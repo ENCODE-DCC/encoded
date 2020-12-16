@@ -12,20 +12,6 @@ from .base import (
 import re
 
 
-def property_closure(request, propname, root_uuid):
-    conn = request.registry[CONNECTION]
-    seen = set()
-    remaining = {str(root_uuid)}
-    while remaining:
-        seen.update(remaining)
-        next_remaining = set()
-        for uuid in remaining:
-            obj = conn.get_by_uuid(uuid)
-            next_remaining.update(obj.__json__(request).get(propname, ()))
-        remaining = next_remaining - seen
-    return seen
-
-
 @abstract_collection(
     name='biosamples',
     unique_key='accession',
@@ -41,6 +27,7 @@ class Biosample(Item):
         'biosample_ontology'
     ]
 
+
     @calculated_property(define=True,
                          schema={"title": "Donors",
                                  "description": "The donors the sample was derived from.",
@@ -51,16 +38,16 @@ class Biosample(Item):
                                     "linkTo": "Donor"
                                     }
                                 })
-    def donors(self, request, registry):
-        connection = registry[CONNECTION]
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid) - {str(self.uuid)}
-        obj_props = (request.embed(uuid, '@@object') for uuid in derived_from_closure)
-        all_donors = {
-            props['accession']
-            for props in obj_props
-            if 'Donor' in props['@type']
-        }
+    def donors(self, request, derived_from):
+        all_donors = set()
+        for d in derived_from:
+            d_obj = request.embed(d, '@@object')
+            if 'Donor' in d_obj.get('@type'):
+                all_donors.add(d_obj.get('@id'))
+            else:
+                all_donors.update(d_obj.get('donors'))
         return sorted(all_donors)
+
 
 @abstract_collection(
     name='cultures',

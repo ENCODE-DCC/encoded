@@ -65,12 +65,8 @@
         "derived_from": {
             "title": "Derived from",
             "description": "The sequencing run designation for the file.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "linkTo": "SequencingRun"
-            }
+            "type": "string",
+            "linkTo": "SequencingRun"
         },
         "read_count": {
             "title": "Read count",
@@ -196,6 +192,9 @@
         },
         "dataset": {
             "title": "Dataset"
+        },
+        "library": {
+            "title": "Library"
         },
         "read_type": {
             "title": "Read type"

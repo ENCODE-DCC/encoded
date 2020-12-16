@@ -85,6 +85,9 @@
         "derived_from": {
             "title": "Library"
         },
+        "dataset": {
+            "title": "Dataset"
+        },
         "platform": {
             "title": "Platform"
         },

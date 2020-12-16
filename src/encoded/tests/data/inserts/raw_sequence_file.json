@@ -19,9 +19,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
-        ],
+        "derived_from": "2a12eb7b-ed78-466a-9552-7512bdd7f45f",
         "md5sum": "fc33724fb1dc16163432e7bd6bf6d4ed",
         "s3_uri": "s3://submissions-lattice/fastq/19D014_per_I1_sample.fastq.gz",
         "validated": true
@@ -47,9 +45,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
-        ],
+        "derived_from": "2a12eb7b-ed78-466a-9552-7512bdd7f45f",
         "md5sum": "104bab5c8a4cd5610bb3669c610fec33",
         "validated": true
     },
@@ -73,9 +69,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
-        ],
+        "derived_from": "2a12eb7b-ed78-466a-9552-7512bdd7f45f",
         "md5sum": "eb740d2d90e5fad2a3cbf8a831eeb0a8"
     },
     {
@@ -98,9 +92,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "3f5c30e4-f5de-48d2-847f-959f3824931f"
-        ],
+        "derived_from": "3f5c30e4-f5de-48d2-847f-959f3824931f",
         "md5sum": "6716659d55a276614c775c9d679ee986"
     },
     {
@@ -122,9 +114,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "3f5c30e4-f5de-48d2-847f-959f3824931f"
-        ],
+        "derived_from": "3f5c30e4-f5de-48d2-847f-959f3824931f",
         "md5sum": "8f8b772ce1d6f10a195b6dc01cfd0916"
     },
     {
@@ -147,9 +137,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "3f5c30e4-f5de-48d2-847f-959f3824931f"
-        ],
+        "derived_from": "3f5c30e4-f5de-48d2-847f-959f3824931f",
         "md5sum": "f29277b3dd2782e3abe28f37734630bc"
     },
     {
@@ -172,9 +160,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "6ca560bd-5278-441d-8256-06f3e3c16e35"
-        ],
+        "derived_from": "6ca560bd-5278-441d-8256-06f3e3c16e35",
         "md5sum": "5729886fe20ef7266a3653e6cc18ba63"
     },
     {
@@ -197,9 +183,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "6ca560bd-5278-441d-8256-06f3e3c16e35"
-        ],
+        "derived_from": "6ca560bd-5278-441d-8256-06f3e3c16e35",
         "md5sum": "445bd44d2c5238f9550c9260028d9835"
     },
     {
@@ -222,9 +206,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "6ca560bd-5278-441d-8256-06f3e3c16e35"
-        ],
+        "derived_from": "6ca560bd-5278-441d-8256-06f3e3c16e35",
         "md5sum": "0d15869ffbcf4cd6583de33fe754ddbe"
     },
     {
@@ -247,9 +229,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
-        ],
+        "derived_from": "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7",
         "md5sum": "414f7ef094bab741597b2cbbd2e77ddb"
     },
     {
@@ -272,9 +252,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
-        ],
+        "derived_from": "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7",
         "md5sum": "273acc3fd9b1d1beb074cdec0a855373"
     },
     {
@@ -297,9 +275,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
-        ],
+        "derived_from": "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7",
         "md5sum": "13b5e6e91653af3ac9dcabe30c15b52b"
     },
     {
@@ -322,9 +298,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "6a0ee005-4d3e-418b-bf47-498547ba3c53"
-        ],
+        "derived_from": "6a0ee005-4d3e-418b-bf47-498547ba3c53",
         "md5sum": "c387aa071eb0273b20e488668b01547e"
     },
     {
@@ -347,9 +321,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "6a0ee005-4d3e-418b-bf47-498547ba3c53"
-        ],
+        "derived_from": "6a0ee005-4d3e-418b-bf47-498547ba3c53",
         "md5sum": "ed63e041625ec9cb1a7a7e0696890503"
     },
     {
@@ -372,9 +344,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "6a0ee005-4d3e-418b-bf47-498547ba3c53"
-        ],
+        "derived_from": "6a0ee005-4d3e-418b-bf47-498547ba3c53",
         "md5sum": "49ee1286192110cecdad3f2945588dd3"
     },
     {
@@ -397,9 +367,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
-        ],
+        "derived_from": "7f3577cf-29dd-4c1c-8328-d82f01e0bc69",
         "md5sum": "02d46a5aad064e6ab403f27adc17720d"
     },
     {
@@ -422,9 +390,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
-        ],
+        "derived_from": "7f3577cf-29dd-4c1c-8328-d82f01e0bc69",
         "md5sum": "d71041ea73fde614a55c7d70f5b3b3d2"
     },
     {
@@ -447,9 +413,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
-        ],
+        "derived_from": "7f3577cf-29dd-4c1c-8328-d82f01e0bc69",
         "md5sum": "2df28e214cb38c7cf20421b43f631ec8"
     },
     {
@@ -472,9 +436,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
-        ],
+        "derived_from": "681d29a4-6058-4a9b-a946-f5a0e19a6e1e",
         "md5sum": "3610a8ea023032b5910d789cb03b17f9"
     },
     {
@@ -497,9 +459,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
-        ],
+        "derived_from": "681d29a4-6058-4a9b-a946-f5a0e19a6e1e",
         "md5sum": "710440573e56bc9c03b5f68e2d1bb86e"
     },
     {
@@ -522,9 +482,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
-        ],
+        "derived_from": "681d29a4-6058-4a9b-a946-f5a0e19a6e1e",
         "md5sum": "014e4a1547ed0daef3fb8ce2ea5f97a8"
     },
     {
@@ -547,9 +505,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
-        ],
+        "derived_from": "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c",
         "md5sum": "85c6507ca5c1dcea43228b035a23fca1"
     },
     {
@@ -572,9 +528,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
-        ],
+        "derived_from": "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c",
         "md5sum": "56f5936b1524ae25ba870ee8d3000fac"
     },
     {
@@ -597,9 +551,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
-        ],
+        "derived_from": "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c",
         "md5sum": "f4cd616d71670451d4e71b6a865d11c2"
     },
     {
@@ -622,9 +574,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "aecf582a-3fb4-4262-9cfb-76b92847119c"
-        ],
+        "derived_from": "aecf582a-3fb4-4262-9cfb-76b92847119c",
         "md5sum": "b0e61831d0a34e7f80651fbe5242e816"
     },
     {
@@ -647,9 +597,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "aecf582a-3fb4-4262-9cfb-76b92847119c"
-        ],
+        "derived_from": "aecf582a-3fb4-4262-9cfb-76b92847119c",
         "md5sum": "f817eb79febd40fe2161ff1518c2ecd6"
     },
     {
@@ -672,9 +620,7 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "derived_from": [
-            "aecf582a-3fb4-4262-9cfb-76b92847119c"
-        ],
+        "derived_from": "aecf582a-3fb4-4262-9cfb-76b92847119c",
         "md5sum": "df1f7162f1c54972243f08bb6e3b4029"
     },
     {
@@ -697,9 +643,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
-        ],
+        "derived_from": "8aafdc5b-11bc-42cc-a002-34fbf1fdd970",
         "md5sum": "00850f338061c35890791b4db2409fdc"
     },
     {
@@ -722,9 +666,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
-        ],
+        "derived_from": "8aafdc5b-11bc-42cc-a002-34fbf1fdd970",
         "md5sum": "fe1e6f3271d4d518d48d05ee30108447"
     },
     {
@@ -747,9 +689,7 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "derived_from": [
-            "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
-        ],
+        "derived_from": "8aafdc5b-11bc-42cc-a002-34fbf1fdd970",
         "md5sum": "86b51dec28a90f17421daccf45f61c18"
     },
     {
@@ -772,9 +712,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "0629dab5-2389-4153-a010-165fc8414344"
-        ],
+        "derived_from": "0629dab5-2389-4153-a010-165fc8414344",
         "md5sum": "2aad655590f532caa097a102b319c177"
     },
     {
@@ -797,9 +735,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "0629dab5-2389-4153-a010-165fc8414344"
-        ],
+        "derived_from": "0629dab5-2389-4153-a010-165fc8414344",
         "md5sum": "95588f2717b944c0de762609059a81af"
     },
     {
@@ -822,9 +758,7 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "derived_from": [
-            "0629dab5-2389-4153-a010-165fc8414344"
-        ],
+        "derived_from": "0629dab5-2389-4153-a010-165fc8414344",
         "md5sum": "2e5e673dd2b2f50dde11b1beb8abd959"
     },
     {
@@ -847,9 +781,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "7083435b-9c6d-4296-be7d-768d71584320"
-        ],
+        "derived_from": "7083435b-9c6d-4296-be7d-768d71584320",
         "md5sum": "6d7c38e8b88edc14ee8cfe4f91c71d90"
     },
     {
@@ -872,9 +804,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "7083435b-9c6d-4296-be7d-768d71584320"
-        ],
+        "derived_from": "7083435b-9c6d-4296-be7d-768d71584320",
         "md5sum": "ba241986d32e7021d343f778c797ca15"
     },
     {
@@ -897,9 +827,7 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "derived_from": [
-            "7083435b-9c6d-4296-be7d-768d71584320"
-        ],
+        "derived_from": "7083435b-9c6d-4296-be7d-768d71584320",
         "md5sum": "c626bd21c55b1796728b4d949c9a4199"
     },
     {
@@ -922,9 +850,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "908a258c-d674-4311-84c0-ad5e15717c19"
-        ],
+        "derived_from": "908a258c-d674-4311-84c0-ad5e15717c19",
         "md5sum": "4fb391452a86667f6c442215cf061b39"
     },
     {
@@ -947,9 +873,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "908a258c-d674-4311-84c0-ad5e15717c19"
-        ],
+        "derived_from": "908a258c-d674-4311-84c0-ad5e15717c19",
         "md5sum": "eaec44b3c60a459a6a287bca6ed9f7cf"
     },
     {
@@ -972,9 +896,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "908a258c-d674-4311-84c0-ad5e15717c19"
-        ],
+        "derived_from": "908a258c-d674-4311-84c0-ad5e15717c19",
         "md5sum": "c877462f81de6345bc2a9b990ddfa8b5"
     },
     {
@@ -997,9 +919,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "908a258c-d674-4311-84c0-ad5e15717c19"
-        ],
+        "derived_from": "908a258c-d674-4311-84c0-ad5e15717c19",
         "md5sum": "a7f0b2ab9cde8f647459822b700b3229"
     },
     {
@@ -1022,9 +942,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
-        ],
+        "derived_from": "ce4a4b84-efc4-4402-aee2-3ca67483aa7e",
         "md5sum": "35fe53b4f7eace03db105c2ec173c0b8"
     },
     {
@@ -1047,9 +965,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
-        ],
+        "derived_from": "ce4a4b84-efc4-4402-aee2-3ca67483aa7e",
         "md5sum": "e74e08a6526fe960e4fd3af35fd6aaa8"
     },
     {
@@ -1072,9 +988,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
-        ],
+        "derived_from": "ce4a4b84-efc4-4402-aee2-3ca67483aa7e",
         "md5sum": "ecfa3bb88cbf55a19b176f472483f745"
     },
     {
@@ -1097,9 +1011,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
-        ],
+        "derived_from": "ce4a4b84-efc4-4402-aee2-3ca67483aa7e",
         "md5sum": "419e108067a42333ec8ef565d0190bcd"
     },
     {
@@ -1122,9 +1034,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "b244ad71-1ae3-45b8-b87c-67e244e03dda"
-        ],
+        "derived_from": "b244ad71-1ae3-45b8-b87c-67e244e03dda",
         "md5sum": "02c16fe4595cdbf83f7b73f153691c9b"
     },
     {
@@ -1147,9 +1057,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "b244ad71-1ae3-45b8-b87c-67e244e03dda"
-        ],
+        "derived_from": "b244ad71-1ae3-45b8-b87c-67e244e03dda",
         "md5sum": "1397dcd5b85cfaa1e257d61c90f915bd"
     },
     {
@@ -1172,9 +1080,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "b244ad71-1ae3-45b8-b87c-67e244e03dda"
-        ],
+        "derived_from": "b244ad71-1ae3-45b8-b87c-67e244e03dda",
         "md5sum": "1290027438ea421322da2eb762a40590"
     },
     {
@@ -1197,9 +1103,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "b244ad71-1ae3-45b8-b87c-67e244e03dda"
-        ],
+        "derived_from": "b244ad71-1ae3-45b8-b87c-67e244e03dda",
         "md5sum": "5ff18b1a819b032e6467ba913734fd11"
     },
     {
@@ -1222,9 +1126,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
-        ],
+        "derived_from": "543d528c-2a00-47f3-8b7f-17a7780dc2cf",
         "md5sum": "1f93dcda094bab01d94552ea3a58e744"
     },
     {
@@ -1247,9 +1149,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
-        ],
+        "derived_from": "543d528c-2a00-47f3-8b7f-17a7780dc2cf",
         "md5sum": "2769128388c0a97392b84424d14c5707"
     },
     {
@@ -1272,9 +1172,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
-        ],
+        "derived_from": "543d528c-2a00-47f3-8b7f-17a7780dc2cf",
         "md5sum": "a48dbb48b6a79890d3cc4cf993e19e2a"
     },
     {
@@ -1297,9 +1195,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
-        ],
+        "derived_from": "543d528c-2a00-47f3-8b7f-17a7780dc2cf",
         "md5sum": "a906d33246695838ca65b8f69e6ff0e2"
     },
     {
@@ -1322,9 +1218,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
-        ],
+        "derived_from": "15c1b20e-e47e-4f89-8155-0bb3186a6acf",
         "md5sum": "bee13a3a990ab0ee85f9e2507d6bffb9"
     },
     {
@@ -1347,9 +1241,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
-        ],
+        "derived_from": "15c1b20e-e47e-4f89-8155-0bb3186a6acf",
         "md5sum": "f964756538ac78591cb0bfc02900dce4"
     },
     {
@@ -1372,9 +1264,7 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "derived_from": [
-            "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
-        ],
+        "derived_from": "15c1b20e-e47e-4f89-8155-0bb3186a6acf",
         "md5sum": "fb56c4a4539a2063382157d523603fc1"
     },
     {
@@ -1397,9 +1287,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
-        ],
+        "derived_from": "fe0c497e-305b-4722-8a29-c67fbd7f25a6",
         "md5sum": "16c5303409add0b33db7e46304a3a890"
     },
     {
@@ -1422,9 +1310,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
-        ],
+        "derived_from": "fe0c497e-305b-4722-8a29-c67fbd7f25a6",
         "md5sum": "e2bc8b815c44834c035cded24b6cde80"
     },
     {
@@ -1447,9 +1333,7 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "derived_from": [
-            "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
-        ],
+        "derived_from": "fe0c497e-305b-4722-8a29-c67fbd7f25a6",
         "md5sum": "b3c6bdcf63217ed19cea683519298272"
     },
     {
@@ -1472,9 +1356,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
-        ],
+        "derived_from": "c59d40d6-10dc-4951-b8e7-d123124cb2b0",
         "md5sum": "c39da95fca731a153428463e428ae823"
     },
     {
@@ -1497,9 +1379,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
-        ],
+        "derived_from": "c59d40d6-10dc-4951-b8e7-d123124cb2b0",
         "md5sum": "2fa86f1630fdb92d0a8a28f6e00df7f1"
     },
     {
@@ -1522,9 +1402,7 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "derived_from": [
-            "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
-        ],
+        "derived_from": "c59d40d6-10dc-4951-b8e7-d123124cb2b0",
         "md5sum": "3e64ce801be205344d3c80a9b1415327"
     },
     {
@@ -1547,9 +1425,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "e99de6aa-4ffe-4380-95aa-43077129b3c0"
-        ],
+        "derived_from": "e99de6aa-4ffe-4380-95aa-43077129b3c0",
         "md5sum": "9407f25aa5716089b19f10d2bfa48c7c"
     },
     {
@@ -1572,9 +1448,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "e99de6aa-4ffe-4380-95aa-43077129b3c0"
-        ],
+        "derived_from": "e99de6aa-4ffe-4380-95aa-43077129b3c0",
         "md5sum": "65df082163840f16e57db7f4ce9806b4"
     },
     {
@@ -1597,9 +1471,7 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "derived_from": [
-            "e99de6aa-4ffe-4380-95aa-43077129b3c0"
-        ],
+        "derived_from": "e99de6aa-4ffe-4380-95aa-43077129b3c0",
         "md5sum": "daefc8c8156a75d2dabd3c084063818f"
     },
     {
@@ -1622,9 +1494,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
-        ],
+        "derived_from": "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4",
         "md5sum": "3d27d4de11ba984fbdabfe0fc669589f"
     },
     {
@@ -1647,9 +1517,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
-        ],
+        "derived_from": "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4",
         "md5sum": "1c3baa3e040987383e242838f66a0457"
     },
     {
@@ -1672,9 +1540,7 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "derived_from": [
-            "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
-        ],
+        "derived_from": "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4",
         "md5sum": "8d6d45de842db71bed6a281afa1c2701"
     },
     {
@@ -1697,9 +1563,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "089da0b8-d3de-4437-b9af-9ba9f888fda4"
-        ],
+        "derived_from": "089da0b8-d3de-4437-b9af-9ba9f888fda4",
         "md5sum": "7c2aeca21ed8a27844eb3f0ce71e8bb1"
     },
     {
@@ -1722,9 +1586,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "089da0b8-d3de-4437-b9af-9ba9f888fda4"
-        ],
+        "derived_from": "089da0b8-d3de-4437-b9af-9ba9f888fda4",
         "md5sum": "ea7cc04649f657c2bb6e7c55406b4fb9"
     },
     {
@@ -1747,9 +1609,7 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "derived_from": [
-            "089da0b8-d3de-4437-b9af-9ba9f888fda4"
-        ],
+        "derived_from": "089da0b8-d3de-4437-b9af-9ba9f888fda4",
         "md5sum": "36a27ea90d07ddd72ebe614d3240dcfa"
     },
     {
@@ -1772,9 +1632,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "44574a0a-e41c-4100-a666-3f60882bc23b"
-        ],
+        "derived_from": "44574a0a-e41c-4100-a666-3f60882bc23b",
         "md5sum": "a66eb4bbdfedac11a851a717308886ad"
     },
     {
@@ -1797,9 +1655,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "44574a0a-e41c-4100-a666-3f60882bc23b"
-        ],
+        "derived_from": "44574a0a-e41c-4100-a666-3f60882bc23b",
         "md5sum": "1fecd172bcf0893f8ff1a5cc0a6b2469"
     },
     {
@@ -1822,9 +1678,7 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "derived_from": [
-            "44574a0a-e41c-4100-a666-3f60882bc23b"
-        ],
+        "derived_from": "44574a0a-e41c-4100-a666-3f60882bc23b",
         "md5sum": "79c297a7b4a723a3b318aa51af85ca11"
     },
     {
@@ -1847,9 +1701,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
-        ],
+        "derived_from": "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0",
         "md5sum": "3167d1d8800eb2a78c75a2b034e67c61"
     },
     {
@@ -1872,9 +1724,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
-        ],
+        "derived_from": "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0",
         "md5sum": "5267f177a814b152d5229b7a5f7f25bc"
     },
     {
@@ -1897,9 +1747,7 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "derived_from": [
-            "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
-        ],
+        "derived_from": "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0",
         "md5sum": "ec4ff850d4beaf24af2b3a683d3542e6"
     },
     {
@@ -1922,9 +1770,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "213bf1b5-796d-4825-b7fd-c399fac7fffe"
-        ],
+        "derived_from": "213bf1b5-796d-4825-b7fd-c399fac7fffe",
         "md5sum": "f9cd04a2eeaf5062b6e721400eefec96"
     },
     {
@@ -1947,9 +1793,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "213bf1b5-796d-4825-b7fd-c399fac7fffe"
-        ],
+        "derived_from": "213bf1b5-796d-4825-b7fd-c399fac7fffe",
         "md5sum": "80c749930f6ce8e90cc9a7573b4893c8"
     },
     {
@@ -1972,9 +1816,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "213bf1b5-796d-4825-b7fd-c399fac7fffe"
-        ],
+        "derived_from": "213bf1b5-796d-4825-b7fd-c399fac7fffe",
         "md5sum": "65b6d370828db71783b953ea7060adba"
     },
     {
@@ -1997,9 +1839,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "213bf1b5-796d-4825-b7fd-c399fac7fffe"
-        ],
+        "derived_from": "213bf1b5-796d-4825-b7fd-c399fac7fffe",
         "md5sum": "7fdbc5bcbac719e2714f27c4ab79197d"
     },
     {
@@ -2022,9 +1862,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "748bf468-5b46-4012-b842-671442460650"
-        ],
+        "derived_from": "748bf468-5b46-4012-b842-671442460650",
         "md5sum": "cbac4a1befa3713949cabeed0f0e42d0"
     },
     {
@@ -2047,9 +1885,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "748bf468-5b46-4012-b842-671442460650"
-        ],
+        "derived_from": "748bf468-5b46-4012-b842-671442460650",
         "md5sum": "9a56cebce17809fcb878ea6be7b570ae"
     },
     {
@@ -2072,9 +1908,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "748bf468-5b46-4012-b842-671442460650"
-        ],
+        "derived_from": "748bf468-5b46-4012-b842-671442460650",
         "md5sum": "c2fcb34bd1c03c500dc915852b85d3fb"
     },
     {
@@ -2097,9 +1931,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "748bf468-5b46-4012-b842-671442460650"
-        ],
+        "derived_from": "748bf468-5b46-4012-b842-671442460650",
         "md5sum": "7ac9620b4d90706a4759531c22d5a6cb"
     },
     {
@@ -2122,9 +1954,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
-        ],
+        "derived_from": "ee94a6b7-2663-41c2-a1fd-185bdad9241d",
         "md5sum": "c6b61b3f0a33aa658e605cca74382da2"
     },
     {
@@ -2147,9 +1977,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
-        ],
+        "derived_from": "ee94a6b7-2663-41c2-a1fd-185bdad9241d",
         "md5sum": "5b4a017bbc447c59b7dcf2dfef9c2830"
     },
     {
@@ -2172,9 +2000,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
-        ],
+        "derived_from": "ee94a6b7-2663-41c2-a1fd-185bdad9241d",
         "md5sum": "c193fe069190d3eb256edbb6395ab3da"
     },
     {
@@ -2197,9 +2023,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
-        ],
+        "derived_from": "ee94a6b7-2663-41c2-a1fd-185bdad9241d",
         "md5sum": "573b0dd1f41f67432f8fc615fca5adfb"
     },
     {
@@ -2222,9 +2046,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "e99740a7-59c6-46ac-b284-d3137af5cc18"
-        ],
+        "derived_from": "e99740a7-59c6-46ac-b284-d3137af5cc18",
         "md5sum": "7a6e2ab0f86abcd8a382b4a4cf0057c1"
     },
     {
@@ -2247,9 +2069,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "e99740a7-59c6-46ac-b284-d3137af5cc18"
-        ],
+        "derived_from": "e99740a7-59c6-46ac-b284-d3137af5cc18",
         "md5sum": "aaae2f574f662953031b1a3448b0c9b2"
     },
     {
@@ -2272,9 +2092,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "e99740a7-59c6-46ac-b284-d3137af5cc18"
-        ],
+        "derived_from": "e99740a7-59c6-46ac-b284-d3137af5cc18",
         "md5sum": "e13760439a40cc72663e2383853708be"
     },
     {
@@ -2297,9 +2115,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "e99740a7-59c6-46ac-b284-d3137af5cc18"
-        ],
+        "derived_from": "e99740a7-59c6-46ac-b284-d3137af5cc18",
         "md5sum": "250f66392beb12116e6b4a1f11e5dc6e"
     },
     {
@@ -2322,9 +2138,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
-        ],
+        "derived_from": "6ff9e510-4cd2-41eb-96e9-60d84736d9a2",
         "md5sum": "72cd210fff268dceea8d41d98b1354e8"
     },
     {
@@ -2347,9 +2161,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
-        ],
+        "derived_from": "6ff9e510-4cd2-41eb-96e9-60d84736d9a2",
         "md5sum": "e19ed86d540f8b96bd7da31ad84ab81e"
     },
     {
@@ -2372,9 +2184,7 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "derived_from": [
-            "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
-        ],
+        "derived_from": "6ff9e510-4cd2-41eb-96e9-60d84736d9a2",
         "md5sum": "bd45e6b1398d33b81d5c52e6f6116639"
     },
     {
@@ -2397,9 +2207,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "a074eba7-31cf-41db-9675-d81d869345a9"
-        ],
+        "derived_from": "a074eba7-31cf-41db-9675-d81d869345a9",
         "md5sum": "d5816288defc73eeade2e8b4ab342283"
     },
     {
@@ -2422,9 +2230,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "a074eba7-31cf-41db-9675-d81d869345a9"
-        ],
+        "derived_from": "a074eba7-31cf-41db-9675-d81d869345a9",
         "md5sum": "f63cae9820992ed3d8ba6f7360332586"
     },
     {
@@ -2447,9 +2253,7 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "derived_from": [
-            "a074eba7-31cf-41db-9675-d81d869345a9"
-        ],
+        "derived_from": "a074eba7-31cf-41db-9675-d81d869345a9",
         "md5sum": "097e4c526214c6c679269cb33c8fdbb3"
     },
     {
@@ -2472,9 +2276,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "f2342e08-61e6-4b4a-923f-db5c0507136f"
-        ],
+        "derived_from": "f2342e08-61e6-4b4a-923f-db5c0507136f",
         "md5sum": "0c1e8420f1b5d60a7cea86335d6bcd44"
     },
     {
@@ -2497,9 +2299,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "f2342e08-61e6-4b4a-923f-db5c0507136f"
-        ],
+        "derived_from": "f2342e08-61e6-4b4a-923f-db5c0507136f",
         "md5sum": "887d6742543913599ecc1799b962f727"
     },
     {
@@ -2522,9 +2322,7 @@
         "file_size": 5000000,
         "read_length": 918,
         "read_count": 1000000,
-        "derived_from": [
-            "f2342e08-61e6-4b4a-923f-db5c0507136f"
-        ],
+        "derived_from": "f2342e08-61e6-4b4a-923f-db5c0507136f",
         "md5sum": "a3fc5df5bd4191fee34e01a42a490c12"
     },
     {
@@ -2547,9 +2345,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
-        ],
+        "derived_from": "08c14aaf-ae61-4173-ae4e-b8aed2e1142c",
         "md5sum": "953bd85f6fd26ce1c83d1085e5bdbf65"
     },
     {
@@ -2572,9 +2368,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
-        ],
+        "derived_from": "08c14aaf-ae61-4173-ae4e-b8aed2e1142c",
         "md5sum": "4af4843a3a770941bcddab7c3908aa0a"
     },
     {
@@ -2597,9 +2391,7 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "derived_from": [
-            "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
-        ],
+        "derived_from": "08c14aaf-ae61-4173-ae4e-b8aed2e1142c",
         "md5sum": "d8c5e078e387808c827de8c6f0976dee"
     },
     {
@@ -2622,9 +2414,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
-        ],
+        "derived_from": "a246c9ed-c2b0-4e7e-947e-17f1924e2c74",
         "md5sum": "20d4fffe4eae6b1adda161e120d72568"
     },
     {
@@ -2647,9 +2437,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
-        ],
+        "derived_from": "a246c9ed-c2b0-4e7e-947e-17f1924e2c74",
         "md5sum": "98c466decae660c8eeb9467dfadd2445"
     },
     {
@@ -2672,9 +2460,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
-        ],
+        "derived_from": "a246c9ed-c2b0-4e7e-947e-17f1924e2c74",
         "md5sum": "eabbdb5a22d106cb9bae7a3420826bbd"
     },
     {
@@ -2697,9 +2483,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "caa2e548-8160-4758-a58b-46aaffe4373b"
-        ],
+        "derived_from": "caa2e548-8160-4758-a58b-46aaffe4373b",
         "md5sum": "098a03540cf9dffb7ecd20333f587b73"
     },
     {
@@ -2722,9 +2506,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "caa2e548-8160-4758-a58b-46aaffe4373b"
-        ],
+        "derived_from": "caa2e548-8160-4758-a58b-46aaffe4373b",
         "md5sum": "91f54c282f4eee842176b7c2245c0dda"
     },
     {
@@ -2747,9 +2529,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "caa2e548-8160-4758-a58b-46aaffe4373b"
-        ],
+        "derived_from": "caa2e548-8160-4758-a58b-46aaffe4373b",
         "md5sum": "6c3d1bd517d2a58b4a20592f0e5ce9c9"
     },
     {
@@ -2772,9 +2552,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
-        ],
+        "derived_from": "a08dac9a-5e04-4105-86e1-e5b05bce9e9b",
         "md5sum": "aae5172f38d71c8bc75a7e3794916f17"
     },
     {
@@ -2797,9 +2575,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
-        ],
+        "derived_from": "a08dac9a-5e04-4105-86e1-e5b05bce9e9b",
         "md5sum": "7528e07e80d74b43fd9770a1b4f700bd"
     },
     {
@@ -2822,9 +2598,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
-        ],
+        "derived_from": "a08dac9a-5e04-4105-86e1-e5b05bce9e9b",
         "md5sum": "df4896d0314a2cc4a480b6d1f119f30c"
     },
     {
@@ -2847,9 +2621,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "fd4b7148-7209-48e5-944e-2613c50e00d7"
-        ],
+        "derived_from": "fd4b7148-7209-48e5-944e-2613c50e00d7",
         "md5sum": "162e893b73a37133b44d544992d2784c"
     },
     {
@@ -2872,9 +2644,7 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "derived_from": [
-            "fd4b7148-7209-48e5-944e-2613c50e00d7"
-        ],
+        "derived_from": "fd4b7148-7209-48e5-944e-2613c50e00d7",
         "md5sum": "461182414db78e36ba9fea4aaa9b43c1"
     },
     {
@@ -2897,9 +2667,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "fd4b7148-7209-48e5-944e-2613c50e00d7"
-        ],
+        "derived_from": "fd4b7148-7209-48e5-944e-2613c50e00d7",
         "md5sum": "16a23d8062a49a769699817d47f0d0df"
     },
     {
@@ -2922,9 +2690,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "38eecbc9-d0db-4a78-aa8c-292010afefb9"
-        ],
+        "derived_from": "38eecbc9-d0db-4a78-aa8c-292010afefb9",
         "md5sum": "10115378c098977e66dbcb0f8889827a"
     },
     {
@@ -2947,9 +2713,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "38eecbc9-d0db-4a78-aa8c-292010afefb9"
-        ],
+        "derived_from": "38eecbc9-d0db-4a78-aa8c-292010afefb9",
         "md5sum": "cbcc210876c0657c21ba085633f40f34"
     },
     {
@@ -2972,9 +2736,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "38eecbc9-d0db-4a78-aa8c-292010afefb9"
-        ],
+        "derived_from": "38eecbc9-d0db-4a78-aa8c-292010afefb9",
         "md5sum": "a01e2da7d63d93e225f42fa5dd2efb75"
     },
     {
@@ -2997,9 +2759,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
-        ],
+        "derived_from": "cc50396d-d60e-4239-9d8a-ed107b0fa81e",
         "md5sum": "39ade9830197c7c77005902e609b110d"
     },
     {
@@ -3022,9 +2782,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
-        ],
+        "derived_from": "cc50396d-d60e-4239-9d8a-ed107b0fa81e",
         "md5sum": "20a8c491d114e7097abf82e7f533badf"
     },
     {
@@ -3047,9 +2805,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
-        ],
+        "derived_from": "cc50396d-d60e-4239-9d8a-ed107b0fa81e",
         "md5sum": "f2fb1f343562657b9566c5495c5ea1ec"
     },
     {
@@ -3072,9 +2828,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
-        ],
+        "derived_from": "9e302e08-3485-4cb8-9fbb-307bae67ca1a",
         "md5sum": "1dd37259e3a672b315ea78f6bd17abb1"
     },
     {
@@ -3097,9 +2851,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
-        ],
+        "derived_from": "9e302e08-3485-4cb8-9fbb-307bae67ca1a",
         "md5sum": "112d96824e76e42265730f7425f2bf90"
     },
     {
@@ -3122,9 +2874,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
-        ],
+        "derived_from": "9e302e08-3485-4cb8-9fbb-307bae67ca1a",
         "md5sum": "7d8a8bc9a6fde7c91402cf096ee2fed6"
     },
     {
@@ -3147,9 +2897,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
-        ],
+        "derived_from": "36bfd7cf-9970-4aeb-be6f-ba109e1c1149",
         "md5sum": "812964d5bdfce172501d226886452700"
     },
     {
@@ -3172,9 +2920,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
-        ],
+        "derived_from": "36bfd7cf-9970-4aeb-be6f-ba109e1c1149",
         "md5sum": "47fe3d62909ba3ff429b933a6f96f3e1"
     },
     {
@@ -3197,9 +2943,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
-        ],
+        "derived_from": "36bfd7cf-9970-4aeb-be6f-ba109e1c1149",
         "md5sum": "891bc36282afc6ec7b2eb885a0325759"
     },
     {
@@ -3222,9 +2966,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
-        ],
+        "derived_from": "fe496b5d-32ce-4d9d-8b72-2ea150d149a7",
         "md5sum": "6c698d8e7fb802027b56642532d2d101"
     },
     {
@@ -3247,9 +2989,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
-        ],
+        "derived_from": "fe496b5d-32ce-4d9d-8b72-2ea150d149a7",
         "md5sum": "e4a7afdc8d7df03cd27c5a7c2f3cad06"
     },
     {
@@ -3272,9 +3012,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
-        ],
+        "derived_from": "fe496b5d-32ce-4d9d-8b72-2ea150d149a7",
         "md5sum": "537bced35d30366924b942b0aea51148"
     },
     {
@@ -3297,9 +3035,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
-        ],
+        "derived_from": "fe496b5d-32ce-4d9d-8b72-2ea150d149a7",
         "md5sum": "e7e1ade6aa8315d8f7022a0fe5c71c75"
     },
     {
@@ -3322,9 +3058,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "10e7e579-1921-488d-9de3-9bc5fe5b6009"
-        ],
+        "derived_from": "10e7e579-1921-488d-9de3-9bc5fe5b6009",
         "md5sum": "8dc6ecc5e4b581630653be12c6486857"
     },
     {
@@ -3347,9 +3081,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "10e7e579-1921-488d-9de3-9bc5fe5b6009"
-        ],
+        "derived_from": "10e7e579-1921-488d-9de3-9bc5fe5b6009",
         "md5sum": "c742a5420f2e618b89738b21304f3c1c"
     },
     {
@@ -3372,9 +3104,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "10e7e579-1921-488d-9de3-9bc5fe5b6009"
-        ],
+        "derived_from": "10e7e579-1921-488d-9de3-9bc5fe5b6009",
         "md5sum": "5033941b6d87f5ba48d292d272351afb"
     },
     {
@@ -3397,9 +3127,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "10e7e579-1921-488d-9de3-9bc5fe5b6009"
-        ],
+        "derived_from": "10e7e579-1921-488d-9de3-9bc5fe5b6009",
         "md5sum": "77cf67b72ba450c6b5d38d0f1f43ae02"
     },
     {
@@ -3422,9 +3150,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "2651c433-d313-44fe-9fca-fe460d7a226c"
-        ],
+        "derived_from": "2651c433-d313-44fe-9fca-fe460d7a226c",
         "md5sum": "bdd9d87312db40554f69debd2cbd9396"
     },
     {
@@ -3447,9 +3173,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "2651c433-d313-44fe-9fca-fe460d7a226c"
-        ],
+        "derived_from": "2651c433-d313-44fe-9fca-fe460d7a226c",
         "md5sum": "47c46d4440afc71de7f0e0e973357b64"
     },
     {
@@ -3472,9 +3196,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "2651c433-d313-44fe-9fca-fe460d7a226c"
-        ],
+        "derived_from": "2651c433-d313-44fe-9fca-fe460d7a226c",
         "md5sum": "800537da2384bb56c5eced15c922441a"
     },
     {
@@ -3497,9 +3219,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "2651c433-d313-44fe-9fca-fe460d7a226c"
-        ],
+        "derived_from": "2651c433-d313-44fe-9fca-fe460d7a226c",
         "md5sum": "fdea2069e14ae4f712613403044774f1"
     },
     {
@@ -3522,9 +3242,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
-        ],
+        "derived_from": "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e",
         "md5sum": "32fcdf7b9d051927d232ae0783c5f117"
     },
     {
@@ -3547,9 +3265,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
-        ],
+        "derived_from": "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e",
         "md5sum": "d03d0879943ae6751305a7796bc79fa4"
     },
     {
@@ -3572,9 +3288,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
-        ],
+        "derived_from": "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e",
         "md5sum": "8883e1e2b92db14416deafd83c4fa023"
     },
     {
@@ -3597,9 +3311,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
-        ],
+        "derived_from": "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e",
         "md5sum": "8dbf075ffdae50db45bdd2140a99c58f"
     },
     {
@@ -3622,9 +3334,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "f36014ab-40c7-400b-9b48-3090ab545f6f"
-        ],
+        "derived_from": "f36014ab-40c7-400b-9b48-3090ab545f6f",
         "md5sum": "3ef9503a4e75cce65eeb318d7b0c614e"
     },
     {
@@ -3647,9 +3357,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "f36014ab-40c7-400b-9b48-3090ab545f6f"
-        ],
+        "derived_from": "f36014ab-40c7-400b-9b48-3090ab545f6f",
         "md5sum": "0b24c13fa27d5153aa3736cd8dd4b4c5"
     },
     {
@@ -3672,9 +3380,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "f36014ab-40c7-400b-9b48-3090ab545f6f"
-        ],
+        "derived_from": "f36014ab-40c7-400b-9b48-3090ab545f6f",
         "md5sum": "2d21285081cae5314a6d7d4b0799aeb3"
     },
     {
@@ -3697,9 +3403,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "f36014ab-40c7-400b-9b48-3090ab545f6f"
-        ],
+        "derived_from": "f36014ab-40c7-400b-9b48-3090ab545f6f",
         "md5sum": "5b3128db520742646df5e395dc4cf293"
     },
     {
@@ -3722,9 +3426,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
-        ],
+        "derived_from": "78965e22-cd6f-4d0b-9c97-0a5d39fb616a",
         "md5sum": "dab7909b8bdfad3053aa6821eb2a4c8a"
     },
     {
@@ -3747,9 +3449,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
-        ],
+        "derived_from": "78965e22-cd6f-4d0b-9c97-0a5d39fb616a",
         "md5sum": "0fadb10cf04649338083d2bc4cfda5cf"
     },
     {
@@ -3772,9 +3472,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
-        ],
+        "derived_from": "78965e22-cd6f-4d0b-9c97-0a5d39fb616a",
         "md5sum": "6cf2ccf966a14167597700faffcda0aa"
     },
     {
@@ -3797,9 +3495,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
-        ],
+        "derived_from": "78965e22-cd6f-4d0b-9c97-0a5d39fb616a",
         "md5sum": "059ba9e6fe79ce69e66e054834cf05be"
     },
     {
@@ -3822,9 +3518,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
-        ],
+        "derived_from": "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4",
         "md5sum": "8bb3bcfc424e9bb55269677709371f2e"
     },
     {
@@ -3847,9 +3541,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
-        ],
+        "derived_from": "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4",
         "md5sum": "d7174162ff309fdbb56cc1e1e52e0ede"
     },
     {
@@ -3872,9 +3564,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
-        ],
+        "derived_from": "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4",
         "md5sum": "978e1e2d5970947b1652007ec9484ece"
     },
     {
@@ -3897,9 +3587,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
-        ],
+        "derived_from": "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4",
         "md5sum": "4a664c757fbe2147af02a6eb4aed9aeb"
     },
     {
@@ -3922,9 +3610,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "31c3f789-5355-494d-9028-08258437fb2c"
-        ],
+        "derived_from": "31c3f789-5355-494d-9028-08258437fb2c",
         "md5sum": "f378439e1289f4387cbed277dd352199"
     },
     {
@@ -3947,9 +3633,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "31c3f789-5355-494d-9028-08258437fb2c"
-        ],
+        "derived_from": "31c3f789-5355-494d-9028-08258437fb2c",
         "md5sum": "156621417cc6cb8314616643089b2ee1"
     },
     {
@@ -3972,9 +3656,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "31c3f789-5355-494d-9028-08258437fb2c"
-        ],
+        "derived_from": "31c3f789-5355-494d-9028-08258437fb2c",
         "md5sum": "6148e0020a735d7bc9bf9e1bacfe05f0"
     },
     {
@@ -3997,9 +3679,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "31c3f789-5355-494d-9028-08258437fb2c"
-        ],
+        "derived_from": "31c3f789-5355-494d-9028-08258437fb2c",
         "md5sum": "0101d7371313cdad1c6184a1b26eb00a"
     },
     {
@@ -4022,9 +3702,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
-        ]
+        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
     },
     {
         "aliases": [
@@ -4046,9 +3724,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
-        ],
+        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca",
         "md5sum": "63cf7c450834afcd60fc9b44c87316fd"
     },
     {
@@ -4071,9 +3747,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
-        ],
+        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca",
         "md5sum": "6b790cfbcd900985f5808c261cc3ee57"
     },
     {
@@ -4096,9 +3770,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
-        ],
+        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca",
         "md5sum": "53640b908fa93e874ca080028e91898e"
     },
     {
@@ -4121,9 +3793,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "a460d195-735f-4776-963d-8e8bc18cdd24"
-        ],
+        "derived_from": "a460d195-735f-4776-963d-8e8bc18cdd24",
         "md5sum": "ffc2a1def6749bccc04f9f2866dc46c6"
     },
     {
@@ -4146,9 +3816,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "a460d195-735f-4776-963d-8e8bc18cdd24"
-        ],
+        "derived_from": "a460d195-735f-4776-963d-8e8bc18cdd24",
         "md5sum": "954240e8f81d4a219011b0f7a3b4fde2"
     },
     {
@@ -4171,9 +3839,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "a460d195-735f-4776-963d-8e8bc18cdd24"
-        ],
+        "derived_from": "a460d195-735f-4776-963d-8e8bc18cdd24",
         "md5sum": "dffa7e95faad4bbb345717fdad96b988"
     },
     {
@@ -4196,9 +3862,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "a460d195-735f-4776-963d-8e8bc18cdd24"
-        ],
+        "derived_from": "a460d195-735f-4776-963d-8e8bc18cdd24",
         "md5sum": "226876aecdc645adf3a9884d5effc846"
     },
     {
@@ -4221,9 +3885,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
-        ],
+        "derived_from": "78c30d8c-ae6b-4f1a-901b-f64024de7e83",
         "md5sum": "61c2f280d9f83aee4801de30eb256f48"
     },
     {
@@ -4246,9 +3908,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
-        ],
+        "derived_from": "78c30d8c-ae6b-4f1a-901b-f64024de7e83",
         "md5sum": "c66ba66d8bfeaeb6c1b47381b7bf1a8c"
     },
     {
@@ -4271,9 +3931,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
-        ],
+        "derived_from": "78c30d8c-ae6b-4f1a-901b-f64024de7e83",
         "md5sum": "e4b5efec91953615a05908f5a4357e5e"
     },
     {
@@ -4296,9 +3954,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
-        ],
+        "derived_from": "78c30d8c-ae6b-4f1a-901b-f64024de7e83",
         "md5sum": "dc6a95bd20ff7200cbac4d9718e6605a"
     },
     {
@@ -4321,9 +3977,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "ff73f9a8-2137-41db-9a5f-2711874c93ed"
-        ],
+        "derived_from": "ff73f9a8-2137-41db-9a5f-2711874c93ed",
         "md5sum": "81e456b6878ce8f9a2e4dbb351fc3508"
     },
     {
@@ -4346,9 +4000,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "ff73f9a8-2137-41db-9a5f-2711874c93ed"
-        ],
+        "derived_from": "ff73f9a8-2137-41db-9a5f-2711874c93ed",
         "md5sum": "4421d34ddc55efa6ff3da0999c97759c"
     },
     {
@@ -4371,9 +4023,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "ff73f9a8-2137-41db-9a5f-2711874c93ed"
-        ],
+        "derived_from": "ff73f9a8-2137-41db-9a5f-2711874c93ed",
         "md5sum": "0b8b2b01e4dc73e6cb44869e7134903b"
     },
     {
@@ -4396,9 +4046,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "ff73f9a8-2137-41db-9a5f-2711874c93ed"
-        ],
+        "derived_from": "ff73f9a8-2137-41db-9a5f-2711874c93ed",
         "md5sum": "08c7f1f71f8df001e20da5f47eef6baa"
     },
     {
@@ -4421,9 +4069,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
-        ],
+        "derived_from": "8a2f8e13-6e37-4020-a3f0-92f797a7d8df",
         "md5sum": "281853588db0d1bf304db92809768195"
     },
     {
@@ -4446,9 +4092,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
-        ],
+        "derived_from": "8a2f8e13-6e37-4020-a3f0-92f797a7d8df",
         "md5sum": "91dae899fb9fbe5cc8e0c6a9d47cf1ed"
     },
     {
@@ -4471,9 +4115,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
-        ],
+        "derived_from": "8a2f8e13-6e37-4020-a3f0-92f797a7d8df",
         "md5sum": "772ebd5a9dbf109a022bad6853e4bd13"
     },
     {
@@ -4496,9 +4138,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
-        ],
+        "derived_from": "8a2f8e13-6e37-4020-a3f0-92f797a7d8df",
         "md5sum": "fcdf676aeb08c2791f1271c8a5a4512c"
     },
     {
@@ -4521,9 +4161,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "d5830cc6-21f1-495d-a0a1-2187365db146"
-        ],
+        "derived_from": "d5830cc6-21f1-495d-a0a1-2187365db146",
         "md5sum": "fa95385d610a060c5abf03243dda0d97"
     },
     {
@@ -4546,9 +4184,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "d5830cc6-21f1-495d-a0a1-2187365db146"
-        ],
+        "derived_from": "d5830cc6-21f1-495d-a0a1-2187365db146",
         "md5sum": "23def3d78f9a88bae81b8b3517610edc"
     },
     {
@@ -4571,9 +4207,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "d5830cc6-21f1-495d-a0a1-2187365db146"
-        ],
+        "derived_from": "d5830cc6-21f1-495d-a0a1-2187365db146",
         "md5sum": "2853bed7f00a72eaa72fb874ae9882da"
     },
     {
@@ -4596,9 +4230,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "d5830cc6-21f1-495d-a0a1-2187365db146"
-        ],
+        "derived_from": "d5830cc6-21f1-495d-a0a1-2187365db146",
         "md5sum": "41fe331b918d811d519caf67da784aaa"
     },
     {
@@ -4621,9 +4253,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
-        ],
+        "derived_from": "72482854-d67c-4e38-aa4d-c8eb0f5c31d3",
         "md5sum": "a0e92a638226cf4e6c0f4fe80ae7b953"
     },
     {
@@ -4646,9 +4276,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
-        ],
+        "derived_from": "72482854-d67c-4e38-aa4d-c8eb0f5c31d3",
         "md5sum": "a1cd9263d585006e305da351aa0eedc3"
     },
     {
@@ -4671,9 +4299,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
-        ],
+        "derived_from": "72482854-d67c-4e38-aa4d-c8eb0f5c31d3",
         "md5sum": "c2ca9803e8dc743717f6b189e28215da"
     },
     {
@@ -4696,9 +4322,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
-        ],
+        "derived_from": "72482854-d67c-4e38-aa4d-c8eb0f5c31d3",
         "md5sum": "57ccf4c55b376e7dc9b07a75fa73b7c7"
     },
     {
@@ -4721,9 +4345,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "31914fbd-df87-4a6e-8145-cc70504c9469"
-        ],
+        "derived_from": "31914fbd-df87-4a6e-8145-cc70504c9469",
         "md5sum": "390f5c7811304f8ceacdb03834b4039e"
     },
     {
@@ -4746,9 +4368,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "31914fbd-df87-4a6e-8145-cc70504c9469"
-        ],
+        "derived_from": "31914fbd-df87-4a6e-8145-cc70504c9469",
         "md5sum": "2479eed95f56c7dc99b1f25facc401c8"
     },
     {
@@ -4771,9 +4391,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "31914fbd-df87-4a6e-8145-cc70504c9469"
-        ],
+        "derived_from": "31914fbd-df87-4a6e-8145-cc70504c9469",
         "md5sum": "c2efc150bdf0dfc99108fbaf902d7252"
     },
     {
@@ -4796,9 +4414,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "31914fbd-df87-4a6e-8145-cc70504c9469"
-        ],
+        "derived_from": "31914fbd-df87-4a6e-8145-cc70504c9469",
         "md5sum": "271a2ae24984fd06b1fca1811d25d2f1"
     },
     {
@@ -4821,9 +4437,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "f14a9538-c3e1-422e-a11c-d7d853512f4a"
-        ],
+        "derived_from": "f14a9538-c3e1-422e-a11c-d7d853512f4a",
         "md5sum": "ea418a3d6942d5f398cf1659a46780b2"
     },
     {
@@ -4846,9 +4460,7 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "derived_from": [
-            "f14a9538-c3e1-422e-a11c-d7d853512f4a"
-        ],
+        "derived_from": "f14a9538-c3e1-422e-a11c-d7d853512f4a",
         "md5sum": "a41f3caef6881460324b39248a07a67a"
     },
     {
@@ -4871,9 +4483,7 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "derived_from": [
-            "f14a9538-c3e1-422e-a11c-d7d853512f4a"
-        ],
+        "derived_from": "f14a9538-c3e1-422e-a11c-d7d853512f4a",
         "md5sum": "9caf9becd4a0fff850983bd3c6f35ca3"
     },
     {
@@ -4896,9 +4506,7 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "derived_from": [
-            "f14a9538-c3e1-422e-a11c-d7d853512f4a"
-        ],
+        "derived_from": "f14a9538-c3e1-422e-a11c-d7d853512f4a",
         "md5sum": "dc48e720e830b060c567ef0c7395bb36"
     },
     {
@@ -4936,9 +4544,7 @@
         "dbxrefs": [
             "SRA:SRR7191896"
         ],
-        "derived_from": [
-            "a7cfa2ba-e8a2-455d-8387-cbd23e73b679"
-        ],
+        "derived_from": "a7cfa2ba-e8a2-455d-8387-cbd23e73b679",
         "md5sum": "0b6a36391e49bcebb773fcfee79a4b69"
     },
     {
@@ -4976,9 +4582,7 @@
         "dbxrefs": [
             "SRA:SRR7191897"
         ],
-        "derived_from": [
-            "a7cfa2ba-e8a2-455d-8387-cbd23e73b679"
-        ],
+        "derived_from": "a7cfa2ba-e8a2-455d-8387-cbd23e73b679",
         "md5sum": "55b6ccb954b024a8054f25c6619948e4"
     },
     {
@@ -5016,9 +4620,7 @@
         "dbxrefs": [
             "SRA:SRR7191898"
         ],
-        "derived_from": [
-            "a7cfa2ba-e8a2-455d-8387-cbd23e73b679"
-        ],
+        "derived_from": "a7cfa2ba-e8a2-455d-8387-cbd23e73b679",
         "md5sum": "e5d299e84a2559823d107a8d116d5dc0"
     },
     {
@@ -5056,9 +4658,7 @@
         "dbxrefs": [
             "SRA:SRR7191899"
         ],
-        "derived_from": [
-            "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d"
-        ],
+        "derived_from": "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d",
         "md5sum": "f8f6b885de9776d5a105a01f1596c610"
     },
     {
@@ -5096,9 +4696,7 @@
         "dbxrefs": [
             "SRA:SRR7191810"
         ],
-        "derived_from": [
-            "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d"
-        ],
+        "derived_from": "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d",
         "md5sum": "82bb3625e311bd480178e8ccdc4e0543"
     },
     {
@@ -5136,9 +4734,7 @@
         "dbxrefs": [
             "SRA:SRR7191811"
         ],
-        "derived_from": [
-            "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d"
-        ],
+        "derived_from": "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d",
         "md5sum": "28cd2ec22e94c633a586f29d58fb1f9f"
     },
     {
@@ -5176,9 +4772,7 @@
         "dbxrefs": [
             "SRA:SRR7191812"
         ],
-        "derived_from": [
-            "c6bac386-c37c-4d6d-8ffc-637de37d30a8"
-        ],
+        "derived_from": "c6bac386-c37c-4d6d-8ffc-637de37d30a8",
         "md5sum": "3f1b31a03e746428ff6a901e00c68456"
     },
     {
@@ -5216,9 +4810,7 @@
         "dbxrefs": [
             "SRA:SRR7191813"
         ],
-        "derived_from": [
-            "c6bac386-c37c-4d6d-8ffc-637de37d30a8"
-        ],
+        "derived_from": "c6bac386-c37c-4d6d-8ffc-637de37d30a8",
         "md5sum": "566eae936304827d4b2b4e1e445b83f2"
     },
     {
@@ -5256,9 +4848,7 @@
         "dbxrefs": [
             "SRA:SRR7191814"
         ],
-        "derived_from": [
-            "c6bac386-c37c-4d6d-8ffc-637de37d30a8"
-        ],
+        "derived_from": "c6bac386-c37c-4d6d-8ffc-637de37d30a8",
         "md5sum": "392d4b4625e6612c2120444aee4b5e20"
     },
     {
@@ -5296,9 +4886,7 @@
         "dbxrefs": [
             "SRA:SRR7191815"
         ],
-        "derived_from": [
-            "0c5b7e8c-375f-40cc-a18a-914e878b34fd"
-        ],
+        "derived_from": "0c5b7e8c-375f-40cc-a18a-914e878b34fd",
         "md5sum": "263545056a1d23e9187c842b3c0587cf"
     },
     {
@@ -5336,9 +4924,7 @@
         "dbxrefs": [
             "SRA:SRR7191816"
         ],
-        "derived_from": [
-            "0c5b7e8c-375f-40cc-a18a-914e878b34fd"
-        ],
+        "derived_from": "0c5b7e8c-375f-40cc-a18a-914e878b34fd",
         "md5sum": "afe65c9fcd4845db7d899f06b7cbc419"
     },
     {
@@ -5376,9 +4962,7 @@
         "dbxrefs": [
             "SRA:SRR7191817"
         ],
-        "derived_from": [
-            "0c5b7e8c-375f-40cc-a18a-914e878b34fd"
-        ],
+        "derived_from": "0c5b7e8c-375f-40cc-a18a-914e878b34fd",
         "md5sum": "07f09cdee0a70898e2bcd9551cfd7c2a"
     },
     {
@@ -5416,9 +5000,7 @@
         "dbxrefs": [
             "SRA:SRR7191818"
         ],
-        "derived_from": [
-            "9a55c381-72ff-4cc2-a68d-c21244651431"
-        ],
+        "derived_from": "9a55c381-72ff-4cc2-a68d-c21244651431",
         "md5sum": "a4ce3583b3727198a4174639863e04fe"
     },
     {
@@ -5456,9 +5038,7 @@
         "dbxrefs": [
             "SRA:SRR7191819"
         ],
-        "derived_from": [
-            "9a55c381-72ff-4cc2-a68d-c21244651431"
-        ],
+        "derived_from": "9a55c381-72ff-4cc2-a68d-c21244651431",
         "md5sum": "18067a1feb14c67c8f8611c34fe26d85"
     },
     {
@@ -5496,9 +5076,7 @@
         "dbxrefs": [
             "SRA:SRR7191820"
         ],
-        "derived_from": [
-            "9a55c381-72ff-4cc2-a68d-c21244651431"
-        ],
+        "derived_from": "9a55c381-72ff-4cc2-a68d-c21244651431",
         "md5sum": "6f4930d9471ea29ada57f5a2f762481c"
     },
     {
@@ -5536,9 +5114,7 @@
         "dbxrefs": [
             "SRA:SRR7191821"
         ],
-        "derived_from": [
-            "9cd890e1-2e9e-4994-ad35-271a78553248"
-        ],
+        "derived_from": "9cd890e1-2e9e-4994-ad35-271a78553248",
         "md5sum": "dca58015fca72e008d7da759611954d6"
     },
     {
@@ -5576,9 +5152,7 @@
         "dbxrefs": [
             "SRA:SRR7191822"
         ],
-        "derived_from": [
-            "9cd890e1-2e9e-4994-ad35-271a78553248"
-        ],
+        "derived_from": "9cd890e1-2e9e-4994-ad35-271a78553248",
         "md5sum": "c435dfcb7b4ece23f4a1892f0da5e707"
     },
     {
@@ -5616,9 +5190,7 @@
         "dbxrefs": [
             "SRA:SRR7191823"
         ],
-        "derived_from": [
-            "9cd890e1-2e9e-4994-ad35-271a78553248"
-        ],
+        "derived_from": "9cd890e1-2e9e-4994-ad35-271a78553248",
         "md5sum": "d5e319e700f2655e78508488254940ff"
     },
     {
@@ -5656,9 +5228,7 @@
         "dbxrefs": [
             "SRA:SRR7191824"
         ],
-        "derived_from": [
-            "3dd59186-0407-4e29-9025-8443485fac53"
-        ],
+        "derived_from": "3dd59186-0407-4e29-9025-8443485fac53",
         "md5sum": "843eddc70922e214bf3e52a8cbf348be"
     },
     {
@@ -5696,9 +5266,7 @@
         "dbxrefs": [
             "SRA:SRR7191825"
         ],
-        "derived_from": [
-            "3dd59186-0407-4e29-9025-8443485fac53"
-        ],
+        "derived_from": "3dd59186-0407-4e29-9025-8443485fac53",
         "md5sum": "dbb09a0dffd307484cc328d8dd2094cc"
     },
     {
@@ -5736,9 +5304,7 @@
         "dbxrefs": [
             "SRA:SRR7191826"
         ],
-        "derived_from": [
-            "3dd59186-0407-4e29-9025-8443485fac53"
-        ],
+        "derived_from": "3dd59186-0407-4e29-9025-8443485fac53",
         "md5sum": "53124e5ea45744f5e2f7c9b9e50d6519"
     },
     {
@@ -5776,9 +5342,7 @@
         "dbxrefs": [
             "SRA:SRR7191827"
         ],
-        "derived_from": [
-            "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df"
-        ],
+        "derived_from": "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df",
         "md5sum": "dd6d83da4e0faad0004a4dd30ab77fb7"
     },
     {
@@ -5816,9 +5380,7 @@
         "dbxrefs": [
             "SRA:SRR7191828"
         ],
-        "derived_from": [
-            "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df"
-        ],
+        "derived_from": "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df",
         "md5sum": "1f5d2dfa93a1aa9b98d155e7f0d05ad0"
     },
     {
@@ -5856,9 +5418,7 @@
         "dbxrefs": [
             "SRA:SRR7191829"
         ],
-        "derived_from": [
-            "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df"
-        ],
+        "derived_from": "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df",
         "md5sum": "5f2d8ed013b61a8a14cb1ef68a2cec21"
     },
     {
@@ -5896,9 +5456,7 @@
         "dbxrefs": [
             "SRA:SRR7191830"
         ],
-        "derived_from": [
-            "74ab76b9-0a74-4263-b1ef-75755938e939"
-        ],
+        "derived_from": "74ab76b9-0a74-4263-b1ef-75755938e939",
         "md5sum": "ce62387106f8ec07a72e50592d17b892"
     },
     {
@@ -5936,9 +5494,7 @@
         "dbxrefs": [
             "SRA:SRR7191831"
         ],
-        "derived_from": [
-            "74ab76b9-0a74-4263-b1ef-75755938e939"
-        ],
+        "derived_from": "74ab76b9-0a74-4263-b1ef-75755938e939",
         "md5sum": "a7b49835b618f463c9ec071c7bf04eaa"
     },
     {
@@ -5976,9 +5532,7 @@
         "dbxrefs": [
             "SRA:SRR7191832"
         ],
-        "derived_from": [
-            "74ab76b9-0a74-4263-b1ef-75755938e939"
-        ],
+        "derived_from": "74ab76b9-0a74-4263-b1ef-75755938e939",
         "md5sum": "95f46cf0ad80459caf585f68919ed73d"
     }
 ]
