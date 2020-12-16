@@ -67,10 +67,10 @@ class BioreferenceComponent extends React.Component {
                 </header>
                 {this.props.auditDetail(context.audit, 'reference-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
-                    <PanelBody addClasses="panel-body-with-header">
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                    <PanelBody addClasses="panel__split">
+                        {/* <div className="flexrow"> */}
+                            <div className="panel__split-element">
+                                <div className="panel__split-heading panel__split-heading--reference"><h4>Summary</h4></div>
                                 <dl className="key-value">
                                     <div data-test="status">
                                         <dt>Status</dt>
@@ -100,8 +100,8 @@ class BioreferenceComponent extends React.Component {
                                 </dl>
                             </div>
 
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading">
+                            <div className="panel__split-element">
+                                <div className="panel__split-heading panel__split-heading--reference">
                                     <h4>Attribution</h4>
                                     <ProjectBadge award={context.award} addClasses="badge-heading" />
                                 </div>
@@ -146,7 +146,7 @@ class BioreferenceComponent extends React.Component {
                                         : null}
                                 </dl>
                             </div>
-                        </div>
+                        {/* </div> */}
                     </PanelBody>
                 </Panel>
 
