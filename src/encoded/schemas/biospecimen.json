@@ -527,7 +527,7 @@
         "accession": {
             "title": "Accession"
         },
-        "internal_ID": {
+        "internal_id": {
             "title": "Internal ID"
         },
         "openspecimen_ID": {

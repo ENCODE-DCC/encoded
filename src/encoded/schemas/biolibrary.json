@@ -26,7 +26,7 @@
         "nucleic_acid_quantity_units": ["nucleic_acid_starting_quantity"],
         "nucleic_acid_quantity": ["nucleic_acid_starting_quantity_units"],
         "source": ["sequencing_id"],
-        "sequencing_ID": ["source"]
+        "sequencing_id": ["source"]
     },
     "properties": {
         "schema_version": {
