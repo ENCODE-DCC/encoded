@@ -14,7 +14,7 @@ from snovault.schema_utils import schema_validator
 from snovault.validation import ValidationFailure
 from .base import (
     Item,
-    paths_filtered_by_status
+    paths_filtered_by_status,
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -57,29 +57,7 @@ def show_cloud_metadata(status=None, md5sum=None, file_size=None, restricted=Non
     return True
 
 
-def property_closure_by_prop(request, propname, root_uuid, defining_property):
-    conn = request.registry[CONNECTION]
-    desired_list = set()
-    seen = set()
-    remaining = {str(root_uuid)}
-    while remaining:
-        seen.update(remaining)
-        next_remaining = set()
-        for uuid in remaining:
-            obj = conn.get_by_uuid(uuid)
-            if obj.__json__(request).get(defining_property, ()):
-                desired_list.add(obj.__json__(request).get('accession', ()))
-            else:
-                new_values = obj.__json__(request).get(propname, ())
-                if isinstance(new_values, list):
-                    next_remaining.update(new_values)
-                elif isinstance(new_values, str):
-                    next_remaining.add(new_values)
-        remaining = next_remaining - seen
-    return desired_list
-
-
-def inherit_protcol_prop(request, seqrun_id, propname, read_type):
+def inherit_protocol_prop(request, seqrun_id, propname, read_type):
     seqrun_obj = request.embed(seqrun_id, '@@object?skip_calculated=true')
     lib_id = seqrun_obj.get('derived_from')
     lib_obj = request.embed(lib_id, '@@object?skip_calculated=true')
@@ -553,10 +531,12 @@ class AnalysisFile(DataFile):
         all_libs = set()
         for f in derived_from:
             obj = request.embed(f, '@@object')
-            if obj.get('libraries'):
+            if obj.get('library'):
+                all_libs.add(obj.get('library'))
+            elif obj.get('libraries'):
                 all_libs.update(obj.get('libraries'))
             elif obj.get('protocol'):
-                all_libs.add(obj.get('accession'))
+                all_libs.add(obj.get('@id'))
         return sorted(all_libs)
 
 
@@ -586,8 +566,8 @@ class RawSequenceFile(DataFile):
     embedded = DataFile.embedded + []
 
     @calculated_property(define=True,
-                         schema={"title": "Libraries",
-                                 "description": "The libraries the file was derived from.",
+                         schema={"title": "Library",
+                                 "description": "The library the file was derived from.",
                                  "comment": "Do not submit. This is a calculated property",
                                  "type": "array",
                                  "items": {
@@ -595,9 +575,12 @@ class RawSequenceFile(DataFile):
                                     "linkTo": "Library"
                                     }
                                 })
-    def libraries(self, request):
-        all_libs = property_closure_by_prop(request, 'derived_from', self.uuid, 'protocol')
-        return sorted(all_libs)
+    def library(self, request, derived_from):
+        all_donors = set()
+        seqrun_obj = request.embed(derived_from, '@@object?skip_calculated=true')
+        lib_id = seqrun_obj.get('derived_from')
+        lib_obj = request.embed(derived_from, '@@object?skip_calculated=true')
+        return lib_obj.get('@id')
 
 
     @calculated_property(define=True,
@@ -610,8 +593,7 @@ class RawSequenceFile(DataFile):
                                     }
                                 })
     def sequence_elements(self, request, derived_from=None, read_type=None):
-        seqrun_id = derived_from[0]
-        return inherit_protcol_prop(request, seqrun_id, 'sequence_elements', read_type)
+        return inherit_protocol_prop(request, derived_from, 'sequence_elements', read_type)
 
 
     @calculated_property(define=True,
@@ -621,8 +603,7 @@ class RawSequenceFile(DataFile):
                                  "type": "string"
                                 })
     def demultiplexed_type(self, request, derived_from=None, read_type=None):
-        seqrun_id = derived_from[0]
-        return inherit_protcol_prop(request, seqrun_id, 'demultiplexed_type', read_type)
+        return inherit_protocol_prop(request, derived_from, 'demultiplexed_type', read_type)
 
 
 @collection(

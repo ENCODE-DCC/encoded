@@ -66,12 +66,8 @@
             "title": "Derived from",
             "description": "The sequencing run designation for the file.",
             "comment": "This field is required for sra and fastq files. See sequencing_run.json for available identifiers.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "linkTo": "SequencingRun"
-            }
+            "type": "string",
+            "linkTo": "SequencingRun"
         },
         "read_count": {
             "title": "Read count",
@@ -199,6 +195,9 @@
         },
         "dataset": {
             "title": "Dataset"
+        },
+        "library": {
+            "title": "Library"
         },
         "read_type": {
             "title": "Read type"

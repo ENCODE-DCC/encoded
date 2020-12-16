@@ -12,20 +12,6 @@ from .base import (
 import re
 
 
-def property_closure(request, propname, root_uuid):
-    conn = request.registry[CONNECTION]
-    seen = set()
-    remaining = {str(root_uuid)}
-    while remaining:
-        seen.update(remaining)
-        next_remaining = set()
-        for uuid in remaining:
-            obj = conn.get_by_uuid(uuid)
-            next_remaining.update(obj.__json__(request).get(propname, ()))
-        remaining = next_remaining - seen
-    return seen
-
-
 @collection(
     name='suspensions',
     unique_key='accession',
@@ -54,13 +40,12 @@ class Suspension(Item):
                                     "linkTo": "Donor"
                                     }
                                 })
-    def donors(self, request, registry):
-        connection = registry[CONNECTION]
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid) - {str(self.uuid)}
-        obj_props = (request.embed(uuid, '@@object') for uuid in derived_from_closure)
-        all_donors = {
-            props['accession']
-            for props in obj_props
-            if 'Donor' in props['@type']
-        }
+    def donors(self, request, derived_from):
+        all_donors = set()
+        for bs in derived_from:
+            bs_obj = request.embed(bs, '@@object')
+            if 'Donor' in bs_obj.get('@type'):
+                all_donors.add(bs_obj.get('@id'))
+            else:
+                all_donors.update(bs_obj.get('donors'))
         return sorted(all_donors)
