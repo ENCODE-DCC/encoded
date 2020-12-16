@@ -199,9 +199,9 @@ BiospecimenTable.columns = {
         title: 'Accession',
         display: biospecimen => <a href={biospecimen['@id']}>{biospecimen.accession}</a>,
     },
-    openspecimen_ID: {
+    openspecimen_id: {
         title: 'OpenSpecimen ID',
-        getValue: biospecimen => biospecimen.openspecimen_ID,
+        getValue: biospecimen => biospecimen.openspecimen_id,
     },
     collection_type: {
         title: 'Collection type',

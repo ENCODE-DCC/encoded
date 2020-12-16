@@ -151,13 +151,13 @@
             "title": "Histologic Subtype"
         },
         "surgery.pathology_report.ajcc_p_stage": {
-            "title": "pT Stage at Presentation"
+            "title": "pT Stage (at presentation)"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN Stage at Presentation"
+            "title": "pN Stage (at presentation)"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM Stage at Presentation"
+            "title": "pM Stage (at presentation)"
         },
         "surgery.pathology_report.metasis_details.site": {
             "title": "Metastasis Site (Pathology)"
@@ -166,7 +166,7 @@
             "title": "Metastasis Type (Pathology)"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage at Presentation"
+            "title": "TNM Stage (at presentation)"
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
