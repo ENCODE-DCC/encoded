@@ -105,7 +105,7 @@
         "diagnosis.follow_up_duration_range": {
             "title": "Follow Up Duration"
         },
-        
+
         "sex": {
             "title": "Sex"
         },
@@ -119,7 +119,7 @@
             "title": "Vital Status"
         },
 
-        "medical_imaging.type" : {
+        "medical_imaging_before_nephrectomy.type" : {
           "title": "Medical Imaging"
         },
 
@@ -141,10 +141,13 @@
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
+        "dominant_tumor.histology_filter": {
+            "title": "Dominant Tumor"
+        },
         "surgery.pathology_report.pathology_report_tumor_range":{
             "title": "Tumor Size Range"
         },
-        "surgery.pathology_report.histology": {
+        "surgery.pathology_report.histology_filter": {
             "title": "Histologic Subtype"
         },
         "surgery.pathology_report.ajcc_p_stage": {
@@ -207,6 +210,42 @@
         "metastasis.source": {
             "title": "Metastasis Source"
         },
+        "labs_and_vitals.BMI": {
+            "title": "BMI"
+        },
+        "labs_and_vitals.BP_Systolic": {
+            "title": "BP_Systolic"
+        },
+        "labs_and_vitals.BP_Diastolic": {
+            "title": "BP_Diastolic"
+        },
+        "labs_and_vitals.Hemoglobin": {
+            "title": "Hemoglobin"
+        },
+        "labs_and_vitals.Platelets": {
+            "title": "Platelets"
+        },
+        "labs_and_vitals.WBC": {
+            "title": "WBC"
+        },
+        "labs_and_vitals.Neutrophils": {
+            "title": "Neutrophils"
+        },
+        "labs_and_vitals.Creatinine": {
+            "title": "Creatinine"
+        },
+        "labs_and_vitals.Calcium": {
+            "title": "Calcium"
+        },
+        "labs_and_vitals.Albumin": {
+            "title": "Albumin"
+        },
+        "labs_and_vitals.Sodium": {
+            "title": "Sodium"
+        },
+        "labs_and_vitals.LDH": {
+            "title": "LDH"
+        },
 
         "biospecimen.sample_type": {
               "title": "Biospecimen Sample Type"
@@ -249,6 +288,9 @@
         },
         "race": {
             "title": "Race"
+        },
+        "dominant_tumor.histology": {
+            "title": "Dominant Tumor"
         },
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
@@ -311,5 +353,3 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
-
-

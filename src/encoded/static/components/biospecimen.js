@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
+import { ItemAccessories } from './navigation';
 import Status from './status';
 import CollapsiblePanel from './collapsiblePanel';
 import { PanelLookup } from './objectutils';
@@ -71,7 +71,7 @@ class Biospecimen extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Biospecimen" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
-
+                        <ItemAccessories item={context}/>
                     </div>
 
                 </header>

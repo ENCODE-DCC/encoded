@@ -17,6 +17,7 @@ from .base import (
     SharedItem,
     paths_filtered_by_status,
 )
+from .histology_filters import histology_filters
 from snovault.resource_views import item_view_object
 from snovault.util import expand_path
 from collections import defaultdict
@@ -39,7 +40,6 @@ USER_ALLOW_CURRENT = [
 USER_DELETED = [
     (Deny, Everyone, 'visible_for_edit')
 ] + ONLY_ADMIN_VIEW_DETAILS
-
 
 def group_values_by_lab(request, labs):
     values_by_key = defaultdict(list)
@@ -135,6 +135,27 @@ def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiati
             last_follow_up_date = "Not available"
 
     return last_follow_up_date
+
+def getLabsAndVitalsRange(value, low, high, unit, lowRange, normalRange, highRange):
+    if value < low:
+        if lowRange == "default":
+            return "Below (< " + str(low) + ")"
+        else:
+            return lowRange
+    elif value >= high:
+        if highRange == "default":
+            return "Above (" + str(high) + " >=)"
+        else:
+            return highRange        
+    else:
+        if normalRange == "default":
+            if unit == "":
+                return "Normal Range (" + str(low) + " >= and < " + str(high) +")"
+            else:
+                return "Normal Range (" + str(low) + " >= and < " + str(high) + " " + unit +")"
+        else: 
+            return normalRange
+        
 
 
 @collection(
@@ -423,10 +444,223 @@ class Patient(Item):
 
 
     @calculated_property(define=True, schema={
+            "title": "Dominant Tumor",
+            "type": "object",
+            "additionalProperties": False,
+            "properties":{
+                "t_stage": {
+                    "title": "pT Stage",
+                    "description": "Pathological T stage, size primary tumor",
+                    "type": "string",
+                },
+                "n_stage": {
+                    "title": "pN Stage",
+                    "description": "Pathological N stage, nodal involvement",
+                    "type": "string",
+                },
+                "m_stage": {
+                    "title": "pM Stage",
+                    "description": "Pathological M stage, nodal involvement",
+                    "type": "string",
+                },
+                "histology": {
+                    "title": "Histology",
+                    "description": "The histology of tumor",
+                    "type": "string",
+                },
+                "histology_filter": {
+                    "title": "Histology",
+                    "description": "The histology of tumor",
+                    "type": "string",
+                },
+                "tumor_size": {
+                    "title": "Tumor Size",
+                    "description": "Greatest dimension of tumor was recorded in cm. ",
+                    "type": "number"
+                },
+                "tumor_size_units": {
+                    "title": "Tumor Size units",
+                    "type": "string",
+                    "enum": [
+                        "cm"
+                    ]
+                },
+                "date": {
+                    "title": "Surgery Date",
+                    "type": "string",
+
+                },
+
+            },
+        })
+    def dominant_tumor(self, request, surgery=None):
+        dominant_tumor = dict()
+        tRanking = {"Not applicable": 0, "pTX": 1,"pT1": 2, "pT1a": 2, "pT1b": 2, "pT2": 3, "pT2a": 3, "pT2b": 3, "pT3": 4, "pT3a": 4, "pT3b": 4, "pT3c": 4, "pT4": 5}
+        nRanking = {"Not applicable": 0, "Not available": 1, "pNX": 1, "pN0": 2, "pN1": 3, "pN2": 4}
+        #non-RCC is ranked at -1, but we assume that we will not handle non-RCC data for now
+        histologyRanking = {
+            "Acquired cystic disease-associated renal cell carcinoma": 3,
+            "Angiomyolipoma": 0,
+            "Chromophobe renal cell carcinoma": 2,
+            "Chromophobe renal cell carcinoma, hybrid type": 2,
+            "Chromophobe renal cell carcinoma, classic": 2,
+            "Chromophobe renal cell carcinoma, eosinophilic": 2,
+            "Clear cell papillary renal cell carcinoma": 1,
+            "Clear cell renal cell carcinoma": 5,
+            "Collecting duct carcinoma": 6,
+            "Cystic nephroma": 0,
+            "Hereditary leiomyomatosis and RCC-associated RCC": 6,
+            "Metanephric adenoma": 0,
+            "MiT family translocation renal cell carcinoma": 4,
+            "Mucinous tubular and spindle cell carcinoma": 3,
+            "Multilocular cystic renal neoplasm of low malignant potential": 1,
+            "Oncocytic renal neoplasm, not further classified": 2,
+            "Oncocytic renal neoplasm, favor RO": 0,
+            "Oncocytic renal neoplasm, favor ChRCC": 2,
+            "Oncocytoma": 0,
+            "Poorly differentiated malignancy": 5,
+            "Sarcomatoid, NOS": 5,
+            "Papillary renal cell carcinoma": 3,
+            "Papillary renal cell carcinoma, type 1": 3,
+            "Papillary renal cell carcinoma, type 2": 4,
+            "Renal cell carcinoma, not further classified": 5,
+            "Renal medullary carcinoma": 6,
+            "SDH deficient renal cell carcinoma": 3,
+            "Tubulocystic renal cell carcinoma": 4,
+            "Unclassified RCC": 5,
+
+        }
+
+        tumors = []
+        #collect all tumors info to make a list
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                surgery_path_report = surgery_object['pathology_report']
+                if len(surgery_path_report) > 0:
+                    for path_report in surgery_path_report:
+                        path_report_obj = request.embed(path_report, '@@object')
+                        t_stage = path_report_obj.get('t_stage')
+                        n_stage = path_report_obj.get('n_stage')
+                        m_stage = path_report_obj.get('m_stage')
+                        histology = path_report_obj.get('histology')
+                        date = surgery_object.get('date')
+                        # handle missing data. if stage info is missing, rank it the -1(lowest)
+                        # Also we assume non-RCC is already exluded from path report data
+                        if t_stage:
+                            t_stage_rank =  tRanking[t_stage]
+                        else:
+                            t_stage_rank = -1
+                        if n_stage:
+                            n_stage_rank =  nRanking[n_stage]
+                        else:
+                            n_stage_rank = -1
+                        if histology:
+                            histology_rank =  histologyRanking[histology]
+                        else:
+                            histology_rank = -1
+                        histology = path_report_obj.get('histology')
+                        histology_filter = histology_filters.get(histology)
+                        tumor = {
+                            't_stage': t_stage,
+                            't_stage_rank': t_stage_rank,
+                            'n_stage': n_stage,
+                            'n_stage_rank': n_stage_rank,
+                            'm_stage': m_stage,
+                            'histology': histology,
+                            'histology_filter': histology_filter,
+                            'histology_rank': histology_rank,
+                            'tumor_size': path_report_obj.get('tumor_size'),
+                            'tumor_size_units': path_report_obj.get('tumor_size_units'),
+                            'path_report': path_report_obj.get('accession'),
+                            'path_report_id': path_report_obj.get('@id'),
+                            'surgery': surgery_object.get('accession'),
+                            'surgery_id': surgery_object.get('@id'),
+                            'date': date
+                        }
+
+                        tumors.append(tumor)
+
+            if len(tumors) == 1:
+                dominant_tumor = tumors[0]
+            elif len(tumors) > 1:
+                #sort by pT stage
+                tumors.sort(key=lambda tumor: tumor['t_stage_rank'])
+                pt_stage_rank = tumors[-1]['t_stage_rank']
+
+                #remove low pT ranking tummors
+                tumorsCopy = tumors.copy()
+                for tumor in tumorsCopy:
+                    if tumor['t_stage_rank'] != pt_stage_rank:
+                        tumors.remove(tumor)
+                # if only one tumor with highest pT rank left
+                if len(tumors) == 1:
+                    dominant_tumor = tumors[0]
+                #if more than one tumor with highest pT rank left
+                else:
+                    #compare the tumors that have highest pt stage when stage is pt1ab or pt2ab
+                    #remove the low pt rank tumors
+
+                    if pt_stage_rank == 2 or pt_stage_rank == 3:
+
+                        hasB = False
+                        for tumor in tumors:
+
+                            if tumor['t_stage'].endswith('b'):
+                                hasB = True
+                                break
+                        if hasB:
+                            #remove stage endswith a
+                            tumorsCopy = tumors.copy()
+                            for tumor in tumorsCopy:
+                                if tumor['t_stage'].endswith('a'):
+                                    tumors.remove(tumor)
+                    #compare the tumors that have highest pt stage when stage is pt3abc
+                    #remove the low pt rank tumors
+                    elif pt_stage_rank == 4:
+                        hasC = False
+                        hasB = False
+                        for tumor in tumors:
+                            if tumor['t_stage'].endswith('b'):
+                                hasB = True
+                            elif tumor['t_stage'].endswith('c'):
+                                hasC = True
+                        if hasC:
+                            #remove stage endswith b and a:
+                            tumorsCopy = tumors.copy()
+                            for tumor in tumorsCopy:
+                                if tumor['t_stage'].endswith('a'):
+                                    tumors.remove(tumor)
+                                elif tumor['t_stage'].endswith('b'):
+                                    tumors.remove(tumor)
+                        elif hasB:
+                            #remove stage endswith a:
+                            tumorsCopy = tumors.copy()
+                            for tumor in tumorsCopy:
+                                if tumor['t_stage'].endswith('a'):
+                                    tumors.remove(tumor)
+                    #now only turely highest pt ranking tumors left
+                    if len(tumors) == 1:
+                        dominant_tumor = tumors[0]
+                    else:
+                        tumors.sort(key=lambda tumor: (tumor['n_stage_rank'], tumor['histology_rank'], tumor['tumor_size'], tumor['tumor_size']))
+                        tumors.sort(key=lambda tumor: tumor.get('date'), reverse=True)
+                        #check if there are duplicated highest rank tumors
+                        isDuplicated = False
+                        if tumors[-1]['n_stage_rank'] == tumors[-2]['n_stage_rank'] and tumors[-1]['t_stage_rank'] == tumors[-2]['t_stage_rank'] and tumors[-1]['histology_rank'] == tumors[-2]['histology_rank'] and tumors[-1]['tumor_size'] == tumors[-2]['tumor_size'] and tumors[-1]['date'] == tumors[-2]['date']:
+                            isDuplicated = True
+
+                        if not isDuplicated:
+                            dominant_tumor = tumors[-1]
+
+
+        return dominant_tumor
+
+    @calculated_property(define=True, schema={
             "title": "Surgery Treatment Summary",
             "type": "string",
         })
-    def surgery_summary(self, request, surgery=None):
+    def surgery_summary(self, request, surgery):
             if len(surgery) > 0:
                 surgery_summary = "Yes"
             else:
@@ -600,6 +834,420 @@ class Patient(Item):
 
 
     @calculated_property(schema={
+        "title": "Labs and Vitals",
+        "description": "Infomation related to Biometrics and Blood Work Within 30 days prior to Date of Nephrectomy",
+        "type": "object",
+        "additionalProperties": False,
+        "properties":{
+            "first_Nephrectomy_date_string": {
+                "title": "Date of First Nephrectomy",
+                "type": "string"
+            },
+            "BMI": {
+                "title": "BMI",
+                "description": "Most recent BMI value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Underweight (<18.4 kg/m2)',
+                    'Normal (18.5-24.9 kg/m2)',
+                    'Overweight (25-29.9 kg/m2)',
+                    'Obese (>30 kg/m2)'
+                ]
+            },
+            "BMIValue": {
+                "title": "BMI Value",
+                "type": "number"
+            },
+            "BMIDate": {
+                "title": "Date of BMI",
+                "type": "string"
+            },
+            "BP_Systolic": {
+                "title": "BP_Systolic",
+                "description": "Most recent BP_Systolic value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Normal (Below 120 mmHg)',
+                    'PreHypertension (121 - 139 mmHg)',
+                    'Hypertension (Above 140 mmHg)'
+                ]
+            },
+            "BP_SystolicValue": {
+                "title": "BP_Systolic Value",
+                "type": "number"
+            },
+            "BP_SystolicDate": {
+                "title": "Date of BP_Systolic",
+                "type": "string"
+            },
+            "BP_Diastolic": {
+                "title": "BP_Diastolic",
+                "description": "Most recent BP_Diastolic value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Normal (Below 80 mmHg)',
+                    'PreHypertension (81 - 89 mmHg)',
+                    'Hypertension (Above 90 mmHg)'
+                ]
+            },
+            "BP_DiastolicValue": {
+                "title": "BP_Diastolic Value",
+                "type": "number"
+            },
+            "BP_DiastolicDate": {
+                "title": "Date of BP_Diastolic",
+                "type": "string"
+            },
+            "Hemoglobin": {
+                "title": "Hemoglobin",
+                "description": "Most recent Hemoglobin value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (12.3 g/dL)',
+                    'Normal (12.4-17.3 g/dL)',
+                    'Above (Above 17.4 g/dL)'
+                ]
+            },
+            "HemoglobinValue": {
+                "title": "Hemoglobin Value",
+                "type": "number"
+            },
+            "HemoglobinDate": {
+                "title": "Date of Hemoglobin",
+                "type": "string"
+            },
+            "Platelets": {
+                "title": "Platelets",
+                "description": "Most recent Platelets value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (140 10^3/ul)',
+                    'Normal Range (141-450 10^3/ul)',
+                    'Above (Above 451 10^3/ul)'
+                ]
+            },
+            "PlateletsValue": {
+                "title": "Platelets Value",
+                "type": "number"
+            },
+            "PlateletsDate": {
+                "title": "Date of Platelets",
+                "type": "string"
+            },
+            "WBC": {
+                "title": "WBC",
+                "description": "Most recent WBC value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (3.9 10^3/ul)',
+                    'Normal Range (4.0-10.9 10^3/ul)',
+                    'Above (11.0 10^3/ul)'
+                ]
+            },
+            "WBCValue": {
+                "title": "WBC Value",
+                "type": "number"
+            },
+            "WBCDate": {
+                "title": "Date of WBC",
+                "type": "string"
+            },
+            "Neutrophils": {
+                "title": "Neutrophils",
+                "description": "Most recent Neutrophils value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (1.4 10^3/ul)',
+                    'Normal Range (1.5-7.3 10^3/ul)',
+                    'Above (7.4 10^3/ul)'
+                ]
+            },
+            "NeutrophilsValue": {
+                "title": "Neutrophils Value",
+                "type": "number"
+            },
+            "NeutrophilsDate": {
+                "title": "Date of Neutrophils",
+                "type": "string"
+            },
+            "Creatinine": {
+                "title": "Creatinine",
+                "description": "Most recent Creatinine value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (0.66 mg/dL)',
+                    'Normal Range (0.67-1.16 mg/dL)',
+                    'Above (1.17 mg/dL)'
+                ]
+            },
+            "CreatinineValue": {
+                "title": "Creatinine Value",
+                "type": "number"
+            },
+            "CreatinineDate": {
+                "title": "Date of Creatinine",
+                "type": "string"
+            },
+            "Calcium": {
+                "title": "Calcium",
+                "description": "Most recent Calcium value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (8.7 mg/dL)',
+                    'Normal Range (8.8-10.1 mg/dL)',
+                    'Above (10.2 mg/dL)'
+                ]
+            },
+            "CalciumValue": {
+                "title": "Calcium Value",
+                "type": "number"
+            },
+            "CalciumDate": {
+                "title": "Date of Calcium",
+                "type": "string"
+            },
+            "Albumin": {
+                "title": "Albumin",
+                "description": "Most recent Albumin value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (3.4 g/dL)',
+                    'Normal Range (3.5-5.2 g/dL)',
+                    'Above (5.3 g/dL)'
+                ]
+            },
+            "AlbuminValue": {
+                "title": "Albumin Value",
+                "type": "number"
+            },
+            "AlbuminDate": {
+                "title": "Date of Albumin",
+                "type": "string"
+            },
+            "Sodium": {
+                "title": "Sodium",
+                "description": "Most recent Sodium value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (134 mmol/L)',
+                    'Normal Range (135-145 mmol/L)',
+                    'Above (146 mmol/L)'
+                ]
+            },
+            "SodiumValue": {
+                "title": "Sodium Value",
+                "type": "number"
+            },
+            "SodiumDate": {
+                "title": "Date of Sodium",
+                "type": "string"
+            },
+            "LDH": {
+                "title": "LDH",
+                "description": "Most recent LDH value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (134 U/L)',
+                    'Normal Range (135-225 U/L)',
+                    'Above (226 U/L)'
+                ]
+            },
+            "LDHValue": {
+                "title": "LDH Value",
+                "type": "number"
+            },
+            "LDHDate": {
+                "title": "Date of LDH",
+                "type": "string"
+            }
+
+        },
+    })
+    def labs_and_vitals(self, request, surgery,labs, vitals):
+        nephrectomy_dates = []
+        first_Nephrectomy_date_string = "Not Available"
+        labs_and_vitals = {
+            'first_Nephrectomy_date_string': "Not Available",
+            'BMI': "Not Available",
+            'BP_Systolic': "Not Available",
+            'BP_Diastolic': "Not Available",
+            'Hemoglobin': "Not Available",
+            'Platelets': "Not Available",
+            'WBC': "Not Available",
+            'Neutrophils': "Not Available",
+            'Creatinine': "Not Available",
+            'Calcium': "Not Available",
+            'Albumin': "Not Available",
+            'Sodium': "Not Available",
+            'LDH': "Not Available"
+        }
+        labs_and_vitals['first_Nephrectomy_date_string'] = first_Nephrectomy_date_string
+        # find the first Nephrectomy 
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                surgery_procedures = surgery_object['surgery_procedure']
+                for surgery_procedure in surgery_procedures:
+                    surgery_procedure_obj = request.embed(surgery_procedure, '@@object')
+                    if surgery_procedure_obj['procedure_type'] == "Nephrectomy":
+                        nephrectomy_dates.append(surgery_object['date'])
+            #compare the date to get the first date if there is nephrectomy_dates
+            if len(nephrectomy_dates)> 0:
+                nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+                first_Nephrectomy_date_string = nephrectomy_dates[0]
+                first_Nephrectomy_date = datetime.strptime(first_Nephrectomy_date_string, '%Y-%m-%d')
+                labs_and_vitals['first_Nephrectomy_date_string'] = first_Nephrectomy_date_string
+
+                #find dates Within 30 days prior to Date of Nephrectomy
+                if len(labs)>0:             
+                    albuminList = []                
+                    calciumList = []
+                    creatinineList = []
+                    hemoglobinList = []
+                    ldhList = []
+                    neutrophilsList = []
+                    plateletsList = []
+                    sodiumList = []
+                    wbcList = []
+
+                    for path in labs:
+                        properties = request.embed(path, '@@object?skip_calculated=true')
+                        lab_date_string = properties.get("date")
+                        #compare the date
+                        lab_date = datetime.strptime(lab_date_string, '%Y-%m-%d')
+                        if (first_Nephrectomy_date - lab_date).days < 30 and (first_Nephrectomy_date - lab_date).days >= 0:
+                            lab_type = properties.get("lab")
+                            lab_value = properties.get("value")
+                            lab = {
+                                "date": lab_date_string,
+                                "value": lab_value
+                            }
+                            if lab_type == "ALBUMIN":
+                                albuminList.append(lab)              
+                            elif lab_type == "CALCIUM":
+                                calciumList.append(lab)
+                            elif lab_type == "CREATININE":
+                                creatinineList.append(lab)
+                            elif lab_type == "HEMOGLOBIN":
+                                hemoglobinList.append(lab)
+                            elif lab_type == "LACTATE_DE":
+                                ldhList.append(lab)
+                            elif lab_type == "NEUTROPHILS":
+                                neutrophilsList.append(lab)
+                            elif lab_type == "PLATELETS":
+                                plateletsList.append(lab)
+                            elif lab_type == "SODIUM":
+                                sodiumList.append(lab)
+                            else:
+                                wbcList.append(lab)
+                    if len(albuminList) > 0:
+                        albuminList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        albuminLab = albuminList[-1]  
+                        labs_and_vitals["Albumin"] = getLabsAndVitalsRange(albuminLab["value"], 3.5, 5.3, "g/dL", "default", "default", "default") 
+                        labs_and_vitals["AlbuminValue"] = albuminLab["value"]
+                        labs_and_vitals["AlbuminDate"] = albuminLab["date"]
+                    if len(calciumList) > 0:
+                        calciumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        calciumLab = calciumList[-1]  
+                        labs_and_vitals["Calcium"] = getLabsAndVitalsRange(calciumLab["value"], 8.8, 10.2, "mg/dL", "default", "default", "default")    
+                        labs_and_vitals["CalciumValue"] = calciumLab["value"]
+                        labs_and_vitals["CalciumDate"] = calciumLab["date"]
+                    if len(creatinineList) > 0:
+                        creatinineList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        creatinineLab = creatinineList[-1] 
+                        labs_and_vitals["Creatinine"] = getLabsAndVitalsRange(creatinineLab["value"], 0.67, 1.17, "mg/dL", "default", "default", "default")
+                        labs_and_vitals["CreatinineValue"] = creatinineLab["value"]
+                        labs_and_vitals["CreatinineDate"] = creatinineLab["date"]
+                    if len(hemoglobinList) > 0:
+                        hemoglobinList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        hemoglobinLab = hemoglobinList[-1]
+                        labs_and_vitals["Hemoglobin"] = getLabsAndVitalsRange(hemoglobinLab["value"], 12.4, 17.4, "g/dL", "default", "default", "default")
+                        labs_and_vitals["HemoglobinValue"] = hemoglobinLab["value"]
+                        labs_and_vitals["HemoglobinDate"] = hemoglobinLab["date"]
+                    if len(ldhList) > 0:
+                        ldhList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        ldhLab = ldhList[-1]
+                        labs_and_vitals["LDH"] = getLabsAndVitalsRange(ldhLab["value"], 135, 226, "U/L", "default", "default", "default")
+                        labs_and_vitals["LDHValue"] = ldhLab["value"]
+                        labs_and_vitals["LDHDate"] = ldhLab["date"]
+                    if len(neutrophilsList) > 0:
+                        neutrophilsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        neutrophilsLab = neutrophilsList[-1]
+                        labs_and_vitals["Neutrophils"] = getLabsAndVitalsRange(neutrophilsLab["value"], 1.5, 7.4, "10^3/ul", "default", "default", "default")
+                        labs_and_vitals["NeutrophilsValue"] = neutrophilsLab["value"]
+                        labs_and_vitals["NeutrophilsDate"] = neutrophilsLab["date"]
+                    if len(plateletsList) > 0:
+                        plateletsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        plateletsLab = plateletsList[-1]
+                        labs_and_vitals["Platelets"] = getLabsAndVitalsRange(plateletsLab["value"], 141, 451, "10^3/ul", "default", "default", "default")
+                        labs_and_vitals["PlateletsValue"] = plateletsLab["value"]
+                        labs_and_vitals["PlateletsDate"] = plateletsLab["date"]
+                    if len(sodiumList) > 0:
+                        sodiumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        sodiumLab = sodiumList[-1]
+                        labs_and_vitals["Sodium"] = getLabsAndVitalsRange(sodiumLab["value"], 135, 146, "mmol/L", "default", "default", "default")
+                        labs_and_vitals["SodiumValue"] = sodiumLab["value"]
+                        labs_and_vitals["SodiumDate"] = sodiumLab["date"]
+                    if len(wbcList) > 0:
+                        wbcList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        wbcLab = wbcList[-1]
+                        labs_and_vitals["WBC"] = getLabsAndVitalsRange(wbcLab["value"], 4, 11, "10^3/ul", "default", "default", "default")
+                        labs_and_vitals["WBCValue"] = wbcLab["value"]
+                        labs_and_vitals["WBCDate"] = wbcLab["date"]
+                if len(vitals)>0 :
+                    bmiList = []
+                    bp_SystolicList = []
+                    bp_DiastolicList = []
+                    for path in vitals:
+                        properties = request.embed(path, '@@object?skip_calculated=true')
+                        vital_date_string = properties.get("date")
+                        #compare the date
+                        vital_date = datetime.strptime(vital_date_string, '%Y-%m-%d')
+                        if (first_Nephrectomy_date - vital_date).days <30 and (first_Nephrectomy_date - vital_date).days >= 0:
+                            vital_type = properties.get("vital")
+                            vital_value = properties.get("value")
+                            vital = {
+                                "date": vital_date_string,
+                                "value": vital_value
+                            }
+
+                            if vital_type == "BMI":
+                                bmiList.append(vital)              
+                            elif vital_type == "BP_DIAS":
+                                bp_DiastolicList.append(vital)
+                            elif vital_type == "BP_SYS":
+                                bp_SystolicList.append(vital)    
+                    if len(bmiList) > 0:     
+                        bmiList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
+                        bmiVital = bmiList[-1]
+                        labs_and_vitals["BMIValue"] = bmiVital["value"]
+                        labs_and_vitals["BMIDate"] = bmiVital["date"] 
+                        if bmiVital["value"] < 18.5:
+                            labs_and_vitals["BMI"] = "Underweight (< 18.5)"
+                        elif bmiVital["value"] < 25:
+                            labs_and_vitals["BMI"] = "Normal (18.5 >= and < 25)"
+                        elif bmiVital["value"] < 30:
+                            labs_and_vitals["BMI"] = "Overweight (25 >= and < 30)"
+                        else:
+                            labs_and_vitals["BMI"] = "Obese (>= 30)"
+                    if len(bp_SystolicList) > 0:
+                        bp_SystolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
+                        bp_SystolicVital = bp_SystolicList[-1] 
+                        labs_and_vitals["BP_Systolic"] = getLabsAndVitalsRange(bp_SystolicVital["value"], 121, 140, "mmHg", 'Normal (< 121)', 'PreHypertension (121 >= and <140 mmHg)', 'Hypertension (>= 140)')
+                        labs_and_vitals["BP_SystolicValue"] = bp_SystolicVital["value"]
+                        labs_and_vitals["BP_SystolicDate"] = bp_SystolicVital["date"] 
+                    if len(bp_DiastolicList) > 0:
+                        bp_DiastolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
+                        bp_DiastolicVital = bp_DiastolicList[-1]  
+                        labs_and_vitals["BP_Diastolic"] = getLabsAndVitalsRange(bp_DiastolicVital["value"], 81, 90, "mmHg", 'Normal (< 81)', 'PreHypertension (81 >= and < 90 mmHg)', 'Hypertension (>= 90)')
+                        labs_and_vitals["BP_DiastolicValue"] = bp_DiastolicVital["value"]
+                        labs_and_vitals["BP_DiastolicDate"] = bp_DiastolicVital["date"] 
+
+        return labs_and_vitals
+
+
+
+    @calculated_property(schema={
         "title": "Metastasis",
         "description": "Infomation related to Metastasis",
         "type": "array",
@@ -692,6 +1340,85 @@ class Patient(Item):
 
         return records
 
+    @calculated_property(schema={
+        "title": "Medical Imaging Records",
+        "description": "Medical imaging type within <90 days of every nephrectomy",
+        "type": "array",
+        "items": {
+            "title": "Medical Imaging",
+            "type": "object",
+            "additionalProperties": False,
+            "properties":{
+                "date": {
+                    "title": "Date of Medical Imaging",
+                    "description": "Date of Medical Imaging",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "Type of Medical Imaging",
+                    "type": "string"
+                }
+
+            },
+        }
+    })
+    def medical_imaging_before_nephrectomy(self, request, surgery, medical_imaging):
+        #find all the nephrectomy dates
+        nephrectomy_dates = []
+        records = []
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                surgery_procedures = surgery_object['surgery_procedure']                
+                if len(surgery_procedures) > 0:
+                    for surgery_procedure in surgery_procedures:
+                        surgery_procedure_obj = request.embed(surgery_procedure, '@@object')
+                        if surgery_procedure_obj['procedure_type'] == "Nephrectomy":
+                            nephrectomy_dates.append(datetime.strptime(surgery_object['date'], '%Y-%m-%d'))
+                            
+
+        #check imaging only if there is nephrectomy dates
+        if len(nephrectomy_dates) > 0 and len(medical_imaging) > 0:
+            imagings = []
+            ct_list = []
+            mr_list = []
+            pet_list = []
+            for nephrectomy_date in nephrectomy_dates:
+                for path in medical_imaging:
+                    imaging = request.embed(path, '@@object?skip_calculated=true')
+                    med_img_date_string = imaging.get("procedure_date")
+                    #compare the date
+                    med_img_date = datetime.strptime(med_img_date_string, '%Y-%m-%d')
+                    if (nephrectomy_date - med_img_date).days <90 and (nephrectomy_date - med_img_date).days >= 0:
+                        imaging_obj = {
+                            "date": med_img_date_string,
+                            "type": imaging.get("type")                  
+                        }
+                        if imaging.get("type") == "CT Abdomen":
+                            ct_list.append(imaging_obj)
+                        elif imaging.get("type") == "MR Abdomen":
+                            mr_list.append(imaging_obj)
+                        else:
+                            pet_list.append(imaging_obj)
+                #sort to get the closest img
+                if len(ct_list) > 0:
+                    ct_list.sort(key = lambda x: datetime.strptime(x["date"], '%Y-%m-%d'))
+                    ct_obj = ct_list[-1]
+                    imagings.append(ct_obj)
+                if len(mr_list) > 0:
+                    mr_list.sort(key = lambda x: datetime.strptime(x["date"], '%Y-%m-%d'))
+                    mr_obj = mr_list[-1]
+                    imagings.append(mr_obj)
+                if len(pet_list) > 0:
+                    pet_list.sort(key = lambda x: datetime.strptime(x["date"], '%Y-%m-%d'))
+                    pet_obj = pet_list[-1]
+                    imagings.append(pet_obj)
+                if len(imagings)> 0:
+                    records = records + imagings        
+                        
+
+        return records
+
 
     matrix = {
         'y': {
@@ -700,6 +1427,7 @@ class Patient(Item):
                 'sex',
                 'race',
                 'ethnicity',
+                'dominant_tumor',
                 'surgery_summary',
                 'radiation_summary',
                 'medications.name',
@@ -719,10 +1447,9 @@ class Patient(Item):
         },
         'x': {
             'facets': [
-
-                'surgery.pathology_report.histology',
+                'surgery.pathology_report.histology_filter',
             ],
-            'group_by': 'surgery.pathology_report.histology',
+            'group_by': 'surgery.pathology_report.histology_filter',
             'label': 'histology',
         },
     }
@@ -997,10 +1724,11 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'sex', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'sex', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status', 'dominant_tumor', 'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
             pass
     return filtered
+

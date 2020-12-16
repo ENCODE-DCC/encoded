@@ -10,6 +10,7 @@ from .base import (
 )
 from pyramid.traversal import find_root, resource_path
 import re
+from .histology_filters import histology_filters
 
 
 @collection(
@@ -66,3 +67,16 @@ class PathologyReport(Item):
     )
     def ihc(self, request, ihc):
         return paths_filtered_by_status(request, ihc)
+
+    @calculated_property(
+        schema={
+            "title": "Histology",
+            "description": "Calculated histology subtype",
+            "type": "string",
+        }
+    )
+    def histology_filter(self, request, histology):
+        
+        return histology_filters.get(histology)
+
+

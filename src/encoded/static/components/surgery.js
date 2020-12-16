@@ -4,7 +4,7 @@ import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import Status from './status';
-import { PanelLookup } from './objectutils';
+import { PanelLookup, ItemAccessories } from './objectutils';
 import CollapsiblePanel from './collapsiblePanel';
 import PathologyReportTable from './pathologyReportTable';
 // import IHCTable from './ihcTable';
@@ -40,7 +40,7 @@ class Surgery extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Surgery" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
-
+                        <ItemAccessories item={context}/>
                     </div>
 
                 </header>

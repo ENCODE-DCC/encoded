@@ -38,7 +38,7 @@
     {
         "caption": "Search page",
         "attachment": "search-page.jpg",
-        "submitted_by": "crickets@stanford.edu",
+        "submitted_by": "vsmalladi@gmail.com",
         "uuid": "2f2ef3dd-0d45-44fc-befa-c851cd04ecd7"
     },
     {
@@ -46,5 +46,17 @@
         "attachment": "encode-library-object-structure.jpg",
         "submitted_by": "crickets@stanford.edu",
         "uuid": "498ce836-3050-47b6-b4cf-b0ac911a7d38"
+    },
+    {
+        "caption": "JSON Example",
+        "attachment": "json.jpg",
+        "submitted_by": "vsmalladi@gmail.com",
+        "uuid": "0f9eadae-95e7-49d9-b796-38925a995d0d"
+    },
+    {
+        "caption": "JSON Browser",
+        "attachment": "json_browser_hires.jpg",
+        "submitted_by": "vsmalladi@gmail.com",
+        "uuid": "7aaac70e-de90-4546-ae7f-60be5e376512"
     }
 ]
