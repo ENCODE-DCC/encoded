@@ -376,7 +376,6 @@ class Bioexperiment extends React.Component {
         return (
             <div className={itemClass}>
                 <header>
-                    {/* <div className="col-sm-12"> */}
                     <Breadcrumbs root="/search/?type=Bioexperiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h2>Experiment summary for {context.accession}</h2>
                     <ReplacementAccessions context={context} />
@@ -384,7 +383,6 @@ class Bioexperiment extends React.Component {
                         <CartToggle element={context} />
                     </div>
                     <DisplayAsJson />
-                    {/* </div> */}
                 </header>
                 <Panel >
                     <PanelBody addClasses="panel__split">
