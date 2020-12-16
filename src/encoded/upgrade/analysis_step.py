@@ -173,3 +173,51 @@ def analysis_step_6_7(value, system):
             output_file.remove('candidate regulatory elements')
             output_file.append('candidate Cis-Regulatory Elements')
             value['output_file_types'] = output_file
+
+
+@upgrade_step('analysis_step', '7', '8')
+def analysis_step_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4641
+
+    input_file_types = value.get('input_file_types', None)
+    output_file_types = value.get('output_file_types', None)
+    if input_file_types and 'optimal idr thresholded peaks' in input_file_types:
+            input_file_types.remove('optimal idr thresholded peaks')
+            input_file_types.append('optimal IDR thresholded peaks')
+            value['input_file_types'] = input_file_types
+    if input_file_types and 'conservative idr thresholded peaks' in input_file_types:
+            input_file_types.remove('conservative idr thresholded peaks')
+            input_file_types.append('conservative IDR thresholded peaks')
+            value['input_file_types'] = input_file_types
+    if input_file_types and 'pseudoreplicated idr thresholded peaks' in input_file_types:
+            input_file_types.remove('pseudoreplicated idr thresholded peaks')
+            input_file_types.append('pseudoreplicated IDR thresholded peaks')
+            value['input_file_types'] = input_file_types
+
+    if output_file_types and 'optimal idr thresholded peaks' in output_file_types:
+            output_file_types.remove('optimal idr thresholded peaks')
+            output_file_types.append('optimal IDR thresholded peaks')
+            value['output_file_types'] = output_file_types
+    if output_file_types and 'conservative idr thresholded peaks' in output_file_types:
+            output_file_types.remove('conservative idr thresholded peaks')
+            output_file_types.append('conservative IDR thresholded peaks')
+            value['output_file_types'] = output_file_types
+    if output_file_types and 'pseudoreplicated idr thresholded peaks' in output_file_types:
+            output_file_types.remove('pseudoreplicated idr thresholded peaks')
+            output_file_types.append('pseudoreplicated IDR thresholded peaks')
+            value['output_file_types'] = output_file_types
+
+
+@upgrade_step('analysis_step', '8', '9')
+def analysis_step_8_9(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    if output_file_types and 'representative dnase hypersensitivity sites' in output_file_types:
+        output_file_types.remove('representative dnase hypersensitivity sites')
+        output_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
+    if input_file_types and 'representative dnase hypersensitivity sites' in input_file_types:
+        input_file_types.remove('representative dnase hypersensitivity sites')
+        input_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
+    return

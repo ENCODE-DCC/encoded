@@ -69,3 +69,19 @@ def pipeline_8_9(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3773
     if value.get('status') == 'active':
         value['status'] = 'released'
+
+
+@upgrade_step('pipeline', '9', '10')
+def pipeline_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4711
+    for i, a in enumerate(value.get('assay_term_names', [])):
+        if a == 'single-nuclei ATAC-seq':
+            value['assay_term_names'][i] = 'single-nucleus ATAC-seq'
+
+
+@upgrade_step('pipeline', '10', '11')
+def pipeline_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5304
+    for i, a in enumerate(value.get('assay_term_names', [])):
+        if a == 'single cell isolation followed by RNA-seq':
+            value['assay_term_names'][i] = 'single-cell RNA sequencing assay'

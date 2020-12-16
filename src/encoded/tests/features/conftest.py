@@ -14,22 +14,22 @@ def external_tx():
 
 @pytest.fixture(scope='session')
 def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
-    from .. import test_indexing
-    return test_indexing.app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
+    from encoded.tests.test_indexing import _app_settings
+    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
 
 
 @pytest.yield_fixture(scope='session')
 def app(app_settings):
-    from .. import test_indexing
+    from encoded.tests.test_indexing import _app
     from snovault.elasticsearch import create_mapping
-    for app in test_indexing.app(app_settings):
+    for app in _app(app_settings):
         create_mapping.run(app)
         yield app
 
 
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
-def workbook(app):
+def index_workbook(request, app):
     from snovault import DBSESSION
     connection = app.registry[DBSESSION].bind.pool.unique_connection()
     connection.detach()
@@ -40,20 +40,20 @@ def workbook(app):
     cursor.close()
 
     from webtest import TestApp
-    log_level = pytest.config.getoption("--log")
+    log_level = request.config.getoption("--log")
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'TEST',
     }
     testapp = TestApp(app, environ)
 
-    from ...loadxl import load_all
+    from encoded.loadxl import load_all
     from pkg_resources import resource_filename
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
     load_all(testapp, inserts, docsdir, log_level=log_level)
 
-    testapp.post_json('/index', {})
+    testapp.post_json('/index', {'is_testing_full': True})
     yield
     # XXX cleanup
 
@@ -97,7 +97,7 @@ def splinter_window_size():
 
 # Depend on workbook fixture here to avoid remote browser timeouts.
 @pytest.fixture(scope='session')
-def browser(workbook, session_browser):
+def browser(index_workbook, session_browser):
     return session_browser
 
 
@@ -112,7 +112,7 @@ def admin_user(browser, base_url):
 @pytest.yield_fixture(scope='session')
 def submitter_user(browser, base_url, admin_user):
     browser.visit(base_url + '/#!impersonate-user')
-    browser.find_by_css('.item-picker input[type="text"]').first.fill('Cherry')
+    browser.find_by_css('.item-picker input[type="text"]').first.fill('860c4750-8d3c-40f5-8f2c-90c5e5d19e88')
     browser.find_by_css('.btn-primary').first.click()  # First click opens on blur, then closes
     browser.find_by_css('.btn-primary').first.click()
     browser.find_by_text('Select').first.click()
@@ -137,13 +137,15 @@ def write_line(request, when, line):
     if terminal.verbosity <= 0:
         return
     capman = request.config.pluginmanager.getplugin('capturemanager')
-    out, err = capman.suspendcapture()
+    outerr = capman.suspend_global_capture()
     try:
-        request.node.add_report_section(when, 'out', out)
-        request.node.add_report_section(when, 'err', err)
+        if outerr is not None:
+            out, err = outerr
+            request.node.add_report_section(when, 'out', out)
+            request.node.add_report_section(when, 'err', err)
         terminal.write_line(line)
     finally:
-        capman.resumecapture()
+        capman.resume_global_capture()
 
 
 @pytest.mark.trylast

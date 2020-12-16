@@ -2,6 +2,10 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
+from .formatter import (
+    audit_link,
+    path_to_text,
+)
 
 
 # flag biosamples that contain GM that is different from the GM in donor. It could be legitimate case, but we would like to see it.
@@ -24,20 +28,31 @@ def audit_biosample_modifications(value, system):
         modification_difference = modifications_ids - model_modifications_ids
 
         if modification_difference and model_modifications_present:
-            detail = 'Biosample {} '.format(value['@id']) + \
-                     'contains genetic modifications {} that '.format(modification_difference) + \
-                     'are not present in the list of genetic modifications {} '.format(
-                         model_modifications_ids) + \
-                     'of the corresponding strain.'
+            mod_diff_links = [audit_link(path_to_text(m), m) for m in modification_difference]
+            model_mod_links = [audit_link(path_to_text(n), n) for n in model_modifications_ids]
+            detail = ('Biosample {} contains '
+                ' genetic modificatons {} that are not present'
+                ' in the list of genetic modifications {} of the corresponding strain.'.format(
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    ', '.join(mod_diff_links),
+                    ', '.join(model_mod_links)
+                )
+            )
             yield AuditFailure('mismatched genetic modifications', detail,
                                level='INTERNAL_ACTION')
         modification_duplicates = model_modifications_ids & modifications_ids
+        mod_dup_links = [audit_link(path_to_text(d), d) for d in modification_duplicates]
+        model_mod_links = [audit_link(path_to_text(n), n) for n in model_modifications_ids]
         if modification_duplicates:
-            detail = 'Biosample {} '.format(value['@id']) + \
-                     'contains genetic modifications {} that '.format(modification_duplicates) + \
-                     'are duplicates of genetic modifications {} '.format(
-                         model_modifications_ids) + \
-                     'of the corresponding strain.'
+            detail = ('Biosample {} contains '
+                'genetic modifications {} that '
+                'are duplicates of genetic modifications {} '
+                'of the corresponding strain.'.format(
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    ', '.join(mod_dup_links),
+                    ', '.join(model_mod_links)
+                )
+            )
             yield AuditFailure('duplicated genetic modifications', detail,
                                level='INTERNAL_ACTION')
     return
@@ -45,6 +60,28 @@ def audit_biosample_modifications(value, system):
 # def audit_biosample_gtex_children(value, system):
 # https://encodedcc.atlassian.net/browse/ENCD-3538
 
+
+def audit_biosample_CRISPR_modifications(value, system):
+# flag biosamples with multiple CRISPR/characterization GM; may be legitimate but we want be notified
+# https://encodedcc.atlassian.net/browse/ENCD-5203
+    if 'applied_modifications' in value:
+        if len(value['applied_modifications']) > 1:
+            CRISPRchar = 0
+            GM_ids = set()
+            for GM in value['applied_modifications']:
+                if GM['method'] == 'CRISPR' and GM['purpose'] == 'characterization':
+                    CRISPRchar += 1
+                    GM_ids.add(GM['@id'])
+            GM_ids_links = [audit_link(path_to_text(m), m) for m in GM_ids]
+            if CRISPRchar >1:
+                detail = ('Biosample {} has multiple CRISPR characterization '
+                          ' genetic modifications {}'.format(
+                           audit_link(path_to_text(value['@id']), value['@id']),
+                           ', '.join(GM_ids_links)
+                          )
+                )
+                yield AuditFailure('multiple CRISPR characterization genetic modifications', detail,
+                                   level='INTERNAL_ACTION')
 
 def audit_biosample_culture_date(value, system):
     '''
@@ -59,12 +96,13 @@ def audit_biosample_culture_date(value, system):
                        "in vitro differentiated cells", "organoid"]
     if (('culture_harvest_date' in value or 'culture_start_date' in value)
         and value['biosample_ontology']['classification'] not in restricted_type):
-        detail = 'Biosample {} is classified as {}, ' + \
-                 'which is not from culture, ' + \
-                 'thus shouldn\'t have culture dates specified.'.format(
-                     value['@id'],
-                     value['biosample_ontology']['classification'],
-                 )
+        detail = ('Biosample {} is classified as {}, '
+            'which is not from culture, '
+            'thus shouldn\'t have culture dates specified.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                value['biosample_ontology']['classification']
+            )
+        )
         yield AuditFailure('biosample not from culture', detail,
                            level='ERROR')
 
@@ -75,10 +113,13 @@ def audit_biosample_culture_date(value, system):
         return
 
     if value['culture_harvest_date'] <= value['culture_start_date']:
-        detail = 'Biosample {} has a culture_harvest_date {} which precedes the culture_start_date {}'.format(
-            value['@id'],
-            value['culture_harvest_date'],
-            value['culture_start_date'])
+        detail = ('Biosample {} has a culture_harvest_date {}'
+            'which precedes the culture_start_date {}'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                value['culture_harvest_date'],
+                value['culture_start_date']
+            )
+        )
         yield AuditFailure('invalid dates', detail, level='ERROR')
 
 
@@ -91,7 +132,10 @@ def audit_biosample_donor(value, system):
         return
 
     if 'donor' not in value:
-        detail = 'Biosample {} is not associated with any donor.'.format(value['@id'])
+        detail = ('Biosample {} is not associated with any donor.'.format(
+            audit_link(value['accession'], value['@id'])
+            )
+        )
         if 'award' in value and 'rfa' in value['award'] and \
            value['award']['rfa'] == 'GGR':
             yield AuditFailure('missing donor', detail, level='INTERNAL_ACTION')
@@ -102,11 +146,14 @@ def audit_biosample_donor(value, system):
 
     donor = value['donor']
     if value.get('organism') != donor.get('organism'):
-        detail = 'Biosample {} is organism {}, yet its donor {} is organism {}. Biosamples require a donor of the same species'.format(
-            value['@id'],
-            value.get('organism'),
-            donor['@id'],
-            donor.get('organism'))
+        detail = ('Biosample {} is organism {}, yet its donor {} is organism {}.'
+            ' Biosamples require a donor of the same species'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                path_to_text(value.get('organism')),
+                audit_link(path_to_text(donor['@id']), donor['@id']),
+                path_to_text(donor.get('organism'))
+            )
+        )
         yield AuditFailure('inconsistent organism', detail, level='ERROR')
 
 
@@ -128,12 +175,17 @@ def audit_biosample_part_of_consistency(value, system):
             if is_part_of(term_id, part_of_term_id, ontology) is True:
                 return
 
-        detail = 'Biosample {} '.format(value['@id']) + \
-                 'with biosample term {} '.format(term_name) + \
-                 'was separated from biosample {} '.format(part_of_biosample['@id']) + \
-                 'with biosample term {}. '.format(part_of_term_name) + \
-                 'The {} '.format(term_id) + \
-                 'ontology does not note that part_of relationship.'
+        detail = ('Biosample {} with biosample term {} '
+            'was separated from biosample {} '
+            'with biosample term {}. The {} '
+            'ontology does not note that part_of relationship.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                term_name,
+                audit_link(path_to_text(part_of_biosample['@id']), part_of_biosample['@id']),
+                part_of_term_name,
+                term_id
+            )
+        )
         yield AuditFailure('inconsistent BiosampleType term', detail,
                            level='INTERNAL_ACTION')
         return
@@ -144,12 +196,13 @@ def audit_biosample_phase(value, system):
                        "in vitro differentiated cells"]
     if ('phase' in value
         and value['biosample_ontology']['classification'] not in restricted_type):
-        detail = 'Biosample {} is classified as {}, ' + \
-                 'which shouldn\'t have a defined cell cycle phase {}.'.format(
-                     value['@id'],
-                     value['biosample_ontology']['classification'],
-                     value['phase']
-                 )
+        detail = ('Biosample {} is classified as {}, '
+            'which shouldn\'t have a defined cell cycle phase {}.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                value['biosample_ontology']['classification'],
+                value['phase']
+            )
+        )
         yield AuditFailure('biosample cannot have defined cell cycle phase',
                            detail, level='ERROR')
 
@@ -157,11 +210,12 @@ def audit_biosample_phase(value, system):
 def audit_biosample_pmi(value, system):
     if (('PMI' in value or 'PMI_units' in value)
         and value['biosample_ontology']['classification'] not in ['tissue']):
-        detail = 'PMI is for tissue sample only. ' + \
-                 'Biosample {} is classified as {}.'.format(
-                     value['@id'],
-                     value['biosample_ontology']['classification'],
-                 )
+        detail = ('PMI is for tissue sample only. '
+            'Biosample {} is classified as {}.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                value['biosample_ontology']['classification'],
+            )
+        )
         yield AuditFailure('non-tissue sample has PMI',
                            detail, level='ERROR')
 
@@ -170,13 +224,13 @@ def audit_biosample_cell_isolation_method(value, system):
     excluded_type = ["whole organisms", "tissue", "organoid"]
     if ('cell_isolation_method' in value
         and value['biosample_ontology']['classification'] in excluded_type):
-        detail = 'Biosample {} is classified as {}, ' + \
-                 'which is not cell ' + \
-                 'and shouldn\'t have cell_isolation_method {}.'.format(
-                     value['@id'],
-                     value['biosample_ontology']['classification'],
-                     value['cell_isolation_method']
-                 )
+        detail = ('Biosample {} is classified as {}, '
+            'which is not cell and shouldn\'t have cell_isolation_method {}.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                value['biosample_ontology']['classification'],
+                value['cell_isolation_method']
+            )
+        )
         yield AuditFailure('non-cell sample has cell_isolation_method',
                            detail, level='ERROR')
 
@@ -185,12 +239,13 @@ def audit_biosample_depleted_in_term_name(value, system):
     restricted_type = ["whole organisms", "tissue"]
     if ('depleted_in_term_name' in value
         and value['biosample_ontology']['classification'] not in restricted_type):
-        detail = 'Biosample {} is classified as {}, ' + \
-                 'which cannot have {} depleted.'.format(
-                     value['@id'],
-                     value['biosample_ontology']['classification'],
-                     value['depleted_in_term_name']
-                 )
+        detail = ('Biosample {} is classified as {}, '
+            'which cannot have {} depleted.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                value['biosample_ontology']['classification'],
+                value['depleted_in_term_name']
+            )
+        )
         yield AuditFailure('non-tissue sample has parts depleted',
                            detail, level='ERROR')
 
@@ -253,11 +308,13 @@ def audit_biosample_post_differentiation_time(value, system):
     biosample_type = value['biosample_ontology']['classification']
     if biosample_type not in ['organoid', 'in vitro differentiated cells']:
         if value.get('post_differentiation_time') or value.get('post_differentiation_time_units'):
-            detail = (
-                'Biosample {} of type {} has post_differentiation_time and/or '
+            detail = ('Biosample {} of type {} has post_differentiation_time and/or '
                 'post_differentiation_time_units specified, properties which are '
-                'restricted to biosamples of type organoid or in vitro differentiated cells'
-            ).format(value['@id'], biosample_type)
+                'restricted to biosamples of type organoid or in vitro differentiated cells.'.format(
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    biosample_type
+                )
+            )
             yield AuditFailure(
                 'invalid post_differentiation_time details',
                 detail,
@@ -267,6 +324,7 @@ def audit_biosample_post_differentiation_time(value, system):
 
 function_dispatcher = {
     'audit_modification': audit_biosample_modifications,
+    'audit_CRISPR_modification': audit_biosample_CRISPR_modifications,
     'audit_culture_date': audit_biosample_culture_date,
     'audit_donor': audit_biosample_donor,
     'audit_part_of': audit_biosample_part_of_consistency,
@@ -282,7 +340,8 @@ function_dispatcher = {
                       'biosample_ontology',
                       'donor',
                       'part_of',
-                      'part_of.biosample_ontology'])
+                      'part_of.biosample_ontology',
+                      'applied_modifications'])
 def audit_biosample(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):

@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import Status from './status';
-import { PanelLookup } from './objectutils';
+import { PanelLookup, ItemAccessories } from './objectutils';
 import CollapsiblePanel from './collapsiblePanel';
 import PathologyReportTable from './pathologyReportTable';
 // import IHCTable from './ihcTable';
@@ -25,22 +25,22 @@ class Surgery extends React.Component {
         ];
         const crumbsReleased = (context.status === 'released');
 
-       
+
         let hasPathology=false;
 
         if (Object.keys(this.props.context.pathology_report).length > 0) {
           hasPathology = true;
-            
+
         }
-        
-      
+
+
          return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Surgery" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
-
+                        <ItemAccessories item={context}/>
                     </div>
 
                 </header>
@@ -71,7 +71,7 @@ class Surgery extends React.Component {
                     </PanelBody>
                 </Panel>
                 {hasPathology && <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report " ></PathologyReportTable>}
-            
+
             </div>
 
 

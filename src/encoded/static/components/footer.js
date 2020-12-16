@@ -9,16 +9,14 @@ const Footer = ({ version }, reactContext) => {
     let userActionRender;
 
     if (!(session && session['auth.userid'])) {
-        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign-in</a>;
+        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign in</a>;
     } else {
         userActionRender = <a href="#" data-trigger="logout">Sign out</a>;
     }
     return (
-        <footer id="page-footer">
+        <footer>
             <div className="container">
-                <div className="row">
-                    <div className="app-version">{version}</div>
-                </div>
+                <div className="app-version">{version}</div>
             </div>
             <div className="page-footer">
                 <div className="container">
@@ -28,7 +26,7 @@ const Footer = ({ version }, reactContext) => {
                                 <ul className="footer-links">
                                     <li><a href="/help/citing-kce">Citing KCE</a></li>
                                     <li><a href="https://www.utsouthwestern.edu/legal/privacy-policy.html">Privacy</a></li>
-                                    <li><a href="mailto:BICF@UTSouthwestern.edu">Contact</a></li>
+                                    <li><a href="mailto:kce@UTSouthwestern.edu">Contact</a></li>
                                 </ul>
                                 <ul className="footer-links">
                                     <li id="user-actions-footer">{userActionRender}</li>
@@ -65,4 +63,3 @@ Footer.defaultProps = {
 };
 
 export default Footer;
-

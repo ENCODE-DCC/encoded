@@ -5,30 +5,88 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-import Pager from '../../libs/bootstrap/pager';
-import { Panel, PanelBody, PanelHeading } from '../../libs/bootstrap/panel';
-import { tintColor } from '../datacolors';
-import { itemClass, encodedURIComponent, parseAndLogError } from '../globals';
-import { requestObjects, DisplayAsJson } from '../objectutils';
+import { encodedURIComponent } from '../../libs/query_encoding';
+import { svgIcon } from '../../libs/svg-icons';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
+import Pager from '../../libs/ui/pager';
+import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
+import { tintColor, isLight } from '../datacolors';
+import GenomeBrowser from '../genome_browser';
+import { itemClass } from '../globals';
+import { requestObjects, ItemAccessories, isFileVisualizable, computeAssemblyAnnotationValue, filterForVisualizableFiles } from '../objectutils';
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
 import CartCBioportalButton from './cbioportal';
 import CartXenaButton from './xenabrowser';
 import CartClearButton from './clear';
-import { cartRetrieve } from './database';
+import CartLockTrigger from './lock';
 import CartMergeShared from './merge_shared';
+import Status from '../status';
+
+/**
+ * This file uses some shorthand terms that need some explanation.
+ * "Partial files" - File objects contained within dataset search results comprising only the
+ *                   properties needed to generate the file facets and file list. These serve as a
+ *                   source for retrieving complete file objects to pass to the genome browser.
+ * "Simplified facets" - Primary objects for displaying cart-view facets. We don't use the "facet"
+ *                       properties from search results because we generate simplified facets from
+ *                       dataset search results. We only do a file search for the current page of
+ *                       genome-browser tracks.
+ */
 
 
 /** Number of dataset elements to display per page */
 const PAGE_ELEMENT_COUNT = 25;
-/** File facet fields to display in order of display */
+/** Number of genome-browser tracks to display per page */
+const PAGE_TRACK_COUNT = 20;
+/** Number of files to display per page */
+const PAGE_FILE_COUNT = 25;
+
+
+/**
+ * Sorter function to sort an array of assemblies/annotations for display in the facet according to
+ * system-wide criteria.
+ * @param {array} facetTerms Assembly facet terms to sort
+ *
+ * @return {array} Same as `facetTerms` but sorted.
+ */
+const assemblySorter = facetTerms => (
+    // Negate the sorting value to sort from highest to lowest.
+    _(facetTerms).sortBy(facetTerm => -computeAssemblyAnnotationValue(facetTerm.term))
+);
+
+
+/**
+ * File facet fields to display in order of display.
+ * - field: `facet` field property
+ * - title: Displayed facet title
+ * - radio: True if radio-button facet; otherwise checkbox facet
+ * - dataset: True to retrieve value from dataset instead of files
+ * - sorter: Function to sort terms within the facet
+ */
 const displayedFacetFields = [
-    'sample_type',
-    'tissue_derivatives',
-    'tissue_type',
-    'anatomic_site',
-    'status',
+
+    { field: 'assembly', title: 'Genome assembly', radio: true, sorter: assemblySorter },
+    { field: 'output_type', title: 'Output type' },
+    { field: 'file_type', title: 'File type' },
+    { field: 'file_format', title: 'File format' },
+    { field: 'assay_term_name', title: 'Assay term name' },
+    { field: 'sample_type', title: 'Sample Type'},
+    { field: 'tissue_derivatives', title: 'Tissue Derivatives'},
+    { field: 'tissue_type', title: 'Tissue Type'},
+    { field: 'anatomic_site', title: 'Anatomic Site'},
+    { field: 'status', title: 'Status' },
 ];
+
+/** Facet `field` values for properties from dataset instead of files */
+const datasetFacets = displayedFacetFields.filter(facetField => facetField.dataset).map(facetField => facetField.field);
+
+/** File facet fields to request from server -- superset of those displayed in facets */
+const requestedFacetFields = displayedFacetFields.concat([
+    { field: '@id' },
+    { field: 'file_format_type' },
+    { field: 'title' },
+]);
 
 
 /**
@@ -75,7 +133,7 @@ class CartSearchResults extends React.Component {
         if (this.state.elementsForDisplay && this.state.elementsForDisplay.length === 0) {
             return <div className="nav result-table cart__empty-message">No visible datasets on this page.</div>;
         }
-        return <ResultTableList results={this.state.elementsForDisplay || []} cartControls={this.props.cartControls} />;
+        return <ResultTableList results={this.state.elementsForDisplay || []} cartControls={this.props.cartControls} mode="cart-view" />;
     }
 }
 
@@ -95,6 +153,104 @@ CartSearchResults.defaultProps = {
     currentPage: 0,
     cartControls: false,
     loggedIn: false,
+};
+
+
+/**
+ * Display browser tracks for the selected page of files.
+ */
+const CartBrowser = ({ files, assembly, pageNumber }) => {
+    const [pageFiles, setPageFiles] = React.useState([]);
+
+    // Request full file objects for the genome browser but only for the given page of file @ids.
+    React.useEffect(() => {
+        if (files.length > 0 && assembly) {
+            const pageStartingIndex = pageNumber * PAGE_TRACK_COUNT;
+            const pageFilesIds = files.slice(pageStartingIndex, pageStartingIndex + PAGE_TRACK_COUNT);
+            requestObjects(pageFilesIds, '/search/?type=File').then((fileResults) => {
+                setPageFiles(fileResults);
+            });
+        } else {
+            // Clear genome browser if new props have no visualizable tracks.
+            setPageFiles([]);
+        }
+    }, [files, assembly, pageNumber]);
+    return <GenomeBrowser files={pageFiles} label={'cart'} assembly={assembly} expanded />;
+};
+
+CartBrowser.propTypes = {
+    /** File @ids of all visualizable tracks, not just on the displayed page */
+    files: PropTypes.array.isRequired,
+    /** Assembly to display; can be empty before partial files loaded */
+    assembly: PropTypes.string,
+    /** Page of files to display */
+    pageNumber: PropTypes.number.isRequired,
+};
+
+CartBrowser.defaultProps = {
+    assembly: '',
+};
+
+
+/**
+ * Display the list of files selected by the current cart facet selections.
+ */
+const CartFiles = ({ files, currentPage }) => {
+    if (files.length > 0) {
+        const pageStartIndex = currentPage * PAGE_FILE_COUNT;
+        const currentPageFiles = files.slice(pageStartIndex, pageStartIndex + PAGE_ELEMENT_COUNT);
+        return (
+            <div className="cart-list cart-list--file">
+                {currentPageFiles.map(file =>
+                    <a key={file['@id']} href={file['@id']} className="cart-list-item">
+                        <div className={`cart-list-item__file-type cart-list-item__file-type--${file.file_format}`}>
+                            <div className="cart-list-item__format">{file.file_format}</div>
+                        </div>
+                        <div className="cart-list-item__props">
+                            <div className="cart-list-item__details">
+                                <div className="cart-list-details__output-type">
+                                    {file.output_type}
+                                </div>
+                                <div className="cart-list-details__type">
+                                    <div className="cart-list-details__label">Type</div>
+                                    <div className="cart-list-details__value">{file.file_type}</div>
+                                </div>
+                                <div className="cart-list-details__target">
+                                    <div className="cart-list-details__label">Target</div>
+                                    <div className="cart-list-details__value">{(file.target && file.target.label) || 'None'}</div>
+                                </div>
+                                <div className="cart-list-details__assay">
+                                    <div className="cart-list-details__label">Assay</div>
+                                    <div className="cart-list-details__value">{file.assay_term_name}</div>
+                                </div>
+                                <div className="cart-list-details__biosample">
+                                    <div className="cart-list-details__label">Biosample</div>
+                                    <div className="cart-list-details__value">{file.biosample_ontology && file.biosample_ontology.term_name}</div>
+                                </div>
+                            </div>
+                            <div className="cart-list-item__identifier">
+                                <div className="cart-list-item__status">
+                                    <Status item={file.status} badgeSize="small" />
+                                </div>
+                                <div className="cart-list-item__title">
+                                    {file.title}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="cart-list-item__hover" />
+                    </a>
+                )}
+            </div>
+        );
+    }
+    return <div className="nav result-table cart__empty-message">No files to view in any dataset in the cohort.</div>;
+};
+
+CartFiles.propTypes = {
+    /** Array of files from datasets in the cart */
+    files: PropTypes.array.isRequired,
+    /** Page of results to display */
+    currentPage: PropTypes.number.isRequired,
 };
 
 
@@ -145,11 +301,7 @@ class FileCount extends React.Component {
             );
         }
 
-        return (
-            <div className="cart__facet-progress-overlay">
-                <progress value={facetLoadProgress} max="100" />
-            </div>
-        );
+        return <progress value={facetLoadProgress} max="100" />;
     }
 }
 
@@ -188,16 +340,38 @@ FacetTermCheck.defaultProps = {
 
 
 /**
- * Display the cart file facet term icon that shows the magnitude of a facet term through its color
- * tint. The maximum value for the facet gets the full base color, and lesser values get lighter
- * tints.
+ * Display the selection radio button for a single cart file facet term.
+ */
+const FacetTermRadio = ({ checked }) => (
+    <div className={`cart-facet-term__radio${checked ? ' cart-facet-term__radio--checked' : ''}`}>
+        {checked ?
+            <i className="icon icon-circle" />
+        : null}
+    </div>
+);
+
+FacetTermRadio.propTypes = {
+    /** True if facet term radio button checked */
+    checked: PropTypes.bool,
+};
+
+FacetTermRadio.defaultProps = {
+    checked: false,
+};
+
+
+/**
+ * Display the cart file facet term count that shows the magnitude of a facet term through its
+ * color tint. The maximum value for the facet gets the full base color, and lesser values get
+ * lighter tints.
  */
 const FacetTermMagnitude = ({ termCount, maxTermCount }) => {
     const MAGNITUDE_BASE_COLOR = '#656BFF';
     const magnitudeColor = tintColor(MAGNITUDE_BASE_COLOR, 1 - (termCount / maxTermCount));
+    const textColor = isLight(magnitudeColor) ? '#000' : '#fff';
     return (
-        <div className="cart-facet-term__magnitude">
-            <i className="icon icon-circle" style={{ color: magnitudeColor }} />
+        <div className="cart-facet-term__magnitude" style={{ backgroundColor: magnitudeColor }}>
+            <span style={{ color: textColor }}>{termCount}</span>
         </div>
     );
 };
@@ -241,7 +415,7 @@ class FacetTerm extends React.Component {
     }
 
     render() {
-        const { term, termCount, maxTermCount, selected } = this.props;
+        const { term, termCount, maxTermCount, selected, visualizable, FacetTermSelectRenderer } = this.props;
         return (
             <li className="cart-facet-term">
                 <div
@@ -252,12 +426,16 @@ class FacetTerm extends React.Component {
                     onKeyDown={this.handleKeyDown}
                     onClick={this.handleTermClick}
                     aria-pressed={selected}
-                    aria-label={`${termCount} ${term} files`}
+                    aria-label={`${termCount} ${term} file${termCount === 1 ? '' : 's'}${visualizable ? ' visualizable' : ''}`}
                 >
-                    <FacetTermCheck checked={selected} />
+                    <FacetTermSelectRenderer checked={selected} />
                     <div className="cart-facet-term__text">{term}</div>
-                    <div className="cart-facet-term__count">{termCount}</div>
                     <FacetTermMagnitude termCount={termCount} maxTermCount={maxTermCount} />
+                    <div className="cart-facet-term__visualizable">
+                        {visualizable ?
+                            <div title="Selects visualizable files">{svgIcon('genomeBrowser')}</div>
+                        : null}
+                    </div>
                 </div>
             </li>
         );
@@ -273,25 +451,30 @@ FacetTerm.propTypes = {
     maxTermCount: PropTypes.number.isRequired,
     /** True if this term should appear selected */
     selected: PropTypes.bool,
+    /** True if term selection results in visualizable files */
+    visualizable: PropTypes.bool,
     /** Callback for handling clicks in the term */
     termClickHandler: PropTypes.func.isRequired,
+    /** Facet term checkbox/radio renderer */
+    FacetTermSelectRenderer: PropTypes.elementType.isRequired,
 };
 
 FacetTerm.defaultProps = {
     selected: false,
+    visualizable: false,
 };
 
 
 /**
- * Request a search of files whose datasets match those in `elements`. Uses search_elements
- * endpoint so we can send all the elements in the cart in the JSON payload of the request.
- * @param {array} elements `@id`s of datasets to request for a file facet
+ * Search for datasets from the @ids in `elements`. Uses search_elements endpoint so we can send
+ * all the elements in the cart in the JSON payload of the request.
+ * @param {array} elements `@id`s of datasets to request
  * @param {func} fetch System fetch function
- * @param {string} queryString Query string to add to URI being fetched; '' for no additions
  * @param {object} session session object from <App> context
+ *
  * @return {object} Promise with search result object
  */
-const requestFacet = (elements, fetch, queryString, session) => {
+const requestDatasets = (elements, fetch, session) => {
     // If <App> hasn't yet retrieved a CSRF token, retrieve one ourselves.
     let sessionPromise;
     if (!session || !session._csrft_) {
@@ -341,71 +524,7 @@ const getObjectFieldValue = (object, field) => {
     if (parts.length === 1) {
         return object[field];
     }
-    return parts.reduce((partObject, part) => partObject[part], object);
-};
-
-
-/**
- * Adds facet term counts and totals from facets of a search result object to the corresponding
- * `accumulatingResults` facet objects. The facets processed have field names in `facetFields`.
- * The `displayedFacetFields` global controls which fields are used.
- * @param {object} accumulatingResults File search results being accumulated.
- * @param {object} currentResults Dataset search results whose file information is getting added
- *                                to the accumulating file results.
- * @param {array}  facetFields Facet field values whose term counts are to be added to the
- *                             accumulating file results.
- *
- * @return {object} Returns `accumulatingResults` with file information from `currentResults`
- *                  added. `accumulatingResults` does not get mutated -- this function returns a
- *                  new object each time.
- */
-const addToAccumulatingFacets = (accumulatingResults, currentResults, facetFields) => {
-    let fileResults = accumulatingResults;
-    if (currentResults['@graph'] && currentResults['@graph'].length > 0) {
-        // Copy the incoming accumulating file results object to avoid mutating it, and then make
-        // the `fileFacetsRefs` object to make finding each field's entry in the copy easy.
-        fileResults = Object.assign({}, accumulatingResults);
-        fileResults.facets = accumulatingResults.facets.slice(0);
-        const fileFacetsRefs = {};
-        facetFields.forEach((field) => {
-            const matchingFacetIndex = fileResults.facets.findIndex(facet => facet.field === field);
-            fileResults.facets[matchingFacetIndex] = Object.assign({}, fileResults.facets[matchingFacetIndex]);
-            fileResults.facets[matchingFacetIndex].terms = fileResults.facets[matchingFacetIndex].terms.slice(0);
-            fileFacetsRefs[field] = fileResults.facets[matchingFacetIndex];
-        });
-
-        // Go through each experiment result to collect file information in the faked file results
-        // object.
-        currentResults['@graph'].forEach((patient) => {
-            if (patient.biospecimen && patient.biospecimen.length > 0) {
-                patient.biospecimen.forEach((file) => {
-                    if (file) {
-                        // For each field we're collecting file information for, add its file facet
-                        // count to the fake file facet we're putting together.
-                        facetFields.forEach((field) => {
-                            const fileFieldValue = getObjectFieldValue(file, field);
-                            if (fileFieldValue) {
-                                const facet = fileFacetsRefs[field];
-                                const termIndex = facet.terms.findIndex(term => term.key === fileFieldValue);
-                                if (termIndex !== -1) {
-                                    // Facet already has an entry for this key, so just bump its counter.
-                                    facet.terms[termIndex] = { doc_count: facet.terms[termIndex].doc_count + 1, key: facet.terms[termIndex].key };
-                                } else {
-                                    // Make a new entry for this key in the facet terms array.
-                                    facet.terms.push({ doc_count: 1, key: fileFieldValue });
-                                }
-                                facet.total += 1;
-                            }
-                        });
-                    }
-                });
-
-                // Collect files in the @graph of the fake file search results object.
-                fileResults['@graph'] = fileResults['@graph'].concat(patient.biospecimen.filter(biospecimen => biospecimen));
-            }
-        });
-    }
-    return fileResults;
+    return parts.reduce((partObject, part) => partObject && partObject[part], object);
 };
 
 
@@ -482,7 +601,7 @@ class Facet extends React.Component {
      * @param {string} term Clicked facet term
      */
     handleFacetTermClick(term) {
-        this.props.facetTermClickHandler(this.props.field, term);
+        this.props.facetTermClickHandler(this.props.displayedFacetField.field, term);
     }
 
     /**
@@ -490,27 +609,29 @@ class Facet extends React.Component {
      * @param {object} e React synthetic event
      */
     handleExpanderEvent(e) {
-        this.props.expanderClickHandler(this.props.field, e.altKey);
+        this.props.expanderClickHandler(this.props.displayedFacetField.field, e.altKey);
     }
 
     render() {
-        const { facet, field, title, expanded, selectedFacetTerms } = this.props;
-        const maxTermCount = Math.max(...Object.keys(facet).map(term => facet[term]));
-        const sortedTerms = Object.keys(facet).sort();
-        const labelId = `${field}-label`;
+        const { facet, displayedFacetField, expanded, selectedFacetTerms } = this.props;
+        const maxTermCount = Math.max(...facet.terms.map(term => term.count));
+        const labelId = `${displayedFacetField.field}-label`;
+        const FacetTermSelectRenderer = displayedFacetField.radio ? FacetTermRadio : FacetTermCheck;
         return (
             <div className="facet">
-                <FacetExpander title={title} field={field} labelId={labelId} expanded={expanded} expanderEventHandler={this.handleExpanderEvent} />
+                <FacetExpander title={facet.title} field={displayedFacetField.field} labelId={labelId} expanded={expanded} expanderEventHandler={this.handleExpanderEvent} />
                 {expanded ?
-                    <ul className="cart-facet" role="region" id={field} aria-labelledby={labelId}>
-                        {sortedTerms.map(term => (
+                    <ul className="cart-facet" role="region" id={displayedFacetField.field} aria-labelledby={labelId}>
+                        {facet.terms.map(facetTerm => (
                             <FacetTerm
-                                key={term}
-                                term={term}
-                                termCount={facet[term]}
+                                key={facetTerm.term}
+                                term={facetTerm.term}
+                                termCount={facetTerm.count}
+                                visualizable={facetTerm.visualizable}
                                 maxTermCount={maxTermCount}
-                                selected={selectedFacetTerms.indexOf(term) > -1}
+                                selected={selectedFacetTerms.indexOf(facetTerm.term) > -1}
                                 termClickHandler={this.handleFacetTermClick}
+                                FacetTermSelectRenderer={FacetTermSelectRenderer}
                             />
                         ))}
                     </ul>
@@ -524,9 +645,7 @@ Facet.propTypes = {
     /** Facet object to display */
     facet: PropTypes.object.isRequired,
     /** Field name representing the facet being displayed */
-    field: PropTypes.string.isRequired,
-    /** Human-readable title for the facet being displayed */
-    title: PropTypes.string.isRequired,
+    displayedFacetField: PropTypes.object.isRequired,
     /** True if facet should appear expanded */
     expanded: PropTypes.bool.isRequired,
     /** Called when the expander button is clicked */
@@ -543,6 +662,36 @@ Facet.defaultProps = {
 
 
 /**
+ * Display a checkbox and label to allow users to filter out facet terms not included in any
+ * visualizable files.
+ */
+const VisualizableTermsToggle = ({ visualizableOnly, handleClick }) => (
+    <div className="cart-viz-toggle">
+        <button id="viz-terms-toggle" role="checkbox" aria-checked={visualizableOnly} onClick={handleClick}>
+            <div className={`cart-viz-toggle__check${visualizableOnly ? ' cart-viz-toggle__check--checked' : ''}`}>
+                {visualizableOnly ? <i className="icon icon-check" /> : null}
+            </div>
+            <label htmlFor="viz-terms-toggle">
+                <div className="cart-viz-toggle__label-text">Show visualizable data only</div>
+                <div className="cart-viz-toggle__icon">{svgIcon('genomeBrowser')}</div>
+            </label>
+        </button>
+    </div>
+);
+
+VisualizableTermsToggle.propTypes = {
+    /** True to display checkbox as checked */
+    visualizableOnly: PropTypes.bool,
+    /** Callback when button is clicked */
+    handleClick: PropTypes.func.isRequired,
+};
+
+VisualizableTermsToggle.defaultProps = {
+    visualizableOnly: false,
+};
+
+
+/**
  * Display the file facets. These display the number of files involved -- not the number of
  * experiments with files matching a criteria. As the primary input to this component is currently
  * an array of experiment IDs while these facets displays all the files involved with those
@@ -551,236 +700,23 @@ Facet.defaultProps = {
  * again retrieves all relevant files for the remaining experiments.
  */
 class FileFacets extends React.Component {
-    /**
-     * Update the `facets` object by incrementing the count of the term within it selected by the
-     * `field` within the given `file`. This utility function only avoids duplicating code in the
-     * `assembleFacets` method.
-     * @param {object} facets Facet object to update - mutated!
-     * @param {string} field Field key within the facet to update
-     * @param {object} file File containing the term to add to the facet
-     */
-    static addFileTermToFacet(facets, field, file) {
-        const term = getObjectFieldValue(file, field);
-        if (term !== undefined) {
-            if (facets[field]) {
-                // The facet has been seen in this loop before, so add to or initialize
-                // the relevant term within this facet.
-                if (facets[field][term]) {
-                    facets[field][term] += 1;
-                } else {
-                    facets[field][term] = 1;
-                }
-            } else {
-                // The facet has not been seen in this loop before, so initialize it as
-                // well as the value of the relevant term within the facet.
-                facets[field] = {};
-                facets[field][term] = 1;
-            }
-        }
-    }
-
     constructor() {
         super();
-        this.state = {
-            /** Tracks facet loading progress */
-            facetLoadProgress: null,
-        };
 
         // Initialize the expanded state of every facet; only the first one is expanded by default.
         const expandedStates = {};
-        displayedFacetFields.forEach((field, index) => {
-            expandedStates[field] = index === 0;
+        displayedFacetFields.forEach((facetField, index) => {
+            expandedStates[facetField.field] = index === 0;
         });
-        this.state.expanded = expandedStates;
+        this.state = {
+            /** Tracks expanded/nonexpanded states of every facet */
+            expanded: expandedStates,
+        };
 
         this.files = [];
         this.fileCount = 0;
-        this.titleMap = {};
 
-        this.retrieveFileFacets = this.retrieveFileFacets.bind(this);
-        this.assembleFacets = this.assembleFacets.bind(this);
         this.handleExpanderClick = this.handleExpanderClick.bind(this);
-    }
-
-    componentDidMount() {
-        this.retrieveFileFacets();
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.elements.length !== this.props.elements.length || prevProps.loggedIn !== this.props.loggedIn) {
-            this.retrieveFileFacets();
-        }
-        this.props.selectedFileCountHandler(this.selectedFileCount);
-    }
-
-    /**
-     * Need to see how file facets look so we can gradually accumulate one, so retrieve an empty
-     * file search result. Return a promise with this facet template.
-     */
-    retrieveFileFacetTemplate() {
-        return this.context.fetch(
-            '/search/?type=Biospecimen&limit=0',
-            {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            }
-        ).then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error(response);
-        }).then((response) => {
-            // Extract only the facets defined in displayedFacetFields.
-            const facets = [];
-            displayedFacetFields.forEach((field) => {
-                const displayedFacet = response.facets.find(facet => facet.field === field);
-                if (displayedFacet) {
-                    facets.push(Object.assign({}, displayedFacet, { terms: [], total: 0 }));
-                }
-            });
-            response.facets = facets;
-            response.total = 0;
-            return response;
-        }).catch((response) => {
-            parseAndLogError('getWriteableCartObject', response);
-        });
-    }
-
-    /**
-     * Perform a special search to get just the facet information for files associated with cart
-     * elements. The cart elements are passed in the JSON body of the POST. No search results get
-     * returned but we do get file facet information.
-     */
-    retrieveFileFacets() {
-        // Break incoming array of dataset @ids into manageable chunks of arrays, each with
-        // CHUNK_SIZE elements. Each chunk gets used in a search of relevant files, and all the
-        // results get combined into one facet object.
-        const CHUNK_SIZE = 2000;
-        const chunks = [];
-        for (let elementIndex = 0; elementIndex < this.props.elements.length; elementIndex += CHUNK_SIZE) {
-            chunks.push(this.props.elements.slice(elementIndex, elementIndex + CHUNK_SIZE));
-        }
-
-        // Assemble the query string from the selected facets.
-        let queryString = '';
-        displayedFacetFields.forEach((field) => {
-            if (this.props.selectedTerms[field].length > 0) {
-                const termQuery = this.props.selectedTerms[field].map(term => `biospecimen.${field}=${encodedURIComponent(term)}`).join('&');
-                queryString += `&${termQuery}`;
-            }
-        });
-
-        // Using the arrays of dataset @id arrays, do a sequence of searches of CHUNK_SIZE datasets
-        // adding the totals from their files together to form the final file facet. Also count the
-        // total number of viewable cart elements for logged-out users viewing shared carts. The
-        // initial promise comes from retrieving the file-facet template, and then we accumulate
-        // file data from the chunked dataset searches.
-        let viewableElementCount = 0;
-        const viewableElements = [];
-        chunks.reduce((promiseChain, currentChunk, currentChunkIndex) => (
-            promiseChain.then(accumulatingResults => (
-                requestFacet(currentChunk, this.context.fetch, queryString, this.context.session).then((currentResults) => {
-                    this.setState({ facetLoadProgress: Math.round(((currentChunkIndex + 1) / chunks.length) * 100) });
-                    viewableElementCount += currentResults.total;
-                    viewableElements.push(...currentResults['@graph'].map(patient => patient['@id']));
-                    return addToAccumulatingFacets(accumulatingResults, currentResults, displayedFacetFields);
-                })
-            )).catch((response) => {
-                parseAndLogError('Error reading biospecimen facets', response);
-            })
-        ), this.retrieveFileFacetTemplate()).then((accumulatedResults) => {
-            // All cart datasets in all chunks have been retrieved and their files extracted, and
-            // the file facet results accumulated. Save the list of files as well as a map of facet
-            // field name to corresponding title.
-            this.files = accumulatedResults['@graph'];
-            this.titleMap = {};
-            accumulatedResults.facets.forEach((facet) => {
-                this.titleMap[facet.field] = facet.title;
-            });
-
-            // Indicate that file facet loading is done.
-            this.setState({ facetLoadProgress: -1 });
-            this.props.searchResultHandler(accumulatedResults, viewableElementCount, viewableElements);
-        });
-    }
-
-    /**
-     * Based on the currently selected facet terms and the files collected from the carted
-     * experiments, generate a list of facets and corresponding counts. The length of the files
-     * array could be in the hundreds of thousands, so this data has to be extracted by going
-     * through this array only once per render.
-     */
-    assembleFacets() {
-        const facets = {};
-        let selectedFileCount = 0;
-        if (this.files.length > 0) {
-            const { selectedTerms } = this.props;
-            const selectedFacetKeys = Object.keys(selectedTerms).filter(term => selectedTerms[term].length > 0);
-            this.files.forEach((file) => {
-                // Determine whether the file passes the currently selected facet terms. Properties
-                // within the file have to match any of the terms within a facet, and across all
-                // facets that include selected terms. This is the "first test" I refer to later.
-                let match = selectedFacetKeys.every((selectedFacetKey) => {
-                    // `selectedFacetKey` is one facet field, e.g. "output_type".
-                    // `filePropValue` is the file's value for that field.
-                    const filePropValue = getObjectFieldValue(file, selectedFacetKey);
-
-                    // Determine if the file's `selectedFacetKey` prop has been selected by at
-                    // least one facet term.
-                    return selectedTerms[selectedFacetKey].indexOf(filePropValue) !== -1;
-                });
-
-                // Files that pass the first test add their properties to the relevant facet term
-                // counts. Files that don't pass go through a second test to see if they should
-                // appear unselected within a facet. Files that fail both tests get ignored for
-                // facets.
-                if (match) {
-                    // The file passed the first test, so it appears selected in its facet. Add all
-                    // its properties to the relevant facet terms.
-                    Object.keys(selectedTerms).forEach((facetField) => {
-                        FileFacets.addFileTermToFacet(facets, facetField, file);
-                    });
-                    selectedFileCount += 1;
-                } else {
-                    // The file didn't pass the first test, so run the same test repeatedly but
-                    // with one facet removed from the test each time. For each easier test the
-                    // file passes, add to the corresponding term count for the removed facet,
-                    // allowing the user to select it to extend the set of selected files.
-                    selectedFacetKeys.forEach((selectedFacetField) => {
-                        // Remove one facet containing a selection from the test.
-                        const filteredSelectedFacetKeys = selectedFacetKeys.filter(key => key !== selectedFacetField);
-                        match = filteredSelectedFacetKeys.every((filteredSelectedFacetKey) => {
-                            const filePropValue = getObjectFieldValue(file, filteredSelectedFacetKey);
-                            return selectedTerms[filteredSelectedFacetKey].indexOf(filePropValue) !== -1;
-                        });
-
-                        // A match means to add to the count of the current facet field file term
-                        // only.
-                        if (match) {
-                            FileFacets.addFileTermToFacet(facets, selectedFacetField, file);
-                        }
-                    });
-                }
-            });
-
-            // We need to include selected terms that happen to have a zero count, so add all
-            // selected facet terms not yet included in `facets`.
-            Object.keys(selectedTerms).forEach((field) => {
-                if (field in facets) {
-                    // Find selected terms NOT in facets and add them with a zero count.
-                    const missingTerms = selectedTerms[field].filter(term => Object.keys(facets[field]).indexOf(term) === -1);
-                    if (missingTerms.length > 0) {
-                        missingTerms.forEach((term) => {
-                            facets[field][term] = 0;
-                        });
-                    }
-                }
-            });
-        }
-
-        return { facets: Object.keys(facets).length > 0 ? facets : null, selectedFileCount };
     }
 
     /**
@@ -796,7 +732,7 @@ class FileFacets extends React.Component {
                 const nextExpandedState = !state.expanded[field];
                 const expandedStates = {};
                 displayedFacetFields.forEach((facetField) => {
-                    expandedStates[facetField] = nextExpandedState;
+                    expandedStates[facetField.field] = nextExpandedState;
                 });
                 return { expanded: expandedStates };
             }
@@ -809,69 +745,148 @@ class FileFacets extends React.Component {
     }
 
     render() {
-        const { selectedTerms, termClickHandler } = this.props;
-
-        // Based on carted files and currently selected facet terms, generate a facet object for
-        // rendering.
-        const { facets, selectedFileCount } = this.assembleFacets();
-        this.selectedFileCount = selectedFileCount;
+        const {
+            facets,
+            selectedTerms,
+            selectedFileCount,
+            termClickHandler,
+            visualizableOnly,
+            visualizableOnlyChangeHandler,
+            facetLoadProgress,
+            disabled,
+        } = this.props;
 
         return (
-            <div className="box facets">
-                <FileCount fileCount={selectedFileCount} facetLoadProgress={this.state.facetLoadProgress} />
+            <div className="cart__display-facets">
+                <FileCount fileCount={selectedFileCount} facetLoadProgress={facetLoadProgress} />
+                {facetLoadProgress === -1 ?
+                    <VisualizableTermsToggle visualizableOnly={visualizableOnly} handleClick={visualizableOnlyChangeHandler} />
+                : null}
                 <div>
-                    {facets ?
+                    {facets && facets.length > 0 ?
                         <div>
-                            {displayedFacetFields.map(field => (
-                                <div key={field}>
-                                    {facets[field] ?
-                                        <Facet
-                                            key={field}
-                                            field={field}
-                                            title={this.titleMap[field]}
-                                            facet={facets[field]}
-                                            selectedFacetTerms={selectedTerms[field]}
-                                            facetTermClickHandler={termClickHandler}
-                                            expanded={this.state.expanded[field]}
-                                            expanderClickHandler={this.handleExpanderClick}
-                                        />
-                                    : null}
-                                </div>
-                            ))}
+                            {displayedFacetFields.map((displayedFacetField) => {
+                                const facetContent = facets.find(facet => facet.field === displayedFacetField.field);
+                                if (facetContent) {
+                                    return (
+                                        <div key={displayedFacetField.field}>
+                                            <Facet
+                                                key={displayedFacetField.field}
+                                                displayedFacetField={displayedFacetField}
+                                                facet={facetContent}
+                                                selectedFacetTerms={selectedTerms[displayedFacetField.field]}
+                                                facetTermClickHandler={termClickHandler}
+                                                expanded={this.state.expanded[displayedFacetField.field]}
+                                                expanderClickHandler={this.handleExpanderClick}
+                                            />
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })}
                         </div>
                     :
-                        <div className="cart__empty-message">No biospecimens or files available</div>
+                        <React.Fragment>
+                            {facetLoadProgress === -1 ?
+                                <div className="cart__empty-message">No biospecimens or files available</div>
+                            : null}
+                        </React.Fragment>
                     }
                 </div>
+                {disabled || facetLoadProgress !== -1 ?
+                    <div className="cart__facet-disabled-overlay" />
+                : null}
             </div>
         );
     }
 }
 
 FileFacets.propTypes = {
-    /** Array of @ids of all elements in the cart */
-    elements: PropTypes.array,
+    /** Array of objects for each displayed facet */
+    facets: PropTypes.array,
     /** Selected facet fields */
     selectedTerms: PropTypes.object,
+    /** Count of the files selected by current selected facet terms */
+    selectedFileCount: PropTypes.number,
     /** Callback when the user clicks on a file format facet item */
     termClickHandler: PropTypes.func.isRequired,
-    /** Callback that receives accumulated search results */
-    searchResultHandler: PropTypes.func.isRequired,
-    /** Called when count of selected files determined */
-    selectedFileCountHandler: PropTypes.func.isRequired,
-    /** True if user has logged in */
-    loggedIn: PropTypes.bool,
+    /** True to check the Show Visualizable Data Only checkbox */
+    visualizableOnly: PropTypes.bool,
+    /** Call to handle clicks in the Visualize Only checkbox */
+    visualizableOnlyChangeHandler: PropTypes.func.isRequired,
+    /** Facet-loading progress for progress bar, or null if not displayed */
+    facetLoadProgress: PropTypes.number,
+    /** True to disable the facets; grayed out and non-clickable */
+    disabled: PropTypes.bool,
 };
 
 FileFacets.defaultProps = {
-    elements: [],
+    facets: [],
     selectedTerms: null,
-    loggedIn: false,
+    selectedFileCount: 0,
+    visualizableOnly: false,
+    facetLoadProgress: null,
+    disabled: false,
 };
 
-FileFacets.contextTypes = {
-    fetch: PropTypes.func,
-    session: PropTypes.object,
+
+/**
+ * Display a button that links to experiment search results. This *only* works for Experiments, not
+ * FCCs for now.
+ */
+const MAX_SEARCHABLE_DATASETS = 125; // Maximum number of datasets for search-results links.
+const CartDatasetSearch = ({ elements }, reactContext) => {
+    const [isWarningVisible, setIsWarningVisible] = React.useState(false);
+
+    // * For now only include experiments. Might need to expand this in the future.
+    const experimentElements = elements.filter(element => element.includes('/experiments/'));
+
+    // Called when the user clicks the Dataset Search button.
+    const handleButtonClick = () => {
+        if (experimentElements.length > MAX_SEARCHABLE_DATASETS) {
+            setIsWarningVisible(true);
+        } else {
+            const datasetsQuery = experimentElements.map(element => `@id=${encodedURIComponent(element)}`).join('&');
+            const query = `/search/?type=Experiment&${datasetsQuery}`;
+            reactContext.navigate(query);
+        }
+    };
+
+    // Called when the user closes the warning modal.
+    const handleCloseClick = () => {
+        setIsWarningVisible(false);
+    };
+
+    // Only display the Dataset Search button if we have at least one experiment in the cart.
+    if (experimentElements.length > 0) {
+        return (
+            <React.Fragment>
+                <button onClick={handleButtonClick} className="btn btn-sm btn-info btn-inline">Dataset search</button>
+                {isWarningVisible ?
+                    <Modal closeModal={handleCloseClick}>
+                        <ModalHeader title={<h4>Cart dataset search results</h4>} closeModal={handleCloseClick} />
+                        <ModalBody>
+                            Viewing cart dataset search results requires {MAX_SEARCHABLE_DATASETS} datasets
+                            or fewer. This cart contains {elements.length} datasets.
+                        </ModalBody>
+                        <ModalFooter
+                            closeModal={handleCloseClick}
+                        />
+                    </Modal>
+                : null}
+            </React.Fragment>
+        );
+    }
+    return null;
+};
+
+CartDatasetSearch.propTypes = {
+    /** Dataset @ids in the cart */
+    elements: PropTypes.array.isRequired,
+};
+
+CartDatasetSearch.contextTypes = {
+    navigate: PropTypes.func,
 };
 
 
@@ -879,16 +894,18 @@ FileFacets.contextTypes = {
  * Display cart tool buttons. If `savedCartObj` is supplied, supply it for the metadata.tsv line
  * in the resulting files.txt.
  */
-const CartTools = ({ elements, selectedTerms, savedCartObj, viewableElements, fileCount, cartType, sharedCart }) => (
+const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fileCounts, cartType, sharedCart, visualizable, inProgress }) => (
     <div className="cart__tools">
         {elements.length > 0 ?
             <CartBatchDownload
                 elements={elements}
                 selectedTerms={selectedTerms}
+                datasetFacets={datasetFacets}
                 cartType={cartType}
                 savedCartObj={savedCartObj}
                 sharedCart={sharedCart}
-                fileCount={fileCount}
+                fileCounts={fileCounts}
+                visualizable={visualizable}
             />
         : null}
         {elements.length > 0 ?
@@ -912,7 +929,9 @@ const CartTools = ({ elements, selectedTerms, savedCartObj, viewableElements, fi
             />
         : null}
         {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableElements={viewableElements} /> : null}
+        {cartType === 'ACTIVE' ? <CartLockTrigger savedCartObj={savedCartObj} inProgress={inProgress} /> : null}
         {cartType === 'ACTIVE' || cartType === 'MEMORY' ? <CartClearButton /> : null}
+        <CartDatasetSearch elements={elements} />
     </div>
 );
 
@@ -924,72 +943,44 @@ CartTools.propTypes = {
     /** Cart as it exists in the database; use JSON payload method if none */
     savedCartObj: PropTypes.object,
     /** Viewable cart element @ids */
-    viewableElements: PropTypes.array,
+    viewableDatasets: PropTypes.array,
     /** Type of cart: ACTIVE, OBJECT, MEMORY */
     cartType: PropTypes.string.isRequired,
     /** Elements in the shared cart, if that's being displayed */
     sharedCart: PropTypes.object,
-    /** Number of files batch download will cause to be downloaded */
-    fileCount: PropTypes.number,
+    /** Number of files batch download will download for each download type */
+    fileCounts: PropTypes.object,
+    /** True if only visualizable files should be downloaded */
+    visualizable: PropTypes.bool,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
 };
 
 CartTools.defaultProps = {
     elements: [],
     selectedTerms: null,
     savedCartObj: null,
-    viewableElements: null,
+    viewableDatasets: null,
     sharedCart: null,
-    fileCount: 0,
-};
-
-
-/**
- * Display the total number of cart elements.
- */
-const ElementCountArea = ({ count, viewableElementCount, typeName, typeNamePlural }) => {
-    if (count > 0) {
-        const countFormatted = count.toLocaleString ? count.toLocaleString() : count.toString();
-        return (
-            <div className="cart__element-count">
-                <span>{countFormatted}&nbsp;{count === 1 ? typeName : typeNamePlural} in cohort</span>
-                {viewableElementCount >= 0 && viewableElementCount !== count ? <span> ({viewableElementCount} visible)</span> : null}
-            </div>
-        );
-    }
-    return null;
-};
-
-ElementCountArea.propTypes = {
-    /** Number of elements in cart display */
-    count: PropTypes.number.isRequired,
-    /** Count of viewable cart elements at user's access level */
-    viewableElementCount: PropTypes.number,
-    /** Singular type name of elements being displayed */
-    typeName: PropTypes.string.isRequired,
-    /** Plural type name of elements being displayed */
-    typeNamePlural: PropTypes.string.isRequired,
-};
-
-ElementCountArea.defaultProps = {
-    viewableElementCount: 0,
+    fileCounts: {},
+    visualizable: false,
 };
 
 
 /**
  * Display the pager control area.
  */
-const PagerArea = ({ currentPage, totalPageCount, updateCurrentPage }) => (
-    <div className="cart__pager">
+const CartPager = ({ currentPage, totalPageCount, updateCurrentPage }) => (
+    <React.Fragment>
         {totalPageCount > 1 ?
-            <div>
+            <div className="cart-pager-area">
                 <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} />
-                <div className="cart__pager-note">pages of datasets</div>
             </div>
         : null}
-    </div>
+    </React.Fragment>
 );
 
-PagerArea.propTypes = {
+CartPager.propTypes = {
     /** Zero-based current page to display */
     currentPage: PropTypes.number.isRequired,
     /** Total number of pages */
@@ -1000,258 +991,639 @@ PagerArea.propTypes = {
 
 
 /**
- * Sets the initial React state for the cart page.
+ * Adds partial file objects from a dataset search-result object to an existing array of partial
+ * file objects. Mutate the file objects to include faceted properties from the relevant datasets.
+ * @param {object} files Partial file objects being collected
+ * @param {object} currentResults Dataset search results containing partial file objects to collect
+ *
+ * @return {object} Returns `files` copy with file information from `currentResults` added.
  */
-const createInitialCartState = () => {
-    const newState = {
-        /** Files formats selected to be included in results; all formats if empty array */
-        selectedTerms: {},
-        /** Search result facets */
-        fileFacets: {},
-        /** Count of elements viewable at user's access level; only for shared carts */
-        viewableElementCount: -1,
-        /** Array of viewable element @ids */
-        viewableElements: null,
-        /** Currently displayed page of dataset search results */
-        currentDatasetResultsPage: 0,
-        /** Cart context after update */
-        updatedContext: null,
-        /** Number of files selected for download */
-        selectedFileCount: 0,
-    };
-    displayedFacetFields.forEach((field) => {
-        newState.selectedTerms[field] = [];
-        newState.fileFacets[field] = [];
-    });
-    return newState;
+const addToAccumulatingFiles = (files, currentResults) => {
+    if (currentResults['@graph'] && currentResults['@graph'].length > 0) {
+        const currentFilesPartial = [];
+        currentResults['@graph'].forEach((dataset) => {
+            if (dataset.files && dataset.files.length > 0) {
+                dataset.files.forEach((file) => {
+                    if (!file.restricted) {
+                        // Mutate the files to include faceted properties from the dataset
+                        // object before adding it to the accumulating list of files.
+                        datasetFacets.forEach((datasetFacet) => {
+                            const [experimentProp] = datasetFacet.split('.');
+                            file[experimentProp] = dataset[experimentProp];
+                        });
+                        currentFilesPartial.push(file);
+                    }
+                });
+            }
+        });
+
+        // Return a new array combining the existing partial files with the additional files.
+        return files.concat(currentFilesPartial);
+    }
+
+    // No search results; just return unchanged list of partial files.
+    return files;
 };
+
+
+/**
+ * Update the `facets` array by incrementing the count of the term within it selected by the
+ * `field` within the given `file`.
+ * @param {array} facets Facet array to update - mutated!
+ * @param {string} field Field key within the facet to update
+ * @param {object} file File containing the term to add to the facet
+ */
+const addFileTermToFacet = (facets, field, file) => {
+    const facetTerm = getObjectFieldValue(file, field);
+    const visualizable = isFileVisualizable(file);
+    if (facetTerm !== undefined) {
+        const matchingFacet = facets.find(facet => facet.field === field);
+        if (matchingFacet) {
+            // The facet has been seen in this loop before, so add to or initialize
+            // the relevant term within this facet.
+            const matchingTerm = matchingFacet.terms.find(matchingFacetTerm => matchingFacetTerm.term === facetTerm);
+            if (matchingTerm) {
+                // Facet term has been counted before, so add to its count. Mark the term as
+                // visualizable if any file contributing to this term is visualizable.
+                matchingTerm.count += 1;
+                if (visualizable) {
+                    matchingTerm.visualizable = visualizable;
+                }
+            } else {
+                // Facet term has not been counted before, so initialize a new facet term entry.
+                matchingFacet.terms.push({ term: facetTerm, count: 1, visualizable });
+            }
+        } else {
+            // The facet has not been seen in this loop before, so initialize it as
+            // well as the value of the relevant term within the facet.
+            facets.push({ field, terms: [{ term: facetTerm, count: 1, visualizable }] });
+        }
+    }
+};
+
+
+/**
+ * Based on the currently selected facet terms and the files collected from the datasets in the
+ * cart, generate the simplified facets and the subset of files these facets select.
+ * @param {object} selectedTerms Currently selected terms within each facet
+ * @param {array} files Partial files to consider when building these facets.
+ *
+ * @return {object}
+ *     {array} assembledFacets - Array of simplified facet objects including fields and terms;
+ *                               empty array if none
+ *     {array} facetSelectedFiles - Array of partial files selected by currently selected facets
+ */
+const assembleFacets = (selectedTerms, files) => {
+    const assembledFacets = [];
+    const facetSelectedFiles = [];
+    const processedFiles = files.filter(file => file.assembly);
+    if (processedFiles.length > 0) {
+        const selectedFacetKeys = Object.keys(selectedTerms).filter(term => selectedTerms[term].length > 0);
+        processedFiles.forEach((file) => {
+            // Determine whether the file passes the currently selected facet terms. Properties
+            // within the file have to match any of the terms within a facet, and across all
+            // facets that include selected terms. This is the "first test" I refer to later.
+            let match = selectedFacetKeys.every((selectedFacetKey) => {
+                // `selectedFacetKey` is one facet field, e.g. "output_type".
+                // `filePropValue` is the file's value for that field.
+                const filePropValue = getObjectFieldValue(file, selectedFacetKey);
+
+                // Determine if the file's `selectedFacetKey` prop has been selected by at
+                // least one facet term.
+                return selectedTerms[selectedFacetKey].indexOf(filePropValue) !== -1;
+            });
+
+            // Files that pass the first test add their properties to the relevant facet term
+            // counts. Files that don't pass go through a second test to see if their properties
+            // should appear unselected within a facet. Files that fail both tests get ignored for
+            // facets.
+            if (match) {
+                // The file passed the first test, so its terms appear selected in their facets.
+                // Add all its properties to the relevant facet terms.
+                Object.keys(selectedTerms).forEach((facetField) => {
+                    addFileTermToFacet(assembledFacets, facetField, file);
+                });
+                facetSelectedFiles.push(file);
+            } else {
+                // The file didn't pass the first test, so run the same test repeatedly but
+                // with one facet removed from the test each time. For each easier test the
+                // file passes, add to the corresponding term count for the removed facet,
+                // allowing the user to select it to extend the set of selected files.
+                selectedFacetKeys.forEach((selectedFacetField) => {
+                    // Remove one facet containing a selection from the test.
+                    const filteredSelectedFacetKeys = selectedFacetKeys.filter(key => key !== selectedFacetField);
+                    match = filteredSelectedFacetKeys.every((filteredSelectedFacetKey) => {
+                        const filePropValue = getObjectFieldValue(file, filteredSelectedFacetKey);
+                        return selectedTerms[filteredSelectedFacetKey].indexOf(filePropValue) !== -1;
+                    });
+
+                    // A match means to add to the count of the current facet field file term
+                    // only.
+                    if (match) {
+                        addFileTermToFacet(assembledFacets, selectedFacetField, file);
+                    }
+                });
+            }
+        });
+
+        // We need to include selected terms that happen to have a zero count, so add all
+        // selected facet terms not yet included in `facets`.
+        Object.keys(selectedTerms).forEach((field) => {
+            const matchingFacet = assembledFacets.find(facet => facet.field === field);
+            if (matchingFacet) {
+                // Find selected terms NOT in facets and add them with a zero count.
+                const matchingFacetTerms = matchingFacet.terms.map(facetTerm => facetTerm.term);
+                const missingTerms = selectedTerms[field].filter(term => matchingFacetTerms.indexOf(term) === -1);
+                if (missingTerms.length > 0) {
+                    missingTerms.forEach((term) => {
+                        matchingFacet.terms.push({ term, count: 0, visualizable: false });
+                    });
+                }
+            }
+        });
+
+        // Sort each facet's terms either alphabetically or by some criteria specific to a
+        // facet. `facets` and `displayedFacetFields` have the same order, but `facets` might
+        // not have all possible facets -- just currently relevant ones.
+        assembledFacets.forEach((facet) => {
+            // We know a corresponding `displayedFacetFields` entry exists because `facets` gets
+            // built from it, so no not-found condition needs checking.
+            const facetDisplay = displayedFacetFields.find(displayedFacetField => displayedFacetField.field === facet.field);
+            facet.title = facetDisplay.title;
+            facet.terms = facetDisplay.sorter ?
+                facetDisplay.sorter(facet.terms)
+            :
+                _(facet.terms).sortBy(facetTerm => facetTerm.term.toLowerCase());
+        });
+    }
+
+    return { assembledFacets: assembledFacets.length > 0 ? assembledFacets : [], facetSelectedFiles };
+};
+
+
+/**
+ * For any radio-button facets, select the first term if no items within them have been selected.
+ * @param {array} facets Simplified facet object
+ * @param {object} selectedTerms Selected terms within the facets
+ *
+ * @return {object} Same as `selectedTerms` but with radio-button facet terms selected
+ */
+const initRadioFacets = (facets, selectedTerms) => {
+    const newSelectedTerms = {};
+    displayedFacetFields.forEach((displayedFacetField) => {
+        if (displayedFacetField.radio && selectedTerms[displayedFacetField.field].length === 0) {
+            // Assign the first term of the radio-button facet as the sole selection. In the
+            // unusual case that no facet terms for this radio-button facet have been collected,
+            // just copy the existing selection for the facet.
+            const matchingFacet = facets.find(facet => facet.field === displayedFacetField.field);
+            newSelectedTerms[displayedFacetField.field] = (
+                matchingFacet ? [matchingFacet.terms[0].term] : selectedTerms[displayedFacetField.field].slice(0)
+            );
+        } else {
+            // Not a radio-button facet, or radio-button facet has selected terms; copy existing
+            // selected terms.
+            newSelectedTerms[displayedFacetField.field] = selectedTerms[displayedFacetField.field].slice(0);
+        }
+    });
+    return newSelectedTerms;
+};
+
+
+/**
+ * Reset the facets to no selections, and select the first term of radio-button facets, all as if
+ * the page has just been loaded.
+ * @param {array} files Files to consider when building facets.
+ *
+ * @return {object} Initial facet-term selections
+ */
+const resetFacets = (files) => {
+    // Make an empty selected-terms object so `assembleFacets` can generate fresh simplified
+    // facets.
+    const emptySelectedTerms = {};
+    displayedFacetFields.forEach((facetField) => {
+        emptySelectedTerms[facetField.field] = [];
+    });
+
+    // Build the facets based on no selections, then select the first term of any radio-button
+    // facets.
+    const { assembledFacets } = assembleFacets(emptySelectedTerms, files);
+    return initRadioFacets(assembledFacets, emptySelectedTerms);
+};
+
+
+/**
+ * Filter visualizable files to ones included in the selected facet terms.
+ * @param {array} visualizableFiles Files in cart datasets that are visualizable
+ * @param {object} selectedTerms Selected facet terms
+ *
+ * @return {array} `visualizableFiles` filtered by facet term selections
+ */
+const getSelectedVisualizableFiles = (visualizableFiles, selectedTerms) => (
+    visualizableFiles.filter(file => (
+        Object.keys(selectedTerms).every(term => (
+            selectedTerms[term].length > 0 ? selectedTerms[term].includes(getObjectFieldValue(file, term)) : true
+        ))
+    ))
+);
+
+
+/**
+ * Content of the tabs with counters.
+ */
+const CounterTab = ({ title, count, voice }) => (
+    <div className="cart-tab" aria-label={`${count} ${voice}`}>
+        {title} <div className="cart-tab__count">{count}</div>
+    </div>
+);
+
+CounterTab.propTypes = {
+    /** Text title for the tab */
+    title: PropTypes.string.isRequired,
+    /** Counter value to display next to the tab */
+    count: PropTypes.number.isRequired,
+    /** Screen reader text */
+    voice: PropTypes.string,
+};
+
+CounterTab.defaultProps = {
+    voice: 'items',
+};
+
+
+/**
+ * Get information about the cart contents including:
+ * cartType: Type of cart being displayed:
+ *           'ACTIVE': Viewing the current cart
+ *           'OBJECT': Viewing the cart specified in the URL
+ *           'MEMORY': Viewing carts in browser memory (non-logged-in user)
+ * @param {object} context Cart search results object; often empty depending on cart type
+ * @param {object} savedCartObj Cart object in Redux store for active logged-in carts
+ *
+ * @return {object} -
+ * {
+ *      {string} cartType - Cart type: OBJECT, MEMORY, ACTIVE
+ *      {string} cartName - Name of cart
+ *      {array} cartDatasets - @ids of all datasets in cart
+ * }
+ */
+const getCartInfo = (context, savedCartObj, elements) => {
+    let cartType;
+    let cartName;
+    let cartPatients;
+    if (context['@type'][0] === 'cart-view') {
+        // Viewing a current active or memory cart on the /cart-view/ page.
+        if (savedCartObj && Object.keys(savedCartObj).length > 0) {
+            cartType = 'ACTIVE';
+            cartName = savedCartObj.name;
+            cartPatients = savedCartObj.elements;
+        } else {
+            cartType = 'MEMORY';
+            cartName = 'Cart';
+            cartPatients = elements;
+        }
+    } else {
+        // Viewing a saved cart at its unique path.
+        cartType = 'OBJECT';
+        cartName = context.name;
+        cartPatients = context.elements;
+    }
+    return { cartType, cartName, cartPatients };
+};
+
+
+/**
+ * Generate a template for selected facet terms with all possible facets but void of any selections
+ * -- this is just to establish an initial selectedTerms object to build on.
+ *
+ * @return {object} Facet terms keyed by displayed facet fields.
+ */
+const generateFacetTermsTemplate = () => {
+    const termTemplate = {};
+    displayedFacetFields.forEach((facetField) => {
+        termTemplate[facetField.field] = [];
+    });
+    return termTemplate;
+};
+
+
+/**
+ * Retrieve partial file objects for all given datasets, as well as a list of datasets viewable at
+ * the user's access level -- needed for shared carts.
+ * @param {array} datasetsIds Array of dataset @ids to retrieve
+ * @param {func} facetLoadHandler Called with progress in loading chunks of datasets1
+ * @param {func} fetch System fetch
+ * @param {object} session System session
+ *
+ * @return {promise}:
+ * {
+ *      datasetFiles - Array of all parital file objects in all datasets
+ *      datasets - Array of all datasets viewable at user's access level; subset of `datasetsIds`
+ * }
+ */
+const retrieveDatasetsFiles = (datasetsIds, facetProgressHandler, fetch, session) => {
+    // Break incoming array of dataset @ids into manageable chunks of arrays, each with
+    // CHUNK_SIZE elements. Search results from all these chunks get consolidated before returning
+    // a promise.
+    const CHUNK_SIZE = 500;
+    const chunks = [];
+    for (let datasetIndex = 0; datasetIndex < datasetsIds.length; datasetIndex += CHUNK_SIZE) {
+        chunks.push(datasetsIds.slice(datasetIndex, datasetIndex + CHUNK_SIZE));
+    }
+
+    // Using the arrays of dataset @id arrays, do a sequence of searches of CHUNK_SIZE datasets
+    // adding to extract information to display the facets, search results, and visualization.
+    facetProgressHandler(null);
+    return chunks.reduce((promiseChain, currentChunk, currentChunkIndex) => (
+        // As each experiment search-result promise resolves, add its results to the array of
+        // partial files and facets in `accumulatingResults`.
+        promiseChain.then(accumulatingResults => (
+            // Request one chunk of datasets. `currentResults` contains the request search
+            // results including the partial file objects we need.
+            requestDatasets(currentChunk, fetch, session).then((currentResults) => {
+                // Update progress on each chunk.
+                facetProgressHandler(Math.round(((currentChunkIndex + 1) / chunks.length) * 100));
+
+                // Add the chunk's worth of results to the array of partial files and facets
+                // we're accumulating.
+                return {
+                    datasetFiles: addToAccumulatingFiles(accumulatingResults.datasetFiles, currentResults),
+                    datasets: accumulatingResults.datasets.concat(currentResults['@graph'].map(experiment => experiment['@id'])),
+                };
+            })
+        ))
+    ), Promise.resolve({ datasetFiles: [], datasets: [] })).then(({ datasetFiles, datasets }) => {
+        facetProgressHandler(-1);
+        return { datasetFiles, datasets };
+    });
+};
+
+
+/**
+ * Reducer function for setting the pager page numbers for each of the cart tabs.
+ * @param {object} state Contains pager page numbers; do not mutate
+ * @param {object} action Contains page number and tab to update
+ *
+ * @return {object} Copy of `state` updated with new page numbers for a tab key
+ */
+const reducerTabPanePageNumber = (state, action) => {
+    // action.tab is the key of the tab needing its value updated.
+    const newPages = Object.assign({}, state);
+    newPages[action.tab] = action.pageNumber;
+    return newPages;
+};
+
+
+/**
+ * Reducer function for setting the pager total page counts for each of the cart tabs.
+ * @param {object} state Contains the pager total page counts; do not mutate
+ * @param {object} action Contains total page count and tab to update
+ *
+ * @return {object} Copy of `state` updated with new values for a tab key
+ */
+const reducerTabPaneTotalPageCount = (state, action) => {
+    // action.tab is the key of the tab needing its value updated.
+    const newPageCounts = Object.assign({}, state);
+    newPageCounts[action.tab] = action.totalPageCount;
+    return newPageCounts;
+};
+
+
+/**
+ * Calculate the total number of pages needed to display all items in any of the tab panes
+ * (datasets, files, etc.).
+ * @param {number} itemCount Total number of items being displayed on pages
+ * @param {number} maxCount Maximum number of items per page
+ *
+ * @return {number} Number of pages to contain all items
+ */
+const calcTotalPageCount = (itemCount, maxCount) => Math.floor(itemCount / maxCount) + (itemCount % maxCount !== 0 ? 1 : 0);
 
 
 /**
  * Renders the cart search results page. Display either:
  * 1. OBJECT (/carts/<uuid>)
- *    * context contains items to display.
+ *    * context contains items to display (shared cart).
  * 2. ACTIVE (/cart-view/) containing the current cart's contents
- *    * savedCartObj contains items to display
+ *    * savedCartObj contains items to display (your own logged-in cart)
  * 3. MEMORY (/cart-view/) containing nothing
- *    * this.props.cart contains items to display
+ *    * this.props.cart contains items to display (logged-out in-memory cart)
+ * All files in all cart experiments are kept in an array of partial file objects which contain
+ * only the file object properties requested in `requestedFacetFields`. When visualizing a subset
+ * of these files, complete file objects get retrieved.
  */
-class CartComponent extends React.Component {
-    constructor() {
-        super();
-        this.state = createInitialCartState();
-        this.files = [];
-        this.handleTermClick = this.handleTermClick.bind(this);
-        this.handleFileSearchResults = this.handleFileSearchResults.bind(this);
-        this.computePageInfo = this.computePageInfo.bind(this);
-        this.updateDatasetCurrentPage = this.updateDatasetCurrentPage.bind(this);
-        this.handleSelectedFileCount = this.handleSelectedFileCount.bind(this);
-    }
+const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, fetch, session }) => {
+    // Array of currently displayed facets and the terms each contains.
+    const [facets, setFacets] = React.useState([]);
+    // Keeps track of currently selected facet terms keyed by facet fields.
+    const [selectedTerms, setSelectedTerms] = React.useState(() => generateFacetTermsTemplate());
+    // Array of dataset @ids the user has access to view; subset of `datasets`; shared carts only.
+    const [viewableDatasets, setViewableDatasets] = React.useState(null);
+    // Currently displayed page number for each tab panes; for pagers.
+    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
+    // Total number of displayed pages for each tab pane; for pagers.
+    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
+    // Currently displayed tab; match key of first TabPanelPane initially.
+    const [displayedTab, setDisplayedTab] = React.useState('datasets');
+    // All currently selected partial file objects, visualizable or not.
+    const [selectedFiles, setSelectedFiles] = React.useState([]);
+    // All currently selected visualizable partial file objects.
+    const [selectedVisualizableFiles, setSelectedVisualizableFiles] = React.useState([]);
+    // Facet-loading progress bar value; null=indeterminate; -1=disable
+    const [facetProgress, setFacetProgress] = React.useState(null);
+    // True if only facet terms for visualizable files displayed.
+    const [visualizableOnly, setVisualizableOnly] = React.useState(false);
+    // All partial file objects in the cart datasets. Not affected by currently selected facets.
+    const [allFiles, setAllFiles] = React.useState([]);
+    // All raw data files in all datasets in the cart.
+    const [rawdataFiles, setRawdataFiles] = React.useState([]);
 
-    componentDidUpdate(prevProps) {
-        const { cartType, totalDatasetPages } = this.computePageInfo();
+    // Retrieve current cart information regardless of its source (memory, object, active).
+    const { cartType, cartName, cartPatients } = getCartInfo(context, savedCartObj, elements);
 
-        // If enough datasets got removed that we lost a page of search results, go back to the
-        // first page.
-        if (totalDatasetPages > 0 && totalDatasetPages <= this.state.currentDatasetResultsPage) {
-            this.setState({ currentDatasetResultsPage: 0 });
-        }
+    // Get all files or just visualizable ones based on the Show Visualizable Data Only switch.
+    const getConsideredFiles = () => (visualizableOnly ? filterForVisualizableFiles(allFiles) : allFiles);
 
-        // If the user has logged in, retrieve relevant data and redraw the page.
-        if (prevProps.loggedIn !== this.props.loggedIn) {
-            const newState = createInitialCartState();
-            this.setState({
-                selectedTerms: newState.selectedTerms,
-                fileFacets: newState.fileFacets,
-                viewableElementCount: newState.viewableElementCount,
-                currentDatasetResultsPage: newState.currentDatasetResultsPage,
+    // Called when the user selects a new page of items to view using the pager.
+    const updateDisplayedPage = (newDisplayedPage) => {
+        // Set the new page number for the currently-displayed tab pane.
+        dispatchPageNumbers({ tab: displayedTab, pageNumber: newDisplayedPage });
+    };
+
+    // Called when the user clicks any term in any facet.
+    const handleTermClick = (clickedField, clickedTerm) => {
+        const newSelectedTerms = {};
+        const matchingFacetField = displayedFacetFields.find(facetField => facetField.field === clickedField);
+        if (matchingFacetField && matchingFacetField.radio) {
+            // The user clicked a radio-button facet.
+            displayedFacetFields.forEach((facetField) => {
+                // Set new term for the clicked radio button, or copy the array for other
+                // terms within this as well as other facets.
+                newSelectedTerms[facetField.field] = facetField.field === clickedField ? [clickedTerm] : selectedTerms[facetField.field].slice(0);
             });
-        }
-
-        // Redraw an OBJECT page if the underlying data changed.
-        if (cartType === 'OBJECT' && !this.props.inProgress && prevProps.inProgress) {
-            cartRetrieve(this.props.context['@id'], this.props.fetch).then((response) => {
-                this.setState({ updatedContext: response });
-            });
-        }
-    }
-
-    /**
-     * Compute information about the currently displayed page of cart contents including:
-     * cartType: Type of cart being displayed:
-     *           'ACTIVE': Viewing the current cart
-     *           'OBJECT': Viewing the cart specified in the URL
-     *           'MEMORY': Viewing carts in browser memory (non-logged-in user)
-     * cartName: Name of cart
-     * cartElements: Array of cart element @ids
-     * totalDatasetPages: Total number of pages of cart elements to display
-     */
-    computePageInfo() {
-        const { context, savedCartObj, elements } = this.props;
-        const cartContext = this.state.updatedContext || context;
-        let cartType = '';
-        let cartElements = [];
-        let cartName = '';
-        if (cartContext['@type'][0] === 'cart-view') {
-            // Viewing a current active or memory cart on the /cart-view/ page.
-            if (savedCartObj && Object.keys(savedCartObj).length > 0) {
-                cartType = 'ACTIVE';
-                cartName = savedCartObj.name;
-                cartElements = savedCartObj.elements;
-            } else {
-                cartType = 'MEMORY';
-                cartName = 'Cohort';
-                cartElements = elements;
-            }
         } else {
-            // Viewing a saved cart at its unique path.
-            cartType = 'OBJECT';
-            cartName = cartContext.name;
-            cartElements = cartContext.elements;
-        }
-        return {
-            cartType,
-            cartName,
-            cartElements,
-            totalDatasetPages: Math.floor(cartElements.length / PAGE_ELEMENT_COUNT) + (cartElements.length % PAGE_ELEMENT_COUNT !== 0 ? 1 : 0),
-        };
-    }
-
-    /**
-     * Called when the given facet term was selected or deselected.
-     * @param {string} clickedField `field` value of the facet whose term was clicked
-     * @param {string} clickedTerm `term` value that was clicked
-     */
-    handleTermClick(clickedField, clickedTerm) {
-        this.setState((prevState) => {
-            // Determine whether we need to add or subtract a term from the facet selections.
-            const addTerm = this.state.selectedTerms[clickedField].indexOf(clickedTerm) === -1;
-
-            // prevState is immutable, so make a copy with the newly clicked term to set the
-            // new state.
-            const newSelectedTerms = {};
+            // The user clicked a checkbox facet. Determine whether we need to add or subtract
+            // a term from the facet selections.
+            const addTerm = selectedTerms[clickedField].indexOf(clickedTerm) === -1;
             if (addTerm) {
                 // Adding a selected term. Copy the previous selectedFacetTerms, adding the newly
                 // selected term in its facet in sorted position.
-                displayedFacetFields.forEach((field) => {
-                    if (clickedField === field) {
-                        // Clicked term belongs to this field's facet. Insert it into its sorted
-                        // position in a copy of the selectedTerms array.
-                        const sortedIndex = _(prevState.selectedTerms[field]).sortedIndex(clickedTerm);
-                        newSelectedTerms[field] = [...prevState.selectedTerms[field].slice(0, sortedIndex), clickedTerm, ...prevState.selectedTerms[field].slice(sortedIndex)];
+                displayedFacetFields.forEach((facetField) => {
+                    if (clickedField === facetField.field) {
+                        // Clicked term belongs to this field's facet. Insert it into its
+                        // sorted position in a copy of the selectedTerms array.
+                        const sortedIndex = _(selectedTerms[facetField.field]).sortedIndex(clickedTerm);
+                        newSelectedTerms[facetField.field] = [...selectedTerms[facetField.field].slice(0, sortedIndex), clickedTerm, ...selectedTerms[facetField.field].slice(sortedIndex)];
                     } else {
                         // Clicked term doesn't belong to this field's facet. Just copy the
                         // `selectedTerms` array unchanged.
-                        newSelectedTerms[field] = prevState.selectedTerms[field].slice(0);
+                        newSelectedTerms[facetField.field] = selectedTerms[facetField.field].slice(0);
                     }
                 });
             } else {
                 // Removing a selected term. Copy the previous selectedFacetTerms, filtering out
                 // the unselected term in its facet.
-                displayedFacetFields.forEach((field) => {
-                    newSelectedTerms[field] = prevState.selectedTerms[field].filter(term => term !== clickedTerm);
+                displayedFacetFields.forEach((facetField) => {
+                    newSelectedTerms[facetField.field] = selectedTerms[facetField.field].filter(term => term !== clickedTerm);
                 });
             }
-            return { selectedTerms: newSelectedTerms };
-        });
-    }
-
-    /**
-     * Handle incoming file facet search results. If any previously unseen facet fields have come
-     * in, add them to the list of facets fields with a copy of the field’s term array.
-     * @param {object} results File search results from server
-     * @param {number} viewableElementCount Number of elements viewable to logged-out users
-     * @param {array} viewableElements Datasets viewable to logged-out users
-     */
-    handleFileSearchResults(results, viewableElementCount, viewableElements) {
-        const newFacets = Object.assign({}, this.state.fileFacets);
-        results.facets.forEach((facet) => {
-            if (displayedFacetFields.indexOf(facet.field) !== -1) {
-                newFacets[facet.field] = facet.terms.slice(0);
-            }
-        });
-        this.setState({ fileFacets: newFacets, viewableElementCount, viewableElements });
-    }
-
-    /**
-     * Called when the user selects a new page of cart elements to view.
-     * @param {number} newCurrent New current page to view; zero based
-     */
-    updateDatasetCurrentPage(newCurrent) {
-        this.setState({ currentDatasetResultsPage: newCurrent });
-    }
-
-    /**
-     * Called when the number of files selected for download has been determined.
-     * @param {number} selectedFileCount Number of files selected for downlaod
-     */
-    handleSelectedFileCount(selectedFileCount) {
-        if (selectedFileCount !== this.state.selectedFileCount) {
-            this.setState({ selectedFileCount });
         }
-    }
 
-    render() {
-        const { context, savedCartObj, loggedIn } = this.props;
-        const { cartType, cartElements, cartName, totalDatasetPages } = this.computePageInfo();
-        const cartContext = this.state.updatedContext || context;
+        // Rebuild the facets with the new selected terms.
+        const { assembledFacets, facetSelectedFiles } = assembleFacets(newSelectedTerms, getConsideredFiles());
+        setFacets(assembledFacets);
+        setSelectedTerms(newSelectedTerms);
+        setSelectedFiles(facetSelectedFiles);
+        setSelectedVisualizableFiles(getSelectedVisualizableFiles(filterForVisualizableFiles(allFiles), newSelectedTerms));
+    };
 
-        return (
-            <div className={itemClass(cartContext, 'view-item')}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>{cartName}</h2>
-                        {cartType === 'OBJECT' ? <DisplayAsJson /> : null}
-                    </div>
-                </header>
-                <Panel addClasses="cart__result-table">
-                    {cartElements.length ?
-                        <PanelHeading addClasses="cart__header">
-                            <PagerArea currentPage={this.state.currentDatasetResultsPage} totalPageCount={totalDatasetPages} updateCurrentPage={this.updateDatasetCurrentPage} />
-                            <CartTools
-                                elements={cartElements}
-                                savedCartObj={savedCartObj}
-                                selectedTerms={this.state.selectedTerms}
-                                viewableElements={this.state.viewableElements}
-                                cartType={cartType}
-                                sharedCart={cartContext}
-                                fileCount={this.state.selectedFileCount}
+    // Called when the user clicks the Show Visualizable Only checkbox.
+    const handleVisualizableOnlyChange = () => {
+        setVisualizableOnly(!visualizableOnly);
+    };
+
+    // Called when the user clicks a tab.
+    const handleTabClick = (newTab) => {
+        setDisplayedTab(newTab);
+    };
+
+    // After mount, we can fetch all datasets in the cart and from them extract all their files.
+    React.useEffect(() => {
+        if (cartPatients.length > 0) {
+            retrieveDatasetsFiles(cartPatients, setFacetProgress, fetch, session).then(({ datasetFiles, datasets }) => {
+                setAllFiles(datasetFiles);
+                setRawdataFiles(datasetFiles.filter(datasetFile => !datasetFile.assembly));
+                setViewableDatasets(datasets);
+            });
+        }
+    }, [cartPatients, fetch, session]);
+
+    // Use the file information to build the facets and its initial selections.
+    React.useEffect(() => {
+        const allVisualizableFiles = filterForVisualizableFiles(allFiles);
+        const consideredFiles = visualizableOnly ? allVisualizableFiles : allFiles;
+        const newSelectedTerms = resetFacets(consideredFiles);
+        const { assembledFacets, facetSelectedFiles } = assembleFacets(newSelectedTerms, consideredFiles);
+        setFacets(assembledFacets);
+        setSelectedFiles(facetSelectedFiles);
+        setSelectedVisualizableFiles(getSelectedVisualizableFiles(allVisualizableFiles, newSelectedTerms));
+        setSelectedTerms(newSelectedTerms);
+    }, [visualizableOnly, allFiles]);
+
+    // Data changes or initial load need a total-page-count calculation.
+    React.useEffect(() => {
+        const patientPageCount = calcTotalPageCount(cartPatients.length, PAGE_ELEMENT_COUNT);
+        const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, PAGE_TRACK_COUNT);
+        const processedDataPageCount = calcTotalPageCount(selectedFiles.length, PAGE_FILE_COUNT);
+        const rawdataPageCount = calcTotalPageCount(rawdataFiles.length, PAGE_FILE_COUNT);
+        dispatchTotalPageCounts({ tab: 'patients', totalPageCount: patientPageCount });
+        dispatchTotalPageCounts({ tab: 'browser', totalPageCount: browserPageCount });
+        dispatchTotalPageCounts({ tab: 'processeddata', totalPageCount: processedDataPageCount });
+        dispatchTotalPageCounts({ tab: 'rawdata', totalPageCount: rawdataPageCount });
+
+        // Go to first page if current page number goes out of range of new page count.
+        if (pageNumbers.patients >= patientPageCount) {
+            dispatchPageNumbers({ tab: 'patients', pageNumber: 0 });
+        }
+        if (pageNumbers.browser >= browserPageCount) {
+            dispatchPageNumbers({ tab: 'browser', pageNumber: 0 });
+        }
+        if (pageNumbers.processeddata >= processedDataPageCount) {
+            dispatchPageNumbers({ tab: 'processeddata', pageNumber: 0 });
+        }
+        if (pageNumbers.rawdata >= rawdataPageCount) {
+            dispatchPageNumbers({ tab: 'rawdata', pageNumber: 0 });
+        }
+    }, [cartPatients, selectedVisualizableFiles, selectedFiles, rawdataFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.processeddata, pageNumbers.rawdata]);
+
+    return (
+        <div className={itemClass(context, 'view-item')}>
+            <header>
+                <h1>{cartName}</h1>
+                {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
+            </header>
+            <Panel addClasses="cart__result-table">
+                {cartPatients.length > 0 ?
+                    <PanelHeading addClasses="cart__header">
+                        <CartTools
+                            elements={cartPatients}
+                            savedCartObj={savedCartObj}
+                            selectedTerms={selectedTerms}
+                            viewableDatasets={viewableDatasets}
+                            cartType={cartType}
+                            sharedCart={context}
+                            fileCounts={{ processed: selectedFiles.length, raw: rawdataFiles.length, all: allFiles.length }}
+                            visualizable={visualizableOnly}
+                            inProgress={inProgress}
+                        />
+                        {selectedTerms.assembly[0] ? <div className="cart-assembly-indicator">{selectedTerms.assembly[0]}</div> : null}
+                    </PanelHeading>
+                : null}
+                <PanelBody>
+                    {cartPatients.length > 0 ?
+                        <div className="cart__display">
+                            <FileFacets
+                                facets={facets}
+                                elements={cartPatients}
+                                selectedTerms={selectedTerms}
+                                termClickHandler={handleTermClick}
+                                selectedFileCount={selectedFiles.length}
+                                visualizableOnly={visualizableOnly}
+                                visualizableOnlyChangeHandler={handleVisualizableOnlyChange}
+                                loggedIn={loggedIn}
+                                facetLoadProgress={facetProgress}
+                                disabled={displayedTab === 'rawdata'}
                             />
-                        </PanelHeading>
-                    : null}
-                    <ElementCountArea
-                        count={cartElements.length}
-                        viewableElementCount={cartType === 'OBJECT' ? this.state.viewableElementCount : -1}
-                        typeName="patient"
-                        typeNamePlural="patients"
-                    />
-                    <PanelBody>
-                        {cartElements.length > 0 ?
-                            <div className="cart__display">
-                                <FileFacets
-                                    elements={cartElements}
-                                    selectedTerms={this.state.selectedTerms}
-                                    termClickHandler={this.handleTermClick}
-                                    searchResultHandler={this.handleFileSearchResults}
-                                    selectedFileCountHandler={this.handleSelectedFileCount}
-                                    loggedIn={loggedIn}
-                                />
-                                <CartSearchResults
-                                    elements={cartElements}
-                                    currentPage={this.state.currentDatasetResultsPage}
-                                    cartControls={cartType !== 'OBJECT'}
-                                    loggedIn={loggedIn}
-                                />
-                            </div>
-                        :
-                            <p className="cart__empty-message">Empty cohort</p>
-                        }
-                    </PanelBody>
-                </Panel>
-            </div>
-        );
-    }
-}
+                            <TabPanel
+                                tabPanelCss="cart__display-content"
+                                tabs={{ patients: 'Patient'}}
+                                tabDisplay={{
+                                    patient: <CounterTab title="Patients" count={cartPatients.length} voice="patients" />,
+                                }}
+                                handleTabClick={handleTabClick}
+                            >
+                                <TabPanelPane key="patients">
+                                    <CartPager
+                                        currentPage={pageNumbers.patients}
+                                        totalPageCount={totalPageCount.patients}
+                                        updateCurrentPage={updateDisplayedPage}
+                                    />
+                                    <CartSearchResults
+                                        elements={cartPatients}
+                                        currentPage={pageNumbers.patients}
+                                        cartControls={cartType !== 'OBJECT'}
+                                        loggedIn={loggedIn}
+                                    />
+                                </TabPanelPane>
+                            </TabPanel>
+                        </div>
+                    :
+                        <p className="cart__empty-message">Empty cohort</p>
+                    }
+                </PanelBody>
+            </Panel>
+        </div>
+    );
+};
 
 CartComponent.propTypes = {
     /** Cart object to display */
@@ -1260,26 +1632,36 @@ CartComponent.propTypes = {
     elements: PropTypes.array.isRequired,
     /** Cart as it exists in the database */
     savedCartObj: PropTypes.object,
-    /** True if cart operation in progress */
-    inProgress: PropTypes.bool.isRequired,
     /** True if user has logged in */
     loggedIn: PropTypes.bool,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool,
     /** System fetch function */
     fetch: PropTypes.func.isRequired,
+    /** System session information */
+    session: PropTypes.object,
 };
 
 CartComponent.defaultProps = {
     savedCartObj: null,
     loggedIn: false,
+    inProgress: false,
+    session: null,
 };
+
+CartComponent.contextTypes = {
+    session: PropTypes.object,
+};
+
 
 const mapStateToProps = (state, ownProps) => ({
     elements: state.elements,
     savedCartObj: state.savedCartObj,
-    inProgress: state.inProgress,
     context: ownProps.context,
     loggedIn: ownProps.loggedIn,
+    inProgress: state.inProgress,
     fetch: ownProps.fetch,
+    session: ownProps.session,
 });
 
 const CartInternal = connect(mapStateToProps)(CartComponent);
@@ -1290,7 +1672,7 @@ const CartInternal = connect(mapStateToProps)(CartComponent);
  */
 const Cart = (props, reactContext) => {
     const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
-    return <CartInternal context={props.context} fetch={reactContext.fetch} loggedIn={loggedIn} />;
+    return <CartInternal context={props.context} fetch={reactContext.fetch} loggedIn={loggedIn} session={reactContext.session} />;
 };
 
 Cart.propTypes = {

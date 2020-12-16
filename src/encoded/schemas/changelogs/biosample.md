@@ -3,37 +3,52 @@
 ### Minor changes since schema version 24
 
 * Added *post_differentiation_time* and *post_differentiation_time_units* properties.
+* Added *perturbed* calculated property to indicate if the biosample has been perturbed using a treatment or a genetic modification for non-tagging purposes.
+* Added *post_nucleic_acid_delivery_time* and *post_nucleic_acid_delivery_time_units* properties.
+* The *summary* property has been updated to include post nucleic acid delivery time.
+* Added *sample_collection_age* and *sample_collection_age_units* for cases where more than one biosamples are collected from the same human donor at different ages.
+* Added *disease_term_id* and *disease_term_name* to indicate the ontological term of a disease affecting a biosample.
 
 ### Schema version 24
 
-* Remove biosample_type, biosample_term_id and biosample_term_name.
+* Remove *biosample_type*, *biosample_term_id* and *biosample_term_name*.
 
 ### Schema version 23
 
-* Link to BiosampleType object.
+* Link to *BiosampleType* object.
 
 ### Schema version 22
 
-* Removed *induced pluripotent stem cell line* and *stem cell* from biosample_type enums.
+* Removed *induced pluripotent stem cell line* and *stem cell* from *biosample_type* enums.
 
 ### Minor changes since schema version 21
 
 * *passage_number* was set to have a minimum of 0.
 * *PMI* was set to have a minimum of 1.
-* Added preservation_method to the calculated property of summary.
+* Added *preservation_method* to the calculated property of *summary*.
 
 ### Schema version 21
 
-* Added *organoid* to biosample_type enums.
+* Added *organoid* to *biosample_type* enums.
 
 ### Minor changes since schema version 20
 
-* Added *single cell* to biosample_type enums
-* Added *cell_isolation_method* property for specification of cell isolation method, it could be one of the followings enums: micropippeting, microfluidic cell sorting, dilution, laser capture microdissection or fluorescence activated cell sorting. The property can not be used with biosample_type whole organisms or tissue
+* Added *single cell* to *biosample_type* enums
+* Added *cell_isolation_method* property for specification of cell isolation method, it could be one of the following enums:
+
+		"enum" : [
+	        "micropipetting",
+	        "microfluidic cell sorting",
+	        "dilution",
+	        "laser capture microdissection",
+	        "fluorescence activated cell sorting"
+	    ]
+	- The property can not be used with *biosample_type* of *whole organisms* or *tissue*.
+
 
 ### Schema version 20
 
-* Replace *immortalized cell line* with *cell line* in biosample_type enum
+* Replace *immortalized cell line* with *cell line* in *biosample_type* enum
 
 ### Minor changes since schema version 19
 
@@ -41,7 +56,7 @@
 * *PMI* and *PMI_units* are additionally restricted to only be used for tissue biosamples.
 * *culture_harvest_date* and *culture_start_date* no longer can be used for tissues (a mistake introduced recently and now corrected within the dependencies).
 * Sample property *preservation_method* with enums ["cryopreservation", "flash-freezing"] was added.
-* Add nih_institutional_certification property for storing biosample institutional certification.
+* Add *nih_institutional_certification* property for storing biosample institutional certification.
 
 ### Schema version 19
 
@@ -51,24 +66,24 @@
 
 ### Schema version 18
 
-* *biosample_type*, *biosample_term_id* and *biosample_term_name* properties are required, consistency between the type and ontology term_id is validated by schema dependency
+* *biosample_type*, *biosample_term_id* and *biosample_term_name* properties are required, consistency between the type and ontology *term_id* is validated by schema dependency
 
 ### Schema version 17
 
-* *status* value "proposed" was removed
+* *status* value *proposed* was removed
 
 
 ### Schema version 16
 
-* *talens* array was removed, as we are migrating towards the use of genetic_modification with modification_technique specifications
-* *treatments* array is required to be non-empty if post_treatment_time_units or post_treatment_time are specified
+* *talens* array was removed, as we are migrating towards the use of *genetic_modification* with *modification_technique* specifications
+* *treatments* array is required to be non-empty if *post_treatment_time_units* or *post_treatment_time* are specified
 * *dbxrefs* property was restricted to DCC access only
 * *pooled_from* array requires at least two entries to be specified
-* *phase* property is restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
-* *culture_harvest_date*, *culture_start_date* propeties are restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "tissue"] and their format is limited now to only *date* and not one of ["date", "date-time"] as it used to be
-* *transfection_method* specification requires specirfication of *transfection_type*
+* *phase* property is restricted to biosamples with *biosample_type* one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+* *culture_harvest_date*, *culture_start_date* propeties are restricted to biosamples with *biosample_type* one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "tissue"] and their format is limited now to only *date* and not one of ["date", "date-time"] as it used to be
+* *transfection_method* specification requires specification of *transfection_type*
 * *post_synchronization_time* specification requires specification of *post_synchronization_time_units* and *fly_synchronization_stage* or *worm_synchronization_stage*
-* *status* value "preliminary" was removed
+* *status* value *preliminary* was removed
 * *date_obtained* format is limited now to only *date* and not one of ["date", "date-time"] as it used to be
 * *derived_from* property was renamed to *originated_from*
 * *alternate_accessions* now must match accession format, "ENCBS..." or "TSTBS..."
@@ -81,8 +96,8 @@
 
 ### Schema version 14
 
-* *depleted_in_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
-* *subcellular_fraction_term_id* is not longer allowed to be submitted, it will be automatically calculated based on the term_name
+* *depleted_in_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the *term_name*
+* *subcellular_fraction_term_id* is not longer allowed to be submitted, it will be automatically calculated based on the *term_name*
 * *depleted_in_term_name* array can now only contain unique elements
 * *notes*, *description*, *submitter_comment*, *product_id* and *lot_id* are no longer allowed to have any leading or trailing whitespace.
 
@@ -111,15 +126,15 @@
 
 ### Schema version 11
 
-* *worm_synchronization_stage* enum was renamed to "L1 larva starved after bleaching" from "starved L1 larva"
+* *worm_synchronization_stage* enum was renamed to *L1 larva starved after bleaching* from *starved L1 larva*
 
 ### Schema version 8
 
-* *worm_life_stage* enum was renamed to "mixed stage (embryonic))" from "embryonic"
+* *worm_life_stage* enum was renamed to *mixed stage (embryonic)* from *embryonic*
 
 ### Schema version 6
 
-* *biosample_type* enum was renamed to "primary cell" from "primary cell line"
+* *biosample_type* enum was renamed to *primary cell* from *primary cell line*
 
 ### Schema version 3
 

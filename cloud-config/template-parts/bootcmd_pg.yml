@@ -1,0 +1,2 @@
+- cloud-init-per once aptkeyget-postgres wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc > /etc/apt/pg_gpg_key
+- cloud-init-per once aptkeyadd-postgres apt-key add /etc/apt/pg_gpg_key

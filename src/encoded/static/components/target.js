@@ -1,52 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { RelatedItems } from './item';
-import { DisplayAsJson } from './objectutils';
+import { ItemAccessories } from './objectutils';
 import { ExperimentTable } from './typeutils';
 
 
-/* eslint-disable react/prefer-stateless-function */
-class Target extends React.Component {
-    render() {
-        let geneIDs = [];
-        const context = this.props.context;
-        const itemClass = globals.itemClass(context, 'view-detail key-value');
-        const source = context.organism ? context.organism.scientific_name : context.investigated_as[0];
+const Target = ({ context }) => {
+    let geneIDs = [];
+    const itemClass = globals.itemClass(context, 'view-detail key-value');
+    const source = context.organism ? context.organism.scientific_name : context.investigated_as[0];
 
-        if (context.genes) {
-            geneIDs = context.genes.map(gene => `GeneID:${gene.geneid}`);
-        }
+    if (context.genes) {
+        geneIDs = context.genes.map(gene => `GeneID:${gene.geneid}`);
+    }
 
-        // Set up breadcrumbs
-        const assayTargets = context.investigated_as.map(assayTarget => `investigated_as=${assayTarget}`);
-        const crumbs = [
-            { id: 'Targets' },
-            { id: context.investigated_as.join(' + '), query: assayTargets.join('&'), tip: context.investigated_as.join(' + ') },
-        ];
-        if (context.organism) {
-            crumbs.push({
-                id: <i>{source}</i>,
-                query: `organism.scientific_name=${source}`,
-                tip: `${context.investigated_as.join(' + ')} and ${source}`,
-            });
-        }
+    // Set up breadcrumbs
+    const assayTargets = context.investigated_as.map(assayTarget => `investigated_as=${assayTarget}`);
+    const crumbs = [
+        { id: 'Targets' },
+        { id: context.investigated_as.join(' + '), query: assayTargets.join('&'), tip: context.investigated_as.join(' + ') },
+    ];
+    if (context.organism) {
+        crumbs.push({
+            id: <i>{source}</i>,
+            query: `organism.scientific_name=${source}`,
+            tip: `${context.investigated_as.join(' + ')} and ${source}`,
+        });
+    }
 
-        const crumbsReleased = (context.status === 'released');
+    const crumbsReleased = (context.status === 'released');
 
-        return (
-            <div className={globals.itemClass(context, 'view-item')}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=target" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>{context.label} (<em>{source}</em>)</h2>
-                        <DisplayAsJson />
-                    </div>
-                </header>
+    return (
+        <div className={globals.itemClass(context, 'view-item')}>
+            <header>
+                <Breadcrumbs root="/search/?type=Target" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h1>{context.label} (<em>{source}</em>)</h1>
+                <ItemAccessories item={context} />
+            </header>
 
-                <div className="panel">
+            <Panel>
+                <PanelBody>
                     <dl className={itemClass}>
                         <div data-test="name">
                             <dt>Target name</dt>
@@ -65,24 +62,29 @@ class Target extends React.Component {
                         <div data-test="external">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxref.length ?
-                                    <DbxrefList context={context} dbxrefs={context.dbxref} />
+                                {context.dbxrefs && context.dbxrefs.length > 0 ?
+                                    <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
                         </div>
                     </dl>
-                </div>
+                </PanelBody>
+            </Panel>
 
-                <RelatedItems
-                    title={`Experiments using target ${context.label}`}
-                    url={`/search/?type=Experiment&target.uuid=${context.uuid}`}
-                    Component={ExperimentTable}
-                />
-            </div>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+            <RelatedItems
+                title={`Functional genomics experiments using target ${context.label}`}
+                url={`/search/?type=Experiment&target.uuid=${context.uuid}`}
+                Component={ExperimentTable}
+            />
+
+            <RelatedItems
+                title={`Functional characterization experiments using target ${context.label}`}
+                url={`/search/?type=FunctionalCharacterizationExperiment&target.uuid=${context.uuid}`}
+                Component={ExperimentTable}
+            />
+        </div>
+    );
+};
 
 Target.propTypes = {
     context: PropTypes.object, // Target object to display

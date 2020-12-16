@@ -14,7 +14,6 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "dataset.json#/properties" },
@@ -45,30 +44,28 @@
     },
     "properties": {
         "schema_version": {
-            "default": "15"
+            "default": "17"
+        },
+        "references": {
+            "title": "References",
+            "description": "The publications that provide more information about the object.",
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "title": "Reference",
+                "description": "A publication that provides more information about the object.",
+                "type": "string",
+                "linkTo": "Publication"
+            }
         }
     },
     "facets": {
-        "assay_term_name": {
-            "title": "Assay name"
-        },
         "status": {
             "title": "Status"
         },
         "assembly": {
             "title": "Genome assembly"
-        },
-        "organism.scientific_name": {
-            "title": "Organism"
-        },
-        "biosample_ontology.classification": {
-            "title": "Biosample classification"
-        },
-        "biosample_ontology.organ_slims": {
-            "title": "Organ"
-        },
-        "biosample_ontology.cell_slims": {
-            "title": "Cell"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -81,9 +78,6 @@
         },
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
-        },
-        "month_released": {
-            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
@@ -98,14 +92,6 @@
     "columns": {
         "accession": {
             "title": "Accession",
-            "type": "string"
-        },
-        "assay_term_name": {
-            "title": "Assay name",
-            "type": "string"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample term name",
             "type": "string"
         },
         "description": {
@@ -123,23 +109,11 @@
         "status": {
             "title": "Status",
             "type": "string"
-        },
-        "organism.scientific_name": {
-            "title": "Organism",
-            "type": "array"
         }
     },
     "boost_values": {
         "accession": 1.0,
         "alternate_accessions": 1.0,
-        "assay_term_name": 1.0,
-        "biosample_ontology.term_name": 1.0,
-        "biosample_ontology.classification": 1.0,
-        "biosample_ontology.cell_slims": 1.0,
-        "biosample_ontology.term_id": 1.0,
-        "biosample_ontology.organ_slims": 1.0,
-        "biosample_ontology.developmental_slims": 1.0,
-        "biosample_ontology.synonyms": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
         "award.title": 1.0,
@@ -151,9 +125,6 @@
         "lab.institute_name": 1.0,
         "lab.institute_label": 1.0,
         "lab.title": 1.0,
-        "organism.name": 1.0,
-        "organism.scientific_name": 1.0,
-        "organism.taxon_id": 1.0,
         "internal_tags": 1.0
     },
     "changelog": "/profiles/changelogs/publication_data.md"

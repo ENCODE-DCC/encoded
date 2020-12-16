@@ -1,30 +1,41 @@
 [
     {
-        "biospecimen": "29bf20ad-7942-44d3-9d89-53febc8829fc",
+        "biospecimen": "KCEBS708IJT",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "uuid": "e6f6c49d-89d4-4adb-baa4-38c103b1583c",
-        "accession": "KCELB012FAA"
+        "documents": [
+            "kce:Myers_Methyl450_protocol"
+        ],
+        "accession": "KCELB012FAA",
+        "submitter_comment":"One sample was failed when sequencing, and have to repeat and combine the half of the failed sample"
     },
     {
-        "biospecimen": "29bf20ad-7942-44d3-9d89-53febc8829fc",
+        "biospecimen": "KCEBS708IJT",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "uuid": "2f5757f7-59f1-4b26-bcb5-7aa9803776c8",
-        "accession": "KCELB745FAA"
+        "accession": "KCELB745FAA",
+        "submitter_comment":"This is a test for submitter_comment"
     },
     {
-        "biospecimen": "170be0f2-6b5c-4b93-ba65-bedadbfe917f",
+        "biospecimen": "KCEBS000AAB",
         "nucleic_acid_term_name": "RNA",
         "status": "released",
         "uuid": "873440f2-13a2-4564-a127-3c88c9a33c8e",
-        "accession": "KCELB038EAA"
+        "documents": [
+            "kce:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "kce:Ambion-NIST_Spikes_Corrected"
+        ],
+        "accession": "KCELB038EAA",
+        "submitter_comment":"This is a test for submitter_comment"
     },
     {
-        "biospecimen": "c58dd4d7-418a-4482-84c8-4d5ee6f29ea5",
+        "biospecimen": "KCEBS087RNA",
         "nucleic_acid_term_name": "RNA",
         "status": "released",
         "uuid": "3245ac16-1d07-4360-bb5c-a7f6dff52885",
-        "accession": "KCELB987EAA"
+        "accession": "KCELB987EAA",
+        "submitter_comment":"This is a test for submitter_comment"
     }
 ]

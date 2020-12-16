@@ -79,3 +79,30 @@ def hotspot_quality_metric_5_6(value, system):
         for a in aliases_to_remove:
             if a in aliases:
                 aliases.remove(a)
+
+@upgrade_step('hotspot_quality_metric', '8', '9')
+def hotspot_quality_metric_8_9(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5306
+    if 'SPOT1 score' in value:
+        value['spot1_score'] = value['SPOT1 score']
+        del value['SPOT1 score']
+
+    if 'SPOT2 score' in value:
+        value['spot2_score'] = value['SPOT2 score']
+        del value['SPOT2 score']
+
+    if 'hotspot count' in value:
+        value['hotspot_count'] = value['hotspot count']
+        del value['hotspot count']
+
+    if 'peaks count' in value:
+        value['peaks_count'] = value['peaks count']
+        del value['peaks count']
+
+    if 'total tags' in value:
+        value['total_tags'] = value['total tags']
+        del value['total tags']
+
+    if 'hotspot tags' in value:
+        value['hotspot_tags'] = value['hotspot tags']
+        del value['hotspot tags']

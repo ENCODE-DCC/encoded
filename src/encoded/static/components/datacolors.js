@@ -16,11 +16,13 @@ import _ from 'underscore';
 const rootColorList = [
     '#2f62cf',
     '#de3700',
-    '#ff9a00',
+    '#FF9000',
     '#009802',
     '#9b009b',
     '#0098c8',
     '#df4076',
+    '#124E78',
+    '#FFC300',
 ];
 
 
@@ -199,41 +201,52 @@ export const isLight = (color) => {
 
     // YIQ equation from http://24ways.org/2010/calculating-color-contrast
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-    return yiq > 128;
+    return yiq > 180;
 };
 
 
 class DataColors {
     constructor(keys) {
-        if (keys && keys.length) {
+        if (keys && keys.length > 0) {
             this.keys = [...keys]; // Clone given array
         } else {
             this.keys = [];
         }
     }
 
-    // Return an array of colors corresponding to the given array of keys.
-    // You can pass optional options in the `options` object.
-    //
-    // options:
-    //     tint (Number): Percentage to lighten (positive number) or darken (negative number) each
-    //         color from the root colors given at DataColors instantiation. This is a signed
-    //         integer -- do not pass a string with a "%" sign at the end.
+    /**
+     * Return an array of colors corresponding to the given array of keys.
+     *
+     * @param {array} keys - List to get color of
+     * @param {array} options - List of changes to color output. Option are
+     *      tint (Number): Percentage to lighten (positive number) or darken (negative number) each
+     *          color from the root colors given at DataColors instantiation. This is a signed
+     *      merryGoRoundColors (boolean): True if you want the color-output to go back to first color after reaching the end. False
+     *          if you want colors to start using default color-value (#808080) after reaching the end of the list
+     * @returns List of colors
+     * @memberof DataColors
+     */
     colorList(keys, options) {
         let colors = [];
-        if (keys && keys.length) {
+        if (keys && keys.length > 0) {
             // Map the given keys to colors consistently
-            colors = keys.map((key) => {
-                let outColor;
-                const i = this.keys.indexOf(key);
-                if (i === -1) {
-                    // No matching key; just return medium gray
-                    outColor = '#808080';
-                } else {
-                    outColor = rootColorList[i % rootColorList.length];
-                }
-                return options && options.tint && options.tint > 0 ? tintColor(outColor, options.tint) : outColor;
-            });
+            colors = options && options.merryGoRoundColors ?
+                keys.map((key, index) => {
+                    const i = index % rootColorList.length;
+                    const outColor = rootColorList[i % rootColorList.length];
+                    return options && options.tint && options.tint > 0 ? tintColor(outColor, options.tint) : outColor;
+                }) :
+                keys.map((key) => {
+                    let outColor;
+                    const i = this.keys.indexOf(key);
+                    if (i === -1) {
+                        // No matching key; just return medium gray
+                        outColor = '#808080';
+                    } else {
+                        outColor = rootColorList[i % rootColorList.length];
+                    }
+                    return options && options.tint && options.tint > 0 ? tintColor(outColor, options.tint) : outColor;
+                });
         } else {
             // No keys provided, just provide the list of colors for the caller to use as needed,
             // optionally modified by a tint value.

@@ -87,6 +87,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import {tooltips as Tooltips} from './tooltips';
 
 
 /**
@@ -139,7 +140,7 @@ const DataTable = ({ tableData }) => {
 
                                 // Cell's colSpan can be a specific number, 0 (full width), or
                                 // undefined (default of 1).
-                                let cellColSpan = (typeof cell === 'object') && cell.colSpan;
+                                let cellColSpan = (typeof cell === 'object' && cell !== null) && cell.colSpan;
                                 if (cellColSpan === 0) {
                                     // Request for colSpan to be whatever the maximum width of the
                                     // table. Use or get cached value.
@@ -157,12 +158,14 @@ const DataTable = ({ tableData }) => {
                                 const cellStyle = (cell && cell.style) || null;
                                 if (cellColSpan > 1) {
                                     if (cell && cell.header) {
-                                        return <th key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle}>{cellContent}</th>;
+                                        let title = Tooltips[cellContent.props.children];
+                                        return <th key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle} title={title}>{cellContent}</th>;
                                     }
                                     return <td key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle}>{cellContent}</td>;
                                 }
                                 if (cell && cell.header) {
-                                    return <th key={colIndex} className={cellCss} style={cellStyle}>{cellContent}</th>;
+                                    let title = Tooltips[cellContent.props.children];
+                                    return <th key={colIndex} className={cellCss} style={cellStyle} title={title}>{cellContent}</th>;
                                 }
                                 return <td key={colIndex} className={cellCss} style={cellStyle}>{cellContent}</td>;
                             })}

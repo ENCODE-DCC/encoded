@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
-import { Panel, PanelHeading, PanelBody, TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
@@ -35,7 +35,6 @@ const excludedTerms = [
     'output_type_output_category',
     'file_format_file_extension',
     'sort_by',
-    'anyOf',
 ];
 
 
@@ -52,54 +51,13 @@ const linkedTerms = ['properties'];
 
 
 /**
- * Create a brace read-only editor instance that goes into the HTML element with the given ID and
- * displaying the given schema term.
- *
- * @param {*} elementId - HTML element ID to draw the editor into.
- * @param {*} term - Schema term object to display.
- */
-function createJsonDisplay(elementId, term) {
-    return new Promise((resolve) => {
-        require.ensure([
-            'brace',
-            'brace/mode/json',
-            'brace/theme/katzenmilch',
-        ], (require) => {
-            const ace = require('brace');
-            require('brace/mode/json');
-            require('brace/theme/katzenmilch');
-            const value = JSON.stringify(term, null, 4);
-            const editor = ace.edit(elementId);
-            const session = editor.getSession();
-            session.setMode('ace/mode/json');
-            editor.setTheme('ace/theme/katzenmilch');
-            editor.setValue(value);
-            editor.setOptions({
-                maxLines: 500,
-                minLines: 1,
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                showGutter: false,
-                showPrintMargin: false,
-            });
-            editor.clearSelection();
-            editor.textInput.getElement().disabled = true;
-            editor.renderer.$cursorLayer.element.style.opacity = 0;
-            resolve(editor);
-        }, 'brace');
-    });
-}
-
-
-/**
  * Convert the contents of the `id` field of a schema to a schema name.
  *
  * @param {*} schemaId - `id` property from schema
  */
 function schemaIdToName(schemaId) {
     const pathMatch = schemaId.match(/\/profiles\/(.*).json/);
-    return pathMatch && pathMatch.length ? pathMatch[1] : null;
+    return pathMatch && pathMatch.length > 0 ? pathMatch[1] : null;
 }
 
 
@@ -185,16 +143,16 @@ const SchemaTermLinksSection = (props) => {
     // Collect all the linkTo and linkFrom @types from schemaProp.
     const collectedLinks = collectLinks(schemaProp);
 
-    if (collectedLinks.linkTo.length || collectedLinks.linkFrom.length) {
+    if (collectedLinks.linkTo.length > 0 || collectedLinks.linkFrom.length > 0) {
         return (
             <div className="schema-term-links">
-                {collectedLinks.linkTo.length ?
+                {collectedLinks.linkTo.length > 0 ?
                     <div>
                         <span className="schema-term-links__title">References: </span>
                         <SchemaTermLinks schemaNames={collectedLinks.linkTo} profilesMap={profilesMap} />
                     </div>
                 : null}
-                {collectedLinks.linkFrom.length ?
+                {collectedLinks.linkFrom.length > 0 ?
                     <div>
                         <span className="schema-term-links__title">Referenced by: </span>
                         <SchemaTermLinks schemaNames={collectedLinks.linkFrom} profilesMap={profilesMap} />
@@ -211,50 +169,6 @@ const SchemaTermLinksSection = (props) => {
 SchemaTermLinksSection.propTypes = {
     schemaProp: PropTypes.object.isRequired, // Schema property from which to collect and display links
     profilesMap: PropTypes.object.isRequired, // Map of schema object @type to corresponding schema ID
-};
-
-
-// Display JSON for one schema term.
-class SchemaTermJsonDisplay extends React.Component {
-    constructor(props) {
-        super(props);
-
-        // Initialize component properties.
-        this.editor = null; // Tracks brace editor reference.
-        this.id = `profile-value-json-${props.term}`; // HTML ID of component to draw brace editor into
-    }
-
-    componentDidMount() {
-        // Now that the JSON display component has mounted,
-        const { schemaValue, term } = this.props;
-
-        // Create a read-only brace editor to display the formatted JSON.
-        createJsonDisplay(this.id, schemaValue[term]).then((editor) => {
-            // The brace editor successfully created. Save the reference to the brace editor
-            // instance so we can get rid of it when the JSON display is closed.
-            this.editor = editor;
-        });
-    }
-
-    componentWillUnmount() {
-        if (this.editor) {
-            this.editor.destroy();
-            this.editor = null;
-        }
-    }
-
-    render() {
-        return (
-            <div className="profile-value__json-content">
-                <div id={this.id} />
-            </div>
-        );
-    }
-}
-
-SchemaTermJsonDisplay.propTypes = {
-    schemaValue: PropTypes.object.isRequired, // Schema object to display
-    term: PropTypes.string.isRequired, // Item within the schema object to display
 };
 
 
@@ -290,7 +204,7 @@ class SchemaTermItemDisplay extends React.Component {
                 </div>
                 {this.state.jsonOpen ?
                     <div>
-                        <SchemaTermJsonDisplay schemaValue={schemaValue} term={term} />
+                        <DisplayRawObject schema={schemaValue} term={term} />
                         {linkedTerm ? <SchemaTermLinksSection schemaProp={schemaValue[term]} profilesMap={profilesMap} /> : null}
                     </div>
                 : null}
@@ -347,7 +261,7 @@ const TermDisplay = (props) => {
             // array (at this time, I don't think any schema array values have non-simple types)
             // and sort the results.
             const simpleTermValues = termSchema.filter(item => !!simpleTypeDisplay[typeof item]).sort();
-            if (simpleTermValues.length) {
+            if (simpleTermValues.length > 0) {
                 return (
                     <div>
                         {simpleTermValues.map((item, i) => (
@@ -357,7 +271,7 @@ const TermDisplay = (props) => {
                 );
             }
 
-            // No simple term types in the schema value, so don't show anything.
+            // No simple term types in the schema value, this case should be caught before this component
             return null;
         }
 
@@ -397,6 +311,16 @@ class DisplayObjectSection extends React.PureComponent {
     render() {
         const { term, schema, schemaName, profilesMap } = this.props;
 
+        // No simple term types in the schema value, so display the schema object
+        const schemaTerm = schema[term];
+        const schemaIsObject = typeof schemaTerm === 'object';
+        const schemaIsArray = Array.isArray(schemaTerm);
+        let simpleTermValuesExist = true;
+        if (schemaIsObject && schemaIsArray) {
+            const simpleTermValues = schemaTerm.filter(item => !!simpleTypeDisplay[typeof item]).sort();
+            simpleTermValuesExist = simpleTermValues.length > 0;
+        }
+
         // Set aria values for accessibility.
         const accordionId = `profile-display-values-${term}`;
         const accordionLabel = `profile-value-item-${term}`;
@@ -418,7 +342,11 @@ class DisplayObjectSection extends React.PureComponent {
                 </h3>
                 {this.state.sectionOpen ?
                     <div id={accordionId} aria-labelledby={accordionLabel} className="profile-display__values">
-                        <TermDisplay termSchema={schema[term]} linkedTerm={linkedTerms.indexOf(term) !== -1} schemaName={schemaName} profilesMap={profilesMap} />
+                        {(schemaIsObject && schemaIsArray && !(simpleTermValuesExist)) ?
+                            <DisplayRawObject schema={schema[term]} />
+                        :
+                            <TermDisplay termSchema={schema[term]} linkedTerm={linkedTerms.indexOf(term) !== -1} schemaName={schemaName} profilesMap={profilesMap} />
+                        }
                     </div>
                 : null}
             </div>
@@ -458,38 +386,117 @@ DisplayObject.defaultProps = {
 };
 
 
-// Display a complete raw schema object.
-class DisplayRawObject extends React.Component {
-    constructor() {
-        super();
-
-        // Set object properties.
-        this.editor = null;
-    }
-
-    componentDidMount() {
-        // Create a read-only brace editor to display the formatted JSON.
-        createJsonDisplay('raw-schema', this.props.schema).then((editor) => {
-            // The brace editor successfully created. Save the reference to the brace editor
-            // instance so we can get rid of it when the JSON display is closed.
-            this.editor = editor;
-        });
-    }
-
-    componentWillUnmount() {
-        if (this.editor) {
-            this.editor.destroy();
-            this.editor = null;
+/**
+ * Display the copy-JSON controls at the top of raw schema displays.
+ */
+const RawObjectControls = ({ rawSchemaElement, textHasSelection }) => {
+    const copyHandler = () => {
+        // Select all raw schema text in preparation for copying it, but only if the user hasn't
+        // manually selected raw schema text.
+        // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard#Using_execCommand()
+        if (rawSchemaElement && !textHasSelection) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(rawSchemaElement);
+            selection.removeAllRanges();
+            selection.addRange(range);
         }
-    }
 
-    render() {
-        return <div id="raw-schema" />;
-    }
-}
+        // Execute copy command. Firefox can throw errors on rare occasion. As this is so unusual,
+        // we just show a console warning in that case.
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.warn('Text copy failed.');
+        }
+
+        // Deselect text if the user hasn't manually selected raw schema text.
+        if (!textHasSelection) {
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+        }
+    };
+
+    return (
+        <div className="raw-schema__controls">
+            <button className="btn btn-info btn-xs" onClick={copyHandler}>
+                {textHasSelection ? <>Copy selected JSON</> : <>Copy all JSON</>}
+            </button>
+        </div>
+    );
+};
+
+RawObjectControls.propTypes = {
+    /** DOM element for the raw schema display */
+    rawSchemaElement: PropTypes.object,
+    /** True if text in the raw schema has a user selection */
+    textHasSelection: PropTypes.bool,
+};
+
+RawObjectControls.defaultProps = {
+    rawSchemaElement: null,
+    textHasSelection: false,
+};
+
+
+/**
+ * Display a complete schema object as text. At mount rawSchemaRef.current gets mutated with
+ * <pre>'s DOM node, which we need to handle text selections within it.
+ */
+const DisplayRawObject = ({ schema, term }) => {
+    // True if user has selected raw schema text.
+    const [textHasSelection, setTextHasSelection] = React.useState(false);
+    // Raw schema DOM element; `rawSchemaRef.current` doesn't cause the rerender we need.
+    const [rawSchemaElement, setRawSchemaElement] = React.useState(null);
+
+    // For displaying a fragment of the schema instead of the whole thing.
+    const schemaFragment = term ? schema[term] : '';
+
+    // Called when the user selects or deselects text anywhere on the page so we can tell if the
+    // user has selected text in the raw schema element or simply clicked to clear a text
+    // selection. Cache so we don't set this function as the event listener on every render.
+    const handleSelection = React.useCallback(() => {
+        const selection = window.getSelection();
+        const isRangeSelection = !selection.isCollapsed;
+        const isSchemaSelection = selection.anchorNode && selection.anchorNode.parentNode === rawSchemaElement;
+        setTextHasSelection(isSchemaSelection ? isRangeSelection : false);
+    }, [rawSchemaElement]);
+
+    // Callback ref to set the state that holds the raw schema DOM element. Need this as a state so
+    // that RawObjectControls can rerender at mount.
+    const rawSchemaRef = (element) => {
+        if (element) {
+            setRawSchemaElement(element);
+        }
+    };
+
+    React.useEffect(() => {
+        // React to text-selection changes anywhere on the page, partly because text selections
+        // outside the raw schema change the raw schema selection, and partly because
+        // 'selectionchange' only works on `document`.
+        document.addEventListener('selectionchange', handleSelection);
+        return (() => {
+            document.removeEventListener('selectionchange', handleSelection);
+        });
+    }, [handleSelection]);
+
+    return (
+        <div className="raw-schema">
+            <RawObjectControls rawSchemaElement={rawSchemaElement} textHasSelection={textHasSelection} />
+            <pre ref={rawSchemaRef}>{JSON.stringify(schemaFragment || schema, null, 4)}</pre>
+        </div>
+    );
+};
 
 DisplayRawObject.propTypes = {
-    schema: PropTypes.object.isRequired, // Schema to display as a raw object
+    /** Schema or fragment to display as a raw object */
+    schema: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+    /** Term within schema to display if not displaying the whole thing */
+    term: PropTypes.string,
+};
+
+DisplayRawObject.defaultProps = {
+    term: '',
 };
 
 
@@ -533,16 +540,16 @@ const SchemaPanel = (props, reactContext) => {
 
     // Determine whether we should display an "Add" button or not depending on the user's logged-in
     // state.
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
-    const decoration = loggedIn ? <a href={`/${schemaName}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
-    const decorationClasses = loggedIn ? 'profiles-add-obj' : '';
+    const roles = globals.getRoles(reactContext.session_properties);
+    const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+    const decoration = isAuthorized ? <a href={`/${schemaName}/#!add`} className="btn btn-info">Add</a> : null;
 
     return (
         <Panel>
             <TabPanel
                 tabs={{ formatted: 'Formatted', raw: 'Raw' }}
                 decoration={decoration}
-                decorationClasses={decorationClasses}
+                decorationClasses="profiles-controls"
             >
                 <TabPanelPane key="formatted">
                     <PanelBody>
@@ -569,6 +576,7 @@ SchemaPanel.propTypes = {
 
 SchemaPanel.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 
@@ -593,11 +601,9 @@ const SchemaPage = (props) => {
 
     return (
         <div className={itemClass}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{title}</h2>
-                </div>
+            <header>
+                <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h1>{title}</h1>
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <SchemaPanel schema={context} schemaName={schemaName} />
@@ -629,39 +635,39 @@ globals.contentViews.register(SchemaPage, 'JSONSchema');
 // add a new object of that type if you're logged in.
 const AllSchemasPage = (props, reactContext) => {
     const { context } = props;
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
+    const reactContextUser = reactContext.session_properties ? reactContext.session_properties.user : null;
+    const canAddSchema = !!(
+        reactContextUser && reactContextUser.lab && reactContextUser.lab.status === 'current' &&
+        reactContextUser.submits_for && reactContextUser.submits_for.length > 0 &&
+        reactContextUser.submits_for.includes(reactContextUser.lab['@id'])
+    );
 
     // Get a sorted list of all available schema object names (e.g. GeneticModification). Filter
     // out those without any `identifyingProperties` because the user can't add objects of that
     // type, nor display their schemas.
     const objectNames = Object.keys(context).sort().filter(objectName => (
-        !!(context[objectName].identifyingProperties && context[objectName].identifyingProperties.length)
+        context[objectName].identifyingProperties && context[objectName].identifyingProperties.length > 0
     ));
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <h2>Schemas</h2>
-                </div>
+            <header>
+                <h1>Schemas</h1>
             </header>
             <Panel>
                 <PanelBody>
-                    <div className="row">
-                        <div className="col-md-12 block-text">
-                            <p>
-                                Schemas, or profiles, are <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a>-formatted
-                                structures defining each object housed in <a href="https://github.com/utsw-bicf/pandiseased" title="KCE GitHub repo">KCE</a>.
-                                To support KCE Project submitters and public users alike, this page
-                                provides a user-friendly visualization method for our schemas to help
-                                organize and understand the data.
-                            </p>
-                            <p>
-                                The links below lead to pages describing each schema KCE supports.
-                            </p>
-                        </div>
+                    <div className="schema-description">
+                        <p>
+                            Schemas, or profiles, are <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a>-formatted
+                            structures defining each object housed in <a href="https://github.com/utsw-bicf/pandiseased" title="KCE GitHub repo">KCE</a>.
+                            To support KCE Project submitters and public users alike, this page
+                            provides a user-friendly visualization method for our schemas to help
+                            organize and understand the data.
+                        </p>
+                        <p>
+                            The links below lead to pages describing each schema ENCODE supports.
+                        </p>
                     </div>
-                    <hr />
                     <div className="schema-list">
                         {objectNames.map((objectName) => {
                             // `objectName` is the @type of each objects e.g. GeneticModification
@@ -672,7 +678,7 @@ const AllSchemasPage = (props, reactContext) => {
 
                             return (
                                 <div className="schema-list__item" key={objectName}>
-                                    {loggedIn ? <a className="btn btn-info btn-xs" href={`/${schemaName}/#!add`}>Add</a> : null}
+                                    {canAddSchema ? <a className="btn btn-info btn-xs" href={`/${schemaName}/#!add`}>Add</a> : null}
                                     <a href={schemaPath} title={context[objectName].description}>{objectName}</a>
                                 </div>
                             );
@@ -690,7 +696,7 @@ AllSchemasPage.propTypes = {
 
 AllSchemasPage.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 globals.contentViews.register(AllSchemasPage, 'JSONSchemas');
-

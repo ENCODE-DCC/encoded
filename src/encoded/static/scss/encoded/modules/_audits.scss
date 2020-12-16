@@ -1,22 +1,21 @@
 $audit-group-height: 40px;
 
 
-.btn.btn-info.audit-indicators {
+.audit-indicators {
     margin-top: 5px;
-    vertical-align: top;
-    padding: 0 5px;
+    padding: 0 10px;
     background: #fff;
     font-size: 1rem;
     background-color: #fff;
+    border-color: #475d8d;
 
-    &:hover, &:active, &:focus {
-        background-color: #fff;
+    &.active {
+        background-color: #f0f0f0;
     }
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
         margin: 0;
-        height: 28px;
     }
 
     .search-meta & {
@@ -25,7 +24,11 @@ $audit-group-height: 40px;
 
     &.audit-search {
         font-size: 0.85rem;
-        height: 28px;
+    }
+
+    // Styling when inside .item-accessories <div>
+    .item-accessories & {
+        margin-right: auto;
     }
 }
 
@@ -33,7 +36,6 @@ $audit-group-height: 40px;
 %audit-icon {
     display: inline-block;
     margin-right: 10px;
-    line-height: 32px;
     font-size: 1.3rem;
     text-align: center;
     border: none;
@@ -46,7 +48,6 @@ $audit-group-height: 40px;
 
     .audit-search & {
         font-size: 0.85rem;
-        line-height: 24px;
     }
 }
 
@@ -85,38 +86,61 @@ $audit-types:
     }
 }
 
-.btn-audit {
-    display: inline-block;
-    margin: 0 10px;
-    height: 26px;
 
-    .audit-search & {
-        margin: 0 6px;
-        height: 24px;
+// Wraps around audit count display
+.audit-counts {
+    white-space: nowrap;
+
+    @at-root #{&}__level {
+        display: inline-block;
+        margin-left: 10px;
+        font-weight: bold;
+        white-space: nowrap;
+
+        &:first-child {
+            margin-left: 0;
+        }
     }
 }
 
 
 %audit-detail-trigger {
     display: block;
+    flex: 0 0 $audit-group-height;
     height: $audit-group-height;
     width: $audit-group-height;
-    float: left;
-    margin-right: 10px;
-    border-right: 1px solid #a0a0a0;
 }
 
-.audit-detail-category-name {
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: #606060;
+// Area that toggles appearance when audit indicators are clicked on.
+.audit-detail {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #a0a0a0;
+    border-radius: 3px;
+
+    @at-root #{&}__summary {
+        display: flex;
+    }
+
+    @at-root #{&}__category-name {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #606060;
+    }
+
+    @at-root #{&}__info {
+        flex: 1 1 auto;
+        padding: 4px 10px;
+        line-height: $audit-group-height - 10;
+        border-left: 1px solid #a0a0a0;
+    }
+
+    // When audit details appear on individual page, not search results.
+    .result-table & {
+        margin-top: 0;
+    }
 }
 
-
-.audit-detail-info {
-    padding: 4px 10px;
-    line-height: $audit-group-height - 10;
-}
 
 
 // Generate the audit icon classes for each of the audit types
@@ -143,21 +167,15 @@ $audit-types:
         @extend %audit-active-icon;
         color: $color;
         font-size: 1.2rem;
-        height: 26px;
-        line-height: 28px;
     }
 
     // Button for each class of audit error
-    .btn-audit-#{$audit-type} {
-        color: $color;
-
-        &:hover, &:focus {
-            color: $color;
-        }
+    .audit-counts__level--#{$audit-type} {
+        color: audit-level-color($color);
     }
 
     // Audit detail
-    .audit-detail-#{$audit-type} {
+    .audit-detail__#{$audit-type} {
         border-top: 1px solid #a0a0a0;
         background-color: fg-to-bg-color($color);
 
@@ -166,7 +184,7 @@ $audit-types:
         }
     }
 
-    .audit-detail-trigger-#{$audit-type} {
+    .audit-detail__trigger--#{$audit-type} {
         @extend %audit-detail-trigger;
 
         &:hover {
@@ -174,17 +192,11 @@ $audit-types:
         }
     }
 
-    // Audit level name text
-    .audit-level-#{$audit-type} {
-        margin-left: 5px !important;
-        color: audit-level-color($color);
-    }
-
     .audit-item-#{$audit-type} {
-        padding: 5px 10px 5px 50px;
+        padding: 7px 10px 7px 50px;
         background-color: darken(fg-to-bg-color($color), 10%);
         border-top: 1px solid #a0a0a0;
-        font-weight: bold;
+        font-weight: 400;
     }
 }
 
@@ -225,4 +237,9 @@ $audit-types:
             color: #428bca;
         }
     }
+}
+
+.audit-icon {
+    height: 13px;
+    line-height: 13px;
 }

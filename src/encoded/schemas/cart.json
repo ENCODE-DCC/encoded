@@ -31,6 +31,12 @@
             "type": "string",
             "pattern": "^(?!\\s)[\\S]*\\S$"
         },
+        "locked": {
+            "title": "Locked cart",
+            "description": "A flag indicating a read-only cart",
+            "default": false,
+            "type": "boolean"
+        },
         "elements": {
             "title": "Cohort elements",
             "description": "Tracks all elements in the cohort",

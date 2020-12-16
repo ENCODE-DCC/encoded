@@ -6,10 +6,29 @@
         "description": "Supplemental data for Heidari et al., Genome-wide map of regulatory interactions in the human genome.",
         "status": "released",
         "lab": "michael-snyder",
-        "references": ["e5e336a0-bdde-11e4-bb52-0800200c9a66"],
+        "references": [
+            "e5e336a0-bdde-11e4-bb52-0800200c9a66"
+        ],
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "4eafdd35-40ea-463a-9e05-c85fb91d25d0",
         "related_files": ["KCEFF002COS", "KCEFF003COS"],
         "date_released": "2014-10-07"
+    },
+    {
+        "related_files": [
+            "ENCFF001MYM",
+            "ENCFF002MYM"
+        ],
+        "accession": "ENCSR129LGO",
+        "description": "Data published in Grubert et al., Landscape of Chromatin Loops in the Human Genome Across Multiple Cell Types. Note that the files currently listed on this page belong to experiments ENCSR014ZXR, ENCSR465NNU, ENCSR716WZI, ENCSR981FNA, ENCSR466AXT, and ENCSR011ITK. More datasets analyzed in the publication will be added to the ENCODE portal shortly.",
+        "date_released": "2017-09-19",
+        "status": "released",
+        "submitted_by": "rutrum.fermentum@platea.turpis",
+        "lab": "michael-snyder",
+        "award": "U54HG006996",
+        "references": [
+            "d40de6c3-7b60-4567-8282-b29f0cafc0e1"
+        ],
+        "uuid": "9e03585f-9301-4123-b20e-4a1802834473"
     }
 ]

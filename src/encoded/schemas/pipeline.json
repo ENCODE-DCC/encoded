@@ -26,7 +26,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "11"
         },
         "accession": {
             "accessionType": "PL"
@@ -76,6 +76,7 @@
                     "CRISPR genome editing followed by RNA-seq",
                     "CRISPR screen",
                     "CRISPRi followed by RNA-seq",
+                    "CUT&RUN",
                     "direct RNA-seq",
                     "DNA methylation profiling by array assay",
                     "DNA-PET",
@@ -87,6 +88,7 @@
                     "genotyping by high throughput sequencing assay",
                     "HiC",
                     "iCLIP",
+                    "icLASER",
                     "icSHAPE",
                     "long read RNA-seq",
                     "MeDIP-seq",
@@ -99,6 +101,7 @@
                     "PAS-seq",
                     "PLAC-seq",
                     "pooled clone sequencing",
+                    "PRO-cap",
                     "PRO-seq",
                     "protein sequencing by tandem mass spectrometry assay",
                     "RAMPAGE",
@@ -111,11 +114,12 @@
                     "RNA-seq",
                     "RRBS",
                     "shRNA knockdown followed by RNA-seq",
-                    "single cell isolation followed by RNA-seq",
                     "single-cell ATAC-seq",
-                    "single-nuclei ATAC-seq",
+                    "single-cell RNA sequencing assay",
+                    "single-nucleus ATAC-seq",
                     "siRNA knockdown followed by RNA-seq",
                     "small RNA-seq",
+                    "SPRITE",
                     "STARR-seq",
                     "Switchgear",
                     "TAB-seq",
@@ -194,6 +198,18 @@
             "comment": "Please increment as whole numbers starting from 1.",
             "type": "integer",
             "minimum": 1
+        },
+        "reference_filesets": {
+            "title": "Reference File Sets",
+            "description": "The reference file set that contains references and indexes for a pipeline.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Reference File Set",
+                "description": "A particular file set containing references and indexes used by the pipeline.",
+                "type": "string",
+                "linkTo": "Reference"
+            }
         }
     },
     "facets": {
@@ -240,6 +256,9 @@
         },
         "analysis_steps.versions.software_versions.software.name": {
             "title": "Software used"
+        },
+        "reference_filesets": {
+            "title": "Reference File Sets"
         }
     },
     "boost_values": {

@@ -1,0 +1,2 @@
+- cloud-init-per once aptkeyget-elasticsearch wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch > /etc/apt/es_gpg_key
+- cloud-init-per once aptkeyadd-elasticsearch apt-key add /etc/apt/es_gpg_key

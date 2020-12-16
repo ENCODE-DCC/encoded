@@ -11,10 +11,10 @@
     "uuid": "41692393-f1f3-4797-9043-989c96a9621c"
   },
   {
-    "surgery": "KCESX708FIJ",
+    "surgery": "KCESX708IJT",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Open",
       "robotic_assist": true
     },
@@ -22,7 +22,7 @@
     "uuid": "717612f1-0fb7-411b-a8b3-b045e252d098"
   },
   {
-    "surgery": "KCESX708IJT",
+    "surgery": "KCESX708FIJ",
     "procedure_type": "Metastectomy",
     "hospital_location": "Parkland",
     "status": "released",
@@ -41,7 +41,7 @@
   },
   {
     "surgery": "KCESX480NBU",
-    "procedure_type": "Ablation",
+    "procedure_type": "Metastectomy",
     "status": "released",
     "uuid": "9f85a354-f0af-4e0c-ab13-c0171655e328"
   },
@@ -72,7 +72,7 @@
     "surgery": "KCESX186NZW",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Open",
       "robotic_assist": false
     },
@@ -85,7 +85,7 @@
     "surgery": "KCESX139SOR",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Laparoscopic",
       "robotic_assist": false
     },
@@ -137,7 +137,7 @@
     "surgery": "KCESX396JUN",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Laparoscopic",
       "robotic_assist": true
     },

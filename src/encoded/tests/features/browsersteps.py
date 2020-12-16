@@ -325,21 +325,21 @@ def field_is_not_required(browser, name):
 
 @when(parse('I enter "{text}" to the alert'))
 def set_alert_text(browser, text):
-    alert = browser.driver.switch_to_alert()
+    alert = browser.driver.switch_to.alert
     assert alert, u'Alert not found'
     alert.send_keys(text)
 
 
 @when(parse('I accept the alert'))
 def accept_alert(browser):
-    alert = browser.driver.switch_to_alert()
+    alert = browser.driver.switch_to.alert
     assert alert, u'Alert not found'
     alert.accept()
 
 
 @when(parse('I dismiss the alert'))
 def dimiss_alert(browser):
-    alert = browser.driver.switch_to_alert()
+    alert = browser.driver.switch_to.alert
     assert alert, u'Alert not found'
     alert.dismiss()
 

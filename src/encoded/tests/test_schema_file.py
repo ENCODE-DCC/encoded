@@ -1,296 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def file_no_replicate(testapp, experiment, award, lab):
-    item = {
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'file_format': 'bam',
-        'file_size': 345,
-        'assembly': 'hg19',
-        'md5sum': 'e002cd204df36d93dd070ef0712b8eed',
-        'output_type': 'alignments',
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_with_replicate(testapp, experiment, award, lab, replicate):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'file_format': 'bam',
-        'file_size': 345,
-        'assembly': 'hg19',
-        'md5sum': 'e003cd204df36d93dd070ef0712b8eed',
-        'output_type': 'alignments',
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_with_derived(testapp, experiment, award, lab, file_with_replicate):
-    item = {
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'file_format': 'bam',
-        'assembly': 'hg19',
-        'file_size': 345,
-        'md5sum': 'e004cd204df36d93dd070ef0712b8eed',
-        'output_type': 'alignments',
-        'status': 'in progress',  # avoid s3 upload codepath
-        'derived_from': [file_with_replicate['@id']]
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_no_assembly(testapp, experiment, award, lab, replicate):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'file_format': 'bam',
-        'file_size': 345,
-        'md5sum': '82847a2a5beb8095282c68c00f48e347',
-        'output_type': 'alignments',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def file_no_error(testapp, experiment, award, lab, replicate, platform1):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'file_size': 345,
-        'platform': platform1['@id'],
-        'award': award['@id'],
-        'file_format': 'fastq',
-        'run_type': 'paired-ended',
-        'paired_end': '1',
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '136e501c4bacf4aab87debab20d76648',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def file_content_error(testapp, experiment, award, lab, replicate, platform1):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'file_size': 345,
-        'platform': platform1['@id'],
-        'award': award['@id'],
-        'file_format': 'fastq',
-        'run_type': 'single-ended',
-        'output_type': 'reads',
-        "read_length": 36,
-        'md5sum': '99378c852c5be68251cbb125ffcf045a',
-        'status': 'content error'
-    }
-    return item
-
-
-@pytest.fixture
-def file_no_platform(testapp, experiment, award, lab, replicate):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'file_size': 345,
-        'award': award['@id'],
-        'file_format': 'fastq',
-        'run_type': 'single-ended',
-        'output_type': 'reads',
-        "read_length": 36,
-        'md5sum': '99378c852c5be68251cbb125ffcf045a',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def file_no_paired_end(testapp, experiment, award, lab, replicate, platform1):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'file_size': 345,
-        'award': award['@id'],
-        'platform': platform1['@id'],
-        'file_format': 'fastq',
-        'run_type': 'paired-ended',
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '136e501c4bacf4aab87debab20d76648',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def file_with_bad_date_created(testapp, experiment, award, lab, replicate, platform1):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'file_size': 345,
-        'date_created': '2017-10-23',
-        'platform': platform1['@id'],
-        'award': award['@id'],
-        'file_format': 'fastq',
-        'run_type': 'paired-ended',
-        'paired_end': '1',
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '136e501c4bacf4aab87debab20d76648',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def file_with_bad_revoke_detail(testapp, experiment, award, lab, replicate, platform1):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'file_size': 345,
-        'platform': platform1['@id'],
-        'award': award['@id'],
-        'file_format': 'fastq',
-        'run_type': 'paired-ended',
-        'paired_end': '1',
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '136e501c4bacf4aab87debab20d76648',
-        'status': 'in progress',
-        'revoke_detail': 'some reason to be revoked'
-    }
-    return item
-
-
-@pytest.fixture
-def file_processed_output_raw_format(testapp, experiment, award, lab, replicate, platform1):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'file_size': 345,
-        'platform': platform1['@id'],
-        'award': award['@id'],
-        'file_format': 'fastq',
-        'run_type': 'single-ended',
-        'output_type': 'peaks',
-        'read_length': 36,
-        'md5sum': '99378c852c5be68251cbb125ffcf045a',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def file_raw_output_processed_format(testapp, experiment, award, lab, replicate):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'file_size': 345,
-        'award': award['@id'],
-        'file_format': 'bam',
-        'output_type': 'reads',
-        'read_length': 36,
-        'assembly': 'hg19',
-        'md5sum': '99378c852c5be68251cbb125ffcf045a',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def file_restriction_map(testapp, experiment, award, lab):
-    item = {
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'file_format': 'txt',
-        'file_size': 3456,
-        'assembly': 'hg19',
-        'md5sum': 'e002cd204df36d93dd070ef0712b8e12',
-        'output_type': 'restriction enzyme site locations',
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return item
-
-
-@pytest.fixture
-def file_no_genome_annotation(testapp, experiment, award, lab, replicate):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assembly': 'GRCh38',
-        'file_format': 'database',
-        'file_size': 342,
-        'md5sum': '82847a2a5beb8095282c68c00f48e347',
-        'output_type': 'transcriptome index',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def file_database_output_type(testapp, experiment, award, lab, replicate):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assembly': 'GRCh38',
-        'file_format': 'database',
-        'file_size': 342,
-        'genome_annotation': 'V24',
-        'md5sum': '82847a2a5beb8095282c68c00f48e348',
-        'output_type': 'alignments',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def file_good_bam(testapp, experiment, award, lab, replicate, platform1):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
-        'lab': lab['@id'],
-        'file_size': 345,
-        'platform': platform1['@id'],
-        'award': award['@id'],
-        'assembly': 'GRCh38',
-        'file_format': 'bam',
-        'output_type': 'alignments',
-        'md5sum': '136e501c4bacf4fab87debab20d76648',
-        'status': 'in progress'
-    }
-    return item
-
-
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
 
@@ -501,3 +211,41 @@ def test_database_output_type_requirement(testapp, file_database_output_type):
     testapp.post_json('/file', file_database_output_type, status=422)
     file_database_output_type.update({'output_type': 'transcriptome index'})
     testapp.post_json('/file', file_database_output_type, status=201)
+
+
+def test_matching_md5sum(testapp, file_no_error, file_good_bam):
+    file = testapp.post_json('/file', file_good_bam).json['@graph'][0]
+    file_no_error.update({'matching_md5sum': [file['@id']]})
+    res = testapp.post_json('/file', file_no_error, expect_errors=False)
+    assert res.status_code == 201
+
+
+def test_no_runtype_readlength_dependency(testapp, file_no_runtype_readlength, platform4):
+    testapp.post_json('/file', file_no_runtype_readlength, status=422)
+    file_no_runtype_readlength.update({'platform': platform4['@id']})
+    testapp.post_json('/file', file_no_runtype_readlength, status=201)
+
+
+def test_subreads_bam(testapp, file_subreads):
+    res = testapp.post_json('/file', file_subreads, expect_errors=False)
+    assert res.status_code == 201
+
+
+def test_no_runtype_dependency(testapp, file_no_runtype, platform3):
+    testapp.post_json('/file', file_no_runtype, status=422)
+    file_no_runtype.update({'run_type': 'single-ended'})
+    testapp.post_json('/file', file_no_runtype, status=201)
+
+def test_hotspots_prefix_dependency_requirement(testapp, file_hotspots_prefix, file_hotspots1_reference):
+    testapp.post_json('/file', file_hotspots_prefix, status=422)
+    file_hotspots_prefix.update({'output_type': 'hotspots1 reference'})
+    testapp.post_json('/file', file_hotspots_prefix, status=201)
+    testapp.post_json('/file', file_hotspots1_reference, status=422)
+    file_hotspots1_reference.update({'hotspots_prefix': 'mm10'})
+    testapp.post_json('/file', file_hotspots1_reference, status=201)
+
+
+def test_subreads_bam_replicate(testapp, file_subreads):
+    item = file_subreads.copy()
+    item.pop('replicate', None)
+    testapp.post_json('/file', item, status=422)

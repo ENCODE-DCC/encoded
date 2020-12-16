@@ -35,7 +35,7 @@ describe('Platform', () => {
 
         beforeAll(() => {
             defDescNode = defDescs.at(2);
-            unorderedList = defDescNode.childAt(0);
+            unorderedList = defDescNode.children().childAt(0);
             listItems = unorderedList.children();
             anchors = unorderedList.find('a');
         });

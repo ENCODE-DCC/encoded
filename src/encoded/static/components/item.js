@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
+import { Panel } from '../libs/ui/panel';
 import Table from './collection';
 import { FetchedData, Param } from './fetched';
 import { JSONSchemaForm } from './form';
 import * as globals from './globals';
-import { AlternateAccession, DisplayAsJson } from './objectutils';
+import { AlternateAccession, ItemAccessories } from './objectutils';
 
 
 const Fallback = (props, reactContext) => {
@@ -13,17 +15,13 @@ const Fallback = (props, reactContext) => {
     const title = typeof context.title === 'string' ? context.title : url.parse(reactContext.location_href).path;
     return (
         <div className="view-item">
-            <header className="row">
-                <div className="col-sm-12">
-                    <h2>{title}</h2>
-                    <DisplayAsJson />
-                </div>
+            <header>
+                <h1>{title}</h1>
+                <ItemAccessories item={context} />
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <section className="view-detail panel">
-                <div className="container">
-                    <pre>{JSON.stringify(context, null, 4)}</pre>
-                </div>
+                <pre>{JSON.stringify(context, null, 4)}</pre>
             </section>
         </div>
     );
@@ -46,21 +44,17 @@ const Item = (props) => {
 
     return (
         <div className={itemClass}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <h2>{title}</h2>
-                    <div className="replacement-accessions">
-                        <AlternateAccession altAcc={context.alternate_accessions} />
-                    </div>
-                    <DisplayAsJson />
+            <header>
+                <h1>{title}</h1>
+                <div className="replacement-accessions">
+                    <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>
+                <ItemAccessories item={context} />
             </header>
-            <div className="row item-row">
-                <div className="col-sm-12">
-                    {context.description ? <p className="description">{context.description}</p> : null}
-                    <ItemPanel {...props} />
-                </div>
-            </div>
+            {context.description ? <p className="description">{context.description}</p> : null}
+            <Panel>
+                <ItemPanel {...props} />
+            </Panel>
         </div>
     );
 };
@@ -77,29 +71,21 @@ globals.contentViews.fallback = function fallback() {
 };
 
 
-export const Panel = (props) => {
+export const ItemComponent = (props) => {
     const context = props.context;
-    const itemClass = globals.itemClass(context, 'view-detail panel');
+    const itemClass = globals.itemClass(context, 'view-detail');
     return (
-        <section className="col-sm-12">
-            <div className={itemClass}>
-                <pre>{JSON.stringify(context, null, 4)}</pre>
-            </div>
-        </section>
+        <div className={itemClass}>
+            <pre>{JSON.stringify(context, null, 4)}</pre>
+        </div>
     );
 };
 
-Panel.propTypes = {
+ItemComponent.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.panelViews.register(Panel, 'Item');
-
-
-// Also use this view as a fallback for anything we haven't registered
-globals.panelViews.fallback = function fallback() {
-    return Panel;
-};
+globals.panelViews.register(ItemComponent, 'Item');
 
 
 const listingTitle = function listingTitle(props) {
@@ -167,11 +153,9 @@ class ItemEdit extends React.Component {
         }
         return (
             <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>{title}</h2>
-                        <DisplayAsJson />
-                    </div>
+                <header>
+                    <h2>{title}</h2>
+                    <ItemAccessories item={context} />
                 </header>
                 {fetchedForm}
             </div>
@@ -195,7 +179,7 @@ const FetchedRelatedItems = (props) => {
     const { Component, context, title, itemUrl } = props;
     if (context === undefined) return null;
     const items = context['@graph'];
-    if (!items || !items.length) return null;
+    if (!items || !items.length > 0) return null;
 
     return (
         <Component {...props} title={title} context={context} total={context.total} items={items} url={itemUrl} showControls={false} />
@@ -218,7 +202,7 @@ FetchedRelatedItems.defaultProps = {
 
 
 export const RelatedItems = (props) => {
-    const itemUrl = globals.encodedURI(`${props.url}&status=released&status=submitted&status=in+progress`);
+    const itemUrl = encoding.encodedURIOLD(`${props.url}&status=released&status=submitted&status=in+progress`);
     const limitedUrl = `${itemUrl}&limit=${props.limit}`;
     const unlimitedUrl = `${itemUrl}&limit=all`;
     return (

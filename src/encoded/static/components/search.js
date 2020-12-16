@@ -1,75 +1,75 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import queryString from 'query-string';
 import _ from 'underscore';
-import moment from 'moment';
 import url from 'url';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
+import QueryString from '../libs/query_string';
 import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls } from './cart';
-import { FetchedData, Param } from './fetched';
-import GenomeBrowser from './genome_browser';
+import FacetRegistry from './facets';
 import * as globals from './globals';
-import { Attachment } from './image';
 import {
-    BrowserSelector,
     DisplayAsJson,
+    BiosampleType,
     requestSearch,
     DocTypeTitle,
-    shadeOverflowOnScroll,
+    singleTreatment,
 } from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
-import { svgIcon } from '../libs/svg-icons';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
+import { BatchDownloadControls, ViewControls } from './view_controls';
+import { BrowserSelector } from './vis_defines';
 
 
 // Should really be singular...
 const types = {
+    patient: { title: 'Patients' },
+    surgery: { title: 'Surgery and Pathology Reports' },
     annotation: { title: 'Annotation file set' },
-    antibody_lot: { title: 'Antibodies' },
-    biosample_type: { title: 'Biosample types' },
-    biosample: { title: 'Biosamples' },
-    experiment: { title: 'Experiments' },
-    gene: { title: 'Genes' },
-    target: { title: 'Targets' },
-    dataset: { title: 'Datasets' },
+    biospecimen: { title: 'Biospecimens' },
+    // bioexperiment: { title: 'Bioexperiments' },
+    // bioseries: { title: 'Series File set' },
+    // biofileSet: { title: 'File set' },
+    // bioexperimentSeries: { title: 'Experiment Series'},
+    biodataset: { title: 'Biodatasets' },
+    bioexperiment: { title: 'Bioexperiments' },
+    bioseries: { title: 'Bioserieses' },
+    biofileSet: { title: 'BiofileSets' },
+    bioexperimentSeries:{title:'BioexperimentSereieses'},
     image: { title: 'Images' },
-    matched_set: { title: 'Matched set series' },
-    aggregate_series: { title: 'Aggregate series' },
-    organism_development_series: { title: 'Organism development series' },
     publication: { title: 'Publications' },
     page: { title: 'Web page' },
-    pipeline: { title: 'Pipeline' },
-    project: { title: 'Project file set' },
+    bioproject: { title: 'Project file set' },
     publication_data: { title: 'Publication file set' },
-    reference: { title: 'Reference file set' },
-    reference_epigenome: { title: 'Reference epigenome series' },
-    replication_timing_series: { title: 'Replication timing series' },
-    software: { title: 'Software' },
-    treatment_concentration_series: { title: 'Treatment concentration series' },
-    treatment_time_series: { title: 'Treatment time series' },
-    ucsc_browser_composite: { title: 'UCSC browser composite file set' },
-    patient: { title: 'Patients' },
+    bioreference: { title: 'Reference file set' },
 };
 
 const datasetTypes = {
-    Annotation: types.annotation.title,
-    Dataset: types.dataset.title,
-    MatchedSet: types.matched_set.title,
-    OrganismDevelopmentSeries: types.organism_development_series.title,
-    Project: types.project.title,
-    PublicationData: types.publication_data.title,
-    Reference: types.reference.title,
-    ReferenceEpigenome: types.reference_epigenome.title,
-    ReplicationTimingSeries: types.replication_timing_series.title,
-    TreatmentConcentrationSeries: types.treatment_concentration_series.title,
-    TreatmentTimeSeries: types.treatment_time_series.title,
-    AggregateSeries: types.aggregate_series.title,
-    UcscBrowserComposite: types.ucsc_browser_composite.title,
 };
 
+const biodatasetTypes = {
+    Biodataset: types.biodataset.title,
+    Bioproject: types.bioproject.title,
+    Bioreference: types.bioreference.title,
+    Bioseries: types.bioseries.title,
+    BiofileSet: types.biofileSet.title,
+    BioexperimentSeries:types.bioexperimentSeries.title
+
+}
+
+const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
+
+// session storage used to preserve opened/closed facets
+const FACET_STORAGE = 'FACET_STORAGE';
+
+// marker for determining user just opened the page
+const MARKER_FOR_NEWLY_LOADED_FACET_PREFIX = 'MARKER_FOR_NEWLY_LOADED_FACETS_';
+
+/**
+ * Maximum  downloadable result count
+ */
+const MAX_DOWNLOADABLE_RESULT = 500;
 
 // You can use this function to render a listing view for the search results object with a couple
 // options:
@@ -98,22 +98,26 @@ export function Listing(reactProps) {
 }
 
 
-/* eslint-disable react/prefer-stateless-function */
-export class PickerActions extends React.Component {
-    render() {
-        if (this.context.actions && this.context.actions.length) {
-            return (
-                <div className="pull-right">
-                    {this.context.actions.map(action => React.cloneElement(action, { key: this.props.context.name, id: this.props.context['@id'] }))}
-                </div>
-            );
-        }
+/**
+ * Generate a CSS class for the <li> of a search result table item.
+ * @param {object} item Displayed search result object
+ *
+ * @return {string} CSS class for this type of object
+ */
+export const resultItemClass = item => `result-item--type-${item['@type'][0]}`;
 
-        // No actions; don't render anything.
-        return <span />;
+export const PickerActions = ({ context }, reactContext) => {
+    if (reactContext.actions && reactContext.actions.length > 0) {
+        return (
+            <div className="result-item__picker">
+                {reactContext.actions.map(action => React.cloneElement(action, { key: context.name, id: context['@id'] }))}
+            </div>
+        );
     }
-}
-/* eslint-enable react/prefer-stateless-function */
+
+    // No actions; don't render anything.
+    return null;
+};
 
 PickerActions.propTypes = {
     context: PropTypes.object.isRequired,
@@ -124,35 +128,30 @@ PickerActions.contextTypes = {
 };
 
 
-/* eslint-disable react/prefer-stateless-function */
-class ItemComponent extends React.Component {
-    render() {
-        const result = this.props.context;
-        const title = globals.listingTitles.lookup(result)({ context: result });
-        const itemType = result['@type'][0];
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    {result.accession ?
-                        <div className="pull-right type sentence-case search-meta">
-                            <p>{itemType}: {` ${result.accession}`}</p>
-                            {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                        </div>
-                        : null}
-                    <div className="accession">
-                        <a href={result['@id']}>{title}</a>
-                    </div>
-                    <div className="data-row">
+const ItemComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => {
+    const title = globals.listingTitles.lookup(result)({ context: result });
+    const itemType = result['@type'][0];
+    return (
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <a href={result['@id']} className="result-item__link">{title}</a>
+                    <div className="result-item__data-row">
                         {result.description}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-            </li>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+                {result.accession ?
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">{itemType}: {` ${result.accession}`}</div>
+                        {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                    </div>
+                : null}
+                <PickerActions context={result} />
+            </div>
+            {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
 
 ItemComponent.propTypes = {
     context: PropTypes.object.isRequired, // Component to render in a listing view
@@ -162,6 +161,7 @@ ItemComponent.propTypes = {
 
 ItemComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Item = auditDecor(ItemComponent);
@@ -174,16 +174,15 @@ class BiosampleComponent extends React.Component {
     render() {
         const result = this.props.context;
         const lifeStage = (result.life_stage && result.life_stage !== 'unknown') ? ` ${result.life_stage}` : '';
-        const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
-        const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
-        const separator = (lifeStage || age) ? ',' : '';
-        const treatment = (result.treatments && result.treatments.length) ? result.treatments[0].treatment_term_name : '';
+        const ageDisplay = (result.age_display && result.age_display !== '') ? ` ${result.age_display}` : '';
+        const separator = (lifeStage || ageDisplay) ? ',' : '';
+        const treatment = (result.treatments && result.treatments.length > 0) ? result.treatments[0].treatment_term_name : '';
 
         // Calculate genetic modification properties for display.
         const rnais = [];
         const constructs = [];
         const mutatedGenes = [];
-        if (result.applied_modifications && result.applied_modifications.length) {
+        if (result.applied_modifications && result.applied_modifications.length > 0) {
             result.applied_modifications.forEach((am) => {
                 // Collect RNAi GM methods.
                 if (am.method === 'RNAi' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
@@ -205,43 +204,40 @@ class BiosampleComponent extends React.Component {
         // Build the text of the synchronization string
         let synchText;
         if (result.synchronization) {
-            synchText = result.synchronization +
-                (result.post_synchronization_time ?
-                    ` + ${result.post_synchronization_time}${result.post_synchronization_time_units ? ` ${result.post_synchronization_time_units}` : ''}`
-                    : '');
+            synchText = `${result.synchronization}${result.post_synchronization_time ? ` +${ageDisplay}` : ''}`;
         }
 
         return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Biosample</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
+            <li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">
                             {`${result.biosample_ontology.term_name} (`}
                             <em>{result.organism.scientific_name}</em>
-                            {`${separator}${lifeStage}${age}${ageUnits})`}
+                            {`${separator}${lifeStage}${ageDisplay})`}
                         </a>
+                        <div className="result-item__data-row">
+                            <div><strong>Type: </strong>{result.biosample_ontology.classification}</div>
+                            {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
+                            {rnais.length > 0 ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
+                            {constructs.length > 0 ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
+                            {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
+                            {mutatedGenes.length > 0 ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
+                            {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
+                            {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
+                            {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
+                            <div><strong>Source: </strong>{result.source.title}</div>
+                        </div>
                     </div>
-                    <div className="data-row">
-                        <div><strong>Type: </strong>{result.biosample_ontology.classification}</div>
-                        {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
-                        {rnais.length ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
-                        {constructs.length ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
-                        {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
-                        {mutatedGenes.length ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
-                        {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
-                        {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
-                        {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
-                        <div><strong>Source: </strong>{result.source.title}</div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Biosample</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, search: true })}
                     </div>
+                    <PickerActions context={result} />
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties })}
             </li>
         );
     }
@@ -256,6 +252,7 @@ BiosampleComponent.propTypes = {
 
 BiosampleComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Biosample = auditDecor(BiosampleComponent);
@@ -263,59 +260,68 @@ const Biosample = auditDecor(BiosampleComponent);
 globals.listingViews.register(Biosample, 'Biosample');
 
 
+/**
+ * Renders both Experiment and FunctionalCharacterizationExperiment search results.
+ */
 const ExperimentComponent = (props, reactContext) => {
-    const { cartControls } = props;
-    const result = props.context;
+    const { context: result, cartControls, mode } = props;
     let synchronizations;
+
+    // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
+    const experimentType = result['@type'][0];
+    const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
+    const displayType = isFunctionalExperiment ? 'Functional Characterization Experiment' : 'Experiment';
 
     // Collect all biosamples associated with the experiment. This array can contain duplicate
     // biosamples, but no null entries.
     let biosamples = [];
-    if (result.replicates && result.replicates.length) {
+    const treatments = [];
+
+    if (result.replicates && result.replicates.length > 0) {
         biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
+        // flatten treatment array of arrays
+        _.compact(biosamples.map(biosample => biosample.treatments)).forEach(treatment => treatment.forEach(t => treatments.push(t)));
     }
 
     // Get all biosample organism names
-    const organismNames = biosamples.length ? BiosampleOrganismNames(biosamples) : [];
+    const organismNames = biosamples.length > 0 ? BiosampleOrganismNames(biosamples) : [];
 
-    // Bek: Forrest should review the change for correctness
     // Collect synchronizations
-    if (result.replicates && result.replicates.length) {
+    if (result.replicates && result.replicates.length > 0) {
         synchronizations = _.uniq(result.replicates.filter(replicate =>
             replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
         ).map((replicate) => {
             const biosample = replicate.library.biosample;
-            return (biosample.synchronization +
-                (biosample.post_synchronization_time ?
-                    ` + ${biosample.post_synchronization_time}${biosample.post_synchronization_time_units ? ` ${biosample.post_synchronization_time_units}` : ''}`
-                    : ''));
+            return `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`;
         }));
     }
 
+    const uniqueTreatments = getUniqueTreatments(treatments);
+
+    // Get a map of related datasets, possibly filtering on their status and
+    // categorized by their type.
+    let seriesMap = {};
+    if (result.related_series && result.related_series.length > 0) {
+        seriesMap = _.groupBy(
+            result.related_series, series => series['@type'][0]
+        );
+    }
+
     return (
-        <li>
+        <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <PickerActions {...props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Experiment</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
-                            {result.assay_title ?
-                                <span>{result.assay_title}</span>
-                                :
-                                <span>{result.assay_term_name}</span>
-                            }
-                            {result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
-                        </a>
-                    </div>
+                    <a href={result['@id']} className="result-item__link">
+                        {result.assay_title ?
+                            <span>{result.assay_title}</span>
+                        :
+                            <span>{result.assay_term_name}</span>
+                        }
+                        {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
+                    </a>
                     {result.biosample_summary ?
-                        <div className="highlight-row">
-                            {organismNames.length ?
+                        <div className="result-item__highlight-row">
+                            {organismNames.length > 0 ?
                                 <span>
                                     {organismNames.map((organism, i) =>
                                         <span key={organism}>
@@ -327,27 +333,64 @@ const ExperimentComponent = (props, reactContext) => {
                                 : null}
                             {result.biosample_summary}
                         </div>
-                        : null}
-                    <div className="data-row">
+                    : null}
+                    <div className="result-item__data-row">
                         {result.target && result.target.label ?
                             <div><strong>Target: </strong>{result.target.label}</div>
                             : null}
 
-                        {synchronizations && synchronizations.length ?
-                            <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
-                            : null}
+                        {mode !== 'cart-view' ?
+                            <React.Fragment>
+                                {synchronizations && synchronizations.length > 0 ?
+                                    <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
+                                : null}
 
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div>
+                                <div><strong>Lab: </strong>{result.lab.title}</div>
+                                <div><strong>Project: </strong>{result.award.project}</div>
+                                {treatments && treatments.length > 0 ?
+                                    <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
+                                        <span>
+                                            {uniqueTreatments.join(', ')}
+                                        </span>
+                                    </div>
+                                : null}
+                                {Object.keys(seriesMap).map(seriesType =>
+                                    <div key={seriesType}>
+                                        <strong>{seriesType.replace(/([A-Z])/g, ' $1')}: </strong>
+                                        {seriesMap[seriesType].map(
+                                            (series, i) => (
+                                                <span key={series.accession}>
+                                                    {i > 0 ? ', ' : null}
+                                                    <a href={series['@id']}>
+                                                        {series.accession}
+                                                    </a>
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
+                                )}
+                            </React.Fragment>
+                        : null}
                     </div>
                 </div>
-                {cartControls ?
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">{displayType}</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    {mode !== 'cart-view' ?
+                        <React.Fragment>
+                            <Status item={result.status} badgeSize="small" css="result-table__status" />
+                            {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                        </React.Fragment>
+                    : null}
+                </div>
+                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
                     <div className="result-item__cart-control">
                         <CartToggle element={result} />
                     </div>
-                    : null}
+                : null}
+                <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -355,21 +398,26 @@ const ExperimentComponent = (props, reactContext) => {
 ExperimentComponent.propTypes = {
     context: PropTypes.object.isRequired, // Experiment search results
     cartControls: PropTypes.bool, // True if displayed in active cart
+    mode: PropTypes.string, // Special search-result modes, e.g. "picker"
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired,
 };
 
 ExperimentComponent.defaultProps = {
     cartControls: false,
+    mode: '',
 };
 
 ExperimentComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
+    session: PropTypes.object,
+    actions: PropTypes.array,
+    session_properties: PropTypes.object,
 };
 
 const Experiment = auditDecor(ExperimentComponent);
 
 globals.listingViews.register(Experiment, 'Experiment');
+globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
 
 
 const DatasetComponent = (props, reactContext) => {
@@ -380,6 +428,7 @@ const DatasetComponent = (props, reactContext) => {
     let targets;
     let lifeStages = [];
     let ages = [];
+    let treatments = [];
 
     // Determine whether the dataset is a series or not
     const seriesDataset = result['@type'].indexOf('Series') >= 0;
@@ -387,15 +436,15 @@ const DatasetComponent = (props, reactContext) => {
     // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
     if (seriesDataset) {
         biosampleTerm = (result.biosample_ontology && Array.isArray(result.biosample_ontology) && result.biosample_ontology.length === 1 && result.biosample_ontology[0].term_name) ? result.biosample_ontology[0].term_name : ((result.biosample_ontology && result.biosample_ontology.term_name) ? result.biosample_ontology.term_name : '');
-        const organisms = (result.organism && result.organism.length) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
+        const organisms = (result.organism && result.organism.length > 0) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
         if (organisms.length === 1) {
             organism = organisms[0];
         }
 
         // Dig through the biosample life stages and ages
-        if (result.related_datasets && result.related_datasets.length) {
+        if (result.related_datasets && result.related_datasets.length > 0) {
             result.related_datasets.forEach((dataset) => {
-                if (dataset.replicates && dataset.replicates.length) {
+                if (dataset.replicates && dataset.replicates.length > 0) {
                     dataset.replicates.forEach((replicate) => {
                         if (replicate.library && replicate.library.biosample) {
                             const biosample = replicate.library.biosample;
@@ -403,6 +452,7 @@ const DatasetComponent = (props, reactContext) => {
 
                             if (lifeStage) { lifeStages.push(lifeStage); }
                             if (biosample.age_display) { ages.push(biosample.age_display); }
+                            if (biosample.treatments) { treatments = [...treatments, ...biosample.treatments]; }
                         }
                     });
                 }
@@ -420,47 +470,53 @@ const DatasetComponent = (props, reactContext) => {
 
     const haveSeries = result['@type'].indexOf('Series') >= 0;
     const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+    const uniqueTreatments = getUniqueTreatments(treatments);
 
     return (
-        <li>
+        <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <PickerActions {...props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
-                            {datasetTypes[result['@type'][0]]}
-                            {seriesDataset ?
-                                <span>
-                                    {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
-                                    {organism || lifeSpec.length > 0 ?
-                                        <span>
-                                            {' ('}
-                                            {organism ? <i>{organism}</i> : null}
-                                            {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
-                                            {')'}
-                                        </span>
-                                        : null}
-                                </span>
-                                :
-                                <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
-                            }
-                        </a>
-                    </div>
-                    <div className="data-row">
+                    <a href={result['@id']} className="result-item__link">
+                        {datasetTypes[result['@type'][0]]}
+                        {seriesDataset ?
+                            <span>
+                                {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+                                {organism || lifeSpec.length > 0 ?
+                                    <span>
+                                        {' ('}
+                                        {organism ? <i>{organism}</i> : null}
+                                        {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
+                                        {')'}
+                                    </span>
+                                : null}
+                            </span>
+                        :
+                            <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
+                        }
+                    </a>
+                    <div className="result-item__data-row">
                         {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
-                        {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
+                        {targets && targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
+                        { treatments && treatments.length > 0 ?
+                                <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
+                                    <span>
+                                        {uniqueTreatments.join(', ')}
+                                    </span>
+                                </div>
+                            : null}
                     </div>
                 </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                </div>
+                <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -473,6 +529,7 @@ DatasetComponent.propTypes = {
 
 DatasetComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Dataset = auditDecor(DatasetComponent);
@@ -481,35 +538,29 @@ globals.listingViews.register(Dataset, 'Dataset');
 
 
 /* eslint-disable react/prefer-stateless-function */
-class TargetComponent extends React.Component {
-    render() {
-        const result = this.props.context;
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Target</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
-                            {result.label} ({result.organism && result.organism.scientific_name ? <i>{result.organism.scientific_name}</i> : <span>{result.investigated_as[0]}</span>})
-                        </a>
-                    </div>
-                    <div className="data-row">
-                        <strong>External resources: </strong>
-                        {result.dbxref && result.dbxref.length ?
-                            <DbxrefList context={result} dbxrefs={result.dbxref} />
-                            : <em>None submitted</em>}
-                    </div>
+const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
+    <li className={resultItemClass(result)}>
+        <div className="result-item">
+            <div className="result-item__data">
+                <a href={result['@id']} className="result-item__link">
+                    {result.label} ({result.organism && result.organism.scientific_name ? <i>{result.organism.scientific_name}</i> : <span>{result.investigated_as[0]}</span>})
+                </a>
+                <div className="result-item__target-external-resources">
+                    <p>External resources:</p>
+                    {result.dbxrefs && result.dbxrefs.length > 0 ?
+                        <DbxrefList context={result} dbxrefs={result.dbxrefs} />
+                    : <em>None submitted</em> }
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-            </li>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+            </div>
+            <div className="result-item__meta">
+                <div className="result-item__meta-title">Target</div>
+                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+            </div>
+            <PickerActions context={result} />
+        </div>
+        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
+    </li>
+);
 
 TargetComponent.propTypes = {
     context: PropTypes.object.isRequired, // Target search results
@@ -519,6 +570,7 @@ TargetComponent.propTypes = {
 
 TargetComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Target = auditDecor(TargetComponent);
@@ -548,7 +600,7 @@ class PatientComponent extends React.Component {
                     <div className="accession">
                         <a href={result['@id']}>
                             {`${result.accession}`}
-                            {hasAge &&`(${age}${ageUnit})`}
+                            {hasAge && `(${age}${ageUnit})`}
                         </a>
                     </div>
                     <div className="data-row">
@@ -599,11 +651,12 @@ class PathologyComponent extends React.Component {
                         </a>
                     </div>
                     <div className="data-row">
-                    {result.tumor_size && result.tumor_size !== 'unknown'&&<div data-test="tumor_size"><strong>Tumor Size:</strong>{result.tumor_size}{result.tumor_size_units}</div>}
-                    {result.laterality && <div><strong>Laterality: </strong>{result.laterality}</div>}
-                    {result.histology && <div><strong>Histology: </strong>{result.histology}</div>}
-                    {result.ajcc_p_stage && <div><strong>Pathological T stage: </strong>{result.ajcc_p_stage}</div>}
-                    {result.ajcc_tnm_stage && <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>}
+                        <div><strong>Tumor Size Range:</strong>{result.tumor_size}{result.tumor_size_units}</div>
+                        <div><strong>Histologic Subtype: </strong>{result.histology}</div>
+                        <div><strong>Tumor Grade: </strong>{result.grade}</div>
+                        <div><strong>pT stage: </strong>{result.ajcc_p_stage}</div>
+                        <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>
+                        <div><strong>Laterality: </strong>{result.laterality}</div>
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -780,18 +833,22 @@ const Image = (props) => {
     const result = props.context;
 
     return (
-        <li>
-            <div className="clearfix">
-                <PickerActions {...props} />
-                <div className="pull-right search-meta">
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <a href={result['@id']} className="result-item__link">{result['@id']}</a>
+                    <div className="attachment">
+                        <div className="file-thumbnail">
+                            <img src={result.thumb_nail} alt="thumbnail" />
+                        </div>
+                    </div>
+                    {result.caption}
+                </div>
+                <div className="result-item__meta">
                     <p className="type meta-title">Image</p>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                 </div>
-                <div className="accession">
-                    <a href={result['@id']}>{result.caption}</a>
-                </div>
-                <div className="data-row">
-                    <Attachment context={result} attachment={result.attachment} />
-                </div>
+                <PickerActions context={result} />
             </div>
         </li>
     );
@@ -804,7 +861,133 @@ Image.propTypes = {
 globals.listingViews.register(Image, 'Image');
 
 
+
+const BioexperimentComponent = (props, reactContext) => {
+    const { cartControls } = props;
+    const result = props.context;
+
+    return (
+        <li>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <PickerActions {...props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Bioexperiment</p>
+                        <p className="type">{` ${result.accession}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {result.assay_term_name ?
+                                <span>{result.assay_term_name}</span> : null
+                            }
+                        </a>
+                    </div>
+
+            </div>
+            {cartControls ?
+                <div className="result-item__cart-control">
+                    <CartToggle element={result} />
+                </div>
+                : null}
+            </div>
+            { props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true }) }
+        </li >
+    );
+};
+
+BioexperimentComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Experiment search results
+    cartControls: PropTypes.bool, // True if displayed in active cart
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired,
+};
+
+BioexperimentComponent.defaultProps = {
+    cartControls: false,
+};
+
+BioexperimentComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Bioexperiment = auditDecor(BioexperimentComponent);
+
+globals.listingViews.register(Bioexperiment, 'Bioexperiment');
+
+const BiodatasetComponent = (props, reactContext) => {
+    const result = props.context;
+    let biosampleTerm;
+
+    // Determine whether the dataset is a series or not
+    const seriesDataset = result['@type'].indexOf('Bioseries') >= 0;
+console.log("seriesDataset", seriesDataset);
+    // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
+    if (seriesDataset) {
+        biosampleTerm = (result.assay_term_name) ? result.assay_term_name : '';
+        // biosampleTerm = (result.biospecimen && Array.isArray(result.biospecimen) && result.biospecimen.length === 1 && result.biospecimen[0].sample_type) ? result.biospecimen[0].sample_type : ((result.biospecimen && result.biospecimen.sample_type) ? result.biospecimen.sample_type : '');
+
+
+    }
+
+    const haveSeries = result['@type'].indexOf('Bioseries') >= 0;
+    const haveFileSet = result['@type'].indexOf('BiofileSet') >= 0;
+    console.log("haveSeries", result['@type'].indexOf('Bioseries'));
+
+    return (
+        <li>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <PickerActions {...props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">{haveSeries ? 'Bioseries' : (haveFileSet ? 'BiofileSet' : 'Biodataset')}</p>
+                        <p className="type">{` ${result.accession}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {biodatasetTypes[result['@type'][0]]}
+                            {seriesDataset ?
+                                <span>
+                                    {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+
+                                </span>
+                                :
+                                <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
+                            }
+                        </a>
+                    </div>
+                    <div className="data-row">
+                        {/* <div><strong>Lab: </strong>{result.lab.title}</div>
+                        <div><strong>Project: </strong>{result.award.project}</div> */}
+                    </div>
+                </div>
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
+
+BiodatasetComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Dataset search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+BiodatasetComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Biodataset = auditDecor(BiodatasetComponent);
+
+globals.listingViews.register(Biodataset, 'Biodataset');
+
+
+/* eslint-disable react/prefer-stateless-function */
 /**
+ *
  * If the given term within the facet is selected, either as a selected term or a negated term,
  * return the href for the term. Don't pass any terms from facets generated by the back end
  * specifically for negation, because they don't get rendered anyway.
@@ -1462,7 +1645,7 @@ class Facet extends React.Component {
                             <div className="filter-hed">Selected filters:</div>
                             {selectedTerms.map(filter =>
                                 <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link">
-                                    <i className="icon icon-times-circle" className={(filter.field.indexOf('!') !== -1) ? 'icon icon-times-circle' : 'icon icon-check-circle'}/> {filter.term}</div></a>
+                                    <i className="icon icon-times-circle" className={(filter.field.indexOf('!') !== -1) ? 'icon icon-times-circle' : 'icon icon-check-circle'} /> {filter.term}</div></a>
                             )}
                         </div>
                         : null}
@@ -1576,7 +1759,7 @@ export class TextFilter extends React.Component {
 
     getValue() {
         const filter = this.props.filters.filter(f => f.field === 'searchTerm');
-        return filter.length ? filter[0].term : '';
+        return filter.length > 0 ? filter[0].term : '';
     }
 
     /**
@@ -1613,7 +1796,7 @@ export class TextFilter extends React.Component {
             <div className="facet">
                 <input
                     type="search"
-                    className="form-control search-query"
+                    className="search-query"
                     placeholder="Enter search term(s)"
                     defaultValue={this.getValue(this.props)}
                     onKeyDown={this.onKeyDown}
@@ -1631,104 +1814,168 @@ TextFilter.propTypes = {
 };
 
 
-// Displays the entire list of facets. It contains a number of <Facet> cmoponents.
-/* eslint-disable react/prefer-stateless-function */
-export class FacetList extends React.Component {
-    render() {
-        const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix } = this.props;
+// Displays the entire list of facets. It contains a number of <Facet> components.
+export const FacetList = (props) => {
+    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter, isExpandable } = props;
 
-        // Get "normal" facets, meaning non-audit facets.
-        const normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
+    const [expandedFacets, setExpandFacets] = React.useState(new Set());
 
-        let width = 'inherit';
-        if (!facets.length && mode !== 'picker') return <div />;
-        let hideTypes;
-        if (mode === 'picker') {
-            // The edit forms item picker (search results in an edit item) shows the Types facet.
-            hideTypes = false;
+    // Get facets from storage that need to be expanded
+    React.useEffect(() => {
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initalize facet collapse-state
+    }, []);
+
+    // Only on initialize load, get facets from facet-section and schema that need to be expanded
+    React.useEffect(() => {
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+        facets.forEach((facet) => {
+            const field = facet.field;
+            const newlyLoadedFacetStorage = `${MARKER_FOR_NEWLY_LOADED_FACET_PREFIX}${field}`;
+            const isFacetNewlyLoaded = sessionStorage.getItem(newlyLoadedFacetStorage);
+
+            const relevantFilters = context && context.filters.filter(filter => (
+                filter.field === facet.field || filter.field === `${facet.field}!`
+            ));
+
+            // auto-open facets based on selected terms (see url) or it set in the schema (open_on_load)
+            if (!isFacetNewlyLoaded && ((relevantFilters && relevantFilters.length > 0) || facet.open_on_load === true)) {
+                sessionStorage.setItem(newlyLoadedFacetStorage, field); // ensure this is not called again on this active session storage
+                facetList.add(facet.field);
+            }
+        });
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initalize facet collapse-state
+    }, [context, facets]);
+
+    if (facets.length === 0 && mode !== 'picker') {
+        return <div />;
+    }
+
+    const parsedUrl = context && context['@id'] && url.parse(context['@id']);
+
+    /**
+     * Handlers opening or closing a tab
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+     */
+    const handleExpanderClick = (e, status, field) => {
+        let facetList = null;
+
+        if (e.altKey) {
+            // user has held down option-key (alt-key in Windows and Linux)
+            sessionStorage.removeItem(FACET_STORAGE);
+            facetList = new Set(status ? [] : facets.map(f => f.field));
         } else {
-            // Hide the types facet if one "type=" term exists in the URL. and it's not the only
-            // facet.
-            hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && normalFacets.length > 1;
-        }
-        if (orientation === 'horizontal') {
-            width = `${100 / facets.length}%`;
+            facetList = new Set(expandedFacets);
+            facetList[status ? 'delete' : 'add'](field);
         }
 
-        // See if we need the Clear Filters link or not. context.clear_filters.
-        let clearButton;
-        const searchQuery = context && context['@id'] && url.parse(context['@id']).search;
-        if (searchQuery) {
-            // Convert search query string to a query object for easy parsing.
-            const terms = queryString.parse(searchQuery);
+        sessionStorage.setItem(FACET_STORAGE, [...facetList].join(',')); // replace rather than update memory
+        setExpandFacets(facetList); // controls open/closed facets
+    };
 
-            // See if there are terms in the query string aside from `searchTerm` or `advancedQuery`. We have a Clear
-            // Filters button if we do.
-            let nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'searchTerm' && term !== 'advancedQuery');
-            clearButton = nonPersistentTerms && (terms.searchTerm || terms.advancedQuery);
+    /**
+     * Called when user types a key while focused on a facet term. If the user types a space or
+     * return we call the term click handler -- needed for a11y because we have a <div> acting as a
+     * button instead of an actual <button>.
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+    */
+    const handleKeyDown = (e, status, field) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+            // keyCode: 13 = enter-key. 32 = spacebar
+            e.preventDefault();
+            handleExpanderClick(e, status, field);
+        }
+    };
 
-            // If no Clear Filters button yet, do the same check with `type` in the query string.
-            if (!clearButton) {
-                nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
-                clearButton = nonPersistentTerms && terms.type;
+    // See if we need the Clear filters link based on combinations of query-string parameters.
+    let clearButton = false;
+    const searchQuery = parsedUrl && parsedUrl.search;
+    if (!supressTitle && searchQuery) {
+        const querySearchTerm = new QueryString(parsedUrl.query);
+        const queryType = querySearchTerm.clone();
+
+        // We have a Clear Filters button if we have "searchTerm" or "advancedQuery" and *anything*
+        // else.
+        const hasSearchTerm = querySearchTerm.queryCount('searchTerm') > 0 || querySearchTerm.queryCount('advancedQuery') > 0;
+        if (hasSearchTerm) {
+            querySearchTerm.deleteKeyValue('searchTerm').deleteKeyValue('advancedQuery');
+            clearButton = querySearchTerm.queryCount() > 0;
+        }
+
+        // If no Clear Filters button yet, do the same check with `type` in the query string.
+        if (!clearButton) {
+            // We have a Clear Filters button if we have "type" and *anything* else.
+            const hasType = queryType.queryCount('type') > 0;
+            if (hasType) {
+                queryType.deleteKeyValue('type');
+                clearButton = queryType.queryCount() > 0;
             }
         }
+    }
 
-        // Collect negation filters ie filters with fields ending in an exclamation point. These
-        // are the negation facet terms that need to get merged into the regular facets that their
-        // non-negated versions inhabit.
-        const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
-
-        return (
+    return (
+        <div className="search-results__facets">
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
-                <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
-                    {(context || clearButton) ?
+                <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`} data-test="facetcontainer">
+                    {(!supressTitle || clearButton) ?
                         <div className="search-header-control">
-                            {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
-                            <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
+                            <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} />
+                            {context.clear_filters ?
+                                <ClearFilters searchUri={context.clear_filters} enableDisplay={clearButton} />
+                            : null}
                         </div>
-                        : null}
-                    {mode === 'picker' && !hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                    {facets.map((facet) => {
-                        if (hideTypes && facet.field === 'type') {
-                            return <span key={facet.field} />;
-                        }
-                        if (facet.field === 'date_released') {
-                            return (
-                                <DateSelectorFacet
-                                    {...this.props}
-                                    key={facet.field}
-                                    facet={facet}
-                                    filters={filters}
-                                    width={width}
-                                    negationFilters={negationFilters}
-                                    facets={facets}
-                                />
-                            );
-                        }
-                        if (facet.field === 'date_submitted') {
-                            return null;
-                        }
-                        return (
-                            <Facet
-                                {...this.props}
+        : null}
+                    {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
+                    <div className="facet-wrapper">
+                        {facets.map((facet) => {
+                            // Filter the filters to just the ones relevant to the current facet,
+                            // matching negation filters too.
+                            const relevantFilters = context && context.filters.filter(filter => (
+                                filter.field === facet.field || filter.field === `${facet.field}!`
+                            ));
+
+                            // Look up the renderer registered for this facet and use it to render this
+                            // facet if a renderer exists. A non-existing renderer supresses the
+                            // display of a facet.
+                            const FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
+                            const isExpanded = expandedFacets.has(facet.field);
+                            return FacetRenderer && <FacetRenderer
                                 key={facet.field}
                                 facet={facet}
-                                filters={filters}
-                                width={width}
-                                negationFilters={negationFilters}
-                            />
-                        );
-                    })}
+                                results={context}
+                                mode={mode}
+                                relevantFilters={relevantFilters}
+                                pathname={parsedUrl.pathname}
+                                queryString={parsedUrl.query}
+                                onFilter={onFilter}
+                                isExpanded={isExpanded}
+                                handleExpanderClick={handleExpanderClick}
+                                handleKeyDown={handleKeyDown}
+                                isExpandable={isExpandable}
+                            />;
+                        })}
+                    </div>
                 </div>
             </div>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+        </div>
+    );
+};
 
 FacetList.propTypes = {
-    context: PropTypes.object,
+    context: PropTypes.object.isRequired,
     facets: PropTypes.oneOfType([
         PropTypes.array,
         PropTypes.object,
@@ -1739,138 +1986,28 @@ FacetList.propTypes = {
     hideTextFilter: PropTypes.bool,
     docTypeTitleSuffix: PropTypes.string,
     addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
+    /** True to supress the display of facet-list title */
+    supressTitle: PropTypes.bool,
+    /** Special facet-term click handler for edit forms */
+    onFilter: PropTypes.func,
+    /** True if the collapsible, false otherwise  */
+    isExpandable: PropTypes.bool,
 };
 
 FacetList.defaultProps = {
-    context: null,
     mode: '',
     orientation: 'vertical',
     hideTextFilter: false,
     addClasses: '',
     docTypeTitleSuffix: 'search',
+    supressTitle: false,
+    onFilter: null,
+    isExpandable: true,
 };
 
 FacetList.contextTypes = {
     session: PropTypes.object,
-};
-
-
-/**
- * Display the modal for batch download, and pass back clicks in the Download button
- */
-export const BatchDownloadModal = ({ handleDownloadClick, title, additionalContent, disabled }) => (
-    <Modal actuator={<button className="btn btn-info btn-sm" disabled={disabled} data-test="batch-download">{title || 'Download'}</button>}>
-        <ModalHeader title="Using batch download" closeModal />
-        <ModalBody>
-            <p>
-                Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file has the URL or command line to download the metadata file.
-            </p>
-            <p>
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
-            </p>
-            <p>
-                The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:
-            </p>
-            <code>xargs -L 1 curl -O -L &lt; files.txt</code><br />
-            <div>{additionalContent}</div>
-        </ModalBody>
-        <ModalFooter
-            closeModal={<button className="btn btn-info btn-sm">Close</button>}
-            submitBtn={<button className="btn btn-info btn-sm" disabled={disabled} onClick={handleDownloadClick}>Download</button>}
-            dontClose
-        />
-    </Modal>
-);
-
-BatchDownloadModal.propTypes = {
-    /** Function to call when Download button gets clicked */
-    handleDownloadClick: PropTypes.func.isRequired,
-    /** Title to override usual actuator "Download" button title */
-    title: PropTypes.string,
-    /** True to disable Download button */
-    disabled: PropTypes.bool,
-    /** Additional content in modal as component */
-    additionalContent: PropTypes.object,
-};
-
-BatchDownloadModal.defaultProps = {
-    title: '',
-    disabled: false,
-    additionalContent: null,
-};
-
-
-export class BatchDownload extends React.Component {
-    constructor() {
-        super();
-        this.handleDownloadClick = this.handleDownloadClick.bind(this);
-    }
-
-    handleDownloadClick() {
-        if (!this.props.context) {
-            requestSearch(this.props.query).then((results) => {
-                this.context.navigate(results.batch_download);
-            });
-        } else {
-            this.context.navigate(this.props.context.batch_download);
-        }
-    }
-
-    render() {
-        return <BatchDownloadModal handleDownloadClick={this.handleDownloadClick} />;
-    }
-}
-
-BatchDownload.propTypes = {
-    context: PropTypes.object, // Search result object whose batch_download we're using
-    query: PropTypes.string, // Without `context`, perform a search using this query string
-};
-
-BatchDownload.defaultProps = {
-    context: null,
-    query: '',
-};
-
-BatchDownload.contextTypes = {
-    navigate: PropTypes.func,
-};
-
-
-/**
- * Display the search-result view controls that lets users go to the different search results pages
- * (matrix, report, etc).
- */
-export const ViewControls = ({ views, css, hrefProcessor }) => {
-    if (views && views.length > 0) {
-        return (
-            <div className={`btn-attached${css ? ` ${css}` : ''}`}>
-                {views.map((view) => {
-                    // Checks for the callback every iteration, but with so few buttons I don't
-                    // expect performance issues.
-                    const href = hrefProcessor ? hrefProcessor(view.href) : view.href;
-                    return <a href={href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(globals.viewToSvg[view.icon])}</a>;
-                })}
-            </div>
-        );
-    }
-    return null;
-};
-
-ViewControls.propTypes = {
-    /** Views from a search-result object */
-    views: PropTypes.array,
-    /** CSS to add to the wrapper <div> */
-    css: PropTypes.string,
-    /** Callback to modify hrefs for each button */
-    hrefProcessor: PropTypes.func,
-};
-
-ViewControls.defaultProps = {
-    views: null,
-    css: '',
-    hrefProcessor: null,
+    session_properties: PropTypes.object,
 };
 
 
@@ -1899,68 +2036,109 @@ ClearFilters.defaultProps = {
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter }, reactContext) => {
-    const results = context['@graph'];
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, activeFilters, showDownloadButton }, reactContext) => {
+    const results = context['total'];
     const searchBase = url.parse(reactContext.location_href).search || '';
-    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-
-    // Get a sorted list of batch hubs keys with case-insensitive sort.
-    let visualizeKeys = [];
-    if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
-        visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
-            const aLower = a.toLowerCase();
-            const bLower = b.toLowerCase();
-            return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
-        });
+    let trimmedSearchBase = ''
+    if (searchBase.indexOf("&limit=") !== -1 || searchBase.indexOf("?limit=") !== -1 ) {
+        console.log("has limit")
+        if (searchBase.indexOf("limit=all") !== -1) {
+            trimmedSearchBase =searchBase.replace(/[?|&]limit=all/, '')
+        } else {
+            trimmedSearchBase =searchBase.replace(/[?|&]limit=\d*/, '')
+        }
+    }else{
+        trimmedSearchBase = searchBase
     }
+    const canDownload = context.total <= MAX_DOWNLOADABLE_RESULT;
+    const modalText = canDownload ?
+        <>
+            <p>
+                Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                The first line of the file has the URL or command line to download the metadata file.
+            </p>
+            <p>
+                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
+            </p>
+            <p>
+                The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
+                The following command using cURL can be used to download all the files in the list:
+            </p>
+            <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
+        </> :
+        <>
+            <p>
+                This search is too large (&gt;{MAX_DOWNLOADABLE_RESULT} datasets) to automatically generate a manifest or metadata file.  We are currently working on methods to download from large searches.
+            </p>
+            <p>
+                You can directly access the files in AWS: <a href="https://registry.opendata.aws/encode-project/" target="_blank" rel="noopener noreferrer">https://registry.opendata.aws/encode-project/</a>
+            </p>
+        </>;
 
     let resultsToggle = null;
-    if (showResultsToggle) {
-        if (context.total > results.length && searchBase.indexOf('limit=all') === -1) {
-            resultsToggle = (
+    const buttonStyle = {
+        marginRight: '5px',
+    };
+
+
+
+    resultsToggle = (
+
+            <div className="btn-attached">
+                {results > 25 &&
                 <a
-                    rel="nofollow"
+                className="btn btn-info btn-sm"
+                style={buttonStyle}
+                href={trimmedSearchBase || '/search/'}
+                onClick={onFilter}
+                >
+                    View 25
+                </a>}
+                {results > 50 &&
+                <a
+                className="btn btn-info btn-sm"
+                style={buttonStyle}
+                href={trimmedSearchBase ? `${trimmedSearchBase}&limit=50` : '/search/?limit=50'}
+                onClick={onFilter}
+                >
+                    View 50
+                </a>}
+                {results > 100 &&
+                <a
                     className="btn btn-info btn-sm"
-                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                    style={buttonStyle}
+                    href={trimmedSearchBase ? `${trimmedSearchBase}&limit=100` : '/search/?limit=100'}
                     onClick={onFilter}
+                >
+                    View 100
+                </a>}
+                {results > 25 &&
+                <a
+                rel="nofollow"
+                className="btn btn-info btn-sm"
+                style={buttonStyle}
+                href={trimmedSearchBase ? `${trimmedSearchBase}&limit=all` : '?limit=all'}
+                onClick={onFilter}
                 >
                     View All
                 </a>
-            );
-        } else {
-            resultsToggle = (
-                <span>
-                    {results.length > 25 ?
-                        <a
-                            className="btn btn-info btn-sm"
-                            href={trimmedSearchBase || '/search/'}
-                            onClick={onFilter}
-                        >
-                            View 25
-                        </a>
-                        : null}
-                </span>
-            );
-        }
-    }
+                }
 
+            </div>
+    );
     return (
         <div className="results-table-control">
-            <ViewControls views={context.views} />
-
-            {resultsToggle}
-
-            {context.batch_download ?
-                <BatchDownload context={context} />
+            <div className="results-table-control__main">
+                <ViewControls results={context} activeFilters={activeFilters} />
+                {Boolean(context['title'] == "Search") && resultsToggle}
+                {showDownloadButton ? <BatchDownloadControls results={context} modalText={modalText} canDownload={canDownload} /> : ''}
+                {!hideBrowserSelector ?
+                    <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} activeFilters={activeFilters} />
                 : null}
-
-            {visualizeKeys.length > 0 ?
-                <BrowserSelector
-                    visualizeCfg={context.visualize_batch}
-                    disabled={!!visualizeDisabledTitle}
-                    title={visualizeDisabledTitle || 'Visualize'}
-                />
-                : null}
+            </div>
+            <div className="results-table-control__json">
+                <DisplayAsJson />
+            </div>
         </div>
     );
 };
@@ -1984,12 +2162,21 @@ SearchControls.propTypes = {
         }
         return null;
     },
+    /** True to hide the Visualize button */
+    hideBrowserSelector: PropTypes.bool,
+    /** Add filters to search links if needed */
+    activeFilters: PropTypes.array,
+    /** Determines whether or not download button is displayed */
+    showDownloadButton: PropTypes.bool,
 };
 
 SearchControls.defaultProps = {
     visualizeDisabledTitle: '',
     showResultsToggle: false,
     onFilter: null,
+    hideBrowserSelector: false,
+    activeFilters: [],
+    showDownloadButton: true,
 };
 
 SearchControls.contextTypes = {
@@ -2005,26 +2192,8 @@ export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
 
-        // Make an array of all assemblies found in all files in the search results.
-        let assemblies = [];
-        const results = this.props.context['@graph'];
-        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
-        if (files.length) {
-            // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
-            assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
-        }
-
-        // Set React component state.
-        this.state = {
-            assemblies,
-            browserAssembly: assemblies.length && assemblies[0], // Currently selected assembly for the browser
-            selectedTab: '',
-        };
-
         // Bind `this` to non-React moethods.
         this.onFilter = this.onFilter.bind(this);
-        this.assemblyChange = this.assemblyChange.bind(this);
-        this.handleTabClick = this.handleTabClick.bind(this);
     }
 
     getChildContext() {
@@ -2033,175 +2202,44 @@ export class ResultTable extends React.Component {
         };
     }
 
-    componentDidMount() {
-        if (window !== undefined) {
-            // Determining this in componentDidMount to avoid server/client reactJS conflict.
-            if (window.location.hash === '#browser') {
-                this.setState({ selectedTab: 'browserpane' });
-            }
-        }
-    }
-
     onFilter(e) {
         const searchStr = e.currentTarget.getAttribute('href');
         this.props.onChange(searchStr);
         e.stopPropagation();
         e.preventDefault();
-        this.setState({ selectedTab: 'listpane' }); // Always return to listpane so that browser can rerender
-    }
-
-    // Called when new value chosen from assembly dropdown.
-    assemblyChange(e) {
-        this.setState({ browserAssembly: e.target.value });
-    }
-
-    handleTabClick(tab) {
-        // Since we force TabPanel tab selection, we need to keep track of selectedTab.
-        if (this.state.selectedTab !== tab) {
-            this.setState({ selectedTab: tab });
-        }
     }
 
     render() {
-        const { context, searchBase, restrictions } = this.props;
-        const { assemblies } = this.state;
+        const { context, searchBase, actions } = this.props;
+        const { facets } = context;
         const results = context['@graph'];
         const total = context.total;
         const columns = context.columns;
         const filters = context.filters;
         const label = 'results';
-        let browseAllFiles = true; // True to pass all files to browser
-        let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
-        let browserDatasets = []; // Datasets will be used to get vis_json blobs
-        let browserFiles = []; // Files to pass to ResultsBrowser component
-        let assemblyChooser;
         const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
-        const facets = context.facets.map((facet) => {
-            if (restrictions[facet.field] !== undefined) {
-                const workFacet = _.clone(facet);
-                workFacet.restrictions = restrictions[workFacet.field];
-                workFacet.terms = workFacet.terms.filter(term => _.contains(workFacet.restrictions, term.key));
-            }
-            return facet;
-        });
-
-        // See if a specific result type was requested ('type=x')
-        // Satisfied iff exactly one type is in the search
-        if (results.length) {
-            let specificFilter;
-            filters.forEach((filter) => {
-                if (filter.field === 'type') {
-                    specificFilter = specificFilter ? '' : filter.term;
-                }
-            });
-        }
-
-        // Check whether the search query qualifies for a genome browser display. Start by counting
-        // the number of "type" filters exist.
-        let typeFilter;
-        const counter = filters.reduce((prev, curr) => {
-            if (curr.field === 'type') {
-                typeFilter = curr;
-                return prev + 1;
-            }
-            return prev;
-        }, 0);
-
-        // If we have only one "type" term in the query string and it's for File, then we can
-        // display the List/Browser tabs. Otherwise we just get the list.
-        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1;
-        if (browserAvail) {
-            // If dataset is in the query string, we can show all files.
-            const datasetFilter = filters.find(filter => filter.field === 'dataset');
-            if (datasetFilter) {
-                browseAllFiles = true;
-
-                // Probably not worth a define in globals.js for visualizable types and statuses.
-                browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
-                if (browserFiles.length > 0) {
-                    browserFiles = browserFiles.filter(file =>
-                        ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-                    );
-                }
-                browserAvail = (browserFiles.length > 0);
-
-                if (browserAvail) {
-                    // Distill down to a list of datasets so they can be passed to genome_browser code.
-                    browserDatasets = browserFiles.reduce((datasets, file) => (
-                        (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
-                    ), []);
-                }
-            } else {
-                browseAllFiles = false;
-                browserAvail = false; // NEW: Limit browser option to type=File&dataset=... only!
-            }
-        }
-
-        if (browserAvail) {
-            // Now determine if we have a mix of assemblies in the files, or just one. If we have
-            // a mix, we need to render a drop-down.
-            if (assemblies.length === 1) {
-                // Only one assembly in all the files. No menu needed.
-                browserAssembly = assemblies[0];
-                // empty div to avoid warning only.
-                assemblyChooser = (
-                    <div className="browser-assembly-chooser" />
-                );
-            } else {
-                browserAssembly = this.state.browserAssembly;
-                assemblyChooser = (
-                    <div className="browser-assembly-chooser">
-                        <div className="browser-assembly-chooser__title">Assembly:</div>
-                        <div className="browser-assembly-chooser__menu">
-                            <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />
-                        </div>
-                    </div>
-                );
-            }
-        }
 
         return (
-            <div>
-                <div className="row">
-                    {facets.length ?
-                        <div className="col-sm-5 col-md-4 col-lg-3">
-                            <FacetList
-                                {...this.props}
-                                facets={facets}
-                                filters={filters}
-                                searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-                                onFilter={this.onFilter}
-                            />
-                        </div>
-                        : ''}
-                    <div className="col-sm-7 col-md-8 col-lg-9">
-
-                        {context.notification === 'Success' ?
-                            <div>
-                                <h4>Showing {results.length} of {total} {label}</h4>
-                                <DisplayAsJson />
-                                <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle />
-                                <hr />
-                                <CartSearchControls searchResults={context} />
-                                {browserAvail ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} navCss="browser-tab-bg" tabFlange>
-                                        <TabPanelPane key="listpane">
-                                            <ResultTableList results={results} columns={columns} tabbed />
-                                        </TabPanelPane>
-                                        <TabPanelPane key="browserpane">
-                                            {assemblyChooser}
-                                            <ResultBrowser files={results} assembly={browserAssembly} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
-                                        </TabPanelPane>
-                                    </TabPanel>
-                                    :
-                                    <ResultTableList results={results} columns={columns} cartControls />
-                                }
-                            </div>
-                            :
-                            <h4>{context.notification}</h4>
-                        }
+            <div className="search-results">
+                <FacetList
+                    {...this.props}
+                    facets={facets}
+                    filters={filters}
+                    searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                    onFilter={this.onFilter}
+                />
+                {context.notification === 'Success' ?
+                    <div className="search-results__result-list">
+                        <h4>Showing {results.length} of {total} {label}</h4>
+                        <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle />
+                        {!(actions && actions.length > 0) ?
+                            <CartSearchControls searchResults={context} />
+                        : null}
+                        <ResultTableList results={results} columns={columns} cartControls />
                     </div>
-                </div>
+                :
+                    <h4>{context.notification}</h4>
+                }
             </div>
         );
     }
@@ -2210,7 +2248,6 @@ export class ResultTable extends React.Component {
 ResultTable.propTypes = {
     context: PropTypes.object.isRequired,
     actions: PropTypes.array,
-    restrictions: PropTypes.object,
     searchBase: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     currentRegion: PropTypes.func,
@@ -2218,7 +2255,6 @@ ResultTable.propTypes = {
 
 ResultTable.defaultProps = {
     actions: [],
-    restrictions: {},
     searchBase: '',
     currentRegion: null,
 };
@@ -2232,106 +2268,29 @@ ResultTable.contextTypes = {
 };
 
 
-const BrowserTabQuickView = function BrowserTabQuickView() {
-    return <div>Quick View <span className="beta-badge">BETA</span></div>;
-};
 
-
-// Display the list of search results.
-export const ResultTableList = ({ results, columns, tabbed, cartControls }) => (
-    <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
-        {results.length ?
-            results.map(result => Listing({ context: result, columns, key: result['@id'], cartControls }))
-            : null}
+// Display the list of search results. `mode` allows for special displays, and supports:
+//     picker: Results displayed in an edit form object picker
+//     cart-view: Results displayed in the Cart View page.
+export const ResultTableList = ({ results, columns, cartControls, mode }) => (
+    <ul className="result-table" id="result-table">
+        {results.length > 0 ?
+            results.map(result => Listing({ context: result, columns, key: result['@id'], cartControls, mode }))
+        : null}
     </ul>
 );
 
 ResultTableList.propTypes = {
     results: PropTypes.array.isRequired, // Array of search results to display
     columns: PropTypes.object, // Columns from search results
-    tabbed: PropTypes.bool, // True if table is in a tab
     cartControls: PropTypes.bool, // True if items should display with cart controls
+    mode: PropTypes.string, // Special search-result modes, e.g. "picker"
 };
 
 ResultTableList.defaultProps = {
     columns: null,
-    tabbed: false,
     cartControls: false,
-};
-
-
-// Display a local genome browser in the ResultTable where search results would normally go. This
-// only gets displayed if the query string contains only one type and it's "File."
-const ResultBrowser = (props) => {
-    let visUrl = '';
-    const datasetCount = props.datasets.length;
-    let region; // optionally make a persistent region
-    const lastRegion = props.currentRegion();
-    if (lastRegion && lastRegion.assembly === props.assembly) {
-        region = lastRegion.region;
-        console.log('found region %s', region);
-    }
-    if (datasetCount === 1) {
-        // /datasets/{ENCSR000AEI}/@@hub/{hg19}/trackDb.json
-        visUrl = `${props.datasets[0]}/@@hub/${props.assembly}/trackDb.json`;
-    } else if (datasetCount > 1) {
-        // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}/{hg19}/vis_blob.json
-        for (let ix = 0; ix < datasetCount; ix += 1) {
-            const accession = props.datasets[ix].split('/')[2];
-            visUrl += `%2C%2Caccession=${accession}`;
-        }
-        visUrl = `/batch_hub/type=Experiment${visUrl}/${props.assembly}/vis_blob.json`;
-    }
-    if (datasetCount > 0) {
-        return (
-            <FetchedData ignoreErrors>
-                <Param name="visBlobs" url={visUrl} />
-                <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
-            </FetchedData>
-        );
-    }
-    return (
-        <div>
-            <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
-        </div>
-    );
-};
-
-ResultBrowser.propTypes = {
-    files: PropTypes.array.isRequired, // Array of files whose browser we're rendering
-    assembly: PropTypes.string.isRequired, // Filter `files` by this assembly
-    datasets: PropTypes.array.isRequired, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
-    limitFiles: PropTypes.bool, // True to limit browsing to 20 files
-    currentRegion: PropTypes.func,
-};
-
-ResultBrowser.defaultProps = {
-    limitFiles: true,
-    currentRegion: null,
-};
-
-
-// Display a dropdown menu of the given assemblies.
-const AssemblyChooser = (props) => {
-    const { assemblies, currentAssembly, assemblyChange } = props;
-
-    return (
-        <select className="form-control" value={currentAssembly} onChange={assemblyChange}>
-            {assemblies.map((assembly, i) =>
-                <option key={i} value={assembly}>{assembly}</option>
-            )}
-        </select>
-    );
-};
-
-AssemblyChooser.propTypes = {
-    assemblies: PropTypes.array.isRequired, // Array of assemblies to include in the dropdown
-    currentAssembly: PropTypes.string, // Currently selected assembly
-    assemblyChange: PropTypes.func.isRequired, // Function to call when the user chooses a new assembly
-};
-
-AssemblyChooser.defaultProps = {
-    currentAssembly: 'default',
+    mode: '',
 };
 
 
@@ -2359,15 +2318,17 @@ export class Search extends React.Component {
         const searchBase = url.parse(this.context.location_href).search || '';
         const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
 
-        return (
-            <div>
-                {facetdisplay ?
-                    <div className="panel data-display main-panel">
+        if (facetdisplay) {
+            return (
+                <Panel>
+                    <PanelBody>
                         <ResultTable {...this.props} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
-                    </div>
-                    : <h4>{notification}</h4>}
-            </div>
-        );
+                    </PanelBody>
+                </Panel>
+            );
+        }
+
+        return <h4>{notification}</h4>;
     }
 }
 
@@ -2382,8 +2343,8 @@ Search.contextTypes = {
 
 // optionally make a persistent region
 Search.lastRegion = {
-    assembly: React.PropTypes.string,
-    region: React.PropTypes.string,
+    assembly: PropTypes.string,
+    region: PropTypes.string,
 };
 
 globals.contentViews.register(Search, 'Search');

@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { RelatedItems } from './item';
-import { DisplayAsJson } from './objectutils';
+import { ItemAccessories } from './objectutils';
 import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
@@ -130,6 +130,7 @@ class Patient extends React.Component {
     if (Object.keys(this.props.context.metastasis).length > 0) {
       hasMetastasis = true;
     }
+
     const labsPanelBody = (
       <PatientChart chartId="labsChart" data={context.labs} ></PatientChart>
 
@@ -163,62 +164,100 @@ class Patient extends React.Component {
           <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" ></script>
           <div className="col-sm-12">
             <Breadcrumbs root="/search/?type=Patient" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-            <h2>{context.accession}</h2>
             <div className="cart__toggle--header">
-                <CartToggle element={context} />
+              <CartToggle element={context} />
             </div>
+            <h2>{context.accession}</h2>
+            <ItemAccessories item={context}/>
           </div>
         </header>
 
         <Panel>
-          <PanelHeading>
-            <h4>Patient Information</h4>
-          </PanelHeading>
-          <PanelBody>
-            <dl className="key-value">
-              <div data-test="status">
-                <dt>Status</dt>
-                <dd><Status item={context} inline /></dd>
-              </div>
-              <div data-test="sex">
-                <dt>Sex</dt>
-                <dd>{context.sex}</dd>
+          <PanelBody addClasses="panel__split">
+            <div className="panel__split-element">
+              <div className="panel__split-heading panel__split-heading--experiment">
+                <h4>Patient Information</h4>
               </div>
 
-              <div data-test="ethnicity">
-                <dt>Ethnicity</dt>
-                <dd>{context.ethnicity}</dd>
+              <dl className="key-value">
+                <div data-test="status">
+                  <dt>Status</dt>
+                  <dd><Status item={context} inline /></dd>
+                </div>
+                <div data-test="sex">
+                  <dt>Sex</dt>
+                  <dd>{context.sex}</dd>
+                </div>
+
+                <div data-test="ethnicity">
+                  <dt>Ethnicity</dt>
+                  <dd>{context.ethnicity}</dd>
+                </div>
+
+                <div data-test="race">
+                  <dt>Race</dt>
+                  <dd>{context.race}</dd>
+                </div>
+
+                <div data-test="age">
+                  <dt>Age at diagnosis</dt>
+                  <dd>{`${context.diagnosis.age}${ageUnit}`}</dd>
+                </div>
+
+                <div data-test="diagnosis_date">
+                  <dt>Diagnosis Date</dt>
+                  <dd>{`${context.diagnosis.diagnosis_date} ( Diagnosis Source: `}{`${context.diagnosis.diagnosis_source} )`}</dd>
+                </div>
+
+                <div data-test="last_follow_up_date">
+                  <dt>Last Follow Up Date</dt>
+                  <dd>{context.last_follow_up_date} </dd>
+                </div>
+
+                {context.death_date && <div data-test="death_date">
+                  <dt>Death Date</dt>
+                  <dd>{`${context.death_date} ( Death Source: `}{`${context.death_source} )`}</dd>
+                </div>}
+              </dl>
+            </div>
+
+            <div className="panel__split-element">
+              <div className="panel__split-heading panel__split-heading--experiment">
+                <h4>Dominant Tumor</h4>
               </div>
-
-              <div data-test="race">
-                <dt>Race</dt>
-                <dd>{context.race}</dd>
-              </div>
-
-              <div data-test="age">
-                <dt>Age at diagnosis</dt>
-                <dd>{`${context.diagnosis.age}${ageUnit}`}</dd>
-              </div>
-
-              <div data-test="diagnosis_date">
-                <dt>Diagnosis Date</dt>
-                <dd>{`${context.diagnosis.diagnosis_date} ( Diagnosis Source: `}{`${context.diagnosis.diagnosis_source} )`}</dd>
-              </div>
-
-              <div data-test="last_follow_up_date">
-               <dt>Last Follow Up Date</dt>
-               <dd>{context.last_follow_up_date} </dd>
-             </div>
-
-              {context.death_date && <div data-test="death_date">
-                <dt>Death Date</dt>
-                <dd>{`${context.death_date} ( Death Source: `}{`${context.death_source} )`}</dd>
-              </div>}
-            </dl>
+              <dl className="key-value">
+                {context.dominant_tumor.histology && <div data-test="histology">
+                  <dt>Histology</dt>
+                  <dd>{context.dominant_tumor.histology} </dd>
+                </div>}
+                {context.dominant_tumor.t_stage &&<div data-test="t_stage">
+                  <dt>pT Stage</dt>
+                  <dd>{context.dominant_tumor.t_stage} </dd>
+                </div>}
+                {context.dominant_tumor.n_stage && <div data-test="n_stage">
+                  <dt>pN Stage</dt>
+                  <dd>{context.dominant_tumor.n_stage} </dd>
+                </div>}
+                {context.dominant_tumor.m_stage && <div data-test="m_stage">
+                  <dt>pM Stage</dt>
+                  <dd>{context.dominant_tumor.m_stage} </dd>
+                </div>}
+                {context.dominant_tumor.tumor_size && <div data-test="tumor_size">
+                  <dt>Tumor Size</dt>
+                  <dd>{`${context.dominant_tumor.tumor_size}${context.dominant_tumor.tumor_size_units}`} </dd>
+                </div>}
+                {context.dominant_tumor.surgery && <div data-test="surgery">
+                  <dt>Surgery</dt>
+                  <dd><a href={context.dominant_tumor.surgery_id}>{context.dominant_tumor.surgery}</a></dd>
+                </div>}
+                {context.dominant_tumor.path_report && <div data-test="path_report">
+                  <dt>Pathology Report</dt>
+                  <dd><a href={context.dominant_tumor.path_report_id}>{context.dominant_tumor.path_report}</a></dd>
+                </div>}
+              </dl>
+            </div>
           </PanelBody>
         </Panel>
-        {hasLabs && <CollapsiblePanel panelId="myPanelId1" title="Lab Results Over Time" content={labsPanelBody} />}
-        {hasVitals && <CollapsiblePanel panelId="myPanelId2" title="Vital Results Over Time" content={vitalsPanelBody} />}
         {hasPath && <PatientPathTable data={context.surgery} tableTitle="Patient Diagnosis"></PatientPathTable>}
         {hasSurgery && <CollapsiblePanel panelId="myPanelId3" title="Surgical Results Over Time" content={surgeryPanelBody} />}
         {hasRadiation && <CollapsiblePanel panelId="myPanelId5" title="Radiation History" content={radiationPanelBody} />}
@@ -227,6 +266,8 @@ class Patient extends React.Component {
         {hasIHC && <IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
         {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
         {hasBiospecimen && <BiospecimenTable data={context.biospecimen} tableTitle="Biospecimens from this patient"></BiospecimenTable>}
+        {hasLabs && <CollapsiblePanel panelId="myPanelId1" title="Lab Results Over Time" content={labsPanelBody} />}
+        {hasVitals && <CollapsiblePanel panelId="myPanelId2" title="Vital Results Over Time" content={vitalsPanelBody} />}
         <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x" /></button>
       </div>
     );

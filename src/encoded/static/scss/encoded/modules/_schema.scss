@@ -50,6 +50,7 @@
 // For the list of available schemas on the /profiles/ page.
 .schema-list {
     display: block;
+    margin-top: 10px;
 
     @media screen and (min-width: $screen-md-min) {
         display: flex;
@@ -57,6 +58,8 @@
     }
 
     @at-root #{&}__item {
+        display: flex;
+        align-items: center;
         margin: 2px 0;
 
         @media screen and (min-width: $screen-md-min) {
@@ -70,22 +73,25 @@
             margin: 2px 0;
         }
 
+        @media screen and (min-width: $screen-xl-min) {
+            flex: 0 1 25%;
+            width: 25%;
+            margin: 2px 0;
+        }
+
         .btn {
             margin-right: 5px;
         }
     }
 }
 
-// Button in profile object's tab bar to add a new object of this type.
-.profiles-add-obj {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    height: 100%;
-    z-index: 1;
+// Descriptive text for the schema page.
+.schema-description {
+    margin-top: -15px;
+    border-bottom: 1px solid #e0e0e0;
 
-    @at-root #{&}__btn {
-        height: 90%;
+    p {
+        line-height: 1.4;
     }
 }
 
@@ -94,5 +100,41 @@
 
     @at-root #{&}__title {
         font-weight: bold;
+    }
+}
+
+// Styles for the raw JSON schema display.
+$raw-schema-height: 8000px;
+.raw-schema {
+    position: relative;
+    height: auto;
+    max-height: $raw-schema-height;
+    overflow: hidden;
+
+    pre {
+        overflow: scroll;
+        max-height: $raw-schema-height;
+    }
+
+    @at-root #{&}__controls {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+}
+
+.profiles-controls {
+    display: flex;
+    margin: 2px;
+
+    .btn {
+        margin-left: 5px;
+    }
+}
+
+.type-JSONSchema {
+    .tab-nav {
+        display: flex;
+        justify-content: space-between;
     }
 }

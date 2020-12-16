@@ -27,6 +27,7 @@ import {
     SET_CURRENT,
     SET_NAME,
     SET_IDENTIFIER,
+    SET_LOCKED,
     SET_STATUS,
     NO_ACTION,
 } from './actions';
@@ -48,7 +49,7 @@ import CartShare from './share';
 import CartStatus from './status';
 import switchCart from './switch';
 import CartToggle from './toggle';
-import { mergeCarts } from './util';
+import { mergeCarts, cartGetAllowedTypes, cartGetAllowedObjectPathTypes } from './util';
 
 
 /**
@@ -103,6 +104,8 @@ const cartModule = (state, action = { type: NO_ACTION }) => {
             return Object.assign({}, state, { name: action.name });
         case SET_IDENTIFIER:
             return Object.assign({}, state, { identifier: action.identifier });
+        case SET_LOCKED:
+            return Object.assign({}, state, { locked: action.locked });
         case SET_CURRENT:
             return Object.assign({}, state, { current: action.current });
         case SET_STATUS:
@@ -150,6 +153,8 @@ const initializeCart = () => {
         name: 'Untitled',
         /** Cart identifier used in URI */
         identifier: 'untitled',
+        /** Initial unlocked cart */
+        locked: false,
         /** @id of current cart */
         current: '',
         /** Cache of saved cart */
@@ -204,6 +209,8 @@ export {
     // Export the following for Jest tests
     cartModule,
     CartManager,
+    cartGetAllowedTypes,
+    cartGetAllowedObjectPathTypes,
 };
 
 

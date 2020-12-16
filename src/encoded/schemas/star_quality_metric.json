@@ -19,7 +19,13 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
+        },
+        "% of chimeric reads": {
+            "title": "% of chimeric reads",
+            "description": "STAR % of chimeric reads",
+            "type": "string",
+            "pattern": "(^100.00%$)|(^([1-9]([0-9])?|0)\\.[0-9]{2}%$)"
         },
         "% of reads mapped to multiple loci": {
             "title": "% reads mapped to multiple loci",
@@ -85,6 +91,12 @@
             "title": "Mismatch rate per base",
             "description": "STAR Mismatch rate per base, %",
             "type": "string"
+        },
+        "Number of chimeric reads": {
+            "title": "# of chimeric reads",
+            "description": "STAR Number of chimeric reads",
+            "type": "number",
+            "minimum": 0
         },
         "Number of input reads": {
             "title": "# of input reads",

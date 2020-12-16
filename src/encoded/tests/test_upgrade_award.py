@@ -1,21 +1,5 @@
 import pytest
-
-
-@pytest.fixture
-def award():
-    return{
-        'name': 'ENCODE2',
-    }
-
-
-@pytest.fixture
-def award_1(award):
-    item = award.copy()
-    item.update({
-        'schema_version': '1',
-        'rfa': "ENCODE2"
-    })
-    return item
+from unittest import TestCase
 
 
 def test_award_upgrade(upgrader, award_1):
@@ -38,17 +22,54 @@ def test_award_upgrade_url(upgrader, award_1):
     assert 'url' not in value
 
 
-@pytest.fixture
-def award_2(award_1):
-    item = award_1.copy()
-    item.update({
-        'schema_version': '3',
-        'viewing_group': 'ENCODE',
-    })
-    return item
-
-
 def test_award_upgrade_viewing_group(upgrader, award_2):
     value = upgrader.upgrade('award', award_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['viewing_group'] == 'ENCODE3'
+
+
+def test_award_upgrade_title_requirement(upgrader, award_5):
+    assert 'title' not in award_5
+    value = upgrader.upgrade('award', award_5, target_version='6')
+    assert value['title']
+    assert value['schema_version'] == '6'
+
+
+def test_award_upgrade_milestones(upgrader, award_2):
+    award_2['schema_version'] = '6'
+    award_2['milestones'] = [
+        {'assay_term_name': 'single-nuclei ATAC-seq'},
+        {'assay_term_name': 'HiC'},
+    ]
+    value = upgrader.upgrade('award', award_2, target_version='7')
+    assert value['schema_version'] == '7'
+    TestCase().assertListEqual(
+        sorted(value['milestones'], key=lambda x: x['assay_term_name']),
+        sorted(
+            [
+                {'assay_term_name': 'single-nucleus ATAC-seq'},
+                {'assay_term_name': 'HiC'}
+            ],
+            key=lambda x: x['assay_term_name']
+        )
+    )
+
+
+def test_award_upgrade_milestones2(upgrader, award_2):
+    award_2['schema_version'] = '7'
+    award_2['milestones'] = [
+        {'assay_term_name': 'single cell isolation followed by RNA-seq'},
+        {'assay_term_name': 'RNA-seq'},
+    ]
+    value = upgrader.upgrade('award', award_2, target_version='8')
+    assert value['schema_version'] == '8'
+    TestCase().assertListEqual(
+        sorted(value['milestones'], key=lambda x: x['assay_term_name']),
+        sorted(
+            [
+                {'assay_term_name': 'single-cell RNA sequencing assay'},
+                {'assay_term_name': 'RNA-seq'}
+            ],
+            key=lambda x: x['assay_term_name']
+        )
+    )

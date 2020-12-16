@@ -88,10 +88,7 @@
             "description": "The laterality of tumor",
             "type": "string",
             "enum": [
-                "Bilateral",
-                "Bilateral, Asynchronous",
                 "Bilateral, Horseshoe",
-                "Bilateral, Synchronous",
                 "Left",
                 "Right",
                 "Not Available"
@@ -125,39 +122,36 @@
             "description": "The histology of tumor",
             "type": "string",
             "enum": [
-                "Acquired cystic disease-associated RCC",
-                "Angiomyolipoma",
-                "ccPRCC",
-                "ccRCC",
-                "ChRCC",
-                "ChRCC, hybrid type",
-                "collecting duct carcinoma(CDC)",
+                "Acquired cystic disease-associated renal cell carcinoma",
+                "Angiomyolipoma", 
+                "Chromophobe renal cell carcinoma",
+                "Chromophobe renal cell carcinoma, hybrid type", 
+                "Chromophobe renal cell carcinoma, classic",   
+                "Chromophobe renal cell carcinoma, eosinophilic", 
+                "Clear cell papillary renal cell carcinoma", 
+                "Clear cell renal cell carcinoma",
+                "Collecting duct carcinoma",
                 "Cystic nephroma",
-                "HLRCC",
-                "Leiomyoma",
-                "Leiomyosarcoma",
+                "Hereditary leiomyomatosis and RCC-associated RCC",
                 "Metanephric adenoma",
+                "MiT family translocation renal cell carcinoma",
                 "Mucinous tubular and spindle cell carcinoma",
-                "multilocular cystic renal neoplasm of low malignant potential",
-                "PRCC, no type given",
-                "PRCC, type 1",
-                "PRCC, type 2",
+                "Multilocular cystic renal neoplasm of low malignant potential", 
+                "Oncocytic renal neoplasm, not further classified",
+                "Oncocytic renal neoplasm, favor RO",
+                "Oncocytic renal neoplasm, favor ChRCC",
+                "Oncocytoma",
                 "Poorly differentiated malignancy",
-                "Renal medullary carcinoma",
-                "Renal Cell Carcinoma, NOS",
-                "RO",
-                "RON",
-                "RON, favor ChRCC",
-                "RON, favor RO",
                 "Sarcomatoid, NOS",
-                "Sarcoma",
-                "MiT family translocation RCC",
-                "Tubulocystic RCC",
-                "Unclassified",
-                "Unclassified RCC",
-                "Nephroblastoma (Wilms tumor)",
-                "Soft tissue neoplasm, NOS",
-                "SDH deficient RCC"
+                "Papillary renal cell carcinoma", 
+                "Papillary renal cell carcinoma, type 1",
+                "Papillary renal cell carcinoma, type 2",
+                "Renal cell carcinoma, not further classified",
+                "Renal medullary carcinoma",
+                "SDH deficient renal cell carcinoma",
+                "Tubulocystic renal cell carcinoma",
+                "Unclassified RCC"
+
             ]
         },
         "sarcomatoid": {
@@ -216,8 +210,8 @@
             "description": "Invasion seen at the margins or not",
             "type": "string",
             "enum": [
-                "Margins uninvolved by invasive carcinoma",
-                "Margins involved by invasive carcinoma",
+                "Positive/involved",
+                "Not involved",
                 "Not available",
                 "Not applicable"
             ]
@@ -362,7 +356,6 @@
             "description": "Pathological M stage, nodal involvement",
             "type": "string",
             "enum": [
-                "pM0",
                 "pM1",
                 "Not applicable",
                 "Not available"
@@ -397,15 +390,15 @@
             "type": "string",
             "enum": [
                 "1",
-                "1A",
-                "1B",
+                "1a",
+                "1b",
                 "2",
-                "2A",
-                "2B",
+                "2a",
+                "2b",
                 "3",
-                "3A",
-                "3B",
-                "3C",
+                "3a",
+                "3b",
+                "3c",
                 "4",
                 "Not applicable",
                 "Not available"
@@ -428,8 +421,8 @@
             "minimum": 1
         },
         "metasis_details": {
-            "title": "Metasis details",
-            "description": "Further details of Metasis pathology report",
+            "title": "Metastasis details",
+            "description": "Further details of metastasis pathology report",
             "type": "object",
             "permission": "import_items",
             "required": [
@@ -438,7 +431,7 @@
             ],
             "properties": {
                 "site": {
-                    "title": "Metasis site",
+                    "title": "Metastasis site",
                     "type": "string",
                     "enum": [
                         "Adrenal",
@@ -451,7 +444,7 @@
                     ]
                 },
                 "type": {
-                    "title": "Metasis type",
+                    "title": "Metastasis type",
                     "type": "string",
                     "enum": [
                         "Distant",
@@ -462,11 +455,14 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "pathology_report_tumor_range": {
-            "title": "Tumor Range"
+            "title": "Tumor Size Range"
+        },
+        "histology_filter": {
+            "title": "Histologic Subtype"
+        },
+        "grade": {
+            "title": "Tumor Grade"
         },
         "ajcc_p_stage": {
             "title": "pT Stage"
@@ -478,28 +474,22 @@
             "title": "pM Stage"
         },
         "metasis_details.site": {
-            "title": "Metasis Site"
+            "title": "Metastasis Site"
         },
         "metasis_details.type": {
-            "title": "Metasis Type"
-        },
-        "ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
+            "title": "Metastasis Type"
         },
         "ajcc_version": {
             "title": "AJCC Version"
         },
+        "ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
+        },
         "laterality": {
             "title": "Tumor Laterality"
         },
-        "histology": {
-            "title": "Tumor Histologic Subtypes"
-        },
         "focality": {
             "title": "Tumor Focality"
-        },
-        "grade": {
-            "title": "Tumor Grade"
         },
         "sarcomatoid": {
             "title": "Sarcomatoid Change"
@@ -517,10 +507,10 @@
             "title": "Perinephric Infiltration"
         },
         "micro_vein": {
-            "title": "Renal Vein Involvement (MicroVein)"
+            "title": "Renal Vein Involvement"
         },
         "micro_adrenal": {
-            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+            "title": "Ipsilateral Adrenal Gland Involvement"
         },
 
         "ihc.antibody": {
@@ -528,6 +518,9 @@
         },
         "ihc.result": {
             "title": "IHC/FISH results"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
@@ -540,14 +533,17 @@
         "patient": {
             "title": "Patient"
         },
-        "status": {
-            "title": "Status"
-        },
         "tumor_size": {
             "title": "Tumor Size"
         },
         "tumor_size_units": {
             "title": "Tumor Size Units"
+        },
+        "histology": {
+            "title": "Histologic Subtype"
+        },
+        "grade": {
+            "title": "Tumor Grade"
         },
         "ajcc_p_stage": {
             "title": "pT stage"
@@ -559,28 +555,22 @@
             "title": "pM stage"
         },
         "metasis_details.site": {
-            "title": "Metasis Site"
+            "title": "Metastasis Site"
         },
         "metasis_details.type": {
-            "title": "Metasis Type"
-        },
-        "ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
+            "title": "Metastasis Type"
         },
         "ajcc_version": {
             "title": "AJCC Version"
         },
+        "ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
+        },
         "laterality": {
             "title": "Tumor Laterality"
         },
-        "histology": {
-            "title": "Tumor Histologic Subtypes"
-        },
         "focality": {
             "title": "Tumor Focality"
-        },
-        "grade": {
-            "title": "Tumor Grade"
         },
         "sarcomatoid": {
             "title": "Sarcomatoid Change"
@@ -598,16 +588,19 @@
             "title": "Perinephric Infiltration"
         },
         "micro_vein": {
-            "title": "Renal Vein Involvement (MicroVein)"
+            "title": "Renal Vein Involvement"
         },
         "micro_adrenal": {
-            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+            "title": "Ipsilateral Adrenal Gland Involvement"
         },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
         "ihc.result": {
             "title": "IHC/FISH results"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "boost_values": {
@@ -638,3 +631,7 @@
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
 }
+
+
+
+

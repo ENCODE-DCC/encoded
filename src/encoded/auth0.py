@@ -3,9 +3,14 @@ from snovault.calculated import calculate_properties
 from snovault.validation import ValidationFailure
 from snovault.validators import no_validate_item_content_post
 from operator import itemgetter
+from snovault.crud_views import collection_add
+from snovault.schema_utils import validate_request
 from pyramid.authentication import CallbackAuthenticationPolicy
-import requests
+from encoded.types.user import User
+from jsonschema_serialize_fork.exceptions import ValidationError
 from pyramid.httpexceptions import (
+    HTTPBadRequest,
+    HTTPInternalServerError,
     HTTPForbidden,
     HTTPFound,
 )
@@ -22,10 +27,10 @@ from pyramid.traversal import find_resource
 from pyramid.view import (
     view_config,
 )
+import requests
 
 
 _marker = object()
-
 
 
 def includeme(config):
@@ -39,7 +44,6 @@ def includeme(config):
 
 class LoginDenied(HTTPForbidden):
     title = 'Login failure'
-
 
 class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
     """
@@ -67,11 +71,11 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
                     request)
             request._auth0_authenticated = None
             return None
-        
-        try:
-            user_url = "https://{domain}/userinfo?access_token={access_token}" \
-                .format(domain='encode.auth0.com', access_token=access_token)
 
+        try:
+            domain = 'dev-kce.auth0.com'
+            user_url = "https://{domain}/userinfo?access_token={access_token}" \
+                .format(domain=domain, access_token=access_token)
             user_info = requests.get(user_url).json()
         except Exception as e:
             if self.debug:
@@ -82,7 +86,7 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
             request._auth0_authenticated = None
             return None
 
-        if user_info['email_verified'] == True:
+        if user_info['email_verified'] is True:
             email = request._auth0_authenticated = user_info['email'].lower()
             return email
         else:
@@ -94,6 +98,37 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
 
     def forget(self, request):
         return []
+
+
+def _get_first_and_last_names_from_name(name):
+    """
+    Get user first and last name from name.
+
+        :param name: name object.
+    """
+    if not name or not name.strip():
+        return None, None
+    name = name.strip()
+    name_split = name.split(' ')
+    name_length = len(name_split)
+    first_name = name_split[0]
+    last_name = name_split[-1] if name_length > 1 else None
+    return first_name, last_name
+
+
+def _get_user_info(user_data):
+    """
+    get user info from user_data object
+        :param user_data: user_data object from oauth service
+    """
+    if not user_data:
+        raise ValidationError('No user data provided')
+    first_name, last_name = _get_first_and_last_names_from_name(user_data.get('name'))
+    return {
+        'email': user_data['email'],
+        'first_name': user_data.get('given_name') or user_data.get('first_name') or first_name,
+        'last_name': user_data.get('family_name') or user_data.get('last_name') or last_name or user_data['email'],
+    }
 
 
 # Unfortunately, X-Requested-With is not sufficient.
@@ -109,6 +144,7 @@ def login(request):
     else:
         namespace, userid = login.split('.', 1)
 
+    # create new user account if one does not exist
     if namespace != 'auth0':
         request.session.invalidate()
         request.response.headerlist.extend(forget(request))

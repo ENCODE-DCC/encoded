@@ -26,6 +26,49 @@ const largeArrow = style => (
     </svg>
 );
 
+const genomeBrowser = style => (
+    <svg version="1.1" data-name="Genome browser" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style={style} className="svg-icon svg-icon-genome-browser">
+        <polygon points="500.06,232.95 0.11,1000 1000,1000" />
+        <rect x="267" width="466" height="153.41" />
+    </svg>
+);
+
+const expandArrows = style => (
+    <svg className="expand-arrows" width="1em" height="1em" viewBox="0 0 16 16" style={style} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path fillRule="evenodd" d="M1.464 10.536a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3.5a.5.5 0 0 1-.5-.5v-3.5a.5.5 0 0 1 .5-.5z" />
+        <path fillRule="evenodd" d="M5.964 10a.5.5 0 0 1 0 .707l-4.146 4.147a.5.5 0 0 1-.707-.708L5.257 10a.5.5 0 0 1 .707 0zm8.854-8.854a.5.5 0 0 1 0 .708L10.672 6a.5.5 0 0 1-.708-.707l4.147-4.147a.5.5 0 0 1 .707 0z" />
+        <path fillRule="evenodd" d="M10.5 1.5A.5.5 0 0 1 11 1h3.5a.5.5 0 0 1 .5.5V5a.5.5 0 0 1-1 0V2h-3a.5.5 0 0 1-.5-.5zm4 9a.5.5 0 0 0-.5.5v3h-3a.5.5 0 0 0 0 1h3.5a.5.5 0 0 0 .5-.5V11a.5.5 0 0 0-.5-.5z" />
+        <path fillRule="evenodd" d="M10 9.964a.5.5 0 0 0 0 .708l4.146 4.146a.5.5 0 0 0 .708-.707l-4.147-4.147a.5.5 0 0 0-.707 0zM1.182 1.146a.5.5 0 0 0 0 .708L5.328 6a.5.5 0 0 0 .708-.707L1.889 1.146a.5.5 0 0 0-.707 0z" />
+        <path fillRule="evenodd" d="M5.5 1.5A.5.5 0 0 0 5 1H1.5a.5.5 0 0 0-.5.5V5a.5.5 0 0 0 1 0V2h3a.5.5 0 0 0 .5-.5z" />
+    </svg>
+);
+
+const collapseArrows = style => (
+    <svg className="collapse-arrows" width="1em" height="1em" viewBox="0 0 16 16" style={style} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path fillRule="evenodd" d="M9.5 2.036a.5.5 0 0 1 .5.5v3.5h3.5a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5z" />
+        <path fillRule="evenodd" d="M14.354 1.646a.5.5 0 0 1 0 .708l-4.5 4.5a.5.5 0 1 1-.708-.708l4.5-4.5a.5.5 0 0 1 .708 0zm-7.5 7.5a.5.5 0 0 1 0 .708l-4.5 4.5a.5.5 0 0 1-.708-.708l4.5-4.5a.5.5 0 0 1 .708 0z" />
+        <path fillRule="evenodd" d="M2.036 9.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V10h-3.5a.5.5 0 0 1-.5-.5z" />
+    </svg>
+);
+
+const lockOpen = style => (
+    <svg version="1.1" data-name="Lock open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 249" style={style} className="svg-icon svg-icon-lock-open">
+        <path d="M180.7,3.5c-30.2,0-54.77,24.57-54.77,54.77v57.41h-95.9c-8.8,0-16,7.2-16,16V229c0,8.8,7.2,16,16,16h116.27
+            c8.8,0,16-7.2,16-16v-97.32c0-8.8-7.2-16-16-16h-3.37V58.27c0-20.82,16.94-37.77,37.77-37.77s37.77,16.94,37.77,37.77v40.18
+            c0,4.69,3.81,8.5,8.5,8.5s8.5-3.81,8.5-8.5V58.27C235.47,28.07,210.9,3.5,180.7,3.5z"
+        />
+    </svg>
+);
+
+const lockClosed = style => (
+    <svg version="1.1" data-name="Lock closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 249" style={style} className="svg-icon svg-icon-lock-open">
+        <path d="M182.89,115.15h-3.37V82.74c0-30.2-24.57-54.77-54.77-54.77c-30.2,0-54.77,24.57-54.77,54.77v32.41h-3.37
+            c-8.8,0-16,7.2-16,16v97.32c0,8.8,7.2,16,16,16h116.27c8.8,0,16-7.2,16-16v-97.32C198.89,122.35,191.69,115.15,182.89,115.15z
+            M86.98,82.74c0-20.82,16.94-37.77,37.77-37.77s37.77,16.94,37.77,37.77v32.41H86.98V82.74z"
+        />
+    </svg>
+);
+
 const icons = {
     disclosure: style => <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style={style} className="svg-icon svg-icon-disclosure"><circle cx="240" cy="240" r="240" /><polyline points="401.79 175.66 240 304.34 78.21 175.66" /></svg>,
     table: style => <svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" style={style} className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg>,
@@ -40,6 +83,11 @@ const icons = {
     chevronUp: style => <svg id="Chevron Up" data-name="Chevron Up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 124" style={style}><polygon points="249,67 124.5,0 0,67 0,124 124.5,57 249,124" /></svg>,
     spinner,
     largeArrow,
+    genomeBrowser,
+    collapseArrows,
+    expandArrows,
+    lockOpen,
+    lockClosed,
 };
 
 /**

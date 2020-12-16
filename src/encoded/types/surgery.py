@@ -72,9 +72,9 @@ class Surgery(Item):
             if nephr_details is not None:
                 nephr_robotic_assist = sp_object.get('nephrectomy_details').get('robotic_assist')
                 if nephr_robotic_assist is True:
-                    robotic_assist_type.append("True")
+                    robotic_assist_type.append("Yes")
                 else:
-                    robotic_assist_type.append("False")
+                    robotic_assist_type.append("No")
 
         return robotic_assist_type
 

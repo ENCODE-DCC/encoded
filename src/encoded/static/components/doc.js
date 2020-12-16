@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
@@ -36,8 +36,8 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 export const DocumentsPanel = (props) => {
     // Filter documentSpecs to just those that have actual documents in them.
-    const documentSpecsMapped = props.documentSpecs.length && _.compact(props.documentSpecs.map(documentSpecs => (
-        documentSpecs.documents.length ? documentSpecs : null
+    const documentSpecsMapped = props.documentSpecs.length > 0 && _.compact(props.documentSpecs.map(documentSpecs => (
+        documentSpecs.documents.length > 0 ? documentSpecs : null
     )));
 
     // Concatenate all documents, and map their UUIDs to corresponding labels
@@ -49,27 +49,22 @@ export const DocumentsPanel = (props) => {
         });
         allDocs = allDocs.concat(spec.documents);
     });
-
     // Sort documents by attachment download name.
     const sortedDocs = globals.sortDocs(allDocs);
 
-    if (documentSpecsMapped.length) {
+    if (documentSpecsMapped.length > 0) {
         return (
-            <div>
-                <Panel addClasses="clearfix">
-                    <PanelHeading>
-                        <h4>{props.title ? <span>{props.title}</span> : <span>Documents</span>}</h4>
-                    </PanelHeading>
-                    <PanelBody addClasses="panel-body-doc doc-panel__outer">
-                        <section className="doc-panel__inner">
-                            {sortedDocs.map((doc) => {
-                                const PanelView = globals.panelViews.lookup(doc);
-                                return <PanelView key={doc['@id']} label={docLabelMap[doc.uuid]} context={doc} />;
-                            })}
-                        </section>
-                    </PanelBody>
-                </Panel>
-            </div>
+            <Panel>
+                <PanelHeading>
+                    <h4>{props.title ? <span>{props.title}</span> : <span>Documents</span>}</h4>
+                </PanelHeading>
+                <div className="document-list">
+                    {sortedDocs.map((doc) => {
+                        const PanelView = globals.panelViews.lookup(doc);
+                        return <PanelView key={doc['@id']} label={docLabelMap[doc.uuid]} context={doc} />;
+                    })}
+                </div>
+            </Panel>
         );
     }
     return null;
@@ -87,8 +82,10 @@ DocumentsPanel.defaultProps = {
 
 // Called when a GET request for all the documents associated with a dataset returns with the
 // array of matching documents.
+
 const DocumentsPanelRenderer = (props) => {
     const documents = props.documentSearch['@graph'];
+
     if (documents && documents.length) {
         return <DocumentsPanel documentSpecs={[{ documents }]} />;
     }
@@ -111,12 +108,16 @@ export const DocumentsPanelReq = (props) => {
 
     if (documents && documents.length) {
         return (
+
             <FetchedData>
+
                 <Param name="documentSearch" url={`/search/?type=Item&${documents.map(docAtId => `@id=${docAtId}`).join('&')}`} />
                 <DocumentsPanelRenderer />
             </FetchedData>
+
         );
     }
+
     return null;
 };
 
@@ -129,13 +130,11 @@ export const DocumentsSubpanels = (props) => {
     const documentSpec = props.documentSpec;
 
     return (
-        <div>
-            <div className="panel-docs-list">
-                {documentSpec.documents.map((doc) => {
-                    const PanelView = globals.panelViews.lookup(doc);
-                    return <PanelView key={doc['@id']} label={documentSpec.label} context={doc} />;
-                })}
-            </div>
+        <div className="document-list">
+            {documentSpec.documents.map((doc) => {
+                const PanelView = globals.panelViews.lookup(doc);
+                return <PanelView key={doc['@id']} label={documentSpec.label} context={doc} />;
+            })}
         </div>
     );
 };
@@ -181,17 +180,15 @@ export class Document extends React.Component {
         const DocumentDetailView = globals.documentViews.detail.lookup(context);
 
         return (
-            <section className="flexcol flexcol--doc">
-                <Panel addClasses={globals.itemClass(context, 'document')}>
-                    <DocumentHeaderView doc={context} label={this.props.label} />
-                    <div className="document__intro">
-                        <DocumentCaptionView doc={context} />
-                        <DocumentPreviewView doc={context} />
-                    </div>
-                    <DocumentFileView doc={context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
-                    <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} id={context['@id']} />
-                </Panel>
-            </section>
+            <Panel addClasses={globals.itemClass(context, 'document-list__document')}>
+                <DocumentHeaderView doc={context} label={this.props.label} />
+                <div className="document__intro">
+                    <DocumentCaptionView doc={context} />
+                    <DocumentPreviewView doc={context} />
+                </div>
+                <DocumentFileView doc={context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
+                <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} id={context['@id']} />
+            </Panel>
         );
     }
 }
@@ -244,7 +241,7 @@ export const DocumentCaption = (props) => {
                     <strong>{excerpt ? 'Description excerpt: ' : 'Description: '}</strong>
                     {excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}
                 </div>
-            : <em>No description</em>}
+                : <em>No description</em>}
         </div>
     );
 };
@@ -286,7 +283,7 @@ export const DocumentFile = (props) => {
                     <button data-trigger onClick={detailSwitch} className="document__file-detail-switch">
                         {collapseIcon(!detailOpen)}
                     </button>
-                : null}
+                    : null}
             </div>
         );
     }
@@ -319,14 +316,14 @@ const DocumentDetail = (props) => {
                         <dt>Description</dt>
                         <dd>{doc.description}</dd>
                     </div>
-                : null}
+                    : null}
 
                 {doc.submitted_by && doc.submitted_by.title ?
                     <div data-test="submitted-by">
                         <dt>Submitted by</dt>
                         <dd>{doc.submitted_by.title}</dd>
                     </div>
-                : null}
+                    : null}
 
                 <div data-test="lab">
                     <dt>Lab</dt>
@@ -338,7 +335,7 @@ const DocumentDetail = (props) => {
                         <dt>Grant</dt>
                         <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                     </div>
-                : null}
+                    : null}
             </dl>
         </div>
     );
@@ -415,10 +412,8 @@ export const AttachmentPanel = (props) => {
 
     // Determine the attachment area CSS classes based on whether they're displayed in a modal
     // or not.
-    const attachmentClasses = `flexcol flexcol--attachment${modal ? '-modal' : ''}`;
-
     return (
-        <section className={attachmentClasses}>
+        <section className="attachment-list__panel">
             <Panel addClasses={globals.itemClass(context, 'attachment')}>
                 <div className="document__intro document__intro--attachment-only">
                     <DocumentCaptionView title={title} />
@@ -457,7 +452,7 @@ export const CharacterizationDocuments = (props) => {
             {docs.map((doc) => {
                 if (doc && doc.attachment) {
                     const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
-                    const docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
+                    const docName = (doc.aliases && doc.aliases.length > 0) ? doc.aliases[0] :
                         ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
                     return (
                         <div className="multi-dd dl-link" key={doc['@id']}>
@@ -478,3 +473,21 @@ export const CharacterizationDocuments = (props) => {
 CharacterizationDocuments.propTypes = {
     docs: PropTypes.array.isRequired, // Array of documents to display within characterization details panel
 };
+
+
+/**
+ * Display an antibody characterization object.
+ */
+const DocumentObject = ({ context }) => {
+    const documentSpecs = [
+        { documents: [context] },
+    ];
+    return <DocumentsPanel title="Documents" documentSpecs={documentSpecs} />;
+};
+
+DocumentObject.propTypes = {
+    /** Document object */
+    context: PropTypes.object.isRequired,
+};
+
+globals.contentViews.register(DocumentObject, 'Document');

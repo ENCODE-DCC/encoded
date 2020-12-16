@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { AttachmentPanel } from './doc';
 import { FetchedData, Param } from './fetched';
@@ -29,11 +29,41 @@ const qcAttachmentProperties = {
     ChipSeqFilterQualityMetric: [
         { cross_correlation_plot: 'Cross-correlation plot' },
     ],
+    ChipAlignmentEnrichmentQualityMetric: [
+        { cross_correlation_plot: 'Cross-correlation plot' },
+        { jsd_plot: 'Jensen-Shannon distance plot' },
+        { gc_bias_plot: 'GC bias plot' },
+    ],
+    ChipReplicationQualityMetric: [
+        { IDR_dispersion_plot: 'IDR dispersion plot' },
+    ],
+    AtacAlignmentEnrichmentQualityMetric: [
+        { cross_correlation_plot: 'Cross-correlation plot' },
+        { jsd_plot: 'Jensen-Shannon distance plot' },
+        { gc_bias_plot: 'GC bias plot' },
+        { tss_enrichment_plot: 'TSS enrichment plot' },
+    ],
+    AtacLibraryQualityMetric: [
+        { fragment_length_distribution_plot: 'Fragment length distribution plot' },
+    ],
+    AtacPeakEnrichmentQualityMetric: [
+        { peak_width_distribution_plot: 'Peak width distribution plot' },
+    ],
+    AtacReplicationQualityMetric: [
+        { idr_dispersion_plot: 'IDR dispersion plot' },
+    ],
+    GembsAlignmentQualityMetric: [
+        { mapq_plot: 'MAPQ plot' },
+        { insert_size_plot: 'Insert size plot' },
+    ],
+    DnaseFootprintingQualityMetric: [
+        { dispersion_model: 'Dispersion model' },
+    ],
 };
 
 
 // Display QC metrics of the selected QC sub-node in a file node.
-export function qcModalContent(qc, file, qcSchema, genericQCSchema) {
+function qcModalContent(qc, file, qcSchema, genericQCSchema) {
     let qcPanels = []; // Each QC metric panel to display
     let filesOfMetric = []; // Array of accessions of files that share this metric
 
@@ -41,7 +71,7 @@ export function qcModalContent(qc, file, qcSchema, genericQCSchema) {
     // quality_metric_of is an array of @ids because they're not embedded, and we're trying
     // to avoid embedding where not absolutely needed. So use a regex to extract the files'
     // accessions from the @ids. After generating the array, filter out empty entries.
-    if (qc.quality_metric_of && qc.quality_metric_of.length) {
+    if (qc.quality_metric_of && qc.quality_metric_of.length > 0) {
         filesOfMetric = qc.quality_metric_of.map((metricId) => {
             // Extract the file's accession from the @id
             const match = globals.atIdToAccession(metricId);
@@ -88,34 +118,27 @@ export function qcModalContent(qc, file, qcSchema, genericQCSchema) {
     }
 
     const header = (
-        <div className="details-view-info">
-            <h4>{qcName} of {file.title}</h4>
-            {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
+        <div className="graph-modal-header__content">
+            <h2>{qcName} of {file.title}</h2>
+            {filesOfMetric.length > 0 ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
         </div>
     );
     const body = (
-        <div>
-            <div className="row">
-                <div className="col-md-4 col-sm-6 col-xs-12">
-                    <QCDataDisplay qcMetric={qc} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
-                </div>
-
-                {(qcPanels && qcPanels.length) || qc.attachment ?
-                    <div className="col-md-8 col-sm-12 quality-metrics-attachments">
-                        <div className="row">
-                            <h5>Quality metric attachments</h5>
-                            <div className="flexrow attachment-panel-inner">
-                                {/* If the metrics object has an `attachment` property, display that first, then display the properties
-                                    not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
-                                {qc.attachment ?
-                                    <AttachmentPanel context={qc} attachment={qc.attachment} title="Attachment" modal />
-                                : null}
-                                {qcPanels}
-                            </div>
-                        </div>
+        <div className="quality-metrics-modal">
+            <QCDataDisplay qcMetric={qc} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
+            {(qcPanels && qcPanels.length > 0) || qc.attachment ?
+                <div className="quality-metrics-modal__attachments">
+                    <h5>Quality metric attachments</h5>
+                    <div className="attachment-list">
+                        {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                            not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                        {qc.attachment ?
+                            <AttachmentPanel context={qc} attachment={qc.attachment} title="Attachment" modal />
+                        : null}
+                        {qcPanels}
                     </div>
-                : null}
-            </div>
+                </div>
+            : null}
         </div>
     );
     return { header, body };
@@ -259,14 +282,16 @@ const QCDataDisplay = (props) => {
     });
 
     return (
-        <dl className="key-value">
-            {displayKeys.map(key =>
-                <div key={key} data-test={key}>
-                    <dt className="sentence-case">{qcSchema.properties[key].title}</dt>
-                    <dd>{typeof qcMetric[key] === 'boolean' ? qcMetric[key].toString() : qcMetric[key]}</dd>
-                </div>
-            )}
-        </dl>
+        <div className="quality-metrics-modal__data">
+            <dl className="key-value">
+                {displayKeys.map(key =>
+                    <div key={key} data-test={key}>
+                        <dt className="sentence-case">{qcSchema.properties[key].title}</dt>
+                        <dd>{typeof qcMetric[key] === 'boolean' ? qcMetric[key].toString() : qcMetric[key]}</dd>
+                    </div>
+                )}
+            </dl>
+        </div>
     );
 };
 
@@ -400,7 +425,7 @@ const QCDetailView = function QCDetailView(node) {
     const selectedQc = node.ref;
     let modalContent = {};
 
-    if (selectedQc && Object.keys(selectedQc).length) {
+    if (selectedQc && Object.keys(selectedQc).length > 0) {
         const schemas = node.schemas;
         const genericQCSchema = schemas.GenericQualityMetric;
         const qcSchema = schemas[selectedQc['@type'][0]];

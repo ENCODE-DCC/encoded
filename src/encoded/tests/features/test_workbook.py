@@ -3,7 +3,7 @@ from pytest_bdd import scenarios
 
 pytestmark = [
     pytest.mark.bdd,
-    pytest.mark.usefixtures('workbook'),
+    pytest.mark.usefixtures('index_workbook'),
 ]
 
 scenarios(
@@ -13,4 +13,5 @@ scenarios(
     'search.feature',
     'advanced_query_search.feature',
     'targets.feature',
+    strict_gherkin=False,
 )

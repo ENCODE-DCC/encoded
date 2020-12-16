@@ -20,5 +20,54 @@
         ],
         "uuid": "7ae7b199-e881-4906-b977-2b1b62de70f7",
         "date_released": "2016-01-01"
+    },
+	{
+        "_test": "reference epigenome",
+        "accession": "ENCSR571AGY",
+        "award": "U41HG006992",
+        "description": "Reference epigenome for human foreskin fibroblast",
+        "lab": "encode-consortium",
+        "status": "released",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "related_datasets": [
+            "/experiments/ENCSR001CTL/",
+            "/experiments/ENCSR001SER/",
+            "/experiments/ENCSR002SER/",
+            "/experiments/ENCSR003SER/",
+            "/experiments/ENCSR001CON/",
+            "/experiments/ENCSR002CON/",
+            "/experiments/ENCSR003CON/"
+        ],
+        "uuid": "4151c0eb-bed8-4dd9-afe4-6526bd593646",
+        "date_released": "2018-07-13"
+    },
+    {
+        "accession": "ENCSR867OGI",
+        "award": "U41HG006992",
+        "date_released": "2019-10-08",
+        "description": "Reference epigenome for human upper lobe of left lung (37 year old male)",
+        "lab": "encode-consortium",
+        "related_datasets": [
+            "/experiments/ENCSR000AER/",
+            "/experiments/ENCSR000AEM/"
+        ],
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "0eeff92f-57d1-46b4-b59f-89a04107c54a"
+    },
+    {
+        "accession": "ENCSR284DRW",
+        "award": "U41HG006992",
+        "date_released": "2019-10-08",
+        "description": "Reference epigenome for human upper lobe of left lung (37 year old male)",
+        "lab": "encode-consortium",
+        "related_datasets": [
+            "/experiments/ENCSR000ADH/",
+            "/experiments/ENCSR000ADI/",
+            "/experiments/ENCSR001ADI/"
+        ],
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "820465fa-b66d-4a67-abaf-7706472fd69f"
     }
 ]

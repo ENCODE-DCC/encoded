@@ -18,6 +18,7 @@ export const CART_OPERATION_IN_PROGRESS = 'CART_OPERATION_IN_PROGRESS';
 export const SET_CURRENT = 'SET_CURRENT';
 export const SET_NAME = 'SET_NAME';
 export const SET_IDENTIFIER = 'SET_IDENTIFIER';
+export const SET_LOCKED = 'SET_LOCKED';
 export const SET_STATUS = 'SET_STATUS';
 export const NO_ACTION = 'NO_ACTION';
 
@@ -213,6 +214,16 @@ export const setCartIdentifier = identifier => (
 
 
 /**
+ * Redux action creator to set the locked status of the cart.
+ * @param {bool} locked Cart lock status
+ * @return {object} Redux action object
+ */
+export const setCartLocked = locked => (
+    { type: SET_LOCKED, locked }
+);
+
+
+/**
  * Redux action creator to set the current cart. This sets the current cart in the Redux store
  * only -- this does not affect the cart settings in localstorage.
  * @param {string} current @id of cart to set as current
@@ -296,4 +307,32 @@ export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, f
             });
         })
     )
+);
+
+
+/**
+ * Redux thunk action creator to set the lock state of a cart both in the Redux store and the cart's
+ * database object.
+ * @param {bool} locked New locked state of the cart
+ * @param {object} cart Cart object being updated
+ * @param {object} user Current user object, often from `session` React context variable
+ * @param {func} fetch System fetch function
+ * @return {Promise} Resolves to the updated cart object
+ */
+export const setCartLockAndSave = (locked, cart, user, fetch) => (
+    (dispatch) => {
+        cartSetOperationInProgress(true, dispatch);
+        cartUpdate(cart['@id'], { locked }, {}, fetch);
+        return cartUpdate(cart['@id'], { locked }, {}, fetch).then((updatedSavedCartObj) => {
+            cartSetOperationInProgress(false, dispatch);
+
+            // If we updated the current cart, set the new locked state in the in-memory cart
+            // object and re-cache the cart object.
+            const currentCartAtId = cartGetSettings(user).current;
+            if (updatedSavedCartObj['@id'] === currentCartAtId) {
+                dispatch(setCartLocked(updatedSavedCartObj.locked));
+                dispatch(cacheSavedCart(updatedSavedCartObj));
+            }
+        });
+    }
 );

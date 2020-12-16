@@ -4,27 +4,29 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from pyramid.response import Response
 from snovault import TYPES
+from snovault.elasticsearch.searches.parsers import QueryString
 from snovault.util import simple_path_ids
 from urllib.parse import (
     parse_qs,
     urlencode,
     quote,
 )
-from encoded.viewconfigs.views import search
-from snovault.helpers.helper import list_visible_columns_for_schemas
+from encoded.search_views import search_generator
+from .vis_defines import is_file_visualizable
 import csv
 import io
 import json
 import datetime
 import re
 
+# Maximum number of cart files to retrieve in a single request.
 ELEMENT_CHUNK_SIZE = 1000
 currenttime = datetime.datetime.now()
 
 
 def includeme(config):
-    config.add_route('batch_download', '/batch_download/{search_params}')
-    config.add_route('metadata', '/metadata/{search_params}/{tsv}')
+    config.add_route('batch_download', '/batch_download{slash:/?}')
+    config.add_route('metadata', '/metadata{slash:/?}')
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
     config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
@@ -34,9 +36,12 @@ def includeme(config):
 _tsv_mapping = OrderedDict([
     ('File accession', ['files.title']),
     ('File format', ['files.file_type']),
+    ('File type', ['files.file_format']),
+    ('File format type', ['files.file_format_type']),
     ('Output type', ['files.output_type']),
+    ('File assembly', ['files.assembly']),
     ('Experiment accession', ['accession']),
-    ('Assay', ['assay_term_name']),
+    ('Assay', ['assay_title']),
     ('Biosample term id', ['biosample_ontology.term_id']),
     ('Biosample term name', ['biosample_ontology.term_name']),
     ('Biosample type', ['biosample_ontology.classification']),
@@ -68,7 +73,7 @@ _tsv_mapping = OrderedDict([
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
     ('Biological replicate(s)', ['files.biological_replicates']),
-    ('Technical replicate', ['files.replicate.technical_replicate_number']),
+    ('Technical replicate(s)', ['files.technical_replicates']),
     ('Read length', ['files.read_length']),
     ('Mapped read length', ['files.mapped_read_length']),
     ('Run type', ['files.run_type']),
@@ -80,7 +85,6 @@ _tsv_mapping = OrderedDict([
     ('md5sum', ['files.md5sum']),
     ('dbxrefs', ['files.dbxrefs']),
     ('File download URL', ['files.href']),
-    ('Assembly', ['files.assembly']),
     ('Genome annotation', ['files.genome_annotation']),
     ('Platform', ['files.platform.title']),
     ('Controlled by', ['files.controlled_by']),
@@ -109,6 +113,7 @@ _tsv_mapping_annotation = OrderedDict([
     ('File accession', ['files.title']),
     ('File format', ['files.file_type']),
     ('Output type', ['files.output_type']),
+    ('Assay term name', ['files.assay_term_name']),
     ('Dataset accession', ['accession']),
     ('Annotation type', ['annotation_type']),
     ('Software used', ['software_used.software.title']),
@@ -131,13 +136,64 @@ _tsv_mapping_annotation = OrderedDict([
     ('Controlled by', ['files.controlled_by']),
     ('File Status', ['files.status']),
     ('Derived from', ['files.derived_from']),
-    ('S3 URL', ['files.cloud_metadata']),
+    ('S3 URL', ['files.cloud_metadata.url']),
+    ('Size', ['files.file_size']),
+    ('No File Available', ['file.no_file_available']),
+    ('Restricted', ['files.restricted'])
+])
+
+_tsv_mapping_publicationdata = OrderedDict([
+    ('File accession', ['files.title']),
+    ('File dataset', ['files.dataset']),
+    ('File type', ['files.file_format']),
+    ('File format', ['files.file_type']),
+    ('File output type', ['files.output_type']),
+    ('Assay term name', ['files.assay_term_name']),
+    ('Biosample term id', ['files.biosample_ontology.term_id']),
+    ('Biosample term name', ['files.biosample_ontology.term_name']),
+    ('Biosample type', ['files.biosample_ontology.classification']),
+    ('File target', ['files.target.label']),
+    ('Dataset accession', ['accession']),
+    ('Dataset date released', ['date_released']),
+    ('Project', ['award.project']),
+    ('Lab', ['files.lab.title']),
+    ('md5sum', ['files.md5sum']),
+    ('dbxrefs', ['files.dbxrefs']),
+    ('File download URL', ['files.href']),
+    ('Assembly', ['files.assembly']),
+    ('File status', ['files.status']),
+    ('Derived from', ['files.derived_from']),
+    ('S3 URL', ['files.cloud_metadata.url']),
     ('Size', ['files.file_size']),
     ('No File Available', ['file.no_file_available']),
     ('Restricted', ['files.restricted'])
 ])
 
 _excluded_columns = ('Restricted', 'No File Available')
+
+# Attributes of files to extract for metadata.tsv.
+default_file_attributes = [
+    'files.title',
+    'files.file_type',
+    'files.file_format',
+    'files.file_format_type',
+    'files.output_type',
+    'files.assembly'
+]
+
+# For extracting accession from @id paths
+accession_re = re.compile(r'^/[a-z-]+/([A-Z0-9]+)/$')
+# For extracting object type from @id paths
+type_re = re.compile(r'^/([a-z-]+)/[A-Z0-9]+/$')
+
+
+# Lowercased type={object type} query-string values allowed for download/metadata.
+_allowed_types = [
+    'experiment',
+    'annotation',
+    'functionalcharacterizationexperiment',
+    'publicationdata',
+]
 
 
 def get_file_uuids(result_dict):
@@ -226,11 +282,11 @@ def _get_annotation_metadata(request, search_path, param_list):
     writer = csv.writer(fout, delimiter='\t')
     writer.writerow(header)
     param_list['limit'] = ['all']
-    fields = [''.join(['&field=', str(value[0])]) for _, value in _tsv_mapping_annotation.items()]
-    path = '{}?{}{}'.format(
+    fields = ['field={}'.format(str(value[0])) for _, value in _tsv_mapping_annotation.items()] + ['field=audit']
+    path = '{}?{}&{}'.format(
         search_path,
         quote(urlencode(param_list, True)),
-        ''.join(fields)
+        '&'.join(fields)
     )
     results = request.embed(path, as_user=True)
     for result_graph in results['@graph']:
@@ -250,6 +306,7 @@ def _get_annotation_metadata(request, search_path, param_list):
                 result_file.get('title', ''),
                 result_file.get('file_type', ''),
                 result_file.get('output_type', ''),
+                result_file.get('assay_term_name', ''),
                 result_graph.get('accession', ''),
                 result_graph.get('annotation_type', ''),
                 software_set,
@@ -284,6 +341,156 @@ def _get_annotation_metadata(request, search_path, param_list):
         content_type='text/tsv',
         body=fout.getvalue(),
         content_disposition='attachment;filename="%s"' % 'metadata.tsv'
+    )
+
+def _get_publicationdata_metadata(request):
+    """
+    Generate PublicationData metadata.tsv.
+
+        :param request: Pyramid request
+    """
+    qs = QueryString(request)
+    param_list = qs.group_values_by_key()
+
+    # Get the required "dataset={path}" parameter.
+    dataset_path = param_list.get('dataset', [''])[0]
+
+    # Open the metadata.tsv file for writing.
+    fout = io.StringIO()
+    writer = csv.writer(fout, delimiter='\t')
+
+    # Build the column-title header row and write it to the file.
+    header = [header for header in _tsv_mapping_publicationdata if header not in _excluded_columns]
+    writer.writerow(header)
+
+    # Load the specified PublicationData object and extract its files to build the rows.
+    dataset = request.embed(dataset_path, as_user=True)
+    file_ids = dataset.get('files', [])
+    if file_ids:
+        for file_id in file_ids:
+            # Load the file object and disqualify those we don't handle.
+            file = request.embed(file_id, as_user=True)
+
+            # Load the file object and disqualify those we don't handle.
+            biosample_ontology = file.get('biosample_ontology', {})
+            if restricted_files_present(file):
+                continue
+            if is_no_file_available(file):
+                continue
+
+            # Extract the file's dataset accession from the @id; avoids loading the dataset object.
+            dataset_accession = ''
+            accession_match = accession_re.match(file.get('dataset', ''))
+            if accession_match:
+                dataset_accession = accession_match.group(1)
+
+            # Extract the file's derived_from accessions from their @id.
+            derived_from_accessions = []
+            derived_from_file_ids = file.get('derived_from', '')
+            for derived_from_file_id in derived_from_file_ids:
+                accession_match = accession_re.match(derived_from_file_id)
+                if accession_match:
+                    derived_from_accessions.append(accession_match.group(1))
+
+            # Build the row's data; must sync with _tsv_mapping_publicationdata.
+            row = [
+                file.get('title', ''),
+                dataset_accession,
+                file.get('file_format', ''),
+                file.get('file_type', ''),
+                file.get('output_type', ''),
+                file.get('assay_term_name', ''),
+                biosample_ontology.get('term_id'),
+                biosample_ontology.get('term_name'),
+                biosample_ontology.get('classification'),
+                file.get('target', {}).get('label', ''),
+                dataset.get('accession', ''),
+                dataset.get('date_released', ''),
+                dataset.get('award', {}).get('project', ''),
+                file.get('lab', {}).get('title', ''),
+                file.get('md5sum', ''),
+                ', '.join(file.get('dbxrefs', '')),
+                file.get('href', ''),
+                file.get('assembly', ''),
+                file.get('status', ''),
+                ', '.join(derived_from_accessions),
+                file.get('cloud_metadata', {}).get('url', ''),
+                file.get('file_size', ''),
+            ]
+            writer.writerow(row)
+
+        # All rows collected; write to the metadata.tsv file and download.
+        return Response(
+            content_type='text/tsv',
+            body=fout.getvalue(),
+            content_disposition='attachment;filename="%s"' % 'metadata.tsv'
+        )
+
+
+def _batch_download_publicationdata(request):
+    """
+    Generate PublicationData files.txt.
+
+        :param request: Pyramid request
+    """
+
+    # Parse the batch_download request query string.
+    qs = QueryString(request)
+    param_list = qs.group_values_by_key()
+
+    # Get the required "dataset={path}" parameter.
+    dataset_path = param_list.get('dataset', [''])[0]
+
+    # Retrieve the files property of the requested PublicationData object.
+    object = request.embed(dataset_path, as_user=True)
+    file_ids = object.get('files', [])
+
+    # Generate the metadata link that heads the file.
+    metadata_link = '{host_url}/metadata/?{search_params}'.format(
+        host_url=request.host_url,
+        search_params=qs._get_original_query_string()
+    )
+
+    # Generate the content of files.txt starting with the metadata.tsv download line and then each
+    # file's download URL.
+    files = [metadata_link]
+    dataset_type = ''
+    if file_ids:
+        for file_id in file_ids:
+            # Request individual file object from its path.
+            file = request.embed(file_id, as_user=True)
+
+            # All file datasets need to belong to the same type of dataset.
+            if dataset_type:
+                # See if subsequent dataset types match the first one we found.
+                file_dataset_type_match = type_re.match(file.get('dataset', ''))
+                if file_dataset_type_match and file_dataset_type_match.group(1) != dataset_type:
+                    raise HTTPBadRequest(explanation='File dataset types must be homogeneous')
+            else:
+                # Establish the first dataset type we find.
+                dataset_type_match = type_re.match(file.get('dataset', ''))
+                if dataset_type_match:
+                    dataset_type = dataset_type_match.group(1)
+
+            # Other disqualifying conditions.
+            if restricted_files_present(file):
+                continue
+            if is_no_file_available(file):
+                continue
+
+            # Finally append file to files.txt.
+            files.append(
+                '{host_url}{href}'.format(
+                    host_url=request.host_url,
+                    href=file['href']
+                )
+            )
+
+    # Initiate the files.txt download.
+    return Response(
+        content_type='text/plain',
+        body='\n'.join(files),
+        content_disposition='attachment; filename="%s"' % 'files.txt'
     )
 
 
@@ -341,14 +548,28 @@ def peak_metadata(context, request):
 
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
-    param_list = parse_qs(request.matchdict['search_params'])
+    qs = QueryString(request)
+    param_list = qs.group_values_by_key()
     if 'referrer' in param_list:
         search_path = '/{}/'.format(param_list.pop('referrer')[0])
     else:
         search_path = '/search/'
     type_param = param_list.get('type', [''])[0]
-    if type_param and type_param.lower() == 'annotation':
-        return _get_annotation_metadata(request, search_path, param_list)
+    cart_uuids = param_list.get('cart', [])
+
+    # Only allow specific type= query-string values, or cart=.
+    if not type_param and not cart_uuids:
+        raise HTTPBadRequest(explanation='URL must include a "type" or "cart" parameter.')
+    if not type_param.lower() in _allowed_types:
+        raise HTTPBadRequest(explanation='"{}" not a valid type for metadata'.format(type_param))
+
+    # Handle special-case metadata.tsv generation.
+    if type_param:
+        if type_param.lower() == 'annotation':
+            return _get_annotation_metadata(request, search_path, param_list)
+        if type_param.lower() == 'publicationdata':
+            return _get_publicationdata_metadata(request)
+
     param_list['field'] = []
     header = []
     file_attributes = []
@@ -358,9 +579,8 @@ def metadata_tsv(context, request):
             if _tsv_mapping[prop][0].startswith('files'):
                 file_attributes = file_attributes + [_tsv_mapping[prop][0]]
         param_list['field'] = param_list['field'] + _tsv_mapping[prop]
-        
+
     # Handle metadata.tsv lines from cart-generated files.txt.
-    cart_uuids = param_list.get('cart', [])
     if cart_uuids:
         # metadata.tsv line includes cart UUID, so load the specified cart and
         # get its "elements" property for a list of items to retrieve.
@@ -369,7 +589,7 @@ def metadata_tsv(context, request):
         try:
             cart = request.embed(cart_uuid, '@@object')
         except KeyError:
-            pass
+            raise HTTPBadRequest(explanation='Specified cart does not exist.')
         else:
             if cart.get('elements'):
                 param_list['@id'] = cart['elements']
@@ -382,10 +602,30 @@ def metadata_tsv(context, request):
             pass
         else:
             param_list['@id'] = elements
+    default_params = [
+        ('field', 'audit'),
+        ('limit', 'all'),
+    ]
+    field_params = [
+        ('field', p)
+        for p in param_list.get('field', [])
+    ]
+    at_id_params = [
+        ('@id', p)
+        for p in param_list.get('@id', [])
+    ]
+    qs.drop('limit')
 
-    param_list['limit'] = ['all']
-    path = '{}?{}'.format(search_path, quote(urlencode(param_list, True)))
-    results = request.embed(path, as_user=True)
+    # Check for the "visualizable" and/or "raw" options in the query string for file filtering.
+    visualizable_only = qs.is_param('option', 'visualizable')
+    raw_only = qs.is_param('option', 'raw')
+    qs.drop('option')
+
+    qs.extend(
+        default_params + field_params + at_id_params
+    )
+    path = '{}?{}'.format(search_path, str(qs))
+    results = request.embed(quote(path), as_user=True)
     rows = []
     for experiment_json in results['@graph']:
         if experiment_json.get('files', []):
@@ -394,12 +634,16 @@ def metadata_tsv(context, request):
                 if not _tsv_mapping[column][0].startswith('files'):
                     make_cell(column, experiment_json, exp_data_row)
 
-            f_attributes = ['files.title', 'files.file_type',
-                            'files.output_type']
+            f_attributes = ['files.title', 'files.file_type', 'files.file_format',
+                            'files.file_format_type', 'files.output_type', 'files.assembly']
 
             for f in experiment_json['files']:
-                # If we're looking for a file type but it doesn't match, ignore file
                 if not files_prop_param_list(f, param_list):
+                    continue
+                if visualizable_only and not is_file_visualizable(f):
+                    continue
+                if raw_only and f.get('assembly'):
+                    # "raw" option only allows files w/o assembly.
                     continue
                 if restricted_files_present(f):
                     continue
@@ -408,7 +652,7 @@ def metadata_tsv(context, request):
                 f['href'] = request.host_url + f['href']
                 f_row = []
                 for attr in f_attributes:
-                    f_row.append(f[attr[6:]])
+                    f_row.append(f.get(attr[6:], ''))
                 data_row = f_row + exp_data_row
                 for prop in file_attributes:
                     if prop in f_attributes:
@@ -445,55 +689,106 @@ def metadata_tsv(context, request):
 
 @view_config(route_name='batch_download', request_method=('GET', 'POST'))
 def batch_download(context, request):
-    # adding extra params to get required columns
-    param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.restricted'] + [k for k, v in param_list.items() if k.startswith('files.')]
-    param_list['limit'] = ['all']
+    default_params = [
+        ('limit', 'all'),
+        ('field', 'files.href'),
+        ('field', 'files.restricted'),
+        ('field', 'files.file_format'),
+        ('field', 'files.file_format_type'),
+        ('field', 'files.status'),
+        ('field', 'files.assembly'),
+    ]
+    qs = QueryString(request)
+    param_list = qs.group_values_by_key()
+    file_filters = qs.param_keys_to_list(
+        params=qs.get_filters_by_condition(
+            key_and_value_condition=lambda k, _: k.startswith('files.')
+        )
+    )
 
+    # Process PublicationData batch downloads separately.
+    type_param = param_list.get('type', [''])[0]
+    if type_param and type_param.lower() == 'publicationdata':
+        return _batch_download_publicationdata(request)
+
+    file_fields = [
+        ('field', k)
+        for k in file_filters
+    ]
+    qs.drop('limit')
+    type_param = param_list.get('type', [''])[0]
+    cart_uuids = param_list.get('cart', [])
+
+    # Only allow specific type= query-string values, or cart=.
+    if not type_param and not cart_uuids:
+        raise HTTPBadRequest(explanation='URL must include a "type" or "cart" parameter.')
+    if not type_param.lower() in _allowed_types:
+        raise HTTPBadRequest(explanation='"{}" not a valid type for metadata'.format(type_param))
+
+    # Check for the "visualizable" and/or "raw" options in the query string for file filtering.
+    visualizable_only = qs.is_param('option', 'visualizable')
+    raw_only = qs.is_param('option', 'raw')
+    qs.drop('option')
+
+    qs.extend(
+        default_params + file_fields
+    )
     experiments = []
-    error_message = None
     if request.method == 'POST':
         metadata_link = ''
-        cart_uuid = None
-
-        # Batch download from cart issues POST and might include "cart" key.
-        cart_uuids = param_list.get('cart', [])
-        if cart_uuids:
-            # "cart" key in query string. Use first cart UUID in metadata link.
-            cart_uuid = cart_uuids.pop()
-
+        cart_uuid = qs.get_one_value(
+            params=qs.get_key_filters(
+                key='cart'
+            )
+        )
         try:
             elements = request.json.get('elements', [])
         except ValueError:
             elements = []
+
         if cart_uuid:
+            try:
+                request.embed(cart_uuid, '@@object')
+            except KeyError:
+                raise HTTPBadRequest(explanation='Specified cart does not exist.')
+
             # metadata.tsv link includes a cart UUID
-            metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
+            metadata_link = '{host_url}/metadata/?{search_params}'.format(
                 host_url=request.host_url,
-                search_params=quote(request.matchdict['search_params']),
+                search_params=qs._get_original_query_string()
             )
         else:
-            metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"elements": [{elements_json}]}}\''.format(
+            metadata_link = '{host_url}/metadata/?{search_params} -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"elements": [{elements_json}]}}\''.format(
                 host_url=request.host_url,
-                search_params=quote(request.matchdict['search_params']),
+                search_params=qs._get_original_query_string(),
                 elements_json=','.join('"{0}"'.format(element) for element in elements)
             )
 
         # Because of potential number of datasets in the cart, break search
         # into multiple searches of ELEMENT_CHUNK_SIZE datasets each.
         for i in range(0, len(elements), ELEMENT_CHUNK_SIZE):
-            param_list['@id'] = elements[i:i + ELEMENT_CHUNK_SIZE]
-            path = '/search/?%s' % quote(urlencode(param_list, True))
-            results = request.embed(path, as_user=True)
+            qs.drop('@id')
+            qs.extend(
+                [
+                    ('@id', e)
+                    for e in elements[i:i + ELEMENT_CHUNK_SIZE]
+                ]
+            )
+            path = '/search/?{}'.format(str(qs))
+            results = request.embed(quote(path), as_user=True)
             experiments.extend(results['@graph'])
     else:
+        # Make sure regular batch download doesn't include a cart parameter; error if it does.
+        if cart_uuids:
+            raise HTTPBadRequest(explanation='You must download cart file manifests from the portal.')
+
         # Regular batch download has single simple call to request.embed
-        metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
+        metadata_link = '{host_url}/metadata/?{search_params}'.format(
             host_url=request.host_url,
-            search_params=quote(request.matchdict['search_params'])
+            search_params=qs._get_original_query_string()
         )
-        path = '/search/?%s' % quote(urlencode(param_list, True))
-        results = request.embed(path, as_user=True)
+        path = '/search/?{}'.format(str(qs))
+        results = request.embed(quote(path), as_user=True)
         experiments = results['@graph']
 
     exp_files = (
@@ -503,8 +798,14 @@ def batch_download(context, request):
     )
 
     files = [metadata_link]
+    param_list = qs.group_values_by_key()
     for exp_file in exp_files:
         if not files_prop_param_list(exp_file, param_list):
+            continue
+        elif visualizable_only and not is_file_visualizable(exp_file):
+            continue
+        elif raw_only and exp_file.get('assembly'):
+            # "raw" option only allows files w/o assembly.
             continue
         elif restricted_files_present(exp_file):
             continue
@@ -523,10 +824,18 @@ def batch_download(context, request):
 
 
 def files_prop_param_list(exp_file, param_list):
+    """Does a file in experiment search results match query-string parms?
+
+    Keyword arguments:
+    exp_file -- file object from experiment search results
+    param_list -- grouped query-string parameters for experiment search
+    """
     for k, v in param_list.items():
         if k.startswith('files.'):
             file_prop = k[len('files.'):]
-            if file_prop in exp_file and exp_file[file_prop] not in v:
+            if file_prop not in exp_file:
+                return False
+            if exp_file[file_prop] not in v:
                 return False
     return True
 
@@ -609,7 +918,7 @@ def report_download(context, request):
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
-        for item in search(context, request, return_generator=True):
+        for item in search_generator(request)['@graph']:
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 
@@ -626,3 +935,43 @@ def report_download(context, request):
     )
     request.response.app_iter = generate_rows()
     return request.response
+
+
+def list_visible_columns_for_schemas(request, schemas):
+    """
+    Returns mapping of default columns for a set of schemas.
+    """
+    columns = OrderedDict({'@id': {'title': 'ID'}})
+    for schema in schemas:
+        if 'columns' in schema:
+            columns.update(schema['columns'])
+        else:
+            # default columns if not explicitly specified
+            columns.update(OrderedDict(
+                (name, {
+                    'title': schema['properties'][name].get('title', name)
+                })
+                for name in [
+                    '@id', 'title', 'description', 'name', 'accession',
+                    'aliases'
+                ] if name in schema['properties']
+            ))
+    fields_requested = request.params.getall('field')
+    if fields_requested:
+        limited_columns = OrderedDict()
+        for field in fields_requested:
+            if field in columns:
+                limited_columns[field] = columns[field]
+            else:
+                # We don't currently traverse to other schemas for embedded
+                # objects to find property titles. In this case we'll just
+                # show the field's dotted path for now.
+                limited_columns[field] = {'title': field}
+                for schema in schemas:
+                    if field in schema['properties']:
+                        limited_columns[field] = {
+                            'title': schema['properties'][field]['title']
+                        }
+                        break
+        columns = limited_columns
+    return columns

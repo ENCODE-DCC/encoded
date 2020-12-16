@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 import { addMultipleToCartAndSave } from './actions';
 import { MaximumElementsLoggedoutModal, CART_MAXIMUM_ELEMENTS_LOGGEDOUT } from './util';
 
@@ -31,8 +31,8 @@ class CartMergeSharedComponent extends React.Component {
      * in a logged-out user's cart than allowed.
      */
     handleMergeButtonClick() {
-        const { viewableElements, loggedIn } = this.props;
-        if (loggedIn || viewableElements.length <= CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
+        const { viewableDatasets, loggedIn } = this.props;
+        if (loggedIn || viewableDatasets.length <= CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
             this.setState({ mergeCartDisplayed: true });
         } else {
             this.setState({ overMaximumError: true });
@@ -58,15 +58,15 @@ class CartMergeSharedComponent extends React.Component {
      * Called when the user confirms they want to merge the shared cart into their own.
      */
     handleClick() {
-        this.props.onMergeCartClick(this.props.viewableElements);
+        this.props.onMergeCartClick(this.props.viewableDatasets);
     }
 
     render() {
-        const { sharedCartObj, savedCartObj, viewableElements } = this.props;
+        const { sharedCartObj, savedCartObj, viewableDatasets } = this.props;
 
         // Show the "Add to current cart" button if the shared cart has elements and we're not looking
         // at our own shared cart.
-        if ((viewableElements && viewableElements.length > 0) && (sharedCartObj['@id'] !== savedCartObj['@id'])) {
+        if ((viewableDatasets && viewableDatasets.length > 0) && (sharedCartObj['@id'] !== savedCartObj['@id'])) {
             const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
             return (
                 <span>
@@ -104,7 +104,7 @@ CartMergeSharedComponent.propTypes = {
     /** Current user's saved cart object */
     savedCartObj: PropTypes.object,
     /** Viewable cart element @ids */
-    viewableElements: PropTypes.array,
+    viewableDatasets: PropTypes.array,
     /** Called to merge shared cart with own cart */
     onMergeCartClick: PropTypes.func.isRequired,
     /** True if cart updating operation is in progress */
@@ -116,7 +116,7 @@ CartMergeSharedComponent.propTypes = {
 CartMergeSharedComponent.defaultProps = {
     sharedCartObj: {},
     savedCartObj: null,
-    viewableElements: null,
+    viewableDatasets: null,
     loggedIn: false,
 };
 
@@ -125,7 +125,7 @@ const mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     inProgress: state.inProgress,
     sharedCartObj: ownProps.sharedCartObj,
-    viewableElements: ownProps.viewableElements,
+    viewableDatasets: ownProps.viewableDatasets,
     adminUser: ownProps.adminUser,
 });
 
@@ -139,10 +139,10 @@ const CartMergeSharedInternal = connect(mapStateToProps, mapDispatchToProps)(Car
 /**
  * Wrapper component to receive React <App> context and pass them to <CartMergeSharedInternal>.
  */
-const CartMergeShared = ({ sharedCartObj, viewableElements }, reactContext) => (
+const CartMergeShared = ({ sharedCartObj, viewableDatasets }, reactContext) => (
     <CartMergeSharedInternal
         sharedCartObj={sharedCartObj}
-        viewableElements={viewableElements}
+        viewableDatasets={viewableDatasets}
         loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
         sessionProperties={reactContext.session_properties}
         fetch={reactContext.fetch}
@@ -153,11 +153,11 @@ CartMergeShared.propTypes = {
     /** Shared cart object */
     sharedCartObj: PropTypes.object.isRequired,
     /** Viewable cart element @ids */
-    viewableElements: PropTypes.array,
+    viewableDatasets: PropTypes.array,
 };
 
 CartMergeShared.defaultProps = {
-    viewableElements: null,
+    viewableDatasets: null,
 };
 
 CartMergeShared.contextTypes = {

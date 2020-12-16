@@ -6,11 +6,12 @@ import jsonschema from 'jsonschema';
 import _ from 'underscore';
 import offset from '../libs/offset';
 import { FetchedData, Param } from './fetched';
-import { parseAndLogError, listingTitles } from './globals';
+import { parseAndLogError, listingTitles, getRoles } from './globals';
 import { FileInput, ItemPreview, ObjectPicker } from './inputs';
 import Layout from './layout';
-import DropdownButton from '../libs/bootstrap/button';
-import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import DropdownButton from '../libs/ui/button';
+import { DropdownMenu } from '../libs/ui/dropdown-menu';
+
 
 const validator = new jsonschema.Validator();
 
@@ -99,7 +100,7 @@ const defaultValue = function defaultValue(schema) {
                 }
             }
         });
-        return (Object.keys(value).length ? value : undefined);
+        return (Object.keys(value).length > 0 ? value : undefined);
     }
     return schema.default || undefined;
 };
@@ -293,19 +294,17 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
         if (!this.context.readonly) {
             if (subtypes.length > 1) {
                 button = (
-                    <DropdownButton title="Add" buttonClasses="rf-RepeatingFieldset__add">
-                        <DropdownMenu>
-                            {subtypes.map(subtype =>
-                                <a
-                                    href="#"
-                                    key={subtype}
-                                    data-subtype={subtype}
-                                    onClick={this.handleAdd}
-                                >
-                                    {schemas[subtype].title}
-                                </a>)}
-                        </DropdownMenu>
-                    </DropdownButton>
+                    <DropdownButton.Immediate label="Add" css="rf-RepeatingFieldset__add">
+                        {subtypes.map(subtype =>
+                            <a
+                                href="#"
+                                key={subtype}
+                                data-subtype={subtype}
+                                onClick={this.handleAdd}
+                            >
+                                {schemas[subtype].title}
+                            </a>)}
+                    </DropdownButton.Immediate>
                 );
             } else {
                 button = (
@@ -598,6 +597,11 @@ export class Field extends UpdateChildMixin(React.Component) {
         const errors = this.context.errors;
         const isValid = !errors[path];
         const type = schema.type || 'string';
+        const sessionProperties = this.context.session_properties;
+        const roles = getRoles(sessionProperties);
+        // check if user is not admin nor submitter
+        const notAuthorized = !['admin', 'submitter'].some(role => roles.includes(role));
+
         let classBase = 'rf-Field';
         if (type === 'object') {
             classBase = 'rf-Fieldset';
@@ -671,18 +675,18 @@ export class Field extends UpdateChildMixin(React.Component) {
                 // React key.
                 options = [<option key="_null_" value={null} />].concat(options);
             }
-            input = <select className="form-control" {...inputProps}>{options}</select>;
+            // special case where Status is disabled for unpriviledged users
+            const isDisabled = notAuthorized && schema.title === 'Status';
+            input = <select className="form-control" {...inputProps} disabled={isDisabled} >{options}</select>;
         } else if (schema.linkTo) {
             // Restrict ObjectPicker to finding the specified type
             // FIXME this should handle an array of types too
-            const restrictions = { type: [schema.linkTo] };
             input = (<ObjectPicker
                 {...inputProps}
                 searchBase={`?mode=picker&type=${schema.linkTo}`}
-                restrictions={restrictions}
             />);
         } else if (schema.type === 'boolean') {
-            input = <input type="checkbox" {...inputProps} />;
+            input = <input type="checkbox" {...inputProps} checked={!!value} />;
         } else if (schema.type === 'integer' || schema.type === 'number') {
             input = <input type="number" {...inputProps} />;
         } else {
@@ -734,6 +738,7 @@ Field.contextTypes = {
     showReadOnly: PropTypes.bool,
     readonly: PropTypes.bool,
     id: PropTypes.string,
+    session_properties: PropTypes.object,
 };
 
 Field.childContextTypes = {
@@ -949,7 +954,7 @@ export class Form extends React.Component {
         let error;
         if (data.errors !== undefined) {
             data.errors.forEach((err) => {
-                let path = `instance${err.name.length ? `.${err.name.join('.')}` : ''}`;
+                let path = `instance${err.name.length > 0 ? `.${err.name.join('.')}` : ''}`;
                 // Missing values for required properties are reported
                 // on the parent property (the one that specifies `required`)
                 // so we have to add the property that is actually missing here.
@@ -1009,19 +1014,15 @@ export class Form extends React.Component {
     render() {
         /* eslint-disable jsx-a11y/anchor-is-valid */
         return (
-            <form
-                className="rf-Form"
-                onSubmit={this.save}
-            >
+            <form className="rf-Form" onSubmit={this.save}>
                 {this.state.message ? <div className="alert alert-success">{this.state.message}</div> : ''}
                 <Field
                     schema={this.props.schema}
                     value={this.state.value}
                     updateChild={this.update}
                 />
-                <div className="pull-right">
+                <div className="form-edit__save-controls">
                     <a href="" className="btn btn-default">Cancel</a>
-                    {' '}
                     <button
                         className="btn btn-success"
                         onClick={this.save}
@@ -1030,7 +1031,6 @@ export class Form extends React.Component {
                     >
                         {this.props.submitLabel}
                     </button>
-                    {' '}
                     {this.props.showSaveAndAdd ?
                         <button
                             data-button="saveAndAdd"

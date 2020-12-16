@@ -4,12 +4,16 @@
     border-bottom: 1px solid #c0c0c0;
 
     > li {
-        font-weight: bold;
+        display: inline-block;
+        font-weight: 500;
         font-size: 1rem;
         color: #808080;
 
         + li:before {
             padding: 0 5px 0 10px;
+            content: "/\A0"; // Slash character, only after adjacent li
+            padding: 0 5px;
+            color: #ccc;
         }
     }
 }

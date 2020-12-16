@@ -278,3 +278,143 @@ class LongReadRnaQuantificationQualityMetric(QualityMetric, CalculatedAssayTermI
 class GencodeCategoryQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'gencode_category_quality_metric'
     schema = load_schema('encoded:schemas/gencode_category_quality_metric.json')
+
+
+@collection(
+    name='chip-alignment-quality-metrics',
+    properties={
+        'title': "ChIP-seq Alignment Quality Metric",
+    })
+class ChipAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_alignment_samstat_quality_metric'
+    schema = load_schema('encoded:schemas/chip_alignment_samstat_quality_metric.json')
+
+
+@collection(
+    name='chip-alignment-enrichment-quality-metrics',
+    properties={
+        'title': "ChIP-seq Alignment Enrichment Quality Metric",
+    })
+class ChipAlignmentEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_alignment_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/chip_alignment_enrichment_quality_metric.json')
+
+
+@collection(
+    name='chip-library-quality-metrics',
+    properties={
+        'title': "ChIP-seq Library Metrics",
+    })
+class ChipLibraryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_library_quality_metric'
+    schema = load_schema('encoded:schemas/chip_library_quality_metric.json')
+
+
+@collection(
+    name='chip-peak-enrichment-quality-metrics',
+    properties={
+        'title': "ChIP-seq Peak Enrichment Quality Metric",
+    })
+class ChipPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_peak_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/chip_peak_enrichment_quality_metric.json')
+
+
+@collection(
+    name='chip-replication-quality-metrics',
+    properties={
+        'title': "ChIP-seq Replication Quality Metric",
+    })
+class ChipReplicationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_replication_quality_metric'
+    schema = load_schema('encoded:schemas/chip_replication_quality_metric.json')
+
+
+@collection(
+    name='atac-alignment-quality-metrics',
+    properties={
+        'title': "ATAC-seq Alignment Quality Metrics",
+    })
+class AtacAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/atac_alignment_quality_metric.json')
+
+
+@collection(
+    name='atac-alignment-enrichment-quality-metrics',
+    properties={
+        'title': "ATAC-seq Alignment Enrichment Quality Metrics",
+    })
+class AtacAlignmentEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_alignment_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/atac_alignment_enrichment_quality_metric.json')
+
+
+@collection(
+    name='atac-library-quality-metrics',
+    properties={
+        'title': "ATAC-seq Library Metrics",
+    })
+class AtacLibraryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_library_complexity_quality_metric'
+    schema = load_schema('encoded:schemas/atac_library_complexity_quality_metric.json')
+
+
+@collection(
+    name='atac-peak-enrichment-quality-metrics',
+    properties={
+        'title': "ATAC-seq Peak Enrichment Quality Metrics",
+    })
+class AtacPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_peak_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/atac_peak_enrichment_quality_metric.json')
+
+
+@collection(
+    name='atac-replication-quality-metrics',
+    properties={
+        'title': "ATAC-seq Replication Quality Metrics",
+    })
+class AtacReplicationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_replication_quality_metric'
+    schema = load_schema('encoded:schemas/atac_replication_quality_metric.json')
+
+
+@collection(
+    name='gene-quantification-quality-metrics',
+    properties={
+        'title': "RNA-seq Gene Quantification Quality Metric",
+    })
+class GeneQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'gene_quantification_quality_metric'
+    schema = load_schema('encoded:schemas/gene_quantification_quality_metric.json')
+
+
+@collection(
+    name='gene-type-quantification-quality-metrics',
+    properties={
+        'title': "RNA-seq Gene Type Quantification Quality Metric",
+    })
+class GeneTypeQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'gene_type_quantification_quality_metric'
+    schema = load_schema('encoded:schemas/gene_type_quantification_quality_metric.json')
+
+
+@collection(
+    name='dnase-footprinting-quality-metrics',
+    properties={
+        'title': "DNase Footprinting Quality Metrics",
+    })
+class DnaseFootprintingQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'dnase_footprinting_quality_metric'
+    schema = load_schema('encoded:schemas/dnase_footprinting_quality_metric.json')
+
+
+@collection(
+    name='gembs-alignment-quality-metrics',
+    properties={
+        'title': "gemBS Alignment Quality Metrics",
+    })
+class GembsAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'gembs_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/gembs_alignment_quality_metric.json')

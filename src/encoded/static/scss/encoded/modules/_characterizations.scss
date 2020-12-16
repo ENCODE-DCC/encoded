@@ -106,6 +106,16 @@ $attachment-button-margin: 3px;
     background-image: url(/static/img/file-broken.svg);
 }
 
+.file-thumbnail {
+    @extend %file-icon;
+    display: inline-block;
+
+    img {
+        height: 100px;
+        width: 120px; 
+    }
+}
+
 .facet-term-key {
     margin-right: 5px;
     font-size: 1.1rem;
@@ -219,8 +229,70 @@ $attachment-button-margin: 3px;
 }
 
 
+.attachment-list {
+    display: flex;
+    margin-left: -5px;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.attachment-list__panel {
+    flex: 0 0 calc(50% - 10px);
+    margin: 5px;
+
+    .panel {
+        margin: 0;
+    }
+}
+
+
 .dl-link {
     word-break: break-all;
+}
+
+
+/**
+ * List of documents, normally wrapped into columns within a panel.
+ */
+.document-list {
+    padding: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    @at-root #{&}__document {
+        margin: 5px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            flex-grow: 0;
+            flex-shrink: 1;
+            flex-basis: calc(50% - 10px);
+            min-width: 0;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex-grow: 0;
+            flex-shrink: 1;
+            flex-basis: calc(33.33% - 10px);
+            min-width: 0;
+        }
+
+        @media screen and (min-width: $screen-xl-min) {
+            flex-grow: 0;
+            flex-shrink: 1;
+            flex-basis: calc(25% - 10px);
+            min-width: 0;
+        }
+    }
+}
+
+
+// Calc doesn't work correctly in IE11.
+.uaTrident .document-list__document {
+    margin: 4px;
 }
 
 // Document styles, normally added to a <Panel> component's classes.
@@ -249,6 +321,8 @@ $detail-switch-width: 30px;
     @at-root #{&}__caption {
         flex: 1 1 auto;
         margin: 5px;
+        line-height: 1.4;
+        word-break: break-word;
     }
 
     @at-root #{&}__preview {
@@ -404,8 +478,6 @@ $detail-switch-width: 30px;
 }
 
 
-
-
 .document-slider {
     display: none;
     margin: 0;
@@ -447,8 +519,15 @@ $detail-switch-width: 30px;
     }
 }
 
-.journal, .author {
-   font-size: 1rem;
+.journal {
+    margin-top: 5px;
+    font-size: 1rem;
+    color: #606060;
+}
+
+.authors {
+    margin-top: 20px;
+    line-height: 1.4;
 }
 
 // Characterization panel biosample terms

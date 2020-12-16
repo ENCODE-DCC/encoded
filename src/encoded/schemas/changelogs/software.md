@@ -1,5 +1,16 @@
 ## Changelog for software.json
 
+### Minor changes since schema version 7
+* Added *CUT&RUN* to *purpose* enum
+
+### Schema version 7
+
+* *purpose* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*
+
+### Schema version 6
+
+* *purpose* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
+
 ### Schema version 5
 
 * *status* property was restricted to one of  

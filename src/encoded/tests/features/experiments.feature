@@ -1,4 +1,4 @@
-@experiments @usefixtures(workbook)
+@experiments @usefixtures(index_workbook)
 Feature: Experiments
 
     Scenario: Collection
@@ -9,11 +9,11 @@ Feature: Experiments
         When I visit "/experiments/"
         And I wait for the content to load
         When I click the link to "/search/?type=Experiment&assay_slims=DNA+binding"
-        Then I should see an element with the css selector "div.panel.data-display.main-panel"
-        And I should see "Showing 19 of 19 results"
+        Then I should see an element with the css selector "div.search-results"
+        And I should see "Showing 20 of 20 results"
 
         When I go back
         And I wait for the content to load
         When I click the link to "/search/?type=Experiment&assay_title=TF+ChIP-seq"
-        Then I should see an element with the css selector "div.panel.data-display.main-panel"
-        And I should see "Showing 8 of 8 results"
+        Then I should see an element with the css selector "div.search-results"
+        And I should see "Showing 9 of 9 results"

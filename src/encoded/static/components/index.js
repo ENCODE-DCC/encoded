@@ -1,10 +1,12 @@
 // Require all components to ensure javascript load ordering
 require('./lib');
+require('./view_controls.js');
 require('./antibody');
 require('./app');
 require('./award');
 require('./image');
 require('./biosample');
+
 require('./cart');
 require('./collection');
 require('./datacolors');
@@ -22,9 +24,16 @@ require('./file');
 require('./item');
 require('./page');
 require('./platform');
+require('./facets');
 require('./search');
 require('./report');
-require('./matrix');
+require('./matrix_audit');
+require('./matrix_entex');
+require('./matrix_mouse_development');
+require('./matrix_experiment');
+require('./matrix_reference_epigenome');
+require('./matrix_sescc_stem_cell');
+require('./matrix_chip_seq');
 require('./target');
 require('./publication');
 require('./pipeline');
@@ -45,6 +54,11 @@ require('./surgery');
 require('./pathology_report');
 require('./biospecimen');
 require('./biofile');
+require('./biodataset');
+require('./doc');
+//require('./filegallery');
+require('./bioexperiment');
+
 
 
 module.exports = require('./app');

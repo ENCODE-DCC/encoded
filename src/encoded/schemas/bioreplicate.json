@@ -12,12 +12,10 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted" }
     ],
-
     "properties": {
         "schema_version": {
             "default": "1"
         },
-
         "biological_replicate_number": {
             "title": "Biological replicate",
             "description": "Data collection under the same methods using a different biological source, measuring the variability in the biological source.",
@@ -32,7 +30,6 @@
             "default": 1,
             "minimum": 1
         },
-
         "biolibrary": {
             "title": "Biolibrary",
             "description": "The nucleic acid library used in this replicate.",
@@ -40,7 +37,13 @@
             "type": "string",
             "linkTo": "Biolibrary"
         },
-
+        "bioexperiment": {
+            "title": "Bioexperiment",
+            "description": "The bioexperiment the replicate belongs to.",
+            "comment": "See bioexperiment.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Bioexperiment"
+        },
         "status": {
             "title": "Status",
             "type": "string",
@@ -62,7 +65,6 @@
     "boost_values": {
         "biolibrary.accession": 1.0,
         "biolibrary.biospecimen.accession": 1.0
-
     },
     "changelog": "/profiles/changelogs/bioreplicate.md"
 }

@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
-import { Panel } from '../libs/bootstrap/panel';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { Panel } from '../libs/ui/panel';
 import * as globals from './globals';
 import Layout from './layout';
-import { PickerActions } from './search';
+import { PickerActions, resultItemClass } from './search';
 
+dayjs.extend(utc);
 
 const Page = (props) => {
     const context = props.context;
@@ -14,7 +16,7 @@ const Page = (props) => {
             <Panel addClasses="news-post">
                 <div className="news-post-header">
                     <h1>{context.title}</h1>
-                    <h2>{moment.utc(context.date_created).format('MMMM D, YYYY')} — <NewsShareList post={context} /></h2>
+                    <h2>{dayjs.utc(context.date_created).format('MMMM D, YYYY')} — <NewsShareList post={context} /></h2>
                 </div>
                 <Layout value={context.layout} />
                 <div className="news-keyword-section">
@@ -24,14 +26,9 @@ const Page = (props) => {
         );
     }
 
-    // Non-news page; render as title, then content box
+    // Non-news page; only layout displayed
     return (
         <div>
-            <header className="row">
-                <div className="col-sm-12">
-                    <h1 className="page-title">{context.title}</h1>
-                </div>
-            </header>
             <Layout value={context.layout} />
         </div>
     );
@@ -44,22 +41,19 @@ Page.propTypes = {
 globals.contentViews.register(Page, 'Page');
 
 
-const Listing = (props) => {
-    const result = props.context;
-    return (
-        <li>
-            <div className="clearfix">
-                <PickerActions {...props} />
-                <div className="accession">
-                    <a href={result['@id']}>{result.title}</a> <span className="page-listing-date">{moment.utc(result.date_created).format('MMMM D, YYYY')}</span>
-                </div>
-                <div className="data-row">
+const Listing = ({ context: result }) => (
+    <li className={resultItemClass(result)}>
+        <div className="result-item">
+            <div className="result-item__data">
+                <a href={result['@id']} className="result-item__link">{result.title}</a> <span className="page-listing-date">{dayjs.utc(result.date_created).format('MMMM D, YYYY')}</span>
+                <div className="result-item__data-row">
                     {result.news ? result.news_excerpt : null}
                 </div>
             </div>
-        </li>
-    );
-};
+            <PickerActions context={result} />
+        </div>
+    </li>
+);
 
 Listing.propTypes = {
     context: PropTypes.object.isRequired, // Search result object
@@ -71,13 +65,13 @@ globals.listingViews.register(Listing, 'Page');
 // Display a list of keywords for the news article in the `post` prop.
 const NewsKeywordList = (props) => {
     const post = props.post;
-    if (post.news_keywords && post.news_keywords.length) {
+    if (post.news_keywords && post.news_keywords.length > 0) {
         return (
             <div className="news-keyword-list">
                 <p>View news matching these terms, or all recent news</p>
-                <a className="news-keyword" href={'/search/?type=Page&news=true'} title="Show all recent news posts">All recent news</a>
+                <a className="btn btn-default btn-sm news-keyword" href={'/search/?type=Page&news=true'} title="Show all recent news posts">All recent news</a>
                 {post.news_keywords.map(keyword =>
-                    <a key={keyword} className="news-keyword" href={`/search/?type=Page&news=true&news_keywords=${keyword}`} title={`Show all news posts tagged with ${keyword}`}>{keyword}</a>
+                    <a key={keyword} className="btn btn-default btn-sm news-keyword" href={`/search/?type=Page&news=true&news_keywords=${keyword}`} title={`Show all news posts tagged with ${keyword}`}>{keyword}</a>
                 )}
             </div>
         );
@@ -100,9 +94,6 @@ const NewsShareList = (props, reactContext) => {
             </a>
             <a className="share-facebook" href={`https://www.facebook.com/sharer/sharer.php?u=${reactContext.location_href}&t=${post.title}`} target="_blank" rel="noopener noreferrer" title="Share this page on Facebook in a new window" aria-label="Share on Facebook">
                 <span className="sr-only">Facebook</span>
-            </a>
-            <a className="share-googleplus" href={`https://plus.google.com/share?url=${reactContext.location_href}`} target="_blank" rel="noopener noreferrer" title="Share this page on Google Plus in a new window" aria-label="Share on Google+">
-                <span className="sr-only">Google+</span>
             </a>
         </div>
     );

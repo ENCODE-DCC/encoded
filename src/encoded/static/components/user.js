@@ -4,15 +4,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import ItemStore from './lib/store';
-import { Modal, ModalHeader, ModalBody } from '../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { cartRemoveElements } from './cart';
 import { Form } from './form';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
-import { DisplayAsJson } from './objectutils';
+import { ItemAccessories } from './objectutils';
+import { SortTablePanel, SortTable } from './sorttable';
 
 
+/**
+ * Item store that adds a `resetSecret` method to reset the access key secret.
+ */
 class AccessKeyStore extends ItemStore {
     resetSecret(id) {
         this.fetch(`${id}reset-secret`, {
@@ -22,16 +27,75 @@ class AccessKeyStore extends ItemStore {
 }
 
 
+/**
+ * Displays and reacts to the Reset and Delete controls in the access key table.
+ */
+class AccessKeyActions extends React.Component {
+    constructor() {
+        super();
+        this.doActionReset = this.doActionReset.bind(this);
+        this.doActionDelete = this.doActionDelete.bind(this);
+    }
+
+    doActionReset(e) {
+        e.preventDefault();
+        this.props.doAction('resetSecret', this.props.accessKeyId);
+    }
+
+    doActionDelete(e) {
+        e.preventDefault();
+        this.props.doAction('delete', this.props.accessKeyId);
+    }
+
+    render() {
+        return (
+            <div className="access-keys__actions">
+                <button onClick={this.doActionReset} className="btn btn-info btn-sm">Reset</button>
+                <button onClick={this.doActionDelete} className="btn btn-danger btn-sm">Delete</button>
+            </div>
+        );
+    }
+}
+
+AccessKeyActions.propTypes = {
+    /** Callback to perform access key store action */
+    doAction: PropTypes.func.isRequired,
+    /** Access key  */
+    accessKeyId: PropTypes.string.isRequired,
+};
+
+
+/**
+ * Defines the columns of the access key table.
+ */
+const accessKeyColumns = {
+    access_key_id: {
+        title: 'Access key ID',
+        sorter: false,
+    },
+    description: {
+        title: 'Description',
+        sorter: false,
+    },
+    actions: {
+        title: 'Actions',
+        display: (item, meta) => <AccessKeyActions doAction={meta.action} accessKeyId={item['@id']} />,
+        sorter: false,
+    },
+};
+
+
 class AccessKeyTable extends React.Component {
     constructor(props, context) {
         super(props, context);
-        const accessKeys = this.props.access_keys;
-        this.store = new AccessKeyStore(accessKeys, this, 'access_keys');
+        this.store = new AccessKeyStore(props.user.access_keys, this, 'access_keys');
 
-        // Set initial React state.
-        this.state = { access_keys: accessKeys };
+        this.state = {
+            accessKeys: [...props.user.access_keys],
+            /** Access key message modal component */
+            modal: null,
+        };
 
-        // Bind this to non-React methods.
         this.create = this.create.bind(this);
         this.doAction = this.doAction.bind(this);
         this.onCreate = this.onCreate.bind(this);
@@ -42,16 +106,32 @@ class AccessKeyTable extends React.Component {
         this.hideModal = this.hideModal.bind(this);
     }
 
+    /**
+     * Called after an access key was deleted from the item store.
+     * @param {object} item Access key that was deleted
+     */
     onDelete(item) {
-        this.setState({
-            modal: (
-                <Modal closeModal={this.hideModal}>
-                    <ModalHeader title={'Access key deleted.'} closeModal={this.hideModal} />
-                    <ModalBody>
-                        <p>{`Access key ${item.access_key_id} has been deleted.`}</p>
-                    </ModalBody>
-                </Modal>
-            ),
+        this.setState((prevState) => {
+            // Remove the deleted item from the existing access key entry, and display the modal
+            // that shows what happened.
+            const deletedIndex = prevState.accessKeys.findIndex(accessKey => accessKey.access_key_id === item.access_key_id);
+            if (deletedIndex !== -1) {
+                return ({
+                    accessKeys: [...prevState.accessKeys.slice(0, deletedIndex), ...prevState.accessKeys.slice(deletedIndex + 1)],
+                    modal: (
+                        <Modal closeModal={this.hideModal}>
+                            <ModalHeader title={'Access key deleted.'} closeModal={this.hideModal} />
+                            <ModalBody>
+                                <p>{`Access key ${item.access_key_id} has been deleted.`}</p>
+                            </ModalBody>
+                            <ModalFooter closeModal={this.hideModal} cancelTitle="OK" />
+                        </Modal>
+                    ),
+                });
+            }
+
+            // Else matching access key is oddly not in local state. Fail silently.
+            return null;
         });
     }
 
@@ -73,10 +153,23 @@ class AccessKeyTable extends React.Component {
         this.showNewSecret('Your secret key has been reset.', response);
     }
 
+    /**
+     * Called after an access key for the user gets created on the server.
+     * @param {object} response Search result containing new access key object
+     */
     onCreate(response) {
+        this.setState((prevState) => {
+            // Add new secret from item store to the beginning of the `accessKeys` state array.
+            const newSecret = Object.assign({}, response['@graph'][0]);
+            return { accessKeys: [newSecret, ...prevState.accessKeys] };
+        });
         this.showNewSecret('Your secret key has been created.', response);
     }
 
+    /**
+     * Called when the user requests a new access key.
+     * @param {object} e React synthetic event
+     */
     create(e) {
         e.preventDefault();
         const item = {};
@@ -86,18 +179,30 @@ class AccessKeyTable extends React.Component {
         this.store.create('/access-keys/', item);
     }
 
-    doAction(action, arg) {
-        this.store[action](arg);
+    /**
+     * Called to perform an access key store action, e.g. reset, delete.
+     * @param {string} action Code for action to perform
+     * @param {string} accessKeyId
+     */
+    doAction(action, accessKeyId) {
+        this.store[action](accessKeyId);
     }
 
+    /**
+     * Called when a new secret gets created on the server.
+     * @param {string} title Title bar message
+     * @param {object} response Access key creation response from server
+     */
     showNewSecret(title, response) {
         this.setState({
             modal: (
                 <Modal closeModal={this.hideModal}>
                     <ModalHeader title={title} closeModal={this.hideModal} />
                     <ModalBody>
-                        Please make a note of the new secret access key.
-                        This is the last time you will be able to view it.
+                        <p>
+                            Please make a note of the new secret access key.
+                            This is the last time you will be able to view it.
+                        </p>
                         <dl className="key-value">
                             <div data-test="accesskeyid">
                                 <dt>Access Key ID</dt>
@@ -109,6 +214,7 @@ class AccessKeyTable extends React.Component {
                             </div>
                         </dl>
                     </ModalBody>
+                    <ModalFooter closeModal={this.hideModal} cancelTitle="OK" />
                 </Modal>
             ),
         });
@@ -119,42 +225,37 @@ class AccessKeyTable extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                <button className="btn btn-success" onClick={this.create}>Add Access Key</button>
-                {this.state.access_keys.length ?
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>Access Key ID</th>
-                                <th>Description</th>
-                                <th />
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.access_keys.map(k =>
-                                <tr key={k.access_key_id}>
-                                    <td>{k.access_key_id}</td>
-                                    <td>{k.description}</td>
-                                    <AccessKeyActions doAction={this.doAction} accessKeyId={k['@id']} />
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                : ''}
-                {this.state.modal}
+        const accessKeyHeader = (
+            <div className="access-keys__header">
+                <h4 className="access-keys__header-title">Access keys</h4>
+                <button onClick={this.create} className="btn btn-info btn-sm access-keys__header-control">Add access key</button>,
             </div>
+        );
+
+        return (
+            <React.Fragment>
+                {this.state.accessKeys.length > 0 ?
+                    <SortTablePanel header={accessKeyHeader} css="access-keys__table">
+                        <SortTable list={this.state.accessKeys} columns={accessKeyColumns} meta={{ action: this.doAction }} />
+                    </SortTablePanel>
+                :
+                    <Panel addClasses="access-keys__table">
+                        <PanelHeading>
+                            {accessKeyHeader}
+                        </PanelHeading>
+                        <PanelBody>
+                            <div className="access-keys__empty-message">No access keys</div>
+                        </PanelBody>
+                    </Panel>
+                }
+                {this.state.modal}
+            </React.Fragment>
         );
     }
 }
 
 AccessKeyTable.propTypes = {
     user: PropTypes.object.isRequired,
-    access_keys: PropTypes.array,
-};
-
-AccessKeyTable.defaultProps = {
-    access_keys: null,
 };
 
 AccessKeyTable.contextTypes = {
@@ -163,89 +264,49 @@ AccessKeyTable.contextTypes = {
 };
 
 
-class AccessKeyActions extends React.Component {
-    constructor() {
-        super();
-
-        // Bind this to non-React methods.
-        this.doActionReset = this.doActionReset.bind(this);
-        this.doActionDelete = this.doActionDelete.bind(this);
-    }
-
-    doActionReset(e) {
-        e.preventDefault();
-        this.props.doAction('resetSecret', this.props.accessKeyId);
-    }
-
-    doActionDelete(e) {
-        e.preventDefault();
-        this.props.doAction('delete', this.props.accessKeyId);
-    }
-
-    render() {
-        /* eslint-disable jsx-a11y/anchor-is-valid */
-        return (
-            <td>
-                <a href="" onClick={this.doActionReset}>reset</a>
-                {' '}<a href="" onClick={this.doActionDelete}>delete</a>
-            </td>
-        );
-        /* eslint-enable jsx-a11y/anchor-is-valid */
-    }
-}
-
-AccessKeyActions.propTypes = {
-    doAction: PropTypes.func.isRequired,
-    accessKeyId: PropTypes.string.isRequired,
-};
-
-
-const User = (props) => {
-    const context = props.context;
+const User = ({ context }) => {
+    const itemClass = globals.itemClass(context, 'view-item');
     const crumbs = [
         { id: 'Users' },
     ];
     const crumbsReleased = (context.status === 'released');
+    const isVerifiedMember = context.groups && context.groups.includes('verified');
+    const isAdmin = context.groups && context.groups.includes('admin');
+    const hasAccessKeyRights = isVerifiedMember || isAdmin;
+
     return (
-        <div>
-            <header className="row">
+        <div className={itemClass}>
+            <header>
                 <Breadcrumbs root="/search/?type=user" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                <div className="col-sm-12">
-                    <h1 className="page-title">{context.title}</h1>
-                    <DisplayAsJson />
-                </div>
+                <h1>{context.title}</h1>
+                <ItemAccessories item={context} />
             </header>
-            <div className="panel data-display">
-                <dl className="key-value">
-                    <div>
-                        <dt>Title</dt>
-                        <dd>{context.job_title}</dd>
-                    </div>
-                    <div>
-                        <dt>Lab</dt>
-                        <dd>{context.lab ? context.lab.title : ''}</dd>
-                    </div>
-                </dl>
-            </div>
-            {context.email ?
-                <div>
-                    <h3>Contact Info</h3>
-                    <div className="panel data-display">
-                        <dl className="key-value">
-                            <dt>Email</dt>
-                            <dd><a href={`mailto:${context.email}`}>{context.email}</a></dd>
-                        </dl>
-                    </div>
-                </div>
-            : ''}
-            {context.access_keys ?
-                <div className="access-keys">
-                    <h3>Access Keys</h3>
-                    <div className="panel data-display">
-                        <AccessKeyTable user={context} access_keys={context.access_keys} />
-                    </div>
-                </div>
-            : ''}
+            <Panel>
+                <PanelBody>
+                    <dl className="key-value">
+                        {context.job_title ?
+                            <div data-test="title">
+                                <dt>Title</dt>
+                                <dd>{context.job_title}</dd>
+                            </div>
+                        : null}
+                        {context.lab ?
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
+                        : null}
+                        {context.email ?
+                            <div data-test="email">
+                                <dt>Email</dt>
+                                <dd><a href={`mailto:${context.email}`}>{context.email}</a></dd>
+                            </div>
+                        : null}
+                    </dl>
+                </PanelBody>
+            </Panel>
+
+            {hasAccessKeyRights ? <AccessKeyTable user={context} accessKeys={context.access_keys} /> : null}
         </div>
     );
 };
@@ -269,10 +330,8 @@ const ImpersonateUserSchema = {
 
 
 class ImpersonateUserFormComponent extends React.Component {
-    constructor(props, context) {
-        super(props, context);
-
-        // Bind this to non-React methods.
+    constructor(props) {
+        super(props);
         this.finished = this.finished.bind(this);
     }
 
@@ -284,7 +343,7 @@ class ImpersonateUserFormComponent extends React.Component {
     render() {
         return (
             <div>
-                <h2>Impersonate User</h2>
+                <h1>Impersonate User</h1>
                 <Form
                     schema={ImpersonateUserSchema}
                     submitLabel="Submit"

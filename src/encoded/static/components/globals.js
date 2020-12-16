@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import ga from 'google-analytics';
+import url from 'url';
 import Registry from '../libs/registry';
 import DataColors from './datacolors';
 
@@ -58,9 +59,9 @@ export function truncateString(str, len) {
     let localStr = str;
     if (localStr.length > len) {
         localStr = localStr.replace(/(^\s)|(\s$)/gi, ''); // Trim leading/trailing white space
-        const isOneWord = str.match(/\s/gi) === null; // Detect single-word string
         localStr = localStr.substr(0, len - 1); // Truncate to length ignoring word boundary
-        localStr = `${!isOneWord ? localStr.substr(0, localStr.lastIndexOf(' ')) : localStr}…`; // Back up to word boundary
+        const isOneWord = localStr.match(/\s/gi) === null; // Detect single-word string
+        localStr = `${!isOneWord ? localStr.substr(0, localStr.lastIndexOf(' ')) : localStr}…`; // Ensure last word is not prematurely split
     }
     return localStr;
 }
@@ -90,31 +91,30 @@ export function unbindEvent(el, eventName, eventHandler) {
 }
 
 
-// Encode a URI with much less intensity than encodeURIComponent but a bit more than encodeURI.
-// In addition to encodeURI, this function escapes exclamations and at signs.
-export function encodedURI(uri) {
-    return encodeURI(uri).replace(/!/g, '%21').replace(/@/g, '%40');
-}
-
-
-// Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
-// `options.space` parameter, or '+' if not provided. Encodes equals sign if `options.encodeEquals`
-// set to true, or leaves the equals sign unencoded.
-// http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
-export function encodedURIComponent(str, options = {}) {
-    const spaceReplace = options.space || '+';
-    const preEquals = encodeURIComponent(str)
-        .replace(/\(/g, '%28')
-        .replace(/\)/g, '%29')
-        .replace(/%20/g, spaceReplace);
-    return options.encodeEquals ? preEquals : preEquals.replace(/%3D/g, '=');
-}
+/**
+ * Remove spaces from id so it can be accepted as an id by HTML
+ *
+ * @param {string} id
+ * @returns id without space or dash if id is empty
+ */
+export const sanitizeId = id => (id ? `${id.replace(/\s/g, '_')}` : '-');
 
 
 // Take an @id and return the corresponding accession. If no accession could be found in the @id,
 // the empty string is returned.
 export function atIdToAccession(atId) {
     const matched = atId.match(/^\/.+\/(.+)\/$/);
+    if (matched && matched.length === 2) {
+        return matched[1];
+    }
+    return '';
+}
+
+
+// Take an @id and return the corresponding object type. If no object type could be found in the
+// @id, the empty string is returned.
+export function atIdToType(atId) {
+    const matched = atId.match(/^\/(.+)\/.+\/$/);
     if (matched && matched.length === 2) {
         return matched[1];
     }
@@ -155,7 +155,16 @@ export function zeroFill(n, digits) {
 export const statusToClassElement = status => status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '');
 
 
-export const productionHost = { 'www.encodeproject.org': 1, 'encodeproject.org': 1, 'www.encodedcc.org': 1 };
+/**
+ * Returns true if code runs on the production host, as opposed to test, demos, or local. This
+ * applies to both server and browser rendering.
+ * @param {string} currentUrl Normally from React context.location_href
+ *
+ * @return True if code runs on production host
+ */
+export const isProductionHost = currentUrl => (
+    ['www.encodeproject.org', 'encodeproject.org', 'www.encodedcc.org'].includes(url.parse(currentUrl).hostname)
+);
 
 export const encodeVersionMap = {
     ENCODE2: '2',
@@ -240,6 +249,35 @@ export function parseAndLogError(cause, response) {
     return promise;
 }
 
+export function getRoles(sessionProperties) {
+    // handles {}, null and other signs of lacks of content
+    if (_.isEmpty(sessionProperties)) {
+        return [];
+    }
+
+    const roles = [];
+
+    // non-empty auth.userid-object shows user is logged at least, so has unprivileged rights
+    if (sessionProperties['auth.userid']) {
+        roles.push('unprivileged');
+    }
+
+    if (sessionProperties.admin) {
+        roles.push('admin');
+    }
+
+    const userSessionProperties = sessionProperties.user;
+
+    if (userSessionProperties &&
+            userSessionProperties.lab &&
+            userSessionProperties.lab.status === 'current' &&
+            userSessionProperties.submits_for &&
+            userSessionProperties.submits_for.length > 0) {
+        roles.push('submitter');
+    }
+
+    return roles;
+}
 
 /**
  * Sort an array of documents first by attachment download name, and then by @id.
@@ -292,6 +330,7 @@ export const biosampleTypeList = [
     'in vitro differentiated cells',
     'single cell',
     'cell-free sample',
+    'cloning host',
     'organoid',
 ];
 

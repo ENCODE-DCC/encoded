@@ -26,7 +26,8 @@
     ],
     "facets": {
         "status": {
-            "title": "Status"
+            "title": "Status",
+            "open_on_load": true
         },
         "output_category": {
             "title": "Output category"
@@ -35,7 +36,8 @@
             "title": "Output type"
         },
         "file_format": {
-            "title": "File format"
+            "title": "File format",
+            "open_on_load": true
         },
         "file_format_type": {
             "title": "File format type"
@@ -54,6 +56,20 @@
         },
         "lab.title": {
             "title": "Lab"
+        },
+        "target.label": {
+            "title": "Target of assay",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "assay_term_name": {
+            "title": "Assay term name",
+            "type": "typeahead"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long"
         }
     },
     "dependencies": {
@@ -130,7 +146,10 @@
                                 "linkTo": "Platform",
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
                         }
@@ -156,7 +175,10 @@
                                 "linkTo": "Platform",
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
                         }
@@ -208,6 +230,25 @@
                 }
             }
         },
+        "index_of": {
+            "comment": "Only fastq files can have index_of specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                },
+                "output_type": {
+                    "enum": ["index reads"]
+                }
+            }
+        },
+        "read_structure": {
+            "comment": "Only fastq files can have read_structure specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                }
+            }
+        },
         "mapped_run_type": {
             "comment": "Only bam files can have mapped_run_type specified.",
             "properties": {
@@ -221,6 +262,31 @@
             "properties": {
                 "file_format": {
                     "enum": ["bam"]
+                }
+            }
+        },
+        "cropped_read_length": {
+            "comment": "Only bam files can have cropped_read_length specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
+        "cropped_read_length_tolerance": {
+            "comment": "Only bam files with cropped_read_length specified can have cropped_read_length_tolerance.",
+            "required": ["cropped_read_length"],
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
+        "hotspots_prefix": {
+            "comment": "Only files with output_type of hotspots1 reference or hotspots2 reference can have hotspots_prefix specified.",
+            "properties": {
+                "output_type": {
+                    "enum": ["hotspots1 reference", "hotspots2 reference"]
                 }
             }
         },
@@ -266,7 +332,7 @@
             ]
         },
         "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes",
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
             "oneOf":[
                 {
                     "properties": {
@@ -310,6 +376,57 @@
                             }
                         },
                         {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "6c275b37-018d-4bf8-85f6-6e3b830524a9"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
                             "required": ["read_length"],
                             "properties": {
                                 "file_format": {
@@ -320,13 +437,40 @@
                                         "linkTo": "Platform",
                                         "linkEnum": [
                                             "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                         ]
                                     }
                                 }
                             }
                         }
                     ]
+                },
+                {
+                    "required": ["replicate"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["subreads"]
+                        },
+                        "platform": {
+                            "linkTo": "Platform",
+                            "linkEnum": [
+                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                "e2be5728-5744-4da4-8881-cb9526d0389e"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "required": ["hotspots_prefix"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["hotspots1 reference", "hotspots2 reference"]
+                        }
+                    }
                 },
                 {
                     "required": ["restriction_enzymes"],
@@ -337,10 +481,18 @@
                     }
                 },
                 {
+                    "required": ["index_of"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["index reads"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "restriction enzyme site locations"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference"]
                             }
                         }
                     }
@@ -360,7 +512,21 @@
                     {
                         "properties": {
                             "output_type": {
+                                "enum": ["index reads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
                                 "enum": ["rejected reads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["subreads"]
                             }
                         }
                     }
@@ -375,7 +541,10 @@
                         "linkTo": "Platform",
                         "linkEnum": [
                             "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                         ]
                     }
                 }
@@ -395,7 +564,10 @@
                                 "linkTo": "Platform",
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
                         }
@@ -434,6 +606,69 @@
                                         "sra"
                                     ]
                                 }
+                            },
+                            "anyOf":[
+                                {
+                                    "properties": {
+                                        "platform": {
+                                            "linkTo": "Platform",
+                                            "linkEnum": [
+                                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                                "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                                "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "output_type": {
+                                            "enum": ["index reads"]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "required": [
+                                "replicate",
+                                "platform",
+                                "run_type"
+                            ],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "fastq",
+                                        "sra"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "properties": {
+                                            "platform": {
+                                                "linkTo": "Platform",
+                                                "linkEnum": [
+                                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "output_type": {
+                                                "enum": ["index reads"]
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         },
                         {
@@ -463,6 +698,30 @@
                                         "idx"
                                     ]
                                 }
+                            },
+                            "not": {
+                                "properties": {
+                                    "output_type": {
+                                        "enum": ["subreads"]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "subreads"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "required": ["assembly"]
                             }
                         },
                         {
@@ -525,6 +784,7 @@
                                         "idat red channel",
                                         "intensity values",
                                         "reads",
+                                        "index reads",
                                         "rejected reads",
                                         "raw data",
                                         "reporter code counts"
@@ -580,6 +840,7 @@
                                             "idat green channel",
                                             "idat red channel",
                                             "intensity values",
+                                            "index reads",
                                             "reads",
                                             "rejected reads",
                                             "raw data",
@@ -599,7 +860,8 @@
                                 },
                                 "output_type": {
                                     "enum": [
-                                        "restriction enzyme site locations"
+                                        "restriction enzyme site locations",
+                                        "sequence adapters"
                                     ]
                                 }
                             }
@@ -712,7 +974,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "14"
+            "default": "22"
         },
         "accession": {
             "accessionType": "FF"
@@ -823,6 +1085,7 @@
                         "gff2",
                         "gff3",
                         "idr_peak",
+                        "idr_ranked_peak",
                         "narrowPeak",
                         "tss_peak"
                     ]
@@ -906,7 +1169,7 @@
             "items": {
                 "title": "Flowcell based fastq signature part",
                 "description": "Fastq file flowcell based unique signature to reference a file.",
-                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2/3) and barcode.",
+                "comment": "Fastq signatures are generated from the sequence identifiers in fastq files. Current convention is based on the Illumina's unique sequence identifier, which is colon separated, flowcell ID, lane number, read_end(1/2/3), and unique barcode when applicable. For more information, please see doi.org/10.1093/database/bay008 or the ENCODE publication object: https://www.encodeproject.org/publications/c954afd6-12c5-4944-b8f7-0fa30ddb8336/",
                 "type":  "string",
                 "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[123]:.*:.*$"
             }
@@ -959,6 +1222,22 @@
             "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
             "type": "string",
             "linkTo": "File"
+        },
+        "cropped_read_length": {
+            "title": "Cropped read length (nt)",
+            "permission": "import_items",
+            "description": "Length the FASTQ reads were cropped to prior to alignment.",
+            "comment": "The actual read length could be up to 2 bp shorter than the specified cropped read length value.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "cropped_read_length_tolerance": {
+            "title": "Cropped read length tolerance (nt)",
+            "permission": "import_items",
+            "description": "Tolerance for FASTQ read length after cropping.",
+            "comment": "This is the maximum tolerated difference between the cropped read length and minimal read length that will be retained.",
+            "type": "integer",
+            "minimum": 0
         },
         "mapped_read_length": {
             "title": "Mapped read length (nt)",
@@ -1068,6 +1347,19 @@
                 }
             }
         },
+        "index_of": {
+            "title": "Index of",
+            "description": "The files this index file is relevant for.",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        },
         "output_type": {
             "title": "Output type",
             "description": "A description of the file's purpose or contents.",
@@ -1081,15 +1373,23 @@
                         "candidate enhancers",
                         "candidate promoters",
                         "chromatin interactions",
+                        "chromosomes reference",
+                        "chromosome sizes",
+                        "consensus DNase hypersensitivity sites (cDHSs)",
                         "mapping quality thresholded chromatin interactions",
-                        "conservative idr thresholded peaks",
+                        "conservative IDR thresholded peaks",
                         "control normalized signal",
                         "DHS peaks",
+                        "DHS regions reference",
                         "differential expression quantifications",
                         "differential splicing quantifications",
+                        "elements reference",
+                        "element quantifications",
                         "enhancer validation",
                         "enrichment",
+                        "enhancers reference",
                         "exon quantifications",
+                        "FDR cut rate",
                         "female genome index",
                         "female genome reference",
                         "filtered indels",
@@ -1097,69 +1397,95 @@
                         "filtered regions",
                         "filtered SNPs",
                         "fold change over control",
+                        "footprints",
                         "gene alignments",
                         "gene quantifications",
                         "genome compartments",
                         "genome index",
                         "genome reference",
+                        "gRNAs",
                         "hotspots",
+                        "hotspots1 reference",
+                        "hotspots2 reference",
                         "idat green channel",
                         "idat red channel",
+                        "index reads",
                         "intensity values",
+                        "IDR ranked peaks",
+                        "IDR thresholded peaks",
                         "library fraction",
                         "long range chromatin interactions",
                         "male genome index",
                         "male genome reference",
                         "maternal haplotype mapping",
                         "maternal variant calls",
+                        "merged transcription segment quantifications",
                         "methylation state at CHG",
                         "methylation state at CHH",
                         "methylation state at CpG",
                         "microRNA quantifications",
+                        "miRNA annotations",
                         "minus strand signal of all reads",
                         "minus strand signal of unique reads",
                         "mitochondria blacklisted regions",
+                        "mitochondrial genome index",
+                        "mitochondrial genome reference",
                         "motif model",
+                        "negative control regions",
                         "nested topologically associated domains",
+                        "non-targeting gRNAs",
                         "normalized signal of all reads",
                         "open chromatin regions",
-                        "optimal idr thresholded peaks",
+                        "optimal IDR thresholded peaks",
                         "paternal haplotype mapping",
                         "paternal variant calls",
                         "peaks",
                         "peaks and background as input for IDR",
+                        "personalized genome assembly",
                         "phased mapping",
                         "phased variant calls",
                         "plus strand signal of all reads",
                         "plus strand signal of unique reads",
+                        "positive control regions",
                         "predicted enhancers",
-                        "pseudoreplicated idr thresholded peaks",
+                        "promoters reference",
+                        "pseudoreplicated IDR thresholded peaks",
                         "raw minus strand signal",
                         "raw normalized signal",
                         "raw plus strand signal",
                         "raw signal",
+                        "ranked gRNAs",
                         "read-depth normalized signal",
                         "reads",
                         "reference variants",
+                        "regulatory elements",
                         "relative replication signal",
                         "replicated peaks",
                         "replication timing profile",
                         "reporter code counts",
-                        "representative dnase hypersensitivity sites",
+                        "representative DNase hypersensitivity sites (rDHSs)",
                         "restriction enzyme site locations",
                         "RNA-binding protein associated mRNAs",
                         "rRNA reference",
+                        "safe-targeting gRNAs",
                         "semi-automated genome annotation",
+                        "sequence adapters",
+                        "sequence barcodes",
                         "signal of all reads",
                         "signal of unique reads",
                         "signal p-value",
                         "spike-in sequence",
+                        "smoothed methylation stage at CpG",
                         "splice junctions",
                         "stable peaks",
+                        "subreads",
                         "topologically associated domains",
+                        "transcribed region quantifications",
                         "transcript quantifications",
                         "transcription start sites",
+                        "transcription segment quantifications",
                         "transcriptome alignments",
+                        "transcriptome annotations",
                         "transcriptome index",
                         "transcriptome reference",
                         "TSS reference",
@@ -1382,6 +1708,69 @@
             "comment": "Do not submit. The field would be posted by DCC.",
             "type": "string",
             "permission": "import_items"
+        },
+
+        "read_structure": {
+            "title": "Read structure",
+            "description": "A list of elements in the read describing the structure of a read.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Sequence element",
+                "description": "One element in the read with start and end coordinates.",
+                "required": ["sequence_element", "start", "end"],
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "sequence_element": {
+                        "title": "Element name",
+                        "type": "string",
+                        "enum": [
+                            "adapter",
+                            "barcode",
+                            "UMI"
+                        ]
+                    },
+                    "start": {
+                        "title": "Start coordinate",
+                        "description": "The 1-based start coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    },
+                    "end": {
+                        "title": "End coordinate",
+                        "description": "The 1-based end coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+
+        "matching_md5sum": {
+            "title": "Matching md5sum",
+            "description": "Array of files which have a matching md5sum.",
+            "comment": "Do not submit. This field is updated by checkfiles.",
+            "type": "array",
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        },
+        "preferred_default": {
+            "title": "Preferred default file",
+            "description": "A flag to indicate whether this file should be used by default for purposes such as downloading, visualization, etc.",
+            "type": "boolean"
+        },
+        "hotspots_prefix": {
+            "title": "Hotspots prefix",
+            "description": "Prefix to be checked and specified only for hotspots1 reference and hotspots2 reference files.",
+            "type": "string",
+            "enum": [
+                "GRCh38",
+                "mm10"
+                ]
         }
     },
     "columns": {
@@ -1415,6 +1804,15 @@
         "file_size": {
             "title": "File size"
         },
+        "assay_term_name": {
+            "title": "Assay term name"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample name"
+        },
+        "target.label": {
+            "title": "Target label"
+        },
         "href": {
             "title": "Download URL"
         },
@@ -1442,6 +1840,12 @@
         "mapped_read_length": {
             "title": "Mapped read length (nt)"
         },
+        "cropped_read_length": {
+            "title": "Cropped read length (nt)"
+        },
+        "cropped_read_length_tolerance": {
+            "title": "Cropped read length tolerance (nt)"
+        },
         "read_length_units": {
             "title": "Read length units"
         },
@@ -1450,6 +1854,9 @@
         },
         "output_type": {
             "title": "Output type"
+        },
+        "index_of": {
+            "title": "Index of"
         },
         "quality_metrics": {
             "title": "QC Metric"
@@ -1484,9 +1891,11 @@
         "idat red channel": "raw data",
         "intensity values": "raw data",
         "reads": "raw data",
+        "index reads": "raw data",
         "rejected reads": "raw data",
         "raw data": "raw data",
         "reporter code counts": "raw data",
+        "subreads": "raw data",
 
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
@@ -1524,11 +1933,13 @@
         "relative replication signal": "signal",
 
         "enrichment": "quantification",
+        "FDR cut rate": "quantification",
         "library fraction": "quantification",
         "exon quantifications": "quantification",
         "gene quantifications": "quantification",
         "microRNA quantifications": "quantification",
         "transcript quantifications": "quantification",
+        "element quantifications": "quantification",
         "methylation state at CpG": "quantification",
         "methylation state at CHG": "quantification",
         "methylation state at CHH": "quantification",
@@ -1540,8 +1951,13 @@
         "motif model": "quantification",
         "differential expression quantifications": "quantification",
         "differential splicing quantifications": "quantification",
+        "smoothed methylation stage at CpG": "quantification",
+        "merged transcription segment quantifications": "quantification",
+        "transcription segment quantifications": "quantification",
+        "transcribed region quantifications": "quantification",
 
         "hotspots": "annotation",
+        "footprints": "annotation",
         "long range chromatin interactions": "annotation",
         "chromatin interactions": "annotation",
         "mapping quality thresholded chromatin interactions": "annotation",
@@ -1567,9 +1983,11 @@
         "mitochondria blacklisted regions": "annotation",
         "distal peaks": "annotation",
         "proximal peaks": "annotation",
-        "optimal idr thresholded peaks": "annotation",
-        "conservative idr thresholded peaks": "annotation",
-        "pseudoreplicated idr thresholded peaks": "annotation",
+        "IDR ranked peaks": "annotation",
+        "IDR thresholded peaks": "annotation",
+        "optimal IDR thresholded peaks": "annotation",
+        "conservative IDR thresholded peaks": "annotation",
+        "pseudoreplicated IDR thresholded peaks": "annotation",
         "stable peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
@@ -1580,13 +1998,22 @@
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
         "candidate Cis-Regulatory Elements": "annotation",
-        "representative dnase hypersensitivity sites":"annotation",
+        "representative DNase hypersensitivity sites (rDHSs)": "annotation",
         "variant calls": "annotation",
         "maternal variant calls": "annotation",
         "paternal variant calls": "annotation",
         "phased variant calls": "annotation",
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
+        "transcriptome annotations": "annotation",
+        "miRNA annotations": "annotation",
+        "non-targeting gRNAs": "annotation",
+        "negative control regions": "annotation",
+        "positive control regions": "annotation",
+        "safe-targeting gRNAs": "annotation",
+        "regulatory elements": "annotation",
+        "gRNAs": "annotation",
+        "ranked gRNAs": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -1608,6 +2035,19 @@
         "restriction enzyme site locations": "reference",
         "sequence alignability": "reference",
         "sequence uniqueness": "reference",
+        "sequence barcodes": "reference",
+        "sequence adapters": "reference",
+        "elements reference": "reference",
+        "personalized genome assembly": "reference",
+        "chromosomes reference": "reference",
+        "hotspots1 reference": "reference",
+        "hotspots2 reference": "reference",
+        "mitochondrial genome index": "reference",
+        "mitochondrial genome reference": "reference",
+        "chromosome sizes": "reference",
+        "enhancers reference": "reference",
+        "promoters reference": "reference",
+        "DHS regions reference": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
@@ -1647,7 +2087,18 @@
         "vcf": ".vcf.gz",
         "wig": ".wig.gz",
         "sam": ".sam.gz",
-        "txt": ".txt"
+        "txt": ".txt.gz"
     },
+     "boost_values": {
+         "accession": 20.0,
+         "@type": 1.0,
+         "assembly": 5.0,
+         "file_format": 5.0,
+         "file_type": 5.0,
+         "file_format_type": 2.0,
+         "output_category": 2.0,
+         "output_type": 2.0,
+         "status": 1.0
+     },
     "changelog": "/profiles/changelogs/file.md"
 }
