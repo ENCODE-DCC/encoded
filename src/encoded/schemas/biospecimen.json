@@ -469,16 +469,16 @@
             "title": "File Output Type"
         },
         "surgery.pathology_report.t_stage": {
-            "title": "pT Stage at Presentation"
+            "title": "pT Stage (at presentation)"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN Stage at Presentation"
+            "title": "pN Stage (at presentation)"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM Stage at Presentation"
+            "title": "pM Stage (at presentation)"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage at Presentation"
+            "title": "TNM Stage (at presentation)"
         },
         "species": {
             "title": "Species"
