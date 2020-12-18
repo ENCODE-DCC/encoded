@@ -1231,13 +1231,13 @@ class Patient(Item):
                     if len(bp_SystolicList) > 0:
                         bp_SystolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
                         bp_SystolicVital = bp_SystolicList[-1] 
-                        labs_and_vitals["BP_Systolic"] = getLabsAndVitalsRange(bp_SystolicVital["value"], 121, 140, 'Normal (< 121)', 'PreHypertension (121 >= and <140 mmHg)', 'Hypertension (>= 140)')
+                        labs_and_vitals["BP_Systolic"] = getLabsAndVitalsRange(bp_SystolicVital["value"], 121, 140, 'Normal (< 121)', 'PreHypertension (121 >= and <140)', 'Hypertension (>= 140)')
                         labs_and_vitals["BP_SystolicValue"] = bp_SystolicVital["value"]
                         labs_and_vitals["BP_SystolicDate"] = bp_SystolicVital["date"] 
                     if len(bp_DiastolicList) > 0:
                         bp_DiastolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
                         bp_DiastolicVital = bp_DiastolicList[-1]  
-                        labs_and_vitals["BP_Diastolic"] = getLabsAndVitalsRange(bp_DiastolicVital["value"], 81, 90, 'Normal (< 81)', 'PreHypertension (81 >= and < 90 mmHg)', 'Hypertension (>= 90)')
+                        labs_and_vitals["BP_Diastolic"] = getLabsAndVitalsRange(bp_DiastolicVital["value"], 81, 90, 'Normal (< 81)', 'PreHypertension (81 >= and < 90)', 'Hypertension (>= 90)')
                         labs_and_vitals["BP_DiastolicValue"] = bp_DiastolicVital["value"]
                         labs_and_vitals["BP_DiastolicDate"] = bp_DiastolicVital["date"] 
 
