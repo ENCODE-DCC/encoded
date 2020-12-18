@@ -1275,7 +1275,7 @@ class Patient(Item):
                     ]
                 },
                 "site": {
-                    "title": "Metastasis Site",
+                    "title": "Metastatic Site",
                     "type": "string",
                     "enum": [
                         "Adrenal",

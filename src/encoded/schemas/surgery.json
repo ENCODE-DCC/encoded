@@ -91,7 +91,7 @@
             "title": "pM Stage"
         },
         "pathology_report.metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site"
         },
         "pathology_report.metasis_details.type": {
             "title": "Metastasis Type"
@@ -175,7 +175,7 @@
             "title": "pM Stage (at presentation)"
         },
         "pathology_report.metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site"
         },
         "pathology_report.metasis_details.type": {
             "title": "Metastasis Type"

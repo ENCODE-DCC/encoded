@@ -160,7 +160,7 @@
             "title": "pM Stage (at presentation)"
         },
         "surgery.pathology_report.metasis_details.site": {
-            "title": "Metastasis Site (Pathology)"
+            "title": "Metastatic Site (Pathology)"
         },
         "surgery.pathology_report.metasis_details.type": {
             "title": "Metastasis Type (Pathology)"
@@ -205,7 +205,7 @@
             "title": "Metastasis Histology Proven"
         },
         "metastasis.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site"
         },
         "metastasis.source": {
             "title": "Metastasis Source"
@@ -311,7 +311,7 @@
             "title": "pM Stage"
         },
         "surgery.pathology_report.metasis_details.site": {
-            "title": "Metastasis Site (Pathology)"
+            "title": "Metastatic Site (Pathology)"
         },
         "surgery.pathology_report.metasis_details.type": {
             "title": "Metastasis Type (Pathology)"
