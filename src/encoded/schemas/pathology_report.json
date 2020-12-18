@@ -474,7 +474,7 @@
             "title": "pM Stage"
         },
         "metasis_details.site": {
-            "title": "Metastatic Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "metasis_details.type": {
             "title": "Metastasis Type"
@@ -555,7 +555,7 @@
             "title": "pM stage"
         },
         "metasis_details.site": {
-            "title": "Metastatic Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "metasis_details.type": {
             "title": "Metastasis Type"
