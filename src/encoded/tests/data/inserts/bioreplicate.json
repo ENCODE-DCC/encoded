@@ -1,32 +1,42 @@
 [
     {
+        "bioexperiment": "KCEBE000ADH",
         "biological_replicate_number": 1,
-        "biolibrary": "3245ac16-1d07-4360-bb5c-a7f6dff52885",
+        "biolibrary": "KCELB987EAA",
+        "status": "released",
         "technical_replicate_number": 1,
-        "uuid": "cf220b38-a7e2-46ab-b6e3-5e8c29c068ba"
+        "uuid": "454c26c2-4252-49d7-a904-4ae479eb6743"
     },
     {
+        "bioexperiment": "KCEBE000ADH",
         "biological_replicate_number": 1,
-        "biolibrary": "873440f2-13a2-4564-a127-3c88c9a33c8e",
-        "technical_replicate_number": 1,
-        "uuid": "6b576141-1347-419e-95d9-1d00a3e7bdd2"
+        "biolibrary": "KCELB987EAA",
+        "technical_replicate_number": 2,
+        "status": "released",
+        "uuid": "1d8d4a65-1db6-4400-ba95-6db3d98fb55f"
     },
     {
+        "bioexperiment": "KCEBE000AES",
         "biological_replicate_number": 1,
-        "biolibrary": "873440f2-13a2-4564-a127-3c88c9a33c8e",
+        "biolibrary": "KCELB038EAA",
         "technical_replicate_number": 1,
-        "uuid": "9bc85837-e3ce-40b0-b57b-354fab678db1"
+        "status": "released",
+        "uuid": "18a45454-8f13-4bf2-842b-64a75613136a"
     },
     {
+        "bioexperiment": "KCEBE000AER",
         "biological_replicate_number": 1,
-        "biolibrary": "e6f6c49d-89d4-4adb-baa4-38c103b1583c",
+        "biolibrary": "KCELB012FAA",
         "technical_replicate_number": 1,
-        "uuid": "e18354a2-210f-4cd5-985b-e154a37967b5"
+        "status": "released",
+        "uuid": "ceb403d7-a51b-45eb-a220-643b2d12ecbf"
     },
     {
-        "biological_replicate_number": 1,
-        "biolibrary": "2f5757f7-59f1-4b26-bcb5-7aa9803776c8",
+        "bioexperiment": "KCEBE000AER",
+        "biological_replicate_number": 2,
+        "biolibrary": "KCELB745FAA",
         "technical_replicate_number": 1,
-        "uuid": "32b89619-35e0-4000-8f1e-3ab80c43bfe2"
+        "status": "released",
+        "uuid": "2fd08d63-cb83-421a-8454-a9505da559c4"
     }
 ]

@@ -1,28 +1,85 @@
 [
-    {       
+    {
+        "award": "Kidney-SPORE",
+        "aliases": [
+            "kce:RNA extraction protocol from Qiagen"
+        ],
+        "description": "RNA extraction protocol from Qiagen",
+        "document_type": "extraction protocol",
+        "attachment": "QiagenRNeasyMiniHandbook.pdf",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "status": "released",
+        "uuid": "9f365a06-3bc1-4f5f-8e4d-2cdf81147d39"
+    },
+    {
+        "award": "Kidney-SPORE",
+        "aliases": [
+            "kce:ChIPSeq_protocol-Abcam"
+        ],
+        "description": "ChIPSeq_protocol from Abcam",
+        "attachment": "ChIPSeq_protocol.pdf",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "status": "released",
+        "uuid": "e0376e86-79d2-4041-80c2-4c8dfef83371"
+    },
+    {
+        "award": "Kidney-SPORE",
+        "aliases": [
+            "kce:Kidney biopsy collection from patient"
+        ],
+        "description": "Kidney biopsy collection from patient",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "ea0125c1-97c8-4921-ba7a-b7eeb75ec4bd"
+    },
+    {
+        "award": "Kidney-SPORE",
+        "aliases": [
+            "kce:Chip-seq protocol-general"
+        ],
+        "description": "Chip-seq protocol",
+        "attachment": "ChIPSeq_protocol.pdf",
+
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "f8599a9f-4095-4b9a-b11a-ea022e2af1f7"
+    },
+    {
         "attachment": "PathologyImage_CMU-1.svs",
+        "aliases": [
+            "kce:Example of high resolution pathology image in SVS format"
+        ],
         "award": "ENCODE2",
         "description": "Example of high resolution pathology image in SVS format",
         "document_type": "high resolution pathology slide image",
         "lab": "thomas-gingeras",
+        "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "2d306180-915d-43b8-a87e-a94c4fa86d7e"
     },
     {
         "aliases": [
-            "axel-visel:HAoSMC_PC_8121902.2P_certificate_of_analysis"
+            "kce:HAoSMC_PC_8121902.2P_certificate_of_analysis"
         ],
         "attachment": "8121902.2P.pdf",
         "award": "ENCODE2",
         "description": "PromoCell Normal Human Aortic Smooth Muscle Cells certificate of analysis",
         "document_type": "certificate of analysis",
         "lab": "thomas-gingeras",
+        "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "11e2d7d3-d43a-4b5a-bf3e-136948efc023"
     },
     {
         "aliases": [
-            "kevin-white:K562_BAC_transfection_White_protocol"
+            "kce:K562_BAC_transfection_White_protocol"
         ],
         "attachment": "BACTransfectionProtocolK562Cells.pdf",
         "award": "U54HG006996",
@@ -30,22 +87,23 @@
         "document_type": "transfection protocol",
         "lab": "kevin-white",
         "submitted_by": "eni.lectus@nullam.sed",
+        "status": "released",
         "uuid": "048d1185-2502-4f0e-a043-bbc75b9dd915"
     },
     {
         "aliases": [
-            "encode:bedMethyl.as" 
+            "kce:bedMethyl.as"
         ],
         "attachment": "bedMethyl.txt",
         "award": "ENCODE2",
         "document_type": "file format specification",
         "lab": "richard-myers",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8" 
+        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8"
     },
     {
         "aliases": [
-            "encode:C2C12_Wold_differentiation_protocol"
+            "kce:C2C12_Wold_differentiation_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
         "award": "ENCODE2-Mouse",
@@ -56,7 +114,7 @@
     },
     {
         "aliases": [
-            "encode:C2C12_Wold_growth_protocol"
+            "kce:C2C12_Wold_growth_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
         "award": "ENCODE2-Mouse",
@@ -67,7 +125,7 @@
     },
     {
         "aliases": [
-            "kevin-white:pBACGK1.1_BAC_vector"
+            "kce:pBACGK1.1_BAC_vector"
         ],
         "attachment": "CH17_pBACGK1.1n.png",
         "award": "U54HG006996",
@@ -84,7 +142,7 @@
     },
     {
         "aliases": [
-            "encode:diffProtB_6hr_protocol"
+            "kce:diffProtB_6hr_protocol"
         ],
         "attachment": "diffProtB_6hr_protocol.txt",
         "award": "ENCODE2",
@@ -95,7 +153,7 @@
     },
     {
         "aliases": [
-            "encode:EPC_Stam_protocol"
+            "kce:EPC_Stam_protocol"
         ],
         "attachment": "EPC_Stam_protocol.pdf",
         "award": "ENCODE2-Mouse",
@@ -107,7 +165,7 @@
     },
     {
         "aliases": [
-            "encode:Heart_STL003_excision_protocol"
+            "kce:Heart_STL003_excision_protocol"
         ],
         "attachment": "Heart_STL003_excision_protocol.txt",
         "award": "ENCODE2",
@@ -119,19 +177,20 @@
     },
     {
         "aliases": [
-            "encode:Myers_Methyl450_protocol"
+            "kce:Myers_Methyl450_protocol"
         ],
         "attachment": "human.wgEncodeHaibMethyl450.txt",
         "award": "ENCODE2",
         "description": "Generalized methods for the HAIB Methyl450 experiments from ENCODE2. Isolation of mouse fetal liver cell subsets. Heart_STL003 general protocol.",
         "document_type": "general protocol",
         "lab": "richard-myers",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "71da87e2-92d0-418b-960b-0a30800172a0"
     },
     {
         "aliases": [
-            "encode:K562_protocol"
+            "kce:K562_protocol"
         ],
         "attachment": "K562_protocol.pdf",
         "award": "ENCODE2",
@@ -142,7 +201,7 @@
     },
     {
         "aliases": [
-            "encode:Heart_STL003_general_protocol"
+            "kce:Heart_STL003_general_protocol"
         ],
         "attachment": "LID48879.pdf",
         "award": "ENCODE2",
@@ -154,7 +213,7 @@
     },
     {
         "aliases": [
-            "encode:MCF-7_Crawford_growth_protocol"
+            "kce:MCF-7_Crawford_growth_protocol"
         ],
         "attachment": "MCF-7_Crawford_protocol.pdf",
         "award": "ENCODE2",
@@ -166,7 +225,7 @@
     },
     {
         "aliases": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "kce:MCF-7_Farnham_growth_protocol"
         ],
         "attachment": "MCF-7_Farnham_protocol.pdf",
         "award": "ENCODE2",
@@ -178,7 +237,7 @@
     },
     {
         "aliases": [
-            "encode:MCF-7_Farnham_treatment_protocol"
+            "kce:MCF-7_Farnham_treatment_protocol"
         ],
         "attachment": "MCF-7_Farnham_protocol.pdf",
         "award": "ENCODE2",
@@ -190,26 +249,19 @@
     },
     {
         "aliases": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "kce:Snyder_Histone_Mouse_protocol"
         ],
         "attachment": "mouse.wgEncodeSydhHist.txt",
         "award": "ENCODE2-Mouse",
         "description": "Generalized Methods for the SYDH Histone experiments in mouse.",
         "document_type": "general protocol",
         "lab": "michael-snyder",
-        "references": [
-            "72a4a030-bdfb-11e4-bb52-0800200c9a66",
-            "341bf550-be0c-11e4-bb52-0800200c9a66",
-            "cf890830-bdfc-11e4-bb52-0800200c9a66",
-            "4be68100-be0c-11e4-bb52-0800200c9a66",
-            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
-        ],
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "302689be-b110-40b6-8912-cc9d934b002e"
     },
     {
         "aliases": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "kce:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "attachment": "Myers_Lab_ChIP-seq_Protocol_v042211.pdf",
         "award": "ENCODE2",
@@ -220,7 +272,7 @@
     },
     {
         "aliases": [
-            "encode:PanIsletD_Crawford_protocol"
+            "kce:PanIsletD_Crawford_protocol"
         ],
         "attachment": "PanIsletD_Crawford_protocol.pdf",
         "award": "ENCODE2",
@@ -231,7 +283,7 @@
     },
     {
         "aliases": [
-            "encode:SAEC_Stam_protocol"
+            "kce:SAEC_Stam_protocol"
         ],
         "attachment": "SAEC_Stam_protocol.pdf",
         "award": "ENCODE2",
@@ -242,7 +294,7 @@
     },
     {
         "aliases": [
-            "encode:HAoSMC_PC_8121902.2P_general_protocol"
+            "kce:HAoSMC_PC_8121902.2P_general_protocol"
         ],
         "attachment": "SID38242.pdf",
         "award": "ENCODE2",
@@ -254,7 +306,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
+            "kce:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
         ],
         "attachment": "SID38806.pdf",
         "award": "U54HG007004",
@@ -265,7 +317,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
+            "kce:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
         ],
         "attachment": "SID38807.pdf",
         "award": "U54HG007004",
@@ -276,7 +328,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
+            "kce:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
         ],
         "attachment": "SID38822.pdf",
         "award": "U54HG007004",
@@ -288,7 +340,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
+            "kce:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
         ],
         "attachment": "SID38823.pdf",
         "award": "U54HG007004",
@@ -300,7 +352,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
+            "kce:Ambion-NIST_Spikes_Corrected"
         ],
         "attachment": "Spikes.fixed.fasta.txt",
         "award": "U54HG007004",
@@ -311,7 +363,7 @@
     },
     {
         "aliases": [
-            "encode:Stam_15_protocols"
+            "kce:Stam_15_protocols"
         ],
         "attachment": "Stam_15_protocols.pdf",
         "award": "ENCODE2",
@@ -322,18 +374,19 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations"
+            "kce:Ambion-NIST_Spikes_Sequences_Concentrations"
         ],
         "attachment": "wgEncodeCshlSpikeinsConcentrations.txt",
         "award": "ENCODE2",
         "document_type": "other",
         "lab": "thomas-gingeras",
+        "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "34e684ee-8e9a-4b4e-9708-4a0bc5ae9811"
     },
     {
         "aliases": [
-            "encode:ZhBTc4_Stam_protocol"
+            "kce:ZhBTc4_Stam_protocol"
         ],
         "attachment": "ZhBTc4_Stam_protocol.pdf",
         "award": "ENCODE2-Mouse",
@@ -344,7 +397,7 @@
     },
     {
         "aliases": [
-            "gregory-crawford:pLKO1"
+            "kce:pLKO1"
         ],
         "attachment": "pLKO1_vector.png",
         "award": "ENCODE2",
@@ -355,7 +408,7 @@
     },
     {
         "aliases": [
-            "encode:Antibody_characterization_standards_February_2014"
+            "kce:Antibody_characterization_standards_February_2014"
         ],
         "attachment": "Antibody_Characterization_ENCODE3_February2014.pdf",
         "award": "U41HG006992",
@@ -366,7 +419,7 @@
     },
     {
         "aliases": [
-            "encode:sample_strain_generation_protocol"
+            "kce:sample_strain_generation_protocol"
         ],
         "attachment": "sample_strain_generation_protocol.pdf",
         "award": "U41HG007355",
@@ -377,7 +430,7 @@
     },
     {
         "aliases": [
-            "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
+            "kce:Graveley_Group_RNA-Seq_Pipeline_02042013"
         ],
         "attachment": "Graveley_Group_RNA-Seq_Pipeline_02042013.pdf",
         "award": "U41HG006992",
@@ -389,7 +442,7 @@
     },
     {
         "aliases": [
-            "roderic-guigo:GeneQuantificationPipeline"
+            "kce:GeneQuantificationPipeline"
         ],
         "attachment": "GeneQuantificationPipeline.pdf",
         "award": "U41HG006992",
@@ -401,7 +454,7 @@
     },
     {
         "aliases": [
-            "encode:ENCODE2_ChIP_seq_pipeline_diagram"
+            "kce:ENCODE2_ChIP_seq_pipeline_diagram"
         ],
         "attachment": "ENCODE2_ChIP_seq_pipeline_diagram.pdf",
         "award": "ENCODE2",
@@ -414,7 +467,7 @@
     },
     {
         "aliases": [
-            "encode:ENCODE2ChIP-seqpipelinespecifications"
+            "kce:ENCODE2ChIP-seqpipelinespecifications"
         ],
         "attachment": "ENCODE2ChIP-seqpipelinespecifications.pdf",
         "award": "ENCODE2",
@@ -426,7 +479,7 @@
     },
     {
         "aliases": [
-            "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
+            "kce:iCLIP_pipeline_ENCODE.pdf"
         ],
         "attachment": "iCLIP_pipeline_ENCODE.pdf",
         "award": "U54HG007005",

@@ -398,7 +398,7 @@
         },
         "replication_type": {
             "title": "Replication type"
-        } 
+        }
     },
     "columns": {
         "accession": {
@@ -487,7 +487,7 @@
         },
         "replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units"
-        },       
+        },
         "replicates.@id": {
             "title": "Replicates"
         }

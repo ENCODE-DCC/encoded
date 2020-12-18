@@ -31,6 +31,11 @@ export function BiosampleOrganismNames(biosamples) {
     return _.uniq(biosamples.map(biosample => biosample.organism.scientific_name));
 }
 
+// Some biospecimmen-specific utilities
+//   Return an array of biosample scientific names from the given array of biosamples.
+export function BiospecimenOrganismNames(biosamples) {
+    return _.uniq(biosamples.map(biospecimen => biospecimen.species));
+}
 
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
 // documents (with @type of Document or Characterization). If the given biosample has no documdents, this
@@ -194,9 +199,9 @@ BiospecimenTable.columns = {
         title: 'Accession',
         display: biospecimen => <a href={biospecimen['@id']}>{biospecimen.accession}</a>,
     },
-    openspecimen_ID: {
+    openspecimen_id: {
         title: 'OpenSpecimen ID',
-        getValue: biospecimen => biospecimen.openspecimen_ID,
+        getValue: biospecimen => biospecimen.openspecimen_id,
     },
     collection_type: {
         title: 'Collection type',
@@ -206,7 +211,6 @@ BiospecimenTable.columns = {
         title: 'Processing type',
         getValue: biospecimen => biospecimen.processing_type,
     },
-
     tissue_type: {
         title: 'Tissue type',
         getValue: biospecimen => biospecimen.tissue_type,
@@ -214,11 +218,7 @@ BiospecimenTable.columns = {
     anatomic_site: {
         title: 'Anatomic site',
         getValue: biospecimen => biospecimen.anatomic_site,
-    },
-    distributed: {
-        title: 'Distributed?',
-        getValue: biospecimen => biospecimen.distributed,
-    },
+    }
 };
 
 

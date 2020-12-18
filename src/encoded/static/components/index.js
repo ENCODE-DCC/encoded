@@ -6,6 +6,7 @@ require('./app');
 require('./award');
 require('./image');
 require('./biosample');
+
 require('./cart');
 require('./collection');
 require('./datacolors');
@@ -53,6 +54,11 @@ require('./surgery');
 require('./pathology_report');
 require('./biospecimen');
 require('./biofile');
+require('./biodataset');
+require('./doc');
+//require('./filegallery');
+require('./bioexperiment');
+
 
 
 module.exports = require('./app');

@@ -19,14 +19,20 @@ ORDER = [
     'image',
     'page',
     'publication',
+    'document',
     'patient',
     'surgery',
     'pathology_report',
     'surgery_procedure',
     'biospecimen',
+    'bioreference',
+    'bioproject',
+    'bioexperiment',
     'platform',
     'biolibrary',
+    'bioreplicate',
     'biofile',
+    'bioexperiment_series',
     'ihc',
     'medication',
     'supportive_medication',
@@ -35,8 +41,8 @@ ORDER = [
     'radiation',
     'medical_imaging',
     'cart',
-    'lab_results',
-    'vital_results'
+    #'lab_results',
+    #'vital_results'
 ]
 
 IS_ATTACHMENT = [
@@ -348,7 +354,8 @@ def pipeline_logger(item_type, phase):
                     skipped += 1
                 elif _errors:
                     errors += 1
-                    logger.error('%s row %d: Error PROCESSING: %s\n%r\n' % (item_type, row_number, _errors, trim(row)))
+                    logger.error('%s row %d: Error PROCESSING: %s\n%r\n' %
+                                 (item_type, row_number, _errors, trim(row)))
                 yield row
                 continue
 
@@ -371,7 +378,8 @@ def pipeline_logger(item_type, phase):
 
             if res.status_int // 100 == 4:
                 errors += 1
-                logger.error('%s row %d: %s (%s)\n%r\n' % (item_type, row_number, res.status, url, trim(row['_value'])))
+                logger.error('%s row %d: %s (%s)\n%r\n' %
+                             (item_type, row_number, res.status, url, trim(row['_value'])))
 
             yield row
 
@@ -594,7 +602,11 @@ PHASE1_PIPELINES = {
     ],
     'biofile': [
         remove_keys('paired_with')
+    ],
+    'bioexperiment': [
+        remove_keys('possible_controls'),
     ]
+
 }
 
 
@@ -695,7 +707,10 @@ PHASE2_PIPELINES = {
     ],
     'biofile': [
         skip_rows_missing_all_keys('paired_with')
-    ]
+    ],
+    'bioexperiment': [
+        skip_rows_missing_all_keys('possible_controls'),
+    ],
 }
 
 

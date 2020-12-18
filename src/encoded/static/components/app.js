@@ -42,9 +42,8 @@ const portal = {
             children: [
                 { id: 'patientsearch', title: 'Patient search', url: '/search/?type=Patient&status=released' },
                 { id: 'samplesearch', title: 'Biospecimen search', url: '/search/?type=Biospecimen&status=released' },
-                { id: 'genomicssearch', title: 'Genomics search', url: '/search/?type=Biofile&status=released' },
-                { id: 'Surgerysearch', title: 'Surgery search', url: '/search/?type=Surgery&status=released' },
-                { id: 'Pathsearch', title: 'Pathology report search', url: '/search/?type=PathologyReport&status=released' },
+                { id: 'genomicssearch', title: 'Biodatasets/Bioexperiments', url: '/search/?type=Biodataset&status=released' },
+                { id: 'Surgerysearch', title: 'Surgery/Pathreports search', url: '/search/?type=Surgery&status=released' },
                 { id: 'sep-mm-1' },
                 { id: 'patientmatrix', title: 'Patient matrix', url: '/matrix/?type=Patient&status=released' },
                 { id: 'sampletmatrix', title: 'Biospecimen matrix', url: '/matrix/?type=Biospecimen&status=released' },

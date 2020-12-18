@@ -6,17 +6,17 @@ import { SortTablePanel, SortTable } from './sorttable';
 class BiospecimenTable extends React.Component {
     constructor(props) {
         super(props);
-        
+
     }
 
     renderData() {
-       
+
             const tableColumns = {
                 accession: {
                     title: 'Accession',
                     display: biospecimen => <a href={biospecimen['@id']}>{biospecimen.accession}</a>,
                 },
-                openspecimen_ID: {
+                openspecimen_id: {
                     title: 'OpenSpecimen ID',
                 },
                 sample_type: {
@@ -36,18 +36,15 @@ class BiospecimenTable extends React.Component {
                 },
                 host: {
                     title: "Host",
-                },
-                distributed: {
-                    title: 'Distributed?',
-                },
+                }
             };
             return (
                 <SortTablePanel title={this.props.tableTitle}>
                     <SortTable list={this.props.data} columns={tableColumns} />
                 </SortTablePanel>
             );
-        
-        
+
+
     }
 
     render() {
@@ -57,7 +54,7 @@ class BiospecimenTable extends React.Component {
     }
 
     componentDidMount() {
-        
+
         this.renderData();
     }
 

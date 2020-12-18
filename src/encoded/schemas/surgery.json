@@ -23,7 +23,7 @@
         },
         "patient": {
             "title": "Patient",
-            "description": "The patient the lab was conducted for.",
+            "description": "The patient the surgery was conducted for.",
             "type": "string",
             "linkTo": "Patient"
         },
@@ -39,7 +39,7 @@
             ]
         },
         "hospital_location": {
-            "title": "Surgery hospital Location",
+            "title": "Hospital Location",
             "type": "string",
             "enum": [
                 "UTSW",
@@ -56,7 +56,7 @@
         }
     },
     "facets": {
-        
+
         "surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
         },
@@ -67,10 +67,10 @@
             "title": "Nephrectomy Type"
         },
         "surgery_procedure.nephrectomy_details.approach": {
-            "title": " Nephrectomy Approach"
+            "title": "Nephrectomy Approach"
         },
         "nephr_robotic_assist":{
-            "title":"Nephrectomy Robotic Assist"
+            "title": "Nephrectomy Robotic Assist"
         },
         "pathology_report.pathology_report_tumor_range": {
             "title": "Tumor Size Range"
@@ -166,13 +166,13 @@
             "title": "Tumor Grade"
         },
         "pathology_report.ajcc_p_stage": {
-            "title": "pT Stage at Presentation"
+            "title": "pT Stage (at presentation)"
         },
         "pathology_report.n_stage": {
-            "title": "pN Stage at Presentation"
+            "title": "pN Stage (at presentation)"
         },
         "pathology_report.m_stage": {
-            "title": "pM Stage at Presentation"
+            "title": "pM Stage (at presentation)"
         },
         "pathology_report.metasis_details.site": {
             "title": "Metastasis Site"
@@ -184,7 +184,7 @@
             "title": "AJCC Version"
         },
         "pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage at Presentation"
+            "title": "TNM Stage (at presentation)"
         },
         "pathology_report.laterality": {
             "title": "Tumor Laterality"
@@ -250,4 +250,3 @@
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }
-

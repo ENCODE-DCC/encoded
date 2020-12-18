@@ -22,16 +22,20 @@ class Biolibrary(Item):
     schema = load_schema('encoded:schemas/biolibrary.json')
     name_key = 'accession'
     rev = {
-        'biofile': ('Biofile', 'biolibrary'),
+        'biofile': ('biofile', 'biolibrary'),
+        'bioreplicate': ('bioreplicate', 'biolibrary'),
     }
     embedded = [
         'biospecimen',
+        'biospecimen.documents',
         'biofile',
+        'bioreplicate',
+        'documents'
     ]
     audit_inherit = [
     ]
     set_status_up = [
-      
+
     ]
     set_status_down = []
 
@@ -45,3 +49,14 @@ class Biolibrary(Item):
     })
     def biofile(self, request, biofile):
         return paths_filtered_by_status(request, biofile)
+
+    @calculated_property(schema={
+        "title": "bioreplicate",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "bioreplicate"
+        },
+    })
+    def bioreplicate(self, request, bioreplicate):
+        return paths_filtered_by_status(request, bioreplicate)

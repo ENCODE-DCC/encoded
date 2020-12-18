@@ -49,7 +49,6 @@ export const DocumentsPanel = (props) => {
         });
         allDocs = allDocs.concat(spec.documents);
     });
-
     // Sort documents by attachment download name.
     const sortedDocs = globals.sortDocs(allDocs);
 
@@ -83,9 +82,11 @@ DocumentsPanel.defaultProps = {
 
 // Called when a GET request for all the documents associated with a dataset returns with the
 // array of matching documents.
+
 const DocumentsPanelRenderer = (props) => {
     const documents = props.documentSearch['@graph'];
-    if (documents && documents.length > 0) {
+
+    if (documents && documents.length) {
         return <DocumentsPanel documentSpecs={[{ documents }]} />;
     }
     return null;
@@ -105,14 +106,18 @@ DocumentsPanelRenderer.defaultProps = {
 export const DocumentsPanelReq = (props) => {
     const { documents } = props;
 
-    if (documents && documents.length > 0) {
+    if (documents && documents.length) {
         return (
+
             <FetchedData>
+
                 <Param name="documentSearch" url={`/search/?type=Item&${documents.map(docAtId => `@id=${docAtId}`).join('&')}`} />
                 <DocumentsPanelRenderer />
             </FetchedData>
+
         );
     }
+
     return null;
 };
 
@@ -236,7 +241,7 @@ export const DocumentCaption = (props) => {
                     <strong>{excerpt ? 'Description excerpt: ' : 'Description: '}</strong>
                     {excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}
                 </div>
-            : <em>No description</em>}
+                : <em>No description</em>}
         </div>
     );
 };
@@ -278,7 +283,7 @@ export const DocumentFile = (props) => {
                     <button data-trigger onClick={detailSwitch} className="document__file-detail-switch">
                         {collapseIcon(!detailOpen)}
                     </button>
-                : null}
+                    : null}
             </div>
         );
     }
@@ -311,14 +316,14 @@ const DocumentDetail = (props) => {
                         <dt>Description</dt>
                         <dd>{doc.description}</dd>
                     </div>
-                : null}
+                    : null}
 
                 {doc.submitted_by && doc.submitted_by.title ?
                     <div data-test="submitted-by">
                         <dt>Submitted by</dt>
                         <dd>{doc.submitted_by.title}</dd>
                     </div>
-                : null}
+                    : null}
 
                 <div data-test="lab">
                     <dt>Lab</dt>
@@ -330,7 +335,7 @@ const DocumentDetail = (props) => {
                         <dt>Grant</dt>
                         <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                     </div>
-                : null}
+                    : null}
             </dl>
         </div>
     );
