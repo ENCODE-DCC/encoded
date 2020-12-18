@@ -91,10 +91,10 @@
             "title": "pM Stage"
         },
         "pathology_report.metasis_details.site": {
-            "title": "Metastatic Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "pathology_report.metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
@@ -175,10 +175,10 @@
             "title": "pM Stage (at presentation)"
         },
         "pathology_report.metasis_details.site": {
-            "title": "Metastatic Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "pathology_report.metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"

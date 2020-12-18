@@ -477,7 +477,7 @@
             "title": "Metastatic Site (Pathology)"
         },
         "metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "ajcc_version": {
             "title": "AJCC Version"
@@ -558,7 +558,7 @@
             "title": "Metastatic Site (Pathology)"
         },
         "metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "ajcc_version": {
             "title": "AJCC Version"
@@ -625,7 +625,6 @@
         "micro_perinephric": 1.0,
         "micro_vein": 1.0,
         "micro_adrenal": 1.0,
-        "metasis_details.site": 1.0,
         "ihc.antibody": 1.0,
         "ihc.result": 1.0
     },
