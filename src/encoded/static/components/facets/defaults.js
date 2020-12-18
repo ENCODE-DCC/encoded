@@ -654,7 +654,7 @@ DefaultDateSelectorFacet.contextTypes = {
  * Default component to render the title of a facet.
  */
 export const DefaultTitle = ({ facet }) => (
-    <h5>{facet.title}</h5>
+    <h5 title={Tooltips[facet.title]}>{facet.title}</h5>
 );
 
 DefaultTitle.propTypes = {

@@ -19,6 +19,31 @@ export let tooltips = {
     "RMC": "Renal medullary carcinoma",
     "SDH RCC": "SDH deficient renal cell carcinoma",
     "TC RCC": "Tubulocystic renal cell carcinoma",
-    "Unclassified RCC": "Unclassified RCC"
+    "Unclassified RCC": "Unclassified RCC",
+
+    "Age at Diagnosis": "The age of the patient at his or her last birthday before diagnosis of renal tumor.",
+    "Sex": "Identifies the sex of the patient as recorded in patient's EMR.",
+    "Ethnicity": "Person of Spanish or Hispanic origin as recorded in patient's EMR. Patients that declined or their records were not found are recorded as unknown.",
+    "Race": "The primary race of the person (American Indian, Asian, Black, Hawaiian Pacific, White, Others) as recorded in patient's EMR.",
+    "Vital Status": "Patient's status (Alive or Deceased) as recorded in EMR or in Tumor Registry (TR).",
+    "Medical Imaging": " Types of medical imaging (CT abdomen and pelvis (with or without contrast), MRI abdomen (with or without contrast) and PET done within 90 days prior to Nephrectomy . If there are multiple entries of the same imaging modality within 90 days, only the closest to Nephrectomyis displayed.",
+    "Tumor Laterality":"Laterality of the tumor is recorded when available in the pathology report.",
+    "Tumor Size Range":"Greatest dimension range of tumor was recorded in cm.",
+    "Tumor Focality":"Single or multiple foci of tumors in that specimen is recorded when available.",
+    "Sarcomatoid Change":"Presence of sarcomatoid dedifferentiation when reported",
+    "Tumor Necrosis":"Presence of tumor necrosis (this is available only after 2012).",
+    "Tumor Grade":" Highest Fuhrman or ISUP grade seen in tumor, 1-4. Benign tumors and ChRCC are recorded as not applicable. Tumors for which grade was not reported in pathology are considered not available. Some of the cases have been reviewed centrally, and the centrally reviewed grade has been depicted in KCE for these cases.",
+    "Margin Status":" Tumor transected at the surgical margins are considered positive/involved.",
+    "Lymphvascular invasion(LVI)":"Lymphovascular invasion in non-muscle containing vessels.",
+    "Perinephric Infiltration":"Tumor extension into perinephric tissues, confirmed by microscopy.",
+    "Renal Vein Involvement":"Tumor extension into major renal veins, confirmed by microscopy.",
+    "Ipsilateral Adrenal Gland Involvement":" Tumor extension into adrenal gland, contiguous or not (this was reported only after 2010 and were derived based on gross description in prior pathology reports. If not stated in old reports, it was assumed to be continuous).",
+    "Pelvicaliceal involvement":"Tumor extension into pelvicalyceal (this will be part of staging 2018 onwards and is may not be mentioned in the prior pathology reports).",
+    "TNM Stage 6th":"Composite stage based on 6th edition rules.",
+    "TNM Stage 7th":"Composite stage based on 7th edition rules.",
+    "Metastatic Site":"This is recorded either from pathology report using natural language search or from clinical and radiotherapy notes. These may not be all inclusive.",
+    "Metastasis Histology Proven":"Record of metastatic RCC in pathology reports and nephrectomy specimens are considered histologically proven.",
+    "Medication Name":"The duration (in months) of the following prescribed Cancer and Support drugs (courtesy Dr. Bowman) are recorded.",
+    "Radiation Treatment Status":"Patients with RCC that received radiotherapy (any technique including SBRT and Stereotactic radiotherapy) at UTSW. The date, dose, fraction, and site of RT are extracted. The patient may receive RT to multiple sites. Brain RT data were partly manually extracted."
     
 };
