@@ -43,7 +43,7 @@ export let tooltips = {
     "TNM Stage 7th":"Composite stage based on 7th edition rules.",
     "Metastatic Site":"This is recorded either from pathology report using natural language search or from clinical and radiotherapy notes. These may not be all inclusive.",
     "Metastasis Histology Proven":"Record of metastatic RCC in pathology reports and nephrectomy specimens are considered histologically proven.",
-    "Medication Name":"The duration (in months) of the following prescribed Cancer and Support drugs (courtesy Dr. Bowman) are recorded.",
+    "Medication Duration":"The duration (in months) of the following prescribed Cancer and Support drugs (courtesy Dr. Bowman) are recorded.",
     "Radiation Treatment Status":"Patients with RCC that received radiotherapy (any technique including SBRT and Stereotactic radiotherapy) at UTSW. The date, dose, fraction, and site of RT are extracted. The patient may receive RT to multiple sites. Brain RT data were partly manually extracted."
     
 };
