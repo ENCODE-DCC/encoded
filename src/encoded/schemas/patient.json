@@ -304,7 +304,7 @@
         "surgery.pathology_report.histology": {
             "title": "Histologic Subtype"
         },
-        "surgery.pathology_report.p_stage": {
+        "surgery.pathology_report.t_stage": {
             "title": "pT Stage"
         },
         "surgery.pathology_report.n_stage": {
@@ -350,7 +350,7 @@
         "medications.name":1.0,
         "ihc.antibody":1.0,
         "ihc.result":1.0,
-        "surgery.pathology_report.p_stage": 1.0,
+        "surgery.pathology_report.t_stage": 1.0,
         "surgery.pathology_report.n_stage": 1.0,
         "surgery.pathology_report.m_stage": 1.0,
         "surgery.pathology_report.metasis_details.site": 1.0,
@@ -359,3 +359,4 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+
