@@ -431,7 +431,7 @@
             ],
             "properties": {
                 "site": {
-                    "title": "Metastasis site",
+                    "title": "Metastatic Site",
                     "type": "string",
                     "enum": [
                         "Adrenal",
@@ -474,10 +474,10 @@
             "title": "pM Stage"
         },
         "metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "ajcc_version": {
             "title": "AJCC Version"
@@ -555,10 +555,10 @@
             "title": "pM stage"
         },
         "metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "ajcc_version": {
             "title": "AJCC Version"
@@ -625,7 +625,6 @@
         "micro_perinephric": 1.0,
         "micro_vein": 1.0,
         "micro_adrenal": 1.0,
-        "metasis_details.site": 1.0,
         "ihc.antibody": 1.0,
         "ihc.result": 1.0
     },
