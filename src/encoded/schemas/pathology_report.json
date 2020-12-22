@@ -79,7 +79,7 @@
             "type": "string",
             "enum": [
                 "path_biopsy",
-                "path_metasis",
+                "path_metastasis",
                 "path_nephrectomy"
             ]
         },
