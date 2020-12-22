@@ -150,7 +150,7 @@
         "surgery.pathology_report.histology_filter": {
             "title": "Histologic Subtype"
         },
-        "surgery.pathology_report.ajcc_p_stage": {
+        "surgery.pathology_report.t_stage": {
             "title": "pT Stage (at presentation)"
         },
         "surgery.pathology_report.n_stage": {
@@ -164,6 +164,9 @@
         },
         "surgery.pathology_report.metasis_details.type": {
             "title": "Metastasis Type (Pathology)"
+        },
+        "surgery.pathology_report.ajcc_version": {
+            "title": "AJCC Version (at presentation)"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage (at presentation)"
@@ -301,7 +304,7 @@
         "surgery.pathology_report.histology": {
             "title": "Histologic Subtype"
         },
-        "surgery.pathology_report.ajcc_p_stage": {
+        "surgery.pathology_report.p_stage": {
             "title": "pT Stage"
         },
         "surgery.pathology_report.n_stage": {
@@ -315,6 +318,9 @@
         },
         "surgery.pathology_report.metasis_details.type": {
             "title": "Metastasis Type (Pathology)"
+        },
+        "surgery.pathology_report.ajcc_version": {
+            "title": "AJCC Version (at presentation)"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage at Presentation"
@@ -344,7 +350,7 @@
         "medications.name":1.0,
         "ihc.antibody":1.0,
         "ihc.result":1.0,
-        "surgery.pathology_report.ajcc_p_stage": 1.0,
+        "surgery.pathology_report.p_stage": 1.0,
         "surgery.pathology_report.n_stage": 1.0,
         "surgery.pathology_report.m_stage": 1.0,
         "surgery.pathology_report.metasis_details.site": 1.0,
