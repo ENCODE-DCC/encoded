@@ -21,7 +21,7 @@ class PathologyReportTable extends React.Component {
             if (IHCi.length > 0) {
                 hasIHC = true;
             }
-            let tableTitle = this.props.tableTitle + "Tumor information" + " " + (i + 1);
+            let tableTitle = this.props.tableTitle + "Tumor Information" + " " + (i + 1);
             let tableIdi =
                 (< div >
 

@@ -40,7 +40,7 @@ class PathologyReport extends React.Component {
                 </header>
                 <Panel>
                     <PanelHeading>
-                        <h4>Pathology Report tumor information</h4>
+                        <h4>Pathology Report Tumor Information</h4>
                     </PanelHeading>
                     <PanelBody>
 
