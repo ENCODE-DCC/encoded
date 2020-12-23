@@ -588,26 +588,27 @@ class PatientComponent extends React.Component {
         const ageUnit = (result.diagnosis.age_unit && hasAge && age != "90 or above") ? ` ${result.diagnosis.age_unit}` : '';
 
         return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Patient</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
+            <li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">
                             {`${result.accession}`}
                             {hasAge && `(${age}${ageUnit})`}
                         </a>
+                        <div className="result-item__data-row">
+                            <div><strong>Sex: </strong>{result.sex}</div>
+                            <div><strong>Ethnicity: </strong>{result.ethnicity}</div>
+                            <div><strong>Race: </strong>{result.race}</div>
+                        </div>
                     </div>
-                    <div className="data-row">
-                        <div><strong>Sex: </strong>{result.sex}</div>
-                        <div><strong>Ethnicity: </strong>{result.ethnicity}</div>
-                        <div><strong>Race: </strong>{result.race}</div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Patient</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+
                     </div>
+                    <PickerActions {...this.props} />
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
