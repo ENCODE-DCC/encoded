@@ -637,28 +637,28 @@ class PathologyComponent extends React.Component {
         const result = this.props.context;
 
         return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Pathology Report</p>
-                        <p className="type">{` ${result.accession}`}</p>
+            <li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">
+                            {`${result.accession} `}
+                        </a>
+                        <div className="result-item__data-row">
+                            <div><strong>Tumor Size Range:</strong>{result.tumor_size}{result.tumor_size_units}</div>
+                            <div><strong>Histologic Subtype: </strong>{result.histology}</div>
+                            <div><strong>Tumor Grade: </strong>{result.grade}</div>
+                            <div><strong>pT stage: </strong>{result.ajcc_p_stage}</div>
+                            <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>
+                            <div><strong>Laterality: </strong>{result.laterality}</div>
+                        </div>
+                    </div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Pathology Report</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
-                            {`${result.accession} `}
-                        </a>
-                    </div>
-                    <div className="data-row">
-                        <div><strong>Tumor Size Range:</strong>{result.tumor_size}{result.tumor_size_units}</div>
-                        <div><strong>Histologic Subtype: </strong>{result.histology}</div>
-                        <div><strong>Tumor Grade: </strong>{result.grade}</div>
-                        <div><strong>pT stage: </strong>{result.ajcc_p_stage}</div>
-                        <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>
-                        <div><strong>Laterality: </strong>{result.laterality}</div>
-                    </div>
+                    <PickerActions {...this.props} />    
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
@@ -690,26 +690,25 @@ class SurgeryComponent extends React.Component {
             type1.push(<div><strong>Surgery Procedure: </strong>{surgeryProcedure[i].procedure_type}</div>);
         }
         return (
-            < li >
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Surgery</p>
-                        <p className="type">{` ${result.accession}`}</p>
+            < li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">
+                            {`${result.accession} `}
+                        </a>
+                        <div className="result-item__data-row">
+                            <div><strong>Surgery Date: </strong>{result.date}</div>
+                            <div><strong>Hospital Location: </strong>{result.hospital_location} </div>
+                            {type1}
+                        </div>
+                    </div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Surgery</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
-                            {`${result.accession} `}
-
-                        </a>
-                    </div>
-                    <div className="data-row">
-                        <div><strong>Surgery Date: </strong>{result.date}</div>
-                        <div><strong>Hospital Location: </strong>{result.hospital_location} </div>
-                        {type1}
-                    </div>
+                    <PickerActions {...this.props} />
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li >
@@ -786,27 +785,28 @@ class BiospecimenComponent extends React.Component {
         const anatomicSite = (result.anatomic_site && result.sample_type == 'Tissue') ? ` ${result.anatomic_site}` : '';
 
         return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Biospecimen</p>
-                        <p className="type">{` ${result.accession}`}</p>
-
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
+            <li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">
                             {`${result.accession} `}
-
                         </a>
+                        <div className="result-item__data-row">
+                            <div><strong>Sample type: </strong>{result.sample_type}</div>
+                            <div><strong>Tissue derivatives: </strong>{result.tissue_derivatives}</div>
+                            <div><strong>Tissue type: </strong>{result.tissue_type}</div>
+                            <div><strong>Anatomic site: </strong>{result.anatomic_site}</div>
+                        </div>
                     </div>
-                    <div className="data-row">
-                        <div><strong>Sample type: </strong>{result.sample_type}</div>
-                        <div><strong>Tissue derivatives: </strong>{result.tissue_derivatives}</div>
-                        <div><strong>Tissue type: </strong>{result.tissue_type}</div>
-                        <div><strong>Anatomic site: </strong>{result.anatomic_site}</div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Biospecimen</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+
                     </div>
+                    <PickerActions {...this.props} />
+                    
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
@@ -868,30 +868,27 @@ const BioexperimentComponent = (props, reactContext) => {
     const result = props.context;
 
     return (
-        <li>
+        <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <PickerActions {...props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Bioexperiment</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
+                    <a href={result['@id']} className="result-item__link">
                             {result.assay_term_name ?
                                 <span>{result.assay_term_name}</span> : null
                             }
-                        </a>
-                    </div>
-
-            </div>
-            {cartControls ?
-                <div className="result-item__cart-control">
-                    <CartToggle element={result} />
+                    </a>
                 </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Bioexperiment</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                </div>
+                {cartControls ?
+                    <div className="result-item__cart-control">
+                        <CartToggle element={result} />
+                    </div>
                 : null}
+                <PickerActions {...props} />
             </div>
             { props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true }) }
         </li >
@@ -937,18 +934,10 @@ console.log("seriesDataset", seriesDataset);
     console.log("haveSeries", result['@type'].indexOf('Bioseries'));
 
     return (
-        <li>
+        <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <PickerActions {...props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">{haveSeries ? 'Bioseries' : (haveFileSet ? 'BiofileSet' : 'Biodataset')}</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
+                    <a href={result['@id']} className="result-item__link">
                             {biodatasetTypes[result['@type'][0]]}
                             {seriesDataset ?
                                 <span>
@@ -958,13 +947,15 @@ console.log("seriesDataset", seriesDataset);
                                 :
                                 <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
                             }
-                        </a>
-                    </div>
-                    <div className="data-row">
-                        {/* <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div> */}
-                    </div>
+                    </a>
                 </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">{haveSeries ? 'Bioseries' : (haveFileSet ? 'BiofileSet' : 'Biodataset')}</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                </div>
+                <PickerActions {...props} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
         </li>
@@ -2349,3 +2340,4 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
+
