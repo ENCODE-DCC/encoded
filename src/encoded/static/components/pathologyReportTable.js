@@ -21,7 +21,7 @@ class PathologyReportTable extends React.Component {
             if (IHCi.length > 0) {
                 hasIHC = true;
             }
-            let tableTitle = this.props.tableTitle + "Tumor information" + " " + (i + 1);
+            let tableTitle = this.props.tableTitle + "Tumor Information" + " " + (i + 1);
             let tableIdi =
                 (< div >
 
@@ -181,11 +181,11 @@ class PathologyReportTable extends React.Component {
                             <div>
                                 {this.filteredData[i].metasis_details && <div data-test="metasis_details.site" style={{ borderTop: "1px solid #151313" }}>
 
-                                    <dt>Metasis Details Site</dt>
+                                    <dt>Metastatic Site</dt>
                                     <dd>{this.filteredData[i].metasis_details.site}</dd>
                                 </div>}
                                 {this.filteredData[i].metasis_details && <div data-test="metasis_details.type">
-                                    <dt>Metasis Details Type</dt>
+                                    <dt>Metastatic Type</dt>
                                     <dd>{this.filteredData[i].metasis_details.type}</dd>
                                 </div>}
                             </div>

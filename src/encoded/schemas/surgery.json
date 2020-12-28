@@ -56,7 +56,7 @@
         }
     },
     "facets": {
-        
+
         "surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
         },
@@ -81,7 +81,7 @@
         "pathology_report.grade": {
             "title": "Tumor Grade"
         },
-        "pathology_report.ajcc_p_stage": {
+        "pathology_report.t_stage": {
             "title": "pT Stage"
         },
         "pathology_report.n_stage": {
@@ -91,10 +91,10 @@
             "title": "pM Stage"
         },
         "pathology_report.metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "pathology_report.metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
@@ -165,26 +165,26 @@
         "pathology_report.grade": {
             "title": "Tumor Grade"
         },
-        "pathology_report.ajcc_p_stage": {
-            "title": "pT Stage at Presentation"
+        "pathology_report.t_stage": {
+            "title": "pT Stage (at presentation)"
         },
         "pathology_report.n_stage": {
-            "title": "pN Stage at Presentation"
+            "title": "pN Stage (at presentation)"
         },
         "pathology_report.m_stage": {
-            "title": "pM Stage at Presentation"
+            "title": "pM Stage (at presentation)"
         },
         "pathology_report.metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "pathology_report.metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
         },
         "pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage at Presentation"
+            "title": "TNM Stage (at presentation)"
         },
         "pathology_report.laterality": {
             "title": "Tumor Laterality"
@@ -227,7 +227,7 @@
         "accession": 1.0,
         "patient": 1.0,
         "surgery_procedure.procedure_type": 1.0,
-        "pathology_report.ajcc_p_stage": 1.0,
+        "pathology_report.t_stage": 1.0,
         "pathology_report.n_stage": 1.0,
         "pathology_report.m_stage": 1.0,
         "pathology_report.metasis_details.site": 1.0,
@@ -250,4 +250,3 @@
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }
-

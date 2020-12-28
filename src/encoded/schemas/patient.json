@@ -150,23 +150,26 @@
         "surgery.pathology_report.histology_filter": {
             "title": "Histologic Subtype"
         },
-        "surgery.pathology_report.ajcc_p_stage": {
-            "title": "pT Stage at Presentation"
+        "surgery.pathology_report.t_stage": {
+            "title": "pT Stage (at presentation)"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN Stage at Presentation"
+            "title": "pN Stage (at presentation)"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM Stage at Presentation"
+            "title": "pM Stage (at presentation)"
         },
         "surgery.pathology_report.metasis_details.site": {
-            "title": "Metastasis Site (Pathology)"
+            "title": "Metastatic Site (Pathology)"
         },
         "surgery.pathology_report.metasis_details.type": {
             "title": "Metastasis Type (Pathology)"
         },
+        "surgery.pathology_report.ajcc_version": {
+            "title": "AJCC Version (at presentation)"
+        },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage at Presentation"
+            "title": "TNM Stage (at presentation)"
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
@@ -205,7 +208,7 @@
             "title": "Metastasis Histology Proven"
         },
         "metastasis.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site"
         },
         "metastasis.source": {
             "title": "Metastasis Source"
@@ -214,37 +217,37 @@
             "title": "BMI"
         },
         "labs_and_vitals.BP_Systolic": {
-            "title": "BP_Systolic"
+            "title": "BP_Systolic (mmHg)"
         },
         "labs_and_vitals.BP_Diastolic": {
-            "title": "BP_Diastolic"
+            "title": "BP_Diastolic (mmHg)"
         },
         "labs_and_vitals.Hemoglobin": {
-            "title": "Hemoglobin"
+            "title": "Hemoglobin (g/dL)"
         },
         "labs_and_vitals.Platelets": {
-            "title": "Platelets"
+            "title": "Platelets (10^3/ul)"
         },
         "labs_and_vitals.WBC": {
-            "title": "WBC"
+            "title": "WBC (10^3/ul)"
         },
         "labs_and_vitals.Neutrophils": {
-            "title": "Neutrophils"
+            "title": "Neutrophils (10^3/ul)"
         },
         "labs_and_vitals.Creatinine": {
-            "title": "Creatinine"
+            "title": "Creatinine (mg/dL)"
         },
         "labs_and_vitals.Calcium": {
-            "title": "Calcium"
+            "title": "Calcium (mg/dL)"
         },
         "labs_and_vitals.Albumin": {
-            "title": "Albumin"
+            "title": "Albumin (g/dL)"
         },
         "labs_and_vitals.Sodium": {
-            "title": "Sodium"
+            "title": "Sodium (mmol/L)"
         },
         "labs_and_vitals.LDH": {
-            "title": "LDH"
+            "title": "LDH (U/L)"
         },
 
         "biospecimen.sample_type": {
@@ -301,7 +304,7 @@
         "surgery.pathology_report.histology": {
             "title": "Histologic Subtype"
         },
-        "surgery.pathology_report.ajcc_p_stage": {
+        "surgery.pathology_report.t_stage": {
             "title": "pT Stage"
         },
         "surgery.pathology_report.n_stage": {
@@ -311,10 +314,13 @@
             "title": "pM Stage"
         },
         "surgery.pathology_report.metasis_details.site": {
-            "title": "Metastasis Site (Pathology)"
+            "title": "Metastatic Site (Pathology)"
         },
         "surgery.pathology_report.metasis_details.type": {
             "title": "Metastasis Type (Pathology)"
+        },
+        "surgery.pathology_report.ajcc_version": {
+            "title": "AJCC Version (at presentation)"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage at Presentation"
@@ -344,7 +350,7 @@
         "medications.name":1.0,
         "ihc.antibody":1.0,
         "ihc.result":1.0,
-        "surgery.pathology_report.ajcc_p_stage": 1.0,
+        "surgery.pathology_report.t_stage": 1.0,
         "surgery.pathology_report.n_stage": 1.0,
         "surgery.pathology_report.m_stage": 1.0,
         "surgery.pathology_report.metasis_details.site": 1.0,
@@ -353,3 +359,4 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+

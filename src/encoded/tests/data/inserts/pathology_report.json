@@ -7,7 +7,7 @@
     "histology": "SDH deficient renal cell carcinoma",
     "status": "released",
     "report_source": "Pathology Report",
-    "path_source_procedure": "path_metasis",
+    "path_source_procedure": "path_metastasis",
     "metasis_details":{
       "site":"Bone",
       "type": "Regional"
@@ -22,7 +22,7 @@
     "histology": "Sarcomatoid, NOS",
     "status": "released",
     "report_source": "Pathology Report",
-    "path_source_procedure": "path_metasis",
+    "path_source_procedure": "path_metastasis",
     "metasis_details":{
       "site":"Other",
       "type": "Distant"
@@ -75,7 +75,7 @@
     "histology": "Collecting duct carcinoma",
     "status": "released",
     "report_source": "Pathology Report",
-    "path_source_procedure": "path_metasis",
+    "path_source_procedure": "path_metastasis",
     "metasis_details":{
       "site":"Other",
       "type": "Distant"

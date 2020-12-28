@@ -79,7 +79,7 @@
             "type": "string",
             "enum": [
                 "path_biopsy",
-                "path_metasis",
+                "path_metastasis",
                 "path_nephrectomy"
             ]
         },
@@ -431,7 +431,7 @@
             ],
             "properties": {
                 "site": {
-                    "title": "Metastasis site",
+                    "title": "Metastatic Site",
                     "type": "string",
                     "enum": [
                         "Adrenal",
@@ -464,7 +464,7 @@
         "grade": {
             "title": "Tumor Grade"
         },
-        "ajcc_p_stage": {
+        "t_stage": {
             "title": "pT Stage"
         },
         "n_stage": {
@@ -474,10 +474,10 @@
             "title": "pM Stage"
         },
         "metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "ajcc_version": {
             "title": "AJCC Version"
@@ -545,7 +545,7 @@
         "grade": {
             "title": "Tumor Grade"
         },
-        "ajcc_p_stage": {
+        "t_stage": {
             "title": "pT stage"
         },
         "n_stage": {
@@ -555,10 +555,10 @@
             "title": "pM stage"
         },
         "metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastatic Site (Pathology)"
         },
         "metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "ajcc_version": {
             "title": "AJCC Version"
@@ -607,7 +607,7 @@
         "surgery": 1.0,
         "patient": 1.0,
         "accession": 1.0,
-        "ajcc_p_stage": 1.0,
+        "t_stage": 1.0,
         "n_stage": 1.0,
         "m_stage": 1.0,
         "metasis_details.site": 1.0,
@@ -625,7 +625,6 @@
         "micro_perinephric": 1.0,
         "micro_vein": 1.0,
         "micro_adrenal": 1.0,
-        "metasis_details.site": 1.0,
         "ihc.antibody": 1.0,
         "ihc.result": 1.0
     },
