@@ -168,375 +168,6 @@ const Item = auditDecor(ItemComponent);
 
 globals.listingViews.register(Item, 'Item');
 
-
-/* eslint-disable react/prefer-stateless-function */
-class BiosampleComponent extends React.Component {
-    render() {
-        const result = this.props.context;
-        const lifeStage = (result.life_stage && result.life_stage !== 'unknown') ? ` ${result.life_stage}` : '';
-        const ageDisplay = (result.age_display && result.age_display !== '') ? ` ${result.age_display}` : '';
-        const separator = (lifeStage || ageDisplay) ? ',' : '';
-        const treatment = (result.treatments && result.treatments.length > 0) ? result.treatments[0].treatment_term_name : '';
-
-        // Calculate genetic modification properties for display.
-        const rnais = [];
-        const constructs = [];
-        const mutatedGenes = [];
-        if (result.applied_modifications && result.applied_modifications.length > 0) {
-            result.applied_modifications.forEach((am) => {
-                // Collect RNAi GM methods.
-                if (am.method === 'RNAi' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
-                    rnais.push(am.modified_site_by_target_id.name);
-                }
-
-                // Collect construct GM methods.
-                if (am.purpose === 'tagging' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
-                    constructs.push(am.modified_site_by_target_id.name);
-                }
-
-                // Collect mutated gene GM methods.
-                if ((am.category === 'deletion' || am.category === 'mutagenesis') && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
-                    mutatedGenes.push(am.modified_site_by_target_id.name);
-                }
-            });
-        }
-
-        // Build the text of the synchronization string
-        let synchText;
-        if (result.synchronization) {
-            synchText = `${result.synchronization}${result.post_synchronization_time ? ` +${ageDisplay}` : ''}`;
-        }
-
-        return (
-            <li className={resultItemClass(result)}>
-                <div className="result-item">
-                    <div className="result-item__data">
-                        <a href={result['@id']} className="result-item__link">
-                            {`${result.biosample_ontology.term_name} (`}
-                            <em>{result.organism.scientific_name}</em>
-                            {`${separator}${lifeStage}${ageDisplay})`}
-                        </a>
-                        <div className="result-item__data-row">
-                            <div><strong>Type: </strong>{result.biosample_ontology.classification}</div>
-                            {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
-                            {rnais.length > 0 ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
-                            {constructs.length > 0 ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
-                            {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
-                            {mutatedGenes.length > 0 ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
-                            {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
-                            {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
-                            {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
-                            <div><strong>Source: </strong>{result.source.title}</div>
-                        </div>
-                    </div>
-                    <div className="result-item__meta">
-                        <div className="result-item__meta-title">Biosample</div>
-                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, search: true })}
-                    </div>
-                    <PickerActions context={result} />
-                </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties })}
-            </li>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
-
-BiosampleComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Biosample search results
-    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-BiosampleComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
-    session_properties: PropTypes.object,
-};
-
-const Biosample = auditDecor(BiosampleComponent);
-
-globals.listingViews.register(Biosample, 'Biosample');
-
-
-/**
- * Renders both Experiment and FunctionalCharacterizationExperiment search results.
- */
-const ExperimentComponent = (props, reactContext) => {
-    const { context: result, cartControls, mode } = props;
-    let synchronizations;
-
-    // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
-    const experimentType = result['@type'][0];
-    const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
-    const displayType = isFunctionalExperiment ? 'Functional Characterization Experiment' : 'Experiment';
-
-    // Collect all biosamples associated with the experiment. This array can contain duplicate
-    // biosamples, but no null entries.
-    let biosamples = [];
-    const treatments = [];
-
-    if (result.replicates && result.replicates.length > 0) {
-        biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
-        // flatten treatment array of arrays
-        _.compact(biosamples.map(biosample => biosample.treatments)).forEach(treatment => treatment.forEach(t => treatments.push(t)));
-    }
-
-    // Get all biosample organism names
-    const organismNames = biosamples.length > 0 ? BiosampleOrganismNames(biosamples) : [];
-
-    // Collect synchronizations
-    if (result.replicates && result.replicates.length > 0) {
-        synchronizations = _.uniq(result.replicates.filter(replicate =>
-            replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
-        ).map((replicate) => {
-            const biosample = replicate.library.biosample;
-            return `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`;
-        }));
-    }
-
-    const uniqueTreatments = getUniqueTreatments(treatments);
-
-    // Get a map of related datasets, possibly filtering on their status and
-    // categorized by their type.
-    let seriesMap = {};
-    if (result.related_series && result.related_series.length > 0) {
-        seriesMap = _.groupBy(
-            result.related_series, series => series['@type'][0]
-        );
-    }
-
-    return (
-        <li className={resultItemClass(result)}>
-            <div className="result-item">
-                <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">
-                        {result.assay_title ?
-                            <span>{result.assay_title}</span>
-                        :
-                            <span>{result.assay_term_name}</span>
-                        }
-                        {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
-                    </a>
-                    {result.biosample_summary ?
-                        <div className="result-item__highlight-row">
-                            {organismNames.length > 0 ?
-                                <span>
-                                    {organismNames.map((organism, i) =>
-                                        <span key={organism}>
-                                            {i > 0 ? <span>and </span> : null}
-                                            <i>{organism} </i>
-                                        </span>
-                                    )}
-                                </span>
-                                : null}
-                            {result.biosample_summary}
-                        </div>
-                    : null}
-                    <div className="result-item__data-row">
-                        {result.target && result.target.label ?
-                            <div><strong>Target: </strong>{result.target.label}</div>
-                            : null}
-
-                        {mode !== 'cart-view' ?
-                            <React.Fragment>
-                                {synchronizations && synchronizations.length > 0 ?
-                                    <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
-                                : null}
-
-                                <div><strong>Lab: </strong>{result.lab.title}</div>
-                                <div><strong>Project: </strong>{result.award.project}</div>
-                                {treatments && treatments.length > 0 ?
-                                    <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
-                                        <span>
-                                            {uniqueTreatments.join(', ')}
-                                        </span>
-                                    </div>
-                                : null}
-                                {Object.keys(seriesMap).map(seriesType =>
-                                    <div key={seriesType}>
-                                        <strong>{seriesType.replace(/([A-Z])/g, ' $1')}: </strong>
-                                        {seriesMap[seriesType].map(
-                                            (series, i) => (
-                                                <span key={series.accession}>
-                                                    {i > 0 ? ', ' : null}
-                                                    <a href={series['@id']}>
-                                                        {series.accession}
-                                                    </a>
-                                                </span>
-                                            )
-                                        )}
-                                    </div>
-                                )}
-                            </React.Fragment>
-                        : null}
-                    </div>
-                </div>
-                <div className="result-item__meta">
-                    <div className="result-item__meta-title">{displayType}</div>
-                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
-                    {mode !== 'cart-view' ?
-                        <React.Fragment>
-                            <Status item={result.status} badgeSize="small" css="result-table__status" />
-                            {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
-                        </React.Fragment>
-                    : null}
-                </div>
-                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
-                    <div className="result-item__cart-control">
-                        <CartToggle element={result} />
-                    </div>
-                : null}
-                <PickerActions context={result} />
-            </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
-    );
-};
-
-ExperimentComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Experiment search results
-    cartControls: PropTypes.bool, // True if displayed in active cart
-    mode: PropTypes.string, // Special search-result modes, e.g. "picker"
-    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired,
-};
-
-ExperimentComponent.defaultProps = {
-    cartControls: false,
-    mode: '',
-};
-
-ExperimentComponent.contextTypes = {
-    session: PropTypes.object,
-    actions: PropTypes.array,
-    session_properties: PropTypes.object,
-};
-
-const Experiment = auditDecor(ExperimentComponent);
-
-globals.listingViews.register(Experiment, 'Experiment');
-globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
-
-
-const DatasetComponent = (props, reactContext) => {
-    const result = props.context;
-    let biosampleTerm;
-    let organism;
-    let lifeSpec;
-    let targets;
-    let lifeStages = [];
-    let ages = [];
-    let treatments = [];
-
-    // Determine whether the dataset is a series or not
-    const seriesDataset = result['@type'].indexOf('Series') >= 0;
-
-    // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
-    if (seriesDataset) {
-        biosampleTerm = (result.biosample_ontology && Array.isArray(result.biosample_ontology) && result.biosample_ontology.length === 1 && result.biosample_ontology[0].term_name) ? result.biosample_ontology[0].term_name : ((result.biosample_ontology && result.biosample_ontology.term_name) ? result.biosample_ontology.term_name : '');
-        const organisms = (result.organism && result.organism.length > 0) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
-        if (organisms.length === 1) {
-            organism = organisms[0];
-        }
-
-        // Dig through the biosample life stages and ages
-        if (result.related_datasets && result.related_datasets.length > 0) {
-            result.related_datasets.forEach((dataset) => {
-                if (dataset.replicates && dataset.replicates.length > 0) {
-                    dataset.replicates.forEach((replicate) => {
-                        if (replicate.library && replicate.library.biosample) {
-                            const biosample = replicate.library.biosample;
-                            const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
-
-                            if (lifeStage) { lifeStages.push(lifeStage); }
-                            if (biosample.age_display) { ages.push(biosample.age_display); }
-                            if (biosample.treatments) { treatments = [...treatments, ...biosample.treatments]; }
-                        }
-                    });
-                }
-            });
-            lifeStages = _.uniq(lifeStages);
-            ages = _.uniq(ages);
-        }
-        lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
-
-        // Get list of target labels
-        if (result.target) {
-            targets = _.uniq(result.target.map(target => target.label));
-        }
-    }
-
-    const haveSeries = result['@type'].indexOf('Series') >= 0;
-    const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
-    const uniqueTreatments = getUniqueTreatments(treatments);
-
-    return (
-        <li className={resultItemClass(result)}>
-            <div className="result-item">
-                <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">
-                        {datasetTypes[result['@type'][0]]}
-                        {seriesDataset ?
-                            <span>
-                                {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
-                                {organism || lifeSpec.length > 0 ?
-                                    <span>
-                                        {' ('}
-                                        {organism ? <i>{organism}</i> : null}
-                                        {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
-                                        {')'}
-                                    </span>
-                                : null}
-                            </span>
-                        :
-                            <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
-                        }
-                    </a>
-                    <div className="result-item__data-row">
-                        {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
-                        {targets && targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div>
-                        { treatments && treatments.length > 0 ?
-                                <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
-                                    <span>
-                                        {uniqueTreatments.join(', ')}
-                                    </span>
-                                </div>
-                            : null}
-                    </div>
-                </div>
-                <div className="result-item__meta">
-                    <div className="result-item__meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</div>
-                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
-                    <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
-                </div>
-                <PickerActions context={result} />
-            </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
-    );
-};
-
-DatasetComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Dataset search results
-    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-DatasetComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
-    session_properties: PropTypes.object,
-};
-
-const Dataset = auditDecor(DatasetComponent);
-
-globals.listingViews.register(Dataset, 'Dataset');
-
-
 /* eslint-disable react/prefer-stateless-function */
 const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
     <li className={resultItemClass(result)}>
@@ -588,26 +219,27 @@ class PatientComponent extends React.Component {
         const ageUnit = (result.diagnosis.age_unit && hasAge && age != "90 or above") ? ` ${result.diagnosis.age_unit}` : '';
 
         return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Patient</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
+            <li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">
                             {`${result.accession}`}
                             {hasAge && `(${age}${ageUnit})`}
                         </a>
+                        <div className="result-item__data-row">
+                            <div><strong>Sex: </strong>{result.sex}</div>
+                            <div><strong>Ethnicity: </strong>{result.ethnicity}</div>
+                            <div><strong>Race: </strong>{result.race}</div>
+                        </div>
                     </div>
-                    <div className="data-row">
-                        <div><strong>Sex: </strong>{result.sex}</div>
-                        <div><strong>Ethnicity: </strong>{result.ethnicity}</div>
-                        <div><strong>Race: </strong>{result.race}</div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Patient</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+
                     </div>
+                    <PickerActions {...this.props} />
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
@@ -636,28 +268,28 @@ class PathologyComponent extends React.Component {
         const result = this.props.context;
 
         return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Pathology Report</p>
-                        <p className="type">{` ${result.accession}`}</p>
+            <li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">
+                            {`${result.accession} `}
+                        </a>
+                        <div className="result-item__data-row">
+                            <div><strong>Tumor Size Range:</strong>{result.tumor_size}{result.tumor_size_units}</div>
+                            <div><strong>Histologic Subtype: </strong>{result.histology}</div>
+                            <div><strong>Tumor Grade: </strong>{result.grade}</div>
+                            <div><strong>pT stage: </strong>{result.ajcc_p_stage}</div>
+                            <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>
+                            <div><strong>Laterality: </strong>{result.laterality}</div>
+                        </div>
+                    </div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Pathology Report</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
-                            {`${result.accession} `}
-                        </a>
-                    </div>
-                    <div className="data-row">
-                        <div><strong>Tumor Size Range:</strong>{result.tumor_size}{result.tumor_size_units}</div>
-                        <div><strong>Histologic Subtype: </strong>{result.histology}</div>
-                        <div><strong>Tumor Grade: </strong>{result.grade}</div>
-                        <div><strong>pT stage: </strong>{result.ajcc_p_stage}</div>
-                        <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>
-                        <div><strong>Laterality: </strong>{result.laterality}</div>
-                    </div>
+                    <PickerActions {...this.props} />    
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
@@ -689,26 +321,25 @@ class SurgeryComponent extends React.Component {
             type1.push(<div><strong>Surgery Procedure: </strong>{surgeryProcedure[i].procedure_type}</div>);
         }
         return (
-            < li >
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Surgery</p>
-                        <p className="type">{` ${result.accession}`}</p>
+            < li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">
+                            {`${result.accession} `}
+                        </a>
+                        <div className="result-item__data-row">
+                            <div><strong>Surgery Date: </strong>{result.date}</div>
+                            <div><strong>Hospital Location: </strong>{result.hospital_location} </div>
+                            {type1}
+                        </div>
+                    </div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Surgery</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
-                            {`${result.accession} `}
-
-                        </a>
-                    </div>
-                    <div className="data-row">
-                        <div><strong>Surgery Date: </strong>{result.date}</div>
-                        <div><strong>Hospital Location: </strong>{result.hospital_location} </div>
-                        {type1}
-                    </div>
+                    <PickerActions {...this.props} />
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li >
@@ -785,27 +416,28 @@ class BiospecimenComponent extends React.Component {
         const anatomicSite = (result.anatomic_site && result.sample_type == 'Tissue') ? ` ${result.anatomic_site}` : '';
 
         return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Biospecimen</p>
-                        <p className="type">{` ${result.accession}`}</p>
-
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
+            <li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">
                             {`${result.accession} `}
-
                         </a>
+                        <div className="result-item__data-row">
+                            <div><strong>Sample type: </strong>{result.sample_type}</div>
+                            <div><strong>Tissue derivatives: </strong>{result.tissue_derivatives}</div>
+                            <div><strong>Tissue type: </strong>{result.tissue_type}</div>
+                            <div><strong>Anatomic site: </strong>{result.anatomic_site}</div>
+                        </div>
                     </div>
-                    <div className="data-row">
-                        <div><strong>Sample type: </strong>{result.sample_type}</div>
-                        <div><strong>Tissue derivatives: </strong>{result.tissue_derivatives}</div>
-                        <div><strong>Tissue type: </strong>{result.tissue_type}</div>
-                        <div><strong>Anatomic site: </strong>{result.anatomic_site}</div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Biospecimen</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+
                     </div>
+                    <PickerActions {...this.props} />
+                    
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
@@ -867,30 +499,27 @@ const BioexperimentComponent = (props, reactContext) => {
     const result = props.context;
 
     return (
-        <li>
+        <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <PickerActions {...props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Bioexperiment</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
+                    <a href={result['@id']} className="result-item__link">
                             {result.assay_term_name ?
                                 <span>{result.assay_term_name}</span> : null
                             }
-                        </a>
-                    </div>
-
-            </div>
-            {cartControls ?
-                <div className="result-item__cart-control">
-                    <CartToggle element={result} />
+                    </a>
                 </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Bioexperiment</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                </div>
+                {cartControls ?
+                    <div className="result-item__cart-control">
+                        <CartToggle element={result} />
+                    </div>
                 : null}
+                <PickerActions {...props} />
             </div>
             { props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true }) }
         </li >
@@ -936,18 +565,10 @@ console.log("seriesDataset", seriesDataset);
     console.log("haveSeries", result['@type'].indexOf('Bioseries'));
 
     return (
-        <li>
+        <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <PickerActions {...props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">{haveSeries ? 'Bioseries' : (haveFileSet ? 'BiofileSet' : 'Biodataset')}</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
+                    <a href={result['@id']} className="result-item__link">
                             {biodatasetTypes[result['@type'][0]]}
                             {seriesDataset ?
                                 <span>
@@ -957,13 +578,15 @@ console.log("seriesDataset", seriesDataset);
                                 :
                                 <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
                             }
-                        </a>
-                    </div>
-                    <div className="data-row">
-                        {/* <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div> */}
-                    </div>
+                    </a>
                 </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">{haveSeries ? 'Bioseries' : (haveFileSet ? 'BiofileSet' : 'Biodataset')}</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                </div>
+                <PickerActions {...props} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
         </li>
@@ -983,749 +606,6 @@ BiodatasetComponent.contextTypes = {
 const Biodataset = auditDecor(BiodatasetComponent);
 
 globals.listingViews.register(Biodataset, 'Biodataset');
-
-
-/* eslint-disable react/prefer-stateless-function */
-/**
- *
- * If the given term within the facet is selected, either as a selected term or a negated term,
- * return the href for the term. Don't pass any terms from facets generated by the back end
- * specifically for negation, because they don't get rendered anyway.
- * @param {string} term - Facet term being tested.
- * @param {object} facet - Facet object containing `term`.
- * @param {array} filters - `filters` array directly from search result object.
- * @return (object) - {
- *                        selected: If the term is selected, this returns the href to remove the term from the URL.
- *                        negated: true if the selected term is for negation.
- *                    }
- */
-function termSelected(term, facet, filters) {
-    let matchingFilter;
-    let negated = false;
-    const exists = facet.type === 'exists';
-
-    // Run through the search result filters to decide whether the given term is selected.
-    const selected = filters.some((filter) => {
-        // Determine whether the filter is for negation (ends in a !). If it's a negation filter,
-        // strip the final "!" for easier testing.
-        negated = filter.field.charAt(filter.field.length - 1) === '!';
-        const filterFieldName = negated ? filter.field.slice(0, -1) : filter.field;
-
-        if (exists) {
-            // Facets with an "exists" property defined in the schema need special handling to
-            // allow for yes/no display.
-            if ((filter.field === `${facet.field}!` && term === 'no') ||
-                (filter.field === facet.field && term === 'yes')) {
-                matchingFilter = filter;
-                return true;
-            }
-        } else if (filterFieldName === facet.field && filter.term === String(term)) {
-            // The facet field and the given term match a filter, so save that filter so we can
-            // extract its `remove` link.
-            matchingFilter = filter;
-            return true;
-        }
-
-        // Not an "exists" term, and not a selected term.
-        return false;
-    });
-
-    if (selected) {
-        // The given term is selected. Return the href to remove the term from the URI, as well as
-        // whether this term was a negation term or not.
-        return {
-            selected: url.parse(matchingFilter.remove).search,
-            negated,
-            exists,
-        };
-    }
-
-    // The given term isn't selected. Return no href (the href will be determined separately), and
-    // if the term isn't selected, it can't be a negation term.
-    return {
-        selected: null,
-        negated: false,
-        exists,
-    };
-}
-
-// Determine whether any of the given terms are selected
-function countSelectedTerms(terms, facet, filters) {
-    let count = 0;
-    terms.forEach((term) => {
-        const { selected } = termSelected(term.key, facet, filters);
-        if (selected) {
-            count += 1;
-        }
-    });
-    return count;
-}
-
-// Display one term within a facet.
-const Term = (props) => {
-    const { filters, facet, total, canDeselect, searchBase, onFilter, statusFacet } = props;
-    const term = props.term.key;
-    const count = props.term.doc_count;
-    const title = props.title || term;
-    const field = facet.field;
-    const em = field === 'target.organism.scientific_name' ||
-        field === 'organism.scientific_name' ||
-        field === 'replicates.library.biosample.donor.organism.scientific_name';
-    const barStyle = {
-        width: `${Math.ceil((count / total) * 100)}%`,
-    };
-
-    // Determine if the given term should display selected, as well as what the href for the term
-    // should be. If it *is* selected, also indicate whether it was selected for negation or not.
-    const { selected, negated, exists } = termSelected(term, facet, filters);
-    let href;
-    let negationHref = '';
-    if (selected && !canDeselect) {
-        href = null;
-    } else if (selected) {
-        href = selected;
-    } else if (facet.type === 'exists') {
-        if (term === 'yes') {
-            href = `${searchBase}${field}=*`;
-        } else {
-            href = `${searchBase}${field}!=*`;
-        }
-    } else {
-        // Term isn't selected. Get the href for the term, and for its negation button.
-        href = `${searchBase}${field}=${globals.encodedURIComponent(term)}`;
-        negationHref = `${searchBase}${field}!=${globals.encodedURIComponent(term)}`;
-    }
-
-    if (facet.appended === 'true') {
-        const facetTerm = facet.terms.find(x => x.key === term);
-        const isNegated = facetTerm.isEqual === 'false';
-        const vfield = filters.find(f => f.term === term);
-        const vhref = vfield ? vfield.remove : '';
-        return (
-            <li className={`facet-term${isNegated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
-                {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
-                <a className="facet-term__item" href={vhref} onClick={href ? onFilter : null}>
-                    <div className="facet-term__text">
-                        {em ? <em>{title}</em> : <span>{title}</span>}
-                    </div>
-                </a>
-            </li>
-        );
-    }
-
-    return (
-        <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
-            {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
-            <a className="facet-term__item" href={href} onClick={href ? onFilter : null}>
-                <div className="facet-term__text">
-                    {em ? <em>{title}</em> : <span>{title}</span>}
-                </div>
-                {negated ? null : <div className="facet-term__count">{count}</div>}
-                {(selected || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
-            </a>
-            <div className="facet-term__negator">
-                {(selected || negated || exists) ? null : <a href={negationHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
-            </div>
-        </li>
-    );
-};
-
-Term.propTypes = {
-    filters: PropTypes.array.isRequired, // Search result filters
-    term: PropTypes.object.isRequired, // One element of the terms array from a single facet
-    title: PropTypes.string, // Optional override for facet title
-    facet: PropTypes.object.isRequired, // Search result facet object containing the given term
-    total: PropTypes.number.isRequired, // Total number of items this term includes
-    canDeselect: PropTypes.bool,
-    searchBase: PropTypes.string.isRequired, // Base URI for the search
-    onFilter: PropTypes.func,
-    statusFacet: PropTypes.bool, // True if the facet displays statuses
-};
-
-Term.defaultProps = {
-    title: '',
-    canDeselect: true,
-    onFilter: null,
-    statusFacet: false,
-};
-
-
-// Wrapper for <Term> to display the "Data Type" facet terms.
-const TypeTerm = (props) => {
-    const { filters, total } = props;
-    const term = props.term.key;
-    let title;
-    try {
-        title = types[term];
-    } catch (e) {
-        title = term;
-    }
-    return <Term {...props} title={title} filters={filters} total={total} />;
-};
-
-TypeTerm.propTypes = {
-    term: PropTypes.object.isRequired,
-    filters: PropTypes.array.isRequired,
-    total: PropTypes.number.isRequired,
-};
-
-const allMonths = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-
-class DateSelectorFacet extends React.Component {
-    constructor() {
-        super();
-
-        // Set initial React component state.
-        this.state = {
-            possibleYears: [], // all years with results
-            startYears: [], // possible years for the start year drop-down
-            endYears: [], // possible years for the end year drop-down
-            startMonths: [], // possible months for the start month drop-down
-            endMonths: [], // possible months for the end month drop-down
-            startYear: undefined, // chosen start year
-            startMonth: undefined, // chosen start month
-            endYear: undefined, // chosen end year
-            endMonth: undefined, // chosen end month
-            activeFacet: 'date_released', // for toggle, either 'date_released' or 'date_submitted'
-        };
-
-        this.selectYear = this.selectYear.bind(this);
-        this.selectMonth = this.selectMonth.bind(this);
-        this.checkForSameYear = this.checkForSameYear.bind(this);
-        this.toggleDateFacet = this.toggleDateFacet.bind(this);
-        this.setActiveFacetParameters = this.setActiveFacetParameters.bind(this);
-        this.handleReset = this.handleReset.bind(this);
-        this.resetMonthDropDowns = this.resetMonthDropDowns.bind(this);
-    }
-
-    componentDidMount() {
-        this.setActiveFacetParameters(true);
-    }
-
-    setActiveFacetParameters(initializationFlag) {
-        let activeFacet = null;
-        let activeFilter = null;
-        let startYear = null;
-        let endYear = null;
-        // If there is a date filter applied, we'll use that filter to set state when the component is mounted
-        if (initializationFlag) {
-            // if a date range has already been selected, we will use that date range to populate drop-downs
-            const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
-            if (existingFilter[0]) {
-                activeFilter = true;
-                const filterString = existingFilter[0].term;
-                activeFacet = (filterString.indexOf('date_released') !== -1) ? 'date_released' : 'date_submitted';
-                startYear = filterString.split('[')[1].split('-')[0];
-                const startMonth = filterString.split('[')[1].split('-')[1];
-                endYear = filterString.split('TO ')[1].split('-')[0];
-                const endMonth = filterString.split('TO ')[1].split('-')[1];
-                // Set dropdown lists to match existing query
-                this.setState({
-                    activeFacet,
-                    startYear,
-                    endYear,
-                    startMonth,
-                    endMonth,
-                });
-            }
-        }
-        if (activeFacet === null) {
-            activeFacet = this.state.activeFacet;
-        }
-
-        // Set possible years to be 2009 -> current year for 'date_released'
-        // Set possible years to be 2008 -> current year for 'date_submitted'
-        const currentYear = moment().format('YYYY');
-        let firstYear = 2007;
-        if (activeFacet === 'date_released') {
-            firstYear = 2008;
-        }
-        const numberOfYears = +currentYear - firstYear;
-        const possibleYears = Array.from({ length: numberOfYears }, (e, i) => (i + firstYear + 1));
-
-        if (!initializationFlag || !activeFilter) {
-            // Set dropdown lists to be full lists of possiblities and initialize to boundaries of full range
-            this.setState({
-                startYear: possibleYears[0],
-                endYear: possibleYears[possibleYears.length - 1],
-                startMonth: '01',
-                endMonth: '12',
-                startYears: possibleYears,
-                endYears: possibleYears,
-            });
-        } else {
-            const startYears = possibleYears.filter(year => +year <= endYear);
-            const endYears = possibleYears.filter(year => +year >= startYear);
-            this.setState({
-                startYears,
-                endYears,
-            });
-        }
-
-        // Set dropdown options to include all possibilities
-        this.setState({
-            possibleYears,
-            startMonths: allMonths,
-            endMonths: allMonths,
-        }, () => this.checkForSameYear());
-    }
-
-    selectYear(event) {
-        // We are changing the start year, which means we need to change the possibilities for the end years and also the possible start months
-        if (event.target.id === 'select-start-year') {
-            // Set startYear to be user choice
-            this.setState({ startYear: event.target.value }, () => {
-                // Check if now the years match and month lists need to be limited
-                this.checkForSameYear();
-            });
-            // Possibilities for endYears must now all be greater than the new startYear
-            const endYears = this.state.possibleYears.filter(year => +year >= event.target.value);
-            this.setState({ endYears });
-            // We are changing the end year, which means we need to change the possiblities for the starting year and also the possible end months
-        } else {
-            // Set endYear to be user choice
-            this.setState({ endYear: event.target.value }, () => {
-                // Check if now the years match and month lists need to be limited
-                this.checkForSameYear();
-            });
-            // Possiblities for startYears must now all be less than the new endYears
-            const startYears = this.state.possibleYears.filter(year => +year <= event.target.value);
-            this.setState({ startYears });
-        }
-    }
-
-    resetMonthDropDowns() {
-        this.setState({
-            startMonths: allMonths,
-            startMonth: '01',
-            endMonths: allMonths,
-            endMonth: '12',
-        });
-    }
-
-    // If the start year and the end year match, we have to be careful to not allow the user to pick an end month that is earlier than the start month
-    checkForSameYear() {
-        if (+this.state.startYear === +this.state.endYear) {
-            // If start month is later than the end month and years match, this is not allowed, so we reset
-            if (+this.state.endMonth < +this.state.startMonth) {
-                this.resetMonthDropDowns();
-                // If start and end months are allowed, we still need to filter dropdown possible lists so they can't select an unallowed combination
-            } else {
-                // endMonths can only display months that are after the chosen startMonth
-                const endMonths = allMonths.filter(month => +month >= +this.state.startMonth);
-                // startMonths can only display months that are before the chosen endMonth
-                const startMonths = allMonths.filter(month => +month <= +this.state.endMonth);
-                this.setState({
-                    endMonths,
-                    startMonths,
-                });
-            }
-            // If the start and end years previously matched (but now they don't), an incomplete list of months may be set and we need to update
-        } else {
-            if (allMonths.length !== this.state.startMonths.length) {
-                this.setState({ startMonths: allMonths });
-            }
-            if (allMonths.length !== this.state.endMonths.length) {
-                this.setState({ endMonths: allMonths });
-            }
-        }
-    }
-
-    selectMonth(event) {
-        // When a month changes, we need to check if the years match and filter the month dropdown possibilities if they do
-        if (event.target.id === 'select-start-month') {
-            this.setState({ startMonth: event.target.value }, () => {
-                this.checkForSameYear();
-            });
-        } else {
-            this.setState({ endMonth: event.target.value }, () => {
-                this.checkForSameYear();
-            });
-        }
-    }
-
-    // Toggle the 'activeFacet' state and also reset the drop down options by calling 'setActiveFacetParameters'
-    toggleDateFacet() {
-        this.setState(prevState => ({ activeFacet: prevState.activeFacet === 'date_released' ? 'date_submitted' : 'date_released' }), this.setActiveFacetParameters);
-    }
-
-    // Reset the dropdowns and state, and clear query
-    handleReset(resetString) {
-        this.setState({ activeFacet: 'date_released' }, () => {
-            this.setActiveFacetParameters();
-            this.context.navigate(resetString);
-        });
-    }
-
-    // Set dropdowns to match quick link query and nagivate to quick link
-    handleQuickLink(searchBaseForDateRange, field) {
-        const currentYear = moment().format('YYYY');
-        const currentMonth = moment().format('MM');
-        const currentDay = moment().format('DD');
-        const quickLinkString = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${field}:[${currentYear - 1}-${currentMonth}-${currentDay} TO ${currentYear}-${currentMonth}-${currentDay}]`;
-        this.setState({
-            startMonth: currentMonth,
-            endMonth: currentMonth,
-            startYear: (currentYear - 1),
-            endYear: currentYear,
-            startMonths: allMonths,
-            endMonths: allMonths,
-            startYears: this.state.possibleYears.filter(year => +year <= currentYear),
-            endYears: this.state.possibleYears.filter(year => +year >= (currentYear - 1)),
-        }, () => {
-            this.context.navigate(quickLinkString);
-        });
-    }
-
-    render() {
-        const { facet, searchBase, facets } = this.props;
-        const field = this.state.activeFacet;
-        const activeFacet = facets.filter(f => f.field === this.state.activeFacet)[0];
-
-        const daysInEndMonth = moment(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
-
-        // if a date range has already been selected, we want to over-write that date range with a new one
-        const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
-        let resetString = '';
-        let searchBaseForDateRange = searchBase;
-        if (existingFilter.length > 0) {
-            resetString = `${existingFilter[0].remove}&`;
-            searchBaseForDateRange = `${existingFilter[0].remove}&`;
-        } else {
-            resetString = searchBase;
-        }
-
-        const searchString = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${this.state.activeFacet}:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${daysInEndMonth}]`;
-
-        // Print selected date range next to date selector facet
-        let dateRangeString = '';
-        if (existingFilter.length > 0) {
-            if (existingFilter[0].term.indexOf('date_released') > -1) {
-                dateRangeString = `Data released between ${existingFilter[0].term.substring(existingFilter[0].term.indexOf('[') + 1, existingFilter[0].term.indexOf(']')).replace('TO', 'and')}`;
-            } else {
-                dateRangeString = `Data submitted between ${existingFilter[0].term.substring(existingFilter[0].term.indexOf('[') + 1, existingFilter[0].term.indexOf(']')).replace('TO', 'and')}`;
-            }
-        }
-
-        if (((activeFacet.terms.length > 0) && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
-            return (
-                <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''}`}>
-                    <h5>Date range selection</h5>
-                    {existingFilter.length > 0 ?
-                        <div className="selected-date-range">
-                            <div>Selected range: </div>
-                            {existingFilter.map(filter =>
-                                <div key={filter.term}>{dateRangeString}</div>
-                            )}
-                        </div>
-                        : null}
-
-                    <div className="date-selector-toggle-wrapper">
-                        <div className="date-selector-toggle"><input
-                            type="radio"
-                            name="released"
-                            value="released"
-                            checked={this.state.activeFacet === 'date_released'}
-                            onChange={this.toggleDateFacet}
-                        />Released
-                        </div>
-                        <div className="date-selector-toggle"><input
-                            type="radio"
-                            name="submitted"
-                            value="submitted"
-                            checked={this.state.activeFacet === 'date_submitted'}
-                            onChange={this.toggleDateFacet}
-                        />Submitted
-                        </div>
-                    </div>
-                    <button className="date-selector-btn" onClick={() => this.handleQuickLink(searchBaseForDateRange, field)}>
-                        <i className="icon icon-caret-right" />
-                        See results for the past year
-                    </button>
-                    <div className="date-container">
-                        <div className="date-selector-module">
-                            <h6>Start date:</h6>
-                            <div className="date-selector">
-                                <select id="select-start-month" value={this.state.startMonth} onChange={this.selectMonth}>
-                                    {this.state.startMonths.map(month =>
-                                        <option value={month} key={month}>{month}</option>
-                                    )}
-                                </select>
-                                <select id="select-start-year" value={this.state.startYear} onChange={this.selectYear}>
-                                    {this.state.startYears.map(year =>
-                                        <option value={year} key={year}>{year}</option>
-                                    )}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="date-arrow">
-                            <i className="icon icon-arrow-right" />
-                        </div>
-                        <div className="date-selector-module">
-                            <h6>End date:</h6>
-                            <div className="date-selector">
-                                <select id="select-end-month" value={this.state.endMonth} onChange={this.selectMonth}>
-                                    {this.state.endMonths.map(month =>
-                                        <option value={month} key={month}>{month}</option>
-                                    )}
-                                </select>
-                                <select id="select-end-year" value={this.state.endYear} onChange={this.selectYear}>
-                                    {this.state.endYears.map(year =>
-                                        <option value={year} key={year}>{year}</option>
-                                    )}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <a href={searchString}>
-                        <button className="btn btn-info btn-sm apply-date-selector">
-                            Apply changes
-                        </button>
-                    </a>
-                    <button className="btn btn-info btn-sm reset-date-selector" onClick={() => this.handleReset(resetString)}>
-                        Reset
-                    </button>
-                </div>
-            );
-        }
-
-        // Facet had all zero terms and was not a "not" facet.
-        return null;
-    }
-}
-
-DateSelectorFacet.propTypes = {
-    facet: PropTypes.object.isRequired,
-    facets: PropTypes.array.isRequired,
-    filters: PropTypes.array.isRequired,
-    searchBase: PropTypes.string.isRequired, // Base URI for the search
-};
-
-DateSelectorFacet.contextTypes = {
-    navigate: PropTypes.func,
-};
-
-// Sanitize user input and facet terms for comparison: convert to lowercase, remove white space and asterisks (which cause regular expression error)
-const sanitizedString = inputString => inputString.toLowerCase()
-    .replace(/ /g, '') // remove spaces (to allow multiple word searches)
-    .replace(/[*?()+[\]\\/]/g, ''); // remove certain special characters (these cause console errors)
-
-class Facet extends React.Component {
-    constructor() {
-        super();
-
-        // Set initial React commponent state.
-        this.state = {
-            initialState: true,
-            unsanitizedSearchTerm: '',
-            searchTerm: '',
-        };
-
-        // Bind `this` to non-React methods.
-        this.handleSearch = this.handleSearch.bind(this);
-    }
-
-    componentDidMount() {
-        this.setState({ initialState: false });
-    }
-
-    handleSearch(event) {
-        // Unsanitized search term entered by user for display
-        this.setState({ unsanitizedSearchTerm: event.target.value });
-        // Search term entered by the user
-        const filterVal = String(sanitizedString(event.target.value));
-        this.setState({ searchTerm: filterVal });
-    }
-
-    render() {
-        const { facet, filters } = this.props;
-        const title = facet.title;
-        const field = facet.field;
-        const total = facet.total;
-        const typeahead = facet.type === 'typeahead';
-
-        // Filter facet terms to create list of those matching the search term entered by the user
-        // Note: this applies only to Typeahead facets
-        let filteredList = null;
-        if (typeahead && this.state.searchTerm !== '') {
-            filteredList = facet.terms.filter(
-                (term) => {
-                    if (term.doc_count > 0) {
-                        const termKey = sanitizedString(term.key);
-                        if (termKey.match(this.state.searchTerm)) {
-                            return term;
-                        }
-                        return null;
-                    }
-                    return null;
-                }
-            );
-        }
-
-        // Make a list of terms for this facet that should appear, by filtering out terms that
-        // shouldn't. Any terms with a zero doc_count get filtered out, unless the term appears in
-        // the search result filter list.
-        const unsortedTerms = facet.terms.filter((term) => {
-            if (term.key) {
-                // See if the facet term also exists in the search result filters (i.e. the term
-                // exists in the URL query string).
-                const found = filters.some(filter => filter.field.replace('!', '') === facet.field.replace('!', '') && filter.term === term.key);
-
-                // If the term wasn't in the filters list, allow its display only if it has a non-
-                // zero doc_count. If the term *does* exist in the filters list, display it
-                // regardless of its doc_count.
-                return found || term.doc_count > 0;
-            }
-
-            // The term exists, but without a key, so don't allow its display.
-            return false;
-        });
-
-        // Sort numerical terms by value not by frequency
-        // This should ultimately be accomplished in the back end, but the front end fix is much simpler so we are starting with that
-        // We have to check the full list for now (until schema change) because some lists contain both numerical and string terms ('Encyclopedia version' under Annotations) and we do not want to sort those by value
-        const numericalTest = a => !isNaN(a.key);
-        // For date facets, sort by date
-        let terms = [];
-        if (field.match('date')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY-MM-DD').toISOString()).reverse();
-        } else if (field.match('month')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'MMMM, YYYY').toISOString()).reverse();
-        } else if (field.match('year')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY').toISOString()).reverse();
-            // For straightforward numerical facets, just sort by value
-        } else if (unsortedTerms.every(numericalTest)) {
-            terms = _.sortBy(unsortedTerms, obj => obj.key);
-        } else if (field.match('range')) {
-            terms = _.sortBy(unsortedTerms, obj => parseInt(obj.key.match(/\d+/)));
-        } else {
-            terms = unsortedTerms;
-        }
-
-        const moreTerms = terms.slice(5);
-        const TermComponent = field === 'type' ? TypeTerm : Term;
-        const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);
-        const canDeselect = (!facet.restrictions || selectedTermCount >= 2);
-        const statusFacet = field === 'status' || field === 'lot_reviews.status';
-
-        // collecting selected search terms to display at the top of the facet
-        const selectedTerms = filters.filter(filter => (filter.field === field || filter.field === `${field}!`));
-
-        // Number of terms to show, the rest will be viewable on scroll
-        const displayedTermsCount = 5;
-
-        // Audit facet titles get mapped to a corresponding icon.
-        let titleComponent = title;
-        if (field.substr(0, 6) === 'audit.') {
-            // Get the human-readable part of the audit facet title.
-            const titleParts = title.split(': ');
-
-            // Get the non-human-readable part so we can generate a corresponding CSS class name.
-            const fieldParts = field.match(/^audit.(.+).category$/i);
-            if (fieldParts && fieldParts.length === 2 && titleParts) {
-                // We got something that looks like an audit title. Generate a CSS class name for
-                // the corresponding audit icon, and generate the title.
-                const iconClass = `icon audit-activeicon-${fieldParts[1].toLowerCase()}`;
-                titleComponent = <span>{titleParts[0]}: <i className={iconClass} /></span>;
-            } else {
-                // Something about the audit facet title doesn't match expectations, so just
-                // display the given non-human-readable audit title.
-                titleComponent = <span>{title}</span>;
-            }
-        }
-
-        // Return Facet component if there are terms with doc_count > 0 or for negated facet
-        if (((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!') || facet.appended === 'true') {
-            return (
-                <div className="facet">
-                    <h5>{titleComponent}</h5>
-                    {/* Display selected filters at the top */}
-                    {(selectedTerms.length > 0) ?
-                        <div className="filter-container">
-                            <div className="filter-hed">Selected filters:</div>
-                            {selectedTerms.map(filter =>
-                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link">
-                                    <i className="icon icon-times-circle" className={(filter.field.indexOf('!') !== -1) ? 'icon icon-times-circle' : 'icon icon-check-circle'} /> {filter.term}</div></a>
-                            )}
-                        </div>
-                        : null}
-                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
-                        {/* Display searchbar for typeahead facets if there are more than 5 terms */}
-                        {typeahead ?
-                            <div className="typeahead-entry" role="search">
-                                <i className="icon icon-search" />
-                                <div className="searchform">
-                                    <input type="search" aria-label={`search to filter list of terms for facet ${titleComponent}`} placeholder="Search" value={this.state.unsanitizedSearchTerm} onChange={this.handleSearch} name={`search${titleComponent.replace(/\s+/g, '')}`} />
-                                </div>
-                            </div>
-                            : null}
-                        {/* If user has searched using the typeahead, we will not display the full set of facet terms, just those matching the search */}
-                        {(filteredList !== null) ?
-                            <div>
-                                {/* Display error message if there is a search but no results found */}
-                                {(filteredList.length === 0) ?
-                                    <div className="searcherror">
-                                        Try a different search term for results.
-                                    </div>
-                                    :
-                                    <div className="terms-block">
-                                        {/* List of results does not overflow top on initialization */}
-                                        <div className="top-shading hide-shading" />
-                                        {/* List of filtered terms */}
-                                        <div className={`term-list search${titleComponent.replace(/\s+/g, '')}`} onScroll={shadeOverflowOnScroll}>
-                                            {filteredList.map(term =>
-                                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                            )}
-                                        </div>
-                                        {/* Only show bottom shading when list of results overflows */}
-                                        <div className={`shading ${(filteredList.length < displayedTermsCount) ? 'hide-shading' : ''}`} />
-                                    </div>
-                                }
-                            </div>
-                            :
-                            <div>
-                                {/* If the user has not searched, we will display the full set of facet terms */}
-                                {(((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!') || (facet.appended === 'true')) ?
-                                    <div className="terms-block">
-                                        {/* List of results does not overflow top on initialization */}
-                                        <div className="top-shading hide-shading" />
-                                        {/* List of terms */}
-                                        <div className={`term-list${typeahead ? ` search${titleComponent.replace(/\s+/g, '')}` : ''}`} onScroll={shadeOverflowOnScroll}>
-                                            {/* To prevent long render time, wait for component to mount to display all typeahead terms and display 50 terms in the interim. */}
-                                            {(this.state.initialState && typeahead) ?
-                                                <div>
-                                                    {terms.slice(0, 50).map(term =>
-                                                        <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                                    )}
-                                                </div>
-                                                :
-                                                <div>
-                                                    {terms.map(term =>
-                                                        <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                                    )}
-                                                </div>
-                                            }
-                                        </div>
-                                        {/* Only show bottom shading when list of results overflows */}
-                                        <div className={`shading ${(terms.length < displayedTermsCount) ? 'hide-shading' : ''}`} />
-                                    </div>
-                                    : null}
-                            </div>
-                        }
-                    </ul>
-                </div>
-            );
-        }
-
-        // Facet had all zero terms and was not a "not" facet.
-        return null;
-    }
-}
-
-Facet.propTypes = {
-    facet: PropTypes.object.isRequired,
-    filters: PropTypes.array.isRequired,
-};
 
 /**
  * Entry field for filtering the results list when search results appear in edit forms.
@@ -2348,3 +1228,5 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
+
+

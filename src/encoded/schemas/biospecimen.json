@@ -547,6 +547,9 @@
         },
         "anatomic_site": {
             "title": "Anatomic Site"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "boost_values": {
@@ -560,3 +563,4 @@
     },
     "changelog": "/profiles/changelogs/biospecimen.md"
 }
+
