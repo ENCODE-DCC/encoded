@@ -46,7 +46,7 @@ class Surgery extends React.Component {
                 </header>
                 <Panel>
                     <PanelHeading>
-                        <h4>Surgery view</h4>
+                        <h4>Surgery View</h4>
                     </PanelHeading>
                     <PanelBody>
                     <dl className="key-value">

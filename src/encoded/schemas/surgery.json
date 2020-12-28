@@ -81,7 +81,7 @@
         "pathology_report.grade": {
             "title": "Tumor Grade"
         },
-        "pathology_report.ajcc_p_stage": {
+        "pathology_report.t_stage": {
             "title": "pT Stage"
         },
         "pathology_report.n_stage": {
@@ -165,7 +165,7 @@
         "pathology_report.grade": {
             "title": "Tumor Grade"
         },
-        "pathology_report.ajcc_p_stage": {
+        "pathology_report.t_stage": {
             "title": "pT Stage (at presentation)"
         },
         "pathology_report.n_stage": {
@@ -227,7 +227,7 @@
         "accession": 1.0,
         "patient": 1.0,
         "surgery_procedure.procedure_type": 1.0,
-        "pathology_report.ajcc_p_stage": 1.0,
+        "pathology_report.t_stage": 1.0,
         "pathology_report.n_stage": 1.0,
         "pathology_report.m_stage": 1.0,
         "pathology_report.metasis_details.site": 1.0,

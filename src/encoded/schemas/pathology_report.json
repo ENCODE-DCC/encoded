@@ -79,7 +79,7 @@
             "type": "string",
             "enum": [
                 "path_biopsy",
-                "path_metasis",
+                "path_metastasis",
                 "path_nephrectomy"
             ]
         },
@@ -464,7 +464,7 @@
         "grade": {
             "title": "Tumor Grade"
         },
-        "ajcc_p_stage": {
+        "t_stage": {
             "title": "pT Stage"
         },
         "n_stage": {
@@ -545,7 +545,7 @@
         "grade": {
             "title": "Tumor Grade"
         },
-        "ajcc_p_stage": {
+        "t_stage": {
             "title": "pT stage"
         },
         "n_stage": {
@@ -607,7 +607,7 @@
         "surgery": 1.0,
         "patient": 1.0,
         "accession": 1.0,
-        "ajcc_p_stage": 1.0,
+        "t_stage": 1.0,
         "n_stage": 1.0,
         "m_stage": 1.0,
         "metasis_details.site": 1.0,

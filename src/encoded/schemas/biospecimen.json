@@ -477,6 +477,9 @@
         "surgery.pathology_report.m_stage": {
             "title": "pM Stage (at presentation)"
         },
+        "surgery.pathology_report.ajcc_version": {
+            "title": "AJCC Version (at presentation)"
+        },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage (at presentation)"
         },

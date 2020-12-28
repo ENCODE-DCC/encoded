@@ -40,7 +40,7 @@ class PathologyReport extends React.Component {
                 </header>
                 <Panel>
                     <PanelHeading>
-                        <h4>Pathology Report tumor information</h4>
+                        <h4>Pathology Report Tumor Information</h4>
                     </PanelHeading>
                     <PanelBody>
 
@@ -199,11 +199,11 @@ class PathologyReport extends React.Component {
                             <div>
                                 {context.metasis_details && <div data-test="metasis_details.site" style={{ borderTop: "1px solid #151313" }}>
 
-                                    <dt>Metasis Details Site</dt>
+                                    <dt>Metastatic Site</dt>
                                     <dd>{context.metasis_details.site}</dd>
                                 </div>}
                                 {context.metasis_details && <div data-test="metasis_details.type">
-                                    <dt>Metasis Details Type</dt>
+                                    <dt>Metastatic Type</dt>
                                     <dd>{context.metasis_details.type}</dd>
                                 </div>}
                             </div>

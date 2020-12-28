@@ -665,7 +665,7 @@ const AllSchemasPage = (props, reactContext) => {
                             organize and understand the data.
                         </p>
                         <p>
-                            The links below lead to pages describing each schema ENCODE supports.
+                            The links below lead to pages describing each schema KCE supports.
                         </p>
                     </div>
                     <div className="schema-list">
