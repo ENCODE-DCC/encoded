@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 import { cartOperationInProgress } from './actions';
 import { documentViews } from '../globals';
-import Tooltip from '../../libs/bootstrap/tooltip';
+import Tooltip from '../../libs/ui/tooltip';
 
 
 /** Maximum number of elements in cart that generates warning in download dialog */

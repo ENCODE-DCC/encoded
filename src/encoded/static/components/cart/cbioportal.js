@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 import { cartOperationInProgress } from './actions';
 import { documentViews } from '../globals';
-import TooltipImage from '../../libs/bootstrap/tooltip-image';
+import TooltipImage from '../../libs/ui/tooltip-image';
 
 
 /** Maximum number of elements in cart that generates warning in download dialog */
@@ -39,8 +39,8 @@ class CartCbioportalButtonComponent extends React.Component {
     linkToCBioportal() {
         this.copyToClipboard();
         this.goToLink();
-     }  
-     
+     }
+
      copyToClipboard() {
         var ids = this.state.samples.map(sample => sample.study + ":" + sample.id).join("\n");
         var temp = document.getElementById("tempinput");
@@ -51,7 +51,7 @@ class CartCbioportalButtonComponent extends React.Component {
         document.execCommand('copy');
         temp.removeChild(textarea);
      }
-     
+
      goToLink() {
        var tab = "summary";
        var studies = new Set(this.state.samples.map(sample => sample.study));
@@ -78,8 +78,8 @@ class CartCbioportalButtonComponent extends React.Component {
                     <br/>
                     <img width="372px" src='/static/img/cbioportal-custom-selection.png' alt="CBioportal Custom Selection"
                      />
-                     
-                     
+
+
 
                     </div>
                 </TooltipImage>
