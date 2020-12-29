@@ -15,11 +15,17 @@ class surgeryProcedureTable extends React.Component {
                 procedure_type: data[i].procedure_type,
             }
             if (data[i].procedure_type == "Nephrectomy") {
+                let robotic = "";
+                if (data[i].nephrectomy_details.robotic_assist === true) {
+                    robotic = 'Yes';
+                } else if (data[i].nephrectomy_details.robotic_assist === false) {
+                    robotic = 'No';
+                } 
                 let obj2 = {
                     procedure_type: "Nephrectomy",
-                    type: data[i].type,
-                    approach: data[i].approach,
-                    robotic_assist: data[i].robotic_assist,
+                    type: data[i].nephrectomy_details.type,
+                    approach: data[i].nephrectomy_details.approach,
+                    robotic_assist: robotic,
                 }
                 surgeryProceduresData[index] = obj2;            
             } else {
@@ -73,6 +79,7 @@ class surgeryProcedureTable extends React.Component {
 }
 
 export default surgeryProcedureTable;
+
 
 
 
