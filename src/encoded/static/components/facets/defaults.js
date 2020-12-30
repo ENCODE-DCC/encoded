@@ -871,6 +871,15 @@ SelectedFilters.propTypes = {
 const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname, queryString, filteredTerms, onFilter, allowNegation }) => {
     const TermComponent = FacetRegistry.Term.lookup(facet.field);
     const facetTitle = facet.title.replace(/\s+/g, '');
+    if (facet.field === "dominant_tumor.histology_filter" || facet.field === "surgery.pathology_report.histology_filter"){
+        filteredTerms = sortTermsAlphabetical(filteredTerms);
+    }
+    if (facet.field === "surgery.pathology_report.t_stage" || facet.field === "surgery.pathology_report.n_stage" || facet.field === "surgery.pathology_report.m_stage" || facet.field === "surgery.pathology_report.ajcc_tnm_stage"){
+        filteredTerms = sortStageTerms(filteredTerms);
+    }
+    if (facet.field === "diagnosis.age_range" || facet.field === "surgery.pathology_report.pathology_report_tumor_range" || facet.field === "medication_range" || facet.field === "radiation.dose_range" || facet.field === "radiation.fractions_range"){
+        filteredTerms = sortTermsNumeric(filteredTerms);
+    }
     return (
         <div className={`facet__term-list search${facetTitle}`}>
             {filteredTerms.map(term => (
@@ -1108,4 +1117,63 @@ DefaultFacet.defaultProps = {
     handleKeyDown: () => {},
     isExpandable: true,
 };
+
+function sortTermsNumeric (filteredTerms) {
+    filteredTerms.sort(function(a, b) {
+        let aValue = parseFloat(a.key);
+        let bValue = parseFloat(b.key);
+        if (isNaN(aValue)) {
+            if (a.key.toLowerCase() === "not available") {
+                aValue = 1000;
+            }else if (a.key.toLowerCase() === "not applicable") {
+                aValue = 1001;
+            }
+            
+        }
+        if (isNaN(bValue)) {
+            if (b.key.toLowerCase() === "not available" ||b.key.toLowerCase() === "unknown" ) {
+                bValue = 1000;
+            }else if (b.key.toLowerCase() === "not applicable") {
+                bValue = 1001;
+            }
+            
+        }
+        return aValue - bValue;
+      });
+    return filteredTerms;              
+}
+
+function sortTermsAlphabetical (filteredTerms) {
+    filteredTerms.sort(function(a, b) {
+        return a.key.localeCompare(b.key);
+    });
+    return filteredTerms;             
+}
+
+function sortStageTerms (filteredTerms) {
+    filteredTerms.sort(function(a, b) {
+        if (a.key.toLowerCase() === 'pnx') {
+            return -1;
+        }else if (b.key.toLowerCase() === 'pnx'){
+            return 1;
+        
+        }else if (a.key.toLowerCase() === "not available" || a.key.toLowerCase() === "not applicable"){
+
+            if (b.key.toLowerCase() === "not available" || b.key.toLowerCase() === "not applicable"){
+                return a.key.localeCompare(b.key)*-1;
+            }else {
+                return 1;
+            }
+        }else if(b.key.toLowerCase() === "not available" || b.key.toLowerCase() === "not applicable"){
+
+            return -1;
+        } else {
+
+            return a.key.localeCompare(b.key);
+        }
+        
+    });
+    return filteredTerms;             
+}
+
 
