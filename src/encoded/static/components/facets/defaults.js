@@ -879,7 +879,7 @@ const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname
     }
     if (facet.field === "diagnosis.age_range" || facet.field === "diagnosis.follow_up_duration_range" || facet.field.includes("pathology_report.pathology_report_tumor_range") 
         || facet.field === "medication_range" || facet.field === "radiation.dose_range" || facet.field === "radiation.fractions_range"
-        || facet.field.includes("pathology_report.grade")){
+        || facet.field.includes("pathology_report.grade" || facet.field.includes("pathology_report.ajcc_version"))){
         filteredTerms = sortTermsNumeric(filteredTerms);
     }
     return (

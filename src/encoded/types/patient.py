@@ -789,7 +789,7 @@ class Patient(Item):
                 follow_up_duration = (follow_up_end_date-follow_up_start_date).days/365
 
                 if follow_up_duration >= 5:
-                    follow_up_duration_range = "5 year and above"
+                    follow_up_duration_range = "5+ year"
                 elif follow_up_duration >= 3:
                     follow_up_duration_range = "3 - 5 year"
                 elif follow_up_duration >= 1.5:
