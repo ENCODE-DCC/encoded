@@ -871,13 +871,15 @@ SelectedFilters.propTypes = {
 const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname, queryString, filteredTerms, onFilter, allowNegation }) => {
     const TermComponent = FacetRegistry.Term.lookup(facet.field);
     const facetTitle = facet.title.replace(/\s+/g, '');
-    if (facet.field === "dominant_tumor.histology_filter" || facet.field === "surgery.pathology_report.histology_filter"){
+    if (facet.field.includes("histology_filter")){
         filteredTerms = sortTermsAlphabetical(filteredTerms);
     }
-    if (facet.field === "surgery.pathology_report.t_stage" || facet.field === "surgery.pathology_report.n_stage" || facet.field === "surgery.pathology_report.m_stage" || facet.field === "surgery.pathology_report.ajcc_tnm_stage"){
+    if (facet.field.includes("pathology_report.t_stage") || facet.field.includes("surgery.pathology_report.n_stage") || facet.field.includes("surgery.pathology_report.m_stage") || facet.field.includes("surgery.pathology_report.ajcc_tnm_stage")){
         filteredTerms = sortStageTerms(filteredTerms);
     }
-    if (facet.field === "diagnosis.age_range" || facet.field === "surgery.pathology_report.pathology_report_tumor_range" || facet.field === "medication_range" || facet.field === "radiation.dose_range" || facet.field === "radiation.fractions_range"){
+    if (facet.field === "diagnosis.age_range" || facet.field === "diagnosis.follow_up_duration_range" || facet.field.includes("pathology_report.pathology_report_tumor_range") 
+        || facet.field === "medication_range" || facet.field === "radiation.dose_range" || facet.field === "radiation.fractions_range"
+        || facet.field.includes("pathology_report.grade")){
         filteredTerms = sortTermsNumeric(filteredTerms);
     }
     return (
