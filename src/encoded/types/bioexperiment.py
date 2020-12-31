@@ -119,7 +119,7 @@ class Bioexperiment(Biodataset,
             "accession": "",
             "openspecimen_id": "",
             "patient": "",
-            "collection_type": "",
+            "sample_type": "",
             "processing_type": "",
             "tissue_type": "",
             "anatomic_site": "",
@@ -147,8 +147,8 @@ class Bioexperiment(Biodataset,
                             biospecimen_summary_dict['patient'] = biospecimenObject['patient']
                         if 'openspecimen_id' in biospecimenObject:
                             biospecimen_summary_dict['openspecimen_id'] = biospecimenObject['openspecimen_id']
-                        if 'collection_type' in biospecimenObject:
-                            biospecimen_summary_dict['collection_type'] = biospecimenObject['collection_type']
+                        if 'sample_type' in biospecimenObject:
+                            biospecimen_summary_dict['sample_type'] = biospecimenObject['sample_type']
                         if "anatomic_site" in biospecimenObject:
                             biospecimen_summary_dict['anatomic_site'] = biospecimenObject['anatomic_site']
                         if 'processing_type' in biospecimenObject:

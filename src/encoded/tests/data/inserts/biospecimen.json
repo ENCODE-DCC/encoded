@@ -15,7 +15,6 @@
         "host": "Mouse",
         "species": "Human",
         "primary_site": "Kidney",
-        "collection_type": "solid tissue",
         "surgery": "KCESX708FIJ"
     },
     {
@@ -25,7 +24,6 @@
         "openspecimen_id":"minimcommodo",
         "patient":"KCEPT708IJT",
         "sample_type":"Tissue",
-        "collection_type": "solid tissue",
         "collection_date":"1982-06-20",
         "tissue_derivatives":"FFPE",
         "tissue_type":"Normal",
@@ -56,7 +54,6 @@
         "documents": [
             "kce:EPC_Stam_protocol"
         ],
-        "collection_type":"solid tissue",
         "status": "released",
         "host": "Human",
         "species": "Human",
@@ -72,7 +69,6 @@
         "sample_type":"Blood",
         "tissue_derivatives":"Blood",
         "tissue_type":"Normal",
-        "collection_type":"solid tissue",
         "uuid": "469ca496-315e-4364-b770-63018e0cf8f4",
         "status": "released",
         "host": "Human",
@@ -95,8 +91,7 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney",
-        "collection_type":"solid tissue"
+        "primary_site": "Kidney"
     },
     {
         "accession": "KCEBS026KCE",
@@ -108,7 +103,6 @@
         "sample_type":"Blood",
         "tissue_derivatives":"Blood",
         "tissue_type":"Normal",
-        "collection_type":"solid tissue",
         "uuid": "f6805b25-edcc-4704-bc95-dbb7d9269bed",
         "status": "released",
         "host": "Human",
@@ -130,8 +124,7 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney",
-        "collection_type":"solid tissue"
+        "primary_site": "Kidney"
     },
     {
         "accession": "KCEBS039ENC",
@@ -149,8 +142,7 @@
         "host": "Human",
         "species": "Human",
         "primary_site": "Kidney",
-        "surgery": "KCESX802XRB",
-        "collection_type":"solid tissue"
+        "surgery": "KCESX802XRB"
     },
     {
         "accession": "KCEBS044ANI",
@@ -168,8 +160,7 @@
         "status": "released",
         "host": "Mouse",
         "species": "Human",
-        "primary_site": "Kidney",
-        "collection_type":"solid tissue"
+        "primary_site": "Kidney"
     },
     {
         "accession": "KCEBS057AAA",
@@ -186,8 +177,7 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney",
-        "collection_type":"solid tissue"
+        "primary_site": "Kidney"
     },
     {
         "accession": "KCEBS088RNA",
@@ -204,7 +194,6 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney",
-        "collection_type":"solid tissue"
+        "primary_site": "Kidney"
     }
 ]
