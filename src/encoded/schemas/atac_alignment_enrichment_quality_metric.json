@@ -19,7 +19,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "subsampled_reads": {
             "title": "Number of subsampled reads",
@@ -35,8 +35,8 @@
             "minimum": 0,
             "maximum": 1
         },
-        "fri_blacklist": {
-            "title": "Fraction of reads in blacklist regions",
+        "fri_exclusion_list": {
+            "title": "Fraction of reads in regions from exclusion list",
             "type": "number",
             "category": "Fraction of reads",
             "minimum": 0,
