@@ -76,7 +76,7 @@
             "type": "string",
             "enum": [
                 "binding sites",
-                "blacklist",
+                "exclusion list",
                 "candidate Cis-Regulatory Elements",
                 "chromatin state",
                 "consensus DNase hypersensitivity sites",
