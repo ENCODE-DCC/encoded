@@ -4,6 +4,9 @@
 
 * Added *LRGASP* to the *internal_tags* enum
 
+### Schema version 31
+* Changed *blacklist* to *exclusion list* in enum for *annotation_type*
+
 ### Schema version 30
 * Updated *representative DNase hypersensitivity sites (rDHSs)*  to *representative DNase hypersensitivity sites* in enum for *annotation_type*
 
