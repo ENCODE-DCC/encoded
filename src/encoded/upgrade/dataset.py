@@ -655,6 +655,7 @@ def experiment_30_31(value, system):
     value['notes'] = f'{value.get("notes", "")}. [Experiment.analyses] {analyses_files}'
     value.pop('analyses')
 
+
 @upgrade_step('annotation', '29', '30')
 def annotation_29_30(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5573
@@ -662,4 +663,14 @@ def annotation_29_30(value, system):
 
     if annotation_type == "representative DNase hypersensitivity sites (rDHSs)":
         value['annotation_type'] = 'representative DNase hypersensitivity sites'
+    return
+
+
+@upgrade_step('annotation', '30', '31')
+def annotation_30_31(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5657
+    annotation_type = value.get('annotation_type', None)
+
+    if annotation_type == "blacklist":
+        value['annotation_type'] = 'exclusion list'
     return

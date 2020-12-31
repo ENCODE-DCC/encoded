@@ -149,3 +149,13 @@ def annotation_29(award, lab):
         'schema_version': '29',
         'annotation_type': 'representative DNase hypersensitivity sites (rDHSs)',
     }
+
+
+@pytest.fixture
+def annotation_30(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '30',
+        'annotation_type': 'blacklist',
+    }

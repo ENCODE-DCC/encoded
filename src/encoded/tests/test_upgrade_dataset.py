@@ -446,3 +446,11 @@ def test_upgrade_annotation_29_to_30(upgrader, annotation_29):
     )
     assert value['schema_version'] == '30'
     assert value['annotation_type'] == 'representative DNase hypersensitivity sites'
+
+
+def test_upgrade_annotation_30_to_31(upgrader, annotation_30):
+    value = upgrader.upgrade(
+        'annotation', annotation_30, current_version='30', target_version='31'
+    )
+    assert value['schema_version'] == '31'
+    assert value['annotation_type'] == 'exclusion list'
