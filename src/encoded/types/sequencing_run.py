@@ -50,6 +50,18 @@ class SequencingRun(Item):
 
 
     @calculated_property(schema={
+        "title": "Lab",
+        "description": "The lab the sequencing run belongs to.",
+        "comment": "Do not submit. This is a calculated property.",
+        "type": "string",
+        "linkTo": "Lab"
+    })
+    def lab(self, request, derived_from):
+        library_obj = request.embed(derived_from, '@@object?skip_calculated=true')
+        return library_obj.get('lab')
+
+
+    @calculated_property(schema={
         "title": "Read 1 file",
         "description": "The Read 1 DataFile belonging to this sequencing run.",
         "comment": "Do not submit. This is a calculated property",
