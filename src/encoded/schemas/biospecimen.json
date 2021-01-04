@@ -441,7 +441,7 @@
             "title": "Specimen Pathological Type"
         },
         "anatomic_site": {
-            "title": "Biospecimen Anatomic Site"
+            "title": "Specimen Anatomic Site"
         },
         "species": {
             "title": "Species"
