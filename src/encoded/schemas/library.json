@@ -594,8 +594,8 @@
             }
         },
         "construction_method": {
-            "title": "The kit or protocol technique used to generate the library of nucleic acid material being sequenced.",
-            "description": "The kit or protocol technique used to generate the library.",
+            "title": "The kit or protocol technique used to generate the library.",
+            "description": "The kit or protocol technique used to generate the library of nucleic acid material being sequenced.",
             "type": "string",
             "enum": [
                 "CapTrap",

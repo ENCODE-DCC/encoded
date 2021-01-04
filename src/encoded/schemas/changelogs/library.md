@@ -1,6 +1,6 @@
 ## Changelog for library.json
 
-### Minor changes sicne schema version 14
+### Minor changes since schema version 14
 
 * *linkers* property is added to specify the linker(s) used during ChIA-PET library preparation.
 * *construction_method* property is added to specify the kit or protocol technique used to generate the nucleic acid library to be sequenced (such as CapTrap or Nanopore Direct RNA Kit).
