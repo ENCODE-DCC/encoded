@@ -251,19 +251,19 @@
         },
 
         "biospecimen.sample_type": {
-              "title": "Biospecimen Sample Type"
+              "title": "Specimen Sample Type"
         },
         "biospecimen.tissue_derivatives": {
-            "title": "Biospecimen Tissue Derivatives"
+            "title": "Specimen Tissue Derivatives"
         },
         "biospecimen.tissue_type": {
-            "title": "Biospecimen Tissue Type"
+            "title": "Specimen Pathological Type"
         },
         "biospecimen.anatomic_site": {
-            "title": "Biospecimen Anatomic Site"
+            "title": "Specimen Anatomic Site"
         },
-        "biospecimen.distributed": {
-            "title": "Biospecimen Distribution Status"
+        "biospecimen.activity_status": {
+            "title": "Specimen Activity Status"
         },
 
         "status": {

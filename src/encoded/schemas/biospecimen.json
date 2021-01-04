@@ -114,7 +114,7 @@
             "linkTo": "Biospecimen"
         },
         "tissue_type": {
-            "title": "Tissue Pathological Type",
+            "title": "Specimen Pathological Type",
             "type": "string",
             "enum": [
                 "Non-Malignant",
@@ -438,7 +438,7 @@
             "title": "Tissue Derivatives"
         },
         "tissue_type": {
-            "title": "Tissue Type"
+            "title": "Specimen Pathological Type"
         },
         "anatomic_site": {
             "title": "Biospecimen Anatomic Site"
@@ -450,7 +450,7 @@
             "title": "Specimen Lineage"
         },
         "activity_status": {
-            "title": "Activity_Status"
+            "title": "Activity Status"
         },
         "surgery.surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
@@ -536,7 +536,7 @@
             "title": "Tissue Derivatives"
         },
         "tissue_type": {
-            "title": "Tissue Type"
+            "title": "Specimen Pathological Type"
         },
         "anatomic_site": {
             "title": "Anatomic Site"
@@ -548,7 +548,7 @@
             "title": "Specimen Lineage"
         },
         "activity_status": {
-            "title": "Activity_Status"
+            "title": "Activity Status"
         },
         "status": {
             "title": "Status"

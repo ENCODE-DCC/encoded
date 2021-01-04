@@ -134,7 +134,7 @@ class Biospecimen extends React.Component {
                                     <dd><a href={context.originated_from}>{context.originated_from.split("/")[2]}</a></dd>
                                 </div>}
                                 {context.tissue_type && <div data-test="tissue_type">
-                                    <dt>Tissue Type</dt>
+                                    <dt>Specimen Pathological Type</dt>
                                     <dd>{context.tissue_type}</dd>
                                 </div>}
                                 {context.anatomic_site && <div data-test="anatomic_site">
