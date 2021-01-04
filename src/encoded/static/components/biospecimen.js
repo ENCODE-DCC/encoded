@@ -147,7 +147,7 @@ class Biospecimen extends React.Component {
                     </div>
                     </PanelBody>
                 </Panel>
-                { hasGenomics && <GenomicsTable data={context.biolibrary} tableTitle="Genomics for this specimen"></GenomicsTable>}
+                {/* { hasGenomics && <GenomicsTable data={context.biolibrary} tableTitle="Genomics for this specimen"></GenomicsTable>} */}
                 {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
 
                 {false &&
