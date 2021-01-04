@@ -1,5 +1,9 @@
 ## Changelog for dataset.json
 
+### Minor changes since schema version 15
+
+* Added *LRGASP* to the *internal_tags* enum
+
 ### Schema version 15
 
 * Update the dbxref regex to remove IHEC; IHEC is explicitly allowed only in Annotation and ReferenceEpigenome objects

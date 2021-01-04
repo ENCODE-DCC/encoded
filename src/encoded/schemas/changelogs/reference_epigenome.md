@@ -1,5 +1,9 @@
 ## Changelog for reference_epigenome.json
 
+### Minor changes since schema version 17
+
+* Added *LRGASP* to the *internal_tags* enum
+
 ### Schema version 17
 
 * Update IHEC dbxref regex to remove version number
