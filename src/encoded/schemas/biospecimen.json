@@ -443,6 +443,15 @@
         "anatomic_site": {
             "title": "Biospecimen Anatomic Site"
         },
+        "species": {
+            "title": "Species"
+        },
+        "specimen_lineage": {
+            "title": "Specimen Lineage"
+        },
+        "activity_status": {
+            "title": "Activity_Status"
+        },
         "surgery.surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
         },
@@ -472,9 +481,6 @@
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage (at presentation)"
-        },
-        "species": {
-            "title": "Species"
         },
         "blood_related_field.blood_component": {
             "title": "Blood Component"
@@ -534,6 +540,15 @@
         },
         "anatomic_site": {
             "title": "Anatomic Site"
+        },
+        "species": {
+            "title": "Species"
+        },
+        "specimen_lineage": {
+            "title": "Specimen Lineage"
+        },
+        "activity_status": {
+            "title": "Activity_Status"
         },
         "status": {
             "title": "Status"
