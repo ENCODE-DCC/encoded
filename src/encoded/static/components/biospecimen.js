@@ -39,9 +39,20 @@ class Biospecimen extends React.Component {
                 list.push(<div className="row" style={{ borderTop: "1px solid #151313" }}></div>)
                 list.push(<div data-test="surgery.pathology_report"><dt>Pathology Report</dt><dd><a href={context.surgery.pathology_report[i]['@id']}>{context.surgery.pathology_report[i].accession}</a></dd> </div>)
                 list.push(<div data-test="surgery.pathology_report"><dt>Histologic Subtype</dt><dd>{context.surgery.pathology_report[i].histology}</dd> </div>)
-                list.push(<div data-test="surgery.pathology_report"><dt>pT Stage</dt><dd>{context.surgery.pathology_report[i].t_stage}</dd> </div>)
-                list.push(<div data-test="surgery.pathology_report"><dt>pN Stage</dt><dd>{context.surgery.pathology_report[i].n_stage}</dd> </div>)
-                list.push(<div data-test="surgery.pathology_report"><dt>pM Stage</dt><dd>{context.surgery.pathology_report[i].m_stage}</dd> </div>)
+                if (context.surgery.pathology_report[i].t_stage) {
+                    list.push(<div data-test="surgery.pathology_report"><dt>pT Stage</dt><dd>{context.surgery.pathology_report[i].t_stage}</dd> </div>)
+                }
+                if (context.surgery.pathology_report[i].n_stage) {
+                    list.push(<div data-test="surgery.pathology_report"><dt>pN Stage</dt><dd>{context.surgery.pathology_report[i].n_stage}</dd> </div>)
+                }
+                if (context.surgery.pathology_report[i].m_stage) {
+                    list.push(<div data-test="surgery.pathology_report"><dt>pM Stage</dt><dd>{context.surgery.pathology_report[i].m_stage}</dd> </div>)
+                }
+                if (context.surgery.pathology_report[i].ajcc_version){
+                    list.push(<div data-test="surgery.pathology_report"><dt>AJCC Version</dt><dd>{context.surgery.pathology_report[i].ajcc_version}</dd> </div>)
+                }
+                
+                
             }
         }
 
@@ -77,74 +88,86 @@ class Biospecimen extends React.Component {
 
                 </header>
 
-                <Panel addClasses="data-display">
+                <Panel>
+                    <PanelBody addClasses="panel__split">
+                        <div className="panel__split-element">
+                            <div className="panel__split-heading panel__split-heading--experiment">
+                                <h4>Specimen Information</h4>  
+                            </div> 
 
-                    <PanelBody addClasses="panel-body-with-header">
-                    <div className="flexrow">
-                        <div className="flexcol-sm-6">
-                            <div className="flexcol-heading experiment-heading"><h4>Biospecimen Infomation</h4></div>
                             <dl className="key-value">
-                            <div data-test="status">
-                                <dt>Status</dt>
-                                <dd><Status item={context} inline /></dd>
-                            </div>
-                            <div data-test="openspecimen_id">
-                                <dt>OpenSpecimen ID</dt>
-                                <dd>{context.openspecimen_id}</dd>
-                            </div>
-                            <div data-test="patient">
-                                <dt>Patient</dt>
-                                <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
-                            </div>
+                                <div data-test="status">
+                                    <dt>Status</dt>
+                                    <dd><Status item={context} inline /></dd>
+                                </div>
+                                <div data-test="openspecimen_id">
+                                    <dt>OpenSpecimen ID</dt>
+                                    <dd>{context.openspecimen_id}</dd>
+                                </div>
+                                <div data-test="specimen_label">
+                                    <dt>Specimen Label</dt>
+                                    <dd>{context.specimen_label}</dd>
+                                </div>
+                                <div data-test="patient">
+                                    <dt>Patient</dt>
+                                    <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
+                                </div>
+                                <div data-test="collection_date">
+                                    <dt>Collection Date</dt>
+                                    <dd>{context.collection_date}</dd>
+                                </div>
+                                <div data-test="sample_type">
+                                    <dt>Sample Type</dt>
+                                    <dd>{context.sample_type}</dd>
+                                </div>
 
-                            <div data-test="collection_date">
-                                <dt>Collection Date</dt>
-                                <dd>{context.collection_date}</dd>
-                            </div>
-                            <div data-test="sample_type">
-                                <dt>Sample Type</dt>
-                                <dd>{context.sample_type}</dd>
-                            </div>
-
-                            <div data-test="tissue_derivatives">
-                                <dt>Tissue Derivatives</dt>
-                                <dd>{context.tissue_derivatives}</dd>
-                            </div>
-                            <div data-test="species">
-                                <dt>Species</dt>
-                                <dd>{context.species}</dd>
-                            </div>
-                            {context.originated_from && <div data-test="originated_from">
-                                <dt>Originated From</dt>
-                                <dd><a href={context.originated_from}>{context.originated_from.split("/")[2]}</a></dd>
-                            </div>}
-                            {context.tissue_type && <div data-test="tissue_type">
-                                <dt>Tissue Type</dt>
-                                <dd>{context.tissue_type}</dd>
-                            </div>}
-                            {context.anatomic_site && <div data-test="anatomic_site">
-                                <dt>Anatomic Site</dt>
-                                <dd>{context.anatomic_site}</dd>
-                            </div>}
-                            {context.primary_site && <div data-test="primary_site">
-                                <dt>Primary Site</dt>
-                                <dd>{context.primary_site}</dd>
-                            </div>}
+                                <div data-test="tissue_derivatives">
+                                    <dt>Tissue Derivatives</dt>
+                                    <dd>{context.tissue_derivatives}</dd>
+                                </div>
+                                <div data-test="species">
+                                    <dt>Species</dt>
+                                    <dd>{context.species}</dd>
+                                </div>
+                                {context.originated_from && <div data-test="originated_from">
+                                    <dt>Originated From</dt>
+                                    <dd><a href={context.originated_from}>{context.originated_from.split("/")[2]}</a></dd>
+                                </div>}
+                                {context.tissue_type && <div data-test="tissue_type">
+                                    <dt>Tissue Type</dt>
+                                    <dd>{context.tissue_type}</dd>
+                                </div>}
+                                {context.anatomic_site && <div data-test="anatomic_site">
+                                    <dt>Anatomic Site</dt>
+                                    <dd>{context.anatomic_site}</dd>
+                                </div>}
+                                {context.primary_site && <div data-test="primary_site">
+                                    <dt>Primary Site</dt>
+                                    <dd>{context.primary_site}</dd>
+                                </div>}
+                                <div data-test="specimen_lineage">
+                                    <dt>Specimen Lineage</dt>
+                                    <dd>{context.specimen_lineage}</dd>
+                                </div>
+                                <div data-test="activity_status">
+                                    <dt>Activity Status</dt>
+                                    <dd>{context.activity_status}</dd>
+                                </div>
                             </dl>
                         </div>
-                        {context.surgery && <div className="flexcol-sm-6">
-                            <div className="flexcol-heading experiment-heading"><h4>Case Infomation</h4></div>
-                            <dl className="key-value">
-                            {context.surgery && <div data-test="surgery">
-                                <dt>Surgery</dt>
-                                <dd><a href={context.surgery['@id']}>{context.surgery.accession}</a></dd>
-                            </div>}
-                            {this.createSurgeryTable()}
-                            {this.createPathTable()}
 
-                            </dl>
-                        </div>}
-                    </div>
+                        <div className="panel__split-element">
+                            <div className="panel__split-heading panel__split-heading--experiment">
+                                <h4>Case Diagnosis</h4>
+                            </div>
+                            {context.surgery && <dl className="key-value">
+                                {context.surgery && <div data-test="surgery">
+                                    <dt>Surgery</dt>
+                                    <dd><a href={context.surgery['@id']}>{context.surgery.accession}</a></dd>
+                                </div>}
+                                {this.createPathTable()}
+                            </dl>}    
+                        </div>
                     </PanelBody>
                 </Panel>
                 { hasGenomics && <GenomicsTable data={context.biolibrary} tableTitle="Genomics for this specimen"></GenomicsTable>}
@@ -162,3 +185,4 @@ class Biospecimen extends React.Component {
 }
 
 globals.contentViews.register(Biospecimen, 'Biospecimen');
+
