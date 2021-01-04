@@ -76,7 +76,10 @@
     "facets": {        
         "platform": {
             "title": "Platform"
-        },      
+        },
+        "lab": {
+            "title": "Lab"
+        },
         "status": {
             "title": "Status"
         }
@@ -87,6 +90,9 @@
         },
         "dataset": {
             "title": "Dataset"
+        },
+        "lab": {
+            "title": "Lab"
         },
         "platform": {
             "title": "Platform"
