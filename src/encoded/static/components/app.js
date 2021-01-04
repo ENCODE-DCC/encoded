@@ -67,6 +67,7 @@ const portal = {
             title: 'Help',
             children: [
                 { id: 'gettingstarted', title: 'Using the Portal', url: '/help/getting-started/' },
+                { id: 'dictionary', title: 'Dictionary', url: '/help/dictionary' },
                 { id: 'cart', title: 'Cohort', url: '/help/cart/' },
                 { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
                 { id: 'citingkce', title: 'Citing KCE', url: '/help/citing-kce' },
