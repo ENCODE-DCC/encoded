@@ -110,9 +110,9 @@ class Biospecimen extends React.Component {
                                 <dt>Tissue Derivatives</dt>
                                 <dd>{context.tissue_derivatives}</dd>
                             </div>
-                            <div data-test="host">
-                                <dt>Host</dt>
-                                <dd>{context.host}</dd>
+                            <div data-test="species">
+                                <dt>Species</dt>
+                                <dd>{context.species}</dd>
                             </div>
                             {context.originated_from && <div data-test="originated_from">
                                 <dt>Originated From</dt>

@@ -34,8 +34,8 @@ class BiospecimenTable extends React.Component {
                 primary_site: {
                     title: "Primary site",
                 },
-                host: {
-                    title: "Host",
+                species: {
+                    title: "Species",
                 }
             };
             return (

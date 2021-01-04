@@ -4,7 +4,7 @@
     "id": "/profiles/biospecimen.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "specimen_label", "openspecimen_id", "patient", "sample_type", "collection_date", "host"],
+    "required": [ "award", "specimen_label", "openspecimen_id", "patient", "sample_type", "collection_date"],
     "identifyingProperties": [ "uuid","accession" ],
     "additionalProperties": false,
     "mixinProperties": [
@@ -202,17 +202,6 @@
         },
         "documents": {
             "description": "Protocols or other documents that describe the sample collection or sample fixation or procession(not data files)."
-        },
-        "host": {
-            "title": "Host",
-            "description": "A organism that was hosting this biosample.",
-            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation.",
-            "type": "string",
-            "default": "Human",
-            "enum": [
-                "Human",
-                "Mouse"
-            ]
         },
         "blood_related_field": {
             "title": "Blood Specific Field",
@@ -513,9 +502,6 @@
         },
         "mouse_related_info.number_of_days_on_treatment": {
             "title": "Number of Days on Treatment"
-        },
-        "host": {
-            "title": "Host organism"
         },
         "pooled_from": {
             "title": "Pooled from"

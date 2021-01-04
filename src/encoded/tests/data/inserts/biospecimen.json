@@ -12,7 +12,6 @@
         "anatomic_site":"Kidney, NOS",
         "uuid": "29bf20ad-7942-44d3-9d89-53febc8829fc",
         "status": "released",
-        "host": "Mouse",
         "species": "Human",
         "primary_site": "Kidney, NOS",
         "surgery": "KCESX708FIJ"
@@ -30,7 +29,6 @@
         "anatomic_site":"Kidney, NOS",
         "uuid": "170be0f2-6b5c-4b93-ba65-bedadbfe917f",
         "status": "released",
-        "host": "Human",
         "species": "Human",
 
         "primary_site": "Kidney, NOS",
@@ -55,7 +53,6 @@
             "kce:EPC_Stam_protocol"
         ],
         "status": "released",
-        "host": "Human",
         "species": "Human",
         "primary_site": "Kidney, NOS"
     },
@@ -72,7 +69,6 @@
         "anatomic_site":"Blood",
         "uuid": "469ca496-315e-4364-b770-63018e0cf8f4",
         "status": "released",
-        "host": "Human",
         "species": "Human",
         "primary_site": "Kidney, NOS"
 
@@ -90,7 +86,6 @@
         "anatomic_site":"Kidney, NOS",
         "uuid": "b1cf3723-2791-4ac7-bb02-e5d49f66819c",
         "status": "released",
-        "host": "Human",
         "species": "Human",
         "primary_site": "Kidney, NOS"
     },
@@ -107,7 +102,6 @@
         "anatomic_site":"Blood",
         "uuid": "f6805b25-edcc-4704-bc95-dbb7d9269bed",
         "status": "released",
-        "host": "Human",
         "species": "Human",
         "primary_site": "Kidney, NOS"
     },
@@ -124,7 +118,6 @@
         "anatomic_site":"Kidney, NOS",
         "uuid": "337a602b-9b40-4947-81e4-39e1e44f2388",
         "status": "released",
-        "host": "Human",
         "species": "Human",
         "primary_site": "Kidney, NOS"
     },
@@ -141,7 +134,6 @@
         "anatomic_site":"Kidney, NOS",
         "uuid": "4998b6fc-4730-4533-8061-4aba132763f2",
         "status": "released",
-        "host": "Human",
         "species": "Human",
         "primary_site": "Kidney, NOS",
         "surgery": "KCESX802XRB"
@@ -160,7 +152,6 @@
         "anatomic_site":"Kidney, NOS",
         "uuid": "651493ea-8d40-41f3-911a-81ed25074af9",
         "status": "released",
-        "host": "Mouse",
         "species": "Human",
         "primary_site": "Kidney, NOS"
     },
@@ -177,7 +168,6 @@
         "anatomic_site":"Kidney, NOS",
         "uuid": "ea1c3399-4def-46ad-a7e8-da48d2e73334",
         "status": "released",
-        "host": "Human",
         "species": "Human",
         "primary_site": "Kidney, NOS"
     },
@@ -194,7 +184,6 @@
         "anatomic_site":"Lung, NOS",
         "uuid": "3c7b123c-9e61-4e3e-a8ec-de49d8d2257f",
         "status": "released",
-        "host": "Human",
         "species": "Human",
         "primary_site": "Kidney, NOS"
     }
