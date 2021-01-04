@@ -48,7 +48,7 @@
         "patient":"KCEPT139SOR",
         "collection_date":"2013-02-09",
         "tissue_derivatives":"Frozen Tissue",
-        "tissue_type":"Metastasis",
+        "tissue_type":"Metastatic",
         "anatomic_site":"Liver",
         "uuid": "c58dd4d7-418a-4482-84c8-4d5ee6f29ea5",
         "documents": [
@@ -188,7 +188,7 @@
         "collection_date":"1976-03-28",
         "sample_type":"Tissue",
         "tissue_derivatives":"Frozen Tissue",
-        "tissue_type":"Metastasis",
+        "tissue_type":"Metastatic",
         "anatomic_site":"Lung, NOS",
         "uuid": "3c7b123c-9e61-4e3e-a8ec-de49d8d2257f",
         "status": "released",
