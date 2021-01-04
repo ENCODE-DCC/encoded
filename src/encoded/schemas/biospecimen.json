@@ -165,8 +165,9 @@
         "primary_site": {
             "title": "Primary Site",
             "type": "string",
+            "default": "Kidney, NOS",
             "enum": [
-                "Kidney",
+                "Kidney, NOS",
                 "Abdominal Wall",
                 "Adrenal",
                 "Bone",
@@ -439,51 +440,6 @@
             "type": "string",
             "linkTo": "Biospecimen"
         }
-    },
-    "sample_type": {
-        "oneOf": [
-            {
-                "required": [
-                  "tissue_type",
-                  "anatomic_site",
-                  "primary_site"
-                ],
-                "properties": {
-                    "sample_type": {
-                        "enum": ["Tissue"]
-                    }
-                }
-            },
-            {
-                "not": {
-                    "oneOf": [
-                        {
-                          "required": [
-                            "tissue_type",
-                            "anatomic_site",
-                            "primary_site"
-                          ],
-                            "properties": {
-                                "sample_type": {
-                                    "enum": [
-                                        "Fluid",
-                                        "Cell",
-                                        "Molecule"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "sample_type": {
-                                    "enum": ["Tissue"]
-                                }
-                            }
-                        }
-                    ]
-                }
-            }
-        ]
     },
     "facets": {
         "sample_type": {

@@ -3,7 +3,7 @@
         "accession": "KCEBS708IJT",
         "specimen_label":"nisiad",
         "award": "Kidney-SPORE",
-        "openspecimen_id":"nulla ",
+        "openspecimen_id":"523614",
         "patient":"KCEPT708IJT",
         "sample_type":"Tissue",
         "collection_date":"1941-02-16",
@@ -14,14 +14,14 @@
         "status": "released",
         "host": "Mouse",
         "species": "Human",
-        "primary_site": "Kidney",
+        "primary_site": "Kidney, NOS",
         "surgery": "KCESX708FIJ"
     },
     {
         "accession": "KCEBS000AAB",
         "specimen_label":"quiscillum",
         "award": "Kidney-SPORE",
-        "openspecimen_id":"minimcommodo",
+        "openspecimen_id":"523643",
         "patient":"KCEPT708IJT",
         "sample_type":"Tissue",
         "collection_date":"1982-06-20",
@@ -33,7 +33,7 @@
         "host": "Human",
         "species": "Human",
 
-        "primary_site": "Kidney",
+        "primary_site": "Kidney, NOS",
         "documents": [
             "kce:K562_BAC_transfection_White_protocol"
         ],
@@ -44,7 +44,7 @@
         "specimen_label":"utminimsed",
         "award": "Kidney-SPORE",
         "sample_type": "Tissue",
-        "openspecimen_id":"ut",
+        "openspecimen_id":"522314",
         "patient":"KCEPT139SOR",
         "collection_date":"2013-02-09",
         "tissue_derivatives":"Frozen Tissue",
@@ -57,29 +57,30 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney"
+        "primary_site": "Kidney, NOS"
     },
     {
         "accession": "KCEBS356AAA",
         "specimen_label":"deserunt",
         "award": "Kidney-SPORE",
-        "openspecimen_id":"veniam",
+        "openspecimen_id":"529814",
         "patient":"KCEPT026PGS",
         "collection_date":"2003-11-09",
         "sample_type":"Fluid",
         "tissue_derivatives":"Whole Blood",
         "tissue_type":"Non-Malignant",
+        "anatomic_site":"Blood",
         "uuid": "469ca496-315e-4364-b770-63018e0cf8f4",
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney"
+        "primary_site": "Kidney, NOS"
 
     },
     {
         "accession": "KCEBS024AAA",
         "specimen_label":"reprehenderit",
-        "openspecimen_id":"et",
+        "openspecimen_id":"987614",
         "award": "Kidney-SPORE",
         "patient":"KCEPT925TMI",
         "collection_date":"1991-08-20",
@@ -91,29 +92,30 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney"
+        "primary_site": "Kidney, NOS"
     },
     {
         "accession": "KCEBS026KCE",
         "specimen_label":"doaliqua",
         "award": "Kidney-SPORE",
-        "openspecimen_id":"inmagnaident",
+        "openspecimen_id":"520754",
         "patient":"KCEPT480NBU",
         "collection_date":"1990-01-13",
         "sample_type":"Fluid",
         "tissue_derivatives":"Whole Blood",
         "tissue_type":"Non-Malignant",
+        "anatomic_site":"Blood",
         "uuid": "f6805b25-edcc-4704-bc95-dbb7d9269bed",
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney"
+        "primary_site": "Kidney, NOS"
     },
     {
         "accession": "KCEBS026FDC",
         "specimen_label":"sintanimau",
         "award": "Kidney-SPORE",
-        "openspecimen_id":"Duissint",
+        "openspecimen_id":"523745",
         "patient":"KCEPT873QVK",
         "collection_date":"2012-06-15",
         "sample_type":"Tissue",
@@ -124,13 +126,13 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney"
+        "primary_site": "Kidney, NOS"
     },
     {
         "accession": "KCEBS039ENC",
         "specimen_label":"nostrudquiu",
         "award": "Kidney-SPORE",
-        "openspecimen_id":"sitani",
+        "openspecimen_id":"523958",
         "patient":"KCEPT802XRB",
         "collection_date":"2005-02-04",
         "sample_type":"Tissue",
@@ -141,14 +143,14 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney",
+        "primary_site": "Kidney, NOS",
         "surgery": "KCESX802XRB"
     },
     {
         "accession": "KCEBS044ANI",
         "specimen_label":"laborumincidid",
         "award": "Kidney-SPORE",
-        "openspecimen_id":"exercitation",
+        "openspecimen_id":"525643",
         "patient":"KCEPT802XRB",
         "collection_date":"1980-03-15",
         "sample_type":"Tissue",
@@ -160,13 +162,13 @@
         "status": "released",
         "host": "Mouse",
         "species": "Human",
-        "primary_site": "Kidney"
+        "primary_site": "Kidney, NOS"
     },
     {
         "accession": "KCEBS057AAA",
         "specimen_label":"aute",
         "award": "Kidney-SPORE",
-        "openspecimen_id":"dolore",
+        "openspecimen_id":"589765",
         "patient":"KCEPT186NZW",
         "collection_date":"1997-08-16",
         "sample_type":"Tissue",
@@ -177,13 +179,13 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney"
+        "primary_site": "Kidney, NOS"
     },
     {
         "accession": "KCEBS088RNA",
         "specimen_label":"officia consequat ut nisi",
         "award": "Kidney-SPORE",
-        "openspecimen_id":"qui",
+        "openspecimen_id":"523805",
         "patient":"KCEPT873QVK",
         "collection_date":"1976-03-28",
         "sample_type":"Tissue",
@@ -194,6 +196,6 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-        "primary_site": "Kidney"
+        "primary_site": "Kidney, NOS"
     }
 ]
