@@ -1,7 +1,7 @@
 [
     {
         "accession": "KCEBS708IJT",
-        "specimen_label":"nisiad",
+        "specimen_label":"14465-2_Tumor-FF",
         "award": "Kidney-SPORE",
         "openspecimen_id":"523614",
         "patient":"KCEPT708IJT",
@@ -18,7 +18,7 @@
     },
     {
         "accession": "KCEBS000AAB",
-        "specimen_label":"quiscillum",
+        "specimen_label":"14465-5_Normal-FF",
         "award": "Kidney-SPORE",
         "openspecimen_id":"523643",
         "patient":"KCEPT708IJT",
@@ -39,7 +39,7 @@
     },
     {
         "accession": "KCEBS087RNA",
-        "specimen_label":"utminimsed",
+        "specimen_label":"24434-3_Tumor-FF_2",
         "award": "Kidney-SPORE",
         "sample_type": "Tissue",
         "openspecimen_id":"522314",
@@ -58,7 +58,7 @@
     },
     {
         "accession": "KCEBS356AAA",
-        "specimen_label":"deserunt",
+        "specimen_label":"PtS17_Normal-FF_2",
         "award": "Kidney-SPORE",
         "openspecimen_id":"529814",
         "patient":"KCEPT026PGS",
@@ -75,7 +75,7 @@
     },
     {
         "accession": "KCEBS024AAA",
-        "specimen_label":"reprehenderit",
+        "specimen_label":"19865-2_Tumor-FF",
         "openspecimen_id":"987614",
         "award": "Kidney-SPORE",
         "patient":"KCEPT925TMI",
@@ -91,7 +91,7 @@
     },
     {
         "accession": "KCEBS026KCE",
-        "specimen_label":"doaliqua",
+        "specimen_label":"PtS8_Normal-FF_1",
         "award": "Kidney-SPORE",
         "openspecimen_id":"520754",
         "patient":"KCEPT480NBU",
@@ -107,7 +107,7 @@
     },
     {
         "accession": "KCEBS026FDC",
-        "specimen_label":"sintanimau",
+        "specimen_label":"14476-2_Tumor-FF",
         "award": "Kidney-SPORE",
         "openspecimen_id":"523745",
         "patient":"KCEPT873QVK",
@@ -123,7 +123,7 @@
     },
     {
         "accession": "KCEBS039ENC",
-        "specimen_label":"nostrudquiu",
+        "specimen_label":"14454-2_Tumor-FF",
         "award": "Kidney-SPORE",
         "openspecimen_id":"523958",
         "patient":"KCEPT802XRB",
@@ -140,7 +140,7 @@
     },
     {
         "accession": "KCEBS044ANI",
-        "specimen_label":"laborumincidid",
+        "specimen_label":"16265-2_Tumor-FF",
         "award": "Kidney-SPORE",
         "openspecimen_id":"525643",
         "patient":"KCEPT802XRB",
@@ -157,7 +157,7 @@
     },
     {
         "accession": "KCEBS057AAA",
-        "specimen_label":"aute",
+        "specimen_label":"24434-1_Normal-FF_2",
         "award": "Kidney-SPORE",
         "openspecimen_id":"589765",
         "patient":"KCEPT186NZW",
@@ -173,7 +173,7 @@
     },
     {
         "accession": "KCEBS088RNA",
-        "specimen_label":"officia consequat ut nisi",
+        "specimen_label":"19365-2_Tumor-FF",
         "award": "Kidney-SPORE",
         "openspecimen_id":"523805",
         "patient":"KCEPT873QVK",
