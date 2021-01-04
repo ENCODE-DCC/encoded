@@ -9,6 +9,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/dataset"},
         {"$ref": "mixins.json#/description"},
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/accession"},
@@ -45,13 +46,6 @@
                 "format": "accession",
                 "pattern": "^(LATLB\\d{3}[A-Z]{3})$"
             }
-        },
-        "dataset": {
-            "title": "Dataset",
-            "description": "The dataset the library belongs to.",
-            "comment": "See dataset.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Dataset"
         },
         "protocol": {
             "title": "Protocol",

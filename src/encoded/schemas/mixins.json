@@ -11,6 +11,14 @@
             "requestMethod": []
         }
     },
+    "dataset": {
+        "dataset": {
+            "title": "Dataset",
+            "description": "The dataset the object belongs to.",
+            "type": "string",
+            "linkTo": "Dataset"
+        }
+    },
     "preservation": {
         "preservation_method": {
             "title": "Preservation method",

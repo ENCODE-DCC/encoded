@@ -9,6 +9,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/dataset"},
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/dbxrefs"},
