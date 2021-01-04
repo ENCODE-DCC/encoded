@@ -4,7 +4,7 @@
     "id": "/profiles/biospecimen.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "internal_id", "openspecimen_id", "patient", "sample_type", "collection_date", "host"],
+    "required": [ "award", "specimen_label", "openspecimen_id", "patient", "sample_type", "collection_date", "host"],
     "identifyingProperties": [ "uuid","accession" ],
     "additionalProperties": false,
     "mixinProperties": [
@@ -31,9 +31,9 @@
             "permission": "import_items",
             "uniqueKey": true
         },
-        "internal_id": {
-            "title": "Internal ID",
-            "description": "ID used internally to identify this biospecimen.",
+        "specimen_label": {
+            "title": "Specimen Label",
+            "description": "Specimen label is unique.",
             "comment": "Only admins are allowed to set or update this value.",
             "type": "string",
             "permission": "import_items",
@@ -66,9 +66,20 @@
             "type": "string",
             "enum": [
                 "Tissue",
-                "Blood",
-                "Stool",
+                "Fluid",
+                "Cell",
                 "Molecule"
+            ]
+        },
+        "specimen_lineage": {
+            "title": "Specimen Lineage",
+            "description": "Parent vs derived sample.",
+            "type": "string",
+            "enum": [
+                "New",
+                "Derived",
+                "Aliquot"
+
             ]
         },
         "tissue_derivatives": {
@@ -76,24 +87,24 @@
             "description": "The tissue storage of the final product after sample processing.",
             "type": "string",
             "enum": [
-                "FF",
-                "FFPE",
-                "TG(PDX)",
-                "DMSO",
-                "Blood",
-                "Primary cell line"
+                "Frozen Tissue",
+                "Cryopreserved Cells",
+                "Body Cavity Fluid",
+                "Plasma",
+                "Frozen Normal",
+                "PBMC",
+                "Buffy Coat",
+                "Whole Blood"
+                
             ]
         },
-        "host": {
-            "title": "Host",
-            "description": "A biospecimen that was hosting this biosample.",
-            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation.",
+        "completion_date" : {
+            "title": "Completion Date",
+            "description": "the date that the biospecimen is created on.",
+            "comment": "Date should be submitted in as YYYY-MM-DD.",
             "type": "string",
-            "default": "Human",
-            "enum": [
-                "Human",
-                "Mouse"
-            ]
+            "format": "date"
+
         },
         "originated_from": {
             "title": "Originated from",
@@ -103,31 +114,52 @@
             "linkTo": "Biospecimen"
         },
         "tissue_type": {
-            "title": "Tissue Type",
+            "title": "Tissue Pathological Type",
             "type": "string",
             "enum": [
-                "Primary",
-                "Metastasis",
-                "Benign tumor",
-                "Normal"
+                "Non-Malignant",
+                "Non-Malignant, Diseased",
+                "Pre-Malignant",
+                "Malignant, Pre-Invasive",
+                "Malignant, Invasive",
+                "Malignant",
+                "Metastatic",
+                "Not Specified"
+
             ]
         },
         "anatomic_site": {
             "title": "Anatomic Site",
             "type": "string",
             "enum": [
-                "Kidney",
-                "Abdominal Wall",
-                "Adrenal",
-                "Bone",
-                "Brain",
+                "Abdomen, NOS",
+                "Adrenal gland, NOS",
+                "Bladder, NOS",
+                "Blood",
+                "Bone, NOS",
+                "Brain, NOS",
+                "Colon, NOS",
+                "Connective, Subcutaneous and other Soft tissues of abdomen",
+                "Connective, Subcutaneous and other Soft tissues, NOS",
+                "Kidney, NOS",
+                "Larynx, NOS",
                 "Liver",
-                "Lung",
-                "Lymph node",
-                "Pancreas",
-                "Peritoneum",
-                "Retroperitoneal mass",
-                "Thrombus"
+                "Lung, NOS",
+                "Lymph node, NOS",
+                "Nervous system, NOS",
+                "Not Specified",
+                "Overlapping lesion of ill-defined sites",
+                "Pancreas, NOS",
+                "Peritoneum, NOS",
+                "Pleura, NOS",
+                "Retroperitoneum",
+                "Skin, NOS",
+                "Small intestine, NOS",
+                "Spinal cord",
+                "Spleen",
+                "Testis, NOS",
+                "Thorax, NOS"
+
             ]
         },
         "primary_site": {
@@ -148,15 +180,37 @@
                 "Thrombus"
             ]
         },
-        "documents": {
-            "description": "Protocols or other documents that describe the sample collection or sample fixation or procession(not data files)."
-        },
         "species": {
             "title": "Species",
             "description": "The organism the biosample was originated from.",
             "type": "string",
             "enum": [
-                "Human"
+                "Human",
+                "Mouse"
+            ]
+        },
+        "activity_status": {
+            "title": "Activity Status",
+            "description": "Whether this sample is still available.",
+            "type": "string",
+            "enum": [
+                "Active",
+                "Closed",
+                "Disabled"
+            ]
+        },
+        "documents": {
+            "description": "Protocols or other documents that describe the sample collection or sample fixation or procession(not data files)."
+        },
+        "host": {
+            "title": "Host",
+            "description": "A organism that was hosting this biosample.",
+            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation.",
+            "type": "string",
+            "default": "Human",
+            "enum": [
+                "Human",
+                "Mouse"
             ]
         },
         "blood_related_field": {
@@ -412,8 +466,8 @@
                             "properties": {
                                 "sample_type": {
                                     "enum": [
-                                        "Blood",
-                                        "Stool",
+                                        "Fluid",
+                                        "Cell",
                                         "Molecule"
                                     ]
                                 }
@@ -521,8 +575,8 @@
         "accession": {
             "title": "Accession"
         },
-        "internal_id": {
-            "title": "Internal ID"
+        "specimen_label": {
+            "title": "Specimen Label"
         },
         "openspecimen_id": {
             "title": "OpenSpecimen ID"
@@ -547,7 +601,7 @@
         "accession": 1.0,
         "patient": 1.0,
         "openspecimen_id": 1.0,
-        "internal_id": 1.0,
+        "specimen_label": 1.0,
         "anatomic_site": 1.0,
         "biolibrary.accession": 1.0,
         "biolibrary.biofile.accession": 1.0
