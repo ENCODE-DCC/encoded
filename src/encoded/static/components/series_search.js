@@ -57,8 +57,6 @@ const SeriesSearch = (props, context) => {
         selectedSeries = query.getKeyValues('type')[0];
     }
     const [descriptionData, setDescriptionData] = React.useState(null);
-    const [seriesTabs, setSeriesTabs] = React.useState({});
-
     const searchBase = url.parse(context.location_href).search || '';
 
     const handleTabClick = React.useCallback((series) => {
@@ -81,18 +79,16 @@ const SeriesSearch = (props, context) => {
         return SeriesSearch.lastRegion;
     };
 
-    const buildTabs = React.useCallback(() => {
-        Object.keys(seriesList).forEach((s) => {
-            seriesTabs[s] =
-                <div className="tab-inner">
-                    <div className="tab-icon">
-                        <img src={`/static/img/series/${s.replace('Series', '')}.svg`} alt={s} />
-                    </div>
-                    {seriesList[s].title}
-                </div>;
-        });
-        return seriesTabs;
-    }, [seriesTabs]);
+    const seriesTabs = [];
+    Object.keys(seriesList).forEach((s) => {
+        seriesTabs[s] =
+            <div className="tab-inner">
+                <div className="tab-icon">
+                    <img src={`/static/img/series/${s.replace('Series', '')}.svg`} alt={s} />
+                </div>
+                {seriesList[s].title}
+            </div>;
+    });
 
     // Select series from tab buttons
     React.useEffect(() => {
@@ -106,10 +102,6 @@ const SeriesSearch = (props, context) => {
             context.navigate(href);
         }
     }, [context, context.fetch, query, selectedSeries]);
-
-    React.useEffect(() => {
-        setSeriesTabs(buildTabs());
-    }, [buildTabs]);
 
     return (
         <div className="layout">

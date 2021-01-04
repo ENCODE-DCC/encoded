@@ -405,7 +405,7 @@ class SummaryBody extends React.Component {
                                 <div>
                                     <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
                                         <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
-                                        <ClearFilters searchUri={this.props.context.clear_filters} enableDisplay={!!clearButton} />
+                                        <ClearFilters searchUri={this.props.context.clear_filters} enableDisplay={clearButton} />
                                         <div className="results-table-control">
                                             <div className="results-table-control__main">
                                                 <ViewControls results={this.props.context} />
@@ -442,11 +442,6 @@ class SummaryBody extends React.Component {
 
 SummaryBody.propTypes = {
     context: PropTypes.object.isRequired, // Summary search result object
-};
-
-SummaryBody.contextTypes = {
-    navigate: PropTypes.func,
-    location_href: PropTypes.string,
 };
 
 // Render the entire summary page based on summary search results.

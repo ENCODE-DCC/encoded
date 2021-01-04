@@ -1200,7 +1200,7 @@ export class ResultTable extends React.Component {
     }
 
     render() {
-        const { context, searchBase, actions, seriesFlag } = this.props;
+        const { context, searchBase, actions, hideDocType } = this.props;
         const { facets } = context;
         const results = context['@graph'];
         const total = context.total;
@@ -1217,7 +1217,7 @@ export class ResultTable extends React.Component {
                     filters={filters}
                     searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
                     onFilter={this.onFilter}
-                    seriesFlag={seriesFlag}
+                    hideDocType={hideDocType}
                 />
                 {context.notification === 'Success' ?
                     <div className="search-results__result-list">
@@ -1242,14 +1242,14 @@ ResultTable.propTypes = {
     searchBase: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     currentRegion: PropTypes.func,
-    seriesFlag: PropTypes.bool,
+    hideDocType: PropTypes.bool,
 };
 
 ResultTable.defaultProps = {
     actions: [],
     searchBase: '',
     currentRegion: null,
-    seriesFlag: false,
+    hideDocType: false,
 };
 
 ResultTable.childContextTypes = {

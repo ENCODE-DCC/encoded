@@ -104,6 +104,7 @@ def search(context, request):
     )
     return fr.render()
 
+
 @view_config(route_name='series_search', request_method='GET', permission='search')
 def series_search(context, request):
     # Note the order of rendering matters for some fields, e.g. AllResponseField and
