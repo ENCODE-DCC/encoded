@@ -19,14 +19,17 @@ class BiospecimenTable extends React.Component {
                 openspecimen_id: {
                     title: 'OpenSpecimen ID',
                 },
+                specimen_label: {
+                    title: "Specimen label"
+                },
                 sample_type: {
-                    title: 'Sample type',
+                    title: 'Specimen type',
                 },
                 tissue_derivatives: {
-                    title: 'Tissue Derivatives',
+                    title: 'Tissue derivatives',
                 },
                 tissue_type: {
-                    title: 'Tissue type',
+                    title: 'Specimen pathological type',
                 },
                 anatomic_site: {
                     title: 'Anatomic site',
@@ -36,6 +39,12 @@ class BiospecimenTable extends React.Component {
                 },
                 species: {
                     title: "Species",
+                },
+                specimen_lineage: {
+                    title: "Specimen lineage"
+                },
+                activity_status: {
+                    title: "Activity status"
                 }
             };
             return (
