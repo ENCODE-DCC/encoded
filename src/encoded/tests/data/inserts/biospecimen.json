@@ -16,6 +16,7 @@
         "species": "Human",
         "primary_site": "Kidney, NOS",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "surgery": "KCESX708FIJ"
     },
     {
@@ -33,6 +34,7 @@
         "uuid": "170be0f2-6b5c-4b93-ba65-bedadbfe917f",
         "status": "released",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "species": "Human",
 
         "primary_site": "Kidney, NOS",
@@ -60,6 +62,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "primary_site": "Kidney, NOS"
     },
     {
@@ -78,6 +81,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "primary_site": "Kidney, NOS"
 
     },
@@ -97,6 +101,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "primary_site": "Kidney, NOS"
     },
     {
@@ -115,6 +120,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "primary_site": "Kidney, NOS"
     },
     {
@@ -133,6 +139,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "primary_site": "Kidney, NOS"
     },
     {
@@ -152,6 +159,7 @@
         "species": "Human",
         "primary_site": "Kidney, NOS",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "surgery": "KCESX802XRB"
     },
     {
@@ -171,6 +179,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "primary_site": "Kidney, NOS"
     },
     {
@@ -189,6 +198,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "primary_site": "Kidney, NOS"
     },
     {
@@ -207,6 +217,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
+        "activity_status": "Active",
         "primary_site": "Kidney, NOS"
     }
 ]
