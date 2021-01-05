@@ -15,7 +15,7 @@ def audit_file_ref_info(value, system):
     A file's reference metadata should match the reference
     metadata of any file it was derived from
     '''
-    if 'derived_from' not in value and 'AnalysisFile' not in value.get('@type'):
+    if 'AnalysisFile' not in value['@type']:
         return
     for f in value['derived_from']:
         for ref_prop in ['assembly', 'genome_annotation']:
@@ -40,7 +40,7 @@ def audit_library_protocol_standards(value, system):
     We check fastq metadata against the expected values based on the
     library protocol used to generate the sequence data.
     '''
-    if 'RawSequenceFile' not in value.get('@type'):
+    if 'RawSequenceFile' not in value['@type']:
         return
 
     lib_prots = set()
@@ -56,19 +56,21 @@ def audit_library_protocol_standards(value, system):
         yield AuditFailure('variable library protocols', detail, level='ERROR')
         return
     else:
+        lib_prot = value['libraries'][0]['protocol']
+        lp_id = lib_prot['@id']
         no_stds_flag = False
-        if not value['libraries'][0]['protocol'].get('sequence_file_standards'):
+        if 'sequence_file_standards' not in lib_prot:
             no_stds_flag = True
         else:
             my_standards = ''
-            for standard in value['libraries'][0]['protocol'].get('sequence_file_standards'):
+            for standard in lib_prot['sequence_file_standards']:
                 if standard['read_type'] == value.get('read_type'):
                     my_standards = standard
                     break
             if no_stds_flag == True or my_standards == '':
                 detail = ('File {} derives from Library Protocol {} with no noted standards for read_type {}.'.format(
                     audit_link(path_to_text(value['@id']), value['@id']),
-                    audit_link(path_to_text(value['libraries'][0]['protocol']['@id']), value['libraries'][0]['protocol']['@id']),
+                    audit_link(path_to_text(lp_id), lp_id),
                     value.get('read_type')
                     )
                 )
@@ -105,7 +107,7 @@ def audit_library_protocol_standards(value, system):
                         value.get('read_length'),
                         rl_spec,
                         my_standards['read_length'],
-                        audit_link(path_to_text(value['libraries'][0]['protocol']['@id']), value['libraries'][0]['protocol']['@id'])
+                        audit_link(path_to_text(lp_id), lp_id)
                         )
                     )
                     yield AuditFailure('does not meet protocol standards', detail, level=audit_level)
@@ -117,12 +119,12 @@ def audit_analysis_library_types(value, system):
     if it is from an RNA-seq library.
     We expect CITE-seq libraries to be paired with RNA-seq libraries.
     '''
-    if 'AnalysisFile' not in value.get('@type'):
+    if 'AnalysisFile' not in value['@type']:
         return
 
     lib_types = set()
     for l in value.get('libraries'):
-        lib_types.add(l['protocol'].get('library_type'))
+        lib_types.add(l['protocol']['library_type'])
     if 'RNA-seq' not in lib_types and value.get('cellranger_assay_chemistry'):
         detail = ('File {} has {} and does not derive from any RNA-seq library'.format(
             audit_link(path_to_text(value['@id']), value['@id']),
@@ -151,7 +153,8 @@ function_dispatcher = {
 @audit_checker('File',
                frame=['derived_from',
                       'libraries',
-                      'libraries.protocol'])
+                      'libraries.protocol',
+                      'libraries.protocol.sequence_file_standards'])
 def audit_file(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
