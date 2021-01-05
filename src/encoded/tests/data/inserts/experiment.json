@@ -760,7 +760,7 @@
         "assay_term_name": "long read RNA-seq",
         "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
-        "internal_tags": "LRGASP",
+        "internal_tags": ["LRGASP"],
         "accession": "ENCSR751ISO",
         "aliases": ["christopher-vollmers:namespace_test", "angela-brooks:namespace_test"],
         "uuid": "6dde71b6-555c-4bed-9bb7-7bec3771893b"
