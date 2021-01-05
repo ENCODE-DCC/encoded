@@ -33,7 +33,6 @@ ORDER = [
     'organoid',
     'suspension',
     'dataset',
-    'reference_file_set',
     'library',
     'reference_file',
     'sequencing_run',
@@ -550,9 +549,6 @@ PHASE1_PIPELINES = {
     'human_postnatal_donor': [
         remove_keys('parents', 'children', 'siblings', 'twin'),
     ],
-    'reference_file_set': [
-        remove_keys('related_files'),
-    ],
     'file': [
         remove_keys('supersedes')
     ],
@@ -587,9 +583,6 @@ PHASE2_PIPELINES = {
     ],
     'human_postnatal_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
-    ],
-    'reference_file_set': [
-        skip_rows_missing_all_keys('related_files'),
     ],
     'file': [
         skip_rows_missing_all_keys('supersedes')

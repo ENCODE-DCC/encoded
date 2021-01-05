@@ -13,3 +13,9 @@ def raw_sequence_file_1_2(value, system):
     if 'award' in value:
         del value['award']
     value['derived_from'] = str(value['derived_from'])
+
+
+@upgrade_step('reference_file', '1', '2')
+def reference_file_1_2(value, system):
+    if 'fileset' in value:
+        del value['fileset']
