@@ -194,7 +194,7 @@
         "dataset": {
             "title": "Dataset"
         },
-        "library": {
+        "libraries": {
             "title": "Library"
         },
         "read_type": {

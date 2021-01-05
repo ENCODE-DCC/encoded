@@ -334,21 +334,19 @@ class RawSequenceFile(DataFile):
     embedded = DataFile.embedded + []
 
     @calculated_property(define=True,
-                         schema={"title": "Library",
+                         schema={"title": "Libraries",
                                  "description": "The library the file was derived from.",
                                  "comment": "Do not submit. This is a calculated property",
                                  "type": "array",
                                  "items": {
-                                    "type": "string",
-                                    "linkTo": "Library"
-                                    }
+                                     "type": "string",
+                                     "linkTo": "Library"
+                                 }
                                 })
-    def library(self, request, derived_from):
-        all_donors = set()
+    def libraries(self, request, derived_from):
         seqrun_obj = request.embed(derived_from, '@@object?skip_calculated=true')
         lib_id = seqrun_obj.get('derived_from')
-        lib_obj = request.embed(derived_from, '@@object?skip_calculated=true')
-        return lib_obj.get('@id')
+        return [lib_id]
 
 
     @calculated_property(define=True,
@@ -358,7 +356,7 @@ class RawSequenceFile(DataFile):
                                  "type": "array",
                                  "items": {
                                     "type": "string"
-                                    }
+                                 }
                                 })
     def sequence_elements(self, request, derived_from=None, read_type=None):
         return inherit_protocol_prop(request, derived_from, 'sequence_elements', read_type)
