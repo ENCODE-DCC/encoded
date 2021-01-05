@@ -1,12 +1,12 @@
 import pytest
 
 @pytest.fixture
-def no_login_submitter(testapp, lab, award):
+def no_login_submitter(testapp, lab_base, award_base):
     item = {
         'first_name': 'ENCODE',
         'last_name': 'Submitter',
         'email': 'no_login_submitter@example.org',
-        'submits_for': [lab['@id']],
+        'submits_for': [lab_base['@id']],
         'status': 'disabled',
     }
     # User @@object view has keys omitted.

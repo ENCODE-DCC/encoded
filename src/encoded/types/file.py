@@ -66,10 +66,11 @@ def inherit_protocol_prop(request, seqrun_id, propname, read_type):
     lib_obj = request.embed(lib_id, '@@object?skip_calculated=true')
     libprot_id = lib_obj.get('protocol')
     libprot_obj = request.embed(libprot_id, '@@object?skip_calculated=true')
-    standards = libprot_obj.get('sequence_file_standards')
-    for s in standards:
-        if s.get('read_type') == read_type:
-            return s.get(propname)
+    if 'sequence_file_standards' in libprot_obj:
+        standards = libprot_obj.get('sequence_file_standards')
+        for s in standards:
+            if s.get('read_type') == read_type:
+                return s.get(propname)
 
 
 RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts', 'intensity values', 'idat red channel', 'idat green channel']

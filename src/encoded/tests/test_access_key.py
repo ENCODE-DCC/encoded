@@ -25,25 +25,6 @@ def test_access_key_get_bad_password(anontestapp, access_key_3):
     anontestapp.get('/', headers=headers, status=401)
 
 
-def test_access_key_principals(anontestapp, execute_counter, access_key_3, submitter, lab):
-    headers = {'Authorization': auth_header(access_key_3)}
-    with execute_counter.expect(2):
-        res = anontestapp.get('/@@testing-user', headers=headers)
-
-    assert res.json['authenticated_userid'] == 'accesskey.' + access_key_3['access_key_id']
-
-    assert sorted(res.json['effective_principals']) == [
-        'accesskey.%s' % access_key_3['access_key_id'],
-        'group.submitter',
-        'lab.%s' % lab['uuid'],
-        'submits_for.%s' % lab['uuid'],
-        'system.Authenticated',
-        'system.Everyone',
-        'userid.%s' % submitter['uuid'],
-        'viewing_group.ENCODE3',
-    ]
-
-
 def test_access_key_self_create_by_verified_member(anontestapp, verified_member):
     extra_environ = {'REMOTE_USER': str(verified_member['email'])}
     res = anontestapp.post_json(
