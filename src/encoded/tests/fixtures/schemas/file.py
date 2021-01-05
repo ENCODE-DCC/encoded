@@ -1900,3 +1900,10 @@ def file_25(testapp, lab, award, experiment):
         'schema_version': '25'
     }
     return item
+
+
+@pytest.fixture
+def file_26(file_base):
+    item = file_base.copy()
+    item['output_type'] = 'pseudo-replicated peaks'
+    return item

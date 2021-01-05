@@ -14,7 +14,7 @@
                 "Optimal IDR thresholded peaks",
                 "IDR thresholded peaks",
                 "Replicated peaks",
-                "Pseudo-replicated peaks",
+                "Pseudoreplicated peaks",
                 "Peaks",
                 "Signal p-value",
                 "Fold change over control",
@@ -54,7 +54,7 @@
                     "spectrum":"on",
                     "output_type": [ "replicated peaks" ]
                 },
-                "Pseudo-replicated peaks": {
+                "Pseudoreplicated peaks": {
                     "tag": "dPRPKS",
                     "visibility": "dense",
                     "type": "bigBed",
@@ -63,7 +63,7 @@
                     "pValueFilter": "0",
                     "qValueFilter": "0",
                     "spectrum":"on",
-                    "output_type": [ "pseudo-replicated peaks" ]
+                    "output_type": [ "pseudoreplicated peaks" ]
                 },
                 "Peaks": {
                     "tag": "ePKS",

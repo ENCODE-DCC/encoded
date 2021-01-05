@@ -180,7 +180,7 @@ def analysis_step_atac_encode4_pseudoreplicate_concordance(testapp):
         'step_label': 'atac-seq-unreplicated-overlap-step',
         'title': 'ATAC seq unreplicated overlap step',
         'input_file_types': ['alignments'],
-        'output_file_types': ['pseudo-replicated peaks'],
+        'output_file_types': ['pseudoreplicated peaks'],
         'analysis_step_types': ['peak calling', 'partition concordance'],
         'major_version': 1
     }
@@ -193,7 +193,7 @@ def analysis_step_atac_encode4_partition_concordance(testapp):
         'step_label': 'atac-seq-partition-concordance-step',
         'title': 'ATAC seq partition concordance step',
         'input_file_types': ['alignments'],
-        'output_file_types': ['pseudo-replicated peaks'],
+        'output_file_types': ['pseudoreplicated peaks'],
         'analysis_step_types': ['peak calling', 'partition concordance'],
         'major_version': 1
     }
@@ -238,5 +238,19 @@ def analysis_step_12(testapp):
         'analysis_step_types': ['QA calculation'],
         'input_file_types': ['consensus DNase hypersensitivity sites (cDHSs)'],
         'output_file_types': ['representative DNase hypersensitivity sites (rDHSs)']
+    }
+    return item
+
+
+@pytest.fixture
+def analysis_step_13(testapp):
+    item = {
+        'schema_version': '13',
+        'step_label': 'pseudoreplicated-step',
+        'title': 'pseudoreplicated step',
+        'major_version': 1,
+        'analysis_step_types': ['peak calling'],
+        'input_file_types': ['pseudo-replicated peaks'],
+        'output_file_types': ['pseudo-replicated peaks']
     }
     return item

@@ -2953,7 +2953,7 @@
         "derived_from": ["ENCFF164JWT"]
     },
     {
-        "_test": "ATAC-seq rep1 pseudo-replicated peaks",
+        "_test": "ATAC-seq rep1 pseudoreplicated peaks",
         "award": "/awards/U54HG006996/",
         "lab": "/labs/michael-snyder/",
         "dataset": "ENCSR808QCJ",
@@ -2963,7 +2963,7 @@
         "accession": "ENCFF182CHA",
         "file_format": "bed",
         "file_format_type": "narrowPeak",
-        "output_type": "pseudo-replicated peaks",
+        "output_type": "pseudoreplicated peaks",
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "61111f06df8446c9cee45ed6e1961d54",
