@@ -83,7 +83,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "derived_from": {
             "items": {
