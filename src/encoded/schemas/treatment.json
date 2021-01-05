@@ -121,7 +121,6 @@
              "items": {
                  "title": "Treatment biosample",
                  "description": "Biosample used in this treatment.",
-                 "comment": "See biosample.json for available identifiers.",
                  "type":  "string",
                  "linkTo": "Biosample"
              }
@@ -134,7 +133,6 @@
              "items": {
                  "title": "Treatment antibody",
                  "description": "Antibody used in this treatment.",
-                 "comment": "See antibody_lot.json for available identifiers.",
                  "type":  "string",
                  "linkTo": "AntibodyLot"
              }

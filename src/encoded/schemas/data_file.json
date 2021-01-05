@@ -25,7 +25,7 @@
          "validated": {
             "title": "Validated",
             "description": "If true, then the metadata has been validated against the data file which it representes.",
-            "comment": "Do not submit. The field will default to 'false' and be updated by the validator.",
+            "comment": "Do not submit. The server will assign a value of 'false' and later be updated by the validator.",
             "type": "boolean",
             "default": false,
             "permission": "import_items"
@@ -40,7 +40,7 @@
         "supersedes": {
             "title": "Supersedes" ,
             "description": "The files that this file supersedes.",
-            "comment": "The files in this list should be obsolete and the superseeding file object should be used instead.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -54,13 +54,12 @@
         "dataset": {
             "title": "Dataset",
             "description": "The experiment or dataset the file belongs to.",
-            "comment": "Required. See dataset.json for available identifiers.",
-            "type": "string"
+            "type": "string",
+            "linkTo": "Dataset"
         },
         "software": {
             "title": "Software",
             "description": "The software used to generate the file.",
-            "comment": "This may be linked to an individual instance at DNANexus or it may be virtual and have many files linked to it.",
             "type": "array",
             "items": {
                 "type": "string"
@@ -69,14 +68,14 @@
         "content_error_detail": {
             "title": "Content error detail",
             "description": "Explanation of why the file failed the automated content checks.",
-            "comment": "Do not submit.  This is posted by the checkfiles script. It is required when status is 'content error'",
+            "comment": "Do not submit. This is posted by the checkfiles script. It is required when status is 'content error'",
             "type": "string",
             "permission": "import_items"
         },
          "revoke_detail": {
             "title": "Revoke error detail",
             "description": "Explanation of why the file was revoked.",
-            "comment": "Do not submit. The field would be posted by DCC.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "string",
             "permission": "import_items"
         }

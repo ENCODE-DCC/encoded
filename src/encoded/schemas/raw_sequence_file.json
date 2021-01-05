@@ -48,9 +48,6 @@
         "schema_version": {
             "default": "1"
         },
-        "dataset": {
-            "linkTo": "Dataset"
-        },
         "dbxrefs": {
             "items": {
                 "title": "External identifier",
@@ -61,7 +58,7 @@
         },
         "supersedes": {
             "items": {
-                "comment": "The files in this list should be archived or revoked.",
+                "comment": "Do not submit. Only admins are allowed to set or update this value.",
                 "type": "string",
                 "linkTo": "RawSequenceFile"
             }
@@ -69,7 +66,6 @@
         "derived_from": {
             "title": "Derived from",
             "description": "The sequencing run designation for the file.",
-            "comment": "This field is required for sra and fastq files. See sequencing_run.json for available identifiers.",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -80,7 +76,6 @@
         "read_count": {
             "title": "Read count",
             "description": "Number of reads in fastq file.",
-            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
             "permission": "import_items",
             "type": "integer",
             "minimum": 0
@@ -109,7 +104,6 @@
         "read_length": {
             "title": "Read length",
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
-            "comment": "This field is required for fastq and sra file formats containing sequencing reads.",
             "type": "integer",
             "minimum": 0
         },

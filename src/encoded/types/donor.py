@@ -49,7 +49,7 @@ class Donor(Item):
             if gestational_age == 'unknown':
                 return 'unknown'
             else:
-                return u'{}'.format(pluralize(gestational_age, gestational_age_units))
+                return u'{} (gestational)'.format(pluralize(gestational_age, gestational_age_units))
         else:
             return None
 
@@ -91,7 +91,7 @@ class MouseDonor(Donor):
     @calculated_property(schema={
         "title": "Organism",
         "description": "Common name of donor organism.",
-        "comment": "Do not submit, value is assigned by the object.",
+        "comment": "Do not submit. This is a calculated property",
         "permission": "import_items",
         "type": "string",
         "linkTo": "Organism"
@@ -139,7 +139,7 @@ class HumanDonor(Donor):
     @calculated_property(schema={
         "title": "Organism",
         "description": "Common name of donor organism.",
-        "comment": "Do not submit, value is assigned by the object.",
+        "comment": "Do not submit. This is a calculated property",
         "permission": "import_items",
         "type": "string",
         "linkTo": "Organism"
@@ -204,7 +204,7 @@ class HumanPostnatalDonor(HumanDonor):
 
     @calculated_property(schema={
         "description": "Human donor(s) that have this human donor in their parent property.",
-        "comment": "Do not submit. Values in the list are reverse links of a human donors that have this biosample under their parents property.",
+        "comment": "Do not submit. This is a calculated property",
         "title": "Children",
         "type": "array",
         "items": {

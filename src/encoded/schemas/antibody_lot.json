@@ -69,7 +69,6 @@
         "host_organism": {
             "title": "Host organism",
             "description": "The organism the antibody was grown in.",
-            "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "Organism"
         },
@@ -173,7 +172,6 @@
         "target_organism": {
             "title": "Target organism",
             "description": "The organism bearing the target which the antibody was designed to detect.",
-            "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "Organism"
         },

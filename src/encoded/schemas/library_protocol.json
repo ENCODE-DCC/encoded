@@ -32,14 +32,12 @@
         "name": {
             "title": "Name",
             "description": "The unique idenfier that describes the protocol used to create the library, convention is lower cased and hyphen delimited.",
-            "comment": "",
             "type": "string",
             "uniqueKey": "library_protocol:name"
         },
         "title": {
             "title": "Title",
             "description": "The unique name that describes the protocol used to create the library, convention is the name with common use of uppercase and spaces.",
-            "comment": "",
             "type": "string"
         },
         "construction_platform": {

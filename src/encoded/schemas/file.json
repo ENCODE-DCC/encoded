@@ -2,7 +2,7 @@
     "title": "File",
     "description": "Schema for submitting metadata for a file.",
     "comment": "This object type is abstract. These properties are inherited by other object types",
-    "id": "/profiles/data_file.json",
+    "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "mixinProperties": [],
@@ -23,7 +23,6 @@
         "submitted_file_name": {
             "title": "Original file name",
             "description": "The local file name used at time of submission.",
-            "comment": "Although this is not required. It is highly recommended.",
             "type": "string"
         },
         "s3_uri": {
@@ -39,7 +38,6 @@
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",
-            "comment": "Required for files with no_file_available = false . Warning: This value can vary for files of same content gzipped at different times",
             "type": "string",
             "format": "hex",
             "maxLength": 32,
@@ -48,7 +46,6 @@
         "content_md5sum": {
             "title": "Content MD5sum",
             "description": "The MD5sum of the uncompressed file.",
-            "comment": "Do not submit. This is only relavant for gzipped files. This value is calculated and posted by checkfiles script upon submission.",
             "type": "string",
             "permission": "import_items",
             "format": "hex",
@@ -58,7 +55,6 @@
         "file_size": {
             "title": "File size",
             "description": "File size specified in bytes.",
-            "comment": "Required.",
             "type": "integer",
             "minimum": 0
         },

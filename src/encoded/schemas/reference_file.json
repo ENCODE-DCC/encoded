@@ -73,7 +73,6 @@
             "items": {
                 "title": "Derived from",
                 "description": "A file participating as input into software to produce this output file.",
-                "comment": "See file.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "ReferenceFile"
             }

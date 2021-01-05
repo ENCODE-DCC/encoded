@@ -49,6 +49,12 @@ class Dataset(Item):
         'libraries': ('Library','dataset'),
         'original_files': ('DataFile','dataset')
     }
+    audit_inherit = [
+        'original_files',
+        'original_files.derived_from',
+        'libraries',
+        'libraries.derived_from'
+    ]
 
 
     @calculated_property(schema={

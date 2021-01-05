@@ -43,21 +43,19 @@
         "corresponding_contributor": {
             "title": "Corresponding contributor",
             "description": "The user who is the primary external contact for the dataset.",
-            "comment": "",
             "type": "string",
             "linkTo": "User"
         },
         "internal_contact": {
             "title": "Internal contact",
             "description": "The Lattice contact for questions about the details of the experiment and/or analysis.",
-            "comment": "",
             "type": "string",
             "linkTo": "User"
         },
         "date_released": {
             "title": "Date released",
             "description": "Date when dataset was released",
-            "comment": "Do not submit, value is assigned whe the object is releaesd.",
+            "comment": "Do not submit. The server will assign a value.",
             "type": "string",
             "anyOf": [
                 {"format": "date-time"},
@@ -79,24 +77,12 @@
         "supersedes": {
             "title": "Supersedes" ,
             "description": "The datasets(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                    "comment": "See experiment.json for a list of available identifiers.",
-                    "type": "string",
-                    "linkTo": "Dataset"
-            }
-        },
-        "related_files": {
-            "title": "Additional data files",
-            "description": "To be removed in a future release after data cleanup.",
-            "type": "array",
-            "permission": "import_items",
-            "items": {
-                "title": "Data file",
-                "comment": "See file.json for available identifiers.",
                 "type": "string",
-                "linkTo": "DataFile"
+                "linkTo": "Dataset"
             }
         }
     },
@@ -133,6 +119,9 @@
         },
         "award.name": {
             "title": "Award name"
+        },
+        "references.citation": {
+            "title": "References"
         },
         "status": {
             "title": "Status"

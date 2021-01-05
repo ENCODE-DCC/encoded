@@ -61,7 +61,6 @@
             "items": {
                 "title": "Parent",
                 "description": "Biological parent of this donor.",
-                "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
             }
@@ -75,7 +74,6 @@
             "items": {
                 "title": "Sibling",
                 "description": "A donor that has at least one parent in common.",
-                "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
             }
@@ -83,14 +81,12 @@
         "twin": {
             "title": "Twin",
             "description": "A human donor that is a twin sibling of this human donor.",
-            "comment": "For human biosamples, see human_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "HumanDonor"
         },
         "twin_type": {
             "title": "Twin type",
             "description": "Type of twin genetic relatedness.",
-            "comment": "The type of the twin sibling of this donor (dizygotic or monozygotic)",
             "type": "string",
             "enum": [
                 "dizygotic",
