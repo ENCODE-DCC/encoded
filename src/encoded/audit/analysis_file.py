@@ -15,14 +15,22 @@ def audit_validated(value, system):
     We check fastq metadata against the expected values based on the
     library protocol used to generate the sequence data.
     '''
-    if value.get('validated') != True and value.get('file_format') in ['hdf5'] \
-        and (value.get('s3_uri') or value.get('external_uri')):
-        detail = ('File {} has not been validated.'.format(
-            audit_link(path_to_text(value['@id']), value['@id'])
+    if value.get('no_file_available') != True:
+        if value.get('s3_uri') or value.get('external_uri'):
+            if value.get('validated') != True and value.get('file_format') in ['hdf5']:
+                detail = ('File {} has not been validated.'.format(
+                    audit_link(path_to_text(value['@id']), value['@id'])
+                    )
+                )
+                yield AuditFailure('file not validated', detail, level='ERROR')
+                return
+        else:
+            detail = ('File {} has no s3_uri, external_uri, and is not marked as no_file_available.'.format(
+                audit_link(path_to_text(value['@id']), value['@id'])
+                )
             )
-        )
-        yield AuditFailure('file not validated', detail, level='ERROR')
-        return
+            yield AuditFailure('file access not specified', detail, level='WARNING')
+            return
 
 
 def audit_file_ref_info(value, system):
