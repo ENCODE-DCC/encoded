@@ -67,7 +67,10 @@ def audit_library_protocol_standards(value, system):
                 if my_standards['read_length'] != value.get('read_length'):
                     std_flag = False
                     rl_spec = my_standards['read_length_specification']
-                    if rl_spec == 'exact':
+                    if not value.get('read_length'):
+                        audit_level = 'ERROR'
+                        std_flag = True
+                    elif rl_spec == 'exact':
                         rl_spec = 'exactly'
                         audit_level = 'ERROR'
                         std_flag = True
