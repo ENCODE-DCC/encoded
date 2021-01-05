@@ -2,12 +2,12 @@ import pytest
 
 
 @pytest.fixture
-def disabled_user(testapp, lab, award):
+def disabled_user(testapp, lab_base):
     item = {
         'first_name': 'ENCODE',
         'last_name': 'Submitter',
         'email': 'no_login_submitter@example.org',
-        'submits_for': [lab['@id']],
+        'submits_for': [lab_base['@id']],
         'status': 'disabled',
     }
     # User @@object view has keys omitted.
@@ -45,7 +45,7 @@ def user_3(user_0_0):
     item = user_0_0.copy()
     item.update({
         'schema_version': '3',
-        'viewing_groups': ['ENCODE'],
+        'viewing_groups': ['CZI038TEN'],
     })
     return item
 
@@ -70,7 +70,7 @@ def user_8(user_0_0):
     item = user_0_0.copy()
     item.update({
         'schema_version': '8',
-        'viewing_groups': ['ENCODE'],
+        'viewing_groups': ['CZI003CNS'],
         'groups': ['admin', 'verified', 'wrangler'],
     })
     return item
@@ -105,7 +105,7 @@ def wrangler(testapp):
 
 
 @pytest.fixture
-def verified_member(testapp, lab, award):
+def verified_member(testapp):
     item = {
         'first_name': 'ENCODE',
         'last_name': 'VerifiedMember',
@@ -118,7 +118,7 @@ def verified_member(testapp, lab, award):
 
 
 @pytest.fixture
-def unverified_member(testapp, lab, award):
+def unverified_member(testapp):
     item = {
         'first_name': 'ENCODE',
         'last_name': 'NonVerifiedMember',
@@ -130,12 +130,12 @@ def unverified_member(testapp, lab, award):
 
 
 @pytest.fixture
-def submitter(testapp, lab, award):
+def submitter(testapp, lab_base):
     item = {
         'first_name': 'ENCODE',
         'last_name': 'Submitter',
         'email': 'encode_submitter@example.org',
-        'submits_for': [lab['@id']],
+        'submits_for': [lab_base['@id']],
     }
     # User @@object view has keys omitted.
     res = testapp.post_json('/user', item)
@@ -143,26 +143,12 @@ def submitter(testapp, lab, award):
 
 
 @pytest.fixture
-def viewing_group_member(testapp, award):
+def viewing_group_member(testapp, award_base):
     item = {
         'first_name': 'Viewing',
         'last_name': 'Group',
         'email': 'viewing_group_member@example.org',
-        'viewing_groups': [award['viewing_group']],
-    }
-    # User @@object view has keys omitted.
-    res = testapp.post_json('/user', item)
-    return testapp.get(res.location).json
-
-
-@pytest.fixture
-def remc_member(testapp, remc_lab):
-    item = {
-        'first_name': 'REMC',
-        'last_name': 'Member',
-        'email': 'remc_member@example.org',
-        'submits_for': [remc_lab['@id']],
-        'viewing_groups': ['REMC'],
+        'viewing_groups': award_base['viewing_groups'],
     }
     # User @@object view has keys omitted.
     res = testapp.post_json('/user', item)

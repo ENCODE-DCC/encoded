@@ -63,10 +63,11 @@ def inherit_protocol_prop(request, seqrun_id, propname, read_type):
     lib_obj = request.embed(lib_id, '@@object?skip_calculated=true')
     libprot_id = lib_obj.get('protocol')
     libprot_obj = request.embed(libprot_id, '@@object?skip_calculated=true')
-    standards = libprot_obj.get('sequence_file_standards')
-    for s in standards:
-        if s.get('read_type') == read_type:
-            return s.get(propname)
+    if 'sequence_file_standards' in libprot_obj:
+        standards = libprot_obj.get('sequence_file_standards')
+        for s in standards:
+            if s.get('read_type') == read_type:
+                return s.get(propname)
 
 
 ENCODE_PROCESSING_PIPELINE_UUID = 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d'

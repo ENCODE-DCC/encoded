@@ -253,11 +253,11 @@ def test_post_object_with_child(testapp):
     assert res.json['target'] == parent_id
 
 
-def test_etag_if_match_tid(testapp, organism):
-    res = testapp.get(organism['@id'] + '?frame=edit', status=200)
+def test_etag_if_match_tid(testapp, human):
+    res = testapp.get(human['@id'] + '?frame=edit', status=200)
     etag = res.etag
-    testapp.patch_json(organism['@id'], {}, headers={'If-Match': etag}, status=200)
-    testapp.patch_json(organism['@id'], {}, headers={'If-Match': etag}, status=412)
+    testapp.patch_json(human['@id'], {}, headers={'If-Match': etag}, status=200)
+    testapp.patch_json(human['@id'], {}, headers={'If-Match': etag}, status=412)
 
 
 def test_retry(testapp):
