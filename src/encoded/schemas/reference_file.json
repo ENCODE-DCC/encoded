@@ -4,7 +4,7 @@
     "id": "/profiles/reference_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["fileset", "file_format", "output_types", "reference_version"],
+    "required": ["file_format", "output_types", "reference_version"],
     "identifyingProperties": ["uuid", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -42,7 +42,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "file_format": {
             "enum": [
@@ -76,12 +76,6 @@
                 "type": "string",
                 "linkTo": "ReferenceFile"
             }
-        },
-        "fileset": {
-            "title": "Fileset",
-            "description": "The fileset that this reference file belongs to.",
-            "type": "string",
-            "linkTo": "ReferenceFileSet"
         },
         "reference_version": {
             "title": "Reference version",
@@ -203,9 +197,6 @@
     "columns": {
         "title": {
             "title": "Title"
-        },
-        "fileset": {
-            "title": "Fileset"
         },
         "organism.name": {
             "title": "Organism"
