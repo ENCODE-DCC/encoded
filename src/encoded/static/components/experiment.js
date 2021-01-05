@@ -43,6 +43,7 @@ const displayedLibraryProperties = [
     { property: 'extraction_method', title: 'Extraction method', test: 'extractionmethod' },
     { property: 'fragmentation_methods', title: 'Fragmentation methods', test: 'fragmentationmethod' },
     { property: 'library_size_selection_method', title: 'Size selection method', test: 'sizeselectionmethod' },
+    { property: 'construction_method', title: 'Library construction method', test: 'libraryconstructionmethod' },
     { property: 'strand_specificity', title: 'Strand specificity', test: 'strandspecificity' },
     { property: 'spikeins_used', title: 'Spike-ins datasets', test: 'spikeins' },
 ];
