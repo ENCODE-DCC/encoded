@@ -254,3 +254,17 @@ def analysis_step_13(testapp):
         'output_file_types': ['pseudo-replicated peaks']
     }
     return item
+
+
+@pytest.fixture
+def analysis_step_13(testapp):
+    item = {
+        'schema_version': '13',
+        'step_label': 'atac-seq-step',
+        'title': 'atac-seq step',
+        'major_version': 1,
+        'analysis_step_types': ['QA calculation'],
+        'input_file_types': ['alignments', 'blacklisted regions'],
+        'output_file_types': ['mitochondria blacklisted regions', 'pseudo-replicated peaks']
+    }
+    return item
