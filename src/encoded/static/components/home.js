@@ -184,7 +184,7 @@ const KEYCODE_ESC = 27;
 
 // Combination input and drop-down suggestions form control. Handles both mouse and keyboard
 // control of the suggestions list.
-class InputSuggest extends React.Component {
+export class InputSuggest extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
