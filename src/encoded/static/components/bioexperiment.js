@@ -369,7 +369,6 @@ class Bioexperiment extends React.Component {
             <dd><strong>Tissue Type: </strong>{biospecimen_summary[0].tissue_type}</dd>
             <dd><strong>Species: </strong>{biospecimen_summary[0].species}</dd>
             <dd><strong>Anatomic Site: </strong>{biospecimen_summary[0].anatomic_site}</dd>
-            <dd><strong>Primary Site: </strong>{biospecimen_summary[0].primary_site}</dd>
         </div>);
 
 

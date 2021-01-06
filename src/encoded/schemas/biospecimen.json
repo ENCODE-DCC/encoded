@@ -165,7 +165,6 @@
         "primary_site": {
             "title": "Primary Site",
             "type": "string",
-            "default": "Kidney, NOS",
             "enum": [
                 "Kidney, NOS",
                 "Abdominal Wall",

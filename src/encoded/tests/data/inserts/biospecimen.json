@@ -14,7 +14,6 @@
         "uuid": "29bf20ad-7942-44d3-9d89-53febc8829fc",
         "status": "released",
         "species": "Human",
-        "primary_site": "Kidney, NOS",
         "specimen_lineage": "New",
         "activity_status": "Active",
         "surgery": "KCESX708FIJ"
@@ -36,8 +35,6 @@
         "specimen_lineage": "New",
         "activity_status": "Active",
         "species": "Human",
-
-        "primary_site": "Kidney, NOS",
         "documents": [
             "kce:K562_BAC_transfection_White_protocol"
         ],
@@ -62,8 +59,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
-        "activity_status": "Active",
-        "primary_site": "Kidney, NOS"
+        "activity_status": "Active"
     },
     {
         "accession": "KCEBS356AAA",
@@ -81,8 +77,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
-        "activity_status": "Active",
-        "primary_site": "Kidney, NOS"
+        "activity_status": "Active"
 
     },
     {
@@ -101,8 +96,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
-        "activity_status": "Active",
-        "primary_site": "Kidney, NOS"
+        "activity_status": "Active"
     },
     {
         "accession": "KCEBS026KCE",
@@ -120,8 +114,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
-        "activity_status": "Active",
-        "primary_site": "Kidney, NOS"
+        "activity_status": "Active"
     },
     {
         "accession": "KCEBS026FDC",
@@ -139,8 +132,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
-        "activity_status": "Active",
-        "primary_site": "Kidney, NOS"
+        "activity_status": "Active"
     },
     {
         "accession": "KCEBS039ENC",
@@ -157,7 +149,6 @@
         "uuid": "4998b6fc-4730-4533-8061-4aba132763f2",
         "status": "released",
         "species": "Human",
-        "primary_site": "Kidney, NOS",
         "specimen_lineage": "New",
         "activity_status": "Active",
         "surgery": "KCESX802XRB"
@@ -179,8 +170,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
-        "activity_status": "Active",
-        "primary_site": "Kidney, NOS"
+        "activity_status": "Active"
     },
     {
         "accession": "KCEBS057AAA",
@@ -198,8 +188,7 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
-        "activity_status": "Active",
-        "primary_site": "Kidney, NOS"
+        "activity_status": "Active"
     },
     {
         "accession": "KCEBS088RNA",
@@ -217,7 +206,6 @@
         "status": "released",
         "species": "Human",
         "specimen_lineage": "New",
-        "activity_status": "Active",
-        "primary_site": "Kidney, NOS"
+        "activity_status": "Active"
     }
 ]
