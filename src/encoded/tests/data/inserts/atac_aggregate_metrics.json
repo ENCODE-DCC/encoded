@@ -1,8 +1,5 @@
 [
 	{
-		"aliases": [
-			"anna-greka:snATAC_donorF_aggregate_metrics"
-		],
 		"uuid": "7042a791-c49e-4eb4-9cfd-e5015e2aca51",
 		"status": "released",
 		"quality_metric_of": "anna-greka:snATAC_donorF1_filtered_tf_bc_matrix",
@@ -30,9 +27,6 @@
 		]
 	},
 	{
-		"aliases": [
-			"anna-greka:snATAC_donorE_aggregate_metrics"
-		],
 		"uuid": "c6c51153-f570-4140-bcdf-06b41e5ebca2",
 		"status": "released",
 		"quality_metric_of": "anna-greka:snATAC_donorE2_filtered_tf_bc_matrix",
