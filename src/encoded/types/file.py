@@ -44,21 +44,6 @@ from snovault.util import take_one_or_return_none
 from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 
 
-<<<<<<< HEAD
-def inherit_protcol_prop(request, seqrun_id, propname, read_type):
-=======
-def show_upload_credentials(request=None, context=None, status=None):
-    if request is None or status not in ('uploading', 'upload failed'):
-        return False
-    return request.has_permission('edit', context)
-
-
-def show_cloud_metadata(status=None, md5sum=None, file_size=None, restricted=None, no_file_available=None):
-    if restricted or not md5sum or not file_size or no_file_available:
-        return False
-    return True
-
-
 def inherit_protocol_prop(request, seqrun_id, propname, read_type):
     seqrun_obj = request.embed(seqrun_id, '@@object?skip_calculated=true')
     lib_id = seqrun_obj.get('derived_from')
@@ -292,25 +277,12 @@ class AnalysisFile(DataFile):
         all_libs = set()
         for f in derived_from:
             obj = request.embed(f, '@@object')
-<<<<<<< HEAD
-<<<<<<< HEAD
-            if 'Library' in obj.get('@type'):
-                all_libs.add(obj.get('@id'))
-            elif obj.get('libraries'):
-                all_libs.update(obj.get('libraries'))
-=======
-=======
->>>>>>> a8d297870089a91f102b67300b0a3e622cd27ba9
             if obj.get('library'):
                 all_libs.add(obj.get('library'))
             elif obj.get('libraries'):
                 all_libs.update(obj.get('libraries'))
             elif obj.get('protocol'):
                 all_libs.add(obj.get('@id'))
-<<<<<<< HEAD
->>>>>>> update donor and library calculations in object types
-=======
->>>>>>> a8d297870089a91f102b67300b0a3e622cd27ba9
         return sorted(all_libs)
 
 
