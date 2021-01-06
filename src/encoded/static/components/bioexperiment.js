@@ -365,7 +365,7 @@ class Bioexperiment extends React.Component {
             <dd><strong>Patient: </strong>{biospecimen_summary[0].patient}</dd>
             <dd><strong>Openspecimen ID: </strong>{biospecimen_summary[0].openspecimen_id}</dd>
             <dd><strong>Sample Type: </strong>{biospecimen_summary[0].sample_type}</dd>
-            <dd><strong>Processing Type: </strong>{biospecimen_summary[0].processing_type}</dd>
+            <dd><strong>Tissue Derivatives: </strong>{biospecimen_summary[0].tissue_derivatives}</dd>
             <dd><strong>Tissue Type: </strong>{biospecimen_summary[0].tissue_type}</dd>
             <dd><strong>Species: </strong>{biospecimen_summary[0].species}</dd>
             <dd><strong>Anatomic Site: </strong>{biospecimen_summary[0].anatomic_site}</dd>
