@@ -592,6 +592,17 @@
                     }
                 }
             }
+        },
+        "construction_method": {
+            "title": "The kit or protocol technique used to generate the library.",
+            "description": "The kit or protocol technique used to generate the library of nucleic acid material being sequenced.",
+            "type": "string",
+            "enum": [
+                "CapTrap",
+                "Nanopore Direct RNA Kit",
+                "Nanopore PCR-cDNA Kit",
+                "R2C2"
+            ]
         }
     },
     "columns": {

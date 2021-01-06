@@ -98,6 +98,7 @@
         "biosample": "ENCBS087RNA",
         "construction_platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
+        "construction_method": "Nanopore PCR-cDNA Kit",
         "lab": "thomas-gingeras",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
