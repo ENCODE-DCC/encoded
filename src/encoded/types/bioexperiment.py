@@ -140,7 +140,6 @@ class Bioexperiment(Biodataset,
                             biolibraryObject['biospecimen'], '@@object')
                         if biospecimenObject['status'] == 'deleted':
                             continue
-                        print(biospecimenObject)
                         if 'accession' in biospecimenObject:
                             biospecimen_summary_dict['accession'] = biospecimenObject['accession']
                         if 'patient' in biospecimenObject:
