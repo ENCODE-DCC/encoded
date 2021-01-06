@@ -56,13 +56,6 @@
                 "pattern": "^(SRA:SRR\\d+|ENA:ERR\\d+)$"
             }
         },
-        "supersedes": {
-            "items": {
-                "comment": "Do not submit. Only admins are allowed to set or update this value.",
-                "type": "string",
-                "linkTo": "RawSequenceFile"
-            }
-        },
         "derived_from": {
             "title": "Derived from",
             "description": "The sequencing run designation for the file.",
