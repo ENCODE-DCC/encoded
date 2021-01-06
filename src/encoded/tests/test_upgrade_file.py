@@ -193,4 +193,11 @@ def test_file_upgrade_25_to_26(upgrader, file_25):
 def test_file_upgrade_26_to_27(upgrader, file_26):
     value = upgrader.upgrade('file', file_26, current_version='26', target_version='27')
     assert value['schema_version'] == '27'
+    assert value['output_type'] == 'exclusion list regions'
+
+
+
+def test_file_upgrade_26_to_27(upgrader, file_26):
+    value = upgrader.upgrade('file', file_26, current_version='26', target_version='27')
+    assert value['schema_version'] == '27'
     assert value['output_type'] == 'pseudoreplicated peaks'

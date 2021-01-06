@@ -734,6 +734,19 @@ def file_25_26(value, system):
 
 @upgrade_step('file', '26', '27')
 def file_26_27(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5657
+    term_pairs = [
+        ('blacklisted regions', 'exclusion list regions'), 
+        ('mitochondria blacklisted regions', 'mitochondrial exclusion list regions'),
+    ]
+    output_type = value.get('output_type', None)
+    for old_term, new_term in term_pairs:
+        if output_type == old_term:
+            value['output_type'] = new_term
+
+
+@upgrade_step('file', '26', '27')
+def file_26_27(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5662
     if value.get('output_type', '') == 'pseudo-replicated peaks':
         value['output_type'] = 'pseudoreplicated peaks'
