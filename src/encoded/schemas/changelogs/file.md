@@ -1,6 +1,9 @@
 ## Changelog for file.json
 
 ### Schema version 27
+* *output_type* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
+
+### Schema version 27
 * *output_type* enum *pseudo-replicated peaks* was updated to *pseudoreplicated peaks*.
 
 ### Schema version 26
