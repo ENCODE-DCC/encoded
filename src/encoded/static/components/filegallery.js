@@ -17,6 +17,9 @@ import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
+import { BatchDownloadModal } from './view_controls';
+import { encodedURIComponent } from '../libs/query_encoding';
+
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
 dayjs.extend(utc);
@@ -1132,37 +1135,99 @@ VisualizationControls.defaultProps = {
 // Displays the file filtering controls for the file association graph and file tables.
 
 class FilterControls extends React.Component {
-    constructor() {
-        super();
+    constructor(props, reactContext) {
+        super(props);
+
+        this.navigate = reactContext.navigate;
 
         // Bind this to non-React methods.
         this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
+        this.setDownloadModalVisibility = this.setDownloadModalVisibility.bind(this);
+        this.handleDownloadClick = this.handleDownloadClick.bind(this);
+
+        this.state = { isBatchDownloadOpen: false };
+    }
+
+    setDownloadModalVisibility(isOpen) {
+        this.setState({ isBatchDownloadOpen: isOpen });
     }
 
     handleAssemblyAnnotationChange(e) {
         this.props.handleAssemblyAnnotationChange(e.target.value);
     }
 
+    handleDownloadClick() {
+        const { context, filters } = this.props;
+        const { accession } = context;
+        const type = context && context['@type'] ? context['@type'][0] : 'Experiment';
+        let assemblies = '';
+
+        if (filters.assembly && filters.assembly.length > 0 && filters.assembly[0] !== 'All assemblies') {
+            const analysis = filters.assembly[0].split(' ');
+            const assembly = analysis[0] ? `&files.assembly=${encodedURIComponent(analysis[0])}` : '';
+            const genomeAnnotation = analysis[1] ? `&files.genome_annotation=${encodedURIComponent(analysis[1])}` : '';
+            assemblies = `${[assembly, genomeAnnotation].filter(a => a !== '').join('')}`;
+        }
+        const fileTypes = filters.file_type && filters.file_type.length > 0 ?
+            filters.file_type.map(fileType => `&files.file_type=${encodedURIComponent(fileType)}`).join('') :
+            '';
+        const biologicalReplicates = filters.biological_replicates && filters.biological_replicates.length > 0 ?
+            filters.biological_replicates.map(replicate => `&files.biological_replicates=${encodedURIComponent(replicate)}`).join('') :
+            '';
+        const outputTypes = filters.output_type && filters.output_type.length > 0 ?
+            filters.output_type.map(outputType => `&files.output_type=${encodedURIComponent(outputType)}`).join('') :
+            '';
+        const fileStatus = document.querySelector('[name="filterIncArchive"]').checked ?
+            '' :
+            '&files.status=released';
+
+        this.navigate(`/batch_download/?type=${type}&accession=${accession}${assemblies}${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
+        this.setDownloadModalVisibility(false);
+    }
+
     render() {
         const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler } = this.props;
 
-        if (filterOptions.length > 0 || browsers.length > 0) {
-            return (
-                <div className="file-gallery-controls">
+        const visualizerControls = (filterOptions.length > 0 || browsers.length > 0) ?
+            (
+                <>
                     {filterOptions.length > 0 ?
                         <div className="file-gallery-controls__assembly-selector">
                             <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
                         </div>
                     : null}
                     <VisualizationControls browsers={browsers} currentBrowser={currentBrowser} browserChangeHandler={browserChangeHandler} visualizeHandler={visualizeHandler} visualizeDisabled={!(browsers.length > 0)} />
+                    <div className="file-gallery-controls__divider">
+                        |
+                    </div>
+                </>
+            )
+        : null;
+
+        return (
+            <div className="file-gallery-controls">
+                {visualizerControls}
+                <div className="file-gallery-controls__download">
+                    <button className="btn btn-info" type="button" onClick={() => this.setDownloadModalVisibility(true)}>Download All</button>
+                    {
+                        this.state.isBatchDownloadOpen ?
+                            <BatchDownloadModal
+                                closeModalHandler={() => this.setDownloadModalVisibility(false)}
+                                downloadClickHandler={this.handleDownloadClick}
+                            /> :
+                            null
+                    }
                 </div>
-            );
-        }
-        return null;
+            </div>
+        );
     }
 }
 
 FilterControls.propTypes = {
+    /** Context */
+    context: PropTypes.object.isRequired,
+    /** filters */
+    filters: PropTypes.object,
     /** Assembly/annotation combos available */
     filterOptions: PropTypes.array.isRequired,
     /** Currently-selected assembly/annotation <select> value */
@@ -1183,8 +1248,12 @@ FilterControls.defaultProps = {
     selectedFilterValue: '0',
     browsers: [],
     currentBrowser: '',
+    filters: [],
 };
 
+FilterControls.contextTypes = {
+    navigate: PropTypes.func,
+};
 
 // Map a QC object to its corresponding two-letter abbreviation for the graph.
 function qcAbbr(qc) {
@@ -2999,6 +3068,7 @@ class FileGalleryRendererComponent extends React.Component {
                                 <FilterControls
                                     selectedFilterValue={this.state.selectedFilterValue}
                                     filterOptions={this.state.availableAssembliesAnnotations}
+                                    filters={this.state.fileFilters}
                                     inclusionOn={this.state.inclusionOn}
                                     browsers={browsers}
                                     currentBrowser={this.state.currentBrowser}
@@ -3007,6 +3077,7 @@ class FileGalleryRendererComponent extends React.Component {
                                     handleInclusionChange={this.handleInclusionChange}
                                     browserChangeHandler={this.handleBrowserChange}
                                     visualizeHandler={this.handleVisualize}
+                                    context={context}
                                 />
                                 {/* If logged in and dataset is released, need to combine search of files that reference
                                     this dataset to get released and unreleased ones. If not logged in, then just get
@@ -3020,6 +3091,7 @@ class FileGalleryRendererComponent extends React.Component {
                         <FilterControls
                             selectedFilterValue={this.state.selectedFilterValue}
                             filterOptions={this.state.availableAssembliesAnnotations}
+                            filters={this.state.fileFilters}
                             inclusionOn={this.state.inclusionOn}
                             browsers={browsers}
                             currentBrowser={this.state.currentBrowser}
@@ -3028,6 +3100,7 @@ class FileGalleryRendererComponent extends React.Component {
                             handleInclusionChange={this.handleInclusionChange}
                             browserChangeHandler={this.handleBrowserChange}
                             visualizeHandler={this.handleVisualize}
+                            context={context}
                         />
                         {fileTable}
                     </div>
