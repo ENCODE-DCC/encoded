@@ -63,6 +63,7 @@ def includeme(config):
     config.add_route('cart-report', '/cart-report{slash:/?}')
     config.add_route('cart-matrix', '/cart-matrix{slash:/?}')
     config.add_route('top-hits-raw', '/top-hits-raw{slash:/?}')
+    config.add_route('top-hits', '/top-hits{slash:/?}')
     config.scan(__name__)
 
 
@@ -641,3 +642,8 @@ def top_hits_raw(context, request):
         ]
     )
     return fr.render()
+
+
+@view_config(route_name='top-hits', request_method='GET', permission='search')
+def top_hits(context, request):
+    return {'@type': ['TopHitsSearch']}
