@@ -15,7 +15,7 @@ def minitestdata(app, conn):
     item = {
         'name': 'human',
         'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
+        'ncbi_taxon_id': '9606',
     }
     testapp.post_json('/organism', item, status=201)
 
@@ -37,7 +37,7 @@ def minitestdata2(app, conn):
     item = {
         'name': 'human',
         'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
+        'ncbi_taxon_id': '9606',
     }
     testapp.post_json('/organism', item, status=201)
 
@@ -67,7 +67,7 @@ def test_fixtures1(testapp):
     item = {
         'name': 'mouse',
         'scientific_name': 'Mus musculus',
-        'taxon_id': '10090',
+        'ncbi_taxon_id': '10090',
     }
     testapp.post_json('/organism', item, status=201)
 

@@ -9,8 +9,9 @@ from .base import (
     ALLOW_SUBMITTER_ADD,
     Item,
     paths_filtered_by_status,
-    SharedItem
+    SharedItem,
 )
+
 
 def item_is_revoked(request, path):
     return request.embed(path, '@@object?skip_calculated=true').get('status') == 'revoked'
@@ -112,27 +113,21 @@ class Dataset(Item):
             "linkTo": "DataFile",
         },
     })
-    def contributing_files(self, request, registry, original_files, status):
+    def contributing_files(self, request, original_files, status):
         derived_from = set()
-        for path in original_files:
-            properties = request.embed(path, '@@object?skip_calculated=true')
-            derived_from.update(
-                paths_filtered_by_status(request, properties.get('derived_from', []))
-            )
-        outside_ids = list(derived_from.difference(original_files))
-
-        outside_files = []
-        conn = registry[CONNECTION]
-        for i in outside_ids:
-            file_id = i.split('/')[-2]
-            if conn.get_by_unique_key('accession', file_id):
-                outsideObject = conn.get_by_unique_key('accession', file_id).__json__(request)
-            elif conn.get_by_unique_key('external_accession', file_id):
-                outsideObject = conn.get_by_unique_key('external_accession', file_id).__json__(request)
+        for f in original_files:
+            f_obj = request.embed(f, '@@object?skip_calculated=true')
+            f_df = f_obj.get('derived_from')
+            if isinstance(f_df, str):
+                derived_from.add(f_df)
             else:
-                outsideObject = conn.get_by_uuid(file_id).__json__(request)
-            # use md5sum as a proxy for Files
-            if 'md5sum' in outsideObject.keys():
+                derived_from.update(f_df)
+
+        outside_ids = list(derived_from.difference(original_files))
+        outside_files = []
+        for i in outside_ids:
+            outsideObject = request.embed(i, '@@object')
+            if 'File' in outsideObject.get('@type'):
                 outside_files.append(i)
 
         if status in ('released'):
@@ -197,35 +192,3 @@ class Dataset(Item):
     })
     def assembly(self, request, original_files, status):
         return calculate_assembly(request, original_files, status)
-
-
-    matrix = {
-        'y': {
-            'group_by': 'biosample_ontology.term_name',
-            'label': 'Biosample',
-        },
-        'x': {
-            'group_by': 'assay_title',
-            'label': 'Assay',
-        },
-    }
-
-    summary = {
-        'x': {
-            'group_by': 'status'
-        },
-        'y': {
-            'group_by': ['replication_type']
-        }
-    }
-
-    reference_epigenome = {
-        'y': {
-            'group_by': 'biosample_ontology.term_name',
-            'label': 'Biosample',
-        },
-        'x': {
-            'group_by': ['assay_title', 'target.label'],
-            'label': 'Assay',
-        },
-    }

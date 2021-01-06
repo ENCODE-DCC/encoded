@@ -7,7 +7,6 @@
         "organism": "human",
         "file_size": 3000000,
         "external_accession": "refdata-cellranger-atac-GRCh38-1.2.0",
-        "fileset": "lattice:human-references",
         "file_format": "tar",
         "output_types": [
             "genome reference"
@@ -26,7 +25,6 @@
         "organism": "human",
         "file_size": 3000000,
         "external_accession": "refdata-gex-GRCh38-2020-A",
-        "fileset": "lattice:human-references",
         "file_format": "tar",
         "output_types": [
             "genome reference"
@@ -55,7 +53,6 @@
         "organism": "mouse",
         "file_size": 5000000,
         "file_format": "tar",
-        "fileset": "lattice:mouse-references",
         "output_types": [
             "genome reference"
         ],
@@ -72,7 +69,6 @@
         "uuid": "e877b293-e2c2-4aca-ab02-84a30f45bb42",
         "organism": "mouse",
         "file_size": 3000000,
-        "fileset": "lattice:mouse-references",
         "file_format": "tar",
         "output_types": [
             "genome reference"

@@ -51,12 +51,6 @@
                 "linkTo": "DataFile"
             }
         },
-        "dataset": {
-            "title": "Dataset",
-            "description": "The experiment or dataset the file belongs to.",
-            "type": "string",
-            "linkTo": "Dataset"
-        },
         "software": {
             "title": "Software",
             "description": "The software used to generate the file.",

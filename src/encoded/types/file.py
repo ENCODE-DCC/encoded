@@ -14,7 +14,7 @@ from snovault.schema_utils import schema_validator
 from snovault.validation import ValidationFailure
 from .base import (
     Item,
-    paths_filtered_by_status
+    paths_filtered_by_status,
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -44,16 +44,17 @@ from snovault.util import take_one_or_return_none
 from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 
 
-def inherit_protcol_prop(request, seqrun_id, propname, read_type):
+def inherit_protocol_prop(request, seqrun_id, propname, read_type):
     seqrun_obj = request.embed(seqrun_id, '@@object?skip_calculated=true')
     lib_id = seqrun_obj.get('derived_from')
     lib_obj = request.embed(lib_id, '@@object?skip_calculated=true')
     libprot_id = lib_obj.get('protocol')
     libprot_obj = request.embed(libprot_id, '@@object?skip_calculated=true')
-    standards = libprot_obj.get('sequence_file_standards')
-    for s in standards:
-        if s.get('read_type') == read_type:
-            return s.get(propname)
+    if 'sequence_file_standards' in libprot_obj:
+        standards = libprot_obj.get('sequence_file_standards')
+        for s in standards:
+            if s.get('read_type') == read_type:
+                return s.get(propname)
 
 
 RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts', 'intensity values', 'idat red channel', 'idat green channel']
@@ -205,6 +206,19 @@ class DataFile(File):
         if read_length is not None or mapped_read_length is not None:
             return "nt"
 
+
+    @calculated_property(schema={
+        "title": "Award",
+        "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
+        "comment": "Do not submit. This is a calculated property.",
+        "type": "string",
+        "linkTo": "Award"
+    })
+    def award(self, request, dataset):
+        dataset_obj = request.embed(dataset, '@@object?skip_calculated=true')
+        return dataset_obj.get('award')
+
+
     @calculated_property(schema={
         "title": "Superseded by",
         "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
@@ -263,10 +277,12 @@ class AnalysisFile(DataFile):
         all_libs = set()
         for f in derived_from:
             obj = request.embed(f, '@@object')
-            if 'Library' in obj.get('@type'):
-                all_libs.add(obj.get('@id'))
+            if obj.get('library'):
+                all_libs.add(obj.get('library'))
             elif obj.get('libraries'):
                 all_libs.update(obj.get('libraries'))
+            elif obj.get('protocol'):
+                all_libs.add(obj.get('@id'))
         return sorted(all_libs)
 
 
@@ -297,20 +313,18 @@ class RawSequenceFile(DataFile):
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",
-                                 "description": "The libraries the file was derived from.",
+                                 "description": "The library the file was derived from.",
                                  "comment": "Do not submit. This is a calculated property",
                                  "type": "array",
                                  "items": {
-                                    "type": "string",
-                                    "linkTo": "Library"
-                                    }
+                                     "type": "string",
+                                     "linkTo": "Library"
+                                 }
                                 })
     def libraries(self, request, derived_from):
-        all_libs = set()
-        for f in derived_from:
-            seqrun_obj = request.embed(f, '@@object?skip_calculated=true')
-            all_libs.add(seqrun_obj.get('derived_from'))
-        return sorted(all_libs)
+        seqrun_obj = request.embed(derived_from, '@@object?skip_calculated=true')
+        lib_id = seqrun_obj.get('derived_from')
+        return [lib_id]
 
 
     @calculated_property(define=True,
@@ -320,11 +334,10 @@ class RawSequenceFile(DataFile):
                                  "type": "array",
                                  "items": {
                                     "type": "string"
-                                    }
+                                 }
                                 })
     def sequence_elements(self, request, derived_from=None, read_type=None):
-        seqrun_id = derived_from[0]
-        return inherit_protcol_prop(request, seqrun_id, 'sequence_elements', read_type)
+        return inherit_protocol_prop(request, derived_from, 'sequence_elements', read_type)
 
 
     @calculated_property(define=True,
@@ -334,8 +347,7 @@ class RawSequenceFile(DataFile):
                                  "type": "string"
                                 })
     def demultiplexed_type(self, request, derived_from=None, read_type=None):
-        seqrun_id = derived_from[0]
-        return inherit_protcol_prop(request, seqrun_id, 'demultiplexed_type', read_type)
+        return inherit_protocol_prop(request, derived_from, 'demultiplexed_type', read_type)
 
 
 @collection(

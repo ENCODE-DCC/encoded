@@ -4,13 +4,13 @@
     "id": "/profiles/sequence_alignment_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "award", "file_format", "output_types", "derived_from", "derivation_process"],
+    "required": ["dataset", "file_format", "output_types", "derived_from", "derivation_process"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/dataset"},
         {"$ref": "mixins.json#/documents"},
-        {"$ref": "mixins.json#/award"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/notes"},
@@ -83,7 +83,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "derived_from": {
             "items": {

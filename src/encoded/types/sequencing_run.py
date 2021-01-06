@@ -38,6 +38,30 @@ class SequencingRun(Item):
 
 
     @calculated_property(schema={
+        "title": "Dataset",
+        "description": "The dataset the sequencing run belongs to.",
+        "comment": "Do not submit. This is a calculated property.",
+        "type": "string",
+        "linkTo": "Dataset"
+    })
+    def dataset(self, request, derived_from):
+        library_obj = request.embed(derived_from, '@@object?skip_calculated=true')
+        return library_obj.get('dataset')
+
+
+    @calculated_property(schema={
+        "title": "Lab",
+        "description": "The lab the sequencing run belongs to.",
+        "comment": "Do not submit. This is a calculated property.",
+        "type": "string",
+        "linkTo": "Lab"
+    })
+    def lab(self, request, derived_from):
+        library_obj = request.embed(derived_from, '@@object?skip_calculated=true')
+        return library_obj.get('lab')
+
+
+    @calculated_property(schema={
         "title": "Read 1 file",
         "description": "The Read 1 DataFile belonging to this sequencing run.",
         "comment": "Do not submit. This is a calculated property",
@@ -47,7 +71,7 @@ class SequencingRun(Item):
     })
     def read_1_file(self, request, registry, files):
         for file_id in files:
-            file_obj = request.embed(file_id, '@@object')
+            file_obj = request.embed(file_id, '@@object?skip_calculated=true')
             read_type = file_obj.get('read_type')
             if read_type == 'Read 1':
                 return file_obj['accession']
@@ -63,7 +87,7 @@ class SequencingRun(Item):
     })
     def read_2_file(self, request, registry, files):
         for file_id in files:
-            file_obj = request.embed(file_id, '@@object')
+            file_obj = request.embed(file_id, '@@object?skip_calculated=true')
             read_type = file_obj.get('read_type')
             if read_type == 'Read 2':
                 return file_obj['accession']
@@ -79,7 +103,7 @@ class SequencingRun(Item):
     })
     def read_1N_file(self, request, registry, files):
         for file_id in files:
-            file_obj = request.embed(file_id, '@@object')
+            file_obj = request.embed(file_id, '@@object?skip_calculated=true')
             read_type = file_obj.get('read_type')
             if read_type == 'Read 1N':
                 return file_obj['accession']
@@ -95,7 +119,7 @@ class SequencingRun(Item):
     })
     def read_2N_file(self, request, registry, files):
         for file_id in files:
-            file_obj = request.embed(file_id, '@@object')
+            file_obj = request.embed(file_id, '@@object?skip_calculated=true')
             read_type = file_obj.get('read_type')
             if read_type == 'Read 2N':
                 return file_obj['accession']
@@ -111,7 +135,7 @@ class SequencingRun(Item):
     })
     def i5_index_file(self, request, registry, files):
         for file_id in files:
-            file_obj = request.embed(file_id, '@@object')
+            file_obj = request.embed(file_id, '@@object?skip_calculated=true')
             read_type = file_obj.get('read_type')
             if read_type == 'i5 index':
                 return file_obj['accession']
@@ -127,7 +151,7 @@ class SequencingRun(Item):
     })
     def i7_index_file(self, request, registry, files):
         for file_id in files:
-            file_obj = request.embed(file_id, '@@object')
+            file_obj = request.embed(file_id, '@@object?skip_calculated=true')
             read_type = file_obj.get('read_type')
             if read_type == 'i7 index':
                 return file_obj['accession']

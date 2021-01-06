@@ -11,20 +11,6 @@ from .base import (
 import re
 
 
-def property_closure(request, propname, root_uuid):
-    # Must avoid cycles
-    conn = request.registry[CONNECTION]
-    seen = set()
-    remaining = {str(root_uuid)}
-    while remaining:
-        seen.update(remaining)
-        next_remaining = set()
-        for uuid in remaining:
-            obj = conn.get_by_uuid(uuid)
-            next_remaining.update(obj.__json__(request).get(propname, ()))
-        remaining = next_remaining - seen
-    return seen
-
 @collection(
     name='libraries',
     unique_key='accession',
@@ -45,6 +31,18 @@ class Library(Item):
     ]
 
 
+    @calculated_property(schema={
+        "title": "Award",
+        "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
+        "comment": "Do not submit. This is a calculated property.",
+        "type": "string",
+        "linkTo": "Award"
+    })
+    def award(self, request, dataset):
+        dataset_obj = request.embed(dataset, '@@object?skip_calculated=true')
+        return dataset_obj.get('award')
+
+
     @calculated_property(condition='protocol', schema={
         "title": "Assay",
         "description": "The general assay used for this Library.",
@@ -61,11 +59,11 @@ class Library(Item):
         ]
     })
     def assay(self, request, derived_from, protocol):
-        protocolObject = request.embed(protocol, '@@object')
+        protocolObject = request.embed(protocol, '@@object?skip_calculated=true')
         if protocolObject.get('library_type') in ['CITE-seq']:
             return protocolObject.get('library_type')
         elif derived_from:
-            derfrObject = request.embed(derived_from[0], '@@object')
+            derfrObject = request.embed(derived_from[0], '@@object?skip_calculated=true')
             if derfrObject.get('suspension_type') == 'cell':
                 mat_type = 'sc'
             elif derfrObject.get('suspension_type') == 'nucleus':
@@ -84,7 +82,7 @@ class Library(Item):
         "type": "string"
     })
     def protocol_title(self, request, protocol):
-        protocolObject = request.embed(protocol, '@@object')
+        protocolObject = request.embed(protocol, '@@object?skip_calculated=true')
         return protocolObject.get('title')
 
 
@@ -98,14 +96,9 @@ class Library(Item):
             "linkTo": "Donor"
         },
     })
-    def donors(self, request, registry, derived_from, status):
-        conn = registry[CONNECTION]
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
-        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
-        # use life_stage as a proxy for donors because 'Donor in props['@type']' returned keyError
-        donor_accs = {
-            props['accession']
-            for props in obj_props
-            if 'life_stage' in props
-        }
-        return donor_accs
+    def donors(self, request, derived_from):
+        all_donors = set()
+        for bs in derived_from:
+            bs_obj = request.embed(bs, '@@object')
+            all_donors.update(bs_obj.get('donors'))
+        return sorted(all_donors)
