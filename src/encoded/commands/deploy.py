@@ -21,6 +21,18 @@ from pathlib import Path
 REPO_DIR = f"{str(Path().parent.absolute())}"
 
 
+def _get_ami_id(bucket: str = "packer-ami-id-and-log", key: str = "ami-id/current_ami_id.txt") -> str:
+    """Fetch the current ami-id from S3.
+    Args:
+        bucket: name of S3 bucket where ami-id is stored
+        key: location of the ami-id file within the bucket
+    Returns:
+        ami_id: string containing the contents current ami id S3 object.
+    """
+    s3 = boto3.resource("s3")
+    ami_id = s3.ObjectSummary(bucket_name=bucket, key=key).get()["Body"].decode().strip()
+    return ami_id
+
 def _load_configuration(conf_path):
     # Load config
     from configparser import SafeConfigParser
@@ -865,11 +877,6 @@ def _parse_args():
                 "%r is an invalid hostname, only [a-z0-9] and hyphen allowed." % value)
         return value
 
-    def get_ami_id():
-        """#TODO decide how this will be handled 
-        """
-        return 'ami-03830cb12cf0006cc'
-
     parser = argparse.ArgumentParser(
         description="Deploy ENCODE on AWS",
     )
@@ -1055,7 +1062,7 @@ def _parse_args():
     args = parser.parse_args()
     # If needed, get ami.
     if not args.image_id:
-        args.image_id = get_ami_id()
+        args.image_id = _get_ami_id()
     # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
         if args.es_elect or args.es_wait:
