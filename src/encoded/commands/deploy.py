@@ -30,7 +30,7 @@ def _get_ami_id(bucket: str = "packer-ami-id-and-log", key: str = "ami-id/curren
         ami_id: string containing the contents current ami id S3 object.
     """
     s3 = boto3.resource("s3")
-    ami_id = s3.ObjectSummary(bucket_name=bucket, key=key).get()["Body"].decode().strip()
+    ami_id = s3.ObjectSummary(bucket_name=bucket, key=key).get()["Body"].read().decode().strip()
     return ami_id
 
 def _load_configuration(conf_path):
