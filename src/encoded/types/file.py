@@ -60,7 +60,6 @@ def show_cloud_metadata(status=None, md5sum=None, file_size=None, restricted=Non
 
 
 def inherit_protocol_prop(request, seqrun_id, propname, read_type):
->>>>>>> update donor and library calculations in object types
     seqrun_obj = request.embed(seqrun_id, '@@object?skip_calculated=true')
     lib_id = seqrun_obj.get('derived_from')
     lib_obj = request.embed(lib_id, '@@object?skip_calculated=true')
@@ -294,18 +293,24 @@ class AnalysisFile(DataFile):
         for f in derived_from:
             obj = request.embed(f, '@@object')
 <<<<<<< HEAD
+<<<<<<< HEAD
             if 'Library' in obj.get('@type'):
                 all_libs.add(obj.get('@id'))
             elif obj.get('libraries'):
                 all_libs.update(obj.get('libraries'))
 =======
+=======
+>>>>>>> a8d297870089a91f102b67300b0a3e622cd27ba9
             if obj.get('library'):
                 all_libs.add(obj.get('library'))
             elif obj.get('libraries'):
                 all_libs.update(obj.get('libraries'))
             elif obj.get('protocol'):
                 all_libs.add(obj.get('@id'))
+<<<<<<< HEAD
 >>>>>>> update donor and library calculations in object types
+=======
+>>>>>>> a8d297870089a91f102b67300b0a3e622cd27ba9
         return sorted(all_libs)
 
 
