@@ -13,7 +13,6 @@ import { BrowserFeat } from './browserfeat';
 import cartStore, {
     CartAlert,
     cartCacheSaved,
-    cartIsUnsaved,
     cartSetOperationInProgress,
     cartGetSettings,
     cartSetSettingsCurrent,
@@ -948,7 +947,7 @@ class App extends React.Component {
     }
 
     handleBeforeUnload() {
-        if (this.state.unsavedChanges.length > 0 || cartIsUnsaved()) {
+        if (this.state.unsavedChanges.length > 0) {
             return 'You have unsaved changes.';
         }
         return undefined;
