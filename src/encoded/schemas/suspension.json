@@ -108,7 +108,7 @@
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((GEO:SAM(E|N|D)(A|G)?\\d+)|(SRA:SRS\\d+)|(ENA:ERS\\d+))$"
+                "pattern": "^((BioSample:SAM(E|N|D)(A|G)?\\d+)|(GEO:SAM(E|N|D)(A|G)?\\d+)|(SRA:SRS\\d+)|(ENA:ERS\\d+))$"
             }
         },
         "starting_quantity": {
