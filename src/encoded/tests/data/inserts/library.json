@@ -14,7 +14,8 @@
             "anna-greka:sc_citeseq_suspension_donorA"
         ],
         "dbxrefs": [
-            "SRA:SRX122313"
+            "SRA:SRX122313",
+            "EGA:EGAX00001710723"
         ],
         "starting_quantity": "10000",
         "starting_quantity_units": "cells",

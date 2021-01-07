@@ -35,7 +35,8 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "BioSample:SAMN144225"
+            "BioSample:SAMN144225",
+            "EGA:EGAN00001549491"
         ],
         "feature_antibodies": [
             "lattice:totalseq_C0051_CD14",
