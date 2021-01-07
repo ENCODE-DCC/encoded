@@ -444,6 +444,10 @@ SummaryBody.propTypes = {
     context: PropTypes.object.isRequired, // Summary search result object
 };
 
+SummaryBody.contextTypes = {
+    navigate: PropTypes.func,
+};
+
 // Render the entire summary page based on summary search results.
 const Summary = (props) => {
     const { context } = props;
