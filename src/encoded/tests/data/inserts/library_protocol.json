@@ -243,5 +243,29 @@
                 "read_length_specification": "exact"
             }
         ]
+    },
+    {
+      "biological_macromolecule": "RNA",
+      "library_type": "RNA-seq",
+      "name": "Smart-seq2",
+      "title": "Smart-seq2"
+    },
+    {
+      "biological_macromolecule": "protein",
+      "library_type": "CITE-seq",
+      "name": "CITE-10x-3'-v3",
+      "title": "CITE 10x 3' v3"
+    },
+    {
+      "biological_macromolecule": "RNA",
+      "library_type": "RNA-seq",
+      "name": "VDJ-10x-5'-v1",
+      "title": "VDJ 10x 5' v1"
+    },
+    {
+      "biological_macromolecule": "RNA",
+      "library_type": "RNA-seq",
+      "name": "10x-3'-v2",
+      "title": "10x 3' v2"
     }
 ]
