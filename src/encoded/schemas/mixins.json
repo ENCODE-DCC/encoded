@@ -26,7 +26,8 @@
             "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
             "uniqueItems": true
-        },
+        }
+    },
     "preservation": {
         "preservation_method": {
             "title": "Preservation method",
