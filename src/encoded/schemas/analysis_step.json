@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "14"
         },
         "step_label": {
             "title": "Step label",
@@ -198,7 +198,7 @@
                     "predicted whole brain enhancers",
                     "preprocessed alignments",
                     "promoters reference",
-                    "pseudo-replicated peaks",
+                    "pseudoreplicated peaks",
                     "pseudoreplicated IDR thresholded peaks",
                     "ranked gRNAs",
                     "raw data",
@@ -352,7 +352,7 @@
                     "predicted whole brain enhancers",
                     "preprocessed alignments",
                     "promoters reference",
-                    "pseudo-replicated peaks",
+                    "pseudoreplicated peaks",
                     "pseudoreplicated IDR thresholded peaks",
                     "ranked gRNAs",
                     "raw minus strand signal",

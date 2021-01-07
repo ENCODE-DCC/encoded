@@ -730,3 +730,11 @@ def file_25_26(value, system):
     elif output_type == "consensus DNase hypersensitivity sites (cDHSs)":
         value['output_type'] = 'consensus DNase hypersensitivity sites'
     return
+
+
+@upgrade_step('file', '26', '27')
+def file_26_27(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5662
+    if value.get('output_type', '') == 'pseudo-replicated peaks':
+        value['output_type'] = 'pseudoreplicated peaks'
+    return

@@ -346,7 +346,7 @@
         ]
     },
     {
-        "term": "pseudo-replicated peaks",
+        "term": "pseudoreplicated peaks",
         "section": "File output types",
         "definition": "The set of peak calls from two partitions, or \"pseudoreplicates.\"",
         "file_formats": "bed, bigBed",

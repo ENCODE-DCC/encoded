@@ -1,5 +1,9 @@
 ## Changelog for analysis_step.json
 
+### Schema version 14
+* *input_file_types: pseudo-replicated peaks* was updated to *input_file_types: pseudoreplicated peaks*
+* *output_file_types: pseudo-replicated peaks* was updated to *output_file_types: pseudoreplicated peaks*
+
 ### Schema version 13
 * *input_file_types*, *output_file_types* enums *consensus DNase hypersensitivity sites (cDHSs)* and *representative DNase hypersensitivity sites (rDHSs)* was updated to *consensus DNase hypersensitivity sites* and *representative DNase hypersensitivity sites* respectively.
 

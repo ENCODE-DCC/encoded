@@ -1754,7 +1754,7 @@ def file_bed_pseudo_replicated_peaks_atac(
         'file_size': 345,
         'assembly': 'GRCh38',
         'md5sum': '27f0221b6d6d4052320dbce3fc434668',
-        'output_type': 'pseudo-replicated peaks',
+        'output_type': 'pseudoreplicated peaks',
         'status': 'in progress',  # avoid s3 upload codepath
         'step_run': analysis_step_run_atac_encode4_pseudoreplicate_concordance['@id'],
     }
@@ -1796,7 +1796,7 @@ def file_bed_replicated_peaks_atac(testapp, ATAC_experiment_replicated, ATAC_bam
         'file_size': 345,
         'assembly': 'GRCh38',
         'md5sum': 'a220ab102df36d93dd070ef0712b8ee7',
-        'output_type': 'pseudo-replicated peaks',
+        'output_type': 'pseudoreplicated peaks',
         'status': 'in progress',  # avoid s3 upload codepath
         'step_run': analysis_step_run_atac_encode4_partition_concordance['@id']
     }
@@ -1899,4 +1899,11 @@ def file_25(testapp, lab, award, experiment):
         'status': 'in progress',  # avoid s3 upload codepath
         'schema_version': '25'
     }
+    return item
+
+
+@pytest.fixture
+def file_26(file_base):
+    item = file_base.copy()
+    item['output_type'] = 'pseudo-replicated peaks'
     return item

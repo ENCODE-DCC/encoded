@@ -88,3 +88,12 @@ def test_analysis_step_12_13(upgrader, analysis_step_12):
     assert 'representative DNase hypersensitivity sites (rDHSs)' not in value['output_file_types']
     assert 'consensus DNase hypersensitivity sites' in value['input_file_types']
     assert 'representative DNase hypersensitivity sites' in value['output_file_types']
+
+
+def test_analysis_step_13_14(upgrader, analysis_step_13):
+    value = upgrader.upgrade('analysis_step', analysis_step_13, current_version='13', target_version='14')
+    assert value['schema_version'] == '14'
+    assert 'pseudo-replicated peaks' not in value['input_file_types']
+    assert 'pseudo-replicated peaks' not in value['output_file_types']
+    assert 'pseudoreplicated peaks' in value['input_file_types']
+    assert 'pseudoreplicated peaks' in value['output_file_types']

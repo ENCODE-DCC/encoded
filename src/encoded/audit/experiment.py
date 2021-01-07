@@ -4320,7 +4320,7 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     if pipeline_title is False:
         return
 
-    # For FRiP: use the pseudo-replicated peaks with multiple biological replicates as input
+    # For FRiP: use the pseudoreplicated peaks with multiple biological replicates as input
     if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
         for file in pseudo_replicated_peaks_files:
             if 'biological_replicates' in file:
@@ -4535,7 +4535,7 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                         rescue = metric['rescue_ratio']
                         self_consistency = metric['self_consistency_ratio']
                         if 'reproducible_peaks' in metric:
-                            if output_type in ['pseudo-replicated peaks', 'replicated peaks']:
+                            if output_type in ['pseudoreplicated peaks', 'replicated peaks']:
                                 peaks_report['overlap_rep_peaks'] = metric['reproducible_peaks']
                                 peaks_report['overlap_rep_peaks_file'] = f['@id']
                                 if metric['reproducible_peaks'] > 150000:
@@ -5035,14 +5035,14 @@ def create_files_mapping(files_list, excluded):
                     file_format
                     and file_format == 'bed'
                     and file_output
-                    and file_output == 'pseudo-replicated peaks'
+                    and file_output == 'pseudoreplicated peaks'
                 ):
                     to_return['pseudo_replicated_peaks_files'][
                         file_object['@id']
                     ] = file_object
 
                 if file_format and file_format == 'bed' and file_output and \
-                        file_output in ['replicated peaks', 'pseudo-replicated peaks',
+                        file_output in ['replicated peaks', 'pseudoreplicated peaks',
                                         'conservative IDR thresholded peaks',
                                         'IDR thresholded peaks']:
                     to_return['overlap_and_idr_peaks'][file_object['@id']] = file_object

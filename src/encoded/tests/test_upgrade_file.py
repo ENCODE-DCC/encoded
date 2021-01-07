@@ -188,3 +188,9 @@ def test_file_upgrade_25_to_26(upgrader, file_25):
     value = upgrader.upgrade('file', file_25, current_version='25', target_version='26')
     assert value['schema_version'] == '26'
     assert value['output_type'] == 'representative DNase hypersensitivity sites'
+
+
+def test_file_upgrade_26_to_27(upgrader, file_26):
+    value = upgrader.upgrade('file', file_26, current_version='26', target_version='27')
+    assert value['schema_version'] == '27'
+    assert value['output_type'] == 'pseudoreplicated peaks'
