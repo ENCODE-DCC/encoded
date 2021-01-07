@@ -4,7 +4,19 @@
     "id": "/profiles/biospecimen.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "specimen_label", "openspecimen_id", "patient", "sample_type", "collection_date"],
+    "required": [ "award", 
+        "specimen_label", 
+        "openspecimen_id", 
+        "patient", 
+        "sample_type", 
+        "collection_date", 
+        "specimen_lineage", 
+        "tissue_derivatives", 
+        "completion_date",
+        "tissue_type",
+        "anatomic_site",
+        "activity_status"
+    ],
     "identifyingProperties": [ "uuid","accession" ],
     "additionalProperties": false,
     "mixinProperties": [
@@ -61,8 +73,8 @@
             "format": "date"
         },
         "sample_type": {
-            "title": "Sample Type",
-            "description": "The type of the biospecimen when it was taken.",
+            "title": "Specimen Class",
+            "description": "The class of the biospecimen when it was taken.",
             "type": "string",
             "enum": [
                 "Tissue",
@@ -83,8 +95,8 @@
             ]
         },
         "tissue_derivatives": {
-            "title": "Tissue Derivatives",
-            "description": "The tissue storage of the final product after sample processing.",
+            "title": "Specimen Type",
+            "description": "The final product after sample processing. It is the subtype of specimen/derivative (paired with Specimen Class).",
             "type": "string",
             "enum": [
                 "Frozen Tissue",
@@ -431,10 +443,10 @@
     },
     "facets": {
         "sample_type": {
-            "title": "Sample Type"
+            "title": "Specimen Class"
         },
         "tissue_derivatives": {
-            "title": "Tissue Derivatives"
+            "title": "Specimen Type"
         },
         "tissue_type": {
             "title": "Specimen Pathological Type"
@@ -449,7 +461,7 @@
             "title": "Specimen Lineage"
         },
         "activity_status": {
-            "title": "Activity Status"
+            "title": "Specimen Activity Status"
         },
         "surgery.surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
@@ -532,7 +544,7 @@
             "title": "Sample Type"
         },
         "tissue_derivatives": {
-            "title": "Tissue Derivatives"
+            "title": "Specimen Type"
         },
         "tissue_type": {
             "title": "Specimen Pathological Type"
@@ -547,7 +559,7 @@
             "title": "Specimen Lineage"
         },
         "activity_status": {
-            "title": "Activity Status"
+            "title": "Specimen Activity Status"
         },
         "status": {
             "title": "Status"

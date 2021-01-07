@@ -251,10 +251,10 @@
         },
 
         "biospecimen.sample_type": {
-              "title": "Specimen Sample Type"
+              "title": "Specimen Class"
         },
         "biospecimen.tissue_derivatives": {
-            "title": "Specimen Tissue Derivatives"
+            "title": "Specimen Type"
         },
         "biospecimen.tissue_type": {
             "title": "Specimen Pathological Type"
