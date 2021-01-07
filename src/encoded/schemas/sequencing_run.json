@@ -49,7 +49,7 @@
         "flowcell_details": {
             "title": "Flowcell details",
             "description": "For each sequence file, the machine id, flowcell, and lane information for the sequencing run.",
-            "comment": "Enter values with their property labels, “machine: NNNNNN, flowcell: NNNNNNNNNN, lane: #”.",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "type": "array",
             "items": {
                 "title": "Flowcell details",

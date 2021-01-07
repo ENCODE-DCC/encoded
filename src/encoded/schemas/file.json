@@ -38,6 +38,7 @@
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "type": "string",
             "format": "hex",
             "maxLength": 32,
@@ -46,6 +47,7 @@
         "content_md5sum": {
             "title": "Content MD5sum",
             "description": "The MD5sum of the uncompressed file.",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "type": "string",
             "permission": "import_items",
             "format": "hex",
@@ -55,6 +57,7 @@
         "file_size": {
             "title": "File size",
             "description": "File size specified in bytes.",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "type": "integer",
             "minimum": 0
         },

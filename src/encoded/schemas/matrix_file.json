@@ -142,6 +142,7 @@
         "feature_counts": {
             "title": "Feature counts",
             "description": "For each category of feature type, the number of entries found in the matrix considered as features (eg: genes, antibody capture, or peaks)",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -170,6 +171,7 @@
         "observation_count": {
             "title": "Observation count",
             "description": "The number of entries found in the matrix considered as observations (eg: cell barcodes)",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "type": "integer"
         },
         "value_scale": {
