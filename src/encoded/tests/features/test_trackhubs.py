@@ -142,18 +142,44 @@ def test_hub_field(testapp, index_workbook, expected):
     assert expected in res.json['hub']
 
 
-def test_visualize(submitter_testapp, index_workbook):
-    expected = {
-        'GRCh38': [
-            "Ensembl",
-            "UCSC",
-        ],
-        'hg19': [
-            "UCSC"
-        ]
-    }
-    res = submitter_testapp.get("/experiments/ENCSR000AEN/")
-    assert set(expected['GRCh38']) == set(res.json['visualize']['GRCh38']) and set(expected['hg19']) == set(res.json['visualize']['hg19'])
+@pytest.mark.parametrize(
+    ('at_id', 'expected'),
+    [
+        (
+            '/experiments/ENCSR000AEN/',
+            {
+                'GRCh38': [
+                    "Ensembl",
+                    "UCSC",
+                ],
+                'hg19': [
+                    "UCSC"
+                ]
+            }
+        ),
+        (
+            '/experiments/ENCSR000AJK/',
+            {
+                'GRCh38': [
+                    'Ensembl',
+                    'UCSC',
+                    'hic'
+                ],
+                'hg19': [
+                    'UCSC',
+                    'hic'
+                ]
+            }
+        )
+    ]
+)
+def test_visualize(submitter_testapp, index_workbook, at_id, expected):
+    res = submitter_testapp.get(at_id)
+    assert len(expected) == len(res.json['visualize'])
+    assert all(
+        set(expected[assembly]) == set(res.json['visualize'][assembly])
+        for assembly in expected
+    )
 
 
 @pytest.mark.parametrize('expected', [
