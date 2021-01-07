@@ -79,7 +79,7 @@ const SeriesSearch = (props, context) => {
         return SeriesSearch.lastRegion;
     };
 
-    const seriesTabs = [];
+    const seriesTabs = {};
     Object.keys(seriesList).forEach((s) => {
         seriesTabs[s] =
             <div className="tab-inner">

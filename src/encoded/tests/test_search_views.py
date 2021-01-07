@@ -59,6 +59,27 @@ def test_search_views_search_view_with_limit(index_workbook, testapp):
     assert 'all' not in r.json
 
 
+def test_series_search_view(index_workbook, testapp):
+    r = testapp.get(
+        '/series-search/?type=OrganismDevelopmentSeries'
+    )
+    assert r.json['title'] == 'Series search'
+    assert len(r.json['@graph']) == 3
+    assert r.json['@graph'][0]['accession'] == 'ENCSR302DEV'
+    assert r.json['@graph'][0]['status'] == 'released'
+    assert 'OrganismDevelopmentSeries' in r.json['@graph'][0]['@type']
+    assert r.json['@id'] == '/series-search/?type=OrganismDevelopmentSeries'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['SeriesSearch']
+    assert r.json['total'] == 3
+    assert r.json['notification'] == 'Success'
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/series-search/?type=OrganismDevelopmentSeries'
+    assert 'debug' not in r.json
+    assert 'columns' in r.json
+    assert 'sort' in r.json
+
+
 def test_search_views_search_view_with_limit_zero(index_workbook, testapp):
     r = testapp.get(
         '/search/?type=Experiment&limit=0'
