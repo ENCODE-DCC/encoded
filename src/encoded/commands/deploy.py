@@ -21,7 +21,7 @@ from pathlib import Path
 REPO_DIR = f"{str(Path().parent.absolute())}"
 
 
-def _get_ami_id(bucket: str = "packer-ami-id-and-log", key: str = "ami-id/current_ami_id.txt") -> str:
+def _fetch_ami_id(bucket: str = "packer-ami-id-and-log", key: str = "ami-id/current_ami_id.txt") -> str:
     """Fetch the current ami-id from S3.
     Args:
         bucket: name of S3 bucket where ami-id is stored
@@ -31,6 +31,7 @@ def _get_ami_id(bucket: str = "packer-ami-id-and-log", key: str = "ami-id/curren
     """
     s3 = boto3.resource("s3")
     ami_id = s3.ObjectSummary(bucket_name=bucket, key=key).get()["Body"].read().decode().strip()
+    print(f"Fetched ami: {ami_id}")
     return ami_id
 
 def _load_configuration(conf_path):
@@ -1062,7 +1063,7 @@ def _parse_args():
     args = parser.parse_args()
     # If needed, get ami.
     if not args.image_id:
-        args.image_id = _get_ami_id()
+        args.image_id = _fetch_ami_id()
     # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
         if args.es_elect or args.es_wait:
