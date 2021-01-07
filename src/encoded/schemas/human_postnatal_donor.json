@@ -167,7 +167,36 @@
             "title": "Test results",
             "description": "The results from any test to measure the donor's health in the format of key (test name):value (test results)",
             "type": "object",
-            "properties": {},
+            "properties": {
+                "eGFR": {
+                    "title": "Estimated glomerular filtration rate",
+                    "type": "string"
+                },
+                "global_glomerulosclerosis": {
+                    "title": "Global glomerulosclerosis",
+                    "type": "string"
+                },
+                "sCr": {
+                    "title": "Serum creatinine",
+                    "type": "string"
+                },
+                "ANS": {
+                    "title": "Arteriosclerosis",
+                    "type": "string"
+                },
+                "IFTA": {
+                    "title": "Interstitial fibrosis and tubular atrophy",
+                    "type": "string"
+                },
+                "serum_K+": {
+                    "title": "Potassium blood level",
+                    "type": "string"
+                },
+                "A1c": {
+                    "title": "Hemoglobin A1C",
+                    "type": "string"
+                }
+            },
             "additionalProperties": true
         }
     },
