@@ -1661,6 +1661,37 @@ class Radiation(Item):
         else:
             return "15 and up"
 
+    
+    @calculated_property(schema={
+        "title": "Radiation Site Consolidated",
+        "type": "string",
+        "enum": [
+                    "Adrenal",
+                    "Bone",
+                    "Brain",
+                    "Liver",
+                    "Lung",
+                    "Lymph node",
+                    "Other",
+                    "Kidney"
+                ],
+    })
+    def site_consolidated(self, request, site_general):
+
+        if site_general == "Adrenal gland, left" or site_general == "Adrenal gland, right":
+            return "Adrenal"
+        elif site_general == "Spine" or site_general == "Bone":
+            return "Bone"
+        elif site_general == "Brain" or site_general == "Liver":
+            return site_general
+        elif site_general == "Connective, subcutaneous and other soft tissues, NOS" or site_general == "Retroperitoneum & peritoneum" or site_general == "Connective, subcutaneous and other soft tissue, abdomen" or site_general == "Gastrointestine/ digestive system & spleen" or site_general == "Salivary gland":
+            return "Other"
+        elif site_general == "Lung, right" or site_general == "Lung, left" or site_general == "Lung":
+            return"Lung and pleura"
+        elif site_general == "Lymph node, NOS" or site_general == "Lymph node, intrathoracic" or site_general == "Lymph node, intra abdominal":
+            return "Lymph node"
+        else:
+            return "Kidney"
 
 
 
