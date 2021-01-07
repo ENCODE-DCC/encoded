@@ -1492,7 +1492,7 @@
         "status": "deleted",
         "uuid": "981db702-6aa0-4a93-8faa-6757c0a5a04d",
         "description": "library_3b",
-        "lab": "jason-lieb",
+        "lab": "jason-spence",
         "dataset": "anindita-basu:scRNAseq_test_dataset_deleted",
         "protocol": "10x-3'-v3",
         "derived_from": [
@@ -1510,7 +1510,7 @@
         "status": "deleted",
         "uuid": "d8ee9e59-f698-482c-9774-2fb28df996a6",
         "description": "library_3c",
-        "lab": "jason-lieb",
+        "lab": "jason-spence",
         "dataset": "anindita-basu:scRNAseq_test_dataset_deleted",
         "protocol": "10x-3'-v3",
         "derived_from": [
