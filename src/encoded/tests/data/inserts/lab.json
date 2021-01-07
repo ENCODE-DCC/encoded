@@ -48,21 +48,21 @@
         "title": "Peter Sims, Columbia"
     },
     {
-        "address1": "School of Biological Sciences",
-        "address2": "2218 Biological Sciences III",
-        "city": "Irvine",
+        "address1": "Department of Genetics",
+        "address2": "300 Pasteur Drive; MC5120",
+        "city": "Stanford",
         "country": "USA",
-        "institute_label": "UCI",
-        "institute_name": "University of California at Irvine",
-        "name": "ali-mortazavi",
+        "institute_label": "Stanford",
+        "institute_name": "Stanford University",
+        "name": "j-michael-cherry",
         "phone": "000-000-0000",
         "principal_investigators": [
-            "netus.lorem@risus.lobortis"
+            "massa.porta@varius.mauris"
         ],
-        "postal_code": "92697-2300",
+        "postal_code": "94304-5577",
         "state": "CA",
-        "title": "Ali Mortazavi, UCI",
-        "uuid": "828cd4fe-ebb0-4b36-a94a-d2e3a36cc987"
+        "title": "J. Michael Cherry, Stanford",
+        "uuid": "cfb789b8-46f3-4d59-a2b3-adc39e7df93a"
     },
     {
       "@id": "/labs/ronald-germain/",

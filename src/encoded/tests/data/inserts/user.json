@@ -86,20 +86,6 @@
         "uuid": "b88b4a37-01c6-45b6-b0ba-f51b37947faa"
     },
     {
-        "email": "netus.lorem@risus.lobortis",
-        "first_name": "Ali",
-        "job_title": "PI",
-        "lab": "Ali Mortazavi, UCI",
-        "last_name": "Mortazavi",
-        "submits_for": [
-            "Ali Mortazavi, UCI"
-        ],
-        "viewing_groups": [
-            "community"
-        ],
-        "uuid": "9f161054-aa2c-40b7-8239-04eb7f08b15d"
-    },
-    {
         "email": "jahilton@stanford.edu",
         "aliases": [
             "lattice:jah-user"
@@ -189,37 +175,41 @@
         "email": "massa.porta@varius.mauris",
         "first_name": "J. Michael",
         "job_title": "PI",
-        "lab": "J. Michael Cherry, Stanford",
+        "lab": "/labs/j-michael-cherry/",
         "last_name": "Cherry",
         "groups": [
             "verified"
         ],
         "submits_for": [
-            "J. Michael Cherry, Stanford",
-            "Ali Mortazavi, UCI"
+            "J. Michael Cherry, Stanford"
         ],
         "uuid": "860c4750-8d3c-40f5-8f2c-90c5e5d19e88"
-    },
-    {
-        "email": "quisque.consequat@venenatis.magna",
-        "first_name": "Jason",
-        "job_title": "PI",
-        "lab": "Jason Lieb, UNC",
-        "last_name": "Lieb",
-        "submits_for": [
-            "Jason Lieb, UNC"
-        ],
-        "uuid": "f56a4449-1a87-4824-8a34-9c6917544b1b"
     },
     {
         "email": "metus.donec@nisl.montes",
         "first_name": "Gregory",
         "job_title": "Data Wrangler",
-        "lab": "Peter Sims, Columbia",
+        "lab": "/labs/peter-sims/",
         "last_name": "Crawford",
         "submits_for": [
             "Peter Sims, Columbia"
         ],
         "uuid": "e74547f3-1676-43de-bcfc-9b946f0024c9"
+    },
+    {
+        "email": "quisque.consequat@venenatis.magna",
+        "first_name": "Sam",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Hill",
+        "status": "current",
+        "uuid": "f1ef8d70-12a8-4a75-81cc-8167e375c35f"
+    },
+    {
+        "email": "netus.lorem@risus.lobortis",
+        "first_name": "Sammy",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Hill",
+        "status": "current",
+        "uuid": "cd09e34b-7513-456c-a69c-66d258b99d83"
     }
 ]
