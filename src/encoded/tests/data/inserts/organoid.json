@@ -43,6 +43,10 @@
         "embedded_in_matrigel": true,
         "documents": [
             "anna-greka:C2C12_Wold_protocol"
+        ],
+        "dbxrefs": [
+            "BioSample:SAMEA104103557",
+            "EGA:EGAN00001549492"
         ]
     },
     {

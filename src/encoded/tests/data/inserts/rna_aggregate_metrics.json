@@ -1,8 +1,5 @@
 [
 	{
-		"aliases": [
-			"peter-sims:postnatal_aggr_metrics"
-		],
 		"uuid": "570aa2b4-fbcb-425f-b818-943eec15059f",
 		"quality_metric_of": "peter-sims:postnatal_merged_matrix",
 		"status": "released",
@@ -17,9 +14,6 @@
 		]
 	},
 	{
-		"aliases": [
-			"peter-sims:prenatal_aggr_metrics"
-		],
 		"uuid": "9c6a9e2a-ba5a-462a-81d3-770120a38120",
 		"quality_metric_of": "peter-sims:prenatal_merged_matrix",
 		"status": "released",

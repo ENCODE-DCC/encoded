@@ -5,10 +5,9 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["quality_metric_of"],
-    "identifyingProperties": ["uuid", "aliases"],
+    "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
-        {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/submitted"},

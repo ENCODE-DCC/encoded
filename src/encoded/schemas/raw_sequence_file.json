@@ -56,22 +56,19 @@
                 "pattern": "^(SRA:SRR\\d+|ENA:ERR\\d+)$"
             }
         },
-        "supersedes": {
-            "items": {
-                "comment": "Do not submit. Only admins are allowed to set or update this value.",
-                "type": "string",
-                "linkTo": "RawSequenceFile"
-            }
-        },
         "derived_from": {
             "title": "Derived from",
             "description": "The sequencing run designation for the file.",
-            "type": "string",
-            "linkTo": "SequencingRun"
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "SequencingRun"
+            }
         },
         "read_count": {
             "title": "Read count",
             "description": "Number of reads in fastq file.",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "permission": "import_items",
             "type": "integer",
             "minimum": 0
@@ -100,6 +97,7 @@
         "read_length": {
             "title": "Read length",
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "type": "integer",
             "minimum": 0
         },

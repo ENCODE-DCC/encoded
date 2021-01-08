@@ -69,5 +69,437 @@
         ],
         "CZI_project_identifier": "CZF2019-002445",
         "focus": "skin" 
+    },
+    {
+      "name": "CZI903MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Adversarial Training of Single-Cell RNA-seq: New Machine Learning Framework for Data Normalization & Visualization",
+      "uuid": "a4a8af93-80bb-447b-b76b-31174f62983f"
+    },
+    {
+      "name": "CZI014MTH",
+      "project": "HCA Seed Networks",
+      "title": "Deep Visual Proteomics: Image-Guided Cell Characterization",
+      "uuid": "f2f3f1e7-2e93-4b5c-9b03-26d9d0a846ab"
+    },
+    {
+      "name": "CZI010MTH",
+      "project": "HCA Seed Networks",
+      "title": "Bioconductor for Analysis and Comprehension of the Human Cell Atlas",
+      "uuid": "b87f79f3-c866-4825-86d7-06e162e3b64a"
+    },
+    {
+      "name": "CZI034MTH",
+      "project": "HCA Seed Networks",
+      "title": "Single Cell Resolution of Cell Lineages and States Based on Chromatin Accessibility Combined with CellTagging or Somatic Mutations",
+      "uuid": "6025e3dc-2816-4205-9dda-747d2187ec7e"
+    },
+    {
+      "name": "CZI032MTH",
+      "project": "HCA Seed Networks",
+      "title": "Single Cell Chromatin Profiling by High-Efficiency Tethered Integrase",
+      "uuid": "5f6b5aa2-28b1-49b9-8490-129f36c56b5f"
+    },
+    {
+      "name": "CZI913MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Development of Site-Specific DNA-barcoded Antibodies for One-Pot Proteomics, Transcriptomics, and Interactomics",
+      "uuid": "111a436c-36ac-4295-8a21-438da1e2fefb"
+    },
+    {
+      "name": "CZI005BMW",
+      "project": "HCA Seed Networks",
+      "title": "A Spatial and Lineage Atlas of Bone Marrow Hematopoiesis",
+      "uuid": "5f8c09f9-a38b-4fbe-95b5-875c7e46f483"
+    },
+    {
+      "name": "CZI037MTH",
+      "project": "HCA Seed Networks",
+      "title": "Technology and Analytics for Sequencing Physically Interacting Cells",
+      "uuid": "4c256bcb-e5bf-482d-80cf-372cf77f9b7c"
+    },
+    {
+      "name": "CZI923MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Modeling Post-Acquisition Tissue Stability for Single-Cell RNA-sequencing",
+      "uuid": "4e46d18c-66a3-4e3f-8591-4948268e9dca"
+    },
+    {
+      "name": "CZI908MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Comparing Microfluidic-Based Single-Cell RNA-seq Approaches for Development of a Human Kidney Cell Atlas",
+      "uuid": "63bb1979-6feb-4637-b7aa-8f92729deb9d"
+    },
+    {
+      "name": "CZI918MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Human Fetal Tissue Preparation for scRNA-seq and Spatial Transcriptomics",
+      "uuid": "de4075de-4dcd-45d1-99d7-15e5bab1bd84"
+    },
+    {
+      "name": "CZI016MOG",
+      "project": "HCA Seed Networks",
+      "title": "Dissecting the Genetic Basis for Tissue Composition and Gene Regulation",
+      "uuid": "3572cbe8-e812-4508-a527-6952490aa629"
+    },
+    {
+      "name": "CZI904MTH",
+      "project": "HCA Pilot Projects",
+      "title": "An Atlas of Airways at a Single-Cell Level",
+      "uuid": "d2c9eaa6-e9d9-4acb-8fa1-6f769b0d443d"
+    },
+    {
+      "name": "CZI927MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Non-Enzymatic Exponential Signal Amplification Probes for RNA in situ Hybridization",
+      "uuid": "d8355338-394b-4cbc-8781-ee2c3a0f20b4"
+    },
+    {
+      "name": "CZI909MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Comparison, Calibration, and Benchmarking of High-Throughput Single-Cell RNA-seq Techniques",
+      "uuid": "80459297-d3f1-4153-991e-5c99f95a8e3b"
+    },
+    {
+      "name": "CZI935MTH",
+      "project": "HCA Pilot Projects",
+      "title": "START: Standardization of Single-Cell and Single-Nucleus RNA-seq Protocols for Tumors",
+      "uuid": "9e314b72-fd05-45da-832a-32df39abe86d"
+    },
+    {
+      "name": "CZI912SKN",
+      "project": "HCA Pilot Projects",
+      "title": "Developing Robust Methods to Process Solid Tissues for Single-Cell RNA-sequencing",
+      "uuid": "426ce052-eb7d-40bf-b483-a5c12c94b680"
+    },
+    {
+      "name": "CZI914MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Dyp-FISH: Dynamic Patterned FISH to Interrogate mRNA and Protein Subcellular Spatial Patterning",
+      "uuid": "610ea610-4a55-487f-8e13-f16d95217204"
+    },
+    {
+      "name": "CZI937MTH",
+      "project": "HCA Pilot Projects",
+      "title": "The Human Breast Cell Atlas",
+      "uuid": "64d4fe42-864d-4dfd-a46e-71e787046221"
+    },
+    {
+      "name": "CZI911MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Developing Psychrophilic Protease Methods for Tissue Dissociation",
+      "uuid": "c0d3b046-11fe-4912-a219-79cc73eb3367"
+    },
+    {
+      "name": "CZI936MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Systematic Assessment of Single-Cell RNA-sequencing Protocols, Datasets and Analysis Methods",
+      "uuid": "72825cc4-b2d9-4b24-a1c4-354b8376c91c"
+    },
+    {
+      "name": "CZI026THY",
+      "project": "HCA Seed Networks",
+      "title": "Mapping Cells and Interactions in the Thymus Across Development and Aging",
+      "uuid": "8a913c47-76f6-425c-a82a-2562d14b80f9"
+    },
+    {
+      "name": "CZI928SKN",
+      "project": "HCA Pilot Projects",
+      "title": "Optimized Isolation and Visualization of Human Skin Cells",
+      "uuid": "ecd10821-e04a-4819-a0c8-41cc510b695b"
+    },
+    {
+      "name": "CZI018BRE",
+      "project": "HCA Seed Networks",
+      "title": "Human Breast Cell Atlas Seed Network",
+      "uuid": "145c442f-1512-4152-aa39-3bb6538a0508"
+    },
+    {
+      "name": "CZI922MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Microfluidic Platform for Rapid and Efficient Isolation of Single-Cells From Tissue",
+      "uuid": "cdc007c7-ddfe-459f-a017-e54ef359134d"
+    },
+    {
+      "name": "CZI023CVS",
+      "project": "HCA Seed Networks",
+      "title": "Human Vascular Endothelial Cell Atlas in the Young and Old",
+      "uuid": "aac8ecad-d8d4-4227-8709-6fc677e06fb5"
+    },
+    {
+      "name": "CZI038TEN",
+      "project": "HCA Seed Networks",
+      "title": "The Tendon Seed Network",
+      "uuid": "a0afec4b-1d35-43c2-9ee9-c0bab6a915c8"
+    },
+    {
+      "name": "CZI035CVS",
+      "project": "HCA Seed Networks",
+      "title": "Single Cell Transcriptomic and Epigenomic Features of the Human Vasculature",
+      "uuid": "4b9940f6-76c9-4150-abaa-011fecf164f7"
+    },
+    {
+      "name": "CZI925MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Multiplex Strategies for Fluorescence and Imaging Mass Cytometry for Image-Based Analyses",
+      "uuid": "92e516c7-2458-4950-9e88-80a9a7a0e7ed"
+    },
+    {
+      "name": "CZI019CNS",
+      "project": "HCA Seed Networks",
+      "title": "Human Cell Atlas Along the Gut-Brain Axis",
+      "uuid": "662f2c33-24c6-4949-a569-69600178c95b"
+    },
+    {
+      "name": "CZI024CNS",
+      "project": "HCA Seed Networks",
+      "title": "Individual Variability in Human Cell Type Transcriptomes and Epigenomes",
+      "uuid": "26f0a341-b04e-4001-bbdf-a12c0a3cb905"
+    },
+    {
+      "name": "CZI905CNS",
+      "project": "HCA Pilot Projects",
+      "title": "Assessing the Relevance of Organoids to Model Inter-Individual Variation",
+      "uuid": "6d8b40c3-1f51-4114-b2fd-41f1184b3b96"
+    },
+    {
+      "name": "CZI003CNS",
+      "project": "HCA Seed Networks",
+      "title": "A Multimodal Strategy for a Single Cell Atlas of the Human Spinal Cord",
+      "uuid": "fd6fa4e9-5209-48b4-bcf8-79c059395945"
+    },
+    {
+      "name": "CZI033BRE",
+      "project": "HCA Seed Networks",
+      "title": "Single Cell Mapping of the Normal Breast of Ethnically Diverse Populations",
+      "uuid": "de2ea1f5-044f-4357-ad83-af6f5ec1690e"
+    },
+    {
+      "name": "CZI002FRS",
+      "project": "HCA Seed Networks",
+      "title": "A Female Reproductive Cell Atlas",
+      "uuid": "6803de51-a1fc-4499-8f16-434c8d423822"
+    },
+    {
+      "name": "CZI028ADI",
+      "project": "HCA Seed Networks",
+      "title": "Mapping the Human Adipose Tissue Cells and Intercellular Communication",
+      "uuid": "77dd1b31-7a8d-49fe-98c7-02273d316856"
+    },
+    {
+      "name": "CZI915CNS",
+      "project": "HCA Pilot Projects",
+      "title": "Enhanced Labeling and Barcode Expression of Virally Infected Cells",
+      "uuid": "c623dd34-58ad-4e7a-8fe7-c2b1dce6585a"
+    },
+    {
+      "name": "CZI039LAT",
+      "project": "HCA Seed Networks",
+      "title": "Lattice",
+      "uuid": "f5ae02ca-567d-4b6a-9b40-b50ccd91ffed"
+    },
+    {
+      "name": "CZI036MOG",
+      "project": "HCA Seed Networks",
+      "title": "Spatiotemporal Multi-Organ Developmental Maps from the Same Individual",
+      "uuid": "01037798-1370-4739-b40c-9ac177c8dab6"
+    },
+    {
+      "name": "CZI906GIT",
+      "project": "HCA Pilot Projects",
+      "title": "Cell and Tissue Preservation to Construct a Human Cell Atlas",
+      "uuid": "542b6851-f8bd-4029-8dd0-a364647b8ce2"
+    },
+    {
+      "name": "CZI929CNS",
+      "project": "HCA Pilot Projects",
+      "title": "Optimizing Early Post-Mortem Brain Cell Isolation for the HCA",
+      "uuid": "8d8c134c-7b61-493a-8ec7-5d2b8787417d"
+    },
+    {
+      "name": "CZI031CNS",
+      "project": "HCA Seed Networks",
+      "title": "Oligodendroglia Heterogeneity in the Human Brain",
+      "uuid": "1102fc8e-8174-4b67-bfdf-7a40a07cec1b"
+    },
+    {
+      "name": "CZI921GIT",
+      "project": "HCA Pilot Projects",
+      "title": "Integration of Single-Cell Genomics and Spatial Proteomics",
+      "uuid": "4b0dfbb0-26bb-447f-b94a-7eed9c8155af"
+    },
+    {
+      "name": "CZI902CNS",
+      "project": "HCA Pilot Projects",
+      "title": "A Strategy for Mapping the Human Spinal Cord with Single-Cell Resolution",
+      "uuid": "d6a6be5b-be25-4a2e-b205-9105595f755a"
+    },
+    {
+      "name": "CZI932GIT",
+      "project": "HCA Pilot Projects",
+      "title": "Single-Cell RNA-sequencing Tools to Evaluate and Enhance Experimental Replicability of the Human Cell Atlas",
+      "uuid": "09ce0c4c-04a4-40e9-82de-defb5a88bb00"
+    },
+    {
+      "name": "CZI011EYE",
+      "project": "HCA Seed Networks",
+      "title": "Cell Atlas of the Human Eye from Birth to Old Age",
+      "uuid": "33dc5fb7-fc14-46f0-95fd-75c0488e94ac"
+    },
+    {
+      "name": "CZI933CNS",
+      "project": "HCA Pilot Projects",
+      "title": "SpaceTx: Benchmarking Methods for Spatial Transcriptomic Mapping of Cortical Cell Types",
+      "uuid": "338a6369-1cff-4731-aafe-44617044a120"
+    },
+    {
+      "name": "CZI020FRS",
+      "project": "HCA Seed Networks",
+      "title": "Human Cell Atlas of the Female Reproductive System",
+      "uuid": "c1408ffe-d98b-458b-9e9d-7f979f5d2109"
+    },
+    {
+      "name": "CZI006CVS",
+      "project": "HCA Seed Networks",
+      "title": "A Spatial Cell Type Reference Atlas of the Adult Human Heart",
+      "uuid": "24975c95-235d-4d9c-a5d5-25edeecdf9a4"
+    },
+    {
+      "name": "CZI007IMM",
+      "project": "HCA Seed Networks",
+      "title": "An Integrated Map of the Immune System in Humans Across Tissues and Ages",
+      "uuid": "a75282b0-0ea7-409d-ac37-81c2df6c4fce"
+    },
+    {
+      "name": "CZI029TES",
+      "project": "HCA Seed Networks",
+      "title": "Mapping the Transcriptome and Proteome of Human Testis in 3D",
+      "uuid": "0524ce52-642c-4d8b-aab4-ee745bcd4666"
+    },
+    {
+      "name": "CZI938MTH",
+      "project": "HCA Pilot Projects",
+      "title": "Towards a Human Cardiac Cell Atlas",
+      "uuid": "f713cbc2-e099-44db-a2de-d65fc830a381"
+    },
+    {
+      "name": "CZI934GIT",
+      "project": "HCA Pilot Projects",
+      "title": "SPAN: Spatial Pilot PANcreas",
+      "uuid": "6ea5b9b2-9488-446a-86cb-3881917922f8"
+    },
+    {
+      "name": "CZI920CNS",
+      "project": "HCA Pilot Projects",
+      "title": "Integrated Computational and Experimental Approaches to Dissect Cell Type Variation",
+      "uuid": "22e50057-0311-43dc-b166-6fa4669b3d0b"
+    },
+    {
+      "name": "CZI919IMM",
+      "project": "HCA Pilot Projects",
+      "title": "In situ Interrogation of Epigenetic States in Single-Cells",
+      "uuid": "46f823f2-0e17-4444-a56c-5bb6f3e6c1c4"
+    },
+    {
+      "name": "CZI012EYE",
+      "project": "HCA Seed Networks",
+      "title": "Cell Atlas of the Neural Retina",
+      "uuid": "c96fbc7d-9cef-460f-a516-ce2114eef39c"
+    },
+    {
+      "name": "CZI930GIT",
+      "project": "HCA Pilot Projects",
+      "title": "Single-Cell Epigenetic State Profiling and Analysis with ATAC-seq In Complex Human Tissue",
+      "uuid": "e0683b39-4764-49ab-a5f3-d0745bd1ffd0"
+    },
+    {
+      "name": "CZI030IMM",
+      "project": "HCA Seed Networks",
+      "title": "Multi-Modal Cell Profiling and Data Integration to Atlas the Immune System",
+      "uuid": "c67cdfd0-3c17-489e-ba5d-d9c31e812790"
+    },
+    {
+      "name": "CZI931CNS",
+      "project": "HCA Pilot Projects",
+      "title": "Single-Cell RNA-seq Analysis of Human Brain Tissue",
+      "uuid": "ba691be1-2fcd-43eb-a3e2-660df64713e9"
+    },
+    {
+      "name": "CZI013MOG",
+      "project": "HCA Seed Networks",
+      "title": "Deciphering Intra- and Inter-Individual Variation at Single Cell Resolution",
+      "uuid": "40b5381b-4258-4b46-a26d-d6104dd5c5d7"
+    },
+    {
+      "name": "CZI907IMM",
+      "project": "HCA Pilot Projects",
+      "title": "Comparative Studies of Large-Scale Single-Cell Sequencing Technologies in Complex Tissues with Integrated On-Chip Imaging",
+      "uuid": "b90e652a-b806-417d-80bb-e8d0d31aea2b"
+    },
+    {
+      "name": "CZI008IMM",
+      "project": "HCA Seed Networks",
+      "title": "Asian Immune Diversity Atlas",
+      "uuid": "cb41f990-551d-4923-8013-4e88b000727a"
+    },
+    {
+      "name": "CZI901GIT",
+      "project": "HCA Pilot Projects",
+      "title": "3D Volumetric, High Parameter, Iterative Imaging",
+      "uuid": "82cf1677-f2f8-4c90-8b1c-9f5321aa971a"
+    },
+    {
+      "name": "CZI910IMM",
+      "project": "HCA Pilot Projects",
+      "title": "Developing Methodology to Assess Immune Cell Heterogeneity",
+      "uuid": "1db8fdde-5a06-455c-8f77-4a4b53ce2a54"
+    },
+    {
+      "name": "CZI017IMM",
+      "project": "HCA Seed Networks",
+      "title": "Generating an Immune Cell Atlas in Ethnically Diverse Africans",
+      "uuid": "60451982-61dd-442e-b749-8fc757a2ba6b"
+    },
+    {
+      "name": "CZI009KID",
+      "project": "HCA Seed Networks",
+      "title": "Benchmarking Developing and Adult Kidney with Organoids at Single Cell Resolution",
+      "uuid": "c800ffaa-685c-48ea-9f09-ea7817fb0da8"
+    },
+    {
+      "name": "CZI917IMM",
+      "project": "HCA Pilot Projects",
+      "title": "Evaluation of Targeted-Nuclease Mapping of the Cell Type Specific Chromatin Landscape",
+      "uuid": "1b45ced0-60fe-416d-9bc5-91e00d50330e"
+    },
+    {
+      "name": "CZI916IMM",
+      "project": "HCA Pilot Projects",
+      "title": "Enhanced, Massively Parallel, and Multimodal Profiling for the Human Cell Atlas",
+      "uuid": "b83edbda-6038-4e88-b2ba-e4710075589c"
+    },
+    {
+      "name": "CZI022LNG",
+      "project": "HCA Seed Networks",
+      "title": "Human Lung Cell Atlas 1.0",
+      "uuid": "13f55a65-eec4-4c9d-8875-8d41eee38eae"
+    },
+    {
+      "name": "CZI926IMM",
+      "project": "HCA Pilot Projects",
+      "title": "Multiplexing Droplet-Based Single-Cell RNA-sequencing of Peripheral Blood Mononuclear Cells",
+      "uuid": "5e2d7cef-bc84-4126-a1ff-2768522d3b02"
+    },
+    {
+      "name": "CZI924IMM",
+      "project": "HCA Pilot Projects",
+      "title": "Multi-Scale Dissection of Rare Human Cellular Hierarchies",
+      "uuid": "64572341-959d-4e4b-8c84-532df5dfbb63"
+    },
+    {
+      "name": "CZI015KID",
+      "project": "HCA Seed Networks",
+      "title": "Developing Tools and Standards for Integration of Multidimensional Human Cell Atlas Data",
+      "uuid": "d687f1c1-4efd-447f-bf19-7e512f3872bd"
     }
 ]

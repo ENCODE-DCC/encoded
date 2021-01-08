@@ -37,20 +37,6 @@
             "default": false,
             "type": "boolean"
         },
-        "supersedes": {
-            "title": "Supersedes" ,
-            "description": "The files that this file supersedes.",
-            "comment": "Do not submit. Only admins are allowed to set or update this value.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Supersedes",
-                "description" : "A file that this file supersedes",
-                "comment": "The files in this list should be archived or revoked.",
-                "type": "string",
-                "linkTo": "DataFile"
-            }
-        },
         "software": {
             "title": "Software",
             "description": "The software used to generate the file.",

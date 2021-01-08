@@ -48,23 +48,6 @@
         "title": "Peter Sims, Columbia"
     },
     {
-        "address1": "School of Biological Sciences",
-        "address2": "2218 Biological Sciences III",
-        "city": "Irvine",
-        "country": "USA",
-        "institute_label": "UCI",
-        "institute_name": "University of California at Irvine",
-        "name": "ali-mortazavi",
-        "phone": "000-000-0000",
-        "principal_investigators": [
-            "netus.lorem@risus.lobortis"
-        ],
-        "postal_code": "92697-2300",
-        "state": "CA",
-        "title": "Ali Mortazavi, UCI",
-        "uuid": "828cd4fe-ebb0-4b36-a94a-d2e3a36cc987"
-    },
-    {
         "address1": "Department of Genetics",
         "address2": "300 Pasteur Drive; MC5120",
         "city": "Stanford",
@@ -82,20 +65,1488 @@
         "uuid": "cfb789b8-46f3-4d59-a2b3-adc39e7df93a"
     },
     {
-        "address1": "Department of Biology",
-        "address2": "408 Fordham Hall, CB# 3280",
-        "city": "Chapel Hill",
-        "country": "USA",
-        "institute_label": "UNC",
-        "institute_name": "University of North Carolina at Chapel Hill",
-        "name": "jason-lieb",
-        "phone": "000-000-0000",
-        "principal_investigators": [
-            "quisque.consequat@venenatis.magna"
-        ],
-        "postal_code": "27599-3280",
-        "state": "NC",
-        "title": "Jason Lieb, UNC",
-        "uuid": "7d7b4a13-6e53-47ee-b3aa-0538029a1bdf"
+      "@id": "/labs/ronald-germain/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ronald-germain",
+      "title": "Ronald Germain, NIH"
+    },
+    {
+      "@id": "/labs/jason-buenrostro/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jason-buenrostro",
+      "title": "Jason Buenrostro, Harvard"
+    },
+    {
+      "@id": "/labs/roderic-guig%C3%B3/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "roderic-guigó",
+      "title": "Roderic Guigó, CRG"
+    },
+    {
+      "@id": "/labs/james-zou/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "james-zou",
+      "title": "James Zou, Stanford"
+    },
+    {
+      "@id": "/labs/raul-rabadan/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "raul-rabadan",
+      "title": "Raul Rabadan, Columbia"
+    },
+    {
+      "@id": "/labs/philippa-hulley/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "philippa-hulley",
+      "title": "Philippa Hulley, Oxford"
+    },
+    {
+      "@id": "/labs/raphael-gottardo/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "raphael-gottardo",
+      "title": "Raphael Gottardo, Fred Hutch"
+    },
+    {
+      "@id": "/labs/harikrishna-nakshatri/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "harikrishna-nakshatri",
+      "title": "Harikrishna Nakshatri, IU"
+    },
+    {
+      "@id": "/labs/jakub-abramson/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jakub-abramson",
+      "title": "Jakub Abramson, Weizmann"
+    },
+    {
+      "@id": "/labs/ramnik-xavier/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ramnik-xavier",
+      "title": "Ramnik Xavier, Broad"
+    },
+    {
+      "@id": "/labs/gregory-hageman/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "gregory-hageman",
+      "title": "Gregory Hageman, Utah"
+    },
+    {
+      "@id": "/labs/prisca-liberali/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "prisca-liberali",
+      "title": "Prisca Liberali, FMI"
+    },
+    {
+      "@id": "/labs/norbert-h%C3%BCbner/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "norbert-hübner",
+      "title": "Norbert Hübner, MDC"
+    },
+    {
+      "@id": "/labs/rahul-satija/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "rahul-satija",
+      "title": "Rahul Satija, NYGC"
+    },
+    {
+      "@id": "/labs/piero-carninci/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "piero-carninci",
+      "title": "Piero Carninci, Riken"
+    },
+    {
+      "@id": "/labs/holger-heyn/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "holger-heyn",
+      "title": "Holger Heyn, CNAG-CRG"
+    },
+    {
+      "@id": "/labs/ernst-lengyel/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ernst-lengyel",
+      "title": "Ernst Lengyel, Chicago"
+    },
+    {
+      "@id": "/labs/ido-amit/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ido-amit",
+      "title": "Ido Amit, Weizmann"
+    },
+    {
+      "@id": "/labs/herbert-schiller/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "herbert-schiller",
+      "title": "Herbert B. Schiller, HMGU"
+    },
+    {
+      "@id": "/labs/seidman/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "seidman",
+      "title": "Seidman, HMS"
+    },
+    {
+      "@id": "/labs/peter-smibert/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "peter-smibert",
+      "title": "Peter Smibert, NYGC"
+    },
+    {
+      "@id": "/labs/nir-yosef/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "nir-yosef",
+      "title": "Nir Yosef, UCB"
+    },
+    {
+      "@id": "/labs/peter-kharchenko/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "peter-kharchenko",
+      "title": "Peter Kharchenko, HMS"
+    },
+    {
+      "@id": "/labs/jason-spence/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jason-spence",
+      "title": "Jason Spence, UMich"
+    },
+    {
+      "@id": "/labs/sekar-kathiresan/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "sekar-kathiresan",
+      "title": "Sekar Kathiresan, Mass General"
+    },
+    {
+      "@id": "/labs/peter-horvath/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "peter-horvath",
+      "title": "Peter Horvath, BRC"
+    },
+    {
+      "@id": "/labs/cole-trapnell/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "cole-trapnell",
+      "title": "Cole Trapnell, UWash"
+    },
+    {
+      "@id": "/labs/gerald-quon/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "gerald-quon",
+      "title": "Gerald Quon, UCD"
+    },
+    {
+      "@id": "/labs/emma-lundberg/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "emma-lundberg",
+      "title": "Emma Lundberg, KTH"
+    },
+    {
+      "@id": "/labs/gavin-ha/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "gavin-ha",
+      "title": "Gavin Ha, Fred Hutch"
+    },
+    {
+      "@id": "/labs/barbara-treutlein/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "barbara-treutlein",
+      "title": "Barbara Treutlein, MP Anthro"
+    },
+    {
+      "@id": "/labs/pascal-barbry/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "pascal-barbry",
+      "title": "Pascal Barbry, CNRS"
+    },
+    {
+      "@id": "/labs/gray-camp/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "gray-camp",
+      "title": "Gray Camp, IOB"
+    },
+    {
+      "@id": "/labs/eiryo-kawakami/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "eiryo-kawakami",
+      "title": "Eiryo Kawakami, Riken"
+    },
+    {
+      "@id": "/labs/gary-bader/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "gary-bader",
+      "title": "Gary Bader, Toronto"
+    },
+    {
+      "@id": "/labs/margaret-deangelis/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "margaret-deangelis",
+      "title": "Margaret DeAngelis, Utah"
+    },
+    {
+      "@id": "/labs/olga-troyanskaya/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "olga-troyanskaya",
+      "title": "Olga Troyanskaya, Princeton"
+    },
+    {
+      "@id": "/labs/georg-lauer/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "georg-lauer",
+      "title": "Georg Lauer, HMS"
+    },
+    {
+      "@id": "/labs/naomi-habib/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "naomi-habib",
+      "title": "Naomi Habib, HUJI"
+    },
+    {
+      "@id": "/labs/test-lab/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "test-lab",
+      "title": "Test Lab"
+    },
+    {
+      "@id": "/labs/anshul-kundaje/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "anshul-kundaje",
+      "title": "Anshul Kundaje, Stanford"
+    },
+    {
+      "@id": "/labs/michael-schneider/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "michael-schneider",
+      "title": "Michael Schneider, Imperial"
+    },
+    {
+      "@id": "/labs/peng-yin/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "peng-yin",
+      "title": "Peng Yin, Harvard"
+    },
+    {
+      "@id": "/labs/minnie-sarwal/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "minnie-sarwal",
+      "title": "Minnie Sarwal, UCSF"
+    },
+    {
+      "@id": "/labs/yoav-gilad/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "yoav-gilad",
+      "title": "Yoav Gilad, Chicago"
+    },
+    {
+      "@id": "/labs/stuart-cook/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "stuart-cook",
+      "title": "Stuart Cook, Imperial"
+    },
+    {
+      "@id": "/labs/noah-zaitlen/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "noah-zaitlen",
+      "title": "Noah Zaitlen, UCSF"
+    },
+    {
+      "@id": "/labs/fei-chen/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "fei-chen",
+      "title": "Fei Chen, Broad"
+    },
+    {
+      "@id": "/labs/michael-mancini/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "michael-mancini",
+      "title": "Michael Mancini, BCM"
+    },
+    {
+      "@id": "/labs/nils-lindstrom/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "nils-lindstrom",
+      "title": "Nils Lindstrom, USC"
+    },
+    {
+      "@id": "/labs/nikolaus-rajewsky/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "nikolaus-rajewsky",
+      "title": "Nikolaus Rajewsky, MDC"
+    },
+    {
+      "@id": "/labs/fabian-theis/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "fabian-theis",
+      "title": "Fabian Theis, HMGU"
+    },
+    {
+      "@id": "/labs/guo-cheng-yuan/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "guo-cheng-yuan",
+      "title": "Guo-Cheng Yuan, Dana-Farber"
+    },
+    {
+      "@id": "/labs/ernest-fraenkel/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ernest-fraenkel",
+      "title": "Ernest Fraenkel, MIT"
+    },
+    {
+      "@id": "/labs/stephanie-dakin/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "stephanie-dakin",
+      "title": "Stephanie Dakin, Oxford"
+    },
+    {
+      "@id": "/labs/gr-scott-budinger/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "gr-scott-budinger",
+      "title": "GR Scott Budinger, Northwestern"
+    },
+    {
+      "@id": "/labs/eran-mukamel/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "eran-mukamel",
+      "title": "Eran Mukamel, UCSD"
+    },
+    {
+      "@id": "/labs/menna-clatworthy/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "menna-clatworthy",
+      "title": "Menna Clatworthy, Cambridge"
+    },
+    {
+      "@id": "/labs/nikolai-slavov/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "nikolai-slavov",
+      "title": "Nikolai Slavov, Northeastern"
+    },
+    {
+      "@id": "/labs/steven-henikoff/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "steven-henikoff",
+      "title": "Steven Henikoff, Fred Hutch"
+    },
+    {
+      "@id": "/labs/nicholas-navin/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "nicholas-navin",
+      "title": "Nicholas Navin, Anderson"
+    },
+    {
+      "@id": "/labs/kun-zhang/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "kun-zhang",
+      "title": "Kun Zhang, UCSD"
+    },
+    {
+      "@id": "/labs/eline-luning-prak/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "eline-luning-prak",
+      "title": "Eline Luning Prak, Penn"
+    },
+    {
+      "@id": "/labs/neil-henderson/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "neil-henderson",
+      "title": "Neil Henderson, Edinburgh"
+    },
+    {
+      "@id": "/labs/alexander-tsankov/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "alexander-tsankov",
+      "title": "Alexander Tsankov, Mount Sinai"
+    },
+    {
+      "@id": "/labs/douglas-shepherd/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "douglas-shepherd",
+      "title": "Douglas Shepherd, ASU"
+    },
+    {
+      "@id": "/labs/yu-hua-tseng/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "yu-hua-tseng",
+      "title": "Yu-Hua Tseng, HMS"
+    },
+    {
+      "@id": "/labs/matthias-mann/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "matthias-mann",
+      "title": "Matthias Mann, UCPH"
+    },
+    {
+      "@id": "/labs/udo-oppermann/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "udo-oppermann",
+      "title": "Udo Oppermann, Oxford"
+    },
+    {
+      "@id": "/labs/jun-li/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jun-li",
+      "title": "Jun Z. Li, UMich"
+    },
+    {
+      "@id": "/labs/naftali-kaminski/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "naftali-kaminski",
+      "title": "Naftali Kaminski, Yale"
+    },
+    {
+      "@id": "/labs/roser-vento-tormo/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "roser-vento-tormo",
+      "title": "Roser Vento-Tormo, Sanger"
+    },
+    {
+      "@id": "/labs/matthias-kretzler/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "matthias-kretzler",
+      "title": "Matthias Kretzler, UMich"
+    },
+    {
+      "@id": "/labs/purushothama-rao-tata/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "purushothama-rao-tata",
+      "title": "Purushothama Rao Tata, Duke"
+    },
+    {
+      "@id": "/labs/shalev-itzkovitz/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "shalev-itzkovitz",
+      "title": "Shalev Itzkovitz, Weizmann"
+    },
+    {
+      "@id": "/labs/donna-farber/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "donna-farber",
+      "title": "Donna Farber, Columbia"
+    },
+    {
+      "@id": "/labs/debora-marks/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "debora-marks",
+      "title": "Debora Marks, HMS"
+    },
+    {
+      "@id": "/labs/matthias-heinig/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "matthias-heinig",
+      "title": "Matthias Heinig, HMGU"
+    },
+    {
+      "@id": "/labs/dana-pe'er/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "dana-pe'er",
+      "title": "Dana Pe'er, Sloan"
+    },
+    {
+      "@id": "/labs/muzlifah-haniffa/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "muzlifah-haniffa",
+      "title": "Muzlifah Haniffa, Newcastle"
+    },
+    {
+      "@id": "/labs/gon%C3%A7alo-castelo-branco/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "gonçalo-castelo-branco",
+      "title": "Gonçalo Castelo-Branco, KI"
+    },
+    {
+      "@id": "/labs/yvan-saeys/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "yvan-saeys",
+      "title": "Yvan Saeys, Ghent"
+    },
+    {
+      "@id": "/labs/chris-sander/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "chris-sander",
+      "title": "Chris Sander, HMS"
+    },
+    {
+      "@id": "/labs/jeffrey-moffitt/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jeffrey-moffitt",
+      "title": "Jeffrey Moffitt, BCH, HMS"
+    },
+    {
+      "@id": "/labs/dominic-gr%C3%BCn/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "dominic-grün",
+      "title": "Dominic Grün, MP Immuno"
+    },
+    {
+      "@id": "/labs/gioele-la-manno/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "gioele-la-manno",
+      "title": "Gioele La Manno, EPFL"
+    },
+    {
+      "@id": "/labs/bo-zhang/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "bo-zhang",
+      "title": "Bo Zhang, WashU"
+    },
+    {
+      "@id": "/labs/mei-zhen/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "mei-zhen",
+      "title": "Mei Zhen, Toronto"
+    },
+    {
+      "@id": "/labs/devon-lawson/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "devon-lawson",
+      "title": "Devon Lawson, UCI"
+    },
+    {
+      "@id": "/labs/esti-yeger-lotem/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "esti-yeger-lotem",
+      "title": "Esti Yeger-Lotem, BGU"
+    },
+    {
+      "@id": "/labs/yunlong-liu/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "yunlong-liu",
+      "title": "Yunlong Liu, IU"
+    },
+    {
+      "@id": "/labs/chung-chau-hon/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "chung-chau-hon",
+      "title": "Chung Chau Hon, Riken"
+    },
+    {
+      "@id": "/labs/mary-elizabeth-patti/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "mary-elizabeth-patti",
+      "title": "Mary-Elizabeth Patti, HMS"
+    },
+    {
+      "@id": "/labs/martin-guilliams/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "martin-guilliams",
+      "title": "Martin Guilliams, Ghent"
+    },
+    {
+      "@id": "/labs/ayellet-segre/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ayellet-segre",
+      "title": "Ayellet Segre, MEE"
+    },
+    {
+      "@id": "/labs/catherine-wu/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "catherine-wu",
+      "title": "Catherine Wu, Dana-Farber"
+    },
+    {
+      "@id": "/labs/mengjie-chen/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "mengjie-chen",
+      "title": "Mengjie Chen, Chicago"
+    },
+    {
+      "@id": "/labs/xiling-shen/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "xiling-shen",
+      "title": "Xiling Shen, Duke"
+    },
+    {
+      "@id": "/labs/aviv-regev/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "aviv-regev",
+      "title": "Aviv Regev, Broad"
+    },
+    {
+      "@id": "/labs/matthew-ritchie/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "matthew-ritchie",
+      "title": "Matthew Ritchie, WEHI"
+    },
+    {
+      "@id": "/labs/charlotte-scott/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "charlotte-scott",
+      "title": "Charlotte Scott, Ghent"
+    },
+    {
+      "@id": "/labs/mark-krasnow/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "mark-krasnow",
+      "title": "Mark Krasnow, Stanford"
+    },
+    {
+      "@id": "/labs/wenyi-wang/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "wenyi-wang",
+      "title": "Wenyi Wang, Anderson"
+    },
+    {
+      "@id": "/labs/tushar-desai/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "tushar-desai",
+      "title": "Tushar Desai, Stanford"
+    },
+    {
+      "@id": "/labs/zemin-zhang/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "zemin-zhang",
+      "title": "Zemin Zhang, Beijing"
+    },
+    {
+      "@id": "/labs/wolfgang-enard/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "wolfgang-enard",
+      "title": "Wolfgang Enard, LMU"
+    },
+    {
+      "@id": "/labs/ann-mullally/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ann-mullally",
+      "title": "Ann Mullally, HMS"
+    },
+    {
+      "@id": "/labs/tom-taghon/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "tom-taghon",
+      "title": "Tom Taghon, Ghent"
+    },
+    {
+      "@id": "/labs/brian-black/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "brian-black",
+      "title": "Brian Black, UCSF"
+    },
+    {
+      "@id": "/labs/margarita-behrens/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "margarita-behrens",
+      "title": "Margarita Behrens, Salk"
+    },
+    {
+      "@id": "/labs/ken-lau/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ken-lau",
+      "title": "Ken Lau, Vanderbilt"
+    },
+    {
+      "@id": "/labs/lucas-pelkmans/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "lucas-pelkmans",
+      "title": "Lucas Pelkmans, Univ of Zurich"
+    },
+    {
+      "@id": "/labs/benjamin-humphreys/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "benjamin-humphreys",
+      "title": "Benjamin Humphreys, WashU"
+    },
+    {
+      "@id": "/labs/assaf-rudich/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "assaf-rudich",
+      "title": "Assaf Rudich, BGU"
+    },
+    {
+      "@id": "/labs/alexis-battle/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "alexis-battle",
+      "title": "Alexis Battle, JHU"
+    },
+    {
+      "@id": "/labs/luca-pinello/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "luca-pinello",
+      "title": "Luca Pinello, Mass General"
+    },
+    {
+      "@id": "/labs/yun-song/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "yun-song",
+      "title": "Yun Song, UCB"
+    },
+    {
+      "@id": "/labs/anna-williams/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "anna-williams",
+      "title": "Anna Williams, Edinburgh"
+    },
+    {
+      "@id": "/labs/shyam-prabhakar/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "shyam-prabhakar",
+      "title": "Shyam Prabhakar, GIS"
+    },
+    {
+      "@id": "/labs/lars-steinmetz/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "lars-steinmetz",
+      "title": "Lars Steinmetz, Stanford"
+    },
+    {
+      "@id": "/labs/wolfgang-huber/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "wolfgang-huber",
+      "title": "Wolfgang Huber, EMBL Heidelberg"
+    },
+    {
+      "@id": "/labs/smita-krishnaswamy/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "smita-krishnaswamy",
+      "title": "Smita Krishnaswamy, Yale"
+    },
+    {
+      "@id": "/labs/thomas-quertermous/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "thomas-quertermous",
+      "title": "Thomas Quertermous, Stanford"
+    },
+    {
+      "@id": "/labs/ken-chen/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ken-chen",
+      "title": "Ken Chen, Anderson"
+    },
+    {
+      "@id": "/labs/ariella-shikanov/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ariella-shikanov",
+      "title": "Ariella Shikanov, UMich"
+    },
+    {
+      "@id": "/labs/tom-maniatis/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "tom-maniatis",
+      "title": "Tom Maniatis, Columbia"
+    },
+    {
+      "@id": "/labs/joshua-sanes/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "joshua-sanes",
+      "title": "Joshua Sanes, Harvard"
+    },
+    {
+      "@id": "/labs/kasper-hansen/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "kasper-hansen",
+      "title": "Kasper Hansen, JHU"
+    },
+    {
+      "@id": "/labs/ludovic-vallier/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "ludovic-vallier",
+      "title": "Ludovic Vallier, Cambridge"
+    },
+    {
+      "@id": "/labs/andrew-carr/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "andrew-carr",
+      "title": "Andrew Carr, Oxford"
+    },
+    {
+      "@id": "/labs/stefan-tullius/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "stefan-tullius",
+      "title": "Stefan Tullius, BWH"
+    },
+    {
+      "@id": "/labs/kami-ahmad/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "kami-ahmad",
+      "title": "Kami Ahmad, Fred Hutch"
+    },
+    {
+      "@id": "/labs/antje-k%C3%B6rner/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "antje-körner",
+      "title": "Antje Körner, Leipzig"
+    },
+    {
+      "@id": "/labs/sushrut-waikar/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "sushrut-waikar",
+      "title": "Sushrut Waikar, BWH"
+    },
+    {
+      "@id": "/labs/joseph-powell/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "joseph-powell",
+      "title": "Joseph Powell, Garvan"
+    },
+    {
+      "@id": "/labs/joanne-jones/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "joanne-jones",
+      "title": "Joanne Jones, Cambridge"
+    },
+    {
+      "@id": "/labs/thierry-voet/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "thierry-voet",
+      "title": "Thierry Voet, KU Leuven"
+    },
+    {
+      "@id": "/labs/amos-tanay/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "amos-tanay",
+      "title": "Amos Tanay, Weizmann"
+    },
+    {
+      "@id": "/labs/jess-snedeker/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jess-snedeker",
+      "title": "Jess Snedeker, ETH Zurich"
+    },
+    {
+      "@id": "/labs/sarah-snelling/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "sarah-snelling",
+      "title": "Sarah Snelling, Oxford"
+    },
+    {
+      "@id": "/labs/liam-paninski/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "liam-paninski",
+      "title": "Liam Paninski, Columbia"
+    },
+    {
+      "@id": "/labs/allon-klein/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "allon-klein",
+      "title": "Allon Klein, HMS"
+    },
+    {
+      "@id": "/labs/sarah-tishkoff/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "sarah-tishkoff",
+      "title": "Sarah Tishkoff, Penn"
+    },
+    {
+      "@id": "/labs/je-lee/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "je-lee",
+      "title": "Je Lee, CSHL"
+    },
+    {
+      "@id": "/labs/anindita-basu/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "anindita-basu",
+      "title": "Anindita Basu, Chicago"
+    },
+    {
+      "@id": "/labs/stephan-sanders/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "stephan-sanders",
+      "title": "Stephan Sanders, UCSF"
+    },
+    {
+      "@id": "/labs/sahand-hormoz/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "sahand-hormoz",
+      "title": "Sahand Hormoz, HMS"
+    },
+    {
+      "@id": "/labs/samantha-morris/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "samantha-morris",
+      "title": "Samantha Morris, WashU"
+    },
+    {
+      "@id": "/labs/andrew-mcmahon/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "andrew-mcmahon",
+      "title": "Andrew McMahon, USC"
+    },
+    {
+      "@id": "/labs/kai-kessenbrock/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "kai-kessenbrock",
+      "title": "Kai Kessenbrock, UCI"
+    },
+    {
+      "@id": "/labs/jay-shin/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jay-shin",
+      "title": "Jay Shin, Riken"
+    },
+    {
+      "@id": "/labs/alan-mullen/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "alan-mullen",
+      "title": "Alan Mullen, Mass General"
+    },
+    {
+      "@id": "/labs/j%C3%BCrgen-cox/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jürgen-cox",
+      "title": "Jürgen Cox, MP Biochem"
+    },
+    {
+      "@id": "/labs/sarah-teichmann/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "sarah-teichmann",
+      "title": "Sarah Teichmann, Sanger"
+    },
+    {
+      "@id": "/labs/aedin-culhane/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "aedin-culhane",
+      "title": "Aedin Culhane, Dana-Farber"
+    },
+    {
+      "@id": "/labs/jeffrey-whitsett/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jeffrey-whitsett",
+      "title": "Jeffrey Whitsett, CCHMC"
+    },
+    {
+      "@id": "/labs/sue-hammoud/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "sue-hammoud",
+      "title": "Sue Hammoud, UMich"
+    },
+    {
+      "@id": "/labs/jayaraj-rajagopal/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "jayaraj-rajagopal",
+      "title": "Jayaraj Rajagopal, Broad"
+    },
+    {
+      "@id": "/labs/stephanie-hicks/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "stephanie-hicks",
+      "title": "Stephanie Hicks, JHU"
+    },
+    {
+      "@id": "/labs/rui-chen/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "rui-chen",
+      "title": "Rui Chen, BCM"
+    },
+    {
+      "@id": "/labs/aaron-streets/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "aaron-streets",
+      "title": "Aaron Streets, UCB"
+    },
+    {
+      "@id": "/labs/karthik-shekhar/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "karthik-shekhar",
+      "title": "Karthik Shekhar, UCB"
+    },
+    {
+      "@id": "/labs/sheng-zhong/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "sheng-zhong",
+      "title": "Sheng Zhong, UCSD"
+    },
+    {
+      "@id": "/labs/joseph-ecker/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "joseph-ecker",
+      "title": "Joseph Ecker, Salk"
+    },
+    {
+      "@id": "/labs/sara-rouhanifard/",
+      "@type": [
+        "Lab",
+        "Item"
+      ],
+      "name": "sara-rouhanifard",
+      "title": "Sara Rouhanifard, Northeastern"
     }
 ]

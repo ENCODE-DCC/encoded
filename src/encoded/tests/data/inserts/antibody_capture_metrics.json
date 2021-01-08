@@ -1,8 +1,5 @@
 [
 	{
-		"aliases": [
-			"anna-greka:donorA1_antibody_metrics"
-		],
 		"uuid": "4e3ed262-8044-4adc-bf76-4d4b7276f808",
 		"status": "released",
 		"quality_metric_of": "anna-greka:donorA1_filtered_feature_bc_matrix",
@@ -23,9 +20,6 @@
 		"median_umis_per_cell": 2513
 	},
 	{
-		"aliases": [
-			"anna-greka:donorA2_antibody_metrics"
-		],
 		"uuid": "95f1d5ac-dd73-4885-a935-555fb18f8d33",
 		"status": "released",
 		"quality_metric_of": "anna-greka:donorA2_filtered_feature_bc_matrix",
@@ -46,9 +40,6 @@
 		"median_umis_per_cell": 3513
 	},
 	{
-		"aliases": [
-			"anna-greka:donorB1_antibody_metrics"
-		],
 		"uuid": "7ef4c15f-ad24-47ef-a4ff-853c863b3146",
 		"status": "released",
 		"quality_metric_of": "anna-greka:donorB1_filtered_feature_bc_matrix",
@@ -69,9 +60,6 @@
 		"median_umis_per_cell": 5513
 	},
 	{
-		"aliases": [
-			"anna-greka:donorB2_antibody_metrics"
-		],
 		"uuid": "64e84d1c-f177-488e-8697-36ff2ca2f88d",
 		"status": "released",
 		"quality_metric_of": "anna-greka:donorB2_filtered_feature_bc_matrix",
@@ -92,9 +80,6 @@
 		"median_umis_per_cell": 2613
 	},
 	{
-		"aliases": [
-			"anna-greka:donorE_antibody_metrics"
-		],
 		"uuid": "f5b01f36-41b6-41f4-944e-6bd03e5305c6",
 		"status": "released",
 		"quality_metric_of": "anna-greka:donorE_filtered_feature_bc_matrix",
@@ -115,9 +100,6 @@
 		"median_umis_per_cell": 2517
 	},
 	{
-		"aliases": [
-			"anna-greka:donorF_antibody_metrics"
-		],
 		"uuid": "a4e6604b-5b22-4894-95ad-1d1297769a16",
 		"status": "released",
 		"quality_metric_of": "anna-greka:donorF_filtered_feature_bc_matrix",
@@ -138,9 +120,6 @@
 		"median_umis_per_cell": 2813
 	},
 	{
-		"aliases": [
-			"anna-greka:donorG_antibody_metrics"
-		],
 		"uuid": "7ea315ce-619c-4b7a-96c8-55bcb4cc7989",
 		"status": "released",
 		"quality_metric_of": "anna-greka:donorG_filtered_feature_bc_matrix",
@@ -161,9 +140,6 @@
 		"median_umis_per_cell": 2913
 	},
 	{
-		"aliases": [
-			"anna-greka:donorH_antibody_metrics"
-		],
 		"uuid": "fa23d3ea-489c-4609-b159-4d927cd7ad3c",
 		"status": "released",
 		"quality_metric_of": "anna-greka:donorH_filtered_feature_bc_matrix",
