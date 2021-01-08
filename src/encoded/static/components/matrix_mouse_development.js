@@ -121,7 +121,7 @@ const analyzeSubCategoryData = (subCategoryData, columnCategory, colMap, colCoun
 // Age can be denoted in days or weeks
 // In the future there are likely to be additions to the data which will require updates to this function
 // For instance, ages measured by months will likely be added
-function sortMouseArray(a, b) {
+export default function sortMouseArray(a, b) {
     const aStage = a.split(/ (.+)/)[0].replace('embryonic', 'embryo');
     const bStage = b.split(/ (.+)/)[0].replace('embryonic', 'embryo');
     const aAge = a.split(/ (.+)/)[1];

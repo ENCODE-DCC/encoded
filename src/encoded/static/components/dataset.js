@@ -16,6 +16,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
+import sortMouseArray from './matrix_mouse_development';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
@@ -1213,6 +1214,121 @@ const basicTableColumns = {
     },
 };
 
+const geneSilencingSeriesTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) =>
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>,
+    },
+
+    target: {
+        title: 'Target',
+        getValue: experiment => (experiment.target ? experiment.target.label : '(control)'),
+    },
+
+    description: {
+        title: 'Description',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
+
+    },
+    status: {
+        title: 'Status',
+        display: experiment => <Status item={experiment} badgeSize="small" />,
+    },
+    cart: {
+        title: 'Cart',
+        display: experiment => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+const treatmentTimeSeriesTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    possible_controls: {
+        title: 'Possible controls',
+        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
+        sorter: false,
+    },
+
+<<<<<<< HEAD
+    assay_term_name: {
+        title: 'Assay',
+    },
+
+    target: {
+        title: 'Target',
+        getValue: (experiment) => (experiment.target ? experiment.target.label : null),
+=======
+    duration: {
+        title: 'Duration',
+        getValue: (experiment) => {
+            let durations = [];
+            if (experiment.replicates && experiment.replicates.length > 0) {
+                const biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
+                durations.push(biosamples.map((biosample) => {
+                    if (biosample.treatments && biosample.treatments.length > 0) {
+                        durations = `${biosample.treatments[0].duration} ${biosample.treatments[0].duration_units}${biosample.treatments[0].duration > 1 ? 's' : ''}`;
+                    }
+                    return null;
+                }));
+            }
+            return durations;
+        },
+>>>>>>> ENCD-5606 update series searches
+    },
+
+    description: {
+        title: 'Description',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
+    },
+
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+function computeConcentration(experiment) {
+    let concentration = [];
+    if (experiment.replicates && experiment.replicates.length > 0) {
+        const biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
+        concentration = `${biosamples[0].treatments[0].amount} ${biosamples[0].treatments[0].amount_units}`;
+    }
+    return concentration;
+}
+
 const treatmentSeriesTableColumns = {
     accession: {
         title: 'Accession',
@@ -1233,77 +1349,80 @@ const treatmentSeriesTableColumns = {
         sorter: false,
     },
 
-    assay_term_name: {
-        title: 'Assay',
-    },
-
-    target: {
-        title: 'Target',
-        getValue: (experiment) => (experiment.target ? experiment.target.label : null),
+    concentration: {
+        title: 'Concentration',
+        getValue: experiment => computeConcentration(experiment),
     },
 
     description: {
         title: 'Description',
     },
 
-    lab: {
-        title: 'Lab',
-        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
-    },
-
-    status: {
-        title: 'Status',
-        display: (experiment) => <Status item={experiment} badgeSize="small" />,
-    },
-
-    cart: {
-        title: 'Cart',
-        display: (experiment) => <CartToggle element={experiment} />,
-        sorter: false,
-    },
-};
-
-const replicationTimingSeriesTableColumns = {
-    accession: {
-        title: 'Accession',
-        display: (experiment, meta) => (
-            <span>
-                {meta.adminUser || publicDataset(experiment) ?
-                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
-                :
-                    <span>{experiment.accession}</span>
-                }
-            </span>
-        ),
-    },
-
-    possible_controls: {
-        title: 'Possible controls',
-        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
-        sorter: false,
-    },
-
-    assay_term_name: {
-        title: 'Assay',
-    },
-
-    phase: {
-        title: 'Biosample phase',
-        display: (experiment) => {
-            let phases = [];
-
+<<<<<<< HEAD
             if (experiment.replicates && experiment.replicates.length > 0) {
                 const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
                 phases = _.chain(biosamples.map((biosample) => biosample.phase)).compact().uniq().value();
             }
             return phases.join(', ');
         },
-        sorter: false,
+=======
+    lab: {
+        title: 'Lab',
+        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
     },
 
+    status: {
+        title: 'Status',
+        display: experiment => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: experiment => <CartToggle element={experiment} />,
+>>>>>>> ENCD-5606 update series searches
+        sorter: false,
+    },
+};
+
+<<<<<<< HEAD
     target: {
         title: 'Target',
         getValue: (experiment) => (experiment.target ? experiment.target.label : null),
+=======
+function computePhase(experiment) {
+    let phases = [];
+    if (experiment.replicates && experiment.replicates.length > 0) {
+        const biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
+        phases = _.chain(biosamples.map(biosample => biosample.phase)).compact().uniq().value();
+    }
+    return phases.join(', ');
+}
+
+const replicationTimingSeriesTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) =>
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>,
+    },
+
+    phase: {
+        title: 'Cell cycle phase',
+        display: experiment => computePhase(experiment),
+        objSorter: (a, b) => {
+            const sortOrder = ['G1', 'G1b', 'S', 'early S', 'S1', 'S2', 'S3', 'S4', 'late S', 'G2'];
+            const aIdx = sortOrder.indexOf(computePhase(a));
+            const bIdx = sortOrder.indexOf(computePhase(b));
+            if (aIdx < bIdx) { return -1; }
+            if (aIdx > bIdx) { return 1; }
+            return 0;
+        },
+>>>>>>> ENCD-5606 update series searches
     },
 
     description: {
@@ -1326,6 +1445,40 @@ const replicationTimingSeriesTableColumns = {
         sorter: false,
     },
 };
+
+// Sort the rows of the matrix by stage (embryo -> postnatal -> adult) and then by age
+// Age can be denoted in days or weeks
+// In the future there are likely to be additions to the data which will require updates to this function
+// For instance, ages measured by months will likely be added
+function sortMouseAge(a, b) {
+    const aAge = a.split(/ (.+)/)[1];
+    const bAge = b.split(/ (.+)/)[1];
+    let aNumerical = 0;
+    let bNumerical = 0;
+    if (aAge.includes('days')) {
+        aNumerical += +aAge.split('days')[0];
+    } else if (aAge.includes('weeks')) {
+        aNumerical += +aAge.split('weeks')[0] * 7;
+    } else if (aAge.includes(' years')) {
+        aNumerical += +aAge.split('years')[0] * 365;
+    }
+    if (bAge.includes('days')) {
+        bNumerical += +bAge.split('days')[0];
+    } else if (bAge.includes(' weeks')) {
+        bNumerical += +bAge.split('weeks')[0] * 7;
+    } else if (bAge.includes(' years')) {
+        bNumerical += +bAge.split('years')[0] * 365;
+    }
+    return aNumerical - bNumerical;
+}
+
+function sortStage(a, b) {
+    if (a.life_stage_age && b.life_stage_age) {
+        return sortMouseArray(a.life_stage_age, b.life_stage_age);
+    }
+    // special case with multiple replicates (old data)
+    return (a.replicates[0].library.biosample.age_display.split(' ')[0] - b.replicates[0].library.biosample.age_display.split(' ')[0]);
+}
 
 const organismDevelopmentSeriesTableColumns = {
     accession: {
@@ -1346,59 +1499,173 @@ const organismDevelopmentSeriesTableColumns = {
         display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
         sorter: false,
     },
-    assay_term_name: {
-        title: 'Assay',
-    },
 
-    age: {
-        title: 'Age',
+    life_stage_age: {
+        title: (experiments) => {
+            let ageUnits = [];
+            experiments.forEach((experiment) => {
+                let biosamples;
+                if (experiment.replicates && experiment.replicates.length > 0) {
+                    biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
+                }
+                if (biosamples && biosamples.length > 0) {
+                    ageUnits = [...ageUnits, ...biosamples.map(b => b.age_units)];
+                }
+            });
+            const uniqueAgeUnits = _.uniq(ageUnits);
+            const biosampleOneStage = (uniqueAgeUnits.length === 1) && (uniqueAgeUnits[0] === 'year');
+            if (biosampleOneStage) {
+                return 'Age';
+            }
+            return 'Stage';
+        },
+
         display: (experiment) => {
             let biosamples;
-            let synchronizationBiosample;
-            let ages;
+            let lifeStageAge = [];
 
             if (experiment.replicates && experiment.replicates.length > 0) {
                 biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
             }
             if (biosamples && biosamples.length > 0) {
+<<<<<<< HEAD
                 synchronizationBiosample = _(biosamples).find((biosample) => biosample.synchronization);
                 if (!synchronizationBiosample) {
                     ages = _.chain(biosamples.map((biosample) => biosample.age_display)).compact().uniq().value();
                 }
-            }
-            return (
-                <span>
-                    {synchronizationBiosample ?
-                        <span>{`${synchronizationBiosample.synchronization} + ${synchronizationBiosample.age_display}`}</span>
-                    :
-                        <span>{ages && ages.length > 0 ? <span>{ages.join(', ')}</span> : null}</span>
+=======
+                biosamples.forEach((biosample) => {
+                    if (biosample.age_units === 'year') {
+                        lifeStageAge.push(`${biosample.age_display ? biosample.age_display : ''}`);
+                    } else {
+                        lifeStageAge.push(`${biosample.life_stage} ${biosample.age_display ? biosample.age_display : ''}`);
                     }
-                </span>
+                });
+>>>>>>> ENCD-5606 update series searches
+            }
+            lifeStageAge = _.uniq(lifeStageAge);
+            return (
+                <span>{lifeStageAge && lifeStageAge.length > 0 ? <span>{lifeStageAge.join(', ')}</span> : 'unknown'}</span>
             );
         },
+        objSorter: (a, b) => sortStage(a, b),
+    },
+
+    description: {
+        title: 'Description',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: item => (item.lab ? item.lab.title : null),
+    },
+
+    status: {
+        title: 'Status',
+        display: experiment => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: experiment => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+function sortPostSynch(a, b) {
+    let aPostSynch;
+    let bPostSynch;
+    let bBiosamples;
+    let aBiosamples;
+    let aSynchronizationBiosample;
+    let bSynchronizationBiosample;
+
+    if (a.replicates && a.replicates.length > 0) {
+        aBiosamples = a.replicates.map(replicate => replicate.library && replicate.library.biosample);
+    }
+    if (aBiosamples && aBiosamples.length > 0) {
+        aSynchronizationBiosample = _(aBiosamples).find(biosample => biosample.synchronization);
+    }
+    if (b.replicates && b.replicates.length > 0) {
+        bBiosamples = b.replicates.map(replicate => replicate.library && replicate.library.biosample);
+    }
+    if (bBiosamples && bBiosamples.length > 0) {
+        bSynchronizationBiosample = _(bBiosamples).find(biosample => biosample.synchronization);
+    }
+    if (aSynchronizationBiosample && bSynchronizationBiosample) {
+        aPostSynch = aSynchronizationBiosample.age_display.split(' ')[0];
+        bPostSynch = bSynchronizationBiosample.age_display.split(' ')[0];
+        return (aPostSynch - bPostSynch);
+    }
+    return 0;
+}
+
+const organismDevelopmentSeriesWormFlyTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) =>
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>,
+    },
+
+    possible_controls: {
+        title: 'Possible controls',
+        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
         sorter: false,
     },
 
-    life_stage: {
-        title: 'Life stage',
-        getValue: (experiment) => {
+    synch: {
+        title: 'Synchronization',
+        display: (experiment) => {
             let biosamples;
-            let lifeStageBiosample;
+            let synchronizationBiosample;
 
             if (experiment.replicates && experiment.replicates.length > 0) {
                 biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
             }
             if (biosamples && biosamples.length > 0) {
+<<<<<<< HEAD
                 lifeStageBiosample = _(biosamples).find((biosample) => biosample.life_stage);
                 return lifeStageBiosample.life_stage;
+=======
+                synchronizationBiosample = _(biosamples).find(biosample => biosample.synchronization);
+>>>>>>> ENCD-5606 update series searches
             }
-            return null;
+            return (
+                <span>{`${synchronizationBiosample.synchronization}`}</span>
+            );
         },
+        objSorter: (a, b) => sortMouseAge(a.life_stage_age, b.life_stage_age),
     },
 
+<<<<<<< HEAD
     target: {
         title: 'Target',
         getValue: (item) => (item.target ? item.target.label : null),
+=======
+    postsynchtime: {
+        title: 'Post-synchronization time',
+        display: (experiment) => {
+            let biosamples;
+            let synchronizationBiosample;
+
+            if (experiment.replicates && experiment.replicates.length > 0) {
+                biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
+            }
+            if (biosamples && biosamples.length > 0) {
+                synchronizationBiosample = _(biosamples).find(biosample => biosample.synchronization);
+            }
+            return (
+                <span>{`${synchronizationBiosample.age_display}`}</span>
+            );
+        },
+        objSorter: (a, b) => sortPostSynch(a, b),
+>>>>>>> ENCD-5606 update series searches
     },
 
     description: {
@@ -1427,14 +1694,15 @@ const organismDevelopmentSeriesTableColumns = {
 const seriesComponents = {
     MatchedSet: { title: 'matched set series', table: basicTableColumns },
     OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
+    OrganismDevelopmentSeriesWormFly: { title: 'organism development series', table: organismDevelopmentSeriesWormFlyTableColumns },
     ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
     ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
     TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
-    TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
+    TreatmentTimeSeries: { title: 'treatment time series', table: treatmentTimeSeriesTableColumns },
     AggregateSeries: { title: 'aggregate series', table: basicTableColumns },
     SingleCellRnaSeries: { title: 'single cell rna series', table: basicTableColumns },
     FunctionalCharacterizationSeries: { title: 'functional characterization series', table: basicTableColumns },
-    GeneSilencingSeries: { title: 'gene silencing series', table: basicTableColumns },
+    GeneSilencingSeries: { title: 'gene silencing series', table: geneSilencingSeriesTableColumns },
 };
 
 export const SeriesComponent = (props, reactContext) => {
@@ -1455,13 +1723,38 @@ export const SeriesComponent = (props, reactContext) => {
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
     // Set up the breadcrumbs
-    const datasetType = context['@type'][1];
-    const seriesType = context['@type'][0];
+    let seriesType = context['@type'][0];
     const crumbs = [
         { id: 'Datasets' },
-        { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
-        { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
+        { id: breakSetName(seriesType), uri: `/series-search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
     ];
+
+    if (seriesType === 'OrganismDevelopmentSeries' && context.organism && context.organism.length > 0) {
+        if ((context.organism[0].scientific_name === 'Caenorhabditis elegans') || (context.organism[0].scientific_name === 'Drosophila melanogaster')) {
+            seriesType = 'OrganismDevelopmentSeriesWormFly';
+        }
+    }
+
+    let treatmentDuration = [];
+    let treatmentAmounts = [];
+    context.related_datasets.forEach((d) => {
+        let biosamples;
+        if (d.replicates && d.replicates.length > 0) {
+            biosamples = d.replicates.map(replicate => replicate.library && replicate.library.biosample);
+        }
+        if (biosamples && biosamples.length > 0) {
+            biosamples.forEach(biosample => biosample.treatments.forEach((treatment) => {
+                if (treatment.duration) {
+                    treatmentDuration.push(`${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`);
+                }
+            }));
+            biosamples.forEach(biosample => biosample.treatments.forEach((treatment) => {
+                if (treatment.amount) {
+                    treatmentAmounts.push(`${treatment.amount} ${treatment.amount_units} ${treatment.treatment_term_name}`);
+                }
+            }));
+        }
+    });
 
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
@@ -1506,6 +1799,20 @@ export const SeriesComponent = (props, reactContext) => {
         );
     }
 
+    let targets;
+    // Get list of target labels
+    if (context.target) {
+        targets = _.uniq(context.target.map(target => target.label));
+    }
+    if (treatmentDuration.length > 0) {
+        treatmentDuration = _.uniq(treatmentDuration);
+        treatmentDuration = treatmentDuration.join(', ');
+    }
+    if (treatmentAmounts.length > 0) {
+        treatmentAmounts = _.uniq(treatmentAmounts);
+        treatmentAmounts = treatmentAmounts.join(', ');
+    }
+
     return (
         <div className={itemClass}>
             <header>
@@ -1546,6 +1853,13 @@ export const SeriesComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {targets && targets.length > 0 ?
+                                <div data-test="description">
+                                    <dt>Target</dt>
+                                    <dd>{targets.join(', ')}</dd>
+                                </div>
+                            : null}
+
                             {terms.length > 0 || speciesRender ?
                                 <div data-test="biosamplesummary">
                                     <dt>Biosample summary</dt>
@@ -1560,7 +1874,12 @@ export const SeriesComponent = (props, reactContext) => {
                                 <div data-test="treatmenttermname">
                                     <dt>Treatment{context.treatment_term_name.length > 0 ? 's' : ''}</dt>
                                     <dd>
-                                        {context.treatment_term_name.join(', ')}
+                                        {seriesType === 'TreatmentConcentrationSeries' && treatmentDuration ?
+                                            <>{context.treatment_term_name} for {treatmentDuration}</>
+                                        : null}
+                                        {seriesType === 'TreatmentTimeSeries' && treatmentAmounts ?
+                                            <>{treatmentAmounts}</>
+                                        : null}
                                     </dd>
                                 </div>
                             : null}
