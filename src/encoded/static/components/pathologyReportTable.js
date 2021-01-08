@@ -347,14 +347,15 @@ class PathologyReportTable extends React.Component {
                                                 <dd>{this.filteredData[i].m_stage}</dd>
                                             </div>}
 
-                                            {this.filteredData[i].examined_lymph_nodes && <div data-test="examined_lymph_nodes">
+                                            {this.filteredData[i].examined_lymph_nodes>=0 && <div data-test="examined_lymph_nodes">
                                                 <dt>Examined Lymph Nodes</dt>
                                                 <dd>{this.filteredData[i].examined_lymph_nodes}</dd>
                                             </div>}
 
-                                            {this.filteredData[i].positive_lymph_nodes && <div data-test="positive_lymph_nodes">
+                                            {this.filteredData[i].positive_lymph_nodes>=0 && <div data-test="positive_lymph_nodes">
                                                 <dt>Positive Lymph Nodes</dt>
                                                 <dd>{this.filteredData[i].positive_lymph_nodes}</dd>
+                                                
                                             </div>}
 
 
