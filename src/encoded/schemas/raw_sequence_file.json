@@ -59,8 +59,11 @@
         "derived_from": {
             "title": "Derived from",
             "description": "The sequencing run designation for the file.",
-            "type": "string",
-            "linkTo": "SequencingRun"
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "SequencingRun"
+            }
         },
         "read_count": {
             "title": "Read count",

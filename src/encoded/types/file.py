@@ -322,7 +322,8 @@ class RawSequenceFile(DataFile):
                                  }
                                 })
     def libraries(self, request, derived_from):
-        seqrun_obj = request.embed(derived_from, '@@object?skip_calculated=true')
+        seqrun_id = derived_from[0]
+        seqrun_obj = request.embed(seqrun_id, '@@object?skip_calculated=true')
         lib_id = seqrun_obj.get('derived_from')
         return [lib_id]
 
@@ -337,7 +338,7 @@ class RawSequenceFile(DataFile):
                                  }
                                 })
     def sequence_elements(self, request, derived_from=None, read_type=None):
-        return inherit_protocol_prop(request, derived_from, 'sequence_elements', read_type)
+        return inherit_protocol_prop(request, derived_from[0], 'sequence_elements', read_type)
 
 
     @calculated_property(define=True,
@@ -347,7 +348,7 @@ class RawSequenceFile(DataFile):
                                  "type": "string"
                                 })
     def demultiplexed_type(self, request, derived_from=None, read_type=None):
-        return inherit_protocol_prop(request, derived_from, 'demultiplexed_type', read_type)
+        return inherit_protocol_prop(request, derived_from[0], 'demultiplexed_type', read_type)
 
 
 @collection(
