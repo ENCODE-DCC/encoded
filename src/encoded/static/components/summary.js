@@ -375,8 +375,6 @@ class SummaryBody extends React.Component {
         });
         const parsedUrl = url.parse(this.props.context['@id']);
         const query = new QueryString(parsedUrl.query);
-        query.deleteKeyValue(systemsField);
-        query.deleteKeyValue(organField);
         query.replaceKeyValue(organismField, tab, '');
         const href = `?${query.format()}`;
         this.context.navigate(href);
