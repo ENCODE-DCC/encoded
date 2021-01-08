@@ -141,6 +141,17 @@ jobs:
             cp junit.xml test-results/npm
       - store_test_results:
           path: test-results
+  eslint:
+    executor: encoded-executor
+    resource_class: medium
+    steps:
+      -  buildout
+      - run:
+          name: Install eslint
+          command: sudo npm install eslint
+      - run:
+          name: Lint the code with Eslint
+          command: node_modules/.bin/eslint src/encoded/static/components/
 
 workflows:
   version: 2
@@ -151,3 +162,4 @@ workflows:
       - indexer
       - not-bdd-non-indexing
       - npm
+      - eslint
