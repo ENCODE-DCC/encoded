@@ -16,12 +16,9 @@ class PathologyReportTable extends React.Component {
         this.filteredData = this.props.data;
         console.log("prtable", this.filteredData);
         let tableTitle = "";
-        // let tableTitlei = "";
 
         if (this.filteredData.length > 1) {
-        // let tableTitlei = "";
 
-            // let tableTitle = tableTitlei;
             for (let i = 0; i < this.filteredData.length; i++) {
                 let pathologyReporti = this.filteredData[i];
                 let IHCi = pathologyReporti.ihc;
@@ -29,7 +26,7 @@ class PathologyReportTable extends React.Component {
                 if (IHCi.length > 0) {
                     hasIHC = true;
                 }
-               tableTitle = this.props.tableTitle + "Tumor Information" + " " + (i + 1);
+                tableTitle = this.props.tableTitle + "Tumor Information" + " " + (i + 1);
                 let tableIdi =
                     (< div >
 
@@ -41,7 +38,7 @@ class PathologyReportTable extends React.Component {
                                         <dd><Status item={this.filteredData[i].status} inline /></dd>
                                     </div>
                                     <div data-test="accession">
-                                        <dt>PR accession</dt>
+                                        <dt>Accession</dt>
                                         <dd><a href={this.filteredData[i]['@id']}>{this.filteredData[i].accession}</a></dd>
                                     </div>
                                     <div data-test="date">
@@ -223,7 +220,6 @@ class PathologyReportTable extends React.Component {
                 if (IHCi.length > 0) {
                     hasIHC = true;
                 }
-                // tableTitlei = this.props.tableTitle + "Tumor Information" + " " + (i + 1);
                 let tableIdi =
                     (< div >
 
@@ -235,7 +231,7 @@ class PathologyReportTable extends React.Component {
                                         <dd><Status item={this.filteredData[i].status} inline /></dd>
                                     </div>
                                     <div data-test="accession">
-                                        <dt>PR accession</dt>
+                                        <dt>Accession</dt>
                                         <dd><a href={this.filteredData[i]['@id']}>{this.filteredData[i].accession}</a></dd>
                                     </div>
                                     <div data-test="date">
