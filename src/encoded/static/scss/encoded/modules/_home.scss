@@ -417,6 +417,7 @@
                 text-align: left;
                 background: none;
                 border: none;
+                padding-left: 15px;
 
                 &.top-hits-search__suggested-results--selected {
                     background-color: #0a253d;
@@ -427,6 +428,7 @@
                     background-color: white;
                     color: gray;
                     font-weight: bold;
+                    padding-left: 7px;
                 }
 
             }

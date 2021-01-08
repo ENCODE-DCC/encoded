@@ -218,7 +218,7 @@ const Item = (props) => {
 
 const Items = (props) => {
     return (
-        <ul className={props.styling}>
+        <div>
           <Title value={props.title} styling={props.titleStyling}/>
           {
               props.items.map(
@@ -231,7 +231,7 @@ const Items = (props) => {
                   )
               )
           }
-        </ul>
+        </div>
     );
 };
 
@@ -243,6 +243,11 @@ const TopHitsInput = (props) => {
 
 
 const TopHitsResults = (props) => {
+    return (
+        <ul className={props.styling}>
+          {props.children}
+        </ul>
+    );
 };
 
 
@@ -282,11 +287,22 @@ const NewTopHitsSearch = (props) => {
               type="text"
               autoComplete="off"
             />
-            <Items
-              title="My section"
-              items={items}
+            <TopHitsResults
               styling={styling['results']}
-              titleStyling={styling['title']}
+              children={
+                  [
+                    <Items
+                    title="Experiment"
+                    items={items}
+                    titleStyling={styling['title']}
+                     />,
+                    <Items
+                    title="File"
+                    items={items}
+                    titleStyling={styling['title']}
+                    />
+                  ]
+              }
             />
           </div>
         </div>
