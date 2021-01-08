@@ -80,6 +80,7 @@ const portal = {
                 { id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/' },
                 { id: 'sep-mm-1' },
                 { id: 'datastandards', title: 'Assays and standards', url: '/data-standards/' },
+                { id: 'glossary', title: 'Glossary', url: '/glossary/' },
                 { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
                 { id: 'softwaretools', title: 'Software tools', url: '/software/' },
                 { id: 'pipelines', title: 'Pipelines', url: '/pipelines/' },
