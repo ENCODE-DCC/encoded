@@ -152,7 +152,7 @@ class SearchSuggestionsPicker extends React.Component {
         return (
             <ul className="site-search__suggested-results" id={this.props.controlId}>
                 {this.props.suggestedSearchItems.map((item, i) => (
-                    <SearchSuggestionsItem key={item} item={item} selected={i === this.props.selectedItemIndex} listClickHandler={this.listClickHandler} listMouseEnter={this.listMouseEnter} />
+                    <SearchSuggestionsItem key={i} item={item} selected={i === this.props.selectedItemIndex} listClickHandler={this.listClickHandler} listMouseEnter={this.listMouseEnter} />
                 ))}
             </ul>
         );
