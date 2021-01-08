@@ -14,6 +14,7 @@ class PathologyReportTable extends React.Component {
 
     filterData() {
         this.filteredData = this.props.data;
+        console.log("prtable", this.filteredData);
         for (let i = 0; i < this.filteredData.length; i++) {
             let pathologyReporti = this.filteredData[i];
             let IHCi = pathologyReporti.ihc;
@@ -31,6 +32,10 @@ class PathologyReportTable extends React.Component {
                                 <div data-test="status">
                                     <dt>Status</dt>
                                     <dd><Status item={this.filteredData[i].status} inline /></dd>
+                                </div>
+                                <div data-test="accession">
+                                    <dt>PR accession</dt>
+                                    <dd><a href={this.filteredData[i]['@id']}>{this.filteredData[i].accession}</a></dd>
                                 </div>
                                 <div data-test="date">
                                     <dt>Pathology Report Date</dt>
