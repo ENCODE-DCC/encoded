@@ -17,8 +17,11 @@ class BioreplicateTable extends React.Component {
             "Technical_replicate_number": i.technical_replicate_number,
             "Library summary": i.biolibrary.nucleic_acid_term_name,
             "Biospecimen": i.biolibrary.biospecimen.accession,
+            "Biospecimen_id":i.biolibrary.biospecimen['@id'],
             "Biolibrary": i.biolibrary.accession,
-            "Patient": i.biolibrary.biospecimen.patient.accession,
+            "Biolibrary_id":i.biolibrary.biospecimen['@id'],
+
+            "Patient": i.biolibrary.biospecimen.patient
 
         }));
         console.log("bioreplicateFilters", this.bioreplicateFilters);
@@ -41,12 +44,17 @@ class BioreplicateTable extends React.Component {
                 },
                 "Biospecimen": {
                     title: 'Biospecimen',
+                    display: bioreplicateFilters => <a href={bioreplicateFilters.Biospecimen_id}>{bioreplicateFilters.Biospecimen}</a>,
                 },
                 "Biolibrary": {
                     title: 'Biolibrary',
+                    display:bioreplicateFilters => <a href={bioreplicateFilters.Biolibrary_id}>{bioreplicateFilters.Biolibrary}</a>,
+
                 },
                 "Patient": {
                     title: 'Patient',
+                    display:bioreplicateFilters => <a href={bioreplicateFilters.Patient}>{bioreplicateFilters.Patient.split("/")[2]}</a>,
+                    
                 },
             };
             console.log("biolibrary",this.bioreplicateFilters.biolibrary);
