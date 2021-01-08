@@ -165,7 +165,8 @@ class Bioexperiment extends React.Component {
     render() {
 
         const context = this.props.context;
-        console.log('context', context);
+        // console.log('context', context);
+        // console.log("replicatesType",context.replication_type);
 
         let librarySpecials = {};
         let libraryComponents = {};
@@ -534,7 +535,8 @@ class Bioexperiment extends React.Component {
 
                     </PanelBody>
                 </Panel>
-                {<BioreplicateTable data={context.bioreplicate} tableTitle="Bioreplicates summary"></BioreplicateTable>}
+
+                {<BioreplicateTable data={context.bioreplicate} tableTitle={"Bioreplicates summary"+"("+context.replication_type+")"}></BioreplicateTable>}
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
