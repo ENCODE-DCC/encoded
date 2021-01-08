@@ -14,7 +14,6 @@ class PathologyReportTable extends React.Component {
 
     filterData() {
         this.filteredData = this.props.data;
-        console.log("prtable", this.filteredData);
         let tableTitle = "";
 
         if (this.filteredData.length > 1) {
