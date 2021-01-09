@@ -6,6 +6,9 @@ from snovault import (
 from .base import (
     Item,
 )
+from .shared_calculated_properties import (
+    CalculatedAward,
+)
 
 
 @collection(
@@ -15,7 +18,7 @@ from .base import (
         'title': 'Libraries',
         'description': 'Libraries used in the ENCODE project',
     })
-class Library(Item):
+class Library(Item, CalculatedAward):
     item_type = 'library'
     schema = load_schema('encoded:schemas/library.json')
     name_key = 'accession'
@@ -26,18 +29,6 @@ class Library(Item):
         'award',
         'lab'
     ]
-
-
-    @calculated_property(schema={
-        "title": "Award",
-        "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
-        "comment": "Do not submit. This is a calculated property.",
-        "type": "string",
-        "linkTo": "Award"
-    })
-    def award(self, request, dataset):
-        dataset_obj = request.embed(dataset, '@@object?skip_calculated=true')
-        return dataset_obj.get('award')
 
 
     @calculated_property(condition='protocol', schema={

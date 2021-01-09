@@ -19,6 +19,9 @@ from urllib.parse import (
     parse_qs,
     urlparse,
 )
+from .shared_calculated_properties import (
+    CalculatedAward,
+)
 import boto3
 import datetime
 import pytz
@@ -160,7 +163,7 @@ def download(context, request):
         'title': 'Data Files',
         'description': 'Listing of all types of data file.',
     })
-class DataFile(File):
+class DataFile(File, CalculatedAward):
     item_type = 'data_file'
     base_types = ['DataFile'] + File.base_types
     name_key = 'accession'
@@ -184,18 +187,6 @@ class DataFile(File):
     def read_length_units(self, read_length=None, mapped_read_length=None):
         if read_length is not None or mapped_read_length is not None:
             return "nt"
-
-
-    @calculated_property(schema={
-        "title": "Award",
-        "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
-        "comment": "Do not submit. This is a calculated property.",
-        "type": "string",
-        "linkTo": "Award"
-    })
-    def award(self, request, dataset):
-        dataset_obj = request.embed(dataset, '@@object?skip_calculated=true')
-        return dataset_obj.get('award')
 
 
 @abstract_collection(
