@@ -9,7 +9,7 @@ const Footer = ({ version }, reactContext) => {
     let userActionRender;
 
     if (!(session && session['auth.userid'])) {
-        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign in/ Create Account</a>;
+        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign in / Create account</a>;
     } else {
         userActionRender = <a href="#" data-trigger="logout">Sign out</a>;
     }

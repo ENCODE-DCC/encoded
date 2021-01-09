@@ -275,7 +275,7 @@ const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }, context)
     const session = context.session;
     const disabled = !session;
     const userActionRender = !(session && session['auth.userid']) ?
-        <a href="#!" className="dropdown__toggle" data-trigger="login" disabled={disabled}>Sign in/ Create Account</a> :
+        <a href="#!" className="dropdown__toggle" data-trigger="login" disabled={disabled}>Sign in / Create account</a> :
         null;
 
     return (
