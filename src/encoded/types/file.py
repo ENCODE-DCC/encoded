@@ -1,47 +1,27 @@
-from botocore.exceptions import ClientError
-from botocore.config import Config
 from snovault import (
     abstract_collection,
-    AfterModified,
-    BeforeModified,
     CONNECTION,
     calculated_property,
     collection,
     load_schema,
 )
-from snovault.attachment import InternalRedirect
-from snovault.schema_utils import schema_validator
-from snovault.validation import ValidationFailure
 from .base import (
     Item,
     paths_filtered_by_status,
 )
 from pyramid.httpexceptions import (
-    HTTPForbidden,
     HTTPTemporaryRedirect,
     HTTPNotFound,
 )
 from pyramid.settings import asbool
-from pyramid.traversal import traverse
 from pyramid.view import view_config
 from urllib.parse import (
     parse_qs,
     urlparse,
 )
-import base64
 import boto3
-import botocore
 import datetime
-import logging
-import json
 import pytz
-import time
-
-from urllib.parse import urlparse
-
-from snovault.util import ensure_list_and_filter_none
-from snovault.util import take_one_or_return_none
-from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 
 
 def inherit_protocol_prop(request, seqrun_id, propname, read_type):

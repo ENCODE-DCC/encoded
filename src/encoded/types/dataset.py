@@ -1,15 +1,11 @@
-from pyramid.traversal import find_root
 from snovault import (
     calculated_property,
     collection,
-    CONNECTION,
     load_schema,
 )
 from .base import (
-    ALLOW_SUBMITTER_ADD,
     Item,
     paths_filtered_by_status,
-    SharedItem,
 )
 
 

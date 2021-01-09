@@ -4,7 +4,6 @@ from snovault import (
     collection,
     load_schema,
 )
-from pyramid.security import Authenticated
 from .base import (
     Item,
     paths_filtered_by_status,

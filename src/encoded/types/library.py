@@ -1,14 +1,11 @@
 from snovault import (
-    CONNECTION,
     calculated_property,
     collection,
     load_schema,
 )
 from .base import (
     Item,
-    paths_filtered_by_status,
 )
-import re
 
 
 @collection(
