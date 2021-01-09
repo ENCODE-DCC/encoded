@@ -44,6 +44,13 @@ export let tooltips = {
     "Metastatic Site":"This is recorded either from pathology report using natural language search or from clinical and radiotherapy notes. These may not be all inclusive.",
     "Metastasis Histology Proven":"Record of metastatic RCC in pathology reports and nephrectomy specimens are considered histologically proven.",
     "Medication Duration":"The duration (in months) of the following prescribed Cancer and Support drugs (courtesy Dr. Bowman) are recorded.",
-    "Radiation Treatment Status":"Patients with RCC that received radiotherapy (any technique including SBRT and Stereotactic radiotherapy) at UTSW. The date, dose, fraction, and site of RT are extracted. The patient may receive RT to multiple sites. Brain RT data were partly manually extracted."
+    "Radiation Treatment Status":"Patients with RCC that received radiotherapy (any technique including SBRT and Stereotactic radiotherapy) at UTSW. The date, dose, fraction, and site of RT are extracted. The patient may receive RT to multiple sites. Brain RT data were partly manually extracted.",
+    
+    //facets for specimen:
+    "Specimen Class": "The class of the biospecimen when it was taken.",
+    "Specimen Type": "The final product after sample processing. It is the subtype of specimen/derivative (paired with Specimen Class).",
+    "Specimen Lineage": "Parent vs derived sample. New is parent sample. Derived is the sample derived from another sample.Aliquot is an aliquot of a sample.",
+    "Specimen Pathological Type": "Normal sample is Non-Malignant. Tumor sample is Malignant, which can be primary or metastatic.",
+    "Specimen Activity Status": "Whether this sample is still available. Active is for available samples. Closed is for unavailable samples. Disabled is for revoked samples."
     
 };

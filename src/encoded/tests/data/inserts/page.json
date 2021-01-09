@@ -543,7 +543,7 @@
           },
           {
             "@id": "#block2",
-            "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | <a href=\"/help/getting-started/\">Using the Portal</a> | <a href=\"/help/rest-api/\">REST API</a> | <a href=\\\"/help/data-organization\\\">Data Organization</a> | Data Dictionary/Definitions</a></h4>\n</center>\n",
+            "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | <a href=\"/help/getting-started/\">Using the Portal</a> | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data Organization</a> | Data Dictionary/Definitions</a></h4>\n</center>\n",
             "@type": [
               "richtextblock",
               "block"
