@@ -165,7 +165,6 @@ class DataFile(File):
     base_types = ['DataFile'] + File.base_types
     name_key = 'accession'
     rev = {
-        'superseded_by': ('DataFile', 'supersedes'),
         'quality_metrics': ('Metrics', 'quality_metric_of'),
     }
     embedded = File.embedded + ['lab', 'award']
@@ -197,21 +196,6 @@ class DataFile(File):
     def award(self, request, dataset):
         dataset_obj = request.embed(dataset, '@@object?skip_calculated=true')
         return dataset_obj.get('award')
-
-
-    @calculated_property(schema={
-        "title": "Superseded by",
-        "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
-        "comment": "Do not submit. This is a calculated property",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "DataFile.supersedes",
-        },
-        "notSubmittable": True,
-    })
-    def superseded_by(self, request, superseded_by):
-        return paths_filtered_by_status(request, superseded_by)
 
 
 @abstract_collection(
@@ -257,11 +241,9 @@ class AnalysisFile(DataFile):
         all_libs = set()
         for f in derived_from:
             obj = request.embed(f, '@@object')
-            if obj.get('library'):
-                all_libs.add(obj.get('library'))
-            elif obj.get('libraries'):
+            if obj.get('libraries'):
                 all_libs.update(obj.get('libraries'))
-            elif obj.get('protocol'):
+            elif 'Library' in obj.get('@type'):
                 all_libs.add(obj.get('@id'))
         return sorted(all_libs)
 
