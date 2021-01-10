@@ -37,7 +37,7 @@ class PathologyReportTable extends React.Component {
                                         <dd><Status item={this.filteredData[i].status} inline /></dd>
                                     </div>
                                     <div data-test="accession">
-                                        <dt>Accession</dt>
+                                        <dt>Pathology Report</dt>
                                         <dd><a href={this.filteredData[i]['@id']}>{this.filteredData[i].accession}</a></dd>
                                     </div>
                                     <div data-test="date">
@@ -230,7 +230,7 @@ class PathologyReportTable extends React.Component {
                                         <dd><Status item={this.filteredData[i].status} inline /></dd>
                                     </div>
                                     <div data-test="accession">
-                                        <dt>Accession</dt>
+                                        <dt>Pathology Report</dt>
                                         <dd><a href={this.filteredData[i]['@id']}>{this.filteredData[i].accession}</a></dd>
                                     </div>
                                     <div data-test="date">
