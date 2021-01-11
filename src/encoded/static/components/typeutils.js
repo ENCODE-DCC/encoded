@@ -203,9 +203,9 @@ BiospecimenTable.columns = {
         title: 'OpenSpecimen ID',
         getValue: biospecimen => biospecimen.openspecimen_id,
     },
-    collection_type: {
-        title: 'Collection type',
-        getValue: biospecimen => biospecimen.collection_type,
+    sample_type: {
+        title: 'Sample type',
+        getValue: biospecimen => biospecimen.sample_type,
     },
     processing_type: {
         title: 'Processing type',

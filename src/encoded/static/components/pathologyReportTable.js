@@ -10,6 +10,7 @@ class PathologyReportTable extends React.Component {
         super(props);
         this.filteredData = [];
         this.tableId = [];
+        this.filterData();
     }
 
     filterData() {
@@ -412,6 +413,7 @@ class PathologyReportTable extends React.Component {
 
 
     render() {
+        
         return (
             <div className="flex-container" >
 
@@ -424,10 +426,6 @@ class PathologyReportTable extends React.Component {
     }
 
 
-    componentDidMount() {
-        this.filterData();
-    }
-
-
 }
 export default PathologyReportTable;
+
