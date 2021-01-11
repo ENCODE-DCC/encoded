@@ -20,15 +20,12 @@ $results-background: #E9E9E9;
     }
 
     .clear-filters-control {
-        position: absolute;
-        width: 100px;
-        bottom: -10px;
+        margin: 10px 10px 20px;
         > div {
             font-size: 1rem;
         }
         @media screen and (max-width: $screen-sm-min) {
             position: relative;
-            bottom: 10px;
             > div {
                 font-size: 0.9rem;
             }
@@ -112,6 +109,7 @@ $results-background: #E9E9E9;
     .summary-content__data {
         background: $results-background;
         padding: 30px;
+        margin-bottom: 30px;
         @media screen and (max-width: $screen-xs-min) {
             padding: 10px 0;
         }
@@ -230,17 +228,11 @@ $results-background: #E9E9E9;
 
 .results-count {
     font-style: italic;
-    margin: 10px auto;
-    font-size: 1.3rem;
+    margin: 10px;
+    font-size: 1rem;
+    text-align: left;
     @media screen and (max-width: $screen-sm-min) {
         font-size: 0.9rem;
-    }
-    .bold-total {
-        font-size: 1.4rem;
-        padding: 3px;
-        @media screen and (max-width: $screen-sm-min) {
-            font-size: 1rem;
-        }
     }
 }
 
@@ -621,83 +613,4 @@ $results-background: #E9E9E9;
             max-width: calc(100% - 20px);
         }
     }
-}
-
-.organism-button {
-    font-size: 1.1rem;
-    padding: 5px 10px 3px;
-    margin-right: 5px;
-    border-radius: 3px;
-    font-weight: 400;
-    background: none;
-    @media screen and (max-width: $screen-sm-min) {
-        font-size: 0.8rem;
-        margin: 5px;
-        padding: 5px 5px 3px;
-    }
-    .button-inner {
-        display: flex;
-        align-items: center;
-    }
-    img {
-        vertical-align: middle;
-        width: 30px;
-        margin-right: 5px;
-        @media screen and (max-width: $screen-md-min) {
-            display: none;
-        }
-    }
-    .button-term {
-        padding-left: 5px;
-    }
-    &.Homo-sapiens {
-        border: 2px solid $Homo-sapiens;
-        color: $Homo-sapiens;
-        &.active {
-            background-color: $Homo-sapiens;
-            color: white;
-        }
-        &:hover:not(.active) {
-            background-color: lighten($Homo-sapiens, 40%);
-        }
-    }
-    &.Mus-musculus {
-        border: 2px solid $Mus-musculus;
-        color: $Mus-musculus;
-        &.active {
-            background-color: $Mus-musculus;
-            color: white;
-        }
-        &:hover:not(.active) {
-            background-color: lighten($Mus-musculus, 40%);
-        }
-    }
-    &.Caenorhabditis-elegans {
-        border: 2px solid $Caenorhabditis-elegans;
-        color: darken($Caenorhabditis-elegans, 7%);
-        &.active {
-            background-color: $Caenorhabditis-elegans;
-            color: white;
-        }
-        &:hover:not(.active) {
-            background-color: lighten($Caenorhabditis-elegans, 40%);
-        }
-    }
-    &.Drosophila-melanogaster {
-        border: 2px solid $Drosophila-melanogaster;
-        color: $Drosophila-melanogaster;
-        &.active {
-            background-color: $Drosophila-melanogaster;
-            color: white;
-        }
-        &:hover:not(.active) {
-            background-color: lighten($Drosophila-melanogaster, 40%);
-        }
-    }
-}
-
-.line-break {
-    border-bottom: 1px solid #B9B9B9;
-    padding: 5px 0;
-    margin-bottom: 10px;
 }

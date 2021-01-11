@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import QueryString from '../libs/query_string';
-import { Panel, PanelBody } from '../libs/ui/panel';
+import { Panel, PanelBody, TabPanel } from '../libs/ui/panel';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
 import { FacetList, ClearFilters } from './search';
@@ -178,7 +178,7 @@ SummaryStatusChart.contextTypes = {
 
 // Render the horizontal facets.
 // Note: these facets are not necessarily horizontal, it depends on the screen width
-const SummaryHorizontalFacets = ({ context, facetList }, reactContext) => {
+const SummaryHorizontalFacets = ({ context, facetList }) => {
     let horizFacets;
     if (facetList === 'all') {
         horizFacets = context.facets.filter(f => ['biosample_ontology.organ_slims', 'biosample_ontology.cell_slims', 'assay_title', 'date_released', 'date_submitted'].includes(f.field));
@@ -330,78 +330,108 @@ class SummaryBody extends React.Component {
         const searchQuery = url.parse(this.props.context['@id']).search;
         const terms = queryString.parse(searchQuery);
         this.state = {
-            selectedOrganism: terms[organismField] ? terms[organismField] : [],
+            selectedOrganism: terms[organismField] ? terms[organismField] : 'Homo sapiens',
         };
         this.chooseOrganism = this.chooseOrganism.bind(this);
+        this.getAvailableOrganisms = this.getAvailableOrganisms.bind(this);
     }
 
-    chooseOrganism(e) {
+    componentDidMount() {
+        const parsedUrl = url.parse(this.props.context['@id']);
+        const query = new QueryString(parsedUrl.query);
+        if ((query.getKeyValues(organismField)).length === 0) {
+            query.addKeyValue(organismField, 'Homo sapiens');
+            const href = `?${query.format()}`;
+            this.context.navigate(href);
+        }
+    }
+
+    /**
+     * Get a list of organism scientific names that exist in the given matrix data.
+     * @return {array} Organisms in data; empty array if none
+     */
+    getAvailableOrganisms() {
+        const { context } = this.props;
+        const organismFacet = context.facets && context.facets.find(facet => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
+        if (organismFacet) {
+            return organismFacet.terms.map(term => term.key);
+        }
+        return [];
+    }
+
+    getOrganismTabs() {
+        // We use "organisms" to determine if a tab should be disabled or not
+        const organisms = this.getAvailableOrganisms();
+        const organismTabs = {};
+        organismTerms.forEach((organismName) => {
+            organismTabs[organismName] = <div className={`organism-button ${organismName.replace(' ', '-')} ${!(organisms.includes(organismName)) ? 'disabled' : ''}`}><img src={`/static/img/bodyMap/organisms/${organismName.replace(' ', '-')}.svg`} alt={organismName} /><span>{organismName}</span></div>;
+        });
+        return organismTabs;
+    }
+
+    chooseOrganism(tab) {
         this.setState({
-            selectedOrganism: e.currentTarget.id,
+            selectedOrganism: tab,
         });
         const parsedUrl = url.parse(this.props.context['@id']);
         const query = new QueryString(parsedUrl.query);
-        query.deleteKeyValue(systemsField);
-        query.deleteKeyValue(organField);
-        query.replaceKeyValue(organismField, e.currentTarget.id, '');
+        query.replaceKeyValue(organismField, tab, '');
         const href = `?${query.format()}`;
         this.context.navigate(href);
     }
+
     render() {
         const searchQuery = url.parse(this.props.context['@id']).search;
         const query = new QueryString(searchQuery);
         const nonPersistentQuery = query.clone();
         nonPersistentQuery.deleteKeyValue('?type');
         const clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('?type') > 0;
+        const organismTabs = this.getOrganismTabs();
         return (
             <div className="summary-header">
-                <div className="summary-header__title_control">
-                    <div className="summary-header__title">
-                        <h1>{this.props.context.title}</h1>
-                    </div>
-                    <ClearFilters searchUri={this.props.context.clear_filters} enableDisplay={!!clearButton} />
-                </div>
+                <h1>{this.props.context.title}</h1>
                 <div className="summary-controls">
-                    <div className="organism-button-instructions">Choose an organism:</div>
-                    <div className="organism-button-container">
-                        {organismTerms.map(term =>
-                            <button
-                                id={term}
-                                onClick={e => this.chooseOrganism(e)}
-                                className={`organism-button ${term.replace(' ', '-')} ${this.state.selectedOrganism === term ? 'active' : ''}`}
-                                key={term}
+                    <div className="outer-tab-container">
+                        <div className="tab-container body-map">
+                            <TabPanel
+                                tabs={organismTabs}
+                                selectedTab={this.state.selectedOrganism}
+                                handleTabClick={this.chooseOrganism}
+                                tabCss="tab-button"
+                                tabPanelCss="tab-container"
                             >
-                                <img src={`/static/img/bodyMap/organisms/${term.replace(' ', '-')}.png`} alt={term} />
-                                <span>{term}</span>
-                            </button>
-                        )}
-                    </div>
-                    <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
-                        <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
-                        <div className="results-table-control results-table-control--centered">
-                            <div className="results-table-control__main">
-                                <ViewControls results={this.props.context} />
-                            </div>
+                                <div>
+                                    <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
+                                        <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
+                                        <ClearFilters searchUri={this.props.context.clear_filters} enableDisplay={clearButton} />
+                                        <div className="results-table-control">
+                                            <div className="results-table-control__main">
+                                                <ViewControls results={this.props.context} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {(this.state.selectedOrganism === 'Homo sapiens') ?
+                                        <React.Fragment>
+                                            <div className="flex-container">
+                                                <BodyMap context={this.props.context} />
+                                                <SummaryData context={this.props.context} displayCharts={'donuts'} />
+                                            </div>
+                                            <div className="summary-content">
+                                                <SummaryData context={this.props.context} displayCharts={'area'} />
+                                            </div>
+                                        </React.Fragment>
+                                    :
+                                        <React.Fragment>
+                                            <SummaryHorizontalFacets context={this.props.context} facetList={'all'} />
+                                            <div className="summary-content">
+                                                <SummaryData context={this.props.context} displayCharts={'all'} />
+                                            </div>
+                                        </React.Fragment>
+                                    }
+                                </div>
+                            </TabPanel>
                         </div>
                     </div>
-                    {(this.state.selectedOrganism === 'Homo sapiens') ?
-                        <React.Fragment>
-                            <div className="flex-container">
-                                <BodyMap context={this.props.context} />
-                                <SummaryData context={this.props.context} displayCharts={'donuts'} />
-                            </div>
-                            <div className="summary-content">
-                                <SummaryData context={this.props.context} displayCharts={'area'} />
-                            </div>
-                        </React.Fragment>
-                    :
-                        <React.Fragment>
-                            <SummaryHorizontalFacets context={this.props.context} facetList={'all'} />
-                            <div className="summary-content">
-                                <SummaryData context={this.props.context} displayCharts={'all'} />
-                            </div>
-                        </React.Fragment>
-                    }
                 </div>
             </div>
         );
@@ -414,7 +444,6 @@ SummaryBody.propTypes = {
 
 SummaryBody.contextTypes = {
     navigate: PropTypes.func,
-    location_href: PropTypes.string,
 };
 
 // Render the entire summary page based on summary search results.

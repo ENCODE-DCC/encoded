@@ -542,7 +542,7 @@ class MatrixPresentation extends React.Component {
         const organisms = this.getAvailableOrganisms();
         const organismTabs = {};
         organismTerms.forEach((organismName) => {
-            organismTabs[organismName] = <div className={`organism-button ${organismName.replace(' ', '-')} ${this.initialSelectedTab === organismName ? 'active' : ''} ${!(organisms.includes(organismName)) ? 'disabled' : ''}`}><img src={`/static/img/bodyMap/organisms/${organismName.replace(' ', '-')}.png`} alt={organismName} /><span>{organismName}</span></div>;
+            organismTabs[organismName] = <div className={`organism-button ${organismName.replace(' ', '-')} ${this.initialSelectedTab === organismName ? 'active' : ''} ${!(organisms.includes(organismName)) ? 'disabled' : ''}`}><img src={`/static/img/bodyMap/organisms/${organismName.replace(' ', '-')}.svg`} alt={organismName} /><span>{organismName}</span></div>;
         });
         return organismTabs;
     }
@@ -696,7 +696,12 @@ class MatrixPresentation extends React.Component {
                     </div>
                 </div>
                 <div className="results-count">Showing <b className="bold-total">{rowCount(context.matrix)}</b> result{rowCount(context.matrix) > 1 ? 's' : ''}.</div>
-                <TabPanel tabs={organismTabs} selectedTab={this.initialSelectedTab} handleTabClick={this.handleTabClick} tabPanelCss="matrix__data-wrapper">
+                <TabPanel
+                    tabs={organismTabs}
+                    selectedTab={this.initialSelectedTab}
+                    handleTabClick={this.handleTabClick}
+                    tabPanelCss="matrix__data-wrapper epigenome-tabs"
+                >
                     {(this.initialSelectedTab === 'Homo sapiens') ?
                         <React.Fragment>
                             <div className="header-clear-links">

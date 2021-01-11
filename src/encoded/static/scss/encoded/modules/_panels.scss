@@ -692,80 +692,6 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
     }
 }
 
-// Tab Panel Styles
-$nav-tab-border-color: #a0a0a0;
-$nav-tab-border-style: 1px solid $nav-tab-border-color;
-$nav-tab-border-radius: 4px;
-
-.tab-nav {
-    position: relative;
-    background-color: #f0f0f0;
-    border-bottom: 1px solid #a0a0a0;
-    @media screen and (max-width: $screen-md-min) {
-        overflow: scroll;
-    }
-}
-
-.nav-tabs {
-    display: flex;
-    margin: 0;
-    padding: 5px 5px 0;
-    align-items: flex-end;
-    position: relative;
-    list-style: none;
-    z-index: 1;
-    top: 1px;
-    border: none;
-    @media screen and (max-width: $screen-md-min) {
-        padding: 5px 5px 0;
-    }
-
-    > li {
-        display: block;
-        flex: 0 1 auto;
-
-        a, a:focus {
-            display: block;
-            text-decoration: none;
-            margin: 0;
-            padding: 5px 20px;
-            border-top: 3px solid transparent;
-            border-right: 1px solid transparent;
-            border-left: 1px solid transparent;
-            border-bottom: 1px solid transparent;
-            border-radius: 0;
-            color: #606060;
-
-            &:hover {
-                color: #000;
-            }
-        }
-
-        &.active {
-            a {
-                border-top: 3px solid #00cc00;
-                border-right: $nav-tab-border-style;
-                border-left: $nav-tab-border-style;
-                border-bottom: 1px solid #fff;
-                pointer-events: none;
-                background-color: #fff;
-                color: #000;
-            }
-        }
-    }
-}
-
-.tab-flange {
-    position: relative;
-    height: 5px;
-    background-color: #fff;
-    z-index: 0;
-    border-top: $nav-tab-border-style;
-    border-right: $nav-tab-border-style;
-    border-bottom: 0;
-    border-left: $nav-tab-border-style;
-}
-
 .BETA {
     background-color: #B24342;
     padding: 2px 7px;
@@ -780,5 +706,14 @@ $nav-tab-border-radius: 4px;
     @at-root #{&}__count {
         @extend .file-gallery-counts;
         border-top: 1px solid #a0a0a0;
+    }
+}
+
+.series-wrapper {
+    .panel-body {
+        padding: 0;
+    }
+    .panel {
+        border: 0;
     }
 }

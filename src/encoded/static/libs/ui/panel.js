@@ -175,7 +175,7 @@ class TabPanel extends React.Component {
     }
 
     render() {
-        const { tabs, tabDisplay, tabPanelCss, navCss, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
+        const { tabs, tabDisplay, tabPanelCss, tabCss, navCss, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
         let children = [];
         let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
@@ -203,7 +203,7 @@ class TabPanel extends React.Component {
                     <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
                         {Object.keys(tabs).map((tab, i) => {
                             return (
-                                <li key={tab} role="presentation" aria-controls={tab} className={`${tab.replace(/\s/g, '')}-tab ${this.getCurrentTab() === tab ? 'active' : ''}`}>
+                                <li key={tab} role="presentation" aria-controls={tab} className={`${tab.replace(/\s/g, '')}-tab ${tabCss} ${this.getCurrentTab() === tab ? 'active' : ''}`}>
                                     <TabItem tab={tab} handleClick={this.handleClick}>
                                         {tabDisplay[tab] || tabs[tab]}
                                     </TabItem>
@@ -214,6 +214,7 @@ class TabPanel extends React.Component {
                     </ul>
                     {decoration ? <div className={decorationClasses}>{decoration}</div> : null}
                     {tabFlange ? <div className="tab-flange" /> : null}
+                    <div className="tab-border" />
                 </div>
                 <div className="tab-content">
                     {children}
@@ -230,6 +231,8 @@ TabPanel.propTypes = {
     tabDisplay: PropTypes.object,
     /** CSS class for the entire tab panel <div> */
     tabPanelCss: PropTypes.string,
+    /** CSS class for each tab */
+    tabCss: PropTypes.string,
     /** key of tab to select (must provide handleTabClick) too; null for no selection */
     selectedTab: PropTypes.string,
     /** Classes to add to navigation <ul> */
@@ -253,6 +256,7 @@ TabPanel.defaultProps = {
     tabDisplay: {},
     selectedTab: '',
     tabPanelCss: null,
+    tabCss: null,
     navCss: null,
     moreComponents: null,
     moreComponentsClasses: '',

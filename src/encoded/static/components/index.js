@@ -50,6 +50,7 @@ require('./gene');
 require('./biosample_type');
 require('./experiment_series');
 require('./glossary');
+require('./series_search');
 
 
 module.exports = require('./app');

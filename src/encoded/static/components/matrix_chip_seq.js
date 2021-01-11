@@ -213,25 +213,25 @@ const tabLevel1 = [
     {
         id: 'Homo sapiens',
         header: 'Homo sapiens',
-        headerImage: '/static/img/bodyMap/organisms/Homo-sapiens.png',
+        headerImage: '/static/img/bodyMap/organisms/Homo-sapiens.svg',
         url: '',
     },
     {
         id: 'Mus musculus',
         header: 'Mus musculus',
-        headerImage: '/static/img/bodyMap/organisms/Mus-musculus.png',
+        headerImage: '/static/img/bodyMap/organisms/Mus-musculus.svg',
         url: '',
     },
     {
         id: 'Caenorhabditis elegans',
         header: 'Caenorhabditis elegans',
-        headerImage: '/static/img/bodyMap/organisms/Caenorhabditis-elegans.png',
+        headerImage: '/static/img/bodyMap/organisms/Caenorhabditis-elegans.svg',
         url: '',
     },
     {
         id: 'Drosophila melanogaster',
         header: 'Drosophila melanogaster',
-        headerImage: '/static/img/bodyMap/organisms/Drosophila-melanogaster.png',
+        headerImage: '/static/img/bodyMap/organisms/Drosophila-melanogaster.svg',
         url: '',
     },
 ];
@@ -484,6 +484,7 @@ class ChIPSeqTabPanel extends React.Component {
                     </ul>
                     {decoration ? <div className={decorationClasses}>{decoration}</div> : null}
                     {tabFlange ? <div className="tab-flange" /> : null}
+                    <div className="tab-border" />
                 </div>
                 <div className="tab-content">
                     {children}
@@ -831,7 +832,6 @@ class ChIPSeqMatrixPresentation extends React.Component {
     render() {
         const { context } = this.props;
         const { scrolledRight, chIPSeqData, showOrganismRequest, selectedTabLevel1, selectedTabLevel2, selectedTabLevel3, spinnerActive, organismName } = this.state;
-        const fontColors = globals.biosampleTypeColors.colorList(this.subTabs);
         const subTabsHeaders = this.subTabs.map((subTab, index) => ({ // subtabs formatted to for displaying
             id: (subTab || index.toString()).trim(' '),
             header: subTab,
@@ -863,9 +863,9 @@ class ChIPSeqMatrixPresentation extends React.Component {
                 <div className="matrix__presentation-content">
                     <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
                     {showOrganismRequest ? <SelectOrganismModal /> : null }
-                    <ChIPSeqTabPanel tabList={tabLevel1} selectedTab={selectedTabLevel1} tabPanelCss="matrix__data-wrapper">
-                        <ChIPSeqTabPanel tabList={filteredTabLevel2} selectedTab={selectedTabLevel2} tabPanelCss="matrix__data-wrapper">
-                            <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedTabLevel3} tabPanelCss="matrix__data-wrapper" handleTabClick={this.subTabClicked} fontColors={fontColors}>
+                    <ChIPSeqTabPanel tabList={tabLevel1} selectedTab={selectedTabLevel1} navCss="organism-tab">
+                        <ChIPSeqTabPanel tabList={filteredTabLevel2} selectedTab={selectedTabLevel2}>
+                            <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedTabLevel3} handleTabClick={this.subTabClicked}>
                                 {chIPSeqData && chIPSeqData.headerRow && chIPSeqData.headerRow.length !== 0 && chIPSeqData.dataRow && chIPSeqData.dataRow.length !== 0 ?
                                       <div className="chip_seq_matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
                                           <DataTable tableData={convertTargetDataToDataTable(chIPSeqData, selectedTabLevel3)} />

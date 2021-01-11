@@ -825,7 +825,7 @@ TextFilter.propTypes = {
 
 // Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
-    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter, isExpandable } = props;
+    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter, isExpandable, hideDocType } = props;
 
     const [expandedFacets, setExpandFacets] = React.useState(new Set());
 
@@ -944,7 +944,9 @@ export const FacetList = (props) => {
                 <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`} data-test="facetcontainer">
                     {(!supressTitle || clearButton) ?
                         <div className="search-header-control">
-                            <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} />
+                            {!(hideDocType) ?
+                                <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} />
+                            : null}
                             {context.clear_filters ?
                                 <ClearFilters searchUri={context.clear_filters} enableDisplay={clearButton} />
                             : null}
@@ -1000,6 +1002,7 @@ FacetList.propTypes = {
     filters: PropTypes.array.isRequired,
     mode: PropTypes.string,
     orientation: PropTypes.string,
+    hideDocType: PropTypes.bool,
     hideTextFilter: PropTypes.bool,
     docTypeTitleSuffix: PropTypes.string,
     addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
@@ -1014,6 +1017,7 @@ FacetList.propTypes = {
 FacetList.defaultProps = {
     mode: '',
     orientation: 'vertical',
+    hideDocType: false,
     hideTextFilter: false,
     addClasses: '',
     docTypeTitleSuffix: 'search',
@@ -1196,7 +1200,7 @@ export class ResultTable extends React.Component {
     }
 
     render() {
-        const { context, searchBase, actions } = this.props;
+        const { context, searchBase, actions, hideDocType } = this.props;
         const { facets } = context;
         const results = context['@graph'];
         const total = context.total;
@@ -1213,6 +1217,7 @@ export class ResultTable extends React.Component {
                     filters={filters}
                     searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
                     onFilter={this.onFilter}
+                    hideDocType={hideDocType}
                 />
                 {context.notification === 'Success' ?
                     <div className="search-results__result-list">
@@ -1237,12 +1242,14 @@ ResultTable.propTypes = {
     searchBase: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     currentRegion: PropTypes.func,
+    hideDocType: PropTypes.bool,
 };
 
 ResultTable.defaultProps = {
     actions: [],
     searchBase: '',
     currentRegion: null,
+    hideDocType: false,
 };
 
 ResultTable.childContextTypes = {
