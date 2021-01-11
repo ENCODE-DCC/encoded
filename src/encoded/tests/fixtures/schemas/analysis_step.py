@@ -257,9 +257,9 @@ def analysis_step_13(testapp):
 
 
 @pytest.fixture
-def analysis_step_13(testapp):
+def analysis_step_14(testapp):
     item = {
-        'schema_version': '13',
+        'schema_version': '14',
         'step_label': 'atac-seq-step',
         'title': 'atac-seq step',
         'major_version': 1,

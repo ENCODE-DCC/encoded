@@ -1903,7 +1903,14 @@ def file_25(testapp, lab, award, experiment):
 
 
 @pytest.fixture
-def file_26(testapp, lab, award, experiment):
+def file_26(file_base):
+    item = file_base.copy()
+    item['output_type'] = 'pseudo-replicated peaks'
+    return item
+
+
+@pytest.fixture
+def file_27(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'bigBed',
@@ -1915,14 +1922,6 @@ def file_26(testapp, lab, award, experiment):
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
-        'schema_version': '26'
+        'schema_version': '27'
     }
-    return item
-
-
-
-@pytest.fixture
-def file_26(file_base):
-    item = file_base.copy()
-    item['output_type'] = 'pseudo-replicated peaks'
     return item

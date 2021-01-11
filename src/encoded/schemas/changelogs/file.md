@@ -1,6 +1,6 @@
 ## Changelog for file.json
 
-### Schema version 27
+### Schema version 28
 * *output_type* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
 
 ### Schema version 27

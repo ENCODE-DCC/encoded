@@ -285,6 +285,17 @@ def analysis_step_12_13(value, system):
 
 @upgrade_step('analysis_step', '13', '14')
 def analysis_step_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5662
+    if 'pseudo-replicated peaks' in value.get('input_file_types', []):
+        value['input_file_types'].remove('pseudo-replicated peaks')
+        value['input_file_types'].append('pseudoreplicated peaks')
+    if 'pseudo-replicated peaks' in value.get('output_file_types', []):
+        value['output_file_types'].remove('pseudo-replicated peaks')
+        value['output_file_types'].append('pseudoreplicated peaks')
+
+
+@upgrade_step('analysis_step', '14', '15')
+def analysis_step_14_15(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5657
     output_file_types = value.get('output_file_types', None)
     input_file_types = value.get('input_file_types', None)
@@ -301,15 +312,3 @@ def analysis_step_13_14(value, system):
         if input_file_types and old_term in input_file_types:
             input_file_types.remove(old_term)
             input_file_types.append(new_term)
-
-
-
-@upgrade_step('analysis_step', '13', '14')
-def analysis_step_13_14(value, system):
-    # https://encodedcc.atlassian.net/browse/ENCD-5662
-    if 'pseudo-replicated peaks' in value.get('input_file_types', []):
-        value['input_file_types'].remove('pseudo-replicated peaks')
-        value['input_file_types'].append('pseudoreplicated peaks')
-    if 'pseudo-replicated peaks' in value.get('output_file_types', []):
-        value['output_file_types'].remove('pseudo-replicated peaks')
-        value['output_file_types'].append('pseudoreplicated peaks')
