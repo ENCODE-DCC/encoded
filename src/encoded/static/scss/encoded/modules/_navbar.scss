@@ -113,6 +113,18 @@ $navbar-bg-color:            #0a253d;
             }
         }
     }
+
+    // Special case to prevent last dropdown from getting cut off on mid-sized
+    // browser screens. Shift menu to right.
+    .navbar__container {
+        .navbar__nav:last-child {
+            .dropdown {
+                .dropdown__menu {
+                    right: 2px;
+                }
+            }
+        }
+    }
 }
 
 @mixin nav-title {
