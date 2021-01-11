@@ -2,14 +2,14 @@ from snovault import (
     abstract_collection,
     calculated_property,
     collection,
-    CONNECTION,
     load_schema,
 )
 from .base import (
     Item,
-    paths_filtered_by_status,
 )
-import re
+from .shared_calculated_properties import (
+    CalculatedDonors,
+)
 
 
 @abstract_collection(
@@ -19,34 +19,13 @@ import re
         'title': 'Biosamples',
         'description': 'Listing of all types of biosample.',
     })
-class Biosample(Item):
+class Biosample(Item, CalculatedDonors):
     base_types = ['Biosample'] + Item.base_types
     name_key = 'accession'
     rev = {}
     embedded = [
         'biosample_ontology'
     ]
-
-
-    @calculated_property(define=True,
-                         schema={"title": "Donors",
-                                 "description": "The donors the sample was derived from.",
-                                 "comment": "Do not submit. This is a calculated property",
-                                 "type": "array",
-                                 "items": {
-                                    "type": "string",
-                                    "linkTo": "Donor"
-                                    }
-                                })
-    def donors(self, request, derived_from):
-        all_donors = set()
-        for d in derived_from:
-            d_obj = request.embed(d, '@@object')
-            if 'Donor' in d_obj.get('@type'):
-                all_donors.add(d_obj.get('@id'))
-            else:
-                all_donors.update(d_obj.get('donors'))
-        return sorted(all_donors)
 
 
 @abstract_collection(

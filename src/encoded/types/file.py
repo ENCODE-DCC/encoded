@@ -1,47 +1,30 @@
-from botocore.exceptions import ClientError
-from botocore.config import Config
 from snovault import (
     abstract_collection,
-    AfterModified,
-    BeforeModified,
     CONNECTION,
     calculated_property,
     collection,
     load_schema,
 )
-from snovault.attachment import InternalRedirect
-from snovault.schema_utils import schema_validator
-from snovault.validation import ValidationFailure
 from .base import (
     Item,
     paths_filtered_by_status,
 )
 from pyramid.httpexceptions import (
-    HTTPForbidden,
     HTTPTemporaryRedirect,
     HTTPNotFound,
 )
 from pyramid.settings import asbool
-from pyramid.traversal import traverse
 from pyramid.view import view_config
 from urllib.parse import (
     parse_qs,
     urlparse,
 )
-import base64
+from .shared_calculated_properties import (
+    CalculatedAward,
+)
 import boto3
-import botocore
 import datetime
-import logging
-import json
 import pytz
-import time
-
-from urllib.parse import urlparse
-
-from snovault.util import ensure_list_and_filter_none
-from snovault.util import take_one_or_return_none
-from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 
 
 def inherit_protocol_prop(request, seqrun_id, propname, read_type):
@@ -180,12 +163,11 @@ def download(context, request):
         'title': 'Data Files',
         'description': 'Listing of all types of data file.',
     })
-class DataFile(File):
+class DataFile(File, CalculatedAward):
     item_type = 'data_file'
     base_types = ['DataFile'] + File.base_types
     name_key = 'accession'
     rev = {
-        'superseded_by': ('DataFile', 'supersedes'),
         'quality_metrics': ('Metrics', 'quality_metric_of'),
     }
     embedded = File.embedded + ['lab', 'award']
@@ -205,33 +187,6 @@ class DataFile(File):
     def read_length_units(self, read_length=None, mapped_read_length=None):
         if read_length is not None or mapped_read_length is not None:
             return "nt"
-
-
-    @calculated_property(schema={
-        "title": "Award",
-        "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
-        "comment": "Do not submit. This is a calculated property.",
-        "type": "string",
-        "linkTo": "Award"
-    })
-    def award(self, request, dataset):
-        dataset_obj = request.embed(dataset, '@@object?skip_calculated=true')
-        return dataset_obj.get('award')
-
-
-    @calculated_property(schema={
-        "title": "Superseded by",
-        "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
-        "comment": "Do not submit. This is a calculated property",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "DataFile.supersedes",
-        },
-        "notSubmittable": True,
-    })
-    def superseded_by(self, request, superseded_by):
-        return paths_filtered_by_status(request, superseded_by)
 
 
 @abstract_collection(
@@ -277,11 +232,9 @@ class AnalysisFile(DataFile):
         all_libs = set()
         for f in derived_from:
             obj = request.embed(f, '@@object')
-            if obj.get('library'):
-                all_libs.add(obj.get('library'))
-            elif obj.get('libraries'):
+            if obj.get('libraries'):
                 all_libs.update(obj.get('libraries'))
-            elif obj.get('protocol'):
+            elif 'Library' in obj.get('@type'):
                 all_libs.add(obj.get('@id'))
         return sorted(all_libs)
 

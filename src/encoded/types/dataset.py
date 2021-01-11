@@ -1,15 +1,11 @@
-from pyramid.traversal import find_root
 from snovault import (
     calculated_property,
     collection,
-    CONNECTION,
     load_schema,
 )
 from .base import (
-    ALLOW_SUBMITTER_ADD,
     Item,
     paths_filtered_by_status,
-    SharedItem,
 )
 
 
@@ -17,16 +13,16 @@ def item_is_revoked(request, path):
     return request.embed(path, '@@object?skip_calculated=true').get('status') == 'revoked'
 
 
-def calculate_assembly(request, files_list, status):
-    assembly = set()
+def calculate_reference(request, files_list, status, ref_field):
+    results = set()
     viewable_file_status = ['released','in progress']
 
     for path in files_list:
         properties = request.embed(path, '@@object?skip_calculated=true')
         if properties['status'] in viewable_file_status:
-            if 'assembly' in properties:
-                assembly.add(properties['assembly'])
-    return list(assembly)
+            if ref_field in properties:
+                results.add(properties[ref_field])
+    return list(results)
 
 
 @collection(
@@ -191,4 +187,17 @@ class Dataset(Item):
         },
     })
     def assembly(self, request, original_files, status):
-        return calculate_assembly(request, original_files, status)
+        return calculate_reference(request, original_files, status, "assembly")
+
+
+    @calculated_property(define=True, schema={
+        "title": "Genome annotation",
+        "description": "The Genome annotations used for references in the data analysis in this Dataset.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def annotation(self, request, original_files, status):
+        return calculate_reference(request, original_files, status, "genome_annotation")

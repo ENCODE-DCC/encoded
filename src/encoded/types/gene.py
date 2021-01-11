@@ -5,7 +5,6 @@ from snovault import (
 )
 from .base import (
     SharedItem,
-    paths_filtered_by_status,
 )
 
 
