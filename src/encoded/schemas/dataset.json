@@ -104,6 +104,9 @@
         "assembly": {
             "title": "Genome assembly"
         },
+        "annotation": {
+            "title": "Genome annotation"
+        },
         "date_released": {
             "title": "Date released",
             "length": "long"
