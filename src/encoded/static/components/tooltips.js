@@ -33,8 +33,9 @@ export let tooltips = {
     "Tumor Grade": " Highest Fuhrman or ISUP grade seen in tumor, 1-4. Benign tumors and ChRCC are recorded as not applicable. Tumors for which grade was not reported in pathology are considered not available. Some of the cases have been reviewed centrally, and the centrally reviewed grade has been depicted in KCE for these cases.",
     "Margin Status": "Tumor transected at the surgical margins are considered positive/involved.",
     "Lymphvascular invasion(LVI)": "Lymphovascular invasion in non-muscle containing vessels.",
-    "TNM Stage 6th": "Composite stage based on 6th edition rules.",
-    "TNM Stage 7th": "Composite stage based on 7th edition rules.",
+    "6th edition": "TNM Stage composite stage based on 6th edition rules.",
+    "7th edition": "TNM Stage composite stage based on 7th edition rules.",
+    "8th edition": "TNM Stage composite stage based on 7th edition rules.",
 
     //patient page facets
     "Metastatic Site": "This is recorded either from pathology report using natural language search or from clinical and radiotherapy notes. These may not be all inclusive.",
