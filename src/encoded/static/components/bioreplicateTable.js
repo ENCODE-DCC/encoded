@@ -19,7 +19,7 @@ class BioreplicateTable extends React.Component {
             "Biospecimen": i.biolibrary.biospecimen.accession,
             "Biospecimen_id":i.biolibrary.biospecimen['@id'],
             "Biolibrary": i.biolibrary.accession,
-            "Biolibrary_id":i.biolibrary.biospecimen['@id'],
+            "Biolibrary_id":i.biolibrary['@id'],
 
             "Patient": i.biolibrary.biospecimen.patient
 
