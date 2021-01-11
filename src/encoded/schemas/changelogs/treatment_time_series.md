@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 18
 * Updated schema description.
+* Added *LRGASP* to the *internal_tags* enum
 
 ### Schema version 18
 

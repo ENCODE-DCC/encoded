@@ -1,5 +1,9 @@
 ## Changelog for project.json
 
+### Minor changes since schema version 17
+
+* Added *LRGASP* to the *internal_tags* enum
+
 ### Schema version 17
 
 * Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects

@@ -575,6 +575,7 @@ export const internalTagsMap = {
     ENCYCLOPEDIAv4: 'tag-ENCYCLOPEDIAv4.svg',
     ENCYCLOPEDIAv5: 'tag-ENCYCLOPEDIAv5.svg',
     ENTEx: 'tag-ENTEx.png',
+    LRGASP: 'tag-LRGASP.png',
     MouseDevSeries: 'tag-MouseDevSeries.svg',
     PGP: 'tag-PGP.png',
     RegulomeDB: 'tag-RegulomeDB.png',

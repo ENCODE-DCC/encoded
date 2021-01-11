@@ -4,6 +4,7 @@
 
 * *related_pipelines* property was added to link relevant pipelines to their corresponding reference fileset 
 * *reference_type* was updated to include the enum *sequence barcodes*
+* Added *LRGASP* to the *internal_tags* enum
 
 ### Schema version 19
 

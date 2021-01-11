@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 30
+
+* Added *LRGASP* to the *internal_tags* enum
+
 ### Schema version 30
 * Updated *representative DNase hypersensitivity sites (rDHSs)*  to *representative DNase hypersensitivity sites* in enum for *annotation_type*
 

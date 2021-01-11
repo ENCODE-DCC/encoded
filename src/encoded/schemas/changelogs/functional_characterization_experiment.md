@@ -3,6 +3,7 @@
 ### Minor changes since schema version 6
 
 * Restricted submission of *target* property to admins only.
+* Added *LRGASP* to the *internal_tags* enum
 
 ### Schema version 6
 
