@@ -286,7 +286,7 @@ def library_schema_14(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'notes': '',
+        'schema_version': '14',
         'nucleic_acid_term_name': 'polyadenylated mRNA',
         'depleted_in_term_name': ['polyadenylated mRNA', 'capped mRNA']
     }
