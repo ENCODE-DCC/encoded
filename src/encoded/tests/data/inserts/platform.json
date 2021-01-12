@@ -153,5 +153,12 @@
         "term_name": "Illumina NovaSeq 6000",
         "url": "http://www.illumina.com/content/dam/illumina-marketing/documents/products/datasheets/novaseq-6000-system-specification-sheet-770-2016-025.pdf",
         "uuid": "27e58bd7-0943-4b5a-9473-30d571eb89ff"
+    },
+    {
+        "term_id": "NTR:0000448",
+        "term_name": "Oxford Nanopore - MinION",
+        "status": "released",
+        "uuid": "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+        "url": "https://nanoporetech.com/products/minion"
     }
 ]

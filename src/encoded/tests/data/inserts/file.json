@@ -4202,5 +4202,21 @@
         "file_size": 1000,
         "assembly": "GRCh38",
         "md5sum": "952b1db39e1a2c3c51f1ce086e6aeeb2"
+    },
+    {
+        "_test": "nanopore signal in tar'ed FAST5 files",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/ali-mortazavi/",
+        "dataset": "ENCSR751ISO",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "a9e147d8-5140-42a8-b261-6e06084ea716",
+        "accession": "ENCFF032ONT",
+        "file_format": "tar",
+        "output_type": "nanopore signal",
+        "file_size": 1000,
+        "platform": "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+        "md5sum": "71fdbdb03bf7770d721829e4f2856dc0",
+        "replicate": "3b427e79-556e-4125-8102-f6723471807e"
     }
 ]

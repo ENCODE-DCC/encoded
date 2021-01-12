@@ -2,6 +2,7 @@
 
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
+* Added *nanopore signal* to the enum list for *input_file_types*
 
 ### Schema version 14
 * *input_file_types: pseudo-replicated peaks* was updated to *input_file_types: pseudoreplicated peaks*

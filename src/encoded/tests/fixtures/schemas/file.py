@@ -1925,3 +1925,20 @@ def file_27(testapp, lab, award, experiment):
         'schema_version': '27'
     }
     return item
+
+
+@pytest.fixture
+def file_nanopore_signal(testapp, experiment, award, lab, replicate_url, platform4):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate_url['@id'],
+        'lab': lab['@id'],
+        'file_size': 5768,
+        'platform': platform4['@id'],
+        'award': award['@id'],
+        'file_format': 'tar',
+        'md5sum': '0adb8693a743723d8a7882b5e9261b98',
+        'output_type': 'nanopore signal',
+        'status': 'in progress'
+    }
+    return item
