@@ -32,7 +32,7 @@ const CartLoggedOutWarning = ({ closeModalHandler }) => {
             <ModalFooter
                 closeModal={closeModalHandler}
                 cancelTitle={'Close'}
-                submitBtn={<button ref={submitButton} data-trigger="login" onClick={handleSubmit} className="btn btn-info">Sign in</button>}
+                submitBtn={<button ref={submitButton} data-trigger="login" onClick={handleSubmit} className="btn btn-info">Sign in / Create account</button>}
             />
         </Modal>
     );

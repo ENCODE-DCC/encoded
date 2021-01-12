@@ -9,10 +9,11 @@ const Footer = ({ version }, reactContext) => {
     let userActionRender;
 
     if (!(session && session['auth.userid'])) {
-        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign in</a>;
+        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign in / Create account</a>;
     } else {
         userActionRender = <a href="#" data-trigger="logout">Sign out</a>;
     }
+
     return (
         <footer>
             <div className="container">
@@ -31,7 +32,6 @@ const Footer = ({ version }, reactContext) => {
                                 <li id="user-actions-footer">{userActionRender}</li>
                             </ul>
                         </div>
-
                         <div className="footer-logos-section">
                             <ul className="footer-logos">
                                 <li><a href="/"><img src="/static/img/encode-logo-small-2x.png" alt="ENCODE" id="encode-logo" height="45px" width="78px" /></a></li>

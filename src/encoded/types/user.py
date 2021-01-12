@@ -122,7 +122,7 @@ def impersonate(request):
     if request.has_permission('impersonate'):
         return {
             'id': 'impersonate',
-            'title': 'Impersonate User…',
+            'title': 'Impersonate user…',
             'href': '/#!impersonate-user',
         }
 
