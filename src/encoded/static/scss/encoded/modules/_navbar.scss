@@ -114,9 +114,9 @@ $navbar-bg-color:            #0a253d;
         }
     }
 
-    // Special case to prevent last dropdown from getting cut off on mid-sized
-    // browser screens. Shift menu to right.
-    .navbar__container {
+    // Prevent last dropvdown from getting cut off on mid-size browser screens by
+    // shifting menu to right.
+    &__container {
         .navbar__nav:last-child {
             .dropdown {
                 .dropdown__menu {
