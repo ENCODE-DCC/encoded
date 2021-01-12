@@ -313,7 +313,7 @@ class Patient(Item):
                     if len(path_reports) > 0:
                         for path_report in path_reports:
                             path_report_obj = request.embed(path_report, '@@object')
-                            if path_report_obj['path_source_procedure'] == 'path_metasis':
+                            if path_report_obj['path_source_procedure'] == 'path_metastasis':
                                 status = "Yes"
         return status
 
@@ -730,7 +730,7 @@ class Patient(Item):
                     path_report_obj = request.embed(path_report, '@@object')
                     if path_report_obj['path_source_procedure'] == "path_nephrectomy" or path_report_obj['path_source_procedure'] == "path_biopsy":
                         non_mets_dates.append(surgery_object['date'])
-                    elif  path_report_obj['path_source_procedure'] == "path_metasis":
+                    elif  path_report_obj['path_source_procedure'] == "path_metastasis":
                         mets_dates.append(surgery_object['date'])
 
         if len(non_mets_dates) > 0 :
@@ -1298,7 +1298,7 @@ class Patient(Item):
                 if len(path_reports) > 0:
                     for path_report in path_reports:
                         path_report_obj = request.embed(path_report, '@@object')
-                        if path_report_obj['path_source_procedure'] == 'path_metasis':
+                        if path_report_obj['path_source_procedure'] == 'path_metastasis':
                             site = path_report_obj['metasis_details']['site']
                             if site == "Lung":
                                 site = "Lung and pleura"
@@ -1760,4 +1760,5 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 
