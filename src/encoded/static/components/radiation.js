@@ -24,7 +24,7 @@ class Radiation extends React.Component {
 
   containsObject(obj, list) {
     for (let i = 0; i < list.length; i++) {
-      if (list[i].id === obj.id && list[i].startDate === obj.startDate) {
+      if (list[i].site === obj.site && list[i].startDate === obj.startDate) {
         return true;
       }
     }
@@ -70,7 +70,8 @@ class Radiation extends React.Component {
 
     for (let i = 0; i < this.radiationAppointments.length; i++) {
       let dataPoint = {
-        id: this.radiationAppointments[i].site_general,
+        id: this.radiationAppointments[i].site_consolidated,
+        site: this.radiationAppointments[i].site_general,
         startDate: this.radiationAppointments[i].start_date + ' 00:00:00',
         endDate: this.radiationAppointments[i].end_date + ' 00:00:00',
         numberOfSite: 1,
@@ -140,7 +141,7 @@ for (let i = 0; i < ganttData.length; i++) {
           bgcolor: '#29A2CC',
           font: {color: 'white'}
         },
-        customdata: ["Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] +endDate],
+        customdata: ["Site: " + ganttData[i].site + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] +endDate],
         hovertemplate: "%{customdata}<extra></extra>"
 
     }
@@ -163,7 +164,7 @@ for (let i = 0; i < ganttData.length; i++) {
         bgcolor: '#29A2CC',
         font: {color: 'white'}
       },
-      hovertemplate: "Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] + endDate + "<extra></extra>"
+      hovertemplate: "Site: " + ganttData[i].site + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] + endDate + "<extra></extra>"
     }
 }
 
@@ -323,3 +324,4 @@ this.plotly.newPlot(this.props.chartId, data, layout, this.plotlyConfig);
 }
 
 export default Radiation;
+
