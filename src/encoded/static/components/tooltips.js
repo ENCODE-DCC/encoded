@@ -99,4 +99,13 @@ export let tooltips = {
     "Isogenic": "Biological replication. Two replicates from biosamples derived from the same human donor or model organism strain. These biosamples have been treated separately (i.e. two growths, two separate knockdowns, or two different excisions).",
     "Anisogenic": "Biological replication. Two replicates from similar tissue biosamples derived from different human donors or model organism strains.",
     "Sequencing replication": "A library can be run through a sequencer multiple times. Each one of these runs could be considered a sequencing replicate of the experiment, especially if the sequencing run is treated differently, e.g. paired- versus single-ended.",
+
+    //facets for specimen:
+    "Specimen Class": "The class of the biospecimen when it was taken.",
+    "Specimen Type": "The final product after sample processing. It is the subtype of specimen/derivative (paired with Specimen Class).",
+    "Specimen Lineage": "Parent vs derived sample. New is parent sample. Derived is the sample derived from another sample.Aliquot is an aliquot of a sample.",
+    "Specimen Pathological Type": "Normal sample is Non-Malignant. Tumor sample is Malignant, which can be primary or metastatic.",
+    "Specimen Activity Status": "Whether this sample is still available. Active is for available samples. Closed is for unavailable samples. Disabled is for revoked samples."
+    
 };
+
