@@ -45,7 +45,7 @@ export let tooltips = {
 
     // Patient Demographics
     "Sex": "Identifies the sex of the patient as recorded in the patient’s EMR.",
-    "Ethnicity": "Persons of Spanish or Hispanic origin as recorded in the patient’s EMR.",
+    "Ethnicity": "Persons of Spanish or Hispanic origin as recorded in the patient’s EMR. Patients that declined or their records were not found are recorded as unknown.",
     "Race": "The primary race of the person (American Indian, Asian, Black, Hawaiian Pacific, White, Others) as recorded in the patient’s EMR.",
     "Age at Diagnosis": "The age of the patient in years at diagnosis of renal tumor.",
     "Last Follow Up Date": "Patient's most recent visit date as recorded in EMR.",
@@ -85,7 +85,7 @@ export let tooltips = {
     // Summary definitions :
     "Metastasis Status": "Patients that had histologic proven metastasis either at the time of nephrectomy or subsequently (FNA, core biopsy or metastasectomy), or patients started on systemic cancer drug, or received radiotherapy in non-renal site (including thrombus) or stated to have metastasis in the clinical notes are categorized as “Yes”.",
 
-    // "Metastasis Site": "This is recorded either from pathology report using natural language search or from clinical and radiotherapy notes. These may not be all-inclusive.",
+    "Metastasis Site": "This is recorded either from pathology report using natural language search or from clinical and radiotherapy notes. These may not be all-inclusive.",
     "Histology Proven": "Record of metastatic RCC in pathology reports and nephrectomy specimens are considered histologically proven.",
     "Biometric Parameters and Basic Blood Workup ": "Biometric parameters (Blood Pressure (BP_Systolic and BP_Diastolic) and Body Mass Index (BMI)) and laboratory values (serum albumin, creatinine, corrected calcium, hemoglobin, lactate dehydrogenase (LDH), neutrophils, platelets, sodium and WBC count) recorded in the patient's EMR within 30 days prior to first nephrectomy. If there are multiple entries of the same parameter within 30 days, the closest to surgery are displayed.",
     "Medical Imaging": "Types of medical imaging (CT abdomen and pelvis (with or without contrast), MRI abdomen (with or without contrast), and PET done within 90 days prior to Nephrectomy. If there are multiple entries of the same imaging modality within 90 days, only the closest to Nephrectomy is displayed.",
