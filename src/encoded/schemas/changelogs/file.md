@@ -2,6 +2,7 @@
 
 ### Schema version 27
 * *output_type* enum *pseudo-replicated peaks* was updated to *pseudoreplicated peaks*.
+* Added *capture targets* to the enum list for *output_type*
 
 ### Schema version 26
 * *output_type* enums *consensus DNase hypersensitivity sites (cDHSs)* and *representative DNase hypersensitivity sites (rDHSs)* was updated to *consensus DNase hypersensitivity sites* and *representative DNase hypersensitivity sites* respectively.

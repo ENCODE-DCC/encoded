@@ -1400,6 +1400,7 @@
                         "candidate Cis-Regulatory Elements",
                         "candidate enhancers",
                         "candidate promoters",
+                        "capture targets",
                         "chromatin interactions",
                         "chromosomes reference",
                         "chromosome sizes",
@@ -2099,7 +2100,8 @@
         "validation": "validation",
         
         "HMM predicted chromatin state": "annotation",
-        "semi-automated genome annotation": "annotation"
+        "semi-automated genome annotation": "annotation",
+        "capture targets": "annotation"
         
     },
     "file_format_file_extension": {

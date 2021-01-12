@@ -3,6 +3,7 @@
 ### Schema version 14
 * *input_file_types: pseudo-replicated peaks* was updated to *input_file_types: pseudoreplicated peaks*
 * *output_file_types: pseudo-replicated peaks* was updated to *output_file_types: pseudoreplicated peaks*
+* Added *capture targets* to the enum list for *input_file_types* and *output_file_types*
 
 ### Schema version 13
 * *input_file_types*, *output_file_types* enums *consensus DNase hypersensitivity sites (cDHSs)* and *representative DNase hypersensitivity sites (rDHSs)* was updated to *consensus DNase hypersensitivity sites* and *representative DNase hypersensitivity sites* respectively.
