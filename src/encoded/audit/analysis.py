@@ -32,14 +32,14 @@ def audit_dnase_footprints(value, system):
             'Missing footprints in ENCODE4 DNase-seq '
             f'analysis {audit_link(path_to_text(value["@id"]), value["@id"])}'
         )
-        yield AuditFailure('missing footprints', detail, level='WARNING')
+        yield AuditFailure('missing footprints', detail, level='ERROR')
         return
 
     # Assume at least one qm['footprint_count'] exists?
     for rep in zero_footprints_reps:
         detail = f'Replicate {rep} has no significant footprints detected.'
         yield AuditFailure(
-            'no significant footprints', detail, level='WARNING'
+            'missing footprints', detail, level='WARNING'
         )
 
 

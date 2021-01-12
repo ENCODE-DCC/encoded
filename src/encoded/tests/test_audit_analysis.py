@@ -32,11 +32,11 @@ def test_audit_dnase_footprints(
     res = testapp.get(base_analysis['@id'] + '@@index-data')
     assert any(
         error['category'] == 'missing footprints'
-        for error in res.json['audit']['WARNING']
+        for error in res.json['audit'].get('ERROR', [])
     )
     assert all(
-        error['category'] != 'no significant footprints'
-        for errors in res.json['audit'].values()
+        error['category'] != 'missing footprints'
+        for errors in res.json['audit'].get('WARNING', [])
         for error in errors
     )
 
@@ -46,12 +46,12 @@ def test_audit_dnase_footprints(
     res = testapp.get(base_analysis['@id'] + '@@index-data')
     assert all(
         error['category'] != 'missing footprints'
-        for errors in res.json['audit'].values()
+        for errors in res.json['audit'].get('ERROR', [])
         for error in errors
     )
     assert all(
-        error['category'] != 'no significant footprints'
-        for errors in res.json['audit'].values()
+        error['category'] != 'missing footprints'
+        for errors in res.json['audit'].get('WARNING', [])
         for error in errors
     )
 
@@ -59,7 +59,12 @@ def test_audit_dnase_footprints(
         dnase_footprinting_quality_metric['@id'], {'footprint_count': 0}
     )
     res = testapp.get(base_analysis['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing footprints'
+        for errors in res.json['audit'].get('ERROR', [])
+        for error in errors
+    )
     assert any(
-        error['category'] == 'no significant footprints'
-        for error in res.json['audit']['WARNING']
+        error['category'] == 'missing footprints'
+        for error in res.json['audit'].get('WARNING', [])
     )
