@@ -165,7 +165,8 @@ class Bioexperiment extends React.Component {
     render() {
 
         const context = this.props.context;
-        console.log('context', context);
+        // console.log('context', context);
+        // console.log("replicatesType",context.replication_type);
 
         let librarySpecials = {};
         let libraryComponents = {};
@@ -364,12 +365,11 @@ class Bioexperiment extends React.Component {
             <dd><strong>Accession: </strong>{biospecimen_summary[0].accession}</dd>
             <dd><strong>Patient: </strong>{biospecimen_summary[0].patient}</dd>
             <dd><strong>Openspecimen ID: </strong>{biospecimen_summary[0].openspecimen_id}</dd>
-            <dd><strong>Collection Type: </strong>{biospecimen_summary[0].collection_type}</dd>
-            <dd><strong>Processing Type: </strong>{biospecimen_summary[0].processing_type}</dd>
+            <dd><strong>Sample Type: </strong>{biospecimen_summary[0].sample_type}</dd>
+            <dd><strong>Tissue Derivatives: </strong>{biospecimen_summary[0].tissue_derivatives}</dd>
             <dd><strong>Tissue Type: </strong>{biospecimen_summary[0].tissue_type}</dd>
             <dd><strong>Species: </strong>{biospecimen_summary[0].species}</dd>
             <dd><strong>Anatomic Site: </strong>{biospecimen_summary[0].anatomic_site}</dd>
-            <dd><strong>Primary Site: </strong>{biospecimen_summary[0].primary_site}</dd>
         </div>);
 
 
@@ -534,7 +534,8 @@ class Bioexperiment extends React.Component {
 
                     </PanelBody>
                 </Panel>
-                {<BioreplicateTable data={context.bioreplicate} tableTitle="Bioreplicates summary"></BioreplicateTable>}
+
+                {<BioreplicateTable data={context.bioreplicate} tableTitle={"Bioreplicates summary"+"("+context.replication_type+")"}></BioreplicateTable>}
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
