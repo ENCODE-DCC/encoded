@@ -998,7 +998,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "27"
+            "default": "28"
         },
         "accession": {
             "accessionType": "FF"
@@ -1395,8 +1395,7 @@
                 {
                     "enum": [
                         "alignments",
-                        "bias model",
-                        "blacklisted regions",
+                        "bias model",                        
                         "candidate Cis-Regulatory Elements",
                         "candidate enhancers",
                         "candidate promoters",
@@ -1419,6 +1418,7 @@
                         "enrichment",
                         "enhancers reference",
                         "exon quantifications",
+                        "exclusion list regions",
                         "FDR cut rate",
                         "female genome index",
                         "female genome reference",
@@ -1459,7 +1459,7 @@
                         "minus strand methylation state at CpG",
                         "minus strand signal of all reads",
                         "minus strand signal of unique reads",
-                        "mitochondria blacklisted regions",
+                        "mitochondrial exclusion list regions",
                         "mitochondrial genome index",
                         "mitochondrial genome reference",
                         "motif model",
@@ -2023,8 +2023,8 @@
         "transcribed fragments": "annotation",
         "filtered transcribed fragments": "annotation",
         "valleys": "annotation",
-        "blacklisted regions": "annotation",
-        "mitochondria blacklisted regions": "annotation",
+        "exclusion list regions": "annotation",
+        "mitochondrial exclusion list regions": "annotation",
         "distal peaks": "annotation",
         "proximal peaks": "annotation",
         "IDR ranked peaks": "annotation",

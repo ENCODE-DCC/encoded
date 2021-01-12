@@ -14,7 +14,7 @@
         "file_formats": "bam"
     },
     {
-        "term": "blacklisted regions",
+        "term": "exclusion list regions",
         "section": "File output types",
         "definition": "A comprehensive set of regions that have anomalous, unstructured, or high signal in next-generation sequencing experiments independent of cell line or experiment.",
         "file_formats": "bed"

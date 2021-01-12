@@ -97,3 +97,12 @@ def test_analysis_step_13_14(upgrader, analysis_step_13):
     assert 'pseudo-replicated peaks' not in value['output_file_types']
     assert 'pseudoreplicated peaks' in value['input_file_types']
     assert 'pseudoreplicated peaks' in value['output_file_types']
+
+
+def test_analysis_step_14_15(upgrader, analysis_step_14):
+    value = upgrader.upgrade('analysis_step', analysis_step_14, current_version='14', target_version='15')
+    assert value['schema_version'] == '15'
+    assert 'blacklisted regions' not in value['input_file_types']
+    assert 'mitochondria blacklisted regions' not in value['output_file_types']
+    assert 'exclusion list regions' in value['input_file_types']
+    assert 'mitochondrial exclusion list regions' in value['output_file_types']

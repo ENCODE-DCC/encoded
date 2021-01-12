@@ -1,5 +1,9 @@
 ## Change log for atac_alignment_enrichment_quality_metric.json
 
+### Schema version 2
+
+* *fri_blacklist* was changed to *fri_exclusion_list*
+
 ### Minor changes since schema version 1
 
 * *NSC* and *RSC* were updated to allow negative values

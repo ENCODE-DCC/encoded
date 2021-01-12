@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Schema version 31
+* Changed *blacklist* to *exclusion list* in enum for *annotation_type*
+
 ### Minor changes since schema version 30
 
 * Added *LRGASP* to the *internal_tags* enum

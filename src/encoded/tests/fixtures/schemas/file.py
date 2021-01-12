@@ -1907,3 +1907,21 @@ def file_26(file_base):
     item = file_base.copy()
     item['output_type'] = 'pseudo-replicated peaks'
     return item
+
+
+@pytest.fixture
+def file_27(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bigBed',
+        'file_format_type': 'bed3+',
+        'md5sum': 'eeb1325f54a0ec4911c4a3df0ed32f20',
+        'output_type': 'blacklisted regions',
+        'assembly': 'hg19',
+        'file_size': 888328,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'schema_version': '27'
+    }
+    return item

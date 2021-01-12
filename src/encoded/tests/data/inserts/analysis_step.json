@@ -66,7 +66,7 @@
             "signal generation",
             "peak calling"
         ],
-        "input_file_types": ["alignments", "reads", "blacklisted regions"],
+        "input_file_types": ["alignments", "reads", "exclusion list regions"],
         "output_file_types": ["optimal IDR thresholded peaks"],
         "qa_stats_generated": ["NSC", "RSC", "SPOT"],
         "status": "released",
@@ -444,7 +444,7 @@
             "alignments",
             "bias model",
             "genome reference",
-            "blacklisted regions",
+            "exclusion list regions",
             "hotspots1 reference",
             "hotspots2 reference"
         ],
@@ -468,7 +468,7 @@
         "title": "Indexing and mappability processing step",
         "input_file_types": [
             "genome reference",
-            "blacklisted regions",
+            "exclusion list regions",
             "mitochondrial genome reference",
             "chromosomes reference"
         ],

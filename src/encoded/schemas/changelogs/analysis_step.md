@@ -1,5 +1,8 @@
 ## Changelog for analysis_step.json
 
+### Schema version 15
+* *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
+
 ### Schema version 14
 * *input_file_types: pseudo-replicated peaks* was updated to *input_file_types: pseudoreplicated peaks*
 * *output_file_types: pseudo-replicated peaks* was updated to *output_file_types: pseudoreplicated peaks*

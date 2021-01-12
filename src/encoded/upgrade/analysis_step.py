@@ -292,3 +292,23 @@ def analysis_step_13_14(value, system):
     if 'pseudo-replicated peaks' in value.get('output_file_types', []):
         value['output_file_types'].remove('pseudo-replicated peaks')
         value['output_file_types'].append('pseudoreplicated peaks')
+
+
+@upgrade_step('analysis_step', '14', '15')
+def analysis_step_14_15(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5657
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    term_pairs = [
+        ('blacklisted regions', 'exclusion list regions'), 
+        ('mitochondria blacklisted regions', 'mitochondrial exclusion list regions'),
+    ]
+    
+    for old_term, new_term in term_pairs:
+        if output_file_types and old_term in output_file_types:
+            output_file_types.remove(old_term)
+            output_file_types.append(new_term)
+        if input_file_types and old_term in input_file_types:
+            input_file_types.remove(old_term)
+            input_file_types.append(new_term)

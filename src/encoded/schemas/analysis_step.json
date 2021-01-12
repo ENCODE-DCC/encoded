@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "14"
+            "default": "15"
         },
         "step_label": {
             "title": "Step label",
@@ -109,7 +109,6 @@
                     "bed",
                     "bias model",
                     "bigInteract",
-                    "blacklisted regions",
                     "candidate Cis-Regulatory Elements",
                     "candidate enhancers",
                     "candidate promoters",
@@ -131,6 +130,7 @@
                     "enhancers reference",
                     "enrichment",
                     "exon quantifications",
+                    "exclusion list regions",
                     "FDR cut rate",
                     "female genome index",
                     "female genome reference",
@@ -171,7 +171,7 @@
                     "minus strand signal of unique reads",
                     "miRNA annotations",
                     "miRNA reference",
-                    "mitochondria blacklisted regions",
+                    "mitochondrial exclusion list regions",
                     "mitochondrial genome index",
                     "mitochondrial genome reference",
                     "motif model",
@@ -264,7 +264,6 @@
                     "bias model",
                     "bigBed",
                     "bigInteract",
-                    "blacklisted regions",
                     "candidate Cis-Regulatory Elements",
                     "candidate enhancers",
                     "candidate promoters",
@@ -286,6 +285,7 @@
                     "enhancers reference",
                     "enrichment",
                     "exon quantifications",
+                    "exclusion list regions",
                     "FDR cut rate",
                     "female genome index",
                     "female genome reference",
@@ -326,7 +326,7 @@
                     "minus strand signal of unique reads",
                     "miRNA annotations",
                     "miRNA reference",
-                    "mitochondria blacklisted regions",
+                    "mitochondrial exclusion list regions",
                     "mitochondrial genome index",
                     "mitochondrial genome reference",
                     "motif model",
