@@ -30,8 +30,6 @@ class BiosampleComponent extends React.Component {
             { id: context.biosample_ontology.term_name, query: `biosample_ontology.term_name=${context.biosample_ontology.term_name}`, tip: context.biosample_ontology.term_name },
         ];
 
-        const crumbsReleased = (context.status === 'released');
-
         // Build the text of the synchronization string
         let synchText;
         if (context.synchronization) {

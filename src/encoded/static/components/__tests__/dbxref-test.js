@@ -767,7 +767,7 @@ describe('Test individual dbxref types', () => {
         beforeAll(() => {
             const context = { '@type': ['Experiment'] };
             const wrapper = mount(
-                <DbxrefList context={context} dbxrefs={['SCREEN-GRCh38:T-cell_donor_ENCDO685OXD', 'SCREEN-GRCh38:iPS_DF_4.7_male_newborn']}/>
+                <DbxrefList context={context} dbxrefs={['SCREEN-GRCh38:T-cell_donor_ENCDO685OXD', 'SCREEN-GRCh38:iPS_DF_4.7_male_newborn']} />
             );
             dbxLinks = wrapper.find('a');
         });

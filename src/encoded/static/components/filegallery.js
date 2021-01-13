@@ -17,8 +17,6 @@ import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
-import { Breadcrumbs } from './navigation';
-
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
 dayjs.extend(utc);

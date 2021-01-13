@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import dayjs from 'dayjs';
+import queryString from 'query-string';
 import * as encoding from '../libs/query_encoding';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import DataColors from './datacolors';
@@ -11,7 +12,6 @@ import { ProjectBadge } from './image';
 import { ItemAccessories } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import queryString from 'query-string';
 import Status from './status';
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute

@@ -10,7 +10,6 @@ import { parseAndLogError, listingTitles, getRoles } from './globals';
 import { FileInput, ItemPreview, ObjectPicker } from './inputs';
 import Layout from './layout';
 import DropdownButton from '../libs/ui/button';
-import { DropdownMenu } from '../libs/ui/dropdown-menu';
 
 
 const validator = new jsonschema.Validator();

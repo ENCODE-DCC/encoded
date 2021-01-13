@@ -926,7 +926,6 @@ BannerOverlayButton.defaultProps = {
     width: '0',
     height: '0',
     selected: false,
-    clickHandler: null,
 };
 
 
