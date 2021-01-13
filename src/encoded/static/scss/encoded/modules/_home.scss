@@ -376,66 +376,6 @@
     @extend .twitter-header;
 }
 
-.top-hits-search {
-    width: 100%;
-
-    @at-root #{&}__input {
-
-        input[type="text"] {
-            display: block;
-            width: 100%;
-            margin-top: 5px;
-        }
-
-    }
-
-    @at-root #{&}__input-field {
-        position: relative;
-    }
-
-    @at-root #{&}__suggested-results {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 100%;
-        z-index: 2;
-        background-color: white;
-        border: 1px solid #a0a0a0;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        margin: 0;
-        padding: 0;
-        list-style: none;
-
-        li {
-            margin: 0;
-            padding: 0;
-
-            button {
-                display: block;
-                width: 100%;
-                font-size: 1rem;
-                text-align: left;
-                background: none;
-                border: none;
-                padding-left: 15px;
-
-                &.top-hits-search__suggested-results--selected {
-                    background-color: #0a253d;
-                    color: #fff;
-                }
-
-                &.top-hits-search__suggested-results--title {
-                    background-color: white;
-                    color: gray;
-                    font-weight: bold;
-                    padding-left: 7px;
-                }
-
-            }
-        }
-    }
-}
-
 .site-search {
     width: 100%;
 
