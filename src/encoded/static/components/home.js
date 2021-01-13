@@ -152,7 +152,7 @@ class SearchSuggestionsPicker extends React.Component {
         return (
             <ul className="site-search__suggested-results" id={this.props.controlId}>
                 {this.props.suggestedSearchItems.map((item, i) => (
-                    <SearchSuggestionsItem key={i} item={item} selected={i === this.props.selectedItemIndex} listClickHandler={this.listClickHandler} listMouseEnter={this.listMouseEnter} />
+                    <SearchSuggestionsItem key={item} item={item} selected={i === this.props.selectedItemIndex} listClickHandler={this.listClickHandler} listMouseEnter={this.listMouseEnter} />
                 ))}
             </ul>
         );
@@ -184,7 +184,7 @@ const KEYCODE_ESC = 27;
 
 // Combination input and drop-down suggestions form control. Handles both mouse and keyboard
 // control of the suggestions list.
-export class InputSuggest extends React.Component {
+class InputSuggest extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
