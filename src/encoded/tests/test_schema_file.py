@@ -249,3 +249,9 @@ def test_subreads_bam_replicate(testapp, file_subreads):
     item = file_subreads.copy()
     item.pop('replicate', None)
     testapp.post_json('/file', item, status=422)
+
+
+def test_nanopore_signal_platform(testapp, file_nanopore_signal):
+    testapp.post_json('/file', file_nanopore_signal, status=201)
+    file_nanopore_signal.pop('replicate', None)
+    testapp.post_json('/file', file_nanopore_signal, status=422)

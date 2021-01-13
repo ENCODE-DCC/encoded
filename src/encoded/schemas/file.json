@@ -489,10 +489,27 @@
                     }
                 },
                 {
+                    "required": ["replicate"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["nanopore signal"]
+                        },
+                        "platform": {
+                            "linkTo": "Platform",
+                            "linkEnum": [
+                                "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                "6ce511d5-eeb3-41fc-bea7-8c38301e88c1",
+                                "7cc06b8c-5535-4a77-b719-4c23644e767d"
+                            ]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal"]
                             }
                         }
                     }
@@ -527,6 +544,13 @@
                         "properties": {
                             "output_type": {
                                 "enum": ["subreads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["nanopore signal"]
                             }
                         }
                     }
@@ -744,29 +768,33 @@
                         },
                         {
                             "not": {
-                                "properties": {
-                                    "file_format": {
-                                        "enum": [
-                                            "rcc",
-                                            "idat",
-                                            "CEL",
-                                            "fastq",
-                                            "gff",
-                                            "gtf",
-                                            "bed",
-                                            "bigBed",
-                                            "bam",
-                                            "sam",
-                                            "starch",
-                                            "sra",
-                                            "bigWig",
-                                            "csfasta",
-                                            "csqual",
-                                            "idx",
-                                            "database"
-                                        ]
+                                "anyOf": [
+                                    {
+                                        "properties": {
+                                            "file_format": {
+                                                "enum": [
+                                                    "rcc",
+                                                    "idat",
+                                                    "CEL",
+                                                    "fastq",
+                                                    "gff",
+                                                    "gtf",
+                                                    "bed",
+                                                    "bigBed",
+                                                    "bam",
+                                                    "sam",
+                                                    "starch",
+                                                    "sra",
+                                                    "bigWig",
+                                                    "csfasta",
+                                                    "csqual",
+                                                    "idx",
+                                                    "database"
+                                                ]
+                                            }
+                                        }
                                     }
-                                }
+                                ]
                             }
                         },
                         {
@@ -806,7 +834,8 @@
                                         "index reads",
                                         "rejected reads",
                                         "raw data",
-                                        "reporter code counts"
+                                        "reporter code counts",
+                                        "nanopore signal"
                                     ]
                                 }
                             }
@@ -867,7 +896,8 @@
                                             "rejected reads",
                                             "raw data",
                                             "reporter code counts",
-                                            "restriction enzyme site locations"
+                                            "restriction enzyme site locations",
+                                            "nanopore signal"
                                         ]
                                     }
                                 }
@@ -1463,6 +1493,7 @@
                         "mitochondrial genome index",
                         "mitochondrial genome reference",
                         "motif model",
+                        "nanopore signal",
                         "negative control regions",
                         "nested topologically associated domains",
                         "non-targeting gRNAs",
@@ -1928,6 +1959,7 @@
         "intensity values": "raw data",
         "reads": "raw data",
         "index reads": "raw data",
+        "nanopore signal": "raw data",
         "rejected reads": "raw data",
         "raw data": "raw data",
         "reporter code counts": "raw data",
