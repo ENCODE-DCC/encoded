@@ -313,7 +313,7 @@ class Patient(Item):
                     if len(path_reports) > 0:
                         for path_report in path_reports:
                             path_report_obj = request.embed(path_report, '@@object')
-                            if path_report_obj['path_source_procedure'] == 'path_metasis':
+                            if path_report_obj['path_source_procedure'] == 'path_metastasis':
                                 status = "Yes"
         return status
 
@@ -730,7 +730,7 @@ class Patient(Item):
                     path_report_obj = request.embed(path_report, '@@object')
                     if path_report_obj['path_source_procedure'] == "path_nephrectomy" or path_report_obj['path_source_procedure'] == "path_biopsy":
                         non_mets_dates.append(surgery_object['date'])
-                    elif  path_report_obj['path_source_procedure'] == "path_metasis":
+                    elif  path_report_obj['path_source_procedure'] == "path_metastasis":
                         mets_dates.append(surgery_object['date'])
 
         if len(non_mets_dates) > 0 :
@@ -1298,7 +1298,7 @@ class Patient(Item):
                 if len(path_reports) > 0:
                     for path_report in path_reports:
                         path_report_obj = request.embed(path_report, '@@object')
-                        if path_report_obj['path_source_procedure'] == 'path_metasis':
+                        if path_report_obj['path_source_procedure'] == 'path_metastasis':
                             site = path_report_obj['metasis_details']['site']
                             if site == "Lung":
                                 site = "Lung and pleura"
@@ -1661,6 +1661,37 @@ class Radiation(Item):
         else:
             return "15 and up"
 
+    
+    @calculated_property(schema={
+        "title": "Radiation Site Consolidated",
+        "type": "string",
+        "enum": [
+                    "Adrenal",
+                    "Bone",
+                    "Brain",
+                    "Liver",
+                    "Lung",
+                    "Lymph node",
+                    "Other",
+                    "Kidney"
+                ],
+    })
+    def site_consolidated(self, request, site_general):
+
+        if site_general == "Adrenal gland, left" or site_general == "Adrenal gland, right":
+            return "Adrenal"
+        elif site_general == "Spine" or site_general == "Bone":
+            return "Bone"
+        elif site_general == "Brain" or site_general == "Liver":
+            return site_general
+        elif site_general == "Connective, subcutaneous and other soft tissues, NOS" or site_general == "Retroperitoneum & peritoneum" or site_general == "Connective, subcutaneous and other soft tissue, abdomen" or site_general == "Gastrointestine/ digestive system & spleen" or site_general == "Salivary gland":
+            return "Other"
+        elif site_general == "Lung, right" or site_general == "Lung, left" or site_general == "Lung":
+            return"Lung and pleura"
+        elif site_general == "Lymph node, NOS" or site_general == "Lymph node, intrathoracic" or site_general == "Lymph node, intra abdominal":
+            return "Lymph node"
+        else:
+            return "Kidney"
 
 
 

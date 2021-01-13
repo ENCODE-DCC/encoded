@@ -195,7 +195,7 @@
         "radiation.fractions_range": {
             "title": "Radiation Fractions"
         },
-        "radiation.site_general" : {
+        "radiation.site_consolidated" : {
           "title": "Radiation Site"
         },
         "radiation.treatment_intention" : {
