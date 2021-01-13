@@ -270,3 +270,14 @@ def library_13_14(value, system):
             if value['nucleic_acid_term_name'] == 'polyadenylated mRNA':
                 value['nucleic_acid_term_name'] = 'RNA'
                 value['notes'] = (notes + ' The nucleic_acid_term_name of this library was automatically upgraded by ENCD-5368.').strip()
+
+
+@upgrade_step('library', '14', '15')
+def library_14_15(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5647
+    notes = value.get('notes', '')
+    if 'depleted_in_term_name' in value:
+        if 'polyadenylated mRNA' in value['depleted_in_term_name']:
+            if value['nucleic_acid_term_name'] == 'polyadenylated mRNA':
+                value['nucleic_acid_term_name'] = 'RNA'
+                value['notes'] = (notes + ' The nucleic_acid_term_name of this library was converted to RNA due to a conflict with polyA mRNA in depleted_in_term_name.').strip()

@@ -92,3 +92,10 @@ def test_library_upgrade_13_to_14(upgrader, library_schema_13):
     assert value['schema_version'] == '14'
     assert value['nucleic_acid_term_name'] == 'RNA'
     assert value['notes'] == 'The nucleic_acid_term_name of this library was automatically upgraded by ENCD-5368.'
+
+
+def test_library_upgrade_14_to_15(upgrader, library_schema_14):
+    value = upgrader.upgrade('library', library_schema_14, current_version='14', target_version='15')
+    assert value['schema_version'] == '15'
+    assert value['nucleic_acid_term_name'] == 'RNA'
+    assert value['notes'] == 'The nucleic_acid_term_name of this library was converted to RNA due to a conflict with polyA mRNA in depleted_in_term_name.'

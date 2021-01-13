@@ -127,8 +127,13 @@ def test_library_adapters_type(testapp, library, file):
     testapp.post_json('/library', adapters_missing_type, status=422)
 
 
-def test_library_nucleic_acid_depleted_in_term(testapp, library_schema_13):
+def test_library_nucleic_acid_depleted_in_term(testapp, library_schema_13, library_schema_capped_mRNA):
     # https://encodedcc.atlassian.net/browse/ENCD-5368
     testapp.post_json('/library', library_schema_13, status=422)
     library_schema_13.update({'nucleic_acid_term_name': 'RNA'})
     testapp.post_json('/library', library_schema_13, status=201)
+
+    # https://encodedcc.atlassian.net/browse/ENCD-5647
+    testapp.post_json('/library', library_schema_capped_mRNA, status=201)
+    library_schema_capped_mRNA.update({'depleted_in_term_name': ['capped mRNA', 'polyadenylated mRNA']})
+    testapp.post_json('/library', library_schema_capped_mRNA, status=422)

@@ -1111,5 +1111,14 @@
         "uuid": "29da50f8-0de3-4352-8b9d-13fdd04b1355",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010"
+    },
+    {
+        "accession": "ENCLB102CAP",
+        "lab": "/labs/gregory-crawford/",
+        "status": "released",
+        "nucleic_acid_term_name": "capped mRNA",
+        "uuid": "30eb50f8-0de3-4352-8b9d-13fdd04b1355",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "award": "U54HG007010"
     }
 ]

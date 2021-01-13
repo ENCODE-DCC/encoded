@@ -269,3 +269,24 @@ def library_schema_13(lab, award):
         'depleted_in_term_name': ['polyadenylated mRNA'],
         'nucleic_acid_term_name': 'polyadenylated mRNA'
     }
+
+
+@pytest.fixture
+def library_schema_capped_mRNA(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'nucleic_acid_term_name': 'capped mRNA',
+        'depleted_in_term_name': ['polyadenylated mRNA']
+    }
+
+
+@pytest.fixture
+def library_schema_14(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'schema_version': '14',
+        'nucleic_acid_term_name': 'polyadenylated mRNA',
+        'depleted_in_term_name': ['polyadenylated mRNA', 'capped mRNA']
+    }

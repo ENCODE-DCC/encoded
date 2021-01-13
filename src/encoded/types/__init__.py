@@ -166,7 +166,8 @@ class Library(Item):
             'RNA': 'SO:0000356',
             'polyadenylated mRNA': 'SO:0000871',
             'miRNA': 'SO:0000276',
-            'protein': 'SO:0000104'
+            'protein': 'SO:0000104',
+            'capped mRNA': 'SO:0000862'
         }
         term_id = None
         if nucleic_acid_term_name in term_lookup:
