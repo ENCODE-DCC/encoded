@@ -270,7 +270,7 @@ def _get_bdm(main_args):
             'DeviceName': '/dev/sda1',
             'Ebs': {
                 'VolumeSize': int(main_args.volume_size),
-                'VolumeType': 'gp2',
+                'VolumeType': 'gp3',
                 'DeleteOnTermination': True
             }
         },
