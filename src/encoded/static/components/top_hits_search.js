@@ -1,102 +1,54 @@
-import React, {useState} from 'react';
 import * as globals from './globals';
+import React, {useState, useEffect} from 'react';
+import PropTypes from 'prop-types';
 import {InputSuggest} from './home';
 
 
 const topHitsUrl = '/top-hits-raw/';
 const topHitsParams = (
     '&field=description&field=accession' +
-    '&field=title&field=biosample_summary' +
+    '&field=title&field=summary&field=biosample_summary' +
+    '&field=assay_term_name&field=file_type&field=status' +
+    '&field=antigen_description' +
     '&format=json'
 );
 
 
-class TopHits {
-    constructor() {
+const debounceFunction = (func, delay, timerId) => {
+    clearTimeout(timerId);
+    return setTimeout(func, delay);
+};
 
-    }
-}
 
-
-class Hit extends React.Component {
-
-    asString() {
-        const embedded = this.props.embedded;
-        return `${embedded.accession || embedded["@id"]} - ${embedded.description || embedded.title || embedded.biosample_summary}`;
+class TopHitsQuery {
+    constructor(searchTerm) {
+        this.searchTerm = searchTerm;
     }
 
-    render() {
-        return <h5>{this.asString()}</h5>;
-    }
-}
-
-
-function Type(props) {
-    return <h3>{props.type}</h3>;
-}
-
-
-function Hits(props) {
-    return props.hits.map(
-        hit => {
-            const embedded = hit._source.embedded;
-            return <Hit key={embedded["@id"]} embedded={embedded} />
-        }
-    );
-}
-
-
-function HitsByType(props) {
-    return (
-        <div>
-            <Type type={props.type} />
-            <Hits hits={props.hits} />
-        </div>
-    );
-}
-
-
-export class TopHitsSearch extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            a: null,
-            currentSearchTerm: '',
-            suggestedSearchTerms: [],
-        };
-        this.lastSearchTerm = '';
-        this.throttlingTimer = null;
-        this.handleTimerExpiry = this.handleTimerExpiry.bind(this);
-        this.startDelayTimer = this.startDelayTimer.bind(this);
-        this.searchTermChange = this.searchTermChange.bind(this);
-        this.searchTermClick = this.searchTermClick.bind(this);
-        this.termSelectHandler = this.termSelectHandler.bind(this);
-        this.inputBlur = this.inputBlur.bind(this);
-    }
-
-    componentWillUnmount() {
-        if (this.throttlingTimer) {
-            clearTimeout(this.throttlingTimer);
-            this.throttlingTimer = null;
-        }
-    }
-
-    parseHits(hits, type) {
-        return <HitsByType key={type} hits={hits} type={type} />;
+    parseHits(hits) {
+        return hits.map(
+            (hit) => hit._source.embedded
+        );
     }
 
     parseResults(results) {
-        let parsedResults = results.aggregations.types.types.buckets.map(
-            result => this.parseHits(result.top_hits.hits.hits, result.key)
+        return results.aggregations.types.types.buckets.map(
+            (result) => (
+                {
+                    key: result.key,
+                    count: result.doc_count,
+                    hits: this.parseHits(result.top_hits.hits.hits)
+                }
+            )
         );
-        return parsedResults;
     }
 
-    makeTopHitsUrl(newSearchTerm) {
-        return `${topHitsUrl}?searchTerm=${newSearchTerm}${topHitsParams}`;
+    makeTopHitsUrl() {
+        return `${topHitsUrl}?searchTerm=${this.searchTerm}${topHitsParams}`;
     }
 
-    fetchTopHits(url) {
+    fetchAndParseTopHits(url) {
+        console.log('making request');
         return fetch(
             url,
             {
@@ -114,103 +66,88 @@ export class TopHitsSearch extends React.Component {
         );
     }
 
-    updateTopHits(newSearchTerm) {
-        this.startDelayTimer();
-        this.lastSearchTerm = newSearchTerm;
-        const url = this.makeTopHitsUrl(newSearchTerm);
-        this.fetchTopHits(url).then(
-            results => this.setState(
-                {suggestedSearchTerms: results, a: results}
-            )
-        );
-    }
-
-    handleTimerExpiry() {
-        this.throttlingTimer = null;
-        if (this.state.currentSearchTerm !== this.lastSearchTerm) {
-            this.updateTopHits(this.state.currentSearchTerm);
-        }
-    }
-
-    startDelayTimer() {
-        this.throttlingTimer = setTimeout(this.handleTimerExpiry, 1000);
-    }
-
-    searchTermChange(newSearchTerm) {
-        if (newSearchTerm !== this.currentSearchTerm) {
-            this.setState({currentSearchTerm: newSearchTerm});
-            if (!this.throttlingTimer) {
-                this.updateTopHits(newSearchTerm);
-            }
-        }
-    }
-
-    termSelectHandler(term) {
-        this.setState({currentSearchTerm: term, suggestedSearchTerms: []});
-    }
-
-    clearTerms () {
-        this.setState({suggestedSearchTerms: []});
-    }
-
-    searchTermClick() {
-        this.clearTerms();
-    }
-
-    inputBlur() {
-        this.clearTerms();
-    }
-
-    render() {
-        const context = this.props.context;
-        const isSearchDisabled = this.state.currentSearchTerm.length === 0;
-        return (
-            <div>
-            <div className="site-search__screen">
-                <form>
-                    <fieldset>
-                <legend className="sr-only">Top hits search</legend>
-                        <div className="site-search__input">
-                            <label htmlFor="top-hits-search" id="top-hits-search-label">
-                                Search for top hits by type
-                            </label>
-                            <InputSuggest
-                                value={this.state.currentSearchTerm}
-                                items={this.state.suggestedSearchTerms}
-                                inputId="top-hits-search"
-                                labelledById="top-hits-search-label"
-                                inputChangeHandler={this.searchTermChange}
-                                inputClickHandler={this.searchTermClick}
-                                inputBlurHandler={this.inputBlur}
-                                itemSelectHandler={this.termSelectHandler}
-                            />
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-            </div>
+    getResults() {
+        return this.fetchAndParseTopHits(
+            this.makeTopHitsUrl()
         );
     }
 }
 
 
+class Hit {
+    constructor(item) {
+        this.item = item;
+    }
+
+    formatName() {
+        return this.item.accession || this.item['@id'];
+    }
+
+    formatDescription() {
+        return (
+            this.item.description ||
+            this.item.summary ||
+            this.item.biosample_summary ||
+            this.item.assay_term_name ||
+            this.item.title
+        );
+    }
+
+    formatDetails() {
+        return (
+            this.item.file_type ||
+            this.item.antingen_description
+        );
+    }
+
+    asString() {
+        return [
+            this.formatDescription(),
+            this.formatDetails(),
+            this.formatName(),
+            this.item.status
+        ].filter(Boolean).join(' - ');
+    }
+};
+
+
+const LinkWithHover = (props) => {
+    const [isHovered, setIsHovered] = useState(false);
+    return (
+        <button
+          className={isHovered ? props.hoverClass: props.defaultClass}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <a href={props.href}>
+            {props.value}
+          </a>
+        </button>
+    );
+};
+
+
 const Title = (props) => {
     return (
-        <li>
-          <button className={props.styling}>
-            {props.value}
-          </button>
-        </li>
+        <LinkWithHover
+          value={props.value}
+          defaultClass={'top-hits-search__suggested-results-title'}
+          hoverClass={'top-hits-search__suggested-results-title--selected'}
+          href={props.href}
+        />
     );
 };
 
 
 const Item = (props) => {
+    const hit = new Hit(props.item);
     return (
         <li>
-          <button className={props.styling}>
-            {props.value}
-          </button>
+          <LinkWithHover
+            value={hit.asString()}
+            hoverClass={'top-hits-search__suggested-results--selected'}
+            href={props.href}
+          />
         </li>
     );
 };
@@ -218,96 +155,119 @@ const Item = (props) => {
 
 const Items = (props) => {
     return (
-        <div>
-          <Title value={props.title} styling={props.titleStyling}/>
+        <ul>
           {
               props.items.map(
                   item => (
                       <Item
-                        key={item.key}
-                        value={item.value}
-                        styling={item.styling}
+                        key={item["@id"]}
+                        item={item}
+                        href={item["@id"]}
                       />
                   )
               )
           }
-        </div>
-    );
-};
-
-
-
-
-const TopHitsInput = (props) => {
-};
-
-
-const TopHitsResults = (props) => {
-    return (
-        <ul className={props.styling}>
-          {props.children}
         </ul>
     );
 };
 
 
-const TopHitsMenu = (props) => {
+const Section = (props) => {
+    return (
+        <>
+          <Title value={props.title} href={props.href}/>
+          <Items
+            items={props.items}
+          />
+        </>
+    );
 };
 
 
-const NewTopHitsSearch = (props) => {
+const TopHitsInput = (props) => {
+    return (
+        <input
+          type="text"
+          autoComplete="off"
+          name="searchTerm"
+          placeholder="Search for top hits by type"
+          value={props.value}
+          onChange={props.onChange}
+        />
+    );
+};
+
+
+const TopHitsResults = (props) => {
+    const makeTitle = (result) => {
+        return `${result.key} (${result.count})`;
+    };
+    return (
+        <div className='top-hits-search__suggested-results'>
+          {
+              props.results.map(
+                  (result) => (
+                      <Section
+                        key={result.key}
+                        title={makeTitle(result)}
+                        href={`/search/?type=${result.key}&searchTerm=${props.input}`}
+                        items={result.hits}
+                      />
+                  )
+            )}
+        </div>
+    );
+};
+
+
+const TopHitsSearch = (props) => {
     const [input, setInput] = useState('');
-    const [topHits, setTopHits] = useState(["a", "b"]);
+    const [topHits, setTopHits] = useState([]);
     const [displayResults, setDisplayResults] = useState(true);
+    const [debounceTimer, setDebounceTimer] = useState(null);
+    const debounceTime = 200;
 
-    const styling = {
-        selectedItem: 'top-hits-search__suggested-results--selected',
-        results: 'top-hits-search__suggested-results',
-        title: 'top-hits-search__suggested-results--title'
-
+    const makeSearchAndSetTopHits = (searchTerm) => {
+        const topHitsQuery = new TopHitsQuery(searchTerm);
+        topHitsQuery.getResults().then(
+            (results) => setTopHits(results)
+        );
     };
 
-    const items = [
-        {
-            key: "abc",
-            value: "new item list",
-            styling: null
-        },
-        {
-            key: "xyz",
-            value: "second item list",
-            styling: styling['selectedItem']
-        },
-    ];
-    
+    const setDebouncedTopHits = (searchTerm) => {
+        setDebounceTimer(
+            debounceFunction(
+                () => {
+                    makeSearchAndSetTopHits(searchTerm);
+                },
+                debounceTime,
+                debounceTimer
+            )
+        );
+    };
+
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setInput(value);
+        setDebouncedTopHits(e.target.value);
+    };
+
     return (
         <div className="top-hits-search__input">
           <div className="top-hits-search__input-field">
-            <input
-              type="text"
-              autoComplete="off"
-            />
-            <TopHitsResults
-              styling={styling['results']}
-              children={
-                  [
-                    <Items
-                    title="Experiment"
-                    items={items}
-                    titleStyling={styling['title']}
-                     />,
-                    <Items
-                    title="File"
-                    items={items}
-                    titleStyling={styling['title']}
-                    />
-                  ]
-              }
-            />
+            <form action="/search/">
+              <TopHitsInput input={input} onChange={handleInputChange} />
+            </form>
+            <TopHitsResults input={input} results={topHits} />
           </div>
         </div>
     );
 };
 
 
-globals.contentViews.register(NewTopHitsSearch, 'TopHitsSearch');
+TopHitsSearch.contextTypes = {
+    fetch: PropTypes.func
+};
+
+
+globals.contentViews.register(TopHitsSearch, 'TopHitsSearch');
