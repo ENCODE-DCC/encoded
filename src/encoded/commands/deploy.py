@@ -1063,7 +1063,9 @@ def _parse_args():
     args = parser.parse_args()
     # If needed, get ami.
     if not args.image_id:
-        args.image_id = _fetch_ami_id()
+        current_ami_id = _fetch_ami_id()
+        args.image_id = current_ami_id
+        args.eshead_image_id = current_ami_id
     # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
         if args.es_elect or args.es_wait:
