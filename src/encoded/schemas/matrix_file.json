@@ -231,6 +231,12 @@
                 "required": ["cutoff_value", "cutoff_units", "cutoff_type"],
                 "additionalProperties": false,
                 "properties": {
+                    "cutoff_proportion": {
+                        "title": "Cutoff proportion",
+                        "description": "The specific subset of the matrix that the cutoff has been applied to.",
+                        "type": "string",
+                        "default": "all"
+                    },
                     "cutoff_value": {
                         "title": "Cutoff value",
                         "description": "",

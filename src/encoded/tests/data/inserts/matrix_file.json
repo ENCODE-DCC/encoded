@@ -4109,7 +4109,8 @@
             {
                 "cutoff_value": 25000,
                 "cutoff_units": "genes/cell",
-                "cutoff_type": "maximum"
+                "cutoff_type": "maximum",
+                "cutoff_proportion": "fibroblasts"
             },
             {
                 "cutoff_value": 1000,
@@ -6668,7 +6669,8 @@
             {
                 "cutoff_value": 20000,
                 "cutoff_units": "genes/cell",
-                "cutoff_type": "maximum"
+                "cutoff_type": "maximum",
+                "cutoff_proportion": "epithelial cells 1"
             },
             {
                 "cutoff_value": 1000,
