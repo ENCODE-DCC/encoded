@@ -770,7 +770,7 @@ def main():
     # Create aws es_wait frontend instance
     if main_args.es_wait and run_args.get('master_user_data'):
         instances = ec2_client.create_instances(
-            ImageId=main_args.eshead_image_id,
+            ImageId=main_args.image_id,
             MinCount=1,
             MaxCount=1,
             InstanceType=main_args.eshead_instance_type,
@@ -792,7 +792,7 @@ def main():
                 run_args,
                 instances_tag_data,
                 instances,
-                main_args.eshead_image_id,
+                main_args.image_id,
                 cluster_master=True,
             )
         )
@@ -1030,10 +1030,6 @@ def _parse_args():
         help=('Override default image ami for demo to use arm')
     )
     parser.add_argument(
-        '--eshead-image-id',
-        help=('ES head node override default image ami')
-    )
-    parser.add_argument(
         '--availability-zone',
         default='us-west-2a',
         help="Set EC2 availabilty zone"
@@ -1065,7 +1061,6 @@ def _parse_args():
     if not args.image_id:
         current_ami_id = _fetch_ami_id()
         args.image_id = current_ami_id
-        args.eshead_image_id = current_ami_id
     # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
         if args.es_elect or args.es_wait:
