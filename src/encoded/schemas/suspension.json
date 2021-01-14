@@ -295,73 +295,16 @@
         "suspension_type": {
             "title": "Suspension type"
         },
-        "donors.sex": {
-            "title": "Donor sex"
-        },
-        "life_stage": {
-            "title": "Life stage"
-        },
-        "biosample_ontology.system_slims": {
-            "title": "System"
-        },
-        "biosample_ontology.organ_slims": {
-            "title": "Organ",
-            "type": "typeahead"
-        },
-        "biosample_ontology.cell_slims": {
-            "title": "Cell",
-            "type": "typeahead"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample term name",
-            "type": "typeahead"
-        },
         "status": {
             "title": "Status"
-        },
-        "donors.life_stage": {
-            "title": "Donor life stage"
-        },
-        "donors.diseases.term_name": {
-            "title": "Donor diseases"
-        },
-        "donors.ethnicity.term_name": {
-            "title": "Donor ethnicity"
         }
     },
     "columns": {
         "accession": {
             "title": "Accession"
         },
-        "biosample_ontology.term_name": {
-            "title": "Biosample term name"
-        },
         "description": {
             "title": "Description"
-        },
-        "biosample_ontology.system_slims": {
-            "title": "System"
-        },
-        "biosample_ontology.organ_slims": {
-            "title": "Organ"
-        },
-        "biosample_ontology.cell_slims": {
-            "title": "Cell"
-        },
-        "donors.age_display": {
-            "title": "Donor age"
-        },
-        "donors.sex": {
-            "title": "Donor sex"
-        },
-        "donors.diseases.term_name": {
-            "title": "Donor diseases"
-        },
-        "donors.ethnicity.term_name": {
-            "title": "Donor ethnicity"
-        },
-        "donors.life_stage": {
-            "title": "Donor life stage"
         },
         "derived_from": {
             "title": "Derived from"
