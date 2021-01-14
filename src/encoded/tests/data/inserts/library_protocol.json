@@ -185,6 +185,7 @@
     {
         "name": "10x-3'-v3",
         "title": "10x 3' v3",
+        "term_id": "EFO:0009922",
         "status": "released",
         "construction_platform": "10x",
         "construction_platform_version": 3,
@@ -245,27 +246,28 @@
         ]
     },
     {
-      "biological_macromolecule": "RNA",
-      "library_type": "RNA-seq",
-      "name": "Smart-seq2",
-      "title": "Smart-seq2"
+        "biological_macromolecule": "RNA",
+        "library_type": "RNA-seq",
+        "name": "Smart-seq2",
+        "title": "Smart-seq2"
     },
     {
-      "biological_macromolecule": "protein",
-      "library_type": "CITE-seq",
-      "name": "CITE-10x-3'-v3",
-      "title": "CITE 10x 3' v3"
+        "biological_macromolecule": "protein",
+        "library_type": "CITE-seq",
+        "name": "CITE-10x-3'-v3",
+        "title": "CITE 10x 3' v3"
     },
     {
-      "biological_macromolecule": "RNA",
-      "library_type": "RNA-seq",
-      "name": "VDJ-10x-5'-v1",
-      "title": "VDJ 10x 5' v1"
+        "biological_macromolecule": "RNA",
+        "library_type": "RNA-seq",
+        "name": "VDJ-10x-5'-v1",
+        "title": "VDJ 10x 5' v1"
     },
     {
-      "biological_macromolecule": "RNA",
-      "library_type": "RNA-seq",
-      "name": "10x-3'-v2",
-      "title": "10x 3' v2"
+        "biological_macromolecule": "RNA",
+        "library_type": "RNA-seq",
+        "term_id": "EFO:0009899",
+        "name": "10x-3'-v2",
+        "title": "10x 3' v2"
     }
 ]
