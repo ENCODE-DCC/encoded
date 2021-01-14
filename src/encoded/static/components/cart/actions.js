@@ -15,6 +15,7 @@ export const REMOVE_MULTIPLE_FROM_CART = 'REMOVE_MULTIPLE_FROM_CART';
 export const REPLACE_CART = 'REPLACE_CART';
 export const CACHE_SAVED_CART = 'CACHE_SAVED_CART';
 export const CART_OPERATION_IN_PROGRESS = 'CART_OPERATION_IN_PROGRESS';
+export const DISPLAY_ALERT = 'DISPLAY_ALERT';
 export const SET_CURRENT = 'SET_CURRENT';
 export const SET_NAME = 'SET_NAME';
 export const SET_IDENTIFIER = 'SET_IDENTIFIER';
@@ -174,6 +175,21 @@ export const cacheSavedCart = savedCartObj => (
  */
 export const cartOperationInProgress = inProgress => (
     { type: CART_OPERATION_IN_PROGRESS, inProgress }
+);
+
+
+/**
+ * Redux action creator to indicate that <App> should display the given cart-related alert (in the
+ * form of a React component). The component that renders the alert should normally wrap it in the
+ * libs/ui/modal.js components. This is useful for cart alerts that might not appear right away,
+ * allowing the user to navigate to a different page before the alert appears. Alerts that you know
+ * appear right away should simply display them in their own React components.
+ * @param {object} alert React component to display alert modal
+ *
+ * @return {object} Redux action to display an alert.
+ */
+export const triggerAlert = alert => (
+    { type: DISPLAY_ALERT, alert }
 );
 
 

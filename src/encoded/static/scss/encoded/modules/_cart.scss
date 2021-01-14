@@ -1204,20 +1204,13 @@ $file-type-colors: (
     }
 }
 
-// Cart-tools buttons that stay side by side even on mobile.
-.cart-tools-extras {
+// Cart-accessories buttons.
+.cart-accessories {
     display: flex;
-    align-content: stretch;
     margin-bottom: 5px;
 
-    @media screen and (min-width: $screen-md-min) {
+    .cart-accessories__button {
         margin-right: 5px;
-        margin-bottom: 0;
-    }
-
-    .cart-tools-extras__button {
-        margin-right: 5px;
-        flex-grow: 1;
 
         &:last-child {
             margin-right: 0;
@@ -1265,5 +1258,43 @@ $file-type-colors: (
 
     @media screen and (min-width: $screen-md-min) {
         width: auto;
+    }
+}
+
+// Contents of the type-selection modal for /cart-search/ page, Report view control button.
+.cart-type-selector {
+    display: flex;
+    justify-content: center;
+
+    .btn {
+        margin-left: 2.5px;
+        margin-right: 2.55px;
+    }
+}
+
+// "Dataset report" button on the cart view page.
+.cart-dataset-report {
+    button {
+        @extend .btn-info;
+        @extend .btn-sm;
+        width: 100%;
+
+        > svg {
+            margin-left: 5px;
+            width: 8px;
+            fill: #fff;
+        }
+    }
+
+    .dropdown-button__content {
+        a {
+            font-family: Quicksand, sans-serif;
+            font-weight: 400;
+            font-size: 1rem;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
     }
 }

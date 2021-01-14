@@ -5,9 +5,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-import { encodedURIComponent } from '../../libs/query_encoding';
 import { svgIcon } from '../../libs/svg-icons';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
+import * as DropdownButton from '../../libs/ui/button';
 import * as Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
 import { tintColor, isLight } from '../datacolors';
@@ -842,66 +841,57 @@ FileFacets.defaultProps = {
 
 
 /**
- * Display a button that links to experiment search results. This *only* works for Experiments, not
- * FCCs for now.
+ * Display a button that links to a report page showing the datasets in the currently displayed
+ * cart.
  */
-const MAX_SEARCHABLE_DATASETS = 125; // Maximum number of datasets for search-results links.
-const CartDatasetSearch = ({ elements, usedDatasetTypes }, reactContext) => {
-    const [isWarningVisible, setIsWarningVisible] = React.useState(false);
+const CartDatasetReport = ({ savedCartObj, sharedCartObj, usedDatasetTypes, cartType }) => {
+    /** Cart that this button links to for search results */
+    const linkedCart = React.useRef(null);
 
-    // Filter to the actual dataset types; not including 'all'.
-    const actualDatasetTypes = usedDatasetTypes.filter(type => type !== 'all');
+    // Get the object for the cart to link to search results.
+    if (cartType === 'ACTIVE') {
+        linkedCart.current = savedCartObj;
+    } else if (cartType === 'OBJECT') {
+        linkedCart.current = sharedCartObj;
+    } else {
+        // Shouldn't happen but just in case.
+        return null;
+    }
 
-    // Called when the user clicks the Dataset Search button.
-    const handleButtonClick = () => {
-        if (elements.length > MAX_SEARCHABLE_DATASETS) {
-            setIsWarningVisible(true);
-        } else {
-            // Build type= query based on the types of datasets in `elements`.
-            const typeQuery = actualDatasetTypes.map(type => `type=${datasetTypes[type].type}`).join('&');
-            const datasetsQuery = elements.map(element => `@id=${encodedURIComponent(element)}`).join('&');
-            const query = `/search/?${typeQuery}&${datasetsQuery}`;
-            reactContext.navigate(query);
-        }
-    };
-
-    // Called when the user closes the warning modal.
-    const handleCloseClick = () => {
-        setIsWarningVisible(false);
-    };
-
-    // Only display the Dataset Search button if we have at least one experiment in the cart.
-    if (elements.length > 0) {
+    // Only display the Dataset Report button if we have at least one experiment in the cart. This
+    // button drops down a menu allowing the user to select the data type to view which links to
+    // that report view.
+    if (linkedCart.current && linkedCart.current.elements && linkedCart.current.elements.length > 0) {
         return (
-            <React.Fragment>
-                <button onClick={handleButtonClick} className="btn btn-sm btn-info btn-inline cart-dataset-search">Dataset search</button>
-                {isWarningVisible ?
-                    <Modal closeModal={handleCloseClick}>
-                        <ModalHeader title={<h4>Cart dataset search results</h4>} closeModal={handleCloseClick} />
-                        <ModalBody>
-                            Viewing cart dataset search results requires {MAX_SEARCHABLE_DATASETS} datasets
-                            or fewer. This cart contains {elements.length} datasets.
-                        </ModalBody>
-                        <ModalFooter
-                            closeModal={handleCloseClick}
-                        />
-                    </Modal>
-                : null}
-            </React.Fragment>
+            <DropdownButton.Immediate
+                label={<>Dataset report {svgIcon('chevronDown')}</>}
+                id="cart-dataset-report"
+                css="cart-dataset-report"
+            >
+                {usedDatasetTypes.map(type => (
+                    <React.Fragment key={type}>
+                        {type !== DEFAULT_DATASET_TYPE ?
+                            <a href={`/cart-report/?type=${allowedDatasetTypes[type].type}&cart=${linkedCart.current['@id']}`} className={`cart-dataset-option cart-dataset-option--${type}`}>
+                                {allowedDatasetTypes[type].title}
+                            </a>
+                        : null}
+                    </React.Fragment>
+                ))}
+            </DropdownButton.Immediate>
         );
     }
     return null;
 };
 
-CartDatasetSearch.propTypes = {
-    /** Dataset @ids in the cart */
-    elements: PropTypes.array.isRequired,
-    /** Types of datasets in `elements` as collection names e.g. "experiments" */
+CartDatasetReport.propTypes = {
+    /** Active cart */
+    savedCartObj: PropTypes.object.isRequired,
+    /** Shared cart */
+    sharedCartObj: PropTypes.object.isRequired,
+    /** Dataset types of objects that exist in cart */
     usedDatasetTypes: PropTypes.array.isRequired,
-};
-
-CartDatasetSearch.contextTypes = {
-    navigate: PropTypes.func,
+    /** Type of cart to link to the button */
+    cartType: PropTypes.string.isRequired,
 };
 
 
@@ -930,10 +920,55 @@ CartTypeSelector.propTypes = {
 
 
 /**
+ * Display header accessories specific for carts.
+ */
+const CartAccessories = ({ savedCartObj, viewableDatasets, sharedCart, cartType, inProgress }) => (
+    <div className="cart-accessories">
+        {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableDatasets={viewableDatasets} /> : null}
+        {cartType === 'ACTIVE' ?
+            <>
+                <CartLockTrigger savedCartObj={savedCartObj} inProgress={inProgress} />
+                <CartClearButton />
+            </>
+        : null}
+    </div>
+);
+
+CartAccessories.propTypes = {
+    /** Cart as it exists in the database */
+    savedCartObj: PropTypes.object,
+    /** Viewable cart element @ids */
+    viewableDatasets: PropTypes.array,
+    /** Elements in the shared cart, if that's being displayed */
+    sharedCart: PropTypes.object,
+    /** Type of cart: ACTIVE, OBJECT */
+    cartType: PropTypes.string.isRequired,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
+};
+
+CartAccessories.defaultProps = {
+    savedCartObj: null,
+    viewableDatasets: null,
+    sharedCart: null,
+};
+
+
+/**
  * Display cart tool buttons. If `savedCartObj` is supplied, supply it for the metadata.tsv line
  * in the resulting files.txt.
  */
-const CartTools = ({ elements, selectedTerms, selectedDatasetType, typeChangeHandler, savedCartObj, viewableDatasets, fileCounts, cartType, sharedCart, visualizable, inProgress }) => {
+const CartTools = ({
+    elements,
+    selectedTerms,
+    selectedDatasetType,
+    typeChangeHandler,
+    savedCartObj,
+    fileCounts,
+    cartType,
+    sharedCart,
+    visualizable,
+}) => {
     // Disable the download button and show `disabledMessage` if the selected dataset matches "All
     // datasets."
     const disabledMessage = selectedDatasetType === DEFAULT_DATASET_TYPE ? 'Select dataset type to download' : '';
@@ -962,14 +997,12 @@ const CartTools = ({ elements, selectedTerms, selectedDatasetType, typeChangeHan
                     disabledMessage={disabledMessage}
                 />
             : null}
-            {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableDatasets={viewableDatasets} /> : null}
-            {cartType === 'ACTIVE' ?
-                <div className="cart-tools-extras">
-                    <CartLockTrigger savedCartObj={savedCartObj} inProgress={inProgress} />
-                    <CartClearButton />
-                </div>
-            : null}
-            <CartDatasetSearch elements={elements} usedDatasetTypes={usedDatasetTypes} />
+            <CartDatasetReport
+                savedCartObj={savedCartObj}
+                sharedCartObj={sharedCart}
+                cartType={cartType}
+                usedDatasetTypes={usedDatasetTypes}
+            />
         </div>
     );
 };
@@ -985,8 +1018,6 @@ CartTools.propTypes = {
     typeChangeHandler: PropTypes.func.isRequired,
     /** Cart as it exists in the database; use JSON payload method if none */
     savedCartObj: PropTypes.object,
-    /** Viewable cart element @ids */
-    viewableDatasets: PropTypes.array,
     /** Type of cart: ACTIVE, OBJECT */
     cartType: PropTypes.string.isRequired,
     /** Elements in the shared cart, if that's being displayed */
@@ -995,15 +1026,12 @@ CartTools.propTypes = {
     fileCounts: PropTypes.object,
     /** True if only visualizable files should be downloaded */
     visualizable: PropTypes.bool,
-    /** True if cart operation in progress */
-    inProgress: PropTypes.bool.isRequired,
 };
 
 CartTools.defaultProps = {
     elements: [],
     selectedTerms: null,
     savedCartObj: null,
-    viewableDatasets: null,
     sharedCart: null,
     fileCounts: {},
     visualizable: false,
@@ -1613,6 +1641,13 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
         <div className={itemClass(context, 'view-item')}>
             <header>
                 <h1>{cartName}</h1>
+                <CartAccessories
+                    savedCartObj={savedCartObj}
+                    viewableDatasets={viewableDatasets}
+                    sharedCart={context}
+                    cartType={cartType}
+                    inProgress={inProgress}
+                />
                 {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
             </header>
             <Panel addClasses="cart__result-table">
@@ -1629,7 +1664,6 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                             sharedCart={context}
                             fileCounts={{ processed: selectedFiles.length, raw: rawdataFiles.length, all: allFiles.length }}
                             visualizable={visualizableOnly}
-                            inProgress={inProgress}
                         />
                         {selectedTerms.assembly[0] ? <div className="cart-assembly-indicator">{selectedTerms.assembly[0]}</div> : null}
                     </PanelHeading>

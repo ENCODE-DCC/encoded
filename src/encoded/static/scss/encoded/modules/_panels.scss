@@ -461,7 +461,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 0 5px;
 }
 
-$file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-controls
+$file-gallery-controls-height: 34px; // Height of controls inside file-gallery-controls
 
 .file-gallery-controls {
     display: flex;
@@ -485,8 +485,10 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
     }
 
     @at-root #{&}__visualization-selector {
+        display: flex;
+
         select {
-            display: inline-block;
+            display: block;
             height: $file-gallery-controls-height;
             width: auto;
             margin-right: 5px;

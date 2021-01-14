@@ -44,6 +44,13 @@ documentViews.preview = new Registry();
 documentViews.file = new Registry();
 documentViews.detail = new Registry();
 
+// UNICODE entity codes, needed in JSX string templates. Each property named after the equivalent
+// HTML entity. Add new entries to this object as needed.
+export const uc = {
+    ldquo: '\u201c', // Left double quote
+    rdquo: '\u201d', // Right double quote
+};
+
 // Report-page cell components
 export const reportCell = new Registry();
 

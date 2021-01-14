@@ -245,6 +245,10 @@ $disabled-color-factor: 20%;
         @include button-size($padding-xs-vertical, $padding-xs-horizontal, $font-size-small, $btn-height-xs, $border-radius-small);
     }
 
+    @at-root button#{&} {
+        display: flex;
+    }
+
     @at-root a#{&} {
         text-decoration: none;
         display: flex;
@@ -420,7 +424,7 @@ pre code {
     @at-root #{&}__content {
         position: absolute;
         top: 100%;
-        right: 0;
+        left: 0;
         margin: 4px 0;
         padding: 0;
         width: 300px;
