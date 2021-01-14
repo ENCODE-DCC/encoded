@@ -6271,6 +6271,7 @@
         "aliases": [
             "peter-sims:prenatal_2a_filtered_matrix"
         ],
+        "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont5/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF112AAA",
         "uuid": "8ae541d4-541b-4a3d-99a4-98e97e3206f3",
         "no_file_available": false,
@@ -6318,6 +6319,7 @@
         "aliases": [
             "peter-sims:prenatal_2b_filtered_matrix"
         ],
+        "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont4/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF113AAA",
         "uuid": "a4f7cbb1-9fec-471c-8daf-e475978fe0d3",
         "no_file_available": false,
@@ -6365,6 +6367,7 @@
         "aliases": [
             "peter-sims:prenatal_2c_filtered_matrix"
         ],
+        "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont3/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF114AAA",
         "uuid": "08c6b1da-11b5-4cc9-a1d5-86105d162fd1",
         "no_file_available": false,
@@ -6412,6 +6415,7 @@
         "aliases": [
             "peter-sims:prenatal_3a_filtered_matrix"
         ],
+        "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont2/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF115AAA",
         "uuid": "117d7566-4586-4675-b359-73ee0351ac3b",
         "no_file_available": false,
@@ -6459,6 +6463,7 @@
         "aliases": [
             "peter-sims:prenatal_3b_filtered_matrix"
         ],
+        "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont1/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF116AAA",
         "uuid": "e363e2cf-2ab5-4e2c-91b4-4ac4a65e69e8",
         "no_file_available": false,
@@ -6506,6 +6511,7 @@
         "aliases": [
             "peter-sims:prenatal_3c_filtered_matrix"
         ],
+        "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont5/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF117AAA",
         "uuid": "97c7a401-f6a8-4315-9d81-e12d84b79a80",
         "no_file_available": false,
@@ -6623,6 +6629,7 @@
         ],
         "accession": "LATDF119AAA",
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
+        "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont5/outs/filtered_feature_bc_matrix.h5",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",

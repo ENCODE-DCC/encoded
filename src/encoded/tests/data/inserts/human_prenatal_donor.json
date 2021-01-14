@@ -108,6 +108,9 @@
     	"life_stage": "fetal",
     	"gestational_age": "85",
     	"gestational_age_units": "day",
+        "diseases": [
+            "MONDO_0005147"
+        ],
     	"sex": "unknown",
     	"ethnicity": "HANCESTRO_0008",
     	"crown_rump_length": 54,
