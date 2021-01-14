@@ -6688,7 +6688,8 @@
         ],
         "derivation_process": [
             "merging",
-            "depth normalization"
+            "depth normalization",
+            "ambient RNA correction"
         ],
         "software": [
             "cellranger aggr 4.0"
