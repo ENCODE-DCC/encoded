@@ -178,7 +178,7 @@ class Dataset(Item):
 
 
     @calculated_property(define=True, schema={
-        "title": "Genome assembly",
+        "title": "Reference assembly",
         "description": "The Genome assemblies used for references in the data analysis in this Dataset.",
         "comment": "Do not submit. This is a calculated property",
         "type": "array",
@@ -186,18 +186,18 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files, status):
+    def reference_assembly(self, request, original_files, status):
         return calculate_reference(request, original_files, status, "assembly")
 
 
     @calculated_property(define=True, schema={
-        "title": "Genome annotation",
-        "description": "The Genome annotations used for references in the data analysis in this Dataset.",
+        "title": "Reference annotation",
+        "description": "The genome annotations used for references in the data analysis in this Dataset.",
         "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def annotation(self, request, original_files, status):
+    def reference_annotation(self, request, original_files, status):
         return calculate_reference(request, original_files, status, "genome_annotation")

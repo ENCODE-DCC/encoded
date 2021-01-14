@@ -101,10 +101,10 @@
         "award.name": {
             "title": "Award name"
         },
-        "assembly": {
+        "reference_assembly": {
             "title": "Genome assembly"
         },
-        "annotation": {
+        "reference_annotation": {
             "title": "Genome annotation"
         },
         "date_released": {
