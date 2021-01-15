@@ -74,8 +74,8 @@
             }
         },
         "plate_id": {
-            "title": "Identifier of the plate the single cell sample originated from",
-            "description": "The plate the single cell sample comes from.",
+            "title": "Plate ID",
+            "description": "Identifier of the plate the single cell sample originated from",
             "type": "string"
         },
         "plate_barcode_details": {
