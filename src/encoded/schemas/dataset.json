@@ -92,7 +92,7 @@
         "libraries.assay": {
             "title": "Assay type"
         },
-        "libraries.protocol_title": {
+        "libraries.protocol.title": {
             "title": "Library protocol"
         },
         "award.project": {
@@ -106,10 +106,6 @@
         },
         "reference_annotation": {
             "title": "Genome annotation"
-        },
-        "date_released": {
-            "title": "Date released",
-            "length": "long"
         },
         "status": {
             "title": "Status"
@@ -131,7 +127,7 @@
         "status": {
             "title": "Status"
         },
-        "libraries.protocol_title": {
+        "libraries.protocol.title": {
             "title": "Library protocol"
         },
         "libraries.assay": {

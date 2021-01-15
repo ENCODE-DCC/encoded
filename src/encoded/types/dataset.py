@@ -38,6 +38,7 @@ class Dataset(Item):
     name_key = 'accession'
     embedded = [
         'libraries',
+        'libraries.protocol',
         'award',
         'references'
     ]
