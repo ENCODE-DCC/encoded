@@ -196,10 +196,13 @@ GraphLegend.contextTypes = {
 
 
 export class Graph extends React.Component {
-    // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
-    // jsonGraph: JsonGraph object containing nodes and edges.
-    // graph: Initialized empty Dagre-D3 graph.
-    static convertGraph(jsonGraph, graph) {
+    /**
+     * Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
+     * @param {object} jsonGraph JsonGraph object containing nodes and edges.
+     * @param {object} graph Initialized empty Dagre-D3 graph; filled by this function.
+     * @param {boolean} hasDecorations True to include any decorations on graph.
+     */
+    static convertGraph(jsonGraph, graph, hasDecorations) {
         // graph: dagre graph object
         // parent: JsonGraph node to insert nodes into
         function convertGraphInner(subgraph, parent) {
@@ -217,7 +220,7 @@ export class Graph extends React.Component {
                     paddingBottom: '10',
                     subnodes: node.subnodes,
                 };
-                if (node.metadata.displayDecoration) {
+                if (node.metadata.displayDecoration && hasDecorations) {
                     nodeOptions.decoration = {
                         id: `${node.id}-highlight`,
                         position: 'top',
@@ -303,7 +306,7 @@ export class Graph extends React.Component {
 
                         // Draw the graph into the panel; get the graph's view box and save it for
                         // comparisons later
-                        const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
+                        const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el, false);
                         this.cv.viewBoxWidth = viewBoxWidth;
                         this.cv.viewBoxHeight = viewBoxHeight;
 
@@ -340,7 +343,7 @@ export class Graph extends React.Component {
     componentDidUpdate() {
         if (this.dagreD3 && !this.cv.zoomMouseDown) {
             const el = this.graphdisplay;
-            const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
+            const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el, false);
 
             // Bind node/subnode click handlers to parent component handlers
             this.bindClickHandlers(this.d3, el);
@@ -396,10 +399,12 @@ export class Graph extends React.Component {
     // must already exist in the HTML element in the el parm. This also sets the viewBox of the
     // SVG to its natural height. eslint exception for dagreD3.render call.
     /* eslint new-cap: ["error", { "newIsCap": false }] */
-    drawGraph(el) {
+    drawGraph(el, isDownloadGraph) {
         const d3 = this.d3;
         const dagreD3 = this.dagreD3;
-        d3.selectAll('svg#pipeline-graph > *').remove(); // http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart#answer-22453174
+        if (!isDownloadGraph) {
+            d3.selectAll('svg#pipeline-graph > *').remove(); // http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart#answer-22453174
+        }
         const svg = d3.select(el).select('svg');
 
         // Clear `width` and `height` attributes if they exist
@@ -412,7 +417,7 @@ export class Graph extends React.Component {
         const render = new dagreD3.render();
 
         // Convert from given node architecture to the dagre nodes and edges
-        Graph.convertGraph(this.props.graph, g);
+        Graph.convertGraph(this.props.graph, g, !isDownloadGraph);
 
         // Run the renderer. This is what draws the final graph.
         render(svg, g);
@@ -429,7 +434,7 @@ export class Graph extends React.Component {
         const viewBox = [-graphWidthMargin, -graphHeightMargin, viewBoxWidth, viewBoxHeight];
 
         // Set the viewBox of the SVG based on its unscaled extents
-        this.cv.savedSvg.attr('viewBox', viewBox.join(' '));
+        svg.attr('viewBox', viewBox.join(' '));
 
         // Now set the `width` and `height` attributes based on the current zoom level
         if (this.state.zoomLevel && this.cv.zoomFactor) {
@@ -576,32 +581,39 @@ export class Graph extends React.Component {
             return stylesText;
         };
 
-        // Going to be manipulating the SVG node, so make a clone.`
-        const svgNode = this.cv.savedSvg.node().cloneNode(true);
+        // Draw a cleaned-up copy of the graph into a hidden div.
+        const downloadContainer = document.getElementById('download-container');
+        this.d3.select(downloadContainer).insert('svg')
+            .attr('id', 'download-svg')
+            .attr('preserveAspectRatio', 'none')
+            .attr('version', '1.1');
 
-        // Reset the SVG's size to its natural size
-        const viewBox = this.cv.savedSvg.attr('viewBox').split(' ');
-        svgNode.setAttribute('width', viewBox[2]);
-        svgNode.setAttribute('height', viewBox[3]);
+        // Copy visible SVG's coordinates to download SVG.
+        const visibleSvg = this.cv.savedSvg;
+        const viewBox = visibleSvg.attr('viewBox');
+        const visibleWidth = visibleSvg.attr('width');
+        const visibleHeight = visibleSvg.attr('height');
+        const downloadSvg = document.getElementById('download-svg');
+        downloadSvg.setAttribute('width', visibleWidth);
+        downloadSvg.setAttribute('height', visibleHeight);
+        downloadSvg.setAttribute('viewBox', viewBox);
 
-        // Attach graph CSS to SVG node clone.
-        const extractedStyles = extractStyles(svgNode);
+        this.drawGraph(downloadContainer, true);
+
+        // Attach graph CSS to download SVG.
+        const extractedStyles = extractStyles(visibleSvg.node());
         const style = document.createElement('style');
         style.setAttribute('type', 'text/css');
         const textNode = document.createTextNode(extractedStyles);
         style.appendChild(textNode);
-        svgNode.appendChild(style);
+        downloadSvg.appendChild(style);
 
-
-        // Turn SVG node clone into a string and attach to a new Image object. This begins "loading" the image.
+        // Turn download SVG elements into a string and attach to a new Image object. This begins
+        // "loading" the image.
         const serializer = new XMLSerializer();
-        const svgXml = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${serializer.serializeToString(svgNode)}`;
+        const svgXml = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${serializer.serializeToString(downloadSvg)}`;
 
-        // Convert svg source to URI data scheme.
-        // const dataScheme = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgXml)}`;
-        const dataScheme = svgXml;
-
-        const svgBlob = new Blob([dataScheme], { type: 'image/svg+xml;charset=utf-8' });
+        const svgBlob = new Blob([svgXml], { type: 'image/svg+xml;charset=utf-8' });
         const svgUrl = URL.createObjectURL(svgBlob);
 
         // Make the image download by making a fake <a> and pretending to click it.
@@ -611,6 +623,11 @@ export class Graph extends React.Component {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+
+        // Empty the hidden div of elements.
+        while (downloadContainer.firstChild) {
+            downloadContainer.removeChild(downloadContainer.firstChild);
+        }
     }
 
     rangeChange(e) {
@@ -703,6 +720,7 @@ export class Graph extends React.Component {
                         <button ref={(button) => { this.dlButton = button; }} className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                     </div>
                     {this.props.children}
+                    <div id="download-container" />
                 </div>
             );
         }

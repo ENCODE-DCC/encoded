@@ -410,6 +410,12 @@ g.qc-tooltip {
     }
 }
 
+// Hidden div to hold downloadable SVG graphs.
+#download-container {
+    position: absolute;
+    opacity: 0;
+}
+
 // Special unknown status color.
 $color-unknown: #ffc0c0;
 
