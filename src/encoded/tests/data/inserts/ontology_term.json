@@ -123,6 +123,12 @@
         "status": "released"
     },
     {
+        "uuid": "c27f21a5-3ef4-407d-80ef-6de84bd6bd83",
+        "term_name": "type 2 diabetes mellitus",
+        "term_id": "MONDO:0005148",
+        "status": "released"
+    },
+    {
         "uuid": "979e8378-e5c3-41f3-8376-c6c7ad8a7812",
         "term_name": "right lobe of liver",
         "term_id": "UBERON:0001114",
