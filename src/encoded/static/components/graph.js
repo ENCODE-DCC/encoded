@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { svgIcon } from '../libs/svg-icons';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { BrowserFeat } from './browserfeat';
 import { requestFiles } from './objectutils';
 import Status, { sessionToAccessLevel, getObjectStatuses } from './status';
@@ -194,13 +195,99 @@ GraphLegend.contextTypes = {
 };
 
 
+/**
+ * Collect CSS styles that apply to the graph and insert them into the given SVG element.
+ * @param {domnode} displayedSvg Displayed <svg> node to extract CSS styles.
+ * @param {domnode} downloadSvg Downloadable <svg> node to attach extracted CSS styles to.
+ */
+const attachStyles = (displayedSvg, downloadSvg) => {
+    // Get all style sheets matching this domain. This avoids a Chrome crash described in
+    // https://medium.com/better-programming/how-to-fix-the-failed-to-read-the-cssrules-property-from-cssstylesheet-error-431d84e4a139
+    // This code adapts their solution. `document.styleSheets` is array-like, so convert to
+    // array with spread so we can use array methods.
+    const sheets = document.styleSheets
+        ? (
+            [...document.styleSheets].filter((sheet) => (
+                !sheet.href || sheet.href.startsWith(window.location.origin)
+            ))
+        ) : [];
+
+    // Put together a string containing text versions of the CSS rules relevant to the
+    // graph by examining CSS style sheets in the DOM.
+    const stylesText = sheets.reduce((accStylesText, sheet) => {
+        const rules = sheet.cssRules;
+        if (rules && rules.length > 0) {
+            // Put together a string containing text versions of the CSS rules relevant to the
+            // graph by examining the CSS rules in each style sheet. cssRules is array-like, so
+            // convert to an array with spread so we can use array methods. Graph-related styles
+            // start with '.pipeline-graph'. Leave out '.active' rules so nodes and arrows in the
+            // PNG don't show highlights.
+            const elementStylesText = [...rules].reduce((accElementStylesText, rule) => {
+                if (
+                    rule.style
+                    && rule.selectorText
+                    && rule.selectorText.startsWith('.pipeline-graph')
+                    && !rule.selectorText.includes('.active')
+                ) {
+                    // If any elements use this style, add the style's CSS text to our
+                    // style text accumulator.
+                    const elems = displayedSvg.querySelectorAll(rule.selectorText);
+                    if (elems.length > 0) {
+                        return `${accElementStylesText} ${rule.selectorText} { ${rule.style.cssText} } `;
+                    }
+                }
+                return accElementStylesText;
+            }, '');
+            return `${accStylesText} ${elementStylesText}`;
+        }
+        return accStylesText;
+    }, '');
+
+    // Insert the collected CSS styles into a new style element.
+    if (stylesText) {
+        const styleEl = document.createElement('style');
+        styleEl.setAttribute('type', 'text/css');
+        styleEl.innerHTML = `/* <![CDATA[ */\n${stylesText}\n/* ]]> */`;
+
+        // Insert the new style element into the beginning of the given SVG element
+        downloadSvg.insertBefore(styleEl, downloadSvg.firstChild);
+    }
+};
+
+
+/** Parameter to specify graph drawn for downloading, not for page */
+const IS_DOWNLOAD_GRAPH = true;
+/** Maximum height of downloadable graph in pixels */
+const MAX_DOWNLOAD_GRAPH_HEIGHT = 10000;
+
+
+/**
+ * Display a modal indicating the graph is too tall to download.
+ */
+const HeightWarning = ({ closeHandler }) => (
+    <Modal closeModal={closeHandler}>
+        <ModalHeader title="Graph too large" closeModal={closeHandler} />
+        <ModalBody>
+            <p>The graph is too large to download.</p>
+        </ModalBody>
+        <ModalFooter closeModal={closeHandler} />
+    </Modal>
+);
+
+HeightWarning.propTypes = {
+    /** Called when the user wants to close the warning */
+    closeHandler: PropTypes.func.isRequired,
+};
+
+
 export class Graph extends React.Component {
-    // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
-    // jsonGraph: JsonGraph object containing nodes and edges.
-    // graph: Initialized empty Dagre-D3 graph.
-    static convertGraph(jsonGraph, graph) {
-        // graph: dagre graph object
-        // parent: JsonGraph node to insert nodes into
+    /**
+     * Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
+     * @param {object} jsonGraph JsonGraph object containing nodes and edges.
+     * @param {object} graph Initialized empty Dagre-D3 graph; filled by this function.
+     * @param {boolean} hasDecorations True to include any decorations on graph.
+     */
+    static convertGraph(jsonGraph, graph, hasDecorations) {
         function convertGraphInner(subgraph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach((node) => {
@@ -216,7 +303,7 @@ export class Graph extends React.Component {
                     paddingBottom: '10',
                     subnodes: node.subnodes,
                 };
-                if (node.metadata.displayDecoration) {
+                if (node.metadata.displayDecoration && hasDecorations) {
                     nodeOptions.decoration = {
                         id: `${node.id}-highlight`,
                         position: 'top',
@@ -253,6 +340,7 @@ export class Graph extends React.Component {
             zoomLevel: null, // Graph zoom level; null to indicate not set
             contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
             coalescedFiles: [],
+            isHeightWarningVisible: false, // True if alert for graph-too-tall visible
         };
 
         // Component state variables we don't want to cause a rerender.
@@ -278,6 +366,7 @@ export class Graph extends React.Component {
         this.rangeMouseUp = this.rangeMouseUp.bind(this);
         this.rangeDoubleClick = this.rangeDoubleClick.bind(this);
         this.changeZoom = this.changeZoom.bind(this);
+        this.closeHeightWarning = this.closeHeightWarning.bind(this);
         this.slider = React.createRef();
     }
 
@@ -296,13 +385,14 @@ export class Graph extends React.Component {
                         // Add SVG element to the graph component, and assign it classes, sizes, and a group
                         const svg = this.d3.select(el).insert('svg', '#graph-node-info')
                             .attr('id', 'pipeline-graph')
+                            .attr('class', 'pipeline-graph')
                             .attr('preserveAspectRatio', 'none')
                             .attr('version', '1.1');
                         this.cv.savedSvg = svg;
 
                         // Draw the graph into the panel; get the graph's view box and save it for
                         // comparisons later
-                        const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
+                        const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el, !IS_DOWNLOAD_GRAPH);
                         this.cv.viewBoxWidth = viewBoxWidth;
                         this.cv.viewBoxHeight = viewBoxHeight;
 
@@ -340,7 +430,7 @@ export class Graph extends React.Component {
     componentDidUpdate() {
         if (this.dagreD3 && !this.cv.zoomMouseDown) {
             const el = this.graphdisplay;
-            const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
+            const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el, !IS_DOWNLOAD_GRAPH);
 
             // Bind node/subnode click handlers to parent component handlers
             this.bindClickHandlers(this.d3, el);
@@ -365,78 +455,71 @@ export class Graph extends React.Component {
     }
 
     handleDlClick() {
-        // Collect CSS styles that apply to the graph and insert them into the given SVG element
-        function attachStyles(el) {
-            let stylesText = '';
-            const sheets = document.styleSheets;
+        // Get dimensions of the displayed graph to determine whether it might cause a larger PNG
+        // than we can support.
+        const { savedSvg } = this.cv;
+        const viewBox = savedSvg.attr('viewBox');
+        const visibleWidth = savedSvg.attr('width');
+        const visibleHeight = savedSvg.attr('height');
+        if (visibleHeight > MAX_DOWNLOAD_GRAPH_HEIGHT) {
+            // Show an alert for the graph being too big to download.
+            this.setState({ isHeightWarningVisible: true });
+        } else {
+            // Draw a copy of the displayed graph but without decorations into a hidden div at the end
+            // of the <body> tag so it can get copied into a <canvas> for downloading. Prepare by
+            // inserting a blank temporary SVG into the hidden div.
+            const graphDownloadContainer = document.getElementById('graph-download-container');
+            this.d3.select(graphDownloadContainer).insert('svg')
+                .attr('id', 'graph-download-svg')
+                .attr('class', 'pipeline-graph')
+                .attr('preserveAspectRatio', 'none')
+                .attr('version', '1.1');
 
-            // Search every style in the style sheet(s) for those applying to graphs.
-            // Note: Not using ES5 looping constructs because these aren’t real arrays.
-            if (sheets) {
-                for (let i = 0; i < sheets.length; i += 1) {
-                    const rules = sheets[i].cssRules;
-                    if (rules) {
-                        for (let j = 0; j < rules.length; j += 1) {
-                            const rule = rules[j];
+            // Copy displayed SVG's coordinates to temporary SVG.
+            const downloadSvg = document.getElementById('graph-download-svg');
+            downloadSvg.setAttribute('width', visibleWidth);
+            downloadSvg.setAttribute('height', visibleHeight);
+            downloadSvg.setAttribute('viewBox', viewBox);
 
-                            // If a style rule starts with 'g.' (svg group), we know it applies to the graph.
-                            // Note: In some browsers, indexOf is a bit faster; on others substring is a bit faster.
-                            // FF(31)'s substring is much faster than indexOf.
-                            if (typeof (rule.style) !== 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
-                                // If any elements use this style, add the style's CSS text to our style text accumulator.
-                                const elems = el.querySelectorAll(rule.selectorText);
-                                if (elems.length > 0) {
-                                    stylesText += `${rule.selectorText} { ${rule.style.cssText} }\n`;
-                                }
-                            }
-                        }
+            // Attach graph CSS to temporary SVG.
+            const displayedSvg = savedSvg.node();
+            attachStyles(displayedSvg, downloadSvg);
+
+            // Draw graph into hidden div's temporary SVG.
+            this.drawGraph(graphDownloadContainer, IS_DOWNLOAD_GRAPH);
+
+            // Turn temporary SVG into a data url and attach to a new Image object. This begins
+            // "loading" the image.
+            const serializer = new XMLSerializer();
+            const svgXml = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${serializer.serializeToString(downloadSvg)}`;
+            const img = new Image();
+            img.onload = () => {
+                // Make a new memory-based canvas and draw the temporary SVG into it.
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const canvasContext = canvas.getContext('2d');
+                canvasContext.drawImage(img, 0, 0, img.width, img.height);
+                canvas.toBlob((blob) => {
+                    // Make the image download by making a fake <a> and pretending to click it.
+                    const a = document.createElement('a');
+                    a.download = this.props.graph.id ? `${this.props.graph.id}.png` : 'graph.png';
+                    a.href = URL.createObjectURL(blob);
+                    a.setAttribute('data-bypass', 'true');
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+
+                    // Empty the hidden div of elements.
+                    while (graphDownloadContainer.firstChild) {
+                        graphDownloadContainer.removeChild(graphDownloadContainer.firstChild);
                     }
-                }
-            }
+                });
+            };
 
-            // Insert the collected SVG styles into a new style element
-            const styleEl = document.createElement('style');
-            styleEl.setAttribute('type', 'text/css');
-            styleEl.innerHTML = `/* <![CDATA[ */\n${stylesText}\n/* ]]> */`;
-
-            // Insert the new style element into the beginning of the given SVG element
-            el.insertBefore(styleEl, el.firstChild);
+            // Begin the image-loading process. `onload` callback executed when this finishes.
+            img.src = `data:image/svg+xml;base64,${window.btoa(svgXml)}`;
         }
-
-        // Going to be manipulating the SVG node, so make a clone to make GC’s job harder
-        const svgNode = this.cv.savedSvg.node().cloneNode(true);
-
-        // Reset the SVG's size to its natural size
-        const viewBox = this.cv.savedSvg.attr('viewBox').split(' ');
-        svgNode.setAttribute('width', viewBox[2]);
-        svgNode.setAttribute('height', viewBox[3]);
-
-        // Attach graph CSS to SVG node clone
-        attachStyles(svgNode);
-
-        // Turn SVG node clone into a data url and attach to a new Image object. This begins "loading" the image.
-        const serializer = new XMLSerializer();
-        const svgXml = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${serializer.serializeToString(svgNode)}`;
-        const img = new Image();
-        img.src = `data:image/svg+xml;base64,${window.btoa(svgXml)}`;
-
-        // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
-        img.onload = function onload() {
-            // Make a new memory-based canvas and draw the image into it.
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const context = canvas.getContext('2d');
-            context.drawImage(img, 0, 0, img.width, img.height);
-
-            // Make the image download by making a fake <a> and pretending to click it.
-            const a = document.createElement('a');
-            a.download = this.props.graph.id ? `${this.props.graph.id}.png` : 'graph.png';
-            a.href = canvas.toDataURL('image/png');
-            a.setAttribute('data-bypass', 'true');
-            document.body.appendChild(a);
-            a.click();
-        }.bind(this);
     }
 
     // For the given container element and its svg, calculate an initial zoom level that fits the
@@ -476,12 +559,17 @@ export class Graph extends React.Component {
     // must already exist in the HTML element in the el parm. This also sets the viewBox of the
     // SVG to its natural height. eslint exception for dagreD3.render call.
     /* eslint new-cap: ["error", { "newIsCap": false }] */
-    drawGraph(el) {
+    drawGraph(el, isDownloadGraph) {
         const { d3, dagreD3 } = this;
-        d3.selectAll('svg#pipeline-graph > *').remove(); // http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart#answer-22453174
-        const svg = d3.select(el).select('svg');
+
+        // Only clear the old graph if we're updating the displayed graph; not if we're drawing the
+        // graph for download.
+        if (!isDownloadGraph) {
+            d3.selectAll('svg#pipeline-graph > *').remove(); // http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart#answer-22453174
+        }
 
         // Clear `width` and `height` attributes if they exist
+        const svg = d3.select(el).select('svg');
         svg.attr('width', null).attr('height', null).attr('viewBox', null);
 
         // Create a new empty graph
@@ -491,7 +579,7 @@ export class Graph extends React.Component {
         const render = new dagreD3.render();
 
         // Convert from given node architecture to the dagre nodes and edges
-        Graph.convertGraph(this.props.graph, g);
+        Graph.convertGraph(this.props.graph, g, !isDownloadGraph);
 
         // Run the renderer. This is what draws the final graph.
         render(svg, g);
@@ -508,7 +596,7 @@ export class Graph extends React.Component {
         const viewBox = [-graphWidthMargin, -graphHeightMargin, viewBoxWidth, viewBoxHeight];
 
         // Set the viewBox of the SVG based on its unscaled extents
-        this.cv.savedSvg.attr('viewBox', viewBox.join(' '));
+        svg.attr('viewBox', viewBox.join(' '));
 
         // Now set the `width` and `height` attributes based on the current zoom level
         if (this.state.zoomLevel && this.cv.zoomFactor) {
@@ -681,6 +769,13 @@ export class Graph extends React.Component {
         }
     }
 
+    /**
+     * Called when the user wants to close the height-warning modal.
+     */
+    closeHeightWarning() {
+        this.setState({ isHeightWarningVisible: false });
+    }
+
     render() {
         const { graph, colorize } = this.props;
         const orientBtnAlt = `Orient graph ${this.state.verticalGraph ? 'horizontally' : 'vertically'}`;
@@ -707,6 +802,8 @@ export class Graph extends React.Component {
                         <button type="button" ref={(button) => { this.dlButton = button; }} className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                     </div>
                     {this.props.children}
+                    <div id="graph-download-container" />
+                    {this.state.isHeightWarningVisible ? <HeightWarning closeHandler={this.closeHeightWarning} /> : null}
                 </div>
             );
         }

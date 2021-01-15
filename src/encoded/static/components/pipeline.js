@@ -449,10 +449,10 @@ class PipelineComponent extends React.Component {
                                     <dt>Reference File Sets</dt>
                                     <dd>
                                         {context.reference_filesets.map((fileset, i) => (
-                                            <>
+                                            <React.Fragment key={fileset['@id']}>
                                                 {i > 0 ? <span>, </span> : null}
                                                 <a href={fileset['@id']}>{fileset.accession}</a>
-                                            </>
+                                            </React.Fragment>
                                         ))}
                                     </dd>
                                 </div>
