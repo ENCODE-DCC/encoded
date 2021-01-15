@@ -155,6 +155,11 @@ $small-font-size: 0.9rem;
     g.pipeline-node-file.graph-node--#{$status} {
         fill: $color;
 
+        // Darken for selected nodes.
+        &.active {
+            fill: desaturate(darken($color, 10%), 20%);
+        }
+
         & g.label {
             fill: label-color($color);
         }

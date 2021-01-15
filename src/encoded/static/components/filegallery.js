@@ -18,7 +18,11 @@ import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
 
-const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
+// Minimum number of files in a coalescing group.
+const MINIMUM_COALESCE_COUNT = 5;
+// Minimum total number of fastq files to consider coalescing them.
+const MINIMUM_READS_COALESCE_COUNT = 100;
+
 dayjs.extend(utc);
 
 // Sort callback to compare the accession/external_accession of two files.
@@ -593,7 +597,7 @@ class RawSequencingTable extends React.Component {
             // corresponding reads files’ pairSortKeys. For ease-of-implementation and performance,
             // we only look for the one file of the pair in `pairedFiles` to get its pairSortKey
             // root (without appended `paired_end` string) -- not both files. Append "-I" to
-            // `poirSortKey` to index reads files sort after the pairs they associate with.
+            // `pairSortKey` to index reads files sort after the pairs they associate with.
             const pairedFileIndexReads = [];
             if (indexFiles) {
                 indexFiles.forEach((indexFile) => {
@@ -1024,7 +1028,7 @@ FileGallery.contextTypes = {
 // [{assembly: 'assembly1', annotation: 'annotation1'}]
 //
 // The resulting array has no duplicate entries, nor empty ones. Entries with an assembly but no
-// annotation simply have an empty string for the annnotation. The array of assemblies and
+// annotation simply have an empty string for the annotation. The array of assemblies and
 // annotations is then sorted with assembly as the primary key and annotation as the secondary.
 
 function collectAssembliesAnnotations(files) {
@@ -1051,7 +1055,7 @@ function collectAssembliesAnnotations(files) {
             // Extract any number from the annotation.
             const annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
             if (annotationMatch) {
-                // Return the number to the sorting algoritm.
+                // Return the number to the sorting algorithm.
                 return Number(annotationMatch[1]);
             }
         }
@@ -1067,7 +1071,7 @@ function collectAssembliesAnnotations(files) {
 
 
 /**
- * Render the visualization controls, including the browser selector and Visulize button.
+ * Render the visualization controls, including the browser selector and Visualize button.
  */
 class VisualizationControls extends React.Component {
     constructor() {
@@ -1295,7 +1299,7 @@ function isCompatibleAssemblyAnnotation(file, assembly, annotation) {
  * @param {string} selectedAnnotation - Genome annotation currently selected for display in the graph
  * @param {object} allFiles - keys are @ids of all files in the current dataset, and the values are
  *         the file objects themselves.
- * @return {object} - Describes the derived_from chaih above the given `file` object. This single-
+ * @return {object} - Describes the derived_from chain above the given `file` object. This single-
  *         level object has keys that are the @id of every file that the given `file` directly or
  *         indirectly derives from. Each key's value is the object of the file that directly
  *         derives from it. A file can spawn more than one file, but in that case we'll have
@@ -1311,7 +1315,7 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
     // file of this derived_from branch and can start stepping back down the chain. We also stop
     // going up the chain once we get to a file not in the current dataset, which might be a
     // processed file that doesn't belong in the graph, or a contributing file. Note that we have a
-    // risk of infinite recursion if the file data incluees a derived_from loop, which isn't valid.
+    // risk of infinite recursion if the file data includes a derived_from loop, which isn't valid.
     if (file.derived_from && file.derived_from.length > 0 && file.dataset === fileDataset['@id']) {
         // File is the product of at least one derived_from chain, so for any files this file
         // derives from (parent files), go up the chain continuing to collect the files involved
@@ -1367,7 +1371,7 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
 
 
 /**
- * Generate a string of CSS classes for a file node. Plass the result into a `className` property of a component.
+ * Generate a string of CSS classes for a file node. Place the result into a `className` property of a component.
  *
  * @param {object-required} file - File we're generating the statuses for.
  * @param {bool} active - True if the file is active and should be highlighted as such.
@@ -1495,7 +1499,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
 
     // Add the derivedFromList to matchingFiles so that the rendering code renders them all
     // together. This is a major change made for ENCD-3661 which used to render this all
-    // `allDerivedFroms` separately. Now they're all rendered together, an no separate rendering
+    // `allDerivedFroms` separately. Now they're all rendered together, and no separate rendering
     // step for derived froms exists anymore.
     matchingFiles = Object.assign(matchingFiles, derivedFromList);
 
@@ -1548,27 +1552,27 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
     // Go through each used contributing file and set a property within it showing which files
     // derive from it. We'll need that for coalescing contributing files.
     const allCoalesced = {};
-    let coalescingGroups = {};
+    let contributingCoalescingGroups = {};
     if (Object.keys(usedContributingFiles).length > 0) {
         // Now use the derivedFiles property of every contributing file to group them into potential
         // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
         // hashed to a stringified 32-bit integer, and mapped to an array of contributing files they
         // derive from.
-        coalescingGroups = _(Object.keys(usedContributingFiles)).groupBy((contributingFileAtId) => {
+        contributingCoalescingGroups = _(Object.keys(usedContributingFiles)).groupBy((contributingFileAtId) => {
             const derivedFiles = usedContributingFiles[contributingFileAtId];
             return globals.hashCode(derivedFiles.map(derivedFile => derivedFile['@id']).join(',')).toString();
         });
 
         // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
         // value. That'll be important when we add step nodes.
-        const coalescingGroupKeys = Object.keys(coalescingGroups);
+        const coalescingGroupKeys = Object.keys(contributingCoalescingGroups);
         if (coalescingGroupKeys && coalescingGroupKeys.length > 0) {
             coalescingGroupKeys.forEach((groupHash) => {
-                const group = coalescingGroups[groupHash];
+                const group = contributingCoalescingGroups[groupHash];
                 if (group.length >= MINIMUM_COALESCE_COUNT) {
                     // Number of files in the coalescing group is at least the minimum number of files we
                     // allow in a coalescing group. Mark every contributing file in the group with the
-                    // group's hash value in a `coalescingGroup` property that step node can connnect to.
+                    // group's hash value in a `coalescingGroup` property that step node can connect to.
                     group.forEach((contributingFileAtId) => {
                         allCoalesced[contributingFileAtId] = groupHash;
 
@@ -1581,7 +1585,58 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                     // The number of contributing files in a coalescing group isn't above our
                     // threshold. Don't use this coalescingGroup anymore and just render them the
                     // same as normal files.
-                    delete coalescingGroups[groupHash];
+                    delete contributingCoalescingGroups[groupHash];
+                }
+            });
+        }
+    }
+
+    // Make a list of the file objects of all fastqs that other files derive from.
+    const allReadsFiles = Object.keys(allFiles).filter(fileAtId => (
+        fileAtId in allDerivedFroms && allFiles[fileAtId].file_type === 'fastq'
+    )).map(fileAtId => allFiles[fileAtId]);
+
+    // Assemble lists of reads files; each list contains the fastq files we can coalesce into one
+    // visual node in the graph. Each list keyed by a hash value based on the lists of files
+    // derived from each fastq combined with the biological replicate of the fastqs. Any fastqs not
+    // included in a replicate get rendered non-coalesced.
+    let readsCoalescingGroups = {};
+    if (allReadsFiles.length > MINIMUM_READS_COALESCE_COUNT) {
+        // Collect all reads files belonging to exactly one biological replicate.
+        const bioRepReadFiles = allReadsFiles.filter(readsFile => (
+            readsFile.biological_replicates && readsFile.biological_replicates.length === 1
+        ));
+
+        // Group reads files with one biological replicate into potential coalescing nodes based on
+        // both the set of files deriving from them as well as their biological replicate. The
+        // resulting object has keys comprising a hash, and a value containing an array of reads
+        // file objects that might get coalesced if that group contains enough reads files.
+        readsCoalescingGroups = _(bioRepReadFiles).groupBy((readsFile) => {
+            const derivedFiles = allDerivedFroms[readsFile['@id']];
+            const bioReplicate = readsFile.biological_replicates[0];
+            return globals.hashCode(derivedFiles.map(derivedFile => `${derivedFile['@id']}-${bioReplicate}`).join(',')).toString();
+        });
+
+        // For any coalescing groups that actually qualify for coalescing, remove them from normal
+        // rendering as they'll get rendered separately.
+        const coalescingGroupHashes = Object.keys(readsCoalescingGroups);
+        if (coalescingGroupHashes.length > 0) {
+            coalescingGroupHashes.forEach((groupHash) => {
+                const group = readsCoalescingGroups[groupHash];
+                if (group.length >= MINIMUM_COALESCE_COUNT) {
+                    // Number of files in the coalescing group is at least the minimum number of
+                    // files we allow to coalesce. Remove each file in the group from the normal
+                    // rendering process.
+                    group.forEach((readsFile) => {
+                        allCoalesced[readsFile['@id']] = groupHash;
+                        delete matchingFiles[readsFile['@id']];
+                        delete allFiles[readsFile['@id']];
+                    });
+                } else {
+                    // The number of contributing files in a coalescing group isn't above our
+                    // threshold. Don't use this coalescingGroup anymore and just render them the
+                    // same as normal files.
+                    delete readsCoalescingGroups[groupHash];
                 }
             });
         }
@@ -1728,7 +1783,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                 // Connect the file to the step, and the step to the derived_from files
                 const infoNodeId = infoNode && infoNode.id;
                 const fileNodeHighlighted = (infoNodeId === fileNodeId) || (infoNodeId === stepId);
-                jsonGraph.addEdge(stepId, fileNodeId, { class: fileNodeHighlighted ? 'highlighted' : '' });
+                jsonGraph.addEdge(stepId, fileNodeId, { class: fileNodeHighlighted ? 'active' : '' });
                 file.derived_from.forEach((derivedFromAtId) => {
                     if (!allDerivedFroms[derivedFromAtId]) {
                         return;
@@ -1739,7 +1794,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                         const derivedFileId = `file:${derivedFromAtId}`;
                         const derivedFileNodeHighlighted = (infoNodeId === derivedFileId) || (infoNodeId === stepId);
                         if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                            jsonGraph.addEdge(derivedFileId, stepId, { class: derivedFileNodeHighlighted ? 'highlighted' : '' });
+                            jsonGraph.addEdge(derivedFileId, stepId, { class: derivedFileNodeHighlighted ? 'active' : '' });
                         }
                     } else {
                         // File derived from a contributing file; add edges to a coalesced node
@@ -1750,13 +1805,13 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                             const derivedFileId = `coalesced:${coalescedContributing}`;
                             const derivedFileNodeHighlighted = (infoNodeId === derivedFileId) || (infoNodeId === stepId);
                             if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                                jsonGraph.addEdge(derivedFileId, stepId, { class: derivedFileNodeHighlighted ? 'highlighted' : '' });
+                                jsonGraph.addEdge(derivedFileId, stepId, { class: derivedFileNodeHighlighted ? 'active' : '' });
                             }
                         } else if (usedContributingFiles[derivedFromAtId]) {
                             const derivedFileId = `file:${derivedFromAtId}`;
                             const derivedFileNodeHighlighted = (infoNodeId === derivedFileId) || (infoNodeId === stepId);
                             if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                                jsonGraph.addEdge(derivedFileId, stepId, { class: derivedFileNodeHighlighted ? 'highlighted' : '' });
+                                jsonGraph.addEdge(derivedFileId, stepId, { class: derivedFileNodeHighlighted ? 'active' : '' });
                             }
                         }
                     }
@@ -1765,9 +1820,9 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         }
     });
 
-    // Now add coalesced nodes to the graph.
-    Object.keys(coalescingGroups).forEach((groupHash) => {
-        const coalescingGroup = coalescingGroups[groupHash];
+    // Add contributing coalesced nodes to the graph.
+    Object.keys(contributingCoalescingGroups).forEach((groupHash) => {
+        const coalescingGroup = contributingCoalescingGroups[groupHash];
         if (coalescingGroup.length > 0) {
             const fileNodeId = `coalesced:${groupHash}`;
             const fileCssClass = `pipeline-node-file contributing${infoNode && infoNode.id === fileNodeId ? ' active' : ''}`;
@@ -1776,12 +1831,33 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                 type: 'Coalesced',
                 shape: 'stack',
                 cornerRadius: 16,
-                contributing: groupHash,
                 ref: coalescingGroup,
                 displayDecoration: true,
                 decorationClass: infoNode && infoNode.id === fileNodeId ? 'decoration--active' : '',
             });
         }
+    });
+
+    // Add coalesced reads nodes to the graph.
+    Object.keys(readsCoalescingGroups).forEach((groupHash) => {
+        // Get all file @ids in the coalescing group.
+        const coalescingGroupFiles = readsCoalescingGroups[groupHash];
+
+        // Get first file object and get its biological_replicate.
+        const replicateNode = jsonGraph.getNode(`rep:${coalescingGroupFiles[0].biological_replicates[0]}`);
+        const fileNodeId = `coalesced:${groupHash}`;
+        const fileCssClass = `pipeline-node-file reads${infoNode && infoNode.id === fileNodeId ? ' active' : ''}`;
+        jsonGraph.addNode(fileNodeId, `${coalescingGroupFiles.length} reads`, {
+            cssClass: fileCssClass,
+            type: 'Coalesced',
+            shape: 'stack',
+            cornerRadius: 16,
+            contributing: groupHash,
+            parentNode: replicateNode,
+            ref: coalescingGroupFiles.map(file => file['@id']),
+            displayDecoration: true,
+            decorationClass: infoNode && infoNode.id === fileNodeId ? 'decoration--active' : '',
+        });
     });
 
     // Add missing-file nodes to the graph.
@@ -1871,7 +1947,7 @@ FileGraph.defaultProps = {
 
 
 /**
- * Display the checkbox for the user to choose whether to include depcrecated files in the graph
+ * Display the checkbox for the user to choose whether to include deprecated files in the graph
  * and table displays.
  */
 const InclusionSelector = ({ inclusionOn, handleInclusionChange }) => (
@@ -1896,7 +1972,7 @@ InclusionSelector.propTypes = {
 };
 
 // Display facets for files
-// Only one assembly can be chosen so controls for 'Assembly' facet look like radiobuttons
+// Only one assembly can be chosen so controls for 'Assembly' facet look like radio buttons
 // Multiple terms may be chosen for facets that are not Assembly so those look like regular buttons
 const FileFacet = (props) => {
     const { facetObject, facetTitle, filterFiles, facetKey, selectedFilters, currentTab } = props;
@@ -1959,7 +2035,7 @@ function addFilter(filterList, value, facet) {
     const currentFilters = filterList;
     // Check to see if there is already a filter for a facet or if it is the assembly facet which can only have one value
     if ((currentFilters[facet]) && facet !== 'assembly') {
-        // If so, append the new falue
+        // If so, append the new value
         currentFilters[facet] = [...currentFilters[facet], value];
     } else {
         // If not, create a new filter with the new value
@@ -2097,7 +2173,7 @@ function createFacetObject(propertyKey, fileList, filters) {
  *      pipelineLab: Pipeline processing lab title, e.g. "ENCODE4 uniform"
  *      assembly: Assembly and annotation string matching assembly facet terms
  *      assemblyAnnotationValue: Value used to sort the compiled analyses
- *      files: Array of files selected with the pipline lab and assembly
+ *      files: Array of files selected with the pipeline lab and assembly
  * }
  */
 const UNIFORM_PIPELINE_LAB = '/labs/encode-processing-pipeline/';
