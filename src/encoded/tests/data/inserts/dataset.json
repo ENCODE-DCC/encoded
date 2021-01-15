@@ -15,7 +15,8 @@
         ],
         "corresponding_contributor": "abbeclarke@broadinstitute.org",
         "dbxrefs": [
-            "SRA:SRP492949"
+            "SRA:SRP492949",
+            "ENA:PRJEB37165"
         ],
         "documents": [
             "anna-greka:LID48879"
@@ -87,7 +88,8 @@
         "dbxrefs": [
             "SRA:SRP1232525",
             "GEO:GSE1278080",
-            "GEO-obsolete:GSM973234"
+            "GEO-obsolete:GSM973234",
+            "EGA:EGAS23458"
         ],
         "submitted_by": "jychien@stanford.edu",
         "date_released": "2020-08-07",
