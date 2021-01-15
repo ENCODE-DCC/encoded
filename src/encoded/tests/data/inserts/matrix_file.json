@@ -6656,8 +6656,7 @@
             "peter-sims:prenatal_2b_filtered_matrix",
             "peter-sims:prenatal_2c_filtered_matrix",
             "peter-sims:prenatal_3a_filtered_matrix",
-            "peter-sims:prenatal_3b_filtered_matrix",
-            "peter-sims:prenatal_3c_filtered_matrix"
+            "peter-sims:prenatal_3b_filtered_matrix"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
