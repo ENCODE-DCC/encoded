@@ -30,6 +30,7 @@ class Library(Item, CalculatedAward):
         'donors',
         'donors.ethnicity',
         'donors.diseases',
+        'donors.organism',
         'derived_from',
         'derived_from.biosample_ontology'
     ]

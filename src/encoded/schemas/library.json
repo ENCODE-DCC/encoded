@@ -183,6 +183,9 @@
         "protocol.title": {
             "title": "Library protocol"
         },
+        "donors.organism.scientific_name": {
+            "title": "Donor organism"
+        },
         "donors.life_stage": {
             "title": "Donor life stage"
         },
@@ -232,6 +235,9 @@
         },
         "protocol.title": {
             "title": "Library protocol"
+        },
+        "donors.organism.scientific_name": {
+            "title": "Donor organism"
         },
         "donors.age_display": {
             "title": "Donor age"
