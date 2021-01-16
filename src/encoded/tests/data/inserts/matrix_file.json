@@ -3495,6 +3495,7 @@
         "file_format": "hdf5",
         "file_size": 100000,
         "lab": "anna-greka",
+        "s3_uri": "s3://submissions-czi012eye/chen_2020/17D013_NeuNT_outs/filtered_feature_bc_matrix.h5",
         "output_types": [
             "gene quantifications"
         ],
@@ -3587,6 +3588,7 @@
         "status": "released",
         "uuid": "d45b8a67-826a-446b-8601-5ec43ca8c2cb",
         "submitted_file_name": "donorCD2_filtered_feature_bc_matrix.h5",
+        "s3_uri": "s3://submissions-czi012eye/chen_2020/19D013_NeuNT_outs/filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
         "lab": "anna-greka",
@@ -4240,6 +4242,7 @@
             "anna-greka:donorCD1_filtered_feature_bc_matrix",
             "anna-greka:donorCD2_filtered_feature_bc_matrix"
         ],
+        "s3_uri": "s3://submissions-czi012eye/chen_2020/19D015_macular_outs/filtered_feature_bc_matrix.h5",
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "filtering_cutoffs": [
@@ -5322,7 +5325,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "cell calling"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -5370,7 +5374,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "cell calling"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -5418,7 +5423,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "cell calling"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -5466,7 +5472,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "cell calling"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -5514,7 +5521,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "cell calling"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -5562,7 +5570,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "cell calling"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -5610,7 +5619,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "cell calling"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -5658,7 +5668,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "cell calling"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -5706,7 +5717,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "cell calling"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -6737,5 +6749,32 @@
             "cellranger aggr 4.0"
         ],
         "md5sum": "2d6c0e193103965fcbc1a4f938439f41"
+    },
+    {
+        "derived_from": [
+            "LATDF200ABA",
+            "LATDF201ABA",
+            "LATDF202ABA",
+            "LATDF203ABA",
+            "LATDF204ABA",
+            "LATDF205ABA",
+            "LATDF206ABA",
+            "LATDF207ABA",
+            "LATDF208ABA"
+        ],
+        "dataset": "LATDS600ABA",
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "file_format": "rds",
+        "normalized": true,
+        "output_types": [
+            "gene quantifications"
+        ],
+        "value_units": "UMI",
+        "value_scale": "log, base 10",
+        "uuid": "7ca0c1d6-4b5a-4e93-b6f2-b1ae1ee172dc",
+        "accession": "LATDF333ORG"
     }
 ]
