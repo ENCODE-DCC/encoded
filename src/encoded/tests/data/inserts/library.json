@@ -687,7 +687,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:human_tissue_donorA",
+            "anna-greka:sc_citeseq_suspension_donorA",
             "anna-greka:sc_citeseq_suspension_donorB"
         ],
         "dbxrefs": [
