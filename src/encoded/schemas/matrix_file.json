@@ -271,6 +271,53 @@
                     }
                 }
             }
+        },
+        "mapping_column": {
+            "title": "Mapping column",
+            "description": "The column in a final matrix that contains the cell mapping identifiers that allows mapping of cells to library.",
+            "type": "string"
+        },
+        "cell_mapping": {
+            "title": "Cell mapping for libraries",
+            "description": "Information at the library level that allows for mapping of cells in the final matrix to Library objects in Lattice.",
+            "type": "array",
+            "items": {
+                "title": "Cell mapping for each library",
+                "type": "object",
+                "required": ["cell_mapping_identifier", "cell_mapping_string", "cell_mapping_location", "cell_mapping_connector"],
+                "additionalProperties": false,
+                "properties": {
+                    "cell_mapping_identifier": {
+                        "title": "Cell mapping identifier",
+                        "description": "The specific identifier that is assigned to the subset of cells that belong to a single library",
+                        "type": "string"
+                    },
+                    "cell_mapping_string": {
+                        "title": "Cell mapping string",
+                        "description": "The string that is concatenated as a prefix or suffix to the cell barcode to make the unique cell identifier, not including the connector string",
+                        "type": "string"
+                    },
+                    "cell_mapping_location": {
+                        "title": "Cell mapping location",
+                        "description": "Indicator distinguishing if the cell_mapping_string is concatenated as a prefix or suffix",
+                        "type": "string",
+                        "enum": [
+                            "prefix",
+                            "suffix"
+                        ]
+                    },
+                    "cell_mapping_connector": {
+                        "title": "Cell mapping connector",
+                        "description": "The string used to join the cell barcode and the cell mapping string to make the unique cell identifier.",
+                        "type": "string",
+                        "enum": [
+                            "_",
+                            "-"
+                        ]
+                    }
+                }
+
+            }
         }
     },
     "facets": {

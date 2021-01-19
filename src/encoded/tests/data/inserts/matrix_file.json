@@ -6630,7 +6630,7 @@
         ],
         "accession": "LATDF119AAA",
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
-        "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont5/outs/filtered_feature_bc_matrix.h5",
+        "s3_uri": "s3://submissions-lattice/testing/LATDF119AAA_final.h5ad",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6695,7 +6695,40 @@
         "software": [
             "cellranger aggr 4.0"
         ],
-        "md5sum": "2e883306013203954eb1b69ae063eef1"
+        "md5sum": "2e883306013203954eb1b69ae063eef1",
+        "cell_mapping": [
+            {
+                "cell_mapping_identifier": "library_1",
+                "cell_mapping_string": "lib_1",
+                "cell_mapping_location": "suffix",
+                "cell_mapping_connector": "-"
+            },
+            {
+                "cell_mapping_identifier": "library_2",
+                "cell_mapping_string": "lib_2",
+                "cell_mapping_location": "suffix",
+                "cell_mapping_connector": "-"
+            },
+            {
+                "cell_mapping_identifier": "library_3",
+                "cell_mapping_string": "lib_3",
+                "cell_mapping_location": "suffix",
+                "cell_mapping_connector": "-"
+            },
+            {
+                "cell_mapping_identifier": "library_4",
+                "cell_mapping_string": "lib_4",
+                "cell_mapping_location": "suffix",
+                "cell_mapping_connector": "-"
+            },
+            {
+                "cell_mapping_identifier": "library_5",
+                "cell_mapping_string": "lib_5",
+                "cell_mapping_location": "suffix",
+                "cell_mapping_connector": "-"
+            }
+        ],
+        "mapping_column": "sample"
     },
     {
         "aliases": [
