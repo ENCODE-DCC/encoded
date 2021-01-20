@@ -1,10 +1,12 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 
 // Import test component and data.
 import Antibody from '../antibody';
 import context from '../testdata/antibody/ENCAB000AUZ';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Antibody', () => {
     beforeAll(() => {

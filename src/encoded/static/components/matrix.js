@@ -34,6 +34,7 @@ export class RowCategoryExpander extends React.Component {
         const { categoryId, expanderColor, expanderBgColor, expanded } = this.props;
         return (
             <button
+                type="button"
                 className="matrix__category-expander"
                 aria-expanded={expanded}
                 aria-controls={categoryId}

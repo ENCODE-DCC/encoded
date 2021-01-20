@@ -32,7 +32,7 @@ function generateQuery(selectedOrganisms, selectedAssayCategory) {
             WORM: `${organismSpec}Caenorhabditis+elegans`, // worm
             FLY: `${organismSpec}Drosophila+melanogaster&${organismSpec}Drosophila+pseudoobscura&${organismSpec}Drosophila+simulans&${organismSpec}Drosophila+mojavensis&${organismSpec}Drosophila+ananassae&${organismSpec}Drosophila+virilis&${organismSpec}Drosophila+yakuba`,
         };
-        const organismQueries = selectedOrganisms.map(organism => queryStrings[organism]);
+        const organismQueries = selectedOrganisms.map((organism) => queryStrings[organism]);
         query += `&${organismQueries.join('&')}`;
     }
 
@@ -69,7 +69,7 @@ class EncodeSearch extends React.Component {
                     <fieldset>
                         <legend className="sr-only">Encode search</legend>
                         <div className="site-search__input">
-                            <label htmlFor="encode-search" className="label--inline">Search ENCODE portal</label>
+                            <div className="label--inline">Search ENCODE portal</div>
                             <Tooltip
                                 trigger={<i className="icon icon-question-circle" />}
                                 tooltipId="search-encode"
@@ -112,7 +112,7 @@ class SearchSuggestionsItem extends React.Component {
     }
 
     render() {
-        return <li><button className={this.props.selected ? 'site-search__suggested-results--selected' : ''} onMouseDown={this.itemClickHandler} onMouseEnter={this.itemMouseEnter}>{this.props.item}</button></li>;
+        return <li><button type="button" className={this.props.selected ? 'site-search__suggested-results--selected' : ''} onMouseDown={this.itemClickHandler} onMouseEnter={this.itemMouseEnter}>{this.props.item}</button></li>;
     }
 }
 
@@ -200,6 +200,7 @@ class InputSuggest extends React.Component {
         this.handleMouseEnter = this.handleMouseEnter.bind(this);
     }
 
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps) {
         // React to new <input> text contents controlled by parent form component.
         if (prevProps.value !== this.props.value) {
@@ -210,6 +211,7 @@ class InputSuggest extends React.Component {
             });
         }
     }
+    /* eslint-enable react/no-did-update-set-state */
 
     handleOnChange(e) {
         // Called when user changes the contents of the controlled <input> field.
@@ -264,7 +266,7 @@ class InputSuggest extends React.Component {
 
             // Select the next item in the list, or stay on the item if the current item is the
             // last one.
-            this.setState(prevState => ({ selectedItemIndex: prevState.selectedItemIndex < this.props.items.length - 1 ? prevState.selectedItemIndex + 1 : prevState.selectedItemIndex }));
+            this.setState((prevState) => ({ selectedItemIndex: prevState.selectedItemIndex < this.props.items.length - 1 ? prevState.selectedItemIndex + 1 : prevState.selectedItemIndex }));
         } else if (e.keyCode === KEYCODE_ENTER && this.state.selectedItemIndex > -1 && this.props.itemSelectHandler) {
             this.props.itemSelectHandler(this.props.items[this.state.selectedItemIndex]);
         } else if (e.keyCode === KEYCODE_ESC) {
@@ -377,6 +379,15 @@ class ScreenSearch extends React.Component {
         }
     }
 
+    handleTimerExpiry() {
+        // Called when the timer expires. If the last term requested for suggestions is different
+        // from what's in the input field, request new suggestions.
+        this.throttlingTimer = null;
+        if (this.state.currSearchTerm !== this.lastSearchTerm) {
+            this.getScreenSuggestions(this.state.currSearchTerm);
+        }
+    }
+
     getScreenSuggestions(newSearchTerm) {
         // Retrieve a list of term suggestions from the SCREEN REST API based on `newSearchTerm`.
         this.startDelayTimer();
@@ -387,27 +398,18 @@ class ScreenSearch extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ userQuery: newSearchTerm.trim() }),
-        }).then(response => (
+        }).then((response) => (
             // If we get an error response from the SCREEN server, just don't display a suggestions
             // drop down.
             response.ok ? response.json() : []
         )).then((results) => {
             let dedupedSearchTerms = [];
             if (results.length > 0) {
-                dedupedSearchTerms = _.chain(results.map(term => term.trim())).uniq().compact().value();
+                dedupedSearchTerms = _.chain(results.map((term) => term.trim())).uniq().compact().value();
             }
             this.setState({ suggestedSearchTerms: dedupedSearchTerms });
             return results;
         });
-    }
-
-    handleTimerExpiry() {
-        // Called when the timer expires. If the last term requested for suggestions is different
-        // from what's in the input field, request new suggestions.
-        this.throttlingTimer = null;
-        if (this.state.currSearchTerm !== this.lastSearchTerm) {
-            this.getScreenSuggestions(this.state.currSearchTerm);
-        }
     }
 
     startDelayTimer() {
@@ -454,7 +456,7 @@ class ScreenSearch extends React.Component {
                     <fieldset>
                         <legend className="sr-only">Screen search</legend>
                         <div className="site-search__input">
-                            <label htmlFor="screen-search" id="screen-search-label">
+                            <div className="label--inline">
                                 Search for candidate Cis-Regulatory Elements
                                 <Tooltip
                                     trigger={<i className="icon icon-question-circle" />}
@@ -464,7 +466,7 @@ class ScreenSearch extends React.Component {
                                     Search for candidate Cis-Regulatory Elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
                                 </Tooltip>
                                 <div className="site-search__note">Hosted by <a href="https://screen.wenglab.org/">SCREEN</a></div>
-                            </label>
+                            </div>
                             <InputSuggest
                                 value={this.state.currSearchTerm}
                                 items={this.state.suggestedSearchTerms}
@@ -624,19 +626,20 @@ export default class Home extends React.Component {
     }
 
     handleTabClick(selectedTab) {
-        // Create a copy of this.state.newtabs so we can manipulate it in peace.
-        const tempArray = _.clone(this.state.organisms);
-        if (tempArray.indexOf(selectedTab) === -1) {
-            // if tab isn't already in array, then add it
-            tempArray.push(selectedTab);
-        } else {
-            // otherwise if it is in array, remove it from array and from link
-            const indexToRemoveArray = tempArray.indexOf(selectedTab);
-            tempArray.splice(indexToRemoveArray, 1);
-        }
-
         // Update the list of user-selected organisms.
-        this.setState({ organisms: tempArray });
+        this.setState((state) => {
+            // Create a copy of this.state.newtabs so we can manipulate it in peace.
+            const tempArray = _.clone(state.organisms);
+            if (tempArray.indexOf(selectedTab) === -1) {
+                // if tab isn't already in array, then add it
+                tempArray.push(selectedTab);
+            } else {
+                // otherwise if it is in array, remove it from array and from link
+                const indexToRemoveArray = tempArray.indexOf(selectedTab);
+                tempArray.splice(indexToRemoveArray, 1);
+            }
+            return { organisms: tempArray };
+        });
     }
 
     // Called when the news content loads so that we can get its height. That lets us match up the
@@ -685,7 +688,7 @@ Home.contextTypes = {
 
 
 // Given retrieved data, draw all home-page charts.
-const ChartGallery = props => (
+const ChartGallery = (props) => (
     <PanelBody>
         <div className="view-all">
             <a href={`/matrix/${props.query}`} className="btn btn-info">
@@ -708,7 +711,7 @@ const ChartGallery = props => (
 );
 
 ChartGallery.propTypes = {
-    assayCategory: PropTypes.string, // Selected assay cateogry from classic image buttons
+    assayCategory: PropTypes.string, // Selected assay category from classic image buttons
     organisms: PropTypes.array, // Contains selected organism strings
     query: PropTypes.string, // Query string to add to /matrix/ URI
 };
@@ -762,7 +765,7 @@ const AssayClicking = ({ assayCategory, handleAssayCategoryClick }) => {
     // Properly adds or removes assay category from link
     const sortByAssay = (category, e) => {
         function handleClick(cat) {
-            // Call the Home component's function to record the new assay cateogry
+            // Call the Home component's function to record the new assay category
             handleAssayCategoryClick(cat); // handles assay category click
         }
 
@@ -962,7 +965,7 @@ const OrganismSelector = (props) => {
     const { organism, selected, clickHandler } = props;
 
     return (
-        <button className={`organism-selector__tab${selected ? ' organism-selector--selected' : ''}`} onClick={() => { clickHandler(organism.toUpperCase(organism)); }}>
+        <button type="button" className={`organism-selector__tab${selected ? ' organism-selector--selected' : ''}`} onClick={() => { clickHandler(organism.toUpperCase(organism)); }}>
             {organism}
         </button>
     );
@@ -1009,9 +1012,7 @@ HomepageChartLoader.defaultProps = {
 // Draw the total chart count in the middle of the donut.
 function drawDonutCenter(chart) {
     const canvasId = chart.chart.canvas.id;
-    const width = chart.chart.width;
-    const height = chart.chart.height;
-    const ctx = chart.chart.ctx;
+    const { width, height, ctx } = chart.chart;
 
     ctx.fillStyle = '#000000';
     ctx.restore();
@@ -1020,7 +1021,7 @@ function drawDonutCenter(chart) {
     ctx.textBaseline = 'middle';
 
     if (canvasId === 'myChart' || canvasId === 'myChart2') {
-        const data = chart.data.datasets[0].data;
+        const { data } = chart.data.datasets[0];
         const total = data.reduce((prev, curr) => prev + curr);
         const textX = Math.round((width - ctx.measureText(total).width) / 2);
         const textY = height / 2;
@@ -1067,7 +1068,7 @@ class HomepageChart extends React.Component {
             const Chart = require('chart.js');
 
             // for each item, set doc count, add to total doc count, add proper label, and assign color.
-            const colors = globals.projectColors.colorList(facetData.map(term => term.key));
+            const colors = globals.projectColors.colorList(facetData.map((term) => term.key));
             const data = [];
             const labels = [];
 
@@ -1151,7 +1152,7 @@ class HomepageChart extends React.Component {
     /* eslint-disable class-methods-use-this */
     updateChart(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
-        const colors = globals.projectColors.colorList(facetData.map(term => term.key));
+        const colors = globals.projectColors.colorList(facetData.map((term) => term.key));
         const data = [];
         const labels = [];
 
@@ -1178,9 +1179,9 @@ class HomepageChart extends React.Component {
 
         // Get all project facets, or an empty array if none.
         if (facets) {
-            const projectFacet = facets.find(facet => facet.field === 'award.project');
+            const projectFacet = facets.find((facet) => facet.field === 'award.project');
             this.facetData = projectFacet ? projectFacet.terms : [];
-            const docCounts = this.facetData.length > 0 ? this.facetData.map(data => data.doc_count) : [];
+            const docCounts = this.facetData.length > 0 ? this.facetData.map((data) => data.doc_count) : [];
             total = docCounts.length > 0 ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
             // No data with the current selection, but we used to? Destroy the existing chart so we can
@@ -1265,7 +1266,7 @@ class HomepageChart2 extends React.Component {
         // require.
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
-            const colors = globals.biosampleTypeColors.colorList(facetData.map(term => term.key));
+            const colors = globals.biosampleTypeColors.colorList(facetData.map((term) => term.key));
             const data = [];
             const labels = [];
 
@@ -1352,7 +1353,7 @@ class HomepageChart2 extends React.Component {
     /* eslint-disable class-methods-use-this */
     updateChart(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
-        const colors = globals.biosampleTypeColors.colorList(facetData.map(term => term.key));
+        const colors = globals.biosampleTypeColors.colorList(facetData.map((term) => term.key));
         const data = [];
         const labels = [];
 
@@ -1380,9 +1381,9 @@ class HomepageChart2 extends React.Component {
         // Our data source will be different for computational predictions
         if (facets) {
             this.computationalPredictions = this.props.assayCategory === 'COMPPRED';
-            const assayFacet = facets.find(facet => facet.field === 'biosample_ontology.classification');
+            const assayFacet = facets.find((facet) => facet.field === 'biosample_ontology.classification');
             this.facetData = assayFacet ? assayFacet.terms : [];
-            const docCounts = this.facetData.length > 0 ? this.facetData.map(data => data.doc_count) : [];
+            const docCounts = this.facetData.length > 0 ? this.facetData.map((data) => data.doc_count) : [];
             total = docCounts.length > 0 ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
             // No data with the current selection, but we used to destroy the existing chart so we can
@@ -1600,9 +1601,9 @@ class HomepageChart3 extends React.Component {
 
         // Get all assay category facets, or an empty array if none
         if (facets) {
-            const projectFacet = facets.find(facet => facet.field === 'assay_slims');
+            const projectFacet = facets.find((facet) => facet.field === 'assay_slims');
             this.facetData = projectFacet ? projectFacet.terms : [];
-            const docCounts = this.facetData.length > 0 ? this.facetData.map(data => data.doc_count) : [];
+            const docCounts = this.facetData.length > 0 ? this.facetData.map((data) => data.doc_count) : [];
             total = docCounts.length > 0 ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
             // No data with the current selection, but we used to? Destroy the existing chart so we can
@@ -1666,7 +1667,7 @@ class News extends React.Component {
         if (newsSearch && newsSearch['@graph'].length > 0) {
             return (
                 <div ref={(node) => { this.nodeRef = node; }} className="news-listing">
-                    {newsSearch['@graph'].map(item =>
+                    {newsSearch['@graph'].map((item) => (
                         <div key={item['@id']} className="news-listing__item">
                             <h3>{item.title}</h3>
                             <h4>{dayjs.utc(item.date_created).format('MMMM D, YYYY')}</h4>
@@ -1675,7 +1676,7 @@ class News extends React.Component {
                                 <a href={item['@id']} aria-label={`View news post for ${item.title}`} key={item['@id']}>Read more</a>
                             </div>
                         </div>
-                    )}
+                    ))}
                 </div>
             );
         }
@@ -1696,7 +1697,7 @@ News.defaultProps = {
 /**
  * Send a GET request for the most recent five news posts.
  */
-const NewsLoader = props => (
+const NewsLoader = (props) => (
     <FetchedData>
         <Param name="newsSearch" url={`${newsUri}&limit=5`} allowMultipleRequest />
         <News newsLoaded={props.newsLoaded} />
@@ -1744,7 +1745,7 @@ class TwitterWidget extends React.Component {
         return (
             <div>
                 <div className="twitter-header">
-                    <h2>Twitter <a href="https://twitter.com/EncodeDCC" title="ENCODE DCC Twitter page in a new window or tab" target="_blank" rel="noopener noreferrer"className="twitter-ref">@EncodeDCC</a></h2>
+                    <h2>Twitter <a href="https://twitter.com/EncodeDCC" title="ENCODE DCC Twitter page in a new window or tab" target="_blank" rel="noopener noreferrer" className="twitter-ref">@EncodeDCC</a></h2>
                 </div>
                 {this.props.height ?
                     <a

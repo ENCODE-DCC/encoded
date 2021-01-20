@@ -12,13 +12,13 @@ import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, Ite
 import pubReferenceList from './reference';
 import Status from './status';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
-import formatMeasurement from './../libs/formatMeasurement';
+import formatMeasurement from '../libs/formatMeasurement';
 
 
 /* eslint-disable react/prefer-stateless-function */
 class BiosampleComponent extends React.Component {
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const aliasList = context.aliases.join(', ');
 
@@ -255,12 +255,12 @@ class BiosampleComponent extends React.Component {
                                     <div data-test="parentof">
                                         <dt>Parent of biosamples</dt>
                                         <dd>
-                                            {context.parent_of.map((biosample, i) =>
+                                            {context.parent_of.map((biosample, i) => (
                                                 <span>
                                                     {i > 0 ? <span>, </span> : null}
                                                     <a href={biosample['@id']}>{biosample.accession}</a>
                                                 </span>
-                                            )}
+                                            ))}
                                         </dd>
                                     </div>
                                 : null}
@@ -356,7 +356,7 @@ class BiosampleComponent extends React.Component {
                     {context.treatments.length > 0 ?
                         <PanelBody addClasses="panel__below-split">
                             <h4>Treatment details</h4>
-                            {context.treatments.map(treatment => treatmentDisplay(treatment))}
+                            {context.treatments.map((treatment) => treatmentDisplay(treatment))}
                         </PanelBody>
                     : null}
                 </Panel>
@@ -473,10 +473,10 @@ const urlMap = {
 };
 
 // Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix
-// of the term ID needs it. Any term IDs with prefixes not maching any in the `urlMap` property
+// of the term ID needs it. Any term IDs with prefixes not matching any in the `urlMap` property
 // simply display without a link.
 const BiosampleTermId = (props) => {
-    const termId = props.termId;
+    const { termId } = props;
 
     if (termId) {
         // All are of the form XXX:nnnnnnn...
@@ -509,7 +509,7 @@ export default BiosampleTermId;
 
 
 const Treatment = (props) => {
-    const context = props.context;
+    const { context } = props;
 
     const treatmentText = singleTreatment(context);
     return (
@@ -564,7 +564,7 @@ globals.contentViews.register(TreatmentContent, 'Treatment');
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 // Document header component -- Characterizations
-const CharacterizationHeader = props => (
+const CharacterizationHeader = (props) => (
     <div className="document__header">
         {props.doc.characterization_method}
     </div>
@@ -577,8 +577,8 @@ CharacterizationHeader.propTypes = {
 
 // Document caption component -- Characterizations
 const CharacterizationCaption = (props) => {
-    const doc = props.doc;
-    const caption = doc.caption;
+    const { doc } = props;
+    const { caption } = doc;
     let excerpt;
 
     if (caption && caption.length > EXCERPT_LENGTH) {
@@ -611,7 +611,7 @@ const CharacterizationDetail = (props) => {
     // See if we need a list of documents or not. Documents without attachments don't get
     // displayed.
     const docs = characterization.documents && characterization.documents.length > 0 ?
-        characterization.documents.filter(doc => !!(doc.attachment && doc.attachment.href && doc.attachment.download))
+        characterization.documents.filter((doc) => !!(doc.attachment && doc.attachment.href && doc.attachment.download))
     : [];
 
     return (

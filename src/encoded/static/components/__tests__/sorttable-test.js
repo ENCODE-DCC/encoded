@@ -1,10 +1,13 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
 // Import test component.
 import { SortTablePanel, SortTable } from '../sorttable';
+
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 dayjs.extend(utc);
 
@@ -21,11 +24,11 @@ describe('Software', () => {
         },
         biological_replicates: {
             title: 'Biological replicates',
-            getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
+            getValue: (item) => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
         },
         technical_replicate_number: {
             title: 'Technical replicate',
-            getValue: item => (item.replicate ? item.replicate.technical_replicate_number : null),
+            getValue: (item) => (item.replicate ? item.replicate.technical_replicate_number : null),
         },
         assembly: {
             title: 'Mapping assembly',
@@ -35,11 +38,11 @@ describe('Software', () => {
         },
         title: {
             title: 'Lab',
-            getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+            getValue: (item) => (item.lab && item.lab.title ? item.lab.title : null),
         },
         date_created: {
             title: 'Date added',
-            getValue: item => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
+            getValue: (item) => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
             sorter: (a, b) => {
                 if (a.date_created && b.date_created) {
                     return Date.parse(a.date_created) - Date.parse(b.date_created);

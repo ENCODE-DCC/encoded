@@ -67,7 +67,7 @@ const _mapAwardToCreator = (award) => {
         return {};
     }
 
-    const pi = award.pi;
+    const { pi } = award;
 
     return {
         '@type': 'Person',
@@ -78,7 +78,7 @@ const _mapAwardToCreator = (award) => {
             sameAs: `${baseUrl}${pi.lab ? pi.lab['@id'] : ''}`,
             url: `${baseUrl}${pi.lab ? pi.lab['@id'] : ''}`,
         },
-        memberOf: !pi.submits_for ? [] : pi.submits_for.map(submitsFor => ({
+        memberOf: !pi.submits_for ? [] : pi.submits_for.map((submitsFor) => ({
             '@type': 'EducationalOrganization',
             url: `${baseUrl}${submitsFor}`,
         })),
@@ -91,7 +91,7 @@ const jsonldFormatter = (context, url) => {
     }
 
     baseUrl = url || baseUrl;
-    const isAnnotationDataSet = context['@type'].some(type => type.toLowerCase() === 'annotation');
+    const isAnnotationDataSet = context['@type'].some((type) => type.toLowerCase() === 'annotation');
     const measurementTechnique = !isAnnotationDataSet ? `${context.assay_title} (${context.assay_term_id})` : '';
 
     const mappedData = {
@@ -116,7 +116,7 @@ const jsonldFormatter = (context, url) => {
         },
     };
 
-    const partialDescription = [context.award.project, context.award.name, context.lab.title].filter(d => d !== '').join(' - ');
+    const partialDescription = [context.award.project, context.award.name, context.lab.title].filter((d) => d !== '').join(' - ');
 
     // set description
     if (isAnnotationDataSet) {
@@ -124,12 +124,12 @@ const jsonldFormatter = (context, url) => {
             `${context.annotation_type} - ${context.description}` :
             context.annotation_type;
         mappedData.description = [annotationDescription, partialDescription].join(' - ');
-    } else if (context['@type'].some(type => type.toLowerCase() === 'experiment' || type.toLowerCase() === 'functionalcharacterizationexperiment')) {
+    } else if (context['@type'].some((type) => type.toLowerCase() === 'experiment' || type.toLowerCase() === 'functionalcharacterizationexperiment')) {
         const targetLabel = context.target && context.target.label ? context.target.label : '';
         const assayTitle = context.assay_title || '';
         const biosampleSummary = context.biosample_summary || '';
 
-        mappedData.description = [targetLabel, assayTitle, biosampleSummary, partialDescription].filter(d => d !== '').join(' - ');
+        mappedData.description = [targetLabel, assayTitle, biosampleSummary, partialDescription].filter((d) => d !== '').join(' - ');
     } else {
         mappedData.description = `${context.summary || context.description} ${partialDescription}`;
     }

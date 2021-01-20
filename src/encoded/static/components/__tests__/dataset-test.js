@@ -1,8 +1,11 @@
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 
 // Import test component and data.
 import { annotationBiosampleSummary } from '../dataset';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Annotation biosample summary', () => {
     test('it works for just scientific name, life stage', () => {

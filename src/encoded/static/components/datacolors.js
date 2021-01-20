@@ -251,7 +251,7 @@ class DataColors {
             // No keys provided, just provide the list of colors for the caller to use as needed,
             // optionally modified by a tint value.
             colors = (options && options.tint && options.tint !== 0) ?
-                rootColorList.map(color => tintColor(color, options.tint))
+                rootColorList.map((color) => tintColor(color, options.tint))
             : rootColorList;
         }
         return colors;

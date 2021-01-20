@@ -36,7 +36,7 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 export const DocumentsPanel = (props) => {
     // Filter documentSpecs to just those that have actual documents in them.
-    const documentSpecsMapped = props.documentSpecs.length > 0 && _.compact(props.documentSpecs.map(documentSpecs => (
+    const documentSpecsMapped = props.documentSpecs.length > 0 && _.compact(props.documentSpecs.map((documentSpecs) => (
         documentSpecs.documents.length > 0 ? documentSpecs : null
     )));
 
@@ -110,7 +110,7 @@ export const DocumentsPanelReq = (props) => {
     if (documents && documents.length > 0) {
         return (
             <FetchedData>
-                <Param name="documentSearch" url={`/search/?type=Item&${documents.map(docAtId => `@id=${docAtId}`).join('&')}`} />
+                <Param name="documentSearch" url={`/search/?type=Item&${documents.map((docAtId) => `@id=${docAtId}`).join('&')}`} />
                 <DocumentsPanelRenderer title={props.title} />
             </FetchedData>
         );
@@ -128,7 +128,7 @@ DocumentsPanelReq.defaultProps = {
 };
 
 export const DocumentsSubpanels = (props) => {
-    const documentSpec = props.documentSpec;
+    const { documentSpec } = props;
 
     return (
         <div className="document-list">
@@ -165,13 +165,13 @@ export class Document extends React.Component {
 
         // Tell parent (App component) about new popover state
         // Pass it this component's React unique node ID
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             panelOpen: !prevState.panelOpen,
         }));
     }
 
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
 
         // Set up rendering components
         const DocumentHeaderView = globals.documentViews.header.lookup(context);
@@ -227,7 +227,7 @@ DocumentHeader.defaultProps = {
 
 // Document caption component -- default
 export const DocumentCaption = (props) => {
-    const doc = props.doc;
+    const { doc } = props;
     const caption = doc.description;
     let excerpt;
 
@@ -253,7 +253,7 @@ DocumentCaption.propTypes = {
 
 
 // Document preview component -- default
-export const DocumentPreview = props => (
+export const DocumentPreview = (props) => (
     <figure className="document__preview">
         <Attachment context={props.doc} attachment={props.doc.attachment} className="characterization" />
     </figure>
@@ -281,7 +281,7 @@ export const DocumentFile = (props) => {
                     </a>
                 </div>
                 {detailSwitch ?
-                    <button data-trigger onClick={detailSwitch} className="document__file-detail-switch">
+                    <button type="button" data-trigger onClick={detailSwitch} className="document__file-detail-switch">
                         {collapseIcon(!detailOpen)}
                     </button>
                 : null}
@@ -305,7 +305,7 @@ DocumentFile.propTypes = {
 
 // Document detail component -- default
 const DocumentDetail = (props) => {
-    const doc = props.doc;
+    const { doc } = props;
     const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
     const excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 
@@ -373,7 +373,7 @@ globals.documentViews.file.register(DocumentFile, 'Document');
 globals.documentViews.detail.register(DocumentDetail, 'Document');
 
 
-const QCAttachmentCaption = props => (
+const QCAttachmentCaption = (props) => (
     <div className="document__caption">
         <div data-test="caption">
             <strong>Attachment: </strong>
@@ -445,7 +445,7 @@ globals.documentViews.preview.register(QCAttachmentPreview, 'QualityMetric');
 
 // Display a list of document links within a characterization.
 export const CharacterizationDocuments = (props) => {
-    const docs = props.docs.filter(doc => !!doc);
+    const docs = props.docs.filter((doc) => !!doc);
     return (
         <dd>
             {docs.map((doc) => {

@@ -68,7 +68,7 @@ const doesRowDataExist = (context, colCategoryKey, colCategory, colSubCategory, 
             // See if data contains column category we're looking for.
             if (rowColCategoryItem.key === colCategoryKey) {
                 // See if row includes data for a displayed subcategory column.
-                return rowColCategoryItem[colSubCategory].buckets.find(rowColSubCategoryItem => (
+                return rowColCategoryItem[colSubCategory].buckets.find((rowColSubCategoryItem) => (
                     noBiosampleAssays.includes(rowColCategoryItem.key) || displayedTermNames.includes(rowColSubCategoryItem.key)
                 ));
             }
@@ -107,9 +107,9 @@ const convertEncoreToDataTable = (context, displayedAssays, rowCategoryFilterTex
     const rowCategory = typeof context.matrix.y.group_by[0] === 'string' ? context.matrix.y.group_by[0] : context.matrix.y.group_by[0][0];
 
     // Generate query strings to filter target header links to the relevant assays.
-    const colCategoryQuery = displayedAssays.map(assay => `${colCategory}=${encoding.encodedURIComponent(assay)}`).join('&');
+    const colCategoryQuery = displayedAssays.map((assay) => `${colCategory}=${encoding.encodedURIComponent(assay)}`).join('&');
 
-    let displayedColSubCategoryQuery = displayedTermNames.map(displayedTermName => (
+    let displayedColSubCategoryQuery = displayedTermNames.map((displayedTermName) => (
         `${colSubCategory}=${encoding.encodedURIComponent(displayedTermName)}`
     )).join('&');
 
@@ -135,9 +135,9 @@ const convertEncoreToDataTable = (context, displayedAssays, rowCategoryFilterTex
             // Filter and sort column subcategory buckets according to `displayedTermNames` so
             // that the column subcategories always appear in the same order under each column
             // category.
-            const colSubCategoryBuckets = _.sortBy(colCategoryItem[colSubCategory].buckets.filter(bucket => (
+            const colSubCategoryBuckets = _.sortBy(colCategoryItem[colSubCategory].buckets.filter((bucket) => (
                 displayedTermNames.includes(bucket.key) || noBiosampleAssays.includes(colCategoryItem.key)
-            )), bucket => displayedTermNames.indexOf(bucket.key));
+            )), (bucket) => displayedTermNames.indexOf(bucket.key));
 
             // Generate the biosample term name column subheaders within one assay column.
             let subCategoryCount = 0;
@@ -282,20 +282,22 @@ const convertEncoreToDataTable = (context, displayedAssays, rowCategoryFilterTex
  */
 const TargetFilter = ({ filterText, textChangeHandler }) => (
     <div className="matrix-general-search">
-        <label htmlFor="target-filter">Enter filter terms to filter the targets included in the matrix.</label>
-        <div className="general-search-entry">
-            <i className="icon icon-filter" />
-            <div className="searchform">
-                <input
-                    type="search"
-                    className="search-query"
-                    name="target-filter"
-                    id="target-filter"
-                    onChange={textChangeHandler}
-                    value={filterText}
-                />
+        <label htmlFor="target-filter">
+            Enter filter terms to filter the targets included in the matrix.
+            <div className="general-search-entry">
+                <i className="icon icon-filter" />
+                <div className="searchform">
+                    <input
+                        type="search"
+                        className="search-query"
+                        name="target-filter"
+                        id="target-filter"
+                        onChange={textChangeHandler}
+                        value={filterText}
+                    />
+                </div>
             </div>
-        </div>
+        </label>
     </div>
 );
 
@@ -378,7 +380,7 @@ const useMatrixScrollHandler = (scrollElement) => {
     React.useEffect(() => {
         if (scrollElement.current) {
             // Install the scroll and resize event handlers.
-            const handleScrollEvent = event => handleScrollIndicator(event.target);
+            const handleScrollEvent = (event) => handleScrollIndicator(event.target);
             const handleResizeEvent = () => handleScrollIndicator(scrollElement.current);
 
             // Cache the reference to the scrollable matrix <div> so that we can remove the "scroll"

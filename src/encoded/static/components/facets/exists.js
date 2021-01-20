@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { DefaultExistsFacet } from './defaults';
 import FacetRegistry from './registry';

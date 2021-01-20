@@ -65,13 +65,13 @@ const libraryPropertyExtractors = {
         // Collect and combine treatments from the library as well as the library's biosample.
         let libraryTreatments = [];
 
-        const treatments = library.treatments;
+        const { treatments } = library;
         if (treatments && treatments.length > 0) {
-            libraryTreatments = libraryTreatments.concat(treatments.map(treatment => singleTreatment(treatment)));
+            libraryTreatments = libraryTreatments.concat(treatments.map((treatment) => singleTreatment(treatment)));
         }
         const biosampleTreatments = library.biosample && library.biosample.treatments;
         if (biosampleTreatments && biosampleTreatments.length > 0) {
-            libraryTreatments = libraryTreatments.concat(biosampleTreatments.map(treatment => singleTreatment(treatment)));
+            libraryTreatments = libraryTreatments.concat(biosampleTreatments.map((treatment) => singleTreatment(treatment)));
         }
 
         return { libraryPropertyString: libraryTreatments.join(', ') };
@@ -91,13 +91,13 @@ const libraryPropertyExtractors = {
 
     size_range: (library, replicates) => {
         // Always display replicate if any other replicate libraries have `average_fragment_size`.
-        const libraryPropertyForceRepDisplay = replicates.some(replicate => replicate.library && replicate.library.average_fragment_size);
+        const libraryPropertyForceRepDisplay = replicates.some((replicate) => replicate.library && replicate.library.average_fragment_size);
         return { libraryPropertyString: library.size_range, libraryPropertyForceRepDisplay };
     },
 
     average_fragment_size: (library, replicates) => {
         // Always display replicate if any other replicate libraries have `size_range`.
-        const libraryPropertyForceRepDisplay = replicates.some(replicate => replicate.library && replicate.library.size_range);
+        const libraryPropertyForceRepDisplay = replicates.some((replicate) => replicate.library && replicate.library.size_range);
         return { libraryPropertyString: library.average_fragment_size, libraryPropertyForceRepDisplay };
     },
 
@@ -205,8 +205,8 @@ const LibraryProperties = ({ replicates }) => {
         displayedLibraryProperties.forEach((displayedLibraryProperty) => {
             const libraryPropertyElements = libraryPropertyDisplays[displayedLibraryProperty.property];
             if (libraryPropertyElements && libraryPropertyElements.length > 0) {
-                const homogeneous = !libraryPropertyElements.some(libraryProperty => libraryProperty.value !== libraryPropertyElements[0].value);
-                const forcedRepDisplay = libraryPropertyElements.some(libraryProperty => libraryProperty.forceRepDisplay);
+                const homogeneous = !libraryPropertyElements.some((libraryProperty) => libraryProperty.value !== libraryPropertyElements[0].value);
+                const forcedRepDisplay = libraryPropertyElements.some((libraryProperty) => libraryProperty.forceRepDisplay);
                 const isStrandSpecificity = displayedLibraryProperty.property === 'strand_specificity';
                 if (!isStrandSpecificity && (!homogeneous || forcedRepDisplay)) {
                     // More than one value collected for this property, and at least one had a
@@ -231,10 +231,10 @@ const LibraryProperties = ({ replicates }) => {
                     let strandSpecificity = null;
 
                     if (isStrandSpecificity) {
-                        const strandSpecificValues = libraryPropertyElements.map(element => element.value);
+                        const strandSpecificValues = libraryPropertyElements.map((element) => element.value);
                         const strandSpecificityFirstValue = strandSpecificValues[0];
 
-                        if (strandSpecificValues.every(value => value === strandSpecificityFirstValue)) {
+                        if (strandSpecificValues.every((value) => value === strandSpecificityFirstValue)) {
                             strandSpecificity = `Strand-specific${strandSpecificityFirstValue === 'strand-specific' ? '' : ` (${strandSpecificityFirstValue})`}`;
                         } else {
                             strandSpecificity = 'Strand-specific (mixed)';
@@ -272,8 +272,8 @@ LibraryProperties.defaultProps = {
  * Display submitter comments from all libraries in all the given replicates.
  */
 const LibrarySubmitterComments = ({ replicates }) => {
-    // Make a list of all libraries in all replicates, deduped.
-    const libraries = _.uniq(replicates.reduce((libraryAcc, replicate) => (replicate.library ? libraryAcc.concat([replicate.library]) : libraryAcc), []), library => library['@id']);
+    // Make a list of all libraries in all replicates, de-duped.
+    const libraries = _.uniq(replicates.reduce((libraryAcc, replicate) => (replicate.library ? libraryAcc.concat([replicate.library]) : libraryAcc), []), (library) => library['@id']);
     if (libraries.length > 0) {
         return libraries.map((library) => {
             if (library.submitter_comment) {
@@ -306,7 +306,7 @@ const DatasetConstructionPlatform = ({ context }) => {
         // We easily have duplicates, so only add the replicate library platform if we haven't
         // already seen it.
         if ((replicate.library && replicate.library.construction_platform) &&
-            (platforms.findIndex(platform => platform['@id'] === replicate.library.construction_platform['@id']) === -1)) {
+            (platforms.findIndex((platform) => platform['@id'] === replicate.library.construction_platform['@id']) === -1)) {
             return platforms.concat(replicate.library.construction_platform);
         }
         return platforms;
@@ -317,12 +317,12 @@ const DatasetConstructionPlatform = ({ context }) => {
             <div data-test="constructionplatform">
                 <dt>Library construction platform</dt>
                 <dd>
-                    {constructionPlatforms.map((platform, i) =>
+                    {constructionPlatforms.map((platform, i) => (
                         <React.Fragment key={platform['@id']}>
                             {i > 0 ? <span>, </span> : null}
                             <a href={platform['@id']}>{platform.term_name}</a>
                         </React.Fragment>
-                    )}
+                    ))}
                 </dd>
             </div>
         );
@@ -367,7 +367,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         // Make an array of arrays of replicates, called “condensed replicates" here. Each top-
         // level array element represents a library linked to by the replicates inside that
         // array. Only the first replicate in each library array gets displayed in the table.
-        const condensedReplicatesKeyed = _(replicates).groupBy(replicate => (replicate.library ? replicate.library['@id'] : replicate.uuid));
+        const condensedReplicatesKeyed = _(replicates).groupBy((replicate) => (replicate.library ? replicate.library['@id'] : replicate.uuid));
         if (Object.keys(condensedReplicatesKeyed).length > 0) {
             condensedReplicates = _.toArray(condensedReplicatesKeyed);
         }
@@ -405,7 +405,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         if (biosamples.length > 0) {
             biosamples.forEach((biosample) => {
                 if (biosample.characterizations && biosample.characterizations.length > 0) {
-                    biosampleCharacterizations = biosampleCharacterizations.concat(biosample.characterizations.map(bc => bc['@id']));
+                    biosampleCharacterizations = biosampleCharacterizations.concat(biosample.characterizations.map((bc) => bc['@id']));
                 }
                 if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
                     appliedModifications.push(...biosample.applied_modifications);
@@ -448,7 +448,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         }
         if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
             biosample.applied_modifications.forEach((am) => {
-                const plasmidMapDoc = (am.documents && am.documents.length > 0) ? am.documents.filter(doc => doc.document_type === 'plasmid map').map(doc => doc['@id']) : [];
+                const plasmidMapDoc = (am.documents && am.documents.length > 0) ? am.documents.filter((doc) => doc.document_type === 'plasmid map').map((doc) => doc['@id']) : [];
                 plasmidMapDocs = plasmidMapDocs.concat(plasmidMapDoc);
             });
         }
@@ -503,9 +503,9 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     if (context.related_series && context.related_series.length > 0) {
         seriesMap = _.groupBy(
             context.related_series.filter(
-                dataset => loggedIn || dataset.status === 'released'
+                (dataset) => loggedIn || dataset.status === 'released'
             ),
-            series => series['@type'][0]
+            (series) => series['@type'][0]
         );
     }
 
@@ -590,7 +590,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                             </div>
 
                             {context.target ?
-                                <React.Fragment>
+                                <>
                                     <div data-test="target">
                                         <dt>Target</dt>
                                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
@@ -607,7 +607,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                             <dd>{context.target_expression_percentile}</dd>
                                         </div>
                                     : null}
-                                </React.Fragment>
+                                </>
                             : null}
 
                             {context.control_type ?
@@ -622,7 +622,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dt>Biosample</dt>
                                     <dd>
                                         <ul>
-                                            {biosamples.map(biosample => (
+                                            {biosamples.map((biosample) => (
                                                 <li key={biosample['@id']}>
                                                     <a href={biosample['@id']}>
                                                         {biosample.accession}
@@ -640,12 +640,12 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dd>
                                         {organismNames.length > 0 ?
                                             <span>
-                                                {organismNames.map((organismName, i) =>
+                                                {organismNames.map((organismName, i) => (
                                                     <span key={organismName}>
                                                         {i > 0 ? <span> and </span> : null}
                                                         <i>{organismName}</i>
                                                     </span>
-                                                )}
+                                                ))}
                                                 &nbsp;
                                             </span>
                                         : null}
@@ -697,10 +697,10 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
                             {/* Display library properties for Experiment and FunctionalCharacterizationExperiment only. */}
                             {!isEnhancerExperiment ?
-                                <React.Fragment>
+                                <>
                                     <LibraryProperties replicates={replicates} />
                                     <DatasetConstructionPlatform context={context} />
-                                </React.Fragment>
+                                </>
                             : null}
 
 
@@ -708,12 +708,12 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div data-test="platform">
                                     <dt>Platform</dt>
                                     <dd>
-                                        {Object.keys(platforms).map((platformId, i) =>
+                                        {Object.keys(platforms).map((platformId, i) => (
                                             <span key={platformId}>
                                                 {i > 0 ? <span>, </span> : null}
                                                 <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
                                             </span>
-                                        )}
+                                        ))}
                                     </dd>
                                 </div>
                             : null}
@@ -723,7 +723,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dt>Controls</dt>
                                     <dd>
                                         <ul>
-                                            {context.possible_controls.map(control => (
+                                            {context.possible_controls.map((control) => (
                                                 <li key={control['@id']} className="multi-comma">
                                                     <a href={control['@id']}>
                                                         {control.accession}
@@ -740,7 +740,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dt>Elements references</dt>
                                     <dd>
                                         <ul>
-                                            {context.elements_references.map(reference => (
+                                            {context.elements_references.map((reference) => (
                                                 <li key={reference} className="multi-comma">
                                                     <a href={reference}>
                                                         {globals.atIdToAccession(reference)}
@@ -771,7 +771,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dt>Genetic modification</dt>
                                     <dd>
                                         <ul>
-                                            {appliedModifications.map(am => (
+                                            {appliedModifications.map((am) => (
                                                 <li key={am}>
                                                     <a href={am}>
                                                         {am.split('/', 3)[2]}
@@ -795,11 +795,11 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dt>Tissues with enhancer activity</dt>
                                     <dd>
                                         <ul>
-                                            {context.tissue_with_enhancer_activity.map(tissue =>
+                                            {context.tissue_with_enhancer_activity.map((tissue) => (
                                                 <li key={tissue}>
                                                     <span>{tissue}</span>
                                                 </li>
-                                            )}
+                                            ))}
                                         </ul>
                                     </dd>
                                 </div>
@@ -860,14 +860,14 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {Object.keys(seriesMap).map(seriesType =>
+                            {Object.keys(seriesMap).map((seriesType) => (
                                 <div data-test="relatedseries" key={seriesType}>
                                     <dt>{seriesType.replace(/([A-Z])/g, ' $1')}</dt>
                                     <dd>
                                         <RelatedSeriesList seriesList={seriesMap[seriesType]} />
                                     </dd>
                                 </div>
-                            )}
+                            ))}
 
                             {context.submitter_comment ?
                                 <div data-test="submittercomment">
@@ -888,7 +888,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                             : null}
 
                             {groupedDbxrefs.SCREEN || groupedDbxrefs.FactorBook ?
-                                <React.Fragment>
+                                <>
                                     <div className="panel__split-heading panel__split-heading--experiment">
                                         <h4>Encyclopedia Integration</h4>
                                     </div>
@@ -906,7 +906,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                             <dd><DbxrefList context={context} dbxrefs={[groupedDbxrefs.FactorBook[0]]} title="view motifs and integrative analysis" /></dd>
                                         </div>
                                     : null}
-                                </React.Fragment>
+                                </>
                             : null}
                         </dl>
                     </div>
@@ -979,12 +979,12 @@ globals.contentViews.register(Experiment, 'TransgenicEnhancerExperiment');
 const replicateTableColumns = {
     biological_replicate_number: {
         title: 'Biological replicate',
-        getValue: condensedReplicate => condensedReplicate[0].biological_replicate_number,
+        getValue: (condensedReplicate) => condensedReplicate[0].biological_replicate_number,
     },
 
     technical_replicate_number: {
         title: 'Technical replicate',
-        getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).sort().join(),
+        getValue: (condensedReplicate) => condensedReplicate.map((replicate) => replicate.technical_replicate_number).sort().join(),
     },
 
     summary: {
@@ -1018,7 +1018,7 @@ const replicateTableColumns = {
         display: (condensedReplicate) => {
             const replicate = condensedReplicate[0];
             if (replicate.library && replicate.library.biosample) {
-                const biosample = replicate.library.biosample;
+                const { biosample } = replicate.library;
                 return <a href={biosample['@id']} title={`View biosample ${biosample.accession}`}>{biosample.accession}</a>;
             }
             return null;
@@ -1054,7 +1054,7 @@ const replicateTableColumns = {
             }
             return null;
         },
-        hide: list => _(list).all((condensedReplicate) => {
+        hide: (list) => _(list).all((condensedReplicate) => {
             const replicate = condensedReplicate[0];
             return !(replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length > 0);
         }),
@@ -1077,12 +1077,12 @@ const replicateTableColumns = {
             }
             return (aReplicate.antibody) ? -1 : ((bReplicate.antibody) ? 1 : 0);
         },
-        hide: list => _(list).all(condensedReplicate => !condensedReplicate[0].antibody),
+        hide: (list) => _(list).all((condensedReplicate) => !condensedReplicate[0].antibody),
     },
 
     library: {
         title: 'Library',
-        getValue: condensedReplicate => (condensedReplicate[0].library ? condensedReplicate[0].library.accession : ''),
+        getValue: (condensedReplicate) => (condensedReplicate[0].library ? condensedReplicate[0].library.accession : ''),
     },
 };
 
@@ -1125,7 +1125,7 @@ class RelatedSeriesList extends React.Component {
         // Initial component state.
         this.state = {
             currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
-            touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indiciation
+            touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indication
             clicked: false, // True if info button was clicked (vs hovered)
         };
 
@@ -1163,7 +1163,7 @@ class RelatedSeriesList extends React.Component {
     }
 
     render() {
-        const seriesList = this.props.seriesList;
+        const { seriesList } = this.props;
 
         return (
             <span>
@@ -1190,14 +1190,14 @@ RelatedSeriesList.propTypes = {
 
 // Display a one dataset related to the experiment
 const RelatedSeriesItem = (props) => {
-    const series = props.series;
+    const { series } = props;
     return (
         <span>
             <a href={series['@id']} title={`View page for series dataset ${series.accession}`}>{series.accession}</a>&nbsp;
             <Tooltip
                 trigger={<i className="icon icon-question-circle" />}
                 tooltipId={series.accession}
-                css={'series-tooltip'}
+                css="series-tooltip"
             >
                 {series.description ? <span>{series.description}</span> : <em>No description available</em>}
             </Tooltip>

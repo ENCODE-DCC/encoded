@@ -75,7 +75,7 @@ export function truncateString(str, len) {
 
 // Given an array of objects with @id properties, this returns the same array but with any
 // duplicate @id objects removed.
-export const uniqueObjectsArray = objects => _(objects).uniq(object => object['@id']);
+export const uniqueObjectsArray = (objects) => _(objects).uniq((object) => object['@id']);
 
 export function bindEvent(el, eventName, eventHandler) {
     if (el.addEventListener) {
@@ -104,7 +104,7 @@ export function unbindEvent(el, eventName, eventHandler) {
  * @param {string} id
  * @returns id without space or dash if id is empty
  */
-export const sanitizeId = id => (id ? `${id.replace(/\s/g, '_')}` : '-');
+export const sanitizeId = (id) => (id ? `${id.replace(/\s/g, '_')}` : '-');
 
 
 // Take an @id and return the corresponding accession. If no accession could be found in the @id,
@@ -159,7 +159,7 @@ export function zeroFill(n, digits) {
 }
 
 // Convert a status string to a string suitable to build a CSS class name.
-export const statusToClassElement = status => status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '');
+export const statusToClassElement = (status) => status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '');
 
 
 /**
@@ -169,7 +169,7 @@ export const statusToClassElement = status => status.toLowerCase().replace(/ /g,
  *
  * @return True if code runs on production host
  */
-export const isProductionHost = currentUrl => (
+export const isProductionHost = (currentUrl) => (
     ['www.encodeproject.org', 'encodeproject.org', 'www.encodedcc.org'].includes(url.parse(currentUrl).hostname)
 );
 
@@ -210,12 +210,12 @@ export function encodeVersion(context) {
     return encodevers;
 }
 
-// Display a human-redable form of the file size given the size of a file in bytes. Returned as a
+// Display a human-readable form of the file size given the size of a file in bytes. Returned as a
 // string.
 export function humanFileSize(size) {
     if (size >= 0) {
         const i = Math.floor(Math.log(size) / Math.log(1024));
-        const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
+        const adjustedSize = (size / (1024 ** i)).toPrecision(3) * 1;
         const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
         return `${adjustedSize} ${units}`;
     }
@@ -319,7 +319,7 @@ export const dbxrefPrefixMap = {
 
 
 // Sanitize user input and facet terms for comparison: convert to lowercase, remove white space and asterisks (which cause regular expression error)
-export const sanitizedString = inputString => inputString.toLowerCase()
+export const sanitizedString = (inputString) => inputString.toLowerCase()
     .replace(/ /g, '') // remove spaces (to allow multiple word searches)
     .replace(/[*?()+[\]\\/]/g, ''); // remove certain special characters (these cause console errors)
 

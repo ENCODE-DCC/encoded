@@ -13,7 +13,6 @@ import { BrowserFeat } from './browserfeat';
 import cartStore, {
     CartAlert,
     cartCacheSaved,
-    cartIsUnsaved,
     cartSetOperationInProgress,
     cartGetSettings,
     cartSetSettingsCurrent,
@@ -26,7 +25,12 @@ import Footer from './footer';
 import Home from './home';
 import jsonldFormatter from '../libs/jsonld';
 import newsHead from './page';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+import {
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+} from '../libs/ui/modal';
 
 
 const portal = {
@@ -113,7 +117,7 @@ const portal = {
 
 
 // See https://github.com/facebook/react/issues/2323 for an IE8 fix removed for Redmine #4755.
-const Title = props => <title {...props}>{props.children}</title>;
+const Title = (props) => <title {...props}>{props.children}</title>;
 
 Title.propTypes = {
     children: PropTypes.node.isRequired,
@@ -191,7 +195,7 @@ class UnsavedChangesToken {
 const SLOW_REQUEST_TIME = 250;
 class Timeout {
     constructor(timeout) {
-        this.promise = new Promise(resolve => setTimeout(resolve.bind(undefined, this), timeout));
+        this.promise = new Promise((resolve) => setTimeout(resolve.bind(undefined, this), timeout));
     }
 }
 
@@ -247,7 +251,7 @@ const AccountCreatedModal = ({ closeModal }) => (
         </ModalBody>
         <ModalFooter
             closeModal={closeModal}
-            cancelTitle={'Close'}
+            cancelTitle="Close"
         />
     </Modal>
 );
@@ -265,7 +269,7 @@ class App extends React.Component {
     }
 
     static scrollTo() {
-        const hash = window.location.hash;
+        const { hash } = window.location;
         if (hash && document.getElementById(hash.slice(1))) {
             window.location.replace(hash);
         } else {
@@ -458,6 +462,7 @@ class App extends React.Component {
         return false;
     }
 
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps, prevState) {
         if (!this.state.session || (this.state.session_cookie !== prevState.session_cookie)) {
             const updateState = {};
@@ -501,119 +506,7 @@ class App extends React.Component {
         xhr.browser_stats.total_time = browserEnd - xhr.xhr_begin;
         recordBrowserStats(xhr.browser_stats, 'contextRequest');
     }
-
-    onHashChange() {
-        // IE8/9
-        this.setState({ href: window.location.href });
-    }
-
-    // Handle http requests to the server, using the given URL and options.
-    fetch(uri, options) {
-        let reqUri = uri;
-        const extendedOptions = _.extend({ credentials: 'same-origin' }, options);
-        const httpMethod = extendedOptions.method || 'GET';
-        if (!(httpMethod === 'GET' || httpMethod === 'HEAD')) {
-            const headers = _.extend({}, extendedOptions.headers);
-            extendedOptions.headers = headers;
-            const session = this.state.session;
-            if (session && session._csrft_) {
-                headers['X-CSRF-Token'] = session._csrft_;
-            }
-        }
-        // Strip url fragment.
-        const urlHash = reqUri.indexOf('#');
-        if (urlHash > -1) {
-            reqUri = reqUri.slice(0, urlHash);
-        }
-        const request = fetch(reqUri, extendedOptions);
-        request.xhr_begin = 1 * new Date();
-        request.then((response) => {
-            request.xhr_end = 1 * new Date();
-            const statsHeader = response.headers.get('X-Stats') || '';
-            request.server_stats = require('querystring').parse(statsHeader);
-            request.etag = response.headers.get('ETag');
-            const sessionCookie = extractSessionCookie();
-            if (this.state.session_cookie !== sessionCookie) {
-                this.setState({ session_cookie: sessionCookie });
-            }
-        });
-        return request;
-    }
-
-    fetchSessionProperties() {
-        if (this.sessionPropertiesRequest) {
-            return;
-        }
-        this.sessionPropertiesRequest = true;
-        this.fetch('/session-properties', {
-            headers: { Accept: 'application/json' },
-        }).then((response) => {
-            this.sessionPropertiesRequest = null;
-            if (!response.ok) {
-                throw response;
-            }
-            return response.json();
-        }).then((sessionProperties) => {
-            this.setState({ session_properties: sessionProperties });
-            return this.initializeCartFromSessionProperties(sessionProperties);
-        });
-    }
-
-    /**
-     * Perform a GET request on the titles of schemas corresponding to an @type, to be placed into
-     * <App> context and usable by any component.
-     */
-    fetchProfilesTitles() {
-        this.fetch('/profiles-titles/', {
-            headers: { Accept: 'application/json' },
-        }).then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            throw response;
-        }).then((profilesTitles) => {
-            this.setState({ profilesTitles });
-        });
-    }
-
-    closeSignupModal() {
-        this.setState({ eulaModalVisibility: false });
-    }
-
-    closeAccountCreationNotification() {
-        this.setState({ accountCreatedModalVisibility: false });
-    }
-
-    closeAccountCreationErrorModal() {
-        this.setState({ accountCreationFailedVisibility: false });
-    }
-
-    signup() {
-        const authResult = this.state.authResult;
-
-        if (!authResult || !authResult.accessToken) {
-            console.warn('authResult object or access token not available');
-            return;
-        }
-        const accessToken = authResult.accessToken;
-        this.closeSignupModal();
-        this.fetch(`${window.location.origin}/users/@@sign-up`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ accessToken }),
-        }).then((response) => {
-            if (!response.ok) {
-                throw new Error('Failed to create new account');
-            }
-            this.setState({ accountCreatedModalVisibility: true }); // tell user account was created
-            this.handleAuth0Login(authResult, false, false); // sign in after account creation
-        }).catch(() => {
-            this.setState({ accountCreationFailedVisibility: true });
-        });
-    }
+    /* eslint-enable react/no-did-update-set-state */
 
     /**
     * Login with existing user or bring up account-creation modal
@@ -625,7 +518,7 @@ class App extends React.Component {
     * @memberof App
     */
     handleAuth0Login(authResult, retrying, createAccount = true) {
-        const accessToken = authResult.accessToken;
+        const { accessToken } = authResult;
         if (!accessToken) {
             return;
         }
@@ -674,55 +567,6 @@ class App extends React.Component {
         });
     }
 
-    triggerLogin() {
-        if (this.state.session && !this.state.session._csrft_) {
-            this.fetch('/session');
-        }
-        this.lock.show();
-    }
-
-    triggerLogout() {
-        const session = this.state.session;
-        if (!(session && session['auth.userid'])) return;
-        this.fetch('/logout?redirect=false', {
-            headers: { Accept: 'application/json' },
-        }).then((response) => {
-            if (!response.ok) throw response;
-            return response.json();
-        }).then(() => {
-            this.DISABLE_POPSTATE = true;
-            const oldPath = window.location.pathname + window.location.search;
-            window.location.assign('/#logged-out');
-            if (oldPath === '/') {
-                window.location.reload();
-            }
-        }, (err) => {
-            globals.parseError(err).then((data) => {
-                const newContext = Object.assign({}, data);
-                newContext.title = `Logout failure: ${data.title}`;
-                this.setState({ context: newContext });
-            });
-        });
-    }
-
-    adviseUnsavedChanges() {
-        const token = new UnsavedChangesToken(this);
-        this.setState({ unsavedChanges: this.state.unsavedChanges.concat([token]) });
-        return token;
-    }
-
-    releaseUnsavedChanges(token) {
-        console.assert(this.state.unsavedChanges.indexOf(token) !== -1);
-        this.setState({ unsavedChanges: this.state.unsavedChanges.filter(x => x !== token) });
-    }
-
-    trigger(name) {
-        const methodName = this.triggers[name];
-        if (methodName) {
-            this[methodName].call(this);
-        }
-    }
-
     handleError(msg, uri, line, column) {
         let mutatableUri = uri;
 
@@ -739,43 +583,6 @@ class App extends React.Component {
         });
     }
 
-    // Called when the user logs in, or the page loads for a logged-in user. Handle any items
-    // collected in the cart while logged out. Retrieve the cart contents for the current logged-
-    // in user.
-    initializeCartFromSessionProperties(sessionProperties) {
-        // Retrieve the logged-in user's carts. If the user has never logged in before, an initial
-        // empty cart gets created and returned here.
-        cartCacheSaved({}, cartStore.dispatch);
-        cartSetOperationInProgress(true, cartStore.dispatch);
-        this.fetch('/carts/@@get-cart', {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        }).then((response) => {
-            cartSetOperationInProgress(false, cartStore.dispatch);
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error(response);
-        }).then((userCarts) => {
-            // Retrieve user's current cart @id from cart settings if available in browser
-            // localstorage. Set it as the current cart in the cart Redux store.
-            let cartSettings = cartGetSettings(sessionProperties.user);
-            if (!cartSettings.current || userCarts['@graph'].indexOf(cartSettings.current) === -1) {
-                // Cart settings are new -- not from localstorage -- OR the current cart @id
-                // doesn't match any of the logged-in user's saved carts. Use the first cart in the
-                // user's saved carts as the current and save the new settings to localstorage.
-                cartSettings = cartSetSettingsCurrent(sessionProperties.user, userCarts['@graph'][0]);
-            }
-            cartSetCurrent(cartSettings.current, cartStore.dispatch);
-
-            // With the logged-in user's current cart @id, retrieve the cart object and copy it to
-            // the cart Redux store.
-            return cartSwitch(cartSettings.current, this.fetch, cartStore.dispatch);
-        });
-    }
-
     /* eslint no-script-url: 0 */ // We're not *using* a javascript: link -- just checking them.
     handleClick(event) {
         const options = {};
@@ -785,8 +592,8 @@ class App extends React.Component {
             return;
         }
 
-        let target = event.target;
-        const nativeEvent = event.nativeEvent;
+        let { target } = event;
+        const { nativeEvent } = event;
 
         // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
         while (
@@ -866,7 +673,7 @@ class App extends React.Component {
 
     // Submitted forms are treated the same as links
     handleSubmit(event) {
-        const target = event.target;
+        const { target } = event;
 
         // Skip POST forms
         if (target.method !== 'get') {
@@ -887,7 +694,7 @@ class App extends React.Component {
         const actionUrl = url.parse(url.resolve(this.state.href, target.action));
         let search = serialize(target);
         if (target.getAttribute('data-removeempty')) {
-            search = search.split('&').filter(item => item.slice(-1) !== '=').join('&');
+            search = search.split('&').filter((item) => item.slice(-1) !== '=').join('&');
         }
         let href = actionUrl.pathname;
         if (search) {
@@ -914,7 +721,7 @@ class App extends React.Component {
             return;
         }
         const request = this.state.contextRequest;
-        const href = window.location.href;
+        const { href } = window.location;
         if (event.state) {
             // Abort inflight xhr before setProps
             if (request && this.requestCurrent) {
@@ -934,6 +741,212 @@ class App extends React.Component {
         this.navigate(href, { replace: true });
     }
 
+    handleBeforeUnload() {
+        if (this.state.unsavedChanges.length > 0) {
+            return 'You have unsaved changes.';
+        }
+        return undefined;
+    }
+
+    onHashChange() {
+        // IE8/9
+        this.setState({ href: window.location.href });
+    }
+
+    // Handle http requests to the server, using the given URL and options.
+    fetch(uri, options) {
+        let reqUri = uri;
+        const extendedOptions = _.extend({ credentials: 'same-origin' }, options);
+        const httpMethod = extendedOptions.method || 'GET';
+        if (!(httpMethod === 'GET' || httpMethod === 'HEAD')) {
+            const headers = _.extend({}, extendedOptions.headers);
+            extendedOptions.headers = headers;
+            const { session } = this.state;
+            if (session && session._csrft_) {
+                headers['X-CSRF-Token'] = session._csrft_;
+            }
+        }
+        // Strip url fragment.
+        const urlHash = reqUri.indexOf('#');
+        if (urlHash > -1) {
+            reqUri = reqUri.slice(0, urlHash);
+        }
+        const request = fetch(reqUri, extendedOptions);
+        request.xhr_begin = 1 * new Date();
+        request.then((response) => {
+            request.xhr_end = 1 * new Date();
+            const statsHeader = response.headers.get('X-Stats') || '';
+            request.server_stats = require('querystring').parse(statsHeader);
+            request.etag = response.headers.get('ETag');
+            const sessionCookie = extractSessionCookie();
+            if (this.state.session_cookie !== sessionCookie) {
+                this.setState({ session_cookie: sessionCookie });
+            }
+        });
+        return request;
+    }
+
+    fetchSessionProperties() {
+        if (this.sessionPropertiesRequest) {
+            return;
+        }
+        this.sessionPropertiesRequest = true;
+        this.fetch('/session-properties', {
+            headers: { Accept: 'application/json' },
+        }).then((response) => {
+            this.sessionPropertiesRequest = null;
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json();
+        }).then((sessionProperties) => {
+            this.setState({ session_properties: sessionProperties });
+            return this.initializeCartFromSessionProperties(sessionProperties);
+        });
+    }
+
+    /**
+     * Perform a GET request on the titles of schemas corresponding to an @type, to be placed into
+     * <App> context and usable by any component.
+     */
+    fetchProfilesTitles() {
+        this.fetch('/profiles-titles/', {
+            headers: { Accept: 'application/json' },
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw response;
+        }).then((profilesTitles) => {
+            this.setState({ profilesTitles });
+        });
+    }
+
+    closeSignupModal() {
+        this.setState({ eulaModalVisibility: false });
+    }
+
+    closeAccountCreationNotification() {
+        this.setState({ accountCreatedModalVisibility: false });
+    }
+
+    closeAccountCreationErrorModal() {
+        this.setState({ accountCreationFailedVisibility: false });
+    }
+
+    signup() {
+        const { authResult } = this.state;
+
+        if (!authResult || !authResult.accessToken) {
+            console.warn('authResult object or access token not available');
+            return;
+        }
+        const { accessToken } = authResult;
+        this.closeSignupModal();
+        this.fetch(`${window.location.origin}/users/@@sign-up`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ accessToken }),
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Failed to create new account');
+            }
+            this.setState({ accountCreatedModalVisibility: true }); // tell user account was created
+            this.handleAuth0Login(authResult, false, false); // sign in after account creation
+        }).catch(() => {
+            this.setState({ accountCreationFailedVisibility: true });
+        });
+    }
+
+    triggerLogin() {
+        if (this.state.session && !this.state.session._csrft_) {
+            this.fetch('/session');
+        }
+        this.lock.show();
+    }
+
+    triggerLogout() {
+        const { session } = this.state;
+        if (!(session && session['auth.userid'])) return;
+        this.fetch('/logout?redirect=false', {
+            headers: { Accept: 'application/json' },
+        }).then((response) => {
+            if (!response.ok) throw response;
+            return response.json();
+        }).then(() => {
+            this.DISABLE_POPSTATE = true;
+            const oldPath = window.location.pathname + window.location.search;
+            window.location.assign('/#logged-out');
+            if (oldPath === '/') {
+                window.location.reload();
+            }
+        }, (err) => {
+            globals.parseError(err).then((data) => {
+                const newContext = { ...data };
+                newContext.title = `Logout failure: ${data.title}`;
+                this.setState({ context: newContext });
+            });
+        });
+    }
+
+    adviseUnsavedChanges() {
+        const token = new UnsavedChangesToken(this);
+        this.setState((state) => ({ unsavedChanges: state.unsavedChanges.concat([token]) }));
+        return token;
+    }
+
+    releaseUnsavedChanges(token) {
+        console.assert(this.state.unsavedChanges.indexOf(token) !== -1);
+        this.setState((state) => ({ unsavedChanges: state.unsavedChanges.filter((x) => x !== token) }));
+    }
+
+    trigger(name) {
+        const methodName = this.triggers[name];
+        if (methodName) {
+            this[methodName].call(this);
+        }
+    }
+
+    // Called when the user logs in, or the page loads for a logged-in user. Handle any items
+    // collected in the cart while logged out. Retrieve the cart contents for the current logged-
+    // in user.
+    initializeCartFromSessionProperties(sessionProperties) {
+        // Retrieve the logged-in user's carts. If the user has never logged in before, an initial
+        // empty cart gets created and returned here.
+        cartCacheSaved({}, cartStore.dispatch);
+        cartSetOperationInProgress(true, cartStore.dispatch);
+        this.fetch('/carts/@@get-cart', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then((response) => {
+            cartSetOperationInProgress(false, cartStore.dispatch);
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(response);
+        }).then((userCarts) => {
+            // Retrieve user's current cart @id from cart settings if available in browser
+            // localstorage. Set it as the current cart in the cart Redux store.
+            let cartSettings = cartGetSettings(sessionProperties.user);
+            if (!cartSettings.current || userCarts['@graph'].indexOf(cartSettings.current) === -1) {
+                // Cart settings are new -- not from localstorage -- OR the current cart @id
+                // doesn't match any of the logged-in user's saved carts. Use the first cart in the
+                // user's saved carts as the current and save the new settings to localstorage.
+                cartSettings = cartSetSettingsCurrent(sessionProperties.user, userCarts['@graph'][0]);
+            }
+            cartSetCurrent(cartSettings.current, cartStore.dispatch);
+
+            // With the logged-in user's current cart @id, retrieve the cart object and copy it to
+            // the cart Redux store.
+            return cartSwitch(cartSettings.current, this.fetch, cartStore.dispatch);
+        });
+    }
+
     /* eslint no-alert: 0 */
     confirmNavigation() {
         // check for beforeunload confirmation
@@ -945,13 +958,6 @@ class App extends React.Component {
             return res;
         }
         return true;
-    }
-
-    handleBeforeUnload() {
-        if (this.state.unsavedChanges.length > 0 || cartIsUnsaved()) {
-            return 'You have unsaved changes.';
-        }
-        return undefined;
     }
 
     navigate(href, options) {
@@ -987,12 +993,12 @@ class App extends React.Component {
             return null;
         }
 
-        let request = this.state.contextRequest;
+        const { contextRequest } = this.state;
 
-        if (request && this.requestCurrent) {
+        if (contextRequest && this.requestCurrent) {
             // Abort the current request, then remember we've aborted the request so that we
             // don't render the Network Request Error page.
-            request.abort();
+            contextRequest.abort();
             this.requestAborted = true;
             this.requestCurrent = false;
         }
@@ -1007,7 +1013,7 @@ class App extends React.Component {
             return null;
         }
 
-        request = this.fetch(mutatableHref, {
+        const request = this.fetch(mutatableHref, {
             headers: { Accept: 'application/json' },
         });
         this.requestCurrent = true; // Remember we have an outstanding GET request
@@ -1144,7 +1150,7 @@ class App extends React.Component {
     render() {
         console.log('render app');
         let content;
-        let context = this.state.context;
+        let { context } = this.state;
         const hrefUrl = url.parse(this.state.href);
         // Every component is remounted when a new search is executed because 'key' is the full url
         const key = context['@id'];
@@ -1162,7 +1168,7 @@ class App extends React.Component {
                 content = <ContentView context={context} />;
             }
         }
-        const errors = this.state.errors.map(i => <div key={i} className="alert alert-error" />);
+        const errors = this.state.errors.map((i) => <div key={i} className="alert alert-error" />);
 
         let appClass = 'done';
         if (this.state.slow) {
@@ -1193,9 +1199,9 @@ class App extends React.Component {
             this.constructor.historyEnabled = false;
         }
 
-        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
         return (
-            <html lang="en" ref={this.props.domReader ? node => this.props.domReader(node) : null}>
+            <html lang="en" ref={this.props.domReader ? (node) => this.props.domReader(node) : null}>
                 <head>
                     <meta charSet="utf-8" />
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -1213,7 +1219,7 @@ class App extends React.Component {
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
-                    {this.state.context && this.state.context['@type'] && this.state.context['@type'].some(type => ['experiment', 'functionalcharacterizationexperiment', 'annotation'].includes(type.toLowerCase())) ?
+                    {this.state.context && this.state.context['@type'] && this.state.context['@type'].some((type) => ['experiment', 'functionalcharacterizationexperiment', 'annotation'].includes(type.toLowerCase())) ?
                         <script
                             data-prop-name="context"
                             type="application/ld+json"

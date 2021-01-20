@@ -47,23 +47,23 @@ describe('ItemStore', () => {
             done = store.create('/items/', { '@id': 'bar' });
         });
 
-        it('posts the item to the backend', () =>
+        it('posts the item to the backend', () => (
             done.then(() => expect(fetch.mock.calls.length).toEqual(1))
-        );
+        ));
 
-        it('updates the internal list of items', () =>
+        it('updates the internal list of items', () => (
             done.then(() => expect(store._items.length).toEqual(2))
-        );
+        ));
 
-        it('calls the view onCreate callback with the response', () =>
+        it('calls the view onCreate callback with the response', () => (
             done.then(() => {
                 expect(view.onCreate).toBeCalledWith({ '@graph': [{ '@id': '/items/bar/' }] });
             })
-        );
+        ));
 
-        it('notifies the view of its new state', () =>
+        it('notifies the view of its new state', () => (
             done.then(() => expect(view.setState.mock.calls[0][0].items.length).toEqual(2))
-        );
+        ));
     });
 
     describe('Updating an item', () => {
@@ -78,23 +78,23 @@ describe('ItemStore', () => {
             done = store.update({ '@id': '/items/foo/', updated: true });
         });
 
-        it('puts the item to the backend', () =>
+        it('puts the item to the backend', () => (
             done.then(() => {
                 expect(fetch.mock.calls.length).toEqual(1);
                 const args = fetch.mock.calls[0];
                 expect(args[1].method).toEqual('PUT');
             })
-        );
+        ));
 
-        it('updates the internal list of items', () =>
+        it('updates the internal list of items', () => (
             done.then(() => expect(store._items[0].updated).toBe(true))
-        );
+        ));
 
-        it('calls the view onUpdate callback with the response', () =>
+        it('calls the view onUpdate callback with the response', () => (
             done.then(() => {
                 expect(view.onUpdate).toBeCalledWith({ '@id': '/items/foo/', updated: true });
             })
-        );
+        ));
     });
 
     describe('Deleting an item', () => {
@@ -109,7 +109,7 @@ describe('ItemStore', () => {
             done = store.delete('/items/foo/');
         });
 
-        it('updates the status on the backend', () =>
+        it('updates the status on the backend', () => (
             done.then(() => {
                 expect(fetch.mock.calls.length).toEqual(1);
                 const args = fetch.mock.calls[0];
@@ -117,17 +117,17 @@ describe('ItemStore', () => {
                 const body = JSON.parse(args[1].body);
                 expect(body).toEqual({ status: 'deleted' });
             })
-        );
+        ));
 
-        it('updates the internal list of items', () =>
+        it('updates the internal list of items', () => (
             done.then(() => expect(store._items.length).toEqual(0))
-        );
+        ));
 
-        it('calls the view onDelete callback with the removed item', () =>
+        it('calls the view onDelete callback with the removed item', () => (
             done.then(() => {
                 expect(view.onDelete).toBeCalledWith({ '@id': '/items/foo/' });
             })
-        );
+        ));
     });
 
     describe('Reporting errors', () => {

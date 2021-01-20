@@ -21,7 +21,7 @@ class AccessKeyStore extends ItemStore {
     resetSecret(id) {
         this.fetch(`${id}reset-secret`, {
             method: 'POST',
-        }, response => this.dispatch('onResetSecret', response));
+        }, (response) => this.dispatch('onResetSecret', response));
     }
 }
 
@@ -49,8 +49,8 @@ class AccessKeyActions extends React.Component {
     render() {
         return (
             <div className="access-keys__actions">
-                <button onClick={this.doActionReset} className="btn btn-info btn-sm">Reset</button>
-                <button onClick={this.doActionDelete} className="btn btn-danger btn-sm">Delete</button>
+                <button type="button" onClick={this.doActionReset} className="btn btn-info btn-sm">Reset</button>
+                <button type="button" onClick={this.doActionDelete} className="btn btn-danger btn-sm">Delete</button>
             </div>
         );
     }
@@ -113,13 +113,13 @@ class AccessKeyTable extends React.Component {
         this.setState((prevState) => {
             // Remove the deleted item from the existing access key entry, and display the modal
             // that shows what happened.
-            const deletedIndex = prevState.accessKeys.findIndex(accessKey => accessKey.access_key_id === item.access_key_id);
+            const deletedIndex = prevState.accessKeys.findIndex((accessKey) => accessKey.access_key_id === item.access_key_id);
             if (deletedIndex !== -1) {
                 return ({
                     accessKeys: [...prevState.accessKeys.slice(0, deletedIndex), ...prevState.accessKeys.slice(deletedIndex + 1)],
                     modal: (
                         <Modal closeModal={this.hideModal}>
-                            <ModalHeader title={'Access key deleted.'} closeModal={this.hideModal} />
+                            <ModalHeader title="Access key deleted." closeModal={this.hideModal} />
                             <ModalBody>
                                 <p>{`Access key ${item.access_key_id} has been deleted.`}</p>
                             </ModalBody>
@@ -159,7 +159,7 @@ class AccessKeyTable extends React.Component {
     onCreate(response) {
         this.setState((prevState) => {
             // Add new secret from item store to the beginning of the `accessKeys` state array.
-            const newSecret = Object.assign({}, response['@graph'][0]);
+            const newSecret = { ...response['@graph'][0] };
             return { accessKeys: [newSecret, ...prevState.accessKeys] };
         });
         this.showNewSecret('Your secret key has been created.', response);
@@ -227,12 +227,12 @@ class AccessKeyTable extends React.Component {
         const accessKeyHeader = (
             <div className="access-keys__header">
                 <h4 className="access-keys__header-title">Access keys</h4>
-                <button onClick={this.create} className="btn btn-info btn-sm access-keys__header-control">Add access key</button>,
+                <button type="button" onClick={this.create} className="btn btn-info btn-sm access-keys__header-control">Add access key</button>,
             </div>
         );
 
         return (
-            <React.Fragment>
+            <>
                 {this.state.accessKeys.length > 0 ?
                     <SortTablePanel header={accessKeyHeader} css="access-keys__table">
                         <SortTable list={this.state.accessKeys} columns={accessKeyColumns} meta={{ action: this.doAction }} />
@@ -248,7 +248,7 @@ class AccessKeyTable extends React.Component {
                     </Panel>
                 }
                 {this.state.modal}
-            </React.Fragment>
+            </>
         );
     }
 }
@@ -360,9 +360,9 @@ ImpersonateUserFormComponent.propTypes = {
 };
 
 
-const mapStateToProps = state => ({ elements: state.elements });
-const mapDispatchToProps = dispatch => ({
-    clearCart: elementAtIds => cartRemoveElements(elementAtIds, dispatch),
+const mapStateToProps = (state) => ({ elements: state.elements });
+const mapDispatchToProps = (dispatch) => ({
+    clearCart: (elementAtIds) => cartRemoveElements(elementAtIds, dispatch),
 });
 
 const ImpersonateUserFormInternal = connect(mapStateToProps, mapDispatchToProps)(ImpersonateUserFormComponent);

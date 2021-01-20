@@ -29,7 +29,7 @@ export const NO_ACTION = 'NO_ACTION';
  * @param {string} elementAtId `@id` of element being added to cart
  * @return {object} Redux action object
  */
-export const addToCart = elementAtId => (
+export const addToCart = (elementAtId) => (
     { type: ADD_TO_CART, elementAtId }
 );
 
@@ -60,7 +60,7 @@ export const addToCartAndSave = (elementAtId, fetch) => (
  * @param {array} elementAtIds `@ids` of elements being added to cart
  * @return {object} Redux action object
  */
-export const addMultipleToCart = elementAtIds => (
+export const addMultipleToCart = (elementAtIds) => (
     { type: ADD_MULTIPLE_TO_CART, elementAtIds }
 );
 
@@ -91,7 +91,7 @@ export const addMultipleToCartAndSave = (elementAtIds, fetch) => (
  * @param {string} elementAtId `@id` of element to remove from the cart
  * @return {object} Redux action object
  */
-export const removeFromCart = elementAtId => (
+export const removeFromCart = (elementAtId) => (
     { type: REMOVE_FROM_CART, elementAtId }
 );
 
@@ -122,7 +122,7 @@ export const removeFromCartAndSave = (elementAtId, fetch) => (
  * @param {array} elementAtIds `@ids` of elements to remove from the cart
  * @return {object} Redux action object
  */
-export const removeMultipleFromCart = elementAtIds => (
+export const removeMultipleFromCart = (elementAtIds) => (
     { type: REMOVE_MULTIPLE_FROM_CART, elementAtIds }
 );
 
@@ -153,7 +153,7 @@ export const removeMultipleFromCartAndSave = (elementAtIds, fetch) => (
  * @param {array} elementAtIds `@ids` of elements to set the cart to
  * @return {object} Redux action object
  */
-export const replaceCart = elementAtIds => (
+export const replaceCart = (elementAtIds) => (
     { type: REPLACE_CART, elementAtIds }
 );
 
@@ -163,7 +163,7 @@ export const replaceCart = elementAtIds => (
  * @param {object} savedCartObj Cart object as saved to the database
  * @return {object} Redux action object
  */
-export const cacheSavedCart = savedCartObj => (
+export const cacheSavedCart = (savedCartObj) => (
     { type: CACHE_SAVED_CART, savedCartObj }
 );
 
@@ -173,7 +173,7 @@ export const cacheSavedCart = savedCartObj => (
  * @param {bool} inProgress True to indicate cart operation in progress; false when done
  * @return {object} Redux action object
  */
-export const cartOperationInProgress = inProgress => (
+export const cartOperationInProgress = (inProgress) => (
     { type: CART_OPERATION_IN_PROGRESS, inProgress }
 );
 
@@ -188,7 +188,7 @@ export const cartOperationInProgress = inProgress => (
  *
  * @return {object} Redux action to display an alert.
  */
-export const triggerAlert = alert => (
+export const triggerAlert = (alert) => (
     { type: DISPLAY_ALERT, alert }
 );
 
@@ -198,7 +198,7 @@ export const triggerAlert = alert => (
  * @param {string} name Name to set cart to
  * @return {object} Redux action object
  */
-export const setCartName = name => (
+export const setCartName = (name) => (
     { type: SET_NAME, name }
 );
 
@@ -208,7 +208,7 @@ export const setCartName = name => (
  * @param {string} identifier Identifier to set cart to
  * @return {object} Redux action object
  */
-export const setCartIdentifier = identifier => (
+export const setCartIdentifier = (identifier) => (
     { type: SET_IDENTIFIER, identifier }
 );
 
@@ -218,7 +218,7 @@ export const setCartIdentifier = identifier => (
  * @param {bool} locked Cart lock status
  * @return {object} Redux action object
  */
-export const setCartLocked = locked => (
+export const setCartLocked = (locked) => (
     { type: SET_LOCKED, locked }
 );
 
@@ -229,7 +229,7 @@ export const setCartLocked = locked => (
  * @param {string} current @id of cart to set as current
  * @return {object} Redux action object
  */
-export const setCurrentCart = current => (
+export const setCurrentCart = (current) => (
     { type: SET_CURRENT, current }
 );
 
@@ -239,7 +239,7 @@ export const setCurrentCart = current => (
  * @param {string} status New status for cart
  * @return {object} Redux action object
  */
-export const setCartStatus = status => (
+export const setCartStatus = (status) => (
     { type: SET_STATUS, status }
 );
 
@@ -255,7 +255,7 @@ export const setCartStatus = status => (
  * @return {Promise} Resolves to the updated cart object
  */
 export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, fetch) => (
-    dispatch => (
+    (dispatch) => (
         new Promise((resolve, reject) => {
             const nameIdentifierSetList = { name };
 

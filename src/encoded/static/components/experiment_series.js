@@ -54,12 +54,12 @@ function getQualityMetricsByReplicate(experiment, field) {
 // legend should be shown or not. So this collection should be color coded
 // columns only.
 const hideColorCodedColumns = {
-    readDepth: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
-    NRF: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
-    NSC: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
-    PBC1: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
-    PBC2: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
-    IDR: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']) || series.target.some(target => target.investigated_as.includes('histone')),
+    readDepth: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    NRF: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    NSC: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    PBC1: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    PBC2: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    IDR: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']) || series.target.some((target) => target.investigated_as.includes('histone')),
 };
 
 const experimentTableColumns = {
@@ -70,15 +70,15 @@ const experimentTableColumns = {
 
     file_assembly: {
         title: 'Assembly',
-        getValue: experiment => _.uniq(experiment.files.map(f => f.assembly)),
-        hide: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+        getValue: (experiment) => _.uniq(experiment.files.map((f) => f.assembly)),
+        hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
     _biological_replicate_number: {
         title: 'Replicate',
         getValue: (experiment, meta) => meta.bioRepNum,
         replicateSpecific: true,
-        hide: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+        hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
     antibody: {
@@ -115,7 +115,7 @@ const experimentTableColumns = {
             );
         },
         replicateSpecific: true,
-        hide: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+        hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
     readDepth: {
@@ -128,15 +128,15 @@ const experimentTableColumns = {
                 minimal = 35000000;
                 recommended = 45000000;
             }
-            const filteredFiles = experiment.files.filter(f => f.biological_replicates.includes(meta.bioRepNum));
-            const qualityMetrics = filteredFiles.map(f => f.quality_metrics).reduce(
+            const filteredFiles = experiment.files.filter((f) => f.biological_replicates.includes(meta.bioRepNum));
+            const qualityMetrics = filteredFiles.map((f) => f.quality_metrics).reduce(
                 (flatQualityMetrics, qms) => flatQualityMetrics.concat(qms), []
             );
             let qm = [];
             if (experiment.target && ['H3K9me3-human', 'H3K9me3-mouse'].includes(experiment.target.name)) {
-                qm = _.uniq(qualityMetrics.filter(q => q.processing_stage === 'unfiltered').map(q => q.mapped / ((q.read1 && q.read2) ? 2 : 1)).filter(q => q));
+                qm = _.uniq(qualityMetrics.filter((q) => q.processing_stage === 'unfiltered').map((q) => q.mapped / ((q.read1 && q.read2) ? 2 : 1)).filter((q) => q));
             } else {
-                qm = _.uniq(qualityMetrics.filter(q => q.processing_stage === 'filtered').map(q => q.total / ((q.read1 && q.read2) ? 2 : 1)).filter(q => q));
+                qm = _.uniq(qualityMetrics.filter((q) => q.processing_stage === 'filtered').map((q) => q.total / ((q.read1 && q.read2) ? 2 : 1)).filter((q) => q));
             }
             if (qm && qm.length > 1) {
                 return <td key="readDepth" className="qc-report">?</td>;
@@ -157,7 +157,7 @@ const experimentTableColumns = {
             return <td key="readDepth" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => hideColorCodedColumns.readDepth(series),
+        hide: (series) => hideColorCodedColumns.readDepth(series),
     },
 
     NRF: {
@@ -181,7 +181,7 @@ const experimentTableColumns = {
             return <td key="NRF" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => hideColorCodedColumns.NRF(series),
+        hide: (series) => hideColorCodedColumns.NRF(series),
     },
 
     NSC: {
@@ -205,7 +205,7 @@ const experimentTableColumns = {
             return <td key="NSC" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => hideColorCodedColumns.NSC(series),
+        hide: (series) => hideColorCodedColumns.NSC(series),
     },
 
     PBC1: {
@@ -229,7 +229,7 @@ const experimentTableColumns = {
             return <td key="PBC1" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => hideColorCodedColumns.PBC1(series),
+        hide: (series) => hideColorCodedColumns.PBC1(series),
     },
 
     PBC2: {
@@ -253,7 +253,7 @@ const experimentTableColumns = {
             return <td key="PBC2" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => hideColorCodedColumns.PBC2(series),
+        hide: (series) => hideColorCodedColumns.PBC2(series),
     },
 
     IDR: {
@@ -267,14 +267,15 @@ const experimentTableColumns = {
             if ((rescueRatios && rescueRatios.length === 1) && (selfConsistencyRatios && selfConsistencyRatios.length === 1)) {
                 if (rescueRatios[0] > 2 && selfConsistencyRatios[0] > 2) {
                     return <td key="IDR" className="qc-report qc-report--not-compliant" rowSpan={meta.rowCount}>Fail</td>;
-                } else if (rescueRatios[0] > 2 || selfConsistencyRatios[0] > 2) {
+                }
+                if (rescueRatios[0] > 2 || selfConsistencyRatios[0] > 2) {
                     return <td key="IDR" className="qc-report qc-report--warning" rowSpan={meta.rowCount}>Borderline</td>;
                 }
                 return <td key="IDR" className="qc-report qc-report--ideal" rowSpan={meta.rowCount}>Pass</td>;
             }
             return <td key="IDR" className="qc-report" rowSpan={meta.rowCount} />;
         },
-        hide: series => hideColorCodedColumns.IDR(series),
+        hide: (series) => hideColorCodedColumns.IDR(series),
     },
 
     peakCount: {
@@ -306,7 +307,7 @@ const experimentTableColumns = {
             }
             return '';
         },
-        hide: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+        hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
     status: {
@@ -320,12 +321,12 @@ const experimentTableColumns = {
 
     lab: {
         title: 'Lab',
-        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
     },
 
     award: {
         title: 'RFA',
-        getValue: experiment => (experiment.award ? experiment.award.rfa : null),
+        getValue: (experiment) => (experiment.award ? experiment.award.rfa : null),
     },
 
     audit: {
@@ -397,9 +398,9 @@ class ExperimentSeriesComponent extends React.Component {
         const datasetAtIds = Object.keys(this.statusFilteredDatasets());
         const updatedDatasetAtIds = Object.keys(this.state.viewableDatasets);
         const symmDiffAtIds = datasetAtIds.filter(
-            i => !updatedDatasetAtIds.includes(i)
+            (i) => !updatedDatasetAtIds.includes(i)
         ).concat(
-            updatedDatasetAtIds.filter(i => !datasetAtIds.includes(i))
+            updatedDatasetAtIds.filter((i) => !datasetAtIds.includes(i))
         );
         if (symmDiffAtIds.length > 0) {
             this.getViewableDatasets();
@@ -414,7 +415,7 @@ class ExperimentSeriesComponent extends React.Component {
     getViewableDatasets() {
         const viewableDatasets = this.statusFilteredDatasets();
         // Collect audit and quality metrics information
-        const promises = Object.keys(viewableDatasets).map(datasetAtId => (
+        const promises = Object.keys(viewableDatasets).map((datasetAtId) => (
             fetch(`${datasetAtId}?frame=audit`, {
                 method: 'GET',
                 headers: {
@@ -426,12 +427,12 @@ class ExperimentSeriesComponent extends React.Component {
                     return response.json();
                 }
                 return {};
-            }).then(data => [data]) // Convert to array to be consistent with the return of requestObjects below
+            }).then((data) => [data]) // Convert to array to be consistent with the return of requestObjects below
         ));
         promises.push(
             requestObjects(
                 Object.keys(viewableDatasets),
-                '/search/?type=Experiment&field=replicates.biological_replicate_number&field=replicates.library.biosample.organism.@id&field=replicates.library.biosample.biosample_ontology.term_id&field=replicates.antibody.lot_reviews&field=files.@id&field=files.assembly&field=files.biological_replicates&field=files.quality_metrics&limit=all'
+                '/search/?type=Experiment&field=replicates.biological_replicate_number&field=replicates.library.biosample.organism.@id&field=replicates.library.biosample.biosample_ontology.term_id&field=replicates.antibody.lot_reviews&field=files.@id&field=files.assembly&field=files.biological_replicates&field=files.quality_metrics&limit=all',
             )
         );
         Promise.all(promises).then((metadataArray) => {
@@ -471,7 +472,7 @@ class ExperimentSeriesComponent extends React.Component {
         const { context, auditDetail, auditIndicators } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const roles = globals.getRoles(this.context.session_properties);
-        const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+        const isAuthorized = ['admin', 'submitter'].some((role) => roles.includes(role));
 
         // Set up the breadcrumbs.
         const datasetType = context['@type'][1];
@@ -484,15 +485,15 @@ class ExperimentSeriesComponent extends React.Component {
         // Calculate the biosample summary from the organism and the biosample ontology.
         let speciesRender = null;
         if (context.organism && context.organism.length > 0) {
-            const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
+            const speciesList = _.uniq(context.organism.map((organism) => organism.scientific_name));
             speciesRender = (
                 <span>
-                    {speciesList.map((species, i) =>
+                    {speciesList.map((species, i) => (
                         <span key={i}>
                             {i > 0 ? <span> and </span> : null}
                             <i>{species}</i>
                         </span>
-                    )}
+                    ))}
                 </span>
             );
         }
@@ -511,15 +512,15 @@ class ExperimentSeriesComponent extends React.Component {
             }
         });
         const showQualityMetricLegend = Object.keys(hideColorCodedColumns).some(
-            columnId => !hideColorCodedColumns[columnId](seriesObject)
+            (columnId) => !hideColorCodedColumns[columnId](seriesObject)
         );
         let addAllToCartControl;
         let internalTags = [];
         const allRows = [];
-        const viewableDatasets = this.state.viewableDatasets;
+        const { viewableDatasets } = this.state;
         if (Object.keys(viewableDatasets).length > 0) {
             // Add the "Add all to cart" button and internal tags from all related datasets.
-            const experimentIds = Object.values(viewableDatasets).map(experiment => experiment['@id']);
+            const experimentIds = Object.values(viewableDatasets).map((experiment) => experiment['@id']);
             addAllToCartControl = (
                 <div className="experiment-table__header">
                     <h4 className="experiment-table__title">{`Experiments in experiment series ${context.accession}`}</h4>
@@ -544,14 +545,14 @@ class ExperimentSeriesComponent extends React.Component {
                 });
                 const analysisObjects = viewableDatasets[datasetAtId].analysis_objects || [];
                 const selectedAnalysis = analysisObjects.filter(
-                    analysis => analysis.files.every(f => filesByDesiredAssembly.includes(f))
+                    (analysis) => analysis.files.every((f) => filesByDesiredAssembly.includes(f))
                 ).sort((a, b) => a.length - b.length)[0] || { files: [] };
                 viewableDatasets[datasetAtId].files = viewableDatasets[datasetAtId].files.filter(
-                    f => selectedAnalysis.files.includes(f['@id'])
+                    (f) => selectedAnalysis.files.includes(f['@id']),
                 );
                 // Number of subrows to be shown corresponds to the number of biological replicates. Show at least one by default.
                 let bioRepNums = _.uniq(
-                    viewableDatasets[datasetAtId].files.map(f => f.biological_replicates).reduce(
+                    viewableDatasets[datasetAtId].files.map((f) => f.biological_replicates).reduce(
                         (bioRepArray, reps) => bioRepArray.concat(reps), []
                     )
                 );
@@ -567,7 +568,11 @@ class ExperimentSeriesComponent extends React.Component {
                         <tr key={viewableDatasets[datasetAtId]['@id'].concat('_', num)}>
                             {Object.keys(columns).map((columnId) => {
                                 if (columns[columnId].replicateSpecific || i === 0) {
-                                    return columns[columnId].display ? columns[columnId].display(viewableDatasets[datasetAtId], cellMeta) : <td key={columnId} rowSpan={columns[columnId].replicateSpecific ? 1 : rowCount}>{columns[columnId].getValue ? columns[columnId].getValue(viewableDatasets[datasetAtId], cellMeta) : viewableDatasets[datasetAtId][columnId]}</td>;
+                                    return (
+                                        columns[columnId].display
+                                            ? columns[columnId].display(viewableDatasets[datasetAtId], cellMeta)
+                                            : <td key={columnId} rowSpan={columns[columnId].replicateSpecific ? 1 : rowCount}>{columns[columnId].getValue ? columns[columnId].getValue(viewableDatasets[datasetAtId], cellMeta) : viewableDatasets[datasetAtId][columnId]}</td>
+                                    );
                                 }
                                 return null;
                             })}
@@ -651,7 +656,7 @@ class ExperimentSeriesComponent extends React.Component {
                                     <div data-test="contributors">
                                         <dt>Contributors</dt>
                                         <dd>
-                                            {context.contributors.map(contributor => (
+                                            {context.contributors.map((contributor) => (
                                                 <span key={contributor['@id']} className="line-item">
                                                     {contributor.title}
                                                 </span>
@@ -693,7 +698,7 @@ class ExperimentSeriesComponent extends React.Component {
                             <table className="table table__sortable table-raw">
                                 <thead>
                                     <tr>
-                                        {Object.keys(columns).map(columnId => <th key={columnId}>{columns[columnId].title}</th>)}
+                                        {Object.keys(columns).map((columnId) => <th key={columnId}>{columns[columnId].title}</th>)}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -762,7 +767,7 @@ const ListingComponent = (props, reactContext) => {
 
     replicates.forEach((replicate) => {
         if (replicate.library && replicate.library.biosample) {
-            const biosample = replicate.library.biosample;
+            const { biosample } = replicate.library;
             const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
             if (lifeStage) {
                 lifeStages.push(lifeStage);
@@ -778,11 +783,11 @@ const ListingComponent = (props, reactContext) => {
 
     // Get list of target labels.
     if (result.target) {
-        targets = _.uniq(result.target.map(target => target.label));
+        targets = _.uniq(result.target.map((target) => target.label));
     }
 
-    const contributors = _.uniq(result.contributors.map(lab => lab.title));
-    const contributingAwards = _.uniq(result.contributing_awards.map(award => award.project));
+    const contributors = _.uniq(result.contributors.map((lab) => lab.title));
+    const contributingAwards = _.uniq(result.contributing_awards.map((award) => award.project));
 
     // Work out the count of related datasets
     const totalDatasetCount = result.related_datasets.reduce((datasetCount, dataset) => (searchableDatasetStatuses.includes(dataset.status) ? datasetCount + 1 : datasetCount), 0);
@@ -801,7 +806,7 @@ const ListingComponent = (props, reactContext) => {
                                     {' ('}
                                     {organism ? <i>{organism}</i> : null}
                                     {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
-                                    {')'}
+                                    )
                                 </span>
                             : null}
                         </span>

@@ -84,10 +84,10 @@ const modalDefaultText = (
  * @return {string} Ampersand-separated query string, not including initial question mark.
  */
 const getQueryFromFilters = (filters) => {
-    const typeQueries = filters.filter(searchFilter => searchFilter.field === 'type');
-    const termQueries = filters.filter(searchFilter => searchFilter.field !== 'type' && searchFilter.field !== 'searchTerm');
-    const searchTermQueries = filters.filter(searchFilter => searchFilter.field === 'searchTerm');
-    const queryElements = typeQueries.concat(termQueries, searchTermQueries).map(searchFilter => `${searchFilter.field}=${encoding.encodedURIComponentOLD(searchFilter.term)}`);
+    const typeQueries = filters.filter((searchFilter) => searchFilter.field === 'type');
+    const termQueries = filters.filter((searchFilter) => searchFilter.field !== 'type' && searchFilter.field !== 'searchTerm');
+    const searchTermQueries = filters.filter((searchFilter) => searchFilter.field === 'searchTerm');
+    const queryElements = typeQueries.concat(termQueries, searchTermQueries).map((searchFilter) => `${searchFilter.field}=${encoding.encodedURIComponentOLD(searchFilter.term)}`);
     return `${queryElements.join('&')}`;
 };
 
@@ -105,7 +105,7 @@ export const ViewControls = ({ results, additionalFilters }) => {
     const searchPageType = getSearchPageType(results);
 
     // Get all "type=" in query string. We only display controls when URL has exactly one "type=".
-    const typeFilters = filters.filter(filter => filter.field === 'type');
+    const typeFilters = filters.filter((filter) => filter.field === 'type');
     if (typeFilters.length === 1) {
         const queryString = getQueryFromFilters(filters);
         const typeQuery = typeFilters[0].term;
@@ -185,16 +185,16 @@ export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickH
     };
 
     return (
-        <Modal focusId="batch-download-submit" closeModal={closeModalHandler} >
+        <Modal focusId="batch-download-submit" closeModal={closeModalHandler}>
             <ModalHeader title="Using batch download" closeModal={closeModalHandler} />
             <ModalBody>
                 {modalText || modalDefaultText}
                 <div>{additionalContent}</div>
             </ModalBody>
             <ModalFooter
-                closeModal={<button className="btn btn-default" onClick={closeModalHandler} >Close</button>}
+                closeModal={<button type="button" className="btn btn-default" onClick={closeModalHandler}>Close</button>}
                 submitBtn={canDownload ?
-                    <button id="batch-download-submit" className="btn btn-info" disabled={disabled || isModalDownloadButtonDisabled} onClick={clickHandler}>Download</button>
+                    <button type="button" id="batch-download-submit" className="btn btn-info" disabled={disabled || isModalDownloadButtonDisabled} onClick={clickHandler}>Download</button>
                     : null}
             >
                 {isModalDownloadButtonDisabled ?
@@ -251,12 +251,12 @@ export const BatchDownloadButton = ({ handleDownloadClick, title, additionalCont
     }, [isModalOpen, onbeforeunload]);
 
     return (
-        <React.Fragment>
-            <button className="btn btn-info btn-sm" onClick={openModal} disabled={disabled} data-test="batch-download">{title}</button>
+        <>
+            <button type="button" className="btn btn-info btn-sm" onClick={openModal} disabled={disabled} data-test="batch-download">{title}</button>
             {isModalOpen ?
                 <BatchDownloadModal additionalContent={additionalContent} disabled={disabled} downloadClickHandler={handleDownloadClick} closeModalHandler={closeModal} modalText={modalText} canDownload={canDownload} />
             : null}
-        </React.Fragment>
+        </>
     );
 };
 
@@ -297,19 +297,19 @@ export const BatchDownloadControls = ({ results, queryString, additionalFilters,
 
     if (results) {
         // No Download button if the search path is prohibited.
-        const hasProhibitedPath = BATCH_DOWNLOAD_PROHIBITED_PATHS.some(path => results['@id'].startsWith(path));
+        const hasProhibitedPath = BATCH_DOWNLOAD_PROHIBITED_PATHS.some((path) => results['@id'].startsWith(path));
         if (hasProhibitedPath) {
             return null;
         }
 
         // No download button if "type=" for an allowed type doesn't exist in query string.
-        const hasDownloadDocType = filters.some(filter => filter.field === 'type' && BATCH_DOWNLOAD_DOC_TYPES.includes(filter.term));
+        const hasDownloadDocType = filters.some((filter) => filter.field === 'type' && BATCH_DOWNLOAD_DOC_TYPES.includes(filter.term));
         if (!hasDownloadDocType) {
             return null;
         }
 
         // No download button if no files.
-        const hasFiles = results.facets.some(facet => facet.field === 'files.file_type' && facet.total > 0);
+        const hasFiles = results.facets.some((facet) => facet.field === 'files.file_type' && facet.total > 0);
         if (!hasFiles) {
             return null;
         }

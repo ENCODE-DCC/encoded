@@ -43,7 +43,7 @@ RenderInBody.propTypes = {
 // </Tooltip>
 //
 // The component that the user can hover over to trigger the tooltip is given in the `trigger`
-// property and appears in the DOM whereever you place the <Tooltip> component. Put the contents
+// property and appears in the DOM wherever you place the <Tooltip> component. Put the contents
 // of the tooltip between the opening and closing <Tooltip> tags. This can simply be a string if
 // that's all you need, or a full-fledged component.
 
@@ -109,7 +109,7 @@ const Tooltip = (props) => {
     React.useEffect(() => {
         // Determine screen width and set mobile parameter and tooltip position
         const updateWidth = () => {
-            const screenWidth = Math.min(screen.width, window.innerWidth);
+            const screenWidth = Math.min(window.screen.width, window.innerWidth);
             setIsMobile(screenWidth <= 960);
             positionTooltip();
         };
@@ -121,13 +121,13 @@ const Tooltip = (props) => {
     // Special case for menu tooltips on mobile to allow the pop-up to be displayed as position relative on devices smaller than 800px wide with touch screens
     if (isMobile && relativeTooltipFlag) {
         return (
-            <React.Fragment>
+            <>
                 <button
                     aria-describedby={visibility ? tooltipId : ''}
-                    onMouseEnter={e => SetDefinitionVisibility(true, e)}
-                    onMouseLeave={e => SetDefinitionVisibility(false, e)}
-                    onFocus={e => SetDefinitionVisibility(true, e)}
-                    onBlur={e => SetDefinitionVisibility(false, e)}
+                    onMouseEnter={(e) => SetDefinitionVisibility(true, e)}
+                    onMouseLeave={(e) => SetDefinitionVisibility(false, e)}
+                    onFocus={(e) => SetDefinitionVisibility(true, e)}
+                    onBlur={(e) => SetDefinitionVisibility(false, e)}
                     className={`tooltip-container__trigger ${visibility ? 'show' : ''}`}
                     ref={buttonRef}
                     type="button"
@@ -139,25 +139,25 @@ const Tooltip = (props) => {
                         className={tooltipCss}
                         role="tooltip"
                         id={tooltipId}
-                        onMouseEnter={e => SetDefinitionVisibility(true, e)}
-                        onMouseLeave={e => SetDefinitionVisibility(false, e)}
-                        onFocus={e => SetDefinitionVisibility(true, e)}
-                        onBlur={e => SetDefinitionVisibility(false, e)}
+                        onMouseEnter={(e) => SetDefinitionVisibility(true, e)}
+                        onMouseLeave={(e) => SetDefinitionVisibility(false, e)}
+                        onFocus={(e) => SetDefinitionVisibility(true, e)}
+                        onBlur={(e) => SetDefinitionVisibility(false, e)}
                     >
                         <div className="tooltip-inner">{children}</div>
                     </div>
                 : null}
-            </React.Fragment>
+            </>
         );
     }
     return (
         <div className={wrapperCss}>
             <button
                 aria-describedby={visibility ? tooltipId : ''}
-                onMouseEnter={e => SetDefinitionVisibility(true, e)}
-                onMouseLeave={e => SetDefinitionVisibility(false, e)}
-                onFocus={e => SetDefinitionVisibility(true, e)}
-                onBlur={e => SetDefinitionVisibility(false, e)}
+                onMouseEnter={(e) => SetDefinitionVisibility(true, e)}
+                onMouseLeave={(e) => SetDefinitionVisibility(false, e)}
+                onFocus={(e) => SetDefinitionVisibility(true, e)}
+                onBlur={(e) => SetDefinitionVisibility(false, e)}
                 className={`tooltip-container__trigger ${visibility ? 'show' : ''}`}
                 ref={buttonRef}
                 type="button"
@@ -171,10 +171,10 @@ const Tooltip = (props) => {
                         role="tooltip"
                         id={tooltipId}
                         style={{ left: `${tooltipLeft}px`, top: `${tooltipTop}px` }}
-                        onMouseEnter={e => SetDefinitionVisibility(true, e)}
-                        onMouseLeave={e => SetDefinitionVisibility(false, e)}
-                        onFocus={e => SetDefinitionVisibility(true, e)}
-                        onBlur={e => SetDefinitionVisibility(false, e)}
+                        onMouseEnter={(e) => SetDefinitionVisibility(true, e)}
+                        onMouseLeave={(e) => SetDefinitionVisibility(false, e)}
+                        onFocus={(e) => SetDefinitionVisibility(true, e)}
+                        onBlur={(e) => SetDefinitionVisibility(false, e)}
                     >
                         <div className="tooltip-arrow" />
                         <div className="tooltip-inner">

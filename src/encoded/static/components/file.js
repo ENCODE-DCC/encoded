@@ -25,7 +25,7 @@ dayjs.extend(utc);
  */
 const MatchingMD5Sum = ({ file }) => {
     if (file.matching_md5sum && file.matching_md5sum.length > 0) {
-        const matchingMD5Accessions = file.matching_md5sum.map(fileAtId => (
+        const matchingMD5Accessions = file.matching_md5sum.map((fileAtId) => (
             <a key={fileAtId} href={fileAtId}>{globals.atIdToAccession(fileAtId)}</a>
         ));
         return (
@@ -47,7 +47,7 @@ MatchingMD5Sum.propTypes = {
 const derivingCols = {
     accession: {
         title: 'Accession',
-        display: file => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
+        display: (file) => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
     },
     dataset: {
         title: 'Dataset',
@@ -60,12 +60,12 @@ const derivingCols = {
     output_type: { title: 'Output type' },
     title: {
         title: 'Lab',
-        getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
+        getValue: (file) => (file.lab && file.lab.title ? file.lab.title : ''),
     },
     assembly: { title: 'Mapping assembly' },
     status: {
         title: 'File status',
-        display: item => <Status item={item} badgeSize="small" inline />,
+        display: (item) => <Status item={item} badgeSize="small" inline />,
     },
 };
 
@@ -83,7 +83,7 @@ const derivingCols = {
 function sortProcessedPagedFiles(files) {
     // Split the list into two groups for basic sorting first by those with accessions,
     // then those with external_accessions.
-    const accessionList = _(files).groupBy(file => (file.accession ? 'accession' : 'external'));
+    const accessionList = _(files).groupBy((file) => (file.accession ? 'accession' : 'external'));
 
     // Start by sorting the accessioned files.
     let sortedAccession = [];
@@ -116,7 +116,7 @@ const DerivedFiles = ({ file }) => {
                 // Sort the files. We still get an array of search results from the server, just
                 // sorted by accessioned files, followed by external_accession files.
                 const sortedFiles = sortProcessedPagedFiles(result['@graph']);
-                setFileIds(sortedFiles.map(sortedFile => sortedFile['@id']));
+                setFileIds(sortedFiles.map((sortedFile) => sortedFile['@id']));
             }
         });
     }, [file]);
@@ -233,7 +233,8 @@ class FileComponent extends React.Component {
         this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
     }
 
-    componentWillReceiveProps() {
+    /* eslint-disable camelcase */
+    UNSAFE_componentWillReceiveProps() {
         // If the logged-in state has changed since the last time we rendered, request files again
         // in case logging in changes the list of dependent files.
         const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
@@ -242,6 +243,7 @@ class FileComponent extends React.Component {
             this.loggedIn = currLoggedIn;
         }
     }
+    /* eslint-enable camelcase */
 
     requestFileDependencies() {
         // Perform GET requests of files that derive from this one, as well as file format
@@ -279,9 +281,9 @@ class FileComponent extends React.Component {
         // Collect up relevant pipelines and quality metrics.
         let pipelines = [];
         if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length > 0) {
-            pipelines = context.analysis_step_version.analysis_step.pipelines;
+            ({ pipelines } = context.analysis_step_version.analysis_step);
         }
-        const qualityMetrics = context.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
+        const qualityMetrics = context.quality_metrics.filter((qc) => loggedIn || qc.status === 'released');
 
         return (
             <div className={itemClass}>
@@ -345,12 +347,12 @@ class FileComponent extends React.Component {
                                     <div data-test="pipelines">
                                         <dt>Pipelines</dt>
                                         <dd>
-                                            {pipelines.map((pipeline, i) =>
+                                            {pipelines.map((pipeline, i) => (
                                                 <span key={pipeline['@id']}>
-                                                    {i > 0 ? <span>{','}<br /></span> : null}
+                                                    {i > 0 ? <span>,<br /></span> : null}
                                                     <a href={pipeline['@id']} title="View page for this pipeline">{pipeline.title}</a>
                                                 </span>
-                                            )}
+                                            ))}
                                         </dd>
                                     </div>
                                 : null}

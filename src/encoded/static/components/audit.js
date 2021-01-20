@@ -125,7 +125,7 @@ export const ObjectAuditIcon = ({ object, audit, isAuthorized }) => {
         const objectAudit = audit || object.audit;
 
         if (objectAudit) {
-            const sortedAuditLevels = _(Object.keys(objectAudit)).sortBy(level => -objectAudit[level][0].level);
+            const sortedAuditLevels = _(Object.keys(objectAudit)).sortBy((level) => -objectAudit[level][0].level);
 
             // Only authorized users should see ambulance icon (INTERNAL_ACTION)
             highestAuditLevel = !isAuthorized && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
@@ -200,7 +200,7 @@ class AuditGroup extends React.Component {
 
     detailSwitch() {
         // Click on the detail disclosure triangle
-        this.setState(prevState => (
+        this.setState((prevState) => (
             ({ detailOpen: !prevState.detailOpen })
         ));
     }
@@ -218,7 +218,7 @@ class AuditGroup extends React.Component {
             <div className={alertClass}>
                 <div className="audit-detail__summary">
                     <div className={`icon audit-detail__trigger--${level}`}>
-                        <button onClick={this.detailSwitch} className="collapsing-title">
+                        <button type="button" onClick={this.detailSwitch} className="collapsing-title">
                             {collapseIcon(!detailOpen)}
                         </button>
                     </div>
@@ -226,18 +226,18 @@ class AuditGroup extends React.Component {
                         <i className={iconClass} />
                         <strong>&nbsp;{categoryName}</strong>
                         <div className="btn-info-audit">
-                            <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} title={`View description of ${categoryName} in a new tab`} rel="noopener noreferrer" target="_blank"><i className="icon icon-info-circle" /></a>
+                            <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} rel="noopener noreferrer" target="_blank"><span className="sr-only">{`View description of ${categoryName} in a new tab`}</span><i className="icon icon-info-circle" /></a>
                         </div>
                     </div>
                 </div>
                 {this.state.detailOpen ?
                     <div className="audit-details-section">
                         <div className="audit-details-decoration" />
-                        {group.map((audit, i) =>
+                        {group.map((audit, i) => (
                             <div className={alertItemClass} key={i} role="alert">
                                 <DetailEmbeddedLink detail={audit.detail} />
                             </div>
-                        )}
+                        ))}
                     </div>
                 : null}
             </div>
@@ -275,7 +275,7 @@ export const AuditCounts = ({ audits, useWrapper, isAuthorized }) => {
     // Sort the audit levels by their level number, using the first element of each warning
     // category.
     if (audits && Object.keys(audits).length > 0) {
-        const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
+        const sortedAuditLevels = _(Object.keys(audits)).sortBy((level) => -audits[level][0].level);
         const auditCountsContent = (
             sortedAuditLevels.map((level) => {
                 if (isAuthorized || level !== 'INTERNAL_ACTION') {
@@ -329,7 +329,7 @@ AuditCounts.defaultProps = {
 // parameter to this function. This decorator returns a component that's the original component
 // plus the audit rendering functions. These functions get added to the original component's
 // properties. See the documentation at the top of this file for details.
-export const auditDecor = AuditComponent => class extends React.Component {
+export const auditDecor = (AuditComponent) => (class extends React.Component {
     constructor() {
         super();
         this.state = { auditDetailOpen: false };
@@ -339,13 +339,13 @@ export const auditDecor = AuditComponent => class extends React.Component {
     }
 
     toggleAuditDetail() {
-        this.setState(prevState => ({ auditDetailOpen: !prevState.auditDetailOpen }));
+        this.setState((prevState) => ({ auditDetailOpen: !prevState.auditDetailOpen }));
     }
 
     auditIndicators(audits, id, options) {
         const { session, search, sessionProperties } = options || {};
         const roles = globals.getRoles(sessionProperties);
-        const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+        const isAuthorized = ['admin', 'submitter'].some((role) => roles.includes(role));
 
         if (auditsDisplayed(audits, session)) {
             // Calculate the class of the indicator button based on whether the audit detail panel
@@ -359,7 +359,7 @@ export const auditDecor = AuditComponent => class extends React.Component {
             }
 
             return (
-                <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
+                <button type="button" className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
                     <AuditCounts audits={audits} useWrapper={false} isAuthorized={isAuthorized} />
                 </button>
             );
@@ -374,9 +374,9 @@ export const auditDecor = AuditComponent => class extends React.Component {
         if (audits && this.state.auditDetailOpen) {
             // Sort the audit levels by their level number, using the first element of each warning
             // category.
-            const sortedAuditLevelNames = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
+            const sortedAuditLevelNames = _(Object.keys(audits)).sortBy((level) => -audits[level][0].level);
             const roles = globals.getRoles(sessionProperties);
-            const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+            const isAuthorized = ['admin', 'submitter'].some((role) => roles.includes(role));
 
             // First loop by audit level, then by audit group
             return (
@@ -389,14 +389,14 @@ export const auditDecor = AuditComponent => class extends React.Component {
                             // 'category' in a more machine-like form)
                             const groupedAudits = _(audit).groupBy('category');
 
-                            return Object.keys(groupedAudits).map(groupName =>
+                            return Object.keys(groupedAudits).map((groupName) => (
                                 <AuditGroup
                                     group={groupedAudits[groupName]}
                                     groupName={groupName}
                                     auditLevelName={auditLevelName}
                                     key={groupName}
                                 />
-                            );
+                            ));
                         }
                         return null;
                     })}
@@ -415,4 +415,4 @@ export const auditDecor = AuditComponent => class extends React.Component {
             />
         );
     }
-};
+});

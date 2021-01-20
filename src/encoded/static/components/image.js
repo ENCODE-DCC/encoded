@@ -38,7 +38,7 @@ const Lightbox = ({ lightboxVisible, clearLightbox, lightboxImg }) => {
                 <a aria-label="Open image" data-bypass="true" href={lightboxImg}>
                     <img src={lightboxImg} alt="Attachment from submitters" style={{ maxHeight: imgHeight }} />
                 </a>
-                <button className="lightbox-close" aria-label="Close" onClick={clearLightbox} />
+                <button type="button" className="lightbox-close" aria-label="Close" onClick={clearLightbox} />
             </div>
         </div>
     );
@@ -104,7 +104,8 @@ export const Attachment = ({ context, attachment, className, showLink }) => {
                     <Lightbox lightboxVisible={lightboxVisible} lightboxImg={attachmentHref} clearLightbox={clearLightbox} />
                 </div>
             );
-        } else if (attachment.type === 'application/pdf') {
+        }
+        if (attachment.type === 'application/pdf') {
             // Attachment is a PDF. Show the PDF icon, and clicks in it show the PDF in a new
             // window using the browser's PDF viewer.
             return (
@@ -157,7 +158,7 @@ Attachment.defaultProps = {
 };
 
 
-const Image = props => (
+const Image = (props) => (
     <figure>
         <Attachment context={props.context} attachment={props.context.attachment} showLink={false} />
         <figcaption>{props.context.caption}</figcaption>
@@ -173,7 +174,7 @@ globals.contentViews.register(Image, 'Image');
 
 // Displays a graphic badge for the award project.
 export const ProjectBadge = (props) => {
-    const award = props.award;
+    const { award } = props;
     const project = award.rfa;
     const projectMeta = ProjectBadge.projectMap[project];
     const imageClass = projectMeta ? projectMeta.imageClass + (props.addClasses ? (` ${props.addClasses}`) : '') : '';

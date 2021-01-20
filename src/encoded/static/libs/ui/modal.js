@@ -154,7 +154,7 @@ ModalHeader.defaultProps = {
 };
 
 
-export const ModalBody = props => (
+export const ModalBody = (props) => (
     <div className={`modal__body${props.addCss ? ` ${props.addCss}` : ''}`}>
         {props.children}
     </div>
@@ -210,7 +210,7 @@ export class ModalFooter extends React.Component {
         // given function. Note: if you pass `null` in the submitBtn property, this component
         // thinks that's a function because of an old Javascript characteristic.
         if (submitBtn) {
-            submitBtnComponent = (typeof submitBtn === 'object') ? submitBtn : <button className="btn btn-info" onClick={this.submitModal}>{submitTitle}</button>;
+            submitBtnComponent = (typeof submitBtn === 'object') ? submitBtn : <button type="button" className="btn btn-info" onClick={this.submitModal}>{submitTitle}</button>;
         }
 
         // If the given closeModal property is a component, make sure it calls the close function
@@ -232,7 +232,7 @@ export class ModalFooter extends React.Component {
         // old Javascript characteristic.
         if (closeModal) {
             const closeBtnFunc = (typeof closeModal === 'function') ? closeModal : (typeof closeModal === 'boolean' ? this.props.c_closeModal : null);
-            closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button className="btn btn-default" onClick={closeBtnFunc} id={this.props.closeId}>{cancelTitle}</button>;
+            closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button type="button" className="btn btn-default" onClick={closeBtnFunc} id={this.props.closeId}>{cancelTitle}</button>;
         }
 
         return (
@@ -446,8 +446,8 @@ export class Modal extends React.Component {
         });
 
         return (
-            <React.Fragment>
-                {actuator ? <React.Fragment>{actuator}</React.Fragment> : null}
+            <>
+                {actuator ? <>{actuator}</> : null}
                 {!this.props.actuator || this.state.modalOpen ?
                     <ModalElement
                         modalChildren={modalChildren}
@@ -457,7 +457,7 @@ export class Modal extends React.Component {
                         focusId={this.props.focusId}
                     />
                 : null}
-            </React.Fragment>
+            </>
         );
     }
 }

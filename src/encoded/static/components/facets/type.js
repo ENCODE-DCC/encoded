@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { DefaultFacet } from './defaults';
 import FacetRegistry from './registry';
@@ -10,7 +9,7 @@ import FacetRegistry from './registry';
  */
 const TypeFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, isExpanded, handleExpanderClick, handleKeyDown }) => {
     // Get "normal" facets, meaning non-audit facets.
-    const nonAuditFacets = results.facets.filter(resultFacets => resultFacets.field.substring(0, 6) !== 'audit.');
+    const nonAuditFacets = results.facets.filter((resultFacets) => resultFacets.field.substring(0, 6) !== 'audit.');
 
     // Determine whether the type facet should be hidden or not.
     let hideTypes;
@@ -20,7 +19,7 @@ const TypeFacet = ({ facet, results, mode, relevantFilters, pathname, queryStrin
     } else {
         // Hide the types facet if one "type=" term exists in the URL. and it's not the only
         // facet.
-        hideTypes = results.filters.filter(filter => filter.field === 'type').length === 1 && nonAuditFacets.length > 1;
+        hideTypes = results.filters.filter((filter) => filter.field === 'type').length === 1 && nonAuditFacets.length > 1;
     }
 
     if (!hideTypes) {

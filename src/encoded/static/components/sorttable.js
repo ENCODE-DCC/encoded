@@ -88,7 +88,7 @@ export const SortTablePanel = (props) => {
 };
 
 SortTablePanel.propTypes = {
-    /** Title to display in tabel panel header. `title` overrides `header` */
+    /** Title to display in table panel header. `title` overrides `header` */
     title: PropTypes.oneOfType([
         PropTypes.string, // When title is a simple string
         PropTypes.element, // When title is JSX
@@ -171,7 +171,7 @@ export class SortTable extends React.Component {
 
         // Get the given sort column ID, or the default (first key in columns object) if none given
         if (this.props.sortColumn) {
-            sortColumn = this.props.sortColumn;
+            ({ sortColumn } = this.props);
         } else {
             sortColumn = Object.keys(this.props.columns)[0];
         }
@@ -198,22 +198,23 @@ export class SortTable extends React.Component {
 
     // Handle clicks in the column headers for sorting columns
     sortDir(column) {
-        const reversed = column === this.state.sortColumn ? !this.state.reversed : false;
-        this.setState({ sortColumn: column, reversed });
+        this.setState((state) => {
+            const reversed = column === state.sortColumn ? !state.reversed : false;
+            return { sortColumn: column, reversed };
+        });
     }
 
     // Called when any column needs sorting. If the column has a sorter function, call it
     // to handle its sorting. Otherwise assume the values can be retrieved from the currently sorted column ID.
     sortColumn(a, b) {
         const columnId = this.state.sortColumn;
-        const sorter = this.props.columns[columnId].sorter;
+        const { sorter } = this.props.columns[columnId];
 
         if (sorter !== false) {
             let aVal;
             let bVal;
             let result;
-            const objSorter = this.props.columns[columnId].objSorter;
-            const getValue = this.props.columns[columnId].getValue;
+            const { objSorter, getValue } = this.props.columns[columnId];
 
             // If the columns for this column has `getValue` defined, use it to get the cell's value. Otherwise
             // just get it from the passed objects directly.

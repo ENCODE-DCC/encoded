@@ -37,7 +37,7 @@ function fileAccessionSort(a, b) {
 }
 
 // Calculate a string representation of the given replication_type.
-const replicationDisplay = replicationType => (
+const replicationDisplay = (replicationType) => (
     `${replicationType === 'anisogenic' ? 'Anisogenic' : 'Isogenic'} replicate`
 );
 
@@ -72,21 +72,6 @@ export class FileTable extends React.Component {
         this.hoverDL = this.hoverDL.bind(this);
     }
 
-    fileClick(file) {
-        const { setInfoNodeId, setInfoNodeVisible } = this.props;
-        if (setInfoNodeId && setInfoNodeVisible) {
-            const node = {
-                '@type': ['File'],
-                metadata: {
-                    ref: file,
-                },
-                schemas: this.props.schemas,
-            };
-            setInfoNodeId(node);
-            setInfoNodeVisible(true);
-        }
-    }
-
     handleCollapse(table) {
         this.setState((state) => {
             const collapsed = _.clone(state.collapsed);
@@ -101,6 +86,21 @@ export class FileTable extends React.Component {
 
     handleCollapseRef() {
         this.handleCollapse('ref');
+    }
+
+    fileClick(file) {
+        const { setInfoNodeId, setInfoNodeVisible } = this.props;
+        if (setInfoNodeId && setInfoNodeVisible) {
+            const node = {
+                '@type': ['File'],
+                metadata: {
+                    ref: file,
+                },
+                schemas: this.props.schemas,
+            };
+            setInfoNodeId(node);
+            setInfoNodeVisible(true);
+        }
     }
 
     hoverDL(hovering, fileUuid) {
@@ -125,13 +125,13 @@ export class FileTable extends React.Component {
         const sessionProperties = this.context.session_properties;
         const loggedIn = !!(session && session['auth.userid']);
         const roles = globals.getRoles(sessionProperties);
-        const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+        const isAuthorized = ['admin', 'submitter'].some((role) => roles.includes(role));
 
         // Establish the selected assembly and annotation for the tabs
         const selectedAssembly = null;
         const selectedAnnotation = null;
 
-        let datasetFiles = _((items && items.length > 0) ? items : []).uniq(file => file['@id']);
+        let datasetFiles = _((items && items.length > 0) ? items : []).uniq((file) => file['@id']);
         if (datasetFiles.length > 0) {
             const unfilteredCount = datasetFiles.length;
 
@@ -331,7 +331,7 @@ FileTable.procTableColumns = {
         title: 'Visualize',
         hide: (list, columns, meta) => meta && meta.browserOptions && (meta.browserOptions.browserFileSelectHandler === null || meta.browserOptions.currentBrowser !== 'hic'),
         display: (item, meta) => {
-            const selectedFile = meta.browserOptions.selectedBrowserFiles.find(file => file['@id'] === item['@id']);
+            const selectedFile = meta.browserOptions.selectedBrowserFiles.find((file) => file['@id'] === item['@id']);
             const selectable = visFileSelectable(item, meta.browserOptions.selectedBrowserFiles, meta.browserOptions.currentBrowser);
             return (
                 <div className="file-table-visualizer">
@@ -354,24 +354,24 @@ FileTable.procTableColumns = {
     output_type: { title: 'Output type' },
     biological_replicates: {
         title: (list, columns, meta) => <span>{replicationDisplay(meta.replicationType)}</span>,
-        getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
+        getValue: (item) => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
     },
     mapped_read_length: {
         title: 'Mapped read length',
-        hide: list => _(list).all(file => file.mapped_read_length === undefined),
+        hide: (list) => _(list).all((file) => file.mapped_read_length === undefined),
     },
     assembly: { title: 'Mapping assembly' },
     genome_annotation: {
         title: 'Genome annotation',
-        hide: list => _(list).all(item => !item.genome_annotation),
+        hide: (list) => _(list).all((item) => !item.genome_annotation),
     },
     title: {
         title: 'Lab',
-        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+        getValue: (item) => (item.lab && item.lab.title ? item.lab.title : null),
     },
     date_created: {
         title: 'Date added',
-        getValue: item => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
+        getValue: (item) => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
         sorter: (a, b) => {
             if (a && b) {
                 return Date.parse(a) - Date.parse(b);
@@ -382,7 +382,7 @@ FileTable.procTableColumns = {
     },
     file_size: {
         title: 'File size',
-        display: item => <span>{globals.humanFileSize(item.file_size)}</span>,
+        display: (item) => <span>{globals.humanFileSize(item.file_size)}</span>,
     },
     audit: {
         title: 'Audit status',
@@ -390,7 +390,7 @@ FileTable.procTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <Status item={item} badgeSize="small" css="status__table-cell" />,
+        display: (item) => <Status item={item} badgeSize="small" css="status__table-cell" />,
     },
 };
 
@@ -409,20 +409,20 @@ FileTable.refTableColumns = {
     output_type: { title: 'Output type' },
     mapped_read_length: {
         title: 'Mapped read length',
-        hide: list => _(list).all(file => file.mapped_read_length === undefined),
+        hide: (list) => _(list).all((file) => file.mapped_read_length === undefined),
     },
     assembly: { title: 'Mapping assembly' },
     genome_annotation: {
         title: 'Genome annotation',
-        hide: list => _(list).all(item => !item.genome_annotation),
+        hide: (list) => _(list).all((item) => !item.genome_annotation),
     },
     title: {
         title: 'Lab',
-        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+        getValue: (item) => (item.lab && item.lab.title ? item.lab.title : null),
     },
     date_created: {
         title: 'Date added',
-        getValue: item => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
+        getValue: (item) => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
         sorter: (a, b) => {
             if (a && b) {
                 return Date.parse(a) - Date.parse(b);
@@ -433,7 +433,7 @@ FileTable.refTableColumns = {
     },
     file_size: {
         title: 'File size',
-        display: item => <span>{globals.humanFileSize(item.file_size)}</span>,
+        display: (item) => <span>{globals.humanFileSize(item.file_size)}</span>,
     },
     audit: {
         title: 'Audit status',
@@ -441,7 +441,7 @@ FileTable.refTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <Status item={item} badgeSize="small" css="status__table-cell" />,
+        display: (item) => <Status item={item} badgeSize="small" css="status__table-cell" />,
     },
 };
 
@@ -494,6 +494,11 @@ class RawSequencingTable extends React.Component {
         this.handleCollapse = this.handleCollapse.bind(this);
     }
 
+    handleCollapse() {
+        // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
+        this.setState((state) => ({ collapsed: !state.collapsed }));
+    }
+
     /**
      * Find the index reads file associated with the one or two given files. For paired reads, both
      * files have to match to return a matching index reads file. For singled-ended reads, only
@@ -504,12 +509,7 @@ class RawSequencingTable extends React.Component {
      * @return {object} Index reads file with index_of matching given files; undefined if none
      */
     findIndexFile(file0, file1) {
-        return this.props.indexFiles.find(indexFile => indexFile.index_of[0] === file0['@id'] && (indexFile.index_of.length === 2 ? indexFile.index_of[1] === file1['@id'] : true));
-    }
-
-    handleCollapse() {
-        // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
-        this.setState({ collapsed: !this.state.collapsed });
+        return this.props.indexFiles.find((indexFile) => indexFile.index_of[0] === file0['@id'] && (indexFile.index_of.length === 2 ? indexFile.index_of[1] === file1['@id'] : true));
     }
 
     render() {
@@ -568,7 +568,7 @@ class RawSequencingTable extends React.Component {
 
                 // File not part of a pair; add it to the non-paired list as a copy so we can
                 // mutate them later.
-                nonpairedFiles.push(Object.assign({}, file));
+                nonpairedFiles.push({ ...file });
                 return false;
             });
 
@@ -581,7 +581,7 @@ class RawSequencingTable extends React.Component {
             if (indexFiles) {
                 nonpairedFiles.forEach((nonpairedFile) => {
                     nonPairedFilesWithIndex.push(nonpairedFile);
-                    const matchingIndexFile = indexFiles.find(indexFile => indexFile.index_of.includes(nonpairedFile['@id']));
+                    const matchingIndexFile = indexFiles.find((indexFile) => indexFile.index_of.includes(nonpairedFile['@id']));
                     if (matchingIndexFile) {
                         nonPairedFilesWithIndex.push(matchingIndexFile);
                     }
@@ -593,12 +593,12 @@ class RawSequencingTable extends React.Component {
             // corresponding reads files’ pairSortKeys. For ease-of-implementation and performance,
             // we only look for the one file of the pair in `pairedFiles` to get its pairSortKey
             // root (without appended `paired_end` string) -- not both files. Append "-I" to
-            // `poirSortKey` to index reads files sort after the pairs they associate with.
+            // `pairSortKey` to index reads files sort after the pairs they associate with.
             const pairedFileIndexReads = [];
             if (indexFiles) {
                 indexFiles.forEach((indexFile) => {
-                    const indexFileCopy = Object.assign({}, indexFile);
-                    const matchingPairFile = pairedFiles.find(pairedFile => indexFile.index_of.includes(pairedFile['@id']));
+                    const indexFileCopy = { ...indexFile };
+                    const matchingPairFile = pairedFiles.find((pairedFile) => indexFile.index_of.includes(pairedFile['@id']));
                     if (matchingPairFile) {
                         indexFileCopy.pairSortId = matchingPairFile.pairSortId;
                         indexFileCopy.pairSortKey = `${matchingPairFile.pairSortId}-I`;
@@ -799,7 +799,7 @@ class RawFileTable extends React.Component {
 
     handleCollapse() {
         // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
-        this.setState({ collapsed: !this.state.collapsed });
+        this.setState((state) => ({ collapsed: !state.collapsed }));
     }
 
     render() {
@@ -1024,7 +1024,7 @@ FileGallery.contextTypes = {
 // [{assembly: 'assembly1', annotation: 'annotation1'}]
 //
 // The resulting array has no duplicate entries, nor empty ones. Entries with an assembly but no
-// annotation simply have an empty string for the annnotation. The array of assemblies and
+// annotation simply have an empty string for the annotation. The array of assemblies and
 // annotations is then sorted with assembly as the primary key and annotation as the secondary.
 
 function collectAssembliesAnnotations(files) {
@@ -1040,7 +1040,7 @@ function collectAssembliesAnnotations(files) {
     // Eliminate duplicate entries in filterOptions. Duplicates are detected by combining the
     // assembly and annotation into a long string. Use the '!' separator so that highly unlikely
     // anomalies don't pass undetected (e.g. hg19!V19 and hg1!9V19 -- again, highly unlikely).
-    filterOptions = filterOptions.length > 0 ? _(filterOptions).uniq(option => `${option.assembly}!${option.annotation ? option.annotation : ''}`) : [];
+    filterOptions = filterOptions.length > 0 ? _(filterOptions).uniq((option) => `${option.assembly}!${option.annotation ? option.annotation : ''}`) : [];
 
     // Now begin a two-stage sort, with the primary key being the assembly in a specific priority
     // order specified by the assemblyPriority array, and the secondary key being the annotation
@@ -1051,7 +1051,7 @@ function collectAssembliesAnnotations(files) {
             // Extract any number from the annotation.
             const annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
             if (annotationMatch) {
-                // Return the number to the sorting algoritm.
+                // Return the number to the sorting algorithm.
                 return Number(annotationMatch[1]);
             }
         }
@@ -1062,12 +1062,12 @@ function collectAssembliesAnnotations(files) {
 
     // Now sort by assembly priority order as the primary sorting key. assemblyPriority is a global
     // array.
-    return _(filterOptions).sortBy(option => _(globals.assemblyPriority).indexOf(option.assembly));
+    return _(filterOptions).sortBy((option) => _(globals.assemblyPriority).indexOf(option.assembly));
 }
 
 
 /**
- * Render the visualization controls, including the browser selector and Visulize button.
+ * Render the visualization controls, including the browser selector and Visualize button.
  */
 class VisualizationControls extends React.Component {
     constructor() {
@@ -1099,7 +1099,7 @@ class VisualizationControls extends React.Component {
             <div className="file-gallery-controls__visualization-selector">
                 {browsers.length > 0 ?
                     <select className="form-control--select" value={currentBrowser} onChange={this.handleBrowserChange}>
-                        {browsers.map(browser => (
+                        {browsers.map((browser) => (
                             <option key={browser} value={browser}>{visMapBrowserName(browser)}</option>
                         ))}
                     </select>
@@ -1295,7 +1295,7 @@ function isCompatibleAssemblyAnnotation(file, assembly, annotation) {
  * @param {string} selectedAnnotation - Genome annotation currently selected for display in the graph
  * @param {object} allFiles - keys are @ids of all files in the current dataset, and the values are
  *         the file objects themselves.
- * @return {object} - Describes the derived_from chaih above the given `file` object. This single-
+ * @return {object} - Describes the derived_from chain above the given `file` object. This single-
  *         level object has keys that are the @id of every file that the given `file` directly or
  *         indirectly derives from. Each key's value is the object of the file that directly
  *         derives from it. A file can spawn more than one file, but in that case we'll have
@@ -1311,7 +1311,7 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
     // file of this derived_from branch and can start stepping back down the chain. We also stop
     // going up the chain once we get to a file not in the current dataset, which might be a
     // processed file that doesn't belong in the graph, or a contributing file. Note that we have a
-    // risk of infinite recursion if the file data incluees a derived_from loop, which isn't valid.
+    // risk of infinite recursion if the file data includes a derived_from loop, which isn't valid.
     if (file.derived_from && file.derived_from.length > 0 && file.dataset === fileDataset['@id']) {
         // File is the product of at least one derived_from chain, so for any files this file
         // derives from (parent files), go up the chain continuing to collect the files involved
@@ -1367,7 +1367,7 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
 
 
 /**
- * Generate a string of CSS classes for a file node. Plass the result into a `className` property of a component.
+ * Generate a string of CSS classes for a file node. Pass the result into a `className` property of a component.
  *
  * @param {object-required} file - File we're generating the statuses for.
  * @param {bool} active - True if the file is active and should be highlighted as such.
@@ -1396,7 +1396,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
     }
 
     const { infoNode, selectedAssembly, selectedAnnotation, colorize } = options;
-    const derivedFileIds = _.memoize(rDerivedFileIds, file => file['@id']);
+    const derivedFileIds = _.memoize(rDerivedFileIds, (file) => file['@id']);
     const genQcId = _.memoize(rGenQcId, (metric, file) => metric['@id'] + file['@id']);
 
     // Begin collecting up information about the files from the search result, and gathering their
@@ -1424,7 +1424,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                 // Collect any QC info that applies to this file and make it searchable by file
                 // @id.
                 if (file.quality_metrics && file.quality_metrics.length > 0) {
-                    fileQcMetrics[file['@id']] = file.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
+                    fileQcMetrics[file['@id']] = file.quality_metrics.filter((qc) => loggedIn || qc.status === 'released');
                 }
 
                 // Save the pipeline array used for each step used by the file.
@@ -1479,8 +1479,8 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         for (let j = 0; j < parentFileAtIds.length; j += 1) {
             const parentFileAtId = parentFileAtIds[j];
             if (matchingFileChain[parentFileAtId]) {
-                if (allDerivedFroms[parentFileAtId] && allDerivedFroms[parentFileAtId].findIndex(childFile => childFile['@id'] === matchingFileChain[parentFileAtId]['@id']) === -1) {
-                    // We've already put this file @id in allDerivedFromss, so add this new parent file to its array.
+                if (allDerivedFroms[parentFileAtId] && allDerivedFroms[parentFileAtId].findIndex((childFile) => childFile['@id'] === matchingFileChain[parentFileAtId]['@id']) === -1) {
+                    // We've already put this file @id in allDerivedFroms, so add this new parent file to its array.
                     allDerivedFroms[parentFileAtId].push(matchingFileChain[parentFileAtId]);
                 } else {
                     // We've never seen this file @id in allDerivedFroms, os start a new array.
@@ -1506,7 +1506,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         Object.keys(matchingFiles).forEach((matchingFileId) => {
             const matchingFile = matchingFiles[matchingFileId];
             const hasDerivedFroms = matchingFile && matchingFile.derived_from && matchingFile.derived_from.length > 0 &&
-                matchingFile.derived_from.some(derivedFileAtId => derivedFileAtId in derivedFromList);
+                matchingFile.derived_from.some((derivedFileAtId) => derivedFileAtId in derivedFromList);
             if (hasDerivedFroms || allDerivedFroms[matchingFileId]) {
                 // This file either has derived_from set, or other files derive from it. Copy it to
                 // our destination object.
@@ -1556,7 +1556,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         // derive from.
         coalescingGroups = _(Object.keys(usedContributingFiles)).groupBy((contributingFileAtId) => {
             const derivedFiles = usedContributingFiles[contributingFileAtId];
-            return globals.hashCode(derivedFiles.map(derivedFile => derivedFile['@id']).join(',')).toString();
+            return globals.hashCode(derivedFiles.map((derivedFile) => derivedFile['@id']).join(',')).toString();
         });
 
         // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
@@ -1625,7 +1625,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         const file = matchingFiles[fileId];
 
         // check to see if file should be highlighted (if it is part of a filtered list)
-        const highlightToggle = highlightedFiles.some(highlight => highlight['@id'] === fileId);
+        const highlightToggle = highlightedFiles.some((highlight) => highlight['@id'] === fileId);
 
         if (!file) {
             if (allMissingFiles.indexOf(fileId) === -1) {
@@ -1733,7 +1733,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                     if (!allDerivedFroms[derivedFromAtId]) {
                         return;
                     }
-                    const derivedFromFile = allFiles[derivedFromAtId] || allMissingFiles.some(missingFileId => missingFileId === derivedFromAtId);
+                    const derivedFromFile = allFiles[derivedFromAtId] || allMissingFiles.some((missingFileId) => missingFileId === derivedFromAtId);
                     if (derivedFromFile) {
                         // Not derived from a contributing file; just add edges normally.
                         const derivedFileId = `file:${derivedFromAtId}`;
@@ -1871,7 +1871,7 @@ FileGraph.defaultProps = {
 
 
 /**
- * Display the checkbox for the user to choose whether to include depcrecated files in the graph
+ * Display the checkbox for the user to choose whether to include deprecated files in the graph
  * and table displays.
  */
 const InclusionSelector = ({ inclusionOn, handleInclusionChange }) => (
@@ -1896,7 +1896,7 @@ InclusionSelector.propTypes = {
 };
 
 // Display facets for files
-// Only one assembly can be chosen so controls for 'Assembly' facet look like radiobuttons
+// Only one assembly can be chosen so controls for 'Assembly' facet look like radio buttons.
 // Multiple terms may be chosen for facets that are not Assembly so those look like regular buttons
 const FileFacet = (props) => {
     const { facetObject, facetTitle, filterFiles, facetKey, selectedFilters, currentTab } = props;
@@ -1924,8 +1924,8 @@ const FileFacet = (props) => {
             {facetTitle !== 'Assembly' ?
                 <h5>{facetTitle}</h5>
             : null}
-            {sortedKeys.map(item =>
-                <button className={`facet-term-${item.replace(/\s/g, '')}-${currentTab} facet-term${selectedObj[item] ? ' selected' : ''}`} onClick={() => filterFiles(item, facetKey)} key={item}>
+            {sortedKeys.map((item) => (
+                <button type="button" className={`facet-term-${item.replace(/\s/g, '')}-${currentTab} facet-term${selectedObj[item] ? ' selected' : ''}`} onClick={() => filterFiles(item, facetKey)} key={item}>
                     {facetTitle === 'Assembly' ?
                         <i className={`${selectedObj[item] ? 'icon icon-circle' : 'icon icon-circle-o'}`} />
                     : null}
@@ -1941,7 +1941,7 @@ const FileFacet = (props) => {
                         : null}
                     </div>
                 </button>
-            )}
+            ))}
         </div>
     );
 };
@@ -1959,7 +1959,7 @@ function addFilter(filterList, value, facet) {
     const currentFilters = filterList;
     // Check to see if there is already a filter for a facet or if it is the assembly facet which can only have one value
     if ((currentFilters[facet]) && facet !== 'assembly') {
-        // If so, append the new falue
+        // If so, append the new value
         currentFilters[facet] = [...currentFilters[facet], value];
     } else {
         // If not, create a new filter with the new value
@@ -2061,7 +2061,7 @@ function createFacetObject(propertyKey, fileList, filters) {
             // We only want to look at files that are not in 'fileListFiltered'
             if (!(fileListFiltered.includes(file))) {
                 // If this file's property was a filter, how many results would there be?
-                let fakeFilters = Object.assign({}, filters);
+                let fakeFilters = { ...filters };
                 fakeFilters = addFilter(fakeFilters, property, propertyKey);
                 let fakeFileList = newFileList;
                 Object.keys(fakeFilters).forEach((f) => {
@@ -2097,7 +2097,7 @@ function createFacetObject(propertyKey, fileList, filters) {
  *      pipelineLab: Pipeline processing lab title, e.g. "ENCODE4 uniform"
  *      assembly: Assembly and annotation string matching assembly facet terms
  *      assemblyAnnotationValue: Value used to sort the compiled analyses
- *      files: Array of files selected with the pipline lab and assembly
+ *      files: Array of files selected with the pipeline lab and assembly
  * }
  */
 const UNIFORM_PIPELINE_LAB = '/labs/encode-processing-pipeline/';
@@ -2139,16 +2139,16 @@ export const compileAnalyses = (experiment, files) => {
 
             // Fill in the compiled object with the labs that group the files.
             compiledAnalyses = [];
-            const fileIds = files.map(file => file['@id']);
+            const fileIds = files.map((file) => file['@id']);
             Object.keys(analysesByLab).forEach((pipelineLab) => {
                 // For one lab, group all analyses by their assembly/annotation, then combine all
                 // file arrays for those with matching pipeline lab, assembly/annotation, and RFA.
-                const analysesByAssembly = _(analysesByLab[pipelineLab]).groupBy(analysis => `${analysis.assembly}${analysis.genome_annotation ? ` ${analysis.genome_annotation}` : ''}`);
+                const analysesByAssembly = _(analysesByLab[pipelineLab]).groupBy((analysis) => `${analysis.assembly}${analysis.genome_annotation ? ` ${analysis.genome_annotation}` : ''}`);
                 Object.keys(analysesByAssembly).forEach((assembly) => {
                     // Combine all analyses files that share the same pipeline lab, assembly, and
                     // annotation and add each to the compiled list. Filter out any not included in
                     // the experiment's files.
-                    const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analysis) => accFiles.concat(analysis.files), []).filter(file => fileIds.includes(file)));
+                    const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analysis) => accFiles.concat(analysis.files), []).filter((file) => fileIds.includes(file)));
                     if (assemblyFiles.length > 0) {
                         compiledAnalyses.push({
                             title: `${pipelineLab} ${assembly}`,
@@ -2162,7 +2162,7 @@ export const compileAnalyses = (experiment, files) => {
             });
         }
     }
-    return _(compiledAnalyses).sortBy(compiledAnalysis => -compiledAnalysis.assemblyAnnotationValue);
+    return _(compiledAnalyses).sortBy((compiledAnalysis) => -compiledAnalysis.assemblyAnnotationValue);
 };
 
 
@@ -2184,7 +2184,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
     */
     useMount(() => {
         const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
-        const analysesAwarded = analyses.filter(analysis => awardSuffix.some(award => analysis.title.includes(award)));
+        const analysesAwarded = analyses.filter((analysis) => awardSuffix.some((award) => analysis.title.includes(award)));
 
         // a bit hacky, removes text and use number to determine sorting
         const sortedAnalysesAwarded = analysesAwarded.sort((a, b) => {
@@ -2214,7 +2214,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
         });
 
         selectedAnalysis = selectedAnalysis || analyses[0];
-        const selectedIndex = analyses.findIndex(a => a.title === selectedAnalysis.title);
+        const selectedIndex = analyses.findIndex((a) => a.title === selectedAnalysis.title);
 
         if (selectedIndex !== -1) {
             handleAnalysesSelection(selectedIndex);
@@ -2287,25 +2287,25 @@ const TabPanelFacets = (props) => {
             {(currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0 ?
                 <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} />
             :
-                <React.Fragment>
+                <>
                     <h4>Choose an assembly </h4>
-                    <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
-                </React.Fragment>
+                    <FileFacet facetTitle="Assembly" facetObject={assembly} filterFiles={filterFiles} facetKey="assembly" selectedFilters={filters} currentTab={currentTab} />
+                </>
             }
             <h4>Filter files </h4>
-            <button className="show-hide-facets" onClick={toggleFacets}>
+            <button type="button" className="show-hide-facets" onClick={toggleFacets}>
                 <i className={`${open ? 'icon icon-chevron-left' : 'icon icon-chevron-right'}`} />
             </button>
             { (Object.keys(filters).length >= 1 && !(Object.keys(filters).length === 1 && filters.assembly)) ?
-                <button className="clear-file-facets" onClick={clearFileFilters}>
+                <button type="button" className="clear-file-facets" onClick={clearFileFilters}>
                     <i className="icon icon-times-circle" />
                     <span> Clear all filters</span>
                 </button>
             : null }
-            <FileFacet facetTitle={'File format'} facetObject={fileType} filterFiles={filterFiles} facetKey={'file_type'} selectedFilters={filters} currentTab={currentTab} />
-            <FileFacet facetTitle={'Output type'} facetObject={outputType} filterFiles={filterFiles} facetKey={'output_type'} selectedFilters={filters} currentTab={currentTab} />
+            <FileFacet facetTitle="File format" facetObject={fileType} filterFiles={filterFiles} facetKey="file_type" selectedFilters={filters} currentTab={currentTab} />
+            <FileFacet facetTitle="Output type" facetObject={outputType} filterFiles={filterFiles} facetKey="output_type" selectedFilters={filters} currentTab={currentTab} />
             {replicate ?
-                <FileFacet facetTitle={'Replicates'} facetObject={replicate} filterFiles={filterFiles} facetKey={'biological_replicates'} selectedFilters={filters} currentTab={currentTab} />
+                <FileFacet facetTitle="Replicates" facetObject={replicate} filterFiles={filterFiles} facetKey="biological_replicates" selectedFilters={filters} currentTab={currentTab} />
             : null}
         </div>
     );
@@ -2455,6 +2455,90 @@ class FileGalleryRendererComponent extends React.Component {
         this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']), updateAssembly);
     }
 
+    /**
+     * Called when the user selects an assembly/annotation to view.
+     */
+    handleAssemblyAnnotationChange(value) {
+        this.setState({ selectedFilterValue: value });
+        this.resetCurrentBrowser(value);
+    }
+
+    /**
+     * Called when the user checks/unchecks the inclusion filter checkbox.
+     */
+    handleInclusionChange() {
+        this.setState((state) => ({ inclusionOn: !state.inclusionOn }));
+    }
+
+    // Handle a click in a graph node. This also handles clicks on the info button of files in the
+    // file table.
+    handleNodeClick(meta, openInfoModal) {
+        if (openInfoModal) {
+            // Select the node and open the modal when the user clicks the node.
+            this.setInfoNodeVisible(true);
+            this.setInfoNodeId(meta);
+        } else if (this.state.infoNode && (meta.id === this.state.infoNode.id)) {
+            // If the user had already selected the node, deselect it.
+            this.setInfoNodeId(null);
+        } else {
+            // Select the node without opening the modal when the user clicks the decoration.
+            this.setInfoNodeId(meta);
+        }
+    }
+
+    /**
+     * Called when the user chooses a new browser from the menu.
+     * @param {string} browser Name of browser user selected
+     */
+    handleBrowserChange(browser) {
+        this.setState((state) => ({
+            currentBrowser: browser,
+            selectedBrowserFiles: visFilterBrowserFiles(state.files, browser),
+        }));
+    }
+
+    /**
+     * Called when the user clicks the Visualize button.
+     */
+    handleVisualize() {
+        const { selectedBrowserAssembly } = this.getSelectedAssemblyAnnotation();
+        visOpenBrowser(this.props.context, this.state.currentBrowser, selectedBrowserAssembly, this.state.selectedBrowserFiles, this.context.location_href);
+    }
+
+    /**
+     * Called when the user selects/deselects a file for visualization in the file table.
+     * @param {object} synthEvent Event from React event handler
+     */
+    handleBrowserFileSelect(synthEvent) {
+        // The @id of the affected file is in the name of the clicked <input>.
+        const clickedFileAtId = synthEvent.target.name;
+        this.setState((state) => {
+            const matchingIndex = state.selectedBrowserFiles.findIndex((file) => file['@id'] === clickedFileAtId);
+            if (matchingIndex === -1) {
+                // Add clicked file to array of selected files.
+                const matchingFile = state.files.find((file) => file['@id'] === clickedFileAtId);
+                return { selectedBrowserFiles: state.selectedBrowserFiles.concat(matchingFile) };
+            }
+            // Remove clicked file from array of selected files.
+            return { selectedBrowserFiles: state.selectedBrowserFiles.slice(0, matchingIndex).concat(state.selectedBrowserFiles.slice(matchingIndex + 1)) };
+        });
+    }
+
+    // Handle a click on a tab
+    handleTabClick(tab) {
+        if (tab !== this.state.currentTab) {
+            this.setState({ currentTab: tab });
+        }
+    }
+
+    // Called when the user selects a pipeline lab analyses.
+    // @param {string} selectedAnalysesIndex Index in state.compiledAnalyses of newly selected pipeline
+    handleAnalysesSelection(selectedAnalysesIndex) {
+        this.saveSelectedAnalysesProps(selectedAnalysesIndex);
+        this.setState({ selectedAnalysesIndex: +selectedAnalysesIndex });
+        this.filterFiles(this.state.compiledAnalyses[selectedAnalysesIndex].assembly, 'assembly');
+    }
+
     // Called from child components when the selected node changes.
     setInfoNodeId(node) {
         this.setState({ infoNode: node });
@@ -2544,17 +2628,17 @@ class FileGalleryRendererComponent extends React.Component {
 
         // Find all analyses matching the given assembly, then of those find one that also matches
         // the pipeline lab.
-        const analysesWithMatchingAssembly = localCompiledAnalyses.filter(analysis => analysis.assembly === assembly);
+        const analysesWithMatchingAssembly = localCompiledAnalyses.filter((analysis) => analysis.assembly === assembly);
         if (analysesWithMatchingAssembly.length > 0) {
-            const matchingAnalysis = analysesWithMatchingAssembly.find(analysis => analysis.pipelineLab === this.selectedAnalysisProps.pipelineLab);
+            const matchingAnalysis = analysesWithMatchingAssembly.find((analysis) => analysis.pipelineLab === this.selectedAnalysisProps.pipelineLab);
             if (matchingAnalysis) {
                 // An analysis matched both assembly and pipeline lab. Get the index of its object
                 // in the array of compiled analyses.
-                compiledAnalysisIndex = localCompiledAnalyses.findIndex(analysis => analysis === matchingAnalysis);
+                compiledAnalysisIndex = localCompiledAnalyses.findIndex((analysis) => analysis === matchingAnalysis);
             } else {
                 // An analysis matched just the assembly. Get the index of the first compiled
                 // analysis object with the matching assembly regardless of its pipeline lab.
-                compiledAnalysisIndex = localCompiledAnalyses.findIndex(analysis => analysis === analysesWithMatchingAssembly[0]);
+                compiledAnalysisIndex = localCompiledAnalyses.findIndex((analysis) => analysis === analysesWithMatchingAssembly[0]);
             }
         }
         return compiledAnalysisIndex;
@@ -2656,7 +2740,7 @@ class FileGalleryRendererComponent extends React.Component {
                     // Update compiled analyses filtered by available assemblies
                     if (context.analysis_objects && context.analysis_objects.length > 0) {
                         const availableAssemblies = Object.keys(assemblyList);
-                        availableCompiledAnalyses = compileAnalyses(context, allFiles).filter(analysis => availableAssemblies.includes(analysis.assembly));
+                        availableCompiledAnalyses = compileAnalyses(context, allFiles).filter((analysis) => availableAssemblies.includes(analysis.assembly));
                     }
                     if (availableCompiledAnalyses.length > 0) {
                         // Update the list of relevant compiled analyses and use it to select an
@@ -2695,22 +2779,7 @@ class FileGalleryRendererComponent extends React.Component {
      */
     clearFileFilters() {
         // Never delete the assembly filter
-        this.setState({ fileFilters: { assembly: [this.state.fileFilters.assembly[0]] } });
-    }
-
-    /**
-     * Called when the user selects an assembly/annotation to view.
-     */
-    handleAssemblyAnnotationChange(value) {
-        this.setState({ selectedFilterValue: value });
-        this.resetCurrentBrowser(value);
-    }
-
-    /**
-     * Called when the user checks/unchecks the inclusion filter checkbox.
-     */
-    handleInclusionChange() {
-        this.setState(state => ({ inclusionOn: !state.inclusionOn }));
+        this.setState((state) => ({ fileFilters: { assembly: [state.fileFilters.assembly[0]] } }));
     }
 
     // If the inclusionOn state property is enabled, we'll just display all the files we got. If
@@ -2721,7 +2790,7 @@ class FileGalleryRendererComponent extends React.Component {
             // The user has chosen to not see files with statuses in
             // FileGalleryRenderer.inclusionStatuses. Create an array with files having those
             // statuses filtered out. Start by making an array of files with a filtered-out status
-            return files.filter(file => FileGalleryRendererComponent.inclusionStatuses.indexOf(file.status) === -1);
+            return files.filter((file) => FileGalleryRendererComponent.inclusionStatuses.indexOf(file.status) === -1);
         }
 
         // The user requested seeing everything including revoked and archived files, so just
@@ -2729,67 +2798,13 @@ class FileGalleryRendererComponent extends React.Component {
         return files;
     }
 
-    // Handle a click in a graph node. This also handles clicks on the info button of files in the
-    // file table.
-    handleNodeClick(meta, openInfoModal) {
-        if (openInfoModal) {
-            // Select the node and open the modal when the user clicks the node.
-            this.setInfoNodeVisible(true);
-            this.setInfoNodeId(meta);
-        } else if (this.state.infoNode && (meta.id === this.state.infoNode.id)) {
-            // If the user had already selected the node, deselect it.
-            this.setInfoNodeId(null);
-        } else {
-            // Select the node without opening the modal when the user clicks the decoration.
-            this.setInfoNodeId(meta);
-        }
-    }
-
     closeModal() {
         // Called when user wants to close modal somehow
         this.setInfoNodeVisible(false);
     }
 
-    /**
-     * Called when the user chooses a new browser from the menu.
-     * @param {string} browser Name of browser user selected
-     */
-    handleBrowserChange(browser) {
-        this.setState({
-            currentBrowser: browser,
-            selectedBrowserFiles: visFilterBrowserFiles(this.state.files, browser),
-        });
-    }
-
-    /**
-     * Called when the user clicks the Visualize button.
-     */
-    handleVisualize() {
-        const { selectedBrowserAssembly } = this.getSelectedAssemblyAnnotation();
-        visOpenBrowser(this.props.context, this.state.currentBrowser, selectedBrowserAssembly, this.state.selectedBrowserFiles, this.context.location_href);
-    }
-
-    /**
-     * Called when the user selects/deselects a file for visualization in the file table.
-     * @param {object} synthEvent Event from React event handler
-     */
-    handleBrowserFileSelect(synthEvent) {
-        // The @id of the affected file is in the name of the clicked <input>.
-        const clickedFileAtId = synthEvent.target.name;
-        this.setState((state) => {
-            const matchingIndex = state.selectedBrowserFiles.findIndex(file => file['@id'] === clickedFileAtId);
-            if (matchingIndex === -1) {
-                // Add clicked file to array of selected files.
-                const matchingFile = state.files.find(file => file['@id'] === clickedFileAtId);
-                return { selectedBrowserFiles: state.selectedBrowserFiles.concat(matchingFile) };
-            }
-            // Remove clicked file from array of selected files.
-            return { selectedBrowserFiles: state.selectedBrowserFiles.slice(0, matchingIndex).concat(state.selectedBrowserFiles.slice(matchingIndex + 1)) };
-        });
-    }
-
     toggleFacets() {
-        this.setState(prevState => ({ facetsOpen: !prevState.facetsOpen }));
+        this.setState((prevState) => ({ facetsOpen: !prevState.facetsOpen }));
     }
 
     filterFiles(value, facet) {
@@ -2797,8 +2812,8 @@ class FileGalleryRendererComponent extends React.Component {
             this.setState({ selectedAssembly: value });
         }
         // Check to see if there are already filters
-        if (Object.keys(this.state.fileFilters).length > 0) {
-            const currentFilters = this.state.fileFilters;
+        const currentFilters = { ...this.state.fileFilters };
+        if (Object.keys(currentFilters).length > 0) {
             // Check to see if a filter for this facet exists, or an assembly filter which is an "OR" type filter not an "AND" type filter like the others
             if ((currentFilters[facet]) && facet !== 'assembly') {
                 // There is a filter for this facet and this value
@@ -2830,21 +2845,6 @@ class FileGalleryRendererComponent extends React.Component {
         }
     }
 
-    // Handle a click on a tab
-    handleTabClick(tab) {
-        if (tab !== this.state.currentTab) {
-            this.setState({ currentTab: tab });
-        }
-    }
-
-    // Called when the user selects a pipeline lab analyses.
-    // @param {string} selectedAnalysesIndex Index in state.compiledAnalyses of newly selected pipeline
-    handleAnalysesSelection(selectedAnalysesIndex) {
-        this.saveSelectedAnalysesProps(selectedAnalysesIndex);
-        this.setState({ selectedAnalysesIndex: +selectedAnalysesIndex });
-        this.filterFiles(this.state.compiledAnalyses[selectedAnalysesIndex].assembly, 'assembly');
-    }
-
     render() {
         const { context, schemas, hideGraph, showReplicateNumber } = this.props;
         let allGraphedFiles;
@@ -2863,7 +2863,7 @@ class FileGalleryRendererComponent extends React.Component {
             // Filter renderable and visualizable files to include only those in the matching
             // analyses plus raw-data files. If no matching analyses, all files get included.
             const selectedAnalysis = this.state.compiledAnalyses[this.state.selectedAnalysesIndex];
-            const graphAnalysesFiles = graphIncludedFiles.filter(file => selectedAnalysis.files.includes(file['@id']));
+            const graphAnalysesFiles = graphIncludedFiles.filter((file) => selectedAnalysis.files.includes(file['@id']));
             if (graphAnalysesFiles.length > 0) {
                 // Collect files that these files derive from, and add any missing ones to the
                 // list of files to include in the graph.
@@ -2876,11 +2876,11 @@ class FileGalleryRendererComponent extends React.Component {
                     Object.keys(derivedFiles).forEach((derivedFileId) => {
                         if (derivedFiles[derivedFileId]) {
                             // See if the file is already included in the analysis' files.
-                            const includedFile = graphAnalysesFiles.find(file => file['@id'] === derivedFileId);
+                            const includedFile = graphAnalysesFiles.find((file) => file['@id'] === derivedFileId);
                             if (!includedFile) {
                                 // The derived-from file isn't already included, so add it
                                 // if it can be found in allFiles (won't necessarily be).
-                                const derivedFile = this.state.allFiles.find(file => file['@id'] === derivedFileId);
+                                const derivedFile = this.state.allFiles.find((file) => file['@id'] === derivedFileId);
                                 if (derivedFile) {
                                     additionalFiles.push(derivedFile);
                                 }
@@ -2890,7 +2890,7 @@ class FileGalleryRendererComponent extends React.Component {
                 });
 
                 // The graphed files now also include the derived-from files and raw files.
-                graphIncludedFiles = graphAnalysesFiles.concat(_.uniq(additionalFiles), graphIncludedFiles.filter(file => file.output_category === 'raw data'));
+                graphIncludedFiles = graphAnalysesFiles.concat(_.uniq(additionalFiles), graphIncludedFiles.filter((file) => file.output_category === 'raw data'));
             } else {
                 // We know at this point there's nothing to graph nor browse for the selected
                 // analysis.
@@ -2970,7 +2970,7 @@ class FileGalleryRendererComponent extends React.Component {
                             <TabPanelPane key="browser">
                                 <GenomeBrowser
                                     files={includedFiles}
-                                    label={'file gallery'}
+                                    label="file gallery"
                                     expanded={this.state.facetsOpen}
                                     assembly={this.state.selectedAssembly}
                                     displaySort
@@ -3038,7 +3038,7 @@ class FileGalleryRendererComponent extends React.Component {
                         <ModalBody>
                             {meta.body}
                         </ModalBody>
-                        <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                        <ModalFooter closeModal={<button type="button" className="btn btn-info" onClick={this.closeModal}>Close</button>} />
                     </Modal>
                 : null}
             </Panel>
@@ -3097,7 +3097,7 @@ const CollapsingTitle = (props) => {
     const { title, handleCollapse, collapsed } = props;
     return (
         <div className="collapsing-title">
-            <button className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
+            <button type="button" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
             <h4>{title}</h4>
         </div>
     );
@@ -3122,9 +3122,9 @@ const FilterMenu = (props) => {
 
     return (
         <select className="form-control--select" value={selectedFilterValue} onChange={handleFilterChange}>
-            {filterOptions.map((option, i) =>
+            {filterOptions.map((option, i) => (
                 <option key={`${option.assembly}${option.annotation}`} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>
-            )}
+            ))}
         </select>
     );
 };
@@ -3162,7 +3162,7 @@ class FileQCButton extends React.Component {
     render() {
         const qcName = qcIdToDisplay(this.props.qc);
         if (qcName) {
-            return <button className="file-qc-btn" onClick={this.handleClick}>{qcName}</button>;
+            return <button type="button" className="file-qc-btn" onClick={this.handleClick}>{qcName}</button>;
         }
         return null;
     }
@@ -3199,7 +3199,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 <h2>{selectedFile.file_type} <a href={selectedFile['@id']}>{selectedFile.title}</a></h2>
             </div>
         );
-        const fileQualityMetrics = selectedFile.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
+        const fileQualityMetrics = selectedFile.quality_metrics.filter((qc) => loggedIn || qc.status === 'released');
 
         body = (
             <div>
@@ -3335,9 +3335,9 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         <div data-test="fileqc">
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
-                                {fileQualityMetrics.map(qc =>
+                                {fileQualityMetrics.map((qc) => (
                                     <FileQCButton key={qc['@id']} qc={qc} file={selectedFile} schemas={node.schemas} handleClick={qcClick} />
-                                )}
+                                ))}
                             </dd>
                         </div>
                     : null}
@@ -3380,25 +3380,26 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
         const coalescedFileColumns = {
             accession: {
                 title: 'Accession',
-                display: item =>
+                display: (item) => (
                     <span>
                         {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                    </span>,
+                    </span>
+                ),
             },
             file_type: { title: 'File type' },
             output_type: { title: 'Output type' },
             assembly: { title: 'Mapping assembly' },
             genome_annotation: {
                 title: 'Genome annotation',
-                hide: list => _(list).all(item => !item.genome_annotation),
+                hide: (list) => _(list).all((item) => !item.genome_annotation),
             },
             title: {
                 title: 'Lab',
-                getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+                getValue: (item) => (item.lab && item.lab.title ? item.lab.title : null),
             },
             date_created: {
                 title: 'Date added',
-                getValue: item => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
+                getValue: (item) => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
                 sorter: (a, b) => {
                     if (a && b) {
                         return Date.parse(a) - Date.parse(b);
@@ -3409,7 +3410,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
             },
             status: {
                 title: 'Status',
-                display: item => <Status item={item} badgeSize="small" />,
+                display: (item) => <Status item={item} badgeSize="small" />,
             },
         };
 

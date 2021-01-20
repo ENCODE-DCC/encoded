@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
@@ -16,7 +15,7 @@ const SoftwareComponent = ({ context, auditIndicators, auditDetail }, reactConte
     const itemClass = globals.itemClass(context, 'view-item');
 
     // Set up breadcrumbs.
-    const typeTerms = context.software_type && context.software_type.map(type => `software_type=${type}`);
+    const typeTerms = context.software_type && context.software_type.map((type) => `software_type=${type}`);
     const crumbs = [
         { id: 'Software' },
         {
@@ -31,7 +30,7 @@ const SoftwareComponent = ({ context, auditIndicators, auditDetail }, reactConte
     const queryParsed = reactContext.location_href && url.parse(reactContext.location_href, true).query;
     if (queryParsed && Object.keys(queryParsed).length > 0) {
         // Find the first 'version' query string item, if any
-        const versionKey = _(Object.keys(queryParsed)).find(key => key === 'version');
+        const versionKey = _(Object.keys(queryParsed)).find((key) => key === 'version');
         if (versionKey) {
             highlightVersion = queryParsed[versionKey];
             if (typeof highlightVersion === 'object') {
@@ -125,7 +124,7 @@ globals.contentViews.register(Software, 'Software');
 
 const softwareVersionColumns = {
     version: {
-        display: version => (version.downloaded_url ? <a href={version.downloaded_url}>{version.version}</a> : <span>{version.version}</span>),
+        display: (version) => (version.downloaded_url ? <a href={version.downloaded_url}>{version.version}</a> : <span>{version.version}</span>),
         title: 'Version',
     },
     download_checksum: {
@@ -136,15 +135,15 @@ const softwareVersionColumns = {
 
 
 const SoftwareVersionTable = (props) => {
-    // Dedupe items list.
-    const items = _(props.items).uniq(version => version['@id']);
+    // De-dupe items list.
+    const items = _(props.items).uniq((version) => version['@id']);
 
     return (
         <SortTablePanel title="Software versions">
             <SortTable
                 list={items}
                 columns={softwareVersionColumns}
-                rowClasses={item => (item.version === props.highlightVersion ? 'highlight-row' : '')}
+                rowClasses={(item) => (item.version === props.highlightVersion ? 'highlight-row' : '')}
             />
         </SortTablePanel>
     );
@@ -169,10 +168,10 @@ const ListingComponent = ({ context: result, auditIndicators, auditDetail }, rea
                 <div className="result-item__data-row">
                     <div>{result.description}</div>
                     {result.software_type && result.software_type.length > 0 ?
-                        <React.Fragment>
+                        <>
                             <strong>Software type: </strong>
                             {result.software_type.join(', ')}
-                        </React.Fragment>
+                        </>
                     : null}
                 </div>
             </div>

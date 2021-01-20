@@ -9,7 +9,7 @@ import { svgIcon } from '../svg-icons';
  * 1. Immediate: Clicking the button opens a dropdown with multiple items. Clicking one of the
  *    items causes an immediate action to occur.
  *
- * <DropdownButton.Immedate>
+ * <DropdownButton.Immediate>
  *     label={text, number, component that forms the button's label}
  *     id={HTML id of this control}
  *     css={optional CSS classes for button}
@@ -18,7 +18,7 @@ import { svgIcon } from '../svg-icons';
  *     <first dropdown item>
  *     <second dropdown item>
  *     <...>
- * </DropdownButton.Immedate>
+ * </DropdownButton.Immediate>
  *
  * The child components each make a clickable dropdown item which you can manage any way you'd
  * like. A very typical way involves using buttons with ids and each having the same click handler:
@@ -26,7 +26,7 @@ import { svgIcon } from '../svg-icons';
  * <DropdownButton.Immediate label={<i>Click here</i>} id="example-id">
  *     <button id="first" onClick={handleClick}>First</button>
  *     <button id="second" onClick={handleClick}>Second</button>
- * </DropdownButton.Immedate>
+ * </DropdownButton.Immediate>
  *
  * The `handleClick` callback would then extract the id of the clicked button to determine what
  * action to take, or each button could get its own click handler.
@@ -196,13 +196,14 @@ export const Immediate = ({ label, id, css, inline, disabled, children }) => {
     const [state, actions] = useDropdownButton();
 
     // Wrap each child in an <li> element, as they will be children of a <ul>.
-    const wrappedChildren = React.Children.map(children, child => (
+    const wrappedChildren = React.Children.map(children, (child) => (
         <li>{React.cloneElement(child)}</li>
     ));
 
     return (
         <div className={`dropdown-button${css ? ` ${css}` : ''}`} style={inline ? { display: 'inline-flex' } : null}>
             <button
+                type="button"
                 className="btn"
                 onClick={actions.handleTrigger}
                 id={id}
@@ -267,7 +268,7 @@ export const Selected = ({ labels, execute, id, triggerVoice, css, inline, disab
     const [state, actions] = useDropdownButton();
 
     // Extract the id attributes of each of the child components.
-    const labelIds = React.Children.map(children, child => child.props.id);
+    const labelIds = React.Children.map(children, (child) => child.props.id);
 
     // Currently selected dropdown item id; initialized to first item.
     const [selection, setSelection] = React.useState(labelIds[0]);
@@ -279,7 +280,7 @@ export const Selected = ({ labels, execute, id, triggerVoice, css, inline, disab
 
     // Wrap each child in an <li> element, as they will be children of a <ul>. Add this component's
     // click handler.
-    const wrappedChildren = React.Children.map(children, child => (
+    const wrappedChildren = React.Children.map(children, (child) => (
         <li>{React.cloneElement(child, { onClick: handleItemClick })}</li>
     ));
 
@@ -291,10 +292,17 @@ export const Selected = ({ labels, execute, id, triggerVoice, css, inline, disab
     return (
         <div className={`dropdown-button${css ? ` ${css}` : ''}`} style={inline ? { display: 'inline-flex' } : null}>
             <div className="dropdown-button__composite" onMouseEnter={actions.handleMouseEnter} onMouseLeave={actions.houseMouseLeave}>
-                <button className="dropdown-button__composite-execute" onClick={handleExecute} onKeyUp={actions.handleKey} disabled={disabled}>
+                <button
+                    type="button"
+                    className="dropdown-button__composite-execute"
+                    onClick={handleExecute}
+                    onKeyUp={actions.handleKey}
+                    disabled={disabled}
+                >
                     {labels[selection]}
                 </button>
                 <button
+                    type="button"
                     className="dropdown-button__composite-trigger"
                     onClick={actions.handleTrigger}
                     id={id}

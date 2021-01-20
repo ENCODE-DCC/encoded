@@ -6,7 +6,7 @@ import offset from '../libs/offset';
 // Render the collection table header that sticks to the top of the browser window, or below the
 // navigation bar of that’s position fixed (as it is if the browser window is wide enough). Note
 // that this method makes the sticky header shudder up and down while scrolling. Better ways exist
-// to do this without shudderingm, but they don't work on tables.
+// to do this without shuddering, but they don't work on tables.
 export default class StickyHeader extends React.Component {
     constructor() {
         super();

@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
 
@@ -177,7 +176,7 @@ const defaultObjectStatuses = {
 
 
 // SVG components for each status icon. These can be imported into something like Ink or Adobe
-// Illustrator for modification, and saved with minificiation. You can remove some elements from
+// Illustrator for modification, and saved with minification. You can remove some elements from
 // the resulting SVG (e.g. <title>, <def>), and viewBox and transform might need adjustment.
 const iconDefinitions = {
     archived: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,4a8,8,0,0,0-8,8H16A8,8,0,0,0,8,4Z" /></svg>,
@@ -288,7 +287,7 @@ export const sessionToAccessLevel = (session, sessionProperties) => {
  */
 export const getObjectStatuses = (item, accessLevel = 'external', objectStatuses = defaultObjectStatuses) => {
     // Go down the @type list for the object until a matching block is found in `objectStatuses`.
-    const objectType = typeof item === 'string' ? item : item['@type'].find(type => objectStatuses[type]);
+    const objectType = typeof item === 'string' ? item : item['@type'].find((type) => objectStatuses[type]);
 
     if (objectType && objectStatuses[objectType]) {
         // To collect all possible statuses for the given `accessLevel` and item @type, concatenate
@@ -336,8 +335,8 @@ Status.propTypes = {
     ]), // Size of status label
     title: PropTypes.string, // Tooltip text
     css: PropTypes.string, // CSS classes to add to surrounding div
-    noLabel: PropTypes.bool, // True to supress display of status label
-    noIcon: PropTypes.bool, // True to supress display of status icon
+    noLabel: PropTypes.bool, // True to suppress display of status label
+    noIcon: PropTypes.bool, // True to suppress display of status icon
     inline: PropTypes.bool, // True to display as CSS inline-block
 };
 

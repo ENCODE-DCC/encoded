@@ -2,7 +2,6 @@
  * Displays the button at the top of search result pages that lets the user add all results to the
  * cart.
  */
-import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import url from 'url';
@@ -56,7 +55,7 @@ const CartAddAllSearchComponent = ({
                     const allowedTypes = cartGetAllowedTypes();
 
                     // Get all elements from results that qualify to exist in carts.
-                    const elementsForCart = results['@graph'].filter(result => allowedTypes.includes(result['@type'][0])).map(result => result['@id']);
+                    const elementsForCart = results['@graph'].filter((result) => allowedTypes.includes(result['@type'][0])).map((result) => result['@id']);
 
                     // Check whether the final cart would have more elements than allowed by doing a
                     // trial merge. If the merged cart fits under the limit, add the new elements
@@ -81,6 +80,7 @@ const CartAddAllSearchComponent = ({
             <div className="cart-add-all">
                 {savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
                 <button
+                    type="button"
                     disabled={inProgress || savedCartObj.locked}
                     className="btn btn-info btn-sm"
                     onClick={handleClick}
@@ -125,8 +125,8 @@ CartAddAllSearchComponent.mapStateToProps = (state, ownProps) => ({
     loggedIn: ownProps.loggedIn,
 });
 CartAddAllSearchComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, ownProps.fetch)),
-    setInProgress: enable => dispatch(cartOperationInProgress(enable)),
+    addAllResults: (elementsForCart) => dispatch(addMultipleToCartAndSave(elementsForCart, ownProps.fetch)),
+    setInProgress: (enable) => dispatch(cartOperationInProgress(enable)),
     showMaxElementsWarning: () => dispatch(triggerAlert(<CartMaxElementsWarning />)),
 });
 
@@ -168,7 +168,7 @@ const CartAddAllElementsComponent = ({
         if (loggedIn) {
             // Filter the added elements to those allowed in carts.
             const allowedPathTypes = cartGetAllowedObjectPathTypes();
-            const allowedElements = elements.filter(element => (
+            const allowedElements = elements.filter((element) => (
                 allowedPathTypes.includes(atIdToType(element))
             ));
 
@@ -195,6 +195,7 @@ const CartAddAllElementsComponent = ({
         <div className="cart-add-all">
             {savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
             <button
+                type="button"
                 disabled={inProgress || (savedCartObj && savedCartObj.locked)}
                 className="btn btn-info btn-sm"
                 onClick={handleClick}
@@ -234,7 +235,7 @@ CartAddAllElementsComponent.mapStateToProps = (state, ownProps) => ({
 });
 
 CartAddAllElementsComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    addAllResults: elements => dispatch(addMultipleToCartAndSave(elements, ownProps.fetch)),
+    addAllResults: (elements) => dispatch(addMultipleToCartAndSave(elements, ownProps.fetch)),
     showMaxElementsWarning: () => dispatch(triggerAlert(<CartMaxElementsWarning />)),
 });
 

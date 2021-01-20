@@ -99,7 +99,7 @@ class SpecialFacetRegistryCore extends FacetRegistryCore {
     }
 
     getFacets() {
-        return Object.keys(this._registry).map(field => this._registry[field]);
+        return Object.keys(this._registry).map((field) => this._registry[field]);
     }
 }
 

@@ -2,19 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-/* eslint-disable react/prefer-stateless-function */
-class Panel extends React.Component {
-    render() {
-        const { addClasses, noDefaultClasses, ...other } = this.props;
-
-        return (
-            <div {...other} className={(noDefaultClasses ? '' : 'panel panel-default') + (addClasses ? ` ${addClasses}` : '')}>
-                {this.props.children}
-            </div>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+const Panel = ({ addClasses, noDefaultClasses, children, ...other }) => (
+    <div {...other} className={(noDefaultClasses ? '' : 'panel panel-default') + (addClasses ? ` ${addClasses}` : '')}>
+        {children}
+    </div>
+);
 
 Panel.propTypes = {
     addClasses: PropTypes.string, // Classes to add to outer panel div
@@ -29,17 +21,11 @@ Panel.defaultProps = {
 };
 
 
-/* eslint-disable react/prefer-stateless-function */
-class PanelBody extends React.Component {
-    render() {
-        return (
-            <div className={`panel-body${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
-                {this.props.children}
-            </div>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+const PanelBody = ({ addClasses, children }) => (
+    <div className={`panel-body${addClasses ? ` ${addClasses}` : ''}`}>
+        {children}
+    </div>
+);
 
 PanelBody.propTypes = {
     addClasses: PropTypes.string, // Classes to add to outer panel div
@@ -52,17 +38,11 @@ PanelBody.defaultProps = {
 };
 
 
-/* eslint-disable react/prefer-stateless-function */
-class PanelHeading extends React.Component {
-    render() {
-        return (
-            <div className={`panel-heading${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
-                {this.props.children}
-            </div>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+const PanelHeading = ({ addClasses, children }) => (
+    <div className={`panel-heading${addClasses ? ` ${addClasses}` : ''}`}>
+        {children}
+    </div>
+);
 
 PanelHeading.propTypes = {
     addClasses: PropTypes.string, // Classes to add to outer panel div
@@ -74,9 +54,9 @@ PanelHeading.defaultProps = {
     children: null,
 };
 
-const PanelFooter = props => (
-    <div className={`panel-footer${props.addClasses ? ` ${props.addClasses}` : ''}`}>
-        {props.children}
+const PanelFooter = ({ addClasses, children }) => (
+    <div className={`panel-footer${addClasses ? ` ${addClasses}` : ''}`}>
+        {children}
     </div>
 );
 
@@ -113,14 +93,11 @@ PanelFooter.defaultProps = {
 // receive those. <TabPanel> copies the `key` property to an `id` property in any child <TabPanel>
 // components so that <TabPanel> can see it.
 
-const TabPanelPane = (props) => {
-    const { id, active } = props;
-    return (
-        <div role="tabpanel" className={`tab-pane${active ? ' active' : ''}`} id={id}>
-            {active ? <div>{props.children}</div> : null}
-        </div>
-    );
-};
+const TabPanelPane = ({ id, active, children }) => (
+    <div role="tabpanel" className={`tab-pane${active ? ' active' : ''}`} id={id}>
+        {active ? <div>{children}</div> : null}
+    </div>
+);
 
 TabPanelPane.propTypes = {
     id: PropTypes.string, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
@@ -201,15 +178,13 @@ class TabPanel extends React.Component {
             <div className={tabPanelCss}>
                 <div className={`tab-nav tab-nav-${this.getCurrentTab() ? this.getCurrentTab().replace(/\s/g, '') : ''}`}>
                     <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
-                        {Object.keys(tabs).map((tab, i) => {
-                            return (
-                                <li key={tab} role="presentation" aria-controls={tab} className={`${tab.replace(/\s/g, '')}-tab ${tabCss} ${this.getCurrentTab() === tab ? 'active' : ''}`}>
-                                    <TabItem tab={tab} handleClick={this.handleClick}>
-                                        {tabDisplay[tab] || tabs[tab]}
-                                    </TabItem>
-                                </li>
-                            );
-                        })}
+                        {Object.keys(tabs).map((tab) => (
+                            <li key={tab} role="presentation" aria-controls={tab} className={`${tab.replace(/\s/g, '')}-tab ${tabCss} ${this.getCurrentTab() === tab ? 'active' : ''}`}>
+                                <TabItem tab={tab} handleClick={this.handleClick}>
+                                    {tabDisplay[tab] || tabs[tab]}
+                                </TabItem>
+                            </li>
+                        ))}
                         {moreComponents ? <div className={moreComponentsClasses}>{moreComponents}</div> : null}
                     </ul>
                     {decoration ? <div className={decorationClasses}>{decoration}</div> : null}
@@ -286,7 +261,7 @@ class TabItem extends React.Component {
     }
 
     render() {
-        const tab = this.props.tab;
+        const { tab } = this.props;
         const isDisabled = checkIfDisabled(this.props);
         return (
             <a href={`#${tab}`} ref={tab} onClick={this.clickHandler} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab" disabled={isDisabled}>

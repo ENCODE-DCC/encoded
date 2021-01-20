@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import FacetRegistry from './registry';
 import Status from '../status';

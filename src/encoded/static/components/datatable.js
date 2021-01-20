@@ -85,7 +85,6 @@
  *   - to add a CSS class to the <tr> for a specific row
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
 
 
@@ -94,7 +93,7 @@ import PropTypes from 'prop-types';
   * @param {object} tableData Same table data you pass to `DataTable`.
   */
 const tableDataMaxWidth = (tableData) => {
-    const widths = tableData.rows.map(row => (Array.isArray(row) ? row.length : row.rowContent.length));
+    const widths = tableData.rows.map((row) => (Array.isArray(row) ? row.length : row.rowContent.length));
     return Math.max(...widths);
 };
 

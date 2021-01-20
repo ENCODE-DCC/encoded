@@ -17,9 +17,9 @@ import { tintColor, isLight } from './datacolors';
  *
  * @param {string} title
  */
-const formatH9HeaderTitle = title => (title && title.trim() !== 'H9' ? title.trim() : 'H9 Stem Cell');
+const formatH9HeaderTitle = (title) => (title && title.trim() !== 'H9' ? title.trim() : 'H9 Stem Cell');
 
-const formatPebbleNameToCssClassFriendly = name => (!name ? '' : name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_'));
+const formatPebbleNameToCssClassFriendly = (name) => (!name ? '' : name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_'));
 
 /**
  * All assay columns to not include in matrix.
@@ -172,8 +172,9 @@ const convertToDataTableFormat = (context) => {
                 }
                 return assay;
             })
-            .filter(assayTitle => !excludedAssays.includes(assayTitle.key)),
-        assayTitle => headerDataOrder.indexOf(assayTitle.key));
+            .filter((assayTitle) => !excludedAssays.includes(assayTitle.key)),
+        (assayTitle) => headerDataOrder.indexOf(assayTitle.key)
+    );
 
     const headerData = [];
 
@@ -205,7 +206,7 @@ const convertToDataTableFormat = (context) => {
 
     const rowData = _.sortBy(
         context.matrix.y['biosample_ontology.classification'].buckets
-            .map(biosampleOntologyClassification => biosampleOntologyClassification['biosample_ontology.term_name'].buckets)
+            .map((biosampleOntologyClassification) => biosampleOntologyClassification['biosample_ontology.term_name'].buckets)
             .reduce((termNames, termName) => termNames.concat(termName), [])
             .map((x) => {
                 const m = { key: x.key,
@@ -213,30 +214,31 @@ const convertToDataTableFormat = (context) => {
                     xHeaders: x.assay_title.buckets
                         .reduce((a, b) => a.concat([{ key: b.key, doc_count: b.doc_count, type: 'assay_title' },
                             ...b['target.label'].buckets
-                                .map(targetLabel => ({
+                                .map((targetLabel) => ({
                                     key: targetLabel.key,
                                     doc_count: targetLabel.doc_count,
                                     type: 'target.label',
                                 }))]), []) };
                 return m;
             }),
-        y => rowDataOrder.indexOf(y.key));
+        (y) => rowDataOrder.indexOf(y.key),
+    );
 
-    // subCategoryKeys used for determinining when to apply "sub" css class in x-header
+    // subCategoryKeys used for determining when to apply "sub" css class in x-header
     const subCategoryKeys = context.matrix.x.assay_title.buckets
-        .map(x => ({
+        .map((x) => ({
             key: x.key,
             hasSubCategory: x['target.label'].buckets.length > 1,
         }))
-        .filter(x => x.hasSubCategory)
-        .map(x => x.key);
+        .filter((x) => x.hasSubCategory)
+        .map((x) => x.key);
 
     let rows = [];
     const edgeColor = '1px solid #f0f0f0';
     const headerBorderBottom = edgeColor;
     const searchBase = context.search_base;
 
-    const headerRow = headerData.map(x => ({
+    const headerRow = headerData.map((x) => ({
         header: (
             <a href={`${searchBase}&${x.type}=${x.key}`} className={`${subCategoryKeys.includes(x.key) ? 'sub' : ''}`} title={`${x.key}`}>
                 <div className="subcategory-row-text">{x.key}</div>
@@ -249,7 +251,7 @@ const convertToDataTableFormat = (context) => {
         css: 'matrix__col-category-header',
     });
 
-    const headerDataKeys = headerData.map(x => x.key);
+    const headerDataKeys = headerData.map((x) => x.key);
     const headerDataKeysLength = headerDataKeys.length;
 
     const biosamples = rowData.map((row) => {
@@ -390,7 +392,7 @@ class MatrixPresentation extends React.Component {
                     .size([height, width]);
 
                 const diagonal = this.d3.svg.diagonal()
-                    .projection(d => [d.x, d.y]);
+                    .projection((d) => [d.x, d.y]);
 
                 const svg = this.d3.select('.sescc_matrix__graph').append('svg')
                     .attr('width', width)
@@ -444,7 +446,7 @@ class MatrixPresentation extends React.Component {
                     // create nodes.
                     const nodeEnter = node.enter().append('g')
                         .attr('class', 'sescc_matrix__node')
-                        .attr('transform', d => `translate(${d.x},${d.y})`)
+                        .attr('transform', (d) => `translate(${d.x},${d.y})`)
                         .style('cursor', 'pointer')
                         .on('click', function updater(d) {
                             const name = formatH9HeaderTitle(d.name);
@@ -454,7 +456,7 @@ class MatrixPresentation extends React.Component {
                             if (!element) {
                                 return;
                             }
-                            const display = element.style.display;
+                            const { display } = element.style;
                             element.style.display = display === '' ? 'none' : '';
                             const color = display === '' ? d.deselectedColor : d.selectedColor;
 
@@ -507,7 +509,7 @@ class MatrixPresentation extends React.Component {
                         { cx: 10, cy: 10, rx: 6.5, ry: 5, stroke: 'black', 'stroke-width': 1.5 },
                     ];
 
-                    nodeEnter.append('svg:title').text(d => `Click to toggle matrix row: ${d.name}`);
+                    nodeEnter.append('svg:title').text((d) => `Click to toggle matrix row: ${d.name}`);
 
                     ellipseSettings.forEach((ellipseSetting) => {
                         nodeEnter.append('ellipse')
@@ -517,7 +519,7 @@ class MatrixPresentation extends React.Component {
                             .attr('ry', ellipseSetting.ry)
                             .style('stroke', ellipseSetting.stroke)
                             .style('stroke-width', ellipseSetting['stroke-width'])
-                            .style('fill', d => d.selectedColor)
+                            .style('fill', (d) => d.selectedColor)
                             .attr('class', () => 'js-cell');
                     });
 
@@ -526,17 +528,17 @@ class MatrixPresentation extends React.Component {
                         .attr('dy', '.35em')
                         .attr('text-anchor', 'middle')
                         .attr('transform', 'rotate(310)')
-                        .text(d => d.name)
+                        .text((d) => d.name)
                         .style('fill-opacity', 1);
 
                     // Declare the link
                     const link = svg.selectAll('path.sescc_matrix__link')
-                        .data(links, d => d.target.id);
+                        .data(links, (d) => d.target.id);
 
                     // Update the links.
                     link.enter().insert('path', 'g')
                         .attr('class', 'sescc_matrix__link')
-                        .style('stroke', d => d.target.linkColor)
+                        .style('stroke', (d) => d.target.linkColor)
                         .attr('d', diagonal);
                 };
                 update(treeData[0]);
@@ -583,7 +585,7 @@ class MatrixPresentation extends React.Component {
 
 
     /**
-     * Toggle matrix row (biosample) visibility of a specificied row in the matrix and change corresponding pebble (node)-color in the tree
+     * Toggle matrix row (biosample) visibility of a specified row in the matrix and change corresponding pebble (node)-color in the tree
      *
      * @param {e} event
      * @memberof MatrixPresentation
@@ -626,8 +628,8 @@ class MatrixPresentation extends React.Component {
                     </div>
                 </div>
                 <div className="sescc_matrix__show-all">
-                    <button className="btn btn-sm btn-info" onClick={() => this.togglePebblesGroupVisibilty(true)}>Show All</button>
-                    <button className="btn btn-sm btn-info" onClick={() => this.togglePebblesGroupVisibilty(false)}>Hide All</button>
+                    <button type="button" className="btn btn-sm btn-info" onClick={() => this.togglePebblesGroupVisibilty(true)}>Show All</button>
+                    <button type="button" className="btn btn-sm btn-info" onClick={() => this.togglePebblesGroupVisibilty(false)}>Hide All</button>
                 </div>
 
                 <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>

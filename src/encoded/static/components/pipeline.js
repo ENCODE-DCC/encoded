@@ -32,7 +32,7 @@ function AnalysisStep(step, node) {
             swVersions = node.metadata.stepVersion.software_versions;
         } else {
             // Get the analysis_step_version array from the step for pipeline graph display.
-            stepVersions = step.versions && _(step.versions).sortBy(version => version.minor_version);
+            stepVersions = step.versions && _(step.versions).sortBy((version) => version.minor_version);
             swStepVersions = _.compact(stepVersions.map((version) => {
                 if (version.software_versions && version.software_versions.length > 0) {
                     return (
@@ -82,12 +82,12 @@ function AnalysisStep(step, node) {
                         <div data-test="outputtypes">
                             <dt>Output</dt>
                             <dd>
-                                {step.output_file_types.map((type, i) =>
+                                {step.output_file_types.map((type, i) => (
                                     <span key={i}>
-                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {i > 0 ? <span>,<br /></span> : null}
                                         {type}
                                     </span>
-                                )}
+                                ))}
                             </dd>
                         </div>
                     : null}
@@ -96,12 +96,12 @@ function AnalysisStep(step, node) {
                         <div data-test="pipeline">
                             <dt>Pipeline</dt>
                             <dd>
-                                {node.metadata.pipelines.map((pipeline, i) =>
+                                {node.metadata.pipelines.map((pipeline, i) => (
                                     <span key={i}>
-                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {i > 0 ? <span>,<br /></span> : null}
                                         <a href={pipeline['@id']}>{pipeline.title}</a>
                                     </span>
-                                )}
+                                ))}
                             </dd>
                         </div>
                     : null}
@@ -110,12 +110,12 @@ function AnalysisStep(step, node) {
                         <div data-test="qastats">
                             <dt>QA statistics</dt>
                             <dd>
-                                {step.qa_stats_generated.map((stat, i) =>
+                                {step.qa_stats_generated.map((stat, i) => (
                                     <span key={i}>
-                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {i > 0 ? <span>,<br /></span> : null}
                                         {stat}
                                     </span>
-                                )}
+                                ))}
                             </dd>
                         </div>
                     : null}
@@ -192,9 +192,24 @@ class PipelineComponent extends React.Component {
         this.closeModal = this.closeModal.bind(this);
     }
 
+    // Called when a node in the graph is clicked.
+    handleNodeClick(nodeId) {
+        // We do different things depending on whether this is a step node or file node, which we
+        // can tell from the given node ID's prefix. For step nodes, set the state so that we
+        // rerender this component with a modal.
+        const nodePrefix = PipelineComponent.getNodeIdPrefix(nodeId);
+        if (nodePrefix === stepNodePrefix) {
+            // Click was in a step node. Set a new state so that a modal for the step node appears.
+            this.setState({
+                infoNode: nodeId,
+                infoModalOpen: true,
+            });
+        }
+    }
+
     assembleGraph() {
         const { context } = this.props;
-        const accession = context.accession;
+        const { accession } = context;
         const analysisSteps = context.analysis_steps;
         let jsonGraph;
 
@@ -219,7 +234,7 @@ class PipelineComponent extends React.Component {
                 // Collect software version titles.
                 if (step.current_version && step.current_version.software_versions && step.current_version.software_versions.length > 0) {
                     const softwareVersions = step.current_version.software_versions;
-                    swVersionList = softwareVersions.map(version => version.software.title);
+                    swVersionList = softwareVersions.map((version) => version.software.title);
                 }
 
                 // Build the node label; both step types and sw version titles if available.
@@ -331,34 +346,19 @@ class PipelineComponent extends React.Component {
         return jsonGraph;
     }
 
-    // Called when a node in the graph is clicked.
-    handleNodeClick(nodeId) {
-        // We do different things depending on whether this is a step node or file node, which we
-        // can tell from the given node ID's prefix. For step nodes, set the state so that we
-        // rerender this component with a modal.
-        const nodePrefix = PipelineComponent.getNodeIdPrefix(nodeId);
-        if (nodePrefix === stepNodePrefix) {
-            // Click was in a step node. Set a new state so that a modal for the step node appears.
-            this.setState({
-                infoNode: nodeId,
-                infoModalOpen: true,
-            });
-        }
-    }
-
     closeModal() {
         // Called when user wants to close modal somehow
         this.setState({ infoModalOpen: false });
     }
 
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
 
         let crumbs;
         const assayName = (context.assay_term_names && context.assay_term_names.length > 0) ? context.assay_term_names.join(' + ') : null;
         if (assayName) {
-            const query = context.assay_term_names.map(name => `assay_term_names=${name}`).join('&');
+            const query = context.assay_term_names.map((name) => `assay_term_names=${name}`).join('&');
             crumbs = [
                 { id: 'Pipelines' },
                 { id: assayName, query, tip: assayName },
@@ -448,12 +448,12 @@ class PipelineComponent extends React.Component {
                                 <div data-test="referencefilesets">
                                     <dt>Reference File Sets</dt>
                                     <dd>
-                                        {context.reference_filesets.map((fileset, i) =>
-                                            <React.Fragment>
+                                        {context.reference_filesets.map((fileset, i) => (
+                                            <>
                                                 {i > 0 ? <span>, </span> : null}
                                                 <a href={fileset['@id']}>{fileset.accession}</a>
-                                            </React.Fragment>
-                                        )}
+                                            </>
+                                        ))}
                                     </dd>
                                 </div>
                             : null}
@@ -496,7 +496,7 @@ class PipelineComponent extends React.Component {
                         <ModalBody>
                             {meta ? meta.body : null}
                         </ModalBody>
-                        <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                        <ModalFooter closeModal={<button type="button" className="btn btn-info" onClick={this.closeModal}>Close</button>} />
                     </Modal>
                 : null}
             </div>
