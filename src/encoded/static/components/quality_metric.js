@@ -61,9 +61,9 @@ const qcAttachmentProperties = {
     ],
     DnaseAlignmentQualityMetric: [
         { insert_size_histogram: 'Insert size histogram' },
-        { insert_size_metric: 'Insert size metric file'},
-        { nuclear_preseq: 'Total read metric file'},
-        { nuclear_preseq_targets: 'Sequencing depths file'},
+        { insert_size_metric: 'Insert size metric file' },
+        { nuclear_preseq: 'Total read metric file' },
+        { nuclear_preseq_targets: 'Sequencing depths file' },
     ],
 };
 

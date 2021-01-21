@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc';
 // Import test component.
 import { SortTablePanel, SortTable } from '../sorttable';
 
-dayjs.extend(utc)
+dayjs.extend(utc);
 
 describe('Software', () => {
     const tableConfig = {

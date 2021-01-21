@@ -1,6 +1,3 @@
-import _ from 'underscore';
-
-
 // Import test component and data.
 import { compileAnalyses } from '../filegallery';
 

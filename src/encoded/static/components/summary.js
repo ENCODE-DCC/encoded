@@ -10,7 +10,7 @@ import * as globals from './globals';
 import { FacetList, ClearFilters } from './search';
 import { getObjectStatuses, sessionToAccessLevel } from './status';
 import { ViewControls } from './view_controls';
-import BodyMap, { systemsField, organField } from './body_map';
+import BodyMap from './body_map';
 
 /**
  * Generate an array of data from one facet bucket for displaying in a chart, with one array entry

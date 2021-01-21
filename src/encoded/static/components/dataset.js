@@ -5,7 +5,6 @@ import { Panel, PanelBody } from '../libs/ui/panel';
 import DropdownButton from '../libs/ui/button';
 import { CartToggle, CartAddAllElements } from './cart';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';

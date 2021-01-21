@@ -10,7 +10,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { cartRemoveElements } from './cart';
 import { Form } from './form';
 import * as globals from './globals';
-import { ItemAccessories, TopAccessories } from './objectutils';
+import { ItemAccessories } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 
 

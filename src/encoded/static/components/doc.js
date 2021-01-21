@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
+import { Panel, PanelHeading } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
@@ -405,7 +405,7 @@ QCAttachmentPreview.propTypes = {
 
 // Display a panel for attachments that aren't a part of an associated document
 export const AttachmentPanel = (props) => {
-    const { context, attachment, title, modal } = props;
+    const { context, attachment, title } = props;
 
     // Set up rendering components.
     const DocumentCaptionView = globals.documentViews.caption.lookup(context);
@@ -429,12 +429,10 @@ AttachmentPanel.propTypes = {
     context: PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
     attachment: PropTypes.object.isRequired, // Attachment being rendered
     title: PropTypes.string, // Title to display in the caption area
-    modal: PropTypes.bool, // `true` if attachments are displayed in a modal
 };
 
 AttachmentPanel.defaultProps = {
     title: '',
-    modal: false,
 };
 
 
