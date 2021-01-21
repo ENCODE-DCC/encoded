@@ -157,11 +157,11 @@
             "title": "Biosample treatment ontology ID",
             "type": "string"
         },
-        "related_datasets.replicates.library.biosample.treatments.concentration": {
+        "related_datasets.replicates.library.biosample.treatments.amount": {
             "title": "Biosample treatment concentration",
             "type": "number"
         },
-        "related_datasets.replicates.library.biosample.treatments.concentration_units": {
+        "related_datasets.replicates.library.biosample.treatments.amount_units": {
             "title": "Biosample treatment concentration units",
             "type": "string"
         },
