@@ -1261,6 +1261,7 @@ $divider-color: #000; // Color of dividers between assays with targets
     }
 
     @at-root #{&}__show-all {
+        display: flex;
         font-size: 1.25rem;
         margin-bottom: 30px;
         .btn {
