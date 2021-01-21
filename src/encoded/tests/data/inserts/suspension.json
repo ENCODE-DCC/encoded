@@ -841,7 +841,8 @@
         "suspension_type": "nucleus",
         "aliases": [
             "jimmie-ye:prepool_susp1"
-        ]
+        ],
+        "accession": "LATSU111JJJ"
     },
     {
         "uuid": "9e5249b3-8491-499f-9631-1bed386e7e45",
@@ -856,7 +857,8 @@
         "suspension_type": "nucleus",
         "aliases": [
             "jimmie-ye:prepool_susp2"
-        ]
+        ],
+        "accession": "LATSU222JJJ"
     },
     {
         "accession": "LATSU870AAA",
