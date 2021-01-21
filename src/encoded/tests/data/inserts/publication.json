@@ -28,7 +28,7 @@
         "publication_year": 2018,
         "identifiers": [
             "PMID:22955622",
-            "PMCID:PMC3439133"
+            "doi:10.1101/2020.07.24.219147"
         ],
         "award": "CZI021IMM",
         "volume": "234",
@@ -49,7 +49,7 @@
         "publication_year": 2012,
         "identifiers": [
             "PMID:22955616",
-            "PMCID:PMC3439153"
+            "doi:10.1016/j.devcel.2020.01.033"
         ],
         "volume": "489",
         "issue": "7414",
@@ -71,7 +71,8 @@
         "volume": "2010",
         "publication_year": 2020,
         "identifiers": [
-            "PMID:20150888"
+            "PMID:20150888",
+            "doi:10.1016/j.devcel.2020.07.023"
         ],
         "award": "CZI025LYN",
         "authors": "Livnat Jerby-Arnon, Aviv Regev"
