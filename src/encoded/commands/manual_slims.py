@@ -16,6 +16,17 @@ slim_shims = {
         'OBI:0002091': ['Transcription'],  # 5' RACE
         'OBI:0002092': ['Transcription'],  # 3' RACE
         'OBI:0002093': ['Transcription'],  # 5' RLM RACE
+        'OBI:0002113': ['Transcription'],  # Bru-seq
+        'OBI:0002114': ['Transcription'],  # BruChase-seq
+        'OBI:0002143': ['Transcription'],  # BruUV-seq
+        'OBI:0002045': ['Transcription'],  # PAS-seq
+        'OBI:0002571': ['Transcription'],  # polyA plus RNA-seq
+        'OBI:0002572': ['Transcription'],  # polyA minus RNA-seq
+        'OBI:0002631': ['Transcription'],  # scRNA-seq
+        'OBI:0002112': ['Transcription'],  # small RNA-seq
+        'OBI:0001271': ['Transcription'],  # total RNA-seq
+        'OBI:0002753': ['Transcription'],  # PRO-cap
+        'OBI:0002457': ['Transcription'],  # PRO-seq
         'OBI:0001863': ['DNA methylation'],  # WGBS
         'OBI:0001862': ['DNA methylation'],  # RRBS
         'OBI:0001861': ['DNA methylation'],  # MRE-seq
