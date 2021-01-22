@@ -4210,6 +4210,7 @@
         "status": "released",
         "uuid": "a1343e3d-1ab0-440b-b0de-61b353566d87",
         "submitted_file_name": "donorCD_pooled_merged_sc_matrix.mtx/",
+        "description": "Anna Greka's very special data",
         "file_format": "mtx",
         "file_size": 100000,
         "lab": "anna-greka",
@@ -6644,6 +6645,7 @@
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/rnaAggr_control.rds",
         "no_file_available": false,
+        "description": "A super cool dataset for all to see",
         "status": "released",
         "file_format": "rds",
         "file_size": 50000,
@@ -6775,6 +6777,7 @@
         "value_units": "UMI",
         "value_scale": "log, base 10",
         "uuid": "7ca0c1d6-4b5a-4e93-b6f2-b1ae1ee172dc",
-        "accession": "LATDF333ORG"
+        "accession": "LATDF333ORG",
+        "description": "There's organoid data in this one!"
     }
 ]
