@@ -278,45 +278,45 @@
             "type": "string"
         },
         "cell_mapping": {
-            "title": "Cell mapping for libraries",
-            "description": "Information at the library level that allows for mapping of cells in the final matrix to Library objects in Lattice.",
-            "type": "array",
-            "items": {
-                "title": "Cell mapping for each library",
-                "type": "object",
-                "required": ["cell_mapping_identifier", "cell_mapping_string", "cell_mapping_location", "cell_mapping_connector"],
-                "additionalProperties": false,
-                "properties": {
-                    "cell_mapping_identifier": {
-                        "title": "Cell mapping identifier",
-                        "description": "The specific identifier that is assigned to the subset of cells that belong to a single library",
-                        "type": "string"
-                    },
-                    "cell_mapping_string": {
-                        "title": "Cell mapping string",
-                        "description": "The string that is concatenated as a prefix or suffix to the cell barcode to make the unique cell identifier, not including the connector string",
-                        "type": "string"
-                    },
-                    "cell_mapping_location": {
-                        "title": "Cell mapping location",
-                        "description": "Indicator distinguishing if the cell_mapping_string is concatenated as a prefix or suffix",
-                        "type": "string",
-                        "enum": [
-                            "prefix",
-                            "suffix"
-                        ]
-                    },
-                    "cell_mapping_connector": {
-                        "title": "Cell mapping connector",
-                        "description": "The string used to join the cell barcode and the cell mapping string to make the unique cell identifier.",
-                        "type": "string",
-                        "enum": [
-                            "_",
-                            "-"
-                        ]
+            "title": "Cell mapping information for this matrix",
+            "description": "Information at the raw matrix level that allows for mapping of cells in the final matrix to other entities in the experimental graph.",
+            "required": ["location"],
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "location": {
+                    "title": "Cell mapping location",
+                    "description": "Indicator distinguishing if the cell_mapping_string is concatenated as a prefix or suffix",
+                    "type": "string",
+                    "enum": [
+                        "prefix",
+                        "suffix"
+                    ]
+                },
+                "label_mappings": {
+                    "title": "Cell mappings for associated raw matrix files",
+                    "description": "Cell mappings that contain information on how cell identifiers have be modified from raw matrix to this matrix",
+                    "type": "array",
+                    "items": {
+                        "title": "Cell mapping for each raw matrix file",
+                        "type": "object",
+                        "required": ["string", "raw_matrix"],
+                        "additionalProperties": false,
+                        "properties": {
+                            "string": {
+                                "title": "String used to make the cell identifier unique",
+                                "description": "The string that is concatenated as a prefix or suffix to the cell barcode to make the unique cell identifier, not including the connector string",
+                                "type": "string"
+                            },
+                            "raw_matrix": {
+                                "title": "The accession of associated raw matrix file",
+                                "description": "The accession of the raw matrix that is connected with the subset of cells in this matrix file associated to the corresponding mapping_string.",
+                                "type": "string",
+                                "linkTo": "MatrixFile"
+                            }
+                        }
                     }
                 }
-
             }
         }
     },
@@ -395,7 +395,8 @@
         "txt": ".txt",
         "mtx": ".mtx",
         "rds": ".rds",
-        "mex": ""
+        "mex": "",
+        "hdf5": ".h5ad"
     },
     "changelog": "/profiles/changelogs/matrix_file.md"
 }

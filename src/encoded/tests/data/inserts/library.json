@@ -1393,8 +1393,7 @@
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip2",
-        "channel_id": "A",
-        "cell_mapping_identifier": "library_1"
+        "channel_id": "A"
     },
     {
         "accession": "LATLB604AAA",
@@ -1412,8 +1411,7 @@
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip2",
-        "channel_id": "B",
-        "cell_mapping_identifier": "library_2"
+        "channel_id": "B"
     },
     {
         "accession": "LATLB605AAA",
@@ -1431,8 +1429,7 @@
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip2",
-        "channel_id": "C",
-        "cell_mapping_identifier": "library_3"
+        "channel_id": "C"
     },
     {
         "accession": "LATLB606AAA",
@@ -1450,8 +1447,7 @@
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip3",
-        "channel_id": "A",
-        "cell_mapping_identifier": "library_4"
+        "channel_id": "A"
     },
     {
         "accession": "LATLB607AAA",
@@ -1469,8 +1465,7 @@
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip3",
-        "channel_id": "B",
-        "cell_mapping_identifier": "library_5"
+        "channel_id": "B"
     },
     {
         "accession": "LATLB608AAA",
