@@ -87,6 +87,42 @@ DEFAULT_ITEM_TYPES = [
 ]
 
 
+TOP_HITS_ITEM_TYPES = [
+    'AntibodyLot',
+    'Award',
+    'Biosample',
+    'BiosampleType',
+    'Annotation',
+    'Experiment',
+    'Document',
+    'HumanDonor',
+    'FlyDonor',
+    'WormDonor',
+    'MouseDonor',
+    'GeneticModification',
+    'Page',
+    'Pipeline',
+    'Publication',
+    'Software',
+    'Gene',
+    'Target',
+    'File',
+    'Lab',
+    'GeneSilencingSeries',
+    'ReferenceEpigenome',
+    'OrganismDevelopmentSeries',
+    'TreatmentTimeSeries',
+    'ReplicationTimingSeries',
+    'MatchedSet',
+    'TreatmentConcentrationSeries',
+    'AggregateSeries',
+    'FunctionalCharacterizationExperiment',
+    'TransgenicEnhancerExperiment',
+    'Reference',
+    'PublicationData',
+]
+
+
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request):
     # Note the order of rendering matters for some fields, e.g. AllResponseField and
@@ -637,7 +673,7 @@ def top_hits_raw(context, request):
         },
         response_fields=[
             RawTopHitsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
+                default_item_types=TOP_HITS_ITEM_TYPES
             )
         ]
     )
