@@ -682,4 +682,11 @@ def top_hits_raw(context, request):
 
 @view_config(route_name='top-hits', request_method='GET', permission='search')
 def top_hits(context, request):
-    return {'@type': ['TopHitsSearch']}
+    fr = FieldedResponse(
+        response_fields=[
+            TypeResponseField(
+                at_type=['TopHitsSearch']
+            )
+        ]
+    )
+    return fr.render()
