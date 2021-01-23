@@ -33,7 +33,7 @@ const Search = () => {
     const handleInputChange = (e) => {
         const value = e.target.value;
         setInput(value);
-        debouncedMakeSearchAndSetResults(e.target.value);
+        debouncedMakeSearchAndSetResults(value);
     };
 
     const handleClickAway = () => {
