@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
     Title,
@@ -48,26 +48,47 @@ Section.propTypes = {
 };
 
 
-const Results = ({ input, results }) => (
-    <div className="top-hits-search__suggested-results">
-        {
-            results.map(
-                result => (
-                    <Section
-                        key={result.key}
-                        title={makeTitle(result)}
-                        href={`/search/?type=${result.key}&searchTerm=${input}`}
-                        items={result.hits}
-                    />
+const Results = ({ input, results, handleClickAway }) => {
+    const resultsRef = useRef(null);
+
+    useEffect(
+        () => {
+            const handleClickOutside = (e) => {
+                if (resultsRef.current && !resultsRef.current.contains(e.target)) {
+                    handleClickAway();
+                }
+            };
+            document.addEventListener('click', handleClickOutside, true);
+            return () => {
+                document.removeEventListener('click', handleClickOutside, true);
+            };
+        },
+        [handleClickAway]
+    );
+
+    return (
+        <div className="top-hits-search__suggested-results" ref={resultsRef}>
+            {
+                results.map(
+                    result => (
+                        <Section
+                            key={result.key}
+                            title={makeTitle(result)}
+                            href={`/search/?type=${result.key}&searchTerm=${input}`}
+                            items={result.hits}
+                        />
+                    )
                 )
-            )}
-    </div>
-);
+            }
+        </div>
+    );
+};
 
 
 Results.propTypes = {
     input: PropTypes.string.isRequired,
     results: PropTypes.array.isRequired,
+    handleClickAway: PropTypes.func.isRequired,
 };
 
 

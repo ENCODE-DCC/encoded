@@ -36,10 +36,15 @@ const Search = () => {
         debouncedMakeSearchAndSetResults(e.target.value);
     };
 
+    const handleClickAway = () => {
+        setResults([]);
+    };
+
     return (
         <Form
             input={input}
             handleInputChange={handleInputChange}
+            handleClickAway={handleClickAway}
             results={results}
         />
     );
