@@ -17,21 +17,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -54,7 +41,25 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "validated": true,
-        "cellranger_assay_chemistry": "SC3Pv2"
+        "cellranger_assay_chemistry": "SC3Pv2",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -74,21 +79,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 11323,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -112,7 +104,25 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "30c7622f6007434c37f4c6d30e42d465",
-        "validated": true
+        "validated": true,
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -132,21 +142,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -168,7 +165,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "99b7747497ca250ae236c828b446bde3"
+        "md5sum": "99b7747497ca250ae236c828b446bde3",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -188,21 +203,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 15234,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -225,7 +227,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "9211c130bcfa065071ed1536577aeb66"
+        "md5sum": "9211c130bcfa065071ed1536577aeb66",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -245,21 +265,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -281,7 +288,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "e4c3013fd79898426fd021f168f7126c"
+        "md5sum": "e4c3013fd79898426fd021f168f7126c",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -301,21 +326,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 10425,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -338,7 +350,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "7265bd6e16c29e0a034266e9472f83a6"
+        "md5sum": "7265bd6e16c29e0a034266e9472f83a6",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -358,21 +388,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -394,7 +411,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "7307c6d5d09aa4cb31a3617e9052e00e"
+        "md5sum": "7307c6d5d09aa4cb31a3617e9052e00e",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -414,21 +449,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 11938,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -451,7 +473,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "1c24591c682193508194b782331bc4b1"
+        "md5sum": "1c24591c682193508194b782331bc4b1",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -470,12 +510,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 239104
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -487,9 +521,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -498,7 +529,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "6ebe5d60e64c75703f9f184506d4cba6"
+        "md5sum": "6ebe5d60e64c75703f9f184506d4cba6",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 239104
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -517,12 +562,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 129394
-            }
-        ],
         "observation_count": 20334,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -534,9 +573,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -546,7 +582,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "6ac72519c2b397ac1c63a45a1991b717"
+        "md5sum": "6ac72519c2b397ac1c63a45a1991b717",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 129394
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -565,12 +615,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 600
-            }
-        ],
         "observation_count": 20332,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -582,9 +626,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -594,7 +635,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "5d95e57866378889cdb3fe3f7ece7d91"
+        "md5sum": "5d95e57866378889cdb3fe3f7ece7d91",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 600
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -613,12 +668,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 265435
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -630,9 +679,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -641,7 +687,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "300b1718edfd3209c692ae44e5480c1a"
+        "md5sum": "300b1718edfd3209c692ae44e5480c1a",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 265435
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -660,12 +720,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 121134
-            }
-        ],
         "observation_count": 10323,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -677,9 +731,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -689,7 +740,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "2991358e34d1fc9a4d0123ad8c5e7b3f"
+        "md5sum": "2991358e34d1fc9a4d0123ad8c5e7b3f",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 121134
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -708,12 +773,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 654
-            }
-        ],
         "observation_count": 10655,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -725,9 +784,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -736,7 +792,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "a5edf082c71bf697b12034b785344be9"
+        "md5sum": "a5edf082c71bf697b12034b785344be9",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 654
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -755,12 +825,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 254644
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -772,9 +836,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -783,7 +844,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "33c5bc7bae5e9e726a59f21abafaa3f1"
+        "md5sum": "33c5bc7bae5e9e726a59f21abafaa3f1",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 254644
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -802,12 +877,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 103241
-            }
-        ],
         "observation_count": 100239,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -819,9 +888,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -831,7 +897,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "8d2c603855b454477cce0b4a49bca68e"
+        "md5sum": "8d2c603855b454477cce0b4a49bca68e",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 103241
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -850,12 +930,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 544
-            }
-        ],
         "observation_count": 9387,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -867,9 +941,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -878,7 +949,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "6ff1ed6b1aed8e606bdae1095a34e240"
+        "md5sum": "6ff1ed6b1aed8e606bdae1095a34e240",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 544
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -897,12 +982,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 267755
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -914,9 +993,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -925,7 +1001,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "6aa4a2f7c22b209ebaa189201e50eeba"
+        "md5sum": "6aa4a2f7c22b209ebaa189201e50eeba",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 267755
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -944,12 +1034,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 103400
-            }
-        ],
         "observation_count": 11858,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -961,9 +1045,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -973,7 +1054,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "527175445d30ebfdf549fa3d3c2899db"
+        "md5sum": "527175445d30ebfdf549fa3d3c2899db",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 103400
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -992,12 +1087,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 590
-            }
-        ],
         "observation_count": 9833,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1009,9 +1098,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -1020,7 +1106,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "de69cd4312f07478d21c36198e13b7cb"
+        "md5sum": "de69cd4312f07478d21c36198e13b7cb",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 590
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1039,12 +1139,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 266211
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1056,9 +1150,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1067,7 +1158,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "323684613c851a8279e3612d003a0e81"
+        "md5sum": "323684613c851a8279e3612d003a0e81",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 266211
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1086,12 +1191,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 102311
-            }
-        ],
         "observation_count": 12596,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1103,9 +1202,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1115,7 +1211,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "4ac30d04e8f1f2bd1e7f594603f68fd3"
+        "md5sum": "4ac30d04e8f1f2bd1e7f594603f68fd3",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 102311
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1134,12 +1244,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 511
-            }
-        ],
         "observation_count": 8342,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1151,9 +1255,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -1162,7 +1263,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "478c983e2c88818e089d2509b56970c9"
+        "md5sum": "478c983e2c88818e089d2509b56970c9",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 511
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1181,12 +1296,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1198,9 +1307,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1209,7 +1315,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "32b6f43792a5d7058f24fc909a4d0e4b"
+        "md5sum": "32b6f43792a5d7058f24fc909a4d0e4b",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1228,12 +1348,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 11239,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1245,9 +1359,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1257,7 +1368,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "69f6e698ed84a669460fb541c1fcdcfd"
+        "md5sum": "69f6e698ed84a669460fb541c1fcdcfd",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1276,12 +1401,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 600
-            }
-        ],
         "observation_count": 9283,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1293,9 +1412,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -1304,7 +1420,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "418afe4cc7f6577acea329736c8e3a45"
+        "md5sum": "418afe4cc7f6577acea329736c8e3a45",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 600
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1323,12 +1453,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1340,9 +1464,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1351,7 +1472,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "f587b29a7531369ba45fbf01533e3788"
+        "md5sum": "f587b29a7531369ba45fbf01533e3788",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1370,12 +1505,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 12985,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1387,9 +1516,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1399,7 +1525,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "0a18cf5fd2e5f84d748e1d22dac0852b"
+        "md5sum": "0a18cf5fd2e5f84d748e1d22dac0852b",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1418,12 +1558,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 600
-            }
-        ],
         "observation_count": 9284,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1435,9 +1569,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -1446,7 +1577,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "8d10f823023a57a1013401ebee09e3e0"
+        "md5sum": "8d10f823023a57a1013401ebee09e3e0",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 600
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1465,12 +1610,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1482,9 +1621,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1493,7 +1629,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "53b15901f2f49f50c7d536cccf98d359"
+        "md5sum": "53b15901f2f49f50c7d536cccf98d359",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1512,12 +1662,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 10484,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1529,9 +1673,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1541,7 +1682,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "438b7e0bfd7ef14e975a2ccbe7a2ecc7"
+        "md5sum": "438b7e0bfd7ef14e975a2ccbe7a2ecc7",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1560,12 +1715,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 600
-            }
-        ],
         "observation_count": 9838,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1577,9 +1726,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -1588,7 +1734,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "ceae622351e08bca8a11013640b05a4f"
+        "md5sum": "ceae622351e08bca8a11013640b05a4f",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 600
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1607,12 +1767,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1624,9 +1778,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1635,7 +1786,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "108943fd756ee170a8d8956da80da870"
+        "md5sum": "108943fd756ee170a8d8956da80da870",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1654,12 +1819,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 11831,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1671,9 +1830,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1683,7 +1839,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "fa3f6b455dadef4efd03335a341b9f41"
+        "md5sum": "fa3f6b455dadef4efd03335a341b9f41",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1702,12 +1872,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 600
-            }
-        ],
         "observation_count": 8234,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1719,9 +1883,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -1730,7 +1891,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "c7b6a486158edc42c1080b688afe2a47"
+        "md5sum": "c7b6a486158edc42c1080b688afe2a47",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 600
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1749,12 +1924,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1766,9 +1935,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1777,7 +1943,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "27239be2723f4ca3e3b4935698faf63a"
+        "md5sum": "27239be2723f4ca3e3b4935698faf63a",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1796,12 +1976,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 12993,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1813,9 +1987,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1825,7 +1996,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "b461a1df2f8479ec0a491b8de9e8ea58"
+        "md5sum": "b461a1df2f8479ec0a491b8de9e8ea58",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1844,12 +2029,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 600
-            }
-        ],
         "observation_count": 8431,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1861,9 +2040,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -1872,7 +2048,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "1691e994fac00f56c365bf37d6caab85"
+        "md5sum": "1691e994fac00f56c365bf37d6caab85",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 600
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1891,12 +2081,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1908,9 +2092,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1919,7 +2100,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "1490c316e1615d0564486f1e4ad6ab3b"
+        "md5sum": "1490c316e1615d0564486f1e4ad6ab3b",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1938,12 +2133,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 13982,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -1955,9 +2144,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -1967,7 +2153,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "7d412ebea9b803c26b3a48597854bbfe"
+        "md5sum": "7d412ebea9b803c26b3a48597854bbfe",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -1986,12 +2186,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 600
-            }
-        ],
         "observation_count": 9210,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2003,9 +2197,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -2014,7 +2205,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "4f175e02e359f2a1eb683879191f15eb"
+        "md5sum": "4f175e02e359f2a1eb683879191f15eb",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 600
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2033,12 +2238,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2050,9 +2249,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2061,7 +2257,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "25dcbbd255177cc82b809216909a821a"
+        "md5sum": "25dcbbd255177cc82b809216909a821a",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2080,12 +2290,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 14982,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2097,9 +2301,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2109,7 +2310,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "a01fe5c058eaf74f619948a6cd66c6ac"
+        "md5sum": "a01fe5c058eaf74f619948a6cd66c6ac",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2128,12 +2343,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 600
-            }
-        ],
         "observation_count": 8837,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2145,9 +2354,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -2156,7 +2362,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "f65b01abad5b21a92c6ff5c83e18ad41"
+        "md5sum": "f65b01abad5b21a92c6ff5c83e18ad41",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 600
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2175,12 +2395,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2192,9 +2406,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2203,7 +2414,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "a7f02c33c7cd3f9461006e4c1e4b9fc7"
+        "md5sum": "a7f02c33c7cd3f9461006e4c1e4b9fc7",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2222,12 +2447,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100000
-            }
-        ],
         "observation_count": 14872,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2239,9 +2458,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2251,7 +2467,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "8d5465e30bc2c7c9427af64828b90083"
+        "md5sum": "8d5465e30bc2c7c9427af64828b90083",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2270,12 +2500,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 612
-            }
-        ],
         "observation_count": 723,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2287,9 +2511,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -2298,7 +2519,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "be7a22b3db14382eef69507e0ec7c9da"
+        "md5sum": "be7a22b3db14382eef69507e0ec7c9da",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 612
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2317,12 +2552,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 294882
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2334,9 +2563,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2345,7 +2571,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "04b52cff73d40e2bed5c3b38037f069b"
+        "md5sum": "04b52cff73d40e2bed5c3b38037f069b",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 294882
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2364,12 +2604,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 119204
-            }
-        ],
         "observation_count": 18273,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2381,9 +2615,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2393,7 +2624,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "468dabd840c01a9327cb83388c170927"
+        "md5sum": "468dabd840c01a9327cb83388c170927",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 119204
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2412,12 +2657,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 620
-            }
-        ],
         "observation_count": 8772,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2429,9 +2668,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -2440,7 +2676,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "f2c2bd6ecc8e015cda0837e040fddc57"
+        "md5sum": "f2c2bd6ecc8e015cda0837e040fddc57",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 620
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2459,12 +2709,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 293848
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2476,9 +2720,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2487,7 +2728,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "5efae53c8b966af196df7f914cd75cda"
+        "md5sum": "5efae53c8b966af196df7f914cd75cda",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 293848
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2506,12 +2761,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 119393
-            }
-        ],
         "observation_count": 18476,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2523,9 +2772,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2535,7 +2781,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "2079a27a62107426c1c58962108e907e"
+        "md5sum": "2079a27a62107426c1c58962108e907e",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 119393
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2554,12 +2814,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 593
-            }
-        ],
         "observation_count": 9282,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2571,9 +2825,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -2582,7 +2833,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "4fce4de132386bc0ff8f62f4b8485b49"
+        "md5sum": "4fce4de132386bc0ff8f62f4b8485b49",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 593
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2601,12 +2866,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 200831
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2618,9 +2877,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2629,7 +2885,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "b6d6168361bafb250824f8fcfbe835dd"
+        "md5sum": "b6d6168361bafb250824f8fcfbe835dd",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 200831
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2648,12 +2918,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 102011
-            }
-        ],
         "observation_count": 16283,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2665,9 +2929,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -2677,7 +2938,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "42963bbbfa5fef9b7499488c9a67c9e0"
+        "md5sum": "42963bbbfa5fef9b7499488c9a67c9e0",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 102011
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2696,12 +2971,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 548
-            }
-        ],
         "observation_count": 9281,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
@@ -2713,9 +2982,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -2724,7 +2990,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "699e92af12999925056ef9e411d5c20e"
+        "md5sum": "699e92af12999925056ef9e411d5c20e",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 548
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2742,17 +3022,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -2768,7 +3039,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "5bb99d4f45a03fec10d05236dee52d69"
+        "md5sum": "5bb99d4f45a03fec10d05236dee52d69",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2786,17 +3071,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 19387,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -2813,7 +3089,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "29356483c34695c24b60eec707076ab5"
+        "md5sum": "29356483c34695c24b60eec707076ab5",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2831,17 +3121,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -2857,7 +3138,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "5eb05afff324450fb1e4de66b498fa8a"
+        "md5sum": "5eb05afff324450fb1e4de66b498fa8a",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2875,17 +3170,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 19844,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -2902,7 +3188,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "a943c3ecc8723adbaf16dbb30fa26e41"
+        "md5sum": "a943c3ecc8723adbaf16dbb30fa26e41",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2920,17 +3220,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -2946,7 +3237,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "25db035202452bb1e699fb04918e51d2"
+        "md5sum": "25db035202452bb1e699fb04918e51d2",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -2964,17 +3269,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 18746,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -2991,7 +3287,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "6a769a24ef4b24d056314af1ca876470"
+        "md5sum": "6a769a24ef4b24d056314af1ca876470",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3009,17 +3319,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3035,7 +3336,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "78b54e57c25174f01f44ac77c7e15cdd"
+        "md5sum": "78b54e57c25174f01f44ac77c7e15cdd",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3053,17 +3368,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 16253,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3080,7 +3386,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "5ced08c46582127943ad2d32224ede49"
+        "md5sum": "5ced08c46582127943ad2d32224ede49",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3098,17 +3418,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3124,7 +3435,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "7db2ca9aa535412215a16a12263813f1"
+        "md5sum": "7db2ca9aa535412215a16a12263813f1",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3142,17 +3467,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 12949,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3169,7 +3485,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "47b8d232b7ca4bff32e68c7a4ab167a3"
+        "md5sum": "47b8d232b7ca4bff32e68c7a4ab167a3",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3187,17 +3517,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3213,7 +3534,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "e4725769cbde08eb02e3cbe5b298b71f"
+        "md5sum": "e4725769cbde08eb02e3cbe5b298b71f",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3231,17 +3566,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 20384,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3258,7 +3584,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "b82ac0119137f8472a2922b7b46eaa14"
+        "md5sum": "b82ac0119137f8472a2922b7b46eaa14",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3276,17 +3616,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3302,7 +3633,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "990d20f4aa2794aa959763cdf2661cb9"
+        "md5sum": "990d20f4aa2794aa959763cdf2661cb9",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3320,17 +3665,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 29332,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3347,7 +3683,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "fe0f36ac13763d3272a959d3a5157d5c"
+        "md5sum": "fe0f36ac13763d3272a959d3a5157d5c",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3365,17 +3715,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3391,7 +3732,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "6391d53c935a8defaccfbcca8ce40631"
+        "md5sum": "6391d53c935a8defaccfbcca8ce40631",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3409,17 +3764,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 17363,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3436,7 +3782,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "96a9e855f208144357f0d62f00c64148"
+        "md5sum": "96a9e855f208144357f0d62f00c64148",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3454,17 +3814,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3483,7 +3834,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "23b31847f5537ef302dd7486c7736d0b"
+        "md5sum": "23b31847f5537ef302dd7486c7736d0b",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3502,17 +3867,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 13922,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3532,7 +3888,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "9c37badf95a2c2d63ae4ce700582e142"
+        "md5sum": "9c37badf95a2c2d63ae4ce700582e142",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3550,17 +3920,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3579,7 +3940,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "4494f30178e1bdc09a5446954e0ab9e0"
+        "md5sum": "4494f30178e1bdc09a5446954e0ab9e0",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3598,17 +3973,8 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33000
-            }
-        ],
         "observation_count": 19388,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3628,7 +3994,21 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "cd4a6f4051a67879c87089a32e606573"
+        "md5sum": "cd4a6f4051a67879c87089a32e606573",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33000
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3648,21 +4028,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3681,7 +4048,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "152cebddcc8ddec8a4ef313cc735ba10"
+        "md5sum": "152cebddcc8ddec8a4ef313cc735ba10",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3701,21 +4086,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 29488,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3735,7 +4107,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "2d5af333d24dc26d73078f61bd590719"
+        "md5sum": "2d5af333d24dc26d73078f61bd590719",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3755,21 +4145,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3788,7 +4165,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "6d7ac66b1cec9b904d7b7b3a722502ba"
+        "md5sum": "6d7ac66b1cec9b904d7b7b3a722502ba",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3808,21 +4203,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 12191,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3842,7 +4224,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "48fa889dd89f1188103c462d26582a6f"
+        "md5sum": "48fa889dd89f1188103c462d26582a6f",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3862,21 +4262,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -3895,7 +4282,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "dbc5d9dc9287d556c3e9ae0fa572fbcb"
+        "md5sum": "dbc5d9dc9287d556c3e9ae0fa572fbcb",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3915,21 +4320,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 10472,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -3949,7 +4341,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "2ec1e229b8cb74bd328e9b5b880632ad"
+        "md5sum": "2ec1e229b8cb74bd328e9b5b880632ad",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -3969,21 +4379,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -4002,7 +4399,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "0cc71f0abe3ca88354420c48f412f511"
+        "md5sum": "0cc71f0abe3ca88354420c48f412f511",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4022,21 +4437,8 @@
             "Ensembl gene ID",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 18283,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4056,7 +4458,25 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "399aa3bc4f1009addf1067cd8892ecfd"
+        "md5sum": "399aa3bc4f1009addf1067cd8892ecfd",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4076,22 +4496,8 @@
             "gene symbol",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 20192,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "log, natural",
-        "value_units": "UMI",
-        "normalized": true,
-        "normalization_method": "LogNormalize",
         "derivation_process": [
             "merging",
             "depth normalization"
@@ -4107,30 +4513,49 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "filtering_cutoffs": [
+        "md5sum": "48912b433c9105e6b4f32c79f6b09f6b",
+        "layers": [
             {
-                "cutoff_value": 25000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "maximum",
-                "cutoff_proportion": "fibroblasts"
-            },
-            {
-                "cutoff_value": 1000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "minimum"
-            },
-            {
-                "cutoff_value": 15,
-                "cutoff_units": "percent mitochondrial/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 3,
-                "cutoff_units": "cells/gene",
-                "cutoff_type": "minimum"
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "log, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum",
+                        "cutoff_proportion": "fibroblasts"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 15,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
             }
-        ],
-        "md5sum": "48912b433c9105e6b4f32c79f6b09f6b"
+        ]
     },
     {
         "aliases": [
@@ -4148,18 +4573,8 @@
         "feature_keys": [
             "gene symbol"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            }
-        ],
         "observation_count": 82379,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "log, natural",
-        "value_units": "UMI",
-        "normalized": true,
-        "normalization_method": "LogNormalize",
         "derivation_process": [
             "merging",
             "depth normalization"
@@ -4179,29 +4594,44 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "filtering_cutoffs": [
+        "md5sum": "2dd4370d08bdf8666b859c888b1f7006",
+        "layers": [
             {
-                "cutoff_value": 25000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 800,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "minimum"
-            },
-            {
-                "cutoff_value": 15,
-                "cutoff_units": "percent mitochondrial/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 3,
-                "cutoff_units": "cells/gene",
-                "cutoff_type": "minimum"
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    }
+                ],
+                "value_scale": "log, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 800,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 15,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
             }
-        ],
-        "md5sum": "2dd4370d08bdf8666b859c888b1f7006"
+        ]
     },
     {
         "aliases": [
@@ -4220,18 +4650,8 @@
         "feature_keys": [
             "gene symbol"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            }
-        ],
         "observation_count": 18293,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "log, natural",
-        "value_units": "UMI",
-        "normalized": true,
-        "normalization_method": "LogNormalize",
         "derivation_process": [
             "merging",
             "depth normalization"
@@ -4246,29 +4666,44 @@
         "s3_uri": "s3://submissions-czi012eye/chen_2020/19D015_macular_outs/filtered_feature_bc_matrix.h5",
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "filtering_cutoffs": [
+        "md5sum": "98b5746b0f69e8be8c888e3c1d74b150",
+        "layers": [
             {
-                "cutoff_value": 25000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 1000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "minimum"
-            },
-            {
-                "cutoff_value": 10,
-                "cutoff_units": "percent mitochondrial/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 3,
-                "cutoff_units": "cells/gene",
-                "cutoff_type": "minimum"
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    }
+                ],
+                "value_scale": "log, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 10,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
             }
-        ],
-        "md5sum": "98b5746b0f69e8be8c888e3c1d74b150"
+        ]
     },
     {
         "aliases": [
@@ -4288,22 +4723,8 @@
             "gene symbol",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 18722,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "log, natural",
-        "value_units": "UMI",
-        "normalized": true,
-        "normalization_method": "LogNormalize",
         "derivation_process": [
             "merging",
             "depth normalization"
@@ -4317,29 +4738,48 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "filtering_cutoffs": [
+        "md5sum": "ee656a7331492beca246fcb1b503fd33",
+        "layers": [
             {
-                "cutoff_value": 25000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 1500,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "minimum"
-            },
-            {
-                "cutoff_value": 20,
-                "cutoff_units": "percent mitochondrial/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 3,
-                "cutoff_units": "cells/gene",
-                "cutoff_type": "minimum"
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "log, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 1500,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 20,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
             }
-        ],
-        "md5sum": "ee656a7331492beca246fcb1b503fd33"
+        ]
     },
     {
         "aliases": [
@@ -4359,22 +4799,8 @@
             "gene symbol",
             "antibody target"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 329950
-            },
-            {
-                "feature_type": "antibody capture",
-                "feature_count": 50
-            }
-        ],
         "observation_count": 29292,
         "dataset": "anna-greka:large_test_dataset",
-        "value_scale": "log1p, natural",
-        "value_units": "UMI",
-        "normalized": true,
-        "normalization_method": "LogNormalize",
         "derivation_process": [
             "merging",
             "depth normalization"
@@ -4388,29 +4814,48 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "filtering_cutoffs": [
+        "md5sum": "24aaa927d40e8680ea107684c39fb442",
+        "layers": [
             {
-                "cutoff_value": 25000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 1000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "minimum"
-            },
-            {
-                "cutoff_value": 15,
-                "cutoff_units": "percent mitochondrial/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 3,
-                "cutoff_units": "cells/gene",
-                "cutoff_type": "minimum"
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "log1p, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 15,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
             }
-        ],
-        "md5sum": "24aaa927d40e8680ea107684c39fb442"
+        ]
     },
     {
         "aliases": [
@@ -4430,12 +4875,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "transcription factor",
-                "feature_count": 540
-            }
-        ],
         "observation_count": 5399,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4447,9 +4886,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4458,7 +4894,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "1dad2d4dffe26a4b09a0fddc6fc52bd0"
+        "md5sum": "1dad2d4dffe26a4b09a0fddc6fc52bd0",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "transcription factor",
+                        "feature_count": 540
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4478,12 +4928,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "transcription factor",
-                "feature_count": 540
-            }
-        ],
         "observation_count": 4939,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4495,9 +4939,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4506,7 +4947,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "9417f1615b2b78a5c11e15093f562e69"
+        "md5sum": "9417f1615b2b78a5c11e15093f562e69",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "transcription factor",
+                        "feature_count": 540
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4526,12 +4981,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "transcription factor",
-                "feature_count": 540
-            }
-        ],
         "observation_count": 5533,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4543,9 +4992,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4554,7 +5000,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "5b04114fa2a5cc26c717c5ece363534f"
+        "md5sum": "5b04114fa2a5cc26c717c5ece363534f",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "transcription factor",
+                        "feature_count": 540
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4574,12 +5034,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "transcription factor",
-                "feature_count": 540
-            }
-        ],
         "observation_count": 7238,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4591,9 +5045,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4602,7 +5053,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "de9f4501f7d812f43bd5121e83928641"
+        "md5sum": "de9f4501f7d812f43bd5121e83928641",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "transcription factor",
+                        "feature_count": 540
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4622,12 +5087,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "transcription factor",
-                "feature_count": 540
-            }
-        ],
         "observation_count": 5122,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4639,9 +5098,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4650,7 +5106,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "e44dc98c2ad7ce7b3e9c0701e0b817a9"
+        "md5sum": "e44dc98c2ad7ce7b3e9c0701e0b817a9",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "transcription factor",
+                        "feature_count": 540
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4670,12 +5140,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "transcription factor",
-                "feature_count": 610
-            }
-        ],
         "observation_count": 4992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4687,9 +5151,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4698,7 +5159,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "f9f7c568df684ed4aef14410d82b49d4"
+        "md5sum": "f9f7c568df684ed4aef14410d82b49d4",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "transcription factor",
+                        "feature_count": 610
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4718,12 +5193,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "transcription factor",
-                "feature_count": 540
-            }
-        ],
         "observation_count": 6331,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4735,9 +5204,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4746,7 +5212,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "b39448f475500107355f229ecccb027b"
+        "md5sum": "b39448f475500107355f229ecccb027b",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "transcription factor",
+                        "feature_count": 540
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4766,12 +5246,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "transcription factor",
-                "feature_count": 521
-            }
-        ],
         "observation_count": 5100,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4783,9 +5257,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4794,7 +5265,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "11aa5183f93bf123c387ef7e0e0dd444"
+        "md5sum": "11aa5183f93bf123c387ef7e0e0dd444",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "transcription factor",
+                        "feature_count": 521
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4814,12 +5299,6 @@
         "feature_keys": [
             "motif ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "transcription factor",
-                "feature_count": 542
-            }
-        ],
         "observation_count": 4992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4831,9 +5310,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -4842,7 +5318,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "2fdbca0bb312f02efdc84fef82b914a6"
+        "md5sum": "2fdbca0bb312f02efdc84fef82b914a6",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "transcription factor",
+                        "feature_count": 542
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4862,12 +5352,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 99231
-            }
-        ],
         "observation_count": 9818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4879,9 +5363,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -4891,7 +5372,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "0da463fc022a076ec9cc6c635da0934f"
+        "md5sum": "0da463fc022a076ec9cc6c635da0934f",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 99231
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4911,12 +5406,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 99231
-            }
-        ],
         "observation_count": 9818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4928,9 +5417,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -4940,7 +5426,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "a0e14d238f06919dca69dd275c10b38e"
+        "md5sum": "a0e14d238f06919dca69dd275c10b38e",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 99231
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -4960,12 +5460,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 99231
-            }
-        ],
         "observation_count": 10292,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -4977,9 +5471,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -4989,7 +5480,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "b691aa0778c3213e7b318efa558fe069"
+        "md5sum": "b691aa0778c3213e7b318efa558fe069",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 99231
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5009,12 +5514,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100122
-            }
-        ],
         "observation_count": 9118,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5026,9 +5525,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5038,7 +5534,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "c829aceaff13ad01453c4b39ca1f856f"
+        "md5sum": "c829aceaff13ad01453c4b39ca1f856f",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100122
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5058,12 +5568,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 110332
-            }
-        ],
         "observation_count": 10211,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5075,9 +5579,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5087,7 +5588,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "f65eb489476d069394924142c4d97060"
+        "md5sum": "f65eb489476d069394924142c4d97060",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 110332
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5107,12 +5622,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 100211
-            }
-        ],
         "observation_count": 9981,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5124,9 +5633,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5136,7 +5642,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "149527139b80175dc1cce36950f547f2"
+        "md5sum": "149527139b80175dc1cce36950f547f2",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 100211
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5156,12 +5676,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 120042
-            }
-        ],
         "observation_count": 9811,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5173,9 +5687,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5185,7 +5696,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "4c792fc634bff7ff6c3687cca73dade3"
+        "md5sum": "4c792fc634bff7ff6c3687cca73dade3",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 120042
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5205,12 +5730,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 150399
-            }
-        ],
         "observation_count": 9118,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5222,9 +5741,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5234,7 +5750,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "1dd3e3d0a78ebdae3be61867d2faea2b"
+        "md5sum": "1dd3e3d0a78ebdae3be61867d2faea2b",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 150399
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5254,12 +5784,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 142921
-            }
-        ],
         "observation_count": 7818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5271,9 +5795,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5283,7 +5804,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "f685e401feec1d36b8e0960a9218c616"
+        "md5sum": "f685e401feec1d36b8e0960a9218c616",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 142921
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5303,12 +5838,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 221022
-            }
-        ],
         "observation_count": 12992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5320,9 +5849,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5332,7 +5858,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "e7effaa434b25ec6a54aa29b11cca271"
+        "md5sum": "e7effaa434b25ec6a54aa29b11cca271",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 221022
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5352,12 +5892,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 201829
-            }
-        ],
         "observation_count": 13992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5369,9 +5903,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5381,7 +5912,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "9b4db05bd5478ab9db71d3bed8e18ef7"
+        "md5sum": "9b4db05bd5478ab9db71d3bed8e18ef7",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 201829
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5401,12 +5946,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 200120
-            }
-        ],
         "observation_count": 12885,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5418,9 +5957,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5430,7 +5966,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "424b260516ccdbf78a7d37ef78575c82"
+        "md5sum": "424b260516ccdbf78a7d37ef78575c82",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 200120
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5450,12 +6000,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 210231
-            }
-        ],
         "observation_count": 12818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5467,9 +6011,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5479,7 +6020,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "6937b150fd7a8c025fadf5cb565465b7"
+        "md5sum": "6937b150fd7a8c025fadf5cb565465b7",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 210231
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5499,12 +6054,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 200231
-            }
-        ],
         "observation_count": 12818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5516,9 +6065,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5528,7 +6074,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "d850a65365f474f954f1801320f02aec"
+        "md5sum": "d850a65365f474f954f1801320f02aec",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 200231
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5548,12 +6108,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 211231
-            }
-        ],
         "observation_count": 11818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5565,9 +6119,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5577,7 +6128,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "e0ea7a30c2b95c4a03181a8f51a35809"
+        "md5sum": "e0ea7a30c2b95c4a03181a8f51a35809",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 211231
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5597,12 +6162,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 220231
-            }
-        ],
         "observation_count": 13118,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5614,9 +6173,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5626,7 +6182,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "8a9fcb515f6bdd738b1e064c46134ebb"
+        "md5sum": "8a9fcb515f6bdd738b1e064c46134ebb",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 220231
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5646,12 +6216,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 200312
-            }
-        ],
         "observation_count": 12991,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5663,9 +6227,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5675,7 +6236,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "5c0cee32250d2309b049eb1168da1f10"
+        "md5sum": "5c0cee32250d2309b049eb1168da1f10",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 200312
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5695,12 +6270,6 @@
         "feature_keys": [
             "genomic coordinates"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "peak",
-                "feature_count": 268231
-            }
-        ],
         "observation_count": 11318,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -5712,9 +6281,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "fragment ends",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "peak calling",
@@ -5724,7 +6290,21 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "md5sum": "c5b4cf72236a68bf9c548bf1fdf73212"
+        "md5sum": "c5b4cf72236a68bf9c548bf1fdf73212",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "peak",
+                        "feature_count": 268231
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "fragment ends",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5744,12 +6324,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5760,9 +6334,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -5770,7 +6341,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "2e5f4a5643dff7e46e1fa164722b082d"
+        "md5sum": "2e5f4a5643dff7e46e1fa164722b082d",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5790,12 +6375,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5806,9 +6385,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -5816,7 +6392,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "98bbebbf557750e83bf42ed0974e22bd"
+        "md5sum": "98bbebbf557750e83bf42ed0974e22bd",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5836,12 +6426,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5852,9 +6436,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -5862,7 +6443,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "ea84ff21512a32c379b7cbf77618b728"
+        "md5sum": "ea84ff21512a32c379b7cbf77618b728",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5882,12 +6477,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5898,9 +6487,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -5908,7 +6494,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "b02bc4994123ab4b4644aad304118b4c"
+        "md5sum": "b02bc4994123ab4b4644aad304118b4c",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5928,12 +6528,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5944,9 +6538,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -5954,7 +6545,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "9718d87b95adae875d0a2cfc2c64922d"
+        "md5sum": "9718d87b95adae875d0a2cfc2c64922d",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -5974,12 +6579,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5990,9 +6589,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -6000,7 +6596,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "dc92ebeafce2cb4c9730341e6efc65be"
+        "md5sum": "dc92ebeafce2cb4c9730341e6efc65be",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6020,12 +6630,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6036,9 +6640,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -6046,7 +6647,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "cba03d18a91877d5677becaf15f195fa"
+        "md5sum": "cba03d18a91877d5677becaf15f195fa",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6066,12 +6681,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6082,9 +6691,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -6092,7 +6698,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "cfedc56fd843f516f0b69c06c3d52777"
+        "md5sum": "cfedc56fd843f516f0b69c06c3d52777",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6112,12 +6732,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6128,9 +6742,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -6138,7 +6749,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "c4e2fe787e7dc34adfd5135984cf9cef"
+        "md5sum": "c4e2fe787e7dc34adfd5135984cf9cef",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6158,12 +6783,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 20991,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6174,9 +6793,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -6185,7 +6801,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "0b62d1ec99c15838826a0bac54ce732d"
+        "md5sum": "0b62d1ec99c15838826a0bac54ce732d",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6205,12 +6835,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 19282,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6221,9 +6845,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -6232,7 +6853,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "b3c8e02b7f150a1567d840841ae2ea52"
+        "md5sum": "b3c8e02b7f150a1567d840841ae2ea52",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6252,12 +6887,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 21882,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6268,9 +6897,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -6279,7 +6905,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "632a9adf153040d5eb2bdfd96c53c5bd"
+        "md5sum": "632a9adf153040d5eb2bdfd96c53c5bd",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6300,12 +6940,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 18727,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6316,9 +6950,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -6327,7 +6958,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "7043cc8ac76c761cacbb3ad6868c2fda"
+        "md5sum": "7043cc8ac76c761cacbb3ad6868c2fda",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6348,12 +6993,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 17882,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6364,9 +7003,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -6375,7 +7011,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "44a9817316acdba0872cb2f8c9bb60a0"
+        "md5sum": "44a9817316acdba0872cb2f8c9bb60a0",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6396,12 +7046,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 16222,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6412,9 +7056,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -6423,7 +7064,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "e788b4b1a5ed6dc74e341fbd6d34b378"
+        "md5sum": "e788b4b1a5ed6dc74e341fbd6d34b378",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6444,12 +7099,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 14829,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6460,9 +7109,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -6471,7 +7117,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "34e36c93b861aeb18ca667b0234345c0"
+        "md5sum": "34e36c93b861aeb18ca667b0234345c0",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6492,12 +7152,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 12992,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6508,9 +7162,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -6519,7 +7170,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "e84139020ca36418fc7c835ff98e56c4"
+        "md5sum": "e84139020ca36418fc7c835ff98e56c4",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6540,12 +7205,6 @@
         "feature_keys": [
             "Ensembl gene ID"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 33029
-            }
-        ],
         "observation_count": 18823,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6556,9 +7215,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "linear",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification",
@@ -6567,7 +7223,21 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "md5sum": "86e38ceabcc13bffa0e6093e17c30bfc"
+        "md5sum": "86e38ceabcc13bffa0e6093e17c30bfc",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 33029
+                    }
+                ],
+                "value_scale": "linear",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "aliases": [
@@ -6587,12 +7257,6 @@
         "feature_keys": [
             "gene symbol"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 20919
-            }
-        ],
         "observation_count": 18292,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6602,32 +7266,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "log1p, base 10",
-        "value_units": "UMI",
-        "normalized": true,
-        "normalization_method": "cellranger aggr read depth normalization",
-        "filtering_cutoffs": [
-            {
-                "cutoff_value": 20000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 1000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "minimum"
-            },
-            {
-                "cutoff_value": 10,
-                "cutoff_units": "percent mitochondrial/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 3,
-                "cutoff_units": "cells/gene",
-                "cutoff_type": "minimum"
-            }
-        ],
         "derivation_process": [
             "merging",
             "depth normalization"
@@ -6635,7 +7273,44 @@
         "software": [
             "cellranger aggr 4.0"
         ],
-        "md5sum": "b80320ebaa285af7a6880dbbd6795134"
+        "md5sum": "b80320ebaa285af7a6880dbbd6795134",
+        "layers": [
+            {
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 20919
+                    }
+                ],
+                "value_scale": "log1p, base 10",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "cellranger aggr read depth normalization",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 20000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 10,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
+            }
+        ]
     },
     {
         "aliases": [
@@ -6657,12 +7332,6 @@
         "feature_keys": [
             "gene symbol"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 20919
-            }
-        ],
         "observation_count": 50292,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6674,33 +7343,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "log1p, base 10",
-        "value_units": "UMI",
-        "normalized": true,
-        "normalization_method": "cellranger aggr read depth normalization",
-        "filtering_cutoffs": [
-            {
-                "cutoff_value": 20000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "maximum",
-                "cutoff_proportion": "epithelial cells 1"
-            },
-            {
-                "cutoff_value": 1000,
-                "cutoff_units": "genes/cell",
-                "cutoff_type": "minimum"
-            },
-            {
-                "cutoff_value": 10,
-                "cutoff_units": "percent mitochondrial/cell",
-                "cutoff_type": "maximum"
-            },
-            {
-                "cutoff_value": 3,
-                "cutoff_units": "cells/gene",
-                "cutoff_type": "minimum"
-            }
-        ],
         "derivation_process": [
             "merging",
             "depth normalization",
@@ -6709,7 +7351,45 @@
         "software": [
             "cellranger aggr 4.0"
         ],
-        "md5sum": "2e883306013203954eb1b69ae063eef1"
+        "md5sum": "2e883306013203954eb1b69ae063eef1",
+        "layers": [
+            {
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 20919
+                    }
+                ],
+                "value_scale": "log1p, base 10",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "cellranger aggr read depth normalization",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 20000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum",
+                        "cutoff_proportion": "epithelial cells 1"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 10,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
+            }
+        ]
     },
     {
         "aliases": [
@@ -6727,12 +7407,6 @@
         "feature_keys": [
             "gene symbol"
         ],
-        "feature_counts": [
-            {
-                "feature_type": "gene",
-                "feature_count": 23213
-            }
-        ],
         "observation_count": 50292,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -6740,9 +7414,6 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "value_scale": "log1p, base 10",
-        "value_units": "UMI",
-        "normalized": false,
         "derivation_process": [
             "alignment",
             "quantification"
@@ -6750,7 +7421,21 @@
         "software": [
             "cellranger aggr 4.0"
         ],
-        "md5sum": "2d6c0e193103965fcbc1a4f938439f41"
+        "md5sum": "2d6c0e193103965fcbc1a4f938439f41",
+        "layers": [
+            {
+                "label": "raw",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 23213
+                    }
+                ],
+                "value_scale": "log1p, base 10",
+                "value_units": "UMI",
+                "normalized": false
+            }
+        ]
     },
     {
         "derived_from": [
@@ -6770,14 +7455,19 @@
             "quantification"
         ],
         "file_format": "rds",
-        "normalized": true,
         "output_types": [
             "gene quantifications"
         ],
-        "value_units": "UMI",
-        "value_scale": "log, base 10",
         "uuid": "7ca0c1d6-4b5a-4e93-b6f2-b1ae1ee172dc",
         "accession": "LATDF333ORG",
-        "description": "There's organoid data in this one!"
+        "description": "There's organoid data in this one!",
+        "layers": [
+            {
+                "label": "X",
+                "normalized": true,
+                "value_units": "UMI",
+                "value_scale": "log, base 10"
+            }
+        ]
     }
 ]
