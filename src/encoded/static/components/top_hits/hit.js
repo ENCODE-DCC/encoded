@@ -1,4 +1,4 @@
-export default class Hit {
+class Hit {
     constructor(item) {
         this.item = item;
     }
@@ -29,7 +29,10 @@ export default class Hit {
             this.formatDescription(),
             this.formatDetails(),
             this.formatName(),
-            this.item.status
+            this.item.status,
         ].filter(Boolean).join(' - ');
     }
 }
+
+
+export default Hit;

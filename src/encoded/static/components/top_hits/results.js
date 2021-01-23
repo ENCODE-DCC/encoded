@@ -1,59 +1,74 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
     Title,
-    Item
+    Item,
 } from './links';
 
 
-const makeTitle = (result) => {
-    return `${result.key} (${result.count})`;
-};
+const makeTitle = result => `${result.key} (${result.count})`;
 
 
-export const Items = (props) => {
-    return (
-        <ul>
-          {
-              props.items.map(
-                  item => (
-                      <Item
-                        key={item["@id"]}
+export const Items = ({ items }) => (
+    <ul>
+        {
+            items.map(
+                item => (
+                    <Item
+                        key={item['@id']}
                         item={item}
-                        href={item["@id"]}
-                      />
-                  )
-              )
-          }
-        </ul>
-    );
+                        href={item['@id']}
+                    />
+                )
+            )
+        }
+    </ul>
+);
+
+
+Items.propTypes = {
+    items: PropTypes.array.isRequired,
 };
 
 
-export const Section = (props) => {
-    return (
-        <>
-          <Title value={props.title} href={props.href}/>
-          <Items
-            items={props.items}
-          />
-        </>
-    );
+export const Section = ({ title, href, items }) => (
+    <>
+        <Title value={title} href={href} />
+        <Items
+            items={items}
+        />
+    </>
+);
+
+
+Section.propTypes = {
+    title: PropTypes.string.isRequired,
+    href: PropTypes.string.isRequired,
+    items: PropTypes.array.isRequired,
 };
 
 
-export default Results = (props) => {
-    return (
-        <div className='top-hits-search__suggested-results'>
-          {
-              props.results.map(
-                  (result) => (
-                      <Section
+const Results = ({ input, results }) => (
+    <div className="top-hits-search__suggested-results">
+        {
+            results.map(
+                result => (
+                    <Section
                         key={result.key}
                         title={makeTitle(result)}
-                        href={`/search/?type=${result.key}&searchTerm=${props.input}`}
+                        href={`/search/?type=${result.key}&searchTerm=${input}`}
                         items={result.hits}
-                      />
-                  )
+                    />
+                )
             )}
-        </div>
-    );
+    </div>
+);
+
+
+Results.propTypes = {
+    input: PropTypes.string.isRequired,
+    results: PropTypes.array.isRequired,
 };
+
+
+export default Results;
