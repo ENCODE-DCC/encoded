@@ -1,5 +1,39 @@
 Changes
 =======
+111.0 (released) snovault 1.0.52
+--------------------------------
+1.	ENCD-5665-tie-eslint-to-circleci (#3671)
+2.	ENCD-5670-manual-slim-transcription-assays (#3681)
+3.	ENCD-5671-fix-stacked-buttons (#3679)
+4.	SNO-185-log-connection-error (#3659)
+5.	ENCD-5615-dataset-search (#3676)
+6.	ENCD-5647-add-capped-mRNA-to-nucleic-acid-term-name (#3655)
+7.	ENCD-5666-add-nanopore-signal-to-file-output-types (#3675)
+8.	ENCD-5667-update-ebs-volume-type (#3674)
+9.	ENCD-5663-login-dropdown-misaligned (#3673)
+10.	ENCD-5644-footprints-audit (#3672)
+11.	ENCD-5657-exclusion-list (#3660)
+13.	ENCD-5664-juicebox-availability-fix (#3670)
+14.	ENCD-5653-signin-location-and-text-update (#3651)
+15.	ENCD-5623 add section breaks to glossary (#3668)
+16.	ENCD-5650-jan-2021-ontology-update (#3665)
+17.	ENCD-5518-change-navbar-color (#3661)
+18.	ENCD-5640-new-internal-tag-LRGASP (#3662)
+19.	ENCD-5543-add-series-page (#3647)
+20.	ENCD-5662-pseudoreplicated-peaks (#3663)
+21.	ENCD-5659-display-library-construction-method (#3667)
+22.	ENCD-5629-add-file-output-type-entries-to-glossary (#3627)
+23.	ENCD-5639-library-property-construction-method (#3654)
+24.	SNO-183-allow-specification-of-cart-in-search (#3650)
+25.	ENCD-5654-adjust-nic-audit-for-mapping-award (#3656)
+26.	ENCD-5607-warning-about-cart-title-private-info (#3638)
+27.	ENCD-5634-logged-out-carts (#3652)
+28.	ENCD-5586-make-donor-ethnicity-list-add-enums (#3645)
+29.	ENCD-5648-email-user-name-as-last-name-in-auth (#3648)
+30.	ENCD-4551-disable-visit-sharable-cart-during-cart-ops (#3646)
+31.	ENCD-5583-reorder-pipeline-on-experiment (#3642)
+32.	ENCD-5642-circleci-test-results (#3643)
+
 110.0 (released) snovault 1.0.51
 --------------------------------
 1.	ENCD-5645-pin-pip-version (#3644)
