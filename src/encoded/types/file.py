@@ -167,9 +167,6 @@ class DataFile(File, CalculatedAward):
     item_type = 'data_file'
     base_types = ['DataFile'] + File.base_types
     name_key = 'accession'
-    rev = {
-        'quality_metrics': ('Metrics', 'quality_metric_of'),
-    }
     embedded = File.embedded + ['lab', 'award']
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
@@ -199,6 +196,9 @@ class DataFile(File, CalculatedAward):
 class AnalysisFile(DataFile):
     item_type = 'analysis_file'
     base_types = ['AnalysisFile'] + DataFile.base_types
+    rev = {
+        'quality_metrics': ('Metrics', 'quality_metric_of')
+    }
     schema = load_schema('encoded:schemas/analysis_file.json')
     embedded = DataFile.embedded + []
 
@@ -214,8 +214,9 @@ class AnalysisFile(DataFile):
         },
         "notSubmittable": True,
     })
-    def quality_metrics(self, request, quality_metrics):
-        return paths_filtered_by_status(request, quality_metrics)
+    def quality_metrics(self, request, quality_metrics=None):
+        if quality_metrics:
+            return paths_filtered_by_status(request, quality_metrics)
 
 
     @calculated_property(define=True,
