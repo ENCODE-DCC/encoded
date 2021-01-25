@@ -305,7 +305,7 @@
                         "properties": {
                             "string": {
                                 "title": "String used to make the cell identifier unique",
-                                "description": "The string that is concatenated as a prefix or suffix to the cell barcode to make the unique cell identifier, not including the connector string",
+                                "description": "The string that is concatenated as a prefix or suffix to the cell barcode to make the unique cell identifier, including the connector string but not the '-1' if present",
                                 "type": "string"
                             },
                             "raw_matrix": {
