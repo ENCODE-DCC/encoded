@@ -471,6 +471,54 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
                for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_antibody_characterizations_NTR_biosample(testapp,
+                                                           base_experiment,
+                                                           wrangler,
+                                                           base_target,
+                                                           base_antibody,
+                                                           base_replicate,
+                                                           base_library,
+                                                           base_antibody_characterization1,
+                                                           human,
+                                                           hepg2,
+                                                           ntr_biosample_type):
+    # Antibody has characterization reviews on a NTR biosample type
+    base_antibody['targets'] = [base_target['@id']]
+    TF_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
+    characterization_reviews = [
+        {
+            'biosample_ontology': hepg2['uuid'],
+            'organism': human['@id'],
+            'lane_status': 'compliant',
+            'lane': 1
+        },
+        {
+            'biosample_ontology': ntr_biosample_type['uuid'],
+            'organism': human['@id'],
+            'lane_status': 'exempt from standards',
+            'lane': 2
+        }
+    ]
+    testapp.patch_json(
+        base_antibody_characterization1['@id'],
+        {'target': base_target['@id'],
+            'characterizes': TF_antibody['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'characterization_reviews': characterization_reviews})
+
+    testapp.patch_json(base_replicate['@id'], {'antibody': TF_antibody['@id'],
+                                               'library': base_library['@id'],
+                                               'experiment': base_experiment['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'biosample_ontology': hepg2['uuid'],
+                                                'target': base_target['@id']})
+
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert not any(error['category'] == 'NTR biosample'
+               for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_geo_submission(testapp, base_experiment):
     testapp.patch_json(
         base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
