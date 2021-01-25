@@ -117,7 +117,8 @@
                      "unreplicated IDR",
                      "variant annotation",
                      "merging",
-                     "cell calling"
+                     "cell calling",
+                     "ambient RNA correction"
                  ]
             }
         }

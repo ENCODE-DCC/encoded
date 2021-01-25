@@ -74,7 +74,7 @@
                 "title": "External identifier",
                 "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^(GEO:(GSM|GSE)|GEO-obsolete:(GSM|GSE)|BioProject:PRJNA|BioStudies:|ArrayExpress:|dbGaP:phs|SRA:SRP|ENA:ERP|EGA:EGAD)[a-zA-Z\\d-]+$"
+                "pattern": "^(GEO:(GSM|GSE)|GEO-obsolete:(GSM|GSE)|BioProject:PRJNA|BioStudies:|ArrayExpress:|dbGaP:phs|SRA:SRP|ENA:(ERP|PRJEB)|EGA:(EGAD|EGAS))[a-zA-Z\\d-]+$"
             }
         },
         "documents": {
@@ -92,7 +92,7 @@
         "libraries.assay": {
             "title": "Assay type"
         },
-        "libraries.protocol_title": {
+        "libraries.protocol.title": {
             "title": "Library protocol"
         },
         "award.project": {
@@ -101,15 +101,11 @@
         "award.name": {
             "title": "Award name"
         },
-        "assembly": {
+        "reference_assembly": {
             "title": "Genome assembly"
         },
-        "annotation": {
+        "reference_annotation": {
             "title": "Genome annotation"
-        },
-        "date_released": {
-            "title": "Date released",
-            "length": "long"
         },
         "status": {
             "title": "Status"
@@ -131,7 +127,7 @@
         "status": {
             "title": "Status"
         },
-        "libraries.protocol_title": {
+        "libraries.protocol.title": {
             "title": "Library protocol"
         },
         "libraries.assay": {

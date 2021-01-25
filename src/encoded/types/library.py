@@ -24,10 +24,15 @@ class Library(Item, CalculatedAward):
     name_key = 'accession'
     rev = {}
     embedded = [
-        'derived_from',
-        'derived_from.biosample_ontology',
         'award',
-        'lab'
+        'lab',
+        'protocol',
+        'donors',
+        'donors.ethnicity',
+        'donors.diseases',
+        'donors.organism',
+        'derived_from',
+        'derived_from.biosample_ontology'
     ]
 
 
@@ -61,17 +66,6 @@ class Library(Item, CalculatedAward):
             return mat_type + protocolObject.get('library_type')
         else:
             return protocolObject.get('library_type')
-
-
-    @calculated_property(condition='protocol', schema={
-        "title": "Protocol title",
-        "description": "The title of the protocol used for this Library.",
-        "comment": "Do not submit. This is a calculated property",
-        "type": "string"
-    })
-    def protocol_title(self, request, protocol):
-        protocolObject = request.embed(protocol, '@@object?skip_calculated=true')
-        return protocolObject.get('title')
 
 
     @calculated_property(condition='derived_from', schema={

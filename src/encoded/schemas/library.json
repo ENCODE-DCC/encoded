@@ -74,8 +74,8 @@
             }
         },
         "plate_id": {
-            "title": "Identifier of the plate the single cell sample originated from",
-            "description": "The plate the single cell sample comes from.",
+            "title": "Plate ID",
+            "description": "Identifier of the plate the single cell sample originated from",
             "type": "string"
         },
         "plate_barcode_details": {
@@ -180,22 +180,37 @@
         "assay": {
             "title": "Assay type"
         },
-        "protocol_title": {
+        "protocol.title": {
             "title": "Library protocol"
         },
-        "derived_from.biosample_ontology.term_name": {
-            "title": "Biosample term name",
-            "type": "typeahead"
+        "donors.organism.scientific_name": {
+            "title": "Donor organism"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
+        },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
         },
         "derived_from.biosample_ontology.system_slims": {
-            "title": "System"
+            "title": "Biosample system"
         },
         "derived_from.biosample_ontology.organ_slims": {
-            "title": "Organ",
+            "title": "Biosample organ",
             "type": "typeahead"
         },
         "derived_from.biosample_ontology.cell_slims": {
-            "title": "Cell",
+            "title": "Biosample cell type",
+            "type": "typeahead"
+        },
+        "derived_from.biosample_ontology.term_name": {
+            "title": "Biosample term name",
             "type": "typeahead"
         },
         "award.project": {
@@ -218,8 +233,40 @@
         "assay": {
             "title": "Assay type"
         },
-        "protocol_title": {
+        "protocol.title": {
             "title": "Library protocol"
+        },
+        "donors.organism.scientific_name": {
+            "title": "Donor organism"
+        },
+        "donors.age_display": {
+            "title": "Donor age"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
+        },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
+        },
+        "derived_from.biosample_ontology.term_name": {
+            "title": "Biosample term name"
+        },
+        "derived_from.biosample_ontology.system_slims": {
+            "title": "Biosample system"
+        },
+        "derived_from.biosample_ontology.organ_slims": {
+            "title": "Biosample organ",
+            "type": "typeahead"
+        },
+        "derived_from.biosample_ontology.cell_slims": {
+            "title": "Biosample cell type",
+            "type": "typeahead"
         },
         "award.project": {
             "title": "Project"
@@ -229,9 +276,6 @@
         },
         "lab.title": {
             "title": "Lab"
-        },
-        "derived_from.biosample_ontology.term_name": {
-            "title": "Biosample term name"
         }
     },
     "changelog": "/profiles/changelogs/library.md"

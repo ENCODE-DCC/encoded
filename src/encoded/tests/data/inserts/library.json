@@ -687,7 +687,8 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:sc_pooled_suspension_donorCD"
+            "anna-greka:sc_citeseq_suspension_donorA",
+            "anna-greka:sc_citeseq_suspension_donorB"
         ],
         "dbxrefs": [
             "SRA:SRX122338"

@@ -13,7 +13,7 @@ def item_is_revoked(request, path):
     return request.embed(path, '@@object?skip_calculated=true').get('status') == 'revoked'
 
 
-def calculate_reference(request, files_list, status, ref_field):
+def calculate_reference(request, files_list, ref_field):
     results = set()
     viewable_file_status = ['released','in progress']
 
@@ -38,6 +38,7 @@ class Dataset(Item):
     name_key = 'accession'
     embedded = [
         'libraries',
+        'libraries.protocol',
         'award',
         'references'
     ]
@@ -178,7 +179,7 @@ class Dataset(Item):
 
 
     @calculated_property(define=True, schema={
-        "title": "Genome assembly",
+        "title": "Reference assembly",
         "description": "The Genome assemblies used for references in the data analysis in this Dataset.",
         "comment": "Do not submit. This is a calculated property",
         "type": "array",
@@ -186,18 +187,18 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files, status):
-        return calculate_reference(request, original_files, status, "assembly")
+    def reference_assembly(self, request, original_files):
+        return calculate_reference(request, original_files, "assembly")
 
 
     @calculated_property(define=True, schema={
-        "title": "Genome annotation",
-        "description": "The Genome annotations used for references in the data analysis in this Dataset.",
+        "title": "Reference annotation",
+        "description": "The genome annotations used for references in the data analysis in this Dataset.",
         "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def annotation(self, request, original_files, status):
-        return calculate_reference(request, original_files, status, "genome_annotation")
+    def reference_annotation(self, request, original_files):
+        return calculate_reference(request, original_files, "genome_annotation")

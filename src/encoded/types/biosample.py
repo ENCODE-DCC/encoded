@@ -24,7 +24,8 @@ class Biosample(Item, CalculatedDonors):
     name_key = 'accession'
     rev = {}
     embedded = [
-        'biosample_ontology'
+        'biosample_ontology',
+        'diseases'
     ]
 
 

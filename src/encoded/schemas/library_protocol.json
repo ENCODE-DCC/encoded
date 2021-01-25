@@ -31,7 +31,7 @@
         },
         "name": {
             "title": "Name",
-            "description": "The unique idenfier that describes the protocol used to create the library, convention is lower cased and hyphen delimited.",
+            "description": "The unique identifier that describes the protocol used to create the library, convention is lower cased and hyphen delimited.",
             "type": "string",
             "uniqueKey": "library_protocol:name"
         },
@@ -39,6 +39,12 @@
             "title": "Title",
             "description": "The unique name that describes the protocol used to create the library, convention is the name with common use of uppercase and spaces.",
             "type": "string"
+        },
+        "term_id": {
+            "title": "Term ID",
+            "description": "The ontology identifier describing the protocol",
+            "type": "string",
+            "pattern": "^EFO:[0-9]{7}$"
         },
         "construction_platform": {
             "title": "Platform",

@@ -111,9 +111,6 @@ export const dbxrefPrefixMap = {
     MGI: {
         pattern: 'http://www.informatics.jax.org/marker/MGI:{0}',
     },
-    PMCID: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/pmc/articles/{0}',
-    },
     PMID: {
         pattern: 'https://www.ncbi.nlm.nih.gov/pubmed/?term={0}',
     },

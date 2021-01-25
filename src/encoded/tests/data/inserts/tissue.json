@@ -361,6 +361,9 @@
         "status": "released",
         "uuid": "31b73f0e-dc24-11ea-87d0-0242ac130003",
         "submitted_by": "metus.donec@nisl.montes",
+        "diseases": [
+            "MONDO_0005147"
+        ],
         "derived_from": [
             "peter-sims:prenatal_donor3"
         ],
