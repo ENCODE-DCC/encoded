@@ -272,11 +272,6 @@
                 }
             }
         },
-        "mapping_column": {
-            "title": "Mapping column",
-            "description": "The column in a final matrix that contains the cell mapping identifiers that allows mapping of cells to library.",
-            "type": "string"
-        },
         "cell_mapping": {
             "title": "Cell mapping information for this matrix",
             "description": "Information at the raw matrix level that allows for mapping of cells in the final matrix to other entities in the experimental graph.",
