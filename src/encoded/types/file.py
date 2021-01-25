@@ -315,7 +315,26 @@ class RawSequenceFile(DataFile):
 class MatrixFile(AnalysisFile):
     item_type = 'matrix_file'
     schema = load_schema('encoded:schemas/matrix_file.json')
-    embedded = AnalysisFile.embedded + []
+    embedded = AnalysisFile.embedded + ['cell_annotations', 'cell_annotations.cell_ontology']
+    rev = {
+        'cell_annotations': ('CellAnnotation', 'matrix_files')
+    }
+    
+
+    @calculated_property(schema={
+        "title": "Cell annotations",
+        "description": "The cell annotations applied to this matrix.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "CellAnnotation.matrix_files",
+        },
+        "notSubmittable": True,
+    })
+    def cell_annotations(self, request, cell_annotations=None):
+        if cell_annotations:
+            return paths_filtered_by_status(request, cell_annotations)
 
 
 @collection(

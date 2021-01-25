@@ -1,0 +1,46 @@
+[
+    {
+        "uuid": "ae31c873-9089-4bdb-8ff3-7c5355273a40",
+        "author_cell_type": "cell population 1",
+        "cell_ontology": "CL_0002305",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "manual, marker genes"
+    },
+    {
+        "uuid": "4c571596-2b0e-41f6-aaf2-950abfd04f58",
+        "author_cell_type": "cell population 2",
+        "cell_ontology": "CL_0000064",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "genes_expressed_low": [
+            "ENSG00000213553"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Cell Typist"
+    },
+    {
+        "uuid": "da7068b7-1aaa-4fe1-83fb-4138d8935908",
+        "author_cell_type": "cell population 3",
+        "cell_ontology": "CL_2000055",
+        "genes_expressed_high": [
+            "ENSG00000266211",
+            "ENSMUSG00000074637"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Cell Typist"
+    }
+]

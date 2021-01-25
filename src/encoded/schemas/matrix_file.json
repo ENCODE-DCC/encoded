@@ -308,6 +308,10 @@
         "layers.normalized": {
             "title": "Normalized"
         },
+        "cell_annotations.cell_ontology.term_name": {
+            "title": "Annotated cell types",
+            "type": "typeahead"
+        },
         "lab.title": {
             "title": "Lab"
         },

@@ -1,0 +1,116 @@
+{
+    "title": "Cell Annotation",
+    "description": "Schema for collecting information from external ontology databases.",
+    "id": "/profiles/cell_annotation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["cell_ontology"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/uuid"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "author_cell_type": {
+            "title": "Author cell type",
+            "description": "The researcher's term for the cell population.",
+            "type": "string"
+        },
+        "cell_ontology": {
+            "title": "Cell ontology",
+            "description": "The corresponding CL term for the cell population.",
+            "comment": "This is the most specific term available in the CL ontology, while still being accurate.",
+            "type": "string",
+            "linkTo": "OntologyTerm"
+        },
+        "genes_expressed_high": {
+            "title": "Genes expressed high",
+            "description": "",
+            "type":  "array",
+            "items": {
+                "type": "string",
+                "linkTo": "Gene"
+            }
+        },
+        "genes_expressed_low": {
+            "title": "Genes expressed low",
+            "description": "",
+            "type":  "array",
+            "items": {
+                "type": "string",
+                "linkTo": "Gene"
+            }
+        },
+        "matrix_files": {
+            "title": "Matrix files",
+            "description": "The matrix files that this cell annotation was applied to.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "MatrixFile"
+            }
+        },
+        "annotation_method": {
+            "title": "Annotation method",
+            "description": "The method or software used to annotate the cell population.",
+            "type": "string"
+        }
+    },
+    "facets": {
+        "cell_ontology.cell_slims": {
+            "title": "Cell ontology cell type",
+            "type": "typeahead"
+        },
+        "cell_ontology.term_name": {
+            "title": "Cell ontology name",
+            "type": "typeahead"
+        },
+        "genes_expressed_high.symbol": {
+            "title": "Genes expressed high",
+            "type": "typeahead"
+        },
+        "genes_expressed_low.symbol": {
+            "title": "Genes expressed low",
+            "type": "typeahead"
+        },
+        "tissues_sampled.organ_slims": {
+            "title": "Organ sampled",
+            "type": "typeahead"
+        },
+        "annotation_method": {
+            "title": "Annotation method"
+        }
+    },
+    "columns": {
+        "author_cell_type": {
+            "title": "Author cell type"
+        },
+        "cell_ontology.term_name": {
+            "title": "Cell ontology name"
+        },
+        "cell_ontology.term_id": {
+            "title": "Cell ontology ID"
+        },
+        "genes_expressed_high.symbol": {
+            "title": "Genes expressed high"
+        },
+        "genes_expressed_low.symbol": {
+            "title": "Genes expressed low"
+        },
+        "tissues_sampled.term_name": {
+            "title": "Tissue sampled"
+        },
+        "tissues_sampled.organ_slims": {
+            "title": "Organ sampled"
+        },
+        "annotation_method": {
+            "title": "Annotation method"
+        }
+    },
+    "changelog": "/profiles/changelogs/cell_annotation.md"
+}
