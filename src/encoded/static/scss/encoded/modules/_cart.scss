@@ -54,9 +54,8 @@
             flex: 0 0 24px;
             margin-left: 5px;
             height: 24px;
-            animation: none;
             align-self: flex-end;
-            background-color: #ff8800;
+            background-color: #f80;
             border-radius: 1.4rem;
             animation: rotating 600ms linear infinite;
 
@@ -75,6 +74,7 @@
             from {
                 transform: rotate(0deg);
             }
+
             to {
                 transform: rotate(360deg);
             }
@@ -108,7 +108,7 @@
     @at-root #{&}__loss-warning {
         font-style: italic;
         text-align: center;
-    
+
         @media screen and (min-width: $screen-sm-min) {
             flex: 0 1 auto;
             text-align: left;
@@ -209,7 +209,7 @@
         bottom: 0;
         left: 0;
         padding: 10px;
-        background-color: rgba(255,255,255,0.7);
+        background-color: rgba(255, 255, 255, 0.7);
         z-index: 1;
     }
 
@@ -255,7 +255,7 @@
 
         &:hover {
             background-color: #e0e0e0;
-    
+
             &:disabled {
                 background-color: #fff;
             }
@@ -335,7 +335,6 @@
     padding: 8px 15px;
 }
 
-
 // Search-result-like file facet and results display.
 .cart__display {
     display: block;
@@ -374,7 +373,6 @@
     }
 }
 
-
 // Defines check boxes and radio button on the cart facets.
 $cart-facet-check-box-size: 18px;
 %facet-term-control {
@@ -387,11 +385,11 @@ $cart-facet-check-box-size: 18px;
     align-items: center;
 }
 
-
 // Facets for the cart-view page.
 $icon-visualizable-color: #396492;
 $cart-facet-visualizable-size: 18px;
 $cart-facet-visualizable-padding: 2px;
+
 .cart-facet {
     padding: 0;
 
@@ -435,9 +433,11 @@ $cart-facet-visualizable-padding: 2px;
         // Checkbox for a facet term
         @at-root #{&}__check {
             @extend %facet-term-control;
+
             border-radius: 3px;
 
             $cart-facet-check-size: 16px;
+
             .icon {
                 flex: 0 0 $cart-facet-check-size;
                 font-size: $cart-facet-check-size;
@@ -451,10 +451,12 @@ $cart-facet-visualizable-padding: 2px;
 
         @at-root #{&}__radio {
             @extend %facet-term-control;
+
             border-radius: $cart-facet-check-box-size / 2;
             text-align: center;
 
             $cart-facet-radio-size: 8px;
+
             .icon {
                 flex: 0 0 $cart-facet-radio-size;
                 font-size: $cart-facet-radio-size;
@@ -476,6 +478,7 @@ $cart-facet-visualizable-padding: 2px;
 
         // Circle whose tint reflects the count
         $cart-facet-magnitude-size: 18px;
+
         @at-root #{&}__magnitude {
             flex: 0 1 auto;
             padding: 0 5px 0;
@@ -504,7 +507,6 @@ $cart-facet-visualizable-padding: 2px;
     }
 }
 
-
 // File-count note above facet
 .cart__facet-file-count {
     position: relative;
@@ -529,7 +531,7 @@ $cart-facet-visualizable-padding: 2px;
         left: 0;
         background-color: #ff0;
         z-index: 0;
-        animation-duration: .2s;
+        animation-duration: 0.2s;
         animation-name: change-flash;
     }
 }
@@ -539,11 +541,11 @@ $cart-facet-visualizable-padding: 2px;
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }
 }
-
 
 // Controls to display on cart page panel.
 .cart-controls {
@@ -557,7 +559,6 @@ $cart-facet-visualizable-padding: 2px;
         margin-left: 5px;
     }
 }
-
 
 // Cart manager table header
 .cart-manager-header {
@@ -585,7 +586,7 @@ $deleted-bg: #ffe0e0;
     height: 10px;
     border: 1px solid #c0c0c0;
 }
-  
+
 .cart-manager-table {
     @at-root #{&}__action {
         display: flex;
@@ -654,16 +655,17 @@ $deleted-bg: #ffe0e0;
     @at-root #{&}__chip {
         @at-root #{&}--current {
             @extend %cart-manager-table-chip;
+
             background-color: $current-bg;
         }
 
         @at-root #{&}--autosave {
             @extend %cart-manager-table-chip;
+
             background-color: $autosave-bg;
         }
     }
 }
-
 
 // Cart rename modal styles
 .cart-rename {
@@ -703,6 +705,7 @@ $deleted-bg: #ffe0e0;
         button {
             @extend .icon;
             @extend .icon-arrow-circle-down;
+
             padding: 2px 8px;
             color: #606060;
             background-color: transparent;
@@ -711,7 +714,7 @@ $deleted-bg: #ffe0e0;
             font-size: 1.5rem;
 
             @media screen and (min-width: $screen-sm-min) {
-                &:before {
+                &::before {
                     content: $fa-var-arrow-circle-right;
                 }
             }
@@ -745,7 +748,6 @@ $deleted-bg: #ffe0e0;
     }
 }
 
-
 // Display of the number of carts the user owns.
 .cart-counts {
     padding: 2px 10px;
@@ -757,7 +759,6 @@ $deleted-bg: #ffe0e0;
     border-top: 1px solid #a0a0a0;
     border-bottom: 1px solid #a0a0a0;
 }
-
 
 // Checkbox for filtering out facet terms not included in visualizable files.
 .cart-viz-toggle {
@@ -779,10 +780,12 @@ $deleted-bg: #ffe0e0;
 
     @at-root #{&}__check {
         @extend %facet-term-control;
+
         flex: 0 0 18px;
         border-radius: 3px;
 
         $cart-viz-toggle-size: 16px;
+
         .icon {
             flex: 0 0 $cart-viz-toggle-size;
             font-size: $cart-viz-toggle-size;
@@ -814,7 +817,6 @@ $deleted-bg: #ffe0e0;
     }
 }
 
-
 .cart-tab {
     display: flex;
     align-items: center;
@@ -836,35 +838,34 @@ $deleted-bg: #ffe0e0;
     }
 }
 
-
 // Defines cart-list identifier colors based on `file_format`
 $file-type-colors: (
-    (bam, #9De89b, #000000),
-    (bed, #ffe062, #000000),
-    (bedpe, #e8917c, #000000),
-    (bigBed, #4cc7ff, #000000),
-    (bigWig, #d5bafb, #000000),
-    (CEL, #a0eeff, #000000),
-    (chain, #ffa677, #000000),
-    (csv, #Bc50ff, #ffffff),
-    (database, #ffd86d, #000000),
-    (fasta, #99e8cd, #000000),
-    (fastq, #e8adb9, #000000),
-    (gff, #f9cbff, #000000),
-    (gtf, #cfc3b8, #000000),
-    (hdf5, #c1ceff, #000000),
-    (hic, #8886b2, #ffffff),
-    (idat, #ffdfcd, #000000),
-    (PWM, #c8c6ff, #000000),
-    (rcc, #acccbe, #000000),
-    (sam, #8eb2b2, #000000),
-    (tagAlign, #b0ff8c, #000000),
-    (tar, #e8ce95, #000000),
-    (tsv, #ff9a99, #000000),
-    (vcf, #a08ce8, #ffffff),
-    (wig, #a3fff2, #000000),
-    (idx, #ffd6ba, #000000),
-    (txt, #e897dc, #000000),
+    (bam, #9de89b, #000),
+    (bed, #ffe062, #000),
+    (bedpe, #e8917c, #000),
+    (bigBed, #4cc7ff, #000),
+    (bigWig, #d5bafb, #000),
+    (CEL, #a0eeff, #000),
+    (chain, #ffa677, #000),
+    (csv, #bc50ff, #fff),
+    (database, #ffd86d, #000),
+    (fasta, #99e8cd, #000),
+    (fastq, #e8adb9, #000),
+    (gff, #f9cbff, #000),
+    (gtf, #cfc3b8, #000),
+    (hdf5, #c1ceff, #000),
+    (hic, #8886b2, #fff),
+    (idat, #ffdfcd, #000),
+    (PWM, #c8c6ff, #000),
+    (rcc, #acccbe, #000),
+    (sam, #8eb2b2, #000),
+    (tagAlign, #b0ff8c, #000),
+    (tar, #e8ce95, #000),
+    (tsv, #ff9a99, #000),
+    (vcf, #a08ce8, #fff),
+    (wig, #a3fff2, #000),
+    (idx, #ffd6ba, #000),
+    (txt, #e897dc, #000),
 );
 
 // Contains list of cart-related objects, sort of like search results.
@@ -888,7 +889,7 @@ $file-type-colors: (
             left: 0;
 
             &:hover {
-                background-color: rgba(0,0,0,0.07);
+                background-color: rgba(0, 0, 0, 0.07);
             }
         }
 
@@ -902,8 +903,8 @@ $file-type-colors: (
             flex: 0 0 25%;
             align-items: center;
             padding: 0 10px 5px;
-            background-color: #ccccff;
-            box-shadow: 0 0 12px inset rgba(0,0,0,0.07);
+            background-color: #ccf;
+            box-shadow: 0 0 12px inset rgba(0, 0, 0, 0.07);
 
             @media screen and (min-width: $screen-md-min) {
                 flex-basis: 20%;
@@ -952,7 +953,7 @@ $file-type-colors: (
                 font-size: 1.3rem;
             }
         }
-        
+
         @at-root #{&}__details {
             display: flex;
             flex-wrap: wrap;
@@ -1032,7 +1033,7 @@ $file-type-colors: (
 
         @at-root #{&}__type {
             flex: 0 0 50%;
-            padding: 0px 10px 5px;
+            padding: 0 10px 5px;
 
             @media screen and (min-width: $screen-md-min) {
                 flex-basis: 25%;
@@ -1041,7 +1042,7 @@ $file-type-colors: (
 
         @at-root #{&}__target {
             flex: 0 0 50%;
-            padding: 0px 10px 5px;
+            padding: 0 10px 5px;
 
             @media screen and (min-width: $screen-md-min) {
                 flex-basis: 25%;
@@ -1054,7 +1055,7 @@ $file-type-colors: (
 
         @at-root #{&}__assay {
             flex: 0 0 50%;
-            padding: 0px 10px 5px;
+            padding: 0 10px 5px;
 
             @media screen and (min-width: $screen-md-min) {
                 flex-basis: 25%;
@@ -1067,7 +1068,7 @@ $file-type-colors: (
 
         @at-root #{&}__biosample {
             flex: 0 0 50%;
-            padding: 0px 10px 5px;
+            padding: 0 10px 5px;
 
             @media screen and (min-width: $screen-md-min) {
                 flex-basis: 25%;
@@ -1085,14 +1086,12 @@ $file-type-colors: (
     }
 }
 
-
 .cart-pager-area {
     display: flex;
     padding: 3px;
     justify-content: flex-end;
     border-bottom: 1px solid #ccc;
 }
-
 
 .nav {
     &.result-table {
@@ -1103,7 +1102,6 @@ $file-type-colors: (
         }
     }
 }
-
 
 // Experiment tables with a cart control in the header.
 .experiment-table {
@@ -1128,7 +1126,6 @@ $file-type-colors: (
         }
     }
 }
-
 
 // Control to batch download cart files.
 .cart-download {
@@ -1183,7 +1180,6 @@ $file-type-colors: (
 
             &:hover {
                 color: #fff;
-                
                 background-color: #4f689e;
             }
         }
@@ -1289,6 +1285,7 @@ $file-type-colors: (
     button {
         @extend .btn-info;
         @extend .btn-sm;
+
         width: 100%;
 
         > svg {

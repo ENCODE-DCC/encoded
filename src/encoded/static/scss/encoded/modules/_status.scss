@@ -1,5 +1,6 @@
 // All status indicator colors. As statuses change in the schemas, should see if corresponding
 // changes are needed here.
+/* stylelint-disable-next-line value-list-max-empty-lines */
 $status-colors: (
     // External
     released: $brand-success,
@@ -45,7 +46,6 @@ $status-colors: (
     not-pursued: #a0a0a0,
 );
 
-
 // Sets the sizes of the font and icons within statuses.
 $large-size: 16px;
 $large-font-size: 1.2rem;
@@ -53,7 +53,6 @@ $standard-size: 12px;
 $standard-font-size: 1rem;
 $small-size: 10px;
 $small-font-size: 0.9rem;
-
 
 .status {
     padding: 4px;
@@ -131,16 +130,16 @@ $small-font-size: 0.9rem;
     }
 }
 
-
 // Calculate the label color based on the lightness of the given color, for contrast.
 @function label-color($color) {
     @if (brightness($color) > 50) {
         @return #404040; // Lighter background, return dark color
-    } @else {
+    }
+
+    @else {
         @return #ffffff; // Darker background, return light color
     }
 }
-
 
 // Defines colors for each type of status.
 @each $status, $color in $status-colors {
@@ -170,7 +169,6 @@ $small-font-size: 0.9rem;
 .dd-status {
     margin-right: 5px;
 }
-
 
 // Antibody Status Panels
 .antibody-status {

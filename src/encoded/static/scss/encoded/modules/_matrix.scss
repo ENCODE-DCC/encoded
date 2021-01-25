@@ -14,9 +14,10 @@ $tab-color: #a8a8a8;
     bottom: -1px;
     left: 100%;
     width: 6px;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.0));
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .ReferenceEpigenomeMatrix {
     .matrix-header__title {
         padding-bottom: 5px;
@@ -25,95 +26,130 @@ $tab-color: #a8a8a8;
     .matrix-facet-container {
         display: flex;
         border: 0;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             flex-wrap: wrap;
         }
+
         .matrix__presentation {
             flex: 0 1 auto;
         }
     }
+
     .test-project-selector {
         label {
             margin-left: 5px;
         }
     }
+
     .matrix-header {
         border-bottom: 0;
     }
+
     .header-clear-links {
         margin-top: 20px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             margin: 10px 5px;
         }
+
         button {
             position: relative;
             top: 0;
             bottom: 0;
             right: 0;
             left: 0;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-sm-min) {
                 width: auto;
             }
         }
     }
+
     .filter-container {
         font-family: Mada;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             font-size: 0.8rem;
         }
     }
+
     .results-count {
         font-family: Mada;
         font-size: 1rem;
         margin: 20px 0;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             font-size: 0.8rem;
         }
+
         .bold-total {
             font-size: 1.1rem;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-xs-min) {
                 font-size: 0.9rem;
             }
         }
+
         text-align: left;
     }
+
     .matrix-header__filter-controls {
         display: block;
         flex: unset;
         margin: 10px 0 0;
     }
+
     .matrix-general-search {
         display: flex;
         align-items: baseline;
         flex-wrap: wrap;
         text-align: left;
+
         input[type="search"] {
             font-size: 0.8rem;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             font-size: 0.9rem;
             margin-bottom: 0;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             font-size: 0.8rem;
             margin-bottom: 20px;
         }
+
         i {
             padding: 5px;
         }
+
         p {
             margin: 0;
             margin-right: 5px;
         }
+
         .searchform {
             margin-left: 5px;
         }
+
         .general-search-entry {
             padding-right: 0;
         }
     }
+
     .matrix-facet-container {
         margin-top: 20px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             margin-top: 10px;
         }
@@ -124,12 +160,15 @@ $tab-color: #a8a8a8;
     p {
         margin-bottom: 10px;
     }
+
     .outer-button-container {
         display: inline-block;
     }
+
     .stage-container {
         display: inline-block;
     }
+
     button {
         font-size: 1rem;
         line-height: 1.7;
@@ -137,72 +176,93 @@ $tab-color: #a8a8a8;
         font-family: Mada;
         font-weight: 400;
         margin: 1px;
-        background: linear-gradient(#DFDFDF, #F8F8F8);
-        border: 2px solid #DFDFDF;
+        background: linear-gradient(#dfdfdf, #f8f8f8);
+        border: 2px solid #dfdfdf;
         border-radius: 3px;
+
         &.embryo {
-            background: lighten(#FFE9C6, 5%);
+            background: lighten(#ffe9c6, 5%);
         }
+
         &.postnatal {
-            background: lighten(#F2C782, 8%);
+            background: lighten(#f2c782, 8%);
         }
+
         &.adult {
-            background: lighten(#E2AE53, 8%);
+            background: lighten(#e2ae53, 8%);
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: 500px) {
             font-size: 0.9rem;
         }
     }
+
     .active {
         font-weight: 600;
         border: 2px solid #000;
+
         &.embryo {
-            background: darken(#FFE9C6, 8%);
+            background: darken(#ffe9c6, 8%);
         }
+
         &.postnatal {
-            background: darken(#F2C782, 5%);
+            background: darken(#f2c782, 5%);
         }
+
         &.adult {
-            background: darken(#E2AE53, 8%);
+            background: darken(#e2ae53, 8%);
         }
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .type-MouseDevelopmentMatrix {
     .matrix-header__filter-controls {
         flex: 0 1 100%;
     }
+
     .matrix-general-search {
         p {
             margin-bottom: 5px;
         }
     }
+
     .matrix__row-spacer {
         height: 1px;
     }
+
     .matrix__row-category {
         font-family: Mada;
+
         > th {
             > div {
                 font-weight: 500;
             }
         }
     }
+
     .matrix__content {
         display: block;
     }
+
     .matrix-header {
         border-bottom: 0;
     }
+
     .mouse-stage-selector-container {
         margin: 5px 0;
+
         label {
             margin-right: 10px;
         }
     }
+
+    /* stylelint-disable-next-line selector-class-pattern */
     .Matrix-page-link {
         display: none;
     }
+
     .clear-filters {
         margin: 10px 5px 5px;
         padding: 0;
@@ -215,17 +275,21 @@ $tab-color: #a8a8a8;
 
 .mouse-dev-matrix {
     position: relative;
+
     .matrix__data-wrapper {
         border: none;
         padding-left: 0;
+
         .matrix__data {
             padding-left: 0;
         }
     }
+
     .matrix__col-category-header {
         > th {
             > a {
                 letter-spacing: 1px;
+
                 .sub {
                     padding-top: 10px;
                     color: #000;
@@ -233,10 +297,12 @@ $tab-color: #a8a8a8;
             }
         }
     }
+
     .sub {
         padding-top: 10px !important;
         color: #000 !important;
     }
+
     .matrix__row-data {
         td {
             a {
@@ -248,6 +314,7 @@ $tab-color: #a8a8a8;
             }
         }
     }
+
     .column-category {
         letter-spacing: 0;
         font-family: Mada;
@@ -255,6 +322,7 @@ $tab-color: #a8a8a8;
         color: white;
         padding: 7px 5px;
     }
+
     .matrix__clear-classifications {
         margin-bottom: 5px;
     }
@@ -264,9 +332,9 @@ $tab-color: #a8a8a8;
     }
 }
 
-
 .subcategory-row-text-mouse {
     @extend .subcategory-row-text;
+
     display: flex;
     align-items: center;
     line-height: 1.5;
@@ -278,17 +346,21 @@ $tab-color: #a8a8a8;
         font-weight: 500;
         padding: 6px 0;
     }
+
     .label-length {
         flex: 0 0 40%;
         font-size: 12px;
     }
 }
+
 .embryo {
     background-color: #fff3e0;
 }
+
 .postnatal {
     background-color: #f6d8a7;
 }
+
 .adult {
     background-color: #e8be76;
 }
@@ -302,7 +374,7 @@ $tab-color: #a8a8a8;
     border-radius: 0;
     z-index: 1;
 
-    &:after {
+    &::after {
         @include matrix-freeze-shadow;
     }
 }
@@ -353,7 +425,7 @@ $tab-color: #a8a8a8;
         flex-shrink: 1;
         flex-basis: calc(100% - 20px);
         width: calc(100% - 20px);
-        border : 1px solid #eee;
+        border: 1px solid #eee;
         overflow: hidden;
         min-width: 0;
     }
@@ -420,9 +492,10 @@ $tab-color: #a8a8a8;
             border-left: 1px solid $matrix-border-color;
             font-size: 1rem;
             border-bottom: 1px solid #fff;
+
             @extend %sticky-column;
 
-            &:after {
+            &::after {
                 @include matrix-freeze-shadow;
             }
 
@@ -436,17 +509,19 @@ $tab-color: #a8a8a8;
 
                 &.embryo {
                     &:hover {
-                        background-color: darken(#FFE9C6, 8%);
+                        background-color: darken(#ffe9c6, 8%);
                     }
                 }
+
                 &.postnatal {
                     &:hover {
-                        background-color: darken(#FFD491, 6%);
+                        background-color: darken(#ffd491, 6%);
                     }
                 }
+
                 &.adult {
                     &:hover {
-                        background-color: darken(#E2AE53, 8%);
+                        background-color: darken(#e2ae53, 8%);
                     }
                 }
 
@@ -527,7 +602,9 @@ $tab-color: #a8a8a8;
     @at-root #{&}__row-category {
         > th {
             white-space: nowrap;
+
             @extend %sticky-column;
+
             text-align: left;
             font-size: 1.1rem;
 
@@ -691,7 +768,6 @@ $tab-color: #a8a8a8;
     }
 }
 
-
 .matrix-header {
     padding-bottom: 10px;
     margin-bottom: 10px;
@@ -757,7 +833,6 @@ $tab-color: #a8a8a8;
     }
 }
 
-
 // Internal tags and type badges for matrix pages.
 .matrix-title-badge {
     @media screen and (min-width: $screen-sm-min) {
@@ -771,7 +846,6 @@ $tab-color: #a8a8a8;
     }
 }
 
-
 .matrix-description {
     @media screen and (min-width: $screen-sm-min) {
         display: flex;
@@ -784,14 +858,15 @@ $tab-color: #a8a8a8;
     }
 }
 
-
 @keyframes arrow-pulse {
     0% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.1;
     }
+
     100% {
         opacity: 1;
     }
@@ -849,7 +924,6 @@ table.matrix th.group-all-groups-cell {
     @extend .group-more-cell__button;
 }
 
-
 /**
  * Styles specific to the reference-epigenome matrix.
  */
@@ -863,6 +937,8 @@ table.matrix th.group-all-groups-cell {
         .tab-content {
             padding-left: 10px;
             overflow: hidden;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-sm-min) {
                 padding-left: 0;
             }
@@ -912,17 +988,21 @@ table.matrix th.group-all-groups-cell {
 .matrix__content--target {
     @extend .matrix__content--reference-epigenome;
 
+    /* stylelint-disable-next-line selector-class-pattern */
     .chip_seq_matrix__data-wrapper {
         .tab-content {
             border-right: 1px solid $tab-color;
             border-left: 1px solid $tab-color;
             border-bottom: 1px solid $tab-color;
         }
+
         overflow-x: auto;
+
         li {
             cursor: -webkit-grab;
             cursor: grab;
             white-space: nowrap;
+
             a::after {
                 content: none !important;
             }
@@ -933,6 +1013,7 @@ table.matrix th.group-all-groups-cell {
                 height: 35px;
                 margin-right: 5px;
                 display: none;
+
                 @media screen and (min-width: $screen-md-min) {
                     display: inline-block;
                 }
@@ -941,18 +1022,21 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .ChipSeqMatrix {
     .general-search-entry {
         margin: 0;
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .chip_seq_matrix__data-wrapper {
     .tab-content {
-            overflow-x: auto;
+        overflow-x: auto;
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .chip_seq_matrix-search {
     display: flex;
     flex-wrap: nowrap !important;
@@ -963,17 +1047,18 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
-.chip_seq_matrix__data  {
+/* stylelint-disable-next-line selector-class-pattern */
+.chip_seq_matrix__data {
     table {
         tr:nth-child(2) td:nth-child(2) {
             border-top-left-radius: 14px;
         }
+
         tr:nth-child(2) td:last-child {
             border-top-right-radius: 14px;
         }
     }
 }
-
 
 // Contents of organism-selection modal.
 .matrix-reference-epigenome__organism-selector {
@@ -995,10 +1080,12 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .chip_seq_matrix__organism-selector {
     @extend .matrix-reference-epigenome__organism-selector;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .chip_seq_matrix__warning {
     min-height: 40px;
     margin: 10px;
@@ -1205,7 +1292,6 @@ $divider-color: #000; // Color of dividers between assays with targets
     }
 }
 
-
 // Dividers for assay/target header and table cells.
 .matrix__row-data > td,
 .matrix__row-data > td:last-of-type,
@@ -1222,8 +1308,10 @@ $divider-color: #000; // Color of dividers between assays with targets
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .sescc_matrix {
     @at-root #{&}__title-img {
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             display: none;
         }
@@ -1233,6 +1321,7 @@ $divider-color: #000; // Color of dividers between assays with targets
         display: flex;
         justify-content: center;
 
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             display: block;
         }
@@ -1254,6 +1343,7 @@ $divider-color: #000; // Color of dividers between assays with targets
             tr:nth-child(2) td:nth-child(2) {
                 border-top-left-radius: 14px;
             }
+
             tr:nth-child(2) td:last-child {
                 border-top-right-radius: 14px;
             }
@@ -1264,18 +1354,19 @@ $divider-color: #000; // Color of dividers between assays with targets
         display: flex;
         font-size: 1.25rem;
         margin-bottom: 30px;
+
         .btn {
             margin-right: 3px;
         }
     }
 
     @at-root #{&}__germ-layer {
-        display:flex;
+        display: flex;
         align-items: center;
         font-weight: bold;
 
         @at-root #{&}-title {
-            display:flex;
+            display: flex;
             justify-content: center;
         }
 
@@ -1293,17 +1384,20 @@ $divider-color: #000; // Color of dividers between assays with targets
         }
 
         hr {
-            margin-bottom:0;
+            margin-bottom: 0;
         }
 
+        /* stylelint-disable-next-line selector-class-pattern */
         .endodermColor {
-            color: blue
+            color: blue;
         }
 
+        /* stylelint-disable-next-line selector-class-pattern */
         .mesodermColor {
             color: green;
         }
 
+        /* stylelint-disable-next-line selector-class-pattern */
         .ectoDermColor {
             color: purple;
         }
@@ -1320,9 +1414,8 @@ $divider-color: #000; // Color of dividers between assays with targets
         fill: none;
         stroke: #ccc;
         stroke-width: 2px;
-      }
+    }
 }
-
 
 /**
  * ENCORE Styles
@@ -1532,6 +1625,7 @@ $rnaseq-term-name-colors:
                 margin-bottom: 0;
                 min-width: 1px; // Prevents flex row overflow by allowing scrolling of this matrix.
 
+                /* stylelint-disable-next-line selector-class-pattern */
                 .uaTrident & {
                     flex-grow: 1;
                 }
@@ -1573,6 +1667,7 @@ $rnaseq-term-name-colors:
             @media screen and (min-width: $screen-md-min) {
                 order: 0;
 
+                /* stylelint-disable-next-line selector-class-pattern */
                 .uaTrident & {
                     flex-grow: 1;
                 }
@@ -1581,6 +1676,7 @@ $rnaseq-term-name-colors:
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .type-EncoreMatrix {
     .matrix-header__target-filter-controls {
         @media screen and (min-width: $screen-md-min) {
@@ -1598,6 +1694,7 @@ $rnaseq-term-name-colors:
     width: $encore-spacer-width;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .type-EncoreMatrix {
     .general-search-entry {
         margin-bottom: 0;

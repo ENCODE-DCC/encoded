@@ -1,6 +1,5 @@
 $pager-dimension: 24px;
 
-
 // Contains the pager's direcion buttons and index.
 .pager {
     display: inline;
@@ -20,7 +19,6 @@ $pager-dimension: 24px;
         }
     }
 }
-
 
 // Pager's direction buttons.
 .pager__dir {
@@ -58,13 +56,12 @@ $pager-dimension: 24px;
     border-right: 1px solid #c0c0c0;
 }
 
-
 $pager-height: 24px;
 $pager-arrow-width: 24px;
 
 .pager-multi {
     display: flex;
-    
+
     > ul {
         display: flex;
         margin: 0;

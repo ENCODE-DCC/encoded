@@ -151,6 +151,17 @@ jobs:
       - run:
           name: Lint the code with Eslint
           command: node_modules/.bin/eslint src/encoded/static/components/
+  stylelint:
+    executor: encoded-executor
+    resource_class: medium
+    steps:
+      -  buildout
+      - run:
+          name: Install stylelint
+          command: sudo npm install stylelint
+      - run:
+          name: Lint the style sheet with StyleLint
+          command: node_modules/.bin/stylelint src/encoded/static/scss/
 
 workflows:
   version: 2
@@ -162,3 +173,4 @@ workflows:
       - not-bdd-non-indexing
       - npm
       - eslint
+      - stylelint

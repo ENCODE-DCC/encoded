@@ -5,8 +5,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-    background-color: #fff;
-    background-color: rgba(255,255,255,.8);
+    background-color: rgba(255, 255, 255, 0.8);
     opacity: 0;
     z-index: 1100;
     transition: all 200ms;
@@ -25,7 +24,6 @@
     }
 }
 
-
 .lightbox-img {
     position: relative;
     display: inline-block;
@@ -40,16 +38,15 @@
         text-align: left;
 
         img {
-              display: block;
-              width: auto;
-              height: auto;
-              margin: 0 auto;
-              max-width: 100%;
-              line-height: 0;
+            display: block;
+            width: auto;
+            height: auto;
+            margin: 0 auto;
+            max-width: 100%;
+            line-height: 0;
         }
     }
 }
-
 
 .lightbox-close {
     position: absolute;

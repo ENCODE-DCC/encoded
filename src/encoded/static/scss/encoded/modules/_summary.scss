@@ -2,7 +2,7 @@ $inset-size: 65px;
 $small-inset-size: 55px;
 $smallest-inset-size: 45px;
 
-$results-background: #E9E9E9;
+$results-background: #e9e9e9;
 
 .summary-header {
     @at-root #{&}__facets-horizontal {
@@ -21,11 +21,15 @@ $results-background: #E9E9E9;
 
     .clear-filters-control {
         margin: 10px 10px 20px;
+
         > div {
             font-size: 1rem;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             position: relative;
+
             > div {
                 font-size: 0.9rem;
             }
@@ -36,6 +40,7 @@ $results-background: #E9E9E9;
         margin: 5px 0 0;
     }
 
+    /* stylelint-disable-next-line selector-class-pattern */
     .summary-header__title_control {
         position: relative;
         margin: auto;
@@ -46,9 +51,12 @@ $results-background: #E9E9E9;
 
 // Make summary page full-width
 .container {
+    /* stylelint-disable-next-line selector-class-pattern */
     &.Summary {
         width: 100%;
         max-width: 100%;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             width: calc(100% - 20px);
             max-width: calc(100% - 20px);
@@ -64,35 +72,47 @@ $results-background: #E9E9E9;
     flex-wrap: wrap;
     max-width: 1600px;
     margin: auto;
+
     .body-facet-container {
         flex: 0 1 80%;
         width: 80%;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: 1400px) {
             flex: 0 1 100%;
             width: 100%;
         }
     }
+
     .summary-content__data {
         background: $results-background;
         flex: 0 1 calc(20% - 20px);
         width: calc(20% - 20px);
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: 1400px) {
             flex: 0 1 100%;
             width: 100%;
         }
+
         .summary-content__snapshot {
             flex-wrap: wrap;
             max-width: 1000px;
             margin: auto;
             display: flex;
         }
+
         .award-charts__chart {
             flex: 0 0 100%;
             width: 100%;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: 1400px) {
                 flex: 0 1 33%;
                 width: 33%;
             }
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-xs-min) {
                 flex: 0 1 100%;
                 width: 100%;
@@ -100,7 +120,6 @@ $results-background: #E9E9E9;
         }
     }
 }
-
 
 // Contains the vertical facets and the charts.
 .summary-content {
@@ -110,6 +129,8 @@ $results-background: #E9E9E9;
         background: $results-background;
         padding: 30px;
         margin-bottom: 30px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             padding: 10px 0;
         }
@@ -231,6 +252,8 @@ $results-background: #E9E9E9;
     margin: 10px;
     font-size: 1rem;
     text-align: left;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         font-size: 0.9rem;
     }
@@ -244,9 +267,13 @@ $results-background: #E9E9E9;
     margin: 10px 0 30px;
     max-width: 1600px;
     width: 100%;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         margin: 0 0 30px;
     }
+
+    /* stylelint-disable-next-line selector-class-pattern */
     &:not(.Homo-sapiens) {
         margin-bottom: 0;
     }
@@ -258,6 +285,8 @@ $results-background: #E9E9E9;
     .organism-button-instructions {
         margin-bottom: 5px;
         font-size: 1.5rem;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             font-size: 1rem;
         }
@@ -269,12 +298,16 @@ $results-background: #E9E9E9;
             padding: 30px 0;
             max-width: 1600px;
             margin: auto;
+
             &.human {
                 border-top: 2px solid #d2d2d2;
+
+                /* stylelint-disable-next-line media-feature-name-disallowed-list */
                 @media screen and (max-width: 1400px) {
                     border: none;
                 }
             }
+
             .horizontal {
                 display: flex;
                 justify-content: center;
@@ -295,6 +328,8 @@ $results-background: #E9E9E9;
         .facet {
             flex: 0 0 25%;
             max-width: 250px;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-xs-min) {
                 flex: 0 0 100%;
                 max-width: none;
@@ -308,6 +343,8 @@ $results-background: #E9E9E9;
         .facet {
             flex: 0 0 33%;
             max-width: 250px;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-xs-min) {
                 flex: 0 0 100%;
                 max-width: none;
@@ -321,6 +358,8 @@ $results-background: #E9E9E9;
         .facet {
             flex: 0 0 50%;
             max-width: 250px;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-xs-min) {
                 flex: 0 0 100%;
                 max-width: none;
@@ -333,6 +372,7 @@ $results-background: #E9E9E9;
     &:hover {
         cursor: pointer;
     }
+
     &.highlight {
         cursor: pointer;
     }
@@ -345,6 +385,7 @@ $results-background: #E9E9E9;
             stroke: $Homo-sapiens;
             cursor: pointer;
         }
+
         &.highlight:not(.cls-5):not(.cls-nervebackground):not(.active) {
             fill: lighten($Homo-sapiens, 45%);
             stroke: lighten($Homo-sapiens, 20%);
@@ -360,6 +401,7 @@ $results-background: #E9E9E9;
         stroke: lighten($Homo-sapiens, 20%);
         cursor: pointer;
     }
+
     &.highlight {
         stroke: lighten($Homo-sapiens, 20%);
         cursor: pointer;
@@ -376,28 +418,37 @@ $results-background: #E9E9E9;
     position: absolute;
     bottom: -50px;
     right: 10px;
+
     .icon {
         margin-right: 3px;
     }
+
     &:hover {
         cursor: pointer;
         background-color: lighten($Homo-sapiens, 45%);
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
         left: 10px;
         bottom: -60px;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         font-size: 0.8rem;
         bottom: -80px;
         left: 10px;
         width: 100px;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
         bottom: -90px;
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .type-Summary {
     .body-list {
         .body-list-element {
@@ -408,16 +459,19 @@ $results-background: #E9E9E9;
 }
 
 .body-list {
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         padding: 0;
         font-size: 0.8rem;
     }
+
     .body-list-inner {
         padding: 10px;
         text-align: left;
         position: relative;
         line-height: 1.8;
     }
+
     .body-list-element {
         display: inline;
         padding: 2px 5px;
@@ -428,19 +482,25 @@ $results-background: #E9E9E9;
         border: none;
         font-size: 1rem;
         margin-bottom: 4px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             font-size: 0.8rem;
         }
+
         &:hover {
             cursor: pointer;
         }
+
         &.active {
             background-color: $Homo-sapiens;
             color: white;
         }
+
         &:hover:not(.active) {
             background-color: lighten($Homo-sapiens, 45%);
         }
+
         &.highlight:not(.active) {
             background-color: lighten($Homo-sapiens, 45%);
         }
@@ -452,8 +512,11 @@ $results-background: #E9E9E9;
     margin: auto;
     border-bottom: 2px solid #d2d2d2;
     border-top: 2px solid #d2d2d2;
+
     .body-list-element {
         width: calc(20% - 4px);
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             width: calc(50% - 4px);
         }
@@ -464,29 +527,40 @@ $results-background: #E9E9E9;
     order: 1;
     -webkit-order: 1;
 }
+
 .body-facet :nth-child(2) {
     order: 2;
     -webkit-order: 2;
 }
+
 .body-facet :nth-child(3) {
     order: 3;
     -webkit-order: 3;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         order: 4;
         -webkit-order: 4;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
         order: 3;
         -webkit-order: 3;
     }
 }
+
 .body-facet :nth-child(4) {
     order: 4;
     -webkit-order: 4;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         order: 3;
         -webkit-order: 3;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
         order: 4;
         -webkit-order: 4;
@@ -499,33 +573,48 @@ $results-background: #E9E9E9;
     align-items: center;
     justify-content: space-evenly;
     flex-wrap: wrap;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         padding: 0;
     }
+
     .body-image-container {
         flex: 0 1 33%;
         max-width: 600px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             flex: 0 1 50%;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
         }
+
         svg {
             margin-right: -25px;
         }
     }
+
     .body-inset-container {
         flex: 0 1 150px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             flex: 0 1 60%;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
         }
+
         .tissue-container {
             width: 65px;
         }
+
         .body-inset {
             position: relative;
             background: none;
@@ -533,71 +622,98 @@ $results-background: #E9E9E9;
             margin: 0;
             margin-right: 9px;
             border: 0;
+
             img {
                 width: $inset-size;
+
+                /* stylelint-disable-next-line media-feature-name-disallowed-list */
                 @media screen and (max-width: $screen-md-min) {
                     width: $smallest-inset-size;
                 }
+
+                /* stylelint-disable-next-line media-feature-name-disallowed-list */
                 @media screen and (max-width: $screen-md-min) {
                     width: $small-inset-size;
                 }
             }
+
             margin-bottom: 10px;
-            &:hover:not(.active):after {
+
+            &:hover:not(.active)::after {
                 cursor: pointer;
                 opacity: 0.5;
             }
-            &.highlight:not(.active):after {
+
+            &.highlight:not(.active)::after {
                 cursor: pointer;
                 opacity: 0.5;
             }
         }
-        .body-inset:after {
+
+        .body-inset::after {
             content: '\A';
             position: absolute;
             width: $inset-size;
             height: $inset-size;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-md-min) {
                 width: $smallest-inset-size;
                 height: $smallest-inset-size;
             }
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-md-min) {
                 width: $small-inset-size;
                 height: $small-inset-size;
             }
-            top:0;
-            left:0;
-            background: #63326E;
+
+            top: 0;
+            left: 0;
+            background: #63326e;
             opacity: 0;
             transition: all 200ms;
             -webkit-transition: all 200ms;
             border-radius: 50%;
         }
     }
+
     .body-list {
         flex: 0 1 calc(33% - 65px);
         text-align: left;
         margin-left: -30px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             flex: 0 1 50%;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
             margin-left: 0;
         }
     }
+
     .body-list-narrow {
         flex: 0 1 calc(18% - 65px);
         margin-left: 0;
+
         .body-list-element {
             width: calc(100% - 4px);
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-sm-min) {
                 width: calc(50% - 4px);
             }
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             flex: 0 1 40%;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
         }
@@ -605,9 +721,12 @@ $results-background: #E9E9E9;
 }
 
 .container {
+    /* stylelint-disable-next-line selector-class-pattern */
     &.Summary {
         width: 100%;
         max-width: 100%;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             width: calc(100% - 20px);
             max-width: calc(100% - 20px);

@@ -112,7 +112,7 @@ $form-bg: #f3f3f3;
         ul {
             text-decoration: none;
             list-style-type: none;
-            padding: 0px;
+            padding: 0;
             margin-left: 25px;
 
             li {
@@ -139,7 +139,7 @@ $form-bg: #f3f3f3;
         font-size: 1rem;
         font-weight: 400;
         padding-bottom: 5px;
-        color: #6C6C6C;
+        color: #6c6c6c;
     }
 
     @at-root #{&}__target-external-resources {
@@ -188,6 +188,7 @@ $form-bg: #f3f3f3;
         border-bottom-left-radius: 0;
         border-bottom: transparent;
     }
+
     z-index: 1;
 }
 
@@ -252,7 +253,7 @@ $form-bg: #f3f3f3;
     background-color: $nav-color-bg;
     border: 1px solid #ccc;
     list-style: none;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,.5);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 
     li {
         margin: 0;
@@ -317,6 +318,7 @@ $form-bg: #f3f3f3;
                 border-top-left-radius: $border-radius-base;
                 border-bottom-left-radius: $border-radius-base;
             }
+
             .btn:last-child {
                 border-top-right-radius: $border-radius-base;
                 border-bottom-right-radius: $border-radius-base;
@@ -405,7 +407,6 @@ $form-bg: #f3f3f3;
     }
 }
 
-
 .result-table {
     position: relative;
     z-index: 10;
@@ -420,10 +421,10 @@ $form-bg: #f3f3f3;
     }
 
     > li {
-        border-bottom: 1px solid #E8E8E8;
+        border-bottom: 1px solid #e8e8e8;
     }
 
-    &:before {
+    &::before {
         content: none;
         display: block;
     }
@@ -446,7 +447,6 @@ $form-bg: #f3f3f3;
         }
     }
 }
-
 
 /**
  * Object-specific search-result styles.

@@ -9,8 +9,7 @@
         font-size: 1rem;
         color: #808080;
 
-        + li:before {
-            padding: 0 5px 0 10px;
+        + li::before {
             content: "/\A0"; // Slash character, only after adjacent li
             padding: 0 5px;
             color: #ccc;

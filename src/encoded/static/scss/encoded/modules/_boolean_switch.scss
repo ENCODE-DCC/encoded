@@ -28,14 +28,14 @@
     @at-root #{&}__frame {
         position: relative;
         border: none;
-        box-shadow: 0 1px 1px inset rgba(0,0,0,0.2);
+        box-shadow: 0 1px 1px inset rgba(0, 0, 0, 0.2);
     }
 
     @at-root #{&}__actuator {
         position: absolute;
         top: 2px;
         background-color: #fff;
-        box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     }
 
     // Focus border because opacity:0 on <input> also hides this.
