@@ -33,6 +33,7 @@
             stroke: $Homo-sapiens;
             cursor: pointer;
         }
+
         &.highlight:not(.cls-5):not(.cls-nervebackground):not(.active) {
             fill: lighten($Homo-sapiens, 45%);
             stroke: lighten($Homo-sapiens, 20%);
@@ -50,6 +51,7 @@
         stroke: lighten($Homo-sapiens, 20%);
         cursor: pointer;
     }
+
     &.highlight {
         stroke: lighten($Homo-sapiens, 20%);
         cursor: pointer;
@@ -61,6 +63,7 @@
     &:hover {
         cursor: pointer;
     }
+
     &.highlight {
         cursor: pointer;
     }
@@ -78,23 +81,31 @@
     position: absolute;
     bottom: -50px;
     right: 10px;
+
     .icon {
         margin-right: 3px;
     }
+
     &:hover {
         cursor: pointer;
         background-color: lighten($Homo-sapiens, 45%);
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
         left: 10px;
         bottom: -60px;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         font-size: 0.8rem;
         bottom: -80px;
         left: 10px;
         width: 100px;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
         bottom: -90px;
     }
@@ -103,16 +114,19 @@
 // Styles for lists of terms (systems list, organs lists, inset images terms list)
 // Also used for thumbnail inset images on pop-up version of body map
 .body-list {
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         padding: 0;
         font-size: 0.8rem;
     }
+
     .body-list-inner {
         padding: 10px;
         text-align: left;
         position: relative;
         line-height: 1.8;
     }
+
     .body-list-element {
         display: inline-block;
         line-height: 1;
@@ -125,19 +139,25 @@
         border: none;
         font-size: 1rem;
         margin-bottom: 4px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             font-size: 0.8rem;
         }
+
         &:hover {
             cursor: pointer;
         }
+
         &.active {
             background-color: $Homo-sapiens;
             color: white;
         }
+
         &:hover:not(.active) {
             background-color: lighten($Homo-sapiens, 45%);
         }
+
         &.highlight:not(.active) {
             background-color: lighten($Homo-sapiens, 45%);
         }
@@ -147,6 +167,7 @@
 // Special styles for the pop-up modal version of the body map component
 .body-map-thumbnail-and-modal {
     max-width: min-content;
+
     .body-list {
         .body-list-element {
             display: inline;
@@ -160,8 +181,11 @@
     margin: auto;
     border-bottom: 2px solid #d2d2d2;
     border-top: 2px solid #d2d2d2;
+
     .body-list-element {
         width: calc(20% - 4px);
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             width: calc(50% - 4px);
         }
@@ -179,33 +203,48 @@
     align-items: center;
     justify-content: space-evenly;
     flex-wrap: wrap;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         padding: 0;
     }
+
     .body-image-container {
         flex: 0 1 33%;
         max-width: 600px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             flex: 0 1 50%;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
         }
+
         svg {
             margin-right: -25px;
         }
     }
+
     .body-inset-container {
         flex: 0 1 150px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             flex: 0 1 60%;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
         }
+
         .tissue-container {
             width: 65px;
         }
+
         .body-inset {
             position: relative;
             background: none;
@@ -213,71 +252,98 @@
             margin: 0;
             margin-right: 9px;
             border: 0;
+
             img {
                 width: $inset-size;
+
+                /* stylelint-disable-next-line media-feature-name-disallowed-list */
                 @media screen and (max-width: $screen-md-min) {
                     width: $smallest-inset-size;
                 }
+
+                /* stylelint-disable-next-line media-feature-name-disallowed-list */
                 @media screen and (max-width: $screen-md-min) {
                     width: $small-inset-size;
                 }
             }
+
             margin-bottom: 10px;
-            &:hover:not(.active):after {
+
+            &:hover:not(.active)::after {
                 cursor: pointer;
                 opacity: 0.5;
             }
-            &.highlight:not(.active):after {
+
+            &.highlight:not(.active)::after {
                 cursor: pointer;
                 opacity: 0.5;
             }
         }
-        .body-inset:after {
+
+        .body-inset::after {
             content: '\A';
             position: absolute;
             width: $inset-size;
             height: $inset-size;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-md-min) {
                 width: $smallest-inset-size;
                 height: $smallest-inset-size;
             }
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-md-min) {
                 width: $small-inset-size;
                 height: $small-inset-size;
             }
-            top:0;
-            left:0;
-            background: #63326E;
+
+            top: 0;
+            left: 0;
+            background: #63326e;
             opacity: 0;
             transition: all 200ms;
             -webkit-transition: all 200ms;
             border-radius: 50%;
         }
     }
+
     .body-list {
         flex: 0 1 calc(33% - 65px);
         text-align: left;
         margin-left: -30px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             flex: 0 1 50%;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
             margin-left: 0;
         }
     }
+
     .body-list-narrow {
         flex: 0 1 calc(18% - 65px);
         margin-left: 0;
+
         .body-list-element {
             width: calc(100% - 4px);
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-sm-min) {
                 width: calc(50% - 4px);
             }
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             flex: 0 1 40%;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
         }
@@ -290,29 +356,40 @@
     order: 1;
     -webkit-order: 1;
 }
+
 .body-facet :nth-child(2) {
     order: 2;
     -webkit-order: 2;
 }
+
 .body-facet :nth-child(3) {
     order: 3;
     -webkit-order: 3;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         order: 4;
         -webkit-order: 4;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
         order: 3;
         -webkit-order: 3;
     }
 }
+
 .body-facet :nth-child(4) {
     order: 4;
     -webkit-order: 4;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         order: 3;
         -webkit-order: 3;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
         order: 4;
         -webkit-order: 4;
@@ -331,9 +408,11 @@
 .body-map-container-pop-up {
     border: 2px solid $Homo-sapiens;
     position: relative;
+
     .body-list-top {
         border-top: 0;
     }
+
     &.expanded {
         max-width: 690px;
         position: absolute;
@@ -341,19 +420,22 @@
         background: white;
         left: 0;
         right: 0;
-        margin: auto;
         top: 120px;
         margin: auto auto 30px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             width: 95%;
         }
     }
+
     &.collapsed {
         width: 0;
         height: 0;
         border: 0;
         overflow: hidden;
     }
+
     .collapse-body-map {
         cursor: pointer;
         margin: 0;
@@ -362,6 +444,7 @@
         font-size: 1rem;
         border: 0;
     }
+
     .body-list {
         .body-list-inner {
             text-align: center;
@@ -372,45 +455,57 @@
     .body-list-inner {
         li {
             display: inline;
-            &:after {
+
+            &::after {
                 content: " ";
                 word-spacing: 0;
                 letter-spacing: 1em;
-                background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=) center center no-repeat;
+                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=) center center no-repeat;
             }
         }
+
         button {
             margin-right: 0;
             padding: 2px 5px;
         }
     }
+
     .body-facet {
         .body-image-container {
             flex: 0 1 50%;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-xs-min) {
                 flex: 0 1 100%;
             }
         }
+
         .body-list {
             flex: 0 1 50%;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-xs-min) {
                 flex: 0 1 100%;
             }
         }
+
         .body-inset-container {
             flex: 0 1 60%;
             text-align: center;
+
             .body-inset {
                 img {
                     width: 55px;
                     height: 55px;
                 }
             }
-            .body-inset:after {
+
+            .body-inset::after {
                 width: 55px;
                 height: 55px;
             }
         }
+
         .body-list-narrow {
             flex: 0 1 40%;
         }
@@ -420,18 +515,22 @@
         order: 1;
         -webkit-order: 1;
     }
+
     .body-facet :nth-child(2) {
         order: 2;
         -webkit-order: 2;
     }
+
     .body-facet :nth-child(3) {
         order: 4;
         -webkit-order: 4;
     }
+
     .body-facet :nth-child(4) {
         order: 3;
         -webkit-order: 3;
     }
+
     .clickable-diagram-container {
         .body-list-inner {
             .body-list-element {
@@ -453,12 +552,16 @@
 
 .expand-arrows {
     fill: $Homo-sapiens;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         top: 8px;
         fill: white;
         height: 20px;
         width: 20px;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
         top: 3px;
     }
@@ -468,11 +571,15 @@
     fill: white;
     top: 2px;
     z-index: 999;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         top: 8px;
         height: 20px;
         width: 20px;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
         top: 3px;
     }
@@ -488,13 +595,18 @@
     font-weight: 400;
     cursor: pointer;
     position: relative;
+
     &:hover {
         background: darken($Homo-sapiens, 10%);
         font-weight: 600;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         font-size: 1rem;
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
         padding: 5px;
         font-size: 0.8rem;
@@ -505,59 +617,74 @@
 .body-image-thumbnail {
     flex: 0 1 220px;
     min-width: 220px;
-    border: 1px solid #d2d2d2;
     border-radius: 2px;
-    background: linear-gradient(#E6E6E6, #fff);
+    background: linear-gradient(#e6e6e6, #fff);
     position: relative;
     border: 2px solid $Homo-sapiens;
     font-size: 1rem;
     margin: 0 0 10px 0;
     padding: 0;
     height: min-content;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         flex: 0 1 100%;
         margin: 0 5px 10px 5px;
     }
+
+    /* stylelint-disable-next-line selector-id-pattern */
     #BodyMap {
         pointer-events: none;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             height: 0;
             display: block;
         }
     }
+
     .body-list {
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             display: none;
         }
     }
+
     .body-list-inner {
         text-align: center;
         margin: 0 0 10px;
         padding: 0;
+
         .body-inset {
             display: inline-block;
             width: 30px;
             margin: 3px;
+
             &.active {
                 .inactive-image {
                     display: none;
                 }
+
                 .active-image {
                     display: block;
                 }
             }
+
             .inactive-image {
                 display: block;
             }
+
             .active-image {
                 display: none;
             }
         }
     }
+
     &:hover {
         cursor: pointer;
         border: 2px solid $Homo-sapiens;
-        background: linear-gradient(#B3B3B3, #fff);
+        background: linear-gradient(#b3b3b3, #fff);
+
         .body-map-expander {
             background: darken($Homo-sapiens, 10%);
             font-weight: 600;

@@ -1,126 +1,140 @@
 .block {
-	padding: .5em;
+    padding: 0.5em;
 }
 
 .layout.editable {
-	position: relative;
-	.row {
-		position: relative;
-		margin-top: -5px;
-		margin-bottom: -5px;
-		padding-top: 5px;
-		padding-bottom: 5px;
-		outline: dashed 1px red;
-	}
-	[class^="col"] {
-		outline: dashed 1px blue;
-	}
-	.block {
-		position: relative;
-		min-height: 20px;
+    position: relative;
 
-		&.dragging {
-			opacity: .5;
-		}
+    .row {
+        position: relative;
+        margin-top: -5px;
+        margin-bottom: -5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        outline: dashed 1px red;
+    }
 
-		&.hover {
-			outline: dashed 1px $brand-primary;
-			&[draggable="true"] {
-				cursor: move;
-			}
-			.block-toolbar {
-				display: block;
-			}
-		}
+    [class^="col"] {
+        outline: dashed 1px blue;
+    }
 
-		.block-toolbar {
-			position: absolute;
-			z-index: 1;
-			top: 3px;
-			right: 3px;
-			text-align: right;
-			display: none;
-			a {
-				text-decoration: none;
-				cursor: pointer;
-			}
-			.remove {
-				border: 0;
-				background: none;
-			}
-		}
+    .block {
+        position: relative;
+        min-height: 20px;
 
-	}
+        &.dragging {
+            opacity: 0.5;
+        }
 
+        &.hover {
+            outline: dashed 1px $brand-primary;
+
+            &[draggable="true"] {
+                cursor: move;
+            }
+
+            .block-toolbar {
+                display: block;
+            }
+        }
+
+        .block-toolbar {
+            position: absolute;
+            z-index: 1;
+            top: 3px;
+            right: 3px;
+            text-align: right;
+            display: none;
+
+            a {
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .remove {
+                border: 0;
+                background: none;
+            }
+        }
+    }
 }
 
-.drop-top:before {
-	content: " ";
-	display: block !important;
-	width: 100%;
-	border-top: solid 3px $brand-primary;
-	margin-top: -3px;
-	position: absolute; top: 0; left: 0;
+.drop-top::before {
+    content: " ";
+    display: block !important;
+    width: 100%;
+    border-top: solid 3px $brand-primary;
+    margin-top: -3px;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
-.drop-bottom:after {
-	content: " ";
-	display: block !important;
-	width: 100%;
-	border-bottom: solid 3px $brand-primary;
-	margin-bottom: -3px;
-	position: absolute; bottom: 0; left: 0;
+
+.drop-bottom::after {
+    content: " ";
+    display: block !important;
+    width: 100%;
+    border-bottom: solid 3px $brand-primary;
+    margin-bottom: -3px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
-.row.drop-bottom:after {
-	display: table !important;
-	position: static;
+
+.row.drop-bottom::after {
+    display: table !important;
+    position: static;
 }
-.drop-left:before {
-	content: " ";
-	display: block !important;
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	border-left: solid 3px $brand-primary;
+
+.drop-left::before {
+    content: " ";
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-left: solid 3px $brand-primary;
 }
-.drop-right:before {
-	content: " ";
-	display: block !important;
-	position: absolute;
-	top: 0;
-	right: 0;
-	height: 100%;
-	border-right: solid 3px $brand-primary;
+
+.drop-right::before {
+    content: " ";
+    display: block !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-right: solid 3px $brand-primary;
 }
 
 .layout-toolbar {
-	display: flex;
-	padding: 5px;
-	justify-content: space-between;
-	background-color: #fff;
-	z-index: 1030;
+    display: flex;
+    padding: 5px;
+    justify-content: space-between;
+    background-color: #fff;
+    z-index: 1030;
 
-	@at-root #{&}__tools {
-		flex: 0 1 auto;
+    @at-root #{&}__tools {
+        flex: 0 1 auto;
 
-		.btn {
-			cursor: move;
-		}
-	}
+        .btn {
+            cursor: move;
+        }
+    }
 
-	@at-root #{&}__controls {
-		display: flex;
-		flex: 0 1 auto;
+    @at-root #{&}__controls {
+        display: flex;
+        flex: 0 1 auto;
 
-		.btn {
-			margin-left: 5px;
-		}
-	}
+        .btn {
+            margin-left: 5px;
+        }
+    }
 }
 
 .layout-toolbar.navbar-fixed-top {
-	z-index: 1031;
-	.col-md-12 {
-		outline: 0;
-	}
+    z-index: 1031;
+
+    .col-md-12 {
+        outline: 0;
+    }
 }

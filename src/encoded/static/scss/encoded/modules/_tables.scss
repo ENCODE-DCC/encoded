@@ -16,6 +16,7 @@ $file-restricted-bg: #ffdcda; // Background color of restricted files
 
 .table-panel {
     @extend .panel;
+
     margin-top: 0;
     margin-bottom: 15px;
     padding: 0;
@@ -53,6 +54,7 @@ $file-restricted-bg: #ffdcda; // Background color of restricted files
                 border-top: none;
             }
         }
+
         > tr:nth-child(even) {
             > td {
                 background-color: #f9f9f9;
@@ -82,12 +84,13 @@ form.table-filter {
 }
 
 .spinner-warning {
-    background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
+    background: #f89406 url("../img/spinner-orange-bg.gif") no-repeat;
     background-position: 7px 9px;
 }
 
 .table-actions {
     margin-left: 1em;
+
     button {
         float: none;
     }
@@ -175,7 +178,6 @@ form.table-filter {
     }
 }
 
-
 .table-section {
     font-size: 1.3rem;
     font-weight: bold;
@@ -204,6 +206,7 @@ form.table-filter {
 
 %tcell-template {
     @extend .icon;
+
     display: block;
     padding: 0 0 0 5px;
     flex: 0 0 10px;
@@ -287,19 +290,17 @@ form.table-filter {
     margin: -10px;
 }
 
-
 /**
  * Styles for specific tables.
  */
 
- // Experiment series tables; might need to expand name if needed for similar object tables.
+// Experiment series tables; might need to expand name if needed for similar object tables.
 .table-experiment-series {
     > tfoot > tr > td {
         padding: 3px 5px;
         text-align: right;
     }
 }
-
 
 // Raw file tables.
 .table-raw {
@@ -341,7 +342,6 @@ form.table-filter {
 .table-raw-separator td {
     border-top: 2px solid #606060;
 }
-
 
 // Header for a SortTable including a pager.
 .header-paged-sorttable {

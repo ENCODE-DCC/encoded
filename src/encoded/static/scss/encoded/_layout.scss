@@ -11,23 +11,23 @@
 }
 
 .homepage-main-box {
-	min-height: 400px;
-	background: url('/static/img/encode-bg-gray.png') no-repeat center;
+    min-height: 400px;
+    background: url('/static/img/encode-bg-gray.png') no-repeat center;
 }
 
 .project-info {
-	h1,h2,h3,h4 {
-		text-shadow: rgba(255,255,255,1) 1px 1px 0;
-	}
+    h1, h2, h3, h4 {
+        text-shadow: rgba(255, 255, 255, 1) 1px 1px 0;
+    }
+
     margin-bottom: 20px;
-	display: block;
-	font-size: 1.3rem;
+    display: block;
+    font-size: 1.3rem;
 }
 
 .text-panel {
     margin-top: 20px;
 }
-
 
 /**
  * Common page elements.
@@ -53,7 +53,6 @@
     }
 }
 
-
 // Main page content panel.
 #content {
     margin: 20px 10px;
@@ -67,27 +66,27 @@
     }
 }
 
-
 /* *********************************************************
 		FOOTER
 ********************************************************** */
 
 .page-footer {
-	color: rgb(255, 255, 255);
-	background-color: #a4afb8; // for IE8
-	background-color: $footerBackground; // overwrite previous line for CSS3 browsers
-	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-	text-align: center;
-	overflow: hidden;
-	a { 
-		color: rgb(255, 255, 255); 
-		font-weight: bold;
-	}
-	ul {
-	    list-style: none;
-	    list-style-position: outside;
-	    padding: 0;
-	}
+    color: rgb(255, 255, 255);
+    background-color: $footerBackground; // overwrite previous line for CSS3 browsers
+    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    overflow: hidden;
+
+    a {
+        color: rgb(255, 255, 255);
+        font-weight: bold;
+    }
+
+    ul {
+        list-style: none;
+        list-style-position: outside;
+        padding: 0;
+    }
 }
 
 .footer-links {
@@ -109,10 +108,12 @@
         background-color: darken($footerBackground, 0.1%);
         border-radius: 3px;
     }
-    a:hover { 
-        text-decoration: none; 
-        background-color: darken($footerBackground, 6%);   
+
+    a:hover {
+        text-decoration: none;
+        background-color: darken($footerBackground, 6%);
     }
+
     a:active {
         background-color: darken($footerBackground, 15%);
     }
@@ -130,11 +131,9 @@
     }
 }
 
-
 .copy-notice {
     text-align: center;
 }
-
 
 // Privacy notice in auth0 login box.
 .auth0__privacy-notice {

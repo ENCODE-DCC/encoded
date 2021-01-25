@@ -21,6 +21,8 @@ $tab-color: #a8a8a8;
     z-index: 1;
     top: 1px;
     border: none;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
         padding: 5px 5px 0;
     }
@@ -84,17 +86,20 @@ $tab-color: #a8a8a8;
         .tab-button {
             padding: 0;
             flex: 0 1 auto;
+
             &:hover:not(.active) {
                 background: #efefef;
             }
+
             a {
                 padding: 10px 20px;
                 display: inline-block;
                 width: 100%;
                 height: 100%;
                 cursor: default;
+
                 &:hover:not([disabled]):not(.active) {
-                    background: #E2E2E2;
+                    background: #e2e2e2;
                     cursor: pointer;
                 }
             }
@@ -102,10 +107,12 @@ $tab-color: #a8a8a8;
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .chip_seq_matrix__data-wrapper {
     .tab-nav {
         overflow: visible;
         margin-bottom: 1px;
+
         .organism-tab {
             font-family: 'Oswald';
             font-weight: 300;
@@ -116,16 +123,20 @@ $tab-color: #a8a8a8;
 .nav-tabs {
     flex-wrap: wrap;
     top: 0;
-    &:after {
+
+    &::after {
         border-bottom: 1px solid $tab-color;
     }
+
     .tab-button {
         flex: 0 1 calc(33% - 10px);
         font-family: 'Oswald';
         text-align: center;
+
         @media screen and (min-width: $series-wrap-width) {
             flex: 0 1 13%;
         }
+
         @media screen and (min-width: $series-narrow-width) {
             flex: 0 1 214px;
         }
@@ -134,17 +145,20 @@ $tab-color: #a8a8a8;
 
 .matrix__data-wrapper {
     .tab-border {
-        bottom: 0px;
+        bottom: 0;
+
         &.mobile {
             display: none;
         }
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .tab-nav-Homosapiens .nav-tabs li, .tab-nav-Musmusculus .nav-tabs li {
     margin: 5px 5px 0 5px;
+
     .tab-border {
-        bottom: 0px;
+        bottom: 0;
     }
 }
 
@@ -152,6 +166,7 @@ $tab-color: #a8a8a8;
     .tab-content {
         padding-top: 10px;
         border: 0;
+
         @media screen and (min-width: $series-wrap-width) {
             border-top: 0;
             border-bottom: 1px solid $tab-color;
@@ -159,6 +174,7 @@ $tab-color: #a8a8a8;
             border-left: 1px solid $tab-color;
         }
     }
+
     .tab-nav {
         margin-bottom: 0;
     }
@@ -168,6 +184,7 @@ $tab-color: #a8a8a8;
     .tab-content {
         border: 0;
         padding: 0;
+
         @media screen and (min-width: $series-wrap-width) {
             border-top: 0;
             border-bottom: 1px solid $tab-color;
@@ -178,10 +195,13 @@ $tab-color: #a8a8a8;
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .tab-button, .tab-nav-Homosapiens .nav-tabs li, .tab-nav-Musmusculus .nav-tabs li {
     font-family: 'Oswald';
     font-size: 1.3rem;
     font-weight: 300;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
         font-size: 1rem;
     }
@@ -189,6 +209,7 @@ $tab-color: #a8a8a8;
 
 .series-tabs .nav-tabs li, .epigenome-tabs .nav-tabs li, .cart__display-content .tab-nav .nav-tabs li {
     padding: 0;
+
     a {
         display: inline-block;
     }
@@ -196,55 +217,67 @@ $tab-color: #a8a8a8;
 
 .nav-tabs li {
     padding: 5px 10px;
-    margin: 5px;
     border-radius: 3px;
     color: #000;
-    margin: 5px 3px 0px 3px;
+    margin: 5px 3px 0 3px;
     background: #efefef;
     border: 1px solid #efefef;
+
     @media screen and (min-width: $series-wrap-width) {
         border: 1px solid transparent;
         border-bottom: 1px solid $tab-color;
         border-radius: 3px 3px 0 0;
     }
+
     &:hover {
-        background: #E2E2E2;
+        background: #e2e2e2;
     }
+
     .disabled {
         background: #efefef;
         opacity: 0.3;
         cursor: default;
+
         &:hover {
             background: #efefef;
         }
     }
+
     a {
         position: relative;
     }
+
     .tab-inner {
         position: relative;
         display: inline-block;
         width: 100%;
         height: 100%;
         padding: 5px;
+
         @media screen and (min-width: $screen-sm-min) {
             padding: 10px;
         }
     }
+
     &.selected, &.active {
         background: white;
         z-index: 9;
+
         a {
             border: none;
         }
+
         border: 1px solid $tab-color;
+
         @media screen and (min-width: $series-wrap-width) {
             border-bottom: white 1px solid;
         }
     }
+
     .tab-icon {
         width: 60px;
         margin: auto;
+
         img {
             width: 60px;
         }
@@ -261,11 +294,13 @@ $tab-color: #a8a8a8;
     z-index: 0;
     position: absolute;
     width: 100%;
-    bottom: 0px;
+    bottom: 0;
     border-bottom: 0;
+
     @media screen and (min-width: $series-wrap-width) {
         border-bottom: 1px solid $tab-color;
     }
+
     &.mobile {
         display: none;
     }
@@ -275,11 +310,14 @@ $tab-color: #a8a8a8;
     position: relative;
     width: 100%;
     margin-top: 20px;
+
     .tab-border {
         bottom: 0;
+
         &.mobile {
             bottom: calc(50% - 1px);
             display: block;
+
             @media screen and (min-width: $series-wrap-width) {
                 display: none;
             }
@@ -290,9 +328,11 @@ $tab-color: #a8a8a8;
 .tab-description {
     padding: 20px 10px;
     font-size: 0.8rem;
+
     @media screen and (min-width: $screen-md-min) {
         font-size: 1rem;
     }
+
     @media screen and (min-width: $series-wrap-width) {
         padding: 20px 0;
     }
@@ -311,12 +351,15 @@ $tab-color: #a8a8a8;
         vertical-align: middle;
         width: 30px;
         margin-right: 7px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             display: none;
         }
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .ReferenceEpigenomeMatrix {
     .nav-tabs {
         li {
@@ -324,10 +367,12 @@ $tab-color: #a8a8a8;
                 background-color: unset;
                 border: 0;
                 margin: 0;
+
                 &:hover {
                     background-color: unset;
                 }
             }
+
             a[disabled] {
                 pointer-events: none;
                 cursor: unset;

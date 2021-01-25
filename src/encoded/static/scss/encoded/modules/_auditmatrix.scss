@@ -24,7 +24,6 @@ $rotated-th-angle: 30deg;
     }
 }
 
-
 th.rotate30 {
     height: $rotated-th-height;
     width: $rotated-th-width;
@@ -34,6 +33,7 @@ th.rotate30 {
     vertical-align: bottom;
     padding: 0 !important;
     border: none !important;
+
     > div {
         position: relative;
         z-index: 1;
@@ -45,6 +45,7 @@ th.rotate30 {
         background-color: #ddd;
         border-left: solid 1px #fff;
         border-right: solid 1px #fff;
+
         > a {
             -webkit-transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
             transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
@@ -64,8 +65,11 @@ th.rotate30 {
 
 .rotate90 {
     vertical-align: top;
+
+    /* stylelint-disable-next-line no-descending-specificity */
     > div {
         position: relative;
+
         > span {
             position: absolute;
             -webkit-transform: rotate(-90deg);
@@ -73,7 +77,7 @@ th.rotate30 {
             -webkit-transform-origin: left bottom 0;
             transform-origin: left bottom 0;
             top: 80px;
-            left: 16px;        
+            left: 16px;
         }
     }
 }

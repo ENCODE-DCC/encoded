@@ -1,7 +1,6 @@
 $panel-heading-inset: 10px; // Number of pixels padding inside panel heading
 $panel-body-inset:    10px; // Number of pixels padding inside panel body
 
-
 /* Panels */
 .panel {
     background-color: #fff;
@@ -35,6 +34,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .Page, .Search, .Matrix, .ChipSeqMatrix, .Summary, .EntexMatrix, .EncoreMatrix, .SESCCStemCellMatrix, .ReferenceEpigenomeMatrix, .MouseDevelopmentMatrix {
     .panel {
         border: 0;
@@ -42,6 +42,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
 }
 
 .view-item {
+    /* stylelint-disable-next-line selector-class-pattern */
     &.type-Experiment {
         .panel {
             border: 1px solid #a0a0a0;
@@ -70,6 +71,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
 
 .panel-full {
     @extend .panel;
+
     padding: 0;
 }
 
@@ -92,7 +94,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     overflow: hidden;
 }
 
-.panel h3, .panel h4 {color: #0A253D;}
+.panel h3, .panel h4 { color: #0a253d; }
 
 .view-detail {
     overflow: hidden;
@@ -109,7 +111,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
 }
 
 /* add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss */
-.panel a[href^="http"]:after, td a[href^="http"]:after      {
+.panel a[href^="http"]::after, td a[href^="http"]::after {
     content: " \f08e";
     font-family: FontAwesome;
     font-weight: normal;
@@ -125,18 +127,19 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     background-position: 0% 0%;
     background-repeat: repeat;
 }
+
 /* remove external-link icon if there is no text in link <a></a>
 Note does not work in =<IE8, oh well */
-a[href^="http"]:empty:after {
+a[href^="http"]:empty::after {
     content: none;
 }
 
 /* do not use external link icon in these cases... */
+
 /* downloads */
-a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
+a[href^="http://encodedcc.sdsc.edu/warehouse/"]::after {
     content: none !important;
 }
-
 
 .panel__split {
     display: block;
@@ -174,16 +177,14 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 }
 
-
 // <PanelBody> class for below split panel area.
 .panel__below-split {
     border-top: 1px solid #c0c0c0;
 
     h4 {
-        margin: 0px 0px 10px;
+        margin: 0 0 10px;
     }
 }
-
 
 // Antibody Status Panels
 .type-antibody-status {
@@ -300,6 +301,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 3px 6px;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .type-QualityMetric.view-detail {
     margin: 0;
 }
@@ -307,6 +309,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 // Holds documents, but as a panel within a panel
 .panel-body-doc-interior {
     @extend .panel-body-doc;
+
     padding-left: 0;
     margin-right: -10px;
 }
@@ -319,6 +322,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 .file-gallery-controls {
     justify-content: flex-end;
     border-bottom: 1px solid #c0c0c0;
+
     select {
         border: 2px solid #4f689e !important;
         color: #4f689e !important;
@@ -329,30 +333,38 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-container {
     display: flex;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
         flex-wrap: wrap;
     }
+
     .disabled-checkbox {
-        color: #6D6D6D;
+        color: #6d6d6d;
     }
+
     .clear-file-facets {
         background: white;
         border: 0;
         padding: 0;
         color: #e50400;
+
         &:hover {
             text-decoration: underline;
         }
     }
+
     .facet {
         padding-bottom: 10px;
     }
+
     .file-gallery-facets {
         position: relative;
-        -webkit-transition: flex-basis .1s ease-in-out;
-        -moz-transition: flex-basis .1s ease-in-out;
-        -o-transition: flex-basis .1s ease-in-out;
-        transition: flex-basis .1s ease-in-out;
+        -webkit-transition: flex-basis 0.1s ease-in-out;
+        -moz-transition: flex-basis 0.1s ease-in-out;
+        -o-transition: flex-basis 0.1s ease-in-out;
+        transition: flex-basis 0.1s ease-in-out;
+
         .show-hide-facets {
             position: absolute;
             padding: 5px 7px;
@@ -362,11 +374,13 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             border-bottom-left-radius: 5px;
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
-            -webkit-transition: right .1s ease-in-out;
-            -moz-transition: right .1s ease-in-out;
-            -o-transition: right .1s ease-in-out;
-            transition: right .1s ease-in-out;
+            -webkit-transition: right 0.1s ease-in-out;
+            -moz-transition: right 0.1s ease-in-out;
+            -o-transition: right 0.1s ease-in-out;
+            transition: right 0.1s ease-in-out;
             background: white;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-md-min) {
                 display: none;
             }
@@ -374,10 +388,14 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
         &.collapsed {
             flex: 0 1 30px;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-md-min) {
                 flex: 0 1 100%;
             }
+
             padding: 0;
+
             .show-hide-facets {
                 right: -26px;
                 border-top-right-radius: 5px;
@@ -391,21 +409,27 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
                 border-right: 2px solid #d2d2d2;
                 border-left: 0;
             }
+
             .facet {
                 display: none;
             }
+
             h4, .clear-file-facets, .facet {
                 display: none;
             }
         }
+
         &.expanded {
             flex: 0 1 20%;
             padding: 20px;
             padding-top: 40px;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-md-min) {
                 flex: 0 1 100%;
                 padding-top: 20px;
             }
+
             .show-hide-facets {
                 right: -2px;
                 border-top: 2px solid #d2d2d2;
@@ -414,14 +438,18 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
                 border-right: 2px solid white;
             }
         }
+
         border-right: 2px solid #d2d2d2;
+
         .facet-term {
             margin-bottom: 2px;
             cursor: pointer;
             z-index: 0;
+
             .facet-term__bar {
                 z-index: -1;
             }
+
             &.selected {
                 .facet-term__bar {
                     visibility: hidden;
@@ -429,14 +457,20 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             }
         }
     }
+
     .file-gallery-tab-bar {
         flex: 0 1 80%;
         overflow: hidden;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             flex: 0 1 100%;
         }
+
         &.expanded {
             flex: 0 1 calc(100% - 30px);
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-md-min) {
                 flex: 0 1 100%;
             }
@@ -468,8 +502,10 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
     align-items: center;
     padding: 5px;
 
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         display: block;
+
         select {
             margin-bottom: 3px;
         }
@@ -520,7 +556,7 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
         -moz-appearance: none;
     }
 
-    &.file-gallery-control-select:after {
+    &.file-gallery-control-select::after {
         content: '\f0dc';
         font-family: FontAwesome;
         padding: 8px;
@@ -554,7 +590,6 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
 .file-table-visualizer {
     text-align: center;
 }
-
 
 // File gallery title bars that collapse
 .collapsing-title-icon {
@@ -621,7 +656,7 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
     &:focus, &:active {
         text-decoration: none;
         outline: 0;
-        box-shadow: 0 0 3px #0000ff inset;
+        box-shadow: 0 0 3px #00f inset;
     }
 }
 
@@ -694,8 +729,9 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .BETA {
-    background-color: #B24342;
+    background-color: #b24342;
     padding: 2px 7px;
     color: white;
     font-weight: 500;
@@ -707,6 +743,7 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
 .table-paged {
     @at-root #{&}__count {
         @extend .file-gallery-counts;
+
         border-top: 1px solid #a0a0a0;
     }
 }
@@ -715,6 +752,7 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
     .panel-body {
         padding: 0;
     }
+
     .panel {
         border: 0;
     }

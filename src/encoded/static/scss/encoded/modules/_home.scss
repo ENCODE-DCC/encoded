@@ -1,6 +1,6 @@
 // Makes background color gray
 .whole-page {
-    background-color: #E8ECEF;
+    background-color: #e8ecef;
 }
 
 .twitter-widget {
@@ -11,7 +11,7 @@
 // Positions overall classic with pic and rectangles
 .overall-classic {
     position: relative;
-    padding-bottom: 0px;
+    padding-bottom: 0;
 
     h1 {
         margin: 0;
@@ -61,6 +61,7 @@
         z-index: 1;
     }
 
+    /* stylelint-disable-next-line selector-class-pattern */
     .uaTrident & {
         img {
             position: static;
@@ -104,10 +105,11 @@
     visibility: visible;
     display: block;
     position: relative;
-    padding-bottom: 0px;
+    padding-bottom: 0;
     max-width: 100%;
     z-index: 2;
 
+    /* stylelint-disable-next-line selector-class-pattern */
     .uaTrident & {
         position: absolute;
         top: 0;
@@ -121,8 +123,8 @@
 // Adds blue outline to rectangles
 .rectangle-box {
     stroke-width: 6px;
-    stroke: #0000EE;
-    fill: #0000EE;
+    stroke: #00e;
+    fill: #00e;
     fill-opacity: 0;
 
     &:hover {
@@ -156,7 +158,7 @@
         fill: $std-href-color;
         visibility: hidden;
     }
-};
+}
 
 // Graph titles
 .title {
@@ -167,7 +169,6 @@
     font-size: 1.6rem;
     font-weight: normal;
 }
-
 
 // Positions tabs with padding, hovering, and changing color if selected
 .organism-selector {
@@ -217,7 +218,7 @@
     background-color: white;
 }
 
-.chart-gallery{
+.chart-gallery {
     display: block;
     padding: 20px;
 
@@ -315,14 +316,12 @@
 
 // Positions getting started pic
 .getting-started-image {
-    padding-top: 0px;
-    background-color: #E8ECEF;
+    padding-top: 0;
+    background-color: #e8ecef;
     height: auto;
     max-width: 100%;
     z-index: 0;
-
 }
-
 
 // Positions View All
 .view-all {
@@ -437,7 +436,7 @@
         a {
             margin: 5px 5px 0 0;
 
-            &:after {
+            &::after {
                 content: "" !important;
             }
         }
@@ -480,6 +479,7 @@
         font-size: 0.9rem;
         margin-top: 10px;
         font-style: italic;
+
         i {
             margin-right: 5px;
         }
@@ -495,7 +495,6 @@
         font-style: italic;
     }
 }
-
 
 .home-banner {
     img {

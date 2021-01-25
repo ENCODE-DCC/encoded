@@ -80,7 +80,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        font-size: .9rem;
+        font-size: 0.9rem;
     }
 }
 
@@ -297,15 +297,16 @@ fieldset.facet {
     // Bar graph representing the relative count.
     @at-root #{&}__bar {
         position: absolute;
-        background-color: #E5E5E5;
+        background-color: #e5e5e5;
         right: 2px;
         top: 0;
-        bottom:0;
+        bottom: 0;
         z-index: -1;
     }
 
     // Button to negate a facet term...
     $negator-width: 12px;
+
     @at-root #{&}__negator {
         flex: 0 0 $negator-width;
         padding: 0 2px 0 0;
@@ -340,11 +341,11 @@ fieldset.facet {
 
 .date-selector {
     select {
-         border-radius: 2px;
-         border: 1px solid #cccccc !important;
-         font-weight: 400;
-         color: inherit !important;
-         margin-right: 2px;
+        border-radius: 2px;
+        border: 1px solid #ccc !important;
+        font-weight: 400;
+        color: inherit !important;
+        margin-right: 2px;
     }
 }
 
@@ -360,15 +361,17 @@ fieldset.facet {
 }
 
 .date-selector-btn {
-    color: rgb(79,104,158);
+    color: rgb(79, 104, 158);
     background: none;
     border: none;
     padding-left: 0;
     margin-left: 5px;
     font-size: 1rem;
+
     &:hover {
         text-decoration: underline;
     }
+
     .icon-caret-right {
         margin-right: 5px;
     }
@@ -385,6 +388,7 @@ fieldset.facet {
     display: flex;
     position: relative;
     align-items: flex-end;
+
     .date-selector-module {
         flex: 0 0 45%;
 
@@ -406,14 +410,18 @@ fieldset.facet {
 .date-selector-toggle-wrapper {
     .date-selector-toggle {
         display: inline-block;
+
         input {
             margin: 5px;
         }
+
         input[disabled] + label {
-            color: #9F9F9F;
+            color: #9f9f9f;
         }
+
         margin-right: 10px;
     }
+
     margin-bottom: 10px;
 }
 
@@ -431,9 +439,11 @@ fieldset.facet {
         margin-right: 5px;
         flex: 0 0 auto;
     }
+
     .searchform {
         flex: 1 1 auto;
     }
+
     input {
         border-radius: 5px;
         padding: 4px;
@@ -451,13 +461,14 @@ fieldset.facet {
     right: 29px;
     left: 0;
     height: 30px;
-    text-align:center;
+    text-align: center;
     cursor: pointer;
     pointer-events: none;
     opacity: 1;
     transition: opacity 0.5s ease-in-out;
     -moz-transition: opacity 0.5s ease-in-out;
     -webkit-transition: opacity 0.5s ease-in-out;
+
     &.hide-shading {
         opacity: 0;
     }
@@ -470,29 +481,33 @@ fieldset.facet {
 .bottom-shading {
     padding-bottom: 2px;
     bottom: 0;
-    background: linear-gradient(rgba(0,0,0,0), 70%, rgba(0,0,0,0.2));
+    background: linear-gradient(rgba(0, 0, 0, 0), 70%, rgba(0, 0, 0, 0.2));
 }
 
 .top-shading {
     top: 0;
-    background: linear-gradient(rgba(0,0,0,0.2), 30%, rgba(0,0,0,0));
+    background: linear-gradient(rgba(0, 0, 0, 0.2), 30%, rgba(0, 0, 0, 0));
 }
 
 .filter-container {
     display: block;
     margin: 10px auto;
+
     .filter-hed {
         display: inline-block;
         padding: 0 5px;
     }
+
     .negation-filter {
         color: #e50400;
     }
+
     .filter-link {
         display: inline-block;
         text-align: center;
         padding: 0 5px;
         cursor: pointer;
+
         &:hover {
             text-decoration: underline;
         }
@@ -511,7 +526,7 @@ fieldset.facet {
     font-size: 0.9rem;
     font-weight: normal;
 
-    a[href^="http"]:after {
+    a[href^="http"]::after {
         font-size: 0.9rem;
     }
 }
@@ -571,7 +586,6 @@ div.meta-status {
     from { max-width: 0%; }
     to { max-width: 100%; }
 }
-
 
 // Styles for publication listing
 

@@ -1,6 +1,7 @@
 .profile-display {
     @at-root #{&}__section {
         margin-top: 20px;
+
         @at-root #{&}--open {
             padding-bottom: 20px;
             border-bottom: 1px solid #e0e0e0;
@@ -105,6 +106,7 @@
 
 // Styles for the raw JSON schema display.
 $raw-schema-height: 8000px;
+
 .raw-schema {
     position: relative;
     height: auto;
@@ -132,6 +134,7 @@ $raw-schema-height: 8000px;
     }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .type-JSONSchema {
     .tab-nav {
         display: flex;

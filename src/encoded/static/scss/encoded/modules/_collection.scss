@@ -7,7 +7,7 @@
 
     // Each chart section within the panel
     @at-root #{&}__chart {
-        @media screen and (min-width: $screen-sm-min) {            
+        @media screen and (min-width: $screen-sm-min) {
             flex: 0 0 33.33%;
             width: 33.33%;
         }
@@ -68,14 +68,12 @@
     }
 }
 
-
 .collection-sub-header {
     margin: -5px 0 15px;
     font-size: 1rem;
     font-weight: normal;
     color: #808080;
 }
-
 
 // For messages when no chart can be drawn.
 .collection-no-chart {
@@ -86,7 +84,6 @@
     font-size: 1.1rem;
     font-style: italic;
 }
-
 
 // Heading for the collection panel
 .collection-heading {

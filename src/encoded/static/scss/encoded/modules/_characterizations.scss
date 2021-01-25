@@ -6,7 +6,6 @@ $qualitymetric-figure-width: 96px;
 $qualitymetric-figure-height: 96px;
 $attachment-button-margin: 3px;
 
-
 .document-title {
     padding: 5px;
     background-color: #fff;
@@ -17,7 +16,7 @@ $attachment-button-margin: 3px;
     font-size: 1rem;
 }
 
-
+/* stylelint-disable-next-line selector-class-pattern */
 .type-Characterization.view-detail.type-AntibodyCharacterization {
     padding-top: 0;
     padding-left: 0;
@@ -26,7 +25,7 @@ $attachment-button-margin: 3px;
     h4 {
         margin: 0;
         padding: 5px 20px 8px;
-        background-color: desaturate(lighten(#0a253d,30%),30%);
+        background-color: desaturate(lighten(#0a253d, 30%), 30%);
         color: #fff;
         font-size: 0.8rem;
         font-weight: bold;
@@ -44,6 +43,7 @@ $attachment-button-margin: 3px;
 
 .characterization-img {
     @include img-responsive();
+
     max-height: 360px;
 }
 
@@ -63,6 +63,7 @@ $attachment-button-margin: 3px;
 
 .characterization-meta-data {
     @extend .document-meta-data;
+
     padding: 0;
 }
 
@@ -70,7 +71,7 @@ $attachment-button-margin: 3px;
     display: table-cell;
     position: relative;
     text-align: left;
-    padding: .3em .5em .4em;
+    padding: 0.3em 0.5em 0.4em;
     font-size: 1rem;
     line-height: 1.1;
     background-color: $gray-light;
@@ -84,6 +85,7 @@ $attachment-button-margin: 3px;
 %file-icon {
     @include img-responsive();
     @include text-hide;
+
     width: 100%;
     height: 100%;
     background-position: center center;
@@ -93,26 +95,30 @@ $attachment-button-margin: 3px;
 
 .file-pdf {
     @extend %file-icon;
+
     background-image: url(/static/img/file-pdf.svg);
 }
 
 .file-generic {
     @extend %file-icon;
+
     background-image: url(/static/img/file.svg);
 }
 
 .file-missing {
     @extend %file-icon;
+
     background-image: url(/static/img/file-broken.svg);
 }
 
 .file-thumbnail {
     @extend %file-icon;
+
     display: inline-block;
 
     img {
         height: 100px;
-        width: 120px; 
+        width: 120px;
     }
 }
 
@@ -121,9 +127,7 @@ $attachment-button-margin: 3px;
     font-size: 1.1rem;
 }
 
-
 @mixin type-panel($figure-width, $figure-height) {
-
     margin-top: 0;
 
     &.view-detail {
@@ -139,7 +143,6 @@ $attachment-button-margin: 3px;
             float: none;
             width: 100%;
             height: $figure-height;
-            padding: 3px;
             margin: 0;
             padding: 0;
             border-left: 1px solid #e8e8e8;
@@ -178,8 +181,8 @@ $attachment-button-margin: 3px;
 
                 img {
                     display: inline-block;
-                    max-height: .8 * $figure-height;
-                    max-width: .8 * $figure-width;
+                    max-height: 0.8 * $figure-height;
+                    max-width: 0.8 * $figure-width;
                     height: auto;
                     width: auto;
                 }
@@ -189,7 +192,6 @@ $attachment-button-margin: 3px;
                 flex: 0 0 $figure-width;
                 margin: 0 0 0 5px;
             }
-
         }
 
         h3 {
@@ -197,7 +199,6 @@ $attachment-button-margin: 3px;
         }
     }
 }
-
 
 .attachment {
     padding: $attachment-button-margin;
@@ -214,7 +215,7 @@ $attachment-button-margin: 3px;
     }
 
     @at-root #{&}__hover {
-        position : absolute;
+        position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
@@ -223,11 +224,10 @@ $attachment-button-margin: 3px;
         z-index: 1;
 
         &:hover {
-            background-color:rgba(0,0,0,0.2);
+            background-color: rgba(0, 0, 0, 0.2);
         }
     }
 }
-
 
 .attachment-list {
     display: flex;
@@ -245,11 +245,9 @@ $attachment-button-margin: 3px;
     }
 }
 
-
 .dl-link {
     word-break: break-all;
 }
-
 
 /**
  * List of documents, normally wrapped into columns within a panel.
@@ -289,8 +287,8 @@ $attachment-button-margin: 3px;
     }
 }
 
-
 // Calc doesn't work correctly in IE11.
+/* stylelint-disable-next-line selector-class-pattern */
 .uaTrident .document-list__document {
     margin: 4px;
 }
@@ -298,6 +296,7 @@ $attachment-button-margin: 3px;
 // Document styles, normally added to a <Panel> component's classes.
 $detail-switch-height: 30px;
 $detail-switch-width: 30px;
+
 .document {
     margin: 3px;
 
@@ -380,7 +379,6 @@ $detail-switch-width: 30px;
     }
 }
 
-
 %panel-intro {
     padding: 5px;
 
@@ -402,9 +400,9 @@ $detail-switch-width: 30px;
 
 .characterization-intro {
     @extend %panel-intro;
+
     padding: 10px;
 }
-
 
 // ***************************************
 // Document download file bar classes
@@ -423,6 +421,7 @@ $detail-switch-width: 30px;
 // Icon within .detail-switch to show the current state of the switch
 .detail-trigger {
     @extend .icon-caret-down;
+
     display: block;
     height: $detail-switch-height;
     line-height: $detail-switch-height;
@@ -453,18 +452,20 @@ $detail-switch-width: 30px;
     margin: 0;
     background-color: $mainThemeColor;
     text-align: center;
-    background-image: linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
-    background-image: -ms-linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
+    /* stylelint-disable-next-line function-linear-gradient-no-nonstandard-direction */
+    background-image: linear-gradient(top, lighten($mainThemeColor, 5%) 0%, $mainThemeColor 100%);
+    background-image: -ms-linear-gradient(top, lighten($mainThemeColor, 5%) 0%, $mainThemeColor 100%);
     border-top: 1px solid #808080 !important;
     border-bottom: none;
     border-left: none;
     border-right: none;
     padding: 0 10px;
     line-height: 32px;
-    color: #333333;
+    color: #333;
 
     &:hover {
-        background-image: linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%);
+        /* stylelint-disable-next-line function-linear-gradient-no-nonstandard-direction */
+        background-image: linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor, 5%) 100%);
     }
 
     &:focus {
@@ -476,7 +477,6 @@ $detail-switch-width: 30px;
         padding: 0;
     }
 }
-
 
 .document-slider {
     display: none;
@@ -497,7 +497,6 @@ $detail-switch-width: 30px;
     }
 }
 
-
 .characterization-slider {
     display: none;
 
@@ -512,7 +511,8 @@ $detail-switch-width: 30px;
     left: 0;
     width: 100%;
     height: 40px;
-    background-image: linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 100%);
+    /* stylelint-disable-next-line function-linear-gradient-no-nonstandard-direction */
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
 
     &.active {
         display: none;
