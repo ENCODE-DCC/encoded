@@ -58,12 +58,12 @@
                         "properties": {},
                         "additionalProperties": {
                             "oneOf": [
-                                { "type": "string" },
+                                { "type": ["string", "integer"] },
                                 {
                                     "type": "array",
                                     "minItems": 1,
                                     "uniqueItems": true,
-                                    "items": { "type": "string" }
+                                    "items": { "type": ["string", "integer"] }
                                 }
                             ]
                         }

@@ -53,6 +53,9 @@ def make_quality_metric_report(request, file_objects, quality_metric_definition)
             }
             if qm_report['metric'] is None:
                 continue
+            qm_report['biological_replicates'] = f_obj.get(
+                'biological_replicates', []
+            )
             standard = quality_metric_definition.get('standard', {})
             # The following order matters and depends a lot on the schema
             # definition.
@@ -301,7 +304,7 @@ class Analysis(Item):
         file_objects = [
             request.embed(
                 f,
-                '@@object_with_select_calculated_properties?field=quality_metrics'
+                '@@object_with_select_calculated_properties?field=quality_metrics&field=biological_replicates'
             )
             for f in files
         ]
