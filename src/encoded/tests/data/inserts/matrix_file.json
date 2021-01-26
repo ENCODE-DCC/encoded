@@ -7318,11 +7318,11 @@
         ],
         "accession": "LATDF119AAA",
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
-        "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/rnaAggr_control.rds",
+        "s3_uri": "s3://submissions-lattice/testing/LATDF119AAA_final.h5ad",
         "no_file_available": false,
         "description": "A super cool dataset for all to see",
         "status": "released",
-        "file_format": "rds",
+        "file_format": "hdf5",
         "file_size": 50000,
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_merged_matrix.mtx",
@@ -7352,6 +7352,31 @@
             "cellranger aggr 4.0"
         ],
         "md5sum": "2e883306013203954eb1b69ae063eef1",
+        "cell_mapping": {
+            "label_location": "suffix",
+            "label_mappings": [
+                { 
+                    "raw_matrix": "LATDF112AAA",
+                    "label": "-lib_1"
+                },
+                {
+                    "raw_matrix": "LATDF113AAA",
+                    "label": "-lib_2"
+                },
+                {
+                    "raw_matrix": "LATDF114AAA",
+                    "label": "-lib_3"
+                },
+                {
+                    "raw_matrix": "LATDF115AAA",
+                    "label": "-lib_4"
+                },
+                {
+                    "raw_matrix": "LATDF116AAA",
+                    "label": "-lib_5"
+                }
+            ]
+        },
         "layers": [
             {
                 "label": "X",
