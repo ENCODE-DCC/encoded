@@ -67,7 +67,8 @@ const Results = ({ input, results, handleClickAway }) => {
 
     useEffect(
         () => {
-            // This is defined withing useEffect to avoid missing dependency error.
+            // This is defined within useEffect to avoid missing dependency error
+            // and possible stale values.
             const handleClickOutside = (e) => {
                 if (resultsRef.current && !resultsRef.current.contains(e.target)) {
                     handleClickAway();
