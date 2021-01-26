@@ -1,5 +1,5 @@
 /**
-* Encapsulates all the formatting for a raw ElasticSearch top hit result.
+* Encapsulates all the formatting for a raw top hit result.
 */
 
 

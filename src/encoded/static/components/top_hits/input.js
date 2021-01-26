@@ -6,8 +6,6 @@ import PropTypes from 'prop-types';
 * Controlled input box that accepts user's query
 * and triggers onChange callback.
 */
-
-
 const Input = props => (
     <input
         type="text"
