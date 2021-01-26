@@ -273,8 +273,8 @@
             }
         },
         "cell_mapping": {
-            "title": "Cell mapping information for this matrix",
-            "description": "Information at the raw matrix level that allows for mapping of cells in the final matrix to other entities in the experimental graph.",
+            "title": "Cell mapping",
+            "description": "Information about the cell identifiers in the final matrix that allows for mapping to other entities in the experimental graph.",
             "required": ["location"],
             "type": "object",
             "additionalProperties": true,
