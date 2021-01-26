@@ -6,9 +6,18 @@ import {
 } from './links';
 
 
+/**
+* Components for rendering results. Results are grouped in sections.
+* A Section has a Title that displays the type (e.g. Experiment, File)
+* and number of results with that type, as well as the top Items
+* in that Section.
+*/
+
+
 const makeTitle = result => `${result.key} (${result.count})`;
 
 
+// Items are mapped to an Item component.
 export const Items = ({ items }) => (
     <ul>
         {
@@ -48,6 +57,11 @@ Section.propTypes = {
 };
 
 
+/**
+* Results are mapped to sections. We add an event listener
+* to detect when the user clicks away from the dropdown list
+* so we can close it.
+*/
 const Results = ({ input, results, handleClickAway }) => {
     const resultsRef = useRef(null);
 

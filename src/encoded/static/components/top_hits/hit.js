@@ -1,3 +1,8 @@
+/**
+* Encapsulates all the formatting for a raw ElasticSearch top hit result.
+*/
+
+
 class Hit {
     constructor(item) {
         this.item = item;

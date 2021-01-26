@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import Hit from './hit';
 
 
+/**
+* The LinkWithHover keeps track of whether the user is hovering
+* and displays default or hover values and classes. The user
+* is redirected to href when clicked.
+*/
 export const LinkWithHover = (props) => {
     const [isHovered, setIsHovered] = useState(false);
     return (
@@ -40,6 +45,10 @@ LinkWithHover.defaultProps = {
 };
 
 
+/**
+* A LinkWithHover that renders section title and count and
+* redirects to search results of that type.
+*/
 export const Title = props => (
     <LinkWithHover
         defaultValue={props.value}
@@ -56,7 +65,12 @@ Title.propTypes = {
 };
 
 
+/**
+* A LinkWithHover that renders a top hit in list form and
+* redirects to that specific document when clicked.
+*/
 export const Item = (props) => {
+    // This class knows how to format a raw hit for display.
     const hit = new Hit(props.item);
     return (
         <li>

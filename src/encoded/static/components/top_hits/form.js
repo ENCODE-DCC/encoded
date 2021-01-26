@@ -4,6 +4,9 @@ import Input from './input';
 import Results from './results';
 
 
+/** Renders the input and dropdown (if there are any results). */
+
+
 const Form = props => (
     <div className="top-hits-search__input">
         <div className="top-hits-search__input-field">
@@ -17,6 +20,7 @@ const Form = props => (
         </div>
     </div>
 );
+
 
 Form.propTypes = {
     input: PropTypes.string.isRequired,
