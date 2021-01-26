@@ -41,6 +41,7 @@ const portal = {
                 { id: 'assaymatrix', title: 'Experiment matrix', url: '/matrix/?type=Experiment&status=released&perturbed=false', tag: 'collection' },
                 { id: 'chip', title: 'ChIP-seq matrix', url: '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released', tag: 'collection' },
                 { id: 'bodymap', title: 'Human body map', url: '/summary/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', tag: 'collection' },
+                { id: 'series', title: 'Functional genomics series', url: '/series-search/?type=OrganismDevelopmentSeries', tag: 'collection' },
                 { id: 'sep-mm-0' },
                 { id: 'functional-characterization', title: 'Functional Characterization data' },
                 { id: 'functional-char-assays', title: 'High-throughput assays', url: '/search/?type=FunctionalCharacterizationExperiment&audit.WARNING.category!=lacking+processed+data', tag: 'collection' },
