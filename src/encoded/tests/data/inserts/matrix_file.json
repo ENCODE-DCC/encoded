@@ -6697,27 +6697,27 @@
         ],
         "md5sum": "2e883306013203954eb1b69ae063eef1",
         "cell_mapping": {
-            "location": "suffix",
+            "label_location": "suffix",
             "label_mappings": [
                 { 
                     "raw_matrix": "LATDF112AAA",
-                    "string": "-lib_1"
+                    "label": "-lib_1"
                 },
                 {
                     "raw_matrix": "LATDF113AAA",
-                    "string": "-lib_2"
+                    "label": "-lib_2"
                 },
                 {
                     "raw_matrix": "LATDF114AAA",
-                    "string": "-lib_3"
+                    "label": "-lib_3"
                 },
                 {
                     "raw_matrix": "LATDF115AAA",
-                    "string": "-lib_4"
+                    "label": "-lib_4"
                 },
                 {
                     "raw_matrix": "LATDF116AAA",
-                    "string": "-lib_5"
+                    "label": "-lib_5"
                 }
             ]
         }

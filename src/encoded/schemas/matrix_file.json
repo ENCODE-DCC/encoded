@@ -275,13 +275,13 @@
         "cell_mapping": {
             "title": "Cell mapping",
             "description": "Information about the cell identifiers in the final matrix that allows for mapping to other entities in the experimental graph.",
-            "required": ["location"],
+            "required": ["label_location"],
             "type": "object",
             "additionalProperties": true,
             "properties": {
-                "location": {
-                    "title": "Cell mapping location",
-                    "description": "Indicator distinguishing if the cell_mapping_string is concatenated as a prefix or suffix",
+                "label_location": {
+                    "title": "Label location",
+                    "description": "Indicator distinguishing if the label is concatenated as a prefix or suffix to the cell barcode.",
                     "type": "string",
                     "enum": [
                         "prefix",
@@ -289,22 +289,22 @@
                     ]
                 },
                 "label_mappings": {
-                    "title": "Cell mappings for associated raw matrix files",
-                    "description": "Cell mappings that contain information on how cell identifiers have be modified from raw matrix to this matrix",
+                    "title": "Label mappings",
+                    "description": "Information on what label was added to cell identifiers in this final matrix that is specific for the associated raw matrix",
                     "type": "array",
                     "items": {
-                        "title": "Cell mapping for each raw matrix file",
+                        "title": "Label mapping",
                         "type": "object",
-                        "required": ["string", "raw_matrix"],
+                        "required": ["label", "raw_matrix"],
                         "additionalProperties": false,
                         "properties": {
-                            "string": {
-                                "title": "String used to make the cell identifier unique",
+                            "label": {
+                                "title": "Label",
                                 "description": "The string that is concatenated as a prefix or suffix to the cell barcode to make the unique cell identifier, including the connector string but not the '-1' if present",
                                 "type": "string"
                             },
                             "raw_matrix": {
-                                "title": "The accession of associated raw matrix file",
+                                "title": "Raw matrix",
                                 "description": "The accession of the raw matrix that is connected with the subset of cells in this matrix file associated to the corresponding mapping_string.",
                                 "type": "string",
                                 "linkTo": "MatrixFile"
@@ -390,8 +390,7 @@
         "txt": ".txt",
         "mtx": ".mtx",
         "rds": ".rds",
-        "mex": "",
-        "hdf5": ".h5ad"
+        "mex": ""
     },
     "changelog": "/profiles/changelogs/matrix_file.md"
 }
