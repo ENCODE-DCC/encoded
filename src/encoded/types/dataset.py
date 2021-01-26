@@ -13,7 +13,7 @@ def item_is_revoked(request, path):
     return request.embed(path, '@@object?skip_calculated=true').get('status') == 'revoked'
 
 
-def calculate_reference(request, files_list, status, ref_field):
+def calculate_reference(request, files_list, ref_field):
     results = set()
     viewable_file_status = ['released','in progress']
 
@@ -187,8 +187,8 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def reference_assembly(self, request, original_files, status):
-        return calculate_reference(request, original_files, status, "assembly")
+    def reference_assembly(self, request, original_files):
+        return calculate_reference(request, original_files, "assembly")
 
 
     @calculated_property(define=True, schema={
@@ -200,5 +200,5 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def reference_annotation(self, request, original_files, status):
-        return calculate_reference(request, original_files, status, "genome_annotation")
+    def reference_annotation(self, request, original_files):
+        return calculate_reference(request, original_files, "genome_annotation")

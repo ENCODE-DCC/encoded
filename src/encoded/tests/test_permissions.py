@@ -39,7 +39,7 @@ def test_wrangler_post_non_lab_collection(wrangler_testapp):
     item = {
         'name': 'human',
         'scientific_name': 'Homo sapiens',
-        'ncbi_taxon_id': '9606',
+        'taxon_id': '9606',
     }
     return wrangler_testapp.post_json('/organism', item, status=201)
 
@@ -48,7 +48,7 @@ def test_submitter_post_non_lab_collection(submitter_testapp):
     item = {
         'name': 'human',
         'scientific_name': 'Homo sapiens',
-        'ncbi_taxon_id': '9606',
+        'taxon_id': '9606',
     }
     return submitter_testapp.post_json('/organism', item, status=403)
 

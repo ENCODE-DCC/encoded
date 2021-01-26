@@ -64,15 +64,15 @@
         },
         "identifiers": {
             "title": "Identifiers",
-            "description": "The identifiers that reference data found in the object.",
+            "description": "The PubMed and DOI identifiers that corresponds to the published work.",
             "type": "array",
             "uniqueItems": true,
             "items": {
                 "title": "Identifier",
-                "description": "An identifier that references data found in the object.",
+                "description": "A PubMed or DOI identifier that corresponds to the published work.",
                 "type": "string",
                 "uniqueKey":  "publication:identifier",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
             }
         },
         "award": {
