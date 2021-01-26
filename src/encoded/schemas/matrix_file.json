@@ -404,15 +404,5 @@
             "title": "Status"
         }
     },
-    "file_format_file_extension": {
-        "csv": ".csv.gz",
-        "loom": ".loom",
-        "hdf5": ".h5",
-        "tsv": ".tsv",
-        "txt": ".txt",
-        "mtx": ".mtx",
-        "rds": ".rds",
-        "mex": ""
-    },
     "changelog": "/profiles/changelogs/matrix_file.md"
 }

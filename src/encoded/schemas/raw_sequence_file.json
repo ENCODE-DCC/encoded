@@ -235,9 +235,5 @@
             "title": "Status"
         }
     },
-    "file_format_file_extension": {
-        "fastq": ".fastq.gz",
-        "sra": ".sra"
-    },
     "changelog": "/profiles/changelogs/raw_sequence_file.md"
 }
