@@ -208,11 +208,11 @@
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.amount": {
-            "title": "Biosample treatment concentration",
+            "title": "Biosample treatment amount",
             "type": "number"
         },
         "related_datasets.replicates.library.biosample.treatments.amount_units": {
-            "title": "Biosample treatment concentration units",
+            "title": "Biosample treatment amount units",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.duration": {
