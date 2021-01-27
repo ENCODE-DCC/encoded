@@ -108,6 +108,7 @@ const defaultObjectStatuses = {
             'released',
             'archived',
             'revoked',
+            'preferred default',
         ],
         unprivileged: [
         ],

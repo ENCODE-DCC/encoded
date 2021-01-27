@@ -1904,6 +1904,9 @@
         "paired_with": {
             "title": "Paired with"
         },
+        "preferred_default": {
+            "title": "Preferred Default"
+        },
         "run_type": {
             "title": "Run type"
         },
