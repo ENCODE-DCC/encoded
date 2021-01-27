@@ -216,13 +216,13 @@ describe('createPipelineFacetObject', () => {
             expect(analysisObjects[0].pipelineLab).toEqual('Mixed');
             expect(analysisObjects[0].assembly).toEqual('GRCh38 V24');
             expect(analysisObjects[0].files).toHaveLength(2);
-            expect(analysisObjects[1].pipelineLab).toEqual('ENCODE4 uniform');
+            expect(analysisObjects[1].pipelineLab).toEqual('ENCODE4 1.0.0');
             expect(analysisObjects[1].assembly).toEqual('GRCh38 V24');
             expect(analysisObjects[1].files).toHaveLength(2);
-            expect(analysisObjects[2].pipelineLab).toEqual('ENCODE3 uniform');
+            expect(analysisObjects[2].pipelineLab).toEqual('ENCODE3 1.0.0');
             expect(analysisObjects[2].assembly).toEqual('GRCh38');
             expect(analysisObjects[2].files).toHaveLength(4);
-            expect(analysisObjects[3].pipelineLab).toEqual('ENCODE4 uniform');
+            expect(analysisObjects[3].pipelineLab).toEqual('ENCODE4 1.0.0');
             expect(analysisObjects[3].assembly).toEqual('hg19');
             expect(analysisObjects[3].files).toHaveLength(4);
         });
