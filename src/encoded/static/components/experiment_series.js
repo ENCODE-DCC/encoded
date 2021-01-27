@@ -16,6 +16,8 @@ import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 
 // Only analysis on selected assembly will be used for QC reporting
 const selectedAssembly = ['GRCh38', 'mm10'];
+const selectedAnalysisRFA = 'ENCODE3';
+const selectedAnalysisLab = '/labs/encode-processing-pipeline/';
 
 /**
  * Giving an experiment, extract one specific quality metric from its files.
@@ -521,10 +523,16 @@ class ExperimentSeriesComponent extends React.Component {
         if (Object.keys(viewableDatasets).length > 0) {
             // Add the "Add all to cart" button and internal tags from all related datasets.
             const experimentIds = Object.values(viewableDatasets).map((experiment) => experiment['@id']);
+            const hubUrl = `http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=${window.location.origin}/batch_hub/type=Experiment%26accession=${
+                Object.values(viewableDatasets).map((experiment) => experiment.accession).join('%26accession=')
+            }/hub.txt&db=hg38`;
             addAllToCartControl = (
                 <div className="experiment-table__header">
                     <h4 className="experiment-table__title">{`Experiments in experiment series ${context.accession}`}</h4>
-                    <CartAddAllElements elements={experimentIds} />
+                    <div className="experiment-table__header-controls">
+                        <CartAddAllElements elements={experimentIds} />
+                        <a className="btn btn-info btn-sm" href={hubUrl} type="button" target="_blank" rel="noopener noreferrer">Visualize</a>
+                    </div>
                 </div>
             );
 
@@ -545,8 +553,10 @@ class ExperimentSeriesComponent extends React.Component {
                 });
                 const analysisObjects = viewableDatasets[datasetAtId].analysis_objects || [];
                 const selectedAnalysis = analysisObjects.filter(
-                    (analysis) => analysis.files.every((f) => filesByDesiredAssembly.includes(f))
-                ).sort((a, b) => a.length - b.length)[0] || { files: [] };
+                    (analysis) => selectedAssembly.includes(analysis.assembly)
+                        && analysis.pipeline_award_rfas.includes(selectedAnalysisRFA)
+                        && analysis.pipeline_labs.includes(selectedAnalysisLab)
+                )[0] || { files: [] };
                 viewableDatasets[datasetAtId].files = viewableDatasets[datasetAtId].files.filter(
                     (f) => selectedAnalysis.files.includes(f['@id']),
                 );
@@ -557,7 +567,17 @@ class ExperimentSeriesComponent extends React.Component {
                     )
                 );
                 if (bioRepNums.length === 0) {
-                    bioRepNums = [''];
+                    // Could just be no desired analysis.
+                    // Try to get from Experiment.replicates so that other info like antibody status can be shown.
+                    bioRepNums = _.uniq(
+                        viewableDatasets[datasetAtId].replicates.map(
+                            (rep) => rep.biological_replicate_number
+                        )
+                    );
+                    // Default to one row if failed.
+                    if (bioRepNums.length === 0) {
+                        bioRepNums = [''];
+                    }
                 }
                 // Extract experiment metadata
                 const rowCount = bioRepNums.length;
