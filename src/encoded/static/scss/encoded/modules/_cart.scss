@@ -1122,6 +1122,10 @@ $file-type-colors: (
         .cart-add-all {
             margin: -5px 5px -5px 0;
         }
+
+        > a.btn[href^="http"]:after {
+            content: "";
+        }
     }
 }
 
