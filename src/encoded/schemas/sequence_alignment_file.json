@@ -207,9 +207,5 @@
             "title": "Status"
         }
     },
-    "file_format_file_extension": {
-        "bam": ".bam",
-        "tagAlign": ".tagAlign.gz"
-    },
     "changelog": "/profiles/changelogs/sequence_alignment_file.md"
 }

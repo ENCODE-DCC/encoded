@@ -103,57 +103,66 @@ class File(Item):
         "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
-    def href(self, request, file_format, accession=None, external_accession=None):
-        accession = accession or external_accession
-        file_extension = self.schema['file_format_file_extension'][file_format]
-        filename = '{}{}'.format(accession, file_extension)
-        return request.resource_path(self, '@@download', filename)
+    def href(self, request, file_format, accession=None, external_accession=None, s3_uri=None, external_uri=None):
+        uri = s3_uri or external_uri
+        if uri:
+            accession = accession or external_accession
+            if uri.split('.')[-1] == 'gz':
+                file_extension = uri.split('.')[-2] + '.gz'
+            else:
+                file_extension = uri.split('.')[-1]
+            filename = '{}.{}'.format(accession, file_extension)
+            return request.resource_path(self, '@@download', filename)
 
 
 @view_config(name='download', context=File, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
     properties = context.upgrade_properties()
-    mapping = context.schema['file_format_file_extension']
-    file_extension = mapping[properties['file_format']]
-    accession_or_external = properties.get('accession') or properties['external_accession']
-    filename = accession_or_external + file_extension
-    if request.subpath:
-        _filename, = request.subpath
-        if filename != _filename:
-            raise HTTPNotFound(_filename)
+    uri = properties.get('s3_uri') or properties.get('external_uri')
+    if uri:
+        if uri.split('.')[-1] == 'gz':
+            file_extension = uri.split('.')[-2] + '.gz'
+        else:
+            file_extension = uri.split('.')[-1]
+        accession_or_external = properties.get('accession') or properties['external_accession']
+        filename = '{}.{}'.format(accession_or_external, file_extension)
+        if request.subpath:
+            _filename, = request.subpath
+            if filename != _filename:
+                raise HTTPNotFound(_filename)
 
-    if properties.get('external_uri'):
-        raise HTTPTemporaryRedirect(location=properties.get('external_uri'))
+        if properties.get('external_uri'):
+            raise HTTPTemporaryRedirect(location=properties.get('external_uri'))
 
-    if properties.get('s3_uri'):
-        conn = boto3.client('s3')
+        if properties.get('s3_uri'):
+            conn = boto3.client('s3')
 
-        parsed_href = urlparse(properties.get('s3_uri'), allow_fragments=False)
-        bucket = parsed_href.netloc
-        key    = parsed_href.path.lstrip('/')
+            parsed_href = urlparse(properties.get('s3_uri'), allow_fragments=False)
+            bucket = parsed_href.netloc
+            key    = parsed_href.path.lstrip('/')
 
-        location = conn.generate_presigned_url(
-            ClientMethod='get_object',
-            Params={
-                'Bucket': bucket,
-                'Key': key,
-                'ResponseContentDisposition': 'attachment; filename=' + filename
-            },
-            ExpiresIn=36*60*60
-        )
-    else:
-        raise HTTPNotFound(
-            detail='S3 URI not present'
-        )
-    if asbool(request.params.get('soft')):
-        expires = int(parse_qs(urlparse(location).query)['Expires'][0])
-        return {
-            '@type': ['SoftRedirect'],
-            'location': location,
-            'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
-        }
-    raise HTTPTemporaryRedirect(location=location)
+            location = conn.generate_presigned_url(
+                ClientMethod='get_object',
+                Params={
+                    'Bucket': bucket,
+                    'Key': key,
+                    'ResponseContentDisposition': 'attachment; filename=' + filename
+                },
+                ExpiresIn=36*60*60
+            )
+        else:
+            raise HTTPNotFound(
+                detail='S3 URI not present'
+            )
+        if asbool(request.params.get('soft')):
+            expires = int(parse_qs(urlparse(location).query)['Expires'][0])
+            return {
+                '@type': ['SoftRedirect'],
+                'location': location,
+                'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
+            }
+        raise HTTPTemporaryRedirect(location=location)
 
 
 @abstract_collection(
