@@ -7317,6 +7317,7 @@
             "peter-sims:prenatal_merged_matrix"
         ],
         "accession": "LATDF119AAA",
+        "author_cell_type_column": "celltype",
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/rnaAggr_control.rds",
         "no_file_available": false,

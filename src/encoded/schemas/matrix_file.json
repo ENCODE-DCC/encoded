@@ -293,6 +293,11 @@
             "description": "The number of entries found in the matrix considered as observations (eg: cell barcodes)",
             "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "type": "integer"
+        },
+        "author_cell_type_column": {
+            "title": "Author cell type column",
+            "description": "The name of the metadat field that holds the researcher's most specific cell type annotation",
+            "type": "string"
         }
     },
     "facets": {
