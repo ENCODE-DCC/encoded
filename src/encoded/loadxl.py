@@ -44,6 +44,7 @@ ORDER = [
     'rna_aggregate_metrics',
     'atac_metrics',
     'atac_aggregate_metrics',
+    'cell_annotation',
     'image',
     'page',
     'access_key'
