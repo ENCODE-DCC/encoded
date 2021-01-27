@@ -47,6 +47,16 @@
                 "linkTo": "Gene"
             }
         },
+        "cell_state": {
+            "title": "Cell state",
+            "description": "The distinguishing state of a cell that allows for futher cell subtyping, but not meant to be capture in the CL ontologies",
+            "type": "string",
+            "enum": [
+                "proliferating",
+                "activated",
+                "resting"
+            ]
+        },
         "matrix_files": {
             "title": "Matrix files",
             "description": "The matrix files that this cell annotation was applied to.",
