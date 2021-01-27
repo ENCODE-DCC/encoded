@@ -11,7 +11,8 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "manual, marker genes"
+        "annotation_method": "manual, marker genes",
+        "notes": "fibroblasts marked by high expression of VCAM1"
     },
     {
         "uuid": "4c571596-2b0e-41f6-aaf2-950abfd04f58",
