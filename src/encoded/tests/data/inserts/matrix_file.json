@@ -7352,31 +7352,29 @@
             "cellranger aggr 4.0"
         ],
         "md5sum": "2e883306013203954eb1b69ae063eef1",
-        "cell_mapping": {
-            "label_location": "suffix",
-            "label_mappings": [
-                { 
-                    "raw_matrix": "LATDF112AAA",
-                    "label": "-lib_1"
-                },
-                {
-                    "raw_matrix": "LATDF113AAA",
-                    "label": "-lib_2"
-                },
-                {
-                    "raw_matrix": "LATDF114AAA",
-                    "label": "-lib_3"
-                },
-                {
-                    "raw_matrix": "LATDF115AAA",
-                    "label": "-lib_4"
-                },
-                {
-                    "raw_matrix": "LATDF116AAA",
-                    "label": "-lib_5"
-                }
-            ]
-        },
+        "cell_label_location": "suffix",
+        "cell_label_mappings": [
+            { 
+                "raw_matrix": "LATDF112AAA",
+                "label": "-lib_1"
+            },
+            {
+                "raw_matrix": "LATDF113AAA",
+                "label": "-lib_2"
+            },
+            {
+                "raw_matrix": "LATDF114AAA",
+                "label": "-lib_3"
+            },
+            {
+                "raw_matrix": "LATDF115AAA",
+                "label": "-lib_4"
+            },
+            {
+                "raw_matrix": "LATDF116AAA",
+                "label": "-lib_5"
+            }
+        ],
         "layers": [
             {
                 "label": "X",
@@ -7399,7 +7397,7 @@
                     },
                     {
                         "cutoff_value": 1000,
-                        "cutoff_units": "genes/cell",
+                        "cutoff_units": "per batch distribution percent umi/cell",
                         "cutoff_type": "minimum"
                     },
                     {

@@ -271,6 +271,19 @@
                                         "percent in peaks/nuclei",
                                         "TSS enrichment score/nuclei",
                                         "blacklist ratio/nuclei",
+                                        "doublet score/nuclei",
+                                        "per batch distribution percent genes/cell",
+                                        "per batch distribution percent genes/nuclei",
+                                        "per batch distribution percent umi/cell",
+                                        "per batch distribution percent umi/nuclei",
+                                        "per batch distribution percent cells/gene",
+                                        "per batch distribution percent nuclei/gene",
+                                        "per batch distribution percent, percent mitochondrial/cell",
+                                        "per batch distribution percent, percent mitochondrial/nuclei",
+                                        "per batch distribution percent fragments in peaks/nuclei",
+                                        "per batch distribution percent, percent in peaks/nuclei",
+                                        "TSS enrichment score/nuclei",
+                                        "blacklist ratio/nuclei",
                                         "doublet score/nuclei"
                                     ]
                                 },
@@ -288,44 +301,35 @@
                 }
             }
         },
-        "cell_mapping": {
-            "title": "Cell mapping",
-            "description": "Information about the cell identifiers in the final matrix that allows for mapping to other entities in the experimental graph.",
-            "required": ["label_location"],
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-                "label_location": {
-                    "title": "Label location",
-                    "description": "Indicator distinguishing if the label is concatenated as a prefix or suffix to the cell barcode.",
-                    "type": "string",
-                    "enum": [
-                        "prefix",
-                        "suffix"
-                    ]
-                },
-                "label_mappings": {
-                    "title": "Label mappings",
-                    "description": "Information on what label was added to cell identifiers in this final matrix that is specific for the associated raw matrix",
-                    "type": "array",
-                    "items": {
-                        "title": "Label mapping",
-                        "type": "object",
-                        "required": ["label", "raw_matrix"],
-                        "additionalProperties": false,
-                        "properties": {
-                            "label": {
-                                "title": "Label",
-                                "description": "The string that is concatenated as a prefix or suffix to the cell barcode to make the unique cell identifier, including the connector string but not the '-1' if present",
-                                "type": "string"
-                            },
-                            "raw_matrix": {
-                                "title": "Raw matrix",
-                                "description": "The accession of the raw matrix that is connected with the subset of cells in this matrix file associated to the corresponding mapping_string.",
-                                "type": "string",
-                                "linkTo": "MatrixFile"
-                            }
-                        }
+        "cell_label_location": {
+            "title": "Cell label location",
+            "description": "Indicator distinguishing if the label is concatenated as a prefix or suffix to the cell barcode.",
+            "type": "string",
+            "enum": [
+                "prefix",
+                "suffix"
+            ]
+        },
+        "cell_label_mappings": {
+            "title": "Cell label mappings",
+            "description": "Information on what label was added to cell identifiers in this final matrix that is specific for the associated raw matrix",
+            "type": "array",
+            "items": {
+                "title": "Cell label mapping",
+                "type": "object",
+                "required": ["label", "raw_matrix"],
+                "additionalProperties": false,
+                "properties": {
+                    "label": {
+                        "title": "Label",
+                        "description": "The string that is concatenated as a prefix or suffix to the cell barcode to make the unique cell identifier, including the connector string but not the '-1' if present",
+                        "type": "string"
+                    },
+                    "raw_matrix": {
+                        "title": "Raw matrix",
+                        "description": "The accession of the raw matrix that is connected with the subset of cells in this matrix file associated to the corresponding mapping_string.",
+                        "type": "string",
+                        "linkTo": "MatrixFile"
                     }
                 }
             }
