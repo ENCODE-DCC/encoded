@@ -163,6 +163,40 @@ export class FileTable extends React.Component {
                 if (file.output_category === 'reference') {
                     return 'ref';
                 }
+
+                // const files = context.analysis_objects
+                //     .reduce((arr, val) => arr.concat(val.files), [])
+                //     .map(f => f.replace('/files/', '').replace('/', ''));
+
+                const analysisObjectFiles = context.analysis_objects
+                    .map((analysisObject) => {
+                        const id = analysisObject.accession;
+                        const analysisFiles = analysisObject.files.map(b => b.replace('/files/', '').replace('/', ''));
+                        const obj = {};
+                        obj[id] = analysisFiles;
+                        return obj;
+                    });
+
+                const analysisAccession = context.analysis_objects.map(a => a.accession);
+
+                let isAnalysis = false;
+                let val = '';
+
+                analysisAccession.every((accession) => {
+                    const analysisFiles = analysisObjectFiles[accession];
+
+                    if (analysisFiles(file.accession)) {
+                        val = accession;
+                        isAnalysis = true;
+                        return false; // break out of every-loop
+                    }
+                    return true;
+                });
+
+                if (isAnalysis) {
+                    return `analysisObject_${val}`;
+                }
+
                 return 'proc';
             });
 
