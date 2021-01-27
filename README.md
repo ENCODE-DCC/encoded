@@ -63,7 +63,8 @@ You can also invoke `pytest` directly if you need more granular control over whi
 # Run a specific test in a specific file
 $ pytest TEST_FILE_PATH::TEST_NAME
 # Run tests with a name matching the expression
-$ pytest -k $EXPRESSION
+# See https://docs.pytest.org/en/stable/usage.html#specifying-tests-selecting-tests
+$ pytest -k "biosample and not schema"
 # Run tests with the given mark
 $ pytest -m $PYTEST_MARK
 ```
