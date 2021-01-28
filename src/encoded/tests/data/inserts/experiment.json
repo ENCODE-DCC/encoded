@@ -181,7 +181,7 @@
         "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
     },
     {
-        "_test": "NTR for assay and no replicates",
+        "_test": "NTR for assay",
         "accession": "ENCSR270OQH",
         "assay_term_name": "ChIA-PET",
         "award": "U54HG006998",

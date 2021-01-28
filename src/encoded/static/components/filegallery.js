@@ -1228,6 +1228,8 @@ function qcAbbr(qc) {
         LongReadRnaQuantificationQualityMetric: 'LQ',
         GembsAlignmentQualityMetric: 'AL',
         DnaseFootprintingQualityMetric: 'DF',
+        ChiaPetAlignmentQualityMetric: 'AL',
+        ChiaPetPeakEnrichmentQualityMetric: 'PE',
     };
 
     let abbr = qcAbbrMap[qc['@type'][0]];

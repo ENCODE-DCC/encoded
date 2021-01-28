@@ -428,3 +428,23 @@ class DnaseFootprintingQualityMetric(QualityMetric, CalculatedAssayTermID):
 class GembsAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'gembs_alignment_quality_metric'
     schema = load_schema('encoded:schemas/gembs_alignment_quality_metric.json')
+
+
+@collection(
+    name='chia-pet-alignment-quality-metrics',
+    properties={
+        'title': "ChIA-PET Alignment Quality Metrics",
+    })
+class ChiaPetAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chia_pet_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/chia_pet_alignment_quality_metric.json')
+
+
+@collection(
+    name='chia-pet-peak-enrichment-quality-metrics',
+    properties={
+        'title': "ChIA-PET Peak Enrichment Quality Metrics",
+    })
+class ChiaPetPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chia_pet_peak_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/chia_pet_peak_enrichment_quality_metric.json')

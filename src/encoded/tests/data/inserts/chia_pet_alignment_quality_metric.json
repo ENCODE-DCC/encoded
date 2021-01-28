@@ -1,0 +1,18 @@
+[
+    {
+        "status": "released",
+        "step_run": "472a9e56-3304-4e2b-b352-ddcc2e310a92",
+        "uuid": "6c7cedf0-ba8e-4d09-ac8e-f3009846f833",
+        "assay_term_name": "ChIA-PET",
+        "quality_metric_of": ["ENCFF203KVL"],
+        "lab": "/labs/ali-mortazavi/",
+        "award": "/awards/U54HG006998/",
+        "total_rp": 297491764,
+        "rp_bl": 263045978,
+        "frp_bl": 0.87,
+        "pet": 168582483,
+        "um_pet": 126928363,
+        "nr_pet": 59631512,
+        "pet_red": 0.54
+    }
+]
