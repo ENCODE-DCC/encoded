@@ -25,6 +25,40 @@ def dummy_parent_and_dummy_request(dummy_request):
     return dp, dummy_request
 
 
+def test_searches_fields_cart_search_response_field_init():
+    from encoded.searches.fields import CartSearchResponseField
+    crf = CartSearchResponseField()
+    assert isinstance(crf, CartSearchResponseField)
+
+
+def test_searches_fields_cart_search_response_build_query(dummy_parent_and_dummy_request):
+    from encoded.cart_view import CartWithElements
+    from encoded.searches.fields import CartSearchResponseField
+    from elasticsearch_dsl import Search
+    dummy_parent, dummy_request = dummy_parent_and_dummy_request
+    crf = CartSearchResponseField(
+        cart=CartWithElements(dummy_request)
+    )
+    crf.parent = dummy_parent
+    crf._build_query()
+    assert isinstance(crf.query, Search)
+
+
+def test_searches_fields_cart_search_response_execute_query(dummy_parent_and_dummy_request, mocker):
+    from encoded.cart_view import CartWithElements
+    from elasticsearch_dsl import Search
+    mocker.patch.object(Search, 'execute')
+    Search.execute.return_value = []
+    from encoded.searches.fields import CartSearchResponseField
+    dummy_parent, dummy_request = dummy_parent_and_dummy_request
+    crf = CartSearchResponseField(
+        cart=CartWithElements(dummy_request)
+    )
+    crf.parent = dummy_parent
+    crf._build_query()
+    crf._execute_query()
+    assert Search.execute.call_count == 1
+
 def test_searches_fields_cart_search_with_facets_response_field_init():
     from encoded.searches.fields import CartSearchWithFacetsResponseField
     crf = CartSearchWithFacetsResponseField()
