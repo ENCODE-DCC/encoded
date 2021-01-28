@@ -59,6 +59,7 @@ def test_searches_fields_cart_search_response_execute_query(dummy_parent_and_dum
     crf._execute_query()
     assert Search.execute.call_count == 1
 
+
 def test_searches_fields_cart_search_with_facets_response_field_init():
     from encoded.searches.fields import CartSearchWithFacetsResponseField
     crf = CartSearchWithFacetsResponseField()
