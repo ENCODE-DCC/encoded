@@ -181,6 +181,7 @@ def report_download(context, request):
 
     endpoint = '/cart-report/' if is_cart_search(request) else '/report/'
     report_search_generator = get_report_search_generator(request)
+    results = report_search_generator(request)
 
     def format_header(seq):
         newheader="%s\t%s%s?%s\r\n" % (downloadtime, request.host_url, endpoint, request.query_string)
@@ -196,7 +197,7 @@ def report_download(context, request):
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
-        for item in report_search_generator(request)['@graph']:
+        for item in results['@graph']:
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 
