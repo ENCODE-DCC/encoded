@@ -110,6 +110,21 @@
                             "pattern": "^NTR:0000545$"
                         }
                     }
+                },
+                {
+                    "properties": {
+                        "classification": {
+                            "enum": [
+                                "technical sample"
+                            ]
+                        },
+                        "term_name": {
+                            "pattern": "^technical sample$"
+                        },
+                        "term_id": {
+                            "pattern": "^NTR:0000637$"
+                        }
+                    }
                 }
             ]
         }
@@ -133,7 +148,8 @@
                 "cloning host",
                 "tissue",
                 "whole organisms",
-                "organoid"
+                "organoid",
+                "technical sample"
             ]
         },
         "dbxrefs": {

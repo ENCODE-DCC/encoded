@@ -3676,7 +3676,7 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 continue
 
             lib = rep['library']
-            if 'biosample' not in lib:
+            if 'biosample' not in lib and 'pooled_biosample' not in lib:
                 detail = ('Library {} is missing biosample, expecting one of type {}'.format(
                     audit_link(path_to_text(lib['@id']), lib['@id']),
                     term_name)
@@ -3684,21 +3684,33 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 yield AuditFailure('missing biosample', detail, level='ERROR')
                 continue
 
-            biosample = lib['biosample']
-            bs_type = biosample.get('biosample_ontology', {}).get('@id')
-            bs_name = biosample.get('biosample_ontology', {}).get('name')
             experiment_bs_type = value.get('biosample_ontology', {}).get('@id')
             experiment_bs_name = value.get('biosample_ontology', {}).get('name')
-            if bs_type != experiment_bs_type:
-                detail = ("Experiment {} contains a library {} linked to biosample "
-                    "type '{}', while experiment's biosample type is '{}'.".format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        audit_link(path_to_text(lib['@id']), lib['@id']),
-                        audit_link(path_to_text(bs_type), bs_type),
-                        audit_link(path_to_text(experiment_bs_type), experiment_bs_type)
+            technical_sample_type = '/biosample-types/technical_sample_NTR_0000637/'
+            if 'biosample' in lib:
+                biosample = lib['biosample']
+                bs_type = biosample.get('biosample_ontology', {}).get('@id')
+                bs_name = biosample.get('biosample_ontology', {}).get('name')
+                if bs_type != experiment_bs_type:
+                    detail = ("Experiment {} contains a library {} linked to biosample "
+                        "type '{}', while experiment's biosample type is '{}'.".format(
+                            audit_link(path_to_text(value['@id']), value['@id']),
+                            audit_link(path_to_text(lib['@id']), lib['@id']),
+                            audit_link(path_to_text(bs_type), bs_type),
+                            audit_link(path_to_text(experiment_bs_type), experiment_bs_type)
+                        )
                     )
-                )
-                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
+                    yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
+            elif 'pooled_biosample' in lib:
+                if experiment_bs_type != technical_sample_type:
+                    detail = (
+                        f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has the '
+                        f'biosample type {audit_link(path_to_text(experiment_bs_type),experiment_bs_type)}, '
+                        f'but contains a library {audit_link(path_to_text(lib["@id"]),lib["@id"])} '
+                        f'generated from a pooled biosample which requires an experiment biosample '
+                        f'type {audit_link(path_to_text(technical_sample_type), technical_sample_type)}.'
+                    )
+                    yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
     return
 
 
@@ -3896,24 +3908,24 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
     return
 
 
-def audit_experiment_library_biosample(value, system, excluded_types):
-    if value['status'] in ['deleted', 'replaced']:
-        return
+# def audit_experiment_library_biosample(value, system, excluded_types):
+#     if value['status'] in ['deleted', 'replaced']:
+#         return
 
-    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
-        return
-    for rep in value['replicates']:
-        if 'library' not in rep:
-            continue
+#     if value.get('assay_term_name') == 'RNA Bind-n-Seq':
+#         return
+#     for rep in value['replicates']:
+#         if 'library' not in rep:
+#             continue
 
-        lib = rep['library']
-        if 'biosample' not in lib:
-            detail = ('Library {} is missing biosample'.format(
-                audit_link(path_to_text(lib['@id']), lib['@id'])
-                )
-            )
-            yield AuditFailure('missing biosample', detail, level='ERROR')
-    return
+#         lib = rep['library']
+#         if 'biosample' not in lib:
+#             detail = ('Library {} is missing biosample'.format(
+#                 audit_link(path_to_text(lib['@id']), lib['@id'])
+#                 )
+#             )
+#             yield AuditFailure('missing biosample', detail, level='ERROR')
+#     return
 
 
 def audit_library_RNA_size_range(value, system, excluded_types):
@@ -4627,6 +4639,29 @@ def audit_experiment_mixed_strand_specific_libraries(value, system, excluded_typ
     return
 
 
+def audit_experiment_biosample_pooled_biosample(value, system, excluded_types):
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    biosample = 0
+    pooled = 0
+    for rep in value['replicates']:
+        if 'library' not in rep:
+            continue
+        lib = rep['library']
+        if 'biosample' in lib:
+            biosample += 1
+        elif 'pooled_biosample' in lib:
+            pooled += 1
+    if biosample > 0 and pooled > 0:
+        detail = (
+            f'This dataset contains libraries with both standard and '
+            f'pooled biosamples.'
+            )
+        yield AuditFailure('inconsistent library structure', detail, level='ERROR')
+    return
+
+
 #######################
 # utilities
 #######################
@@ -5275,7 +5310,7 @@ function_dispatcher_without_files = {
     'audit_documents': audit_experiment_documents,
     'audit_replicate_without_libraries': audit_experiment_replicates_with_no_libraries,
     'audit_experiment_biosample': audit_experiment_biosample_term,
-    'audit_library_biosample': audit_experiment_library_biosample,
+    # 'audit_library_biosample': audit_experiment_library_biosample,
     'audit_target': audit_experiment_target,
     'audit_mixed_libraries': audit_experiment_mixed_libraries,
     'audit_hic_restriction_enzyme_in_libaries': audit_hic_restriction_enzyme_in_libaries,
@@ -5293,7 +5328,8 @@ function_dispatcher_without_files = {
     'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range,
     'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
     'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed,
-    'audit_mixed_strand_specificities': audit_experiment_mixed_strand_specific_libraries
+    'audit_mixed_strand_specificities': audit_experiment_mixed_strand_specific_libraries,
+    'audit_biosample_vs_pooled_biosample': audit_experiment_biosample_pooled_biosample
 }
 
 function_dispatcher_with_files = {

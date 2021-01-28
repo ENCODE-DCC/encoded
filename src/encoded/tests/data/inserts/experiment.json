@@ -755,7 +755,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "status": "released",
         "date_submitted": "2015-04-20",
-        "biosample_ontology": "tissue_UBERON_0001891",
+        "biosample_ontology": "technical_sample_NTR_0000637",
         "award": "U54HG007010",
         "assay_term_name": "long read RNA-seq",
         "lab": "/labs/john-stamatoyannopoulos/",

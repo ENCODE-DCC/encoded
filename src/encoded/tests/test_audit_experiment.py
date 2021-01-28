@@ -481,12 +481,19 @@ def test_audit_experiment_geo_submission(testapp, base_experiment):
 
 def test_audit_experiment_biosample_match(testapp, base_experiment,
                                           base_biosample, base_replicate,
-                                          base_library, h1, ileum):
+                                          base_library, h1, ileum, biosample_1,
+                                          biosample_2, library_no_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_ontology': h1['uuid']})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     testapp.patch_json(base_experiment['@id'], {'biosample_ontology': ileum['uuid']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent library biosample'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(library_no_biosample['@id'], {'pooled_biosample': [biosample_1['@id'], biosample_2['@id']]})
+    testapp.patch_json(base_replicate['@id'], {'library': library_no_biosample['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent library biosample'
+               and 'generated from a pooled biosample' in error['detail']
                for error in collect_audit_errors(res))
 
 
@@ -596,10 +603,15 @@ def test_audit_experiment_model_organism_mismatched_donor(testapp,
 
 
 def test_audit_experiment_with_library_without_biosample(testapp, base_experiment, base_replicate,
-                                                         library_no_biosample):
+                                                         library_no_biosample, biosample_1,
+                                                         biosample_2):
     testapp.patch_json(base_replicate['@id'], {'library': library_no_biosample['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing biosample'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(library_no_biosample['@id'], {'pooled_biosample': [biosample_1['@id'], biosample_2['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing biosample'
                for error in collect_audit_errors(res))
 
 
@@ -4063,4 +4075,16 @@ def test_audit_experiment_mixed_strand_specificity_libraries(
     testapp.patch_json(library_2['@id'], {'strand_specificity': 'strand-specific'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'mixed strand specificities'
+               for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_biosample_and_pooled_biosample(testapp, base_experiment, base_replicate,
+                                                         base_library, library_no_biosample, biosample_1,
+                                                         biosample_2, base_replicate_two):
+    # https://encodedcc.atlassian.net/browse/ENCD-5674
+    testapp.patch_json(library_no_biosample['@id'], {'pooled_biosample': [biosample_1['@id'], biosample_2['@id']]})
+    testapp.patch_json(base_replicate_two['@id'], {'library': library_no_biosample['@id']})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent library structure'
                for error in collect_audit_errors(res))

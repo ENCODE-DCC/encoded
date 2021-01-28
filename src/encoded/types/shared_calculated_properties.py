@@ -244,6 +244,22 @@ class CalculatedBiosampleSummary:
                                 drop_age_sex_flag = True
                             if biosample_add_classification_flag is True:
                                 add_classification_flag = True
+                    elif 'pooled_biosample' in libraryObject:
+                        for each_biosample in libraryObject['pooled_biosample']:
+                            biosampleObject = request.embed(each_biosample, '@@object')
+                            if biosampleObject['status'] == 'deleted':
+                                continue
+                            if biosampleObject['accession'] not in biosample_accessions:
+                                biosample_accessions.add(biosampleObject['accession'])
+                                biosample_info = biosample_summary_information(request, biosampleObject)
+                                biosample_summary_dictionary = biosample_info[0]
+                                biosample_drop_age_sex_flag = biosample_info[1]
+                                biosample_add_classification_flag = biosample_info[2]
+                                dictionaries_of_phrases.append(biosample_summary_dictionary)
+                                if biosample_drop_age_sex_flag is True:
+                                    drop_age_sex_flag = True
+                                if biosample_add_classification_flag is True:
+                                    add_classification_flag = True
 
         if drop_age_sex_flag is True:
             sentence_parts = [
