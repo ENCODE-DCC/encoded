@@ -122,7 +122,7 @@ class Cart:
         )
 
     def _get_cart_object_or_error(self, uuid):
-        return self.request.embed(uuid, '@@object', as_user=True)
+        return self.request.embed(uuid, '@@object')
 
     def _try_to_get_cart_object(self, uuid):
         try:
