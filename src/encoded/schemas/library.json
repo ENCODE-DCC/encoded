@@ -38,6 +38,7 @@
         "size_range": {"not": {"required": ["average_fragment_size"]}},
         "fragment_length_CV": {"not": {"required": ["fragment_length_SD"]}},
         "fragment_length_SD": {"not": {"required": ["fragment_length_CV"]}},
+        "pooled_biosample": {"not": {"required": ["biosample"]}},
         "adapters": {
             "oneOf": [
                 {
@@ -265,6 +266,21 @@
             "comment": "See biosample.json for available identifiers.",
             "type": "string",
             "linkTo": "Biosample"
+        },
+        "mixed_biosamples": {
+            "title": "Mixed biosamples",
+            "description": "Nucleic acid derived from two or more biosamples mixed together for library generation.",
+            "comment": "See biosample.json for available identifiers.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 2,
+            "items": {
+                "title": "Biosample",
+                "description": "The biosample that nucleic acid was isolated from to generate the library.",
+                "comment": "See biosample.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Biosample"
+            }
         },
         "product_id": {
             "description": "The product identifier provided by the vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."

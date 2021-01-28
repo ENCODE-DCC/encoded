@@ -3633,6 +3633,8 @@ def audit_experiment_biosample_term(value, system, excluded_types):
     term_id = value.get('biosample_ontology', {}).get('term_id')
     term_type = value.get('biosample_ontology', {}).get('classification')
     term_name = value.get('biosample_ontology', {}).get('term_name')
+    biosample_count = 0
+    mixed_biosample_count = 0
 
     if 'biosample_ontology' not in value:
         detail = ('Biosample {} is missing biosample_ontology'.format(
@@ -3670,13 +3672,16 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 )
                 yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
 
+    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
+        return
+
     if 'replicates' in value:
         for rep in value['replicates']:
             if 'library' not in rep:
                 continue
 
             lib = rep['library']
-            if 'biosample' not in lib:
+            if 'biosample' not in lib and 'mixed_biosamples' not in lib:
                 detail = ('Library {} is missing biosample, expecting one of type {}'.format(
                     audit_link(path_to_text(lib['@id']), lib['@id']),
                     term_name)
@@ -3684,21 +3689,43 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 yield AuditFailure('missing biosample', detail, level='ERROR')
                 continue
 
-            biosample = lib['biosample']
-            bs_type = biosample.get('biosample_ontology', {}).get('@id')
-            bs_name = biosample.get('biosample_ontology', {}).get('name')
             experiment_bs_type = value.get('biosample_ontology', {}).get('@id')
             experiment_bs_name = value.get('biosample_ontology', {}).get('name')
-            if bs_type != experiment_bs_type:
-                detail = ("Experiment {} contains a library {} linked to biosample "
-                    "type '{}', while experiment's biosample type is '{}'.".format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        audit_link(path_to_text(lib['@id']), lib['@id']),
-                        audit_link(path_to_text(bs_type), bs_type),
-                        audit_link(path_to_text(experiment_bs_type), experiment_bs_type)
+            experiment_bs_uuid = value.get('biosample_ontology', {}).get('uuid')
+            technical_sample_uuid = 'f6ade16f-4367-452c-882a-57f8f3c08a59'
+            technical_sample_type = '/biosample-types/f6ade16f-4367-452c-882a-57f8f3c08a59/'
+            if 'biosample' in lib:
+                biosample_count += 1
+                biosample = lib['biosample']
+                bs_type = biosample.get('biosample_ontology', {}).get('@id')
+                bs_name = biosample.get('biosample_ontology', {}).get('name')
+                if bs_type != experiment_bs_type:
+                    detail = ("Experiment {} contains a library {} linked to biosample "
+                        "type '{}', while experiment's biosample type is '{}'.".format(
+                            audit_link(path_to_text(value['@id']), value['@id']),
+                            audit_link(path_to_text(lib['@id']), lib['@id']),
+                            audit_link(path_to_text(bs_type), bs_type),
+                            audit_link(path_to_text(experiment_bs_type), experiment_bs_type)
+                        )
                     )
+                    yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
+            elif 'mixed_biosamples' in lib:
+                mixed_biosample_count += 1
+                if experiment_bs_uuid != technical_sample_uuid:
+                    detail = (
+                        f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has the '
+                        f'biosample type {audit_link(path_to_text(experiment_bs_type),experiment_bs_type)}, '
+                        f'but contains a library {audit_link(path_to_text(lib["@id"]),lib["@id"])} '
+                        f'generated from mixed biosamples which requires the experiment biosample '
+                        f'type {audit_link(path_to_text(technical_sample_type), technical_sample_type)}.'
+                    )
+                    yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
+
+        if biosample_count > 0 and mixed_biosample_count > 0:
+            detail = (
+                f'This dataset contains libraries with both standard and mixed biosamples.'
                 )
-                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
+            yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
     return
 
 
@@ -3893,26 +3920,6 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                 )
                 yield AuditFailure('partially characterized antibody', detail,
                                    level='NOT_COMPLIANT')
-    return
-
-
-def audit_experiment_library_biosample(value, system, excluded_types):
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
-        return
-    for rep in value['replicates']:
-        if 'library' not in rep:
-            continue
-
-        lib = rep['library']
-        if 'biosample' not in lib:
-            detail = ('Library {} is missing biosample'.format(
-                audit_link(path_to_text(lib['@id']), lib['@id'])
-                )
-            )
-            yield AuditFailure('missing biosample', detail, level='ERROR')
     return
 
 
@@ -5275,7 +5282,6 @@ function_dispatcher_without_files = {
     'audit_documents': audit_experiment_documents,
     'audit_replicate_without_libraries': audit_experiment_replicates_with_no_libraries,
     'audit_experiment_biosample': audit_experiment_biosample_term,
-    'audit_library_biosample': audit_experiment_library_biosample,
     'audit_target': audit_experiment_target,
     'audit_mixed_libraries': audit_experiment_mixed_libraries,
     'audit_hic_restriction_enzyme_in_libaries': audit_hic_restriction_enzyme_in_libaries,

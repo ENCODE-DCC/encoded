@@ -45,7 +45,7 @@ def test_batch_download_report_download(testapp, index_workbook, threadlocals):
         b'Biosample treatment', b'Biosample treatment ontology ID', b'Biosample treatment amount', b'Biosample treatment amount units',
         b'Biosample treatment duration', b'Biosample treatment duration units', b'Synchronization',
         b'Post-synchronization time', b'Post-synchronization time units',
-        b'Replicates',
+        b'Replicates', b'Mixed biosamples',
     ]
     assert len(lines) == 77
 

@@ -1130,5 +1130,16 @@
         "uuid": "fa626696-aeee-4272-9284-be8aa57f7176",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG006998"
+    },
+    {
+        "_test": "mixed library",
+        "accession": "ENCLB001MIX",
+        "mixed_biosamples": ["ENCBS888RUL", "ENCBS475JUN"],
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "nucleic_acid_term_name": "DNA",
+        "uuid": "4cc2c563-1e17-413a-b120-15cbf77eda20",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "award": "U54HG007010"
     }
 ]

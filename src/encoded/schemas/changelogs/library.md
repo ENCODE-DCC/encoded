@@ -1,5 +1,8 @@
 ## Changelog for library.json
 
+### Minor changes since schema version 15
+* A new property *mixed_biosamples* is now available for specifying the mixture of two or more biosamples used in a technical sample.
+
 ### Schema version 15
 * *capped mRNA* may now be specified in the property *nucleic_acid_term_name*, this cannot be submitted in combination with *capped mRNA* in *depleted_in_term_name*. Specifying *polyadenylated mRNA* in both *nucleic_acid_term_name* and *depleted_in_term_name* is also disallowed.
 

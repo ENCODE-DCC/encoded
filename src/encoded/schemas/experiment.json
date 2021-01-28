@@ -411,6 +411,9 @@
         },       
         "replicates.@id": {
             "title": "Replicates"
+        },
+        "replicates.library.mixed_biosamples": {
+            "title": "Mixed biosamples"
         }
     },
     "boost_values": {

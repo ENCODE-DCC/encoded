@@ -210,5 +210,11 @@
     "term_name": "skin epidermis",
     "term_id": "UBERON:0001003",
     "status": "released"
+}, {
+    "classification": "technical sample",
+    "uuid": "f6ade16f-4367-452c-882a-57f8f3c08a59",
+    "term_name": "technical sample",
+    "term_id": "NTR:0000637",
+    "status": "released"
 }
 ]
