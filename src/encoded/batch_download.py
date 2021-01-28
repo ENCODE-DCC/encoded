@@ -153,10 +153,13 @@ def _convert_camel_to_snake(type_str):
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', tmp).lower()
 
 
+def is_cart_search(request):
+    return bool(request.params.getall('cart'))
+
 def get_report_search_generator(request):
-    if request.params.getall('cart'):
-        return cart_search_generator(request)
-    return search_generator(request)
+    if is_cart_search(request):
+        return cart_search_generator
+    return search_generator
 
 
 @view_config(route_name='report_download', request_method='GET')
@@ -175,8 +178,11 @@ def report_download(context, request):
     columns = list_visible_columns_for_schemas(request, schemas)
     snake_type = _convert_camel_to_snake(type_str).replace("'", '')
 
+    endpoint = '/cart-report/' if is_cart_search(request) else '/report/'
+    report_search_generator = get_report_search_generator(request)
+
     def format_header(seq):
-        newheader="%s\t%s%s?%s\r\n" % (downloadtime, request.host_url, '/report/', request.query_string)
+        newheader="%s\t%s%s?%s\r\n" % (downloadtime, request.host_url, endpoint, request.query_string)
         return(bytes(newheader, 'utf-8'))
        
 
@@ -189,7 +195,7 @@ def report_download(context, request):
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
-        for item in get_report_search_generator(request)['@graph']:
+        for item in report_search_generator(request)['@graph']:
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 
