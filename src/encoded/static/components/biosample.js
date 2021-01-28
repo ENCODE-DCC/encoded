@@ -15,10 +15,7 @@ import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, Experimen
 import formatMeasurement from './../libs/formatMeasurement';
 
 
-/* eslint-disable react/prefer-stateless-function */
-class BiosampleComponent extends React.Component {
-    render() {
-        const context = this.props.context;
+const BiosampleComponent = ({ context, auditIndicators, auditDetail }) => {
         const itemClass = globals.itemClass(context, 'view-item');
         const aliasList = context.aliases.join(', ');
 
@@ -66,9 +63,9 @@ class BiosampleComponent extends React.Component {
                     <div className="replacement-accessions">
                         <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>
-                    <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'biosample-audit' }} />
+                    <ItemAccessories item={context} audit={{ auditIndicators: auditIndicators, auditId: 'biosample-audit' }} />
                 </header>
-                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
+                {auditDetail(context.audit, 'biosample-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
                 <Panel>
                     <PanelBody addClasses="panel__split">
                         <div className="panel__split-element">
@@ -360,6 +357,7 @@ class BiosampleComponent extends React.Component {
                         </PanelBody>
                     : null}
                 </Panel>
+
                 {context.pooled_from && context.pooled_from.length > 0 ?
                     <BiosampleTable
                         title="Pooled from biosamples"
@@ -396,11 +394,15 @@ class BiosampleComponent extends React.Component {
                     Component={ExperimentTable}
                 />
 
-                <RelatedItems
-                    title="Biosamples that are part of this biosample"
-                    url={`/search/?type=Biosample&part_of.uuid=${context.uuid}`}
-                    Component={BiosampleTable}
-                />
+                {context.parent_of.length > 0 ?
+                    <BiosampleTable
+                        items={context.parent_of}
+                        limit={5}
+                        total={context.parent_of.length}
+                        title="Biosamples that are part of this biosample"
+                        url={`/search/?type=Biosample&part_of.uuid=${context.uuid}`}
+                    />
+                : null}
 
                 <RelatedItems
                     title="Biosamples originating from this biosample"
