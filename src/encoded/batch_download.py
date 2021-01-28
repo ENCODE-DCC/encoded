@@ -156,6 +156,7 @@ def _convert_camel_to_snake(type_str):
 def is_cart_search(request):
     return bool(request.params.getall('cart'))
 
+
 def get_report_search_generator(request):
     if is_cart_search(request):
         return cart_search_generator

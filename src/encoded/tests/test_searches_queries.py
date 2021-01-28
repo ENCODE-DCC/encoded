@@ -18,7 +18,7 @@ def params_parser(dummy_request):
     return ParamsParser(dummy_request)
 
 
-def test_searches_queries_cart_search_query_factory_with_init(params_parser):
+def test_searches_queries_cart_search_query_factory_init(params_parser):
     from encoded.cart_view import CartWithElements
     from encoded.searches.queries import CartQueryMixin
     from encoded.searches.queries import CartSearchQueryFactory
