@@ -32,6 +32,7 @@ module.exports = {
         'max-len': 0, // No maximum line length, but try to keep to 100 except with URLs
         'max-classes-per-file': 'off', // Causes too many code changes
         'import/extensions': 'off',
+        'no-await-in-loop': 'off', // Sometimes needed when promise relies on previous promise
         'no-bitwise': 'off', // We use bitwise operators
         'no-console': 'off', // We allow console messages
         'no-param-reassign': 'off',

@@ -75,23 +75,28 @@ export function CollectBiosampleDocs(biosample) {
 
 
 // Display a table of retrieved biosamples related to the displayed biosample
-export const BiosampleTable = (props) => {
-    const { items, limit, total, url, title } = props;
-    let biosamples;
+export const BiosampleTable = ({ items, limit, total, url, title }) => {
+    let biosamples = items;
+    let footer = null;
+    let subheader = null;
+    if (limit > 0) {
+        // If limit isn't zero, include a footer with search link.
+        footer = <BiosampleTableFooter items={items} total={total} url={url} />;
+    } else {
+        // The limit contains zero, so no footer or search link; just a count in the header.
+        subheader = <div className="table-paged__count">{`${total} biosample${total === 1 ? '' : 's'}`}</div>;
+    }
 
     // If there's a limit on entries to display and the array is greater than that
     // limit, then clone the array with just that specified number of elements
-    if (limit && (limit < items.length)) {
+    if (limit > 0 && (limit < items.length)) {
         // Limit the experiment list by cloning first {limit} elements
         biosamples = items.slice(0, limit);
-    } else {
-        // No limiting; just reference the original array
-        biosamples = items;
     }
 
     return (
-        <SortTablePanel title={title}>
-            <SortTable list={items} columns={BiosampleTable.columns} footer={<BiosampleTableFooter items={biosamples} total={total} url={url} />} />
+        <SortTablePanel title={title} subheader={subheader}>
+            <SortTable list={biosamples} columns={BiosampleTable.columns} footer={footer} />
         </SortTablePanel>
     );
 };
@@ -363,7 +368,7 @@ ExperimentTableFooter.defaultProps = {
 };
 
 
-const experimentTableColumns = {
+export const experimentTableColumns = {
     accession: {
         title: 'Accession',
         display: (item) => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
@@ -371,6 +376,26 @@ const experimentTableColumns = {
 
     assay_term_name: {
         title: 'Assay',
+    },
+
+    'replicates.library.biosample': {
+        title: 'Biosamples',
+        display: (item) => {
+            if (item.replicates.length > 0) {
+                const biosamples = item.replicates.reduce((accBiosamples, replicate) => accBiosamples.concat(replicate.library.biosample), []);
+                if (biosamples.length > 0) {
+                    return biosamples.map((biosample, index) => (
+                        <span key={biosample['@id']}>
+                            {index > 0 ? <>, </> : null}
+                            <a href={biosample['@id']}>{biosample.accession}</a>
+                        </span>
+                    ));
+                }
+                return null;
+            }
+            return null;
+        },
+        hide: (list, columns, meta) => !(meta && meta.showBiosamples),
     },
 
     'biosample_ontology.term_name': {
@@ -394,16 +419,32 @@ const experimentTableColumns = {
 };
 
 
-export const ExperimentTable = ({ items, limit, total, url, title }) => {
+export const ExperimentTable = ({ items, limit, total, url, title, showBiosamples }) => {
     // If there's a limit on entries to display and the array is greater than that limit, then
     // clone the array with just that specified number of elements.
     if (items.length > 0) {
-        const experiments = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+        let experiments;
+        let footer = null;
+        let subheader = null;
+        if (limit > 0) {
+            // Limit given, so use a footer with a search link.
+            experiments = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+            footer = <ExperimentTableFooter items={experiments} total={total} url={url} />;
+        } else {
+            // No limit given, so don't include a footer; have a count in the table header.
+            experiments = items;
+            subheader = <div className="table-paged__count">{`${total} experiment${total === 1 ? '' : 's'}`}</div>;
+        }
 
         return (
             <div>
-                <SortTablePanel title={title}>
-                    <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={total} url={url} />} />
+                <SortTablePanel title={title} subheader={subheader}>
+                    <SortTable
+                        list={experiments}
+                        columns={experimentTableColumns}
+                        footer={footer}
+                        meta={{ showBiosamples }}
+                    />
                 </SortTablePanel>
             </div>
         );
@@ -419,18 +460,22 @@ ExperimentTable.propTypes = {
     /** Total number of experiments */
     total: PropTypes.number,
     /** URI to go to equivalent search results */
-    url: PropTypes.string.isRequired,
+    url: PropTypes.string,
     /** Title for the table of experiments; can be string or component */
     title: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.node,
     ]),
+    /** True to show column of experiment biosamples */
+    showBiosamples: PropTypes.bool,
 };
 
 ExperimentTable.defaultProps = {
     limit: 0,
     total: 0,
+    url: '',
     title: '',
+    showBiosamples: false,
 };
 
 
