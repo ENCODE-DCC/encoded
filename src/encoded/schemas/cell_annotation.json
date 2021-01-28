@@ -34,8 +34,7 @@
             "description": "",
             "type":  "array",
             "items": {
-                "type": "string",
-                "linkTo": "Gene"
+                "type": "string"
             }
         },
         "genes_expressed_low": {
@@ -43,9 +42,18 @@
             "description": "",
             "type":  "array",
             "items": {
-                "type": "string",
-                "linkTo": "Gene"
+                "type": "string"
             }
+        },
+        "cell_state": {
+            "title": "Cell state",
+            "description": "The distinguishing state of a cell that allows for futher cell subtyping, but not meant to be capture in the CL ontologies",
+            "type": "string",
+            "enum": [
+                "proliferating",
+                "activated",
+                "resting"
+            ]
         },
         "matrix_files": {
             "title": "Matrix files",
@@ -71,11 +79,11 @@
             "title": "Cell ontology name",
             "type": "typeahead"
         },
-        "genes_expressed_high.symbol": {
+        "genes_expressed_high": {
             "title": "Genes expressed high",
             "type": "typeahead"
         },
-        "genes_expressed_low.symbol": {
+        "genes_expressed_low": {
             "title": "Genes expressed low",
             "type": "typeahead"
         },
@@ -97,10 +105,10 @@
         "cell_ontology.term_id": {
             "title": "Cell ontology ID"
         },
-        "genes_expressed_high.symbol": {
+        "genes_expressed_high": {
             "title": "Genes expressed high"
         },
-        "genes_expressed_low.symbol": {
+        "genes_expressed_low": {
             "title": "Genes expressed low"
         },
         "tissues_sampled.term_name": {

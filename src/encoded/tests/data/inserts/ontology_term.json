@@ -12,6 +12,84 @@
         "status": "released"
     },
     {
+        "uuid": "a8bd74b7-7967-4f64-8efa-b1f1bd3321ac",
+        "term_name": "epithelial cell of proximal tubule",
+        "term_id": "CL:0002306",
+        "status": "released"
+    },
+    {
+        "uuid": "64bf7eff-ba4f-47a9-b320-c9a9a31bba75",
+        "term_name": "parietal epithelial cell",
+        "term_id": "CL:1000452",
+        "status": "released"
+    },
+    {
+        "uuid": "817ae3ce-906d-49cc-ba8b-f952b59b55b9",
+        "term_name": "kidney loop of Henle thick ascending limb epithelial cell",
+        "term_id": "CL:1001106",
+        "status": "released"
+    },
+    {
+        "uuid": "bb788244-d4f9-49ab-99e3-ddb49897239f",
+        "term_name": "kidney distal convoluted tubule epithelial cell",
+        "term_id": "CL:1000849",
+        "status": "released"
+    },
+    {
+        "uuid": "73f1c401-8ae3-41ef-a258-dc6ee765eea5",
+        "term_name": "kidney connecting tubule epithelial cell",
+        "term_id": "CL:1000768",
+        "status": "released"
+    },
+    {
+        "uuid": "f1d479db-0640-4199-bfe5-b34625a554f5",
+        "term_name": "renal principal cell",
+        "term_id": "CL:0005009",
+        "status": "released"
+    },
+    {
+        "uuid": "5e700854-68de-45e0-ae9a-b3939d4339fe",
+        "term_name": "renal alpha-intercalated cell",
+        "term_id": "CL:0005011",
+        "status": "released"
+    },
+    {
+        "uuid": "08d6b66c-96e9-485c-a789-96e1f05bd7d4",
+        "term_name": "renal beta-intercalated cell",
+        "term_id": "CL:0002201",
+        "status": "released"
+    },
+    {
+        "uuid": "66488f7d-ae6d-4317-9930-7630cdc28aea",
+        "term_name": "glomerular visceral epithelial cell",
+        "term_id": "CL:0000653",
+        "status": "released"
+    },
+    {
+        "uuid": "3fd757af-fcbc-412d-b799-de9bcef2278b",
+        "term_name": "mesangial cell",
+        "term_id": "CL:0000650",
+        "status": "released"
+    },
+    {
+        "uuid": "8de59200-074e-479a-b943-f6f8f651f562",
+        "term_name": "fibroblast",
+        "term_id": "CL:0000057",
+        "status": "released"
+    },
+    {
+        "uuid": "dbfd9d95-8027-43ff-88b1-aa5189d0f584",
+        "term_name": "leukocyte",
+        "term_id": "CL:0000738",
+        "status": "released"
+    },
+    {
+        "uuid": "80d34e68-3c23-4ac0-ae46-8bfcbcd9fbbc",
+        "term_name": "kidney capillary endothelial cell",
+        "term_id": "CL:1000892",
+        "status": "released"
+    },
+    {
         "uuid": "ff3240a5-9e2c-467d-81d5-a16f3f3f8ca0",
         "term_name": "GM06990",
         "term_id": "EFO:0002783",

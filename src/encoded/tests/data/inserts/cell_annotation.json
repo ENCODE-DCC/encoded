@@ -1,23 +1,8 @@
 [
     {
         "uuid": "ae31c873-9089-4bdb-8ff3-7c5355273a40",
-        "author_cell_type": "cell population 1",
-        "cell_ontology": "CL_0002305",
-        "genes_expressed_high": [
-            "ENSG00000243485",
-            "ENSG00000183186",
-            "ENSG00000272031"
-        ],
-        "matrix_files": [
-            "LATDF119AAA"
-        ],
-        "annotation_method": "manual, marker genes",
-        "notes": "fibroblasts marked by high expression of VCAM1"
-    },
-    {
-        "uuid": "4c571596-2b0e-41f6-aaf2-950abfd04f58",
-        "author_cell_type": "cell population 2",
-        "cell_ontology": "CL_0000064",
+        "author_cell_type": "PT",
+        "cell_ontology": "CL_0002306",
         "genes_expressed_high": [
             "ENSG00000243485",
             "ENSG00000183186",
@@ -29,19 +14,221 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Cell Typist"
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "proximal_tubule"
     },
     {
-        "uuid": "da7068b7-1aaa-4fe1-83fb-4138d8935908",
-        "author_cell_type": "cell population 3",
-        "cell_ontology": "CL_2000055",
+        "uuid": "4c571596-2b0e-41f6-aaf2-950abfd04f58",
+        "author_cell_type": "PT_VCAM1",
+        "cell_ontology": "CL_0002306",
         "genes_expressed_high": [
-            "ENSG00000266211",
-            "ENSMUSG00000074637"
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
         ],
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Cell Typist"
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "proximal_tubule_VCAM1+",
+        "cell_state": "proliferating"
+    },
+    {
+        "uuid": "da7068b7-1aaa-4fe1-83fb-4138d8935908",
+        "author_cell_type": "PEC",
+        "cell_ontology": "CL_1000452",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "parietal_epithelial_cells"
+    },
+    {
+        "uuid": "78e33c2f-a5fd-4914-822c-61c8ed5d7490",
+        "author_cell_type": "TAL",
+        "cell_ontology": "CL_1001106",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "thick_ascending_limb_of_loop_of_Henle"
+    },
+    {
+        "uuid": "4908e957-082e-4bda-b3c3-764aaca5a95b",
+        "author_cell_type": "DCT1",
+        "cell_ontology": "CL_1000849",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "genes_expressed_low": [
+            "ENSG00000213553"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "distal_convoluted_tubule_1"
+    },
+    {
+        "uuid": "84d88751-0c7d-4416-a6a4-761969844368",
+        "author_cell_type": "DCT2",
+        "cell_ontology": "CL_1000849",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "distal_convoluted_tubule_2"
+    },
+    {
+        "uuid": "c8f96a42-e8e1-4330-9a1c-922b682edcd1",
+        "author_cell_type": "CNT",
+        "cell_ontology": "CL_1000768",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "connecting_tubule"
+    },
+    {
+        "uuid": "6c8ce8a6-f8d8-4152-8e87-ee84039231b3",
+        "author_cell_type": "PC",
+        "cell_ontology": "CL_0005009",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "principle_cells"
+    },
+    {
+        "uuid": "f1a3113c-f305-49ce-b7a8-511dc251cd84",
+        "author_cell_type": "ICA",
+        "cell_ontology": "CL_0005011",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "type_A_intercalated_cells"
+    },
+    {
+        "uuid": "bd42def5-f89c-4f22-b5ac-c35e5d5bfd2b",
+        "author_cell_type": "ICB",
+        "cell_ontology": "CL_0002201",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "type_B_intercalated_cells"
+    },
+    {
+        "uuid": "9831eed8-3084-4f62-bcc5-5381d1d2bc90",
+        "author_cell_type": "PODO",
+        "cell_ontology": "CL_0000653",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "podocyte"
+    },
+    {
+        "uuid": "de5439b1-c938-402e-815a-e5c28597537e",
+        "author_cell_type": "ENDO",
+        "cell_ontology": "CL_1000892",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "endothelial_cells"
+    },
+    {
+        "uuid": "434f9de2-1609-46b1-94d2-06ae79ece5ef",
+        "author_cell_type": "MES",
+        "cell_ontology": "CL_0000650",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "mesangial_cells"
+    },
+    {
+        "uuid": "c6b10d1b-1b62-4ff5-b514-8a5903c15727",
+        "author_cell_type": "FIB",
+        "cell_ontology": "CL_0000057",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "fibroblasts"
+    },
+    {
+        "uuid": "752fe633-4b30-43cf-aa75-3121a34ef266",
+        "author_cell_type": "LEUK",
+        "cell_ontology": "CL_0000738",
+        "genes_expressed_high": [
+            "ENSG00000243485",
+            "ENSG00000183186",
+            "ENSG00000272031"
+        ],
+        "matrix_files": [
+            "LATDF119AAA"
+        ],
+        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "notes": "leukocytes"
     }
 ]
