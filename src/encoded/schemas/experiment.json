@@ -388,11 +388,11 @@
         "replicates.library.biosample.treatments.treatment_term_id": {
             "title": "Biosample treatment ontology ID"
         },
-        "replicates.library.biosample.treatments.concentration": {
-            "title": "Biosample treatment concentration"
+        "replicates.library.biosample.treatments.amount": {
+            "title": "Biosample treatment amount"
         },
-        "replicates.library.biosample.treatments.concentration_units": {
-            "title": "Biosample treatment concentration units"
+        "replicates.library.biosample.treatments.amount_units": {
+            "title": "Biosample treatment amount units"
         },
         "replicates.library.biosample.treatments.duration": {
             "title": "Biosample treatment duration"

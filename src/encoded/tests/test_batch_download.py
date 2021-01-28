@@ -41,7 +41,7 @@ def test_batch_download_report_download(testapp, index_workbook):
         b'Target gene symbol', b'Biosample summary', b'Biosample term name', b'Dbxrefs', b'Description', b'Lab',
         b'Project', b'Status', b'Files', b'Related series', b'Biosample accession', b'Biological replicate',
         b'Technical replicate', b'Linked antibody', b'Organism', b'Life stage', b'Biosample age',
-        b'Biosample treatment', b'Biosample treatment ontology ID', b'Biosample treatment concentration', b'Biosample treatment concentration units',
+        b'Biosample treatment', b'Biosample treatment ontology ID', b'Biosample treatment amount', b'Biosample treatment amount units',
         b'Biosample treatment duration', b'Biosample treatment duration units', b'Synchronization',
         b'Post-synchronization time', b'Post-synchronization time units',
         b'Replicates',
