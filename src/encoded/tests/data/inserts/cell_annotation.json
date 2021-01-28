@@ -155,7 +155,8 @@
         ],
         "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "type_B_intercalated_cells"
-    },{
+    },
+    {
         "uuid": "9831eed8-3084-4f62-bcc5-5381d1d2bc90",
         "author_cell_type": "PODO",
         "cell_ontology": "CL_0000653",

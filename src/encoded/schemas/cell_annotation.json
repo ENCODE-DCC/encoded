@@ -34,8 +34,7 @@
             "description": "",
             "type":  "array",
             "items": {
-                "type": "string",
-                "linkTo": "Gene"
+                "type": "string"
             }
         },
         "genes_expressed_low": {
@@ -43,8 +42,7 @@
             "description": "",
             "type":  "array",
             "items": {
-                "type": "string",
-                "linkTo": "Gene"
+                "type": "string"
             }
         },
         "cell_state": {
