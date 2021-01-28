@@ -1,13 +1,35 @@
 from encoded.searches.responses import CartQueryResponseWithFacets
 from encoded.searches.responses import CartMatrixResponseWithFacets
+from encoded.searches.queries import CartSearchQueryFactory
 from encoded.searches.queries import CartSearchQueryFactoryWithFacets
 from encoded.searches.queries import CartMatrixQueryFactoryWithFacets
 from encoded.searches.queries import CartReportQueryFactoryWithFacets
+from snovault.elasticsearch.searches.fields import BasicSearchResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import ClearFiltersResponseField
 from snovault.elasticsearch.searches.fields import TypeOnlyClearFiltersResponseField
 from snovault.elasticsearch.searches.fields import FiltersResponseField
+
+
+class CartSearchResponseField(BasicSearchResponseField):
+    '''
+    Like BasicSearchResponseField but uses CartSearchQueryFactory
+    as query builder and CartQueryResponseWithFacets as response.
+    '''
+
+    def _build_query(self):
+        self.query_builder = CartSearchQueryFactory(
+            params_parser=self.get_params_parser(),
+            **self.kwargs
+        )
+        self.query = self.query_builder.build_query()
+
+    def _execute_query(self):
+        self.results = CartQueryResponseWithFacets(
+            results=self.query.execute(),
+            query_builder=self.query_builder
+        )
 
 
 class CartSearchWithFacetsResponseField(BasicSearchWithFacetsResponseField):

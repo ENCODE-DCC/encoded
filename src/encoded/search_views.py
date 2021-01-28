@@ -1,6 +1,7 @@
 from pyramid.view import view_config
 
 from encoded.cart_view import CartWithElements
+from encoded.searches.fields import CartSearchResponseField
 from encoded.searches.fields import CartSearchWithFacetsResponseField
 from encoded.searches.fields import CartReportWithFacetsResponseField
 from encoded.searches.fields import CartMatrixWithFacetsResponseField
@@ -190,6 +191,25 @@ def search_generator(request):
         response_fields=[
             BasicSearchResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES
+            )
+        ]
+    )
+    return fgr.render()
+
+
+def cart_search_generator(request):
+    '''
+    For internal use (no view). Like search_quick but returns raw generator
+    of cart search hits in @graph field.
+    '''
+    fgr = FieldedGeneratorResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            CartSearchResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                cart=CartWithElements(request),
             )
         ]
     )
