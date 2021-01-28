@@ -75,23 +75,25 @@ export function CollectBiosampleDocs(biosample) {
 
 
 // Display a table of retrieved biosamples related to the displayed biosample
-export const BiosampleTable = (props) => {
-    const { items, limit, total, url, title } = props;
-    let biosamples;
+export const BiosampleTable = ({ items, limit, total, url, title }) => {
+    let biosamples = items;
+    let footer = null;
+
+    // If limit isn't zero, include a footer with search link.
+    if (limit > 0) {
+        footer = <BiosampleTableFooter items={items} total={total} url={url} />;
+    }
 
     // If there's a limit on entries to display and the array is greater than that
     // limit, then clone the array with just that specified number of elements
-    if (limit && (limit < items.length)) {
+    if (limit > 0 && (limit < items.length)) {
         // Limit the experiment list by cloning first {limit} elements
         biosamples = items.slice(0, limit);
-    } else {
-        // No limiting; just reference the original array
-        biosamples = items;
     }
 
     return (
         <SortTablePanel title={title}>
-            <SortTable list={items} columns={BiosampleTable.columns} footer={<BiosampleTableFooter items={biosamples} total={total} url={url} />} />
+            <SortTable list={biosamples} columns={BiosampleTable.columns} footer={footer} />
         </SortTablePanel>
     );
 };
