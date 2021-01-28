@@ -19,8 +19,6 @@ class CellAnnotation(Item):
     schema = load_schema('encoded:schemas/cell_annotation.json')
     embedded = [
         'cell_ontology',
-        'genes_expressed_high',
-        'genes_expressed_low',
         'tissues_sampled'
     ]
 

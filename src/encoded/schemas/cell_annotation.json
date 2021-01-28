@@ -79,11 +79,11 @@
             "title": "Cell ontology name",
             "type": "typeahead"
         },
-        "genes_expressed_high.symbol": {
+        "genes_expressed_high": {
             "title": "Genes expressed high",
             "type": "typeahead"
         },
-        "genes_expressed_low.symbol": {
+        "genes_expressed_low": {
             "title": "Genes expressed low",
             "type": "typeahead"
         },
@@ -105,10 +105,10 @@
         "cell_ontology.term_id": {
             "title": "Cell ontology ID"
         },
-        "genes_expressed_high.symbol": {
+        "genes_expressed_high": {
             "title": "Genes expressed high"
         },
-        "genes_expressed_low.symbol": {
+        "genes_expressed_low": {
             "title": "Genes expressed low"
         },
         "tissues_sampled.term_name": {
