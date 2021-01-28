@@ -12,6 +12,7 @@ from urllib.parse import (
     quote,
 )
 from encoded.search_views import search_generator
+from encoded.search_views import cart_search_generator
 from .vis_defines import is_file_visualizable
 import csv
 import io
@@ -152,6 +153,12 @@ def _convert_camel_to_snake(type_str):
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', tmp).lower()
 
 
+def get_report_search_generator(request):
+    if request.params.getall('cart'):
+        return cart_search_generator(request)
+    return search_generator(request)
+
+
 @view_config(route_name='report_download', request_method='GET')
 def report_download(context, request):
     downloadtime = datetime.datetime.now()
@@ -182,7 +189,7 @@ def report_download(context, request):
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
-        for item in search_generator(request)['@graph']:
+        for item in get_report_search_generator(request)['@graph']:
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 

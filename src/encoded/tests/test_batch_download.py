@@ -49,6 +49,25 @@ def test_batch_download_report_download(testapp, index_workbook):
     assert len(lines) == 77
 
 
+def test_batch_download_report_download_with_cart(testapp, index_workbook):
+    res = testapp.get('/report.tsv?type=Experiment&cart=/carts/ali-mortazavi-first-cart/')
+    assert res.headers['content-type'] == 'text/tsv; charset=UTF-8'
+    disposition = res.headers['content-disposition']
+    assert disposition.startswith('attachment;filename="experiment_report') and disposition.endswith('.tsv"')
+    lines = res.body.splitlines()
+    assert lines[1].split(b'\t') == [
+        b'ID', b'Accession', b'Assay name', b'Assay title', b'Target of assay',
+        b'Target gene symbol', b'Biosample summary', b'Biosample term name', b'Dbxrefs', b'Description', b'Lab',
+        b'Project', b'Status', b'Files', b'Related series', b'Biosample accession', b'Biological replicate',
+        b'Technical replicate', b'Linked antibody', b'Organism', b'Life stage', b'Biosample age',
+        b'Biosample treatment', b'Biosample treatment ontology ID', b'Biosample treatment concentration', b'Biosample treatment concentration units',
+        b'Biosample treatment duration', b'Biosample treatment duration units', b'Synchronization',
+        b'Post-synchronization time', b'Post-synchronization time units',
+        b'Replicates',
+    ]
+    assert len(lines) == 7
+
+
 def test_batch_download_matched_set_report_download(testapp, index_workbook):
     res = testapp.get('/report.tsv?type=MatchedSet&sort=accession')
     disposition = res.headers['content-disposition']

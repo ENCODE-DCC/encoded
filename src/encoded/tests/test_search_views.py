@@ -284,7 +284,6 @@ def test_search_views_cart_search_generator_cart_specified(index_workbook, dummy
     assert len(r.keys()) == 1
     assert isinstance(r['@graph'], GeneratorType)
     hits = [h for h in r['@graph']]
-    print(hits)
     assert '@id' in hits[0]
     assert len(hits) >= 3
 
