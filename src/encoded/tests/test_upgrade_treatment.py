@@ -65,3 +65,9 @@ def test_treatment_upgrade_10_11(upgrader, treatment_10):
     value = upgrader.upgrade('treatment', treatment_10, current_version='10', target_version='11')
     assert value['schema_version'] == '11'
     assert 'lab' not in value
+
+
+def test_treatment_upgrade_11_12(upgrader, treatment_11):
+    value = upgrader.upgrade('treatment', treatment_11, current_version='11', target_version='12')
+    assert 'treatment_type' not in value
+    assert value['purpose'] == 'stimulation'

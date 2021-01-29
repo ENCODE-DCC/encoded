@@ -128,3 +128,14 @@ def treatment_with_duration_amount_units(testapp, organism):
         'amount_units': 'mg'
     }
     return testapp.post_json('/treatment', item).json['@graph'][0]
+
+@pytest.fixture
+def treatment_11(treatment_0_0, lab):
+    item = treatment_0_0.copy()
+    item.update({
+        'schema_version': '11',
+        'treatment_type': 'stimulation',
+        'status': 'in progress',
+        'lab': lab['@id']
+    })
+    return item
