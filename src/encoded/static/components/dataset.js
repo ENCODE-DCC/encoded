@@ -789,7 +789,11 @@ const ProjectComponent = (props, reactContext) => {
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
     // Collect organisms
+<<<<<<< HEAD
     const organisms = (context.organism && context.organism.length > 0) ? _.uniq(context.organism.map((organism) => organism.name)) : [];
+=======
+    const organisms = (context.organism && context.organism.length > 0) ? [...new Set(context.organism.map(organism => organism.name))] : [];
+>>>>>>> address code review
 
     // Set up the breadcrumbs
     const datasetType = context['@type'][1];
@@ -855,14 +859,22 @@ const ProjectComponent = (props, reactContext) => {
                             {context.biosample_ontology && context.biosample_ontology.length > 0 ?
                                 <div data-test="biosampletermname">
                                     <dt>Biosample term name</dt>
+<<<<<<< HEAD
                                     <dd>{_.uniq(context.biosample_ontology.map((b) => b.term_name)).join(', ')}</dd>
+=======
+                                    <dd>{[...new Set(context.biosample_ontology.map(b => b.term_name))]}</dd>
+>>>>>>> address code review
                                 </div>
                             : null}
 
                             {context.biosample_ontology && context.biosample_ontology.length > 0 ?
                                 <div data-test="biosampletype">
                                     <dt>Biosample type</dt>
+<<<<<<< HEAD
                                     <dd>{_.uniq(context.biosample_ontology.map((b) => b.classification)).join(', ')}</dd>
+=======
+                                    <dd>{[...new Set(context.biosample_ontology.map(b => b.classification)).join(', ')]}</dd>
+>>>>>>> address code review
                                 </div>
                             : null}
 
@@ -968,7 +980,11 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
     // Collect organisms
+<<<<<<< HEAD
     const organisms = (context.organism && context.organism.length > 0) ? _.uniq(context.organism.map((organism) => organism.name)) : [];
+=======
+    const organisms = (context.organism && context.organism.length > 0) ? [...new Set(context.organism.map(organism => organism.name))] : [];
+>>>>>>> address code review
 
     // Set up the breadcrumbs
     const datasetType = context['@type'][1];
@@ -1446,29 +1462,26 @@ const replicationTimingSeriesTableColumns = {
     },
 };
 
-// Sort the rows of the matrix by stage (embryo -> postnatal -> adult) and then by age
-// Age can be denoted in days or weeks
+// Compute approximate number of days of mouse age to compare ages of different units ("weeks" or "years")
 // In the future there are likely to be additions to the data which will require updates to this function
 // For instance, ages measured by months will likely be added
+function computeAgeComparator(ageStage) {
+    const age = ageStage.split(/ (.+)/)[1];
+    let ageNumerical = 0;
+    if (age.includes('days')) {
+        ageNumerical += +age.split('days')[0];
+    } else if (age.includes('weeks')) {
+        ageNumerical += +age.split('weeks')[0] * 7;
+    } else if (age.includes(' years')) {
+        ageNumerical += +age.split('years')[0] * 365;
+    }
+    return ageNumerical;
+}
+
+// Sort the rows of the matrix by stage (embryo -> postnatal -> adult) and then by age
 function sortMouseAge(a, b) {
-    const aAge = a.split(/ (.+)/)[1];
-    const bAge = b.split(/ (.+)/)[1];
-    let aNumerical = 0;
-    let bNumerical = 0;
-    if (aAge.includes('days')) {
-        aNumerical += +aAge.split('days')[0];
-    } else if (aAge.includes('weeks')) {
-        aNumerical += +aAge.split('weeks')[0] * 7;
-    } else if (aAge.includes(' years')) {
-        aNumerical += +aAge.split('years')[0] * 365;
-    }
-    if (bAge.includes('days')) {
-        bNumerical += +bAge.split('days')[0];
-    } else if (bAge.includes(' weeks')) {
-        bNumerical += +bAge.split('weeks')[0] * 7;
-    } else if (bAge.includes(' years')) {
-        bNumerical += +bAge.split('years')[0] * 365;
-    }
+    const aNumerical = computeAgeComparator(a);
+    const bNumerical = computeAgeComparator(b);
     return aNumerical - bNumerical;
 }
 
@@ -1512,7 +1525,7 @@ const organismDevelopmentSeriesTableColumns = {
                     ageUnits = [...ageUnits, ...biosamples.map(b => b.age_units)];
                 }
             });
-            const uniqueAgeUnits = _.uniq(ageUnits);
+            const uniqueAgeUnits = [...new Set(ageUnits)];
             const biosampleOneStage = (uniqueAgeUnits.length === 1) && (uniqueAgeUnits[0] === 'year');
             if (biosampleOneStage) {
                 return 'Age';
@@ -1536,14 +1549,14 @@ const organismDevelopmentSeriesTableColumns = {
 =======
                 biosamples.forEach((biosample) => {
                     if (biosample.age_units === 'year') {
-                        lifeStageAge.push(`${biosample.age_display ? biosample.age_display : ''}`);
+                        lifeStageAge.push(biosample.age_display);
                     } else {
-                        lifeStageAge.push(`${biosample.life_stage} ${biosample.age_display ? biosample.age_display : ''}`);
+                        lifeStageAge.push(biosample.life_stage);
                     }
                 });
 >>>>>>> ENCD-5606 update series searches
             }
-            lifeStageAge = _.uniq(lifeStageAge);
+            lifeStageAge = [...new Set(lifeStageAge)];
             return (
                 <span>{lifeStageAge && lifeStageAge.length > 0 ? <span>{lifeStageAge.join(', ')}</span> : 'unknown'}</span>
             );
@@ -1572,29 +1585,25 @@ const organismDevelopmentSeriesTableColumns = {
     },
 };
 
-function sortPostSynch(a, b) {
-    let aPostSynch;
-    let bPostSynch;
-    let bBiosamples;
-    let aBiosamples;
-    let aSynchronizationBiosample;
-    let bSynchronizationBiosample;
+function computeSynchBiosample(experiment) {
+    let postSynch;
+    let biosamples;
+    let synchronizationBiosample;
 
-    if (a.replicates && a.replicates.length > 0) {
-        aBiosamples = a.replicates.map(replicate => replicate.library && replicate.library.biosample);
+    if (experiment.replicates && experiment.replicates.length > 0) {
+        biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
     }
-    if (aBiosamples && aBiosamples.length > 0) {
-        aSynchronizationBiosample = _(aBiosamples).find(biosample => biosample.synchronization);
+    if (biosamples && biosamples.length > 0) {
+        synchronizationBiosample = biosamples.find(biosample => biosample.synchronization);
+        postSynch = synchronizationBiosample.age_display.split(' ')[0];
     }
-    if (b.replicates && b.replicates.length > 0) {
-        bBiosamples = b.replicates.map(replicate => replicate.library && replicate.library.biosample);
-    }
-    if (bBiosamples && bBiosamples.length > 0) {
-        bSynchronizationBiosample = _(bBiosamples).find(biosample => biosample.synchronization);
-    }
-    if (aSynchronizationBiosample && bSynchronizationBiosample) {
-        aPostSynch = aSynchronizationBiosample.age_display.split(' ')[0];
-        bPostSynch = bSynchronizationBiosample.age_display.split(' ')[0];
+    return postSynch;
+}
+
+function sortPostSynch(a, b) {
+    const aPostSynch = computeSynchBiosample(a);
+    const bPostSynch = computeSynchBiosample(b);
+    if (aPostSynch && bPostSynch) {
         return (aPostSynch - bPostSynch);
     }
     return 0;
@@ -1630,11 +1639,15 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
             }
             if (biosamples && biosamples.length > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 lifeStageBiosample = _(biosamples).find((biosample) => biosample.life_stage);
                 return lifeStageBiosample.life_stage;
 =======
                 synchronizationBiosample = _(biosamples).find(biosample => biosample.synchronization);
 >>>>>>> ENCD-5606 update series searches
+=======
+                synchronizationBiosample = biosamples.find(biosample => biosample.synchronization);
+>>>>>>> address code review
             }
             return (
                 <span>{`${synchronizationBiosample.synchronization}`}</span>
@@ -1658,7 +1671,7 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
                 biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
             }
             if (biosamples && biosamples.length > 0) {
-                synchronizationBiosample = _(biosamples).find(biosample => biosample.synchronization);
+                synchronizationBiosample = biosamples.find(biosample => biosample.synchronization);
             }
             return (
                 <span>{`${synchronizationBiosample.age_display}`}</span>
@@ -1729,14 +1742,14 @@ export const SeriesComponent = (props, reactContext) => {
         { id: breakSetName(seriesType), uri: `/series-search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
     ];
 
-    if (seriesType === 'OrganismDevelopmentSeries' && context.organism && context.organism.length > 0) {
-        if ((context.organism[0].scientific_name === 'Caenorhabditis elegans') || (context.organism[0].scientific_name === 'Drosophila melanogaster')) {
-            seriesType = 'OrganismDevelopmentSeriesWormFly';
-        }
+    if (seriesType === 'OrganismDevelopmentSeries' && context.organism && context.organism.length > 0 && ((context.organism[0].scientific_name === 'Caenorhabditis elegans') || (context.organism[0].scientific_name === 'Drosophila melanogaster'))) {
+        seriesType = 'OrganismDevelopmentSeriesWormFly';
     }
 
     let treatmentDuration = [];
+    let combinedTreatmentDuration;
     let treatmentAmounts = [];
+    let combinedTreatmentAmounts;
     context.related_datasets.forEach((d) => {
         let biosamples;
         if (d.replicates && d.replicates.length > 0) {
@@ -1766,7 +1779,11 @@ export const SeriesComponent = (props, reactContext) => {
     // Calculate the biosample summary
     let speciesRender = null;
     if (context.organism && context.organism.length > 0) {
+<<<<<<< HEAD
         const speciesList = _.uniq(context.organism.map((organism) => organism.scientific_name));
+=======
+        const speciesList = [...new Set(context.organism.map(organism => organism.scientific_name))];
+>>>>>>> address code review
         speciesRender = (
             <span>
                 {speciesList.map((species, i) => (
@@ -1778,7 +1795,11 @@ export const SeriesComponent = (props, reactContext) => {
             </span>
         );
     }
+<<<<<<< HEAD
     const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? _.uniq(context.biosample_ontology.map((b) => b.term_name)) : [];
+=======
+    const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? [...new Set(context.biosample_ontology.map(b => b.term_name))] : [];
+>>>>>>> address code review
 
     // Calculate the donor diversity.
     const diversity = donorDiversity(context);
@@ -1802,15 +1823,15 @@ export const SeriesComponent = (props, reactContext) => {
     let targets;
     // Get list of target labels
     if (context.target) {
-        targets = _.uniq(context.target.map(target => target.label));
+        targets = [...new Set(context.target.map(target => target.label))];
     }
     if (treatmentDuration.length > 0) {
-        treatmentDuration = _.uniq(treatmentDuration);
-        treatmentDuration = treatmentDuration.join(', ');
+        treatmentDuration = [...new Set(treatmentDuration)];
+        combinedTreatmentDuration = treatmentDuration.join(', ');
     }
     if (treatmentAmounts.length > 0) {
-        treatmentAmounts = _.uniq(treatmentAmounts);
-        treatmentAmounts = treatmentAmounts.join(', ');
+        treatmentAmounts = [...new Set(treatmentAmounts)];
+        combinedTreatmentAmounts = treatmentAmounts.join(', ');
     }
 
     return (
@@ -1875,10 +1896,10 @@ export const SeriesComponent = (props, reactContext) => {
                                     <dt>Treatment{context.treatment_term_name.length > 0 ? 's' : ''}</dt>
                                     <dd>
                                         {seriesType === 'TreatmentConcentrationSeries' && treatmentDuration ?
-                                            <>{context.treatment_term_name} for {treatmentDuration}</>
+                                            <>{context.treatment_term_name} for {combinedTreatmentDuration}</>
                                         : null}
                                         {seriesType === 'TreatmentTimeSeries' && treatmentAmounts ?
-                                            <>{treatmentAmounts}</>
+                                            <>{combinedTreatmentAmounts}</>
                                         : null}
                                     </dd>
                                 </div>

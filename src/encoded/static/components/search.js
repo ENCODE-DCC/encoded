@@ -312,10 +312,10 @@ const ExperimentComponent = (props, reactContext) => {
         }
     } else {
         if (result.replicates && result.replicates.length > 0) {
-            biosamples = _.compact(result.replicates.map((replicate) => replicate.library && replicate.library.biosample));
+            biosamples = (result.replicates.map((replicate) => replicate.library && replicate.library.biosample)).filter((biosample) => !!biosample);
         }
         // flatten treatment array of arrays
-        _.compact(biosamples.map((biosample) => biosample.treatments)).forEach({treatment} => treatment.forEach((t) => {
+        (biosamples.map((biosample) => biosample.treatments)).filter((treatment) => !!treatment).forEach((treatment) => treatment.forEach((t) => {
             treatments.push(t);
         }));
     }
@@ -623,7 +623,7 @@ const DatasetComponent = (props, reactContext) => {
                                     }
                                     return output;
                                 }, [])];
-                                treatmentUnit = `${biosample.treatments[0].amount_units}s`;
+                                treatmentUnit = biosample.treatments[0].amount_units;
                             }
                             if (biosample.treatments && treatmentTime) {
                                 treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter(t => t.treatment_term_name).map(t => t.treatment_term_name)];
@@ -633,7 +633,7 @@ const DatasetComponent = (props, reactContext) => {
                                     }
                                     return output;
                                 }, [])];
-                                treatmentUnit = `${biosample.treatments[0].duration_units}s`;
+                                treatmentUnit = biosample.treatments[0].duration_units;
                             }
                             if (biosample.organism && biosample.organism.scientific_name) {
                                 organisms.push(biosample.organism.scientific_name);
