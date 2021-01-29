@@ -1,0 +1,58 @@
+{
+    "title": "ChIA-PET chromatin interactions quality metric",
+    "description": "Schema for reporting ChIA-PET chromatin interactions quality metric",
+    "id": "/profiles/chia_pet_chr_interactions_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run", "award", "lab", "quality_metric_of"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "intra_inter_pet_ratio": {
+            "title": "Ratio of intra/inter-chr PET",
+            "description": "Ratio of intrachromsomal PET to interchromosomal PET",
+            "type":  "number",
+            "minimum": 0
+        },
+        "intra_inter_clust_pet2_ratio": {
+            "title": "Ratio of intra/inter-chr PET clusters (>=2)",
+            "description": "Ratio of intrachromosomal PET clusters to interchromosomal PET clusters with PET >=2",
+            "type":  "number",
+            "minimum": 0
+        },
+        "intra_inter_clust_pet5_ratio": {
+            "title": "Ratio of intra/inter-chr PET clusters (>=5)",
+            "description": "Ratio of intrachromosomal PET clusters to interchromosomal PET clusters with PET >=5",
+            "type":  "number",
+            "minimum": 0
+        },
+        "intra_inter_clust_pet10_ratio": {
+            "title": "Ratio of intra/inter-chr PET clusters (>=10)",
+            "description": "Ratio of intrachromosomal PET clusters to interchromosomal PET clusters with PET >=10",
+            "type":  "number",
+            "minimum": 0
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/chia_pet_chr_interactions_quality_metric.md"
+}
