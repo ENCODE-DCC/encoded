@@ -1229,6 +1229,7 @@ function qcAbbr(qc) {
         GembsAlignmentQualityMetric: 'AL',
         DnaseFootprintingQualityMetric: 'DF',
         ChiaPetAlignmentQualityMetric: 'AL',
+        ChiaPetChrInteractionsQualityMetric: 'CI',
         ChiaPetPeakEnrichmentQualityMetric: 'PE',
     };
 

@@ -38,22 +38,23 @@
             "maximum": 1
         },
         "pet": {
-            "title": "Number of paired-end tags (PETs)",
+            "title": "Number of PET",
             "type":  "integer",
             "minimum": 0
         },
         "um_pet": {
-            "title": "Number of uniquely mapped paired-end tags (PETs)",
+            "title": "Number of uniquely mapped PET",
             "type":  "integer",
             "minimum": 0
         },
         "nr_pet": {
-            "title": "Number of non-redundant paired-end tags (PETs)",
+            "title": "Number of non-redundant PET",
             "type":  "integer",
             "minimum": 0
         },
         "pet_red": {
-            "title": "Paired-end tags redundancy",
+            "title": "PET redundancy",
+            "description": "Ratio of redundant PET to uniquely mapped PET",
             "type":  "number",
             "minimum": 0,
             "maximum": 1
