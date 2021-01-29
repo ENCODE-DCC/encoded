@@ -163,41 +163,18 @@ export class FileTable extends React.Component {
                 if (file.output_category === 'reference') {
                     return 'ref';
                 }
+                if (context.analysis_objects) {
+                    const analysisObjectFiles = context.analysis_objects.map(f => f.files);
+                    const analysisFiles = analysisObjectFiles.reduce((arr, val) => arr.concat(val), []);
 
-                // const files = context.analysis_objects
-                //     .reduce((arr, val) => arr.concat(val.files), [])
-                //     .map(f => f.replace('/files/', '').replace('/', ''));
-
-                const analysisObjectFiles = context.analysis_objects
-                    .map((analysisObject) => {
-                        const id = analysisObject.accession;
-                        const analysisFiles = analysisObject.files.map(b => b.replace('/files/', '').replace('/', ''));
-                        const obj = {};
-                        obj[id] = analysisFiles;
-                        return obj;
-                    });
-
-                const analysisAccession = context.analysis_objects.map(a => a.accession);
-
-                let isAnalysis = false;
-                let val = '';
-
-                analysisAccession.every((accession) => {
-                    const analysisFiles = analysisObjectFiles[accession];
-
-                    if (analysisFiles(file.accession)) {
-                        val = accession;
-                        isAnalysis = true;
-                        return false; // break out of every-loop
+                    if (analysisFiles.includes(file['@id'])) {
+                        return file.accession;
                     }
-                    return true;
-                });
-
-                if (isAnalysis) {
-                    return `analysisObject_${val}`;
                 }
 
-                return 'proc';
+                return 'other procs';
+
+                //  return 'proc';
             });
 
             // showReplicateNumber matches with show-functionality. It has to
@@ -265,6 +242,66 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
+
+                        /////////
+                        <SortTable
+                            title={
+                                <CollapsingTitle
+                                    title="Other Processed data"
+                                    collapsed={this.state.collapsed.proc}
+                                    handleCollapse={this.handleCollapseProc}
+                                />
+                            }
+                            rowClasses={this.rowClasses}
+                            collapsed={this.state.collapsed.proc}
+                            list={files['other procs']}
+                            columns={FileTable.procTableColumns}
+                            sortColumn={showReplicateNumber ? 'biological_replicates' : 'date_created'}
+                            meta={{
+                                encodevers,
+                                replicationType: context.replication_type,
+                                hoverDL: this.hoverDL,
+                                restrictedTip: this.state.restrictedTip,
+                                fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
+                                graphedFiles,
+                                browserOptions,
+                                loggedIn,
+                                isAuthorized,
+                                adminUser,
+                            }}
+                        />
+
+                        {Object.keys(files).filter(file => file.includes('ENCF')).map(key =>
+                            <SortTable
+                                title={
+                                    <CollapsingTitle
+                                        title={`${key} Other Processed data`}
+                                        collapsed={this.state.collapsed.proc}
+                                        handleCollapse={this.handleCollapseProc}
+                                    />
+                                }
+                                rowClasses={this.rowClasses}
+                                collapsed={this.state.collapsed.proc}
+                                list={files[key]}
+                                columns={FileTable.procTableColumns}
+                                sortColumn={showReplicateNumber ? 'biological_replicates' : 'date_created'}
+                                meta={{
+                                    encodevers,
+                                    replicationType: context.replication_type,
+                                    hoverDL: this.hoverDL,
+                                    restrictedTip: this.state.restrictedTip,
+                                    fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
+                                    graphedFiles,
+                                    browserOptions,
+                                    loggedIn,
+                                    isAuthorized,
+                                    adminUser,
+                                }}
+                            />
+                        )}
+
+                        /////////
+
                         <SortTable
                             title={
                                 <CollapsingTitle
@@ -2316,16 +2353,19 @@ const TabPanelFacets = (props) => {
         replicate = createFacetObject('biological_replicates', fileList, filters);
     }
 
+    const selector = currentTab === 'tables'
+        ? ''
+        : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0
+            ? <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} />
+            :
+            <React.Fragment>
+                <h4>Choose an assembly </h4>
+                <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
+            </React.Fragment>;
+
     return (
         <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
-            {(currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0 ?
-                <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} />
-            :
-                <React.Fragment>
-                    <h4>Choose an assembly </h4>
-                    <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
-                </React.Fragment>
-            }
+            {selector}
             <h4>Filter files </h4>
             <button className="show-hide-facets" onClick={toggleFacets}>
                 <i className={`${open ? 'icon icon-chevron-left' : 'icon icon-chevron-right'}`} />
