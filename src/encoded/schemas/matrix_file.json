@@ -151,7 +151,7 @@
                 "title": "Layer",
                 "description": "",
                 "type": "object",
-                "required": ["label", "normalized", "value_scale", "value_units"],
+                "required": ["normalized", "value_scale", "value_units"],
                 "properties": {
                     "label": {
                         "title": "Label",
@@ -171,6 +171,7 @@
                             "properties": {
                                 "feature_type": {
                                     "title": "Feature type",
+                                    "comment":  "Do not submit. This will be filled in during checkfiles validation.",
                                     "type": "string",
                                     "enum": [
                                         "gene",
@@ -181,6 +182,7 @@
                                 },
                                 "feature_count": {
                                     "title": "Feature count",
+                                    "comment":  "Do not submit. This will be filled in during checkfiles validation.",
                                     "description": "",
                                     "type": "integer"
                                 }
