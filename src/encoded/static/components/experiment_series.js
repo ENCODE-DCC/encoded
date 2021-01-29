@@ -566,7 +566,17 @@ class ExperimentSeriesComponent extends React.Component {
                     )
                 );
                 if (bioRepNums.length === 0) {
-                    bioRepNums = [''];
+                    // Could just be no desired analysis.
+                    // Try to get from Experiment.replicates so that other info like antibody status can be shown.
+                    bioRepNums = _.uniq(
+                        viewableDatasets[datasetAtId].replicates.map(
+                            rep => rep.biological_replicate_number
+                        )
+                    );
+                    // Default to one row if failed.
+                    if (bioRepNums.length === 0) {
+                        bioRepNums = [''];
+                    }
                 }
                 // Extract experiment metadata
                 const rowCount = bioRepNums.length;
