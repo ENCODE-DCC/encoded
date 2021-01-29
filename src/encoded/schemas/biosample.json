@@ -980,6 +980,9 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
+        "parent_of": {
+            "title": "Child biosamples"
+        },
         "applied_modifications.modified_site_by_target_id.name": {
             "title": "Modification site"
         },
