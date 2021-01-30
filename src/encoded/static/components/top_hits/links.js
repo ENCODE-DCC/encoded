@@ -17,7 +17,7 @@ export const LinkWithHover = (props) => {
             onMouseLeave={() => setIsHovered(false)}
         >
             <a href={props.href}>
-                {isHovered ? props.defaultValue : props.hoverValue || props.defaultValue}
+                {isHovered ? props.hoverValue || props.defaultValue : props.defaultValue}
             </a>
         </button>
     );
