@@ -88,7 +88,7 @@ As an example, the `<FileComponent>` component in [file.js](../src/encoded/stati
 
 ## View Registry
 
-Each type of _encoded_ object generally gets rendered by its own React component. Experiment objects, for example, get rendered by the `<Experiment>` component in [experiment.js](../src/encoded/static/components/experiment.js). Yet you’ll find no giant `switch` statement farming out the different object types to different React components. Instead, this gets handled in two lines in  the `<App>` component in [app.js](../src/encoded/static/components/app.js):
+Each type of _encoded_ object generally gets rendered by its own React component. Experiment objects, for example, get rendered by the `<Experiment>` component in [experiment.js](../src/encoded/static/components/experiment.js). Yet you’ll find no giant `switch` statement farming out the different object types to different React components. Instead, this gets handled in two lines in the `<App>` component in [app.js](../src/encoded/static/components/app.js):
 
     const ContentView = globals.content_views.lookup(context, currentAction);
     content = <ContentView context={context} />;
@@ -185,27 +185,27 @@ The part within the callback would execute once the GET request had returned, wi
 You’ll see some uses of these request functions that _do_ fit into a “get data, render data” model. Earlier versions of _encoded_ had a strict limit on the length of a URL. In cases where our search URI could have a long length, you had to use these request functions because if a URI’s length reached a certain maximum, these functions would break the request into _multiple_ GET requests so that each URI fit into the maximum. Once all the GET requests returned, these functions put the results together and returned them to the caller. Now that _encoded_ accepts arbitrarily long URIs, these cases could be replaced with `<FetchedData>`.
 
 ## ESLint
-ENCODE uses [ESLint](https://eslint.org/) to automate enforcement of Javascript code quality and standards. It is also a tool that helps developers learn good Javascript practices. ESLint inspects all Javascript code in:
+ENCODE uses [ESLint](https://eslint.org/) to automate enforcement of Javascript code quality and standards. It is also a tool that help developers learn good Javascript practices. ESLint inspects all Javascript code in:
 
 `src/encoded/static/components/`
 
-ENCODE implementation of [ESLint](https://eslint.org/) uses [AirBnB](https://github.com/airbnb/javascript) coding style; although some exceptions are made to the rules. The rules can be found by at [https://github.com/ENCODE-DCC/encoded/blob/dev/.eslintrc.js](https://github.com/ENCODE-DCC/encoded/blob/dev/.eslintrc.js),  under the "Rules" section. The rules should not be disabled (via eslint.js or in a code file) without first consulting other front-end developers. There is rarely ever a need to disable a rule for a ticket and almost always there are legitimate workarounds.
+ENCODE implementation of [ESLint](https://eslint.org/) uses [AirBnB](https://github.com/airbnb/javascript) coding style; although some exceptions are made to the rules. The rules can be found by at [https://github.com/ENCODE-DCC/encoded/blob/dev/.eslintrc.js](https://github.com/ENCODE-DCC/encoded/blob/dev/.eslintrc.js), under the "Rules" section. The rules should not be disabled (via eslint.js or in a code file) without first consulting other front-end developers. There is rarely ever a need to disable a rule for a ticket and almost always there are legitimate workarounds.
 
-It is important to make sure new Javascript code satisifies [ESLint](https://eslint.org/) rules, otherwise, the CircleCI under  (ci/circleci: eslint) check will fail the build.
+It is important to make sure new Javascript code satisifies [ESLint](https://eslint.org/) rules, otherwise, CircleCI under **ci/circleci: eslint** check will fail the build.
 
-You can check for and correct [ESLint](https://eslint.org/) violations either through the command line or with a plugin to a text editor. Either way suffices as long  as violations are corrected.
+You can check for and correct [ESLint](https://eslint.org/) violations either through the command line or with a plugin to a code editor. Either way suffices as long as violations are corrected.
 
 ### Command line
 
-#### Determining [ESLint](https://eslint.org/)  Violations
+#### Determining [ESLint](https://eslint.org/) Violations
 
-The  format for checking for [ESLint](https://eslint.org/) violations is:
+The format for checking for [ESLint](https://eslint.org/) violations is:
 `./node_modules/eslint/bin/eslint.js <file or folder path>`
 
-for example, to get all rule violations in a folder, you can run:
+For example, to get all rule violations in a folder you can run:
 `./node_modules/eslint/bin/eslint.js src/encoded/static/components/`
 
-You can also check just one file (e.g datacolor.js) by  running:
+You can also check just one file (e.g datacolor.js) by running:
 `./node_modules/eslint/bin/eslint.js src/encoded/static/components/datacolors.js`
 
 #### Correcting [ESLint](https://eslint.org/) Violations
@@ -213,46 +213,46 @@ You can also check just one file (e.g datacolor.js) by  running:
 The format for correcting [ESLint](https://eslint.org/) violations is:
 `./node_modules/eslint/bin/eslint.js <file or folder path> --fix`
 
-For example, you fix all rule violations in a folder, by running:
+For example, you fix all rule violations in a folder by running:
 `./node_modules/eslint/bin/eslint.js src/encoded/static/components/ --fix`
 
-You can also fix violation for just one file (e.g datacolor.js) by  running:
+You can also fix violation for just one file (e.g datacolor.js) by running:
 `./node_modules/eslint/bin/eslint.js src/encoded/static/components/datacolors.js -- fix`
 
 Numerous other options can be found at [ESLint Command line interface Documention page](https://eslint.org/docs/user-guide/command-line-interface)
 
-There are many [YouTube](https://www.youtube.com/results?search_query=eslint+command+line) videos on this  topic. Here is one [discussing command line](https://www.youtube.com/watch?v=txJEn1Fn0Gg).
+There are many [YouTube](https://www.youtube.com/results?search_query=eslint+command+line) videos on this topic. Here is one [discussing command line](https://www.youtube.com/watch?v=txJEn1Fn0Gg).
 
 ### Editor Plugin
 
-Widely used code text editors generally have extensions that allows you to visually detect [ESLint](https://eslint.org/) violations by seeing a squiggly under the code in question. They also display  information on what rule was violated by mousing over the squiggly and sometimes automated correction by right clicking and selecting an appropiate option.
+Popular code editors display information pertaining to [ESLint](https://eslint.org/) violated rules on hover as well as automated corrections, which can be selected and applied by clicking on fix (wording may vary depending on editor).
 
-Here is collection of many extensions for [popular text editors](https://eslint.org/docs/user-guide/integrations)
+Here is a collection of extensions for [popular code editors](https://eslint.org/docs/user-guide/integrations)
 
-Here is a quick tutorial on using [ESLint](https://eslint.org/) with  a text editor on [YouTube](https://www.youtube.com/watch?v=qYOw2z6Og8I). You  can  other find other videos on [YouTube](https://www.youtube.com/results?search_query=eslint+extension+)
+Here is a quick tutorial on using [ESLint](https://eslint.org/) with a code editor on [YouTube](https://www.youtube.com/watch?v=qYOw2z6Og8I). You can other find other videos on [YouTube](https://www.youtube.com/results?search_query=eslint+extension+)
 
 ## StyleLint
-ENCODE uses [StyleLint](https://stylelint.io/) to automate enforcement of proper style sheets- CSS/SCSS (henceforth called  just CSS) format and structure. It is also a good tool that helps designers learn good CSS practices. StyleLint inspects all style sheets in:
+ENCODE uses [StyleLint](https://stylelint.io/) to automate enforcement of proper style sheets- CSS/SCSS (henceforth called just CSS) format and structure. It is also a good tool that helps designers learn good CSS practices. StyleLint inspects all style sheets in:
 
 `src/encoded/static/scss/`
 
-ENCODE implementation of [StyleLint](https://stylelint.io/)  uses [Stylelint Config Standard](https://github.com/stylelint/stylelint-config-standard) rules collection; although some exceptions are made to the rules. The rules can  be found by examining [https://github.com/ENCODE-DCC/encoded/blob/dev/.stylelint.json](https://github.com/ENCODE-DCC/encoded/blob/dev/.stylelint.json),  under the "Rules" section. The rules should not be disabled without consulting other front-end developers. There is rarely ever a need to disable any rule and almost always there are legitimate workarounds. The current disabled rules are [design debt](https://en.wikipedia.org/wiki/Technical_debt).
+ENCODE implementation of [StyleLint](https://stylelint.io/) uses [Stylelint Config Standard](https://github.com/stylelint/stylelint-config-standard) rules collection; although some exceptions are made to the rules. The rules can be found by examining [https://github.com/ENCODE-DCC/encoded/blob/dev/.stylelint.json](https://github.com/ENCODE-DCC/encoded/blob/dev/.stylelint.json), under the "Rules" section. The rules should not be disabled without consulting other front-end developers. There is rarely ever a need to disable any rule and almost always there are legitimate workarounds. The current disabled rules are [design debt](https://en.wikipedia.org/wiki/Technical_debt).
 
-It is important to make sure new style sheets  satisifies [StyleLint](https://stylelint.io/) rules, otherwise, the CircleCI under  (ci/circleci: stylelint) check will fail the build.
+It is important to make sure new style sheets satisify [StyleLint](https://stylelint.io/) rules, otherwise, the CircleCI under (ci/circleci: stylelint) check will fail the build.
 
-You can check for and correct [StyleLint](https://stylelint.io/) violations either through the command line or with a plugin to a text editor. Either way suffices as long  as violations are corrected.
+You can check for and correct [StyleLint](https://stylelint.io/) violations either through the command line or with a plugin to a code editor. Either way suffices as long as violations are corrected.
 
 ### Command line
 
-#### Determining [StyleLint](https://stylelint.io/)  Violations
+#### Determining [StyleLint](https://stylelint.io/) Violations
 
-The  format for checking for [StyleLint](https://stylelint.io/) violations is:
+The format for checking for [StyleLint](https://stylelint.io/) violations is:
 `./node_modules/stylelint/bin/stylelint.js <file or folder path>`
 
-For example, to find all rule violations in a folder, you can run:
+For example, to find all rule violations in a folder you can run:
 `./node_modules/stylelint/bin/stylelint.js src/encoded/static/scss/`
 
-You can also check just one file (e.g datacolor.js) by  running:
+You can also check just one file (e.g datacolor.js) by running:
 `./node_modules/stylelint/bin/eslint.js src/encoded/static/scss/style.scss`
 
 #### Correcting [StyleLint](https://stylelint.io/) Violations
@@ -260,19 +260,19 @@ You can also check just one file (e.g datacolor.js) by  running:
 The format for correcting the [StyleLint](https://stylelint.io/) violations is:
 `./node_modules/stylelint/bin/stylelint.js <file or folder path> --fix`
 
-For example, you fix all rule violations in a folder, by running:
+For example, you fix all rule violations in a folder by running:
 `./node_modules/stylelint/bin/stylelint.js src/encoded/static/scss/ --fix`
 
-You can also fix violation for just one file (e.g style.css) by  running:
+You can also fix violation for just one file (e.g style.css) by running:
 `./node_modules/stylelint/bin/stylelint.js src/encoded/static/components/style.scss -- fix`
 
 Numerous other options can be found at [StyleLint Command line interface Documention page](https://stylelint.io/user-guide/usage/cli)
 
-You can search on [YouTube](https://www.youtube.com/results?search_query=stylelint+) to see if there are any videos that illustrate using the command line with  [StyleLint](https://stylelint.io/).  In general, the idea is similar to  the [ESLint](https://eslint.org/).
+You can search on [YouTube](https://www.youtube.com/results?search_query=stylelint+) to see if there are any videos that illustrate using the command line with [StyleLint](https://stylelint.io/). In general, the idea is similar to the [ESLint](https://eslint.org/).
 #### Editor Extension
 
-Widely used code text editors generally have extensions that allows you to visually detect [StyleLint Command line interface Documention page](https://stylelint.io/user-guide/usage/cli) violations by seeing a squiggly under the code in question. They also display information on what rule was violated by mousing over the squiggly and sometimes automated correction by right clicking and selecting an appropiate option.
+Popular code Editors display information pertaining to [StyleLint Command line interface Documention page](https://stylelint.io/user-guide/usage/cli) violated rule on hover as well as automated corrections, which can be selected and applied by clicking on fix (wording may vary depending on editor).
 
-Here is collection of many extenstions for [popular text editors](https://stylelint.io/user-guide/integrations/editor)
+Here is a collection of extenstions for [popular code editors](https://stylelint.io/user-guide/integrations/editor)
 
-You can search on [YouTube](https://www.youtube.com/results?search_query=stylelint+) to see if there are any vidoes that illustrate using text editor extension with  [StyleLint](https://stylelint.io/). In general, the idea is similar to  the [ESLint](https://eslint.org/).
+You can search on [YouTube](https://www.youtube.com/results?search_query=stylelint+) to see if there are any vidoes that illustrate using code editor extension with [StyleLint](https://stylelint.io/). In general, the idea is similar to the [ESLint](https://eslint.org/).
