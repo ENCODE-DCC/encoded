@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import dayjs from 'dayjs';
@@ -17,6 +17,8 @@ import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
+import { BatchDownloadModal } from './view_controls';
+import { encodedURIComponent } from '../libs/query_encoding';
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
 dayjs.extend(utc);
@@ -46,17 +48,29 @@ export class FileTable extends React.Component {
         return '';
     }
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
-        // Initialize component state.
-        this.state = {
-            collapsed: { // Keeps track of which tables are collapsed
+        const objectAnalysis = {};
+        (props.context.analysis_objects || []).map(m => m.accession)
+            .forEach((a) => {
+                objectAnalysis[a] = false;
+            });
+
+        const collapsed = Object.assign({}
+            , { // Keeps track of which tables are collapsed
                 raw: false,
                 rawArray: false,
                 proc: false,
                 ref: false,
-            },
+                other: false,
+            }
+            , objectAnalysis
+        );
+
+        // Initialize component state.
+        this.state = {
+            collapsed,
         };
 
         // Initialize non-state component variables.
@@ -148,6 +162,12 @@ export class FileTable extends React.Component {
                 return true;
             });
             const filteredCount = datasetFiles.length;
+            const analysisObjectsFiles = context.analysis_objects
+                ? context.analysis_objects.map(analysisObject => ({
+                    accession: analysisObject.accession,
+                    files: analysisObject.files,
+                }))
+                : null;
 
             // Extract four kinds of file arrays
             const files = _(datasetFiles).groupBy((file) => {
@@ -163,18 +183,18 @@ export class FileTable extends React.Component {
                 if (file.output_category === 'reference') {
                     return 'ref';
                 }
-                if (context.analysis_objects) {
-                    const analysisObjectFiles = context.analysis_objects.map(f => f.files);
-                    const analysisFiles = analysisObjectFiles.reduce((arr, val) => arr.concat(val), []);
 
-                    if (analysisFiles.includes(file['@id'])) {
-                        return file.accession;
+                let analysisObjectsAccession = null;
+
+                (analysisObjectsFiles || []).some((analysisObjectsFile) => {
+                    if (analysisObjectsFile.files.includes(file['@id'])) {
+                        analysisObjectsAccession = analysisObjectsFile.accession;
+                        return true; // break out
                     }
-                }
+                    return false;
+                });
 
-                return 'other procs';
-
-                //  return 'proc';
+                return analysisObjectsAccession || 'other';
             });
 
             // showReplicateNumber matches with show-functionality. It has to
@@ -182,6 +202,9 @@ export class FileTable extends React.Component {
             // TODO: (1)Move .hide to FileTable.procTableColumns declaration
             // (2) move showReplicateNumber to meta
             FileTable.procTableColumns.biological_replicates.hide = () => !showReplicateNumber;
+
+            const analysisObjectKeys = Object.keys(files).filter(file => file.includes('ENC'));
+            const otherKeys = Object.keys(files).filter(file => file === 'Other');
 
             return (
                 <div>
@@ -191,6 +214,8 @@ export class FileTable extends React.Component {
                             files={files.raw}
                             indexFiles={files.index}
                             showReplicateNumber={showReplicateNumber}
+                            context={context}
+                            navigate={this.context.navigate}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -205,6 +230,8 @@ export class FileTable extends React.Component {
                         <RawFileTable
                             files={files.rawArray}
                             showReplicateNumber={showReplicateNumber}
+                            context={context}
+                            navigate={this.context.navigate}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -222,6 +249,8 @@ export class FileTable extends React.Component {
                                     title="Processed data"
                                     collapsed={this.state.collapsed.proc}
                                     handleCollapse={this.handleCollapseProc}
+                                    context={context}
+                                    navigate={this.context.navigate}
                                 />
                             }
                             rowClasses={this.rowClasses}
@@ -242,19 +271,19 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
-
-                        /////////
                         <SortTable
                             title={
                                 <CollapsingTitle
                                     title="Other Processed data"
                                     collapsed={this.state.collapsed.proc}
                                     handleCollapse={this.handleCollapseProc}
+                                    context={context}
+                                    navigate={this.context.navigate}
                                 />
                             }
                             rowClasses={this.rowClasses}
                             collapsed={this.state.collapsed.proc}
-                            list={files['other procs']}
+                            list={files.Other}
                             columns={FileTable.procTableColumns}
                             sortColumn={showReplicateNumber ? 'biological_replicates' : 'date_created'}
                             meta={{
@@ -270,18 +299,19 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
-
-                        {Object.keys(files).filter(file => file.includes('ENCF')).map(key =>
-                            <SortTable
+                        {[analysisObjectKeys, otherKeys].map(keys =>
+                            keys.map(key => <SortTable
                                 title={
                                     <CollapsingTitle
-                                        title={`${key} Other Processed data`}
-                                        collapsed={this.state.collapsed.proc}
-                                        handleCollapse={this.handleCollapseProc}
+                                        title={`${key} Processed data`}
+                                        collapsed={this.state.collapsed[key]}
+                                        handleCollapse={() => this.handleCollapse(key)}
+                                        context={context}
+                                        navigate={this.context.navigate}
                                     />
                                 }
                                 rowClasses={this.rowClasses}
-                                collapsed={this.state.collapsed.proc}
+                                collapsed={this.state.collapsed[key]}
                                 list={files[key]}
                                 columns={FileTable.procTableColumns}
                                 sortColumn={showReplicateNumber ? 'biological_replicates' : 'date_created'}
@@ -297,17 +327,16 @@ export class FileTable extends React.Component {
                                     isAuthorized,
                                     adminUser,
                                 }}
-                            />
+                            />)
                         )}
-
-                        /////////
-
                         <SortTable
                             title={
                                 <CollapsingTitle
                                     title="Reference data"
                                     collapsed={this.state.collapsed.ref}
                                     handleCollapse={this.handleCollapseRef}
+                                    context={context}
+                                    navigate={this.context.navigate}
                                 />
                             }
                             collapsed={this.state.collapsed.ref}
@@ -393,6 +422,7 @@ FileTable.defaultProps = {
 FileTable.contextTypes = {
     session: PropTypes.object,
     session_properties: PropTypes.object,
+    navigate: PropTypes.func,
 };
 
 
@@ -584,7 +614,7 @@ class RawSequencingTable extends React.Component {
     }
 
     render() {
-        const { files, indexFiles, meta, showReplicateNumber } = this.props;
+        const { files, indexFiles, meta, showReplicateNumber, context } = this.props;
         const { loggedIn, adminUser, isAuthorized } = meta;
 
         if (files && files.length > 0) {
@@ -703,7 +733,13 @@ class RawSequencingTable extends React.Component {
                     <thead>
                         <tr className="table-section">
                             <th colSpan="12">
-                                <CollapsingTitle title="Raw sequencing data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
+                                <CollapsingTitle
+                                    title="Raw sequencing data"
+                                    collapsed={this.state.collapsed}
+                                    handleCollapse={this.handleCollapse}
+                                    context={context}
+                                    navigate={this.context.navigate}
+                                />
                             </th>
                         </tr>
 
@@ -842,6 +878,7 @@ class RawSequencingTable extends React.Component {
 }
 
 RawSequencingTable.propTypes = {
+    context: PropTypes.object.isRequired,
     files: PropTypes.array, // Raw files to display
     indexFiles: PropTypes.array, // Index reads files that refer to actual files in `files`
     meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
@@ -854,7 +891,9 @@ RawSequencingTable.defaultProps = {
     showReplicateNumber: true,
 };
 
-
+RawSequencingTable.contextTypes = {
+    navigate: PropTypes.func,
+};
 class RawFileTable extends React.Component {
     constructor() {
         super();
@@ -874,7 +913,7 @@ class RawFileTable extends React.Component {
     }
 
     render() {
-        const { files, meta, showReplicateNumber } = this.props;
+        const { files, meta, showReplicateNumber, context } = this.props;
         const { loggedIn, adminUser, isAuthorized } = meta;
 
         if (files && files.length > 0) {
@@ -904,7 +943,13 @@ class RawFileTable extends React.Component {
                     <thead>
                         <tr className="table-section">
                             <th colSpan="11">
-                                <CollapsingTitle title="Raw data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
+                                <CollapsingTitle
+                                    title="Raw data"
+                                    collapsed={this.state.collapsed}
+                                    handleCollapse={this.handleCollapse}
+                                    context={context}
+                                    navigate={this.context.navigate}
+                                />
                             </th>
                         </tr>
 
@@ -1032,6 +1077,9 @@ RawFileTable.defaultProps = {
     showReplicateNumber: true,
 };
 
+RawFileTable.contextTypes = {
+    navigate: PropTypes.func,
+};
 
 // Called once searches for unreleased files returns results in props.items. Displays both released and
 // unreleased files.
@@ -2205,7 +2253,8 @@ export const compileAnalyses = (experiment, files) => {
                 if (analysis.pipeline_labs[0] !== UNIFORM_PIPELINE_LAB) {
                     return 'Lab custom';
                 }
-                return `${analysis.pipeline_award_rfas[0]} uniform`;
+                const pipelineInfo = analysis.pipeline_version ? `version ${analysis.pipeline_version}` : '1.0.0';
+                return `${analysis.pipeline_award_rfas[0]} ${pipelineInfo}`;
             });
 
             // Fill in the compiled object with the labs that group the files.
@@ -2220,11 +2269,14 @@ export const compileAnalyses = (experiment, files) => {
                     // annotation and add each to the compiled list. Filter out any not included in
                     // the experiment's files.
                     const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analysis) => accFiles.concat(analysis.files), []).filter(file => fileIds.includes(file)));
+                    const status = analysesByAssembly[assembly][0].status;
+
                     if (assemblyFiles.length > 0) {
                         compiledAnalyses.push({
                             title: `${pipelineLab} ${assembly}`,
                             pipelineLab,
                             assembly,
+                            status,
                             assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assembly, analysesByAssembly[assembly][0].genome_annotation),
                             files: _.uniq(assemblyFiles),
                         });
@@ -2304,9 +2356,15 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
             <div className="analyses-selector analyses-selector--file-gallery-facets">
                 <h4>Choose analysis</h4>
                 <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection}>
-                    {analyses.map((analysis, index) => (
-                        <option key={analysis.title} value={index}>{analysis.title}</option>
-                    ))}
+                    {analyses.map((analysis, index) => {
+                        const text = `${analysis.title} ${analysis.status === 'released' ? '✅' : '⬜'}`;
+
+                        return (
+                            <option key={analysis.title} value={index}>
+                                {text}
+                            </option>
+                        );
+                    })}
                 </select>
             </div>
         : null
@@ -3168,23 +3226,62 @@ const FileGalleryRenderer = auditDecor(FileGalleryRendererComponent);
 
 
 const CollapsingTitle = (props) => {
-    const { title, handleCollapse, collapsed } = props;
+    const { title, handleCollapse, collapsed, context, filters, navigate } = props;
+
+    const [downloadModalVisibility, setDownloadModalVisibility] = useState(false);
+
+    const handleDownloadClick = () => {
+        const { accession } = context;
+        const type = context && context['@type'] ? context['@type'][0] : 'Experiment';
+
+        const fileTypes = filters.file_type && filters.file_type.length > 0 ?
+        filters.file_type.map(fileType => `&files.file_type=${encodedURIComponent(fileType)}`).join('') :
+        '';
+        const biologicalReplicates = filters.biological_replicates && filters.biological_replicates.length > 0 ?
+            filters.biological_replicates.map(replicate => `&files.biological_replicates=${encodedURIComponent(replicate)}`).join('') :
+            '';
+        const outputTypes = filters.output_type && filters.output_type.length > 0 ?
+            filters.output_type.map(outputType => `&files.output_type=${encodedURIComponent(outputType)}`).join('') :
+            '';
+        const fileStatus = document.querySelector('[name="filterIncArchive"]').checked ?
+            '' :
+            '&files.status=released';
+
+        navigate(`/batch_download/?type=${type}&accession=${accession}${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
+        setDownloadModalVisibility(false);
+    };
+
     return (
         <div className="collapsing-title">
+            {downloadModalVisibility
+                ? <BatchDownloadModal
+                    closeModalHandler={() => setDownloadModalVisibility(false)}
+                    downloadClickHandler={handleDownloadClick}
+                />
+                :
+                null}
             <button className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
-            <h4>{title}</h4>
+            <h4>
+                {title}
+                <button onClick={() => setDownloadModalVisibility(true)}>Download</button>
+            </h4>
         </div>
     );
 };
 
 CollapsingTitle.propTypes = {
+    context: PropTypes.object.isRequired, // context
     title: PropTypes.string.isRequired, // Title to display in the title bar
     handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
     collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
+    filters: PropTypes.object, // filters
+    navigate: PropTypes.func,
 };
 
 CollapsingTitle.defaultProps = {
     collapsed: false,
+    filters: [],
+    navigate: () => {},
 };
 
 
