@@ -54,7 +54,7 @@ commands:
       - run:
           name: Run buildout
           command: |
-            sudo pip3 install --upgrade pip setuptools
+            sudo pip3 install --upgrade pip setuptools==51.3.3
             sudo pip3 install zc.buildout redis
             buildout bootstrap
             bin/buildout

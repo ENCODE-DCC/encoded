@@ -1115,6 +1115,18 @@ $file-type-colors: (
             margin: -5px -5px -5px 0;
         }
     }
+
+    @at-root #{&}__header-controls {
+        display: flex;
+
+        .cart-add-all {
+            margin: -5px 5px -5px 0;
+        }
+
+        > a.btn[href^="http"]:after {
+            content: "";
+        }
+    }
 }
 
 
