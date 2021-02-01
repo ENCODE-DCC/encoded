@@ -102,7 +102,7 @@ const flattenChildren = (tree) => {
         }
 
         // Tip of a branch.
-        return accBiosample.concat(biosample);
+        return accBiosample;
     }, []);
     return childBiosamples;
 };
