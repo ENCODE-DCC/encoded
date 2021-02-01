@@ -103,5 +103,5 @@ def treatment_10_11(value, system):
 def treatment_11_12(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5686
     if value.get('treatment_type') == 'stimulation':
-        value.pop('treatment_type', None)
+        value['treatment_type'] = 'chemical'
         value['purpose'] = 'stimulation'
