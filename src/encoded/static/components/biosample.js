@@ -98,11 +98,11 @@ const flattenChildren = (tree) => {
     const childBiosamples = tree.children.reduce((accBiosample, biosample) => {
         const childTree = tree.hierarchy[biosample['@id']];
         if (Object.keys(childTree).length > 0) {
-            return accBiosample.concat(flattenChildren(tree.hierarchy[biosample['@id']]));
+            return accBiosample.concat(flattenChildren(childTree));
         }
 
         // Tip of a branch.
-        return [];
+        return accBiosample.concat(biosample);
     }, []);
     return tree.children.concat(childBiosamples);
 };
