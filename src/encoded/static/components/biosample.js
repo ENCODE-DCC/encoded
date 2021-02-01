@@ -17,33 +17,103 @@ import formatMeasurement from './../libs/formatMeasurement';
 
 /**
  * Given an array of biosample objects, go through all the `parent_of` arrays to recursively
- * retrieve the entire tree of biosamples as a flat array of biosample objects that gets returned
- * as a function results.
- * @param {array} biosamples Array of biosample objects
+ * retrieve the entire tree of biosamples, returning this layered structure as a function results:
+ *
+ * {
+ *     children: [biosample 1, biosample 2, biosample 3... ]
+ *     hierarchy: {
+ *         biosample 1 @id: { children: [biosample 1 child...], hierarchy: { biosample 1 grandchildren } } }
+ *         biosample 2 @id: { children, [biosample 2 child...], hierarchy: { biosample 2 grandchildren } } }
+ *         biosample 3 @id: { children, [biosample 3 child...], hierarchy: { biosample 3 grandchildren } } }
+ *         ...
+ *     }
+ * }
+ *
+ * Each branch of the hierarchy has its own { children, hierarchy } instance. Each child biosample
+ * @id key in `hierarchy` corresponds to a biosample object in `children`, and each one's value
+ * represents the next level down in the hierarchy where this child serves as a parent. We don't
+ * currently display these biosamples hierarchically, but in case we want to in the future this
+ * structure should make that easy.
+ *
+ * The top-level biosamples usually have non-embedded `parent_of` objects, while the results of the
+ * requests have `parent_of` embedded, so we cover both cases in this function. We could model this
+ * hierarchy by mutating the biosample objects to reference their child biosample objects, but this
+ * way avoids mutating those objects that belong to React.
+ * @param {array} biosamples Array of direct children of a biosample object, as biosample objects
  *
  * @return {array} Array of entire tree of biosample objects
  */
 const collectChildren = (biosamples) => {
-    // Collect the biosamples of the children of all given biosamples. These could be full
-    // full biosample objects or biosample @ids, though they never mix.
-    const children = biosamples.reduce((acc, biosample) => acc.concat(biosample.parent_of), []);
-    if (children.length > 0) {
-        if (typeof children[0] === 'string') {
-            // Children comprise an array of biosample @ids. Perform a request of all of them as a
-            // search.
-            return requestObjects(children, '/search/?type=Biosample').then(childBiosamples => (
-                biosamples.concat(collectChildren(childBiosamples))
-            ));
+    // Initialize this level of the hierarchy by putting the given biosample objects in `children`
+    // and then setting their corresponding @ids as object keys with empty objects as values in
+    // `hierarchy`.
+    const tree = {
+        children: biosamples,
+        hierarchy: biosamples.reduce((biosampleAtIds, biosample) => Object.assign(biosampleAtIds, { [biosample['@id']]: {} }), {}),
+    };
+
+    // Collect all children of the given biosamples, in some cases as full biosample objects and in
+    // other cases as biosample @ids that must be resolved to biosample objects.
+    const promises = biosamples.map((biosample) => {
+        if (biosample.parent_of.length > 0) {
+            if (typeof biosample.parent_of[0] === 'string') {
+                // The `parent_of` array comprises @ids, so request the full biosample objects from
+                // that array.
+                return requestObjects(biosample.parent_of, '/search/?type=Biosample').then(childBiosamples => (
+                    // Take the requested biosample objects and use them to generate the child
+                    // branches to attach to the current branch.
+                    collectChildren(childBiosamples).then((childTree) => {
+                        tree.hierarchy[biosample['@id']] = childTree;
+                        return tree;
+                    })
+                ));
+            }
+
+            // The `parent_of` array comprises full biosample objects, so use those directly to
+            // generate the child branches of the tree to attach to the current branch.
+            return collectChildren(biosample.parent_of).then((childTree) => {
+                tree.hierarchy[biosample['@id']] = childTree;
+                return tree;
+            });
         }
 
-        // Children comprise an array of full biosample search-result objects.
-        return biosamples.concat(children);
-    }
-    return biosamples;
+        // We have descended to a leaf of the tree.
+        return tree;
+    });
+
+    // Once the requests of all biosamples have completed, return the completed biosample tree.
+    const all = Promise.all(promises).then(() => { console.log('DEBr3 %o', tree); return tree; });
+    return all;
+};
+
+
+/**
+ * For now we display all biosamples in the tree as a flat list, so take the given tree and
+ * generate a flat array of biosamples.
+ * @param {object} tree Tree of biosamples generated by `collectChildren`
+ *
+ * @return {array} All biosamples under this level in the tree
+ */
+const flattenChildren = (tree) => {
+    const childBiosamples = tree.children.reduce((accBiosample, biosample) => {
+        const childTree = tree.hierarchy[biosample['@id']];
+        if (Object.keys(childTree).length > 0) {
+            return accBiosample.concat(flattenChildren(tree.hierarchy[biosample['@id']]));
+        }
+
+        // Tip of a branch.
+        return [];
+    }, []);
+    return tree.children.concat(childBiosamples);
 };
 
 
 const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
+    /** Array of biosamples the current biosample parents */
+    const [biosampleChildren, setBiosampleChildren] = React.useState([]);
+    /** True when we have an outstanding request for children of this biosample */
+    const isChildCollectionInProgress = React.useRef(false);
+
     const itemClass = globals.itemClass(context, 'view-item');
     const aliasList = context.aliases.join(', ');
 
@@ -84,10 +154,17 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
     const dbxrefs = (context.dbxrefs || []).concat(context.biosample_ontology.dbxrefs || []);
 
     React.useEffect(() => {
-        collectChildren(context.parent_of).then((biosamples) => {
-            console.log(biosamples);
-        });
-    });
+        // Only request children after login session set to prevent needless re-renders, and if we
+        // don't already have an outstanding request.
+        if (reactContext.session && !isChildCollectionInProgress.current) {
+            isChildCollectionInProgress.current = true;
+            collectChildren(context.parent_of).then((tree) => {
+                isChildCollectionInProgress.current = false;
+                const biosamples = flattenChildren(tree);
+                setBiosampleChildren(biosamples);
+            });
+        }
+    }, [context.parent_of, reactContext.session]);
 
     return (
         <div className={itemClass}>
@@ -428,11 +505,11 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
                 Component={ExperimentTable}
             />
 
-            {context.parent_of.length > 0 ?
+            {biosampleChildren.length > 0 ?
                 <BiosampleTable
-                    items={context.parent_of}
+                    items={biosampleChildren}
                     limit={5}
-                    total={context.parent_of.length}
+                    total={biosampleChildren.length}
                     title="Biosamples that are part of this biosample"
                     url={`/search/?type=Biosample&part_of.uuid=${context.uuid}`}
                 />
