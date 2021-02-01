@@ -1551,7 +1551,7 @@ const organismDevelopmentSeriesTableColumns = {
                     if (biosample.age_units === 'year') {
                         lifeStageAge.push(biosample.age_display);
                     } else {
-                        lifeStageAge.push(biosample.life_stage);
+                        lifeStageAge.push(`${biosample.life_stage} ${biosample.age_display}`);
                     }
                 });
 >>>>>>> ENCD-5606 update series searches
