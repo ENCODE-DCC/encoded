@@ -52,10 +52,9 @@ export class FileTable extends React.Component {
         super(props);
 
         const objectAnalysis = {};
-        (props.context.analysis_objects || []).map(m => m.accession)
-            .forEach((a) => {
-                objectAnalysis[a] = false;
-            });
+        (props.context.analysis_objects || []).forEach((analysisObject) => {
+            objectAnalysis[analysisObject.accession] = analysisObject.status !== 'released';
+        });
 
         const collapsed = Object.assign({}
             , { // Keeps track of which tables are collapsed
@@ -63,7 +62,7 @@ export class FileTable extends React.Component {
                 rawArray: false,
                 proc: false,
                 ref: false,
-                other: false,
+                Other: false,
             }
             , objectAnalysis
         );
@@ -194,7 +193,7 @@ export class FileTable extends React.Component {
                     return false;
                 });
 
-                return analysisObjectsAccession || 'other';
+                return analysisObjectsAccession || 'Other';
             });
 
             // showReplicateNumber matches with show-functionality. It has to
@@ -3262,8 +3261,8 @@ const CollapsingTitle = (props) => {
                 null}
             <button className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
             <h4>
-                {title}
-                <button onClick={() => setDownloadModalVisibility(true)}>Download</button>
+                {title} &nbsp;&nbsp;
+                <button className="btn btn-info" onClick={() => setDownloadModalVisibility(true)}>Download</button>
             </h4>
         </div>
     );
