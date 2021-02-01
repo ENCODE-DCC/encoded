@@ -1136,6 +1136,7 @@
                         "bedMethyl",
                         "broadPeak",
                         "candidate enhancer predictions",
+                        "elements enrichments",
                         "enhancer predictions",
                         "enhancerAssay",
                         "gappedPeak",
