@@ -185,7 +185,7 @@ The part within the callback would execute once the GET request had returned, wi
 You’ll see some uses of these request functions that _do_ fit into a “get data, render data” model. Earlier versions of _encoded_ had a strict limit on the length of a URL. In cases where our search URI could have a long length, you had to use these request functions because if a URI’s length reached a certain maximum, these functions would break the request into _multiple_ GET requests so that each URI fit into the maximum. Once all the GET requests returned, these functions put the results together and returned them to the caller. Now that _encoded_ accepts arbitrarily long URIs, these cases could be replaced with `<FetchedData>`.
 
 ## ESLint
-ENCODE uses [ESLint](https://eslint.org/) to automate enforcement of Javascript code quality and standards. It is also a tool that help developers learn good Javascript practices. ESLint inspects all Javascript code in:
+ENCODE uses [ESLint](https://eslint.org/) to automate enforcement of Javascript code quality and standards. It is also a tool that helps developers learn good Javascript practices. ESLint inspects all Javascript code in:
 
 `src/encoded/static/components/`
 
@@ -273,6 +273,6 @@ You can search on [YouTube](https://www.youtube.com/results?search_query=styleli
 
 Popular code Editors display information pertaining to [StyleLint Command line interface Documention page](https://stylelint.io/user-guide/usage/cli) violated rule on hover as well as automated corrections, which can be selected and applied by clicking on fix (wording may vary depending on editor).
 
-Here is a collection of extenstions for [popular code editors](https://stylelint.io/user-guide/integrations/editor)
+Here is a collection of extensions for [popular code editors](https://stylelint.io/user-guide/integrations/editor)
 
 You can search on [YouTube](https://www.youtube.com/results?search_query=stylelint+) to see if there are any vidoes that illustrate using code editor extension with [StyleLint](https://stylelint.io/). In general, the idea is similar to the [ESLint](https://eslint.org/).
