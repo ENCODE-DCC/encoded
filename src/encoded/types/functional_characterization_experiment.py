@@ -99,7 +99,6 @@ class FunctionalCharacterizationExperiment(
         'award',
         'documents',
         'replicates.antibody.characterizations.biosample_ontology',
-        'replicates.antibody.characterizations.characterization_reviews.biosample_ontology',
         'replicates.antibody.characterizations',
         'replicates.antibody.targets',
         'replicates.library',
