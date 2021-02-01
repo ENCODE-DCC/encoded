@@ -104,7 +104,7 @@ const flattenChildren = (tree) => {
         // Tip of a branch.
         return accBiosample.concat(biosample);
     }, []);
-    return tree.children.concat(childBiosamples);
+    return childBiosamples;
 };
 
 
@@ -161,7 +161,7 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
             collectChildren(context.parent_of).then((tree) => {
                 isChildCollectionInProgress.current = false;
                 const biosamples = flattenChildren(tree);
-                setBiosampleChildren(biosamples);
+                setBiosampleChildren(context.parent_of.concat(biosamples));
             });
         }
     }, [context.parent_of, reactContext.session]);
