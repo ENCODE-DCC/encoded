@@ -93,7 +93,7 @@ export class JsonGraph {
                 }
             }
             if (nodes[i].subnodes && nodes[i].subnodes.length > 0) {
-                const matching = nodes[i].subnodes.find(subnode => id === subnode.id);
+                const matching = nodes[i].subnodes.find((subnode) => id === subnode.id);
                 if (matching) {
                     return matching;
                 }
@@ -125,9 +125,9 @@ export class JsonGraph {
 
     getEdge(source, target) {
         if (this.edges && this.edges.length > 0) {
-            const matching = _(this.edges).find(edge =>
+            const matching = _(this.edges).find((edge) => (
                 (source === edge.source) && (target === edge.target)
-            );
+            ));
             return matching;
         }
         return undefined;
@@ -176,12 +176,12 @@ const GraphLegend = (props, context) => {
 
     return (
         <div className="file-status-legend">
-            {statusList.map(status => (
+            {statusList.map((status) => (
                 <Status
                     key={status}
                     item={status}
                     badgeSize="small"
-                    css={'file-status-legend__status'}
+                    css="file-status-legend__status"
                 />
             ))}
         </div>
@@ -336,6 +336,7 @@ export class Graph extends React.Component {
     }
 
     // State change; redraw the graph
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate() {
         if (this.dagreD3 && !this.cv.zoomMouseDown) {
             const el = this.graphdisplay;
@@ -356,6 +357,86 @@ export class Graph extends React.Component {
             this.cv.viewBoxWidth = viewBoxWidth;
             this.cv.viewBoxHeight = viewBoxHeight;
         }
+    }
+    /* eslint-enable react/no-did-update-set-state */
+
+    handleOrientationClick() {
+        this.setState((state) => ({ verticalGraph: !state.verticalGraph }));
+    }
+
+    handleDlClick() {
+        // Collect CSS styles that apply to the graph and insert them into the given SVG element
+        function attachStyles(el) {
+            let stylesText = '';
+            const sheets = document.styleSheets;
+
+            // Search every style in the style sheet(s) for those applying to graphs.
+            // Note: Not using ES5 looping constructs because these aren’t real arrays.
+            if (sheets) {
+                for (let i = 0; i < sheets.length; i += 1) {
+                    const rules = sheets[i].cssRules;
+                    if (rules) {
+                        for (let j = 0; j < rules.length; j += 1) {
+                            const rule = rules[j];
+
+                            // If a style rule starts with 'g.' (svg group), we know it applies to the graph.
+                            // Note: In some browsers, indexOf is a bit faster; on others substring is a bit faster.
+                            // FF(31)'s substring is much faster than indexOf.
+                            if (typeof (rule.style) !== 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
+                                // If any elements use this style, add the style's CSS text to our style text accumulator.
+                                const elems = el.querySelectorAll(rule.selectorText);
+                                if (elems.length > 0) {
+                                    stylesText += `${rule.selectorText} { ${rule.style.cssText} }\n`;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Insert the collected SVG styles into a new style element
+            const styleEl = document.createElement('style');
+            styleEl.setAttribute('type', 'text/css');
+            styleEl.innerHTML = `/* <![CDATA[ */\n${stylesText}\n/* ]]> */`;
+
+            // Insert the new style element into the beginning of the given SVG element
+            el.insertBefore(styleEl, el.firstChild);
+        }
+
+        // Going to be manipulating the SVG node, so make a clone to make GC’s job harder
+        const svgNode = this.cv.savedSvg.node().cloneNode(true);
+
+        // Reset the SVG's size to its natural size
+        const viewBox = this.cv.savedSvg.attr('viewBox').split(' ');
+        svgNode.setAttribute('width', viewBox[2]);
+        svgNode.setAttribute('height', viewBox[3]);
+
+        // Attach graph CSS to SVG node clone
+        attachStyles(svgNode);
+
+        // Turn SVG node clone into a data url and attach to a new Image object. This begins "loading" the image.
+        const serializer = new XMLSerializer();
+        const svgXml = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${serializer.serializeToString(svgNode)}`;
+        const img = new Image();
+        img.src = `data:image/svg+xml;base64,${window.btoa(svgXml)}`;
+
+        // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
+        img.onload = function onload() {
+            // Make a new memory-based canvas and draw the image into it.
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const context = canvas.getContext('2d');
+            context.drawImage(img, 0, 0, img.width, img.height);
+
+            // Make the image download by making a fake <a> and pretending to click it.
+            const a = document.createElement('a');
+            a.download = this.props.graph.id ? `${this.props.graph.id}.png` : 'graph.png';
+            a.href = canvas.toDataURL('image/png');
+            a.setAttribute('data-bypass', 'true');
+            document.body.appendChild(a);
+            a.click();
+        }.bind(this);
     }
 
     // For the given container element and its svg, calculate an initial zoom level that fits the
@@ -396,8 +477,7 @@ export class Graph extends React.Component {
     // SVG to its natural height. eslint exception for dagreD3.render call.
     /* eslint new-cap: ["error", { "newIsCap": false }] */
     drawGraph(el) {
-        const d3 = this.d3;
-        const dagreD3 = this.dagreD3;
+        const { d3, dagreD3 } = this;
         d3.selectAll('svg#pipeline-graph > *').remove(); // http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart#answer-22453174
         const svg = d3.select(el).select('svg');
 
@@ -537,88 +617,9 @@ export class Graph extends React.Component {
         });
     }
 
-    handleOrientationClick() {
-        this.setState({ verticalGraph: !this.state.verticalGraph });
-    }
-
-    handleDlClick() {
-        // Collect CSS styles that apply to the graph and insert them into the given SVG element
-        function attachStyles(el) {
-            let stylesText = '';
-            const sheets = document.styleSheets;
-
-            // Search every style in the style sheet(s) for those applying to graphs.
-            // Note: Not using ES5 looping constructs because these aren’t real arrays.
-            if (sheets) {
-                for (let i = 0; i < sheets.length; i += 1) {
-                    const rules = sheets[i].cssRules;
-                    if (rules) {
-                        for (let j = 0; j < rules.length; j += 1) {
-                            const rule = rules[j];
-
-                            // If a style rule starts with 'g.' (svg group), we know it applies to the graph.
-                            // Note: In some browsers, indexOf is a bit faster; on others substring is a bit faster.
-                            // FF(31)'s substring is much faster than indexOf.
-                            if (typeof (rule.style) !== 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
-                                // If any elements use this style, add the style's CSS text to our style text accumulator.
-                                const elems = el.querySelectorAll(rule.selectorText);
-                                if (elems.length > 0) {
-                                    stylesText += `${rule.selectorText} { ${rule.style.cssText} }\n`;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Insert the collected SVG styles into a new style element
-            const styleEl = document.createElement('style');
-            styleEl.setAttribute('type', 'text/css');
-            styleEl.innerHTML = `/* <![CDATA[ */\n${stylesText}\n/* ]]> */`;
-
-            // Insert the new style element into the beginning of the given SVG element
-            el.insertBefore(styleEl, el.firstChild);
-        }
-
-        // Going to be manipulating the SVG node, so make a clone to make GC’s job harder
-        const svgNode = this.cv.savedSvg.node().cloneNode(true);
-
-        // Reset the SVG's size to its natural size
-        const viewBox = this.cv.savedSvg.attr('viewBox').split(' ');
-        svgNode.setAttribute('width', viewBox[2]);
-        svgNode.setAttribute('height', viewBox[3]);
-
-        // Attach graph CSS to SVG node clone
-        attachStyles(svgNode);
-
-        // Turn SVG node clone into a data url and attach to a new Image object. This begins "loading" the image.
-        const serializer = new XMLSerializer();
-        const svgXml = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${serializer.serializeToString(svgNode)}`;
-        const img = new Image();
-        img.src = `data:image/svg+xml;base64,${window.btoa(svgXml)}`;
-
-        // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
-        img.onload = function onload() {
-            // Make a new memory-based canvas and draw the image into it.
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const context = canvas.getContext('2d');
-            context.drawImage(img, 0, 0, img.width, img.height);
-
-            // Make the image download by making a fake <a> and pretending to click it.
-            const a = document.createElement('a');
-            a.download = this.props.graph.id ? `${this.props.graph.id}.png` : 'graph.png';
-            a.href = canvas.toDataURL('image/png');
-            a.setAttribute('data-bypass', 'true');
-            document.body.appendChild(a);
-            a.click();
-        }.bind(this);
-    }
-
     rangeChange(e) {
         // Called when the user clicks/drags the zoom slider; value comes from the slider 0-100
-        const value = e.target.value;
+        const { value } = e.target;
 
         // Calculate the new graph width and height for the new zoom value
         const width = (value * this.cv.zoomFactor) + this.cv.minZoomWidth;
@@ -692,9 +693,9 @@ export class Graph extends React.Component {
                         <table className="zoom-control">
                             <tbody>
                                 <tr>
-                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(-6)}><i className="icon icon-minus" /></button></td>
+                                    <td className="zoom-indicator"><button type="button" onClick={() => this.changeZoom(-6)}><span className="sr-only">Zoom out</span><i className="icon icon-minus" /></button></td>
                                     <td className="zomm-controller"><input type="range" className="zoom-slider" ref={this.slider} min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onInput={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
-                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(6)}><i className="icon icon-plus" /></button></td>
+                                    <td className="zoom-indicator"><button type="button" onClick={() => this.changeZoom(6)}><span className="sr-only">Zoom in</span><i className="icon icon-plus" /></button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -702,8 +703,8 @@ export class Graph extends React.Component {
                     <div ref={(div) => { this.graphdisplay = div; }} className="graph-display" onScroll={this.scrollHandler} />
                     {colorize ? <GraphLegend /> : null}
                     <div className="graph-dl">
-                        <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
-                        <button ref={(button) => { this.dlButton = button; }} className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
+                        <button type="button" className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
+                        <button type="button" ref={(button) => { this.dlButton = button; }} className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                     </div>
                     {this.props.children}
                 </div>

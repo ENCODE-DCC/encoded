@@ -38,7 +38,7 @@ export const DefaultBooleanFacet = ({ facet, relevantFilters, queryString }, rea
 
     // We have to build the new query string unless the user clicked the "either" radio button,
     // which uses the `remove` link from the relevant filter. This callback gets memoized to avoid
-    // needlessly rerendering this component, and its dependencies should normally not change until
+    // needlessly re-rendering this component, and its dependencies should normally not change until
     // the user clicks a term.
     const handleRadioClick = React.useCallback((event) => {
         const { value } = event.target;
@@ -63,7 +63,7 @@ export const DefaultBooleanFacet = ({ facet, relevantFilters, queryString }, rea
         <fieldset className="facet">
             <legend>{facet.title}</legend>
             <div className="facet__content--exists">
-                {facet.terms.map(term => (
+                {facet.terms.map((term) => (
                     <div key={term.key_as_string} className="facet__radio">
                         <input type="radio" name={facet.field} value={term.key_as_string} id={term.key_as_string} checked={currentOption === term.key_as_string} onChange={handleRadioClick} />
                         <label htmlFor={term.key}>
@@ -123,11 +123,11 @@ export const DefaultExistsFacet = ({ facet, relevantFilters, queryString }, reac
     }
 
     // Sort yes/no facet terms into yes - no order.
-    const sortedTerms = _(facet.terms.filter(term => term.doc_count > 0)).sortBy(term => ['yes', 'no'].indexOf(term.key));
+    const sortedTerms = _(facet.terms.filter((term) => term.doc_count > 0)).sortBy((term) => ['yes', 'no'].indexOf(term.key));
 
     // We have to build the new query string unless the user clicked the "either" radio button,
     // which uses the `remove` link from the relevant filter. This callback gets memoized to avoid
-    // needlessly rerendering this component, and its dependencies should normally not change until
+    // needlessly re-rendering this component, and its dependencies should normally not change until
     // the user clicks a term.
     const handleRadioClick = React.useCallback((event) => {
         const { value } = event.target;
@@ -156,7 +156,7 @@ export const DefaultExistsFacet = ({ facet, relevantFilters, queryString }, reac
             <fieldset className="facet">
                 <legend>{facet.title}</legend>
                 <div className="facet__content--exists">
-                    {sortedTerms.map(term => (
+                    {sortedTerms.map((term) => (
                         <div key={term.key} className="facet__radio">
                             <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
                             <label htmlFor={term.key}>
@@ -231,6 +231,43 @@ export class DefaultDateSelectorFacet extends React.Component {
         });
     }
 
+    // Reset the dropdowns and state, and clear query
+    handleReset(resetString) {
+        this.setState({ activeFacet: 'date_released' }, () => {
+            this.setActiveFacetParameters();
+
+            // Strip trailing & for the ENCD-4803 branch because it keeps the training ampersand.
+            let processedResetString = resetString;
+            if (resetString[resetString.length - 1] === '&') {
+                processedResetString = resetString.substring(0, resetString.length - 1);
+            }
+
+            this.context.navigate(processedResetString);
+        });
+    }
+
+    // Set dropdowns to match quick link query and navigate to quick link
+    handleQuickLink(searchBaseForDateRange, field) {
+        const currentYear = dayjs().format('YYYY');
+        const currentMonth = dayjs().format('MM');
+        const currentDay = dayjs().format('DD');
+        const quickLinkString = `${searchBaseForDateRange}advancedQuery=${field}:[${currentYear - 1}-${currentMonth}-${currentDay} TO ${currentYear}-${currentMonth}-${currentDay}]`;
+        this.setState((state) => (
+            {
+                startMonth: currentMonth,
+                endMonth: currentMonth,
+                startYear: (currentYear - 1),
+                endYear: currentYear,
+                startMonths: allMonths,
+                endMonths: allMonths,
+                startYears: state.possibleYears.filter((year) => +year <= currentYear),
+                endYears: state.possibleYears.filter((year) => +year >= (currentYear - 1)),
+            }
+        ), () => {
+            this.context.navigate(quickLinkString);
+        });
+    }
+
     setActiveFacetParameters(initializationFlag) {
         let activeFacet = null;
         let activeFilter = null;
@@ -239,7 +276,7 @@ export class DefaultDateSelectorFacet extends React.Component {
         // If there is a date filter applied, we'll use that filter to set state when the component is mounted
         if (initializationFlag) {
             // if a date range has already been selected, we will use that date range to populate drop-downs
-            const existingFilter = this.props.results.filters.filter(filter => (filter.field === 'advancedQuery' && filter.term.includes('date')));
+            const existingFilter = this.props.results.filters.filter((filter) => (filter.field === 'advancedQuery' && filter.term.includes('date')));
             if (existingFilter[0]) {
                 activeFilter = true;
                 const filterString = existingFilter[0].term;
@@ -259,7 +296,7 @@ export class DefaultDateSelectorFacet extends React.Component {
             }
         }
         if (activeFacet === null) {
-            activeFacet = this.state.activeFacet;
+            ({ activeFacet } = this.state);
         }
 
         // Set possible years to be 2009 -> current year for 'date_released'
@@ -273,7 +310,7 @@ export class DefaultDateSelectorFacet extends React.Component {
         const possibleYears = Array.from({ length: numberOfYears }, (e, i) => (i + firstYear + 1));
 
         if (!initializationFlag || !activeFilter) {
-            // Set dropdown lists to be full lists of possiblities and initialize to boundaries of full range
+            // Set dropdown lists to be full lists of possibilities and initialize to boundaries of full range
             this.setState({
                 startYear: possibleYears[0],
                 endYear: possibleYears[possibleYears.length - 1],
@@ -283,8 +320,8 @@ export class DefaultDateSelectorFacet extends React.Component {
                 endYears: possibleYears,
             });
         } else {
-            const startYears = possibleYears.filter(year => +year <= endYear);
-            const endYears = possibleYears.filter(year => +year >= startYear);
+            const startYears = possibleYears.filter((year) => +year <= endYear);
+            const endYears = possibleYears.filter((year) => +year >= startYear);
             this.setState({
                 startYears,
                 endYears,
@@ -308,18 +345,22 @@ export class DefaultDateSelectorFacet extends React.Component {
                 this.checkForSameYear();
             });
             // Possibilities for endYears must now all be greater than the new startYear
-            const endYears = this.state.possibleYears.filter(year => +year >= event.target.value);
-            this.setState({ endYears });
-        // We are changing the end year, which means we need to change the possiblities for the starting year and also the possible end months
+            this.setState((state) => {
+                const endYears = state.possibleYears.filter((year) => +year >= event.target.value);
+                return { endYears };
+            });
+        // We are changing the end year, which means we need to change the possibilities for the starting year and also the possible end months
         } else {
             // Set endYear to be user choice
             this.setState({ endYear: event.target.value }, () => {
                 // Check if now the years match and month lists need to be limited
                 this.checkForSameYear();
             });
-            // Possiblities for startYears must now all be less than the new endYears
-            const startYears = this.state.possibleYears.filter(year => +year <= event.target.value);
-            this.setState({ startYears });
+            // Possibilities for startYears must now all be less than the new endYears
+            this.setState((state) => {
+                const startYears = state.possibleYears.filter((year) => +year <= event.target.value);
+                return { startYears };
+            });
         }
     }
 
@@ -341,9 +382,9 @@ export class DefaultDateSelectorFacet extends React.Component {
             // If start and end months are allowed, we still need to filter dropdown possible lists so they can't select an unallowed combination
             } else {
                 // endMonths can only display months that are after the chosen startMonth
-                const endMonths = allMonths.filter(month => +month >= +this.state.startMonth);
+                const endMonths = allMonths.filter((month) => +month >= +this.state.startMonth);
                 // startMonths can only display months that are before the chosen endMonth
-                const startMonths = allMonths.filter(month => +month <= +this.state.endMonth);
+                const startMonths = allMonths.filter((month) => +month <= +this.state.endMonth);
                 this.setState({
                     endMonths,
                     startMonths,
@@ -375,49 +416,14 @@ export class DefaultDateSelectorFacet extends React.Component {
 
     // Toggle the 'activeFacet' state and also reset the drop down options by calling 'setActiveFacetParameters'
     toggleDateFacet() {
-        this.setState(prevState => ({ activeFacet: prevState.activeFacet === 'date_released' ? 'date_submitted' : 'date_released' }), this.setActiveFacetParameters);
-    }
-
-    // Reset the dropdowns and state, and clear query
-    handleReset(resetString) {
-        this.setState({ activeFacet: 'date_released' }, () => {
-            this.setActiveFacetParameters();
-
-            // * Strip trailing & for the ENCD-4803 branch because it keeps the training ampersand.
-            let processedResetString = resetString;
-            if (resetString[resetString.length - 1] === '&') {
-                processedResetString = resetString.substring(0, resetString.length - 1);
-            }
-
-            this.context.navigate(processedResetString);
-        });
-    }
-
-    // Set dropdowns to match quick link query and nagivate to quick link
-    handleQuickLink(searchBaseForDateRange, field) {
-        const currentYear = dayjs().format('YYYY');
-        const currentMonth = dayjs().format('MM');
-        const currentDay = dayjs().format('DD');
-        const quickLinkString = `${searchBaseForDateRange}advancedQuery=${field}:[${currentYear - 1}-${currentMonth}-${currentDay} TO ${currentYear}-${currentMonth}-${currentDay}]`;
-        this.setState({
-            startMonth: currentMonth,
-            endMonth: currentMonth,
-            startYear: (currentYear - 1),
-            endYear: currentYear,
-            startMonths: allMonths,
-            endMonths: allMonths,
-            startYears: this.state.possibleYears.filter(year => +year <= currentYear),
-            endYears: this.state.possibleYears.filter(year => +year >= (currentYear - 1)),
-        }, () => {
-            this.context.navigate(quickLinkString);
-        });
+        this.setState((prevState) => ({ activeFacet: prevState.activeFacet === 'date_released' ? 'date_submitted' : 'date_released' }), this.setActiveFacetParameters);
     }
 
     render() {
         const { facet, results, queryString } = this.props;
         const searchBase = `?${queryString}&`;
         const field = this.state.activeFacet;
-        const activeFacet = results.facets.filter(f => f.field === this.state.activeFacet)[0];
+        const activeFacet = results.facets.filter((f) => f.field === this.state.activeFacet)[0];
         let disableDateReleased = false;
         let disableDateSubmitted = false;
         // filterFlag is true to indicate that we need to display filters
@@ -426,11 +432,11 @@ export class DefaultDateSelectorFacet extends React.Component {
         let missingField = null;
 
         // Check which of date released and date submitted might be disabled, either for lack of data or because of !=* filter
-        if ((queryString.indexOf('date_released!=*') > -1) || !(results.facets.filter(f => f.field === 'date_released').length > 0)) {
+        if ((queryString.indexOf('date_released!=*') > -1) || !(results.facets.filter((f) => f.field === 'date_released').length > 0)) {
             disableDateReleased = true;
             missingField = 'date_released';
         }
-        if ((queryString.indexOf('date_submitted!=*') > -1) || !(results.facets.filter(f => f.field === 'date_submitted').length > 0)) {
+        if ((queryString.indexOf('date_submitted!=*') > -1) || !(results.facets.filter((f) => f.field === 'date_submitted').length > 0)) {
             disableDateSubmitted = true;
             missingField = 'date_submitted';
         }
@@ -465,26 +471,27 @@ export class DefaultDateSelectorFacet extends React.Component {
                     <h5>Date range selection</h5>
                     <div className="filter-container">
                         {deleteReleasedFilter ?
-                            <React.Fragment>
+                            <>
                                 <div className="filter-hed">Selected filter for date released:</div>
                                 <a href={deleteReleasedFilter} className="negation-filter">
                                     <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
                                 </a>
-                            </React.Fragment>
+                            </>
                         : null}
                         {deleteSubmittedFilter ?
-                            <React.Fragment>
+                            <>
                                 <div className="filter-hed">Selected filter for date submitted:</div>
                                 <a href={deleteSubmittedFilter} className="negation-filter">
                                     <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
                                 </a>
-                            </React.Fragment>
+                            </>
                         : null}
                     </div>
                 </div>
             );
         // If both date released and date submitted are disabled but there are no filters (both have no data), display no facet
-        } else if (disableDateReleased && disableDateSubmitted && !filterFlag) {
+        }
+        if (disableDateReleased && disableDateSubmitted && !filterFlag) {
             return null;
         }
 
@@ -500,7 +507,7 @@ export class DefaultDateSelectorFacet extends React.Component {
         const daysInEndMonth = dayjs(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
 
         // if a date range has already been selected, we want to over-write that date range with a new one
-        const existingFilter = this.props.results.filters.filter(filter => (filter.field === 'advancedQuery' && filter.term.includes('date')));
+        const existingFilter = this.props.results.filters.filter((filter) => (filter.field === 'advancedQuery' && filter.term.includes('date')));
         let resetString = '';
         let searchBaseForDateRange = searchBase;
         if (existingFilter.length > 0) {
@@ -522,7 +529,7 @@ export class DefaultDateSelectorFacet extends React.Component {
             }
         }
 
-        if ((activeFacet && (activeFacet.terms.length > 0) && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+        if ((activeFacet && (activeFacet.terms.length > 0) && activeFacet.terms.some((term) => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''}`}>
                     <h5>Date range selection</h5>
@@ -545,9 +552,9 @@ export class DefaultDateSelectorFacet extends React.Component {
                     {existingFilter.length > 0 ?
                         <div className="selected-date-range">
                             <div>Selected range: </div>
-                            {existingFilter.map(filter =>
+                            {existingFilter.map((filter) => (
                                 <div key={filter.term}>{dateRangeString}</div>
-                            )}
+                            ))}
                         </div>
                     : null}
 
@@ -577,7 +584,7 @@ export class DefaultDateSelectorFacet extends React.Component {
                             <label htmlFor="submitted-radio-button" id="submitted-radio-button-label">Submitted</label>
                         </div>
                     </div>
-                    <button className="date-selector-btn" onClick={() => this.handleQuickLink(searchBaseForDateRange, field)}>
+                    <button type="button" className="date-selector-btn" onClick={() => this.handleQuickLink(searchBaseForDateRange, field)}>
                         <i className="icon icon-caret-right" />
                         See results for the past year
                     </button>
@@ -586,14 +593,14 @@ export class DefaultDateSelectorFacet extends React.Component {
                             <h6>Start date:</h6>
                             <div className="date-selector">
                                 <select id="select-start-month" value={this.state.startMonth} onChange={this.selectMonth}>
-                                    {this.state.startMonths.map(month =>
+                                    {this.state.startMonths.map((month) => (
                                         <option value={month} key={month}>{month}</option>
-                                    )}
+                                    ))}
                                 </select>
                                 <select id="select-start-year" value={this.state.startYear} onChange={this.selectYear}>
-                                    {this.state.startYears.map(year =>
+                                    {this.state.startYears.map((year) => (
                                         <option value={year} key={year}>{year}</option>
-                                    )}
+                                    ))}
                                 </select>
                             </div>
                         </div>
@@ -604,21 +611,21 @@ export class DefaultDateSelectorFacet extends React.Component {
                             <h6>End date:</h6>
                             <div className="date-selector">
                                 <select id="select-end-month" value={this.state.endMonth} onChange={this.selectMonth}>
-                                    {this.state.endMonths.map(month =>
+                                    {this.state.endMonths.map((month) => (
                                         <option value={month} key={month}>{month}</option>
-                                    )}
+                                    ))}
                                 </select>
                                 <select id="select-end-year" value={this.state.endYear} onChange={this.selectYear}>
-                                    {this.state.endYears.map(year =>
+                                    {this.state.endYears.map((year) => (
                                         <option value={year} key={year}>{year}</option>
-                                    )}
+                                    ))}
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div className="date-selector-facet__controls">
                         <a className="btn btn-info btn-sm apply-date-selector" href={searchString}>Apply changes</a>
-                        <button className="btn btn-info btn-sm reset-date-selector" onClick={() => this.handleReset(resetString)}>
+                        <button type="button" className="btn btn-info btn-sm reset-date-selector" onClick={() => this.handleReset(resetString)}>
                             Reset
                         </button>
                     </div>
@@ -760,9 +767,9 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
             </a>
             <div className="facet-term__negator">
                 {allowNegation ?
-                    <React.Fragment>
-                        {selectedTermFilter ? null : <a href={negHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
-                    </React.Fragment>
+                    <>
+                        {selectedTermFilter ? null : <a href={negHref} title="Do not include items with this term"><span className="sr-only">Do not include items with this term</span><i className="icon icon-minus-circle" /></a>}
+                    </>
                 : null}
             </div>
         </li>
@@ -835,18 +842,18 @@ Typeahead.propTypes = {
 const SelectedFilters = ({ facet, selectedTerms }) => {
     const SelectedTermNameComponent = FacetRegistry.SelectedTermName.lookup(facet.field);
     return (
-        <React.Fragment>
+        <>
             {(selectedTerms.length > 0) ?
                 <div className="filter-container">
                     <div className="filter-hed">Selected filters:</div>
-                    {selectedTerms.map(filter =>
+                    {selectedTerms.map((filter) => (
                         <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}>
                             <div className="filter-link"><i className="icon icon-times-circle" /> <SelectedTermNameComponent filter={filter} /></div>
                         </a>
-                    )}
+                    ))}
                 </div>
             : null}
-        </React.Fragment>
+        </>
     );
 };
 
@@ -861,14 +868,14 @@ SelectedFilters.propTypes = {
 /**
  * Render the terms within a facet, calling the currently registered term-rendering component.
  * This component gets memoized so it only renders when the facet data unequivocally changes,
- * avoiding needless rerenders when a different facet needs to rerender.
+ * avoiding needless re-renders when a different facet needs to rerender.
  */
 const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname, queryString, filteredTerms, onFilter, allowNegation }) => {
     const TermComponent = FacetRegistry.Term.lookup(facet.field);
     const facetTitle = facet.title.replace(/\s+/g, '');
     return (
         <div className={`facet__term-list search${facetTitle}`}>
-            {filteredTerms.map(term => (
+            {filteredTerms.map((term) => (
                 <TermComponent
                     key={term.key}
                     term={term}
@@ -929,19 +936,19 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     const TitleComponent = FacetRegistry.Title.lookup(facet.field);
 
     // Filter out terms with a zero doc_count, as seen in region-search results.
-    const significantTerms = !facet.appended ? facet.terms.filter(term => term.doc_count > 0) : facet.terms;
+    const significantTerms = !facet.appended ? facet.terms.filter((term) => term.doc_count > 0) : facet.terms;
 
     // Sort numerical terms by value not by frequency
     // This should ultimately be accomplished in the back end, but the front end fix is much simpler so we are starting with that
     // We have to check the full list for now (until schema change) because some lists contain both numerical and string terms ('Encyclopedia version' under Annotations) and we do not want to sort those by value
-    const numericalTest = a => !isNaN(a.key);
+    const numericalTest = (a) => !Number.isNaN(Number(a.key));
     // For straightforward numerical facets, just sort by value
-    const processedTerms = significantTerms.every(numericalTest) ? _.sortBy(significantTerms, obj => obj.key) : significantTerms;
+    const processedTerms = significantTerms.every(numericalTest) ? _.sortBy(significantTerms, (obj) => obj.key) : significantTerms;
 
-    const disabledCss = filters => filters.some(f => f.field.indexOf('!') !== -1 && f.term.trim() === '*');
+    const disabledCss = (filters) => filters.some((f) => f.field.indexOf('!') !== -1 && f.term.trim() === '*');
 
     // Filter the list of facet terms to those allowed by the optional typeahead field. Memoize the
-    // resulting list to avoid needlessly rerendering the facet-term list that can get very long.
+    // resulting list to avoid needlessly re-rendering the facet-term list that can get very long.
     const filteredTerms = React.useMemo(() => {
         if (facet.type === 'typeahead') {
             const passingTerms = processedTerms.filter(
@@ -955,7 +962,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                         return null;
                     }
                     return null;
-                }
+                },
             );
 
             // Typeahead facets only render a truncated list of terms until initialState becomes
@@ -967,7 +974,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
 
     // Called to set the top and bottom shading for scrollable facets based on where the user has
     // scrolled the facet as well as its height. This function needs memoization as new instances
-    // of itself can cause needless rerendering of dependent components.
+    // of itself can cause needless re-rendering of dependent components.
     const handleScrollShading = React.useCallback(() => {
         const element = scrollingElement.current;
         if (element.scrollTop === 0 && topShadingVisible) {
@@ -982,7 +989,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                 // Bottom edge of the facet scrolled into view.
                 setBottomShadingVisible(false);
             } else if (scrollDiff > 0 && !bottomShadingVisible) {
-                // Bottom edge of thefgh facet scrolled out of view.
+                // Bottom edge of the facet scrolled out of view.
                 setBottomShadingVisible(true);
             }
         }
@@ -1025,8 +1032,8 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                 role="button"
                 aria-label={facet.field}
                 aria-pressed={isExpanded}
-                onClick={e => handleExpanderClick(e, isExpanded, facet.field)}
-                onKeyDown={e => handleKeyDown(e, isExpanded, facet.field)}
+                onClick={(e) => handleExpanderClick(e, isExpanded, facet.field)}
+                onKeyDown={(e) => handleKeyDown(e, isExpanded, facet.field)}
             >
                 <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
                 {isExpandable ? <i className={`facet-chevron icon icon-chevron-${isExpanded ? 'up' : 'down'}`} /> : null}
@@ -1042,7 +1049,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                                     Try a different search term for results.
                                 </div>
                             :
-                                <React.Fragment>
+                                <>
                                     <FacetTerms
                                         facet={facet}
                                         results={results}
@@ -1056,7 +1063,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                                     />
                                     <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
                                     <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
-                                </React.Fragment>
+                                </>
                             }
                         </ul>
                     </div>

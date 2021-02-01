@@ -1,4 +1,3 @@
-import React from 'react';
 import _ from 'underscore';
 
 
@@ -7,11 +6,11 @@ export default function pubReferenceList(values) {
     if (values && values.length > 0) {
         const links = _.compact(values.map((value) => {
             if (value.identifiers) {
-                return value.identifiers.map((identifier, index) =>
+                return value.identifiers.map((identifier, index) => (
                     <li key={index}>
                         <a href={value['@id']}>{identifier}</a>
                     </li>
-                );
+                ));
             }
             return null;
         }));

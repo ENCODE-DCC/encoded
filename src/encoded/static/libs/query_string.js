@@ -48,7 +48,7 @@ class QueryString {
     _parse() {
         // Filter out any empty elements caused by a trailing ampersand.
         if (this._query) {
-            const inputQueryElements = this._query.split('&').filter(element => element);
+            const inputQueryElements = this._query.split('&').filter((element) => element);
             this._parsedQuery = inputQueryElements.map((element) => {
                 // Split each query string element into its key and value in `queryElement`. If "!"
                 // is at the end of the key, then this was a != query-string element. In that case
@@ -92,7 +92,7 @@ class QueryString {
      * @return {object} Reference to this object for method chaining.
      */
     deleteKeyValue(key, value) {
-        this._parsedQuery = this._parsedQuery.filter(element => element[key] === undefined || (value !== undefined ? element[key] !== value : false));
+        this._parsedQuery = this._parsedQuery.filter((element) => element[key] === undefined || (value !== undefined ? element[key] !== value : false));
         return this;
     }
 
@@ -122,7 +122,7 @@ class QueryString {
      * @return {array} Non-URL-encoded values that have `key` as their key.
      */
     getKeyValues(key, negative) {
-        return this._parsedQuery.filter(queryElement => queryElement[key] && queryElement.negative === !!negative).map(queryElement => queryElement[Object.keys(queryElement)[0]]);
+        return this._parsedQuery.filter((queryElement) => queryElement[key] && queryElement.negative === !!negative).map((queryElement) => queryElement[Object.keys(queryElement)[0]]);
     }
 
     /**
@@ -136,8 +136,8 @@ class QueryString {
      */
     getKeyValuesIfPresent(key) {
         return this._parsedQuery
-            .filter(queryElement => queryElement[key])
-            .map(queryElement => queryElement[Object.keys(queryElement)[0]]);
+            .filter((queryElement) => queryElement[key])
+            .map((queryElement) => queryElement[Object.keys(queryElement)[0]]);
     }
 
     /**
@@ -148,7 +148,7 @@ class QueryString {
      */
     queryCount(key) {
         if (key) {
-            return this._parsedQuery.filter(queryElement => queryElement[key]).length;
+            return this._parsedQuery.filter((queryElement) => queryElement[key]).length;
         }
         return this._parsedQuery.length;
     }

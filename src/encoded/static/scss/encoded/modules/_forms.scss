@@ -14,10 +14,12 @@ form {
 
 	label {
 		display: block;
+	}
 
-		&.label--inline {
-			display: inline-block;
-		}
+	.label--inline {
+		display: inline-block;
+		padding: 10px 0 0;
+		font-weight: 600;
 	}
 }
 

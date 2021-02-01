@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
@@ -10,7 +9,7 @@ import { ItemAccessories, TopAccessories } from './objectutils';
 
 
 const BiosampleTypeComponenet = (props, reactContext) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'view-item');
 
     // Set up breadcrumbs
@@ -73,11 +72,11 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                             <dt>Aliases</dt>
                             <dd>
                                 <ul>
-                                    {context.aliases.map(alias =>
+                                    {context.aliases.map((alias) => (
                                         <li key={alias}>
                                             <span>{alias}</span>
                                         </li>
-                                    )}
+                                    ))}
                                 </ul>
                             </dd>
                         </div>

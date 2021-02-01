@@ -18,7 +18,7 @@ const regionGenomes = [
 
 const AutocompleteBox = (props) => {
     const terms = props.auto['@graph']; // List of matching terms from server
-    const handleClick = props.handleClick;
+    const { handleClick } = props;
     const userTerm = props.userTerm && props.userTerm.toLowerCase(); // Term user entered
 
     if (!props.hide && userTerm && userTerm.length > 0 && terms && terms.length > 0) {
@@ -126,7 +126,7 @@ class AdvSearch extends React.Component {
     constructor() {
         super();
 
-        // Set intial React state.
+        // Set initial React state.
         /* eslint-disable react/no-unused-state */
         // Need to disable this rule because of a bug in eslint-plugin-react.
         // https://github.com/yannickcr/eslint-plugin-react/issues/1484#issuecomment-366590614
@@ -159,7 +159,7 @@ class AdvSearch extends React.Component {
     }
 
     handleDiscloseClick() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             disclosed: !prevState.disclosed,
         }));
     }
@@ -195,16 +195,16 @@ class AdvSearch extends React.Component {
     }
 
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
         const id = url.parse(this.context.location_href, true);
         const region = id.query.region || '';
 
         if (this.state.genome === '') {
             let assembly = regionGenomes[0].value;
             if (context.assembly) {
-                assembly = regionGenomes.find(el =>
+                assembly = regionGenomes.find((el) => (
                     context.assembly === el.value || context.assembly === el.display
-                ).value;
+                )).value;
             }
             this.setState({ genome: assembly });
         }
@@ -212,7 +212,7 @@ class AdvSearch extends React.Component {
         return (
             <Panel>
                 <PanelBody>
-                    <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1" onSubmit={this.handleOnFocus} >
+                    <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1" onSubmit={this.handleOnFocus}>
                         <input type="hidden" name="annotation" value={this.state.terms.annotation} />
                         <label htmlFor="annotation">Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
                         <div className="adv-search-form__input">
@@ -224,9 +224,9 @@ class AdvSearch extends React.Component {
                                 </FetchedData>
                             : null}
                             <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
-                                {regionGenomes.map(genomeId =>
+                                {regionGenomes.map((genomeId) => (
                                     <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
-                                )}
+                                ))}
                             </select>
                         </div>
                         {context.notification ?
@@ -279,16 +279,12 @@ class RegionSearch extends React.Component {
     }
 
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
         const results = context['@graph'];
-        const columns = context.columns;
-        const notification = context.notification;
+        const { columns, notification, filters, facets, total } = context;
         const searchBase = url.parse(this.context.location_href).search || '';
         const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-        const filters = context.filters;
-        const facets = context.facets;
-        const total = context.total;
-        const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+        const visualizeDisabledTitle = total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
 
         return (
             <div>
@@ -339,7 +335,7 @@ class RegionSearch extends React.Component {
 
                                     <hr />
                                     <ul className="nav result-table" id="result-table">
-                                        {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
+                                        {results.map((result) => Listing({ context: result, columns, key: result['@id'] }))}
                                     </ul>
                                 </div>
                             </div>

@@ -18,13 +18,15 @@ export class Param extends React.Component {
         this.fetch(this.props.url);
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
+    /* eslint-disable camelcase */
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if (!this.state.fetchedRequest && nextProps.url === undefined) return;
         if (this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
             _.isEqual(nextContext.session, this.context.session)) return;
         this.fetch(nextProps.url);
     }
+    /* eslint-enable camelcase */
 
     componentWillUnmount() {
         const xhr = this.state.fetchedRequest;
@@ -35,9 +37,9 @@ export class Param extends React.Component {
     }
 
     fetch(url) {
-        let request = this.state.fetchedRequest;
-        if (!this.props.allowMultipleRequest && request) {
-            request.abort();
+        const { fetchedRequest } = this.state;
+        if (!this.props.allowMultipleRequest && fetchedRequest) {
+            fetchedRequest.abort();
         }
 
         if (!url) {
@@ -47,6 +49,7 @@ export class Param extends React.Component {
             });
         }
         // XXX Errors should really result in a separate component being rendered.
+        let request;
         if (this.props.type === 'json') {
             request = this.context.fetch(url, {
                 headers: { Accept: 'application/json' },
@@ -72,7 +75,7 @@ export class Param extends React.Component {
         }
 
         this.setState({
-            fetchedRequest: request,
+            fetchedRequest: request || fetchedRequest,
         });
     }
 
@@ -183,8 +186,8 @@ export class FetchedData extends React.Component {
         }
 
         // Detect whether a <Param> component returned an "Error" @type object
-        const errors = params.map(param => this.state[param.props.name])
-            .filter(obj => obj && (obj['@type'] || []).indexOf('Error') > -1);
+        const errors = params.map((param) => this.state[param.props.name])
+            .filter((obj) => obj && (obj['@type'] || []).indexOf('Error') > -1);
 
         // If we got an error, display the error string on the web page
         if (errors.length > 0) {
@@ -244,7 +247,7 @@ Items.defaultProps = {
 };
 
 
-export const FetchedItems = props => (
+export const FetchedItems = (props) => (
     <FetchedData>
         <Param name="data" url={props.url} />
         <Items {...props} />

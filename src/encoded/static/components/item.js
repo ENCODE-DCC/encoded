@@ -11,7 +11,7 @@ import { AlternateAccession, ItemAccessories } from './objectutils';
 
 
 const Fallback = (props, reactContext) => {
-    const context = props.context;
+    const { context } = props;
     const title = typeof context.title === 'string' ? context.title : url.parse(reactContext.location_href).path;
     return (
         <div className="view-item">
@@ -37,7 +37,7 @@ Fallback.contextTypes = {
 
 
 const Item = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'view-item');
     const title = globals.listingTitles.lookup(context)({ context });
     const ItemPanel = globals.panelViews.lookup(context);
@@ -72,7 +72,7 @@ globals.contentViews.fallback = function fallback() {
 
 
 export const ItemComponent = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'view-detail');
     return (
         <div className={itemClass}>
@@ -89,7 +89,7 @@ globals.panelViews.register(ItemComponent, 'Item');
 
 
 const listingTitle = function listingTitle(props) {
-    const context = props.context;
+    const { context } = props;
     return context.title || context.name || context.accession || context['@id'];
 };
 
@@ -115,7 +115,7 @@ class ItemEdit extends React.Component {
     }
 
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         let title = globals.listingTitles.lookup(context)({ context });
         let action;

@@ -1,11 +1,13 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 import _ from 'underscore';
 
 // Import test component and data.
 import { SearchControls } from '../search';
 import context from '../testdata/experiment-search';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('View controls for search with Experiments', () => {
     describe('Minimal Experiment', () => {

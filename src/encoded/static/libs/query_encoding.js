@@ -7,7 +7,7 @@
  *
  * @return {string} URL-encoded query-string value.
  */
-export const encodedURIComponent = value => (
+export const encodedURIComponent = (value) => (
     encodeURIComponent(value)
         .replace(/\(/g, '%28')
         .replace(/\)/g, '%29')
@@ -23,7 +23,7 @@ export const encodedURIComponent = value => (
  *
  * @return {string} Unencoded query-string value
  */
-export const decodedURIComponent = value => (
+export const decodedURIComponent = (value) => (
     decodeURIComponent(value.replace(/\+/g, '%20'))
 );
 

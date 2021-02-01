@@ -38,7 +38,7 @@ const batchDownload = (cartType, elements, selectedTerms, selectedType, facets, 
             // Build the query string from `files` properties in the dataset, or from the
             // dataset properties itself for fields marked in `facets`.
             subQueryString = selectedTerms[field].map(
-                term => `${facets.includes(field) ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
+                (term) => `${facets.includes(field) ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
             ).join('&');
         }
         return subQueryString;
@@ -167,7 +167,7 @@ const CartBatchDownloadComponent = (
     };
 
     return (
-        <React.Fragment>
+        <>
             <DropdownButton.Selected
                 labels={{
                     processed: disabledMessage || 'Download processed data files',
@@ -180,19 +180,19 @@ const CartBatchDownloadComponent = (
                 css="cart-download"
                 disabled={!!disabledMessage}
             >
-                <button id="processed" className="menu-item">
+                <button type="button" id="processed" className="menu-item">
                     <div className="cart-download__option-title">Processed data files</div>
                     <div className="cart-download__option-description">
                         Downloads files using the selected filters.
                     </div>
                 </button>
-                <button id="raw" className="menu-item">
+                <button type="button" id="raw" className="menu-item">
                     <div className="cart-download__option-title">Raw data files only</div>
                     <div className="cart-download__option-description">
                         Downloads all files that don&rsquo;t have assemblies and without using any selected filters.
                     </div>
                 </button>
-                <button id="all" className="menu-item">
+                <button type="button" id="all" className="menu-item">
                     <div className="cart-download__option-title">All files</div>
                     <div className="cart-download__option-description">
                         Downloads all files without using any selected filters.
@@ -205,7 +205,7 @@ const CartBatchDownloadComponent = (
                     downloadClickHandler={handleDownloadClick}
                     closeModalHandler={closeModal}
                     additionalContent={
-                        <React.Fragment>
+                        <>
                             {elements.length >= ELEMENT_WARNING_LENGTH_MIN ?
                                 <p className="cart__batch-download-warning">
                                     The &ldquo;files.txt&rdquo; file can take a very long time to generate
@@ -218,11 +218,11 @@ const CartBatchDownloadComponent = (
                                     Unable to download as no {getDownloadTypeText(downloadType)} are available.
                                 </p>
                             : null}
-                        </React.Fragment>
+                        </>
                     }
                 />
             : null}
-        </React.Fragment>
+        </>
     );
 };
 
@@ -276,8 +276,8 @@ const mapStateToProps = (state, ownProps) => ({
     fetch: ownProps.fetch,
 });
 
-const mapDispatchToProps = dispatch => ({
-    setInProgress: enable => dispatch(cartOperationInProgress(enable)),
+const mapDispatchToProps = (dispatch) => ({
+    setInProgress: (enable) => dispatch(cartOperationInProgress(enable)),
 });
 
 const CartBatchDownloadInternal = connect(mapStateToProps, mapDispatchToProps)(CartBatchDownloadComponent);

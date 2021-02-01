@@ -22,7 +22,7 @@ class CartShareComponent extends React.Component {
      * Called when the user clicks the Copy button to copy the URL to the clipboard.
      */
     copyUrl() {
-        // Gewt the URL text <input> element in the DOM and select all of the text in it to copy to
+        // Get the URL text <input> element in the DOM and select all of the text in it to copy to
         // the user's clipboard.
         // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard#Using_execCommand()
         this.cartUrlBox.select();
@@ -61,7 +61,7 @@ class CartShareComponent extends React.Component {
                     </p>
                     <div className="cart__share-url">
                         <input ref={(input) => { this.cartUrlBox = input; }} type="text" aria-label="Sharable cart URL" value={sharableUrl} readOnly />
-                        <button id="cart-share-url-trigger" aria-label="Copy shared cart URL" onClick={this.copyUrl} className="btn btn-sm"><i className="icon icon-clipboard" />&nbsp;Copy</button>
+                        <button type="button" id="cart-share-url-trigger" aria-label="Copy shared cart URL" onClick={this.copyUrl} className="btn btn-sm"><i className="icon icon-clipboard" />&nbsp;Copy</button>
                     </div>
                 </ModalBody>
                 <ModalFooter

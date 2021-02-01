@@ -101,7 +101,7 @@ class CartStatusComponent extends React.Component {
             const cartName = (savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
             const menuItems = [];
             const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
-            const clearCartItem = !locked ? <button key="clear" onClick={this.clearCartClick}>Clear cart</button> : null;
+            const clearCartItem = !locked ? <button type="button" key="clear" onClick={this.clearCartClick}>Clear cart</button> : null;
             const lockIcon = cartName ? <div className="cart-nav-lock">{svgIcon(locked ? 'lockClosed' : 'lockOpen')}</div> : null;
 
             // The href is just to quiet ESLint for the bad href. This code shouldn't do this
@@ -115,7 +115,7 @@ class CartStatusComponent extends React.Component {
             if (elements.length > 0) {
                 menuItems.push(
                     viewCartItem,
-                    <button key="share" onClick={this.shareCartClick}>Share cart</button>,
+                    <button type="button" key="share" onClick={this.shareCartClick}>Share cart</button>,
                     clearCartItem,
                     <DropdownMenuSep key="sep-2" />
                 );

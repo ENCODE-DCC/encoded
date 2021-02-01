@@ -12,7 +12,7 @@
  * @param {object} user User object from DB
  * @return {string} User's localstorage key
  */
-const cartLocalstorageKey = user => `encode-cart-${user['@id']}`;
+const cartLocalstorageKey = (user) => `encode-cart-${user['@id']}`;
 
 
 /**

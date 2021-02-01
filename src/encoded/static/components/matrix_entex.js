@@ -95,7 +95,7 @@ const entexDonors = [
 const DonorLegendRow = ({ entexDonor }) => (
     <div className="donor-legend-row">
         <div className="donor-cell">
-            {entexDonors.map(donorQuadrant => (
+            {entexDonors.map((donorQuadrant) => (
                 <div key={donorQuadrant.accession} className={`donor-quadrant donor-quadrant--${donorQuadrant.cssSuffix}${donorQuadrant.accession !== entexDonor.accession ? ' blank' : ''}`} />
             ))}
         </div>
@@ -117,7 +117,7 @@ DonorLegendRow.propTypes = {
  */
 const DonorLegend = () => (
     <div className="donor-legend">
-        {entexDonors.map(entexDonor => (
+        {entexDonors.map((entexDonor) => (
             <DonorLegendRow key={entexDonor.accession} entexDonor={entexDonor} />
         ))}
     </div>
@@ -210,7 +210,7 @@ const generateColMap = (context) => {
     });
 
     // If targetAssays only contains nulls, then just empty it so we can skip the targetAssay row.
-    if (!targetAssays.some(assay => assay !== null)) {
+    if (!targetAssays.some((assay) => assay !== null)) {
         targetAssays = [];
     }
 
@@ -224,8 +224,8 @@ const generateColMap = (context) => {
  */
 const DonorCell = ({ donorDatum, rowCategory, rowSubcategory, colCategory, colSubcategory }) => {
     // Construct the screen-reader string with all provided accessions, comma separated.
-    const relevantDonors = entexDonors.filter(entexDonor => donorDatum.includes(entexDonor.accession));
-    const donorVoice = relevantDonors.map(relevantDonor => relevantDonor.voice).join(', ');
+    const relevantDonors = entexDonors.filter((entexDonor) => donorDatum.includes(entexDonor.accession));
+    const donorVoice = relevantDonors.map((relevantDonor) => relevantDonor.voice).join(', ');
 
     return (
         <div className="donor-cell">
@@ -282,7 +282,7 @@ const convertContextToDataTable = (context) => {
 
     // Convert column map to an array of column map values sorted by column number for displaying
     // in the matrix header.
-    const sortedCols = Object.keys(colMap).map(assayColKey => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
+    const sortedCols = Object.keys(colMap).map((assayColKey) => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
 
     // Generate the matrix header row labels for the assays with targets. Need a max-width inline
     // style so that wide labels don't make the target columns expand.
@@ -527,7 +527,7 @@ const MatrixPresentation = ({ context }) => {
     // why.
     React.useEffect(() => {
         // Direct callbacks not memoized because of their small size.
-        const handleScrollEvent = event => handleScroll(event.target);
+        const handleScrollEvent = (event) => handleScroll(event.target);
         const handleResizeEvent = () => handleScroll(ref.current);
 
         // Cache the reference to the scrollable matrix <div> so that we can remove the "scroll"

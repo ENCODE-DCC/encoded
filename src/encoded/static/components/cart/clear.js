@@ -36,8 +36,8 @@ class CartClearModalComponent extends React.Component {
                     <p id="clear-cart-description">Clearing the cart is not reversible.</p>
                 </ModalBody>
                 <ModalFooter
-                    closeModal={<button id="clear-cart-close" onClick={closeClickHandler} className="btn btn-default">Cancel</button>}
-                    submitBtn={<button onClick={this.handleConfirmClearClick} disabled={inProgress} className="btn btn-danger" id="clear-cart-submit">Clear</button>}
+                    closeModal={<button type="button" id="clear-cart-close" onClick={closeClickHandler} className="btn btn-default">Cancel</button>}
+                    submitBtn={<button type="button" onClick={this.handleConfirmClearClick} disabled={inProgress} className="btn btn-danger" id="clear-cart-submit">Clear</button>}
                     dontClose
                 />
             </Modal>
@@ -63,14 +63,14 @@ CartClearModalComponent.defaultProps = {
     inProgress: false,
 };
 
-CartClearModalComponent.mapStateToProps = state => ({
+CartClearModalComponent.mapStateToProps = (state) => ({
     elements: state.elements,
     cartName: state.savedCartObj && state.savedCartObj.name,
     inProgress: state.inProgress,
 });
 
 CartClearModalComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    onClearCartClick: elements => dispatch(removeMultipleFromCartAndSave(elements, ownProps.fetch)),
+    onClearCartClick: (elements) => dispatch(removeMultipleFromCartAndSave(elements, ownProps.fetch)),
 });
 
 const CartClearModalInternal = connect(CartClearModalComponent.mapStateToProps, CartClearModalComponent.mapDispatchToProps)(CartClearModalComponent);
@@ -122,7 +122,7 @@ class CartClearButtonComponent extends React.Component {
         if (elements.length > 0 && !this.props.locked) {
             return (
                 <div className="cart-tools-extras__button">
-                    <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-danger btn-sm btn-inline">Clear cart</button>
+                    <button type="button" disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-danger btn-sm btn-inline">Clear cart</button>
                     {this.state.modalOpen ?
                         <CartClearModal closeClickHandler={this.handleCloseClick} />
                     : null}
@@ -148,7 +148,7 @@ CartClearButtonComponent.defaultProps = {
     locked: false,
 };
 
-CartClearButtonComponent.mapStateToProps = state => ({
+CartClearButtonComponent.mapStateToProps = (state) => ({
     elements: state.elements,
     inProgress: state.inProgress,
     locked: state.locked,

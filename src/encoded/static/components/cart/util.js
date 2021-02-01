@@ -38,7 +38,7 @@ export const defaultDatasetType = {
  * @return {array} Copy of `allowedCartTypes` global
  */
 export const cartGetAllowedTypes = () => (
-    Object.keys(allowedDatasetTypes).map(datasetType => allowedDatasetTypes[datasetType].type)
+    Object.keys(allowedDatasetTypes).map((datasetType) => allowedDatasetTypes[datasetType].type)
 );
 
 
@@ -104,6 +104,6 @@ export const getIsCartSearch = (context) => {
  *
  * @return {array} @types of all elements in the cart search results, de-duped.
  */
-export const getCartSearchTypes = context => (
-    _.uniq(context['@graph'].map(result => result['@type'][0]))
+export const getCartSearchTypes = (context) => (
+    _.uniq(context['@graph'].map((result) => result['@type'][0]))
 );

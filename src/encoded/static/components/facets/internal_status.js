@@ -1,15 +1,14 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { DefaultFacet } from './defaults';
 import FacetRegistry from './registry';
 
 
 /**
- * The Internal Status facet only displays with an admin login. Its display gets supressed with the
+ * The Internal Status facet only displays with an admin login. Its display gets suppressed with the
  * null output from this component otherwise.
  */
 const InternalStatusFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, isExpanded, handleExpanderClick, handleKeyDown }, reactContext) => (
-    <React.Fragment>
+    <>
         {reactContext.session_properties && reactContext.session_properties.admin ?
             <DefaultFacet
                 facet={facet}
@@ -23,7 +22,7 @@ const InternalStatusFacet = ({ facet, results, mode, relevantFilters, pathname, 
                 handleKeyDown={handleKeyDown}
             />
         : null}
-    </React.Fragment>
+    </>
 );
 
 InternalStatusFacet.propTypes = {

@@ -6,8 +6,9 @@ import * as globals from './globals';
 
 function sortedJson(obj) {
     if (obj instanceof Array) {
-        return obj.map(value => sortedJson(value));
-    } else if (obj instanceof Object) {
+        return obj.map((value) => sortedJson(value));
+    }
+    if (obj instanceof Object) {
         const sorted = {};
         Object.keys(obj).sort().forEach((key) => {
             sorted[key] = obj[key];
@@ -22,7 +23,7 @@ class EditForm extends React.Component {
     constructor() {
         super();
 
-        // Intialize component state.
+        // Initialize component state.
         this.state = {
             communicating: false,
             data: undefined,
@@ -109,7 +110,7 @@ class EditForm extends React.Component {
 
     /* eslint-disable jsx-a11y/anchor-is-valid */
     render() {
-        const error = this.state.error;
+        const { error } = this.state;
         return (
             <div>
                 <div
@@ -124,7 +125,7 @@ class EditForm extends React.Component {
                 <div className="form-edit__save-controls">
                     <a href="" className="btn btn-default">Cancel</a>
                     {' '}
-                    <button onClick={this.save} className="btn btn-info" disabled={this.communicating || this.state.editor_error}>Save</button>
+                    <button type="button" onClick={this.save} className="btn btn-info" disabled={this.communicating || this.state.editor_error}>Save</button>
                 </div>
                 <ul style={{ clear: 'both' }}>
                     {error && error.code === 422 ? error.errors.map((err, i) => (
@@ -156,7 +157,7 @@ EditForm.contextTypes = {
 
 
 const ItemEdit = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'view-item');
     const title = globals.listingTitles.lookup(context)({ context });
     const url = `${context['@id']}?frame=edit`;

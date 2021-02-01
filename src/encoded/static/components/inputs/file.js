@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
  *   href - base64-encoded contents of file
  */
 const adjustFileValues = (rFile, readerResult) => {
-    let type = rFile.type;
+    let { type } = rFile;
     let href = readerResult;
 
     // https://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript/1203361#answer-12900504
@@ -58,7 +58,7 @@ export default class FileInput extends React.Component {
     onChange(e, file) {
         let rFile = file;
         if (rFile === undefined) {
-            const input = this.input;
+            const { input } = this;
             rFile = input.files[0];
         }
         const reader = new FileReader();

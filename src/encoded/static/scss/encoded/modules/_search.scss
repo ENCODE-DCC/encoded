@@ -289,6 +289,10 @@ $form-bg: #f3f3f3;
         .btn {
             flex: 0 1 auto;
             margin-right: 5px;
+
+            .icon {
+                margin-right: 5px;
+            }
         }
 
         .btn-attached {

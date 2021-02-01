@@ -72,54 +72,43 @@ const cartModule = (state, action = { type: NO_ACTION }) => {
         switch (action.type) {
         case ADD_TO_CART:
             if (state.elements.indexOf(action.elementAtId) === -1) {
-                return Object.assign({}, state, {
-                    elements: state.elements.concat([action.elementAtId]),
-                });
+                return { ...state, elements: state.elements.concat([action.elementAtId]) };
             }
             return state;
-        case ADD_MULTIPLE_TO_CART: {
-            const elements = mergeCarts(state.elements, action.elementAtIds);
-            return Object.assign({}, state, {
-                elements,
-            });
-        }
+        case ADD_MULTIPLE_TO_CART:
+            return { ...state, elements: mergeCarts(state.elements, action.elementAtIds) };
         case REMOVE_FROM_CART: {
             const doomedIndex = state.elements.indexOf(action.elementAtId);
             if (doomedIndex !== -1) {
-                return Object.assign({}, state, {
+                return {
+                    ...state,
                     elements: state.elements
                         .slice(0, doomedIndex)
                         .concat(state.elements.slice(doomedIndex + 1)),
-                });
+                };
             }
             return state;
         }
         case REMOVE_MULTIPLE_FROM_CART:
-            return Object.assign({}, state, {
-                elements: _.difference(state.elements, action.elementAtIds),
-            });
+            return { ...state, elements: _.difference(state.elements, action.elementAtIds) };
         case REPLACE_CART:
-            return Object.assign({}, state, {
-                elements: action.elementAtIds,
-            });
+            return { ...state, elements: action.elementAtIds };
         case CACHE_SAVED_CART:
-            return Object.assign({}, state, {
-                savedCartObj: action.savedCartObj,
-            });
+            return { ...state, savedCartObj: action.savedCartObj };
         case CART_OPERATION_IN_PROGRESS:
-            return Object.assign({}, state, { inProgress: action.inProgress });
+            return { ...state, inProgress: action.inProgress };
         case DISPLAY_ALERT:
-            return Object.assign({}, state, { alert: action.alert });
+            return { ...state, alert: action.alert };
         case SET_NAME:
-            return Object.assign({}, state, { name: action.name });
+            return { ...state, name: action.name };
         case SET_IDENTIFIER:
-            return Object.assign({}, state, { identifier: action.identifier });
+            return { ...state, identifier: action.identifier };
         case SET_LOCKED:
-            return Object.assign({}, state, { locked: action.locked });
+            return { ...state, locked: action.locked };
         case SET_CURRENT:
-            return Object.assign({}, state, { current: action.current });
+            return { ...state, current: action.current };
         case SET_STATUS:
-            return Object.assign({}, state, { status: action.status });
+            return { ...state, status: action.status };
         default:
             return state;
         }
@@ -136,7 +125,7 @@ const cartModule = (state, action = { type: NO_ACTION }) => {
  */
 const cartMergeElements = (cart, elements) => {
     const mergedElements = mergeCarts(cart.elements, elements);
-    return Object.assign({}, cart, { elements: mergedElements });
+    return { ...cart, elements: mergedElements };
 };
 
 

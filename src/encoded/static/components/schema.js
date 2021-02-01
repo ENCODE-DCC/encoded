@@ -40,9 +40,9 @@ const excludedTerms = [
 
 // Functions to display simple schema term types, keyed by `typeof` result.
 const simpleTypeDisplay = {
-    string: item => <span>{item}</span>,
-    boolean: item => <span>{item ? 'True' : 'False'}</span>,
-    number: item => <span >{item}</span>,
+    string: (item) => <span>{item}</span>,
+    boolean: (item) => <span>{item ? 'True' : 'False'}</span>,
+    number: (item) => <span>{item}</span>,
 };
 
 
@@ -135,7 +135,7 @@ SchemaTermLinks.propTypes = {
 };
 
 
-// Display linkFrom and linkTo property values as links to the respecive schema pages, given a
+// Display linkFrom and linkTo property values as links to the respective schema pages, given a
 // property in the schema that contains at least one linkTo and/or linkFrom.
 const SchemaTermLinksSection = (props) => {
     const { schemaProp, profilesMap } = props;
@@ -190,7 +190,7 @@ class SchemaTermItemDisplay extends React.Component {
     }
 
     handleDisclosureClick() {
-        this.setState(prevState => ({ jsonOpen: !prevState.jsonOpen }));
+        this.setState((prevState) => ({ jsonOpen: !prevState.jsonOpen }));
     }
 
     render() {
@@ -199,7 +199,7 @@ class SchemaTermItemDisplay extends React.Component {
         return (
             <div>
                 <div className="profile-value__item">
-                    <button className="profile-value__disclosure-button" onClick={this.handleDisclosureClick}>{collapseIcon(!this.state.jsonOpen)}</button>
+                    <button type="button" className="profile-value__disclosure-button" onClick={this.handleDisclosureClick}>{collapseIcon(!this.state.jsonOpen)}</button>
                     <span> {term}</span>
                 </div>
                 {this.state.jsonOpen ?
@@ -227,9 +227,9 @@ const SchemaTermDisplay = (props) => {
 
     return (
         <div>
-            {Object.keys(props.schemaValue).sort().map(key =>
+            {Object.keys(props.schemaValue).sort().map((key) => (
                 <SchemaTermItemDisplay key={`${schemaName}-${key}`} term={key} schemaValue={schemaValue} schemaName={schemaName} linkedTerm={linkedTerm} profilesMap={profilesMap} />
-            )}
+            ))}
         </div>
     );
 };
@@ -260,7 +260,7 @@ const TermDisplay = (props) => {
             // The value's an array, so display a list. Filter out any non-simple types in the
             // array (at this time, I don't think any schema array values have non-simple types)
             // and sort the results.
-            const simpleTermValues = termSchema.filter(item => !!simpleTypeDisplay[typeof item]).sort();
+            const simpleTermValues = termSchema.filter((item) => !!simpleTypeDisplay[typeof item]).sort();
             if (simpleTermValues.length > 0) {
                 return (
                     <div>
@@ -305,7 +305,7 @@ class DisplayObjectSection extends React.PureComponent {
     handleDisclosureClick() {
         // Click in the disclosure icon. Toggle the `sectionOpen` state to show or hide the list of
         // child properties.
-        this.setState(prevState => ({ sectionOpen: !prevState.sectionOpen }));
+        this.setState((prevState) => ({ sectionOpen: !prevState.sectionOpen }));
     }
 
     render() {
@@ -317,7 +317,7 @@ class DisplayObjectSection extends React.PureComponent {
         const schemaIsArray = Array.isArray(schemaTerm);
         let simpleTermValuesExist = true;
         if (schemaIsObject && schemaIsArray) {
-            const simpleTermValues = schemaTerm.filter(item => !!simpleTypeDisplay[typeof item]).sort();
+            const simpleTermValues = schemaTerm.filter((item) => !!simpleTypeDisplay[typeof item]).sort();
             simpleTermValuesExist = simpleTermValues.length > 0;
         }
 
@@ -329,6 +329,7 @@ class DisplayObjectSection extends React.PureComponent {
             <div className={`profile-display__section${this.state.sectionOpen ? ' profile-display__section--open' : ''}`}>
                 <h3 className="profile-value__item" id={accordionLabel}>
                     <button
+                        type="button"
                         className="profile-value__disclosure-button"
                         data-toggle="collapse"
                         data-target={`#${accordionId}`}
@@ -365,12 +366,12 @@ DisplayObjectSection.propTypes = {
 // Display an entire formatted schema.
 const DisplayObject = (props) => {
     const { schema, schemaName, profilesMap } = props;
-    const schemaTerms = Object.keys(schema).filter(term => excludedTerms.indexOf(term) === -1);
+    const schemaTerms = Object.keys(schema).filter((term) => excludedTerms.indexOf(term) === -1);
     return (
         <div className="profile-display">
-            {schemaTerms.map(term =>
+            {schemaTerms.map((term) => (
                 <DisplayObjectSection key={`${schemaName}-${term}`} term={term} schemaName={schemaName} profilesMap={profilesMap} schema={schema} />
-            )}
+            ))}
         </div>
     );
 };
@@ -419,7 +420,7 @@ const RawObjectControls = ({ rawSchemaElement, textHasSelection }) => {
 
     return (
         <div className="raw-schema__controls">
-            <button className="btn btn-info btn-xs" onClick={copyHandler}>
+            <button type="button" className="btn btn-info btn-xs" onClick={copyHandler}>
                 {textHasSelection ? <>Copy selected JSON</> : <>Copy all JSON</>}
             </button>
         </div>
@@ -516,7 +517,7 @@ Markdown.defaultProps = {
 
 
 // Display the Markdown-formatted change log.
-const ChangeLog = props => (
+const ChangeLog = (props) => (
     <div>
         <Markdown source={props.source} />
     </div>
@@ -541,7 +542,7 @@ const SchemaPanel = (props, reactContext) => {
     // Determine whether we should display an "Add" button or not depending on the user's logged-in
     // state.
     const roles = globals.getRoles(reactContext.session_properties);
-    const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+    const isAuthorized = ['admin', 'submitter'].some((role) => roles.includes(role));
     const decoration = isAuthorized ? <a href={`/${schemaName}/#!add`} className="btn btn-info">Add</a> : null;
 
     return (
@@ -582,9 +583,9 @@ SchemaPanel.contextTypes = {
 
 // Displays a page for a single schema given in the `context` prop.
 const SchemaPage = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context);
-    const title = context.title;
+    const { title } = context;
 
     // The schema id is a path to the schema's JSON. Convert that to just the schema name.
     const schemaName = schemaIdToName(context.id);
@@ -645,7 +646,7 @@ const AllSchemasPage = (props, reactContext) => {
     // Get a sorted list of all available schema object names (e.g. GeneticModification). Filter
     // out those without any `identifyingProperties` because the user can't add objects of that
     // type, nor display their schemas.
-    const objectNames = Object.keys(context).sort().filter(objectName => (
+    const objectNames = Object.keys(context).sort().filter((objectName) => (
         context[objectName].identifyingProperties && context[objectName].identifyingProperties.length > 0
     ));
 

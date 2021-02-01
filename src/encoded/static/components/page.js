@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -10,7 +9,7 @@ import { PickerActions, resultItemClass } from './search';
 dayjs.extend(utc);
 
 const Page = (props) => {
-    const context = props.context;
+    const { context } = props;
     if (context.news) {
         return (
             <Panel addClasses="news-post">
@@ -64,15 +63,15 @@ globals.listingViews.register(Listing, 'Page');
 
 // Display a list of keywords for the news article in the `post` prop.
 const NewsKeywordList = (props) => {
-    const post = props.post;
+    const { post } = props;
     if (post.news_keywords && post.news_keywords.length > 0) {
         return (
             <div className="news-keyword-list">
                 <p>View news matching these terms, or all recent news</p>
-                <a className="btn btn-default btn-sm news-keyword" href={'/search/?type=Page&news=true'} title="Show all recent news posts">All recent news</a>
-                {post.news_keywords.map(keyword =>
+                <a className="btn btn-default btn-sm news-keyword" href="/search/?type=Page&news=true" title="Show all recent news posts">All recent news</a>
+                {post.news_keywords.map((keyword) => (
                     <a key={keyword} className="btn btn-default btn-sm news-keyword" href={`/search/?type=Page&news=true&news_keywords=${keyword}`} title={`Show all news posts tagged with ${keyword}`}>{keyword}</a>
-                )}
+                ))}
             </div>
         );
     }
@@ -86,7 +85,7 @@ NewsKeywordList.propTypes = {
 
 // Display a list of news sharing links/buttons for the news article in the `post` prop.
 const NewsShareList = (props, reactContext) => {
-    const post = props.post;
+    const { post } = props;
     return (
         <div className="news-share-list">
             <a className="share-twitter" href={`http://twitter.com/intent/tweet?url=${reactContext.location_href}&text=${post.title}&via=EncodeDCC`} target="_blank" rel="noopener noreferrer" title="Share this page on Twitter in a new window" aria-label="Share on Twitter">
@@ -110,7 +109,7 @@ NewsShareList.contextTypes = {
 
 // Write Facebook meta tags to the site header.
 export default function newsHead(props, siteUrl) {
-    const context = props.context;
+    const { context } = props;
 
     if (context.news) {
         return [

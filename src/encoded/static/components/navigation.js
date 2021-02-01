@@ -24,7 +24,7 @@ class HomeBrand extends React.Component {
 
     render() {
         return (
-            <button className="home-brand" onClick={this.handleClick}>
+            <button type="button" className="home-brand" onClick={this.handleClick}>
                 {this.context.portal.portal_title}
                 <span className="sr-only">Home</span>
             </button>
@@ -65,19 +65,39 @@ export default class Navigation extends React.Component {
 
     componentDidMount() {
         // Add a click handler to the DOM document -- the entire page
-        document.addEventListener('click', e => this.documentClickHandler(e));
+        document.addEventListener('click', (e) => this.documentClickHandler(e));
     }
 
     componentWillUnmount() {
         // Remove the DOM document click handler now that the DropdownButton is going away.
-        document.removeEventListener('click', e => this.documentClickHandler(e));
+        document.removeEventListener('click', (e) => this.documentClickHandler(e));
+    }
+
+    /**
+     * Handle a click in the close box of the test-data warning.
+     * @param {object} e React synthetic event
+     */
+    handleClickWarning(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Remove the warning banner because the user clicked the close icon
+        this.setState({ testWarning: false });
+
+        // If collection with .sticky-header on page, jiggle scroll position
+        // to force the sticky header to jump to the top of the page.
+        const hdrs = document.getElementsByClassName('sticky-header');
+        if (hdrs.length > 0) {
+            window.scrollBy(0, -1);
+            window.scrollBy(0, 1);
+        }
     }
 
     /**
      * A click outside the DropdownButton closes the dropdown.
      */
     documentClickHandler(e) {
-        const className = e.target.className;
+        const { className } = e.target;
         // Only close navigation hamburger when user does not click on tooltip icon
         // Note: "toString" is required for hamburger SVG on mobile which does not have a className that is a string
         // Elements with validClassName and validTagName should not close the menu when clicked on
@@ -109,7 +129,7 @@ export default class Navigation extends React.Component {
             // On touch devices, activate menu item if new one chosen or deactivate menu item if old one chosen
             if (e.type === 'click' && isMobile) {
                 activateMenuItem = dropdownId !== this.state.openDropdown;
-                this.setState(prevState => ({
+                this.setState((prevState) => ({
                     openDropdown: ((dropdownId !== prevState.openDropdown) && dropdownIdIsString) ? dropdownId : '',
                 }));
             // On non-touch devices, a click functions like a hover would, it only activates and cannot deactivate
@@ -140,26 +160,6 @@ export default class Navigation extends React.Component {
         }
     }
 
-    /**
-     * Handle a click in the close box of the test-data warning.
-     * @param {object} e React synthetic event
-     */
-    handleClickWarning(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Remove the warning banner because the user clicked the close icon
-        this.setState({ testWarning: false });
-
-        // If collection with .sticky-header on page, jiggle scroll position
-        // to force the sticky header to jump to the top of the page.
-        const hdrs = document.getElementsByClassName('sticky-header');
-        if (hdrs.length > 0) {
-            window.scrollBy(0, -1);
-            window.scrollBy(0, 1);
-        }
-    }
-
     render() {
         return (
             <div id="navbar" className="navbar__wrapper">
@@ -178,7 +178,7 @@ export default class Navigation extends React.Component {
                     <div className="test-warning">
                         <div className="container test-warning__content">
                             <div className="test-warning__text">The data displayed on this page is not official and only for testing purposes.</div>
-                            <button className="test-warning__close" onClick={this.handleClickWarning}>
+                            <button type="button" className="test-warning__close" onClick={this.handleClickWarning}>
                                 <i className="icon icon-times-circle-o" />
                                 <span className="sr-only">Close test warning banner</span>
                             </button>
@@ -210,8 +210,8 @@ Navigation.childContextTypes = {
 // Main navigation menus
 const GlobalSections = (props, context) => {
     const glossary = require('./glossary/glossary.json');
-    const actions = context.listActionsFor('global_sections').map(action =>
-        <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} >
+    const actions = context.listActionsFor('global_sections').map((action) => (
+        <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
             {action.children ?
                 <DropdownMenu label={action.id}>
                     {action.children.map((childAction) => {
@@ -219,7 +219,7 @@ const GlobalSections = (props, context) => {
                         if (childAction.id.substring(0, 4) === 'sep-') {
                             return <DropdownMenuSep key={childAction.id} />;
                         }
-                        const glossaryMatch = glossary.find(def => def.term.toLowerCase() === childAction.title.toLowerCase());
+                        const glossaryMatch = glossary.find((def) => def.term.toLowerCase() === childAction.title.toLowerCase());
                         if (glossaryMatch) {
                             return (
                                 <div
@@ -250,7 +250,7 @@ const GlobalSections = (props, context) => {
                 </DropdownMenu>
             : null}
         </NavItem>
-    ).concat(<CartStatus key="cart-control" openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} />);
+    )).concat(<CartStatus key="cart-control" openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} />);
     return <Nav>{actions}</Nav>;
 };
 
@@ -272,7 +272,7 @@ GlobalSections.contextTypes = {
 
 
 const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }, context) => {
-    const session = context.session;
+    const { session } = context;
     const disabled = !session;
     const userActionRender = !(session && session['auth.userid']) ?
         <a href="#!" className="dropdown__toggle" data-trigger="login" disabled={disabled}>Sign in / Create account</a> :
@@ -309,11 +309,11 @@ SecondarySections.defaultProps = {
 
 // Context actions: mainly for editing the current object
 const ContextActions = (props, context) => {
-    const actions = context.listActionsFor('context').map(action =>
+    const actions = context.listActionsFor('context').map((action) => (
         <a href={action.href} key={action.name}>
             <i className="icon icon-pencil" /> {action.title}
         </a>
-    );
+    ));
 
     // No action menu
     if (actions.length === 0) {
@@ -386,12 +386,12 @@ const UserActions = (props, context) => {
         // Logged out, so no user menu at all
         return null;
     }
-    const actions = context.listActionsFor('user').map(action =>
+    const actions = context.listActionsFor('user').map((action) => (
         <a href={action.href || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
             {action.title}
         </a>
-    );
-    const user = sessionProperties.user;
+    ));
+    const { user } = sessionProperties;
     const fullname = (user && user.title) || 'unknown';
     return (
         <NavItem dropdownId="useractions" dropdownTitle={fullname} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
@@ -433,7 +433,7 @@ export const Breadcrumbs = (props) => {
     let accretingTip = '';
 
     // Get an array of just the crumbs with something in their id
-    const crumbs = _.filter(props.crumbs, crumb => crumb.id);
+    const crumbs = _.filter(props.crumbs, (crumb) => crumb.id);
     const rootTitle = crumbs[0].id;
 
     return (

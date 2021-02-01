@@ -30,11 +30,11 @@ export function annotationBiosampleSummary(annotation) {
     if (summaryStrings.length > 0) {
         return (
             <span className="biosample-summary">
-                {summaryStrings.map((summaryString, i) =>
+                {summaryStrings.map((summaryString, i) => (
                     <span key={i}>
                         {i > 0 ? <span>{', '}{summaryString}</span> : <span>{summaryString}</span>}
                     </span>
-                )}
+                ))}
             </span>
         );
     }
@@ -121,12 +121,12 @@ const AnnotationComponent = (props, reactContext) => {
                                 <div data-test="targets">
                                     <dt>Target</dt>
                                     <dd>
-                                        {context.targets.map((target, i) =>
-                                            <React.Fragment>
+                                        {context.targets.map((target, i) => (
+                                            <>
                                                 {i > 0 ? <span>, </span> : null}
                                                 <a href={target['@id']}>{target.label}</a>
-                                            </React.Fragment>
-                                        )}
+                                            </>
+                                        ))}
                                     </dd>
                                 </div>
                             : null}
@@ -398,7 +398,7 @@ globals.contentViews.register(PublicationData, 'PublicationData');
 const fileCols = {
     accession: {
         title: 'Accession',
-        display: file => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
+        display: (file) => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
     },
     dataset: {
         title: 'Dataset',
@@ -416,12 +416,12 @@ const fileCols = {
     output_type: { title: 'Output type' },
     title: {
         title: 'Lab',
-        getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
+        getValue: (file) => (file.lab && file.lab.title ? file.lab.title : ''),
     },
     assembly: { title: 'Mapping assembly' },
     status: {
         title: 'File status',
-        display: item => <Status item={item} badgeSize="small" inline />,
+        display: (item) => <Status item={item} badgeSize="small" inline />,
         sorter: (aStatus, bStatus) => (aStatus < bStatus ? -1 : (aStatus > bStatus ? 1 : 0)),
     },
 };
@@ -665,7 +665,7 @@ const ReferenceComponent = (props, reactContext) => {
                                     <dt>Examined loci</dt>
                                     <dd>
                                         <ul>
-                                            {context.examined_loci.map(examinedLocus => (
+                                            {context.examined_loci.map((examinedLocus) => (
                                                 <li key={examinedLocus['@id']} className="multi-comma">
                                                     <a href={examinedLocus['@id']}>
                                                         {examinedLocus.symbol}
@@ -681,12 +681,12 @@ const ReferenceComponent = (props, reactContext) => {
                                 <div data-test="relatedpipelines">
                                     <dt>Related Pipelines</dt>
                                     <dd>
-                                        {context.related_pipelines.map((pipeline, i) =>
+                                        {context.related_pipelines.map((pipeline, i) => (
                                             <React.Fragment key={pipeline['@id']}>
                                                 {i > 0 ? <span>, </span> : null}
                                                 <a href={pipeline['@id']}>{pipeline.accession}</a>
                                             </React.Fragment>
-                                        )}
+                                        ))}
                                     </dd>
                                 </div>
                             : null}
@@ -788,7 +788,7 @@ const ProjectComponent = (props, reactContext) => {
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
     // Collect organisms
-    const organisms = (context.organism && context.organism.length > 0) ? _.uniq(context.organism.map(organism => organism.name)) : [];
+    const organisms = (context.organism && context.organism.length > 0) ? _.uniq(context.organism.map((organism) => organism.name)) : [];
 
     // Set up the breadcrumbs
     const datasetType = context['@type'][1];
@@ -854,14 +854,14 @@ const ProjectComponent = (props, reactContext) => {
                             {context.biosample_ontology && context.biosample_ontology.length > 0 ?
                                 <div data-test="biosampletermname">
                                     <dt>Biosample term name</dt>
-                                    <dd>{_.uniq(context.biosample_ontology.map(b => b.term_name)).join(', ')}</dd>
+                                    <dd>{_.uniq(context.biosample_ontology.map((b) => b.term_name)).join(', ')}</dd>
                                 </div>
                             : null}
 
                             {context.biosample_ontology && context.biosample_ontology.length > 0 ?
                                 <div data-test="biosampletype">
                                     <dt>Biosample type</dt>
-                                    <dd>{_.uniq(context.biosample_ontology.map(b => b.classification)).join(', ')}</dd>
+                                    <dd>{_.uniq(context.biosample_ontology.map((b) => b.classification)).join(', ')}</dd>
                                 </div>
                             : null}
 
@@ -967,7 +967,7 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
     // Collect organisms
-    const organisms = (context.organism && context.organism.length > 0) ? _.uniq(context.organism.map(organism => organism.name)) : [];
+    const organisms = (context.organism && context.organism.length > 0) ? _.uniq(context.organism.map((organism) => organism.name)) : [];
 
     // Set up the breadcrumbs
     const datasetType = context['@type'][1];
@@ -1122,20 +1122,20 @@ globals.contentViews.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
 export const FilePanelHeader = (props) => {
-    const context = props.context;
+    const { context } = props;
 
     return (
         <div>
             {context.visualize && context.status === 'released' ?
                 <span className="pull-right">
                     <DropdownButton.Immediate label="Visualize Data">
-                        {Object.keys(context.visualize).sort().map(assembly =>
-                            Object.keys(context.visualize[assembly]).sort().map(browser =>
+                        {Object.keys(context.visualize).sort().map((assembly) => (
+                            Object.keys(context.visualize[assembly]).sort().map((browser) => (
                                 <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
                                     {assembly} {browser}
                                 </a>
-                            )
-                        )}
+                            ))
+                        ))}
                     </DropdownButton.Immediate>
                 </span>
             : null}
@@ -1153,7 +1153,7 @@ function displayPossibleControls(item, adminUser) {
     if (item.possible_controls && item.possible_controls.length > 0) {
         return (
             <span>
-                {item.possible_controls.map((control, i) =>
+                {item.possible_controls.map((control, i) => (
                     <span key={control.uuid}>
                         {i > 0 ? <span>, </span> : null}
                         {adminUser || publicDataset(control) ?
@@ -1162,7 +1162,7 @@ function displayPossibleControls(item, adminUser) {
                             <span>{control.accession}</span>
                         }
                     </span>
-                )}
+                ))}
             </span>
         );
     }
@@ -1173,14 +1173,15 @@ function displayPossibleControls(item, adminUser) {
 const basicTableColumns = {
     accession: {
         title: 'Accession',
-        display: (experiment, meta) =>
+        display: (experiment, meta) => (
             <span>
                 {meta.adminUser || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
                 }
-            </span>,
+            </span>
+        ),
     },
 
     assay_term_name: {
@@ -1189,7 +1190,7 @@ const basicTableColumns = {
 
     target: {
         title: 'Target',
-        getValue: experiment => (experiment.target ? experiment.target.label : null),
+        getValue: (experiment) => (experiment.target ? experiment.target.label : null),
     },
 
     description: {
@@ -1198,16 +1199,16 @@ const basicTableColumns = {
 
     lab: {
         title: 'Lab',
-        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
 
     },
     status: {
         title: 'Status',
-        display: experiment => <Status item={experiment} badgeSize="small" />,
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
     },
     cart: {
         title: 'Cart',
-        display: experiment => <CartToggle element={experiment} />,
+        display: (experiment) => <CartToggle element={experiment} />,
         sorter: false,
     },
 };
@@ -1215,14 +1216,15 @@ const basicTableColumns = {
 const treatmentSeriesTableColumns = {
     accession: {
         title: 'Accession',
-        display: (experiment, meta) =>
+        display: (experiment, meta) => (
             <span>
                 {meta.adminUser || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
                 }
-            </span>,
+            </span>
+        ),
     },
 
     possible_controls: {
@@ -1237,7 +1239,7 @@ const treatmentSeriesTableColumns = {
 
     target: {
         title: 'Target',
-        getValue: experiment => (experiment.target ? experiment.target.label : null),
+        getValue: (experiment) => (experiment.target ? experiment.target.label : null),
     },
 
     description: {
@@ -1246,17 +1248,17 @@ const treatmentSeriesTableColumns = {
 
     lab: {
         title: 'Lab',
-        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
     },
 
     status: {
         title: 'Status',
-        display: experiment => <Status item={experiment} badgeSize="small" />,
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
     },
 
     cart: {
         title: 'Cart',
-        display: experiment => <CartToggle element={experiment} />,
+        display: (experiment) => <CartToggle element={experiment} />,
         sorter: false,
     },
 };
@@ -1264,14 +1266,15 @@ const treatmentSeriesTableColumns = {
 const replicationTimingSeriesTableColumns = {
     accession: {
         title: 'Accession',
-        display: (experiment, meta) =>
+        display: (experiment, meta) => (
             <span>
                 {meta.adminUser || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
                 }
-            </span>,
+            </span>
+        ),
     },
 
     possible_controls: {
@@ -1290,8 +1293,8 @@ const replicationTimingSeriesTableColumns = {
             let phases = [];
 
             if (experiment.replicates && experiment.replicates.length > 0) {
-                const biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
-                phases = _.chain(biosamples.map(biosample => biosample.phase)).compact().uniq().value();
+                const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+                phases = _.chain(biosamples.map((biosample) => biosample.phase)).compact().uniq().value();
             }
             return phases.join(', ');
         },
@@ -1300,7 +1303,7 @@ const replicationTimingSeriesTableColumns = {
 
     target: {
         title: 'Target',
-        getValue: experiment => (experiment.target ? experiment.target.label : null),
+        getValue: (experiment) => (experiment.target ? experiment.target.label : null),
     },
 
     description: {
@@ -1309,17 +1312,17 @@ const replicationTimingSeriesTableColumns = {
 
     lab: {
         title: 'Lab',
-        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
     },
 
     status: {
         title: 'Status',
-        display: experiment => <Status item={experiment} badgeSize="small" />,
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
     },
 
     cart: {
         title: 'Cart',
-        display: experiment => <CartToggle element={experiment} />,
+        display: (experiment) => <CartToggle element={experiment} />,
         sorter: false,
     },
 };
@@ -1327,14 +1330,15 @@ const replicationTimingSeriesTableColumns = {
 const organismDevelopmentSeriesTableColumns = {
     accession: {
         title: 'Accession',
-        display: (experiment, meta) =>
+        display: (experiment, meta) => (
             <span>
                 {meta.adminUser || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
                 }
-            </span>,
+            </span>
+        ),
     },
 
     possible_controls: {
@@ -1354,12 +1358,12 @@ const organismDevelopmentSeriesTableColumns = {
             let ages;
 
             if (experiment.replicates && experiment.replicates.length > 0) {
-                biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
+                biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
             }
             if (biosamples && biosamples.length > 0) {
-                synchronizationBiosample = _(biosamples).find(biosample => biosample.synchronization);
+                synchronizationBiosample = _(biosamples).find((biosample) => biosample.synchronization);
                 if (!synchronizationBiosample) {
-                    ages = _.chain(biosamples.map(biosample => biosample.age_display)).compact().uniq().value();
+                    ages = _.chain(biosamples.map((biosample) => biosample.age_display)).compact().uniq().value();
                 }
             }
             return (
@@ -1382,10 +1386,10 @@ const organismDevelopmentSeriesTableColumns = {
             let lifeStageBiosample;
 
             if (experiment.replicates && experiment.replicates.length > 0) {
-                biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
+                biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
             }
             if (biosamples && biosamples.length > 0) {
-                lifeStageBiosample = _(biosamples).find(biosample => biosample.life_stage);
+                lifeStageBiosample = _(biosamples).find((biosample) => biosample.life_stage);
                 return lifeStageBiosample.life_stage;
             }
             return null;
@@ -1394,7 +1398,7 @@ const organismDevelopmentSeriesTableColumns = {
 
     target: {
         title: 'Target',
-        getValue: item => (item.target ? item.target.label : null),
+        getValue: (item) => (item.target ? item.target.label : null),
     },
 
     description: {
@@ -1403,17 +1407,17 @@ const organismDevelopmentSeriesTableColumns = {
 
     lab: {
         title: 'Lab',
-        getValue: item => (item.lab ? item.lab.title : null),
+        getValue: (item) => (item.lab ? item.lab.title : null),
     },
 
     status: {
         title: 'Status',
-        display: experiment => <Status item={experiment} badgeSize="small" />,
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
     },
 
     cart: {
         title: 'Cart',
-        display: experiment => <CartToggle element={experiment} />,
+        display: (experiment) => <CartToggle element={experiment} />,
         sorter: false,
     },
 };
@@ -1469,31 +1473,31 @@ export const SeriesComponent = (props, reactContext) => {
     // Calculate the biosample summary
     let speciesRender = null;
     if (context.organism && context.organism.length > 0) {
-        const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
+        const speciesList = _.uniq(context.organism.map((organism) => organism.scientific_name));
         speciesRender = (
             <span>
-                {speciesList.map((species, i) =>
+                {speciesList.map((species, i) => (
                     <span key={i}>
                         {i > 0 ? <span> and </span> : null}
                         <i>{species}</i>
                     </span>
-                )}
+                ))}
             </span>
         );
     }
-    const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? _.uniq(context.biosample_ontology.map(b => b.term_name)) : [];
+    const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? _.uniq(context.biosample_ontology.map((b) => b.term_name)) : [];
 
     // Calculate the donor diversity.
     const diversity = donorDiversity(context);
 
     // Filter out any files we shouldn't see.
-    const experimentList = context.related_datasets.filter(dataset => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
+    const experimentList = context.related_datasets.filter((dataset) => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
 
     // If we display a table of related experiments, have to render the control to add all of
     // them to the current cart.
     let addAllToCartControl;
     if (experimentList.length > 0) {
-        const experimentIds = experimentList.map(experiment => experiment['@id']);
+        const experimentIds = experimentList.map((experiment) => experiment['@id']);
         addAllToCartControl = (
             <div className="experiment-table__header">
                 <h4 className="experiment-table__title">{`Experiments in ${seriesTitle} ${context.accession}`}</h4>

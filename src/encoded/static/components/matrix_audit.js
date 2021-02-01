@@ -45,14 +45,14 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
     let minSubCategoryValue = Number.MAX_VALUE;
 
     subCategoryData.forEach((rowData) => {
-        const rowDataValues = rowData[columnCategoryType].buckets.map(rowItem => rowItem.doc_count);
+        const rowDataValues = rowData[columnCategoryType].buckets.map((rowItem) => rowItem.doc_count);
 
         // Update min and max values found within all subcategories of the given category.
         const prospectiveMax = Math.max(...rowDataValues);
         if (maxSubCategoryValue < prospectiveMax) {
             maxSubCategoryValue = prospectiveMax;
         }
-        const prospectiveMin = Math.min(...rowDataValues.filter(value => value));
+        const prospectiveMin = Math.min(...rowDataValues.filter((value) => value));
         if (minSubCategoryValue > prospectiveMin) {
             minSubCategoryValue = prospectiveMin;
         }
@@ -103,7 +103,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
 
     // Generate the top-row sideways header labels. First item is null for the empty upper-left
     // cell.
-    const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
+    const header = [{ header: null }].concat(colCategoryNames.map((colCategoryName) => ({
         header: <a href={`${context.search_base}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryName)}`}>{colCategoryName}</a>,
     })));
 
@@ -111,8 +111,8 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
     // presentation order. Use these to get each audit level's data from the matrix data. Changes
     // to the order should happen in the global, `auditOrderKey`. The `x` property in `matrix`
     // holds other data we need later, so that doesn't get included.
-    const unsortedRowCategoryNames = Object.keys(context.matrix).filter(auditLevel => auditLevel !== 'x' && (loggedIn || auditLevel !== 'audit.INTERNAL_ACTION.category'));
-    const rowCategoryNames = _.sortBy(unsortedRowCategoryNames, rowCategoryName => auditOrderKey.indexOf(rowCategoryName));
+    const unsortedRowCategoryNames = Object.keys(context.matrix).filter((auditLevel) => auditLevel !== 'x' && (loggedIn || auditLevel !== 'audit.INTERNAL_ACTION.category'));
+    const rowCategoryNames = _.sortBy(unsortedRowCategoryNames, (rowCategoryName) => auditOrderKey.indexOf(rowCategoryName));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
     // hierarchy with the audit levels gets referred to here as "rowCategory" and the lower-level
@@ -234,7 +234,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
                     },
                 ],
                 css: `matrix__row-spacer${expandableRowCategory ? ' matrix__row-spacer--expander' : ''}`,
-            }]
+            }],
         );
     }, [{ rowContent: header, css: 'matrix__col-category-header' }]);
     return { dataTable: matrixDataTable, rowKeys: matrixRowKeys };
@@ -252,7 +252,7 @@ const MatrixHeader = ({ context }) => {
     // code exists in case more than one type is allowed in future.
     let type = '';
     if (context.filters && context.filters.length > 0) {
-        const typeFilters = context.filters.filter(filter => filter.field === 'type');
+        const typeFilters = context.filters.filter((filter) => filter.field === 'type');
         if (typeFilters.length === 1) {
             type = typeFilters[0].term;
         }
@@ -264,7 +264,7 @@ const MatrixHeader = ({ context }) => {
         // If we have a 'type' query string term along with others terms, we need a Clear Filters
         // button.
         const terms = queryString.parse(searchQuery);
-        const nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
+        const nonPersistentTerms = _(Object.keys(terms)).any((term) => term !== 'type');
         clearButton = nonPersistentTerms && terms.type;
     }
 
@@ -334,12 +334,40 @@ class MatrixPresentation extends React.Component {
         this.handleScrollIndicator(this.scrollElement);
     }
 
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps) {
         // If URI changed, we need close any expanded rowCategories in case the URI change results
         // in a huge increase in displayed data. Also update the scroll indicator if needed.
         if (prevProps.context['@id'] !== this.props.context['@id']) {
             this.handleScrollIndicator(this.scrollElement);
             this.setState({ expandedRowCategories: [] });
+        }
+    }
+    /* eslint-enable react/no-did-update-set-state */
+
+    /**
+     * Called when the user scrolls the matrix horizontally within its div to handle scroll
+     * indicators.
+     * @param {object} e React synthetic scroll event
+     */
+    handleOnScroll(e) {
+        this.handleScrollIndicator(e.target);
+    }
+
+    /**
+     * Show a scroll indicator depending on current scrolled position.
+     * @param {object} element DOM element to apply shading to
+     */
+    handleScrollIndicator(element) {
+        // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
+        // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
+        const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
+        if (scrollDiff < 2 && !this.state.scrolledRight) {
+            // Right edge of matrix scrolled into view.
+            this.setState({ scrolledRight: true });
+        } else if (scrollDiff >= 2 && this.state.scrolledRight) {
+            // Right edge of matrix scrolled out of view.
+            this.setState({ scrolledRight: false });
         }
     }
 
@@ -371,32 +399,6 @@ class MatrixPresentation extends React.Component {
             const expandedCategories = prevState.expandedRowCategories;
             return { expandedRowCategories: [...expandedCategories.slice(0, matchingCategoryIndex), ...expandedCategories.slice(matchingCategoryIndex + 1)] };
         });
-    }
-
-    /**
-     * Called when the user scrolls the matrix horizontally within its div to handle scroll
-     * indicators.
-     * @param {object} e React synthetic scroll event
-     */
-    handleOnScroll(e) {
-        this.handleScrollIndicator(e.target);
-    }
-
-    /**
-     * Show a scroll indicator depending on current scrolled position.
-     * @param {object} element DOM element to apply shading to
-     */
-    handleScrollIndicator(element) {
-        // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
-        // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
-        const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
-        if (scrollDiff < 2 && !this.state.scrolledRight) {
-            // Right edge of matrix scrolled into view.
-            this.setState({ scrolledRight: true });
-        } else if (scrollDiff >= 2 && this.state.scrolledRight) {
-            // Right edge of matrix scrolled out of view.
-            this.setState({ scrolledRight: false });
-        }
     }
 
     render() {

@@ -145,12 +145,12 @@ export const visFilterBrowserFiles = (files, browser, limits = false) => {
     // Filter the given files to ones qualified for the given browser, and only those files with
     // "released" status.
     const qualifiedFileTypes = browserFileTypes[browser];
-    let qualifiedFiles = files.filter(file => qualifiedFileTypes.indexOf(file.file_format) !== -1 && file.status === 'released');
+    let qualifiedFiles = files.filter((file) => qualifiedFileTypes.indexOf(file.file_format) !== -1 && file.status === 'released');
 
     // For the hic browser, sort to prioritize "mapping quality thresholded chromatin interactions"
     // output_types.
     if (browser === 'hic') {
-        qualifiedFiles = qualifiedFiles.sort(file => (file.output_type === 'mapping quality thresholded chromatin interactions' ? -1 : 0));
+        qualifiedFiles = qualifiedFiles.sort((file) => (file.output_type === 'mapping quality thresholded chromatin interactions' ? -1 : 0));
         if (limits) {
             qualifiedFiles = qualifiedFiles.slice(0, MAX_HIC_FILES_SELECTED);
         }
@@ -200,8 +200,8 @@ const browserOrder = [
  * @param {array} browsers Array of browsers to sort
  * @return {array} Same contents as `browsers` but sorted according to `browserOrder`
  */
-export const visSortBrowsers = browsers => (
-    _.sortBy(browsers, browser => browserOrder.indexOf(browser))
+export const visSortBrowsers = (browsers) => (
+    _.sortBy(browsers, (browser) => browserOrder.indexOf(browser))
 );
 
 
@@ -219,7 +219,7 @@ const browserNameMap = {
  * Map a browser to its display name.
  * @param {string} browser Browser whose display name is desired
  */
-export const visMapBrowserName = browser => browserNameMap[browser];
+export const visMapBrowserName = (browser) => browserNameMap[browser];
 
 
 /**
@@ -255,13 +255,13 @@ const generateBatchHubUrl = (resultsId, hostName) => {
  */
 const getRelevantAssemblies = (results) => {
     let relevantAssemblies = [];
-    const assemblyFacet = results.facets.find(facet => facet.field === 'assembly');
+    const assemblyFacet = results.facets.find((facet) => facet.field === 'assembly');
     if (assemblyFacet) {
         // Get array of assemblies specified in the search query; empty array if none.
-        const specifiedAssemblies = results.filters.filter(filter => filter.field === 'assembly').map(filter => filter.term);
-        relevantAssemblies = assemblyFacet.terms.filter(term => term.doc_count > 0 && (specifiedAssemblies.length === 0 || specifiedAssemblies.includes(term.key)));
+        const specifiedAssemblies = results.filters.filter((filter) => filter.field === 'assembly').map((filter) => filter.term);
+        relevantAssemblies = assemblyFacet.terms.filter((term) => term.doc_count > 0 && (specifiedAssemblies.length === 0 || specifiedAssemblies.includes(term.key)));
     }
-    return relevantAssemblies.map(assembly => assembly.key).sort((a, b) => globals.assemblyPriority.indexOf(a) - globals.assemblyPriority.indexOf(b));
+    return relevantAssemblies.map((assembly) => assembly.key).sort((a, b) => globals.assemblyPriority.indexOf(a) - globals.assemblyPriority.indexOf(b));
 };
 
 
@@ -353,20 +353,20 @@ export class BrowserSelector extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
+    // When the link to open a browser gets clicked, this gets called to close the modal in
+    // addition to going to the link.
+    handleClick() {
+        this.closeModal();
+    }
+
     // Called to open the browser-selection modal.
     openModal() {
         this.setState({ selectorOpen: true });
     }
 
-    // Called to close the browser-seletino modal.
+    // Called to close the browser-selection modal.
     closeModal() {
         this.setState({ selectorOpen: false });
-    }
-
-    // When the link to open a browser gets clicked, this gets called to close the modal in
-    // addition to going to the link.
-    handleClick() {
-        this.closeModal();
     }
 
     render() {
@@ -374,7 +374,7 @@ export class BrowserSelector extends React.Component {
 
         // Only consider Visualize button if exactly one type= of Experiment or Annotation exists
         // in query string.
-        const docTypes = results.filters.filter(filter => filter.field === 'type').map(filter => filter.term);
+        const docTypes = results.filters.filter((filter) => filter.field === 'type').map((filter) => filter.term);
         if (docTypes.length > 1 || (docTypes.length === 1 && docTypes[0] !== 'Experiment' && docTypes[0] !== 'Annotation')) {
             return null;
         }
@@ -416,8 +416,8 @@ export class BrowserSelector extends React.Component {
 
         if (relevantAssemblies.length > 0) {
             return (
-                <React.Fragment>
-                    <button onClick={this.openModal} className="btn btn-info btn-sm" data-test="visualize" id="visualize-control">
+                <>
+                    <button type="button" onClick={this.openModal} className="btn btn-info btn-sm" data-test="visualize" id="visualize-control">
                         Visualize
                     </button>
                     {this.state.selectorOpen ?
@@ -440,7 +440,7 @@ export class BrowserSelector extends React.Component {
                                             <hr />
                                             {relevantAssemblies.map((assembly) => {
                                                 const assemblyBrowsers = visualizeCfg[assembly];
-                                                const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
+                                                const browserList = _(Object.keys(assemblyBrowsers)).sortBy((browser) => _(globals.browserPriority).indexOf(browser));
 
                                                 return (
                                                     <div key={assembly} className="browser-selector__assembly-option">
@@ -448,13 +448,13 @@ export class BrowserSelector extends React.Component {
                                                             {assembly}:
                                                         </div>
                                                         <div className="browser-selector__browsers">
-                                                            {browserList.map(browser =>
+                                                            {browserList.map((browser) => (
                                                                 <div key={browser} className="browser-selector__browser">
                                                                     <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
                                                                         {browser}
                                                                     </a>
                                                                 </div>
-                                                            )}
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 );
@@ -463,10 +463,10 @@ export class BrowserSelector extends React.Component {
                                     </div>
                                 }
                             </ModalBody>
-                            <ModalFooter closeModal={<button id="visualize-limit-close" className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                            <ModalFooter closeModal={<button type="button" id="visualize-limit-close" className="btn btn-info" onClick={this.closeModal}>Close</button>} />
                         </Modal>
                     : null}
-                </React.Fragment>
+                </>
             );
         }
         return null;

@@ -18,7 +18,7 @@ import cartSetOperationInProgress from './in_progress';
  * @param {func} fetch - System fetch function
  */
 const switchCart = (currentCartAtId, fetch) => (
-    dispatch => (
+    (dispatch) => (
         new Promise((resolve, reject) => {
             cartSetOperationInProgress(true, dispatch);
             return cartRetrieve(currentCartAtId, fetch).then((savedCartObj) => {

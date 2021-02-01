@@ -76,7 +76,7 @@ const datasetTypes = {
     GeneSilencingSeries: types.gene_silencing_series.title,
 };
 
-const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
+const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));
 
 // session storage used to preserve opened/closed facets
 const FACET_STORAGE = 'FACET_STORAGE';
@@ -122,13 +122,13 @@ export function Listing(reactProps) {
  *
  * @return {string} CSS class for this type of object
  */
-export const resultItemClass = item => `result-item--type-${item['@type'][0]}`;
+export const resultItemClass = (item) => `result-item--type-${item['@type'][0]}`;
 
 export const PickerActions = ({ context }, reactContext) => {
     if (reactContext.actions && reactContext.actions.length > 0) {
         return (
             <div className="result-item__picker">
-                {reactContext.actions.map(action => React.cloneElement(action, { key: context.name, id: context['@id'] }))}
+                {reactContext.actions.map((action) => React.cloneElement(action, { key: context.name, id: context['@id'] }))}
             </div>
         );
     }
@@ -308,14 +308,14 @@ const ExperimentComponent = (props, reactContext) => {
 
     if (isEnhancerExperiment) {
         if (result.biosamples && result.biosamples.length > 0) {
-            biosamples = result.biosamples;
+            ({ biosamples } = result);
         }
     } else {
         if (result.replicates && result.replicates.length > 0) {
-            biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
+            biosamples = _.compact(result.replicates.map((replicate) => replicate.library && replicate.library.biosample));
         }
         // flatten treatment array of arrays
-        _.compact(biosamples.map(biosample => biosample.treatments)).forEach(treatment => treatment.forEach(t => treatments.push(t)));
+        _.compact(biosamples.map((biosample) => biosample.treatments)).forEach((treatment) => treatment.forEach((t) => treatments.push(t)));
     }
 
     // Get all biosample organism names
@@ -324,15 +324,15 @@ const ExperimentComponent = (props, reactContext) => {
     // Collect synchronizations
     if (isEnhancerExperiment) {
         if (biosamples && biosamples.length > 0) {
-            synchronizations = _.uniq(biosamples.filter(biosample => biosample && biosample.synchronization).map(biosample => (
+            synchronizations = _.uniq(biosamples.filter((biosample) => biosample && biosample.synchronization).map((biosample) => (
                 `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`
             )));
         }
     } else if (result.replicates && result.replicates.length > 0) {
-        synchronizations = _.uniq(result.replicates.filter(replicate =>
+        synchronizations = _.uniq(result.replicates.filter((replicate) => (
             replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
-        ).map((replicate) => {
-            const biosample = replicate.library.biosample;
+        )).map((replicate) => {
+            const { biosample } = replicate.library;
             return `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`;
         }));
     }
@@ -344,13 +344,13 @@ const ExperimentComponent = (props, reactContext) => {
     let seriesMap = {};
     if (result.related_series && result.related_series.length > 0) {
         seriesMap = _.groupBy(
-            result.related_series, series => series['@type'][0]
+            result.related_series, (series) => series['@type'][0],
         );
     }
 
     // Get SCREEN link and FactorBook link if they exist
-    const screenLink = (result.dbxrefs && result.dbxrefs.some(dbxref => (dbxref.indexOf('SCREEN') > -1))) ? result.dbxrefs.filter(dbxref => (dbxref.indexOf('SCREEN') > -1))[0] : null;
-    const motifsLink = (result.dbxrefs && result.dbxrefs.some(dbxref => (dbxref.indexOf('FactorBook') > -1))) ? result.dbxrefs.filter(dbxref => (dbxref.indexOf('FactorBook') > -1))[0] : null;
+    const screenLink = (result.dbxrefs && result.dbxrefs.some((dbxref) => (dbxref.indexOf('SCREEN') > -1))) ? result.dbxrefs.filter((dbxref) => (dbxref.indexOf('SCREEN') > -1))[0] : null;
+    const motifsLink = (result.dbxrefs && result.dbxrefs.some((dbxref) => (dbxref.indexOf('FactorBook') > -1))) ? result.dbxrefs.filter((dbxref) => (dbxref.indexOf('FactorBook') > -1))[0] : null;
     let screenSearch = '';
     let screenAssembly = '';
     if (screenLink) {
@@ -378,12 +378,12 @@ const ExperimentComponent = (props, reactContext) => {
                         <div className="result-item__highlight-row">
                             {organismNames.length > 0 ?
                                 <span>
-                                    {organismNames.map((organism, i) =>
+                                    {organismNames.map((organism, i) => (
                                         <span key={organism}>
                                             {i > 0 ? <span>and </span> : null}
                                             <i>{organism} </i>
                                         </span>
-                                    )}
+                                    ))}
                                 </span>
                             : null}
                             {result.biosample_summary}
@@ -401,7 +401,7 @@ const ExperimentComponent = (props, reactContext) => {
                         : null}
 
                         {mode !== 'cart-view' ?
-                            <React.Fragment>
+                            <>
                                 {synchronizations && synchronizations.length > 0 ?
                                     <div><span className="result-item__property-title">Synchronization timepoint: </span>{synchronizations.join(', ')}</div>
                                 : null}
@@ -415,7 +415,7 @@ const ExperimentComponent = (props, reactContext) => {
                                         </span>
                                     </div>
                                 : null}
-                                {Object.keys(seriesMap).map(seriesType =>
+                                {Object.keys(seriesMap).map((seriesType) => (
                                     <div key={seriesType}>
                                         <span className="result-item__property-title">{seriesType.replace(/([A-Z])/g, ' $1')}: </span>
                                         {seriesMap[seriesType].map(
@@ -426,14 +426,14 @@ const ExperimentComponent = (props, reactContext) => {
                                                         {series.accession}
                                                     </a>
                                                 </span>
-                                            )
+                                            ),
                                         )}
                                     </div>
-                                )}
+                                ))}
                                 {screenLink ?
                                     <div><span className="result-item__property-title">candidate Cis-Regulatory Elements (cCREs): </span><a href={`https://screen.encodeproject.org/search?q=${screenSearch}&assembly=${screenAssembly}`}>SCREEN</a></div>
                                 : null}
-                            </React.Fragment>
+                            </>
                         : null}
                     </div>
                 </div>
@@ -441,10 +441,10 @@ const ExperimentComponent = (props, reactContext) => {
                     <div className="result-item__meta-title">{displayType}</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     {mode !== 'cart-view' ?
-                        <React.Fragment>
+                        <>
                             <Status item={result.status} badgeSize="small" css="result-table__status" />
                             {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
-                        </React.Fragment>
+                        </>
                     : null}
                 </div>
                 {cartControls && isResultAllowedInCart && !(reactContext.actions && reactContext.actions.length > 0) ?
@@ -502,10 +502,10 @@ const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicat
                 <div className="result-item__meta-title">Annotation</div>
                 <div className="result-item__meta-id">{` ${result.accession}`}</div>
                 {mode !== 'cart-view' ?
-                    <React.Fragment>
+                    <>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
-                    </React.Fragment>
+                    </>
                 : null}
             </div>
             {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
@@ -563,7 +563,7 @@ const DatasetComponent = (props, reactContext) => {
     // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
     if (seriesDataset) {
         biosampleTerm = (result.biosample_ontology && Array.isArray(result.biosample_ontology) && result.biosample_ontology.length === 1 && result.biosample_ontology[0].term_name) ? result.biosample_ontology[0].term_name : ((result.biosample_ontology && result.biosample_ontology.term_name) ? result.biosample_ontology.term_name : '');
-        const organisms = (result.organism && result.organism.length > 0) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
+        const organisms = (result.organism && result.organism.length > 0) ? _.uniq(result.organism.map((resultOrganism) => resultOrganism.scientific_name)) : [];
         if (organisms.length === 1) {
             organism = organisms[0];
         }
@@ -574,7 +574,7 @@ const DatasetComponent = (props, reactContext) => {
                 if (dataset.replicates && dataset.replicates.length > 0) {
                     dataset.replicates.forEach((replicate) => {
                         if (replicate.library && replicate.library.biosample) {
-                            const biosample = replicate.library.biosample;
+                            const { biosample } = replicate.library;
                             const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
 
                             if (lifeStage) { lifeStages.push(lifeStage); }
@@ -591,7 +591,7 @@ const DatasetComponent = (props, reactContext) => {
 
         // Get list of target labels
         if (result.target) {
-            targets = _.uniq(result.target.map(target => target.label));
+            targets = _.uniq(result.target.map((target) => target.label));
         }
     }
 
@@ -613,7 +613,7 @@ const DatasetComponent = (props, reactContext) => {
                                         {' ('}
                                         {organism ? <i>{organism}</i> : null}
                                         {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
-                                        {')'}
+                                        )
                                     </span>
                                 : null}
                             </span>
@@ -767,7 +767,7 @@ export class TextFilter extends React.Component {
     }
 
     getValue() {
-        const filter = this.props.filters.filter(f => f.field === 'searchTerm');
+        const filter = this.props.filters.filter((f) => f.field === 'searchTerm');
         return filter.length > 0 ? filter[0].term : '';
     }
 
@@ -780,7 +780,7 @@ export class TextFilter extends React.Component {
     */
     performSearch(e) {
         let searchStr = this.props.searchBase.replace(/&?searchTerm=[^&]*/, '');
-        const value = e.target.value;
+        const { value } = e.target;
         if (value) {
             searchStr += `searchTerm=${e.target.value}`;
         } else {
@@ -835,7 +835,7 @@ export const FacetList = (props) => {
         const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
 
         sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
-        setExpandFacets(facetList); // initalize facet collapse-state
+        setExpandFacets(facetList); // initialize facet collapse-state
     }, []);
 
     // Only on initialize load, get facets from facet-section and schema that need to be expanded
@@ -844,11 +844,11 @@ export const FacetList = (props) => {
         const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
 
         facets.forEach((facet) => {
-            const field = facet.field;
+            const { field } = facet;
             const newlyLoadedFacetStorage = `${MARKER_FOR_NEWLY_LOADED_FACET_PREFIX}${field}`;
             const isFacetNewlyLoaded = sessionStorage.getItem(newlyLoadedFacetStorage);
 
-            const relevantFilters = context && context.filters.filter(filter => (
+            const relevantFilters = context && context.filters.filter((filter) => (
                 filter.field === facet.field || filter.field === `${facet.field}!`
             ));
 
@@ -860,7 +860,7 @@ export const FacetList = (props) => {
         });
 
         sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
-        setExpandFacets(facetList); // initalize facet collapse-state
+        setExpandFacets(facetList); // initialize facet collapse-state
     }, [context, facets]);
 
     if (facets.length === 0 && mode !== 'picker') {
@@ -882,7 +882,7 @@ export const FacetList = (props) => {
         if (e.altKey) {
             // user has held down option-key (alt-key in Windows and Linux)
             sessionStorage.removeItem(FACET_STORAGE);
-            facetList = new Set(status ? [] : facets.map(f => f.field));
+            facetList = new Set(status ? [] : facets.map((f) => f.field));
         } else {
             facetList = new Set(expandedFacets);
             facetList[status ? 'delete' : 'add'](field);
@@ -945,7 +945,7 @@ export const FacetList = (props) => {
                     {(!supressTitle || clearButton) ?
                         <div className="search-header-control">
                             {!(hideDocType) ?
-                                <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} />
+                                <DocTypeTitle searchResults={context} wrapper={(children) => <h1>{children} {docTypeTitleSuffix}</h1>} />
                             : null}
                             {context.clear_filters ?
                                 <ClearFilters searchUri={context.clear_filters} enableDisplay={clearButton} />
@@ -957,12 +957,12 @@ export const FacetList = (props) => {
                         {allFacets.map((facet) => {
                             // Filter the filters to just the ones relevant to the current facet,
                             // matching negation filters too.
-                            const relevantFilters = context && context.filters.filter(filter => (
+                            const relevantFilters = context && context.filters.filter((filter) => (
                                 filter.field === facet.field || filter.field === `${facet.field}!`
                             ));
 
                             // Look up the renderer registered for this facet and use it to render this
-                            // facet if a renderer exists. A non-existing renderer supresses the
+                            // facet if a renderer exists. A non-existing renderer suppresses the
                             // display of a facet.
                             let FacetRenderer;
                             if (facet.specialFieldName) {
@@ -1006,7 +1006,7 @@ FacetList.propTypes = {
     hideTextFilter: PropTypes.bool,
     docTypeTitleSuffix: PropTypes.string,
     addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
-    /** True to supress the display of facet-list title */
+    /** True to suppress the display of facet-list title */
     supressTitle: PropTypes.bool,
     /** Special facet-term click handler for edit forms */
     onFilter: PropTypes.func,
@@ -1182,7 +1182,7 @@ export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
 
-        // Bind `this` to non-React moethods.
+        // Bind `this` to non-React methods.
         this.onFilter = this.onFilter.bind(this);
     }
 
@@ -1201,11 +1201,8 @@ export class ResultTable extends React.Component {
 
     render() {
         const { context, searchBase, actions, hideDocType } = this.props;
-        const { facets } = context;
+        const { facets, total, columns, filters } = context;
         const results = context['@graph'];
-        const total = context.total;
-        const columns = context.columns;
-        const filters = context.filters;
         const label = 'results';
         const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
 
@@ -1267,7 +1264,7 @@ ResultTable.contextTypes = {
 export const ResultTableList = ({ results, columns, cartControls, mode }) => (
     <ul className="result-table" id="result-table">
         {results.length > 0 ?
-            results.map(result => Listing({ context: result, columns, key: result['@id'], cartControls, mode }))
+            results.map((result) => Listing({ context: result, columns, key: result['@id'], cartControls, mode }))
         : null}
     </ul>
 );
@@ -1305,10 +1302,10 @@ export class Search extends React.Component {
     }
 
     render() {
-        const context = this.props.context;
-        const notification = context.notification;
+        const { context } = this.props;
+        const { notification } = context;
         const searchBase = url.parse(this.context.location_href).search || '';
-        const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
+        const facetdisplay = context.facets && context.facets.some((facet) => facet.total > 0);
 
         if (facetdisplay) {
             return (

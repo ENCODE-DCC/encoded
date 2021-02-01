@@ -15,17 +15,17 @@ import { SortTablePanel, SortTable } from './sorttable';
 
 const datasetsColumns = {
     accession: {
-        display: dataset => <a href={dataset['@id']}>{dataset.accession}</a>,
+        display: (dataset) => <a href={dataset['@id']}>{dataset.accession}</a>,
         title: 'Accession',
         sorter: false,
     },
     type: {
-        getValue: dataset => (dataset['@type'] || [''])[0], // only the first matters
+        getValue: (dataset) => (dataset['@type'] || [''])[0], // only the first matters
         title: 'Type',
         sorter: false,
     },
     target: {
-        getValue: dataset => (dataset.target ? dataset.target.label : ''),
+        getValue: (dataset) => (dataset.target ? dataset.target.label : ''),
         title: 'Target',
         sorter: false,
     },
@@ -45,7 +45,7 @@ const datasetsColumns = {
         sorter: false,
     },
     lab: {
-        getValue: dataset => (dataset.lab ? dataset.lab.title : ''),
+        getValue: (dataset) => (dataset.lab ? dataset.lab.title : ''),
         title: 'Lab',
         sorter: false,
     },
@@ -54,7 +54,7 @@ const datasetsColumns = {
         sorter: false,
     },
     status: {
-        display: dataset => <Status item={dataset.status} badgeSize="small" inline />,
+        display: (dataset) => <Status item={dataset.status} badgeSize="small" inline />,
         title: 'Status',
         sorter: false,
     },
@@ -74,22 +74,22 @@ const datasetsColumns = {
 
 const publicationDataColumns = {
     accession: {
-        display: publicationData => <a href={publicationData['@id']}>{publicationData.accession}</a>,
+        display: (publicationData) => <a href={publicationData['@id']}>{publicationData.accession}</a>,
         title: 'Accession',
         sorter: false,
     },
     fileCount: {
-        getValue: publicationData => (publicationData.files ? publicationData.files.length : 0),
+        getValue: (publicationData) => (publicationData.files ? publicationData.files.length : 0),
         title: 'Number of files',
         sorter: false,
     },
     description: {
-        display: publicationData => publicationData.description || <i>No description</i>,
+        display: (publicationData) => publicationData.description || <i>No description</i>,
         title: 'Description',
         sorter: false,
     },
     status: {
-        display: publicationData => <Status item={publicationData} badgeSize="small" inline />,
+        display: (publicationData) => <Status item={publicationData} badgeSize="small" inline />,
         title: 'Status',
         sorter: false,
     },
@@ -175,7 +175,7 @@ const DatasetTable = ({ datasets }) => {
     }, [datasets, currentPage]);
 
     return (
-        <React.Fragment>
+        <>
             {visibleDatasets.length > 0 ?
                 <SortTablePanel
                     header={<DatasetTableHeader title="Datasets" elements={datasets} currentPage={currentPage} totalPageCount={totalPageCount} updateCurrentPage={updateCurrentPage} />}
@@ -185,7 +185,7 @@ const DatasetTable = ({ datasets }) => {
                     <SortTable list={visibleDatasets} columns={datasetsColumns} />
                 </SortTablePanel>
             : null}
-        </React.Fragment>
+        </>
     );
 };
 
@@ -208,7 +208,7 @@ const PublicationDataTable = ({ publicationDataIds }) => {
     }, [publicationDataIds]);
 
     return (
-        <React.Fragment>
+        <>
             {publicationData.length > 0 ?
                 <SortTablePanel
                     title="File sets"
@@ -217,7 +217,7 @@ const PublicationDataTable = ({ publicationDataIds }) => {
                     <SortTable list={publicationData} columns={publicationDataColumns} />
                 </SortTablePanel>
             : null}
-        </React.Fragment>
+        </>
     );
 };
 
@@ -229,11 +229,11 @@ PublicationDataTable.propTypes = {
 
 // Display a publication object.
 const PublicationComponent = (props, reactContext) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'view-item');
 
     // Set up breadcrumbs
-    const categoryTerms = context.categories && context.categories.map(category => `categories=${category}`);
+    const categoryTerms = context.categories && context.categories.map((category) => `categories=${category}`);
     const crumbs = [
         { id: 'Publications' },
         {
@@ -303,7 +303,7 @@ globals.contentViews.register(Publication, 'Publication');
 
 
 const Citation = (props) => {
-    const context = props.context;
+    const { context } = props;
     return (
         <span>
             {context.journal ? <i>{context.journal}. </i> : ''}{context.date_published ? `${context.date_published};` : <span>&nbsp;</span>}
@@ -318,7 +318,7 @@ Citation.propTypes = {
 
 
 const Abstract = (props) => {
-    const context = props.context;
+    const { context } = props;
     return (
         <dl className="key-value">
             {context.abstract ?
@@ -351,7 +351,7 @@ Abstract.propTypes = {
 
 
 const SupplementaryData = (props) => {
-    const data = props.data;
+    const { data } = props;
     return (
         <section className="supplementary-data">
             <dl className="key-value">
@@ -404,7 +404,7 @@ class SupplementaryDataListing extends React.Component {
     }
 
     handleClick() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             excerptExpanded: !prevState.excerptExpanded,
         }));
     }
@@ -435,12 +435,12 @@ class SupplementaryDataListing extends React.Component {
                     <div id={nodeId} aria-expanded={excerpt ? this.state.excerptExpanded : true}>
                         <strong>Data summary: </strong>
                         {excerpt ?
-                            <React.Fragment>
+                            <>
                                 {this.state.excerptExpanded ? summary : excerpt}
-                                <button className="btn btn-default btn-xs" aria-controls={nodeId} onClick={this.handleClick}>
+                                <button type="button" className="btn btn-default btn-xs" aria-controls={nodeId} onClick={this.handleClick}>
                                     {this.state.excerptExpanded ? <span>See less</span> : <span>See more</span>}
                                 </button>
-                            </React.Fragment>
+                            </>
                         : summary}
                     </div>
                 : null}
@@ -475,13 +475,13 @@ const ListingComponent = (props, context) => {
                         <p className="list-citation"><Citation context={result} /></p>
                         {result.identifiers && result.identifiers.length ? <DbxrefList context={result} dbxrefs={result.identifiers} addClasses="list-reference" /> : '' }
                         {result.supplementary_data && result.supplementary_data.length ?
-                            <React.Fragment>
-                                {result.supplementary_data.map((data, i) =>
+                            <>
+                                {result.supplementary_data.map((data, i) => (
                                     <section className="list-supplementary" key={i}>
                                         <SupplementaryDataListing data={data} id={result['@id']} index={i} />
                                     </section>
-                                )}
-                            </React.Fragment>
+                                ))}
+                            </>
                         : null}
                     </div>
                 </div>

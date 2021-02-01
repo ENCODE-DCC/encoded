@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { svgIcon } from '../../libs/svg-icons';
@@ -35,6 +34,7 @@ const CartLockTriggerComponent = ({ savedCartObj, inProgress, onLock }) => {
                 />
             : null}
             <button
+                type="button"
                 onClick={handleLockClick}
                 className="btn btn-sm btn-warning btn-inline cart-lock-trigger"
                 disabled={inProgress || savedCartObj.status === 'deleted' || savedCartObj.status === 'disabled'}
@@ -57,7 +57,7 @@ CartLockTriggerComponent.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onLock: locked => dispatch(setCartLockAndSave(locked, ownProps.savedCartObj, ownProps.sessionProperties && ownProps.sessionProperties.user, ownProps.fetch)),
+    onLock: (locked) => dispatch(setCartLockAndSave(locked, ownProps.savedCartObj, ownProps.sessionProperties && ownProps.sessionProperties.user, ownProps.fetch)),
 });
 
 const CartLockTriggerInternal = connect(null, mapDispatchToProps)(CartLockTriggerComponent);

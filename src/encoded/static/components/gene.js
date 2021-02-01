@@ -34,7 +34,7 @@ class Gene extends React.Component {
             }
         });
         Promise.all((nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(
-            goID => this.context.fetch(
+            (goID) => this.context.fetch(
                 this.baseGOUrl.replace(/\{0\}/g, goID), {
                     method: 'GET',
                 }
@@ -51,13 +51,13 @@ class Gene extends React.Component {
             })
         )).then((validGOs) => {
             this.setState({
-                goIDs: validGOs.filter(validGO => validGO !== null).map(goID => 'GOGene:'.concat(goID)),
+                goIDs: validGOs.filter((validGO) => validGO !== null).map((goID) => 'GOGene:'.concat(goID)),
             });
         });
     }
 
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
 
         // Set up breadcrumbs
@@ -106,11 +106,11 @@ class Gene extends React.Component {
                               <dt>Synonyms</dt>
                               <dd>
                                   <ul>
-                                      {context.synonyms.map(synonym =>
+                                      {context.synonyms.map((synonym) => (
                                           <li key={synonym}>
                                               <span>{synonym}</span>
                                           </li>
-                                      )}
+                                      ))}
                                   </ul>
                               </dd>
                           </div>

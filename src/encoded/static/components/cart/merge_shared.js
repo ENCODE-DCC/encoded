@@ -52,7 +52,7 @@ class CartMergeSharedComponent extends React.Component {
             const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
             return (
                 <div className="cart-merge">
-                    <button className="btn btn-info btn-sm" disabled={this.props.inProgress} onClick={this.handleMergeButtonClick}>Add to current cart</button>
+                    <button type="button" className="btn btn-info btn-sm" disabled={this.props.inProgress} onClick={this.handleMergeButtonClick}>Add to current cart</button>
                     {this.state.mergeCartDisplayed ?
                         <Modal labelId="merge-cart-label" descriptionId="merge-cart-description" focusId="merge-cart-close">
                             <ModalHeader labelId="merge-cart-label" title={`Add items to cart: ${cartName || ''}`} closeModal />
@@ -63,7 +63,7 @@ class CartMergeSharedComponent extends React.Component {
                                 </p>
                             </ModalBody>
                             <ModalFooter
-                                closeModal={<button id="merge-cart-close" className="btn btn-info" onClick={this.handleMergeModalClose}>Close</button>}
+                                closeModal={<button type="button" id="merge-cart-close" className="btn btn-info" onClick={this.handleMergeModalClose}>Close</button>}
                                 submitBtn={this.handleClick}
                                 submitTitle="Add items to current cart"
                             />
@@ -107,7 +107,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onMergeCartClick: elementAtIds => dispatch(addMultipleToCartAndSave(elementAtIds, ownProps.fetch)),
+    onMergeCartClick: (elementAtIds) => dispatch(addMultipleToCartAndSave(elementAtIds, ownProps.fetch)),
 });
 
 const CartMergeSharedInternal = connect(mapStateToProps, mapDispatchToProps)(CartMergeSharedComponent);

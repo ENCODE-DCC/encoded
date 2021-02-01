@@ -122,7 +122,7 @@ ReportDataRegistry.register({ field: 'title', type: 'File' }, AccessionRenderer)
  */
 const ExperimentRelatedSeriesRenderer = ({ value }) => {
     if (value && typeof value === 'object' && Array.isArray(value) && value.length > 0) {
-        return value.map(relatedSeries => relatedSeries['@id']).join();
+        return value.map((relatedSeries) => relatedSeries['@id']).join();
     }
     return null;
 };
@@ -176,7 +176,7 @@ ReportDataRegistry.register({ field: 'download_url', type: 'Image' }, ImageDownl
  */
 const ExperimentFilesRenderer = ({ item }) => {
     if (item.files && item.files.length > 0) {
-        return item.files.map(file => <a key={file['@id']} href={file['@id']}>{globals.atIdToAccession(file['@id'])}</a>).reduce((prev, curr) => [prev, ', ', curr]);
+        return item.files.map((file) => <a key={file['@id']} href={file['@id']}>{globals.atIdToAccession(file['@id'])}</a>).reduce((prev, curr) => [prev, ', ', curr]);
     }
     return null;
 };
@@ -213,7 +213,7 @@ const lookupColumn = (result, column) => {
 
     for (let i = 0, len = names.length; i < len && nodes.length > 0; i += 1) {
         let nextnodes = [];
-        _.each(nodes.map(node => node[names[i]]), (v) => {
+        _.each(nodes.map((node) => node[names[i]]), (v) => {
             if (v === undefined) return;
             if (Array.isArray(v)) {
                 nextnodes = nextnodes.concat(v);
@@ -233,12 +233,12 @@ const lookupColumn = (result, column) => {
     }
     // if we ended with an embedded object, show the @id
     if (nodes.length > 0 && nodes[0]['@id'] !== undefined) {
-        nodes = nodes.map(node => node['@id']);
+        nodes = nodes.map((node) => node['@id']);
     }
 
     // Stringify any nodes that are objects or arrays. Objects and arrays have typeof `object`.
     if (nodes.length > 0) {
-        nodes = nodes.map(item => (typeof item === 'object' ? JSON.stringify(item) : item));
+        nodes = nodes.map((item) => (typeof item === 'object' ? JSON.stringify(item) : item));
     }
 
     return _.uniq(nodes).join(', ');
@@ -250,12 +250,12 @@ const lookupColumn = (result, column) => {
  * duplication in the parent.
  */
 const ReportHeaderCell = ({ title, sortable, sortIcon }) => (
-    <React.Fragment>
+    <>
         {title}
         {sortable && sortIcon ?
             <i className={`icon ${sortIcon}`} />
         : null}
-    </React.Fragment>
+    </>
 );
 
 ReportHeaderCell.propTypes = {
@@ -326,7 +326,7 @@ const ReportHeader = ({ context, allColumns, visibleFields, tableRef }) => {
                     if (allColumns) {
                         title = allColumns[field];
                     } else if (context.columns[field]) {
-                        title = context.columns[field].title;
+                        ({ title } = context.columns[field]);
                     }
 
                     // No title available because allColumns not loaded or no column defined in
@@ -392,7 +392,7 @@ ReportHeader.defaultProps = {
  */
 const ReportData = ({ context, visibleFields, type }) => (
     <tbody>
-        {context['@graph'].map(item => (
+        {context['@graph'].map((item) => (
             <tr key={item['@id']}>
                 {visibleFields.map((field) => {
                     // Get the value of the property in `item` and see if the current field and
@@ -449,8 +449,8 @@ const ColumnSelectorControls = ({ handleSelectAll, handleSelectOne, handleSortCh
     return (
         <div className="column-selector__controls">
             <div className="column-selector__utility-buttons">
-                <button onClick={handleSelectAll} className="btn btn-info">Select all</button>
-                <button onClick={handleSelectOne} className="btn btn-info">Select {firstColumnTitle} only</button>
+                <button type="button" onClick={handleSelectAll} className="btn btn-info">Select all</button>
+                <button type="button" onClick={handleSelectOne} className="btn btn-info">Select {firstColumnTitle} only</button>
             </div>
             <div className="column-selector__sort-selector">
                 <select className="form-control--select" value={selectedSort} onChange={handleOnChange}>
@@ -504,7 +504,7 @@ const getColumnFields = (columns, sorted) => {
  */
 const getExtraFields = (allColumns, visibleFields) => {
     const schemaFields = Object.keys(allColumns);
-    const extraFields = visibleFields.filter(visibleField => !schemaFields.includes(visibleField));
+    const extraFields = visibleFields.filter((visibleField) => !schemaFields.includes(visibleField));
     if (extraFields.length > 0) {
         return _.sortBy(extraFields);
     }
@@ -572,7 +572,7 @@ const ColumnSelector = ({ allColumns, visibleFields, setVisibleFields, closeSele
             }
 
             // Remove selected column field from selectedColumns.
-            updatedColumns = selectedFields.filter(field => field !== clickedField);
+            updatedColumns = selectedFields.filter((field) => field !== clickedField);
         } else {
             updatedColumns = selectedFields.concat(clickedField);
         }
@@ -617,10 +617,10 @@ const ColumnSelector = ({ allColumns, visibleFields, setVisibleFields, closeSele
             />
             <ModalBody>
                 <div className="column-selector__selectors">
-                    {columnFields.map(field => <ColumnItem key={field} field={field} title={allColumns[field]} selected={selectedFields.includes(field)} toggleColumn={toggleColumn} />)}
+                    {columnFields.map((field) => <ColumnItem key={field} field={field} title={allColumns[field]} selected={selectedFields.includes(field)} toggleColumn={toggleColumn} />)}
                 </div>
                 <div className="column-selector__selectors column-selector__selectors--extra">
-                    {extraFields.map(field => <ColumnItem key={field} field={field} selected={selectedFields.includes(field)} toggleColumn={toggleColumn} />)}
+                    {extraFields.map((field) => <ColumnItem key={field} field={field} selected={selectedFields.includes(field)} toggleColumn={toggleColumn} />)}
                 </div>
             </ModalBody>
             <ModalFooter
@@ -650,7 +650,7 @@ ColumnSelector.propTypes = {
  *
  * @return {promise} Schema corresponding to selected `type`; null if error.
  */
-const loadSchemaColumns = type => (
+const loadSchemaColumns = (type) => (
     fetch('/profiles/', {
         method: 'GET',
         headers: { Accept: 'application/json' },
@@ -660,7 +660,7 @@ const loadSchemaColumns = type => (
             return response.json();
         }
         return Promise.resolve(null);
-    }).then(responseJson => (responseJson ? responseJson[type] : null))
+    }).then((responseJson) => (responseJson ? responseJson[type] : null))
 );
 
 
@@ -673,7 +673,7 @@ const generateColumns = (context, schema) => {
     const generatedColumns = {};
 
     // Convert `columns` from returned JSON to our columns object, and make an array of column
-    // titles for each deduping later.
+    // titles for each de-duping later.
     const columnTitles = [];
     Object.keys(context.columns).forEach((column) => {
         generatedColumns[column] = context.columns[column].title;
@@ -749,12 +749,12 @@ const Report = ({ context }, reactContext) => {
     /** Table DOM element to handle its sticky header */
     const tableRef = React.useRef(null);
 
-    // Calculate values from the search results and query string usuable by the rest of the
+    // Calculate values from the search results and query string useable by the rest of the
     // component. The back end report code allows exactly one "type=x" parameter.
     const parsedUrl = React.useMemo(() => url.parse(context['@id']), [context]);
     const query = React.useMemo(() => new QueryString(parsedUrl.query), [parsedUrl]);
     const fieldOrder = React.useMemo(() => (allColumns ? Object.keys(allColumns) : Object.keys(context.columns)), [allColumns, context.columns]);
-    const typeFilter = context.filters.find(filter => filter.field === 'type');
+    const typeFilter = context.filters.find((filter) => filter.field === 'type');
     const type = typeFilter.term;
 
     // Based on the query string's "field=x" elements, generate an array of visible columns
@@ -801,10 +801,10 @@ const Report = ({ context }, reactContext) => {
     // Called when the user selects a new set of visible columns. Generate a new set of "field="
     // queries based on the newly selected visible columns and navigate to the new query.
     const handleColumnSelection = React.useCallback((selectedColumns) => {
-        const sortedColumns = _(selectedColumns).sortBy(field => fieldOrder.indexOf(field));
+        const sortedColumns = _(selectedColumns).sortBy((field) => fieldOrder.indexOf(field));
 
         // Convert the newly selected columns to a "field=x&field=y..." query.
-        const fieldQuery = sortedColumns.map(field => `field=${encodedURIComponent(field)}`).join('&');
+        const fieldQuery = sortedColumns.map((field) => `field=${encodedURIComponent(field)}`).join('&');
 
         // Get the existing query string and strip out any existing "field=x" elements.
         const columnQuery = query.clone();
@@ -866,7 +866,7 @@ const Report = ({ context }, reactContext) => {
 
     // No filled facets means no results, and we should display the notification from the back end
     // instead of the report.
-    const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
+    const facetdisplay = context.facets && context.facets.some((facet) => facet.total > 0);
     if (facetdisplay) {
         return (
             <div className="search-results">
@@ -875,7 +875,7 @@ const Report = ({ context }, reactContext) => {
                     <div className="results-table-control">
                         <div className="results-table-control__main">
                             <ViewControls results={context} />
-                            <button className="btn btn-info btn-sm" title="Choose columns" onClick={openColumnSelector} disabled={!allColumns}>
+                            <button type="button" className="btn btn-info btn-sm" title="Choose columns" onClick={openColumnSelector} disabled={!allColumns}>
                                 <i className="icon icon-columns" /> Columns
                             </button>
                             <a className="btn btn-info btn-sm" href={downloadTsvPath} data-bypass data-test="download-tsv">Download TSV</a>

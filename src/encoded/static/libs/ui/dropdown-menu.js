@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 
@@ -18,7 +17,7 @@ import PropTypes from 'prop-types';
 // <li> --separator-- </li> (well, actually a line, not the word "separator")
 // <li><a href="#">Third</a></li>
 
-export const DropdownMenu = props => (
+export const DropdownMenu = (props) => (
     <ul className="dropdown__menu" aria-labelledby={props.label}>
         {props.children.map((child, i) => <li key={i}>{child}</li>)}
     </ul>

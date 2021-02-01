@@ -29,7 +29,7 @@ export class DisplayAsJson extends React.Component {
 
     render() {
         return (
-            <button className="btn btn-info btn-sm" title="Convert page to JSON-formatted data" aria-label="Convert page to JSON-formatted data" onClick={this.onClick}>&#123; ; &#125;</button>
+            <button type="button" className="btn btn-info btn-sm" title="Convert page to JSON-formatted data" aria-label="Convert page to JSON-formatted data" onClick={this.onClick}>&#123; ; &#125;</button>
         );
     }
 }
@@ -114,7 +114,7 @@ export function requestSearch(query) {
             return response.json();
         }
         return Promise.resolve(null);
-    }).then(responseJson => responseJson || {});
+    }).then((responseJson) => responseJson || {});
 }
 
 
@@ -150,7 +150,7 @@ export function requestObjects(atIds, uri, filteringObjects) {
 
         // Filter the given file @ids to exclude those files we already have in data.@graph,
         // just so we don't use bandwidth getting things we already have.
-        filteredObjectIds = atIds.filter(atId => !filteringFileIds[atId]);
+        filteredObjectIds = atIds.filter((atId) => !filteringFileIds[atId]);
     } else {
         // The caller didn't supply an array of files to filter out, so filtered files are just
         // all of them.
@@ -219,18 +219,18 @@ export function donorDiversity(dataset) {
 
     if (dataset.related_datasets && dataset.related_datasets.length > 0) {
         // Get all non-deleted related experiments; empty array if none.
-        const experiments = dataset.related_datasets.filter(experiment => experiment.status !== 'deleted');
+        const experiments = dataset.related_datasets.filter((experiment) => experiment.status !== 'deleted');
 
         // From list list of non-deleted experiments, get all non-deleted replicates into one
         // array.
         if (experiments.length > 0) {
             // Make an array of replicate arrays, one replicate array per experiment. Only include
             // non-deleted replicates.
-            const replicatesByExperiment = experiments.map(experiment => (
+            const replicatesByExperiment = experiments.map((experiment) => (
                 (experiment.replicates && experiment.replicates.length > 0) ?
-                    experiment.replicates.filter(replicate => replicate.status !== 'deleted')
-                : [])
-            );
+                    experiment.replicates.filter((replicate) => replicate.status !== 'deleted')
+                : []
+            ));
 
             // Merge all replicate arrays into one non-deleted replicate array.
             const replicates = replicatesByExperiment.reduce((replicateCollection, replicatesForExperiment) => replicateCollection.concat(replicatesForExperiment), []);
@@ -334,7 +334,7 @@ class FileInfoButton extends React.Component {
 
     render() {
         return (
-            <button className="file-table-btn" onClick={this.onClick}>
+            <button type="button" className="file-table-btn" onClick={this.onClick}>
                 <i className="icon icon-info-circle">
                     <span className="sr-only">Open file information</span>
                 </i>
@@ -352,7 +352,7 @@ FileInfoButton.propTypes = {
 // Render a download button for a file that reacts to login state and admin status to render a
 // tooltip about the restriction based on those things.
 export const RestrictedDownloadButton = (props) => {
-    const file = props.file;
+    const { file } = props;
     const buttonEnabled = !(file.restricted || file.no_file_available);
 
     // Default icon
@@ -390,7 +390,7 @@ export const RestrictedDownloadButton = (props) => {
                 </div>
             }
             tooltipId={file['@id']}
-            css={'dl-tooltip-trigger'}
+            css="dl-tooltip-trigger"
         >
             {file.restricted ?
                 <div>
@@ -601,9 +601,9 @@ const badgeMap = {
  */
 export const MatrixBadges = ({ context, type }) => {
     // Collect filters that are internal_tags.
-    const internalTags = _.uniq(context.filters.filter(filter => (
+    const internalTags = _.uniq(context.filters.filter((filter) => (
         filter.field === 'internal_tags' && filter.term !== '*'
-    )).map(filter => filter.term));
+    )).map((filter) => filter.term));
     if (internalTags.length > 0) {
         return internalTags.map((tag) => {
             const filename = internalTagsMap[tag];
@@ -679,7 +679,7 @@ InternalTags.defaultProps = {
 export const DocTypeTitle = ({ searchResults, wrapper }, reactContext) => {
     // Determine the search page doc_type title to display at the top of the facet list.
     let facetTitle = '';
-    const docTypes = searchResults.filters.length > 0 ? searchResults.filters.filter(searchFilter => searchFilter.field === 'type') : [];
+    const docTypes = searchResults.filters.length > 0 ? searchResults.filters.filter((searchFilter) => searchFilter.field === 'type') : [];
     if (docTypes.length === 1) {
         facetTitle = reactContext.profilesTitles[docTypes[0].term];
     }
@@ -830,7 +830,7 @@ export function computeAssemblyAnnotationValue(assembly, annotation) {
  *
  * @return {bool} True if file is visualizable
  */
-export const isFileVisualizable = file => (
+export const isFileVisualizable = (file) => (
     (file.file_format === 'bigWig' || file.file_format === 'bigBed')
         && (file.file_format_type !== 'bedMethyl')
         && (file.file_format_type !== 'bedLogR')
@@ -843,7 +843,7 @@ export const isFileVisualizable = file => (
 // Not all files can be visualized on the Valis genome browser
 // Some of these files should be visualizable later, after updates to browser
 export function filterForVisualizableFiles(fileList) {
-    return fileList.filter(file => isFileVisualizable(file));
+    return fileList.filter((file) => isFileVisualizable(file));
 }
 
 
@@ -863,4 +863,4 @@ TableItemCount.propTypes = {
  *
  * @param {function} fn
  */
-export const useMount = fn => React.useEffect(fn, []);
+export const useMount = (fn) => React.useEffect(fn, []);

@@ -1,5 +1,5 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import _ from 'underscore';
@@ -7,6 +7,9 @@ import _ from 'underscore';
 // Import test component and data.
 import Experiment from '../experiment';
 import context from '../testdata/experiment';
+
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 // Create the Redux mock store.
 const initialCart = { elements: [], name: 'Untitled' };

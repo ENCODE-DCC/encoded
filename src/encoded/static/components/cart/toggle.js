@@ -1,7 +1,6 @@
 /**
  * Renders and handles a button to toggle items in/out of the cart.
  */
-import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { svgIcon } from '../../libs/svg-icons';
@@ -66,6 +65,7 @@ const CartToggleComponent = ({
         <div className={`cart-toggle${inCart ? ' cart-toggle--in-cart' : ''}${css ? ` ${css}` : ''}`}>
             {displayName && savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
             <button
+                type="button"
                 onClick={handleClick}
                 disabled={inProgress || locked}
                 title={inProgressToolTip || lockedToolTip || inCartToolTip}

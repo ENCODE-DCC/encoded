@@ -1,8 +1,8 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 import _ from 'underscore';
 import { cartModule, CartManager } from '../cart';
 import {
@@ -15,6 +15,8 @@ import {
 } from '../cart/actions';
 import { isAllowedElementsPossible } from '../cart/util';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 // Create the Redux mock store.
 const initialCart = {

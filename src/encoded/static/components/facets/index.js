@@ -151,7 +151,7 @@ export { FacetRegistry, SpecialFacetRegistry };
  * SelectedTermName -- Render the text within the "Selected filters" links. This registry exists
  * for when you need to change the styling of the terms that can be cleared from the facet, or if
  * you have a mapping of actual facet term value to displayed term within "Selected filters."
- * Custom SelectedTermName components receive the folling properties:
+ * Custom SelectedTermName components receive the following properties:
  *
  *   filter - facets.filters object that is offered to the user for clearing. filter.term holds the
  *   name for the clear link.

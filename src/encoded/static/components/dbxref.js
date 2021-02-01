@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 
@@ -327,7 +326,7 @@ const DbxrefUrl = (props) => {
         // then display that as a link.
         let url = urlPattern.replace(/\{0\}/g, encodeURIComponent(value));
 
-        // If, after replacing the {0} withx the value, the URL needs further modification, call the
+        // If, after replacing the {0} with the value, the URL needs further modification, call the
         // caller-provided post-processor with the given dbxref and the generated URL.
         if (urlProcessor.postprocessor) {
             url = urlProcessor.postprocessor(context, dbxref, url);
@@ -371,9 +370,9 @@ export const DbxrefList = (props) => {
 
     return (
         <ul className={addClasses}>
-            {dbxrefs.map((dbxref, i) =>
+            {dbxrefs.map((dbxref, i) => (
                 <li key={i}><DbxrefUrl dbxref={dbxref} context={context} title={title} /></li>
-            )}
+            ))}
         </ul>
     );
 };

@@ -70,13 +70,14 @@ const SeriesSearch = (props, context) => {
     }, [context]);
 
     const currentRegion = (assembly, region) => {
+        let lastRegion = {};
         if (assembly && region) {
-            this.lastRegion = {
+            lastRegion = {
                 assembly,
                 region,
             };
         }
-        return SeriesSearch.lastRegion;
+        return lastRegion;
     };
 
     const seriesTabs = {};

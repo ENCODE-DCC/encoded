@@ -1,9 +1,11 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 
 // Import test component.
 import { DbxrefList } from '../dbxref';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Test individual dbxref types', () => {
     describe('Test UniProtKB', () => {

@@ -15,7 +15,7 @@ import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleTable, ExperimentTable } from './typeutils';
-import formatMeasurement from './../libs/formatMeasurement';
+import formatMeasurement from '../libs/formatMeasurement';
 
 
 const HumanDonor = (props) => {
@@ -149,7 +149,7 @@ globals.panelViews.register(HumanDonor, 'HumanDonor');
 const donorTableColumns = {
     accession: {
         title: 'Accession',
-        display: donor => <a href={donor['@id']}>{donor.accession}</a>,
+        display: (donor) => <a href={donor['@id']}>{donor.accession}</a>,
     },
     age_display: {
         title: 'Age',
@@ -169,7 +169,7 @@ const donorTableColumns = {
     sex: { title: 'Sex' },
     status: {
         title: 'Status',
-        display: donor => <Status item={donor} badgeSize="small" inline />,
+        display: (donor) => <Status item={donor} badgeSize="small" inline />,
     },
 };
 
@@ -478,7 +478,8 @@ class DonorComponent extends React.Component {
         }
     }
 
-    componentWillReceiveProps() {
+    /* eslint-disable camelcase */
+    UNSAFE_componentWillReceiveProps() {
         // Humans need to do a couple requests to get the parents and children of the donor.
         if (this.props.context['@type'][0] === 'HumanDonor') {
             // If the logged-in state has changed since the last time we rendered, request files again
@@ -490,6 +491,7 @@ class DonorComponent extends React.Component {
             }
         }
     }
+    /* eslint-enable camelcase */
 
     requestRelations() {
         // donor.parents and donor.children aren't embedded in the human donor object -- they're
@@ -655,10 +657,10 @@ const DonorListingComponent = (props, reactContext) => {
                     <div className="result-item__data-row">
                         {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                         {result.external_ids && result.external_ids.length ?
-                            <React.Fragment>
+                            <>
                                 <strong>External resources: </strong>
                                 <DbxrefList context={result} dbxrefs={result.external_ids} />
-                            </React.Fragment>
+                            </>
                         : null}
                     </div>
                 </div>
@@ -690,19 +692,19 @@ DonorListingComponent.contextTypes = {
 const DonorListing = auditDecor(DonorListingComponent);
 
 
-const HumanListing = props => (
+const HumanListing = (props) => (
     <DonorListing {...props} organismTitle="Human donor" />
 );
 
-const MouseListing = props => (
+const MouseListing = (props) => (
     <DonorListing {...props} organismTitle="Mouse donor" />
 );
 
-const WormListing = props => (
+const WormListing = (props) => (
     <DonorListing {...props} organismTitle="Worm donor" />
 );
 
-const FlyListing = props => (
+const FlyListing = (props) => (
     <DonorListing {...props} organismTitle="Fly donor" />
 );
 

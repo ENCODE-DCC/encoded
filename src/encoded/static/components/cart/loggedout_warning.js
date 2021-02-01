@@ -31,8 +31,8 @@ const CartLoggedOutWarning = ({ closeModalHandler }) => {
             </ModalBody>
             <ModalFooter
                 closeModal={closeModalHandler}
-                cancelTitle={'Close'}
-                submitBtn={<button ref={submitButton} data-trigger="login" onClick={handleSubmit} className="btn btn-info">Sign in / Create account</button>}
+                cancelTitle="Close"
+                submitBtn={<button type="button" ref={submitButton} data-trigger="login" onClick={handleSubmit} className="btn btn-info">Sign in / Create account</button>}
             />
         </Modal>
     );

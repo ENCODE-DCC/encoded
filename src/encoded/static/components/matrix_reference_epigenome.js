@@ -151,11 +151,11 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
 
     // Convert column map to an array of column map values sorted by column number for displaying
     // in the matrix header.
-    const sortedCols = Object.keys(colMap).map(assayColKey => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
+    const sortedCols = Object.keys(colMap).map((assayColKey) => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
 
     // Generate array of names of assays that have targets and don't collapse their targets, for
     // rendering those columns as disabled.
-    const colCategoriesWithSubcategories = Object.keys(colMap).filter(colCategoryName => colMap[colCategoryName].hasSubcategories && !collapsedAssays.includes(colCategoryName));
+    const colCategoriesWithSubcategories = Object.keys(colMap).filter((colCategoryName) => colMap[colCategoryName].hasSubcategories && !collapsedAssays.includes(colCategoryName));
 
     // Generate the hierarchical top-row sideways header label cells. The first cell is null unless
     // it contains a link to clear the currently selected classification. At the end of this loop,
@@ -195,7 +195,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
     let matrixRow = 1;
     const rowKeys = ['column-categories'];
     const rowCategoryBuckets = context.matrix.y[rowCategory].buckets;
-    const rowCategoryColors = globals.biosampleTypeColors.colorList(rowCategoryBuckets.map(rowCategoryDatum => rowCategoryDatum.key));
+    const rowCategoryColors = globals.biosampleTypeColors.colorList(rowCategoryBuckets.map((rowCategoryDatum) => rowCategoryDatum.key));
     const dataTable = rowCategoryBuckets.reduce((accumulatingTable, rowCategoryBucket, rowCategoryIndex) => {
         // Each loop iteration generates one biosample classification row as well as the rows of
         // biosample term names under it.
@@ -235,12 +235,12 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                             const colIndex = colMap[colMapKey].col;
                             cells[colIndex] = {
                                 content: (
-                                    <React.Fragment>
+                                    <>
                                         <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`}>
                                             <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
                                             &nbsp;
                                         </a>
-                                    </React.Fragment>
+                                    </>
                                 ),
                                 style: { backgroundColor: rowSubcategoryColor },
                             };
@@ -251,12 +251,12 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                         const colIndex = colMap[rowSubcategoryColCategoryBucket.key].col;
                         cells[colIndex] = {
                             content: (
-                                <React.Fragment>
+                                <>
                                     <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`}>
                                         <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
                                         &nbsp;
                                     </a>
-                                </React.Fragment>
+                                </>
                             ),
                             style: { backgroundColor: rowSubcategoryColor },
                         };
@@ -394,11 +394,11 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
             </div>
             {showProjects ?
                 <div className="test-project-selector">
-                    <input type="radio" id="all" name="project" value="All" checked={project === null} onChange={e => projectSelect(e, context['@id'])} />
+                    <input type="radio" id="all" name="project" value="All" checked={project === null} onChange={(e) => projectSelect(e, context['@id'])} />
                     <label htmlFor="all">All</label> &nbsp; &nbsp;
-                    <input type="radio" id="roadmap" name="project" value="Roadmap" checked={project === 'Roadmap'} onChange={e => projectSelect(e, context['@id'])} />
+                    <input type="radio" id="roadmap" name="project" value="Roadmap" checked={project === 'Roadmap'} onChange={(e) => projectSelect(e, context['@id'])} />
                     <label htmlFor="roadmap">Roadmap</label> &nbsp; &nbsp;
-                    <input type="radio" id="nonroadmap" name="project" value="Nonroadmap" checked={project !== 'Roadmap' && project !== null} onChange={e => projectSelect(e, context['@id'])} />
+                    <input type="radio" id="nonroadmap" name="project" value="Nonroadmap" checked={project !== 'Roadmap' && project !== null} onChange={(e) => projectSelect(e, context['@id'])} />
                     <label htmlFor="nonroadmap">Non-Roadmap</label>
                 </div>
             : null}
@@ -424,23 +424,23 @@ MatrixHeader.contextTypes = {
 
 const SelectedFilters = (props) => {
     const selectedFilters = props.filters;
-    const organTerms = selectedFilters.filter(f => f.field === organField);
-    const systemsTerms = selectedFilters.filter(f => f.field === systemsField);
-    const freeSearchTerms = selectedFilters.filter(f => f.field === 'searchTerm');
+    const organTerms = selectedFilters.filter((f) => f.field === organField);
+    const systemsTerms = selectedFilters.filter((f) => f.field === systemsField);
+    const freeSearchTerms = selectedFilters.filter((f) => f.field === 'searchTerm');
     const selectedTerms = [...organTerms, ...systemsTerms, ...freeSearchTerms];
     return (
-        <React.Fragment>
+        <>
             {(selectedTerms.length > 0) ?
                 <div className="filter-container">
                     <div className="filter-hed">Selected filters:</div>
-                    {selectedTerms.map(filter =>
+                    {selectedTerms.map((filter) => (
                         <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}>
                             <div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div>
                         </a>
-                    )}
+                    ))}
                 </div>
             : null}
-        </React.Fragment>
+        </>
     );
 };
 
@@ -476,8 +476,8 @@ class MatrixPresentation extends React.Component {
         // Gather the biosample classifications actually in the data and filter the requested
         // classifications down to the actual data.
         const classificationBuckets = props.context.matrix.y[props.context.matrix.y.group_by[0]].buckets;
-        const actualClassifications = classificationBuckets.map(bucket => bucket.key);
-        const filteredClassifications = requestedClassifications.filter(classification => actualClassifications.includes(classification));
+        const actualClassifications = classificationBuckets.map((bucket) => bucket.key);
+        const filteredClassifications = requestedClassifications.filter((classification) => actualClassifications.includes(classification));
 
         this.state = {
             /** Categories to display expanded */
@@ -509,14 +509,61 @@ class MatrixPresentation extends React.Component {
     }
 
     /**
+     * Called when the user scrolls the matrix horizontally within its div to handle scroll
+     * indicators.
+     * @param {object} e React synthetic scroll event
+     */
+    handleOnScroll(e) {
+        this.handleScrollIndicator(e.target);
+    }
+
+    /**
+     * Show a scroll indicator depending on current scrolled position.
+     * @param {object} element DOM element to apply shading to
+     */
+    handleScrollIndicator(element) {
+        if (element) {
+            // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
+            // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
+            const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
+            if (scrollDiff < 2 && !this.state.scrolledRight) {
+                // Right edge of matrix scrolled into view.
+                this.setState({ scrolledRight: true });
+            } else if (scrollDiff >= 2 && this.state.scrolledRight) {
+                // Right edge of matrix scrolled out of view.
+                this.setState({ scrolledRight: false });
+            }
+        } else if (!this.state.scrolledRight) {
+            this.setState({ scrolledRight: true });
+        }
+    }
+
+    /**
+     * Handle a click on a tab by navigating to the reference epigenome matrix URL that includes
+     * the organism for the clicked tab.
+     * @param {string} Text of tab that the user clicked
+     */
+    handleTabClick(tab) {
+        // Parse and extract from the context URI instead of using this.parsedUrl and this.query
+        // because we mutate both of these in this method.
+        const parsedUrl = url.parse(this.props.context['@id']);
+        const query = new QueryString(parsedUrl.query);
+        query.replaceKeyValue('replicates.library.biosample.donor.organism.scientific_name', tab);
+        parsedUrl.search = null;
+        parsedUrl.query = null;
+        const baseMatrixUrl = url.format(parsedUrl);
+        this.context.navigate(`${baseMatrixUrl}?${query.format()}`);
+    }
+
+    /**
      * Get a list of organism scientific names that exist in the given matrix data.
      * @return {array} Organisms in data; empty array if none
      */
     getAvailableOrganisms() {
         const { context } = this.props;
-        const organismFacet = context.facets && context.facets.find(facet => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
+        const organismFacet = context.facets && context.facets.find((facet) => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
         if (organismFacet) {
-            return organismFacet.terms.map(term => term.key);
+            return organismFacet.terms.map((term) => term.key);
         }
         return [];
     }
@@ -525,7 +572,7 @@ class MatrixPresentation extends React.Component {
      * Get an array of all values in the current query string corresponding to the given `key`.
      * @param {string} key Query string key whose values this retrieves.
      *
-     * @return {array} Values for each occurence of `key` in the query string.
+     * @return {array} Values for each occurrence of `key` in the query string.
      */
     getQueryValues(key) {
         return this.query.getKeyValues(key);
@@ -614,53 +661,6 @@ class MatrixPresentation extends React.Component {
         });
     }
 
-    /**
-     * Called when the user scrolls the matrix horizontally within its div to handle scroll
-     * indicators.
-     * @param {object} e React synthetic scroll event
-     */
-    handleOnScroll(e) {
-        this.handleScrollIndicator(e.target);
-    }
-
-    /**
-     * Show a scroll indicator depending on current scrolled position.
-     * @param {object} element DOM element to apply shading to
-     */
-    handleScrollIndicator(element) {
-        if (element) {
-            // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
-            // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
-            const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
-            if (scrollDiff < 2 && !this.state.scrolledRight) {
-                // Right edge of matrix scrolled into view.
-                this.setState({ scrolledRight: true });
-            } else if (scrollDiff >= 2 && this.state.scrolledRight) {
-                // Right edge of matrix scrolled out of view.
-                this.setState({ scrolledRight: false });
-            }
-        } else if (!this.state.scrolledRight) {
-            this.setState({ scrolledRight: true });
-        }
-    }
-
-    /**
-     * Handle a click on a tab by navigating to the reference epigenome matrix URL that includes
-     * the organism for the clicked tab.
-     * @param {string} Text of tab that the user clicked
-     */
-    handleTabClick(tab) {
-        // Parse and extract from the context URI instead of using this.parsedUrl and this.query
-        // because we mutate both of these in this method.
-        const parsedUrl = url.parse(this.props.context['@id']);
-        const query = new QueryString(parsedUrl.query);
-        query.replaceKeyValue('replicates.library.biosample.donor.organism.scientific_name', tab);
-        parsedUrl.search = null;
-        parsedUrl.query = null;
-        const baseMatrixUrl = url.format(parsedUrl);
-        this.context.navigate(`${baseMatrixUrl}?${query.format()}`);
-    }
-
     clearOrgans() {
         const href = clearBodyMapSelectionsFromUrl(this.props.context['@id']);
         this.context.navigate(href);
@@ -685,10 +685,10 @@ class MatrixPresentation extends React.Component {
             };
         }
 
-        const rowCount = matrix => matrix.y['biosample_ontology.classification'].buckets.reduce((currentTotalCount, termName) => currentTotalCount + termName['biosample_ontology.term_name'].buckets.length, 0);
+        const rowCount = (matrix) => matrix.y['biosample_ontology.classification'].buckets.reduce((currentTotalCount, termName) => currentTotalCount + termName['biosample_ontology.term_name'].buckets.length, 0);
 
         return (
-            <React.Fragment>
+            <>
                 <div className="results-table-control">
                     <div className="results-table-control__main">
                         <ViewControls results={this.props.context} alternativeNames={['Search list', 'Tabular report', 'Summary matrix']} />
@@ -703,15 +703,15 @@ class MatrixPresentation extends React.Component {
                     tabPanelCss="matrix__data-wrapper epigenome-tabs"
                 >
                     {(this.initialSelectedTab === 'Homo sapiens') ?
-                        <React.Fragment>
+                        <>
                             <div className="header-clear-links">
-                                <button className="clear-organs" onClick={this.clearOrgans}>
+                                <button type="button" className="clear-organs" onClick={this.clearOrgans}>
                                     <i className="icon icon-times-circle" />
                                     Clear all body map selections
                                 </button>
                             </div>
                             <SelectedFilters filters={context.filters} />
-                        </React.Fragment>
+                        </>
                     :
                         <SelectedFilters filters={context.filters} />
                     }
@@ -733,7 +733,7 @@ class MatrixPresentation extends React.Component {
                                         : null}
                                     </div>
                                 :
-                                    <React.Fragment>
+                                    <>
                                         <div className="matrix__data--empty" />
                                         <Modal>
                                             <ModalHeader closeModal={false} addCss="matrix__modal-header">
@@ -742,20 +742,20 @@ class MatrixPresentation extends React.Component {
                                             <ModalBody addCss="matrix-reference-epigenome__organism-selector">
                                                 <div>Organism to view in matrix:</div>
                                                 <div className="selectors">
-                                                    {Object.keys(organismTabs).map(organism => (
+                                                    {Object.keys(organismTabs).map((organism) => (
                                                         // Encode the organism name into the <a> class for BDD testing.
                                                         <a key={organism} className={`btn btn-info btn__selector--${organism.replace(/ /g, '-')}`} href={`${context['@id']}&replicates.library.biosample.donor.organism.scientific_name=${encoding.encodedURIComponent(organism)}`}>{organism}</a>
                                                     ))}
                                                 </div>
                                             </ModalBody>
                                         </Modal>
-                                    </React.Fragment>
+                                    </>
                                 }
                             </div>
                         </div>
                     </div>
                 </TabPanel>
-            </React.Fragment>
+            </>
         );
     }
 }

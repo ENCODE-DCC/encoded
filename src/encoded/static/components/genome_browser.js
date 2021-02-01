@@ -57,10 +57,8 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
 
     if (gVState) {
         const savedState = gVState ? JSON.parse(gVState) : {};
-        contig = savedState.contig;
-        x0 = savedState.x0;
-        x1 = savedState.x1;
-        pinnedFiles = savedState.pinnedFiles;
+        ({ contig } = savedState);
+        ({ x0, x1, pinnedFiles } = savedState);
     } else if (assembly === 'GRCh38') {
         pinnedFiles = [
             {
@@ -349,17 +347,17 @@ const TrackLabel = ({ file, label, long }) => {
     }
 
     return (
-        <React.Fragment>
+        <>
             {(label === 'cart') ?
                 <ul className="gb-info">
                     {cartShortLabel}
                     {long ?
-                        <React.Fragment>
+                        <>
                             <li><a href={file.dataset} className="gb-accession">{datasetName}<span className="sr-only">{`Details for dataset ${datasetName}`}</span></a></li>
                             <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
                             <li>{file.output_type}</li>
                             {biologicalReplicates ? <li>{`rep ${biologicalReplicates}`}</li> : null}
-                        </React.Fragment>
+                        </>
                     : null}
                 </ul>
             :
@@ -369,16 +367,16 @@ const TrackLabel = ({ file, label, long }) => {
                         {(biologicalReplicates !== '') ? <span>{` (rep ${biologicalReplicates})`}</span> : null}
                     </li>
                     {long ?
-                        <React.Fragment>
+                        <>
                             {file.biosample_ontology && file.biosample_ontology.term_name ? <li>{file.biosample_ontology.term_name}</li> : null}
                             {file.target ? <li>{file.target.label}</li> : null}
                             {file.assay_term_name ? <li>{file.assay_term_name}</li> : null}
                             <li>{file.output_type}</li>
-                        </React.Fragment>
+                        </>
                     : null}
                 </ul>
             }
-        </React.Fragment>
+        </>
     );
 };
 
@@ -442,6 +440,7 @@ class GenomeBrowser extends React.Component {
         }
     }
 
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps, prevState) {
         if (!(this.state.disableBrowserForIE) && this.GV) {
             if (this.state.contig !== prevState.contig) {
@@ -469,6 +468,7 @@ class GenomeBrowser extends React.Component {
             }
         }
     }
+    /* eslint-enable react/no-did-update-set-state */
 
     componentWillUnmount() {
         // Recommendation from George of Valis to clear web-browser memory used by Valis.
@@ -486,6 +486,55 @@ class GenomeBrowser extends React.Component {
             x1,
             pinnedFiles: this.state.pinnedFiles,
         }));
+    }
+
+    handleChange(e) {
+        this.setState({
+            showAutoSuggest: true,
+            searchTerm: e.target.value,
+        });
+    }
+
+    handleAutocompleteClick(term, id, name) {
+        const newTerms = {};
+        const inputNode = this.gene;
+        inputNode.value = term;
+        newTerms[name] = id;
+        this.setState({
+            // terms: newTerms,
+            showAutoSuggest: false,
+            searchTerm: term,
+        });
+        inputNode.focus();
+        // Now let the timer update the terms state when it gets around to it.
+    }
+
+    handleOnFocus() {
+        this.setState({ showAutoSuggest: false });
+        const coordinateHref = `/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
+        getCoordinateData(coordinateHref, this.context.fetch).then((response) => {
+            // Find the response line that matches the search
+            const responseIndex = response['@graph'].findIndex((responseLine) => responseLine.text === this.state.searchTerm);
+
+            // Find the annotation line that matches the genome selected in the fake facets
+            const { annotations } = response['@graph'][responseIndex]._source;
+            const annotationIndex = annotations.findIndex((annotation) => annotation.assembly_name === this.state.genome);
+            const annotation = annotations[annotationIndex];
+
+            // Compute gene location information from the annotation
+            const annotationLength = +annotation.end - +annotation.start;
+            const contig = `chr${annotation.chromosome}`;
+            const xStart = +annotation.start - (annotationLength / 2);
+            const xEnd = +annotation.end + (annotationLength / 2);
+
+            if (contig !== '') {
+                this.state.visualizer.setLocation({
+                    contig,
+                    x0: xStart,
+                    x1: xEnd,
+                });
+            }
+        });
     }
 
     setBrowserDefaults(assemblyAnnotation, resolve) {
@@ -561,7 +610,7 @@ class GenomeBrowser extends React.Component {
         if (this.props.displaySort) {
             orderedSortParam.forEach((param) => {
                 files = _.chain(files)
-                    .sortBy(obj => sortLookUp(obj, param));
+                    .sortBy((obj) => sortLookUp(obj, param));
             });
             files = files.value();
         }
@@ -574,11 +623,13 @@ class GenomeBrowser extends React.Component {
 
         // Update state if function has been triggered by button click and sort and sort direction are new
         if (toggleFlag) {
-            const newSortToggle = [...this.state.sortToggle];
-            newSortToggle[sortIdx] = !newSortToggle[sortIdx];
-            this.setState({
-                primarySort,
-                sortToggle: newSortToggle,
+            this.setState((state) => {
+                const newSortToggle = [...state.sortToggle];
+                newSortToggle[sortIdx] = !newSortToggle[sortIdx];
+                return {
+                    primarySort,
+                    sortToggle: newSortToggle,
+                };
             });
         }
         return files;
@@ -596,15 +647,11 @@ class GenomeBrowser extends React.Component {
         if (files.length > 0) {
             tracks = this.filesToTracks(newFiles, this.props.label, domain);
         }
-        let contig = this.state.contig;
-        let x0 = this.state.x0;
-        let x1 = this.state.x1;
+        let { contig, x0, x1 } = this.state;
         if (this.chartdisplay) {
             const coordinates = readGenomeBrowserLabelCoordinates();
 
-            x0 = coordinates.x0;
-            x1 = coordinates.x1;
-            contig = coordinates.contig;
+            ({ x0, x1, contig } = coordinates);
         }
         this.setState({
             trackList: tracks,
@@ -642,7 +689,8 @@ class GenomeBrowser extends React.Component {
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
                 trackObj.expandedHeightPx = 140;
                 return trackObj;
-            } else if (file.file_format === 'bigWig') {
+            }
+            if (file.file_format === 'bigWig') {
                 const trackObj = {};
                 trackObj.name = <TrackLabel label={label} file={file} />;
                 trackObj.longname = <TrackLabel label={label} file={file} long />;
@@ -651,7 +699,8 @@ class GenomeBrowser extends React.Component {
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
                 trackObj.expandedHeightPx = 140;
                 return trackObj;
-            } else if (file.file_format === 'vdna-dir') {
+            }
+            if (file.file_format === 'vdna-dir') {
                 const trackObj = {};
                 trackObj.name = <ul className="gb-info"><li>{this.props.assembly.split(' ')[0]}</li></ul>;
                 trackObj.type = 'sequence';
@@ -659,7 +708,8 @@ class GenomeBrowser extends React.Component {
                 trackObj.heightPx = 40;
                 trackObj.expandable = false;
                 return trackObj;
-            } else if (file.file_format === 'vgenes-dir') {
+            }
+            if (file.file_format === 'vgenes-dir') {
                 const trackObj = {};
                 trackObj.name = <ul className="gb-info"><li>{file.title}</li></ul>;
                 trackObj.type = 'annotation';
@@ -702,14 +752,15 @@ class GenomeBrowser extends React.Component {
     }
 
     drawTracks(container) {
+        const { contig, x0, x1, trackList } = this.state;
         const visualizer = new this.GV.GenomeVisualizer({
             clampToTracks: true,
             reorderTracks: true,
             removableTracks: false,
             panels: [{
-                location: { contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 },
+                location: { contig, x0, x1 },
             }],
-            tracks: this.state.trackList,
+            tracks: trackList,
         });
         this.setState({ visualizer });
         this.clearBrowserMemory();
@@ -721,55 +772,6 @@ class GenomeBrowser extends React.Component {
         window.addEventListener('resize', this.drawTracksResized);
     }
 
-    handleChange(e) {
-        this.setState({
-            showAutoSuggest: true,
-            searchTerm: e.target.value,
-        });
-    }
-
-    handleAutocompleteClick(term, id, name) {
-        const newTerms = {};
-        const inputNode = this.gene;
-        inputNode.value = term;
-        newTerms[name] = id;
-        this.setState({
-            // terms: newTerms,
-            showAutoSuggest: false,
-            searchTerm: term,
-        });
-        inputNode.focus();
-        // Now let the timer update the terms state when it gets around to it.
-    }
-
-    handleOnFocus() {
-        this.setState({ showAutoSuggest: false });
-        const coordinateHref = `/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
-        getCoordinateData(coordinateHref, this.context.fetch).then((response) => {
-            // Find the response line that matches the search
-            const responseIndex = response['@graph'].findIndex(responseLine => responseLine.text === this.state.searchTerm);
-
-            // Find the annotation line that matches the genome selected in the fake facets
-            const annotations = response['@graph'][responseIndex]._source.annotations;
-            const annotationIndex = annotations.findIndex(annotation => annotation.assembly_name === this.state.genome);
-            const annotation = annotations[annotationIndex];
-
-            // Compute gene location information from the annotation
-            const annotationLength = +annotation.end - +annotation.start;
-            const contig = `chr${annotation.chromosome}`;
-            const xStart = +annotation.start - (annotationLength / 2);
-            const xEnd = +annotation.end + (annotationLength / 2);
-
-            if (contig !== '') {
-                this.state.visualizer.setLocation({
-                    contig,
-                    x0: xStart,
-                    x1: xEnd,
-                });
-            }
-        });
-    }
-
     resetLocation() {
         const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, true);
         this.state.visualizer.setLocation({ contig, x0, x1 });
@@ -777,15 +779,15 @@ class GenomeBrowser extends React.Component {
 
     render() {
         return (
-            <React.Fragment>
+            <>
                 {(this.state.trackList.length > 0 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
-                    <React.Fragment>
+                    <>
                         { (this.state.genome.indexOf('GRC') !== -1) ?
                             <div className="gene-search">
                                 <i className="icon icon-search" />
                                 <div className="search-instructions">Search for a gene</div>
                                 <div className="searchform">
-                                    <input id="gene" ref={(input) => { this.gene = input; }} aria-label={'search for gene name'} placeholder="Enter gene name here" value={this.state.searchTerm} onChange={this.handleChange} />
+                                    <input id="gene" ref={(input) => { this.gene = input; }} aria-label="search for gene name" placeholder="Enter gene name here" value={this.state.searchTerm} onChange={this.handleChange} />
                                     {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                         <FetchedData loadingComplete>
                                             <Param
@@ -801,33 +803,33 @@ class GenomeBrowser extends React.Component {
                                         </FetchedData>
                                     : null}
                                 </div>
-                                <button className="submit-gene-search btn btn-info" onClick={this.handleOnFocus}>Submit</button>
+                                <button type="button" className="submit-gene-search btn btn-info" onClick={this.handleOnFocus}>Submit</button>
                             </div>
                         : null}
                         {this.props.displaySort ?
                             <div className="sort-control-container">
                                 <div className="sort-label">Sort by: </div>
-                                {this.props.sortParam.map((param, paramIdx) => <button className={`sort-button ${param === this.state.primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => this.sortAndRefresh(param, this.state.sortToggle[paramIdx], paramIdx, true)}><i className={this.state.sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
+                                {this.props.sortParam.map((param, paramIdx) => <button type="button" className={`sort-button ${param === this.state.primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => this.sortAndRefresh(param, this.state.sortToggle[paramIdx], paramIdx, true)}><i className={this.state.sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
                             </div>
                         : null}
                         <div className="browser-container">
-                            <button className="reset-browser-button" onClick={this.resetLocation}>
+                            <button type="button" className="reset-browser-button" onClick={this.resetLocation}>
                                 <i className="icon icon-undo" />
                                 <span className="reset-title">Reset coordinates</span>
                             </button>
                             <div ref={(div) => { this.chartdisplay = div; }} className="valis-browser" />
                         </div>
-                    </React.Fragment>
+                    </>
                 :
-                    <React.Fragment>
+                    <>
                         {(this.state.disableBrowserForIE) ?
                             <div className="browser-error valis-browser">The genome browser does not support Internet Explorer. Please upgrade your browser to Edge to visualize files on ENCODE.</div>
                         :
                             <div className="browser-error valis-browser">There are no visualizable results.</div>
                         }
-                    </React.Fragment>
+                    </>
                 }
-            </React.Fragment>
+            </>
         );
     }
 }

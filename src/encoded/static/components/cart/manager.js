@@ -189,7 +189,7 @@ IdentifierInput.defaultProps = {
  * @param {string} name Human-readable name to convert
  * @return {string} `name` converted to one legal for URIs
  */
-const convertNameToIdentifier = name => name.toLowerCase().replace(/\W+/g, '-');
+const convertNameToIdentifier = (name) => name.toLowerCase().replace(/\W+/g, '-');
 
 
 /**
@@ -222,6 +222,7 @@ class NameCartButtonComponent extends React.Component {
         this.handleControlClick = this.handleControlClick.bind(this);
     }
 
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate() {
         const { create, cart } = this.props;
         if (!create && !this.state.modalOpen && (cart.name !== this.state.newName || cart.identifier !== this.state.newIdentifier)) {
@@ -234,6 +235,7 @@ class NameCartButtonComponent extends React.Component {
             });
         }
     }
+    /* eslint-enable react/no-did-update-set-state */
 
     /**
      * Called when the button to actuate the modal is clicked.
@@ -267,7 +269,7 @@ class NameCartButtonComponent extends React.Component {
         // belonging to the current user. Don't give the warning if the cart with a conflicting
         // name is the cart being renamed.
         const upperCaseName = name.trim().toUpperCase();
-        const conflictingCart = cartManager['@graph'].find(cartItem => cartItem.status !== 'disabled' && cartItem.status !== 'deleted' && cartItem.name.trim().toUpperCase() === upperCaseName);
+        const conflictingCart = cartManager['@graph'].find((cartItem) => cartItem.status !== 'disabled' && cartItem.status !== 'deleted' && cartItem.name.trim().toUpperCase() === upperCaseName);
         const nameConflict = conflictingCart && (create || conflictingCart['@id'] !== cart['@id']);
         this.setState({ newName: name, nameConflict });
 
@@ -336,7 +338,7 @@ class NameCartButtonComponent extends React.Component {
         const modalTitle = create ? 'New cart' : <span>Rename cart: {cart.name}</span>;
         const actuatorTitle = create ? 'New cart' : 'Rename';
         return (
-            <React.Fragment>
+            <>
                 <div className="cart-manager-table__tooltip-group">
                     {disabled ?
                         <div
@@ -344,7 +346,7 @@ class NameCartButtonComponent extends React.Component {
                             title={disabledTooltip}
                         />
                     : null}
-                    <button className={`btn btn-info btn-sm btn-inline${actuatorCss ? ` ${actuatorCss}` : ''}`} onClick={this.handleActuator} disabled={disabled}>{actuatorTitle}</button>
+                    <button type="button" className={`btn btn-info btn-sm btn-inline${actuatorCss ? ` ${actuatorCss}` : ''}`} onClick={this.handleActuator} disabled={disabled}>{actuatorTitle}</button>
                 </div>
                 {this.state.modalOpen ?
                     <Modal closeModal={this.handleClose} submitModal={this.handleSubmit} labelId="name-cart-label" descriptionId="name-cart-description">
@@ -366,9 +368,12 @@ class NameCartButtonComponent extends React.Component {
                             </div>
                             <div className={`cart-rename__control-area${this.state.transferEnabled ? ' cart-rename__control-area--enabled' : ''}`}>
                                 <button
+                                    type="button"
                                     title="Select to automatically transfer the name to a plausibly similar identifier"
                                     onClick={this.handleControlClick}
-                                />
+                                >
+                                    <span className="sr-only">Select to automatically transfer the name to a plausibly similar identifier</span>
+                                </button>
                             </div>
                             <div className="cart-rename__identifier-area">
                                 <IdentifierInput
@@ -388,18 +393,19 @@ class NameCartButtonComponent extends React.Component {
                         <ModalFooter
                             submitBtn={
                                 <button
+                                    type="button"
                                     className="btn btn-info"
                                     disabled={this.state.nameConflict || this.state.newName.length === 0 || inProgress}
                                     onClick={this.handleSubmit}
                                 >
                                     {actuatorTitle}
                                 </button>}
-                            closeModal={<button className="btn btn-default" onClick={this.handleClose}>{inProgress ? <span>Close</span> : <span>Cancel</span>}</button>}
+                            closeModal={<button type="button" className="btn btn-default" onClick={this.handleClose}>{inProgress ? <span>Close</span> : <span>Cancel</span>}</button>}
                             addCss="cart-rename__footer-controls"
                         />
                     </Modal>
                 : null}
-            </React.Fragment>
+            </>
         );
     }
 }
@@ -457,7 +463,7 @@ NameCartButtonComponent.mapStateToProps = (state, ownProps) => ({
 NameCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
     onRename: (name, identifier) => dispatch(setCartNameIdentifierAndSave({ name, identifier }, ownProps.cart, ownProps.user, ownProps.fetch)),
     onCreate: (name, identifier) => cartCreate({ name, identifier }, ownProps.fetch),
-    onSwitchCart: cartAtId => dispatch(switchCart(cartAtId, ownProps.fetch)),
+    onSwitchCart: (cartAtId) => dispatch(switchCart(cartAtId, ownProps.fetch)),
 });
 
 const NameCartButton = connect(NameCartButtonComponent.mapStateToProps, NameCartButtonComponent.mapDispatchToProps)(NameCartButtonComponent);
@@ -516,7 +522,7 @@ class DeleteCartButtonComponent extends React.Component {
             disabledTooltip = 'Cart operation in progress';
         }
         return (
-            <React.Fragment>
+            <>
                 <div className="cart-manager-table__tooltip-group">
                     {disabledTooltip ?
                         <div
@@ -524,7 +530,7 @@ class DeleteCartButtonComponent extends React.Component {
                             title={disabledTooltip}
                         />
                     : null}
-                    <button className="btn btn-danger btn-sm btn-inline" onClick={this.handleDeleteClick} disabled={!!disabledTooltip}><i className="icon icon-trash-o" />&nbsp;Delete</button>
+                    <button type="button" className="btn btn-danger btn-sm btn-inline" onClick={this.handleDeleteClick} disabled={!!disabledTooltip}><i className="icon icon-trash-o" />&nbsp;Delete</button>
                 </div>
                 {this.state.modalOpen ?
                     <Modal closeModal={this.handleCloseClick}>
@@ -539,7 +545,7 @@ class DeleteCartButtonComponent extends React.Component {
                         />
                     </Modal>
                 : null}
-            </React.Fragment>
+            </>
         );
     }
 }
@@ -567,8 +573,8 @@ DeleteCartButtonComponent.mapStateToProps = (state, ownProps) => ({
     updateCartManager: ownProps.updateCartManager,
     fetch: ownProps.fetch,
 });
-DeleteCartButtonComponent.mapDispatchToProps = dispatch => ({
-    setInProgress: enable => dispatch(cartOperationInProgress(enable)),
+DeleteCartButtonComponent.mapDispatchToProps = (dispatch) => ({
+    setInProgress: (enable) => dispatch(cartOperationInProgress(enable)),
 });
 
 const DeleteCartButtonInternal = connect(DeleteCartButtonComponent.mapStateToProps, DeleteCartButtonComponent.mapDispatchToProps)(DeleteCartButtonComponent);
@@ -619,7 +625,7 @@ class ShareCartButtonComponent extends React.Component {
             disabledTooltip = 'Cannot share the auto-save cart';
         }
         return (
-            <React.Fragment>
+            <>
                 <div className="cart-manager-table__tooltip-group">
                     {disabledTooltip ?
                         <div
@@ -627,12 +633,12 @@ class ShareCartButtonComponent extends React.Component {
                             title={disabledTooltip}
                         />
                     : null}
-                    <button className="btn btn-info btn-sm btn-inline" onClick={this.handleShareClick} disabled={!!disabledTooltip || inProgress}>Share</button>
+                    <button type="button" className="btn btn-info btn-sm btn-inline" onClick={this.handleShareClick} disabled={!!disabledTooltip || inProgress}>Share</button>
                 </div>
                 {this.state.modalOpen ?
                     <CartShare userCart={cart} closeShareCart={this.closeShareCart} />
                 : null}
-            </React.Fragment>
+            </>
         );
     }
 }
@@ -663,19 +669,19 @@ const cartTableColumns = {
     name: {
         title: 'Name',
         headerCss: 'cart-manager-table__name-header',
-        display: item => <a href={item['@id']} className="cart-manager-table__text-wrap">{item.name}</a>,
+        display: (item) => <a href={item['@id']} className="cart-manager-table__text-wrap">{item.name}</a>,
     },
     identifier: {
         title: 'Identifier',
         headerCss: 'cart-manager-table__name-header',
-        display: item => (item.identifier ? <a href={item['@id']} className="cart-manager-table__text-wrap">{item.identifier}</a> : null),
+        display: (item) => (item.identifier ? <a href={item['@id']} className="cart-manager-table__text-wrap">{item.identifier}</a> : null),
     },
     element_count: {
         title: 'Items',
     },
     status: {
         title: 'Status',
-        display: item => <Status item={item} badgeSize="small" />,
+        display: (item) => <Status item={item} badgeSize="small" />,
         hide: (item, columns, meta) => !meta.admin,
     },
     actions: {
@@ -748,10 +754,10 @@ const CartManagerFooter = ({ adminUser, isDeletedVisible, deletedVisibleChangeHa
     <div className="cart-manager-table__footer">
         <div className="cart-manager-table__footer-item">
             {adminUser ?
-                <React.Fragment>
+                <>
                     <input id="check-deleted-visible" type="checkbox" checked={isDeletedVisible} onChange={deletedVisibleChangeHandler} />
                     <label htmlFor="check-deleted-visible">Show deleted carts</label>
-                </React.Fragment>
+                </>
             : null}
         </div>
         <div className="cart-manager-table__legend">
@@ -798,6 +804,13 @@ class CartManagerComponent extends React.Component {
     }
 
     /**
+     * Called when the user clicks the "Show deleted carts" checkbox.
+     */
+    handleDeletedVisibleChange(e) {
+        this.setState({ isDeletedVisible: e.target.checked });
+    }
+
+    /**
      * Usually called in reaction to a possible change to the cart manager object, loads the
      * current cart object into this component's `updatedContext` state.
      */
@@ -807,20 +820,13 @@ class CartManagerComponent extends React.Component {
         });
     }
 
-    /**
-     * Called when the user clicks the "Show deleted carts" checkbox.
-     */
-    handleDeletedVisibleChange(e) {
-        this.setState({ isDeletedVisible: e.target.checked });
-    }
-
     render() {
         const { context, currentCart, inProgress, sessionProperties, fetch } = this.props;
         const adminUser = !!(sessionProperties && sessionProperties.admin);
         const cartContext = this.state.updatedContext || context;
         const extantCartCount = cartContext['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' && cart.status !== 'disabled' ? sum + 1 : sum), 0);
         const user = sessionProperties && sessionProperties.user;
-        const cartList = this.state.isDeletedVisible ? cartContext['@graph'] : cartContext['@graph'].filter(cart => cart.status !== 'deleted');
+        const cartList = this.state.isDeletedVisible ? cartContext['@graph'] : cartContext['@graph'].filter((cart) => cart.status !== 'deleted');
         const cartPanelHeader = (
             <div className="cart-manager-header">
                 <h4 className="cart-manager-header__title">Cart manager</h4>
@@ -839,7 +845,7 @@ class CartManagerComponent extends React.Component {
             <SortTablePanel header={cartPanelHeader}>
                 <SortTable
                     list={cartList}
-                    rowKeys={cartContext['@graph'].map(cart => cart['@id'])}
+                    rowKeys={cartContext['@graph'].map((cart) => cart['@id'])}
                     columns={cartTableColumns}
                     meta={{
                         cartManager: cartContext,

@@ -28,12 +28,12 @@ export function BiosampleSummaryString(biosample, supressOrganism) {
 // Some biosample-specific utilities
 //   Return an array of biosample scientific names from the given array of biosamples.
 export function BiosampleOrganismNames(biosamples) {
-    return _.uniq(biosamples.map(biosample => biosample.organism.scientific_name));
+    return _.uniq(biosamples.map((biosample) => biosample.organism.scientific_name));
 }
 
 
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
-// documents (with @type of Document or Characterization). If the given biosample has no documdents, this
+// documents (with @type of Document or Characterization). If the given biosample has no documents, this
 // function returns null. Protocol documents and characterizations get included.
 export function CollectBiosampleDocs(biosample) {
     // Collect up the various biosample documents
@@ -114,15 +114,15 @@ BiosampleTable.defaultProps = {
 BiosampleTable.columns = {
     accession: {
         title: 'Accession',
-        display: biosample => <a href={biosample['@id']}>{biosample.accession}</a>,
+        display: (biosample) => <a href={biosample['@id']}>{biosample.accession}</a>,
     },
     'biosample_ontology.classification': {
         title: 'Type',
-        getValue: item => item.biosample_ontology && item.biosample_ontology.classification,
+        getValue: (item) => item.biosample_ontology && item.biosample_ontology.classification,
     },
     'biosample_ontology.term_name': {
         title: 'Term',
-        getValue: item => item.biosample_ontology && item.biosample_ontology.term_name,
+        getValue: (item) => item.biosample_ontology && item.biosample_ontology.term_name,
     },
     summary: { title: 'Summary', sorter: false },
 };
@@ -179,7 +179,7 @@ DonorTable.propTypes = {
     items: PropTypes.array.isRequired, // List of donors as an array of search results
     limit: PropTypes.number, // Maximum number of donors to display in the table
     total: PropTypes.number, // Total number of donors in the search results; might be more than we display in the table
-    url: PropTypes.string, // URL to use for the complete donor search reuslts
+    url: PropTypes.string, // URL to use for the complete donor search results
     title: PropTypes.string, // Title to use for the table of donors
 };
 
@@ -190,15 +190,15 @@ DonorTable.defaultProps = {
     title: '',
 };
 
-// <SortTable> column specificiation for the table of donors.
+// <SortTable> column specification for the table of donors.
 DonorTable.columns = {
     accession: {
         title: 'Accession',
-        display: donor => <a href={donor['@id']}>{donor.accession}</a>,
+        display: (donor) => <a href={donor['@id']}>{donor.accession}</a>,
     },
     species: {
         title: 'Species',
-        display: donor => (donor.organism && donor.organism.scientific_name ? <i>{donor.organism.scientific_name}</i> : null),
+        display: (donor) => (donor.organism && donor.organism.scientific_name ? <i>{donor.organism.scientific_name}</i> : null),
     },
     sex: {
         title: 'Sex',
@@ -234,7 +234,7 @@ DonorTableFooter.defaultProps = {
 // Display a reference to an award page as a definition list item.
 export const AwardRef = (props) => {
     const { context, adminUser } = props;
-    const award = context.award;
+    const { award } = context;
 
     if (award && award.pi && award.pi.lab) {
         return (
@@ -308,7 +308,7 @@ export function fileStatusList(session, sessionProperties) {
 export const ReplacementAccessions = ({ context }) => {
     const alternateAccessions = context.alternate_accessions || [];
     const supersededByAtIds = context.superseded_by || [];
-    const supersedes = (context.supersedes && context.supersedes.map(supersedesAtId => globals.atIdToAccession(supersedesAtId))) || [];
+    const supersedes = (context.supersedes && context.supersedes.map((supersedesAtId) => globals.atIdToAccession(supersedesAtId))) || [];
 
     if (alternateAccessions.length > 0 || supersededByAtIds.length > 0 || supersedes.length > 0) {
         return (
@@ -366,7 +366,7 @@ ExperimentTableFooter.defaultProps = {
 const experimentTableColumns = {
     accession: {
         title: 'Accession',
-        display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
+        display: (item) => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
     },
 
     assay_term_name: {
@@ -375,12 +375,12 @@ const experimentTableColumns = {
 
     'biosample_ontology.term_name': {
         title: 'Biosample term name',
-        getValue: item => item.biosample_ontology && item.biosample_ontology.term_name,
+        getValue: (item) => item.biosample_ontology && item.biosample_ontology.term_name,
     },
 
     target: {
         title: 'Target',
-        getValue: item => item.target && item.target.label,
+        getValue: (item) => item.target && item.target.label,
     },
 
     description: {
@@ -389,7 +389,7 @@ const experimentTableColumns = {
 
     title: {
         title: 'Lab',
-        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+        getValue: (item) => (item.lab && item.lab.title ? item.lab.title : null),
     },
 };
 
@@ -480,10 +480,10 @@ ControllingExperiments.defaultProps = {
  * Display a count of biosample characterizations in the footer, with a link to the corresponding search if needed.
  */
 const BiosampleCharacterizationTableFooter = ({ items, total, url }) => (
-    <React.Fragment>
+    <>
         <span>Displaying {items.length} of {total} </span>
         {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
-    </React.Fragment>
+    </>
 );
 
 BiosampleCharacterizationTableFooter.propTypes = {
@@ -503,23 +503,23 @@ BiosampleCharacterizationTableFooter.defaultProps = {
 const biosampleCharacterizationTableColumns = {
     'characterizes.biosample_ontology.term_name': {
         title: 'Biosample term',
-        display: char => <a href={char['@id']}>{char.characterizes.biosample_ontology.term_name}</a>,
+        display: (char) => <a href={char['@id']}>{char.characterizes.biosample_ontology.term_name}</a>,
     },
     characterization_method: {
         title: 'Characterization method',
-        getValue: char => char.characterization_method && char.characterization_method.uppercaseFirstChar(),
+        getValue: (char) => char.characterization_method && char.characterization_method.uppercaseFirstChar(),
     },
     'lab.title': {
         title: 'Characterization lab',
-        getValue: char => char.lab.title,
+        getValue: (char) => char.lab.title,
     },
     'review.lab.title': {
         title: 'Review lab',
-        getValue: char => char.review && char.review.lab.title,
+        getValue: (char) => char.review && char.review.lab.title,
     },
     'review.status': {
         title: 'Review status',
-        display: char => char.review && char.review.status && <Status item={char.review.status} badgeSize="small" inline />,
+        display: (char) => char.review && char.review.status && <Status item={char.review.status} badgeSize="small" inline />,
     },
 };
 
@@ -560,7 +560,7 @@ BiosampleCharacterizationTable.defaultProps = {
 const derivingCols = {
     accession: {
         title: 'Accession',
-        display: file => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
+        display: (file) => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
         sorter: false,
     },
     dataset: {
@@ -575,19 +575,19 @@ const derivingCols = {
     output_type: { title: 'Output type', sorter: false },
     title: {
         title: 'Lab',
-        getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
+        getValue: (file) => (file.lab && file.lab.title ? file.lab.title : ''),
         sorter: false,
     },
     assembly: { title: 'Mapping assembly', sorter: false },
     status: {
         title: 'File status',
-        display: item => <Status item={item} badgeSize="small" inline />,
+        display: (item) => <Status item={item} badgeSize="small" inline />,
         sorter: false,
     },
 };
 
 
-const PAGED_FILE_TABLE_MAX = 25; // Maximnum number of files per page
+const PAGED_FILE_TABLE_MAX = 25; // Maximum number of files per page
 const PAGED_FILE_CACHE_MAX = 10; // Maximum number of pages to cache
 
 
@@ -597,7 +597,7 @@ const PAGED_FILE_CACHE_MAX = 10; // Maximum number of pages to cache
  *
  * @return {number} Total number of pages to hold these files
  */
-const getTotalPages = count => parseInt(count / PAGED_FILE_TABLE_MAX, 10) + (count % PAGED_FILE_TABLE_MAX ? 1 : 0);
+const getTotalPages = (count) => parseInt(count / PAGED_FILE_TABLE_MAX, 10) + (count % PAGED_FILE_TABLE_MAX ? 1 : 0);
 
 
 /**
@@ -697,7 +697,7 @@ export const FileTablePaged = ({ context, fileIds, files, title }) => {
                 // To save memory, see if we can lose a reference to a page so that it gets GC'd. Need
                 // to convert cache page number keys to strings because numeric keys always become
                 // strings.
-                const cachedPageNos = Object.keys(pageCache.current).map(pageNo => parseInt(pageNo, 10));
+                const cachedPageNos = Object.keys(pageCache.current).map((pageNo) => parseInt(pageNo, 10));
                 if (cachedPageNos.length > PAGED_FILE_CACHE_MAX) {
                     // Our cache has filled. Find the cache entry with a page farthest from the current
                     // and kick it out. A bit complicated because it finds both the maximum page-number

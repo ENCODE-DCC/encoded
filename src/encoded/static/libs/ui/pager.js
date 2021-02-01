@@ -1,7 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { svgIcon } from '../../libs/svg-icons';
+import { svgIcon } from '../svg-icons';
 
 
 /**
@@ -25,9 +24,23 @@ export const Simple = ({ total, current, updateCurrentPage }) => {
     return (
         <nav className="pager" aria-label="Pagination">
             <ul>
-                <li><button className="pager__dir" disabled={prevDisabled} aria-label={prevDisabled ? '' : `Previous page ${current} of ${total}`} onClick={handlePrev}><i className="icon icon-chevron-left" /></button></li>
-                <li><div className="pager__index"><div>{current + 1} OF {total}</div></div></li>
-                <li><button className="pager__dir" disabled={nextDisabled} aria-label={nextDisabled ? '' : `Next page ${current + 2} of ${total}`} onClick={handleNext}><i className="icon icon-chevron-right" /></button></li>
+                <li>
+                    <button type="button" className="pager__dir" disabled={prevDisabled} aria-label={prevDisabled ? '' : `Previous page ${current} of ${total}`} onClick={handlePrev}>
+                        <i className="icon icon-chevron-left" />
+                    </button>
+                </li>
+                <li>
+                    <div className="pager__index">
+                        <div>
+                            {current + 1} OF {total}
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <button type="button" className="pager__dir" disabled={nextDisabled} aria-label={nextDisabled ? '' : `Next page ${current + 2} of ${total}`} onClick={handleNext}>
+                        <i className="icon icon-chevron-right" />
+                    </button>
+                </li>
             </ul>
         </nav>
     );

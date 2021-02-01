@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -20,7 +19,7 @@ CartAlertComponent.defaultProps = {
     alert: null,
 };
 
-CartAlertComponent.mapStateToProps = state => ({
+CartAlertComponent.mapStateToProps = (state) => ({
     alert: state.alert,
 });
 

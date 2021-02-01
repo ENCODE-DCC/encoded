@@ -1,9 +1,8 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
-import { getRenderedProps } from '../app';
 import App from '..';
 
+const { getRenderedProps } = require('../app');
 
 // App calls Browserfeat to act on the DOM, so prevent that functionality as we have no DOM.
 jest.mock('../browserfeat');

@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
@@ -14,11 +13,11 @@ const Target = ({ context }) => {
     const source = context.organism ? context.organism.scientific_name : context.investigated_as[0];
 
     if (context.genes) {
-        geneIDs = context.genes.map(gene => `GeneID:${gene.geneid}`);
+        geneIDs = context.genes.map((gene) => `GeneID:${gene.geneid}`);
     }
 
     // Set up breadcrumbs
-    const assayTargets = context.investigated_as.map(assayTarget => `investigated_as=${assayTarget}`);
+    const assayTargets = context.investigated_as.map((assayTarget) => `investigated_as=${assayTarget}`);
     const crumbs = [
         { id: 'Targets' },
         { id: context.investigated_as.join(' + '), query: assayTargets.join('&'), tip: context.investigated_as.join(' + ') },

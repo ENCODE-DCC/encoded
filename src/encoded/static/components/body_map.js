@@ -443,8 +443,8 @@ class BodyMap extends React.Component {
         // If the state already includes the term, we remove it and its associated terms from state
         } else if (this.state.selectedOrgan.includes(currentOrgan)) {
             if (typeof this.state.selectedOrgan !== 'string') {
-                this.setState(prevState => ({
-                    selectedOrgan: prevState.selectedOrgan.filter(organ => organ !== currentOrgan && !(multipleAssociations.includes(organ))) || [],
+                this.setState((prevState) => ({
+                    selectedOrgan: prevState.selectedOrgan.filter((organ) => organ !== currentOrgan && !(multipleAssociations.includes(organ))) || [],
                 }));
             } else {
                 this.setState({ selectedOrgan: [] });
@@ -569,13 +569,13 @@ class BodyMap extends React.Component {
                 // If the state already includes the newly selected organ, we remove it and its associated terms
                 } else if (this.state.selectedOrgan.includes(newOrgan)) {
                     if (typeof this.state.selectedOrgan !== 'string') {
-                        this.setState(prevState => ({
-                            selectedOrgan: prevState.selectedOrgan.filter(organ => organ !== newOrgan && !(multipleAssociations.includes(organ))) || [],
+                        this.setState((prevState) => ({
+                            selectedOrgan: prevState.selectedOrgan.filter((organ) => organ !== newOrgan && !(multipleAssociations.includes(organ))) || [],
                         }));
                     } else {
                         this.setState({ selectedOrgan: [] });
                     }
-                // If there already is a "currentOrgan" but it does not include the clicked-on organ, add the new organ and its assocations
+                // If there already is a "currentOrgan" but it does not include the clicked-on organ, add the new organ and its associations
                 } else {
                     let newState;
                     if (typeof this.state.selectedOrgan !== 'string') {
@@ -619,23 +619,23 @@ class BodyMap extends React.Component {
             <div className="body-facet-container">
                 <div className="body-list body-list-top">
                     <ul className="body-list-inner">
-                        {Object.keys(SystemsList).map(b =>
+                        {Object.keys(SystemsList).map((b) => (
                             <li key={b}>
                                 <span
                                     id={b}
                                     className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
                                     role="button"
                                     tabIndex="0"
-                                    onClick={e => this.chooseOrgan(e)}
-                                    onKeyPress={e => this.chooseOrgan(e)}
-                                    onMouseEnter={e => highlightOrgan(e)}
+                                    onClick={(e) => this.chooseOrgan(e)}
+                                    onKeyPress={(e) => this.chooseOrgan(e)}
+                                    onMouseEnter={(e) => highlightOrgan(e)}
                                     onMouseLeave={unHighlightOrgan}
                                 >
                                     {b}
                                 </span>
                             </li>
-                        )}
-                        <button className="clear-organs" onClick={this.clearOrgans}>
+                        ))}
+                        <button type="button" className="clear-organs" onClick={this.clearOrgans}>
                             <i className="icon icon-times-circle" />
                             Clear body map selections
                         </button>
@@ -650,31 +650,32 @@ class BodyMap extends React.Component {
                     </div>
                     <div className="body-list">
                         <ul className="body-list-inner">
-                            {Object.keys(BodyList).map(b =>
+                            {Object.keys(BodyList).map((b) => (
                                 <li key={b}>
                                     <span
                                         id={b}
                                         className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
                                         role="button"
                                         tabIndex="0"
-                                        onClick={e => this.chooseOrgan(e)}
-                                        onKeyPress={e => this.chooseOrgan(e)}
-                                        onMouseEnter={e => highlightOrgan(e)}
+                                        onClick={(e) => this.chooseOrgan(e)}
+                                        onKeyPress={(e) => this.chooseOrgan(e)}
+                                        onMouseEnter={(e) => highlightOrgan(e)}
                                         onMouseLeave={unHighlightOrgan}
                                     >
                                         {b}
                                     </span>
                                 </li>
-                            )}
+                            ))}
                         </ul>
                     </div>
                     <div className="body-inset-container">
-                        {Object.keys(CellsList).map(image =>
+                        {Object.keys(CellsList).map((image) => (
                             <button
+                                type="button"
                                 id={image}
                                 className={`body-inset ${image.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, image) ? 'active' : ''}`}
-                                onClick={e => this.chooseOrgan(e)}
-                                onMouseEnter={e => highlightOrgan(e)}
+                                onClick={(e) => this.chooseOrgan(e)}
+                                onMouseEnter={(e) => highlightOrgan(e)}
                                 onMouseLeave={unHighlightOrgan}
                                 key={image}
                             >
@@ -685,26 +686,26 @@ class BodyMap extends React.Component {
                                 }
                                 <div className="overlay" />
                             </button>
-                        )}
+                        ))}
                     </div>
                     <div className="body-list body-list-narrow">
                         <ul className="body-list-inner">
-                            {Object.keys(CellsList).map(b =>
+                            {Object.keys(CellsList).map((b) => (
                                 <li key={b}>
                                     <span
                                         id={b}
                                         className={`body-list-element ${b.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
                                         role="button"
                                         tabIndex="0"
-                                        onClick={e => this.chooseOrgan(e)}
-                                        onKeyPress={e => this.chooseOrgan(e)}
-                                        onMouseEnter={e => highlightOrgan(e)}
+                                        onClick={(e) => this.chooseOrgan(e)}
+                                        onKeyPress={(e) => this.chooseOrgan(e)}
+                                        onMouseEnter={(e) => highlightOrgan(e)}
                                         onMouseLeave={unHighlightOrgan}
                                     >
                                         {b}
                                     </span>
                                 </li>
-                            )}
+                            ))}
                         </ul>
                     </div>
                 </div>
@@ -727,9 +728,10 @@ BodyMap.contextTypes = {
 // Button to display the actual body map facet <BodyMapModal>
 export const ClickableThumbnail = (props) => {
     // "toggleThumbnail" toggles whether or not the pop-up is displayed
-    const toggleThumbnail = props.toggleThumbnail;
+    const { toggleThumbnail } = props;
     return (
         <button
+            type="button"
             className="body-image-thumbnail"
             onClick={() => toggleThumbnail()}
         >
@@ -738,7 +740,7 @@ export const ClickableThumbnail = (props) => {
             <BodyDiagram />
             <div className="body-list body-list-narrow">
                 <ul className="body-list-inner">
-                    {Object.keys(CellsList).map(image =>
+                    {Object.keys(CellsList).map((image) => (
                         <div
                             className={`body-inset ${image}`}
                             id={image}
@@ -748,7 +750,7 @@ export const ClickableThumbnail = (props) => {
                             <img className="inactive-image" src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}_deselected.svg`} alt={image} />
                             <div className="overlay" />
                         </div>
-                    )}
+                    ))}
                 </ul>
             </div>
         </button>
@@ -763,13 +765,11 @@ ClickableThumbnail.propTypes = {
 // Displayed when you click on <ClickableThumbnail>
 // Allows you to select organ / system filters
 export const BodyMapModal = (props) => {
-    const isThumbnailExpanded = props.isThumbnailExpanded;
-    const toggleThumbnail = props.toggleThumbnail;
-    const context = props.context;
+    const { context, isThumbnailExpanded, toggleThumbnail } = props;
     return (
         <div className="modal" style={{ display: 'block' }}>
             <div className={`body-map-container-pop-up ${isThumbnailExpanded ? 'expanded' : 'collapsed'}`}>
-                <button className="collapse-body-map" onClick={() => toggleThumbnail()}>
+                <button type="button" className="collapse-body-map" onClick={() => toggleThumbnail()}>
                     {svgIcon('collapseArrows')}
                     <div className="body-map-collapser">Hide body diagram</div>
                 </button>

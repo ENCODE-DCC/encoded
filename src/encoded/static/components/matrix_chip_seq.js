@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import pluralize from 'pluralize';
 import url from 'url';
@@ -20,7 +20,7 @@ const CLEAR_SEARCH_BOX_PUBSUB = 'clearSearchBox';
 const LARGE_MATRIX_MIN_SIZE = 150;
 
 /**
- * Tranform context to a form where easier to fetch information
+ * Transform context to a form where easier to fetch information
  *
  * @param {context} context - Context from react
  * @param {string} assayTitle - Assay Title
@@ -45,27 +45,27 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
 
     const subTabSource = 'biosample_ontology.classification';
 
-    const subTabs = context.matrix.x[subTabSource].buckets.map(x => x.key);
+    const subTabs = context.matrix.x[subTabSource].buckets.map((x) => x.key);
     const chIPSeqData = {};
 
     subTabs.forEach((subTab) => {
         const xGroupBy1 = context.matrix.x.group_by[0];
         const xGroupBy2 = context.matrix.x.group_by[1];
-        const headerRow = context.matrix.x[xGroupBy1].buckets.find(f => f.key === subTab)[xGroupBy2]
+        const headerRow = context.matrix.x[xGroupBy1].buckets.find((f) => f.key === subTab)[xGroupBy2]
             .buckets
             .reduce((a, b) => a.concat(b), [])
-            .map(x => x.key);
+            .map((x) => x.key);
         const headerRowIndex = headerRow.reduce((x, y, z) => { x[y] = z; return x; }, []);
         const headerRowLength = headerRow.length;
         const yGroupBy1 = context.matrix.y.group_by[0];
         const yGroupBy2 = context.matrix.y.group_by[1];
 
         const yData = context.matrix.y[yGroupBy1].buckets
-            .find(rBucket => rBucket.key === organismName)[yGroupBy2].buckets
+            .find((rBucket) => rBucket.key === organismName)[yGroupBy2].buckets
             .reduce((a, b) => {
                 const m = {};
                 m[b.key] = b[xGroupBy1].buckets
-                    .filter(f => f.key === subTab)
+                    .filter((f) => f.key === subTab)
                     .reduce((x, y) => {
                         x.push([...y[xGroupBy2].buckets]
                             .reduce((i, j) => i.concat(j), []));
@@ -84,7 +84,7 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
             const keyDocCountPair = y[yKey].reduce((a, b) => a.concat(b), []);
 
             keyDocCountPair.forEach((kp) => {
-                const key = kp.key;
+                const { key } = kp;
                 const docCount = kp.doc_count;
                 const index = headerRowIndex[key];
                 dataRowT[yKey][index + 1] = docCount;
@@ -101,7 +101,7 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
 
         // remove all rows with all 0's
         // Note- First entry is biosample ontology classification, does not count against 0's-row and is weedy out in the statement
-        dataRow = dataRow.filter(data => data.some((content, index) => (content !== 0 && index !== 0)));
+        dataRow = dataRow.filter((data) => data.some((content, index) => (content !== 0 && index !== 0)));
 
         chIPSeqData[subTab] = { headerRow, dataRow, assayTitle, organismName };
     });
@@ -112,9 +112,9 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
     return {
         chIPSeqData,
         subTabs: [
-            subTabsSorted.find(item => item === 'whole organisms'),
-            ...subTabsSorted.filter(tab => tab !== 'whole organisms'),
-        ].filter(tab => tab !== undefined),
+            subTabsSorted.find((item) => item === 'whole organisms'),
+            ...subTabsSorted.filter((tab) => tab !== 'whole organisms'),
+        ].filter((tab) => tab !== undefined),
     };
 };
 
@@ -154,7 +154,7 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
     const isAssayTitleHistone = chIPSeqData.assayTitle === 'Histone ChIP-seq';
 
     const dataTable = [];
-    const headerRow = chIPSeqData.headerRow.map(x => ({
+    const headerRow = chIPSeqData.headerRow.map((x) => ({
         header: <a href={`/search/?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.term_name=${x}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}`} title={x}>{x}</a>,
     }));
 
@@ -257,7 +257,7 @@ const tabLevel2 = [
 ];
 
 
-const assayTitlesOptions = tabLevel2.map(tab => tab.id);
+const assayTitlesOptions = tabLevel2.map((tab) => tab.id);
 
 /**
  *  Files (Drosophila melanogaster) and worms (Caenorhabditis elegans) exclude the Histone tab
@@ -395,7 +395,7 @@ class ChIPSeqMatrixSearch extends SearchFilter {
 * Render the area above the matrix itself, including the page title.
 */
 const ChIPSeqMatrixHeader = (props) => {
-    const [context] = useState(props.context);
+    const [context] = React.useState(props.context);
 
     return (
         <div className="matrix-header">
@@ -549,9 +549,9 @@ const SelectOrganismModal = () => (
         <ModalBody addCss="chip_seq_matrix__organism-selector">
             <div>Organism to view in matrix:</div>
             <div className="selectors">
-                {tabLevel1.map((tab, index) =>
+                {tabLevel1.map((tab, index) => (
                     <a key={index} className={`btn btn-info btn__selector--${tab.id.replace(/ /g, '-')}`} href={`/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=${tab.id}&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released`}>{tab.header}</a>
-                )}
+                ))}
             </div>
         </ModalBody>
     </Modal>);
@@ -575,10 +575,10 @@ class ChIPSeqMatrixPresentation extends React.Component {
         const { context } = this.props;
         const link = context['@id'];
         const query = new QueryString(link);
-        const assayTitle = assayTitlesOptions.filter(tab => query.getKeyValues('assay_title').includes(tab))[0];
+        const assayTitle = assayTitlesOptions.filter((tab) => query.getKeyValues('assay_title').includes(tab))[0];
         const organismName = query.getKeyValues('replicates.library.biosample.donor.organism.scientific_name')[0];
-        const selectedTabLevel1 = (tabLevel1.find(tab => tab.id === organismName) || tabLevel1[0]).id;
-        const selectedTabLevel2 = (tabLevel2.find(tab => tab.id === assayTitle) || tabLevel2[0]).id;
+        const selectedTabLevel1 = (tabLevel1.find((tab) => tab.id === organismName) || tabLevel1[0]).id;
+        const selectedTabLevel2 = (tabLevel2.find((tab) => tab.id === assayTitle) || tabLevel2[0]).id;
 
         this.subTabs = [];
         this.ChIPSeqMatrixData = [];
@@ -638,7 +638,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
                 this.setState(matrixUpdate);
                 this.setState({ spinnerActive: false });
             } else {
-                // defer is used to allow ending of spinnner most likely after matrix is drawn. It is hacky.
+                // defer is used to allow ending of spinner most likely after matrix is drawn. It is hacky.
                 _.defer(() => {
                     this.setState(matrixUpdate, () => {
                         _.defer(() => {
@@ -668,6 +668,36 @@ class ChIPSeqMatrixPresentation extends React.Component {
     }
 
     /**
+     * Called when the user scrolls the matrix horizontally within its div to handle scroll
+     * indicators
+     * @param {object} e React synthetic scroll event
+     */
+    handleOnScroll(e) {
+        this.handleScrollIndicator(e.target);
+    }
+
+    /**
+     * Show a scroll indicator depending on current scrolled position.
+     * @param {object} element DOM element to apply shading to
+     */
+    handleScrollIndicator(element) {
+        if (element) {
+            // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
+            // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
+            const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
+            if (scrollDiff < 2 && !this.state.scrolledRight) {
+                // Right edge of matrix scrolled into view.
+                this.setState({ scrolledRight: true });
+            } else if (scrollDiff >= 2 && this.state.scrolledRight) {
+                // Right edge of matrix scrolled out of view.
+                this.setState({ scrolledRight: false });
+            }
+        } else if (!this.state.scrolledRight) {
+            this.setState({ scrolledRight: true });
+        }
+    }
+
+    /**
      * A subtab is clicked.
      *
      *  Its mains job is to extract required data from chIPSeqData object. This is computationally cheaper than
@@ -679,7 +709,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
     subTabClicked(e) {
         PubSub.publish(CLEAR_SEARCH_BOX_PUBSUB, {});
         const index = Number(e.target.dataset.key);
-        const selectedTabLevel3 = this.subTabs[isNaN(index) ? 0 : index];
+        const selectedTabLevel3 = this.subTabs[Number.isNaN(index) ? 0 : index];
         window.sessionStorage.setItem('encodeSelectedTabLevel3', selectedTabLevel3);
         const chIPSeqData = this.ChIPSeqMatrixData.chIPSeqData[selectedTabLevel3];
 
@@ -694,7 +724,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
                     });
                 });
             } else {
-                // defer is used to allow ending of spinner most likely aferr painting of matrix DOM is complete. It is hacky.
+                // defer is used to allow ending of spinner most likely after painting of matrix DOM is complete. It is hacky.
                 _.defer(() => {
                     this.setState({ chIPSeqData: null }, () => { // chIPSeqData set to null to prevent react from doing a diff
                         this.setState({ selectedTabLevel3, chIPSeqData }, () => {
@@ -719,7 +749,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
      */
     performSearch(message, searchData) {
         const searchText = searchData.text.toLocaleLowerCase().trim();
-        const chIPSeqData = Object.assign({}, this.ChIPSeqMatrixData.chIPSeqData[this.state.selectedTabLevel3]);
+        const chIPSeqData = { ...this.ChIPSeqMatrixData.chIPSeqData[this.state.selectedTabLevel3] };
         let dataRow = [];
         let headerRow = [];
 
@@ -734,7 +764,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
                         return i;
                     }
                     return null;
-                }).filter(m => m !== null);
+                }).filter((m) => m !== null);
 
                 const dataRowLength = chIPSeqData.dataRow.length;
 
@@ -759,8 +789,8 @@ class ChIPSeqMatrixPresentation extends React.Component {
                     }
                 }
             } else { // searching target
-                dataRow = selectedAxis.map(y => (y[0].trim().toLocaleLowerCase().indexOf(searchText) !== -1 ? y : null)).filter(f => f !== null);
-                headerRow = chIPSeqData.headerRow;
+                dataRow = selectedAxis.map((y) => (y[0].trim().toLocaleLowerCase().indexOf(searchText) !== -1 ? y : null)).filter((f) => f !== null);
+                ({ headerRow } = chIPSeqData);
             }
 
             // clear data if both data or header row if either is empty, so show no-data message
@@ -798,37 +828,6 @@ class ChIPSeqMatrixPresentation extends React.Component {
         });
     }
 
-
-    /**
-     * Called when the user scrolls the matrix horizontally within its div to handle scroll
-     * indicators
-     * @param {object} e React synthetic scroll event
-     */
-    handleOnScroll(e) {
-        this.handleScrollIndicator(e.target);
-    }
-
-    /**
-     * Show a scroll indicator depending on current scrolled position.
-     * @param {object} element DOM element to apply shading to
-     */
-    handleScrollIndicator(element) {
-        if (element) {
-            // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
-            // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
-            const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
-            if (scrollDiff < 2 && !this.state.scrolledRight) {
-                // Right edge of matrix scrolled into view.
-                this.setState({ scrolledRight: true });
-            } else if (scrollDiff >= 2 && this.state.scrolledRight) {
-                // Right edge of matrix scrolled out of view.
-                this.setState({ scrolledRight: false });
-            }
-        } else if (!this.state.scrolledRight) {
-            this.setState({ scrolledRight: true });
-        }
-    }
-
     render() {
         const { context } = this.props;
         const { scrolledRight, chIPSeqData, showOrganismRequest, selectedTabLevel1, selectedTabLevel2, selectedTabLevel3, spinnerActive, organismName } = this.state;
@@ -840,7 +839,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
         // NOTE: In fly (Drosophila melanogaster) and worm (Caenorhabditis elegans), Histone ChIP-seq are hidden
         const hideAssayTitle = selectedTabLevel1 && organismsWithHiddenHistoneAssay.includes(selectedTabLevel1);
         const filteredTabLevel2 = hideAssayTitle ?
-            tabLevel2.filter(tab => tab.id !== 'Histone ChIP-seq') :
+            tabLevel2.filter((tab) => tab.id !== 'Histone ChIP-seq') :
             tabLevel2;
 
         for (let i = 0; i < tabLevel1.length; i += 1) {

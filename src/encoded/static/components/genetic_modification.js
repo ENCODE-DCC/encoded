@@ -74,7 +74,7 @@ const modifiedSiteRenderers = {
             </div>
         );
     },
-    modified_site_by_gene_id: gm => (
+    modified_site_by_gene_id: (gm) => (
         <div data-test="msgene">
             <dt>Gene</dt>
             <dd className="sequence"><a href={gm.modified_site_by_gene_id['@id']}>{gm.modified_site_by_gene_id.symbol}</a></dd>
@@ -89,13 +89,13 @@ const modifiedSiteRenderers = {
             </div>
         );
     },
-    modified_site_by_sequence: gm => (
+    modified_site_by_sequence: (gm) => (
         <div data-test="msseq">
             <dt>Sequence</dt>
             <dd className="sequence">{gm.modified_site_by_sequence}</dd>
         </div>
     ),
-    modified_site_nonspecific: gm => (
+    modified_site_nonspecific: (gm) => (
         <div data-test="msnonspec">
             <dt>Integration site</dt>
             <dd>{gm.modified_site_nonspecific}</dd>
@@ -109,8 +109,8 @@ const modifiedSiteRenderers = {
  * @param {object} geneticModification GM object
  * @return {boolean} True if `geneticModification` includes any modification site properties.
  */
-const hasModificationSiteProps = geneticModification => (
-    Object.keys(modifiedSiteRenderers).some(siteType => geneticModification[siteType])
+const hasModificationSiteProps = (geneticModification) => (
+    Object.keys(modifiedSiteRenderers).some((siteType) => geneticModification[siteType])
 );
 
 
@@ -177,7 +177,7 @@ const ModificationMethod = (props) => {
     // directly into a <ul> element.
     let treatments = [];
     if (geneticModification.treatments && geneticModification.treatments.length > 0) {
-        treatments = geneticModification.treatments.map(treatment => <li key={treatment.uuid}>{singleTreatment(treatment)}</li>);
+        treatments = geneticModification.treatments.map((treatment) => <li key={treatment.uuid}>{singleTreatment(treatment)}</li>);
     }
 
     return (
@@ -316,7 +316,7 @@ const AttributionRenderer = (props) => {
 
 AttributionRenderer.propTypes = {
     geneticModification: PropTypes.object.isRequired, // GeneticModification object being displayed
-    award: PropTypes.object, // Award object retreived from an individual GET request; don't make isRequired because React's static analysizer will ding it
+    award: PropTypes.object, // Award object retrieved from an individual GET request; don't make isRequired because React's static analyzer will ding it
 };
 
 AttributionRenderer.defaultProps = {
@@ -325,7 +325,7 @@ AttributionRenderer.defaultProps = {
 
 
 // Display the contents of the attribution panel (currently the right-hand side of the summary
-// panel) for the given genetic modification object. Because the award and lab informatino isn't
+// panel) for the given genetic modification object. Because the award and lab information isn't
 // embedded in the GM object, we have to retrieve it with a couple GET requests here, and have
 // <AttributionRenderer> actually render the panel contents after the GET request completes.
 const Attribution = (props) => {
@@ -340,7 +340,7 @@ const Attribution = (props) => {
 };
 
 Attribution.propTypes = {
-    geneticModification: PropTypes.object.isRequired, // Genetic modificastion object for which we're getting the attribution information
+    geneticModification: PropTypes.object.isRequired, // Genetic modification object for which we're getting the attribution information
 };
 
 
@@ -361,8 +361,8 @@ const DocumentsRenderer = ({ characterizations, modificationDocuments, character
         // corresponding document objects. We can't touch the GM object's characterizations so we
         // make a copy of each and modify that instead.
         const characterizationsCopy = characterizations.map((characterization) => {
-            const copy = Object.assign({}, characterization);
-            copy.documents = characterization.documents ? _.compact(characterization.documents.map(documentAtId => characterizationDocumentMap[documentAtId])) : [];
+            const copy = { ...characterization };
+            copy.documents = characterization.documents ? _.compact(characterization.documents.map((documentAtId) => characterizationDocumentMap[documentAtId])) : [];
             return copy;
         });
 
@@ -733,18 +733,18 @@ GeneticModificationSummary.defaultProps = {
 GeneticModificationSummary.columns = {
     accession: {
         title: 'Accession',
-        display: item => <a href={item['@id']}>{item.accession}</a>,
+        display: (item) => <a href={item['@id']}>{item.accession}</a>,
     },
     category: { title: 'Category' },
     purpose: { title: 'Purpose' },
     method: { title: 'Method' },
     nucleic_acid_delivery_method: {
         title: 'Nucleic acid delivery method',
-        display: item => (item.nucleic_acid_delivery_method && item.nucleic_acid_delivery_method.length > 0 ? item.nucleic_acid_delivery_method.join(', ') : null),
+        display: (item) => (item.nucleic_acid_delivery_method && item.nucleic_acid_delivery_method.length > 0 ? item.nucleic_acid_delivery_method.join(', ') : null),
     },
     site: {
         title: 'Site',
-        display: item => (hasModificationSiteProps(item) ? <ModificationSiteItems geneticModification={item} itemClass={'gm-table-modification-site'} /> : null),
+        display: (item) => (hasModificationSiteProps(item) ? <ModificationSiteItems geneticModification={item} itemClass="gm-table-modification-site" /> : null),
     },
 };
 
@@ -758,7 +758,7 @@ export default GeneticModificationSummary;
 
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
-const CharacterizationHeader = props => (
+const CharacterizationHeader = (props) => (
     <div className="document__header">
         {props.doc.characterization_method} {props.label ? <span>{props.label}</span> : null}
     </div>
@@ -775,8 +775,8 @@ CharacterizationHeader.defaultProps = {
 
 
 const CharacterizationCaption = (props) => {
-    const doc = props.doc;
-    const caption = doc.caption;
+    const { doc } = props;
+    const { caption } = doc;
     let excerpt;
 
     if (caption && caption.length > EXCERPT_LENGTH) {
@@ -801,7 +801,7 @@ CharacterizationCaption.propTypes = {
 
 
 const CharacterizationDocuments = (props) => {
-    const docs = props.docs.filter(doc => !!doc);
+    const docs = props.docs.filter((doc) => !!doc);
     return (
         <dd>
             {docs.map((doc, i) => {
@@ -830,7 +830,7 @@ CharacterizationDocuments.propTypes = {
 
 
 const CharacterizationDetail = (props) => {
-    const doc = props.doc;
+    const { doc } = props;
     const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
     const excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 

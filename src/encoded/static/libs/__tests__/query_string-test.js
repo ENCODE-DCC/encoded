@@ -1,4 +1,4 @@
-import QueryString from '../../libs/query_string';
+import QueryString from '../query_string';
 
 
 describe('QueryString Class', () => {

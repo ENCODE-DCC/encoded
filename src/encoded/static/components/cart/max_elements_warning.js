@@ -32,7 +32,7 @@ const CartMaxElementsWarningComponent = ({ closeMaxElementsWarning }) => {
             <ModalBody>
                 Carts can hold a maximum of {CART_MAX_ELEMENTS} datasets.
             </ModalBody>
-            <ModalFooter submitBtn={<button ref={submitButton} onClick={handleClose} className="btn btn-info">Close</button>} />
+            <ModalFooter submitBtn={<button type="button" ref={submitButton} onClick={handleClose} className="btn btn-info">Close</button>} />
         </Modal>
     );
 };
@@ -41,7 +41,7 @@ CartMaxElementsWarningComponent.propTypes = {
     closeMaxElementsWarning: PropTypes.func.isRequired,
 };
 
-CartMaxElementsWarningComponent.mapDispatchToProps = dispatch => ({
+CartMaxElementsWarningComponent.mapDispatchToProps = (dispatch) => ({
     closeMaxElementsWarning: () => dispatch(triggerAlert(null)),
 });
 

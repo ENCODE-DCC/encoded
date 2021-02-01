@@ -166,9 +166,9 @@ const getMouseAgeObject = (rowCategoryData) => {
     mouseAgeFullArray.sort(sortMouseArray);
     const uniqueAgeArray = [...new Set(mouseAgeFullArray)];
     const mouseAgeObject = {
-        embryo: uniqueAgeArray.filter(age => age.includes('embryo')).map(age => age.replace('embryo', '')),
-        postnatal: uniqueAgeArray.filter(age => age.includes('postnatal')).map(age => age.replace('postnatal', '')),
-        adult: uniqueAgeArray.filter(age => age.includes('adult')).map(age => age.replace('adult', '')),
+        embryo: uniqueAgeArray.filter((age) => age.includes('embryo')).map((age) => age.replace('embryo', '')),
+        postnatal: uniqueAgeArray.filter((age) => age.includes('postnatal')).map((age) => age.replace('postnatal', '')),
+        adult: uniqueAgeArray.filter((age) => age.includes('adult')).map((age) => age.replace('adult', '')),
     };
     return mouseAgeObject;
 };
@@ -275,7 +275,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
 
     // Convert column map to an array of column map values sorted by column number for displaying
     // in the matrix header.
-    const sortedCols = Object.keys(colMap).map(assayColKey => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
+    const sortedCols = Object.keys(colMap).map((assayColKey) => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
 
     const colCategoryNames = [];
     sortedCols.forEach((col) => {
@@ -288,7 +288,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
 
     // Generate array of names of assays that have targets and don't collapse their targets, for
     // rendering those columns as disabled.
-    const colCategoriesWithSubcategories = Object.keys(colMap).filter(colCategoryName => colMap[colCategoryName].hasSubcategories && !collapsedAssays.includes(colCategoryName));
+    const colCategoriesWithSubcategories = Object.keys(colMap).filter((colCategoryName) => colMap[colCategoryName].hasSubcategories && !collapsedAssays.includes(colCategoryName));
 
     const { rowCategoryData, rowCategoryNames } = getRowCategories();
     const rowKeys = ['column-categories'];
@@ -419,11 +419,11 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                             const colIndex = colMap[colMapKey].col;
                             cells[colIndex] = {
                                 content: (
-                                    <React.Fragment>
+                                    <>
                                         <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`} style={{ color: rowCategoryTextColor }}>
                                             <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
                                         </a>
-                                    </React.Fragment>
+                                    </>
                                 ),
                                 style: { backgroundColor: rowSubcategoryColor },
                             };
@@ -434,11 +434,11 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                         const colIndex = colMap[rowSubcategoryColCategoryBucket.key].col;
                         cells[colIndex] = {
                             content: (
-                                <React.Fragment>
+                                <>
                                     <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`} style={{ color: rowCategoryTextColor }}>
                                         <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
                                     </a>
-                                </React.Fragment>
+                                </>
                             ),
                             style: { backgroundColor: rowSubcategoryColor },
                         };
@@ -573,6 +573,7 @@ const MouseStageButton = (props) => {
     const newIdString = idString.replace(/\s+/g, '-');
     return (
         <button
+            type="button"
             id={newIdString}
             className={`legend-option ${idString} ${newIdString} ${activeClass ? 'active' : ''}`}
             onClick={onClick}
@@ -610,8 +611,8 @@ class MatrixPresentation extends React.Component {
         // Gather the biosample classifications actually in the data and filter the requested
         // classifications down to the actual data.
         const classificationBuckets = props.context.matrix.y[props.context.matrix.y.group_by[0]].buckets;
-        const actualClassifications = classificationBuckets.map(bucket => bucket.key);
-        const filteredClassifications = requestedClassifications.filter(classification => actualClassifications.includes(classification));
+        const actualClassifications = classificationBuckets.map((bucket) => bucket.key);
+        const filteredClassifications = requestedClassifications.filter((classification) => actualClassifications.includes(classification));
 
         this.state = {
             /** Categories the user has expanded */
@@ -620,7 +621,7 @@ class MatrixPresentation extends React.Component {
             scrolledRight: false,
             /** User selected mouse stage or age */
             developmentStageClick: [],
-            /** Window width, used to determine how many colummns to display */
+            /** Window width, used to determine how many columns to display */
             windowWidth: 0,
         };
         this.expanderClickHandler = this.expanderClickHandler.bind(this);
@@ -638,6 +639,7 @@ class MatrixPresentation extends React.Component {
         window.addEventListener('resize', this.updateWindowWidth);
     }
 
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps) {
         // If URI changed, we need close any expanded rowCategories in case the URI change results
         // in a huge increase in displayed data. Also update the scroll indicator if needed.
@@ -646,12 +648,39 @@ class MatrixPresentation extends React.Component {
             this.setState({ expandedRowCategories: [] });
         }
     }
+    /* eslint-enable react/no-did-update-set-state */
+
+    /**
+     * Called when the user scrolls the matrix horizontally within its div to handle scroll
+     * indicators.
+     * @param {object} e React synthetic scroll event
+     */
+    handleOnScroll(e) {
+        this.handleScrollIndicator(e.target);
+    }
+
+    /**
+     * Show a scroll indicator depending on current scrolled position.
+     * @param {object} element DOM element to apply shading to
+     */
+    handleScrollIndicator(element) {
+        // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
+        // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
+        const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
+        if (scrollDiff < 2 && !this.state.scrolledRight) {
+            // Right edge of matrix scrolled into view.
+            this.setState({ scrolledRight: true });
+        } else if (scrollDiff >= 2 && this.state.scrolledRight) {
+            // Right edge of matrix scrolled out of view.
+            this.setState({ scrolledRight: false });
+        }
+    }
 
     /**
      * Get an array of all values in the current query string corresponding to the given `key`.
      * @param {string} key Query string key whose values this retrieves.
      *
-     * @return {array} Values for each occurence of `key` in the query string.
+     * @return {array} Values for each occurrence of `key` in the query string.
      */
     getQueryValues(key) {
         return this.query.getKeyValues(key);
@@ -659,7 +688,7 @@ class MatrixPresentation extends React.Component {
 
     updateWindowWidth() {
         this.setState({
-            windowWidth: Math.min(screen.width, window.innerWidth),
+            windowWidth: Math.min(window.screen.width, window.innerWidth),
         });
     }
 
@@ -692,63 +721,46 @@ class MatrixPresentation extends React.Component {
             return { expandedRowCategories: [...expandedCategories.slice(0, matchingCategoryIndex), ...expandedCategories.slice(matchingCategoryIndex + 1)] };
         });
     }
-    /**
-     * Called when the user scrolls the matrix horizontally within its div to handle scroll
-     * indicators.
-     * @param {object} e React synthetic scroll event
-     */
-    handleOnScroll(e) {
-        this.handleScrollIndicator(e.target);
-    }
-
-    /**
-     * Show a scroll indicator depending on current scrolled position.
-     * @param {object} element DOM element to apply shading to
-     */
-    handleScrollIndicator(element) {
-        // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
-        // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
-        const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
-        if (scrollDiff < 2 && !this.state.scrolledRight) {
-            // Right edge of matrix scrolled into view.
-            this.setState({ scrolledRight: true });
-        } else if (scrollDiff >= 2 && this.state.scrolledRight) {
-            // Right edge of matrix scrolled out of view.
-            this.setState({ scrolledRight: false });
-        }
-    }
 
     selectMouseDevelopmentStage(e) {
         const targetId = e.target.id.replace(/-/g, ' ');
         // selected something that was already selected so just de-select
         if (this.state.developmentStageClick.indexOf(targetId) > -1) {
-            const newSelections = this.state.developmentStageClick.filter(stage => stage !== targetId);
-            this.setState({ developmentStageClick: newSelections });
+            this.setState((state) => {
+                const newSelections = state.developmentStageClick.filter((stage) => stage !== targetId);
+                return { developmentStageClick: newSelections };
+            });
         // selected a particular age so need to disable the stage
         } else if (targetId.split(' ').length > 1) {
             let newSelections = [];
             if (targetId.includes('embryo')) {
-                newSelections = this.state.developmentStageClick.filter(stage => stage !== 'embryo');
+                newSelections = this.state.developmentStageClick.filter((stage) => stage !== 'embryo');
             } else if (targetId.includes('postnatal')) {
-                newSelections = this.state.developmentStageClick.filter(stage => stage !== 'postnatal');
+                newSelections = this.state.developmentStageClick.filter((stage) => stage !== 'postnatal');
             } else {
-                newSelections = this.state.developmentStageClick.filter(stage => stage !== 'adult');
+                newSelections = this.state.developmentStageClick.filter((stage) => stage !== 'adult');
             }
             newSelections = [...newSelections, targetId];
             this.setState({ developmentStageClick: newSelections });
         // selected a stage but there are also ages selected so disable those
         } else if (targetId === 'embryo') {
-            let newSelections = this.state.developmentStageClick.filter(stage => (!(stage.includes('embryo') && (stage.split(' ').length > 1))));
-            newSelections = [...newSelections, targetId];
-            this.setState({ developmentStageClick: newSelections });
+            this.setState((state) => {
+                let newSelections = state.developmentStageClick.filter((stage) => (!(stage.includes('embryo') && (stage.split(' ').length > 1))));
+                newSelections = [...newSelections, targetId];
+                return { developmentStageClick: newSelections };
+            });
         } else if (targetId === 'postnatal') {
-            let newSelections = this.state.developmentStageClick.filter(stage => (!(stage.includes('postnatal') && (stage.split(' ').length > 1))));
-            newSelections = [...newSelections, targetId];
-            this.setState({ developmentStageClick: newSelections });
+            this.setState((state) => {
+                let newSelections = state.developmentStageClick.filter((stage) => (!(stage.includes('postnatal') && (stage.split(' ').length > 1))));
+                newSelections = [...newSelections, targetId];
+                return { developmentStageClick: newSelections };
+            });
         } else {
-            let newSelections = this.state.developmentStageClick.filter(stage => (!(stage.includes('adult') && (stage.split(' ').length > 1))));
-            newSelections = [...newSelections, targetId];
-            this.setState({ developmentStageClick: newSelections });
+            this.setState((state) => {
+                let newSelections = state.developmentStageClick.filter((stage) => (!(stage.includes('adult') && (stage.split(' ').length > 1))));
+                newSelections = [...newSelections, targetId];
+                return { developmentStageClick: newSelections };
+            });
         }
     }
 
@@ -787,8 +799,8 @@ class MatrixPresentation extends React.Component {
         if (this.state.windowWidth > 1160) {
             // Determining best index for splitting the matrix
             const spacerRowIndices = dataTable.map((d, i) => (d.css === 'matrix__row-spacer' ? i : '')).filter(String);
-            const distanceFromCenter = spacerRowIndices.map(d => Math.abs(d - (dataTable.length / 2)));
-            const bestCenter = spacerRowIndices[distanceFromCenter.findIndex(d => d === Math.min(...distanceFromCenter))];
+            const distanceFromCenter = spacerRowIndices.map((d) => Math.abs(d - (dataTable.length / 2)));
+            const bestCenter = spacerRowIndices[distanceFromCenter.findIndex((d) => d === Math.min(...distanceFromCenter))];
             matrixConfig = {
                 rows: dataTable.slice(0, bestCenter),
                 rowKeys,
@@ -863,7 +875,7 @@ class MatrixPresentation extends React.Component {
         });
 
         return (
-            <React.Fragment>
+            <>
                 <div className="matrix-header">
                     <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} additionalFilters={additionalFilters} />
                     <div className="matrix-header__controls">
@@ -872,73 +884,73 @@ class MatrixPresentation extends React.Component {
                                 <p>Select mouse development stages to filter results:</p>
                                 <div className="outer-button-container">
                                     {embryoSplitRows ?
-                                        <React.Fragment>
+                                        <>
                                             <div className="stage-container">
                                                 <MouseStageButton
-                                                    keyWord={'embryo'}
-                                                    idString={'embryo'}
+                                                    keyWord="embryo"
+                                                    idString="embryo"
                                                     activeClass={this.state.developmentStageClick.indexOf('embryo') > -1}
-                                                    onClick={e => this.selectMouseDevelopmentStage(e)}
+                                                    onClick={(e) => this.selectMouseDevelopmentStage(e)}
                                                     buttonWidth={embryoFirstRowWidth}
                                                 />
                                                 <div className="age-container">
-                                                    {embryoFirstRow.map(age => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
+                                                    {embryoFirstRow.map((age) => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
                                                 </div>
                                             </div>
                                             <div className="stage-container">
                                                 <MouseStageButton
-                                                    keyWord={'embryo'}
-                                                    idString={'embryo'}
+                                                    keyWord="embryo"
+                                                    idString="embryo"
                                                     activeClass={this.state.developmentStageClick.indexOf('embryo') > -1}
-                                                    onClick={e => this.selectMouseDevelopmentStage(e)}
+                                                    onClick={(e) => this.selectMouseDevelopmentStage(e)}
                                                     buttonWidth={embryoSecondRowWidth}
                                                 />
                                                 <div className="age-container">
-                                                    {embryoSecondRow.map(age => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
+                                                    {embryoSecondRow.map((age) => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
                                                 </div>
                                             </div>
-                                        </React.Fragment>
+                                        </>
                                     :
                                         <div className="stage-container">
                                             <MouseStageButton
-                                                keyWord={'embryo'}
-                                                idString={'embryo'}
+                                                keyWord="embryo"
+                                                idString="embryo"
                                                 activeClass={this.state.developmentStageClick.indexOf('embryo') > -1}
-                                                onClick={e => this.selectMouseDevelopmentStage(e)}
+                                                onClick={(e) => this.selectMouseDevelopmentStage(e)}
                                                 buttonWidth={embryoWidth}
                                             />
                                             <div className="age-container">
-                                                {mouseAgeObject.embryo.map(age => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
+                                                {mouseAgeObject.embryo.map((age) => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
                                             </div>
                                         </div>
                                     }
                                     <div className="stage-container">
                                         <MouseStageButton
-                                            keyWord={'postnatal'}
-                                            idString={'postnatal'}
+                                            keyWord="postnatal"
+                                            idString="postnatal"
                                             activeClass={this.state.developmentStageClick.indexOf('postnatal') > -1}
-                                            onClick={e => this.selectMouseDevelopmentStage(e)}
+                                            onClick={(e) => this.selectMouseDevelopmentStage(e)}
                                             buttonWidth={postnatalWidth}
                                         />
                                         <div className="age-container">
-                                            {mouseAgeObject.postnatal.map(age => <MouseStageButton keyWord={age} idString={`postnatal ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`postnatal${age}`) > -1) || (this.state.developmentStageClick.indexOf('postnatal') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`postnatal ${age}`} />)}
+                                            {mouseAgeObject.postnatal.map((age) => <MouseStageButton keyWord={age} idString={`postnatal ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`postnatal${age}`) > -1) || (this.state.developmentStageClick.indexOf('postnatal') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`postnatal ${age}`} />)}
                                         </div>
                                     </div>
                                     <div className="stage-container">
                                         <MouseStageButton
-                                            keyWord={'adult'}
-                                            idString={'adult'}
+                                            keyWord="adult"
+                                            idString="adult"
                                             activeClass={this.state.developmentStageClick.indexOf('adult') > -1}
-                                            onClick={e => this.selectMouseDevelopmentStage(e)}
+                                            onClick={(e) => this.selectMouseDevelopmentStage(e)}
                                             buttonWidth={adultWidth}
                                         />
                                         <div className="age-container">
-                                            {mouseAgeObject.adult.map(age => <MouseStageButton keyWord={age} idString={`adult ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`adult${age}`) > -1) || (this.state.developmentStageClick.indexOf('adult') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`adult ${age}`} />)}
+                                            {mouseAgeObject.adult.map((age) => <MouseStageButton keyWord={age} idString={`adult ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`adult${age}`) > -1) || (this.state.developmentStageClick.indexOf('adult') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`adult ${age}`} />)}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button className="clear-filters" onClick={this.clearFilters} >Clear Filters <i className="icon icon-times-circle" aria-label="Clear search terms and selected mouse development stages and ages" /></button>
+                            <button type="button" className="clear-filters" onClick={this.clearFilters}>Clear Filters <i className="icon icon-times-circle" aria-label="Clear search terms and selected mouse development stages and ages" /></button>
                         </div>
                     </div>
                 </div>
@@ -963,7 +975,7 @@ class MatrixPresentation extends React.Component {
                         : null}
                     </div>
                 </div>
-            </React.Fragment>
+            </>
         );
     }
 }

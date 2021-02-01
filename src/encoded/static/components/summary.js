@@ -92,11 +92,11 @@ class SummaryStatusChart extends React.Component {
         };
 
         // Convert statusData to a form createBarChart understands.
-        let facetData = statusData.find(facet => facet.key === 'anisogenic');
+        let facetData = statusData.find((facet) => facet.key === 'anisogenic');
         data.anisogenicDataset = facetData ? generateStatusData(facetData.status.buckets, data.labels) : [];
-        facetData = statusData.find(facet => facet.key === 'isogenic');
+        facetData = statusData.find((facet) => facet.key === 'isogenic');
         data.isogenicDataset = facetData ? generateStatusData(facetData.status.buckets, data.labels) : [];
-        facetData = statusData.find(facet => facet.key === 'unreplicated');
+        facetData = statusData.find((facet) => facet.key === 'unreplicated');
         data.unreplicatedDataset = facetData ? generateStatusData(facetData.status.buckets, data.labels) : [];
 
         // Generate colors to use for each replicate type.
@@ -118,7 +118,7 @@ class SummaryStatusChart extends React.Component {
         // chart's dataset.
         const datasets = [];
         globals.replicateTypeList.forEach((replicateType, replicateTypeIndex) => {
-            const facetData = statusData.find(facet => facet.key === replicateType);
+            const facetData = statusData.find((facet) => facet.key === replicateType);
             if (facetData) {
                 // Get an array of replicate data per status from the facet data.
                 const data = generateStatusData(facetData.status.buckets, experimentStatuses);
@@ -181,9 +181,9 @@ SummaryStatusChart.contextTypes = {
 const SummaryHorizontalFacets = ({ context, facetList }) => {
     let horizFacets;
     if (facetList === 'all') {
-        horizFacets = context.facets.filter(f => ['biosample_ontology.organ_slims', 'biosample_ontology.cell_slims', 'assay_title', 'date_released', 'date_submitted'].includes(f.field));
+        horizFacets = context.facets.filter((f) => ['biosample_ontology.organ_slims', 'biosample_ontology.cell_slims', 'assay_title', 'date_released', 'date_submitted'].includes(f.field));
     } else {
-        horizFacets = context.facets.filter(f => ['assay_title', 'biosample_ontology.term_name', 'date_released', 'date_submitted'].includes(f.field));
+        horizFacets = context.facets.filter((f) => ['assay_title', 'biosample_ontology.term_name', 'date_released', 'date_submitted'].includes(f.field));
     }
 
     // Note: we subtract one from the horizontal facet length because "date-released" and "date-submitted" are collapsed into one facet
@@ -257,26 +257,26 @@ class SummaryData extends React.Component {
         const { context } = this.props;
 
         // Find the labs and assay facets in the search results.
-        const labFacet = context.facets.find(facet => facet.field === 'lab.title');
+        const labFacet = context.facets.find((facet) => facet.field === 'lab.title');
         let labs = labFacet ? labFacet.terms : null;
-        const assayFacet = context.facets.find(facet => facet.field === 'assay_title');
+        const assayFacet = context.facets.find((facet) => facet.field === 'assay_title');
         let assays = assayFacet ? assayFacet.terms : null;
 
-        const filteredOutLabs = context.filters.filter(c => c.field === 'lab.title!');
-        const filteredOutAssays = context.filters.filter(c => c.field === 'assay_title!');
+        const filteredOutLabs = context.filters.filter((c) => c.field === 'lab.title!');
+        const filteredOutAssays = context.filters.filter((c) => c.field === 'assay_title!');
 
         // Filter the assay list if any assay facets have been selected so that the assay graph will be
         // filtered accordingly. Find assay_title filters. Same applies to the lab filters.
         if (context.filters && context.filters.length > 0) {
-            const assayTitleFilters = context.filters.filter(filter => filter.field === 'assay_title');
+            const assayTitleFilters = context.filters.filter((filter) => filter.field === 'assay_title');
             if (assayTitleFilters.length > 0) {
-                const assayTitleFilterTerms = assayTitleFilters.map(filter => filter.term);
-                assays = assays.filter(assayItem => assayTitleFilterTerms.indexOf(assayItem.key) !== -1);
+                const assayTitleFilterTerms = assayTitleFilters.map((filter) => filter.term);
+                assays = assays.filter((assayItem) => assayTitleFilterTerms.indexOf(assayItem.key) !== -1);
             }
-            const labFilters = context.filters.filter(filter => filter.field === 'lab.title');
+            const labFilters = context.filters.filter((filter) => filter.field === 'lab.title');
             if (labFilters.length > 0) {
-                const labFilterTerms = labFilters.map(filter => filter.term);
-                labs = labs.filter(labItem => labFilterTerms.indexOf(labItem.key) !== -1);
+                const labFilterTerms = labFilters.map((filter) => filter.term);
+                labs = labs.filter((labItem) => labFilterTerms.indexOf(labItem.key) !== -1);
             }
         }
 
@@ -291,10 +291,10 @@ class SummaryData extends React.Component {
         // Collect selected facet terms to add to the base linkUri.
         let searchQuery = '';
         if (context.filters && context.filters.length > 0) {
-            searchQuery = context.filters.map(filter => `${filter.field}=${encoding.encodedURIComponentOLD(filter.term)}`).join('&');
+            searchQuery = context.filters.map((filter) => `${filter.field}=${encoding.encodedURIComponentOLD(filter.term)}`).join('&');
         }
         const linkUri = `/matrix/?${searchQuery}`;
-        const displayCharts = this.props.displayCharts;
+        const { displayCharts } = this.props;
 
         return (
             <div className="summary-content__data">
@@ -352,9 +352,9 @@ class SummaryBody extends React.Component {
      */
     getAvailableOrganisms() {
         const { context } = this.props;
-        const organismFacet = context.facets && context.facets.find(facet => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
+        const organismFacet = context.facets && context.facets.find((facet) => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
         if (organismFacet) {
-            return organismFacet.terms.map(term => term.key);
+            return organismFacet.terms.map((term) => term.key);
         }
         return [];
     }
@@ -411,22 +411,22 @@ class SummaryBody extends React.Component {
                                         </div>
                                     </div>
                                     {(this.state.selectedOrganism === 'Homo sapiens') ?
-                                        <React.Fragment>
+                                        <>
                                             <div className="flex-container">
                                                 <BodyMap context={this.props.context} />
-                                                <SummaryData context={this.props.context} displayCharts={'donuts'} />
+                                                <SummaryData context={this.props.context} displayCharts="donuts" />
                                             </div>
                                             <div className="summary-content">
-                                                <SummaryData context={this.props.context} displayCharts={'area'} />
+                                                <SummaryData context={this.props.context} displayCharts="area" />
                                             </div>
-                                        </React.Fragment>
+                                        </>
                                     :
-                                        <React.Fragment>
-                                            <SummaryHorizontalFacets context={this.props.context} facetList={'all'} />
+                                        <>
+                                            <SummaryHorizontalFacets context={this.props.context} facetList="all" />
                                             <div className="summary-content">
-                                                <SummaryData context={this.props.context} displayCharts={'all'} />
+                                                <SummaryData context={this.props.context} displayCharts="all" />
                                             </div>
-                                        </React.Fragment>
+                                        </>
                                     }
                                 </div>
                             </TabPanel>

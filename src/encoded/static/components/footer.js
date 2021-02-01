@@ -1,10 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 const Footer = ({ version }, reactContext) => {
-    const session = reactContext.session;
+    const { session } = reactContext;
     const disabled = !session;
     let userActionRender;
 
