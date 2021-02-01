@@ -633,7 +633,7 @@ const DatasetComponent = (props, reactContext) => {
                                     }
                                     return output;
                                 }, [])];
-                                treatmentUnit = biosample.treatments[0].duration_units;
+                                treatmentUnit = `${biosample.treatments[0].duration_units}s`;
                             }
                             if (biosample.organism && biosample.organism.scientific_name) {
                                 organisms.push(biosample.organism.scientific_name);
