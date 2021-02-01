@@ -227,7 +227,7 @@ def test_search_views_search_quick_view_specify_field(index_workbook, testapp):
     assert len(r.json['@graph'][0].keys()) == 2
 
 
-def test_search_views_search_generator(index_workbook, dummy_request):
+def test_search_views_search_generator(index_workbook, dummy_request, threadlocals):
     from types import GeneratorType
     dummy_request.environ['QUERY_STRING'] = (
         'type=*&limit=all'
@@ -242,7 +242,7 @@ def test_search_views_search_generator(index_workbook, dummy_request):
     assert '@id' in hits[0]
 
 
-def test_search_views_search_generator_field_specified(index_workbook, dummy_request):
+def test_search_views_search_generator_field_specified(index_workbook, dummy_request, threadlocals):
     from types import GeneratorType
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&field=@id&limit=5'
@@ -256,6 +256,36 @@ def test_search_views_search_generator_field_specified(index_workbook, dummy_req
     assert len(hits) == 5
     assert '@id' in hits[0]
     assert len(hits[0].keys()) == 2
+
+
+def test_search_views_cart_search_generator(index_workbook, dummy_request, threadlocals):
+    from types import GeneratorType
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=*&limit=all'
+    )
+    from encoded.search_views import cart_search_generator
+    r = cart_search_generator(dummy_request)
+    assert '@graph' in r
+    assert len(r.keys()) == 1
+    assert isinstance(r['@graph'], GeneratorType)
+    hits = [dict(h) for h in r['@graph']]
+    assert len(hits) > 800
+    assert '@id' in hits[0]
+
+
+def test_search_views_cart_search_generator_cart_specified(index_workbook, dummy_request, threadlocals):
+    from types import GeneratorType
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&field=@id'
+    )
+    from encoded.search_views import cart_search_generator
+    r = cart_search_generator(dummy_request)
+    assert '@graph' in r
+    assert len(r.keys()) == 1
+    assert isinstance(r['@graph'], GeneratorType)
+    hits = [h for h in r['@graph']]
+    assert '@id' in hits[0]
+    assert len(hits) >= 3
 
 
 def test_search_views_report_view(index_workbook, testapp):
