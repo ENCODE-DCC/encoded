@@ -1,4 +1,5 @@
 from snovault.elasticsearch.searches.interfaces import CART_KEY
+from snovault.elasticsearch.searches.queries import BasicSearchQueryFactory
 from snovault.elasticsearch.searches.queries import BasicSearchQueryFactoryWithFacets
 from snovault.elasticsearch.searches.queries import BasicMatrixQueryFactoryWithFacets
 from snovault.elasticsearch.searches.queries import BasicReportQueryFactoryWithFacets
@@ -17,6 +18,14 @@ class CartQueryMixin:
             super()._get_post_filters()
             + self.kwargs.get(CART_KEY).as_params()
         )
+
+
+class CartSearchQueryFactory(CartQueryMixin, BasicSearchQueryFactory):
+    '''
+    Like BasicSearchQueryFactory but expands cart params to @ids and
+    adds to post_filters.
+    '''
+    pass
 
 
 class CartSearchQueryFactoryWithFacets(CartQueryMixin, BasicSearchQueryFactoryWithFacets):

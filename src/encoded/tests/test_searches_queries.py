@@ -18,6 +18,20 @@ def params_parser(dummy_request):
     return ParamsParser(dummy_request)
 
 
+def test_searches_queries_cart_search_query_factory_init(params_parser):
+    from encoded.cart_view import CartWithElements
+    from encoded.searches.queries import CartQueryMixin
+    from encoded.searches.queries import CartSearchQueryFactory
+    csqf = CartSearchQueryFactory(
+        params_parser,
+        cart=CartWithElements(params_parser._request)
+    )
+    assert isinstance(csqf, CartSearchQueryFactory)
+    assert isinstance(csqf, CartQueryMixin)
+    assert csqf.params_parser == params_parser
+    assert hasattr(csqf, '_get_post_filters_with_carts')
+
+
 def test_searches_queries_cart_search_query_factory_with_facets_init(params_parser):
     from encoded.cart_view import CartWithElements
     from encoded.searches.queries import CartQueryMixin
