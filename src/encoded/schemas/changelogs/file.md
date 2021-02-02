@@ -1,6 +1,6 @@
 ## Changelog for file.json
 
-### Minor changes since schema verision 28
+### Minor changes since schema version 28
 * Added *element enrichments* to the enum list for *file_format_type*
 
 ### Schema version 28
