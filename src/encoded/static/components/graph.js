@@ -458,9 +458,9 @@ export class Graph extends React.Component {
         // Get dimensions of the displayed graph to determine whether it might cause a larger PNG
         // than we can support.
         const { savedSvg } = this.cv;
-        const viewBox = savedSvg.attr('viewBox');
-        const visibleWidth = savedSvg.attr('width');
-        const visibleHeight = savedSvg.attr('height');
+        const viewBox = savedSvg.attr('viewBox').split(' ');
+        const visibleWidth = viewBox[2];
+        const visibleHeight = viewBox[3];
         if (visibleHeight > MAX_DOWNLOAD_GRAPH_HEIGHT) {
             // Show an alert for the graph being too big to download.
             this.setState({ isHeightWarningVisible: true });
@@ -479,7 +479,7 @@ export class Graph extends React.Component {
             const downloadSvg = document.getElementById('graph-download-svg');
             downloadSvg.setAttribute('width', visibleWidth);
             downloadSvg.setAttribute('height', visibleHeight);
-            downloadSvg.setAttribute('viewBox', viewBox);
+            downloadSvg.setAttribute('viewBox', viewBox.join(' '));
 
             // Attach graph CSS to temporary SVG.
             const displayedSvg = savedSvg.node();
@@ -599,10 +599,16 @@ export class Graph extends React.Component {
         svg.attr('viewBox', viewBox.join(' '));
 
         // Now set the `width` and `height` attributes based on the current zoom level
-        if (this.state.zoomLevel && this.cv.zoomFactor) {
-            const width = (this.state.zoomLevel * this.cv.zoomFactor) + this.cv.minZoomWidth;
-            const height = width / this.cv.aspectRatio;
-            svg.attr('width', width).attr('height', height);
+        if (!isDownloadGraph) {
+            // Displayed graph subject to selected zoom factor.
+            if (this.state.zoomLevel && this.cv.zoomFactor) {
+                const width = (this.state.zoomLevel * this.cv.zoomFactor) + this.cv.minZoomWidth;
+                const height = width / this.cv.aspectRatio;
+                svg.attr('width', width).attr('height', height);
+            }
+        } else {
+            // Downloaded graph uses unity zoom factor.
+            svg.attr('width', viewBoxWidth).attr('height', viewBoxHeight);
         }
 
         // Return the SVG so callers can do more with this after drawing the unscaled graph
