@@ -65,7 +65,7 @@ def test_batch_download_report_download_with_cart(testapp, index_workbook, threa
         b'Biosample treatment', b'Biosample treatment ontology ID', b'Biosample treatment amount', b'Biosample treatment amount units',
         b'Biosample treatment duration', b'Biosample treatment duration units', b'Synchronization',
         b'Post-synchronization time', b'Post-synchronization time units',
-        b'Replicates',
+        b'Replicates', b'Mixed biosamples',
     ]
     assert len(lines) == 7
 
