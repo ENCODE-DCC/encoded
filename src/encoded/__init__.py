@@ -4,7 +4,6 @@ import encoded.schema_formats # needed to import before snovault to add FormatCh
 import base64
 import codecs
 import json
-import netaddr
 import os
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
