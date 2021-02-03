@@ -2392,10 +2392,89 @@
         "lab": "ali-mortazavi",
         "md5sum": "0794afd6c9bee2c00b4491094d2ef81b",
         "output_type": "long range chromatin interactions",
-        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "5333a3e1-2e33-47f3-b01e-c5925e9b95b0"
+        "uuid": "5333a3e1-2e33-47f3-b01e-c5925e9b95b0",
+        "derived_from": ["ENCFF203KVL"]
+    },
+    {
+        "accession": "ENCFF217EOB",
+        "aliases": [
+            "erez-lieberman:chia-reads"
+        ],
+        "award": "/awards/U54HG006998/",
+        "lab": "/labs/ali-mortazavi/",
+        "dataset": "ENCSR270OQH",
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "uuid": "6ba39785-e009-4680-9530-45713973f086",
+        "file_format": "fastq",
+        "output_type": "reads",
+        "file_size": 929891,
+        "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "read_length": 50,
+        "run_type": "single-ended",
+        "md5sum": "a22e7f71e10ca678b2e42ac147af9a68"
+    },
+    {
+        "accession": "ENCFF811ACC",
+        "aliases": [
+            "erez-lieberman:chia-unfiltered-alignments"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR270OQH",
+        "file_format": "bam",
+        "file_size": 10823678,
+        "lab": "ali-mortazavi",
+        "md5sum": "86ecd2fab3b10a738c553eaa40431fe3",
+        "output_type": "unfiltered alignments",
+        "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "107cd650-9401-4f83-9a40-ab2356314c42",
+        "derived_from": ["ENCFF217EOB"]
+    },
+    {
+        "accession": "ENCFF203KVL",
+        "aliases": [
+            "erez-lieberman:chia-alignments"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR270OQH",
+        "file_format": "bam",
+        "file_size": 10532679,
+        "lab": "ali-mortazavi",
+        "md5sum": "292b4e18c0656bb95776c5e882ae2a4a",
+        "output_type": "alignments",
+        "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "876855ad-7fd9-4ae8-93b0-62f9e4c7e343",
+        "derived_from": ["ENCFF217EOB"]
+    },
+    {
+        "accession": "ENCFF928TLJ",
+        "aliases": [
+            "erez-lieberman:chia-peaks"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR270OQH",
+        "file_format": "bed",
+        "file_format_type": "bed6+",
+        "file_size": 893590,
+        "lab": "ali-mortazavi",
+        "md5sum": "b8c4ccb7078163067d49ab612f55b128",
+        "output_type": "peaks",
+        "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "1871bce2-16b3-4ad3-8c0e-7a51512516ce",
+        "derived_from": ["ENCFF811ACC"]
     },
     {
         "accession": "ENCFF812THZ",

@@ -1,0 +1,12 @@
+[
+    {
+        "status": "released",
+        "step_run": "56c6a019-a247-495c-8179-1639f4836ef8",
+        "uuid": "53804f15-17b7-4bb9-b964-f9c7bdb396e5",
+        "assay_term_name": "ChIA-PET",
+        "quality_metric_of": ["ENCFF928TLJ"],
+        "lab": "/labs/ali-mortazavi/",
+        "award": "/awards/U54HG006998/",
+        "binding_peaks": 241990
+    }
+]

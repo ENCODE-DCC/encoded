@@ -1,0 +1,72 @@
+{
+    "title": "ChIA-PET alignment quality metric",
+    "description": "Schema for reporting ChIA-PET alignment quality metric",
+    "id": "/profiles/chia_pet_alignment_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run", "award", "lab", "quality_metric_of"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "total_rp": {
+            "title": "Number of total read pairs in raw data",
+            "type":  "integer",
+            "minimum": 0
+        },
+        "rp_bl": {
+            "title": "Number of read pairs with bridge linker",
+            "type":  "integer",
+            "minimum": 0
+        },
+        "frp_bl": {
+            "title": "Fraction of read pairs with bridge linker",
+            "type":  "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "pet": {
+            "title": "Number of PET",
+            "type":  "integer",
+            "minimum": 0
+        },
+        "um_pet": {
+            "title": "Number of uniquely mapped PET",
+            "type":  "integer",
+            "minimum": 0
+        },
+        "nr_pet": {
+            "title": "Number of non-redundant PET",
+            "type":  "integer",
+            "minimum": 0
+        },
+        "pet_red": {
+            "title": "PET redundancy",
+            "description": "Ratio of redundant PET to uniquely mapped PET",
+            "type":  "number",
+            "minimum": 0,
+            "maximum": 1
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/chia_pet_alignment_quality_metric.md"
+}
