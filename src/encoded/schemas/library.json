@@ -38,7 +38,7 @@
         "size_range": {"not": {"required": ["average_fragment_size"]}},
         "fragment_length_CV": {"not": {"required": ["fragment_length_SD"]}},
         "fragment_length_SD": {"not": {"required": ["fragment_length_CV"]}},
-        "pooled_biosample": {"not": {"required": ["biosample"]}},
+        "mixed_biosamples": {"not": {"required": ["biosample"]}},
         "adapters": {
             "oneOf": [
                 {
