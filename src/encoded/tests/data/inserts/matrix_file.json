@@ -6923,7 +6923,8 @@
     },
     {
         "aliases": [
-            "peter-sims:prenatal_2a_filtered_matrix"
+            "peter-sims:prenatal_2a_filtered_matrix",
+            "benjamin-humphreys:healthy_1_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont1/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF112AAA",
@@ -6976,7 +6977,8 @@
     },
     {
         "aliases": [
-            "peter-sims:prenatal_2b_filtered_matrix"
+            "peter-sims:prenatal_2b_filtered_matrix",
+            "benjamin-humphreys:healthy_2_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont2/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF113AAA",
@@ -7029,7 +7031,8 @@
     },
     {
         "aliases": [
-            "peter-sims:prenatal_2c_filtered_matrix"
+            "peter-sims:prenatal_2c_filtered_matrix",
+            "benjamin-humphreys:healthy_3_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont3/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF114AAA",
@@ -7082,7 +7085,8 @@
     },
     {
         "aliases": [
-            "peter-sims:prenatal_3a_filtered_matrix"
+            "peter-sims:prenatal_3a_filtered_matrix",
+            "benjamin-humphreys:healthy_4_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont4/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF115AAA",
@@ -7135,7 +7139,8 @@
     },
     {
         "aliases": [
-            "peter-sims:prenatal_3b_filtered_matrix"
+            "peter-sims:prenatal_3b_filtered_matrix",
+            "benjamin-humphreys:healthy_5_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont5/outs/filtered_feature_bc_matrix.h5",
         "accession": "LATDF116AAA",
@@ -7319,11 +7324,11 @@
         "accession": "LATDF119AAA",
         "author_cell_type_column": "celltype",
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
-        "s3_uri": "s3://submissions-lattice/testing/muto_rna.h5ad",
+        "s3_uri": "s3://submissions-lattice/testing/muto_rna.rds",
         "no_file_available": false,
         "description": "A super cool dataset for all to see",
         "status": "released",
-        "file_format": "hdf5",
+        "file_format": "rds",
         "file_size": 50000,
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_merged_matrix.mtx",
@@ -7333,7 +7338,7 @@
         "feature_keys": [
             "gene symbol"
         ],
-        "observation_count": 50292,
+        "observation_count": 19985,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:prenatal_2a_filtered_matrix",
@@ -7377,19 +7382,21 @@
             }
         ],
         "author_cell_type_column": "celltype",
+        "default_visualization": "author_celltype",
+        "default_embedding": "X_umap",
         "layers": [
             {
-                "label": "X",
+                "assay": "SCT",
                 "feature_counts": [
                     {
                         "feature_type": "gene",
-                        "feature_count": 20919
+                        "feature_count": 22357
                     }
                 ],
-                "value_scale": "log1p, base 10",
+                "value_scale": "log1p, natural",
                 "value_units": "UMI",
                 "normalized": true,
-                "normalization_method": "cellranger aggr read depth normalization",
+                "normalization_method": "scTransform",
                 "filtering_cutoffs": [
                     {
                         "cutoff_value": 20000,
