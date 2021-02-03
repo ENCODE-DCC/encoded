@@ -1195,7 +1195,9 @@ class FilterControls extends React.Component {
 
     render() {
         const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler, context } = this.props;
-        const contextFiles = context.files || [];
+        const filterIncArchive = document.querySelector('[name="filterIncArchive"]');
+        const filterIncArchiveStatus = filterIncArchive ? filterIncArchive.checked : false;
+        const contextFiles = (context.files || []).filter((file) => (filterIncArchiveStatus ? file : inclusionStatuses.indexOf(file.status) === -1));
 
         const visualizerControls = (filterOptions.length > 0 || browsers.length > 0) ?
             (
