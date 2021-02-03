@@ -1,3 +1,6 @@
+$graph-download-font: 'Helvetica Neue', sans-serif;
+
+
 $pipeline-node-types:
     (file, #FFF5BA),
     (analysis-step, #D3E9FF),
@@ -73,7 +76,7 @@ $pipeline-node-types:
     }
 
     g.label {
-        font-family: $site-font;
+        font-family: $graph-download-font;
         font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
         font-weight: bold;
         fill: #000;
@@ -187,7 +190,7 @@ $pipeline-node-types:
         }
 
         > text {
-            font-family: $site-font;
+            font-family: $graph-download-font;
             font-weight: bold;
             fill: #000;
         }
