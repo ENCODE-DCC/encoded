@@ -24,9 +24,9 @@ Feature: Cart
         And I click the link to "/cart-view/"
         And I wait for the content to load
         Then I should see 6 elements with the css selector ".result-item"
-        And I should see "1 file selected"
+        And I should see "2 files selected"
         When I click the link to "#processeddata"
-        Then I should see 1 elements with the css selector ".cart-list-item"
+        Then I should see 2 elements with the css selector ".cart-list-item"
         When I click the link to "#rawdata"
         Then I should see 0 elements with the css selector ".cart-list-item"
 

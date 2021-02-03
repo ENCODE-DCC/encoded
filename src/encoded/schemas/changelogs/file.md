@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 28
+* Added *element enrichments* to the enum list for *file_format_type*
+
 ### Schema version 28
 * *output_type* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
 * The *output_type* enum was updated to include *nanopore signal* to describe sets of FAST5 files containing the raw signal output of Oxford Nanopore runs.
@@ -21,7 +24,6 @@
 
 ### Minor changes since schema version 24
 * The *output_type* enum was updated to include *UV enriched segment quantifications*, *plus strand methylation state at CpG*, *minus strand methylation state at CpG*, *CpG sites coverage*, and *sparse gene count matrix*.
-
 
 ### Schema version 24
 * *output_type: stable peaks* was updated to *output_type: pseudo-replicated peaks*

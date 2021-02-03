@@ -4297,5 +4297,22 @@
         "platform": "6c275b37-018d-4bf8-85f6-6e3b830524a9",
         "md5sum": "71fdbdb03bf7770d721829e4f2856dc0",
         "replicate": "3b427e79-556e-4125-8102-f6723471807e"
+    },
+    {
+        "_test": "element enrichments bed",
+        "award": "/awards/UM1HG009390/",
+        "lab": "/labs/kevin-white/",
+        "dataset": "ENCSR928SVL",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "4311680d-8561-4063-a95c-6a0904175fd4",
+        "accession": "ENCFF021EEB",
+        "file_format": "bed",
+        "file_format_type": "element enrichments",
+        "output_type": "peaks",
+        "file_size": 934901,
+        "assembly": "GRCh38",
+        "md5sum": "77db89899d466e86dc8118762967eee6",
+        "replicate": "31f76c7b-b6ac-4e06-b1d3-8907a4136ab1"
     }
 ]
