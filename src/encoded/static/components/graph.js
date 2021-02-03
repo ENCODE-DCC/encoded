@@ -500,6 +500,7 @@ export class Graph extends React.Component {
                 canvas.height = img.height;
                 const canvasContext = canvas.getContext('2d');
                 canvasContext.drawImage(img, 0, 0, img.width, img.height);
+                canvasContext.font = '13.6px "Helvetica Neue, sans-serif" bold';
                 canvas.toBlob((blob) => {
                     // Make the image download by making a fake <a> and pretending to click it.
                     const a = document.createElement('a');
