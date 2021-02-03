@@ -607,7 +607,7 @@ const DatasetComponent = (props, reactContext) => {
                                 postSynchTime.push(biosample.post_synchronization_time);
                             }
                             if (biosample.synchronization) {
-                                synchronization = biosample.synchronization[0];
+                                ({ synchronization } = biosample);
                             }
                             if (biosample.post_synchronization_time_units) {
                                 postSynchronizationTimeUnits = biosample.post_synchronization_time_units;
@@ -715,7 +715,7 @@ const DatasetComponent = (props, reactContext) => {
                         {(ages.length > 0 && organismSeries && (organisms.indexOf('Homo sapiens') > -1)) ?
                             <div><span className="result-item__property-title">Ages: </span>{ages.join(', ')} {ageUnits}</div>
                         : null}
-                        {(fullStages.length > 0 && organismSeries && (organisms.indexOf('Homo sapiens') === -1)) ?
+                        {(fullStages.length > 0 && organismSeries && (organisms.indexOf('Mus musculus') > -1)) ?
                             <div><span className="result-item__property-title">Stages: </span>{fullStages.join(', ')}</div>
                         : null}
                         {synchronization ?

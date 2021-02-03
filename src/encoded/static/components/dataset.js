@@ -1315,7 +1315,9 @@ function computeConcentration(experiment) {
     let concentration = [];
     if (experiment.replicates && experiment.replicates.length > 0) {
         const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
-        concentration = `${biosamples[0].treatments[0].amount} ${biosamples[0].treatments[0].amount_units}`;
+        if (biosamples && biosamples.length > 0 && biosamples[0].treatments && biosamples[0].treatments.length > 0 && biosamples[0].treatments[0].amount) {
+            concentration = `${biosamples[0].treatments[0].amount} ${biosamples[0].treatments[0].amount_units}`;
+        }
     }
     return concentration;
 }
@@ -1451,7 +1453,10 @@ function sortStage(a, b) {
         return sortMouseArray(a.life_stage_age, b.life_stage_age);
     }
     // special case with multiple replicates (old data)
-    return (a.replicates[0].library.biosample.age_display.split(' ')[0] - b.replicates[0].library.biosample.age_display.split(' ')[0]);
+    if (a.replicates[0].library.biosample.age_display && b.replicates[0].library.biosample.age_display) {
+        return (a.replicates[0].library.biosample.age_display.split(' ')[0] - b.replicates[0].library.biosample.age_display.split(' ')[0]);
+    }
+    return 0;
 }
 
 const organismDevelopmentSeriesTableColumns = {
@@ -1505,8 +1510,12 @@ const organismDevelopmentSeriesTableColumns = {
                 biosamples.forEach((biosample) => {
                     if (biosample.age_units === 'year') {
                         lifeStageAge.push(biosample.age_display);
-                    } else {
+                    } else if (biosample.life_stage && biosample.age_display) {
                         lifeStageAge.push(`${biosample.life_stage} ${biosample.age_display}`);
+                    } else if (biosample.life_stage) {
+                        lifeStageAge.push(biosample.life_stage);
+                    } else if (biosample.age_display) {
+                        lifeStageAge.push(biosample.age_display);
                     }
                 });
             }
@@ -1549,7 +1558,11 @@ function computeSynchBiosample(experiment) {
     }
     if (biosamples && biosamples.length > 0) {
         synchronizationBiosample = biosamples.find((biosample) => biosample.synchronization);
-        postSynch = synchronizationBiosample.age_display.split(' ')[0];
+        if (synchronizationBiosample.age_display.indexOf('-') > -1) {
+            postSynch = synchronizationBiosample.age_display.split('-')[0];
+        } else {
+            postSynch = synchronizationBiosample.age_display.split(' ')[0];
+        }
     }
     return postSynch;
 }
@@ -1704,6 +1717,8 @@ export const SeriesComponent = (props, reactContext) => {
             biosamples.forEach((biosample) => biosample.treatments.forEach((treatment) => {
                 if (treatment.amount) {
                     treatmentAmounts.push(`${treatment.amount} ${treatment.amount_units} ${treatment.treatment_term_name}`);
+                } else if (treatment.treatment_term_name) {
+                    treatmentAmounts.push(treatment.treatment_term_name);
                 }
             }));
         }
