@@ -961,13 +961,6 @@ class App extends React.Component {
         return true;
     }
 
-    handleBeforeUnload() {
-        if (this.state.unsavedChanges.length > 0) {
-            return 'You have unsaved changes.';
-        }
-        return undefined;
-    }
-
     navigate(href, options) {
         const mutatableOptions = options || {};
         if (!this.confirmNavigation()) {

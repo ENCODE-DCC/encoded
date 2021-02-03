@@ -44,6 +44,14 @@ const replicationDisplay = (replicationType) => (
     `${replicationType === 'anisogenic' ? 'Anisogenic' : 'Isogenic'} replicate`
 );
 
+// Keeps a list of file statuses to include or exclude based on the checkbox in FilterControls.
+const inclusionStatuses = [
+    'archived',
+    'revoked',
+    'deleted',
+    'replaced',
+];
+
 export class FileTable extends React.Component {
     static rowClasses() {
         return '';
@@ -1148,10 +1156,6 @@ class FilterControls extends React.Component {
         this.state = { isBatchDownloadOpen: false };
     }
 
-    setDownloadModalVisibility(isOpen) {
-        this.setState({ isBatchDownloadOpen: isOpen });
-    }
-
     handleAssemblyAnnotationChange(e) {
         this.props.handleAssemblyAnnotationChange(e.target.value);
     }
@@ -1166,27 +1170,32 @@ class FilterControls extends React.Component {
             const analysis = filters.assembly[0].split(' ');
             const assembly = analysis[0] ? `&files.assembly=${encodedURIComponent(analysis[0])}` : '';
             const genomeAnnotation = analysis[1] ? `&files.genome_annotation=${encodedURIComponent(analysis[1])}` : '';
-            assemblies = `${[assembly, genomeAnnotation].filter(a => a !== '').join('')}`;
+            assemblies = `${[assembly, genomeAnnotation].filter((a) => a !== '').join('')}`;
         }
         const fileTypes = filters.file_type && filters.file_type.length > 0 ?
-            filters.file_type.map(fileType => `&files.file_type=${encodedURIComponent(fileType)}`).join('') :
+            filters.file_type.map((fileType) => `&files.file_type=${encodedURIComponent(fileType)}`).join('') :
             '';
         const biologicalReplicates = filters.biological_replicates && filters.biological_replicates.length > 0 ?
-            filters.biological_replicates.map(replicate => `&files.biological_replicates=${encodedURIComponent(replicate)}`).join('') :
+            filters.biological_replicates.map((replicate) => `&files.biological_replicates=${encodedURIComponent(replicate)}`).join('') :
             '';
         const outputTypes = filters.output_type && filters.output_type.length > 0 ?
-            filters.output_type.map(outputType => `&files.output_type=${encodedURIComponent(outputType)}`).join('') :
+            filters.output_type.map((outputType) => `&files.output_type=${encodedURIComponent(outputType)}`).join('') :
             '';
         const fileStatus = document.querySelector('[name="filterIncArchive"]').checked ?
             '' :
-            '&files.status=released';
+            inclusionStatuses.map((inclusionStatus) => `&files.status!=${inclusionStatus}`);
 
         this.navigate(`/batch_download/?type=${type}&accession=${accession}${assemblies}${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
         this.setDownloadModalVisibility(false);
     }
 
+    setDownloadModalVisibility(isOpen) {
+        this.setState({ isBatchDownloadOpen: isOpen });
+    }
+
     render() {
-        const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler } = this.props;
+        const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler, context } = this.props;
+        const contextFiles = context.files || [];
 
         const visualizerControls = (filterOptions.length > 0 || browsers.length > 0) ?
             (
@@ -1197,27 +1206,34 @@ class FilterControls extends React.Component {
                         </div>
                     : null}
                     <VisualizationControls browsers={browsers} currentBrowser={currentBrowser} browserChangeHandler={browserChangeHandler} visualizeHandler={visualizeHandler} visualizeDisabled={!(browsers.length > 0)} />
-                    <div className="file-gallery-controls__divider">
-                        |
-                    </div>
+                    {contextFiles.length > 0 ?
+                        <div className="file-gallery-controls__divider">
+                            |
+                        </div> :
+                        null
+                    }
                 </>
             )
         : null;
 
+        const downloadBtn = contextFiles.length > 0 ?
+            <div className="file-gallery-controls__download">
+                <button className="btn btn-info" type="button" onClick={() => this.setDownloadModalVisibility(true)}>Download All</button>
+                {
+                    this.state.isBatchDownloadOpen ?
+                        <BatchDownloadModal
+                            closeModalHandler={() => this.setDownloadModalVisibility(false)}
+                            downloadClickHandler={this.handleDownloadClick}
+                        /> :
+                        null
+                }
+            </div> :
+                null;
+
         return (
             <div className="file-gallery-controls">
                 {visualizerControls}
-                <div className="file-gallery-controls__download">
-                    <button className="btn btn-info" type="button" onClick={() => this.setDownloadModalVisibility(true)}>Download All</button>
-                    {
-                        this.state.isBatchDownloadOpen ?
-                            <BatchDownloadModal
-                                closeModalHandler={() => this.setDownloadModalVisibility(false)}
-                                downloadClickHandler={this.handleDownloadClick}
-                            /> :
-                            null
-                    }
-                </div>
+                {downloadBtn}
             </div>
         );
     }
@@ -2856,13 +2872,13 @@ class FileGalleryRendererComponent extends React.Component {
 
     // If the inclusionOn state property is enabled, we'll just display all the files we got. If
     // inclusionOn is disabled, we filter out any files with states in
-    // FileGalleryRenderer.inclusionStatuses.
+    // inclusionStatuses.
     filterForInclusion(files) {
         if (!this.state.inclusionOn) {
             // The user has chosen to not see files with statuses in
-            // FileGalleryRenderer.inclusionStatuses. Create an array with files having those
+            // inclusionStatuses. Create an array with files having those
             // statuses filtered out. Start by making an array of files with a filtered-out status
-            return files.filter((file) => FileGalleryRendererComponent.inclusionStatuses.indexOf(file.status) === -1);
+            return files.filter((file) => inclusionStatuses.indexOf(file.status) === -1);
         }
 
         // The user requested seeing everything including revoked and archived files, so just
@@ -3121,14 +3137,6 @@ class FileGalleryRendererComponent extends React.Component {
         );
     }
 }
-
-// Keeps a list of file statuses to include or exclude based on the checkbox in FilterControls.
-FileGalleryRendererComponent.inclusionStatuses = [
-    'archived',
-    'revoked',
-    'deleted',
-    'replaced',
-];
 
 FileGalleryRendererComponent.propTypes = {
     /** Dataset whose files we're rendering */
