@@ -1,6 +1,5 @@
 $graph-download-font: 'Helvetica Neue', sans-serif;
 
-
 $pipeline-node-types:
     (file, #fff5ba),
     (analysis-step, #d3e9ff),
@@ -11,7 +10,7 @@ $pipeline-node-types:
 // background colors passed in $color.
 @function node-text-color($color) {
     @if (lightness($color) > 65) {
-        @return #000000; // Lighter backgorund, return dark color
+        @return #000000; // Lighter background, return dark color
     }
 
     @else {
@@ -19,20 +18,26 @@ $pipeline-node-types:
     }
 }
 
-@each $node-type, $color in $pipeline-node-types {
-    // Audit icons
-    g.pipeline-node-#{$node-type} {
-        fill: $color;
+.pipeline-graph {
+    @each $node-type, $color in $pipeline-node-types {
+        // Audit icons
+        g.pipeline-node-#{$node-type} {
+            fill: $color;
 
-        &.highlight {
-            > rect, > ellipse {
-                stroke: #f4442e;
-                stroke-width: 3px;
+            &.highlight {
+                > rect, > ellipse {
+                    stroke: #f4442e;
+                    stroke-width: 3px;
+                }
+
+                line {
+                    stroke: #f4442e;
+                    stroke-width: 1px;
+                }
             }
 
-            line {
-                stroke: #f4442e;
-                stroke-width: 1px;
+            &.active {
+                fill: desaturate(darken($color, 20%), 30%);
             }
 
             &.error, &.restricted {
@@ -40,10 +45,12 @@ $pipeline-node-types:
             }
 
             &.revoked, &.deleted {
-                fill: #B24342;
+                fill: #b24342;
 
-        &.revoked, &.deleted {
-            fill: #b24342;
+                g.label {
+                    fill: #fff;
+                }
+            }
 
             &.archived, &.replaced {
                 fill: #c0c0c0;
@@ -82,10 +89,12 @@ $pipeline-node-types:
         }
 
         &.contributing {
-            stroke-dasharray: 4,2;
+            stroke-dasharray: 4, 2;
 
-    &.contributing {
-        stroke-dasharray: 4, 2;
+            rect, ellipse {
+                stroke: #a0a0a0;
+                stroke-width: 1.5px;
+            }
 
             .decoration {
                 stroke-dasharray: none;
@@ -102,7 +111,7 @@ $pipeline-node-types:
 
         line {
             stroke: #a0a0a0;
-            stroke-width: .5px;
+            stroke-width: 0.5px;
         }
 
         .decoration {
@@ -132,9 +141,11 @@ $pipeline-node-types:
         }
     }
 
-    line {
-        stroke: #a0a0a0;
-        stroke-width: 0.5px;
+    g.subnodes {
+        text {
+            font-size: 10px;
+            pointer-events: none;
+        }
     }
 
     g.cluster {
@@ -149,6 +160,7 @@ $pipeline-node-types:
         }
     }
 
+    /* stylelint-disable-next-line selector-class-pattern */
     g.edgePath {
         path.path {
             stroke: #c0c0c0;
@@ -188,12 +200,15 @@ $pipeline-node-types:
                 fill: darken(#80ffc0, 50%);
             }
 
-/* stylelint-disable-next-line selector-class-pattern */
-g.edgePath {
-    path.path {
-        stroke: #c0c0c0;
-        stroke-width: 2px;
-    }
+            > text {
+                fill: #fff;
+            }
+        }
+
+        &.highlight {
+            > circle {
+                stroke: #f4442e;
+            }
 
             > text {
                 fill: #fff;
@@ -264,46 +279,6 @@ g.edgePath {
 
 .btn.btn-orient {
     margin-right: 5px;
-}
-
-g.pipeline-node-qc-metric {
-    > circle {
-        stroke-width: 2px;
-        stroke: #a0a0a0;
-        fill: #80ffc0;
-    }
-
-    > text {
-        font-weight: bold;
-        fill: #000;
-    }
-
-    &.active {
-        > circle {
-            fill: darken(#80ffc0, 50%);
-        }
-
-        > text {
-            fill: #fff;
-        }
-    }
-
-    &.highlight {
-        > circle {
-            stroke: #f4442e;
-        }
-
-        > text {
-            fill: #fff;
-        }
-    }
-
-    // Handle hovering over the QC circle to bring up the tooltip.
-    > circle:hover {
-        + text + g {
-            display: block;
-        }
-    }
 }
 
 .file-qc-buttons {
@@ -482,7 +457,6 @@ $color-unknown: #ffc0c0;
         display: none;
     }
 }
-
 
 // Hidden div within which to draw a temporary file graph for downloading. Though hidden, it must
 // take up space so that the viewBox gets configured correctly. Therefore, no display:none.
