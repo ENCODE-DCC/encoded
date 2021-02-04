@@ -486,7 +486,6 @@
             "title": "Treatment type",
             "description": "The classification of the treatment.",
             "type": "string",
-            "default": "chemical",
             "enum": [
                 "antibody",
                 "chemical",
@@ -495,7 +494,6 @@
                 "injection",
                 "irradiation",
                 "protein",
-                "stimulation",
                 "transplantation"
             ]
         },

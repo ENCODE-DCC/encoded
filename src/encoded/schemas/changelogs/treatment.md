@@ -1,5 +1,8 @@
 ## Changelog for treatment.json
 
+### Schema version 12
+* Moved *stimulation* from *treatment_type* to *purpose*
+
 ### Minor changes since schema version 11
 * *product_id* and *source* properties were added using imports from mixins.json.
 * *stimulation* was added to the enum list for the *treatment_type* property in mixins.json.

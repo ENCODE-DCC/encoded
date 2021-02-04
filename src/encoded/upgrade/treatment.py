@@ -97,3 +97,11 @@ def treatment_9_10(value, system):
 def treatment_10_11(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4272
     value.pop('lab', None)
+
+
+@upgrade_step('treatment', '11', '12')
+def treatment_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5686
+    if value.get('treatment_type') == 'stimulation':
+        value['treatment_type'] = 'chemical'
+        value['purpose'] = 'stimulation'
