@@ -51,6 +51,7 @@ require('./biosample_type');
 require('./experiment_series');
 require('./glossary');
 require('./series_search');
+require('./annotations_search');
 
 
 module.exports = require('./app');
