@@ -10,7 +10,6 @@ $navbar-trigger-icon-width:  20px;
 $navbar-trigger-icon-height: 20px;
 $navbar-bg-color:            #0a253d;
 
-
 // Wrapper and base class
 //
 // Provide a static navbar from which we expand to create full-width, fixed, and
@@ -25,15 +24,13 @@ $navbar-bg-color:            #0a253d;
     }
 }
 
-
-
 /**
  * Main navigation area.
  */
 .navbar {
     width: 100%;
     background-color: $navbar-bg-color;
-    box-shadow: 0px 6px 12px 0px rgba(0,0,0,0.19);
+    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.19);
 
     // Contains the entire navigation system.
     @at-root #{&}__container {
@@ -140,7 +137,6 @@ $navbar-bg-color:            #0a253d;
     line-height: 1;
 }
 
-
 /**
  * One nav area within a navbar.
  */
@@ -166,7 +162,7 @@ $navbar-bg-color:            #0a253d;
         position: relative;
 
         .dropdown__toggle {
-            @include nav-title;        
+            @include nav-title;
 
             &:hover {
                 background-color: #2f4961;
@@ -189,7 +185,6 @@ $navbar-bg-color:            #0a253d;
     }
 }
 
-
 // Search box in main navigation
 .navbar__search {
     display: flex;
@@ -197,13 +192,12 @@ $navbar-bg-color:            #0a253d;
     padding: 0;
     border-radius: 14px;
     background-color: #fff;
-    transition: width 0.1s ease-out;
-	border: none;
-	box-shadow: none;
-	-ms-transition: width 0.3s ease-out;
-	-moz-transition: width 0.3s ease-out;
-	-webkit-transition: width 0.3s ease-out;
-	transition: width 0.3s ease-out;
+    border: none;
+    box-shadow: none;
+    -ms-transition: width 0.3s ease-out;
+    -moz-transition: width 0.3s ease-out;
+    -webkit-transition: width 0.3s ease-out;
+    transition: width 0.3s ease-out;
 
     > input {
         flex: 1 1 auto;
@@ -229,7 +223,6 @@ $navbar-bg-color:            #0a253d;
     }
 }
 
-
 .dropdown__menu {
     padding: 0;
     background-color: transparent;
@@ -238,12 +231,13 @@ $navbar-bg-color:            #0a253d;
     @media screen and (min-width: $screen-md-min) {
         background-color: #fff;
         border: 1px solid #e0e0e0;
-        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     }
 
     & > li {
         position: relative;
-        &>a, &>button, &>span {
+
+        & > a, & > button, & > span {
             display: block;
             padding: 5px 15px 5px 25px;
             color: white;
@@ -293,6 +287,8 @@ $navbar-bg-color:            #0a253d;
         &:hover {
             text-decoration: none;
         }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             color: #fff;
         }
@@ -305,6 +301,7 @@ $navbar-bg-color:            #0a253d;
         padding: 2px 30px 2px 20px;
         letter-spacing: 1px;
         font-size: 0.9rem;
+
         @media screen and (min-width: $screen-md-min) {
             font-size: 1.1rem;
             color: #696969;
@@ -312,17 +309,17 @@ $navbar-bg-color:            #0a253d;
         }
     }
 
-     @media screen and (min-width: $screen-md-min) {
+    @media screen and (min-width: $screen-md-min) {
         position: absolute;
         top: 100%;
         padding: 10px 0;
         z-index: 100;
         border: 1px solid #e0e0e0;
         border-bottom-right-radius: 3px;
-        border-bottom-left-radius:  3px;
+        border-bottom-left-radius: 3px;
 
-        &>li {
-            &>a, &>button, &>span, &>div {
+        & > li {
+            & > a, & > button, & > span, & > div {
                 display: block;
                 width: 100%;
                 margin: 0;
@@ -341,8 +338,8 @@ $navbar-bg-color:            #0a253d;
 
                 &:not(.disabled-menu-item) {
                     &:hover,&:active {
-                        border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                        border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
+                        border-top: 1px solid darken($navbar-inverse-link-active-bg, 20%);
+                        border-bottom: 1px solid darken($navbar-inverse-link-active-bg, 20%);
                         background-color: $navbar-inverse-link-active-bg;
                         color: #fff;
                     }
@@ -365,6 +362,7 @@ $navbar-bg-color:            #0a253d;
 }
 
 .disabled-menu-item {
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
         font-size: 0.9rem;
     }
@@ -377,20 +375,25 @@ $navbar-bg-color:            #0a253d;
     padding: 2px 30px 2px 20px;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
+
     @media screen and (min-width: $screen-md-min) {
         &:hover,&:active {
             a {
                 color: #fff;
             }
-            border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
-            border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
+
+            border-top: 1px solid darken($navbar-inverse-link-active-bg, 20%);
+            border-bottom: 1px solid darken($navbar-inverse-link-active-bg, 20%);
             background-color: $navbar-inverse-link-active-bg;
         }
     }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
         &.sub-menu {
             font-size: 0.9rem;
         }
+
         a {
             color: #fff;
         }
@@ -421,7 +424,6 @@ $navbar-bg-color:            #0a253d;
         background-color: lighten($navbar-bg-color, 20%);
     }
 }
-
 
 .test-warning {
     position: relative;
@@ -477,7 +479,6 @@ $navbar-bg-color:            #0a253d;
 
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 auto;
-            margbin-right: 0;
         }
 
         > .icon {

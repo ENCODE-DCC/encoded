@@ -1,0 +1,22 @@
+{
+    "extends": "stylelint-config-standard",
+    "rules": {
+        "at-rule-no-unknown": null,
+        "indentation": [4, {
+            "message": "ENCODE uses 4 spaces rather than tabs or any other combination of spaces"
+        }],
+        "media-feature-name-disallowed-list": ["max-width", {
+            "message": "Media query should not use max-width as a parameter. This makes it harded to do mobile-first development"
+        }],
+        "no-duplicate-selectors": null,
+        "selector-class-pattern": ["^[a-z]([-]?[a-z0-9]+)*(__[a-z0-9]([-]?[a-z0-9]+)*)?(--[a-z0-9]([-]?[a-z0-9]+)*)?$", {
+            "message": "Class show follow BEM naming convention. For example: block__element--modifier. For more details see- http://getbem.com/naming/"   
+        }],
+        "selector-id-pattern": ["^[a-z]([-]?[a-z0-9]+)*(__[a-z0-9]([-]?[a-z0-9]+)*)?(--[a-z0-9]([-]?[a-z0-9]+)*)?$", {
+            "message": "Selecting elements by id is discouraged. Nevertheless, if used, it should follow BEM naming convention. For example: block__element--modifier. For more details see- http://getbem.com/naming/"   
+        }],
+        "selector-list-comma-newline-after": null,
+        "font-family-no-missing-generic-family-keyword": null,
+        "no-descending-specificity": null
+    }
+}

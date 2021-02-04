@@ -1,38 +1,37 @@
 $graph-download-font: 'Helvetica Neue', sans-serif;
 
-
 $pipeline-node-types:
-    (file, #FFF5BA),
-    (analysis-step, #D3E9FF),
+    (file, #fff5ba),
+    (analysis-step, #d3e9ff),
     (quality-metric, #80ffc0),
     (file-type, #e0e0e0);
-    
 
 // FUnction to return black for light background colors passed in $color, and white for dark
 // background colors passed in $color.
 @function node-text-color($color) {
     @if (lightness($color) > 65) {
         @return #000000; // Lighter background, return dark color
-    } @else {
+    }
+
+    @else {
         @return #ffffff; // Darker background, return light color
     }
 }
-      
 
 .pipeline-graph {
     @each $node-type, $color in $pipeline-node-types {
         // Audit icons
         g.pipeline-node-#{$node-type} {
             fill: $color;
-            
+
             &.highlight {
                 > rect, > ellipse {
-                    stroke: #F4442E;
+                    stroke: #f4442e;
                     stroke-width: 3px;
                 }
 
                 line {
-                    stroke: #F4442E;
+                    stroke: #f4442e;
                     stroke-width: 1px;
                 }
             }
@@ -46,7 +45,7 @@ $pipeline-node-types:
             }
 
             &.revoked, &.deleted {
-                fill: #B24342;
+                fill: #b24342;
 
                 g.label {
                     fill: #fff;
@@ -90,7 +89,7 @@ $pipeline-node-types:
         }
 
         &.contributing {
-            stroke-dasharray: 4,2;
+            stroke-dasharray: 4, 2;
 
             rect, ellipse {
                 stroke: #a0a0a0;
@@ -112,7 +111,7 @@ $pipeline-node-types:
 
         line {
             stroke: #a0a0a0;
-            stroke-width: .5px;
+            stroke-width: 0.5px;
         }
 
         .decoration {
@@ -161,6 +160,7 @@ $pipeline-node-types:
         }
     }
 
+    /* stylelint-disable-next-line selector-class-pattern */
     g.edgePath {
         path.path {
             stroke: #c0c0c0;
@@ -204,10 +204,10 @@ $pipeline-node-types:
                 fill: #fff;
             }
         }
-        
+
         &.highlight {
             > circle {
-                stroke: #F4442E;
+                stroke: #f4442e;
             }
 
             > text {
@@ -267,6 +267,7 @@ $pipeline-node-types:
 
 .selected-step {
     @extend .step-info;
+
     background-color: #e8f0e8;
 }
 
@@ -314,8 +315,9 @@ $pipeline-node-types:
 .quality-metrics-modal {
     @media screen and (min-width: $screen-md-min) {
         display: flex;
+
         hr {
-          margin-right: 10px;
+            margin-right: 10px;
         }
     }
 
@@ -323,7 +325,6 @@ $pipeline-node-types:
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 33.33%;
         }
-
     }
 
     @at-root #{&}__attachments {
@@ -388,7 +389,7 @@ $pipeline-node-types:
     }
 
     button:focus {
-        outline:none;
+        outline: none;
     }
 }
 
@@ -438,7 +439,7 @@ $color-unknown: #ffc0c0;
         margin-right: 1px;
         margin-bottom: 1px;
         text-align: center;
-    };
+    }
 
     .status--status-unknown {
         fill: label-color($color-unknown);
@@ -446,7 +447,6 @@ $color-unknown: #ffc0c0;
         box-shadow: inset 0 0 0 1px lighten($color-unknown, 20%);
     }
 }
-
 
 .analyses-selector {
     @at-root #{&}--file-gallery-facets {
@@ -457,7 +457,6 @@ $color-unknown: #ffc0c0;
         display: none;
     }
 }
-
 
 // Hidden div within which to draw a temporary file graph for downloading. Though hidden, it must
 // take up space so that the viewBox gets configured correctly. Therefore, no display:none.

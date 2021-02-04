@@ -1,6 +1,5 @@
 $audit-group-height: 40px;
 
-
 .audit-indicators {
     margin-top: 5px;
     padding: 0 10px;
@@ -55,6 +54,7 @@ $audit-group-height: 40px;
 // Audit icon that's clickable as well as displayable
 %audit-active-icon {
     @extend %audit-icon;
+
     margin: 0 5px 2px 0;
 }
 
@@ -67,7 +67,7 @@ $audit-types:
     ("warning", circle, #e0e000),
     ("not_compliant", file-text, #ff8000),
     ("internal_action", ambulance, #a0a0a0),
-    ("ok", check, #4C994C);
+    ("ok", check, #4c994c);
 
 // Function for an inverse curve; used for saturation and lightness of backgrounds
 @function inverse-curve($value) {
@@ -82,11 +82,12 @@ $audit-types:
 @function audit-level-color($basecolor) {
     @if lightness($basecolor) <= 40 {
         @return $basecolor;
-    } @else {
+    }
+
+    @else {
         @return darken($basecolor,10%);
     }
 }
-
 
 // Wraps around audit count display
 .audit-counts {
@@ -103,7 +104,6 @@ $audit-types:
         }
     }
 }
-
 
 %audit-detail-trigger {
     display: block;
@@ -142,20 +142,20 @@ $audit-types:
     }
 }
 
-
-
 // Generate the audit icon classes for each of the audit types
 @each $audit-type, $suffix, $color in $audit-types {
     // Audit icons
     .audit-icon-#{$audit-type} {
         @extend .icon-#{$suffix}; // FontAwesome icon
         @extend %audit-icon;
+
         color: $color;
     }
 
     .audit-icon-#{$audit-type}-badged {
         @extend .icon-#{$suffix}; // FontAwesome icon
         @extend %audit-icon;
+
         color: #fff;
         font-size: 0.7rem;
         line-height: 1;
@@ -166,6 +166,7 @@ $audit-types:
     .audit-activeicon-#{$audit-type} {
         @extend .icon-#{$suffix}; // FontAwesome icon
         @extend %audit-active-icon;
+
         color: $color;
         font-size: 1.2rem;
     }
@@ -212,12 +213,13 @@ $audit-types:
     right: 0;
     bottom: 0;
     left: 0;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.3) inset;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) inset;
     pointer-events: none;
 }
 
 .audit-category {
     @extend .sentence-case;
+
     display: inline;
 }
 
@@ -229,7 +231,7 @@ $audit-types:
     display: inline-block;
     margin-left: 10px;
     vertical-align: middle;
-    font-size:1.2rem;
+    font-size: 1.2rem;
 
     .icon {
         color: #a0a0a0;

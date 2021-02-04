@@ -3,9 +3,11 @@
     @media screen and (min-width: $screen-sm-min) {
         width: 400px;
     }
+
     @media screen and (min-width: $screen-md-min) {
         width: 600px;
     }
+
     @media screen and (min-width: $screen-lg-min) {
         width: 800px;
     }
@@ -51,6 +53,7 @@
 
     @at-root #{&}__assembly-title {
         @extend .browser-selector__assembly;
+
         font-size: 1.3rem;
     }
 
@@ -61,6 +64,7 @@
 
     @at-root #{&}__browsers-title {
         @extend .browser-selector__browsers;
+
         font-size: 1.3rem;
     }
 

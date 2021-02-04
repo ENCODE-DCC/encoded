@@ -38,7 +38,7 @@ dl.key-value, dl.key-value-doc {
     dt {
         font-weight: 600;
 
-        &:after {
+        &::after {
             content: ":";
         }
     }
@@ -97,7 +97,7 @@ dl.key-value, dl.key-value-doc {
         float: none !important;
         display: block !important;
         text-align: left !important;
-        margin-bottom: 0px !important;
+        margin-bottom: 0 !important;
     }
 
     dd {
@@ -112,7 +112,7 @@ dl.key-value, dl.key-value-doc {
 // When multiple items in a <dd> need to be displayed on their own lines.
 // Apply to each <span> within a <dd> that needs its own line.
 .line-item {
-    &:before {
+    &::before {
         content: ' ';
         display: block;
     }
@@ -157,11 +157,11 @@ dd ul, .multi-value-line {
 .multi-comma {
     margin-right: 0;
 
-    &:after {
+    &::after {
         content: ",\00a0";
     }
 
-    &:last-child:after {
+    &:last-child::after {
         content: normal;
     }
 }
@@ -169,7 +169,6 @@ dd ul, .multi-value-line {
 .multi-dd {
     margin-bottom: 10px;
 }
-
 
 .para-text {
     line-height: 1.6 !important;

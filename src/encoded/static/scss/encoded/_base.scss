@@ -5,8 +5,8 @@ $nav-color-bg:                 #0a253d; // Navigation background color
 
 $appVersionHeight:             30px;
 $footerHeight: 				   80px + $appVersionHeight;
-$footerTopBorderHeight:		   0px;
-$footerBackground:             rgba(10,37,61,0.3) !default;
+$footerTopBorderHeight:		   0;
+$footerBackground:             rgba(10, 37, 61, 0.3) !default;
 $footerBackgroundHighlight:    #294b6a !default;
 
 $tableHeadFootBackgroundColor: #f5f5f5;
@@ -17,10 +17,10 @@ $site-font:                    'Mada', sans-serif;
 $brand-font:                   'Mada', sans-serif;
 $button-font:                  'Quicksand', sans-serif;
 
-$Homo-sapiens:                  #63326E;
-$Mus-musculus:                  #3D518C;
-$Caenorhabditis-elegans:        #77878B;
-$Drosophila-melanogaster:       #335C67;
+$Homo-sapiens:                  #63326e;
+$Mus-musculus:                  #3d518c;
+$Caenorhabditis-elegans:        #77878b;
+$Drosophila-melanogaster:       #335c67;
 
 // Pass value with CSS units and get just the value back
 @function strip-units($value) {
@@ -41,15 +41,17 @@ $Drosophila-melanogaster:       #335C67;
 
 @mixin font-size($size, $important: false) {
     $imptext: "";
+
     @if $important {
         $imptext: " !important";
     }
+
     font-size: round($size * strip-units($font-size-base)) + px#{$imptext};
     font-size: $size + rem#{$imptext};
 }
 
-
 /* BASE STYLES */
+
 /* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */
 
 html {
@@ -87,7 +89,7 @@ body {
 [hidden] { display: none !important; }
 
 #slot-application {
-	height: 100vh;
+    height: 100vh;
 }
 
 #application {
@@ -96,7 +98,7 @@ body {
     @media screen and (min-width: $screen-md-min) {
         display: flex;
         flex-direction: column;
-        height: 0px;
+        height: 0;
     }
 }
 
@@ -122,21 +124,23 @@ b {
 hr { clear: both; }
 
 figure {
-	img { max-width: 100%; height: auto; }
-	margin-bottom: 1em;
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    margin-bottom: 1em;
 }
 
 .sentence-case-block {
     display: inline-block;
 
-    &::first-letter,
-    &:first-letter {
+    &::first-letter {
         text-transform: uppercase;
     }
 }
 
 .sentence-case::first-letter { text-transform: uppercase; }
-.sentence-case:first-letter { text-transform: uppercase; } // older browser support
 
 // Replace Bootstrap's header sizes
 h1, .h1 { font-size: 2.1rem; }
@@ -168,8 +172,9 @@ center {
 
 h4, .h4 {
     font-weight: 600;
+
     a {
-        font-family: Mada;
+        font-family: $site-font;
         font-weight: 400;
     }
 }
@@ -183,7 +188,6 @@ h4, .h4 {
 blockquote {
     font-size: 1rem;
 }
-
 
 /**
  * Site-wide button styles
@@ -202,7 +206,7 @@ blockquote {
 $disabled-color-factor: 20%;
 
 .btn {
-    font-family: Quicksand;
+    font-family: $button-font;
     flex: 0 1 auto;
     height: $btn-height;
     padding: 0 $padding-base-horizontal;
@@ -220,27 +224,78 @@ $disabled-color-factor: 20%;
     border: 1px solid #c0c0c0;
     line-height: 1;
 
-    &.btn-default { color: #000;    background-color: #f8f9fa; }
-    &.btn-primary { color: #fff;    background-color: $brand-primary; }
-    &.btn-success { color: #fff;    background-color: $brand-success; }
-    &.btn-info    { color: #fff;    background-color: $brand-info; }
-    &.btn-warning { color: #fff;    background-color: $brand-warning; }
-    &.btn-danger  { color: #fff;    background-color: $brand-danger; }
+    &.btn-default {
+        color: #000;
+        background-color: #f8f9fa;
+    }
 
-    &:disabled, &[disabled] { pointer-events: none; }
-    &.btn-default:disabled, &.btn-default[disabled] { color: #000; background-color: lighten(#f8f9fa, $disabled-color-factor); }
-    &.btn-primary:disabled, &.btn-primary[disabled] { color: #fff; background-color: lighten($brand-primary, $disabled-color-factor); }
-    &.btn-success:disabled, &.btn-success[disabled] { color: #fff; background-color: lighten($brand-success, $disabled-color-factor); }
-    &.btn-info:disabled, &.btn-info[disabled]    { color: #fff; background-color: lighten($brand-info, $disabled-color-factor); }
-    &.btn-warning:disabled, &.btn-warning[disabled] { color: #fff; background-color: lighten($brand-warning, $disabled-color-factor); }
-    &.btn-danger:disabled , &.btn-danger[disabled] { color: #fff; background-color: lighten($brand-danger, $disabled-color-factor); }
+    &.btn-primary {
+        color: #fff;
+        background-color: $brand-primary;
+    }
+
+    &.btn-success {
+        color: #fff;
+        background-color: $brand-success;
+    }
+
+    &.btn-info {
+        color: #fff;
+        background-color: $brand-info;
+    }
+
+    &.btn-warning {
+        color: #fff;
+        background-color: $brand-warning;
+    }
+
+    &.btn-danger {
+        color: #fff;
+        background-color: $brand-danger;
+    }
+
+    &:disabled, &[disabled] {
+        pointer-events: none;
+    }
+
+    &.btn-default:disabled, &.btn-default[disabled] {
+        color: #000;
+        background-color: lighten(#f8f9fa, $disabled-color-factor);
+    }
+
+    &.btn-primary:disabled, &.btn-primary[disabled] {
+        color: #fff;
+        background-color: lighten($brand-primary, $disabled-color-factor);
+    }
+
+    &.btn-success:disabled, &.btn-success[disabled] {
+        color: #fff;
+        background-color: lighten($brand-success, $disabled-color-factor);
+    }
+
+    &.btn-info:disabled, &.btn-info[disabled] {
+        color: #fff;
+        background-color: lighten($brand-info, $disabled-color-factor);
+    }
+
+    &.btn-warning:disabled, &.btn-warning[disabled] {
+        color: #fff;
+        background-color: lighten($brand-warning, $disabled-color-factor);
+    }
+
+    &.btn-danger:disabled, &.btn-danger[disabled] {
+        color: #fff;
+        background-color: lighten($brand-danger, $disabled-color-factor);
+    }
 
     &.btn-lg {
         @include button-size($padding-large-vertical, $padding-large-horizontal, $font-size-large, $btn-height-lg, $border-radius-large);
     }
+
     &.btn-sm {
         @include button-size($padding-small-vertical, $padding-small-horizontal, $font-size-small, $btn-height-sm, $border-radius-small);
     }
+
     &.btn-xs {
         @include button-size($padding-xs-vertical, $padding-xs-horizontal, $font-size-small, $btn-height-xs, $border-radius-small);
     }
@@ -275,7 +330,6 @@ $disabled-color-factor: 20%;
     }
 }
 
-
 // More generic style maybe eventually replacing .replacement-accessions.
 .supplemental-refs {
     margin: -5px 0 10px;
@@ -285,8 +339,7 @@ $disabled-color-factor: 20%;
     font-weight: normal;
 }
 
-
-*, *:after, *:before {
+*, *::after, *::before {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -297,19 +350,18 @@ $disabled-color-factor: 20%;
     text-align: center;
 }
 
-
 .checkbox--right {
-	cursor: auto;
+    cursor: auto;
 
-	label {
-		cursor: default;
+    label {
+        cursor: default;
         font-weight: bold;
-	}
+    }
 
-	input[type="checkbox"] {
-		float: none;
-		margin-left: 10px;
-	}
+    input[type="checkbox"] {
+        float: none;
+        margin-left: 10px;
+    }
 }
 
 input[disabled] {
@@ -318,13 +370,14 @@ input[disabled] {
     pointer-events: none;
 }
 
-
 // Calculate lightness using a smarter algorithm than Sass's `lightness`.
 // https://medium.com/@tonipinel/how-to-get-an-accurate-contrast-color-with-sass-b0ebc01bf17f
 @function re-gamma($n) {
     @if $n <= 0.0031308 {
         @return $n * 12.92;
-    } @else {
+    }
+
+    @else {
         @return 1.055 * pow($n, 1 / 2.4) - 0.055;
     }
 }
@@ -332,16 +385,19 @@ input[disabled] {
 @function de-gamma($n) {
     @if $n <= 0.04045 {
         @return $n / 12.92;
-    } @else {
+    }
+
+    @else {
         @return pow((($n + 0.055) / 1.055), 2.4);
     }
 }
 
- @function brightness($c) {
-	$rlin: de-gamma(red($c) / 255);
-	$glin: de-gamma(green($c) / 255);
-	$blin: de-gamma(blue($c) / 255);
-	@return re-gamma(0.2126 * $rlin + 0.7152 * $glin + 0.0722 * $blin) * 100;
+@function brightness($c) {
+    $rlin: de-gamma(red($c) / 255);
+    $glin: de-gamma(green($c) / 255);
+    $blin: de-gamma(blue($c) / 255);
+
+    @return re-gamma(0.2126 * $rlin + 0.7152 * $glin + 0.0722 * $blin) * 100;
 }
 
 /**
@@ -359,11 +415,10 @@ input[disabled] {
     width: 1px;
 }
 
-
 // Inline code
 code {
     padding: 2px 4px;
-    font-family: Menlo,Monaco,Consolas,Courier New,monospace;
+    font-family: Menlo, Monaco, Consolas, Courier New, monospace;
     font-size: 1rem;
     color: #c7254e;
     background-color: #f9f2f4;
@@ -460,7 +515,7 @@ pre code {
 
                 &:hover {
                     color: #fff;
-                    background-color: #4E7294;
+                    background-color: #4e7294;
                     border-top: 1px solid #2b3f51;
                     border-bottom: 1px solid #2b3f51;
                 }

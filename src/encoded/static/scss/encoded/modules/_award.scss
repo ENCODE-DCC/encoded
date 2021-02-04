@@ -68,7 +68,6 @@
             display: block;
             margin: 2px 0;
             padding: 0 3px;
-            line-height: 13px;
             color: black;
             text-indent: -8px;
             text-decoration: none;
@@ -110,13 +109,12 @@
     }
 }
 
-
 // Provides the flex structure for a group of charts.
 .award-chart__group-wrapper {
     padding: 5px;
 
     &:first-child {
-    margin: 50px 0 0 0;
+        margin: 50px 0 0 0;
         margin-top: 0;
     }
 
@@ -143,7 +141,6 @@
     }
 }
 
-
 // Style for a group of charts, like for the experiment group or annotation group.
 .award-chart__group {
     @media screen and (min-width: $screen-sm-min) {
@@ -158,6 +155,7 @@
     font-size: 1.1rem;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .type-Award {
     .panel__split {
         border-top: 1px solid #c0c0c0;
