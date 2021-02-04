@@ -143,7 +143,7 @@ const experimentTableColumns = {
                 if (metricObj && metricObj.metric) {
                     return (
                         <td className={qcModifierMap[metricObj.quality] || qcBlock}>
-                            {Number.parseFloat(metricObj.metric) ? (Number.parseFloat(metricObj.metric) / 1000000).toFixed(2).concat('M') : metricObj.metric}
+                            {typeof metricObj.metric === 'number' ? (metricObj.metric / 1000000).toFixed(2).concat('M') : metricObj.metric}
                         </td>
                     );
                 }
@@ -166,7 +166,7 @@ const experimentTableColumns = {
                 if (metricObj && metricObj.metric) {
                     return (
                         <td className={qcModifierMap[metricObj.quality] || qcBlock}>
-                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
                         </td>
                     );
                 }
@@ -189,7 +189,7 @@ const experimentTableColumns = {
                 if (metricObj && metricObj.metric) {
                     return (
                         <td className={qcModifierMap[metricObj.quality] || qcBlock}>
-                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
                         </td>
                     );
                 }
@@ -212,7 +212,7 @@ const experimentTableColumns = {
                 if (metricObj && metricObj.metric) {
                     return (
                         <td className={qcModifierMap[metricObj.quality] || qcBlock}>
-                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
                         </td>
                     );
                 }
@@ -235,7 +235,7 @@ const experimentTableColumns = {
                 if (metricObj && metricObj.metric) {
                     return (
                         <td className={qcModifierMap[metricObj.quality] || qcBlock}>
-                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
                         </td>
                     );
                 }
@@ -258,7 +258,7 @@ const experimentTableColumns = {
                 if (metricObj && metricObj.metric) {
                     return (
                         <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>
-                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
                         </td>
                     );
                 }
@@ -280,7 +280,7 @@ const experimentTableColumns = {
                 if (metricObj && metricObj.metric) {
                     return (
                         <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>
-                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
                         </td>
                     );
                 }
@@ -338,7 +338,7 @@ const experimentTableColumns = {
                 if (metricObj && metricObj.metric) {
                     return (
                         <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>
-                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
                         </td>
                     );
                 }
