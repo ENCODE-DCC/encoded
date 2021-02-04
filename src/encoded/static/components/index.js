@@ -53,6 +53,7 @@ require('./experiment_series');
 require('./glossary');
 require('./series_search');
 require('./top_hits');
+require('./annotations_search');
 
 
 module.exports = require('./app');
