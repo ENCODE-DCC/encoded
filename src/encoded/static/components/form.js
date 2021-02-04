@@ -675,7 +675,7 @@ export class Field extends UpdateChildMixin(React.Component) {
                 // "_null_" is a placeholder; it'd be nice if we could actually use null
                 // to avoid potential collision with real options, but it's not a valid
                 // React key.
-                options = [<option key="_null_" value={null}><span className="sr-only">Placeholder</span></option>].concat(options);
+                options = [<option key="_null_" value={null}>&nbsp;</option>].concat(options);
             }
             // special case where Status is disabled for unpriviledged users
             const isDisabled = notAuthorized && schema.title === 'Status';
