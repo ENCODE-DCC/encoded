@@ -1118,11 +1118,9 @@ def check_experiment_wgbs_encode4_standards(
     samtools_metrics = get_metrics(
         cpg_quantifications, 'SamtoolsFlagstatsQualityMetric', desired_assembly)
 
-    yield from check_wgbs_coverage(
-        samtools_metrics,
+    yield from check_wgbs_coverage_ENCODE4(
+        gembs_metrics,
         pipeline_title,
-        min(read_lengths),
-        organism_name,
         get_pipeline_objects(alignment_files))
     yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
     yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 1, pipeline_title)
@@ -1904,6 +1902,35 @@ def check_wgbs_coverage(samtools_metrics,
                     int(coverage),
                     audit_link('ENCODE WGBS data standards', '/data-standards/wgbs/')
                 )
+            )
+            if coverage < 5:
+                yield AuditFailure('extremely low coverage',
+                                   detail,
+                                   level='ERROR')
+            elif coverage < 25:
+                yield AuditFailure('insufficient coverage',
+                                   detail,
+                                   level='NOT_COMPLIANT')
+            elif coverage < 30:
+                yield AuditFailure('low coverage',
+                                   detail,
+                                   level='WARNING')
+    return
+
+
+def check_wgbs_coverage_ENCODE4(
+    gembs_metrics,
+    pipeline_title,
+    pipeline_objects
+):
+    for m in gembs_metrics:
+        if 'average_coverage' in m:
+            coverage = m['average_coverage']
+            detail = (f'Replicate of experiment processed by {pipeline_title}'
+                f' ({audit_link(path_to_text(pipeline_objects[0]["@id"]), pipeline_objects[0]["@id"])}) '
+                f'has a coverage of {coverage}X. The minimum ENCODE standard coverage for each '
+                f'replicate in a WGBS assay is 25X and the recommended value is '
+                f'> 30X (See {audit_link("ENCODE WGBS data standards", "/data-standards/wgbs/")}).'
             )
             if coverage < 5:
                 yield AuditFailure('extremely low coverage',
