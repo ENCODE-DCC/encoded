@@ -1183,7 +1183,7 @@ class FilterControls extends React.Component {
             '';
         const fileStatus = inclusionOn ?
             '' :
-            inclusionStatuses.map((inclusionStatus) => `&files.status!=${inclusionStatus}`);
+            '&files.status=released&files.status=in progress';
 
         this.navigate(`/batch_download/?type=${type}&accession=${accession}${assemblies}${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
         this.setDownloadModalVisibility(false);
