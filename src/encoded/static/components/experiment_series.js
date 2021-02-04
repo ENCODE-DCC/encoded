@@ -767,7 +767,7 @@ class ExperimentSeriesComponent extends React.Component {
                                 </tbody>
                             </table>
                         </div>
-                        <PanelFooter addClasses="table-panel__std-footer">
+                        <PanelFooter addClasses="table-panel__std-footer qc-footer">
                             <select value={this.selectedAnalysis} onChange={this.handleAnalysisRFAChange}>
                                 {Object.keys(analysisRFAOptions).map((analysis) => <option key={analysis} value={analysis}>{analysisRFAOptions[analysis]}</option>)}
                             </select>
