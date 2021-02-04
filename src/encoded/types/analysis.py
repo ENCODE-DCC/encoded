@@ -69,13 +69,10 @@ def make_quality_metric_report(request, file_objects, quality_metric_definition)
                 if qm_level not in standard:
                     continue
                 threshold = standard[qm_level]
-                qualified = (
-                    (
-                        isinstance(threshold, str)
-                        and qm_report['metric'] == threshold
-                    )
-                    or qm_report['metric'] >= threshold
-                )
+                if isinstance(threshold, str):
+                    qualified = qm_report['metric'] == threshold
+                else:
+                    qualified = qm_report['metric'] >= threshold
                 if qualified:
                     break
             if qm_level is not None:
