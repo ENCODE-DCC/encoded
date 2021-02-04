@@ -24,7 +24,8 @@
 				"total_pre_normalization": 1469346.34,
 				"unique_post_normalization": 37543
 			}
-		]
+		],
+		"aliases": ["lattice:test_atacaggrmetrics"]
 	},
 	{
 		"uuid": "c6c51153-f570-4140-bcdf-06b41e5ebca2",

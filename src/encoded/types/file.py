@@ -326,7 +326,6 @@ class MatrixFile(AnalysisFile):
         "notSubmittable": True,
     })
     def quality_metrics(self, request, quality_metrics=None):
-        print(quality_metrics)
         if quality_metrics:
             return paths_filtered_by_status(request, quality_metrics)
 

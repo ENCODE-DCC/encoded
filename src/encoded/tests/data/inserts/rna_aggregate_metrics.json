@@ -11,7 +11,8 @@
 			{"library": "peter-sims:library_1a", "pre_normalization_raw_reads_per_filtered_bc": 100000, "pre_normalization_cmb_reads_per_filtered_bc": 20000, "frac_reads_kept": 30},
 			{"library": "peter-sims:library_1b", "pre_normalization_raw_reads_per_filtered_bc": 100000, "pre_normalization_cmb_reads_per_filtered_bc": 20000, "frac_reads_kept": 30},
 			{"library": "peter-sims:library_1c", "pre_normalization_raw_reads_per_filtered_bc": 100000, "pre_normalization_cmb_reads_per_filtered_bc": 20000, "frac_reads_kept": 30}
-		]
+		],
+		"aliases": ["lattice:test_rnaaggrmetrics"]
 	},
 	{
 		"uuid": "9c6a9e2a-ba5a-462a-81d3-770120a38120",
