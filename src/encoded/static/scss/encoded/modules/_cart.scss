@@ -1121,7 +1121,7 @@ $file-type-colors: (
             margin: -5px 5px -5px 0;
         }
 
-        > a.btn[href^="http"]:after {
+        > a.btn[href^="http"]::after {
             content: "";
         }
     }
