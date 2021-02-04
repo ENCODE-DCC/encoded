@@ -141,7 +141,11 @@ const experimentTableColumns = {
                     meta.bioRepNum
                 );
                 if (metricObj && metricObj.metric) {
-                    return <td className={qcModifierMap[metricObj.quality] || qcBlock}>{(metricObj.metric / 1000000).toFixed(2).concat('M')}</td>;
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {Number.parseFloat(metricObj.metric) ? (Number.parseFloat(metricObj.metric) / 1000000).toFixed(2).concat('M') : metricObj.metric}
+                        </td>
+                    );
                 }
             }
             return <td className={qcBlock} />;
@@ -160,7 +164,11 @@ const experimentTableColumns = {
                     meta.bioRepNum
                 );
                 if (metricObj && metricObj.metric) {
-                    return <td className={qcModifierMap[metricObj.quality] || qcBlock}>{metricObj.metric.toFixed(2)}</td>;
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
             }
             return <td className={qcBlock} />;
@@ -179,7 +187,11 @@ const experimentTableColumns = {
                     meta.bioRepNum
                 );
                 if (metricObj && metricObj.metric) {
-                    return <td className={qcModifierMap[metricObj.quality] || qcBlock}>{metricObj.metric.toFixed(2)}</td>;
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
             }
             return <td className={qcBlock} />;
@@ -198,7 +210,11 @@ const experimentTableColumns = {
                     meta.bioRepNum
                 );
                 if (metricObj && metricObj.metric) {
-                    return <td className={qcModifierMap[metricObj.quality] || qcBlock}>{metricObj.metric.toFixed(2)}</td>;
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
             }
             return <td className={qcBlock} />;
@@ -217,7 +233,11 @@ const experimentTableColumns = {
                     meta.bioRepNum
                 );
                 if (metricObj && metricObj.metric) {
-                    return <td className={qcModifierMap[metricObj.quality] || qcBlock}>{metricObj.metric.toFixed(2)}</td>;
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
             }
             return <td className={qcBlock} />;
@@ -236,7 +256,11 @@ const experimentTableColumns = {
                     meta.bioRepNum
                 );
                 if (metricObj && metricObj.metric) {
-                    return <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>{metricObj.metric.toFixed(2)}</td>;
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
             }
             return <td className={qcBlock} rowSpan={meta.rowCount} />;
@@ -254,7 +278,11 @@ const experimentTableColumns = {
                     meta.bioRepNum
                 );
                 if (metricObj && metricObj.metric) {
-                    return <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>{metricObj.metric.toFixed(2)}</td>;
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
             }
             return <td className={qcBlock} rowSpan={meta.rowCount} />;
@@ -308,7 +336,11 @@ const experimentTableColumns = {
                     meta.bioRepNum
                 );
                 if (metricObj && metricObj.metric) {
-                    return <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>{metricObj.metric.toFixed(2)}</td>;
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {Number.parseFloat(metricObj.metric) ? Number.parseFloat(metricObj.metric).toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
             }
             return <td className={qcBlock} rowSpan={meta.rowCount} />;
