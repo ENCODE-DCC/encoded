@@ -3117,6 +3117,58 @@ def test_audit_experiment_wgbs_standards(testapp,
                'high lambda C methylation ratio' for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_wgbs_standards_ENCODE4(
+    testapp,
+    base_experiment,
+    file_fastq_3,
+    replicate_1_1,
+    replicate_2_1,
+    library_1,
+    library_2,
+    biosample_1,
+    biosample_2,
+    donor_1,
+    file_bam_1_1,
+    file_bed_methyl,
+    gembs_quality_metric,
+    cpg_correlation_quality_metric,
+    analysis_step_run_bam,
+    analysis_step_version_bam,
+    analysis_step_bam,
+    pipeline_bam,
+    encode4_award
+):
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'GRCh38',
+                                             'notes': 'file bam 1 1',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bed_methyl['@id'], {
+        'step_run': analysis_step_run_bam['@id'],
+        'assembly': 'GRCh38',
+        'notes': 'file bed methyl',
+        'derived_from': [file_bam_1_1['@id']]})
+    testapp.patch_json(pipeline_bam['@id'], {'title':'gemBS'})
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {
+        'status': 'released',
+        'date_released': '2021-01-01',
+        'replicates': [replicate_1_1['@id'], replicate_2_1['@id']],
+        'assay_term_name': 'whole-genome shotgun bisulfite sequencing',
+        'award': encode4_award['uuid'],
+    })
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    print(res)
+    assert any(error['category'] ==
+               'insufficient replicate concordance' for error in collect_audit_errors(res))
+    assert any(error['category'] ==
+               'high lambda C methylation ratio' for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_modern_chip_seq_standards(testapp,
                                                     base_experiment,
                                                     replicate_1_1,
