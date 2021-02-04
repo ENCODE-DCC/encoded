@@ -118,7 +118,9 @@
                      "variant annotation",
                      "merging",
                      "cell calling",
-                     "ambient RNA correction"
+                     "ambient RNA correction",
+                     "doublet removal",
+                     "batch correction"
                  ]
             }
         }

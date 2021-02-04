@@ -4,7 +4,7 @@
     "id": "/profiles/cell_annotation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["cell_ontology"],
+    "required": ["author_cell_type"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
