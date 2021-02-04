@@ -1435,6 +1435,8 @@
                         "chromosomes reference",
                         "chromosome sizes",
                         "consensus DNase hypersensitivity sites",
+                        "curated binding sites",
+                        "curated SNVs",
                         "mapping quality thresholded chromatin interactions",
                         "conservative IDR thresholded peaks",
                         "control normalized signal",
@@ -1443,11 +1445,13 @@
                         "DHS regions reference",
                         "differential expression quantifications",
                         "differential splicing quantifications",
+                        "dsQTLs",
                         "elements reference",
                         "element quantifications",
                         "enhancer validation",
                         "enrichment",
                         "enhancers reference",
+                        "eQTLs",
                         "exon quantifications",
                         "exclusion list regions",
                         "FDR cut rate",
@@ -1517,6 +1521,7 @@
                         "promoters reference",
                         "pseudoreplicated peaks",
                         "pseudoreplicated IDR thresholded peaks",
+                        "PWMs",
                         "raw minus strand signal",
                         "raw normalized signal",
                         "raw plus strand signal",
@@ -2134,8 +2139,12 @@
         
         "HMM predicted chromatin state": "annotation",
         "semi-automated genome annotation": "annotation",
-        "capture targets": "annotation"
-        
+        "capture targets": "annotation",
+        "curated binding sites": "annotation",
+        "curated SNVs": "annotation",
+        "eQTLs": "annotation",
+        "dsQTLs": "annotation",
+        "PWMs": "annotation"
     },
     "file_format_file_extension": {
         "2bit": ".2bit",
