@@ -1161,7 +1161,7 @@ class FilterControls extends React.Component {
     }
 
     handleDownloadClick() {
-        const { context, filters } = this.props;
+        const { context, filters, inclusionOn } = this.props;
         const { accession } = context;
         const type = context && context['@type'] ? context['@type'][0] : 'Experiment';
         let assemblies = '';
@@ -1181,7 +1181,7 @@ class FilterControls extends React.Component {
         const outputTypes = filters.output_type && filters.output_type.length > 0 ?
             filters.output_type.map((outputType) => `&files.output_type=${encodedURIComponent(outputType)}`).join('') :
             '';
-        const fileStatus = document.querySelector('[name="filterIncArchive"]').checked ?
+        const fileStatus = inclusionOn ?
             '' :
             inclusionStatuses.map((inclusionStatus) => `&files.status!=${inclusionStatus}`);
 
@@ -1194,10 +1194,8 @@ class FilterControls extends React.Component {
     }
 
     render() {
-        const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler, context } = this.props;
-        const filterIncArchive = document.querySelector('[name="filterIncArchive"]');
-        const filterIncArchiveStatus = filterIncArchive ? filterIncArchive.checked : false;
-        const contextFiles = (context.files || []).filter((file) => (filterIncArchiveStatus ? file : inclusionStatuses.indexOf(file.status) === -1));
+        const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler, context, inclusionOn } = this.props;
+        const contextFiles = (context.files || []).filter((file) => (inclusionOn ? file : inclusionStatuses.indexOf(file.status) === -1));
 
         const visualizerControls = (filterOptions.length > 0 || browsers.length > 0) ?
             (
@@ -1260,6 +1258,8 @@ FilterControls.propTypes = {
     browserChangeHandler: PropTypes.func.isRequired,
     /** Called when the user clicks the Visualize button */
     visualizeHandler: PropTypes.func.isRequired,
+    /** include-deprecated check box checked status */
+    inclusionOn: PropTypes.bool,
 };
 
 FilterControls.defaultProps = {
@@ -1267,6 +1267,7 @@ FilterControls.defaultProps = {
     browsers: [],
     currentBrowser: '',
     filters: [],
+    inclusionOn: false,
 };
 
 FilterControls.contextTypes = {
