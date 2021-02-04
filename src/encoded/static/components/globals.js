@@ -345,6 +345,7 @@ export const biosampleTypeList = [
     'cell-free sample',
     'cloning host',
     'organoid',
+    'technical sample',
 ];
 
 export const replicateTypeList = [

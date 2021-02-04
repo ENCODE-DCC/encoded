@@ -137,3 +137,12 @@ def test_library_nucleic_acid_depleted_in_term(testapp, library_schema_13, libra
     testapp.post_json('/library', library_schema_capped_mRNA, status=201)
     library_schema_capped_mRNA.update({'depleted_in_term_name': ['capped mRNA', 'polyadenylated mRNA']})
     testapp.post_json('/library', library_schema_capped_mRNA, status=422)
+
+
+def test_library_biosample_and_mixed_biosample(testapp, library, biosample_1, biosample_2):
+    # https://encodedcc.atlassian.net/browse/ENCD-5674
+    testapp.post_json('/library', library, status=201)
+    library.update({'mixed_biosamples': [biosample_1['@id'], biosample_2['@id']]})
+    testapp.post_json('/library', library, status=201)
+    library.update({'biosample': biosample_2})
+    testapp.post_json('/library', library, status=422)

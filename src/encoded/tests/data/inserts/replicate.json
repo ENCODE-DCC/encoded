@@ -903,5 +903,15 @@
         "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
         "library": "ENCLB128CHP",
         "uuid": "9571a30b-799d-428e-beb9-31c412e9dda3"
+    },
+    {
+        "_test": "replicate for mixed biosamples",
+        "experiment": "/experiments/ENCSR751ISO/",
+        "biological_replicate_number": 3,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001MIX",
+        "uuid": "a69a923f-c2a2-49ac-9d72-6710233ef615"
     }
 ]
