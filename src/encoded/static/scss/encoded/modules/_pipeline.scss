@@ -1,3 +1,6 @@
+$graph-download-font: 'Helvetica Neue', sans-serif;
+
+
 $pipeline-node-types:
     (file, #FFF5BA),
     (analysis-step, #D3E9FF),
@@ -6,165 +9,232 @@ $pipeline-node-types:
     
 
 // FUnction to return black for light background colors passed in $color, and white for dark
-// backbground colors passed in $color.
+// background colors passed in $color.
 @function node-text-color($color) {
     @if (lightness($color) > 65) {
-        @return #000000; // Lighter backgorund, return dark color
+        @return #000000; // Lighter background, return dark color
     } @else {
         @return #ffffff; // Darker background, return light color
     }
 }
       
 
-@each $node-type, $color in $pipeline-node-types {
-    // Audit icons
-    g.pipeline-node-#{$node-type} {
-        fill: $color;
-        
-        &.highlight {
-            > rect, > ellipse {
-                stroke: #F4442E;
-                stroke-width: 3px;
+.pipeline-graph {
+    @each $node-type, $color in $pipeline-node-types {
+        // Audit icons
+        g.pipeline-node-#{$node-type} {
+            fill: $color;
+            
+            &.highlight {
+                > rect, > ellipse {
+                    stroke: #F4442E;
+                    stroke-width: 3px;
+                }
+
+                line {
+                    stroke: #F4442E;
+                    stroke-width: 1px;
+                }
             }
 
-            line {
-                stroke: #F4442E;
-                stroke-width: 1px;
+            &.active {
+                fill: desaturate(darken($color, 20%), 30%);
+            }
+
+            &.error, &.restricted {
+                fill: #ffc0c0;
+            }
+
+            &.revoked, &.deleted {
+                fill: #B24342;
+
+                g.label {
+                    fill: #fff;
+                }
+            }
+
+            &.archived, &.replaced {
+                fill: #c0c0c0;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            > text {
+                fill: #000;
             }
         }
 
-        &.active {
-            fill: desaturate(darken($color, 20%), 30%);
-        }
-
-        &.error, &.restricted {
-            fill: #ffc0c0;
-        }
-
-        &.revoked, &.deleted {
-            fill: #B24342;
-
-            g.label {
-                fill: #fff;
-            }
-        }
-
-        &.archived, &.replaced {
-            fill: #c0c0c0;
-        }
-
-        &:hover {
-            cursor: pointer;
-        }
-
-        > text {
-            fill: #000;
+        .graph-modal--#{$node-type} {
+            background-color: $color;
         }
     }
 
-    .graph-modal--#{$node-type} {
-        background-color: $color;
-    }
-}
-
-g.pipeline-node-file-type {
-    pointer-events: none;
-}
-
-g.label {
-    font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
-    font-weight: bold;
-    fill: #000;
-    pointer-events: none;
-}
-
-g.node {
-    > rect, > ellipse {
-        stroke: #a0a0a0;
-        stroke-width: 1.5px;
+    g.pipeline-node-file-type {
+        pointer-events: none;
     }
 
-    &.contributing {
-        stroke-dasharray: 4,2;
+    g.label {
+        font-family: $graph-download-font;
+        font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
+        font-weight: bold;
+        fill: #000;
+        pointer-events: none;
+    }
 
-        rect, ellipse {
+    g.node {
+        > rect, > ellipse {
             stroke: #a0a0a0;
             stroke-width: 1.5px;
         }
 
-        .decoration {
-            stroke-dasharray: none;
-        }
-    }
+        &.contributing {
+            stroke-dasharray: 4,2;
 
-    line {
-        stroke: #a0a0a0;
-        stroke-width: .5px;
-    }
+            rect, ellipse {
+                stroke: #a0a0a0;
+                stroke-width: 1.5px;
+            }
 
-    .decoration {
-        rect {
-            fill: #e0e0e0;
+            .decoration {
+                stroke-dasharray: none;
+            }
         }
 
-        &__border {
-            fill: none;
-            stroke-width: 1px;
+        // Stacks of coalesced reads files. Make border slightly finer for cleaner look.
+        &.reads {
+            .stack {
+                stroke: #a0a0a0;
+                stroke-width: 1px;
+            }
+        }
+
+        line {
             stroke: #a0a0a0;
+            stroke-width: .5px;
         }
 
-        &__icon {
-            fill: #606060;
-        }
-
-        &.decoration--active {
+        .decoration {
             rect {
+                fill: #e0e0e0;
+            }
+
+            &__border {
+                fill: none;
+                stroke-width: 1px;
+                stroke: #a0a0a0;
+            }
+
+            &__icon {
                 fill: #606060;
             }
 
-            .decoration__icon {
-                fill: #e0e0e0;
+            &.decoration--active {
+                rect {
+                    fill: #606060;
+                }
+
+                .decoration__icon {
+                    fill: #e0e0e0;
+                }
             }
         }
     }
-}
 
-g.subnodes {
-    text {
-        font-size: 10px;
-        pointer-events: none;
-    }
-}
-
-g.cluster {
-    rect {
-        fill: #f0f8f0;
-        stroke: #c0c0c0;
+    g.subnodes {
+        text {
+            font-size: 10px;
+            pointer-events: none;
+        }
     }
 
-    text {
-        font-size: $font-size-base; // Don't use rems; maintain size on mobile
-        fill: #000;
-    }
-}
+    g.cluster {
+        rect {
+            fill: #f0f8f0;
+            stroke: #c0c0c0;
+        }
 
-g.edgePath {
-    path.path {
-        stroke: #c0c0c0;
-        stroke-width: 2px;
-    }
-
-    defs > marker > path {
-        fill: #c0c0c0;
+        text {
+            font-size: $font-size-base; // Don't use rems; maintain size on mobile
+            fill: #000;
+        }
     }
 
-    &.highlighted {
+    g.edgePath {
         path.path {
-            stroke: #00f;
+            stroke: #c0c0c0;
+            stroke-width: 2px;
         }
 
         defs > marker > path {
-            fill: #00f;
+            fill: #c0c0c0;
+        }
+
+        &.active {
+            path.path {
+                stroke: #00f;
+            }
+
+            defs > marker > path {
+                fill: #00f;
+            }
+        }
+    }
+
+    g.pipeline-node-qc-metric {
+        > circle {
+            stroke-width: 2px;
+            stroke: #a0a0a0;
+            fill: #80ffc0;
+        }
+
+        > text {
+            font-family: $graph-download-font;
+            font-weight: bold;
+            fill: #000;
+        }
+
+        &.active {
+            > circle {
+                fill: darken(#80ffc0, 50%);
+            }
+
+            > text {
+                fill: #fff;
+            }
+        }
+        
+        &.highlight {
+            > circle {
+                stroke: #F4442E;
+            }
+
+            > text {
+                fill: #fff;
+            }
+        }
+
+        // Handle hovering over the QC circle to bring up the tooltip.
+        > circle:hover {
+            + text + g {
+                display: block;
+            }
+        }
+    }
+
+    g.qc-tooltip {
+        display: none;
+        pointer-events: none;
+
+        rect, polygon {
+            fill: #000;
+        }
+
+        text {
+            fill: #fff;
+            font-size: 0.8rem;
+            font-weight: normal;
         }
     }
 }
@@ -208,46 +278,6 @@ g.edgePath {
 
 .btn.btn-orient {
     margin-right: 5px;
-}
-
-g.pipeline-node-qc-metric {
-    > circle {
-        stroke-width: 2px;
-        stroke: #a0a0a0;
-        fill: #80ffc0;
-    }
-
-    > text {
-        font-weight: bold;
-        fill: #000;
-    }
-
-    &.active {
-        > circle {
-            fill: darken(#80ffc0, 50%);
-        }
-
-        > text {
-            fill: #fff;
-        }
-    }
-    
-    &.highlight {
-        > circle {
-            stroke: #F4442E;
-        }
-
-        > text {
-            fill: #fff;
-        }
-    }
-
-    // Handle hovering over the QC circle to bring up the tooltip.
-    > circle:hover {
-        + text + g {
-            display: block;
-        }
-    }
 }
 
 .file-qc-buttons {
@@ -395,21 +425,6 @@ g.pipeline-node-qc-metric {
     }
 }
 
-g.qc-tooltip {
-    display: none;
-    pointer-events: none;
-
-    rect, polygon {
-        fill: #000;
-    }
-
-    text {
-        fill: #fff;
-        font-size: 0.8rem;
-        font-weight: normal;
-    }
-}
-
 // Special unknown status color.
 $color-unknown: #ffc0c0;
 
@@ -441,4 +456,12 @@ $color-unknown: #ffc0c0;
     .file-gallery-facets.collapsed & {
         display: none;
     }
+}
+
+
+// Hidden div within which to draw a temporary file graph for downloading. Though hidden, it must
+// take up space so that the viewBox gets configured correctly. Therefore, no display:none.
+#graph-download-container {
+    position: absolute;
+    opacity: 0;
 }
