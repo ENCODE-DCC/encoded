@@ -524,7 +524,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "peak annotation"
         ],
         "software": [
             "cellranger-atac count 1.2"

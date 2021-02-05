@@ -109,6 +109,7 @@
                     "alignment",
                     "quantification",
                     "peak calling",
+                    "peak annotation",
                     "filtering",
                     "merging",
                     "cell calling",
