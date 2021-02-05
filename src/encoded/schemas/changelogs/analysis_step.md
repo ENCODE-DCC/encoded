@@ -1,5 +1,8 @@
 ## Changelog for analysis_step.json
 
+### Minor changes since schema version 12
+* Added *curated binding sites*, *curated SNVs*, *dsQTLs*, *eQTLs* and *PWMs* to the enum list for *input_file_types* and *output_file_types*
+
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
 * Added *nanopore signal* to the enum list for *input_file_types*
