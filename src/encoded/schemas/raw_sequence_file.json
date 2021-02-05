@@ -89,7 +89,7 @@
             ]
         },
         "fastq_signature": {
-            "title": "Fastq file flowcell based signature",
+            "title": "Fastq signature",
             "description": "Fastq file flowcell based unique signature to reference a file.",
             "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
             "type": "array",
@@ -133,8 +133,8 @@
                     "minimum": 0
                 },
                 "read_number_location": {
-                    "title": "Read number (1 or 2) identifier location",
-                    "description": "Location of the read number in the read name",
+                    "title": "Read number location",
+                    "description": "Location of the read number (1 or 2) in the read name",
                     "comment": "Zero-based location of the read number in the read name, if you split the read name using space and : as delimiters",
                     "type": "integer",
                     "minimum": 0
