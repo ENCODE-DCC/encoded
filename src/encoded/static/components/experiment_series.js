@@ -16,37 +16,42 @@ import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 
 // Only analysis on selected assembly will be used for QC reporting
 const selectedAssembly = ['GRCh38', 'mm10'];
-const selectedAnalysisRFA = 'ENCODE3';
 const selectedAnalysisLab = '/labs/encode-processing-pipeline/';
+const defaultAnalysisRFA = 'ENCODE3';
+const analysisRFAOptions = {
+    ENCODE3: 'ENCODE3 analysis',
+    ENCODE4: 'ENCODE4 analysis',
+};
+const qcBlock = 'qc-report';
+const qcModifierMap = {
+    pass: 'qc-report--ideal',
+    warning: 'qc-report--warning',
+    not_compliant: 'qc-report--not-compliant',
+    error: 'qc-report--error',
+};
 
 /**
- * Giving an experiment, extract one specific quality metric from its files.
- * Extracted quality metrics are grouped by corresponding biological replicate number.
- * For a specific biological replicate, there could be more than one quality metric
- * values extracted. They are all stored uniquely in an array.
+ * Giving a quality metric report, extract one specific quality metric matching
+ * desired biological replicate number.
  *
- * @return {object} Quality metrics grouped by biological replicate number.
+ * @return {object} Quality metric and quality level.
  */
-function getQualityMetricsByReplicate(experiment, field) {
-    const qualityMetricsByReplicate = {};
-    experiment.files.forEach((f) => {
-        f.quality_metrics.forEach((qm) => {
-            if (qm[field]) {
-                f.biological_replicates.forEach((num) => {
-                    if (qualityMetricsByReplicate[num]) {
-                        qualityMetricsByReplicate[num].push(qm[field]);
-                    } else {
-                        qualityMetricsByReplicate[num] = [qm[field]];
-                    }
-                });
+function getQualityMetricsByReplicate(qualityMetricReport, field, bioRepNum) {
+    const qualityMetric = {};
+    if (qualityMetricReport && qualityMetricReport[field]) {
+        const metrics = qualityMetricReport[field].filter(
+            (m) => m.biological_replicates.includes(bioRepNum)
+        );
+        if (metrics && metrics.length > 1) {
+            qualityMetric.metric = '?';
+        } else if (metrics && metrics.length === 1 && metrics[0].metric) {
+            qualityMetric.metric = metrics[0].metric;
+            if (metrics[0].quality && qcModifierMap[metrics[0].quality]) {
+                qualityMetric.quality = metrics[0].quality;
             }
-        });
-    });
-    const qmByRep = {};
-    Object.keys(qualityMetricsByReplicate).forEach((rep) => {
-        qmByRep[rep] = _.uniq(qualityMetricsByReplicate[rep]);
-    });
-    return qmByRep;
+        }
+    }
+    return qualityMetric;
 }
 
 // The hideColorCodedColumns is a collection of conditions determine whether
@@ -67,12 +72,12 @@ const hideColorCodedColumns = {
 const experimentTableColumns = {
     accession: {
         title: 'Accession',
-        display: (experiment, meta) => <td key="accession" rowSpan={meta.rowCount}><a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a></td>,
+        display: (experiment, meta) => <td rowSpan={meta.rowCount}><a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a></td>,
     },
 
     file_assembly: {
         title: 'Assembly',
-        getValue: (experiment) => _.uniq(experiment.files.map((f) => f.assembly)),
+        getValue: (experiment) => _.uniq(experiment.selectedFiles.map((f) => f.assembly)),
         hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
@@ -110,53 +115,40 @@ const experimentTableColumns = {
             if (statuses.length === 0) {
                 statuses.push('awaiting characterization');
             }
-            return (
-                <td key="antibody">
-                    {statuses.map((status, i) => <Status key={i} item={status} inline />)}
-                </td>
-            );
+            return <td>{statuses.map((status, i) => <Status key={i} item={status} inline />)}</td>;
         },
         replicateSpecific: true,
         hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
+    mappedReadLength: {
+        title: <div>Mapped read length</div>,
+        getValue: (experiment) => _.uniq(experiment.selectedFiles.map((f) => f.mapped_read_length).filter((l) => l)).join(', '),
+    },
+
+    mappedRunType: {
+        title: <div>Mapped run type</div>,
+        getValue: (experiment) => _.uniq(experiment.selectedFiles.map((f) => f.mapped_run_type).filter((l) => l)).join(', '),
+    },
+
     readDepth: {
         title: <div>Read depth<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Number of mapped reads passing quality control filtering. Minimum read depth is 5M. For broad histone marks, acceptable read depth is &gt;35M and recommended read depth is &gt;45M. For other targets, acceptable read depth is &gt;10M and recommended read depth is &gt;20M.</Tooltip></div>,
         display: (experiment, meta) => {
-            const low = 5000000;
-            let minimal = 10000000;
-            let recommended = 20000000;
-            if (experiment.target && experiment.target.investigated_as.includes('broad histone mark')) {
-                minimal = 35000000;
-                recommended = 45000000;
-            }
-            const filteredFiles = experiment.files.filter((f) => f.biological_replicates.includes(meta.bioRepNum));
-            const qualityMetrics = filteredFiles.map((f) => f.quality_metrics).reduce(
-                (flatQualityMetrics, qms) => flatQualityMetrics.concat(qms), []
-            );
-            let qm = [];
-            if (experiment.target && ['H3K9me3-human', 'H3K9me3-mouse'].includes(experiment.target.name)) {
-                qm = _.uniq(qualityMetrics.filter((q) => q.processing_stage === 'unfiltered').map((q) => q.mapped / ((q.read1 && q.read2) ? 2 : 1)).filter((q) => q));
-            } else {
-                qm = _.uniq(qualityMetrics.filter((q) => q.processing_stage === 'filtered').map((q) => q.total / ((q.read1 && q.read2) ? 2 : 1)).filter((q) => q));
-            }
-            if (qm && qm.length > 1) {
-                return <td key="readDepth" className="qc-report">?</td>;
-            }
-            if (qm && qm.length === 1) {
-                let qcClass = 'qc-report';
-                if (qm[0] < low) {
-                    qcClass = qcClass.concat(' qc-report--error');
-                } else if (qm[0] >= low && qm[0] < minimal) {
-                    qcClass = qcClass.concat(' qc-report--not-compliant');
-                } else if (qm[0] >= minimal && qm[0] < recommended) {
-                    qcClass = qcClass.concat(' qc-report--warning');
-                } else {
-                    qcClass = qcClass.concat(' qc-report--ideal');
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'Read depth',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {typeof metricObj.metric === 'number' ? (metricObj.metric / 1000000).toFixed(2).concat('M') : metricObj.metric}
+                        </td>
+                    );
                 }
-                return <td key="readDepth" className={qcClass}>{(qm[0] / 1000000).toFixed(2).concat('M')}</td>;
             }
-            return <td key="readDepth" className="qc-report" />;
+            return <td className={qcBlock} />;
         },
         replicateSpecific: true,
         hide: (series) => hideColorCodedColumns.readDepth(series),
@@ -165,22 +157,21 @@ const experimentTableColumns = {
     NRF: {
         title: <div>NRF<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Non-redundant fraction (indicates library complexity). Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads. Acceptable NRF is &gt;0.5 and recommended NRF is &gt;0.8.</Tooltip></div>,
         display: (experiment, meta) => {
-            const qm = getQualityMetricsByReplicate(experiment, 'NRF')[meta.bioRepNum];
-            if (qm && qm.length > 1) {
-                return <td key="NRF" className="qc-report">?</td>;
-            }
-            if (qm && qm.length === 1) {
-                let qcClass = 'qc-report';
-                if (qm[0] < 0.5) {
-                    qcClass = qcClass.concat(' qc-report--not-compliant');
-                } else if (qm[0] >= 0.5 && qm[0] < 0.8) {
-                    qcClass = qcClass.concat(' qc-report--warning');
-                } else {
-                    qcClass = qcClass.concat(' qc-report--ideal');
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'NRF',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
-                return <td key="NRF" className={qcClass}>{qm[0].toFixed(2)}</td>;
             }
-            return <td key="NRF" className="qc-report" />;
+            return <td className={qcBlock} />;
         },
         replicateSpecific: true,
         hide: (series) => hideColorCodedColumns.NRF(series),
@@ -189,22 +180,21 @@ const experimentTableColumns = {
     NSC: {
         title: <div>NSC<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts. Acceptable NSC is &gt;1.05 and recommended NSC is &gt;1.1.</Tooltip></div>,
         display: (experiment, meta) => {
-            const qm = getQualityMetricsByReplicate(experiment, 'NSC')[meta.bioRepNum];
-            if (qm && qm.length > 1) {
-                return <td key="NSC" className="qc-report">?</td>;
-            }
-            if (qm && qm.length === 1) {
-                let qcClass = 'qc-report';
-                if (qm[0] < 1.05) {
-                    qcClass = qcClass.concat(' qc-report--not-compliant');
-                } else if (qm[0] >= 1.05 && qm[0] < 1.1) {
-                    qcClass = qcClass.concat(' qc-report--warning');
-                } else {
-                    qcClass = qcClass.concat(' qc-report--ideal');
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'NSC',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
-                return <td key="NSC" className={qcClass}>{qm[0].toFixed(2)}</td>;
             }
-            return <td key="NSC" className="qc-report" />;
+            return <td className={qcBlock} />;
         },
         replicateSpecific: true,
         hide: (series) => hideColorCodedColumns.NSC(series),
@@ -213,22 +203,21 @@ const experimentTableColumns = {
     PBC1: {
         title: <div>PBC1<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely. Acceptable PBC1 is &gt;0.5 and recommended PBC1 is &gt;0.9.</Tooltip></div>,
         display: (experiment, meta) => {
-            const qm = getQualityMetricsByReplicate(experiment, 'PBC1')[meta.bioRepNum];
-            if (qm && qm.length > 1) {
-                return <td key="PBC1" className="qc-report">?</td>;
-            }
-            if (qm && qm.length === 1) {
-                let qcClass = 'qc-report';
-                if (qm[0] < 0.5) {
-                    qcClass = qcClass.concat(' qc-report--not-compliant');
-                } else if (qm[0] >= 0.5 && qm[0] < 0.9) {
-                    qcClass = qcClass.concat(' qc-report--warning');
-                } else {
-                    qcClass = qcClass.concat(' qc-report--ideal');
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'PBC1',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
-                return <td key="PBC1" className={qcClass}>{qm[0].toFixed(2)}</td>;
             }
-            return <td key="PBC1" className="qc-report" />;
+            return <td className={qcBlock} />;
         },
         replicateSpecific: true,
         hide: (series) => hideColorCodedColumns.PBC1(series),
@@ -237,84 +226,131 @@ const experimentTableColumns = {
     PBC2: {
         title: <div>PBC2<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely. Acceptable PBC2 is &gt;1 and recommended PBC2 &gt;10.</Tooltip></div>,
         display: (experiment, meta) => {
-            const qm = getQualityMetricsByReplicate(experiment, 'PBC2')[meta.bioRepNum];
-            if (qm && qm.length > 1) {
-                return <td key="PBC2" className="qc-report">?</td>;
-            }
-            if (qm && qm.length === 1) {
-                let qcClass = 'qc-report';
-                if (qm[0] < 1) {
-                    qcClass = qcClass.concat(' qc-report--not-compliant');
-                } else if (qm[0] >= 1 && qm[0] < 10) {
-                    qcClass = qcClass.concat(' qc-report--warning');
-                } else {
-                    qcClass = qcClass.concat(' qc-report--ideal');
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'PBC2',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
+                        </td>
+                    );
                 }
-                return <td key="PBC2" className={qcClass}>{qm[0].toFixed(2)}</td>;
             }
-            return <td key="PBC2" className="qc-report" />;
+            return <td className={qcBlock} />;
         },
         replicateSpecific: true,
         hide: (series) => hideColorCodedColumns.PBC2(series),
     },
 
+    rescueRatio: {
+        title: <div>Rescue ratio<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The rescue ratio measures consistency between datasets when the replicates within a single experiment are not comparable.</Tooltip></div>,
+        display: (experiment, meta) => {
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'Rescue ratio',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
+                        </td>
+                    );
+                }
+            }
+            return <td className={qcBlock} rowSpan={meta.rowCount} />;
+        },
+        hide: (series) => hideColorCodedColumns.IDR(series),
+    },
+
+    selfConsistencyRatio: {
+        title: <div>Self-consistency ratio<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The self-consistency ratio measures consistency within a single dataset</Tooltip></div>,
+        display: (experiment, meta) => {
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'Self-consistency ratio',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
+                        </td>
+                    );
+                }
+            }
+            return <td className={qcBlock} rowSpan={meta.rowCount} />;
+        },
+        hide: (series) => hideColorCodedColumns.IDR(series),
+    },
+
     IDR: {
         title: <div>IDR<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Irreproducible discovery rate is determined by the self-consistency ratio and the rescue ratio. The self-consistency ratio measures consistency within a single dataset. The rescue ratio measures consistency between datasets when the replicates within a single experiment are not comparable. The IDR test fails if both ratios are &lt;2, and passes if both ratios are &gt;2. Otherwise, IDR is borderline.</Tooltip></div>,
         display: (experiment, meta) => {
-            const rescueRatios = getQualityMetricsByReplicate(experiment, 'rescue_ratio')[meta.bioRepNum];
-            const selfConsistencyRatios = getQualityMetricsByReplicate(experiment, 'self_consistency_ratio')[meta.bioRepNum];
-            if ((rescueRatios && rescueRatios.length > 1) || (selfConsistencyRatios && selfConsistencyRatios.length > 1)) {
-                return <td key="IDR" className="qc-report" rowSpan={meta.rowCount}>?</td>;
-            }
-            if ((rescueRatios && rescueRatios.length === 1) && (selfConsistencyRatios && selfConsistencyRatios.length === 1)) {
-                if (rescueRatios[0] > 2 && selfConsistencyRatios[0] > 2) {
-                    return <td key="IDR" className="qc-report qc-report--not-compliant" rowSpan={meta.rowCount}>Fail</td>;
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'IDR',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>{metricObj.metric}</td>;
                 }
-                if (rescueRatios[0] > 2 || selfConsistencyRatios[0] > 2) {
-                    return <td key="IDR" className="qc-report qc-report--warning" rowSpan={meta.rowCount}>Borderline</td>;
-                }
-                return <td key="IDR" className="qc-report qc-report--ideal" rowSpan={meta.rowCount}>Pass</td>;
             }
-            return <td key="IDR" className="qc-report" rowSpan={meta.rowCount} />;
+            return <td className={qcBlock} rowSpan={meta.rowCount} />;
         },
         hide: (series) => hideColorCodedColumns.IDR(series),
     },
 
     peakCount: {
         title: <div>Replicated Peak count<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The replicated peak count reported here is for replicated experiments only. It is the peak count of either optimal IDR thresholded peaks for TF ChIP or replicated peaks for histone ChIP. Please note that higher peak count does NOT necessarily mean higher quality data.</Tooltip></div>,
-        getValue: (experiment, meta) => {
-            // ENCODE3 TF and histone ChIP-seq quality metrics modeling
-            // Skip peakCount if the experiment has less than 1 replicate
-            if (!experiment.replicates || experiment.replicates.length <= 1) {
-                return '';
+        display: (experiment, meta) => {
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'Peak count',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>{metricObj.metric}</td>;
+                }
             }
-            const optimalPeakCounts = getQualityMetricsByReplicate(experiment, 'N_optimal')[meta.bioRepNum] || getQualityMetricsByReplicate(experiment, 'npeak_overlap')[meta.bioRepNum] || [];
-            if (optimalPeakCounts.length === 0) {
-                // ENCODE4 ChIP-seq quality metrics modeling
-                experiment.files.forEach((f) => {
-                    if (f.preferred_default && f.biological_replicates.includes(meta.bioRepNum)) {
-                        f.quality_metrics.forEach((qm) => {
-                            if (qm.reproducible_peaks) {
-                                optimalPeakCounts.push(qm.reproducible_peaks);
-                            }
-                        });
-                    }
-                });
+            return <td className={qcBlock} rowSpan={meta.rowCount} />;
+        },
+        hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    },
+
+    frip: {
+        title: <div>FRiP<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Fraction of all mapped reads that fall into the called peak regions, i.e. usable reads in significantly enriched peaks divided by all usable reads. In general, FRiP scores correlate positively with the number of regions. (Landt et al, Genome Research Sept. 2012, 22(9): 1813–1831)</Tooltip></div>,
+        display: (experiment, meta) => {
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'FRiP',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock} rowSpan={meta.rowCount}>
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
+                        </td>
+                    );
+                }
             }
-            if (optimalPeakCounts.length > 1) {
-                return '?';
-            }
-            if (optimalPeakCounts.length === 1) {
-                return optimalPeakCounts[0];
-            }
-            return '';
+            return <td className={qcBlock} rowSpan={meta.rowCount} />;
         },
         hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
     status: {
         title: 'Status',
-        display: (experiment, meta) => <td key="status" rowSpan={meta.rowCount}><Status item={experiment} badgeSize="small" /></td>,
+        display: (experiment, meta) => <td rowSpan={meta.rowCount}><Status item={experiment} badgeSize="small" /></td>,
     },
 
     date_released: {
@@ -333,13 +369,13 @@ const experimentTableColumns = {
 
     audit: {
         title: 'Audit status',
-        display: (experiment, meta) => <td key="audit" rowSpan={meta.rowCount}><AuditCounts audits={experiment.audit} isAuthorized={meta.isAuthorized} /></td>,
+        display: (experiment, meta) => <td rowSpan={meta.rowCount}><AuditCounts audits={experiment.audit} isAuthorized={meta.isAuthorized} /></td>,
         sorter: false,
     },
 
     cart: {
         title: 'Cart',
-        display: (experiment, meta) => <td key="cart" rowSpan={meta.rowCount}><CartToggle element={experiment} /></td>,
+        display: (experiment, meta) => <td rowSpan={meta.rowCount}><CartToggle element={experiment} /></td>,
         sorter: false,
     },
 };
@@ -385,11 +421,19 @@ class ExperimentSeriesComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            /** Audit objects keyed by dataset @id. Datasets w/o audits included with empty object */
+            /** Dataset objects with audit keyed by dataset @id which are
+             * retrieved through a series of requests. For each dataset objects
+             * there are two key prpoperies, selectedAnalysis and selectedFiles.
+             * selectedAnalysis is one analysis objects selected based on lab,
+             * award, etc. selectedFiles is a filtered list of experiment files
+             * belonging to the selectedAnalysis.
+             */
             viewableDatasets: {},
+            selectedAnalysisRFA: defaultAnalysisRFA,
         };
         this.statusFilteredDatasets = this.statusFilteredDatasets.bind(this);
         this.getViewableDatasets = this.getViewableDatasets.bind(this);
+        this.handleAnalysisRFAChange = this.handleAnalysisRFAChange.bind(this);
     }
 
     componentDidMount() {
@@ -407,6 +451,10 @@ class ExperimentSeriesComponent extends React.Component {
         if (symmDiffAtIds.length > 0) {
             this.getViewableDatasets();
         }
+    }
+
+    handleAnalysisRFAChange(e) {
+        this.setState({ selectedAnalysisRFA: e.target.value });
     }
 
     /**
@@ -434,7 +482,7 @@ class ExperimentSeriesComponent extends React.Component {
         promises.push(
             requestObjects(
                 Object.keys(viewableDatasets),
-                '/search/?type=Experiment&field=replicates.biological_replicate_number&field=replicates.library.biosample.organism.@id&field=replicates.library.biosample.biosample_ontology.term_id&field=replicates.antibody.lot_reviews&field=files.@id&field=files.assembly&field=files.biological_replicates&field=files.quality_metrics&limit=all',
+                '/search/?type=Experiment&field=replicates.biological_replicate_number&field=replicates.library.biosample.organism.@id&field=replicates.library.biosample.biosample_ontology.term_id&field=replicates.antibody.lot_reviews&field=files.@id&field=files.assembly&field=files.biological_replicates&field=files.quality_metrics&field=files.mapped_read_length&field=files.mapped_run_type&limit=all',
             )
         );
         Promise.all(promises).then((metadataArray) => {
@@ -543,27 +591,20 @@ class ExperimentSeriesComponent extends React.Component {
 
             // Experiment table data
             Object.keys(viewableDatasets).forEach((datasetAtId) => {
-                // Select one analysis based on file assembly and file count
-                // for extracting quality metrics
-                const filesByDesiredAssembly = [];
-                viewableDatasets[datasetAtId].files.forEach((f) => {
-                    if (selectedAssembly.includes(f.assembly)) {
-                        filesByDesiredAssembly.push(f['@id']);
-                    }
-                });
+                // Select one analysis based on analysis award
                 const analysisObjects = viewableDatasets[datasetAtId].analysis_objects || [];
-                const selectedAnalysis = analysisObjects.filter(
+                viewableDatasets[datasetAtId].selectedAnalysis = analysisObjects.filter(
                     (analysis) => selectedAssembly.includes(analysis.assembly)
-                        && analysis.pipeline_award_rfas.includes(selectedAnalysisRFA)
+                        && analysis.pipeline_award_rfas.includes(this.state.selectedAnalysisRFA)
                         && analysis.pipeline_labs.includes(selectedAnalysisLab)
                 )[0] || { files: [] };
-                viewableDatasets[datasetAtId].files = viewableDatasets[datasetAtId].files.filter(
-                    (f) => selectedAnalysis.files.includes(f['@id']),
+                viewableDatasets[datasetAtId].selectedFiles = viewableDatasets[datasetAtId].files.filter(
+                    (f) => viewableDatasets[datasetAtId].selectedAnalysis.files.includes(f['@id'])
                 );
                 // Number of subrows to be shown corresponds to the number of biological replicates. Show at least one by default.
                 let bioRepNums = _.uniq(
-                    viewableDatasets[datasetAtId].files.map((f) => f.biological_replicates).reduce(
-                        (bioRepArray, reps) => bioRepArray.concat(reps), []
+                    viewableDatasets[datasetAtId].selectedFiles.reduce(
+                        (allBioReps, f) => allBioReps.concat(f.biological_replicates), []
                     )
                 );
                 if (bioRepNums.length === 0) {
@@ -726,7 +767,12 @@ class ExperimentSeriesComponent extends React.Component {
                                 </tbody>
                             </table>
                         </div>
-                        {showQualityMetricLegend ? <PanelFooter><QualityMetricLegend /></PanelFooter> : null}
+                        <PanelFooter addClasses="table-panel__std-footer qc-footer">
+                            <select value={this.selectedAnalysis} onChange={this.handleAnalysisRFAChange}>
+                                {Object.keys(analysisRFAOptions).map((analysis) => <option key={analysis} value={analysis}>{analysisRFAOptions[analysis]}</option>)}
+                            </select>
+                            {showQualityMetricLegend ? <QualityMetricLegend /> : null}
+                        </PanelFooter>
                     </Panel>
                 : null}
 

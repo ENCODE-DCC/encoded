@@ -202,6 +202,22 @@ class IDRQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'idr_quality_metric'
     schema = load_schema('encoded:schemas/idr_quality_metric.json')
 
+    @calculated_property(schema={
+        "title": "FRiP score from optimal peaks",
+        "type": "number",
+        "description": "Fraction reads in IDR peaks (FRiP) from optimal peaks",
+        "comment": "Do not submit. The value is extracted from submitted FRiP scores.",
+        "notSubmittable": True,
+    })
+    def frip(self, request, Fp=None, Ft=None, Np=None, Nt=None):
+        if Np is None:
+            return Ft
+        if Nt is None:
+            return Fp
+        if Nt >= Np:
+            return Ft
+        return Fp
+
 
 @collection(
     name='histone-chipseq-quality-metrics',
@@ -212,6 +228,22 @@ class IDRQualityMetric(QualityMetric, CalculatedAssayTermID):
 class HistoneChipSeqQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'histone_chipseq_quality_metric'
     schema = load_schema('encoded:schemas/histone_chipseq_quality_metric.json')
+
+    @calculated_property(schema={
+        "title": "Best FRiP score",
+        "type": "number",
+        "description": "Best fraction reads in peaks (FRiP) from peaks",
+        "comment": "Do not submit. The value is extracted from submitted FRiP scores.",
+        "notSubmittable": True,
+    })
+    def frip(self, request, Fp=None, Ft=None, F1=None, F2=None):
+        frips = [
+            f
+            for f in [Fp, Ft, F1, F2]
+            if f is not None
+        ]
+        if frips:
+            return max(frips)
 
 
 @collection(
