@@ -22,7 +22,7 @@
     },
     {
         "uuid": "3b970fa2-f7a8-4ae4-81b2-7ca5c8d38512",
-        "user": "d162af00-38d0-4b02-a319-fcaf76a479d2",
+        "user": "/users/294a192a-f01e-42d7-b579-192790f96a8f",
         "description": "Unencrypted secret key is 'button', hashed using edw_hash. To use with cURL to make admin requests, pass -u fabric:button",
         "access_key_id": "fabric",
         "secret_access_key_hash": "Je940ivdr0JZS1HL5xjSESq4pCE/YPVSNDaT+0hMxsANHk31mhcXQAuHkjZFr9OQ"
