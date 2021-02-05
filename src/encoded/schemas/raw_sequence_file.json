@@ -65,6 +65,15 @@
                 "linkTo": "SequencingRun"
             }
         },
+        "derivation_process": {
+            "items": {
+                "type":  "string",
+                "enum": [
+                     "filtering",
+                     "concatenation"
+                 ]
+            }
+        },
         "read_count": {
             "title": "Read count",
             "description": "Number of reads in fastq file.",

@@ -4499,8 +4499,7 @@
         "observation_count": 20192,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -4576,8 +4575,7 @@
         "observation_count": 82379,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -4653,8 +4651,7 @@
         "observation_count": 18293,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -4726,8 +4723,7 @@
         "observation_count": 18722,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -4802,8 +4798,7 @@
         "observation_count": 29292,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -7272,8 +7267,7 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "cellranger aggr 4.0"
@@ -7351,7 +7345,6 @@
         "genome_annotation": "GENCODE 32",
         "derivation_process": [
             "merging",
-            "depth normalization",
             "ambient RNA correction"
         ],
         "software": [

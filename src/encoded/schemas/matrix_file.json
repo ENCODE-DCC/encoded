@@ -102,6 +102,23 @@
                 ]
             }
         },
+        "derivation_process": {
+            "items": {
+                "type":  "string",
+                "enum": [
+                    "alignment",
+                    "quantification",
+                    "peak calling",
+                    "filtering",
+                    "merging",
+                    "cell calling",
+                    "ambient RNA correction",
+                    "doublet removal",
+                    "batch correction",
+                    "depth normalization"
+                 ]
+            }
+        },
         "file_format": {
             "enum": [
                 "mtx",

@@ -96,6 +96,15 @@
                 ]
             }
         },
+        "derivation_process": {
+            "items": {
+                "type":  "string",
+                "enum": [
+                     "alignment",
+                     "read trimming"
+                 ]
+            }
+        },
         "file_format": {
             "enum": [
                 "bam",
