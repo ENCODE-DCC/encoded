@@ -4,7 +4,7 @@
     "id": "/profiles/suspension.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["biosample_ontology", "derived_from", "derivation_process", "suspension_type"],
+    "required": ["derived_from", "derivation_process", "suspension_type"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -56,12 +56,6 @@
                 "format": "accession",
                 "pattern": "^(LATSU\\d{3}[A-Z]{3})$"
             }
-        },
-        "biosample_ontology": {
-            "title": "Biosample ontology",
-            "description": "An embedded property for linking to biosample type which describes the ontology of the biosample.",
-            "type": "string",
-            "linkTo": "OntologyTerm"
         },
         "derived_from": {
             "title": "Derived from",

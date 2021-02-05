@@ -48,5 +48,5 @@ class CellAnnotation(Item):
             for s in susps:
                 susp_obj = request.embed(s, '@@object')
                 if susp_obj['@type'][0] == 'Suspension':
-                    onts.add(susp_obj.get('biosample_ontology'))
+                    onts.update(susp_obj.get('biosample_ontology'))
             return list(onts)
