@@ -479,11 +479,12 @@ describe('Test individual dbxref types', () => {
     });
 
     describe('Test UCSC-GB-hg19', () => {
+        const context = { '@type': ['Experiment'] };
         let dbxLinks;
 
         beforeAll(() => {
             const wrapper = mount(
-                <DbxrefList dbxrefs={['UCSC-GB-hg19:wgEncodeUwAffyExonArray', 'UCSC-GB-hg19:wgEncodeUmassDekker5C']} />
+                <DbxrefList context={context} dbxrefs={['UCSC-GB-hg19:wgEncodeUwAffyExonArray', 'UCSC-GB-hg19:wgEncodeUmassDekker5C']} />
             );
 
             dbxLinks = wrapper.find('a');
