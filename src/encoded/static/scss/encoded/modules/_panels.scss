@@ -522,6 +522,7 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
 
     @at-root #{&}__visualization-selector {
         display: flex;
+        margin-bottom: 2px;
 
         select {
             display: block;
@@ -533,6 +534,27 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
         button {
             height: $file-gallery-controls-height;
             vertical-align: top;
+        }
+    }
+
+    @at-root #{&}__download {
+        button {
+            height: $file-gallery-controls-height;
+            vertical-align: top;
+        }
+
+        @media screen and (min-width: $screen-sm-min) {
+            margin-left: 5px;
+        }
+    }
+
+    @at-root #{&}__divider {
+        display: none;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: inline;
+            margin-left: 5px;
+            font-weight: 500;
         }
     }
 }
