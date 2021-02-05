@@ -30,6 +30,17 @@
         "uuid": "bcee0c61-2216-45a0-b839-1dd832ec220c"
     },
     {
+        "email": "jpa29@stanford.edu",
+        "first_name": "Joanna",
+        "job_title": "Wrangler",
+        "lab": "j-michael-cherry",
+        "last_name": "Argasinska",
+        "groups": [
+            "admin"
+        ],
+        "uuid": "294a192a-f01e-42d7-b579-192790f96a8f"
+    },
+    {
         "email": "jimmie.ye@ucsf.ude",
         "first_name": "Jimmie",
         "job_title": "PI",
