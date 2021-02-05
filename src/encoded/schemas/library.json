@@ -199,18 +199,18 @@
         "donors.ethnicity.term_name": {
             "title": "Donor ethnicity"
         },
-        "derived_from.biosample_ontology.system_slims": {
+        "biosample_ontologies.system_slims": {
             "title": "Biosample system"
         },
-        "derived_from.biosample_ontology.organ_slims": {
+        "biosample_ontologies.organ_slims": {
             "title": "Biosample organ",
             "type": "typeahead"
         },
-        "derived_from.biosample_ontology.cell_slims": {
+        "biosample_ontologies.cell_slims": {
             "title": "Biosample cell type",
             "type": "typeahead"
         },
-        "derived_from.biosample_ontology.term_name": {
+        "biosample_ontologies.term_name": {
             "title": "Biosample term name",
             "type": "typeahead"
         },
@@ -255,17 +255,17 @@
         "donors.ethnicity.term_name": {
             "title": "Donor ethnicity"
         },
-        "derived_from.biosample_ontology.term_name": {
+        "biosample_ontologies.term_name": {
             "title": "Biosample term name"
         },
-        "derived_from.biosample_ontology.system_slims": {
+        "biosample_ontologies.system_slims": {
             "title": "Biosample system"
         },
-        "derived_from.biosample_ontology.organ_slims": {
+        "biosample_ontologies.organ_slims": {
             "title": "Biosample organ",
             "type": "typeahead"
         },
-        "derived_from.biosample_ontology.cell_slims": {
+        "biosample_ontologies.cell_slims": {
             "title": "Biosample cell type",
             "type": "typeahead"
         },

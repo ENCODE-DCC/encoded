@@ -289,6 +289,21 @@
         "suspension_type": {
             "title": "Suspension type"
         },
+        "biosample_ontologies.system_slims": {
+            "title": "Biosample system"
+        },
+        "biosample_ontologies.organ_slims": {
+            "title": "Biosample organ",
+            "type": "typeahead"
+        },
+        "biosample_ontologies.cell_slims": {
+            "title": "Biosample cell type",
+            "type": "typeahead"
+        },
+        "biosample_ontologies.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead"
+        },
         "status": {
             "title": "Status"
         }

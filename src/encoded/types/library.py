@@ -8,6 +8,7 @@ from .base import (
 )
 from .shared_calculated_properties import (
     CalculatedAward,
+    CalculatedBiosampleOntologies,
 )
 
 
@@ -18,7 +19,7 @@ from .shared_calculated_properties import (
         'title': 'Libraries',
         'description': 'Libraries used in the ENCODE project',
     })
-class Library(Item, CalculatedAward):
+class Library(Item, CalculatedAward, CalculatedBiosampleOntologies):
     item_type = 'library'
     schema = load_schema('encoded:schemas/library.json')
     name_key = 'accession'
@@ -31,8 +32,7 @@ class Library(Item, CalculatedAward):
         'donors.ethnicity',
         'donors.diseases',
         'donors.organism',
-        'derived_from',
-        'derived_from.biosample_ontology'
+        'biosample_ontologies'
     ]
 
 

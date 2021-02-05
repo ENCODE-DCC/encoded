@@ -40,13 +40,8 @@ class CellAnnotation(Item):
             for mf in matrix_files:
                 mf_obj = request.embed(mf, '@@object')
                 libs.update(mf_obj.get('libraries'))
-            susps = set()
-            for l in libs:
-                lib_obj = request.embed(l, '@@object?skip_calculated=true')
-                susps.update(lib_obj.get('derived_from'))
             onts = set()
-            for s in susps:
-                susp_obj = request.embed(s, '@@object')
-                if susp_obj['@type'][0] == 'Suspension':
-                    onts.update(susp_obj.get('biosample_ontology'))
+            for l in libs:
+                lib_obj = request.embed(l, '@@object')
+                onts.update(lib_obj.get('biosample_ontologies'))
             return list(onts)
