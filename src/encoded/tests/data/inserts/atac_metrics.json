@@ -95,7 +95,8 @@
         "waste_mito_fragments": 22735958,
         "waste_noncell_barcode_fragments": 110069493,
         "quality_metric_of": "jimmie-ye:filtered_peak_matrix_1a",
-        "uuid": "40079d9e-bb73-4cac-a2fc-1f464a1dfa01"
+        "uuid": "40079d9e-bb73-4cac-a2fc-1f464a1dfa01",
+        "aliases": ["lattice:test_atacmetrics"]
     },
     {
         "uuid": "b89de45d-5946-40e7-b35e-b4ba7c33342b",

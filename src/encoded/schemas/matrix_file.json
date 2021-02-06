@@ -102,6 +102,24 @@
                 ]
             }
         },
+        "derivation_process": {
+            "items": {
+                "type":  "string",
+                "enum": [
+                    "alignment",
+                    "quantification",
+                    "peak calling",
+                    "peak annotation",
+                    "filtering",
+                    "merging",
+                    "cell calling",
+                    "ambient RNA correction",
+                    "doublet removal",
+                    "batch correction",
+                    "depth normalization"
+                 ]
+            }
+        },
         "file_format": {
             "enum": [
                 "mtx",
@@ -362,7 +380,12 @@
         },
         "author_cell_type_column": {
             "title": "Author cell type column",
-            "description": "The name of the metadat field that holds the researcher's most specific cell type annotation",
+            "description": "The name of the metadata field that holds the researcher's most specific cell type annotation",
+            "type": "string"
+        },
+        "author_cluster_column": {
+            "title": "Author cluster column",
+            "description": "The name of the metadata field that holds the researcher's cluster information",
             "type": "string"
         }
     },

@@ -8,6 +8,7 @@ from .base import (
 )
 from .shared_calculated_properties import (
     CalculatedDonors,
+    CalculatedBiosampleOntologies,
 )
 
 
@@ -18,7 +19,9 @@ from .shared_calculated_properties import (
         'title': 'Suspensions',
         'description': 'Listing of Suspensions',
     })
-class Suspension(Item, CalculatedDonors):
+class Suspension(Item, CalculatedDonors, CalculatedBiosampleOntologies):
     item_type = 'suspension'
     schema = load_schema('encoded:schemas/suspension.json')
-    embedded = []
+    embedded = [
+        'biosample_ontologies'
+    ]

@@ -17,7 +17,8 @@
 		"antibody_reads_usable_per_cell": 5038,
 		"fraction_unrecognized_antibody": 4.9,
 		"antibody_reads_in_cells": 72.0,
-		"median_umis_per_cell": 2513
+		"median_umis_per_cell": 2513,
+		"aliases": ["lattice:test_acmetrics"]
 	},
 	{
 		"uuid": "95f1d5ac-dd73-4885-a935-555fb18f8d33",

@@ -4,7 +4,6 @@ import pytest
 @pytest.fixture
 def suspension_base(testapp, heart_ontology, tissue_base):
     item = {
-        'biosample_ontology': heart_ontology['uuid'],
         'derivation_process': ['mechanical dissociation'],
         'suspension_type': 'cell',
         'derived_from': [tissue_base['uuid']]

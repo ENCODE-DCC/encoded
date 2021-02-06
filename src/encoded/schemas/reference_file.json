@@ -77,6 +77,14 @@
                 "linkTo": "ReferenceFile"
             }
         },
+        "derivation_process": {
+            "items": {
+                "type":  "string",
+                "enum": [
+                     "filtering"
+                 ]
+            }
+        },
         "reference_version": {
             "title": "Reference version",
             "description": "The version of the genome reference assembly that is associated with this reference file.",

@@ -524,7 +524,8 @@
         "derivation_process": [
             "alignment",
             "peak calling",
-            "quantification"
+            "quantification",
+            "peak annotation"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -4499,8 +4500,7 @@
         "observation_count": 20192,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -4576,8 +4576,7 @@
         "observation_count": 82379,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -4653,8 +4652,7 @@
         "observation_count": 18293,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -4726,8 +4724,7 @@
         "observation_count": 18722,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -4802,8 +4799,7 @@
         "observation_count": 29292,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "seurat 3.0"
@@ -7272,8 +7268,7 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "derivation_process": [
-            "merging",
-            "depth normalization"
+            "merging"
         ],
         "software": [
             "cellranger aggr 4.0"
@@ -7323,6 +7318,7 @@
         ],
         "accession": "LATDF119AAA",
         "author_cell_type_column": "celltype",
+        "author_cluster_column": "seurat_clusters",
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
         "s3_uri": "s3://submissions-lattice/testing/muto_rna.rds",
         "no_file_available": false,
@@ -7351,7 +7347,6 @@
         "genome_annotation": "GENCODE 32",
         "derivation_process": [
             "merging",
-            "depth normalization",
             "ambient RNA correction"
         ],
         "software": [

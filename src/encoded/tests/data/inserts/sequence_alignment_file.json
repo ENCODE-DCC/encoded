@@ -25,9 +25,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -62,9 +60,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -96,9 +92,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -131,9 +125,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -166,9 +158,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -201,9 +191,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -236,9 +224,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -271,9 +257,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -306,9 +290,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -341,9 +323,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -376,9 +356,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -411,9 +389,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -446,9 +422,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -481,9 +455,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -516,9 +488,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -551,9 +521,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -586,9 +554,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -622,9 +588,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -657,9 +621,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -692,9 +654,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 91,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 4.0"
@@ -727,9 +687,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -762,9 +720,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -797,9 +753,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -832,9 +786,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -867,9 +819,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -902,9 +852,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -937,9 +885,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -972,9 +918,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1007,9 +951,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1042,9 +984,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1077,9 +1017,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1112,9 +1050,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1147,9 +1083,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1182,9 +1116,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1217,9 +1149,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1252,9 +1182,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1287,9 +1215,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1322,9 +1248,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1357,9 +1281,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1392,9 +1314,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1427,9 +1347,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1462,9 +1380,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1497,9 +1413,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1532,9 +1446,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1567,9 +1479,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger-atac count 1.2"
@@ -1608,9 +1518,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 3.1"
@@ -1649,9 +1557,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 3.1"
@@ -1690,9 +1596,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 3.1"
@@ -1731,9 +1635,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 3.1"
@@ -1772,9 +1674,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 3.1"
@@ -1813,9 +1713,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 3.1"
@@ -1854,9 +1752,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 3.1"
@@ -1895,9 +1791,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 3.1"
@@ -1936,9 +1830,7 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "derivation_process": [
-            "alignment",
-            "quantification",
-            "cell calling"
+            "alignment"
         ],
         "software": [
             "cellranger count 3.1"

@@ -79,22 +79,23 @@
             "type": "string"
         },
         "plate_barcode_details": {
-            "title": "Single cell barcodes information",
+            "title": "Plate barcode details",
             "description": "For single cell biosamples, the barcodes used to identify the biosamples.",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "title": "Biosample barcode",
+                "title": "Plate barcode",
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
                     "barcode": {
                         "title": "Barcode",
+                        "description": "The barcode assigned to the molecules within the given well.",
                         "type": "string"
                     },
                     "plate_location": {
-                         "title": "Position of the single cell sample on the plate",
-                         "description": "The location (such as A1) of the single cell sample on the plate.",
+                         "title": "Plate location",
+                         "description": "The position (such as A1) of the single cell sample on the plate.",
                          "type": "string",
                          "pattern": "^([ABCDEFGH]([1-9]|1[0-2]))$"
                     }
@@ -198,18 +199,18 @@
         "donors.ethnicity.term_name": {
             "title": "Donor ethnicity"
         },
-        "derived_from.biosample_ontology.system_slims": {
+        "biosample_ontologies.system_slims": {
             "title": "Biosample system"
         },
-        "derived_from.biosample_ontology.organ_slims": {
+        "biosample_ontologies.organ_slims": {
             "title": "Biosample organ",
             "type": "typeahead"
         },
-        "derived_from.biosample_ontology.cell_slims": {
+        "biosample_ontologies.cell_slims": {
             "title": "Biosample cell type",
             "type": "typeahead"
         },
-        "derived_from.biosample_ontology.term_name": {
+        "biosample_ontologies.term_name": {
             "title": "Biosample term name",
             "type": "typeahead"
         },
@@ -254,17 +255,17 @@
         "donors.ethnicity.term_name": {
             "title": "Donor ethnicity"
         },
-        "derived_from.biosample_ontology.term_name": {
+        "biosample_ontologies.term_name": {
             "title": "Biosample term name"
         },
-        "derived_from.biosample_ontology.system_slims": {
+        "biosample_ontologies.system_slims": {
             "title": "Biosample system"
         },
-        "derived_from.biosample_ontology.organ_slims": {
+        "biosample_ontologies.organ_slims": {
             "title": "Biosample organ",
             "type": "typeahead"
         },
-        "derived_from.biosample_ontology.cell_slims": {
+        "biosample_ontologies.cell_slims": {
             "title": "Biosample cell type",
             "type": "typeahead"
         },

@@ -75,54 +75,7 @@
         "derivation_process": {
             "title": "Derivation process",
             "description": "The method(s) by which this object was derived.",
-            "type": "array",
-            "items": {
-                "title": "Derivation process",
-                "description": "A method by which this object was derived.",
-                "type":  "string",
-                "enum": [
-                     "alignment",
-                     "barcodes mapping generation",
-                     "chromatin loop identification",
-                     "classification",
-                     "depth normalization",
-                     "enrichment",
-                     "fastq concatenation",
-                     "file format conversion",
-                     "filtering",
-                     "genome indexing",
-                     "genome segmentation",
-                     "IDR",
-                     "interaction calling",
-                     "long-read sequencing error correction",
-                     "open chromatin region identification",
-                     "partition concordance",
-                     "personalized genome assembly",
-                     "pseudoreplicated IDR",
-                     "peak calling",
-                     "pooling",
-                     "QA calculation",
-                     "quantification",
-                     "ranking",
-                     "read trimming",
-                     "replicate concordance",
-                     "signal generation",
-                     "signal normalization",
-                     "splice junction extraction",
-                     "subsampling",
-                     "topologically associated domain identification",
-                     "transcript identification",
-                     "transcriptome annotation",
-                     "transcriptome assembly",
-                     "unreplicated IDR",
-                     "variant annotation",
-                     "merging",
-                     "cell calling",
-                     "ambient RNA correction",
-                     "doublet removal",
-                     "batch correction"
-                 ]
-            }
+            "type": "array"
         }
     }
 }

@@ -552,9 +552,6 @@ PHASE1_PIPELINES = {
     ],
     'file': [
         remove_keys('supersedes')
-    ],
-    'treatment': [
-        remove_keys('biosamples_used')
     ]
 }
 
@@ -587,9 +584,6 @@ PHASE2_PIPELINES = {
     ],
     'file': [
         skip_rows_missing_all_keys('supersedes')
-    ],
-    'treatment': [
-        skip_rows_missing_all_keys('biosamples_used')
     ]
 }
 

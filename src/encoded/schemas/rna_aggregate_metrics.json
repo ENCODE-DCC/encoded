@@ -8,6 +8,7 @@
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
+        {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/submitted"},

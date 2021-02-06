@@ -205,27 +205,9 @@ class DataFile(File, CalculatedAward):
 class AnalysisFile(DataFile):
     item_type = 'analysis_file'
     base_types = ['AnalysisFile'] + DataFile.base_types
-    rev = {
-        'quality_metrics': ('Metrics', 'quality_metric_of')
-    }
+    rev = {}
     schema = load_schema('encoded:schemas/analysis_file.json')
     embedded = DataFile.embedded + []
-
-
-    @calculated_property(schema={
-        "title": "Quality metrics",
-        "description": "The list of QC metric objects associated with this file.",
-        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Metrics.quality_metric_of",
-        },
-        "notSubmittable": True,
-    })
-    def quality_metrics(self, request, quality_metrics=None):
-        if quality_metrics:
-            return paths_filtered_by_status(request, quality_metrics)
 
 
     @calculated_property(define=True,
@@ -326,9 +308,27 @@ class MatrixFile(AnalysisFile):
     schema = load_schema('encoded:schemas/matrix_file.json')
     embedded = AnalysisFile.embedded + ['cell_annotations', 'cell_annotations.cell_ontology']
     rev = {
-        'cell_annotations': ('CellAnnotation', 'matrix_files')
-    }
+        'cell_annotations': ('CellAnnotation', 'matrix_files'),
+        'quality_metrics': ('Metrics', 'quality_metric_of')
     
+    }
+
+
+    @calculated_property(schema={
+        "title": "Quality metrics",
+        "description": "The list of QC metric objects associated with this file.",
+        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Metrics.quality_metric_of",
+        },
+        "notSubmittable": True,
+    })
+    def quality_metrics(self, request, quality_metrics=None):
+        if quality_metrics:
+            return paths_filtered_by_status(request, quality_metrics)
+
 
     @calculated_property(schema={
         "title": "Cell annotations",
