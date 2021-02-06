@@ -508,5 +508,80 @@
         "section": "File output types",
         "file_formats": "bam",
         "definition": "The mapping locations of input reads with respect to a genome or other provided reference without any filtering (such as removing duplicates)."
+    },
+    {
+        "term": "broad histone mark",
+        "section": "Target categories",
+        "definition": "Category of histone modifications that are frequently detected across relatively long continuous stretches of DNA. This category includes H3F3A, H3K27me3, H3K36me3, H3K4me1, H3K79me2, H3K79me3, H3K9me1, H3K9me2, H4K20me1."
+    },
+    {
+        "term": "chromatin remodeler",
+        "section": "Target categories",
+        "definition": "Proteins involved in any process that results in the specification, formation or maintenance of the physical structure of eukaryotic chromatin. For example, members of a protein complex that possesses histone deacetylase activity."
+    },
+    {
+        "term": "cofactor",
+        "section": "Target categories",
+        "definition": "A protein or a member of a complex that interacts specifically and non-covalently with a DNA-bound DNA-binding transcription factor to initiate, activate or repress gene transcription."
+    },
+    {
+        "term": "cohesin",
+        "section": "Target categories",
+        "definition": "Proteins involved in a cell cycle process in which the sister chromatids of a replicated chromosome become tethered to each other."
+    },
+    {
+        "term": "control",
+        "section": "Target categories",
+        "definition": "Non-specific targets or mock targets which serve as a placeholder for experiments that are used as controls."
+    },
+    {
+        "term": "DNA repair",
+        "section": "Target categories",
+        "definition": "Proteins involved in a process of restoring DNA after damage. A variety of different DNA repair pathways have been reported that include direct reversal, base excision repair, nucleotide excision repair, photoreactivation, bypass, double-strand break repair pathway, and mismatch repair pathway."
+    },
+    {
+        "term": "DNA replication",
+        "section": "Target categories",
+        "definition": "Proteins involved in a cellular metabolic process in which a cell duplicates one or more molecules of DNA."
+    },
+    {
+        "term": "histone",
+        "section": "Target categories",
+        "definition": "Protein members of a complex comprised of DNA wound around a multisubunit core and associated proteins, which forms the primary packing unit of DNA in the nucleus into higher order structures."
+    },
+    {
+        "term": "narrow histone mark",
+        "section": "Target categories",
+        "definition": "Category of histone modifications that are frequently detected across relatively short continuous stretches of DNA. This category includes H2AFZ, H3ac, H3K27ac, H3K4me2, H3K4me3, H3K9ac."
+    },
+    {
+        "term": "other context",
+        "section": "Target categories",
+        "definition": "Protein with a unique function that does not belong to any other category."
+    },
+    {
+        "term": "recombinant protein",
+        "section": "Target categories",
+        "definition": "Genetically modified proteins. One common type of modification is epitope tagging."
+    },
+    {
+        "term": "RNA binding protein",
+        "section": "Target categories",
+        "definition": "Targets which interact selectively and non-covalently with RNA molecules."
+    },
+    {
+        "term": "RNA polymerase complex",
+        "section": "Target categories",
+        "definition": "Components of one of the three nuclear DNA-directed RNA polymerases complexes found in all eukaryotes, including RNA polymerase I, II and III."
+    },
+    {
+        "term": "tag",
+        "section": "Target categories",
+        "definition": "Short peptides that can be fused to proteins of interests and serve as antigens for antibodies."
+    },
+    {
+        "term": "transcription factor",
+        "section": "Target categories",
+        "definition": "A protein or a member of a complex that interacts selectively and non-covalently with chromatin or a specific DNA sequence (sometimes referred to as a motif) to modulate gene transcription."
     }
 ]
