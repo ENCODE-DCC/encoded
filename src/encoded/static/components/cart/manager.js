@@ -350,7 +350,7 @@ class NameCartButtonComponent extends React.Component {
                 </div>
                 {this.state.modalOpen ?
                     <Modal closeModal={this.handleClose} submitModal={this.handleSubmit} labelId="name-cart-label" descriptionId="name-cart-description">
-                        <ModalHeader title={<h4>{modalTitle}</h4>} labelId="name-cart-label" closeModal={this.handleClose} />
+                        <ModalHeader title={<h2>{modalTitle}</h2>} labelId="name-cart-label" closeModal={this.handleClose} />
                         <ModalBody addCss="cart-rename">
                             <div className="cart-rename__name-area">
                                 <NameInput
