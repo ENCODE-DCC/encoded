@@ -32,7 +32,8 @@ class Library(Item, CalculatedAward, CalculatedBiosampleOntologies):
         'donors.ethnicity',
         'donors.diseases',
         'donors.organism',
-        'biosample_ontologies'
+        'biosample_ontologies',
+        'derived_from'
     ]
 
 
