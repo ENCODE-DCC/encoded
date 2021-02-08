@@ -1175,11 +1175,7 @@ def _parse_args():
         else:
             # frontend
             args.instance_type = 'c5.9xlarge'
-    # Check cluster name overrides name
     if args.cluster_name:
-        cluster_tag = '-cluster'
-        cluster_name = args.cluster_name.replace(cluster_tag, '')
-        args.cluster_name = cluster_name + cluster_tag
         if args.name is None:
             args.name = cluster_name
         # adding a single node to a pre existing cluster
