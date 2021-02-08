@@ -1177,7 +1177,7 @@ def _parse_args():
             args.instance_type = 'c5.9xlarge'
     if args.cluster_name:
         if args.name is None:
-            args.name = cluster_name
+            args.name = args.cluster_name
         # adding a single node to a pre existing cluster
         if args.node_name and int(args.cluster_size) != 1:
             raise ValueError(
