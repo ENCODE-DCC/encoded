@@ -31,7 +31,7 @@ const seriesList = {
 };
 
 // Fetch data from href
-function getSeriesData(seriesLink, fetch) {
+export default function getSeriesData(seriesLink, fetch) {
     return fetch(seriesLink, {
         method: 'GET',
         headers: {

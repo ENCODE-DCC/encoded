@@ -702,22 +702,27 @@ class MatrixPresentation extends React.Component {
                     handleTabClick={this.handleTabClick}
                     tabPanelCss="matrix__data-wrapper epigenome-tabs"
                 >
-                    {(this.initialSelectedTab === 'Homo sapiens') ?
-                        <>
-                            <div className="header-clear-links">
-                                <button type="button" className="clear-organs" onClick={this.clearOrgans}>
-                                    <i className="icon icon-times-circle" />
-                                    Clear all body map selections
-                                </button>
-                            </div>
-                            <SelectedFilters filters={context.filters} />
-                        </>
-                    :
-                        <SelectedFilters filters={context.filters} />
-                    }
+                    <div className="header-clear-links">
+                        <button type="button" className="clear-organs" onClick={this.clearOrgans}>
+                            <i className="icon icon-times-circle" />
+                            Clear all body map selections
+                        </button>
+                    </div>
+                    <SelectedFilters filters={context.filters} />
                     <div className="matrix-facet-container">
                         {(this.initialSelectedTab === 'Homo sapiens') ?
-                            <BodyMapThumbnailAndModal context={context} location={this.context.location_href} />
+                            <BodyMapThumbnailAndModal
+                                context={context}
+                                location={this.context.location_href}
+                                organism="Homo sapiens"
+                            />
+                        : null}
+                        {(this.initialSelectedTab === 'Mus musculus') ?
+                            <BodyMapThumbnailAndModal
+                                context={context}
+                                location={this.context.location_href}
+                                organism="Mus musculus"
+                            />
                         : null}
                         <div className="matrix__presentation">
                             <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>
