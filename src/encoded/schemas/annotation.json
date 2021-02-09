@@ -224,12 +224,6 @@
         }
     },
     "facets": {
-        "annotation_type": {
-            "title": "Annotation type",
-            "type": "typeahead",
-            "length": "long",
-            "open_on_load": true
-        },
         "assay_term_name": {
             "title": "Assay name"
         },
@@ -269,9 +263,6 @@
         },
         "software_used.software.name": {
             "title": "Software used"
-        },
-        "encyclopedia_version": {
-            "title": "Encyclopedia version"
         },
         "assembly": {
             "title": "Genome assembly"

@@ -792,12 +792,20 @@ BodyMapModal.propTypes = {
 export const BodyMapThumbnailAndModal = (props) => {
     const [isThumbnailExpanded, setIsThumbnailExpanded] = React.useState(false);
 
+    console.log(props);
+
     React.useEffect(() => {
         // Display modal if page has just refreshed because of user selection from body map
         setIsThumbnailExpanded(props.location.includes('#openModal'));
 
         // Highlight body map selections based on url
-        const searchQuery = url.parse(props.context['@id']).search;
+        let searchQuery = '';
+        if (props.context['@id']) {
+            searchQuery = url.parse(props.context['@id']).search;
+        } else {
+            searchQuery = props.location.split('6543')[1];
+        }
+        console.log(searchQuery);
         initializeBodyMap(searchQuery);
         const query = new QueryString(searchQuery);
         const terms = query.getKeyValues(organField);

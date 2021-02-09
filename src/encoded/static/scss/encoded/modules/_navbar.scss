@@ -166,7 +166,7 @@ $navbar-bg-color:            #0a253d;
         position: relative;
 
         .dropdown__toggle {
-            @include nav-title;        
+            @include nav-title;
 
             &:hover {
                 background-color: #2f4961;
