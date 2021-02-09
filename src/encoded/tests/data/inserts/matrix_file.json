@@ -4500,7 +4500,9 @@
         "observation_count": 20192,
         "dataset": "anna-greka:large_test_dataset",
         "derivation_process": [
-            "merging"
+            "merging",
+            "cell filtering",
+            "gene filtering"
         ],
         "software": [
             "seurat 3.0"

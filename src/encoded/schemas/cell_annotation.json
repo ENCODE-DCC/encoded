@@ -29,17 +29,17 @@
             "type": "string",
             "linkTo": "OntologyTerm"
         },
-        "genes_expressed_high": {
-            "title": "Genes expressed high",
-            "description": "",
+        "enriched_marker_genes": {
+            "title": "Enriched marker genes",
+            "description": "Gene symbols for relatively postively expressed genes that were used for cell type annotation.",
             "type":  "array",
             "items": {
                 "type": "string"
             }
         },
-        "genes_expressed_low": {
-            "title": "Genes expressed low",
-            "description": "",
+        "depleted_marker_genes": {
+            "title": "Depleted marker genes",
+            "description": "Gene symbols for relatively negatively expressed genes that were used for cell type annotation.",
             "type":  "array",
             "items": {
                 "type": "string"
@@ -79,12 +79,12 @@
             "title": "Cell ontology name",
             "type": "typeahead"
         },
-        "genes_expressed_high": {
-            "title": "Genes expressed high",
+        "enriched_marker_genes": {
+            "title": "Enriched marker genes",
             "type": "typeahead"
         },
-        "genes_expressed_low": {
-            "title": "Genes expressed low",
+        "depleted_marker_genes": {
+            "title": "Depleted marker genes",
             "type": "typeahead"
         },
         "tissues_sampled.organ_slims": {
@@ -105,11 +105,11 @@
         "cell_ontology.term_id": {
             "title": "Cell ontology ID"
         },
-        "genes_expressed_high": {
-            "title": "Genes expressed high"
+        "enriched_marker_genes": {
+            "title": "Enriched marker genes"
         },
-        "genes_expressed_low": {
-            "title": "Genes expressed low"
+        "depleted_marker_genes": {
+            "title": "Depleted marker genes"
         },
         "tissues_sampled.term_name": {
             "title": "Tissue sampled"
