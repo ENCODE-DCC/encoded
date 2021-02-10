@@ -1123,7 +1123,7 @@ def check_experiment_wgbs_encode4_standards(
         pipeline_title,
         get_pipeline_objects(alignment_files))
     yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
-    yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 1, pipeline_title)
+    yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.99, pipeline_title)
 
     return
 
@@ -2012,12 +2012,12 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
 def check_wgbs_lambda_ENCODE4(gembs_metrics, threshold, pipeline_title):
     for metric in gembs_metrics:
         conversion_rate = metric.get('conversion_rate')
-        if conversion_rate > threshold:
+        if conversion_rate < threshold:
             detail = (f'ENCODE experiment processed by {pipeline_title} '
                 f'pipeline has a lambda rate of {conversion_rate}. '
-                f'The lambda rate should be < 1.'
+                f'The lambda conversion rate should be > 99%.'
             )
-            yield AuditFailure('high lambda C methylation ratio', detail,
+            yield AuditFailure('low lambda C conversion rate', detail,
                                level='WARNING')
 
 
