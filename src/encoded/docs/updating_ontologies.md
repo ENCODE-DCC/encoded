@@ -10,11 +10,11 @@ Ontologies used
 |:--|:--|:--|:--|
 | [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON download] | 2020-09-16 | [UBERON release date] |
 | [Cell Ontology (CL)] | incl. w/ UBERON | incl. w/ UBERON | incl. w/ UBERON |
-| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2020-09-15 (3.22.0) | [EFO releases] |
-| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2020-09-14 | [MONDO release date] |
-| [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2019-07-22 (2.3) | [HANCESTRO releases] |
+| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-01-18 (3.26.0) | [EFO releases] |
+| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-01-29 | [MONDO release date] |
+| [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2021-01-04 (2.5) | [HANCESTRO releases] |
 
-**Current ontology.json:** `ontology-2020-09-23.json`
+**Current ontology.json:** `ontology-2021-02-09.json`
 **Updated with site version:** 1
 
 How to update the ontology versions
@@ -30,7 +30,7 @@ How to update the ontology versions
 ```
 	$ cp ontology.json ontology-YYYY-MM-DD.json
 ```
-3. Load new ontology file into the encoded-build/ontology directory on S3
+3. Load new ontology file into the latticed-build/ontology directory on S3
 ```
 	$ aws s3 cp ontology-YYYY-MM-DD.json s3://latticed-build/ontology/
 ```
