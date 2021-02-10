@@ -216,5 +216,18 @@
     "term_name": "technical sample",
     "term_id": "NTR:0000637",
     "status": "released"
+},{
+    "classification": "primary cell",
+    "uuid": "4f5b1bfa-c1b4-4d3b-8a42-88f1456632c5",
+    "term_name": "regulatory T cell",
+    "term_id": "CL:0000815",
+    "status": "released"
+},
+{
+    "classification": "primary cell",
+    "uuid": "062fc599-856b-4b00-b086-f7cee26cfd30",
+    "term_name": "CD4-positive, alpha-beta memory T cell",
+    "term_id": "CL:0000897",
+    "status": "released"
 }
 ]

@@ -1669,6 +1669,7 @@ const seriesComponents = {
     SingleCellRnaSeries: { title: 'single cell rna series', table: basicTableColumns },
     FunctionalCharacterizationSeries: { title: 'functional characterization series', table: basicTableColumns },
     GeneSilencingSeries: { title: 'gene silencing series', table: geneSilencingSeriesTableColumns },
+    DifferentiationSeries: { title: 'differentiation series', table: basicTableColumns },
 };
 
 export const SeriesComponent = (props, reactContext) => {

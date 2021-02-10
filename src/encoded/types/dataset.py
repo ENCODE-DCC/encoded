@@ -1004,3 +1004,16 @@ class GeneSilencingSeries(Series):
     item_type = 'gene_silencing_series'
     schema = load_schema('encoded:schemas/gene_silencing_series.json')
     embedded = Series.embedded
+
+
+@collection(
+    name='differentiation-series',
+    unique_key='accession',
+    properties={
+        'title': "Differentiation series",
+        'description': 'A series that groups experiments investigating biosamples along a differentiation trajectory.',
+    })
+class DifferentiationSeries(Series):
+    item_type = 'differentiation_series'
+    schema = load_schema('encoded:schemas/differentiation_series.json')
+    embedded = Series.embedded
