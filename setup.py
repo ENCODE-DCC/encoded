@@ -5,7 +5,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 # Edit Snovault version after the `@` here, can be a branch or tag
-SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@1.0.53"
+SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@SNO-191-pyramid-env-vars"
 
 INSTALL_REQUIRES = [
     "Jinja2==2.11.1",

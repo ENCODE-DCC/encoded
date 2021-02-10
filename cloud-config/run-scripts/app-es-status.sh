@@ -16,7 +16,7 @@ echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Waiting for es to come
 watch_dog=0
 while true; do
     watch_dog=$((watch_dog + 1))
-    es_status="$(curl -fsSL $ENCD_ES_IP:$ENCD_ES_PORT/_cat/health?h=status)"
+    es_status="$(curl -fsSL $ELASTICSEARCH_URL/_cat/health?h=status)"
     echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) status: '$es_status'"
     if [ "$es_status" == 'yellow' ] || [ "$es_status" == 'green' ]; then
         echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) status passed"
