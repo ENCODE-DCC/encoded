@@ -3,6 +3,7 @@
 ### Minor changes since schema version 31
 * Added *Capture Hi-C* and *single-nucleus RNA-seq* to *assay_term_name* enum
 * Added *LRGASP* to the *internal_tags* enum
+* Added *doi* property
 
 ### Schema version 31
 
