@@ -2272,20 +2272,12 @@ export const compileAnalyses = (experiment, files) => {
     let compiledAnalyses = [];
     if (experiment.analysis_objects && experiment.analysis_objects.length > 0) {
         // Get all the analysis objects that qualify for inclusion in the Pipeline facet.
-        const qualifyingAnalyses = experiment.analysis_objects.filter((analysis) => {
-            const rfas = _.uniq(analysis.pipeline_award_rfas);
-
-            // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
-            // `UNIFORM_PIPELINE_LAB` is only valid if alone.
-            return (
-                analysis.assembly
-                && analysis.assembly !== 'mixed'
-                && analysis.genome_annotation !== 'mixed'
-                && analysis.pipeline_award_rfas.length === 1
-                && analysis.pipeline_labs.length > 0
-                && !(analysis.pipeline_labs.length === 1 && analysis.pipeline_labs[0] === UNIFORM_PIPELINE_LAB && rfas.length > 1)
-            );
-        });
+        // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
+        // `UNIFORM_PIPELINE_LAB` is only valid if alone.
+        const qualifyingAnalyses = experiment.analysis_objects.filter((analysis) => (
+            analysis.assembly
+            && analysis.assembly !== 'mixed'
+            && analysis.genome_annotation !== 'mixed'));
 
         if (qualifyingAnalyses.length > 0) {
             // Group all the qualifying analyses' files by pipeline lab. Each pipeline lab title is
@@ -2316,15 +2308,13 @@ export const compileAnalyses = (experiment, files) => {
                     // annotation and add each to the compiled list. Filter out any not included in
                     // the experiment's files.
                     const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analysis) => accFiles.concat(analysis.files), []).filter((file) => fileIds.includes(file)));
-                    if (assemblyFiles.length > 0) {
-                        compiledAnalyses.push({
-                            title: `${pipelineLab} ${assembly}`,
-                            pipelineLab,
-                            assembly,
-                            assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assembly, analysesByAssembly[assembly][0].genome_annotation),
-                            files: _.uniq(assemblyFiles),
-                        });
-                    }
+                    compiledAnalyses.push({
+                        title: `${pipelineLab} ${assembly}`,
+                        pipelineLab,
+                        assembly,
+                        assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assembly, analysesByAssembly[assembly][0].genome_annotation),
+                        files: _.uniq(assemblyFiles),
+                    });
                 });
             });
         }
