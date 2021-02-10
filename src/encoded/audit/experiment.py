@@ -2010,8 +2010,6 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
 
 
 def check_wgbs_lambda_ENCODE4(gembs_metrics, threshold, pipeline_title):
-    yield AuditFailure('LAMBDA ENCODE4&&&&&&&&&&&&&&&&', gembs_metrics,
-                               level='WARNING')
     for metric in gembs_metrics:
         conversion_rate = metric.get('conversion_rate')
         if conversion_rate > threshold:
