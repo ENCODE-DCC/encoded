@@ -1123,7 +1123,7 @@ def check_experiment_wgbs_encode4_standards(
         pipeline_title,
         get_pipeline_objects(alignment_files))
     yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
-    yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.99, pipeline_title)
+    yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title)
 
     return
 
