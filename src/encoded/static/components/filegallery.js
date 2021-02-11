@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc';
 import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { collapseIcon } from '../libs/svg-icons';
-import { auditDecor, auditsDisplayed, ObjectAuditIcon } from './audit';
+import { auditDecor, auditsDisplayed } from './audit';
 import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
@@ -232,7 +232,7 @@ export class FileTable extends React.Component {
                             collapsed={this.state.collapsed.proc}
                             list={files.proc}
                             columns={FileTable.procTableColumns}
-                            sortColumn={showReplicateNumber ? 'biological_replicates' : 'date_created'}
+                            sortColumn="Default"
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -365,6 +365,23 @@ FileTable.procTableColumns = {
         },
         objSorter: (a, b) => fileAccessionSort(a, b),
     },
+    Default: {
+        title: 'Default',
+        display: (item) => (item.preferred_default ? '✔' : ''),
+        objSorter: (a, b) => {
+            const aPreferredDefault = a.preferred_default;
+            const bPreferredDefault = b.preferred_default;
+
+            if (aPreferredDefault === bPreferredDefault) {
+                return 0;
+            }
+
+            if (aPreferredDefault) {
+                return -1;
+            }
+            return 1;
+        },
+    },
     file_type: { title: 'File type' },
     output_type: { title: 'Output type' },
     biological_replicates: {
@@ -375,14 +392,9 @@ FileTable.procTableColumns = {
         title: 'Mapped read length',
         hide: (list) => _(list).all((file) => file.mapped_read_length === undefined),
     },
-    assembly: { title: 'Mapping assembly' },
     genome_annotation: {
         title: 'Genome annotation',
         hide: (list) => _(list).all((item) => !item.genome_annotation),
-    },
-    title: {
-        title: 'Lab',
-        getValue: (item) => (item.lab && item.lab.title ? item.lab.title : null),
     },
     date_created: {
         title: 'Date added',
@@ -398,10 +410,6 @@ FileTable.procTableColumns = {
     file_size: {
         title: 'File size',
         display: (item) => <span>{globals.humanFileSize(item.file_size)}</span>,
-    },
-    audit: {
-        title: 'Audit status',
-        display: (item, meta) => <ObjectAuditIcon object={item} audit={item.audit} isAuthorized={meta.isAuthorized} />,
     },
     status: {
         title: 'File status',
@@ -449,10 +457,6 @@ FileTable.refTableColumns = {
     file_size: {
         title: 'File size',
         display: (item) => <span>{globals.humanFileSize(item.file_size)}</span>,
-    },
-    audit: {
-        title: 'Audit status',
-        display: (item, meta) => <ObjectAuditIcon object={item} isAuthorized={meta.isAuthorized} />,
     },
     status: {
         title: 'File status',
@@ -529,7 +533,7 @@ class RawSequencingTable extends React.Component {
 
     render() {
         const { files, indexFiles, meta, showReplicateNumber } = this.props;
-        const { loggedIn, adminUser, isAuthorized } = meta;
+        const { loggedIn, adminUser } = meta;
 
         if (files && files.length > 0) {
             // Make object keyed by all files' @ids to make searching easy. Each key's value
@@ -663,7 +667,6 @@ class RawSequencingTable extends React.Component {
                                 <th>Lab</th>
                                 <th>Date added</th>
                                 <th>File size</th>
-                                <th>Audit status</th>
                                 <th>File status</th>
                             </tr>
                         : null}
@@ -719,7 +722,6 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={pairClass}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                             <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -763,7 +765,6 @@ class RawSequencingTable extends React.Component {
                                         <td className={singleClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td className={singleClass}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td className={singleClass}>{globals.humanFileSize(file.file_size)}</td>
-                                        <td className={singleClass}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                         <td className={singleClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -819,7 +820,7 @@ class RawFileTable extends React.Component {
 
     render() {
         const { files, meta, showReplicateNumber } = this.props;
-        const { loggedIn, adminUser, isAuthorized } = meta;
+        const { loggedIn, adminUser } = meta;
 
         if (files && files.length > 0) {
             // Group all files by their library accessions. Any files without replicates or
@@ -865,7 +866,6 @@ class RawFileTable extends React.Component {
                                 <th>Lab</th>
                                 <th>Date added</th>
                                 <th>File size</th>
-                                <th>Audit status</th>
                                 <th>File status</th>
                             </tr>
                         : null}
@@ -913,7 +913,6 @@ class RawFileTable extends React.Component {
                                             <td className={fileBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={fileBottom}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={fileBottom}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={fileBottom}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                             <td className={fileBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -943,7 +942,6 @@ class RawFileTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -1471,7 +1469,8 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
  */
 const fileCssClassGen = (file, active, highlight, colorizeNode, addClasses) => {
     const statusClass = colorizeNode ? ` graph-node--${globals.statusToClassElement(file.status)}` : '';
-    return `pipeline-node-file${active ? ' active' : ''}${highlight ? ' highlight' : ''}${statusClass}${addClasses ? ` ${addClasses}` : ''}`;
+    const preferredDefaultClass = file.preferred_default ? ' graph-node--preferred-default ' : '';
+    return `pipeline-node-file${active ? ' active' : ''}${highlight ? ' highlight' : ''}${statusClass}${addClasses ? ` ${addClasses}` : ''}${preferredDefaultClass}`;
 };
 
 
