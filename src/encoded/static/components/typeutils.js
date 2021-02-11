@@ -382,7 +382,10 @@ export const experimentTableColumns = {
         title: 'Biosamples',
         display: (item) => {
             if (item.replicates.length > 0) {
-                const biosamples = item.replicates.reduce((accBiosamples, replicate) => accBiosamples.concat(replicate.library.biosample), []);
+                const biosamples = _.uniq(
+                    item.replicates.reduce((accBiosamples, replicate) => accBiosamples.concat(replicate.library.biosample), []),
+                    (biosample) => biosample['@id']
+                );
                 if (biosamples.length > 0) {
                     return biosamples.map((biosample, index) => (
                         <span key={biosample['@id']}>
