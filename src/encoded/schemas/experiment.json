@@ -500,7 +500,8 @@
         "internal_tags": 5.0,
         "biosample_summary": 12.0,
         "description": 8.0,
-        "replication_type": 1.0
+        "replication_type": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/experiment.md"
 }
