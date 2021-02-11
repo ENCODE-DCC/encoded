@@ -3158,7 +3158,7 @@ def test_audit_experiment_wgbs_standards_lambda_ENCODE4(
     })
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
-               'high lambda C methylation ratio' for error in collect_audit_errors(res))
+               'low lambda C conversion rate' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_wgbs_standards_coverage_ENCODE4(
