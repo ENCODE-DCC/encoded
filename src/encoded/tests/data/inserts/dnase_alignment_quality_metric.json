@@ -19,6 +19,7 @@
         "quality_metric_of": ["ENCFF718LJW"],
         "lab": "/labs/john-stamatoyannopoulos/",
         "award": "/awards/U54HG007010/",
-        "fourier_transform_eleven": -1
+        "fourier_transform_eleven": -1,
+        "defect_mode": true
     }
 ]
