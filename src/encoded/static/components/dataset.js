@@ -1689,11 +1689,22 @@ export const SeriesComponent = (props, reactContext) => {
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
     // Set up the breadcrumbs
+    const datasetType = context['@type'][1];
     let seriesType = context['@type'][0];
-    const crumbs = [
-        { id: 'Datasets' },
-        { id: breakSetName(seriesType), uri: `/series-search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
-    ];
+    let crumbs;
+    const functionalGenomicsSeries = ['OrganismDevelopmentSeries', 'TreatmentTimeSeries', 'TreatmentConcentrationSeries', 'ReplicationTimingSeries', 'GeneSilencingSeries'];
+    if (functionalGenomicsSeries.indexOf(seriesType) > -1) {
+        crumbs = [
+            { id: 'Datasets' },
+            { id: breakSetName(seriesType), uri: `/series-search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
+        ];
+    } else {
+        crumbs = [
+            { id: 'Datasets' },
+            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+            { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
+        ];
+    }
 
     if (seriesType === 'OrganismDevelopmentSeries' && context.organism && context.organism.length > 0 && ((context.organism[0].scientific_name === 'Caenorhabditis elegans') || (context.organism[0].scientific_name === 'Drosophila melanogaster'))) {
         seriesType = 'OrganismDevelopmentSeriesWormFly';
@@ -1713,8 +1724,6 @@ export const SeriesComponent = (props, reactContext) => {
                 if (treatment.duration) {
                     treatmentDuration.push(`${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`);
                 }
-            }));
-            biosamples.forEach((biosample) => biosample.treatments.forEach((treatment) => {
                 if (treatment.amount) {
                     treatmentAmounts.push(`${treatment.amount} ${treatment.amount_units} ${treatment.treatment_term_name}`);
                 } else if (treatment.treatment_term_name) {
@@ -1847,6 +1856,9 @@ export const SeriesComponent = (props, reactContext) => {
                                         : null}
                                         {seriesType === 'TreatmentTimeSeries' && treatmentAmounts ?
                                             <>{combinedTreatmentAmounts}</>
+                                        : null}
+                                        {(treatmentDuration.length === 0 || seriesType !== 'TreatmentConcentrationSeries') && (treatmentAmounts.length === 0 || seriesType !== 'TreatmentTimeSeries') ?
+                                            <>{context.treatment_term_name.join(', ')}</>
                                         : null}
                                     </dd>
                                 </div>
