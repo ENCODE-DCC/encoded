@@ -23,3 +23,8 @@ def test_assay_single_cell_rna_series(testapp, base_single_cell_series):
 def test_gene_silencing_series(testapp, base_gene_silencing_series):
     res = testapp.get(base_gene_silencing_series['@id'] + '@@index-data')
     assert sorted(res.json['object']['assay_term_name']) == ["RNA-seq"]
+
+
+def test_assay_differentiation_series(testapp, base_differentiation_series):
+    res = testapp.get(base_differentiation_series['@id'] + '@@index-data')
+    assert sorted(res.json['object']['assay_term_name']) == ['RNA-seq']
