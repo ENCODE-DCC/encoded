@@ -106,6 +106,7 @@ class Analysis(Item):
 
     set_status_up = [
         'files',
+        'documents',
     ]
     set_status_down = [
         'files',
