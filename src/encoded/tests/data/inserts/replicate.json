@@ -913,5 +913,35 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "library": "ENCLB001MIX",
         "uuid": "a69a923f-c2a2-49ac-9d72-6710233ef615"
+    },
+    {
+        "_test": "ATAC regT rep1",
+        "experiment": "ENCSR263RTC",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB345CTR",
+        "uuid": "2c58a489-7be8-4741-a9f7-9952e8f4b9ac"
+    },
+    {
+        "_test": "ATAC memT rep1",
+        "experiment": "ENCSR897MTC",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB027CMT",
+        "uuid": "d6960d34-b371-4930-841b-3ca08305caa9"
+    },
+    {
+        "_test": "ATAC act regT rep1",
+        "experiment": "ENCSR309ART",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB849DQW",
+        "uuid": "618d2a08-4d29-4140-86cc-012a942b1ad8"
     }
 ]
