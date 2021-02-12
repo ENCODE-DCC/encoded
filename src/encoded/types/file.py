@@ -126,14 +126,7 @@ class File(Item):
     embedded_with_frame = [
         Path(
             'analyses',
-            include=[
-                '@id',
-                '@type',
-                'uuid',
-                'status',
-                'pipeline_award_rfas',
-                'pipeline_version'
-            ]
+            include=['status', 'pipeline_award_rfas', 'pipeline_version']
         ),
     ]
     audit_inherit = [
