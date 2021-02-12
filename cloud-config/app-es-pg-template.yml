@@ -1,20 +1,9 @@
 #cloud-config
 ssh_authorized_keys:
 %(ssh_auth_keys)s
-apt_sources:
-%(apt_srcs_es)s
-%(apt_srcs_pg)s
 bootcmd:
-%(bootcmd)s
-%(bootcmd_es)s
-%(bootcmd_pg)s
-%(bootcmd_node)s
-packages:
-%(packages_all)s
-%(packages_app)s
-%(packages_es)s
-%(packages_pg)s
-%(packages_node)s
+  - set -ex
+  - echo "Booting."
 power_state:
   mode: reboot
 output:

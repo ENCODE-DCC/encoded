@@ -21,6 +21,19 @@ from pathlib import Path
 REPO_DIR = f"{str(Path().parent.absolute())}"
 
 
+def _fetch_ami_id(bucket: str = "packer-ami-id-and-log", key: str = "ami-id/current_ami_id.txt") -> str:
+    """Fetch the current ami-id from S3.
+    Args:
+        bucket: name of S3 bucket where ami-id is stored
+        key: location of the ami-id file within the bucket
+    Returns:
+        ami_id: string containing the contents current ami id S3 object.
+    """
+    s3 = boto3.resource("s3")
+    ami_id = s3.ObjectSummary(bucket_name=bucket, key=key).get()["Body"].read().decode().strip()
+    print(f"Fetched ami: {ami_id}")
+    return ami_id
+
 def _load_configuration(conf_path):
     # Load config
     from configparser import SafeConfigParser
@@ -757,7 +770,7 @@ def main():
     # Create aws es_wait frontend instance
     if main_args.es_wait and run_args.get('master_user_data'):
         instances = ec2_client.create_instances(
-            ImageId=main_args.eshead_image_id,
+            ImageId=main_args.image_id,
             MinCount=1,
             MaxCount=1,
             InstanceType=main_args.eshead_instance_type,
@@ -779,7 +792,7 @@ def main():
                 run_args,
                 instances_tag_data,
                 instances,
-                main_args.eshead_image_id,
+                main_args.image_id,
                 cluster_master=True,
             )
         )
@@ -789,54 +802,25 @@ def main():
     helper_vars = []
     if 'demo' in instances_info:
         instance_info = instances_info['demo']
-        if main_args.build_ami:
-            print('AMI Build: Demo deploying:', instance_info['name'])
-            print('instance_id:', instance_info['instance_id'])
-            print(
-                'After it builds, create the ami: '
-                "python ./cloud-config/create-ami.py {} demo {} --profile-name {}".format(
-                    instances_tag_data['username'],
-                    instance_info['instance_id'],
-                    main_args.profile_name,
-                )
-            )
-        else:
-            print('Deploying Demo({}): {}'.format(
-                instance_info['private_ip'],
-                instance_info['url']
-            ))
-            print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
+        print('Deploying Demo({}): {}'.format(
+            instance_info['private_ip'],
+            instance_info['url']
+        ))
+        print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print("ssh and tail:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
     elif 'cluster_master' in instances_info and main_args.es_wait:
         instance_info = instances_info['cluster_master']
-        if main_args.build_ami:
-            print('AMI Build: Wait ES cluster deploying:', instance_info['name'])
-            print('instance_id:', instance_info['instance_id'])
-            arg_name = 'es-wait-head'
-            if main_args.es_elect:
-                arg_name = 'es-elect'
-            print(
-                'After it builds, create the ami: '
-                "python ./cloud-config/create-ami.py {} {} {} --profile-name {}".format(
-                    instances_tag_data['username'],
-                    arg_name,
-                    instance_info['instance_id'],
-                    main_args.profile_name,
-                )
-            )
-        else:
-            print('Deploying Head ES Node({}): {}'.format(
-                instance_info['private_ip'],
-                instance_info['name']
-            ))
-            print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
+        print('Deploying Head ES Node({}): {}'.format(
+            instance_info['private_ip'],
+            instance_info['name']
+        ))
+        print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print('\nRun the following command to view es head deployment log.')
         print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
         print('')
         helper_vars.append("datam='{}'".format(instance_info['instance_id']))
         for index in range(main_args.cluster_size):
-            str_index = str(index)
-            key_name = 'cluster_node_' + str_index
+            key_name = 'cluster_node_{}'.format(index)
             node_info = instances_info[key_name]
             helper_vars.append("data{}='{}'  # {}".format(index, node_info['instance_id'], key_name))
             if index == 0:
@@ -855,30 +839,18 @@ def main():
                 print("ES node{} ssh:\n ssh ubuntu@{}".format(index, node_info['public_dns']))
     elif 'frontend' in instances_info:
         instance_info = instances_info['frontend']
-        if main_args.build_ami:
-            print('AMI Build: Deploying Frontend:', instance_info['name'])
-            print('instance_id:', instance_info['instance_id'])
-            print(
-                'After it builds, create the ami: '
-                "python ./cloud-config/create-ami.py {} frontend {} --profile-name {}".format(
-                    instances_tag_data['username'],
-                    instance_info['instance_id'],
-                    main_args.profile_name,
-                )
-            )
-        else:
-            print('Deploying Frontend({}): {}'.format(
-                instance_info['private_ip'],
-                instance_info['url'],
-            ))
-            print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
+        print('Deploying Frontend({}): {}'.format(
+            instance_info['private_ip'],
+            instance_info['url'],
+        ))
+        print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print('\n\nRun the following command to view the deployment log.')
         print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
         helper_vars.append("frontend='{}'".format(instance_info['instance_id']))
     else:
         print('Warning: Unknown instance info')
         print(instances_info)
-    if main_args.role == 'candidate' or main_args.build_ami:
+    if main_args.role == 'candidate':
         print('')
         # helps vars for release and building amis
         for helper_var in helper_vars:
@@ -1058,10 +1030,6 @@ def _parse_args():
         help=('Override default image ami for demo to use arm')
     )
     parser.add_argument(
-        '--eshead-image-id',
-        help=('ES head node override default image ami')
-    )
-    parser.add_argument(
         '--availability-zone',
         default='us-west-2a',
         help="Set EC2 availabilty zone"
@@ -1089,79 +1057,10 @@ def _parse_args():
         )
     )
     args = parser.parse_args()
-    # Set AMI per build type
-    ami_map = {
-        # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
-        'default': 'ami-0d1cd67c26f5fca19',
-        'arm_default': 'ami-003b90277095b7a42',
-
-        # Private AMIs: Add comments to each build
-
-        # encdami-demo build on 2020-05-18 09:18:40.053861: encdami-demo-2020-05-18_091840
-        'demo': 'ami-02ee743e10e6bca42',
-        # encdami-es-wait-head build on 2020-05-18 15:11:07.352104: encdami-es-wait-head-2020-05-18_151107
-        'es-wait-head': 'ami-04637560d9b9c4cb9',
-        # encdami-es-wait-node build on 2020-05-18 15:11:07.352073: encdami-es-wait-node-2020-05-18_151107
-        'es-wait-node': 'ami-03c53286feed8040f',
-        #  ES elect builds were not bulit since we rarely use them
-        'es-elect-head': None,
-        'es-elect-node': None,
-        # encdami-frontend build on 2020-05-19 06:03:16.286725: encdami-frontend-2020-05-19_060316
-        'frontend': 'ami-004367e4b7cdfc264',
-
-        # Production Private AMIs: Add comments to each build
-
-        # encdami-es-wait-head build on 2020-05-19 06:23:26.382876: encdami-es-wait-head-2020-05-19_062326
-        'es-wait-head-prod': 'ami-03530bdf05c08bf32',
-        # encdami-es-wait-node build on 2020-05-19 06:23:32.339883: encdami-es-wait-node-2020-05-19_062332
-        'es-wait-node-prod': 'ami-0de906a6f1894057b',
-        #  ES elect builds were not bulit since we rarely use them
-        'es-elect-head-prod': None,
-        'es-elect-node-prod': None,
-        # encdami-frontend build on 2020-05-19 06:32:47.400206: encdami-frontend-2020-05-19_063247
-        'frontend-prod': 'ami-0e13a1f4c36d19ac1',
-    }
+    # If needed, get ami.
     if not args.image_id:
-        # Select ami by build type.  
-        if args.build_ami:
-            # Building new amis or making full builds from scratch
-            # should start from base ubutnu image
-            args.image_id = ami_map['default']
-            args.eshead_image_id = ami_map['default']
-            # We only need one es node to make an ami
-            args.cluster_size = 1
-        elif args.full_build:
-            # Full builds from scratch
-            # should start from base ubutnu image
-            args.image_id = ami_map['default']
-            args.eshead_image_id = ami_map['default']
-        elif args.cluster_name:
-            # Cluster builds have three prebuilt priviate amis
-            if args.es_wait:
-                if args.profile_name == 'production':
-                    args.eshead_image_id = ami_map['es-wait-head-prod']
-                    args.image_id = ami_map['es-wait-node-prod']
-                else:
-                    args.eshead_image_id = ami_map['es-wait-head']
-                    args.image_id = ami_map['es-wait-node']
-            elif args.es_elect and args.profile_name != 'production':
-                if args.profile_name == 'production':
-                    args.eshead_image_id = ami_map['es-elect-head-prod']
-                    args.image_id = ami_map['es-elect-node-prod']
-                else:
-                    args.eshead_image_id = ami_map['es-elect-head']
-                    args.image_id = ami_map['es-elect-node']
-            else:
-                if args.profile_name == 'production':
-                    args.image_id = ami_map['frontend-prod']
-                else:
-                    args.image_id = ami_map['frontend']
-        else:
-            args.image_id = ami_map['demo']
-    elif args.arm_image_id:
-        args.image_id = ami_map['arm_default']
-    else:
-        args.image_id = ami_map['default']
+        current_ami_id = _fetch_ami_id()
+        args.image_id = current_ami_id
     # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
         if args.es_elect or args.es_wait:
