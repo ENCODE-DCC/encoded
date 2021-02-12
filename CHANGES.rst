@@ -1,5 +1,34 @@
 Changes
 =======
+112.0 (released) snovault 1.0.53
+--------------------------------
+1. ENCD-5719 fix breadcrumbs and treatments (#3716)
+2. ENCD-5713-snovault update to 1.0.53 (#3708)
+3. ENCD-5247-experiment- series-table-update (#3704)
+4. ENCD-4179-batchdownload-link-on-dataset-pages (#3666)
+5. ENCD-5673-add-scss-linter (#3684)
+6. ENCD-4018-update-regulome-related-schema (#3706)
+7. ENCD-5686-move-stimulation-to-purpose (#3695)
+8. ENCD-5337 Fix downloaded graphs (#3699)
+9. ENCD-5709-form-selects (#3705)
+10. SNO-158-create-minimally-indexed-deploy (#3399)
+11. ENCD-5606 update series searches (#3685)
+12. ENCD-5674-allow-submission-of-library-with-mixed-biosamples (#3698)
+13. ENCD-5700-add-index-reads-to-input-file-types-analysis-step (#3703)
+14. ENCD-5691-add -element-enrichments-file-format-type (#3700)
+15. ENCD-5678-update-frontend-documentation (#3689)
+16. ENCD-5592-chia-pet-quality-metrics (#3696)
+17. ENCD-5660-remove-antibody-NTR-audit-expt (#3687)
+18. ENCD-5683-exp-series-hotfix (#3691)
+19. ENCD-5694-fix-experiment-report-columns-for-cart-test (#3702)
+20. ENCD-5684-fix-download-from-cart-report (#3692)
+21. ENCD-5649 add series to nav (#3688)
+22. ENCD-5661-upgrade-js-pkg (#3677)
+23. ENCD-5593-move-install-to-setup (#3657)
+24. ENCD-5655-page-editor-fix (#3690)
+25. ENCD-5672-update-schema-columns-amount (#3682)
+26. ENCD-5680 Pin setuptools version in circle-ci (#3686)
+
 111.0 (released) snovault 1.0.52
 --------------------------------
 1.	ENCD-5665-tie-eslint-to-circleci (#3671)
