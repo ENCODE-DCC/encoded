@@ -6,6 +6,7 @@ import codecs
 import copy
 import json
 import os
+from pathlib import Path
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
 except ImportError:
@@ -254,7 +255,10 @@ def main(global_config, **local_config):
         config.include('.region_indexer')
     config.include(static_resources)
     config.include(changelogs)
-    config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
+    ontology_path = Path(__file__).resolve().parents[2] / "ontology.json"
+    config.registry['ontology'] = (
+        json_from_path(str(ontology_path)) if ontology_path.exists() else {}
+    )
 
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')

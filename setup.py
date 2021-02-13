@@ -41,7 +41,6 @@ INSTALL_REQUIRES = [
     "transaction==3.0.0",
     "waitress==1.4.3",
     "xlrd==1.2.0",
-    "zc.buildout==2.13.2",
     "zope.interface==4.7.1",
     "zope.sqlalchemy==1.2",
     f"snovault @ {SNOVAULT_DEP}",

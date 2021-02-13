@@ -22,6 +22,9 @@ if [ $? -gt 0 ]; then
     exit 1
 fi
 
+# Copy correct conf file to repo root
+sudo -u encoded cp "conf/pyramid/${ENCD_PYRAMID_CONFIG_NAME}.ini" production.ini
+
 # Install snovault editably if specified in deploy
 if [ "$ENCD_DEVELOP_SNOVAULT" == 'true' ]; then
     source "${ENCD_VENV_DIR}/bin/activate"
@@ -36,12 +39,12 @@ if [ "$ENCD_DEVELOP_SNOVAULT" == 'true' ]; then
     fi
 fi
 
-# Run buildout
-bin_build_cmd="$(which buildout) -c $ENCD_ROLE.cfg buildout:index_procs=$ENCD_INDEX_PROCS buildout:index_chunk_size=$ENCD_INDEX_CHUNK_SIZE"
-echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) CMD: $bin_build_cmd"
-sudo -H -u encoded LANG=en_US.UTF-8 $bin_build_cmd
+# Install JS dependencies and build
+make_cmd="make javascript-and-download-files"
+echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) CMD: $make_cmd"
+sudo -H -u encoded $make_cmd
 if [ $? -gt 0 ]; then
-    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: buildout return error status"
+    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: make return error status"
     # Build has failed
     touch "$encd_failed_flag"
     exit 1

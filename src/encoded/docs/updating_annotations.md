@@ -38,7 +38,7 @@ $ cp annotations_local.json annotations_YYYY_MM_DD.json
 $ aws s3 cp annotations_YYYY_MM_DD.json s3://encoded-build/annotations/
 ```
 
-5. Update the annotations version in the [buildout.cfg]:
+5. Update the annotations version in the [Makefile]:
 ```
 curl -o annotations.json https://s3-us-west-1.amazonaws.com/encoded-build/annotations/annotations_YYYY_MM_DD.json
 ```
@@ -58,7 +58,7 @@ curl -o annotations.json https://s3-us-west-1.amazonaws.com/encoded-build/annota
 [Entrez Gene ID (NCBI)]: http://ncbi.nlm.nih.gov/gene/
 [HUGO Gene Nomenclature Committee HGNC ID (HGNC)]: http://genenames.org
 [Mouse Genome Informatics (MGI)]: http://informatics.jax.org
-[buildout.cfg]: ../../../buildout.cfg
+[Makefile]: ../../../Makefile
 [generate_annotations]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/generate_annotations.py
 [GRCh38 gff assembly release date]: https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.39/
 [hg19 gff assembly release date]: https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.25/
