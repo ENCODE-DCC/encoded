@@ -4281,3 +4281,38 @@ def test_audit_experiment_mixed_strand_specificity_libraries(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'mixed strand specificities'
                for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_inconsistent_analysis_status(testapp, experiment_with_analysis,
+                                                       analysis_released, analysis_released_2,
+                                                       analysis_1, experiment_rna):
+    # https://encodedcc.atlassian.net/browse/ENCD-5705
+    # Released analysis objects are disallowed in non-released datasets
+    testapp.patch_json(experiment_with_analysis['@id'],
+                       {"analysis_objects": [analysis_released["@id"]]})
+    res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis status'
+               and 'not released' in error['detail']
+               for error in collect_audit_errors(res))
+    # Released datasets must have a released analysis
+    testapp.patch_json(
+        experiment_with_analysis['@id'], {'status': 'released', 'date_released': '2021-01-01'})
+    testapp.patch_json(
+        experiment_with_analysis['@id'], {"analysis_objects": [analysis_1["@id"]]})
+    res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis status'
+               and 'lacks a released analysis' in error['detail']
+               for error in collect_audit_errors(res))
+    # Multiple released analyses in a dataset is disallowed
+    testapp.patch_json(
+        experiment_with_analysis['@id'], {
+            "analysis_objects": [analysis_released["@id"], analysis_released_2["@id"]]})
+    res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis status'
+               and 'released analyses' in error['detail']
+               for error in collect_audit_errors(res))
+    # Datasets lacking a released analysis (no analysis_objects at all) are flagged
+    res = testapp.get(experiment_rna['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis status'
+               and 'lacks a released analysis' in error['detail']
+               for error in collect_audit_errors(res))
