@@ -84,6 +84,17 @@ class Dataset(Item):
     ]
     embedded_with_frame = [
         Path('references', exclude=['datasets', 'publication_data']),
+        Path(
+            'files.analyses',
+            include=[
+                '@id',
+                '@type',
+                'uuid',
+                'status',
+                'pipeline_award_rfas',
+                'pipeline_version',
+            ],
+        ),
     ]
     audit_inherit = [
         'original_files',
