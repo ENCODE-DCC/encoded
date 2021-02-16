@@ -110,6 +110,7 @@ class Analysis(Item):
     ]
     set_status_down = [
         'files',
+        'documents',
     ]
 
     @calculated_property(schema={
