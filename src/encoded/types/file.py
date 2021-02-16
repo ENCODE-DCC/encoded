@@ -132,8 +132,8 @@ class File(Item):
                 'uuid',
                 'status',
                 'pipeline_award_rfas',
-                'pipeline_version'
-            ]
+                'pipeline_version',
+            ],
         ),
     ]
     audit_inherit = [
