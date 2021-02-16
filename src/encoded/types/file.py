@@ -127,6 +127,7 @@ class File(Item):
         Path(
             'analyses',
             include=[
+                '@id',
                 'status',
                 'pipeline_award_rfas',
                 'pipeline_version'
