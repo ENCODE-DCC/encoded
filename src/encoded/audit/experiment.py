@@ -641,15 +641,23 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             files_structure,
             standards_version)
 
-    if standards_version == 'ENC3' and \
-            value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
 
-        yield from check_experiment_wgbs_encode3_standards(
-            value,
-            files_structure,
-            organism_name,
-            desired_assembly)
-        return
+    if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
+        award = value.get('award', {})
+        if award.get('rfa') == 'ENCODE3':
+            yield from check_experiment_wgbs_encode3_standards(
+                value,
+                files_structure,
+                organism_name,
+                desired_assembly)
+            return
+        if award.get('rfa') == 'ENCODE4':
+            yield from check_experiment_wgbs_encode4_standards(
+                value,
+                files_structure,
+                organism_name,
+                desired_assembly)
+            return
 
     if value['assay_term_name'] == 'ATAC-seq':
         yield from check_experiment_atac_encode4_qc_standards(
@@ -1073,6 +1081,49 @@ def check_experiment_wgbs_encode3_standards(experiment,
     yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
 
     yield from check_wgbs_lambda(bismark_metrics, 1, pipeline_title)
+
+    return
+
+
+def check_experiment_wgbs_encode4_standards(
+    experiment,
+    files_structure,
+    organism_name,
+    desired_assembly
+):
+    alignment_files = files_structure.get('alignments').values()
+    fastq_files = files_structure.get('fastq_files').values()
+    cpg_quantifications = files_structure.get('cpg_quantifications').values()
+
+    if fastq_files == []:
+        return
+
+    yield from check_wgbs_read_lengths(fastq_files, organism_name, 130, 100)
+
+    read_lengths = get_read_lengths_wgbs(fastq_files)
+
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(
+        alignment_files, ['GRCh38', 'mm10'], ['gemBS'])
+
+    if pipeline_title is False:
+        return
+
+    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+        return
+
+    gembs_metrics = get_metrics(
+        alignment_files, 'GembsAlignmentQualityMetric', desired_assembly)
+    cpg_metrics = get_metrics(
+        cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
+    samtools_metrics = get_metrics(
+        cpg_quantifications, 'SamtoolsFlagstatsQualityMetric', desired_assembly)
+
+    yield from check_wgbs_coverage_ENCODE4(
+        gembs_metrics,
+        pipeline_title,
+        get_pipeline_objects(alignment_files))
+    yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
+    yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title)
 
     return
 
@@ -1867,6 +1918,35 @@ def check_wgbs_coverage(samtools_metrics,
     return
 
 
+def check_wgbs_coverage_ENCODE4(
+    gembs_metrics,
+    pipeline_title,
+    pipeline_objects
+):
+    for m in gembs_metrics:
+        if 'average_coverage' in m:
+            coverage = m['average_coverage']
+            detail = (f'Replicate of experiment processed by {pipeline_title}'
+                f' ({audit_link(path_to_text(pipeline_objects[0]["@id"]), pipeline_objects[0]["@id"])}) '
+                f'has a coverage of {coverage}X. The minimum ENCODE standard coverage for each '
+                f'replicate in a WGBS assay is 25X and the recommended value is '
+                f'> 30X (See {audit_link("ENCODE WGBS data standards", "/data-standards/wgbs/")}).'
+            )
+            if coverage < 5:
+                yield AuditFailure('extremely low coverage',
+                                   detail,
+                                   level='ERROR')
+            elif coverage < 25:
+                yield AuditFailure('insufficient coverage',
+                                   detail,
+                                   level='NOT_COMPLIANT')
+            elif coverage < 30:
+                yield AuditFailure('low coverage',
+                                   detail,
+                                   level='WARNING')
+    return
+
+
 def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
     for m in cpg_metrics:
         if 'Pearson Correlation Coefficient' in m:
@@ -1884,6 +1964,23 @@ def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
                                    level='NOT_COMPLIANT')
     return
 
+
+def check_wgbs_pearson_ENCODE4(cpg_metrics, threshold,  pipeline_title):
+    for m in cpg_metrics:
+        if 'Pearson correlation' in m:
+            if m['Pearson correlation'] < threshold:
+                detail = ('ENCODE experiment processed by {} '
+                    'pipeline has CpG quantification Pearson Correlation of '
+                    '{}, while a value >={} is required.'.format(
+                        pipeline_title,
+                        m['Pearson correlation'],
+                        threshold
+                    )
+                )
+                yield AuditFailure('insufficient replicate concordance',
+                                   detail,
+                                   level='NOT_COMPLIANT')
+    return
 
 def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
     for metric in bismark_metrics:
@@ -1910,6 +2007,18 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
                 )
                 yield AuditFailure('high lambda C methylation ratio', detail,
                                    level='WARNING')
+
+
+def check_wgbs_lambda_ENCODE4(gembs_metrics, threshold, pipeline_title):
+    for metric in gembs_metrics:
+        conversion_rate = metric.get('conversion_rate')
+        if conversion_rate < threshold:
+            detail = (f'ENCODE experiment processed by {pipeline_title} '
+                f'pipeline has a lambda rate of {conversion_rate}. '
+                f'The lambda conversion rate should be > 99%.'
+            )
+            yield AuditFailure('low lambda C conversion rate', detail,
+                               level='WARNING')
 
 
 def check_file_chip_seq_read_depth(file_to_check,
