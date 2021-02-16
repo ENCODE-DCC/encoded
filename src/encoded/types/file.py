@@ -128,6 +128,8 @@ class File(Item):
             'analyses',
             include=[
                 '@id',
+                '@type',
+                'uuid',
                 'status',
                 'pipeline_award_rfas',
                 'pipeline_version'
