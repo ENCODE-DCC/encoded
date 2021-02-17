@@ -180,7 +180,7 @@ def test_audit_experiment_replicate_with_no_fastq_files(
 
 
 def test_audit_experiment_replicated(
-    testapp, base_fcc_experiment, base_replicate
+    testapp, base_fcc_experiment, base_replicate, pooled_clone_sequencing
 ):
     testapp.patch_json(
         base_fcc_experiment['@id'],
@@ -192,6 +192,19 @@ def test_audit_experiment_replicated(
     res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
     assert any(
         error['category'] == 'unreplicated experiment'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(
+        base_replicate['@id'], {'experiment': pooled_clone_sequencing['@id']}
+    )
+    testapp.patch_json(
+        pooled_clone_sequencing['@id'],
+        {'status': 'submitted', 'date_submitted': '2015-03-03'}
+    )
+    res = testapp.get(pooled_clone_sequencing['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'unreplicated experiment' and
+        error['level_name'] == 'WARNING'
         for error in collect_audit_errors(res)
     )
 
