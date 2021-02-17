@@ -1942,3 +1942,75 @@ def file_nanopore_signal(testapp, experiment, award, lab, replicate_url, platfor
         'status': 'in progress'
     }
     return item
+
+
+@pytest.fixture
+def file_fastq_1_chia(testapp, lab, encode4_award, ChIA_PET_experiment, replicate_ChIA_PET, platform1):
+    item = {
+        'dataset': ChIA_PET_experiment['@id'],
+        'replicate': replicate_ChIA_PET['@id'],
+        'file_format': 'fastq',
+        'file_size': 5890125,
+        'platform': platform1['@id'],
+        'output_type': 'reads',
+        "read_length": 75,
+        'md5sum': '04cc8b52ffc78dc62df7cadd44adfedd',
+        'run_type': "single-ended",
+        'lab': lab['@id'],
+        'award': encode4_award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def chia_bam(testapp, encode_lab, encode4_award, ChIA_PET_experiment, replicate_ChIA_PET, file_fastq_1_chia):
+    item = {
+        'dataset': ChIA_PET_experiment['@id'],
+        'replicate': replicate_ChIA_PET['@id'],
+        'file_format': 'bam',
+        'md5sum': 'eaaa33052a2a15317c0acc65a783e505',
+        'output_type': 'alignments',
+        'derived_from': [file_fastq_1_chia['@id']],
+        'assembly': 'GRCh38',
+        'lab': encode_lab['@id'],
+        'file_size': 341908904,
+        'award': encode4_award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def chia_peaks(testapp, ChIA_PET_experiment, chia_bam, encode4_award, encode_lab):
+    item = {
+        'dataset': ChIA_PET_experiment['@id'],
+        'lab': encode_lab['@id'],
+        'award': award['@id'],
+        'derived_from': [chia_bam['@id']],
+        'file_format': 'bed',
+        'file_format_type': 'broadPeak',
+        'file_size': 45892,
+        'assembly': 'GRCh38',
+        'md5sum': 'b8c4ccb7078163067d49ab612f55b128',
+        'output_type': 'peaks',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def chia_chromatin_int(testapp, ChIA_PET_experiment, chia_bam, encode4_award, encode_lab):
+    item = {
+        'dataset': ChIA_PET_experiment['@id'],
+        'lab': encode_lab['@id'],
+        'award': encode4_award['@id'],
+        'derived_from': [chia_bam['@id']],
+        'file_format': 'hic',
+        'file_size': 3908501,
+        'assembly': 'GRCh38',
+        'md5sum': '78f05b7a9fa61088c90b29e578a3cb43',
+        'output_type': 'chromatin interactions',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]

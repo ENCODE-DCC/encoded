@@ -375,3 +375,14 @@ def replicate_ATAC_seq_3(testapp, ATAC_experiment_replicated, base_library):
         'technical_replicate_number': 1,
     }
     return testapp.post_json('/replicate', item).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_ChIA_PET(testapp, ChIA_PET_experiment, library_1):
+    item = {
+        'experiment': ChIA_PET_experiment['@id'],
+        'library': library_1['@id'],
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+    }
+    return testapp.post_json('/replicate', item).json['@graph'][0]
