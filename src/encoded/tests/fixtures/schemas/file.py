@@ -1958,13 +1958,13 @@ def file_fastq_1_chia(testapp, lab, encode4_award, ChIA_PET_experiment, replicat
         'run_type': "single-ended",
         'lab': lab['@id'],
         'award': encode4_award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
+        'status': 'in progress'  # avoid s3 upload codepath
     }
     return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
-def chia_bam(testapp, encode_lab, encode4_award, ChIA_PET_experiment, replicate_ChIA_PET, file_fastq_1_chia):
+def chia_bam(testapp, encode_lab, encode4_award, ChIA_PET_experiment, replicate_ChIA_PET, file_fastq_1_chia, analysis_step_run_chia_alignment):
     item = {
         'dataset': ChIA_PET_experiment['@id'],
         'replicate': replicate_ChIA_PET['@id'],
@@ -1977,16 +1977,17 @@ def chia_bam(testapp, encode_lab, encode4_award, ChIA_PET_experiment, replicate_
         'file_size': 341908904,
         'award': encode4_award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run_chia_alignment['@id']
     }
     return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
-def chia_peaks(testapp, ChIA_PET_experiment, chia_bam, encode4_award, encode_lab):
+def chia_peaks(testapp, ChIA_PET_experiment, chia_bam, encode4_award, encode_lab, analysis_step_run_chia_peak_calling):
     item = {
         'dataset': ChIA_PET_experiment['@id'],
         'lab': encode_lab['@id'],
-        'award': award['@id'],
+        'award': encode4_award['@id'],
         'derived_from': [chia_bam['@id']],
         'file_format': 'bed',
         'file_format_type': 'broadPeak',
@@ -1995,12 +1996,13 @@ def chia_peaks(testapp, ChIA_PET_experiment, chia_bam, encode4_award, encode_lab
         'md5sum': 'b8c4ccb7078163067d49ab612f55b128',
         'output_type': 'peaks',
         'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run_chia_peak_calling['@id']
     }
     return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
-def chia_chromatin_int(testapp, ChIA_PET_experiment, chia_bam, encode4_award, encode_lab):
+def chia_chromatin_int(testapp, ChIA_PET_experiment, chia_bam, encode4_award, encode_lab, analysis_step_run_chia_interaction_calling):
     item = {
         'dataset': ChIA_PET_experiment['@id'],
         'lab': encode_lab['@id'],
@@ -2012,5 +2014,6 @@ def chia_chromatin_int(testapp, ChIA_PET_experiment, chia_bam, encode4_award, en
         'md5sum': '78f05b7a9fa61088c90b29e578a3cb43',
         'output_type': 'chromatin interactions',
         'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run_chia_interaction_calling['@id']
     }
     return testapp.post_json('/file', item).json['@graph'][0]

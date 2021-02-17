@@ -268,3 +268,42 @@ def analysis_step_14(testapp):
         'output_file_types': ['mitochondria blacklisted regions', 'pseudo-replicated peaks']
     }
     return item
+
+
+@pytest.fixture
+def analysis_step_chia_alignment(testapp):
+    item = {
+        'step_label': 'chia-pet-alignment-step',
+        'title': 'ChIA-pet alignment step',
+        'input_file_types': ['reads'],
+        'output_file_types': ['alignments', 'unfiltered alignments'],
+        'analysis_step_types': ['alignment', 'filtering', 'classification'],
+        'major_version': 1
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_chia_peak_calling(testapp):
+    item = {
+        'step_label': 'chia-pet-peak-calling-step',
+        'title': 'ChIA-pet peak calling step',
+        'input_file_types': ['unfiltered alignments'],
+        'output_file_types': ['peaks'],
+        'analysis_step_types': ['peak calling'],
+        'major_version': 1
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_chia_interaction_calling(testapp):
+    item = {
+        'step_label': 'chia-pet-interaction-calling-step',
+        'title': 'ChIA-PET interaction calling step',
+        'input_file_types': ['alignments'],
+        'output_file_types': ['chromatin interactions'],
+        'analysis_step_types': ['interaction calling', 'file format conversion'],
+        'major_version': 1
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]

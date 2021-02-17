@@ -4727,15 +4727,12 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
 
 def check_experiment_chiapet_encode4_qc_standards(experiment, files_structure):
     alignment_files = files_structure.get('alignments').values()
-    peaks_files = files_structure.get('peaks_files').values()
+    peak_files = files_structure.get('peaks_files').values()
     chr_int_files = files_structure.get('chromatin_interaction_files').values()
 
-    assay_term_name = experiment['assay_term_name']
-    if assay_term_name != 'ChIA-PET':
-        return
-
     alignment_metric = get_metrics(alignment_files, 'ChiaPetAlignmentQualityMetric')
-    peak_metric = get_metrics(peaks_files, 'ChiaPetPeakEnrichmentQualityMetric')
+    peak_metric = get_metrics(peak_files, 'ChiaPetPeakEnrichmentQualityMetric')
+    int_metric = get_metrics(chr_int_files, 'ChiaPetChrInteractionsQualityMetric')
 
     # Checks in ChiaPetAlignmentQualityMetric
     if alignment_metric is not None and len(alignment_metric) > 0:
@@ -4747,23 +4744,26 @@ def check_experiment_chiapet_encode4_qc_standards(experiment, files_structure):
                     f'Alignment file '
                     f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} has '
                     f'{total_reads} total read pairs. '
-                    f'According to ENCODE4 standards, ChIA-PETS assays '
-                    f'require a minimum of 150,000,000 total read pairs.'
+                    f'According to ENCODE4 standards, ChIA-PET assays performed '
+                    f'with the in-situ protocol require a minimum of '
+                    f'150,000,000 total read pairs. For assays performed with the '
+                    f'long reads protocol a minimum of 100,000,000 total read pairs '
+                    f'is acceptable.'
                     )
                 if metric['total_rp'] < 150000000:
-                    yield AuditFailure('low read pairs', detail, level='NOT_COMPLIANT')
+                    yield AuditFailure('low read pairs', detail, level='WARNING')
 
             if 'frp_bl' in metric and 'quality_metric_of' in metric:
-                fraction_bl = float(metric['frb_bl'])
+                fraction_bl = float(metric['frp_bl'])
                 detail = (
                     f'Alignment file '
                     f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} has '
                     f'a fraction of read pairs with bridge linker value of {fraction_bl:.2f}. '
-                    f'According to ENCODE4 standards, ChIA-PETS assays require a '
+                    f'According to ENCODE4 standards, ChIA-PET assays require a '
                     f'minimum of value of 0.5 for fraction of read pairs with bridge linker.'
                     )
                 if fraction_bl < 0.5:
-                    yield AuditFailure('low fraction of read pairs with linker', level='NOT_COMPLIANT')
+                    yield AuditFailure('low fraction of read pairs with linker', detail, level='NOT_COMPLIANT')
 
             if 'nr_pet' in metric and 'quality_metric_of' in metric:
                 nonred_pet = metric['nr_pet']
@@ -4771,7 +4771,7 @@ def check_experiment_chiapet_encode4_qc_standards(experiment, files_structure):
                     f'Alignment file '
                     f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} has '
                     f'{nonred_pet} total non-redundant PET. '
-                    f'According to ENCODE4 standards, ChIA-PETS assays '
+                    f'According to ENCODE4 standards, ChIA-PET assays '
                     f'require a minimum of 10,000,000 non-redundant PET.'
                     )
                 if nonred_pet < 10000000:
@@ -4780,52 +4780,36 @@ def check_experiment_chiapet_encode4_qc_standards(experiment, files_structure):
     # Checks in ChiaPetPeakEnrichmentQualityMetric
     if peak_metric is not None and len(peak_metric) > 0:
         for metric in peak_metric:
-            peak_file = files_structure.get('peaks')[metric['quality_metric_of'][0]]
+            peak_file = files_structure.get('peaks_files')[metric['quality_metric_of'][0]]
             if 'binding_peaks' in metric and 'quality_metric_of' in metric:
                 peaks = metric['binding_peaks']
                 detail = (
                     f'Peaks file '
                     f'{audit_link(path_to_text(peak_file["@id"]),peak_file["@id"])} has '
                     f'{peaks} total peaks. '
-                    f'According to ENCODE4 standards, ChIA-PETS assays '
+                    f'According to ENCODE4 standards, ChIA-PET assays '
                     f'require a minimum of 10,000 protein factor binding peaks.'
                     )
                 if peaks < 10000:
-                    yield AuditFailure('low protein factor bindinng peaks', detail, level='NOT_COMPLIANT')
+                    yield AuditFailure('low protein factor binding peaks', detail, level='NOT_COMPLIANT')
 
     # Checks in ChiaPetChrInteractionsQualityMetric
-    chr_int_report = {}
-    problematic_files = 0
-    for f in chr_int_files:
-        file_list = []
-        file_list.append(f)
-        f_chr_int_metrics = get_metrics(file_list, 'ChiaPetChrInteractionsQualityMetric')
-        if f_chr_int_metrics is not None and len(f_chr_int_metrics) > 0:
-            for metric in f_chr_int_metrics:
-                if 'intra_inter_pet_ratio' in metric:
-                    chr_int_report['intra_inter_ratio'] = float(metric['intra_inter_pet_ratio'])
-                    chr_int_report['intra_inter_ratio_file'] = f['@id']
-                    if metric['intra_inter_pet_ratio'] >= 1:
-                        chr_int_report['intra_inter_ratio_qual'] = 'pass'
-                    if metric['intra_inter_pet_ratio'] < 1:
-                        chr_int_report['intra_inter_ratio_qual'] = 'warning'
-
-    if problematic_files == 0:
-        detail_items = []
-        if 'intra_inter_pet_ratio' in chr_int_report.keys():
-            detail_items.append(tuple((str(chr_int_report['intra_inter_pet_ratio']),
-                                chr_int_report.get('intra_inter_ratio_file'), ' (ratio of intrachromosomal PET to interchromosomal PET)')))
-            audit_ints = ' and '.join(m[0] for m in detail_items)
-            file_links = ' and '.join((audit_link(path_to_text(m[1]), m[1])) + m[2] for m in detail_items)
-            detail = (
-            f'According to ENCODE4 standards, ChIA-PETS assays should have a ratio of interachromsomal PET '
-            f'to interchromsomal PET >1 using the in-situ protocol. '
-            f'<1 is acceptable for ChIA-PET assays performed using the long reads protocol. '
-            f'File(s) {file_links} have {audit_ints} ratio of intrachromsomal PET to interchromosomal PET.')
-        if 'pass' in chr_int_report.values():
-            return
-        elif 'warning' in chr_int_report.values():
-            yield AuditFailure('low ratio of intra/inter-chr PET', detail, level='WARNING')
+    if int_metric is not None and len(int_metric) > 0:
+        for metric in int_metric:
+            int_file = files_structure.get('chromatin_interaction_files')[metric['quality_metric_of'][0]]
+            if 'intra_inter_pet_ratio' in metric and 'quality_metric_of' in metric:
+                int_ratio = float(metric['intra_inter_pet_ratio'])
+                detail = (
+                    f'Chromatin interactions file '
+                    f'{audit_link(path_to_text(int_file["@id"]),int_file["@id"])} has '
+                    f'a ratio of intra/inter-chr PET of {int_ratio:.2f}. '
+                    f'According to ENCODE4 standards, ChIA-PET assays performed '
+                    f'with the in-situ protocol require a minimum ratio of 1. '
+                    f'For experiments performed with the long reads protocol '
+                    f'a ratio below 1 is acceptable.'
+                    )
+                if int_ratio < 1:
+                    yield AuditFailure('low intra/inter-chr PET ratio', detail, level='WARNING')
 
 
 def audit_experiment_mixed_strand_specific_libraries(value, system, excluded_types):

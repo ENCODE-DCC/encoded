@@ -602,5 +602,16 @@
         ],
         "status": "released",
         "uuid": "205078ce-1325-47c0-af2a-1cfff129798b"
+    },
+    {
+        "step_label": "chia-pet-alignment-step",
+        "major_version": 1,
+        "title": "ChIA-PET alignment step",
+        "analysis_step_types": ["alignment",
+            "filtering", "classification"],
+        "input_file_types": ["reads"],
+        "output_file_types": ["alignments", "unfiltered alignments"],
+        "status": "released",
+        "uuid": "4b947660-00d1-4c9f-adaa-9fc26c514e12"
     }
 ]

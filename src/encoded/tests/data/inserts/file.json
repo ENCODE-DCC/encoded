@@ -2433,6 +2433,7 @@
         "output_type": "unfiltered alignments",
         "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
         "status": "released",
+        "step_run": "8479e383-3492-4ffc-b2ea-10fb65589cde",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "107cd650-9401-4f83-9a40-ab2356314c42",
         "derived_from": ["ENCFF217EOB"]
@@ -2452,6 +2453,7 @@
         "output_type": "alignments",
         "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
         "status": "released",
+        "step_run": "8479e383-3492-4ffc-b2ea-10fb65589cde",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "876855ad-7fd9-4ae8-93b0-62f9e4c7e343",
         "derived_from": ["ENCFF217EOB"]
