@@ -1,6 +1,6 @@
 ## Changelog for analysis_step.json
 
-### Minor changes since schema version 12
+### Minor changes since schema version 15
 * Added *curated binding sites*, *curated SNVs*, *dsQTLs*, *eQTLs* and *PWMs* to the enum list for *input_file_types* and *output_file_types*
 
 ### Schema version 15
