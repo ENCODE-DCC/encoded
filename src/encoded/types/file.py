@@ -10,6 +10,7 @@ from snovault import (
 )
 from snovault.attachment import InternalRedirect
 from snovault.schema_utils import schema_validator
+from snovault.util import Path
 from snovault.validation import ValidationFailure
 from .base import (
     Item,
@@ -94,6 +95,7 @@ class File(Item):
     name_key = 'accession'
 
     rev = {
+        'analyses': ('Analysis', 'files'),
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
         'superseded_by': ('File', 'supersedes'),
@@ -120,6 +122,19 @@ class File(Item):
         'step_run',
         'biosample_ontology',
         'target'
+    ]
+    embedded_with_frame = [
+        Path(
+            'analyses',
+            include=[
+                '@id',
+                '@type',
+                'uuid',
+                'status',
+                'pipeline_award_rfas',
+                'pipeline_version'
+            ]
+        ),
     ]
     audit_inherit = [
         'replicate',
@@ -543,6 +558,20 @@ class File(Item):
                 )
             )
         )
+
+    @calculated_property(schema={
+        "title": "Analyses",
+        "description": "The analyses which the file belongs to.",
+        "comment": "Do not submit. Values in the list are reverse links of Analysis with this file in files field.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Analysis.files",
+        },
+        "notSubmittable": True,
+    })
+    def analyses(self, request, analyses):
+        return paths_filtered_by_status(request, analyses)
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
