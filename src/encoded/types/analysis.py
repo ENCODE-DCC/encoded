@@ -143,7 +143,7 @@ class Analysis(Item):
         'encoded:schemas/file.json'
     )
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Assembly",
         "description": "A genome assembly on which this analysis is performed.",
         "comment": "Do not submit. This field is calculated from files in this analysis.",
@@ -169,7 +169,7 @@ class Analysis(Item):
         if len(assemblies) < 1:
             return
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Genome Annotation",
         "description": "A genome annotation on which this analysis is performed.",
         "comment": "Do not submit. This field is calculated from files in this analysis.",
@@ -229,7 +229,7 @@ class Analysis(Item):
                 )
         return sorted(pipelines)
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Pipeline awards",
         "description": "A list of award bioproject phases to which pipelines "
                        "that used to generate this analysis belong to.",
@@ -240,7 +240,7 @@ class Analysis(Item):
             "type": "string"
         }
     })
-    def pipeline_award_rfas(self, request, pipelines=[]):
+    def pipeline_award_rfas(self, request, pipelines):
         pipeline_award_rfas = set()
         for pipeline in pipelines:
             pipeline_object = request.embed(
@@ -255,7 +255,7 @@ class Analysis(Item):
             )
         return sorted(pipeline_award_rfas)
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Pipeline labs",
         "description": "A list of labs whose pipelines are used to generate this analysis.",
         "comment": "Do not submit. This field is calculated from files in this analysis.",
@@ -266,7 +266,7 @@ class Analysis(Item):
             "linkTo": "Lab"
         }
     })
-    def pipeline_labs(self, request, pipelines=[]):
+    def pipeline_labs(self, request, pipelines):
         return sorted({
             lab
             for lab in [
@@ -317,6 +317,34 @@ class Analysis(Item):
                 )
             )
         return quality_metrics_report
+
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self,
+        assembly,
+        genome_annotation,
+        pipeline_labs,
+        pipeline_award_rfas,
+        pipeline_version=None
+    ):
+        analysis_type = 'Lab custom'
+        if pipeline_labs == ['/labs/encode-processing-pipeline/']:
+            analysis_type = 'Uniform'
+            if pipeline_award_rfas:
+                analysis_type = ', '.join(pipeline_award_rfas)
+        analysis_version = ''
+        if pipeline_version:
+            analysis_version = f' v{pipeline_version}'
+        analysis_assembly = ''
+        if assembly:
+            analysis_assembly = f' {assembly}'
+        analysis_annotation = ''
+        if genome_annotation:
+            if not (genome_annotation == 'mixed' and assembly == 'mixed'):
+                analysis_annotation = f' {genome_annotation}'
+        return f'{analysis_type}{analysis_version}{analysis_assembly}{analysis_annotation}'
 
 
 @collection(
