@@ -250,9 +250,6 @@ def main(global_config, **local_config):
     config.include(static_resources)
     config.include(changelogs)
     config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
-    aws_ip_ranges = json_from_path(settings.get('aws_ip_ranges_path'), {'prefixes': []})
-    config.registry['aws_ipset'] = netaddr.IPSet(
-        record['ip_prefix'] for record in aws_ip_ranges['prefixes'] if record['service'] == 'AMAZON')
 
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')
