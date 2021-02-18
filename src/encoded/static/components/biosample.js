@@ -143,7 +143,7 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
                 '/search/?type=Experiment&status=released&status=submitted&status=in+progress&field=accession&field=assay_term_name&field=replicates.library.biosample.@id&field=replicates.library.biosample.accession&field=biosample_ontology.term_name&field=target&field=description&field=title&field=lab.title&limit=all',
                 'replicates.library.biosample.@id'
             ).then((experiments) => {
-                setExperimentsUsing(experiments);
+                setExperimentsUsing(_.uniq(experiments, (experiment) => experiment['@id']));
             });
         }
     }, [biosampleChildren]);
