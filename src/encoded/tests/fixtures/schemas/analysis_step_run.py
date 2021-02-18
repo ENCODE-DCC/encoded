@@ -2,6 +2,13 @@ import pytest
 
 
 @pytest.fixture
+def analysis_step_run_with_no_status(analysis_step_version):
+    return {
+        'analysis_step_version': analysis_step_version['@id']
+    }
+
+
+@pytest.fixture
 def analysis_step_run(testapp, analysis_step_version):
     item = {
         'analysis_step_version': analysis_step_version['@id'],
