@@ -4330,7 +4330,7 @@ def test_audit_experiment_chia_encode4_qc_standards(
                         {'quality_metric_of': [chia_peaks['@id']]})
     res = testapp.get(ChIA_PET_experiment['@id'] + '@@index-data')
     audit_errors = collect_audit_errors(res)
-    assert any(error['category'] == 'low read pairs' for error in audit_errors)
+    assert any(error['category'] == 'low total read pairs' for error in audit_errors)
     assert any(error['category'] == 'low fraction of read pairs with linker' for error in audit_errors)
     assert any(error['category'] == 'low non-redundant PET' for error in audit_errors)
     assert any(error['category'] == 'low protein factor binding peaks' for error in audit_errors)

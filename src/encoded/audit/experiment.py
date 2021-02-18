@@ -4751,7 +4751,7 @@ def check_experiment_chiapet_encode4_qc_standards(experiment, files_structure):
                     f'is acceptable.'
                     )
                 if metric['total_rp'] < 150000000:
-                    yield AuditFailure('low read pairs', detail, level='WARNING')
+                    yield AuditFailure('low total read pairs', detail, level='WARNING')
 
             if 'frp_bl' in metric and 'quality_metric_of' in metric:
                 fraction_bl = float(metric['frp_bl'])
@@ -4760,7 +4760,7 @@ def check_experiment_chiapet_encode4_qc_standards(experiment, files_structure):
                     f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} has '
                     f'a fraction of read pairs with bridge linker value of {fraction_bl:.2f}. '
                     f'According to ENCODE4 standards, ChIA-PET assays require a '
-                    f'minimum of value of 0.5 for fraction of read pairs with bridge linker.'
+                    f'minimum value of 0.5 for fraction of read pairs with bridge linker.'
                     )
                 if fraction_bl < 0.5:
                     yield AuditFailure('low fraction of read pairs with linker', detail, level='NOT_COMPLIANT')
