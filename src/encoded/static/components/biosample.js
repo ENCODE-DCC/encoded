@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
@@ -55,7 +56,7 @@ export const collectChildren = async (rootBiosample, session, sessionProperties)
                     // the next level of the tree to reduce the size of the resulting search object.
                     layerBiosamples = await requestObjects(
                         layerContents,
-                        '/search/?type=Biosample&field=accession&field=biosample_ontology.classification&field=biosample_ontology.term_name&field=biosample_ontology.term_name&field=status&field=parent_of'
+                        '/search/?type=Biosample&field=accession&field=biosample_ontology.classification&field=biosample_ontology.term_name&field=biosample_ontology.term_name&field=status&field=parent_of&limit=all'
                     );
                 } else {
                     // We already have biosample objects.
@@ -73,7 +74,7 @@ export const collectChildren = async (rootBiosample, session, sessionProperties)
             }
         }
     }
-    return totalBiosamples;
+    return _.uniq(totalBiosamples, (biosample) => biosample['@id']);
 };
 
 
@@ -139,7 +140,7 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
             const biosampleAtIds = biosampleChildren.map((biosample) => biosample['@id']).concat(context['@id']);
             requestObjects(
                 biosampleAtIds,
-                '/search/?type=Experiment&status=released&status=submitted&status=in+progress&field=accession&field=assay_term_name&field=replicates.library.biosample.@id&field=replicates.library.biosample.accession&field=biosample_ontology.term_name&field=target&field=description&field=title',
+                '/search/?type=Experiment&status=released&status=submitted&status=in+progress&field=accession&field=assay_term_name&field=replicates.library.biosample.@id&field=replicates.library.biosample.accession&field=biosample_ontology.term_name&field=target&field=description&field=title&field=lab.title&limit=all',
                 'replicates.library.biosample.@id'
             ).then((experiments) => {
                 setExperimentsUsing(experiments);
