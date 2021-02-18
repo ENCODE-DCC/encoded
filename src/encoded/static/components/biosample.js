@@ -56,7 +56,7 @@ export const collectChildren = async (rootBiosample, session, sessionProperties)
                     // the next level of the tree to reduce the size of the resulting search object.
                     layerBiosamples = await requestObjects(
                         layerContents,
-                        '/search/?type=Biosample&field=accession&field=biosample_ontology.classification&field=biosample_ontology.term_name&field=biosample_ontology.term_name&field=status&field=parent_of&limit=all'
+                        '/search/?type=Biosample&field=accession&field=biosample_ontology.classification&field=biosample_ontology.term_name&field=biosample_ontology.term_name&field=status&field=parent_of&field=summary&limit=all'
                     );
                 } else {
                     // We already have biosample objects.
