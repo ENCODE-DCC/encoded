@@ -116,6 +116,7 @@
         }
     },
     "boost_values": {
+        "accession": 1.0,
         "@type": 1.0,
         "assembly": 1.0,
         "genome_annotation": 1.0,

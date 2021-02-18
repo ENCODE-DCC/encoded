@@ -66,6 +66,7 @@ def includeme(config):
 
 
 DEFAULT_ITEM_TYPES = [
+    'Analysis',
     'AntibodyLot',
     'Award',
     'Biosample',
