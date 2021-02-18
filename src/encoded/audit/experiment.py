@@ -2954,7 +2954,9 @@ def audit_experiment_replicated(value, system, excluded_types):
             detail = ('This experiment is expected to be replicated, but '
                 'contains only one listed biological replicate.')
             level='NOT_COMPLIANT'
-            if value['biosample_ontology']['classification'] in ['tissue', 'primary cell']:
+            if value['assay_term_name'] == 'pooled clone sequencing':
+                level='WARNING'
+            elif value['biosample_ontology']['classification'] in ['tissue', 'primary cell']:
                 level='INTERNAL_ACTION'
             yield AuditFailure('unreplicated experiment', detail, level)
     return
