@@ -4,6 +4,7 @@
 
 * Restricted submission of *target* property to admins only.
 * Added *LRGASP* to the *internal_tags* enum
+* Added *doi* property
 
 ### Schema version 6
 

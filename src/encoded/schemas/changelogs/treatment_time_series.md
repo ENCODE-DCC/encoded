@@ -3,6 +3,7 @@
 ### Minor changes since schema version 18
 * Updated schema description.
 * Added *LRGASP* to the *internal_tags* enum
+* Added *doi* property
 
 ### Schema version 18
 

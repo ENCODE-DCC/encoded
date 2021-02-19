@@ -311,7 +311,8 @@
         "lab.title": 1.0,
         "references.title": 1.0,
         "notes": 1.0,
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/transgenic_enhancer_experiment.md"
 }

@@ -140,7 +140,8 @@
         "lab.institute_label": 1.0,
         "lab.title": 1.0,
         "internal_tags": 1.0,
-        "computational_model_type": 1.0
+        "computational_model_type": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/computational_model.md"
 
