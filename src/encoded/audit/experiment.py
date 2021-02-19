@@ -4757,37 +4757,38 @@ def audit_experiment_inconsistent_analysis_status(value, system, excluded_types)
                 f'but lacks a released analysis.'
             )
             yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
-    analysis_statuses = set()
-    released_analyses = []
-    released_analyses_links = []
-    for analysis in value['analysis_objects']:
-        analysis_statuses.add(analysis['status'])
-        if analysis.get('status') == 'released':
-            released_analyses.append(analysis['@id'])
-    released_analyses_links = ', '.join([audit_link(path_to_text(m), m) for m in released_analyses])
-    if len(released_analyses) > 1:
-        detail = (
-            f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has multiple '
-            f'released analyses {released_analyses_links}.'
-        )
-        yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
-    elif value['status'] in ['deleted', 'replaced',
-                             'archived', 'in progress',
-                             'submitted', 'revoked',
-                             ]:
-        if 'released' in analysis_statuses:
+    else:
+        analysis_statuses = set()
+        released_analyses = []
+        released_analyses_links = []
+        for analysis in value['analysis_objects']:
+            analysis_statuses.add(analysis['status'])
+            if analysis.get('status') == 'released':
+                released_analyses.append(analysis['@id'])
+        released_analyses_links = ', '.join([audit_link(path_to_text(m), m) for m in released_analyses])
+        if len(released_analyses) > 1:
             detail = (
-                f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is not '
-                f'released, but has a released analysis {released_analyses_links}.'
+                f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has multiple '
+                f'released analyses {released_analyses_links}.'
             )
             yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
-    if value['status'] == 'released':
-        if released_analyses == []:
-            detail = (
-                f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is released '
-                f'but lacks a released analysis.'
-            )
-            yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+        elif value['status'] in ['deleted', 'replaced',
+                                 'archived', 'in progress',
+                                 'submitted', 'revoked',
+                                 ]:
+            if 'released' in analysis_statuses:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is not '
+                    f'released, but has a released analysis {released_analyses_links}.'
+                )
+                yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+        if value['status'] == 'released':
+            if released_analyses == []:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is released '
+                    f'but lacks a released analysis.'
+                )
+                yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
 
 
 #######################
