@@ -66,6 +66,7 @@ class Biosample(Item):
         'part_of.characterizations.documents.submitted_by',
         'part_of.treatments.documents',
         'parent_of',
+        'parent_of.biosample_ontology',
         'pooled_from',
         'pooled_from.biosample_ontology',
         'characterizations.submitted_by',

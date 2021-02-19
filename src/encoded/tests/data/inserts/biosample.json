@@ -1088,6 +1088,7 @@
         "model_organism_health_status": "Healthy",
         "mouse_life_stage": "postnatal",
         "organism": "mouse",
+        "part_of": "ENCBS123AAC",
         "source": "len-pennacchio",
         "submitted_by": "ipsum.mi@torquent.eleifend",
         "uuid": "bc5b62f7-ce28-4a1e-b6b3-93c9c5a86d7a"
@@ -1106,6 +1107,7 @@
         "model_organism_health_status": "Healthy",
         "mouse_life_stage": "embryonic",
         "organism": "mouse",
+        "part_of": "ENCBS123AAA",
         "source": "len-pennacchio",
         "submitted_by": "ipsum.mi@torquent.eleifend",
         "uuid": "b8d504af-5af8-4f6e-b250-9980085bee80"
