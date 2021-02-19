@@ -2,9 +2,11 @@ import pytest
 
 
 @pytest.fixture
-def analysis_step_run_with_no_status(analysis_step_version):
+def analysis_step_run_with_no_status(analysis_step_version, lab, award):
     return {
-        'analysis_step_version': analysis_step_version['@id']
+        'analysis_step_version': analysis_step_version['@id'],
+        'award': award['@id'],
+        'lab': lab['@id']
     }
 
 
