@@ -88,6 +88,10 @@ export const compileAnalyses = (experiment, files) => {
             // that lab. Also form the lab title here, prepending with the rfa (e.g. ENCODE3) for
             // `UNIFORM_PIPELINE_LAB`.
             const analysesByLab = _(qualifyingAnalyses).groupBy((analysis) => {
+                // handles rare case title is not set
+                if (!analysis.title) {
+                    return 'untitled-1.0.0';
+                }
                 // handles mixed and lab custom
                 if (!analysis.title.includes('ENCODE')) {
                     return `${analysis.title}`;
@@ -96,7 +100,7 @@ export const compileAnalyses = (experiment, files) => {
                 const pipelineInfo = analysis.pipeline_version ? '' : 'v1.0.0';
                 const titleComponents = analysis.title.split(' ');
 
-                return `${titleComponents[0]} ${pipelineInfo} ${_.rest(titleComponents, 1).join(' ')}`;
+                return `${titleComponents[0]} ${pipelineInfo} ${_.rest(titleComponents, 1).join(' ')}`.trim();
             });
 
             // Fill in the compiled object with the labs that group the files.
@@ -2425,7 +2429,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
     */
     useMount(() => {
         const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
-        const analysesAwarded = analyses.filter((analysis) => awardSuffix.some((award) => analysis.title.includes(award)));
+        const analysesAwarded = analyses.filter((analysis) => awardSuffix.some((award) => (analysis.title || '').includes(award)));
 
         // a bit hacky, removes text and use number to determine sorting
         const sortedAnalysesAwarded = analysesAwarded.sort((a, b) => {
@@ -2446,7 +2450,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
 
         awardSuffix.every((award) => {
             sortedAnalysesAwarded.every((analysis) => {
-                selectedAnalysis = analysis.title.includes(award) ? analysis : null;
+                selectedAnalysis = analysis.title && analysis.title.includes(award) ? analysis : null;
 
                 return !selectedAnalysis; // kills loop if this evaluates to true
             });
