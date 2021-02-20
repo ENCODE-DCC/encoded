@@ -257,7 +257,8 @@
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
         "internal_tags": 1.0,
-        "description": 3.0
+        "description": 3.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/differentiation_series.md"
 }
