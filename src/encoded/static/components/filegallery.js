@@ -71,7 +71,7 @@ const inclusionStatuses = [
  *      files: Array of files selected with the pipeline lab and assembly
  * }
  */
-export const compileAnalyses = (experiment, files) => {
+export const compileAnalyses = (experiment, files, dataFormat = null) => {
     let compiledAnalyses = [];
     if (experiment.analysis_objects && experiment.analysis_objects.length > 0) {
         // Get all the analysis objects that qualify for inclusion in the Pipeline facet.
@@ -87,21 +87,7 @@ export const compileAnalyses = (experiment, files) => {
             // an object key with the value of an array containing all analysis objects included in
             // that lab. Also form the lab title here, prepending with the rfa (e.g. ENCODE3) for
             // `UNIFORM_PIPELINE_LAB`.
-            const analysesByLab = _(qualifyingAnalyses).groupBy((analysis) => {
-                // handles rare case title is not set
-                if (!analysis.title) {
-                    return 'untitled-1.0.0';
-                }
-                // handles mixed and lab custom
-                if (!analysis.title.includes('ENCODE')) {
-                    return `${analysis.title}`;
-                }
-
-                const pipelineInfo = analysis.pipeline_version ? '' : 'v1.0.0';
-                const titleComponents = analysis.title.split(' ');
-
-                return `${titleComponents[0]} ${pipelineInfo} ${_.rest(titleComponents, 1).join(' ')}`.trim();
-            });
+            const analysesByLab = _(qualifyingAnalyses).groupBy((analysis) => analysis.title);
 
             // Fill in the compiled object with the labs that group the files.
             compiledAnalyses = [];
@@ -115,13 +101,16 @@ export const compileAnalyses = (experiment, files) => {
                     // annotation and add each to the compiled list. Filter out any not included in
                     // the experiment's files.
                     const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analysis) => accFiles.concat(analysis.files), []).filter((file) => fileIds.includes(file)));
-                    const { status } = analysesByAssembly[assembly][0];
+                    // eslint-disable-next-line camelcase
+                    const { status, accession, pipeline_award_rfas } = analysesByAssembly[assembly][0];
 
                     compiledAnalyses.push({
                         title: `${pipelineLab}`,
                         pipelineLab,
                         assembly,
                         status,
+                        accession,
+                        pipelineAwardRfa: pipeline_award_rfas[0] || '',
                         assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assembly, analysesByAssembly[assembly][0].genome_annotation),
                         files: _.uniq(assemblyFiles),
                     });
@@ -129,6 +118,33 @@ export const compileAnalyses = (experiment, files) => {
             });
         }
     }
+
+    if (dataFormat === 'choose analysis') {
+        const combinedRfaAndAssembly = (rfa, assembly) => `${rfa} ${assembly}`;
+        const rfaAndAssembly = compiledAnalyses.map((compiledAnalyse) => combinedRfaAndAssembly(compiledAnalyse.pipelineAwardRfa, compiledAnalyse.assembly));
+        const duplicatedRfaAndAssembly = _.filter(rfaAndAssembly, (val, i, iteratee) => _.includes(iteratee, val, i + 1));
+
+        if (duplicatedRfaAndAssembly) {
+            compiledAnalyses = compiledAnalyses.map((compiledAnalyse) => {
+                const c = { ...compiledAnalyse };
+                if (duplicatedRfaAndAssembly.includes(combinedRfaAndAssembly(compiledAnalyse.pipelineAwardRfa, compiledAnalyse.assembly))) {
+                    const { title, accession } = compiledAnalyse;
+                    c.title = `${title} (${accession})`;
+                }
+                return c;
+            });
+        }
+    }
+
+    if (dataFormat === 'processed data') {
+        compiledAnalyses = compiledAnalyses.map((compiledAnalyse) => {
+            const { title, accession } = compiledAnalyse;
+            const c = { ...compiledAnalyse };
+            c.title = `${title} (${accession})`;
+            return c;
+        });
+    }
+
     return _(compiledAnalyses).sortBy((compiledAnalysis) => -compiledAnalysis.assemblyAnnotationValue);
 };
 
@@ -284,7 +300,7 @@ export class FileTable extends React.Component {
 
             const analysisObjectKeys = Object.keys(files).filter((file) => file.includes('ENCAN'));
             const otherKeys = Object.keys(files).filter((file) => file === nonAnalysisObjectPrefix); // all files not parts of an analysis object
-            const compileAnalysis = compileAnalyses(context, datasetFiles);
+            const compileAnalysis = compileAnalyses(context, datasetFiles, 'processed data');
 
             const getAnalysisName = (fileData) => {
                 const fileList = fileData.map((f) => f['@id']);
@@ -3007,7 +3023,7 @@ class FileGalleryRendererComponent extends React.Component {
                     // Update compiled analyses filtered by available assemblies
                     if (context.analysis_objects && context.analysis_objects.length > 0) {
                         const availableAssemblies = Object.keys(assemblyList);
-                        availableCompiledAnalyses = compileAnalyses(context, allFiles).filter((analysis) => availableAssemblies.includes(analysis.assembly));
+                        availableCompiledAnalyses = compileAnalyses(context, allFiles, 'choose analysis').filter((analysis) => availableAssemblies.includes(analysis.assembly));
                     }
                     if (availableCompiledAnalyses.length > 0) {
                         // Update the list of relevant compiled analyses and use it to select an
