@@ -351,38 +351,39 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
-                        {[analysisObjectKeys, otherKeys].map((keys) => keys.map((key) => <SortTable
-                            title={
-                                <CollapsingTitle
-                                    title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(files[key])} Processed data`}
-                                    collapsed={this.state.collapsed[key]}
-                                    handleCollapse={() => this.handleCollapse(key)}
-                                    context={context}
-                                    analysisObjectKey={key}
-                                    filters={filters}
-                                    totalFiles={files && files[key] ? files[key].length : 0}
-                                    isDownloadable={key !== nonAnalysisObjectPrefix}
-                                    inclusionOn={inclusionOn}
-                                />
-                            }
-                            rowClasses={this.rowClasses}
-                            collapsed={this.state.collapsed[key]}
-                            list={files[key]}
-                            columns={FileTable.procTableColumns}
-                            sortColumn="default"
-                            meta={{
-                                encodevers,
-                                replicationType: context.replication_type,
-                                hoverDL: this.hoverDL,
-                                restrictedTip: this.state.restrictedTip,
-                                fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
-                                graphedFiles,
-                                browserOptions,
-                                loggedIn,
-                                isAuthorized,
-                                adminUser,
-                            }}
-                        />))}
+                        {[analysisObjectKeys, otherKeys].map((keys) => keys.map((key) => (
+                            <SortTable
+                                title={
+                                    <CollapsingTitle
+                                        title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(files[key])} Processed data`}
+                                        collapsed={this.state.collapsed[key]}
+                                        handleCollapse={() => this.handleCollapse(key)}
+                                        context={context}
+                                        analysisObjectKey={key}
+                                        filters={filters}
+                                        totalFiles={files && files[key] ? files[key].length : 0}
+                                        isDownloadable={key !== nonAnalysisObjectPrefix}
+                                        inclusionOn={inclusionOn}
+                                    />
+                                }
+                                rowClasses={this.rowClasses}
+                                collapsed={this.state.collapsed[key]}
+                                list={files[key]}
+                                columns={FileTable.procTableColumns}
+                                sortColumn="default"
+                                meta={{
+                                    encodevers,
+                                    replicationType: context.replication_type,
+                                    hoverDL: this.hoverDL,
+                                    restrictedTip: this.state.restrictedTip,
+                                    fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
+                                    graphedFiles,
+                                    browserOptions,
+                                    loggedIn,
+                                    isAuthorized,
+                                    adminUser,
+                                }}
+                            />)))}
                         <SortTable
                             title={
                                 <CollapsingTitle
