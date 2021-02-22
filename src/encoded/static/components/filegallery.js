@@ -61,10 +61,13 @@ const inclusionStatuses = [
  * labs. Export for Jest test.
  * @param {object} experiment Contains the analyses to convert into an pipeline labs dropdown
  * @param {array} files Array of all files from search that gets included in file gallery
+ * @dataFormat{string} Massages data to a be in a particular strucuture if set
  *
  * @return {array} Compiled analyses information, each element with the form:
  * {
- *      title: Analyses dropdown title -- `pipelineLab`+`assembly`
+ *      title: Analyses dropdown title -- `pipelineLab`+`assembly` (if dataFormat is falsey)
+ *             Analyses dropdown title + (accession) (if dataFormat = 'choose analysis' and the drop down has duplicate assembly and RFA, otherwise it's the regular title)
+ *             Analyses dropdown title + (accession) (if dataFormat = 'processed data')
  *      pipelineLab: Pipeline processing lab title, e.g. "ENCODE4 uniform"
  *      assembly: Assembly and annotation string matching assembly facet terms
  *      assemblyAnnotationValue: Value used to sort the compiled analyses
