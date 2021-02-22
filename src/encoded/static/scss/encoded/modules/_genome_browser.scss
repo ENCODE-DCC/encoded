@@ -373,11 +373,15 @@ a {
 }
 
 .gb-info {
-    margin: 0;
+    margin: 1px 0 0 0;
     padding: 0;
     list-style: none;
     font-size: 0.8rem;
     color: #606060;
+
+    ul {
+        line-height: 12px;
+    }
 
     > li {
         margin: 2px 0;
