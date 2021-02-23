@@ -306,7 +306,7 @@ class RawSequenceFile(DataFile):
 class MatrixFile(AnalysisFile):
     item_type = 'matrix_file'
     schema = load_schema('encoded:schemas/matrix_file.json')
-    embedded = AnalysisFile.embedded + ['cell_annotations', 'cell_annotations.cell_ontology']
+    embedded = AnalysisFile.embedded + ['cell_annotations', 'cell_annotations.cell_ontology', 'experimental_variable_disease']
     rev = {
         'cell_annotations': ('CellAnnotation', 'matrix_files'),
         'quality_metrics': ('Metrics', 'quality_metric_of')
