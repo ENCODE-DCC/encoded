@@ -8,6 +8,16 @@ from .base import (
 )
 
 
+def pluralize(value, value_units):
+    try:
+        if float(value) == 1:
+            return str(value) + ' ' + value_units
+        else:
+            return str(value) + ' ' + value_units + 's'
+    except:
+        return str(value) + ' ' + value_units + 's'
+
+
 @collection(
     name='treatments',
     properties={
@@ -30,13 +40,22 @@ class Treatment(Item):
             amount=None, amount_units=None, temperature=None, temperature_units=None):
         summ = []
         if amount:
-            amt = '{} {} of'.format(amount, amount_units)
+            a = str(amount)
+            if a.endswith('.0'):
+                a = a[:-2]
+            amt = '{} {} of'.format(a, amount_units)
             summ.append(amt)
         summ.append(treatment_term_name)
         if duration:
-            dur = 'for {} {}'.format(duration, duration_units)
+            d = str(duration)
+            if d.endswith('.0'):
+                d = d[:-2]
+            dur = 'for {}'.format(pluralize(d, duration_units))
             summ.append(dur)
         if temperature:
-            temp = 'at {} {}'.format(temperature, temperature_units)
+            t = str(temperature)
+            if t.endswith('.0'):
+                t = t[:-2]
+            temp = 'at {} {}'.format(t, temperature_units)
             summ.append(temp)
         return ' '.join(summ)

@@ -12,6 +12,16 @@ from .shared_calculated_properties import (
 )
 
 
+def pluralize(value, value_units):
+    try:
+        if float(value) == 1:
+            return str(value) + ' ' + value_units
+        else:
+            return str(value) + ' ' + value_units + 's'
+    except:
+        return str(value) + ' ' + value_units + 's'
+
+
 @abstract_collection(
     name='biosamples',
     unique_key='accession',
@@ -47,14 +57,15 @@ class Biosample(Item, CalculatedDonors):
                     amt = str(t_obj['amount'])
                     if amt.endswith('.0'):
                         amt = amt[:-2]
-                    summ += (amt + ' ' + t_obj['amount_units'] + ' of ')
+                    a_units = t_obj['amount_units']
+                    summ += (amt + ' ' + a_units + ' of ')
                 summ += (t_obj.get('treatment_term_name'))
 
                 if t_obj.get('duration'):
                     d = str(t_obj['duration'])
                     if d.endswith('.0'):
                         d = d[:-2]
-                    dur = d + ' ' + t_obj['duration_units']
+                    dur = pluralize(d, t_obj['duration_units'])
                 else:
                     dur = 'none'
 
