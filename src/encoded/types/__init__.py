@@ -66,17 +66,6 @@ class Organism(Item):
 
 
 @collection(
-    name='treatments',
-    properties={
-        'title': 'Treatments',
-        'description': 'Listing Biosample Treatments',
-    })
-class Treatment(Item):
-    item_type = 'treatment'
-    schema = load_schema('encoded:schemas/treatment.json')
-
-
-@collection(
     name='documents',
     properties={
         'title': 'Documents',

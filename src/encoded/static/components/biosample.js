@@ -118,13 +118,6 @@ class BiosampleComponent extends React.Component {
                                         <dd>{context.fixed}</dd>
                                     </div>
                                 : null}
-
-                                {context.donors ?
-                                    <div data-test="donors">
-                                        <dt>Donors</dt>
-                                        <dd>{context.donors}</dd>
-                                    </div>
-                                : null}
                             </dl>
                         </div>
 

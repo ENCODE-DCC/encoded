@@ -253,10 +253,17 @@ const Abstract = (props) => {
                 </div>
             : null}
 
-            {context.identifiers && context.identifiers.length > 0 ?
-                <div data-test="references">
-                    <dt>References</dt>
-                    <dd><DbxrefList context={context} dbxrefs={context.identifiers} addClasses="multi-value" /></dd>
+            {context.doi ?
+                <div data-test="doireference">
+                    <dt>DOI</dt>
+                    <dd><a href={'https://doi.org/doi:'.concat(context.doi)}>{context.doi}</a></dd>
+                </div>
+            : null}
+
+            {context.pmid ?
+                <div data-test="pmreference">
+                    <dt>PubMed ID</dt>
+                    <dd><a href={'https://www.ncbi.nlm.nih.gov/pubmed/?term='.concat(context.pmid)}>{context.pmid}</a></dd>
                 </div>
             : null}
         </dl>

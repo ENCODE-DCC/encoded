@@ -94,9 +94,6 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
-        "summary": {
-            "title": "Summary"
-        },
         "description": {
             "title": "Description"
         },

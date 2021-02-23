@@ -254,7 +254,7 @@ class SequenceAlignmentFile(AnalysisFile):
 class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
-    embedded = DataFile.embedded + []
+    embedded = DataFile.embedded + ['derived_from', 'derived_from.flowcell_details']
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",

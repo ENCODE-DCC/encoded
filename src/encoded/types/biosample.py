@@ -25,8 +25,54 @@ class Biosample(Item, CalculatedDonors):
     rev = {}
     embedded = [
         'biosample_ontology',
-        'diseases'
+        'diseases',
+        'donors',
+        'donors.organism'
     ]
+
+    @calculated_property(schema={
+        "title": "Treatment summary",
+        "description": "A summary of the treatments applied to the Biosample.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "notSubmittable": True,
+    })
+    def treatment_summary(self, request, treatments=None):
+        if treatments:
+            dur_dict = {}
+            for t in treatments:
+                t_obj = request.embed(t, '@@object?skip_calculated=true')
+                summ = ''
+                if t_obj.get('amount'):
+                    amt = str(t_obj['amount'])
+                    if amt.endswith('.0'):
+                        amt = amt[:-2]
+                    summ += (amt + ' ' + t_obj['amount_units'] + ' of ')
+                summ += (t_obj.get('treatment_term_name'))
+
+                if t_obj.get('duration'):
+                    d = str(t_obj['duration'])
+                    if d.endswith('.0'):
+                        d = d[:-2]
+                    dur = d + ' ' + t_obj['duration_units']
+                else:
+                    dur = 'none'
+
+                if dur_dict.get(dur):
+                    if t_obj.get('amount'):
+                        dur_dict[dur].append(summ)
+                    else:
+                        dur_dict[dur].insert(0, summ)
+                else:
+                    dur_dict[dur] = [summ]
+
+            ovr = []
+            for k,v in dur_dict.items():
+                temp = (' and '.join(v))
+                if k != 'none':
+                    temp += (' for ' + k)
+                ovr.append(temp)
+            return ('; '.join(ovr))
 
 
 @abstract_collection(

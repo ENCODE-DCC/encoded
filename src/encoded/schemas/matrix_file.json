@@ -176,6 +176,12 @@
                 "X_tsne"
             ]
         },
+        "experimental_variable_disease": {
+            "title": "Experimental variable disease",
+            "description": "The primary disease variable used in the analysis of data within this matrix, distinguishing the disease group from the control, or normal, group.",
+            "type": "string",
+            "linkTo": "OntologyTerm"
+        },
         "layers": {
             "title": "Layers",
             "description": "",
@@ -188,7 +194,7 @@
                 "properties": {
                     "label": {
                         "title": "Label",
-                        "description": "",
+                        "description": "For AnnData h5ad final matrix files, the name used to describe the layer. Required for a layer that is not raw counts and is not the visualization layer.",
                         "type": "string"
                     },
                     "assay": {
@@ -310,10 +316,11 @@
                                         "percent ribosomal protein large subunits",
                                         "percent ribosomal protein small subunits",
                                         "fragments in peaks/nuclei",
-                                        "percent in peaks/nuclei",
+                                        "percent fragments in peaks/nuclei",
                                         "TSS enrichment score/nuclei",
                                         "blacklist ratio/nuclei",
                                         "doublet score/nuclei",
+                                        "nucleosome signal/nuclei",
                                         "per batch distribution percent genes/cell",
                                         "per batch distribution percent genes/nuclei",
                                         "per batch distribution percent umi/cell",

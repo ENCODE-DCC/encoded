@@ -3,6 +3,7 @@
         "aliases": [
             "anna-greka:large_test_dataset"
         ],
+        "dataset_title": "The best dataset around",
         "description": "Human, mouse, and CITEseq large dataset",
         "accession": "LATDS700BBB",
         "uuid": "062a566c-89f9-4d23-b0a5-aa38026fb37e",

@@ -23,5 +23,7 @@ class Suspension(Item, CalculatedDonors, CalculatedBiosampleOntologies):
     item_type = 'suspension'
     schema = load_schema('encoded:schemas/suspension.json')
     embedded = [
-        'biosample_ontologies'
+        'biosample_ontologies',
+        'donors',
+        'donors.organism'
     ]

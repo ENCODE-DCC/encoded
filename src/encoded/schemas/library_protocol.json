@@ -177,7 +177,7 @@
             ]
         },
         "polyA_selection": {
-            "title": "PolyA selection",
+            "title": "polyA selection",
             "description": "A flag to indicate whether or not there was step in the experimental protocol to select for polyA in the mRNA.",
             "type": "boolean"
         },
