@@ -2991,6 +2991,11 @@ def audit_experiment_replicates_with_no_libraries(value, system, excluded_types)
 def audit_experiment_isogeneity(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
+    if 'replicates' in value:
+        for rep in value['replicates']:
+            if 'library' in rep:
+                if 'mixed_biosamples' in rep['library']:
+                    return
     if value.get('replication_type') is None:
         detail = ('In experiment {} the replication_type'
             ' cannot be determined'.format(

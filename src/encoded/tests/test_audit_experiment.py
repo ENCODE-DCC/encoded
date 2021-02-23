@@ -4341,3 +4341,15 @@ def test_audit_experiment_chia_encode4_qc_standards(
     res2 = testapp.get(ChIA_PET_experiment['@id'] + '@@index-data')
     audit_errors = collect_audit_errors(res2)
     assert 'low read pairs' not in (error['category'] for error in audit_errors)
+
+
+def test_audit_experiment_mixed_biosamples_replication_type(testapp, base_experiment, biosample_1,
+                                                            biosample_2, base_replicate,
+                                                            library_no_biosample):
+    # https://encodedcc.atlassian.net/browse/ENCD-5706
+    testapp.patch_json(library_no_biosample['@id'], {
+        'mixed_biosamples': [biosample_1['@id'], biosample_2['@id']]})
+    testapp.patch_json(base_replicate['@id'], {'library': library_no_biosample['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'undetermined replication_type'
+               for error in collect_audit_errors(res))
