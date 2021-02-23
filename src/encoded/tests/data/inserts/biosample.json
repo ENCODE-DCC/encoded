@@ -1266,5 +1266,45 @@
         "status": "released",
         "submitted_by": "mus.mi@porttitor.molestie",
         "uuid": "2ee9acb1-6a04-4226-ac62-afcf1e1f5db3"
+    },
+    {
+        "accession": "ENCBS972CAB",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "cab31060-9794-4d8c-9f8f-d1726790c1a8"
+    },
+    {
+        "accession": "ENCBS375PCM",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000897",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "79ce360f-8173-47c1-be89-42f732b31105"
+    },
+    {
+        "accession": "ENCBS979OUG",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "treatments": ["373bf377-6f76-4dd9-a956-b4c1ded4b2c0"],
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "caeab93d-6909-40f6-9658-d0ee9d7a69a2"
     }
 ]

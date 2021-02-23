@@ -179,5 +179,20 @@
         "treatment_type": "protein",
         "purpose": "stimulation",
         "uuid": "1d2a0ab4-412c-4646-87f9-858dfaaa7c06"
+    },
+    {
+        "aliases": [
+            "michael-snyder:Interleukin-2"
+        ],
+        "amount": 50,
+        "amount_units": "μg/mL",
+        "duration": 48,
+        "duration_units": "hour",
+        "purpose": "activation",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "UniProtKB:P60568",
+        "treatment_term_name": "Interleukin-2",
+        "treatment_type": "protein",
+        "uuid": "373bf377-6f76-4dd9-a956-b4c1ded4b2c0"
     }
 ]

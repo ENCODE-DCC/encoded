@@ -1160,5 +1160,44 @@
         "date_released": "2015-08-31",
         "biosample_ontology": "tissue_UBERON_0001891",
         "assay_term_name": "single-nucleus RNA-seq"
+    },
+    {
+        "_test": "ATAC-seq reg Tcell",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "status": "released",
+        "date_submitted": "2020-08-14",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "award": "UM1HG009442",
+        "assay_term_name": "ATAC-seq",
+        "lab": "/labs/michael-snyder/",
+        "date_released": "2020-09-11",
+        "accession": "ENCSR263RTC",
+        "uuid": "d829f093-ea4e-4079-99be-b848e028c1ec"
+    },
+    {
+        "_test": "ATAC-seq memory Tcell",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "status": "released",
+        "date_submitted": "2020-08-14",
+        "biosample_ontology": "primary_cell_CL_0000897",
+        "award": "UM1HG009442",
+        "assay_term_name": "ATAC-seq",
+        "lab": "/labs/michael-snyder/",
+        "date_released": "2020-09-11",
+        "accession": "ENCSR897MTC",
+        "uuid": "1a550dbb-f12a-40bc-bced-2d82c877cd0c"
+    },
+    {
+        "_test": "ATAC-seq activated reg Tcell",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "status": "released",
+        "date_submitted": "2020-08-14",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "award": "UM1HG009442",
+        "assay_term_name": "ATAC-seq",
+        "lab": "/labs/michael-snyder/",
+        "date_released": "2020-09-11",
+        "accession": "ENCSR309ART",
+        "uuid": "cd18b797-db64-458a-b117-10de5210130a"
     }
 ]
