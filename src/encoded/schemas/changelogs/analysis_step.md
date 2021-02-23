@@ -4,6 +4,7 @@
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
 * Added *nanopore signal* to the enum list for *input_file_types*
 * Added *index reads* to the enum list for *input_file_types*
+* Added *guide quantifications*, *perturbation signal*, *element gene interactions signal*, and *element gene interactions p-value* to the enum list for *input_file_types* and *output_file_types*
 
 ### Schema version 14
 * *input_file_types: pseudo-replicated peaks* was updated to *input_file_types: pseudoreplicated peaks*
