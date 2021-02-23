@@ -90,7 +90,7 @@ export const compileAnalyses = (experiment, files, dataFormat = null) => {
             // an object key with the value of an array containing all analysis objects included in
             // that lab. Also form the lab title here, prepending with the rfa (e.g. ENCODE3) for
             // `UNIFORM_PIPELINE_LAB`.
-            const analysesByLab = _(qualifyingAnalyses).groupBy((analysis) => analysis.title);
+            const analysesByLab = _(qualifyingAnalyses).groupBy((analysis) => analysis.accession);
 
             // Fill in the compiled object with the labs that group the files.
             compiledAnalyses = [];
@@ -105,10 +105,10 @@ export const compileAnalyses = (experiment, files, dataFormat = null) => {
                     // the experiment's files.
                     const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analysis) => accFiles.concat(analysis.files), []).filter((file) => fileIds.includes(file)));
                     // eslint-disable-next-line camelcase
-                    const { status, accession, pipeline_award_rfas } = analysesByAssembly[assembly][0];
+                    const { status, accession, pipeline_award_rfas, title } = analysesByAssembly[assembly][0];
 
                     compiledAnalyses.push({
-                        title: `${pipelineLab}`,
+                        title,
                         pipelineLab,
                         assembly,
                         status,
@@ -123,14 +123,13 @@ export const compileAnalyses = (experiment, files, dataFormat = null) => {
     }
 
     if (dataFormat === 'choose analysis') {
-        const combinedRfaAndAssembly = (rfa, assembly) => `${rfa} ${assembly}`;
-        const rfaAndAssembly = compiledAnalyses.map((compiledAnalyse) => combinedRfaAndAssembly(compiledAnalyse.pipelineAwardRfa, compiledAnalyse.assembly));
-        const duplicatedRfaAndAssembly = _.filter(rfaAndAssembly, (val, i, iteratee) => _.includes(iteratee, val, i + 1));
+        const titles = compiledAnalyses.map((compiledAnalyse) => compiledAnalyse.title);
+        const duplicatedTitles = _.filter(titles, (val, i, iteratee) => _.includes(iteratee, val, i + 1));
 
-        if (duplicatedRfaAndAssembly) {
+        if (duplicatedTitles.length > 0) {
             compiledAnalyses = compiledAnalyses.map((compiledAnalyse) => {
                 const c = { ...compiledAnalyse };
-                if (duplicatedRfaAndAssembly.includes(combinedRfaAndAssembly(compiledAnalyse.pipelineAwardRfa, compiledAnalyse.assembly))) {
+                if (duplicatedTitles.includes(compiledAnalyse.title)) {
                     const { title, accession } = compiledAnalyse;
                     c.title = `${title} (${accession})`;
                 }
@@ -268,7 +267,15 @@ export class FileTable extends React.Component {
             });
             const filteredCount = datasetFiles.length;
             const analysisObjectsFiles = context.analysis_objects
-                ? context.analysis_objects.map((analysisObject) => ({
+                ? context.analysis_objects.sort((a, b) => {
+                    if (a.status === 'released') {
+                        return -1;
+                    }
+                    if (b.status === 'released') {
+                        return 1;
+                    }
+                    return 0;
+                }).map((analysisObject) => ({
                     accession: analysisObject.accession,
                     files: analysisObject.files,
                 }))
@@ -305,9 +312,8 @@ export class FileTable extends React.Component {
             const otherKeys = Object.keys(files).filter((file) => file === nonAnalysisObjectPrefix); // all files not parts of an analysis object
             const compileAnalysis = compileAnalyses(context, datasetFiles, 'processed data');
 
-            const getAnalysisName = (fileData) => {
-                const fileList = fileData.map((f) => f['@id']);
-                const selectedAnalysis = compileAnalysis.find((c) => c.files.some((file) => (fileList || []).includes(file)));
+            const getAnalysisName = (accession) => {
+                const selectedAnalysis = compileAnalysis.find((c) => c.accession === accession);
 
                 return selectedAnalysis ? selectedAnalysis.title : '';
             };
@@ -354,11 +360,11 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
-                        {[analysisObjectKeys, otherKeys].map((keys) => keys.map((key) => (
+                        {[...analysisObjectKeys, ...otherKeys].map((key) => (
                             <SortTable
                                 title={
                                     <CollapsingTitle
-                                        title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(files[key])} Processed data`}
+                                        title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)} Processed data`}
                                         collapsed={this.state.collapsed[key]}
                                         handleCollapse={() => this.handleCollapse(key)}
                                         context={context}
@@ -386,7 +392,7 @@ export class FileTable extends React.Component {
                                     isAuthorized,
                                     adminUser,
                                 }}
-                            />)))}
+                            />))}
                         <SortTable
                             title={
                                 <CollapsingTitle
@@ -2435,7 +2441,7 @@ function createFacetObject(propertyKey, fileList, filters) {
  * Display the analyses selector, a dropdown menu to choose which pipeline lab's files to view in
  * the file association graph.
  */
-const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef }) => {
+const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection }) => {
     React.useEffect(() => {
         if (selectedAnalysesIndex === -1 && analyses.length > 0) {
             // No selected pipeline lab analyses, but if we have at least one qualifying one,
@@ -2497,7 +2503,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
         analyses.length > 0 ?
             <div className="analyses-selector analyses-selector--file-gallery-facets">
                 <h4>Choose analysis</h4>
-                <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection} ref={analysisSelectorRef}>
+                <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection}>
                     {analyses.map((analysis, index) => {
                         const text = `${analysis.title} ${analysis.status === 'released' ? '🟢' : '⚪'}`;
 
@@ -2520,12 +2526,11 @@ AnalysesSelector.propTypes = {
     selectedAnalysesIndex: PropTypes.number.isRequired,
     /** Called when the user chooses a pipeline lab from the menu */
     handleAnalysesSelection: PropTypes.func.isRequired,
-    analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
 };
 
 
 const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef } = props;
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection } = props;
 
     // Filter file list to make sure it includes only files that should be displayed
     let fileList = allFiles;
@@ -2557,7 +2562,7 @@ const TabPanelFacets = (props) => {
     const selector = currentTab === 'tables'
         ? ''
         : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0
-            ? <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} analysisSelectorRef={analysisSelectorRef} />
+            ? <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} />
             :
             <>
                 <h4>Choose an assembly </h4>
@@ -2601,7 +2606,6 @@ TabPanelFacets.propTypes = {
     selectedAnalysesIndex: PropTypes.number.isRequired,
     /** Function to call when the user changes the currently selected pipeline lab analyses */
     handleAnalysesSelection: PropTypes.func.isRequired,
-    analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
 };
 
 TabPanelFacets.defaultProps = {
@@ -2663,8 +2667,6 @@ class FileGalleryRendererComponent extends React.Component {
         /** Used to see if related_files has been updated */
         this.prevRelatedFiles = [];
         this.relatedFilesRequested = false;
-
-        this.analysisSelectorRef = React.createRef();
 
         // Bind `this` to non-React methods.
         this.setInfoNodeId = this.setInfoNodeId.bind(this);
@@ -2972,15 +2974,6 @@ class FileGalleryRendererComponent extends React.Component {
             let allFiles = datasetFiles.concat(relatedFiles);
             allFiles = this.filterForInclusion(allFiles);
 
-            const compiledAnalysis = compileAnalyses(context, allFiles);
-            const dropdown = this.analysisSelectorRef.current;
-            const selectedIndex = dropdown ? dropdown.selectedIndex : null;
-            const compileAnalysisFiles = selectedIndex ? compiledAnalysis[selectedIndex].files : null;
-
-            const filterFilesByAnalysis = (files) => (!compileAnalysisFiles
-                    ? files
-                    : files.filter((file) => compileAnalysisFiles.some((b) => b === file['@id'])));
-
             // If there are filters, filter the new files
             let filteredFiles = allFiles;
             const graphFiles = allFiles;
@@ -2988,9 +2981,9 @@ class FileGalleryRendererComponent extends React.Component {
             if (Object.keys(this.state.fileFilters).length > 0) {
                 Object.keys(this.state.fileFilters).forEach((fileFilter) => {
                     if (fileFilter === 'assembly') {
-                        filesFilteredByAssembly = filterFilesByAnalysis(filterItems(filesFilteredByAssembly, fileFilter, this.state.fileFilters[fileFilter]));
+                        filesFilteredByAssembly = filterItems(filesFilteredByAssembly, fileFilter, this.state.fileFilters[fileFilter]);
                     }
-                    filteredFiles = filterFilesByAnalysis(filterItems(filteredFiles, fileFilter, this.state.fileFilters[fileFilter]));
+                    filteredFiles = filterItems(filteredFiles, fileFilter, this.state.fileFilters[fileFilter]);
                 });
             }
 
@@ -3247,7 +3240,6 @@ class FileGalleryRendererComponent extends React.Component {
                             analyses={this.state.compiledAnalyses}
                             selectedAnalysesIndex={this.state.selectedAnalysesIndex}
                             handleAnalysesSelection={this.handleAnalysesSelection}
-                            analysisSelectorRef={this.analysisSelectorRef}
                         />
                         <TabPanel
                             tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
