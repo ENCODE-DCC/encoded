@@ -4745,6 +4745,52 @@ def audit_experiment_mixed_strand_specific_libraries(value, system, excluded_typ
     return
 
 
+def audit_experiment_inconsistent_analysis_status(value, system, excluded_types):
+    '''
+    Experiments that are released should have exactly 1 released analysis object.
+    Unreleased experiments should not have any released analysis object(s).
+    '''
+    if 'analysis_objects' not in value:
+        if value['status'] == 'released':
+            detail = (
+                f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is released '
+                f'but lacks a released analysis.'
+            )
+            yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+    else:
+        analysis_statuses = set()
+        released_analyses = []
+        released_analyses_links = []
+        for analysis in value['analysis_objects']:
+            analysis_statuses.add(analysis['status'])
+            if analysis.get('status') == 'released':
+                released_analyses.append(analysis['@id'])
+        released_analyses_links = ', '.join([audit_link(path_to_text(m), m) for m in released_analyses])
+        if len(released_analyses) > 1:
+            detail = (
+                f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has multiple '
+                f'released analyses {released_analyses_links}.'
+            )
+            yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+        elif value['status'] in ['deleted', 'replaced',
+                                 'archived', 'in progress',
+                                 'submitted', 'revoked',
+                                 ]:
+            if 'released' in analysis_statuses:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is not '
+                    f'released, but has a released analysis {released_analyses_links}.'
+                )
+                yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+        if value['status'] == 'released':
+            if released_analyses == []:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is released '
+                    f'but lacks a released analysis.'
+                )
+                yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+
+
 #######################
 # utilities
 #######################
@@ -5410,7 +5456,8 @@ function_dispatcher_without_files = {
     'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range,
     'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
     'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed,
-    'audit_mixed_strand_specificities': audit_experiment_mixed_strand_specific_libraries
+    'audit_mixed_strand_specificities': audit_experiment_mixed_strand_specific_libraries,
+    'audit_inconsistent_analysis_status': audit_experiment_inconsistent_analysis_status,
 }
 
 function_dispatcher_with_files = {
