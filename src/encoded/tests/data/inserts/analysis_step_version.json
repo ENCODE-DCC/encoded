@@ -196,5 +196,11 @@
         "software_versions": ["8369c9b0-50ad-11e4-916c-0800200c9a66"],
         "uuid": "5c4042c6-27b0-42c5-b608-9061005e32ab",
         "minor_version": 1
+    },
+    {
+        "analysis_step": "chia-pet-alignment-step-v-1",
+        "software_versions": ["8369c9b0-50ad-11e4-916c-0800200c9a66"],
+        "uuid": "ee924ba6-e5d4-4c31-9c7c-cf8dc42fa862",
+        "minor_version": 1
     }
 ]

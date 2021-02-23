@@ -158,3 +158,30 @@ def analysis_step_run_atac_encode4_pseudoreplicate_concordance(testapp,
         'status': 'released'
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_chia_alignment(testapp, analysis_step_version_chia_alignment):
+    item = {
+        'analysis_step_version': analysis_step_version_chia_alignment['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_chia_peak_calling(testapp, analysis_step_version_chia_peak_calling):
+    item = {
+        'analysis_step_version': analysis_step_version_chia_peak_calling['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_chia_interaction_calling(testapp, analysis_step_version_chia_interaction_calling):
+    item = {
+        'analysis_step_version': analysis_step_version_chia_interaction_calling['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]

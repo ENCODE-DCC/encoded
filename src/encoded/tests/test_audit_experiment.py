@@ -4316,3 +4316,28 @@ def test_audit_experiment_inconsistent_analysis_status(testapp, experiment_with_
     assert any(error['category'] == 'inconsistent analysis status'
                and 'lacks a released analysis' in error['detail']
                for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chia_encode4_qc_standards(
+        testapp, encode2_award, chia_bam, chia_peaks, chia_chromatin_int, ChIA_PET_experiment,
+        chia_pet_align_quality_metric, chia_pet_chr_int_quality_metric, chia_pet_peak_quality_metric
+        ):
+    testapp.patch_json(chia_pet_align_quality_metric['@id'],
+                        {'quality_metric_of': [chia_bam['@id']]})
+    testapp.patch_json(chia_pet_chr_int_quality_metric['@id'],
+                        {'quality_metric_of': [chia_chromatin_int['@id']]})
+    testapp.patch_json(chia_pet_peak_quality_metric['@id'],
+                        {'quality_metric_of': [chia_peaks['@id']]})
+    res = testapp.get(ChIA_PET_experiment['@id'] + '@@index-data')
+    audit_errors = collect_audit_errors(res)
+    assert any(error['category'] == 'low total read pairs' for error in audit_errors)
+    assert any(error['category'] == 'low fraction of read pairs with linker' for error in audit_errors)
+    assert any(error['category'] == 'low non-redundant PET' for error in audit_errors)
+    assert any(error['category'] == 'low protein factor binding peaks' for error in audit_errors)
+    assert any(error['category'] == 'low intra/inter-chr PET ratio' for error in audit_errors)
+
+    # Make sure audits don't apply to non-ENCODE4 award experiments
+    testapp.patch_json(ChIA_PET_experiment['@id'], {'award': encode2_award['@id']})
+    res2 = testapp.get(ChIA_PET_experiment['@id'] + '@@index-data')
+    audit_errors = collect_audit_errors(res2)
+    assert 'low read pairs' not in (error['category'] for error in audit_errors)

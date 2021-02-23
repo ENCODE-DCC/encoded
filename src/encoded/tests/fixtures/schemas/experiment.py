@@ -779,3 +779,14 @@ def experiment_30(root, experiment):
             'notes': 'Previous notes.'
     })
     return properties
+
+
+@pytest.fixture
+def ChIA_PET_experiment(testapp, lab, encode4_award, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': encode4_award['@id'],
+        'assay_term_name': 'ChIA-PET',
+        'biosample_ontology': heart['uuid']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
