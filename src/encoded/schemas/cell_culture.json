@@ -91,6 +91,15 @@
         }
     },
     "facets": {
+        "donors.organism.scientific_name": {
+            "title": "Organism"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
+        },
         "biosample_ontology.system_slims": {
             "title": "System"
         },
@@ -106,6 +115,9 @@
             "title": "Biosample term name",
             "type": "typeahead"
         },
+        "diseases.term_name": {
+            "title": "Disease"
+        },
         "status": {
             "title": "Status"
         }
@@ -120,6 +132,15 @@
         "description": {
             "title": "Description"
         },
+        "donors.organism.scientific_name": {
+            "title": "Organism"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
+        },
         "biosample_ontology.system_slims": {
             "title": "System"
         },
@@ -128,6 +149,9 @@
         },
         "biosample_ontology.cell_slims": {
             "title": "Cell"
+        },
+        "diseases.term_name": {
+            "title": "Disease"
         },
         "derived_from": {
             "title": "Derived from"

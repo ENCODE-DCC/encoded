@@ -143,6 +143,9 @@
         "accession": {
             "title": "Accession"
         },
+        "dataset_title": {
+            "title": "Dataset title"
+        },
         "award.project": {
             "title": "Project"
         },

@@ -398,6 +398,9 @@
         }
     },
     "facets": {
+        "assays": {
+            "title": "Assays"
+        },
         "output_types": {
             "title": "Output type"
         },

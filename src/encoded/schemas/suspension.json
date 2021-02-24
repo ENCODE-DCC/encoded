@@ -286,6 +286,15 @@
         }
     },
     "facets": {
+        "donors.organism.scientific_name": {
+            "title": "Organism"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
+        },
         "suspension_type": {
             "title": "Suspension type"
         },
@@ -314,6 +323,15 @@
         },
         "description": {
             "title": "Description"
+        },
+        "donors.organism.scientific_name": {
+            "title": "Organism"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
         },
         "derived_from": {
             "title": "Derived from"
