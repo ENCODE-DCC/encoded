@@ -88,7 +88,6 @@ def test_users_post_disallowed(submitter, access_key, submitter_testapp):
 def test_users_view_basic_indexer(submitter, indexer_testapp):
     res = indexer_testapp.get(submitter['@id'])
     assert 'title' in res.json
-    assert 'email' not in res.json
     assert 'access_keys' not in res.json
 
 

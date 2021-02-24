@@ -180,6 +180,9 @@
         "treatment_type": {
             "title": "Treatment type"
         },
+        "summary": {
+            "title": "Treatment summary"
+        },
         "purpose": {
             "title": "Purpose"
         },

@@ -7354,6 +7354,7 @@
         "software": [
             "cellranger aggr 4.0"
         ],
+        "experimental_variable_disease": "MONDO_0005148",
         "md5sum": "2e883306013203954eb1b69ae063eef1",
         "cell_label_location": "suffix",
         "cell_label_mappings": [
@@ -7408,7 +7409,7 @@
                     },
                     {
                         "cutoff_value": 10,
-                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_units": "percent fragments in peaks/nuclei",
                         "cutoff_type": "maximum"
                     },
                     {

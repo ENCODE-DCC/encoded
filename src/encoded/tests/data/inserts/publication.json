@@ -9,9 +9,7 @@
         "authors": "Anna Greka, Abbe Clark",
         "journal": "BMC Bioinformatics",
         "publication_year": 2019,
-        "identifiers": [
-            "PMID:2314242"
-        ],
+        "pmid": "2314242",
         "award": "CZI001KID",
         "volume": "88",
         "page": "55-57",
@@ -26,10 +24,8 @@
         "authors": "Jimmie Ye, Jenny Chen",
         "journal": "Nature",
         "publication_year": 2018,
-        "identifiers": [
-            "PMID:22955622",
-            "doi:10.1101/2020.07.24.219147"
-        ],
+        "pmid": "22955622",
+        "doi": "10.1101/2020.07.24.219147",
         "award": "CZI021IMM",
         "volume": "234",
         "issue": "454",
@@ -47,10 +43,8 @@
         "journal": "Nature",
         "award": "CZI004LIV",
         "publication_year": 2012,
-        "identifiers": [
-            "PMID:22955616",
-            "doi:10.1016/j.devcel.2020.01.033"
-        ],
+        "pmid": "22955616",
+        "doi": "10.1016/j.devcel.2020.01.033",
         "volume": "489",
         "issue": "7414",
         "page": "57-74",
@@ -70,10 +64,8 @@
         "page": "pdb.prot5384",
         "volume": "2010",
         "publication_year": 2020,
-        "identifiers": [
-            "PMID:20150888",
-            "doi:10.1016/j.devcel.2020.07.023"
-        ],
+        "pmid": "20150888",
+        "doi": "10.1016/j.devcel.2020.07.023",
         "award": "CZI025LYN",
         "authors": "Livnat Jerby-Arnon, Aviv Regev"
     }

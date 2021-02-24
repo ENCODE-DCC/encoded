@@ -14,7 +14,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "name": {
             "title": "Name",
@@ -31,9 +31,9 @@
         },
         "taxon_id": {
             "title": "Taxon ID",
-            "description": "The NCBI taxon ID for the organism (e.g. NCBI:10090).",
+            "description": "The NCBI taxon ID for the organism (e.g. NCBITaxon:10090).",
             "type": "string",
-            "format": "^(NCBI:[0-9])+$"
+            "format": "^(NCBITaxon:[0-9])+$"
         }
     },
     "facets": {

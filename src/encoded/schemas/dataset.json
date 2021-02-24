@@ -46,17 +46,45 @@
             "type": "string",
             "linkTo": "Award"
         },
-        "corresponding_contributor": {
-            "title": "Corresponding contributor",
+        "dataset_title": {
+            "title": "Dataset title",
+            "description": "The title of this dataset, to be displayed in external resources, like the HCA DCP.",
+            "type": "string"
+        },
+        "description": {
+            "description": "A summary of this dataset, to be displayed in external resources, like the HCA DCP."
+        },
+        "corresponding_contributors": {
+            "title": "Corresponding contributors",
             "description": "The user who is the primary external contact for the dataset.",
-            "type": "string",
-            "linkTo": "User"
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "User"
+            }
+        },
+        "contributors": {
+            "title": "Contributors",
+            "description": "The user who is the primary external contact for the dataset.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "User"
+            }
         },
         "internal_contact": {
             "title": "Internal contact",
             "description": "The Lattice contact for questions about the details of the experiment and/or analysis.",
             "type": "string",
             "linkTo": "User"
+        },
+        "funding_organizations": {
+            "title": "Funding organizations",
+            "description": "The list of organizations that contributed funding to the generation of these data.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         },
         "date_released": {
             "title": "Date released",
@@ -114,6 +142,9 @@
     "columns": {
         "accession": {
             "title": "Accession"
+        },
+        "dataset_title": {
+            "title": "Dataset title"
         },
         "award.project": {
             "title": "Project"

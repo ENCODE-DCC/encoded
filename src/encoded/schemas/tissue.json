@@ -188,6 +188,15 @@
         }
     },
     "facets": {
+        "donors.organism.scientific_name": {
+            "title": "Organism"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
+        },
         "biosample_ontology.system_slims": {
             "title": "System"
         },
@@ -198,6 +207,9 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead"
+        },
+        "diseases.term_name": {
+            "title": "Disease"
         },
         "status": {
             "title": "Status"
@@ -210,17 +222,29 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
-        "summary": {
-            "title": "Summary"
-        },
         "description": {
             "title": "Description"
+        },
+        "donors.organism.scientific_name": {
+            "title": "Organism"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
+        },
+        "treatment_summary": {
+            "title": "Treatment summary"
         },
         "biosample_ontology.system_slims": {
             "title": "System"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
+        },
+        "diseases.term_name": {
+            "title": "Disease"
         },
         "derived_from": {
             "title": "Derived from"

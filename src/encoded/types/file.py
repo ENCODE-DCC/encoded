@@ -254,7 +254,7 @@ class SequenceAlignmentFile(AnalysisFile):
 class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
-    embedded = DataFile.embedded + []
+    embedded = DataFile.embedded + ['derived_from', 'derived_from.flowcell_details']
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",
@@ -306,7 +306,7 @@ class RawSequenceFile(DataFile):
 class MatrixFile(AnalysisFile):
     item_type = 'matrix_file'
     schema = load_schema('encoded:schemas/matrix_file.json')
-    embedded = AnalysisFile.embedded + ['cell_annotations', 'cell_annotations.cell_ontology']
+    embedded = AnalysisFile.embedded + ['cell_annotations', 'cell_annotations.cell_ontology', 'experimental_variable_disease']
     rev = {
         'cell_annotations': ('CellAnnotation', 'matrix_files'),
         'quality_metrics': ('Metrics', 'quality_metric_of')
@@ -328,6 +328,24 @@ class MatrixFile(AnalysisFile):
     def quality_metrics(self, request, quality_metrics=None):
         if quality_metrics:
             return paths_filtered_by_status(request, quality_metrics)
+
+
+    @calculated_property(schema={
+        "title": "Assays",
+        "description": "The list of assays used to generate data contained in this matrix.",
+        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "type": "array",
+        "items": {
+            "type": 'string'
+        },
+        "notSubmittable": True,
+    })
+    def assays(self, request, libraries=None):
+        assays = set()
+        for l in libraries:
+            l_obj = request.embed(l, '@@object')
+            assays.add(l_obj['assay'])
+        return assays
 
 
     @calculated_property(schema={

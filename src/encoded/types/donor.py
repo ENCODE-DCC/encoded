@@ -20,6 +20,7 @@ from .base import (
 class Donor(Item):
     base_types = ['Donor'] + Item.base_types
     embedded = [
+        'diseases',
         'organism'
     ]
     name_key = 'accession'

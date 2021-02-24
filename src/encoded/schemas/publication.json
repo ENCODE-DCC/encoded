@@ -15,7 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "status": {
             "default": "released"
@@ -62,18 +62,19 @@
             "description": "The journal of the publication.",
             "type": "string"
         },
-        "identifiers": {
-            "title": "Identifiers",
-            "description": "The PubMed and DOI identifiers that corresponds to the published work.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Identifier",
-                "description": "A PubMed or DOI identifier that corresponds to the published work.",
-                "type": "string",
-                "uniqueKey":  "publication:identifier",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
-            }
+        "doi": {
+            "title": "DOI",
+            "description": "A DOI identifier that corresponds to the published work.",
+            "type": "string",
+            "uniqueKey":  "publication:doi",
+            "pattern": "^(10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
+        },
+        "pmid": {
+            "title": "PubMed ID",
+            "description": "A PubMed identifier that corresponds to the published work.",
+            "type": "string",
+            "uniqueKey":  "publication:pmid",
+            "pattern": "^([0-9]+)$"
         },
         "award": {
             "title": "Award",
@@ -112,6 +113,12 @@
         "publication_year": {
             "title": "Publication year"
         },
+        "pmid": {
+            "title": "PubMed ID"
+        },
+        "doi": {
+            "title": "DOI"
+        },
         "datasets": {
             "title": "Datasets"
         },
@@ -123,11 +130,7 @@
         },
         "status": {
             "title": "Status"
-        },
-        "identifiers": {
-            "title": "Identifiers"
         }
     },
     "changelog": "/profiles/changelogs/publication.md"
-
 }

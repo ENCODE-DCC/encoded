@@ -12,7 +12,8 @@
             "community",
             "CZI001KID"
         ],
-        "uuid": "58b5c2f0-d147-4c17-bf38-a142e2234488"
+        "uuid": "58b5c2f0-d147-4c17-bf38-a142e2234488",
+        "institute_name": "Stanford University"
     },
     {
         "email": "agreka@bwh.harvard.ude",
@@ -27,7 +28,8 @@
             "community",
             "CZI001KID"
         ],
-        "uuid": "bcee0c61-2216-45a0-b839-1dd832ec220c"
+        "uuid": "bcee0c61-2216-45a0-b839-1dd832ec220c",
+        "institute_name": "Harvard"
     },
     {
         "email": "jpa29@stanford.edu",
@@ -38,7 +40,8 @@
         "groups": [
             "admin"
         ],
-        "uuid": "294a192a-f01e-42d7-b579-192790f96a8f"
+        "uuid": "294a192a-f01e-42d7-b579-192790f96a8f",
+        "institute_name": "Stanford University"
     },
     {
         "email": "jimmie.ye@ucsf.ude",
@@ -52,7 +55,8 @@
         "viewing_groups": [
             "community"
         ],
-        "uuid": "d162af00-38d0-4b02-a319-fcaf76a479d2"
+        "uuid": "d162af00-38d0-4b02-a319-fcaf76a479d2",
+        "institute_name": "UC San Fran"
     },
     {
         "email": "r.gate@ucsf.ude",
@@ -66,7 +70,8 @@
         "viewing_groups": [
             "community"
         ],
-        "uuid": "54d092c3-b7ab-49f4-a2bb-00eeebc8e440"
+        "uuid": "54d092c3-b7ab-49f4-a2bb-00eeebc8e440",
+        "institute_name": "Stanford University"
     },
     {
         "email": "pas2182@columbia.ude",
@@ -80,7 +85,8 @@
         "viewing_groups": [
             "community"
         ],
-        "uuid": "ccdf34b7-a013-4056-90bd-5a934cc2c118"
+        "uuid": "ccdf34b7-a013-4056-90bd-5a934cc2c118",
+        "institute_name": "Stanford University"
     },
     {
         "email": "cd3403@columbia.ude",
@@ -94,7 +100,8 @@
         "viewing_groups": [
             "community"
         ],
-        "uuid": "b88b4a37-01c6-45b6-b0ba-f51b37947faa"
+        "uuid": "b88b4a37-01c6-45b6-b0ba-f51b37947faa",
+        "institute_name": "Stanford University"
     },
     {
         "email": "jahilton@stanford.edu",
@@ -221,6 +228,7 @@
         "lab": "/labs/j-michael-cherry/",
         "last_name": "Hill",
         "status": "current",
-        "uuid": "cd09e34b-7513-456c-a69c-66d258b99d83"
+        "uuid": "cd09e34b-7513-456c-a69c-66d258b99d83",
+        "institute_name": "Clown University"
     }
 ]

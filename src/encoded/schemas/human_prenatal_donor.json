@@ -101,6 +101,9 @@
         "ethnicity.term_name": {
             "title": "Ethnicity"
         },
+        "diseases.term_name": {
+            "title": "Disease"
+        },
         "status": {
             "title": "Status"
         }
@@ -126,6 +129,9 @@
         },
         "ethnicity.term_name": {
             "title": "Ethnicity"
+        },
+        "diseases.term_name": {
+            "title": "Disease"
         },
         "status": {
             "title": "Status"

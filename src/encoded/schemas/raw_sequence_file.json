@@ -70,7 +70,8 @@
                 "type":  "string",
                 "enum": [
                      "filtering",
-                     "concatenation"
+                     "concatenation",
+                     "demultiplexing"
                  ]
             }
         },

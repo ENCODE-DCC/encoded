@@ -15,7 +15,10 @@
             "LATDF119AAA"
         ],
         "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
-        "notes": "proximal_tubule"
+        "notes": "proximal_tubule",
+        "aliases": [
+            "lattice:special_cell_type"
+        ]
     },
     {
         "uuid": "4c571596-2b0e-41f6-aaf2-950abfd04f58",

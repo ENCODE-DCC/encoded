@@ -120,6 +120,9 @@
         "strain_term_name": {
             "title": "Strain"
         },
+        "diseases.term_name": {
+            "title": "Disease"
+        },
         "status": {
             "title": "Status"
         }
@@ -145,6 +148,9 @@
         },
         "strain_term_name": {
             "title": "Strain"
+        },
+        "diseases.term_name": {
+            "title": "Disease"
         },
         "status": {
             "title": "Status"

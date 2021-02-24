@@ -3,6 +3,7 @@
         "aliases": [
             "anna-greka:large_test_dataset"
         ],
+        "dataset_title": "The best dataset around",
         "description": "Human, mouse, and CITEseq large dataset",
         "accession": "LATDS700BBB",
         "uuid": "062a566c-89f9-4d23-b0a5-aa38026fb37e",
@@ -13,13 +14,23 @@
         "references": [
             "lattice:Greka_Clark_2019_large_dataset"
         ],
-        "corresponding_contributor": "abbeclarke@broadinstitute.org",
+        "contributors": [
+            "jimmie.ye@ucsf.ude",
+            "netus.lorem@risus.lobortis"
+        ],
+        "corresponding_contributors": [
+            "abbeclarke@broadinstitute.org"
+        ],
         "dbxrefs": [
             "SRA:SRP492949",
             "ENA:PRJEB37165"
         ],
         "documents": [
             "anna-greka:LID48879"
+        ],
+        "funding_organizations": [
+            "National Institutes of Health",
+            "Chan Zuckerberg Institute"
         ]
     },
     {
@@ -43,7 +54,12 @@
         "references": [
             "lattice:Ye_Chen_2018_atac"
         ],
-        "corresponding_contributor": "jimmie.ye@ucsf.ude",
+        "contributors": [
+            "abbeclarke@broadinstitute.org"
+        ],
+        "corresponding_contributors": [
+            "jimmie.ye@ucsf.ude"
+        ],
         "internal_contact": "r.gate@ucsf.ude",
         "urls": [
             "https://data.humancellatlas.org/explore/projects/4a95101c-9ffc-4f30-a809-f04518a23803"
@@ -67,7 +83,9 @@
         "submitted_by": "jychien@stanford.edu",
         "date_released": "2020-08-07",
         "status": "released",
-        "corresponding_contributor": "pas2182@columbia.ude",
+        "corresponding_contributors": [
+            "pas2182@columbia.ude"
+        ],
         "internal_contact": "cd3403@columbia.ude",
         "references": [
             "52e85c70-fe2d-11e3-9191-0800200c9a66"
@@ -94,7 +112,9 @@
         "submitted_by": "jychien@stanford.edu",
         "date_released": "2020-08-07",
         "status": "deleted",
-        "corresponding_contributor": "netus.lorem@risus.lobortis",
+        "corresponding_contributors": [
+            "netus.lorem@risus.lobortis"
+        ],
         "internal_contact": "netus.lorem@risus.lobortis",
         "references": [
             "474461bd-943e-4514-92a7-e268390eef53"
