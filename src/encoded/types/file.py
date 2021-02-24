@@ -133,6 +133,7 @@ class File(Item):
                 'status',
                 'pipeline_award_rfas',
                 'pipeline_version',
+                'title',
             ],
         ),
     ]
