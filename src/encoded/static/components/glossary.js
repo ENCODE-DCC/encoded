@@ -33,6 +33,14 @@ GlossaryTerm.propTypes = {
     glossaryEntry: PropTypes.object.isRequired,
 };
 
+// Optional links appended to section headers
+const sectionHeaderLinks = {
+    'Target categories': {
+        link: 'https://www.encodeproject.org/target-categorization/',
+        text: 'Category assignment details',
+    },
+};
+
 const Glossary = (props) => {
     const { context } = props;
     const glossary = require('./glossary/glossary.json');
@@ -57,7 +65,12 @@ const Glossary = (props) => {
                     </h4>
                     {Object.keys(glossaryBySection).map((section) => (
                         <div className="glossary-block" key={section} id={section}>
-                            <h2 id={`${section.toLowerCase().split(' ').join('-')}`}>{section}</h2>
+                            <h2 id={`${section.toLowerCase().split(' ').join('-')}`}>
+                                {section}
+                                {sectionHeaderLinks[section] ?
+                                    <span className="section-header-link"><a href={sectionHeaderLinks[section].link}>{sectionHeaderLinks[section].text}</a></span>
+                                : null}
+                            </h2>
                             {(section === undefined) ?
                                 <h4>{section}</h4>
                             : null}

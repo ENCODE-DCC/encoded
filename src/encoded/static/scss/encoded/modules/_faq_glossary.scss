@@ -51,7 +51,7 @@
     }
 }
 
-.glossary-element a[href^="http"]::after {
+.glossary-element a[href^="http"]::after, .section-header-link a[href^="http"]::after {
     content: " \f08e";
     font-family: FontAwesome;
     font-weight: normal;
@@ -81,6 +81,17 @@
 
 .glossary-block {
     padding-bottom: 30px;
+
+    .section-header-link {
+        font-size: 1rem;
+        font-family: $site-font;
+        margin-left: 10px;
+        display: block;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: inline-block;
+        }
+    }
 }
 
 .glossary-field {
