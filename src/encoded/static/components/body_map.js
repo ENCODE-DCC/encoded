@@ -4,7 +4,9 @@ import queryString from 'query-string';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
 import QueryString from '../libs/query_string';
-import BodyDiagram from '../img/bodyMap/Deselected_Body';
+import HumanBodyDiagram from '../img/bodyMap/Deselected_Body';
+import MouseBodyDiagram from '../img/bodyMap/Deselected-mouse';
+import getSeriesData from './series_search';
 
 // Query for systems slim
 export const systemsField = 'biosample_ontology.system_slims';
@@ -18,7 +20,7 @@ export const organField = 'biosample_ontology.organ_slims';
 // As another type of example, note that "skeleton" highlights "bone element" but not the other way around
 // A third case is "esophagus" and "trachea": they each highlight the same paths but are not the same organ
 //     Because of the way the code works, we need to include both the paths and the synonymous term for each
-export const BodyList = {
+export const HumanList = {
     'adrenal gland': ['cls-34'],
     'arterial blood vessel': ['cls-11'],
     'bone element': ['cls-65', 'cls-77', 'cls-78', 'cls-80', 'cls-81'],
@@ -68,10 +70,42 @@ export const BodyList = {
     vein: ['cls-vein'],
 };
 
+export const MouseList = {
+    'adrenal gland': ['cls-27'],
+    'bone element': ['cls-bone', 'cls-5', 'cls-bone1', 'cls-bone6'],
+    brain: ['cls-21', 'cls-22', 'cls-23', 'cls-24'],
+    breast: ['cls-41', 'cls-42'],
+    colon: ['cls-colon', 'cls-9'],
+    esophagus: ['cls-esophagus'],
+    'extraembryonic component': ['placenta'],
+    eye: ['cls-39', 'cls-40', 'cls-eye'],
+    gonad: ['testis', 'ovary'],
+    heart: ['cls-33', 'cls-34', 'cls-18'],
+    intestine: ['large intestine', 'small intestine', 'colon'],
+    kidney: ['cls-kidney'],
+    'large intestine': ['cls-largeintestine', 'cls-19'],
+    limb: ['cls-limb1', 'cls-limb2'],
+    liver: ['cls-17', 'cls-liver'],
+    lung: ['cls-lung'],
+    'lymph node': ['cls-28'],
+    'mammary gland': ['breast'],
+    'musculature of body': ['cls-14', 'cls-15', 'cls-16'],
+    ovary: ['cls-6', 'cls-7', 'cls-35', 'cls-36'],
+    pancreas: ['cls-12'],
+    'skin of body': ['cls-1', 'cls-2', 'cls-32', 'cls-3', 'cls-limb1', 'cls-limb2', 'cls-10'],
+    'small intestine': ['cls-8', 'cls-smallintestine', 'cls-smallintestine19'],
+    'spinal cord': ['cls-20'],
+    spleen: ['cls-13'],
+    stomach: ['cls-stomach'],
+    testis: ['cls-37'],
+    thymus: ['cls-29', 'cls-30', 'cls-31'],
+    'urinary bladder': ['cls-38'],
+};
+
 // Mapping from cells and tissue types to inset images
 // All mappings are empty because there are no paths or shapes that correspond to the inset images
 //     (each has one associated image with a name corresponding to the cell or tissue term)
-export const CellsList = {
+export const HumanCellsList = {
     'adipose tissue': [],
     blood: [],
     'blood vessel': [],
@@ -79,15 +113,25 @@ export const CellsList = {
     'connective tissue': [],
     embryo: [],
     epithelium: [],
-    placenta: [],
     'lymphoid tissue': [],
     'lymph node': [],
     'lymphatic vessel': [],
+    placenta: [],
+};
+
+export const MouseCellsList = {
+    'adipose tissue': [],
+    blood: [],
+    'bone marrow': [],
+    'connective tissue': [],
+    embryo: [],
+    epithelium: [],
+    placenta: [],
 };
 
 // Mapping for systems slims
 // Systems slims are mapped to organs in the "BodyList"
-export const SystemsList = {
+export const HumanSystemsList = {
     'central nervous system': ['brain', 'spinal chord'],
     'circulatory system': ['blood', 'blood vessel', 'arterial blood vessel', 'heart', 'pericardium', 'vein', 'lymphatic vessel'],
     'digestive system': ['esophagus', 'intestine', 'small intestine', 'large intestine', 'liver', 'gallbladder', 'mouth', 'spleen', 'stomach', 'tongue', 'colon'],
@@ -102,6 +146,22 @@ export const SystemsList = {
     'sensory system': ['eye', 'nose', 'tongue'],
     'skeletal system': ['bone element', 'skeleton', 'bone marrow', 'limb'],
     'integumental system': ['mammary gland', 'skin of body'],
+};
+
+export const MouseSystemsList = {
+    'central nervous system': ['brain', 'spinal cord'],
+    'circulatory system': ['blood', 'heart'],
+    'digestive system': ['large intestine', 'small intestine', 'stomach', 'pancreas', 'colon', 'spleen', 'esophagus'],
+    'endocrine system': ['liver', 'pancreas', 'thymus', 'adrenal gland'],
+    'excretory system': ['kidney', 'urinary bladder'],
+    'exocrine system': ['mammary gland', 'liver'],
+    'immune system': ['lymph node', 'spleen', 'thymus', 'bone marrow'],
+    'integumental system': ['mammary gland'],
+    musculature: ['musculature of body', 'limb'],
+    'reproductive system': ['ovary', 'testis'],
+    'respiratory system': ['lung'],
+    'sensory system': ['eye'],
+    'skeletal system': ['bone element', 'bone marrow', 'limb'],
 };
 
 // Unhighlight all highlighted organ / inset image / systems terms and all highlighted svg paths / shapes and all highlighted inset images
@@ -128,7 +188,7 @@ const addingClass = (changedClass, matchingString, removeFlag = false) => {
 };
 
 // Set body map diagram colors based on url, when component mounts
-export const initializeBodyMap = (searchQuery) => {
+export const initializeBodyMap = (searchQuery, BodyList, SystemsList) => {
     const query = new QueryString(searchQuery);
     const terms = query.getKeyValues(organField);
     if (terms.length > 0) {
@@ -159,7 +219,7 @@ export const clearBodyMapSelectionsFromUrl = (originalUrl) => {
 // Most organs are comprised of multiple svg paths and we want all of the corresponding svg components to highlight together
 // For example, when the user hovers over one kidney, we want both kidneys to highlight because both will be selected upon click
 // As another example, "musculature of body" is comprised of 7 paths right next to each other and it would be confusing for just one line or section to highlight on hover
-const svgHighlight = (e) => {
+const svgHighlight = (e, BodyList) => {
     // Remove existing highlights
     unHighlightOrgan();
     const svgClass = e.target.className.baseVal;
@@ -185,7 +245,7 @@ const svgHighlight = (e) => {
 // Additionally, highlight any other associated terms
 // For example, if hovering over "large intestine", we want all "large intestine" svg components to highlight as well as the term "colon"
 // Hovering over a system term name should highlight all associated organ terms and inset image terms and their corresponding svg elements or inset images
-const highlightOrgan = (e) => {
+const highlightOrgan = (e, BodyList, CellsList, SystemsList) => {
     const currentOrgan = e.target.id || e.target.parentNode.id;
     // Check inset images mapping to see if term exists in that object
     if (Object.keys(CellsList).includes(currentOrgan)) {
@@ -254,11 +314,25 @@ class BodyMap extends React.Component {
     constructor(props) {
         super(props);
 
-        // Determine which organ and system slims are already selected (based on the url)
         const searchQuery = url.parse(this.props.context['@id']).search;
+
+        // Determine which organ and system slims are already selected (based on the url)
         const terms = queryString.parse(searchQuery);
         let organTerms = terms[organField];
         const systemsTerms = terms[systemsField];
+
+        let BodyList = {};
+        let CellsList = {};
+        let SystemsList = {};
+        if (props.organism === 'Homo sapiens') {
+            BodyList = HumanList;
+            CellsList = HumanCellsList;
+            SystemsList = HumanSystemsList;
+        } else if (props.organism === 'Mus musculus') {
+            BodyList = MouseList;
+            CellsList = MouseCellsList;
+            SystemsList = MouseSystemsList;
+        }
 
         // In the case that there are only organ slims, we initialize "organTerms" to consist of organ slims
         // In the case that there are both organ and system slims, append system terms to organ terms
@@ -286,7 +360,12 @@ class BodyMap extends React.Component {
         // Initialize state, "selectedOrgan", to be combined organ and system terms
         this.state = {
             selectedOrgan: organTerms || [],
+            organFacets: [],
+            systemFacets: [],
         };
+        this.CellsList = CellsList;
+        this.BodyList = BodyList;
+        this.SystemsList = SystemsList;
         this.svgClick = this.svgClick.bind(this);
         this.chooseOrgan = this.chooseOrgan.bind(this);
         this.clearOrgans = this.clearOrgans.bind(this);
@@ -296,7 +375,37 @@ class BodyMap extends React.Component {
     // and highlight the body map elements which correspond to those terms
     componentDidMount() {
         const searchQuery = url.parse(this.props.context['@id']).search;
-        initializeBodyMap(searchQuery);
+        initializeBodyMap(searchQuery, this.BodyList, this.SystemsList);
+
+        // Find url for page without any organs or systems selected
+        const query = new QueryString(searchQuery);
+        const linkOrgans = query.getKeyValues(organField);
+        linkOrgans.forEach((term) => {
+            query.deleteKeyValue(organField, term);
+        });
+        const linkSystems = query.getKeyValues(systemsField);
+        linkSystems.forEach((term) => {
+            query.deleteKeyValue(systemsField, term);
+        });
+        const unfilteredHref = query.format();
+        getSeriesData(unfilteredHref, this.context.fetch).then((response) => {
+            const { facets } = response;
+            const organFacets = facets.filter((f) => f.field === organField)[0].terms.map((f) => f.key);
+            const systemFacets = facets.filter((f) => f.field === systemsField)[0].terms.map((f) => f.key);
+            this.setState({
+                organFacets,
+                systemFacets,
+            }, () => {
+                // Add a class to disable pointer events on paths associated with unavailable organ terms
+                Object.keys(this.BodyList).forEach((b) => {
+                    if (this.state.organFacets.indexOf(b) === -1) {
+                        this.BodyList[b].forEach((path) => {
+                            addingClass('disabled', path);
+                        });
+                    }
+                });
+            });
+        });
     }
 
     // Clear all organ and system slims selections (clear state and navigate to new url)
@@ -337,13 +446,13 @@ class BodyMap extends React.Component {
         // User has selected a term, so all corresponding body map elements need to be selected
         // Any associated terms and their body map elements must also be selected
         if (active) {
-            Object.keys(BodyList).forEach((b) => {
+            Object.keys(this.BodyList).forEach((b) => {
                 if (b === e.target.id) {
-                    BodyList[b].forEach((bodyClass) => {
+                    this.BodyList[b].forEach((bodyClass) => {
                         if (bodyClass.indexOf('cls') === -1) {
                             multipleAssociations.push(bodyClass);
                             document.getElementById(bodyClass).classList.add('active');
-                            const newBodyClass = BodyList[bodyClass];
+                            const newBodyClass = this.BodyList[bodyClass];
                             if (!newBodyClass) {
                                 addingClass('active', bodyClass);
                             } else {
@@ -358,14 +467,14 @@ class BodyMap extends React.Component {
                 }
             });
             // If the term is a systems term, all systems elements (terms and body map elements) must be selected
-            Object.keys(SystemsList).forEach((b) => {
+            Object.keys(this.SystemsList).forEach((b) => {
                 if (b === e.target.id) {
                     systemsClick = true;
-                    SystemsList[b].forEach((bodyClass) => {
+                    this.SystemsList[b].forEach((bodyClass) => {
                         if (bodyClass.indexOf('cls') === -1) {
                             multipleAssociations.push(bodyClass);
                             document.getElementById(bodyClass).classList.add('active');
-                            const newBodyClass = BodyList[bodyClass];
+                            const newBodyClass = this.BodyList[bodyClass];
                             if (!newBodyClass) {
                                 addingClass('active', bodyClass);
                             } else {
@@ -382,13 +491,13 @@ class BodyMap extends React.Component {
         // User has de-selected a term, so all corresponding body map elements need to be de-selected
         // Any associated terms and their body map elements must also be de-selected
         } else {
-            Object.keys(BodyList).forEach((b) => {
+            Object.keys(this.BodyList).forEach((b) => {
                 if (b === e.target.id) {
-                    BodyList[b].forEach((bodyClass) => {
+                    this.BodyList[b].forEach((bodyClass) => {
                         if (bodyClass.indexOf('cls') === -1) {
                             multipleAssociations.push(bodyClass);
                             document.getElementById(bodyClass).classList.remove('active');
-                            const newBodyClass = BodyList[bodyClass];
+                            const newBodyClass = this.BodyList[bodyClass];
                             if (!newBodyClass) {
                                 // Removing "active" class (removeFlag = true)
                                 addingClass('active', bodyClass, true);
@@ -406,14 +515,14 @@ class BodyMap extends React.Component {
                 }
             });
             // If the term is a systems term, all systems elements (terms and body map elements) must be de-selected
-            Object.keys(SystemsList).forEach((b) => {
+            Object.keys(this.SystemsList).forEach((b) => {
                 if (b === e.target.id) {
                     systemsClick = true;
-                    SystemsList[b].forEach((bodyClass) => {
+                    this.SystemsList[b].forEach((bodyClass) => {
                         if (bodyClass.indexOf('cls') === -1) {
                             multipleAssociations.push(bodyClass);
                             document.getElementById(bodyClass).classList.remove('active');
-                            const newBodyClass = BodyList[bodyClass];
+                            const newBodyClass = this.BodyList[bodyClass];
                             if (!newBodyClass) {
                                 // Removing "active" class (removeFlag = true)
                                 addingClass('active', bodyClass, true);
@@ -521,13 +630,13 @@ class BodyMap extends React.Component {
             // An organ may have multiple associations and we want to be sure to highlight all the associated terms on click
             // For example, clicking on the "intestine" organ should also highlight the "colon" organ
             const multipleAssociations = [];
-            Object.keys(BodyList).forEach((b) => {
-                if (BodyList[b] === svgClass || BodyList[b].includes(svgClass)) {
+            Object.keys(this.BodyList).forEach((b) => {
+                if (this.BodyList[b] === svgClass || this.BodyList[b].includes(svgClass)) {
                     // This is the new organ that we want to append to state
                     newOrgan = b;
                     // Make sure all svg elements associated with that organ are selected, not just the clicked-on element
                     if (active) {
-                        BodyList[b].forEach((bodyClass) => {
+                        this.BodyList[b].forEach((bodyClass) => {
                             addingClass('active', bodyClass);
                             if (bodyClass.indexOf('cls') === -1) {
                                 multipleAssociations.push(bodyClass);
@@ -540,7 +649,7 @@ class BodyMap extends React.Component {
                         });
                     // De-select all svg elements associated with clicked-on organ
                     } else {
-                        BodyList[b].forEach((bodyClass) => {
+                        this.BodyList[b].forEach((bodyClass) => {
                             // Removing "active" class (removeFlag = true)
                             addingClass('active', bodyClass, true);
                             if (bodyClass.indexOf('cls') === -1) {
@@ -616,10 +725,10 @@ class BodyMap extends React.Component {
 
     render() {
         return (
-            <div className="body-facet-container">
+            <div className={`body-facet-container ${this.props.organism.toLowerCase().replace(/\s/g, '-')}`}>
                 <div className="body-list body-list-top">
                     <ul className="body-list-inner">
-                        {Object.keys(SystemsList).map((b) => (
+                        {Object.keys(this.SystemsList).map((b) => (
                             <li key={b}>
                                 <span
                                     id={b}
@@ -628,8 +737,9 @@ class BodyMap extends React.Component {
                                     tabIndex="0"
                                     onClick={(e) => this.chooseOrgan(e)}
                                     onKeyPress={(e) => this.chooseOrgan(e)}
-                                    onMouseEnter={(e) => highlightOrgan(e)}
+                                    onMouseEnter={(e) => highlightOrgan(e, this.BodyList, this.CellsList, this.SystemsList)}
                                     onMouseLeave={unHighlightOrgan}
+                                    disabled={this.state.systemFacets.indexOf(b) === -1}
                                 >
                                     {b}
                                 </span>
@@ -643,14 +753,24 @@ class BodyMap extends React.Component {
                 </div>
                 <div className="body-facet">
                     <div className="body-image-container">
-                        <BodyDiagram
-                            handleClick={this.svgClick}
-                            handleHighlight={svgHighlight}
-                        />
+                        {this.props.organism === 'Homo sapiens' ?
+                            <HumanBodyDiagram
+                                handleClick={this.svgClick}
+                                handleHighlight={svgHighlight}
+                                BodyList={this.BodyList}
+                            />
+                        : null}
+                        {this.props.organism === 'Mus musculus' ?
+                            <MouseBodyDiagram
+                                handleClick={this.svgClick}
+                                handleHighlight={svgHighlight}
+                                BodyList={this.BodyList}
+                            />
+                        : null}
                     </div>
                     <div className="body-list">
                         <ul className="body-list-inner">
-                            {Object.keys(BodyList).map((b) => (
+                            {Object.keys(this.BodyList).map((b) => (
                                 <li key={b}>
                                     <span
                                         id={b}
@@ -659,8 +779,9 @@ class BodyMap extends React.Component {
                                         tabIndex="0"
                                         onClick={(e) => this.chooseOrgan(e)}
                                         onKeyPress={(e) => this.chooseOrgan(e)}
-                                        onMouseEnter={(e) => highlightOrgan(e)}
+                                        onMouseEnter={(e) => highlightOrgan(e, this.BodyList, this.CellsList, this.SystemsList)}
                                         onMouseLeave={unHighlightOrgan}
+                                        disabled={this.state.organFacets.indexOf(b) === -1}
                                     >
                                         {b}
                                     </span>
@@ -669,20 +790,21 @@ class BodyMap extends React.Component {
                         </ul>
                     </div>
                     <div className="body-inset-container">
-                        {Object.keys(CellsList).map((image) => (
+                        {Object.keys(this.CellsList).map((image) => (
                             <button
                                 type="button"
                                 id={image}
                                 className={`body-inset ${image.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, image) ? 'active' : ''}`}
                                 onClick={(e) => this.chooseOrgan(e)}
-                                onMouseEnter={(e) => highlightOrgan(e)}
+                                onMouseEnter={(e) => highlightOrgan(e, this.BodyList, this.CellsList, this.SystemsList)}
                                 onMouseLeave={unHighlightOrgan}
                                 key={image}
+                                disabled={this.state.organFacets.indexOf(image) === -1}
                             >
                                 {((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === image) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(image))) ?
-                                    <img src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}.svg`} alt={image} />
+                                    <img src={`/static/img/bodyMap/insetSVGs/${this.props.organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}.svg`} alt={image} />
                                 :
-                                    <img src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}_deselected.svg`} alt={image} />
+                                    <img src={`/static/img/bodyMap/insetSVGs/${this.props.organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}_deselected.svg`} alt={image} />
                                 }
                                 <div className="overlay" />
                             </button>
@@ -690,7 +812,7 @@ class BodyMap extends React.Component {
                     </div>
                     <div className="body-list body-list-narrow">
                         <ul className="body-list-inner">
-                            {Object.keys(CellsList).map((b) => (
+                            {Object.keys(this.CellsList).map((b) => (
                                 <li key={b}>
                                     <span
                                         id={b}
@@ -699,8 +821,9 @@ class BodyMap extends React.Component {
                                         tabIndex="0"
                                         onClick={(e) => this.chooseOrgan(e)}
                                         onKeyPress={(e) => this.chooseOrgan(e)}
-                                        onMouseEnter={(e) => highlightOrgan(e)}
+                                        onMouseEnter={(e) => highlightOrgan(e, this.BodyList, this.CellsList, this.SystemsList)}
                                         onMouseLeave={unHighlightOrgan}
+                                        disabled={this.state.organFacets.indexOf(b) === -1}
                                     >
                                         {b}
                                     </span>
@@ -716,11 +839,13 @@ class BodyMap extends React.Component {
 
 BodyMap.propTypes = {
     context: PropTypes.object.isRequired,
+    organism: PropTypes.string.isRequired,
 };
 
 BodyMap.contextTypes = {
     navigate: PropTypes.func,
     location_href: PropTypes.string,
+    fetch: PropTypes.func,
 };
 
 // Clickable thumbnail
@@ -728,7 +853,13 @@ BodyMap.contextTypes = {
 // Button to display the actual body map facet <BodyMapModal>
 export const ClickableThumbnail = (props) => {
     // "toggleThumbnail" toggles whether or not the pop-up is displayed
-    const { toggleThumbnail } = props;
+    const { toggleThumbnail, organism } = props;
+    let CellsList = {};
+    if (props.organism === 'Homo sapiens') {
+        CellsList = HumanCellsList;
+    } else if (props.organism === 'Mus musculus') {
+        CellsList = MouseCellsList;
+    }
     return (
         <button
             type="button"
@@ -737,7 +868,16 @@ export const ClickableThumbnail = (props) => {
         >
             <div className="body-map-expander">Filter results by body diagram</div>
             {svgIcon('expandArrows')}
-            <BodyDiagram />
+            {organism === 'Homo sapiens' ?
+                <HumanBodyDiagram
+                    BodyList={HumanList}
+                />
+            : null}
+            {organism === 'Mus musculus' ?
+                <MouseBodyDiagram
+                    BodyList={MouseList}
+                />
+            : null}
             <div className="body-list body-list-narrow">
                 <ul className="body-list-inner">
                     {Object.keys(CellsList).map((image) => (
@@ -746,8 +886,8 @@ export const ClickableThumbnail = (props) => {
                             id={image}
                             key={image}
                         >
-                            <img className="active-image" src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}.svg`} alt={image} />
-                            <img className="inactive-image" src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}_deselected.svg`} alt={image} />
+                            <img className="active-image" src={`/static/img/bodyMap/insetSVGs/${organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}.svg`} alt={image} />
+                            <img className="inactive-image" src={`/static/img/bodyMap/insetSVGs/${organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}_deselected.svg`} alt={image} />
                             <div className="overlay" />
                         </div>
                     ))}
@@ -759,13 +899,14 @@ export const ClickableThumbnail = (props) => {
 
 ClickableThumbnail.propTypes = {
     toggleThumbnail: PropTypes.func.isRequired,
+    organism: PropTypes.string.isRequired,
 };
 
 // Pop-up body map facet
 // Displayed when you click on <ClickableThumbnail>
 // Allows you to select organ / system filters
 export const BodyMapModal = (props) => {
-    const { context, isThumbnailExpanded, toggleThumbnail } = props;
+    const { context, isThumbnailExpanded, toggleThumbnail, organism } = props;
     return (
         <div className="modal" style={{ display: 'block' }}>
             <div className={`body-map-container-pop-up ${isThumbnailExpanded ? 'expanded' : 'collapsed'}`}>
@@ -774,7 +915,10 @@ export const BodyMapModal = (props) => {
                     <div className="body-map-collapser">Hide body diagram</div>
                 </button>
                 <div className="clickable-diagram-container">
-                    <BodyMap context={context} />
+                    <BodyMap
+                        context={context}
+                        organism={organism}
+                    />
                 </div>
             </div>
             <div className="modal-backdrop in" />
@@ -786,11 +930,25 @@ BodyMapModal.propTypes = {
     isThumbnailExpanded: PropTypes.bool.isRequired,
     toggleThumbnail: PropTypes.func.isRequired,
     context: PropTypes.object.isRequired,
+    organism: PropTypes.string.isRequired,
 };
 
 // Combining the body map thumbnail and the body map modal into one component
 export const BodyMapThumbnailAndModal = (props) => {
     const [isThumbnailExpanded, setIsThumbnailExpanded] = React.useState(false);
+
+    let BodyList = {};
+    let CellsList = {};
+    let SystemsList = {};
+    if (props.organism === 'Homo sapiens') {
+        BodyList = HumanList;
+        CellsList = HumanCellsList;
+        SystemsList = HumanSystemsList;
+    } else if (props.organism === 'Mus musculus') {
+        BodyList = MouseList;
+        CellsList = MouseCellsList;
+        SystemsList = MouseSystemsList;
+    }
 
     React.useEffect(() => {
         // Display modal if page has just refreshed because of user selection from body map
@@ -798,7 +956,7 @@ export const BodyMapThumbnailAndModal = (props) => {
 
         // Highlight body map selections based on url
         const searchQuery = url.parse(props.context['@id']).search;
-        initializeBodyMap(searchQuery);
+        initializeBodyMap(searchQuery, BodyList, SystemsList);
         const query = new QueryString(searchQuery);
         const terms = query.getKeyValues(organField);
         terms.forEach((term) => {
@@ -814,9 +972,18 @@ export const BodyMapThumbnailAndModal = (props) => {
 
     return (
         <div className="body-map-thumbnail-and-modal">
-            <ClickableThumbnail toggleThumbnail={toggleThumbnail} />
+            <ClickableThumbnail
+                toggleThumbnail={toggleThumbnail}
+                organism={props.organism}
+                CellsList={CellsList}
+            />
             {isThumbnailExpanded ?
-                <BodyMapModal isThumbnailExpanded toggleThumbnail={toggleThumbnail} context={props.context} />
+                <BodyMapModal
+                    isThumbnailExpanded
+                    toggleThumbnail={toggleThumbnail}
+                    context={props.context}
+                    organism={props.organism}
+                />
             : null}
         </div>
     );
@@ -825,6 +992,7 @@ export const BodyMapThumbnailAndModal = (props) => {
 BodyMapThumbnailAndModal.propTypes = {
     context: PropTypes.object.isRequired,
     location: PropTypes.string.isRequired, // Should be context.location_href from parent
+    organism: PropTypes.string.isRequired,
 };
 
 export default BodyMap;

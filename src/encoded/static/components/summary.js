@@ -413,7 +413,10 @@ class SummaryBody extends React.Component {
                                     {(this.state.selectedOrganism === 'Homo sapiens') ?
                                         <>
                                             <div className="flex-container">
-                                                <BodyMap context={this.props.context} />
+                                                <BodyMap
+                                                    context={this.props.context}
+                                                    organism={this.state.selectedOrganism}
+                                                />
                                                 <SummaryData context={this.props.context} displayCharts="donuts" />
                                             </div>
                                             <div className="summary-content">
