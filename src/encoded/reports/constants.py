@@ -89,6 +89,8 @@ METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('No File Available', ['files.no_file_available']),
         ('Restricted', ['files.restricted']),
         ('s3_uri', ['files.s3_uri']),
+        ('File analysis title', ['files.analyses.title']),
+        ('File analysis status', ['files.analyses.status']),
     ]
 )
 
