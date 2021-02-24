@@ -54,11 +54,23 @@
         "description": {
             "description": "A summary of this dataset, to be displayed in external resources, like the HCA DCP."
         },
-        "corresponding_contributor": {
-            "title": "Corresponding contributor",
+        "corresponding_contributors": {
+            "title": "Corresponding contributors",
             "description": "The user who is the primary external contact for the dataset.",
-            "type": "string",
-            "linkTo": "User"
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "User"
+            }
+        },
+        "contributors": {
+            "title": "Contributors",
+            "description": "The user who is the primary external contact for the dataset.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "User"
+            }
         },
         "internal_contact": {
             "title": "Internal contact",

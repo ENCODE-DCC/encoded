@@ -40,7 +40,9 @@ class Dataset(Item):
         'libraries',
         'libraries.protocol',
         'award',
-        'references'
+        'references',
+        'corresponding_contributors',
+        'contributors'
     ]
     rev = {
         'superseded_by': ('Dataset', 'supersedes'),
