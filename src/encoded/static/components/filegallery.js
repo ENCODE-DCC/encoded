@@ -2603,6 +2603,7 @@ TabPanelFacets.propTypes = {
     /** Function to call when the user changes the currently selected pipeline lab analyses */
     handleAnalysesSelection: PropTypes.func.isRequired,
     analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
+    context: PropTypes.object.isRequired, // context object
 };
 
 TabPanelFacets.defaultProps = {

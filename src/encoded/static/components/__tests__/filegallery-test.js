@@ -10,6 +10,7 @@ const experiment0 = {
                 '/files/ENCFF005MRN/',
             ],
             assembly: 'GRCh38',
+            accession: 'accession0',
             genome_annotation: 'V24',
             pipelines: [
                 '/pipelines/ENCPL001MRN/',
@@ -32,6 +33,7 @@ const experiment0 = {
                 '/files/ENCFF783YZT/',
             ],
             assembly: 'hg19',
+            accession: 'accession1',
             pipelines: [
                 '/pipelines/ENCPL001MRN/',
                 '/pipelines/ENCPL003RNA/',
@@ -50,6 +52,7 @@ const experiment0 = {
                 '/files/ENCFF001RCV/',
             ],
             assembly: 'GRCh38',
+            accession: 'accession2',
             pipelines: [
                 '/pipelines/ENCPL001GRV/',
             ],
@@ -67,6 +70,7 @@ const experiment0 = {
                 '/files/ENCFF783YZT/',
             ],
             assembly: 'GRCh38',
+            accession: 'accession3',
             pipelines: [
                 '/pipelines/ENCPL001GRV/',
             ],
@@ -84,6 +88,7 @@ const experiment0 = {
                 '/files/ENCFF001RCW/',
             ],
             assembly: 'GRCh38',
+            accession: 'accession4',
             genome_annotation: 'V24',
             pipelines: [
                 '/pipelines/ENCPL001GRV/',
@@ -218,16 +223,16 @@ describe('createPipelineFacetObject', () => {
         it('Has both ENCODE Uniform and Lab Custom facet terms and count', () => {
             const analysisObjects = compileAnalyses(experiment0, files0);
             expect(analysisObjects).toHaveLength(5);
-            expect(analysisObjects[0].pipelineLab).toEqual('Mixed');
+            expect(analysisObjects[0].pipelineLab).toEqual('accession0');
             expect(analysisObjects[0].assembly).toEqual('GRCh38 V24');
             expect(analysisObjects[0].files).toHaveLength(2);
-            expect(analysisObjects[1].pipelineLab).toEqual('ENCODE4');
+            expect(analysisObjects[1].pipelineLab).toEqual('accession4');
             expect(analysisObjects[1].assembly).toEqual('GRCh38 V24');
             expect(analysisObjects[1].files).toHaveLength(2);
-            expect(analysisObjects[2].pipelineLab).toEqual('ENCODE3');
+            expect(analysisObjects[2].pipelineLab).toEqual('accession2');
             expect(analysisObjects[2].assembly).toEqual('GRCh38');
             expect(analysisObjects[2].files).toHaveLength(2);
-            expect(analysisObjects[3].pipelineLab).toEqual('Lab');
+            expect(analysisObjects[3].pipelineLab).toEqual('accession3');
             expect(analysisObjects[3].assembly).toEqual('GRCh38');
             expect(analysisObjects[3].files).toHaveLength(2);
         });
