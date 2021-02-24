@@ -155,7 +155,7 @@ export const MouseSystemsList = {
     'endocrine system': ['liver', 'pancreas', 'thymus', 'adrenal gland'],
     'excretory system': ['kidney', 'urinary bladder'],
     'exocrine system': ['mammary gland', 'liver'],
-    'immune system': ['lymph node', 'spleen', 'thymus'],
+    'immune system': ['lymph node', 'spleen', 'thymus', 'bone marrow'],
     'integumental system': ['mammary gland'],
     musculature: ['musculature of body', 'limb'],
     'reproductive system': ['ovary', 'testis'],
