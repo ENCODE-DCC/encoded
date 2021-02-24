@@ -43,7 +43,6 @@ class Library(Item, CalculatedAward, CalculatedBiosampleOntologies):
         "comment": "Do not submit. This is a calculated property",
         "type": "string",
         "enum": [
-            "scATAC-seq",
             "snATAC-seq",
             "scRNA-seq",
             "snRNA-seq",

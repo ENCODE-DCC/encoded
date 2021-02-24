@@ -331,6 +331,24 @@ class MatrixFile(AnalysisFile):
 
 
     @calculated_property(schema={
+        "title": "Assays",
+        "description": "The list of assays used to generate data contained in this matrix.",
+        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "type": "array",
+        "items": {
+            "type": 'string'
+        },
+        "notSubmittable": True,
+    })
+    def assays(self, request, libraries=None):
+        assays = set()
+        for l in libraries:
+            l_obj = request.embed(l, '@@object')
+            assays.add(l_obj['assay'])
+        return assays
+
+
+    @calculated_property(schema={
         "title": "Cell annotations",
         "description": "The cell annotations applied to this matrix.",
         "comment": "Do not submit. This is a calculated property",
