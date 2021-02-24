@@ -2441,7 +2441,7 @@ function createFacetObject(propertyKey, fileList, filters) {
  * Display the analyses selector, a dropdown menu to choose which pipeline lab's files to view in
  * the file association graph.
  */
-const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection }) => {
+const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef }) => {
     React.useEffect(() => {
         if (selectedAnalysesIndex === -1 && analyses.length > 0) {
             // No selected pipeline lab analyses, but if we have at least one qualifying one,
@@ -2503,7 +2503,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
         analyses.length > 0 ?
             <div className="analyses-selector analyses-selector--file-gallery-facets">
                 <h4>Choose analysis</h4>
-                <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection}>
+                <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection} ref={analysisSelectorRef}>
                     {analyses.map((analysis, index) => {
                         const text = `${analysis.title} ${analysis.status === 'released' ? '🟢' : '⚪'}`;
 
@@ -2526,43 +2526,41 @@ AnalysesSelector.propTypes = {
     selectedAnalysesIndex: PropTypes.number.isRequired,
     /** Called when the user chooses a pipeline lab from the menu */
     handleAnalysesSelection: PropTypes.func.isRequired,
+    analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
 };
 
 
 const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection } = props;
-
-    // Filter file list to make sure it includes only files that should be displayed
-    let fileList = allFiles;
-    if (currentTab === 'browser') {
-        fileList = filterForVisualizableFiles(fileList);
-    }
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef, context } = props;
 
     // Initialize assembly object
     const assembly = { 'All assemblies': 100 };
 
-    // Create object for Assembly facet from list of all files
-    // We do not count how many results there are for a given assembly because we will not display the bars
-    fileList.forEach((file) => {
-        if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
-            assembly[`${file.assembly} ${file.genome_annotation}`] = computeAssemblyAnnotationValue(file.assembly, file.genome_annotation);
-        } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
-            assembly[file.assembly] = computeAssemblyAnnotationValue(file.assembly);
-        }
-    });
+    // set up filesFilteredByAssembly initially with files from drop down
+    const compiledAnalysis = compileAnalyses(context, allFiles);
+    const dropdown = analysisSelectorRef.current;
+    const selectedIndex = dropdown ? dropdown.selectedIndex : null;
+    const compileAnalysisFiles = selectedIndex ? compiledAnalysis[selectedIndex].files : null;
+    let files = compileAnalysisFiles
+        ? allFiles.filter((f) => compileAnalysisFiles && compileAnalysisFiles.includes(f['@id']))
+        : allFiles;
+
+    if (currentTab === 'browser') {
+        files = filterForVisualizableFiles(files);
+    }
 
     // Create objects for non-Assembly facets
-    const fileType = createFacetObject('file_type', fileList, filters);
-    const outputType = createFacetObject('output_type', fileList, filters);
+    const fileType = createFacetObject('file_type', files, filters);
+    const outputType = createFacetObject('output_type', files, filters);
     let replicate;
     if (experimentType !== 'Annotation') {
-        replicate = createFacetObject('biological_replicates', fileList, filters);
+        replicate = createFacetObject('biological_replicates', files, filters);
     }
 
     const selector = currentTab === 'tables'
         ? ''
-        : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0
-            ? <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} />
+        : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && files.length > 0
+            ? <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} analysisSelectorRef={analysisSelectorRef} />
             :
             <>
                 <h4>Choose an assembly </h4>
@@ -2606,12 +2604,12 @@ TabPanelFacets.propTypes = {
     selectedAnalysesIndex: PropTypes.number.isRequired,
     /** Function to call when the user changes the currently selected pipeline lab analyses */
     handleAnalysesSelection: PropTypes.func.isRequired,
+    analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
 };
 
 TabPanelFacets.defaultProps = {
     analyses: [],
 };
-
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
@@ -2667,6 +2665,8 @@ class FileGalleryRendererComponent extends React.Component {
         /** Used to see if related_files has been updated */
         this.prevRelatedFiles = [];
         this.relatedFilesRequested = false;
+
+        this.analysisSelectorRef = React.createRef();
 
         // Bind `this` to non-React methods.
         this.setInfoNodeId = this.setInfoNodeId.bind(this);
@@ -2974,16 +2974,24 @@ class FileGalleryRendererComponent extends React.Component {
             let allFiles = datasetFiles.concat(relatedFiles);
             allFiles = this.filterForInclusion(allFiles);
 
+            // set up filesFilteredByAssembly initially with files from drop down
+            const compiledAnalysis = compileAnalyses(context, allFiles);
+            const dropdown = this.analysisSelectorRef.current;
+            const selectedIndex = dropdown ? dropdown.selectedIndex : null;
+            const compileAnalysisFiles = selectedIndex ? compiledAnalysis[selectedIndex].files : null;
+            const getFilesDataFromIds = () => allFiles.filter((f) => compileAnalysisFiles && compileAnalysisFiles.includes(f['@id']));
+
+            // default value
+            const filesFilteredByAssembly = compileAnalysisFiles ? getFilesDataFromIds() : allFiles;
+
             // If there are filters, filter the new files
-            let filteredFiles = allFiles;
+            let filteredFiles = compileAnalysisFiles ? getFilesDataFromIds() : allFiles;
             const graphFiles = allFiles;
-            let filesFilteredByAssembly = allFiles;
             if (Object.keys(this.state.fileFilters).length > 0) {
                 Object.keys(this.state.fileFilters).forEach((fileFilter) => {
-                    if (fileFilter === 'assembly') {
-                        filesFilteredByAssembly = filterItems(filesFilteredByAssembly, fileFilter, this.state.fileFilters[fileFilter]);
+                    if (fileFilter !== 'assembly') {
+                        filteredFiles = filterItems(filteredFiles, fileFilter, this.state.fileFilters[fileFilter]);
                     }
-                    filteredFiles = filterItems(filteredFiles, fileFilter, this.state.fileFilters[fileFilter]);
                 });
             }
 
@@ -3240,6 +3248,8 @@ class FileGalleryRendererComponent extends React.Component {
                             analyses={this.state.compiledAnalyses}
                             selectedAnalysesIndex={this.state.selectedAnalysesIndex}
                             handleAnalysesSelection={this.handleAnalysesSelection}
+                            analysisSelectorRef={this.analysisSelectorRef}
+                            context={context}
                         />
                         <TabPanel
                             tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
