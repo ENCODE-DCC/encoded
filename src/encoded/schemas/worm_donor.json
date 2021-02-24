@@ -153,7 +153,9 @@
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "strain_name": 1.0,
-        "genotype": 1.0
+        "genotype": 1.0,
+        "organism.scientific_name": 1.0,
+        "organism.name": 1.0
     },
     "changelog": "/profiles/changelogs/worm_donor.md"
 }
