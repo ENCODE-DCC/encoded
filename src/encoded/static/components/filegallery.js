@@ -129,8 +129,9 @@ export const compileAnalyses = (experiment, files, dataFormat = null) => {
         if (duplicatedTitles.length > 0) {
             compiledAnalyses = compiledAnalyses.map((compiledAnalyse) => {
                 const c = { ...compiledAnalyse };
+
                 if (duplicatedTitles.includes(compiledAnalyse.title)) {
-                    const { title, accession } = compiledAnalyse;
+                    const { title, accession } = c;
                     c.title = `${title} (${accession})`;
                 }
                 return c;
@@ -364,7 +365,7 @@ export class FileTable extends React.Component {
                             <SortTable
                                 title={
                                     <CollapsingTitle
-                                        title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)} Processed data`}
+                                        title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)} processed data`}
                                         collapsed={this.state.collapsed[key]}
                                         handleCollapse={() => this.handleCollapse(key)}
                                         context={context}
@@ -2504,15 +2505,11 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
             <div className="analyses-selector analyses-selector--file-gallery-facets">
                 <h4>Choose analysis</h4>
                 <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection} ref={analysisSelectorRef}>
-                    {analyses.map((analysis, index) => {
-                        const text = `${analysis.title} ${analysis.status === 'released' ? '🟢' : '⚪'}`;
-
-                        return (
-                            <option key={analysis.title} value={index}>
-                                {text}
-                            </option>
-                        );
-                    })}
+                    {analyses.map((analysis, index) => (
+                        <option value={index}>
+                            {`${analysis.title} ${analysis.status === 'released' ? '🟢' : '⚪'}`}
+                        </option>
+                    ))}
                 </select>
             </div>
         : null
@@ -2540,7 +2537,8 @@ const TabPanelFacets = (props) => {
     const compiledAnalysis = compileAnalyses(context, allFiles);
     const dropdown = analysisSelectorRef.current;
     const selectedIndex = dropdown ? dropdown.selectedIndex : null;
-    const compileAnalysisFiles = selectedIndex ? compiledAnalysis[selectedIndex].files : null;
+    const analysis = compiledAnalysis[selectedIndex];
+    const compileAnalysisFiles = analysis ? analysis.files : null;
     let files = compileAnalysisFiles
         ? allFiles.filter((f) => compileAnalysisFiles && compileAnalysisFiles.includes(f['@id']))
         : allFiles;
@@ -2559,7 +2557,7 @@ const TabPanelFacets = (props) => {
 
     const selector = currentTab === 'tables'
         ? ''
-        : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && files.length > 0
+        : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0
             ? <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} analysisSelectorRef={analysisSelectorRef} />
             :
             <>
@@ -2978,7 +2976,8 @@ class FileGalleryRendererComponent extends React.Component {
             const compiledAnalysis = compileAnalyses(context, allFiles);
             const dropdown = this.analysisSelectorRef.current;
             const selectedIndex = dropdown ? dropdown.selectedIndex : null;
-            const compileAnalysisFiles = selectedIndex ? compiledAnalysis[selectedIndex].files : null;
+            const analysis = compiledAnalysis[selectedIndex];
+            const compileAnalysisFiles = analysis ? analysis.files : null;
             const getFilesDataFromIds = () => allFiles.filter((f) => compileAnalysisFiles && compileAnalysisFiles.includes(f['@id']));
 
             // default value
@@ -3027,8 +3026,7 @@ class FileGalleryRendererComponent extends React.Component {
                     const assemblyList = this.setAssemblyList(allFiles);
                     // Update compiled analyses filtered by available assemblies
                     if (context.analysis_objects && context.analysis_objects.length > 0) {
-                        const availableAssemblies = Object.keys(assemblyList);
-                        availableCompiledAnalyses = compileAnalyses(context, allFiles, 'choose analysis').filter((analysis) => availableAssemblies.includes(analysis.assembly));
+                        availableCompiledAnalyses = compileAnalyses(context, allFiles, 'choose analysis');
                     }
                     if (availableCompiledAnalyses.length > 0) {
                         // Update the list of relevant compiled analyses and use it to select an
