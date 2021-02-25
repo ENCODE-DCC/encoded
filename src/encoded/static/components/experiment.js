@@ -14,7 +14,16 @@ import { singleTreatment, ItemAccessories, InternalTags, TopAccessories } from '
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments, ExperimentTable } from './typeutils';
+import {
+    AwardRef,
+    BiosampleSummaryString,
+    BiosampleOrganismNames,
+    CollectBiosampleDocs,
+    ControllingExperiments,
+    DoiRef,
+    ExperimentTable,
+    ReplacementAccessions,
+} from './typeutils';
 import Tooltip from '../libs/ui/tooltip';
 import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
@@ -558,6 +567,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             <header>
                 <TopAccessories context={context} crumbs={crumbs} />
                 <h1>{displayType} summary for {context.accession}</h1>
+                <DoiRef context={context} />
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'experiment-audit' }} hasCartControls />
             </header>

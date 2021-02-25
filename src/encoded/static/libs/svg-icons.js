@@ -115,6 +115,15 @@ const chevronRight = () => (
     </svg>
 );
 
+const clipboard = (style) => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 249" style={style} className="svg-icon svg-icon-clipboard">
+        <path d="M164,24.5h26.54c6.31,0,11.46,5.05,11.46,11.23v190.05c0,6.17-5.16,11.23-11.46,11.23H57.46
+            C51.16,237,46,231.95,46,225.77V35.73c0-6.17,5.16-11.23,11.46-11.23H84"
+        />
+        <rect x="84" y="11" width="80" height="46" />
+    </svg>
+);
+
 
 const icons = {
     disclosure: (style) => <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style={style} className="svg-icon svg-icon-disclosure"><circle cx="240" cy="240" r="240" /><polyline points="401.79 175.66 240 304.34 78.21 175.66" /></svg>,
@@ -136,6 +145,7 @@ const icons = {
     expandArrows,
     lockOpen,
     lockClosed,
+    clipboard,
 };
 
 /**

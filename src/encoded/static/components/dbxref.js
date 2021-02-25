@@ -287,18 +287,12 @@ export function dbxrefHref(prefix, value) {
 
 
 /**
- * Internal component to display one dbxref as a string. It handles calling the pre- and post-
- * processor from `dbxrefPrefixMap` above, and looking up the URL for the given dbxref. It
- * generates either a link with the generated URL for the given dbxref and the dbxref itself as the
- * link text, o just the dbxref in a <span> if we don't have that dbxref in `dbxrefPrefixMap`.
- *
- * @prop {string} dbxref - String containing one dbxref string.
- * @prop {object} context - Object (Experiment, HumanDonor, etc.) containing the dbxref being
- *     displayed.
- * @prop {title} title - String that is displayed instead of Dbxref string. Optional.
+ * Display one dbxref. It handles calling the pre- and post- processor from `dbxrefPrefixMap`
+ * above, and looking up the URL for the given dbxref. It generates either a link with the
+ * generated URL for the given dbxref and the dbxref itself as the link text, or just the dbxref in
+ * a <span> if we don't have that dbxref in `dbxrefPrefixMap`.
  */
-const DbxrefUrl = (props) => {
-    const { dbxref, context, title } = props;
+export const DbxrefUrl = ({ dbxref, context, title, displayRef }) => {
     const displayTitle = title || dbxref;
     // Standard dbxref pattern: {prefix}:{value}. If the dbxref has more than one colon, only the
     // first colon splits the dbxref into `prefix` and `value`. The other colons get included as
@@ -333,7 +327,7 @@ const DbxrefUrl = (props) => {
         }
 
         // Return the final dbxref as a link.
-        return <a href={url}>{displayTitle}</a>;
+        return <a href={url} ref={displayRef}>{displayTitle}</a>;
     }
 
     // The dbxref prefix didn't map to anything we know about, so just display the dbxref as
@@ -342,13 +336,19 @@ const DbxrefUrl = (props) => {
 };
 
 DbxrefUrl.propTypes = {
-    dbxref: PropTypes.string.isRequired, // dbxref string
-    context: PropTypes.object.isRequired, // Object that contains the dbxref
-    title: PropTypes.string, // title string displayed instead of dbxref string
+    /** dbxref string */
+    dbxref: PropTypes.string.isRequired,
+    /** Object that contains the dbxref */
+    context: PropTypes.object.isRequired,
+    /** title string displayed instead of dbxref string */
+    title: PropTypes.string,
+    /** React ref for the dbxref link */
+    displayRef: PropTypes.object,
 };
 
 DbxrefUrl.defaultProps = {
     title: '',
+    displayRef: null,
 };
 
 

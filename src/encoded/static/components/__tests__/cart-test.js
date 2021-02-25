@@ -14,7 +14,6 @@ import {
     CART_OPERATION_IN_PROGRESS,
 } from '../cart/actions';
 import { isAllowedElementsPossible } from '../cart/util';
-import { sortDatasetAnalyses } from '../cart/analysis';
 
 // Temporary use of adapter until Enzyme is compatible with React 17.
 Enzyme.configure({ adapter: new Adapter() });
@@ -435,73 +434,5 @@ describe('Cart manager while logged in as admin', () => {
         const tableRows = cartManager.find('.table.table__sortable tbody tr');
         expect(tableRows.at(0).find('.cart-manager-table__autosave-row')).toHaveLength(1);
         expect(tableRows.at(2).find('.cart-manager-table__current-row')).toHaveLength(1);
-    });
-});
-
-describe('Compiled analysis sorting', () => {
-    let analyses;
-
-    beforeAll(() => {
-        analyses = [
-            {
-                title: 'ENCODE3 v1.2.3 hg19',
-                status: 'released',
-                lab: 'ENCODE3',
-                version: '1.2.3',
-                assembly: 'hg19',
-                annotation: '',
-                assemblyAnnotationValue: 19.5,
-                files: ['/files/ENCFF101RCZ/'],
-            },
-            {
-                title: 'ENCODE3 v0.0.4 hg19 V19',
-                status: 'in progress',
-                lab: 'ENCODE3',
-                version: '0.0.4',
-                assembly: 'hg19',
-                annotation: 'V19',
-                assemblyAnnotationValue: 19.5019,
-                files: ['/files/ENCFF001RCV/', '/files/ENCFF001RCZ/'],
-            },
-            {
-                title: 'ENCODE3 GRCh38',
-                status: 'released',
-                lab: '',
-                version: '',
-                assembly: 'GRCh38',
-                annotation: '',
-                assemblyAnnotationValue: 38.5,
-                files: [
-                    '/files/ENCFF684NLR/',
-                    '/files/ENCFF651UIO/',
-                    '/files/ENCFF858ORL/',
-                    '/files/ENCFF231IAK/',
-                    '/files/ENCFF797ARJ/',
-                    '/files/ENCFF611CHF/',
-                    '/files/ENCFF873ZWP/',
-                    '/files/ENCFF953EVD/',
-                    '/files/ENCFF303HPA/',
-                    '/files/ENCFF434HLD/',
-                    '/files/ENCFF852TVX/',
-                    '/files/ENCFF547XEQ/',
-                ],
-            },
-            {
-                title: 'Lab custom v10.20.30 GRCh38 V24',
-                status: 'released',
-                lab: 'Lab custom',
-                version: '10.20.30',
-                assembly: 'GRCh38',
-                annotation: 'V24',
-                assemblyAnnotationValue: 38.5024,
-                files: ['/files/ENCFF003MRN/', '/files/ENCFF005MRN/'],
-            },
-        ];
-    });
-
-    test('Compiled analyses sort correctly', () => {
-        const sorted = sortDatasetAnalyses(analyses);
-        console.log(sorted);
-        expect([]).toHaveLength(0);
     });
 });

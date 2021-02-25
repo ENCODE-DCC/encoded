@@ -17,7 +17,7 @@ import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
-import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable } from './typeutils';
+import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -83,6 +83,7 @@ const AnnotationComponent = (props, reactContext) => {
             <header>
                 <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for annotation file set {context.accession}</h1>
+                <DoiRef context={context} />
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'annotation-audit' }} hasCartControls />
             </header>
@@ -289,6 +290,7 @@ const PublicationDataComponent = ({ context, auditIndicators, auditDetail }, rea
             <header>
                 <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for publication file set {context.accession}</h1>
+                <DoiRef context={context} />
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>
@@ -456,6 +458,7 @@ const ComputationalModelComponent = (props, reactContext) => {
             <header>
                 <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for computational model file set {context.accession}</h1>
+                <DoiRef context={context} />
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>
@@ -610,6 +613,7 @@ const ReferenceComponent = (props, reactContext) => {
             <header>
                 <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for reference file set {context.accession}</h1>
+                <DoiRef context={context} />
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>
@@ -808,6 +812,7 @@ const ProjectComponent = (props, reactContext) => {
             <header>
                 <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for project file set {context.accession}</h1>
+                <DoiRef context={context} />
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>
@@ -987,6 +992,7 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
             <header>
                 <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for UCSC browser composite file set {context.accession}</h1>
+                <DoiRef context={context} />
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>
@@ -1796,6 +1802,7 @@ export const SeriesComponent = (props, reactContext) => {
             <header>
                 <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for {seriesTitle} {context.accession}</h1>
+                <DoiRef context={context} />
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} hasCartControls={seriesType === 'FunctionalCharacterizationSeries'} />
             </header>
