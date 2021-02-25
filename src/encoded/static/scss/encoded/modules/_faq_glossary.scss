@@ -51,23 +51,6 @@
     }
 }
 
-.glossary-element a[href^="http"]::after, .section-header-link a[href^="http"]::after {
-    content: " \f08e";
-    font-family: FontAwesome;
-    font-weight: normal;
-    font-style: normal;
-    text-decoration: none;
-    -webkit-font-smoothing: antialiased;
-
-    /* sprites.less reset */
-    display: inline;
-    line-height: normal;
-    vertical-align: baseline;
-    background-image: none;
-    background-position: 0% 0%;
-    background-repeat: repeat;
-}
-
 .block.richtextblock .glossary-element {
     .glossary-extra-info {
         margin: 0 0 0 25px;
