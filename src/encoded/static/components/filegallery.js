@@ -3673,6 +3673,13 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         </div>
                     : null}
 
+                    {selectedFile.mapped_run_type !== undefined ?
+                        <div data-test="mappedruntype">
+                            <dt>Mapped run type</dt>
+                            <dd>{selectedFile.mapped_run_type}</dd>
+                        </div>
+                    : null}
+
                     {selectedFile.cropped_read_length !== undefined ?
                         <div data-test="croppedreadlength">
                             <dt>Cropped read length</dt>

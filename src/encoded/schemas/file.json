@@ -1926,6 +1926,9 @@
         "cropped_read_length_tolerance": {
             "title": "Cropped read length tolerance (nt)"
         },
+        "mapped_run_type": {
+            "title": "Mapped run type for bam files"
+        },
         "read_length_units": {
             "title": "Read length units"
         },

@@ -343,6 +343,13 @@ class FileComponent extends React.Component {
                                     <dd>{`[${context.technical_replicates && context.technical_replicates.length > 0 ? context.technical_replicates.join(', ') : '-'}]`}</dd>
                                 </div>
 
+                                {context.mapped_run_type ?
+                                    <div data-test="mappruntype">
+                                        <dt>Mapped run type</dt>
+                                        <dd>{context.mapped_run_type}</dd>
+                                    </div>
+                                : null}
+
                                 {pipelines.length > 0 ?
                                     <div data-test="pipelines">
                                         <dt>Pipelines</dt>
