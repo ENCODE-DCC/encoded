@@ -144,8 +144,9 @@ const displayedFacetFields = [
         css: 'cart-facet--analysis',
     },
     {
-        field: 'assay_term_name',
+        field: 'assay_title',
         title: 'Assay',
+        dataset: true,
         preferred: true,
     },
     {
