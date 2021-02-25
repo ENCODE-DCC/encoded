@@ -828,6 +828,17 @@ export function filterForVisualizableFiles(fileList) {
 
 
 /**
+ * Filter the given files to only include those with the `preferred_default` flag set.
+ * @param {array} fileList Files to filter
+ *
+ * @return {array} Members of `fileList` that have preferred_default flag set.
+ */
+export const filterForPreferredFiles = (fileList) => (
+    fileList.filter((file) => file.preferred_default)
+);
+
+
+/**
  * Displays an item count intended for the tops of table, normally reflecting a search result count.
  */
 export const TableItemCount = ({ count }) => (
