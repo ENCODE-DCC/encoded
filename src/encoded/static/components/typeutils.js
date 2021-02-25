@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import * as Pager from '../libs/ui/pager';
+import { dbxrefHref } from './dbxref';
 import * as globals from './globals';
-import { requestFiles, AlternateAccession } from './objectutils';
+import { requestFiles, AlternateAccession, CopyButton } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BatchDownloadControls } from './view_controls';
@@ -858,4 +859,35 @@ FileTablePaged.defaultProps = {
     context: null,
     fileIds: null,
     files: null,
+};
+
+
+/**
+ * Display a DOI dbxref and a button to copy the link to the clipboard.
+ */
+export const DoiRef = ({ context }) => {
+    if (context.doi) {
+        const doiDbxref = `doi:${context.doi}`;
+        const doiHref = dbxrefHref(doiDbxref, context);
+        if (doiHref) {
+            return (
+                <div className="doi-ref">
+                    <div className="doi-ref__link">{doiDbxref}</div>
+                    <CopyButton
+                        label="Copy DOI URL"
+                        copyText={doiHref}
+                        css="btn-xs doi-ref__copy-button"
+                        titlePre="Copy DOI URL"
+                        titlePost="Copied DOI URL"
+                    />
+                </div>
+            );
+        }
+    }
+    return null;
+};
+
+DoiRef.propTypes = {
+    /** Target of doi -- currently displayed dataset object */
+    context: PropTypes.object.isRequired,
 };
