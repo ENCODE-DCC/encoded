@@ -1,5 +1,6 @@
-awscli
-boto3>=1.11.3
+PyYAML==5.2
+awscli==1.19.8
+boto3==1.17.8
 Babel==2.2.0
 argparse==1.2.1
 boto==2.49.0
