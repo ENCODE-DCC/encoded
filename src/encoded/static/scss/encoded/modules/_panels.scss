@@ -684,6 +684,10 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
     &__file-download {
         cursor: pointer;
         color: #428bca;
+
+        &--no-download-shade {
+            opacity: 0.3;
+        }
     }
 }
 

@@ -107,16 +107,18 @@ export const compileAnalyses = (experiment, files, dataFormat = null) => {
                     // eslint-disable-next-line camelcase
                     const { status, accession, pipeline_award_rfas, title } = analysesByAssembly[assembly][0];
 
-                    compiledAnalyses.push({
-                        title,
-                        pipelineLab,
-                        assembly,
-                        status,
-                        accession,
-                        pipelineAwardRfa: pipeline_award_rfas[0] || '',
-                        assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assembly, analysesByAssembly[assembly][0].genome_annotation),
-                        files: _.uniq(assemblyFiles),
-                    });
+                    if (assemblyFiles.length > 0) {
+                        compiledAnalyses.push({
+                            title,
+                            pipelineLab,
+                            assembly,
+                            status,
+                            accession,
+                            pipelineAwardRfa: pipeline_award_rfas[0] || '',
+                            assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assembly, analysesByAssembly[assembly][0].genome_annotation),
+                            files: _.uniq(assemblyFiles),
+                        });
+                    }
                 });
             });
         }
@@ -150,6 +152,13 @@ export const compileAnalyses = (experiment, files, dataFormat = null) => {
 
     return _(compiledAnalyses).sortBy((compiledAnalysis) => -compiledAnalysis.assemblyAnnotationValue);
 };
+
+/**
+ * True if there is at least one file that can be downloaded. False others
+ *
+ * @param {array} files Files to check to see if they can be downloaded
+ */
+const downloadEnabled = (files) => (files || []).some((file) => !(file.restricted || file.no_file_available));
 
 export class FileTable extends React.Component {
     static rowClasses() {
@@ -374,6 +383,7 @@ export class FileTable extends React.Component {
                                         totalFiles={files && files[key] ? files[key].length : 0}
                                         isDownloadable={key !== nonAnalysisObjectPrefix}
                                         inclusionOn={inclusionOn}
+                                        files={files[key]}
                                     />
                                 }
                                 rowClasses={this.rowClasses}
@@ -405,6 +415,7 @@ export class FileTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files && files.ref ? files.ref.length : 0}
                                     inclusionOn={inclusionOn}
+                                    files={files.ref}
                                 />
                             }
                             collapsed={this.state.collapsed.ref}
@@ -818,6 +829,7 @@ class RawSequencingTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
+                                    files={files}
                                 />
                             </th>
                         </tr>
@@ -1032,6 +1044,7 @@ class RawFileTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
+                                    files={files}
                                 />
                             </th>
                         </tr>
@@ -3381,7 +3394,7 @@ const FileGalleryRenderer = auditDecor(FileGalleryRendererComponent);
 
 
 const CollapsingTitle = (props, reactContext) => {
-    const { title, handleCollapse, collapsed, context, filters, analysisObjectKey, outputCategory, outputType, totalFiles, isDownloadable, inclusionOn } = props;
+    const { title, handleCollapse, collapsed, context, filters, analysisObjectKey, outputCategory, outputType, totalFiles, isDownloadable, inclusionOn, files } = props;
 
     const [downloadModalVisibility, setDownloadModalVisibility] = useState(false);
 
@@ -3421,6 +3434,8 @@ const CollapsingTitle = (props, reactContext) => {
         setDownloadModalVisibility(false);
     };
 
+    const canDownload = downloadEnabled(files);
+
     return (
         <div className="collapsing-title">
             {downloadModalVisibility
@@ -3434,8 +3449,8 @@ const CollapsingTitle = (props, reactContext) => {
             <h4>
                 {title} <span className="collapsing-title-file-count">({`${totalFiles} File${totalFiles !== 1 ? 's' : ''}`})</span>  &nbsp;&nbsp;
                 {isDownloadable ?
-                    <span className="collapsing-title__file-download" onClick={() => setDownloadModalVisibility(true)} role="button" tabIndex={0} onKeyDown={() => {}}>
-                        <i className="icon icon-download">
+                    <span className="collapsing-title__file-download" onClick={() => (canDownload ? setDownloadModalVisibility(true) : null)} role="button" tabIndex={0} onKeyDown={() => {}}>
+                        <i className={`icon icon-download ${canDownload ? '' : 'collapsing-title__file-download--no-download-shade'}`}>
                             <span className="sr-only">Download</span>
                         </i>
                     </span>
@@ -3457,6 +3472,7 @@ CollapsingTitle.propTypes = {
     totalFiles: PropTypes.number, // total file count
     isDownloadable: PropTypes.bool, // whether or not the section can have it's files downloaded
     inclusionOn: PropTypes.bool.isRequired, // inclusion box checked or not
+    files: PropTypes.array, // associated files
 };
 
 CollapsingTitle.defaultProps = {
@@ -3467,6 +3483,7 @@ CollapsingTitle.defaultProps = {
     outputType: null,
     totalFiles: 0,
     isDownloadable: true,
+    files: [],
 };
 
 CollapsingTitle.contextTypes = {
