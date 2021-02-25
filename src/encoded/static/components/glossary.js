@@ -18,9 +18,10 @@ const GlossaryTerm = (props) => {
             {props.glossaryEntry.additional_information ?
                 <p className="glossary-extra-info">
                     <span className="glossary-label">Additional information: </span>
-                    {props.glossaryEntry.additional_information.map((href) => (
+                    {props.glossaryEntry.additional_information.map((href, hrefIndex) => (
                         <span className="glossary-field" key={href.url}>
                             <a href={href.url}>{href.title}</a>
+                            <span>{((props.glossaryEntry.additional_information.length > 1) && hrefIndex < (props.glossaryEntry.additional_information.length - 1)) ? ', ' : ''}</span>
                         </span>
                     ))}
                 </p>
