@@ -499,7 +499,10 @@ class Annotation(FileSet, CalculatedVisualize):
     @calculated_property(condition='contributing_files', schema={
         "title": "Biochemical profile inputs",
         "description": "The input data used to generate a cCRE annotation.",
-        "type": "string",
+        "type": "array",
+        "items": {
+            "type": "string"
+        },
         "notSubmittable": True
     })
     def biochemical_inputs(
@@ -542,7 +545,8 @@ class Annotation(FileSet, CalculatedVisualize):
                                     elif properties['assay_term_name'] == 'DNase-seq':
                                         inputs_set.add('DNase-seq')
         inputs_list = sorted(inputs_set)
-        return ((', ').join([str(each) for each in inputs_list]))
+        if inputs_list:
+            return list(inputs_list)
 
 
 @collection(
