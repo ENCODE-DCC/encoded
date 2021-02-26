@@ -381,7 +381,7 @@ export class FileTable extends React.Component {
                                         analysisObjectKey={key}
                                         filters={filters}
                                         totalFiles={files && files[key] ? files[key].length : 0}
-                                        isDownloadable={key !== nonAnalysisObjectPrefix}
+                                        isDownloadable={key !== nonAnalysisObjectPrefix && context.analysis_objects && ['released', 'archived'].includes(context.analysis_objects.find((a) => a.accession === key).status)}
                                         inclusionOn={inclusionOn}
                                         files={files[key]}
                                     />
@@ -2541,36 +2541,35 @@ AnalysesSelector.propTypes = {
 
 
 const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef, context } = props;
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef } = props;
+
+    // Filter file list to make sure it includes only files that should be displayed
+    const fileList = allFiles;
 
     // Initialize assembly object
     const assembly = { 'All assemblies': 100 };
 
-    // set up filesFilteredByAssembly initially with files from drop down
-    const compiledAnalysis = compileAnalyses(context, allFiles);
-    const dropdown = analysisSelectorRef.current;
-    const selectedIndex = dropdown ? dropdown.selectedIndex : null;
-    const analysis = compiledAnalysis[selectedIndex];
-    const compileAnalysisFiles = analysis ? analysis.files : null;
-    let files = compileAnalysisFiles
-        ? allFiles.filter((f) => compileAnalysisFiles && compileAnalysisFiles.includes(f['@id']))
-        : allFiles;
-
-    if (currentTab === 'browser') {
-        files = filterForVisualizableFiles(files);
-    }
+    // Create object for Assembly facet from list of all files
+    // We do not count how many results there are for a given assembly because we will not display the bars
+    fileList.forEach((file) => {
+        if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
+            assembly[`${file.assembly} ${file.genome_annotation}`] = computeAssemblyAnnotationValue(file.assembly, file.genome_annotation);
+        } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
+            assembly[file.assembly] = computeAssemblyAnnotationValue(file.assembly);
+        }
+    });
 
     // Create objects for non-Assembly facets
-    const fileType = createFacetObject('file_type', files, filters);
-    const outputType = createFacetObject('output_type', files, filters);
+    const fileType = createFacetObject('file_type', fileList, filters);
+    const outputType = createFacetObject('output_type', fileList, filters);
     let replicate;
     if (experimentType !== 'Annotation') {
-        replicate = createFacetObject('biological_replicates', files, filters);
+        replicate = createFacetObject('biological_replicates', fileList, filters);
     }
 
     const selector = currentTab === 'tables'
         ? ''
-        : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0
+        : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0
             ? <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} analysisSelectorRef={analysisSelectorRef} />
             :
             <>
@@ -2616,7 +2615,6 @@ TabPanelFacets.propTypes = {
     /** Function to call when the user changes the currently selected pipeline lab analyses */
     handleAnalysesSelection: PropTypes.func.isRequired,
     analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
-    context: PropTypes.object.isRequired, // context object
 };
 
 TabPanelFacets.defaultProps = {
@@ -2663,7 +2661,7 @@ class FileGalleryRendererComponent extends React.Component {
             /** Current tab: 'browser', 'graph', or 'tables' */
             currentTab: 'tables',
             /** Sorted compiled dataset analysis objects filtered by available assemblies */
-            compiledAnalyses: compileAnalyses(props.context, datasetFiles),
+            compiledAnalyses: compileAnalyses(props.context, datasetFiles, 'choose analysis'),
             /** Index of currently/last selected `compiledAnalyses`. */
             selectedAnalysesIndex: 0,
         };
@@ -2704,6 +2702,7 @@ class FileGalleryRendererComponent extends React.Component {
         this.findCompiledAnalysesIndex = this.findCompiledAnalysesIndex.bind(this);
         this.resetCurrentBrowser = this.resetCurrentBrowser.bind(this);
         this.handleAnalysesSelection = this.handleAnalysesSelection.bind(this);
+        this.updateChooseAnalysis = this.updateChooseAnalysis.bind(this);
     }
 
     componentDidMount() {
@@ -2742,7 +2741,15 @@ class FileGalleryRendererComponent extends React.Component {
         // }
     }
 
+
     componentDidUpdate(prevProps, prevState) {
+        if ((prevState.currentTab !== 'browser' && prevState.currentTab !== this.state.currentTab)) {
+            const analyses = this.getBrowserAnalysis();
+            const selectedIndex = this.getBrowserSelectedIndex();
+
+            this.updateChooseAnalysis(analyses, selectedIndex);
+        }
+
         const updateAssembly = prevState.currentTab !== this.state.currentTab || prevState.inclusionOn !== this.state.inclusionOn || prevProps.data !== this.props.data;
         this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']), updateAssembly);
     }
@@ -2831,6 +2838,7 @@ class FileGalleryRendererComponent extends React.Component {
         this.filterFiles(this.state.compiledAnalyses[selectedAnalysesIndex].assembly, 'assembly');
     }
 
+
     // Called from child components when the selected node changes.
     setInfoNodeId(node) {
         this.setState({ infoNode: node });
@@ -2888,6 +2896,45 @@ class FileGalleryRendererComponent extends React.Component {
             return visSortBrowsers(this.props.context.visualize[selectedBrowserAssembly]);
         }
         return [];
+    }
+
+    getBrowserAnalysis() {
+        const { allFiles, compiledAnalyses } = this.state;
+
+        const analyses = compiledAnalyses.filter((c) => {
+            const analysisFiles = filterForVisualizableFiles(c.files.map((f) => allFiles.find((aF) => aF['@id'] === f)));
+
+            return analysisFiles.length > 0;
+        });
+
+        return analyses;
+    }
+
+    getBrowserSelectedIndex() {
+        const { selectedAnalysesIndex } = this.state;
+
+        const analyses = this.getBrowserAnalysis();
+
+        const selectedAnalysis = analyses[selectedAnalysesIndex];
+
+        if (!selectedAnalysis) {
+            return 0;
+        }
+
+        let selectedIndex = selectedAnalysesIndex;
+
+        if (!analyses.find((c) => c.accession === selectedAnalysis.accession)) {
+            selectedIndex = 0;
+        }
+
+        return selectedIndex;
+    }
+
+    updateChooseAnalysis(compiledAnalyses, selectedAnalysesIndex) {
+        this.setState({
+            selectedAnalysesIndex,
+            compiledAnalyses,
+        });
     }
 
     /**
@@ -2965,6 +3012,7 @@ class FileGalleryRendererComponent extends React.Component {
     updateFiles(prevLoggedIn, updateAssembly) {
         const { context, data } = this.props;
         const { session } = this.context;
+        const { currentTab } = this.state;
         const loggedIn = !!(session && session['auth.userid']);
         const relatedFileAtIds = context.related_files && context.related_files.length > 0 ? context.related_files : [];
         const datasetFiles = data ? data['@graph'] : [];
@@ -2987,9 +3035,13 @@ class FileGalleryRendererComponent extends React.Component {
             allFiles = this.filterForInclusion(allFiles);
 
             // set up filesFilteredByAssembly initially with files from drop down
-            const compiledAnalysis = compileAnalyses(context, allFiles);
+            const compiledAnalysis = currentTab === 'browser'
+                ? this.getBrowserAnalysis()
+                : compileAnalyses(context, allFiles, 'choose analysis');
             const dropdown = this.analysisSelectorRef.current;
-            const selectedIndex = dropdown ? dropdown.selectedIndex : null;
+            const selectedIndex = currentTab === 'browser'
+                ? this.getBrowserSelectedIndex()
+                : dropdown ? dropdown.selectedIndex : null;
             const analysis = compiledAnalysis[selectedIndex];
             const compileAnalysisFiles = analysis ? analysis.files : null;
             const getFilesDataFromIds = () => allFiles.filter((f) => compileAnalysisFiles && compileAnalysisFiles.includes(f['@id']));
@@ -3040,7 +3092,7 @@ class FileGalleryRendererComponent extends React.Component {
                     const assemblyList = this.setAssemblyList(allFiles);
                     // Update compiled analyses filtered by available assemblies
                     if (context.analysis_objects && context.analysis_objects.length > 0) {
-                        availableCompiledAnalyses = compileAnalyses(context, allFiles, 'choose analysis');
+                        availableCompiledAnalyses = compiledAnalysis;
                     }
                     if (availableCompiledAnalyses.length > 0) {
                         // Update the list of relevant compiled analyses and use it to select an
