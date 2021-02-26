@@ -5,7 +5,6 @@ import base64
 import codecs
 import copy
 import json
-import netaddr
 import os
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
