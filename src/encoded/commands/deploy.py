@@ -394,6 +394,9 @@ def _get_ec2_client(main_args, instances_tag_data):
 
 def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     build_type = instances_tag_data['build_type']  # template_name
+    sqlalchemy_url = 'postgresql:///encoded'
+    if build_type in ('app', 'app-es'):
+        sqlalchemy_url = f"postgresql://{main_args.pg_ip}/encoded"
     master_user_data = None
     git_remote = 'origin' if not is_tag else 'tags'
     home = "/srv/encoded"
@@ -406,10 +409,8 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'CC_DIR': main_args.conf_dir_remote,
         'CLUSTER_NAME': 'NONE',
         'DEVELOP_SNOVAULT': 'true' if not main_args.no_develop_snovault else 'false',
-        'ES_IP': main_args.es_ip,
-        'ES_PORT': main_args.es_port,
+        'ELASTICSEARCH_URL': f"{main_args.es_ip}:{main_args.es_port}",
         'ES_OPT_FILENAME': 'notused',
-        'FE_IP': main_args.fe_ip,
         'FULL_BUILD': main_args.full_build,
         'GIT_BRANCH': main_args.branch,
         'GIT_REMOTE': git_remote,
@@ -425,6 +426,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'PG_VERSION': main_args.postgres_version,
         'PG_OPEN': 'true' if main_args.pg_open else 'false',
         'PG_IP': main_args.pg_ip,
+        'SQLALCHEMY_URL': sqlalchemy_url,
         'PY3_PATH': '/usr/bin/python3.6',
         'REDIS_PORT': main_args.redis_port,
         'REMOTE_INDEXING': 'true' if main_args.remote_indexing else 'false',
@@ -994,7 +996,6 @@ def _parse_args():
         type=hostname,
         help="Name of single node to add to already existing cluster"
     )
-    parser.add_argument('--fe-ip', default='localhost', help="Primary frontend ip address")
     parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
 
     # Database

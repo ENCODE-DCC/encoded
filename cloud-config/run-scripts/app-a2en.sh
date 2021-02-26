@@ -10,6 +10,11 @@ fi
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Running"
 
 # Script Below
+# Need to pass to indexers
+echo "export ELASTICSEARCH_URL=${ELASTICSEARCH_URL}" | sudo tee -a /etc/apache2/envvars
+echo "export SQLALCHEMY_URL=${SQLALCHEMY_URL}" | sudo tee -a /etc/apache2/envvars
+echo "export REMOTE_INDEXING=${REMOTE_INDEXING}" | sudo tee -a /etc/apache2/envvars
+
 a2dismod mpm_event
 a2enmod headers
 a2enmod proxy_http
@@ -28,7 +33,7 @@ a2disconf serve-cgi-bin
 a2ensite 000-encoded-default.conf
 a2ensite 666-encoded-app.conf
 
-if [ "$ENCD_REMOTE_INDEXING" == 'false' ]; then
+if [ "$REMOTE_INDEXING" == 'false' ]; then
     if [ "$ENCD_INDEX_PRIMARY" == 'true' ]; then
         a2ensite 111-indexer-primary.conf
     fi

@@ -9,15 +9,6 @@ if [ -f "$encd_failed_flag" ]; then
 fi
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Running"
 
-# Script Below
-
-# Check remote postgres uri
-PG_URI='postgresql:///encoded'
-if [ "$ENCD_BUILD_TYPE" == 'app' ] || [ "$ENCD_BUILD_TYPE" == 'app-es' ]; then
-    PG_URI="postgresql://$ENCD_PG_IP/encoded"
-fi
-echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD PG_URI: $PG_URI"
-
 # Install App
 cd "$ENCD_HOME"
 source "${ENCD_VENV_DIR}/bin/activate"
@@ -46,7 +37,7 @@ if [ "$ENCD_DEVELOP_SNOVAULT" == 'true' ]; then
 fi
 
 # Run buildout
-bin_build_cmd="$(which buildout) -c $ENCD_ROLE.cfg buildout:es-ip=$ENCD_ES_IP buildout:es-port=$ENCD_ES_PORT buildout:pg-uri=$PG_URI buildout:fe-ip=$ENCD_FE_IP buildout:remote_indexing=$ENCD_REMOTE_INDEXING buildout:index_procs=$ENCD_INDEX_PROCS buildout:index_chunk_size=$ENCD_INDEX_CHUNK_SIZE"
+bin_build_cmd="$(which buildout) -c $ENCD_ROLE.cfg buildout:index_procs=$ENCD_INDEX_PROCS buildout:index_chunk_size=$ENCD_INDEX_CHUNK_SIZE"
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) CMD: $bin_build_cmd"
 sudo -H -u encoded LANG=en_US.UTF-8 $bin_build_cmd
 if [ $? -gt 0 ]; then
@@ -55,6 +46,7 @@ if [ $? -gt 0 ]; then
     touch "$encd_failed_flag"
     exit 1
 fi
+
 some_other_bin_path="$(which batchupgrade)"
 if [ ! -f "$some_other_bin_path" ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: bin commands do not exist"
