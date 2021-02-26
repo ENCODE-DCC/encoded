@@ -135,6 +135,7 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "description": 1.0,
         "document_type": 1.0,
         "award.title": 1.0,

@@ -254,6 +254,7 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "label": 20.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
