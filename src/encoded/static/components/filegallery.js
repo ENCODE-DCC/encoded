@@ -971,7 +971,7 @@ RawSequencingTable.propTypes = {
     indexFiles: PropTypes.array, // Index reads files that refer to actual files in `files`
     meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
     showReplicateNumber: PropTypes.bool,
-    outputCategory: PropTypes.object, // output category object
+    outputCategory: PropTypes.string, // output category object
     outputType: PropTypes.object, // output type object
     filters: PropTypes.object, // user selected filters
     inclusionOn: PropTypes.bool.isRequired, // whether or not inclusion on is checked
@@ -1163,7 +1163,7 @@ RawFileTable.propTypes = {
     files: PropTypes.array, // Raw sequencing files to display
     meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
     showReplicateNumber: PropTypes.bool, // True to show replicate number
-    outputCategory: PropTypes.object, // output category object
+    outputCategory: PropTypes.string, // output category object
     context: PropTypes.object.isRequired, // context object from server
     filters: PropTypes.object, // user-selected filters
     inclusionOn: PropTypes.bool.isRequired, // whether or not inclusion on is checked
@@ -2519,7 +2519,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
                 <h4>Choose analysis</h4>
                 <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection} ref={analysisSelectorRef}>
                     {analyses.map((analysis, index) => (
-                        <option value={index}>
+                        <option value={index} key={analysis.accession}>
                             {`${analysis.title} ${analysis.status === 'released' ? '🟢' : '⚪'}`}
                         </option>
                     ))}
@@ -2835,7 +2835,7 @@ class FileGalleryRendererComponent extends React.Component {
     handleAnalysesSelection(selectedAnalysesIndex) {
         this.saveSelectedAnalysesProps(selectedAnalysesIndex);
         this.setState({ selectedAnalysesIndex: +selectedAnalysesIndex });
-        this.filterFiles(this.state.compiledAnalyses[selectedAnalysesIndex].assembly, 'assembly');
+        this.filterFiles((this.state.compiledAnalyses[selectedAnalysesIndex] || this.state.compiledAnalyses[0]).assembly, 'assembly');
     }
 
 
@@ -3103,7 +3103,7 @@ class FileGalleryRendererComponent extends React.Component {
                         this.saveSelectedAnalysesProps(compiledAnalysesIndex, availableCompiledAnalyses);
                         this.setState({ compiledAnalyses: availableCompiledAnalyses, selectedAnalysesIndex: compiledAnalysesIndex });
                         // Find the matching assembly in compiledAnalyses, or the first otherwise.
-                        const newAnalyses = availableCompiledAnalyses[compiledAnalysesIndex];
+                        const newAnalyses = availableCompiledAnalyses[compiledAnalysesIndex] || availableCompiledAnalyses[compiledAnalysesIndex];
                         const newAssembly = newAnalyses.assembly;
                         if (newAssembly !== currentAssembly) {
                             this.filterFiles(newAssembly, 'assembly');
@@ -3214,7 +3214,8 @@ class FileGalleryRendererComponent extends React.Component {
         if (this.state.compiledAnalyses.length > 0 && this.state.selectedAssembly) {
             // Filter renderable and visualizable files to include only those in the matching
             // analyses plus raw-data files. If no matching analyses, all files get included.
-            const selectedAnalysis = this.state.compiledAnalyses[this.state.selectedAnalysesIndex];
+            // entries can  get hidden, so the or-condition is needed.
+            const selectedAnalysis = this.state.compiledAnalyses[this.state.selectedAnalysesIndex] || this.state.compiledAnalyses[0];
             const graphAnalysesFiles = graphIncludedFiles.filter((file) => selectedAnalysis.files.includes(file['@id']));
             if (graphAnalysesFiles.length > 0) {
                 // Collect files that these files derive from, and add any missing ones to the
@@ -3519,7 +3520,7 @@ CollapsingTitle.propTypes = {
     collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
     filters: PropTypes.object, // filters
     analysisObjectKey: PropTypes.object, // analysis object
-    outputCategory: PropTypes.object, //  output category object
+    outputCategory: PropTypes.string, //  output category object
     outputType: PropTypes.object, // outout type object
     totalFiles: PropTypes.number, // total file count
     isDownloadable: PropTypes.bool, // whether or not the section can have it's files downloaded
