@@ -2433,6 +2433,7 @@
         "output_type": "unfiltered alignments",
         "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
         "status": "released",
+        "step_run": "8479e383-3492-4ffc-b2ea-10fb65589cde",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "107cd650-9401-4f83-9a40-ab2356314c42",
         "derived_from": ["ENCFF217EOB"]
@@ -2452,6 +2453,7 @@
         "output_type": "alignments",
         "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
         "status": "released",
+        "step_run": "8479e383-3492-4ffc-b2ea-10fb65589cde",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "876855ad-7fd9-4ae8-93b0-62f9e4c7e343",
         "derived_from": ["ENCFF217EOB"]
@@ -4314,5 +4316,20 @@
         "assembly": "GRCh38",
         "md5sum": "77db89899d466e86dc8118762967eee6",
         "replicate": "31f76c7b-b6ac-4e06-b1d3-8907a4136ab1"
+    },
+    {
+        "_test": "guide quantifications tsv",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/bing-ren/",
+        "dataset": "ENCSR112TRG",
+        "replicate": "3b427e79-556e-4125-8102-f6723471807e",
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "uuid": "02c6586f-9322-47f8-ace2-a0fbc7c15f00",
+        "accession": "ENCFF888GQS",
+        "file_format": "tsv",
+        "output_type": "guide quantifications",
+        "file_size": 9876,
+        "md5sum": "d2c5c8e3c2da0331ab7f1a4c376f13cc"
     }
 ]

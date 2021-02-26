@@ -52,6 +52,7 @@ const types = {
     functional_characterization_experiment: { title: 'Functional characterization experiments' },
     transgenic_enhancer_experiment: { title: 'Transgenic enhancer experiments' },
     gene_silencing_series: { title: 'Gene silencing series' },
+    differentiation_series: { title: 'Differentiation series' },
 };
 
 const datasetTypes = {
@@ -74,6 +75,7 @@ const datasetTypes = {
     FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
     TransgenicEnhancerExperiment: types.transgenic_enhancer_experiment.title,
     GeneSilencingSeries: types.gene_silencing_series.title,
+    DifferentiationSeries: types.differentiation_series.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));

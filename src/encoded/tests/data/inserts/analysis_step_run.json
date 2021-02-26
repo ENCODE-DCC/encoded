@@ -503,5 +503,13 @@
         "status": "released",
         "analysis_step_version": "5c4042c6-27b0-42c5-b608-9061005e32ab",
         "pipeline_run_id": "50441e50-f091-4ba7-9850-2bdcd813d5e9"
+    },
+    {
+        "aliases": [
+            "encode:chia-alignment"
+        ],
+        "uuid": "8479e383-3492-4ffc-b2ea-10fb65589cde",
+        "status": "released",
+        "analysis_step_version": "ee924ba6-e5d4-4c31-9c7c-cf8dc42fa862"
     }
 ]

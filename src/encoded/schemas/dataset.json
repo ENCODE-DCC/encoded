@@ -85,6 +85,13 @@
             ],
             "permission": "import_items"
         },
+        "doi": {
+            "title": "Digital object identifier",
+            "description": "Assigned DOI from Crossref.",
+            "type": "string",
+            "pattern": "^(10.17989/ENCSR\\d{3}[A-Z]{3})$",
+            "permission": "import_items"
+        },
         "internal_tags": {
             "title": "Internal tags",
             "description": "Some datasets are part of particular data collections",
@@ -171,6 +178,7 @@
         "award.project": 5.0,
         "description": 1.0,
         "dbxrefs": 1.0,
+        "doi": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
         "submitted_by.email": 1.0,

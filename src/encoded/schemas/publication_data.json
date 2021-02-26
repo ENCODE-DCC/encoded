@@ -112,6 +112,7 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
@@ -125,7 +126,8 @@
         "lab.institute_name": 1.0,
         "lab.institute_label": 1.0,
         "lab.title": 1.0,
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/publication_data.md"
 

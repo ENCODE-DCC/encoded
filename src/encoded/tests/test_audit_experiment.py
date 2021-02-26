@@ -4281,3 +4281,75 @@ def test_audit_experiment_mixed_strand_specificity_libraries(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'mixed strand specificities'
                for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_inconsistent_analysis_status(testapp, experiment_with_analysis,
+                                                       analysis_released, analysis_released_2,
+                                                       analysis_1, experiment_rna):
+    # https://encodedcc.atlassian.net/browse/ENCD-5705
+    # Released analysis objects are disallowed in non-released datasets
+    testapp.patch_json(experiment_with_analysis['@id'],
+                       {"analysis_objects": [analysis_released["@id"]]})
+    res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis status'
+               and 'not released' in error['detail']
+               for error in collect_audit_errors(res))
+    # Released datasets must have a released analysis
+    testapp.patch_json(
+        experiment_with_analysis['@id'], {'status': 'released', 'date_released': '2021-01-01'})
+    testapp.patch_json(
+        experiment_with_analysis['@id'], {"analysis_objects": [analysis_1["@id"]]})
+    res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis status'
+               and 'lacks a released analysis' in error['detail']
+               for error in collect_audit_errors(res))
+    # Multiple released analyses in a dataset is disallowed
+    testapp.patch_json(
+        experiment_with_analysis['@id'], {
+            "analysis_objects": [analysis_released["@id"], analysis_released_2["@id"]]})
+    res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis status'
+               and 'released analyses' in error['detail']
+               for error in collect_audit_errors(res))
+    # Datasets lacking a released analysis (no analysis_objects at all) are flagged
+    res = testapp.get(experiment_rna['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis status'
+               and 'lacks a released analysis' in error['detail']
+               for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chia_encode4_qc_standards(
+        testapp, encode2_award, chia_bam, chia_peaks, chia_chromatin_int, ChIA_PET_experiment,
+        chia_pet_align_quality_metric, chia_pet_chr_int_quality_metric, chia_pet_peak_quality_metric
+        ):
+    testapp.patch_json(chia_pet_align_quality_metric['@id'],
+                        {'quality_metric_of': [chia_bam['@id']]})
+    testapp.patch_json(chia_pet_chr_int_quality_metric['@id'],
+                        {'quality_metric_of': [chia_chromatin_int['@id']]})
+    testapp.patch_json(chia_pet_peak_quality_metric['@id'],
+                        {'quality_metric_of': [chia_peaks['@id']]})
+    res = testapp.get(ChIA_PET_experiment['@id'] + '@@index-data')
+    audit_errors = collect_audit_errors(res)
+    assert any(error['category'] == 'low total read pairs' for error in audit_errors)
+    assert any(error['category'] == 'low fraction of read pairs with linker' for error in audit_errors)
+    assert any(error['category'] == 'low non-redundant PET' for error in audit_errors)
+    assert any(error['category'] == 'low protein factor binding peaks' for error in audit_errors)
+    assert any(error['category'] == 'low intra/inter-chr PET ratio' for error in audit_errors)
+
+    # Make sure audits don't apply to non-ENCODE4 award experiments
+    testapp.patch_json(ChIA_PET_experiment['@id'], {'award': encode2_award['@id']})
+    res2 = testapp.get(ChIA_PET_experiment['@id'] + '@@index-data')
+    audit_errors = collect_audit_errors(res2)
+    assert 'low read pairs' not in (error['category'] for error in audit_errors)
+
+
+def test_audit_experiment_mixed_biosamples_replication_type(testapp, base_experiment, biosample_1,
+                                                            biosample_2, base_replicate,
+                                                            library_no_biosample):
+    # https://encodedcc.atlassian.net/browse/ENCD-5706
+    testapp.patch_json(library_no_biosample['@id'], {
+        'mixed_biosamples': [biosample_1['@id'], biosample_2['@id']]})
+    testapp.patch_json(base_replicate['@id'], {'library': library_no_biosample['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'undetermined replication_type'
+               for error in collect_audit_errors(res))

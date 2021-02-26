@@ -245,6 +245,7 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "geneid": 1.0,
         "symbol": 20.0,
         "synonyms": 1.0,

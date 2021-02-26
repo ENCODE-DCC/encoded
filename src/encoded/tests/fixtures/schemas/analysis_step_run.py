@@ -2,6 +2,15 @@ import pytest
 
 
 @pytest.fixture
+def analysis_step_run_with_no_status(analysis_step_version, lab, award):
+    return {
+        'analysis_step_version': analysis_step_version['@id'],
+        'award': award['@id'],
+        'lab': lab['@id']
+    }
+
+
+@pytest.fixture
 def analysis_step_run(testapp, analysis_step_version):
     item = {
         'analysis_step_version': analysis_step_version['@id'],
@@ -155,6 +164,33 @@ def analysis_step_run_atac_encode4_pseudoreplicate_concordance(testapp,
                     analysis_step_version_atac_encode4_pseudoreplicate_concordance):
     item = {
         'analysis_step_version': analysis_step_version_atac_encode4_pseudoreplicate_concordance['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_chia_alignment(testapp, analysis_step_version_chia_alignment):
+    item = {
+        'analysis_step_version': analysis_step_version_chia_alignment['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_chia_peak_calling(testapp, analysis_step_version_chia_peak_calling):
+    item = {
+        'analysis_step_version': analysis_step_version_chia_peak_calling['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_chia_interaction_calling(testapp, analysis_step_version_chia_interaction_calling):
+    item = {
+        'analysis_step_version': analysis_step_version_chia_interaction_calling['@id'],
         'status': 'released'
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]

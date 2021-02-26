@@ -172,6 +172,12 @@
                     "title": "MD5sum"
                 }
             }
+        },
+        "defect_mode": {
+            "title": "Defect mode",
+            "description": "A flag to indicate whether the pipeline run that generated this quality metric was run in defect mode.",
+            "type": "boolean",
+            "default": false
         }
     },
     "facets": {

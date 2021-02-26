@@ -18,9 +18,10 @@ const GlossaryTerm = (props) => {
             {props.glossaryEntry.additional_information ?
                 <p className="glossary-extra-info">
                     <span className="glossary-label">Additional information: </span>
-                    {props.glossaryEntry.additional_information.map((href) => (
+                    {props.glossaryEntry.additional_information.map((href, hrefIndex) => (
                         <span className="glossary-field" key={href.url}>
                             <a href={href.url}>{href.title}</a>
+                            <span>{((props.glossaryEntry.additional_information.length > 1) && hrefIndex < (props.glossaryEntry.additional_information.length - 1)) ? ', ' : ''}</span>
                         </span>
                     ))}
                 </p>
@@ -31,6 +32,14 @@ const GlossaryTerm = (props) => {
 
 GlossaryTerm.propTypes = {
     glossaryEntry: PropTypes.object.isRequired,
+};
+
+// Optional links appended to section headers
+const sectionHeaderLinks = {
+    'Target categories': {
+        link: 'https://www.encodeproject.org/target-categorization/',
+        text: 'Category assignment details',
+    },
 };
 
 const Glossary = (props) => {
@@ -57,7 +66,12 @@ const Glossary = (props) => {
                     </h4>
                     {Object.keys(glossaryBySection).map((section) => (
                         <div className="glossary-block" key={section} id={section}>
-                            <h2 id={`${section.toLowerCase().split(' ').join('-')}`}>{section}</h2>
+                            <h2 id={`${section.toLowerCase().split(' ').join('-')}`}>
+                                {section}
+                                {sectionHeaderLinks[section] ?
+                                    <span className="section-header-link"><a href={sectionHeaderLinks[section].link}>{sectionHeaderLinks[section].text}</a></span>
+                                : null}
+                            </h2>
                             {(section === undefined) ?
                                 <h4>{section}</h4>
                             : null}

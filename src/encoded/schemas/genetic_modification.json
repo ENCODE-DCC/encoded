@@ -1171,6 +1171,7 @@
     },
     "boost_values": {
         "accession": 1.0,
+        "@type": 1.0,
         "alternate_accessions": 1.0,
         "aliases": 1.0,
         "modified_site_by_target_id.label": 1.0,

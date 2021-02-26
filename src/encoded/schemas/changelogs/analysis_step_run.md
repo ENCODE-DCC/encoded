@@ -3,6 +3,7 @@
 ### Minor changes since schema version 5
 
 * Add *pipeline_run_id*.
+* Add *award* and *lab* as submittable properties.
 
 ### Schema version 5
 

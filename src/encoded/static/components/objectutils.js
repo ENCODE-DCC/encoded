@@ -118,81 +118,61 @@ export function requestSearch(query) {
 }
 
 
-// Do a search of the specific objects whose @ids are listed in the `atIds` parameter. Because we
-// have to specify the @id of each object in the URL of the GET request, the URL can get quite
-// long, so if the number of `atIds` @ids goes beyond the `chunkSize` constant, we break the
-// searches into chunks, and the maximum number of @ids in each chunk is `chunkSize`. We
-// then send out all the search GET requests at once, combine them into one array of
-// files returned as a promise.
-//
-// You can also supply an array of objects in the filteringObjects parameter. Any file @ids in
-// `atIds` that matches an object['@id'] in `filteringObjects` doesn't get included in the GET
-// request.
-//
-// Note: this function calls `fetch`, so you can't call this function from code that runs on the
-// server or it'll complain that `fetch` isn't defined. If called from a React component, make sure
-// you only call it when you know the component is mounted, like from the componentDidMount method.
-//
-// atIds: array of file @ids.
-// uri: Base URI specifying the type and statuses of the objects we want to get. The list of object
-//      @ids gets added to this URI.
-// filteringObjects: Array of files to filter out of the array of file @ids in the fileIds parameter.
-export function requestObjects(atIds, uri, filteringObjects) {
-    const chunkSize = 100; // Maximum # of files to search for at once
-    const filteringFileIds = {}; // @ids of files we've searched for and don't need retrieval
-    let filteredObjectIds = {}; // @ids of files we need to retrieve
+/**
+ * Do a search of the specific objects whose @ids are listed in the `identifiers` parameter. Because
+ * we have to specify the @id of each object in the URL of the GET request, the URL can get quite
+ * long, so if the number of `identifiers` goes beyond the CHUNK_SIZE constant, we break the
+ * searches into chunks, and we estimate the maximum number of @ids in each chunk to reasonably
+ * fit within a URL. We then send out all the search GET requests at once, and combine the
+ * requested objects into one array returned as a promise.
+ *
+ * @param {array} identifiers object identifiers, usually @ids
+ * @param {string} uri Base URI specifying type and statuses of the objects we want to get
+ * @param {string} queryProp Object property to search; '@id' by default
+ *
+ * @return {promise} Array of objects requested from the server
+ */
+const MAX_URL_LENGTH = 4000;
+export const requestObjects = async (identifiers, uri, queryProp = '@id') => {
+    if (identifiers.length > 0) {
+        // Calculate a roughly reasonable chunk size based on an estimate of how many query-string
+        // elements will fit within the maximum URL size. Assume the first identifier has a length
+        // typical for all the identifiers.
+        const singleQuerySize = queryProp.length + identifiers[0].length;
+        const chunkLength = Math.trunc(MAX_URL_LENGTH / singleQuerySize) - Math.trunc(uri.length / singleQuerySize);
 
-    // Make a searchable object of file IDs for files to filter out of our list.
-    if (filteringObjects && filteringObjects.length > 0) {
-        filteringObjects.forEach((filteringObject) => {
-            filteringFileIds[filteringObject['@id']] = filteringObject;
-        });
+        // Break `identifiers` into an array of arrays of <= the calculated chunk size.
+        const objectChunks = [];
+        for (let start = 0, chunkIndex = 0; start < identifiers.length; start += chunkLength, chunkIndex += 1) {
+            objectChunks[chunkIndex] = identifiers.slice(start, start + chunkLength);
+        }
 
-        // Filter the given file @ids to exclude those files we already have in data.@graph,
-        // just so we don't use bandwidth getting things we already have.
-        filteredObjectIds = atIds.filter((atId) => !filteringFileIds[atId]);
-    } else {
-        // The caller didn't supply an array of files to filter out, so filtered files are just
-        // all of them.
-        filteredObjectIds = atIds;
-    }
+        // Going to send out all search chunk GET requests at once, and then wait for all of them to
+        // complete.
+        const chunks = await Promise.all(objectChunks.map(async (objectChunk) => {
+            // Build URL containing search for specific objects for each chunk of objects.
+            const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${queryProp}=${encoding.encodedURIComponent(current)}`, ''));
+            const response = await fetch(objectUrl, {
+                method: 'GET',
+                headers: { Accept: 'application/json' },
+            });
 
-    // Break fileIds into an array of arrays of <= `chunkSize` @ids so we don't generate search
-    // URLs that are too long for the server to handle.
-    const objectChunks = [];
-    for (let start = 0, chunkIndex = 0; start < filteredObjectIds.length; start += chunkSize, chunkIndex += 1) {
-        objectChunks[chunkIndex] = filteredObjectIds.slice(start, start + chunkSize);
-    }
-
-    // Going to send out all search chunk GET requests at once, and then wait for all of them to
-    // complete.
-    return Promise.all(objectChunks.map((objectChunk) => {
-        // Build URL containing file search for specific files for each chunk of files.
-        const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${encoding.encodedURIComponentOLD('@id')}=${encoding.encodedURIComponentOLD(current)}`, ''));
-        return fetch(objectUrl, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        }).then((response) => {
-            // Convert each response response to JSON
+            // Convert each response response to JSON.
             if (response.ok) {
                 return response.json();
             }
             return Promise.resolve(null);
-        });
-    })).then((chunks) => {
+        }));
+
         // All search chunks have resolved or errored. We get an array of search results in
-        // `chunks` -- one per chunk. Now collect their files from their @graphs into one array of
-        // files and return them as the promise result.
+        // `chunks` -- one per chunk. Now collect their objects from their @graphs into one array of
+        // objects and return them as the promise result.
         if (chunks && chunks.length > 0) {
             return chunks.reduce((objects, chunk) => (chunk && chunk['@graph'].length > 0 ? objects.concat(chunk['@graph']) : objects), []);
         }
-
-        // Didn't get any good chucks back, so just return no results.
-        return [];
-    });
-}
+    }
+    return Promise.resolve([]);
+};
 
 
 // Do a search of the specific files whose @ids are listed in the `fileIds` parameter.
@@ -845,6 +825,17 @@ export const isFileVisualizable = (file) => (
 export function filterForVisualizableFiles(fileList) {
     return fileList.filter((file) => isFileVisualizable(file));
 }
+
+
+/**
+ * Filter the given files to only include those with the `preferred_default` flag set.
+ * @param {array} fileList Files to filter
+ *
+ * @return {array} Members of `fileList` that have preferred_default flag set.
+ */
+export const filterForPreferredFiles = (fileList) => (
+    fileList.filter((file) => file.preferred_default)
+);
 
 
 /**

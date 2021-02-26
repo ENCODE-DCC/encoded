@@ -27,6 +27,61 @@
 // "body-image-container" is the wrapper for the body map SVG "BodyMap"
 // Within the body map, we want to highlight all the different SVG shapes
 .body-image-container {
+    .homo-sapiens {
+        path, polyline, circle, ellipse, rect, polygon {
+            &:hover:not(.cls-5):not(.cls-nervebackground):not(.active) {
+                fill: lighten($Homo-sapiens, 45%);
+                stroke: $Homo-sapiens;
+                cursor: pointer;
+            }
+
+            &.highlight:not(.cls-5):not(.cls-nervebackground):not(.active) {
+                fill: lighten($Homo-sapiens, 45%);
+                stroke: lighten($Homo-sapiens, 20%);
+                cursor: pointer;
+                opacity: 0.8;
+            }
+        }
+    }
+
+    .mus-musculus {
+        path, polyline, circle, ellipse, rect, polygon {
+            &:hover:not(.cls-1):not(.cls-2):not(.cls-10):not(.cls-11):not(.cls-thymus):not(.cls-25):not(.cls-26):not(.active) {
+                fill: lighten($Homo-sapiens, 45%);
+                stroke: $Homo-sapiens;
+                cursor: pointer;
+            }
+
+            &.highlight:not(.cls-1):not(.cls-2):not(.cls-10):not(.cls-11):not(.cls-thymus):not(.cls-25):not(.cls-26):not(.active) {
+                fill: lighten($Homo-sapiens, 45%);
+                stroke: lighten($Homo-sapiens, 20%);
+                cursor: pointer;
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+.body-list-element[disabled] {
+    pointer-events: none;
+    color: #b1b1b1;
+}
+
+.body-inset-container {
+    button[disabled] {
+        pointer-events: none;
+    }
+}
+
+.mouse-map, .human-map {
+    path {
+        &.disabled {
+            pointer-events: none;
+        }
+    }
+}
+
+.homo-sapiens {
     path, polyline, circle, ellipse, rect, polygon {
         &:hover:not(.cls-5):not(.cls-nervebackground):not(.active) {
             fill: lighten($Homo-sapiens, 45%);
@@ -39,6 +94,52 @@
             stroke: lighten($Homo-sapiens, 20%);
             cursor: pointer;
             opacity: 0.8;
+        }
+    }
+}
+
+.mus-musculus {
+    path, polyline, circle, ellipse, rect, polygon {
+        &:hover:not(.cls-1):not(.cls-2):not(.cls-10):not(.cls-11):not(.cls-thymus):not(.cls-25):not(.cls-26):not(.active) {
+            fill: lighten($Homo-sapiens, 45%);
+            stroke: $Homo-sapiens;
+            cursor: pointer;
+        }
+
+        &.highlight:not(.cls-1):not(.cls-2):not(.cls-10):not(.cls-11):not(.cls-thymus):not(.cls-25):not(.cls-26):not(.active) {
+            fill: lighten($Homo-sapiens, 45%);
+            stroke: lighten($Homo-sapiens, 20%);
+            cursor: pointer;
+            opacity: 0.8;
+        }
+    }
+}
+
+// for "skin of body" (cls-5), entire body map should not turn light purple on hover, just the outline
+.homo-sapiens {
+    .cls-5 {
+        &:hover {
+            stroke: lighten($Homo-sapiens, 20%);
+            cursor: pointer;
+        }
+
+        &.highlight {
+            stroke: lighten($Homo-sapiens, 20%);
+            cursor: pointer;
+        }
+    }
+}
+
+.mus-musculus {
+    .cls-1, .cls-2, .cls-10 {
+        &:hover {
+            stroke: lighten($Homo-sapiens, 20%);
+            cursor: pointer;
+        }
+
+        &.highlight {
+            stroke: lighten($Homo-sapiens, 20%);
+            cursor: pointer;
         }
     }
 }
@@ -267,8 +368,6 @@
                 }
             }
 
-            margin-bottom: 10px;
-
             &:hover:not(.active)::after {
                 cursor: pointer;
                 opacity: 0.5;
@@ -346,6 +445,37 @@
         /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
+        }
+    }
+}
+
+.body-facet-container {
+    &.mus-musculus {
+        .body-facet {
+            padding: 0;
+
+            .body-image-container {
+                flex: 0 1 100%;
+
+                svg {
+                    margin-top: 40px;
+                    width: 100%;
+                }
+            }
+
+            .body-inset-container {
+                flex: 0 1 100%;
+            }
+
+            .body-list {
+                flex: 0 1 100%;
+                margin-left: 0;
+            }
+
+            &:nth-child(4) {
+                order: 4;
+                -webkit-order: 4;
+            }
         }
     }
 }
@@ -511,22 +641,22 @@
         }
     }
     // For the pop-up, we want the "body-facet" elements swapped on desktop not just on tablet
-    .body-facet :nth-child(1) {
+    .homo-sapiens .body-facet :nth-child(1) {
         order: 1;
         -webkit-order: 1;
     }
 
-    .body-facet :nth-child(2) {
+    .homo-sapiens .body-facet :nth-child(2) {
         order: 2;
         -webkit-order: 2;
     }
 
-    .body-facet :nth-child(3) {
+    .homo-sapiens .body-facet :nth-child(3) {
         order: 4;
         -webkit-order: 4;
     }
 
-    .body-facet :nth-child(4) {
+    .homo-sapiens .body-facet :nth-child(4) {
         order: 3;
         -webkit-order: 3;
     }
@@ -603,12 +733,13 @@
 
     /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
+        padding: 5px 0 5px 25px;
         font-size: 1rem;
     }
 
     /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
-        padding: 5px;
+        padding: 5px 0 5px 30px;
         font-size: 0.8rem;
     }
 }
@@ -630,22 +761,30 @@
     @media screen and (max-width: $screen-sm-min) {
         flex: 0 1 100%;
         margin: 0 5px 10px 5px;
+        min-width: 240px;
     }
 
-    /* stylelint-disable-next-line selector-id-pattern */
-    #BodyMap {
+    .human-map, .mouse-map {
         pointer-events: none;
 
         /* stylelint-disable-next-line media-feature-name-disallowed-list */
-        @media screen and (max-width: $screen-sm-min) {
+        @media screen and (max-width: $screen-xs-min) {
             height: 0;
             display: block;
         }
     }
 
+    .mouse-map {
+        margin: 0 5px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            padding-top: 40px;
+        }
+    }
+
     .body-list {
         /* stylelint-disable-next-line media-feature-name-disallowed-list */
-        @media screen and (max-width: $screen-sm-min) {
+        @media screen and (max-width: $screen-xs-min) {
             display: none;
         }
     }

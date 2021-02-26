@@ -98,3 +98,39 @@ def analysis_step_version_atac_encode4_pseudoreplicate_concordance(testapp,
         ],
     }
     return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_version_chia_alignment(testapp, analysis_step_chia_alignment, software_version):
+    item = {
+        'analysis_step': analysis_step_chia_alignment['@id'],
+        'minor_version': 0,
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_version_chia_peak_calling(testapp, analysis_step_chia_peak_calling, software_version):
+    item = {
+        'analysis_step': analysis_step_chia_peak_calling['@id'],
+        'minor_version': 0,
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_version_chia_interaction_calling(testapp, analysis_step_chia_interaction_calling, software_version):
+    item = {
+        'analysis_step': analysis_step_chia_interaction_calling['@id'],
+        'minor_version': 0,
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]

@@ -411,6 +411,10 @@ $cart-facet-visualizable-padding: 2px;
         .icon {
             flex: 0 0 auto;
         }
+
+        &[aria-expanded="false"] {
+            border-bottom: none;
+        }
     }
 
     // One term within a facet
@@ -504,6 +508,11 @@ $cart-facet-visualizable-padding: 2px;
                 fill: $icon-visualizable-color;
             }
         }
+    }
+
+    // Special cart facet for analysis.
+    @at-root #{&}--analysis {
+        margin-top: 0;
     }
 }
 
@@ -761,14 +770,13 @@ $deleted-bg: #ffe0e0;
 }
 
 // Checkbox for filtering out facet terms not included in visualizable files.
-.cart-viz-toggle {
+.cart-checkbox {
     margin: 0 0 10px;
     padding: 0;
 
     > button {
         display: flex;
         width: 100%;
-        justify-content: center;
         border: none;
         background: none;
 
@@ -784,11 +792,11 @@ $deleted-bg: #ffe0e0;
         flex: 0 0 18px;
         border-radius: 3px;
 
-        $cart-viz-toggle-size: 16px;
+        $cart-checkbox-size: 16px;
 
         .icon {
-            flex: 0 0 $cart-viz-toggle-size;
-            font-size: $cart-viz-toggle-size;
+            flex: 0 0 $cart-checkbox-size;
+            font-size: $cart-checkbox-size;
         }
 
         @at-root #{&}--checked {

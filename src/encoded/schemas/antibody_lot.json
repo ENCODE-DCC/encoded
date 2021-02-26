@@ -277,6 +277,7 @@
     },
     "boost_values": {
         "accession": 1.0,
+        "@type": 1.0,
         "alternate_accessions": 1.0,
         "lot_id": 1.0,
         "lot_id_alias": 1.0,

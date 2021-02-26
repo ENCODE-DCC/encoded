@@ -166,7 +166,7 @@ const AnnotationComponent = (props, reactContext) => {
                             {context.biochemical_inputs && context.biochemical_inputs.length > 0 ?
                                  <div data-test="biochemicalinputs">
                                      <dt>Biochemical inputs</dt>
-                                     <dd>{context.biochemical_inputs}</dd>
+                                     <dd>{context.biochemical_inputs.join(', ')}</dd>
                                  </div>
                              : null}
 
@@ -1669,6 +1669,7 @@ const seriesComponents = {
     SingleCellRnaSeries: { title: 'single cell rna series', table: basicTableColumns },
     FunctionalCharacterizationSeries: { title: 'functional characterization series', table: basicTableColumns },
     GeneSilencingSeries: { title: 'gene silencing series', table: geneSilencingSeriesTableColumns },
+    DifferentiationSeries: { title: 'differentiation series', table: basicTableColumns },
 };
 
 export const SeriesComponent = (props, reactContext) => {

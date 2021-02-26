@@ -580,7 +580,8 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
         'long read RNA-seq',
         'small RNA-seq',
         'icSHAPE',
-        'ATAC-seq'
+        'ATAC-seq',
+        'ChIA-PET'
     ]:
         return
     if not value.get('original_files'):
@@ -663,6 +664,14 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
         yield from check_experiment_atac_encode4_qc_standards(
             value,
             files_structure)
+        return
+
+    if value['assay_term_name'] == 'ChIA-PET':
+        award = value.get('award', {})
+        if award.get('rfa') == 'ENCODE4':
+            yield from check_experiment_chiapet_encode4_qc_standards(
+                value,
+                files_structure)
         return
 
 
@@ -2982,6 +2991,11 @@ def audit_experiment_replicates_with_no_libraries(value, system, excluded_types)
 def audit_experiment_isogeneity(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
+    if 'replicates' in value:
+        for rep in value['replicates']:
+            if 'library' in rep:
+                if 'mixed_biosamples' in rep['library']:
+                    return
     if value.get('replication_type') is None:
         detail = ('In experiment {} the replication_type'
             ' cannot be determined'.format(
@@ -4716,6 +4730,93 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
             yield AuditFailure('insufficient number of reproducible peaks', detail, level='NOT_COMPLIANT')
 
 
+def check_experiment_chiapet_encode4_qc_standards(experiment, files_structure):
+    alignment_files = files_structure.get('alignments').values()
+    peak_files = files_structure.get('peaks_files').values()
+    chr_int_files = files_structure.get('chromatin_interaction_files').values()
+
+    alignment_metric = get_metrics(alignment_files, 'ChiaPetAlignmentQualityMetric')
+    peak_metric = get_metrics(peak_files, 'ChiaPetPeakEnrichmentQualityMetric')
+    int_metric = get_metrics(chr_int_files, 'ChiaPetChrInteractionsQualityMetric')
+
+    # Checks in ChiaPetAlignmentQualityMetric
+    if alignment_metric is not None and len(alignment_metric) > 0:
+        for metric in alignment_metric:
+            alignment_file = files_structure.get('alignments')[metric['quality_metric_of'][0]]
+            if 'total_rp' in metric and 'quality_metric_of' in metric:
+                total_reads = metric['total_rp']
+                detail = (
+                    f'Alignment file '
+                    f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} has '
+                    f'{total_reads} total read pairs. '
+                    f'According to ENCODE4 standards, ChIA-PET assays performed '
+                    f'with the in-situ protocol require a minimum of '
+                    f'150,000,000 total read pairs. For assays performed with the '
+                    f'long reads protocol a minimum of 100,000,000 total read pairs '
+                    f'is acceptable.'
+                    )
+                if metric['total_rp'] < 150000000:
+                    yield AuditFailure('low total read pairs', detail, level='WARNING')
+
+            if 'frp_bl' in metric and 'quality_metric_of' in metric:
+                fraction_bl = float(metric['frp_bl'])
+                detail = (
+                    f'Alignment file '
+                    f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} has '
+                    f'a fraction of read pairs with bridge linker value of {fraction_bl:.2f}. '
+                    f'According to ENCODE4 standards, ChIA-PET assays require a '
+                    f'minimum value of 0.5 for fraction of read pairs with bridge linker.'
+                    )
+                if fraction_bl < 0.5:
+                    yield AuditFailure('low fraction of read pairs with linker', detail, level='NOT_COMPLIANT')
+
+            if 'nr_pet' in metric and 'quality_metric_of' in metric:
+                nonred_pet = metric['nr_pet']
+                detail = (
+                    f'Alignment file '
+                    f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} has '
+                    f'{nonred_pet} total non-redundant PET. '
+                    f'According to ENCODE4 standards, ChIA-PET assays '
+                    f'require a minimum of 10,000,000 non-redundant PET.'
+                    )
+                if nonred_pet < 10000000:
+                    yield AuditFailure('low non-redundant PET', detail, level='NOT_COMPLIANT')
+
+    # Checks in ChiaPetPeakEnrichmentQualityMetric
+    if peak_metric is not None and len(peak_metric) > 0:
+        for metric in peak_metric:
+            peak_file = files_structure.get('peaks_files')[metric['quality_metric_of'][0]]
+            if 'binding_peaks' in metric and 'quality_metric_of' in metric:
+                peaks = metric['binding_peaks']
+                detail = (
+                    f'Peaks file '
+                    f'{audit_link(path_to_text(peak_file["@id"]),peak_file["@id"])} has '
+                    f'{peaks} total peaks. '
+                    f'According to ENCODE4 standards, ChIA-PET assays '
+                    f'require a minimum of 10,000 protein factor binding peaks.'
+                    )
+                if peaks < 10000:
+                    yield AuditFailure('low protein factor binding peaks', detail, level='NOT_COMPLIANT')
+
+    # Checks in ChiaPetChrInteractionsQualityMetric
+    if int_metric is not None and len(int_metric) > 0:
+        for metric in int_metric:
+            int_file = files_structure.get('chromatin_interaction_files')[metric['quality_metric_of'][0]]
+            if 'intra_inter_pet_ratio' in metric and 'quality_metric_of' in metric:
+                int_ratio = float(metric['intra_inter_pet_ratio'])
+                detail = (
+                    f'Chromatin interactions file '
+                    f'{audit_link(path_to_text(int_file["@id"]),int_file["@id"])} has '
+                    f'a ratio of intra/inter-chr PET of {int_ratio:.2f}. '
+                    f'According to ENCODE4 standards, ChIA-PET assays performed '
+                    f'with the in-situ protocol require a minimum ratio of 1. '
+                    f'For experiments performed with the long reads protocol '
+                    f'a ratio below 1 is acceptable.'
+                    )
+                if int_ratio < 1:
+                    yield AuditFailure('low intra/inter-chr PET ratio', detail, level='WARNING')
+
+
 def audit_experiment_mixed_strand_specific_libraries(value, system, excluded_types):
     '''
     Experiments should not have libraries with different strand specificities
@@ -4743,6 +4844,52 @@ def audit_experiment_mixed_strand_specific_libraries(value, system, excluded_typ
             )
         yield AuditFailure('mixed strand specificities', detail, level='ERROR')
     return
+
+
+def audit_experiment_inconsistent_analysis_status(value, system, excluded_types):
+    '''
+    Experiments that are released should have exactly 1 released analysis object.
+    Unreleased experiments should not have any released analysis object(s).
+    '''
+    if 'analysis_objects' not in value:
+        if value['status'] == 'released':
+            detail = (
+                f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is released '
+                f'but lacks a released analysis.'
+            )
+            yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+    else:
+        analysis_statuses = set()
+        released_analyses = []
+        released_analyses_links = []
+        for analysis in value['analysis_objects']:
+            analysis_statuses.add(analysis['status'])
+            if analysis.get('status') == 'released':
+                released_analyses.append(analysis['@id'])
+        released_analyses_links = ', '.join([audit_link(path_to_text(m), m) for m in released_analyses])
+        if len(released_analyses) > 1:
+            detail = (
+                f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has multiple '
+                f'released analyses {released_analyses_links}.'
+            )
+            yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+        elif value['status'] in ['deleted', 'replaced',
+                                 'archived', 'in progress',
+                                 'submitted', 'revoked',
+                                 ]:
+            if 'released' in analysis_statuses:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is not '
+                    f'released, but has a released analysis {released_analyses_links}.'
+                )
+                yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+        if value['status'] == 'released':
+            if released_analyses == []:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is released '
+                    f'but lacks a released analysis.'
+                )
+                yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
 
 
 #######################
@@ -5075,6 +5222,7 @@ def create_files_mapping(files_list, excluded):
                  'idr_thresholded_peaks': {},
                  'cpg_quantifications': {},
                  'contributing_files': {},
+                 'chromatin_interaction_files': {},
                  'raw_data': {},
                  'processed_data': {},
                  'pseudo_replicated_peaks_files': {},
@@ -5127,6 +5275,9 @@ def create_files_mapping(files_list, excluded):
                 if file_output and file_output == 'microRNA quantifications':
                     to_return['microRNA_quantifications_files'][file_object['@id']
                                                             ] = file_object
+
+                if file_output and file_output in ['chromatin interactions', 'long range chromatin interactions']:
+                    to_return['chromatin_interaction_files'][file_object['@id']] = file_object
 
                 if file_output and file_output == 'signal of unique reads':
                     to_return['signal_files'][file_object['@id']] = file_object
@@ -5410,7 +5561,8 @@ function_dispatcher_without_files = {
     'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range,
     'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
     'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed,
-    'audit_mixed_strand_specificities': audit_experiment_mixed_strand_specific_libraries
+    'audit_mixed_strand_specificities': audit_experiment_mixed_strand_specific_libraries,
+    'audit_inconsistent_analysis_status': audit_experiment_inconsistent_analysis_status,
 }
 
 function_dispatcher_with_files = {

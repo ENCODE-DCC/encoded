@@ -22,7 +22,24 @@ const ELEMENT_WARNING_LENGTH_MIN = 500;
  * user has logged in, we additionally set a "cart" query string parameter with the @id of the
  * user's cart object, which is used in the metadata.tsv line of the resulting files.txt.
  */
-const batchDownload = (cartType, elements, selectedTerms, selectedType, facets, savedCartObj, sharedCart, setInProgress, options, fetch) => {
+const batchDownload = (
+    cartType,
+    elements,
+    analyses,
+    selectedTerms,
+    selectedType,
+    facetFields,
+    savedCartObj,
+    sharedCart,
+    setInProgress,
+    {
+        raw = false,
+        all = false,
+        visualizable = false,
+        preferredDefault = false,
+    },
+    fetch
+) => {
     let contentDisposition;
     let cartId;
     if (cartType === 'OBJECT') {
@@ -32,23 +49,35 @@ const batchDownload = (cartType, elements, selectedTerms, selectedType, facets, 
     }
 
     // Form query string from currently selected file formats.
-    const fileFormatSelections = (options.raw || options.all) ? [] : _.compact(Object.keys(selectedTerms).map((field) => {
-        let subQueryString = '';
-        if (selectedTerms[field].length > 0) {
-            // Build the query string from `files` properties in the dataset, or from the
-            // dataset properties itself for fields marked in `facets`.
-            subQueryString = selectedTerms[field].map(
-                (term) => `${facets.includes(field) ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
-            ).join('&');
-        }
-        return subQueryString;
-    }));
+    const datasetFacets = facetFields.filter((facetField) => facetField.dataset).map((facetField) => facetField.field);
+    const fileFormatSelections = (raw || all)
+        ? []
+        : (
+            _.compact(Object.keys(selectedTerms).map((field) => {
+                let subQueryString = '';
+                let mappedQuery = '';
+                if (selectedTerms[field].length > 0) {
+                    const matchingFacetField = facetFields.find((facetField) => facetField.field === field);
+                    if (matchingFacetField && matchingFacetField.fieldMapper) {
+                        mappedQuery = matchingFacetField.fieldMapper(selectedTerms[field], analyses);
+                    } else {
+                        // Build the query string from `files` properties in the dataset, or from the
+                        // dataset properties itself for fields marked in `facets`.
+                        subQueryString = selectedTerms[field].map((term) => (
+                            `${datasetFacets.includes(field) ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
+                        )).join('&');
+                    }
+                }
+                return `${subQueryString}${mappedQuery ? `&${mappedQuery}` : ''}`;
+            }))
+        );
 
     // Initiate a batch download as a POST, passing it all dataset @ids in the payload.
     setInProgress(true);
-    const visualizableOption = `${options.visualizable ? '&option=visualizable' : ''}`;
-    const rawOption = `${options.raw ? '&option=raw' : ''}`;
-    fetch(`/batch_download/?type=${selectedType}${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${visualizableOption}${rawOption}`, {
+    const visualizableOption = `${visualizable ? '&option=visualizable' : ''}`;
+    const rawOption = `${raw ? '&option=raw' : ''}`;
+    const preferredDefaultQuery = preferredDefault ? '&files.preferred_default=true' : '';
+    fetch(`/batch_download/?type=${selectedType}${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${visualizableOption}${rawOption}${preferredDefaultQuery}`, {
         method: 'POST',
         headers: {
             Accept: 'text/plain',
@@ -117,15 +146,17 @@ const CartBatchDownloadComponent = (
     {
         cartType,
         elements,
+        analyses,
         selectedTerms,
         selectedType,
-        datasetFacets,
+        facetFields,
         savedCartObj,
         sharedCart,
         fileCounts,
         setInProgress,
         cartInProgress,
         visualizable,
+        preferredDefault,
         disabledMessage,
         fetch,
     }
@@ -150,7 +181,8 @@ const CartBatchDownloadComponent = (
         } else if (downloadType === 'all') {
             options.all = true;
         }
-        batchDownload(cartType, elements, selectedTerms, selectedType, datasetFacets, savedCartObj, sharedCart, setInProgress, options, fetch);
+        options.preferredDefault = preferredDefault;
+        batchDownload(cartType, elements, analyses, selectedTerms, selectedType, facetFields, savedCartObj, sharedCart, setInProgress, options, fetch);
     };
 
     // Called when the user clicks the button to make the batch-download modal appear.
@@ -231,12 +263,14 @@ CartBatchDownloadComponent.propTypes = {
     cartType: PropTypes.string.isRequired,
     /** Cart elements */
     elements: PropTypes.array,
+    /** All compiled analyses in the cart */
+    analyses: PropTypes.array.isRequired,
     /** Selected facet terms */
     selectedTerms: PropTypes.object,
     /** Selected object type */
     selectedType: PropTypes.string.isRequired,
-    /** Facet fields with data from dataset instead of file */
-    datasetFacets: PropTypes.array,
+    /** Used facet field definitions */
+    facetFields: PropTypes.array.isRequired,
     /** Cart as it exists in the database; use JSON payload method if none */
     savedCartObj: PropTypes.object,
     /** Shared cart object */
@@ -249,6 +283,8 @@ CartBatchDownloadComponent.propTypes = {
     cartInProgress: PropTypes.bool,
     /** True to download only visualizable files */
     visualizable: PropTypes.bool,
+    /** True to download preferred_default files */
+    preferredDefault: PropTypes.bool,
     /** Message to display in browser tooltip when disabled */
     disabledMessage: PropTypes.string,
     /** System fetch function */
@@ -258,18 +294,19 @@ CartBatchDownloadComponent.propTypes = {
 CartBatchDownloadComponent.defaultProps = {
     elements: [],
     selectedTerms: null,
-    datasetFacets: [],
     savedCartObj: null,
     sharedCart: null,
     fileCounts: {},
     cartInProgress: false,
     visualizable: false,
+    preferredDefault: false,
     disabledMessage: '',
 };
 
 const mapStateToProps = (state, ownProps) => ({
     cartInProgress: state.inProgress,
     elements: ownProps.elements,
+    analyses: ownProps.analyses,
     selectedTerms: ownProps.selectedTerms,
     savedCartObj: ownProps.savedCartObj,
     fileCounts: ownProps.fileCounts,

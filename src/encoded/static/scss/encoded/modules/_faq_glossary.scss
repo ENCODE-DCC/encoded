@@ -51,23 +51,6 @@
     }
 }
 
-.glossary-element a[href^="http"]::after {
-    content: " \f08e";
-    font-family: FontAwesome;
-    font-weight: normal;
-    font-style: normal;
-    text-decoration: none;
-    -webkit-font-smoothing: antialiased;
-
-    /* sprites.less reset */
-    display: inline;
-    line-height: normal;
-    vertical-align: baseline;
-    background-image: none;
-    background-position: 0% 0%;
-    background-repeat: repeat;
-}
-
 .block.richtextblock .glossary-element {
     .glossary-extra-info {
         margin: 0 0 0 25px;
@@ -81,11 +64,16 @@
 
 .glossary-block {
     padding-bottom: 30px;
-}
 
-.glossary-field {
-    a {
-        padding-right: 10px;
+    .section-header-link {
+        font-size: 1rem;
+        font-family: $site-font;
+        margin-left: 10px;
+        display: block;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: inline-block;
+        }
     }
 }
 

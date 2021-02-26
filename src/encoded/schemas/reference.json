@@ -201,6 +201,7 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
@@ -220,7 +221,8 @@
         "software_used.software.name": 1.0,
         "reference_type": 1.0,
         "internal_tags": 1.0,
-        "description": 1.0
+        "description": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/reference.md"
 

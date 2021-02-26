@@ -3,6 +3,7 @@
 ### Minor changes since schema version 28
 * Added *element enrichments* to the enum list for *file_format_type*
 * Added *curated binding sites*, *curated SNVs*, *dsQTLs*, *eQTLs* and *PWMs* to the enum list for *output_type*.
+* Added *guide quantifications*, *perturbation signal*, *element gene interactions signal*, and *element gene interactions p-value* to the enum list for *output_type*
 
 ### Schema version 28
 * *output_type* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 

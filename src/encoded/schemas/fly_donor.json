@@ -136,14 +136,18 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "genetic_modifications.modified_site_by_target_id.label": 1.0,
         "genetic_modifications.modified_site_by_target_id.genes.dbxrefs": 1.0,
         "genetic_modifications.modified_site_by_target_id.genes.symbol": 1.0,
         "genetic_modifications.modified_site_by_target_id.aliases": 1.0,
         "parent_strains": 1.0,
         "accession": 1.0,
-        "alternate_accessions": 1.0
-
+        "alternate_accessions": 1.0,
+        "strain_name": 1.0,
+        "genotype": 1.0,
+        "organism.scientific_name": 1.0,
+        "organism.name": 1.0
     },
     "changelog": "/profiles/changelogs/fly_donor.md"
 }

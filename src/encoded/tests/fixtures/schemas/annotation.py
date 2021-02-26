@@ -159,3 +159,25 @@ def annotation_30(award, lab):
         'schema_version': '30',
         'annotation_type': 'blacklist',
     }
+
+
+@pytest.fixture
+def annotation_ccre(testapp, award, lab):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'annotation_type': 'candidate Cis-Regulatory Elements',
+        'encyclopedia_version': 'ENCODE v5'
+    }
+    return testapp.post_json('/annotation', item).json['@graph'][0]
+
+
+@pytest.fixture
+def annotation_dhs(testapp, award, lab):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'annotation_type': 'representative DNase hypersensitivity sites',
+        'encyclopedia_version': 'ENCODE v5'
+    }
+    return testapp.post_json('/annotation', item).json['@graph'][0]

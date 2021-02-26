@@ -84,6 +84,18 @@ class Dataset(Item):
     ]
     embedded_with_frame = [
         Path('references', exclude=['datasets', 'publication_data']),
+        Path(
+            'files.analyses',
+            include=[
+                '@id',
+                '@type',
+                'uuid',
+                'status',
+                'pipeline_award_rfas',
+                'pipeline_version',
+                'title',
+            ],
+        ),
     ]
     audit_inherit = [
         'original_files',
@@ -499,7 +511,10 @@ class Annotation(FileSet, CalculatedVisualize):
     @calculated_property(condition='contributing_files', schema={
         "title": "Biochemical profile inputs",
         "description": "The input data used to generate a cCRE annotation.",
-        "type": "string",
+        "type": "array",
+        "items": {
+            "type": "string"
+        },
         "notSubmittable": True
     })
     def biochemical_inputs(
@@ -542,7 +557,8 @@ class Annotation(FileSet, CalculatedVisualize):
                                     elif properties['assay_term_name'] == 'DNase-seq':
                                         inputs_set.add('DNase-seq')
         inputs_list = sorted(inputs_set)
-        return ((', ').join([str(each) for each in inputs_list]))
+        if inputs_list:
+            return list(inputs_list)
 
 
 @collection(
@@ -1003,4 +1019,17 @@ class FunctionalCharacterizationSeries(Series):
 class GeneSilencingSeries(Series):
     item_type = 'gene_silencing_series'
     schema = load_schema('encoded:schemas/gene_silencing_series.json')
+    embedded = Series.embedded
+
+
+@collection(
+    name='differentiation-series',
+    unique_key='accession',
+    properties={
+        'title': "Differentiation series",
+        'description': 'A series that groups experiments investigating biosamples along a differentiation trajectory.',
+    })
+class DifferentiationSeries(Series):
+    item_type = 'differentiation_series'
+    schema = load_schema('encoded:schemas/differentiation_series.json')
     embedded = Series.embedded
