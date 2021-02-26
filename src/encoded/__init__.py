@@ -3,6 +3,7 @@ install_aliases()  # NOQA
 import encoded.schema_formats # needed to import before snovault to add FormatCheckers
 import base64
 import codecs
+import copy
 import json
 import os
 try:
@@ -64,7 +65,9 @@ def changelogs(config):
 
 
 def configure_engine(settings):
-    engine_url = settings['sqlalchemy.url']
+    settings = copy.deepcopy(settings)
+    engine_url = os.environ.get("SQLALCHEMY_URL") or settings['sqlalchemy.url']
+    settings["sqlalchemy.url"] = engine_url
     engine_opts = {}
     if engine_url.startswith('postgresql'):
         if settings.get('indexer_worker'):
@@ -235,7 +238,10 @@ def main(global_config, **local_config):
         config.include('encoded.search_views')
 
     if 'snp_search.server' in config.registry.settings:
-        addresses = aslist(config.registry.settings['snp_search.server'])
+        addresses = aslist(
+            os.environ.get("ELASTICSEARCH_URL")
+            or config.registry.settings['snp_search.server']
+        )
         config.registry['snp_search'] = Elasticsearch(
             addresses,
             serializer=PyramidJSONSerializer(json_renderer),
