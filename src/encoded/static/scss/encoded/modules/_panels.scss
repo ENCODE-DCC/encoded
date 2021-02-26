@@ -680,6 +680,15 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
         outline: 0;
         box-shadow: 0 0 3px #00f inset;
     }
+
+    &__file-download {
+        cursor: pointer;
+        color: #428bca;
+
+        &--no-download-shade {
+            opacity: 0.3;
+        }
+    }
 }
 
 // Control for collapsing panel title bars
@@ -724,6 +733,11 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
         background-color: darken(#d8e0e8, 10%);
         text-decoration: none;
     }
+}
+
+.collapsing-title-file-count {
+    font-size: 0.9rem;
+    color: #606060;
 }
 
 .subpanel {

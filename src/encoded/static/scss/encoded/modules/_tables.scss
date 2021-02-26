@@ -96,14 +96,22 @@ form.table-filter {
     }
 }
 
-.tcell-thumbnail {
+%tcenter {
     display: flex;
     justify-content: center;
+}
+
+.tcell-thumbnail {
+    @extend %tcenter;
 
     img {
         height: 100px;
         width: 120px;
     }
+}
+
+.tcell-center {
+    @extend %tcenter;
 }
 
 /* initial state is hidden (see template; class=hide) */

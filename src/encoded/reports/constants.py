@@ -6,6 +6,7 @@ METADATA_ALLOWED_TYPES = [
     'Annotation',
     'FunctionalCharacterizationExperiment',
     'PublicationData',
+    'Analysis',
 ]
 
 
