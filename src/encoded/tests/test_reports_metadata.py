@@ -650,6 +650,8 @@ def test_metadata_metadata_report_build_header(dummy_request):
         'Controlled by',
         'File Status',
         's3_uri',
+        'File analysis title',
+        'File analysis status',
         'Audit WARNING',
         'Audit NOT_COMPLIANT',
         'Audit ERROR'
@@ -695,7 +697,9 @@ def test_metadata_metadata_report_split_column_and_fields_by_experiment_and_file
         'File Status': ['status'],
         'No File Available': ['no_file_available'],
         'Restricted': ['restricted'],
-        's3_uri': ['s3_uri']
+        's3_uri': ['s3_uri'],
+        'File analysis title': ['analyses.title'],
+        'File analysis status': ['analyses.status']
     }
     expected_experiment_column_to_fields_mapping = {
         'Experiment accession': ['accession'],
@@ -853,6 +857,8 @@ def test_metadata_metadata_report_add_fields_to_param_list(dummy_request):
         'files.no_file_available',
         'files.restricted',
         'files.s3_uri',
+        'files.analyses.title',
+        'files.analyses.status',
         'files.read_count',
     ]
     assert set(mr.param_list['field']) == set(expected_fields), f"{set(mr.param_list['field']) - set(expected_fields)}"
@@ -1047,7 +1053,9 @@ def test_metadata_metadata_report_get_field_params(dummy_request):
         ('field', 'files.status'),
         ('field', 'files.no_file_available'),
         ('field', 'files.restricted'),
-        ('field', 'files.s3_uri')
+        ('field', 'files.s3_uri'),
+        ('field', 'files.analyses.title'),
+        ('field', 'files.analyses.status'),
     ]
     for param in mr._get_field_params():
         assert param in expected_field_params, f'{param}'
@@ -1155,9 +1163,9 @@ def test_metadata_metadata_report_initialize_report(dummy_request):
     )
     mr = MetadataReport(dummy_request)
     mr._initialize_report()
-    assert len(mr.header) == 55
+    assert len(mr.header) == 57
     assert len(mr.experiment_column_to_fields_mapping.keys()) == 26, f'{len(mr.experiment_column_to_fields_mapping.keys())}'
-    assert len(mr.file_column_to_fields_mapping.keys()) == 28, f'{len(mr.file_column_to_fields_mapping.keys())}'
+    assert len(mr.file_column_to_fields_mapping.keys()) == 30, f'{len(mr.file_column_to_fields_mapping.keys())}'
 
 
 def test_metadata_metadata_report_build_params(dummy_request):
@@ -1170,7 +1178,7 @@ def test_metadata_metadata_report_build_params(dummy_request):
     dummy_request.json = {'elements': ['/experiments/ENCSR123ABC/']}
     mr = MetadataReport(dummy_request)
     mr._build_params()
-    assert len(mr.param_list['field']) == 63, f'{len(mr.param_list["field"])} not expected'
+    assert len(mr.param_list['field']) == 65, f'{len(mr.param_list["field"])} not expected'
     assert len(mr.param_list['@id']) == 1
 
 
@@ -1220,7 +1228,8 @@ def test_metadata_metadata_report_build_new_request(dummy_request):
         '&field=files.read_length&field=files.mapped_read_length&field=files.run_type&field=files.paired_end'
         '&field=files.paired_with&field=files.index_of&field=files.derived_from&field=files.file_size'
         '&field=files.lab.title&field=files.md5sum&field=files.dbxrefs&field=files.href&field=files.genome_annotation'
-        '&field=files.platform.title&field=files.controlled_by&field=files.s3_uri&field=files.replicate.library'
+        '&field=files.platform.title&field=files.controlled_by&field=files.s3_uri&field=files.analyses.title'
+        '&field=files.analyses.status&field=files.replicate.library'
         '&%40id=%2Fexperiments%2FENCSR123ABC%2F'
     )
     assert new_request.effective_principals == ['system.Everyone']
@@ -1476,6 +1485,8 @@ def test_metadata_metadata_report_output_sorted_row(dummy_request):
         '',
         'released',
         's3://encode-public/2020/07/09/dc068c0a-d1c8-461a-a208-418d35121f3b/ENCFF244PJU.bed.gz',
+        '',
+        '',
         (
             'inconsistent control read length',
             'low read length',
