@@ -443,6 +443,10 @@ class GenomeBrowser extends React.Component {
     /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps, prevState) {
         if (!(this.state.disableBrowserForIE) && this.GV) {
+            console.log('component did update');
+            console.log(this.props);
+            console.log(prevProps);
+
             if (this.state.contig !== prevState.contig) {
                 if (this.state.visualizer) {
                     this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
