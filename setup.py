@@ -5,7 +5,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 # Edit Snovault version after the `@` here, can be a branch or tag
-SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@1.0.54"
+SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@SNO-192-update-pip-install"
 
 INSTALL_REQUIRES = [
     "PasteDeploy==2.1.0",
@@ -21,7 +21,7 @@ INSTALL_REQUIRES = [
     "elasticsearch==5.4.0",
     "future==0.18.2",
     "humanfriendly==6.1",
-    "jsonschema-serialize-fork @ git+https://github.com/lrowe/jsonschema_serialize_fork.git@2.1.1",  # noqa
+    "jsonschema_serialize_fork==2.1.1",
     "loremipsum==1.0.5",
     "passlib==1.7.2",
     "psutil==5.6.7",
@@ -37,7 +37,7 @@ INSTALL_REQUIRES = [
     "repoze.debug==1.1",
     "rfc3987==1.3.8",
     "rutter==0.2",
-    "subprocess-middleware @ git+https://github.com/lrowe/subprocess_middleware.git@0.3",  # noqa
+    "subprocess_middleware==0.3",
     "transaction==3.0.0",
     "waitress==1.4.3",
     "xlrd==1.2.0",
