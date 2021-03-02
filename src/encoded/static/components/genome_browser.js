@@ -151,6 +151,9 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
         x1 = 237997;
     }
 
+    console.log('pinned files');
+    console.log(pinnedFiles);
+
     return { x0, x1, contig, pinnedFiles };
 };
 
@@ -491,6 +494,9 @@ class GenomeBrowser extends React.Component {
         // save co-ordinates to be used to restore location if user comes back to genome_browser tab/area
         const { x0, x1, contig } = readGenomeBrowserLabelCoordinates();
 
+        console.log('pinned files');
+        console.log(this.state.pinnedFiles);
+
         window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify({
             contig,
             x0,
@@ -552,6 +558,8 @@ class GenomeBrowser extends React.Component {
         console.log('set browser defaults');
         console.log(assemblyAnnotation);
         const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation);
+        console.log('pinned files');
+        console.log(pinnedFiles);
 
         this.setState({ contig, x0, x1, pinnedFiles }, () => {
             if (resolve) {
@@ -659,6 +667,8 @@ class GenomeBrowser extends React.Component {
         let newFiles = [];
         const domain = `${window.location.protocol}//${window.location.hostname}`;
         files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag);
+        console.log('pinned files');
+        console.log(this.state.pinnedFiles);
         newFiles = [...this.state.pinnedFiles, ...files];
         let tracks = [];
         if (files.length > 0) {
