@@ -44,7 +44,7 @@
             "title": "Preservation time",
             "description": "The length of time that the sample was preserved",
             "type": "string",
-            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+            "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
         },
         "preservation_time_units": {
             "title": "Preservation time units",
