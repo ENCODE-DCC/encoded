@@ -445,8 +445,10 @@ class GenomeBrowser extends React.Component {
         console.log('click');
         if (!(this.state.disableBrowserForIE) && this.GV) {
             console.log('component did update');
-            // console.log(this.props);
-            // console.log(prevProps);
+            console.log(this.props);
+            console.log(prevProps);
+            console.log(this.props.assembly);
+            console.log(prevProps.assembly);
 
             if (this.state.contig !== prevState.contig) {
                 console.log('updated location');
@@ -547,6 +549,8 @@ class GenomeBrowser extends React.Component {
     }
 
     setBrowserDefaults(assemblyAnnotation, resolve) {
+        console.log('set browser defaults');
+        console.log(assemblyAnnotation);
         const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation);
 
         this.setState({ contig, x0, x1, pinnedFiles }, () => {
@@ -557,8 +561,11 @@ class GenomeBrowser extends React.Component {
     }
 
     setGenomeAndTracks() {
+        console.log('set genome and tracks');
         const genome = mapGenome(this.props.assembly);
+        console.log(this.props.assembly);
         this.setState({ genome }, () => {
+            console.log(`genome is ${genome}`);
             // Determine genome and Gencode pinned files for selected assembly
             const genomePromise = new Promise((resolve) => {
                 this.setBrowserDefaults(genome, resolve);
