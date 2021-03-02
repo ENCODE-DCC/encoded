@@ -688,6 +688,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.path = file.href;
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
                 trackObj.expandedHeightPx = 140;
+                trackObj.expandable = false;
                 return trackObj;
             }
             if (file.file_format === 'bigWig') {
@@ -698,6 +699,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.path = domain + file.href;
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
                 trackObj.expandedHeightPx = 140;
+                trackObj.expandable = false;
                 return trackObj;
             }
             if (file.file_format === 'vdna-dir') {
@@ -724,7 +726,7 @@ class GenomeBrowser extends React.Component {
             trackObj.longname = <TrackLabel file={file} label={label} long />;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
-            trackObj.expandable = true;
+            trackObj.expandable = false;
             trackObj.displayLabels = false;
             trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
             trackObj.expandedHeightPx = 140;
@@ -735,7 +737,6 @@ class GenomeBrowser extends React.Component {
                 (['bedrnaelements', 'peptidemapping', 'bedexonscore', 'bed12', 'bed9'].indexOf(file.file_format_type.toLowerCase()) > -1)) {
                 trackObj.name = <TrackLabel file={file} label={label} long />;
                 trackObj.heightPx = 95;
-                trackObj.expandable = false;
             }
             return trackObj;
         });
