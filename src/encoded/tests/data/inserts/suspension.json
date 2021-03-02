@@ -113,7 +113,7 @@
         "suspension_type": "nucleus",
         "starting_quantity": "1000",
         "starting_quantity_units": "nuclei/\u03bcl",
-        "cell_viability_method": "trypan blue staining",
+        "cell_viability_method": "annexin V",
         "percent_cell_viability": "95.5",
         "depleted_cell_types": [
             "CL_0002305"
