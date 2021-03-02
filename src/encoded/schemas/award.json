@@ -30,7 +30,7 @@
             "title": "Name",
             "description": "The grant ID assigned by Lattice.",
             "type": "string",
-            "pattern": "^[A-Za-z0-9\\-]+$",
+            "pattern": "^((CZI|HCA)\\d{3}[A-Z]{3})$",
             "uniqueKey": true
        },
         "description": {
@@ -64,7 +64,8 @@
             "type": "string",
             "enum": [
                 "HCA Seed Networks",
-                "HCA Pilot Projects"
+                "HCA Pilot Projects",
+                "HCA General Community"
             ]
         },
         "focus": {

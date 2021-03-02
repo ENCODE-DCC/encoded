@@ -501,5 +501,11 @@
       "project": "HCA Seed Networks",
       "title": "Developing Tools and Standards for Integration of Multidimensional Human Cell Atlas Data",
       "uuid": "d687f1c1-4efd-447f-bf19-7e512f3872bd"
+    },
+    {
+      "name": "HCA000HCA",
+      "project": "HCA General Community",
+      "title": "General Human Cell Atlas research projects that are not funded through Seed Networks or Pilot Projects grants",
+      "uuid": "0f541271-bb31-43f0-86af-e39159c8d5c7"
     }
 ]

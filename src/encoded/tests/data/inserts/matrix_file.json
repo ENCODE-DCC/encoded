@@ -8,7 +8,7 @@
         "submitted_file_name": "donorA1_raw_feature_bc_matrix/",
         "file_format": "mex",
         "file_size": 100000,
-        "lab": "anna-greka",
+        "lab": "hca-general",
         "output_types": [
             "gene quantifications",
             "antibody capture quantifications"
