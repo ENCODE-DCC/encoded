@@ -38,86 +38,86 @@ system_slims = {
 }
 
 organ_slims = {
-    'UBERON:0002369': 'adrenal gland',
+    'UBERON:0001155': 'colon', #subclass of UBERON:0000059,UBERON:0000160,UBERON:0001555
+    'UBERON:0000059': 'large intestine', #subclass of UBERON:0000160,UBERON:0001555
+    'UBERON:0002108': 'small intestine', #subclass of UBERON:0000160,UBERON:0001555
+    'UBERON:0000160': 'intestine', #subclass of UBERON:0001555
+    'UBERON:0001723': 'tongue', #subclass of UBERON:0000165,UBERON:0001555
+    'UBERON:0001829': 'major salivary gland', #subclass of UBERON:0000165,UBERON:0002365,UBERON:0001555
+    'UBERON:0000165': 'mouth', #subclass of UBERON:0001555
+    'UBERON:0001043': 'esophagus', #subclass of UBERON:0001555
+    'UBERON:0000945': 'stomach', #subclass of UBERON:0001555
+    'UBERON:0006562': 'pharynx', #subclass of UBERON:0001555
+    'UBERON:0001350': 'coccyx', #subclass of UBERON:0001474,UBERON:0004288
+    'UBERON:0004288': 'skeleton',
+    'UBERON:0002371': 'bone marrow', #subclass of UBERON:0001474
+    'UBERON:0001474': 'bone element',
+    'UBERON:0000007': 'pituitary gland', #subclass of UBERON:0000955,UBERON:0002368
+    'UBERON:0003547': 'brain meninx', #subclass of UBERON:0000955
+    'UBERON:0000955': 'brain',
+    'UBERON:0002182': 'main bronchus', #subclass of UBERON:0002185
+    'UBERON:0002185': 'bronchus',
+    'UBERON:0000998': 'seminal vesicle', #subclass of UBERON:0000991,UBERON:0000473
+    'UBERON:0000473': 'testis', #subclass of UBERON:0000991
+    'UBERON:0000992': 'ovary', #subclass of UBERON:0000991
+    'UBERON:0000991': 'gonad',
+    'UBERON:0002073': 'hair follicle', #subclass of UBERON:0002097,UBERON:0000483
+    'UBERON:0001820': 'sweat gland', #subclass of UBERON:0002097,UBERON:0000483,UBERON:0002365
+    'UBERON:0001821': 'sebaceous gland', #subclass of UBERON:0002097,UBERON:0000483,UBERON:0002365
+    'UBERON:0002097': 'skin of body',
+    'UBERON:0001817': 'lacrimal gland', #subclass of UBERON:0000970,UBERON:0002365
+    'UBERON:0000970': 'eye',
+    'UBERON:0000029': 'lymph node', #subclass of UBERON:0005057
+    'UBERON:0002106': 'spleen', #subclass of UBERON:0005057
+    'UBERON:0002370': 'thymus', #subclass of UBERON:0002368,UBERON:0005057
+    'UBERON:0002107': 'liver', #subclass of UBERON:0002368,UBERON:0002365
+    'UBERON:0002369': 'adrenal gland', #subclass of UBERON:0002368
+    'UBERON:0002046': 'thyroid gland', #subclass of UBERON:0002368
+    'UBERON:0001132': 'parathyroid gland', #subclass of UBERON:0002368
+    'UBERON:0002368': 'endocrine gland',
+    'UBERON:0001911': 'mammary gland', #subclass of UBERON:0002365
+    'UBERON:0000414': 'mucous gland', #subclass of UBERON:0002365
+    'UBERON:0002365': 'exocrine gland',
+    'UBERON:0000178': 'blood', #subclass of UBERON:0006314
+    'UBERON:0006314': 'bodily fluid',
+    'UBERON:0003509': 'arterial blood vessel', #subclass of UBERON:0001981,UBERON:0002049
+    'UBERON:0001638': 'vein', #subclass of UBERON:0001981,UBERON:0002049
+    'UBERON:0001981': 'blood vessel', #subclass of UBERON:0002049
+    'UBERON:0001473': 'lymphatic vessel', #subclass of UBERON:0002049
+    'UBERON:0000043': 'tendon', #subclass of UBERON:0002384
+    'UBERON:0001013': 'adipose tissue', #subclass of UBERON:0002384
+    'UBERON:0001987': 'placenta', #subclass of UBERON:0016887
+    'UBERON:0000310': 'breast',
+    'UBERON:0001103': 'diaphragm',
+    'UBERON:0001690': 'ear',
+    'UBERON:0000922': 'embryo',
     'UBERON:0002110': 'gallbladder',
-    'UBERON:0002106': 'spleen',
-    'UBERON:0001043': 'esophagus',
+    'UBERON:0000948': 'heart',
+    'UBERON:0002113': 'kidney',
+    'UBERON:0001737': 'larynx',
+    'UBERON:0002101': 'limb',
+    'UBERON:0002048': 'lung',
+    'UBERON:0001744': 'lymphoid tissue',
+    'UBERON:0001021': 'nerve',
     'UBERON:0000004': 'nose',
+    'UBERON:0001264': 'pancreas',
+    'UBERON:0000989': 'penis',
+    'UBERON:0002407': 'pericardium',
+    'UBERON:0002367': 'prostate gland',
+    'UBERON:0002240': 'spinal cord',
+    'UBERON:0003126': 'trachea',
     'UBERON:0000056': 'ureter',
     'UBERON:0000057': 'urethra',
-    'UBERON:0000059': 'large intestine',
-    'UBERON:0000165': 'mouth',
-    'UBERON:0000945': 'stomach',
-    'UBERON:0000948': 'heart',
-    'UBERON:0000955': 'brain',
-    'UBERON:0000970': 'eye',
-    'UBERON:0000991': 'gonad',
     'UBERON:0001255': 'urinary bladder',
-    'UBERON:0001264': 'pancreas',
-    'UBERON:0001474': 'bone element',
-    'UBERON:0002048': 'lung',
-    'UBERON:0002097': 'skin of body',
-    'UBERON:0002107': 'liver',
-    'UBERON:0002108': 'small intestine',
-    'UBERON:0002113': 'kidney',
-    'UBERON:0002240': 'spinal cord',
-    'UBERON:0002367': 'prostate gland',
-    'UBERON:0002370': 'thymus',
-    'UBERON:0003126': 'trachea',
-    'UBERON:0001723': 'tongue',
-    'UBERON:0001737': 'larynx',
-    'UBERON:0006562': 'pharynx',
-    'UBERON:0001103': 'diaphragm',
-    'UBERON:0002185': 'bronchus',
-    'UBERON:0000029': 'lymph node',
-    'UBERON:0001132': 'parathyroid gland',
-    'UBERON:0002046': 'thyroid gland',
-    'UBERON:0001981': 'blood vessel',
-    'UBERON:0001473': 'lymphatic vessel',
-    'UBERON:0000178': 'blood',
-    'UBERON:0007844': 'cartilage element',
-    'UBERON:0001690': 'ear',
-    'UBERON:0001987': 'placenta',
-    'UBERON:0001911': 'mammary gland',
-    'UBERON:0000007': 'pituitary gland',
-    'UBERON:0016887': 'extraembryonic component',
-    'UBERON:0001013': 'adipose tissue',
-    'UBERON:0000310': 'breast',
-    'UBERON:0000989': 'penis',
-    'UBERON:0004288': 'skeleton',
     'UBERON:0000995': 'uterus',
     'UBERON:0000996': 'vagina',
-    'UBERON:0000992': 'ovary',
-    'UBERON:0000473': 'testis',
-    'UBERON:0003509': 'arterial blood vessel',
-    'UBERON:0001638': 'vein',
-    'UBERON:0000160': 'intestine',
-    'UBERON:0002384': 'connective tissue',
-    'UBERON:0002101': 'limb',
-    'UBERON:0000922': 'embryo',
-    'UBERON:0001021': 'nerve',
-    'UBERON:0002371': 'bone marrow',
-    'UBERON:0006314': 'bodily fluid',
-    'UBERON:0002049': 'vasculature',
-    'UBERON:0000483': 'epithelium',
-    'UBERON:0002407': 'pericardium',
-    'UBERON:0001744': 'lymphoid tissue',
-    'UBERON:0001155': 'colon',
-    'UBERON:0003547': 'brain meninx',
-    'UBERON:0001350': 'coccyx',
-    'UBERON:0002368': 'endocrine gland',
-    'UBERON:0002365': 'exocrine gland',
-    'UBERON:0002073': 'hair follicle',
-    'UBERON:0005057': 'immune organ',
-    'UBERON:0001817': 'lacrimal gland',
-    'UBERON:0002182': 'main bronchus',
-    'UBERON:0001829': 'major salivary gland',
-    'UBERON:0000414': 'mucous gland',
-    'UBERON:0001821': 'sebaceous gland',
-    'UBERON:0000998': 'seminal vesicle',
-    'UBERON:0001820': 'sweat gland',
     'UBERON:0001555': 'digestive tract',
-    'UBERON:0000043': 'tendon'
+    'UBERON:0002049': 'vasculature',
+    'UBERON:0002384': 'connective tissue',
+    'UBERON:0005057': 'immune organ',
+    'UBERON:0007844': 'cartilage element',
+    'UBERON:0016887': 'extraembryonic component',
+    'UBERON:0000483': 'epithelium'
 }
 
 cell_slims = {
