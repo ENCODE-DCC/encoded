@@ -9,30 +9,32 @@ from .base import (
 
 
 developmental_slims = {
-    'UBERON:0000926': 'mesoderm',
     'UBERON:0000924': 'ectoderm',
-    'UBERON:0000925': 'endoderm'
+    'UBERON:0000925': 'endoderm',
+    'UBERON:0000926': 'mesoderm'
 }
 
 system_slims = {
-    'UBERON:0000383': 'musculature of body',
+    'UBERON:0000363': 'reticuloendothelial system', #subclass of UBERON:0002405
+    'UBERON:0002405': 'immune system',
+    'UBERON:0004535': 'cardiovascular system', #subclass of UBERON:0001009
+    'UBERON:0001009': 'circulatory system',
+    'UBERON:0001017': 'central nervous system', #subclass of UBERON:0001016
+    'UBERON:0000010': 'peripheral nervous system', #subclass of UBERON:0001016
+    'UBERON:0001016': 'nervous system',
+    'UBERON:0000383': 'musculature of body', #subclass of UBERON:0002204
+    'UBERON:0001434': 'skeletal system', #subclass of UBERON:0002204
+    'UBERON:0002204': 'musculoskeletal system',
+    'UBERON:0001032': 'sensory system', #subclass of UBERON:0004456
+    'UBERON:0004456': 'sense organ system',
+    'UBERON:0001007': 'digestive system',
     'UBERON:0000949': 'endocrine system',
     'UBERON:0002330': 'exocrine system',
-    'UBERON:0000990': 'reproductive system',
-    'UBERON:0001004': 'respiratory system',
-    'UBERON:0001007': 'digestive system',
-    'UBERON:0001008': 'excretory system',
-    'UBERON:0001009': 'circulatory system',
-    'UBERON:0001434': 'skeletal system',
-    'UBERON:0002405': 'immune system',
-    'UBERON:0002416': 'integumental system',
-    'UBERON:0001032': 'sensory system',
-    'UBERON:0001016': 'nervous system',
-    'UBERON:0001017': 'central nervous system',
-    'UBERON:0000010': 'peripheral nervous system',
     'UBERON:0002390': 'hematopoietic system',
-    'UBERON:0004535': 'cardiovascular system',
-    'UBERON:0000363': 'reticuloendothelial system'
+    'UBERON:0002416': 'integumental system',
+    'UBERON:0001008': 'renal system',
+    'UBERON:0000990': 'reproductive system',
+    'UBERON:0001004': 'respiratory system'
 }
 
 organ_slims = {
@@ -119,40 +121,42 @@ organ_slims = {
 }
 
 cell_slims = {
-    'CL:0000236': 'B cell',
-    'CL:0002494': 'cardiocyte',
+    'CL:0000236': 'B cell', #subclass of CL:0000542,CL:0000738,CL:0000988
+    'CL:0000084': 'T cell', #subclass of CL:0000542,CL:0000738,CL:0000988
+    'CL:0000542': 'lymphocyte', #subclass of CL:0000763,CL:0000738,CL:0000988
+    'CL:0000094': 'granulocyte', #subclass of CL:0000763,CL:0000738,CL:0000988
+    'CL:0000576': 'monocyte', #subclass of CL:0000763,CL:0000738,CL:0000988
+    'CL:0000763': 'myeloid cell', #subclass of CL:0000988
+    'CL:0000738': 'leukocyte', #subclass of CL:0000988
+    'CL:0000988': 'hematopoietic cell',
+    'CL:0000312': 'keratinocyte', #subclass of CL:0000066
+    'CL:0000115': 'endothelial cell', #subclass of CL:0000066
+    'CL:0000066': 'epithelial cell',
+    'CL:0000057': 'fibroblast', #subclass of CL:0002320
+    'CL:0000669': 'pericyte', #subclass of CL:0002320
     'CL:0002320': 'connective tissue cell',
     'CL:0002321': 'embryonic cell',
-    'CL:0000115': 'endothelial cell',
-    'CL:0000066': 'epithelial cell',
-    'CL:0000094': 'granulocyte',
-    'CL:0000057': 'fibroblast',
-    'CL:0000988': 'hematopoietic cell',
-    'CL:0000312': 'keratinocyte',
-    'CL:0000738': 'leukocyte',
-    'CL:0000542': 'lymphocyte',
+    'CL:0002494': 'cardiocyte',
     'CL:0000148': 'melanocyte',
-    'CL:0000576': 'monocyte',
-    'CL:0000763': 'myeloid cell',
     'CL:0000056': 'myoblast',
     'CL:0002319': 'neural cell',
-    'CL:0000669': 'pericyte',
     'CL:0000192': 'smooth muscle cell',
     'CL:0000034': 'stem cell',
-    'CL:0000084': 'T cell'
+    'EFO:0004905': 'induced pluripotent stem cell', #subclass of CL:0000034
+    'EFO:0002886': 'stem cell derived cell line' #subclass of CL:0000034
 }
 
 disease_slims = {
+    'MONDO:0005015': 'diabetes', #subclass of MONDO:0004335,MONDO:0005066
+    'MONDO:0004335': 'digestive system disease',
+    'MONDO:0005066': 'metabolic disease',
     'MONDO:0002280': 'anemia',
     'MONDO:0005578': 'arthritis',
     'MONDO:0005113': 'bacterial infection',
     'MONDO:0004992': 'cancer',
-    'MONDO:0005015': 'diabetes',
-    'MONDO:0004335': 'digestive system disease',
     'MONDO:0005044': 'hypertensive disorder',
     'MONDO:0005240': 'kidney disease',
     'MONDO:0005084': 'mental disorder',
-    'MONDO:0005066': 'metabolic disease',
     'MONDO:0100081': 'sleep disorder'
 }
 
