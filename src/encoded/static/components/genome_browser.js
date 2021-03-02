@@ -393,289 +393,136 @@ TrackLabel.defaultProps = {
     long: false,
 };
 
-class GenomeBrowser extends React.Component {
-    constructor(props, context) {
-        super(props, context);
-
-        this.state = {
-            trackList: [],
-            visualizer: null,
-            showAutoSuggest: true,
-            searchTerm: '',
-            genome: '',
-            contig: 'chr1',
-            x0: 0,
-            x1: 59e6,
-            pinnedFiles: [],
-            disableBrowserForIE: false,
-            sortToggle: this.props.sortParam.map(() => true), // Indicates ascending or descending order for each sort parameter; true is descending and false is ascending
-            primarySort: this.props.sortParam[0] || 'Replicates', // Indicates the final (primary) sort applied to the list of files
-        };
-        this.setBrowserDefaults = this.setBrowserDefaults.bind(this);
-        this.clearBrowserMemory = this.clearBrowserMemory.bind(this);
-        this.filesToTracks = this.filesToTracks.bind(this);
-        this.drawTracks = this.drawTracks.bind(this);
-        this.drawTracksResized = this.drawTracksResized.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
-        this.handleOnFocus = this.handleOnFocus.bind(this);
-        this.setGenomeAndTracks = this.setGenomeAndTracks.bind(this);
-        this.resetLocation = this.resetLocation.bind(this);
-        this.sortFiles = this.sortFiles.bind(this);
-        this.sortAndRefresh = this.sortAndRefresh.bind(this);
-    }
-
-    componentDidMount() {
-        // Check if browser is IE 11 and disable browser if so
-        if (BrowserFeat.getBrowserCaps('uaTrident')) {
-            this.setState({ disableBrowserForIE: true });
-        } else {
-            // Load GenomeVisualizer library
-            // We have to wait for the component to mount because the library relies on window variable
-            require.ensure(['genome-visualizer'], (require) => {
-                this.GV = require('genome-visualizer');
-                // Determine pinned files based on genome, filter and sort files, compute and draw tracks
-                this.setGenomeAndTracks();
-            });
-        }
-    }
+const GenomeBrowser = (props, context) => {
+    const [trackList, setTrackList] = React.useState([]);
+    const [visualizer, setVisualizer] = React.useState(null);
+    const [showAutoSuggest, setShowAutoSuggest] = React.useState(true);
+    const [searchTerm, setSearchTerm] = React.useState('');
+    const [genome, setGenome] = React.useState('');
+    const [contig, setContig] = React.useState('chr1');
+    const [x0, setX0] = React.useState(0);
+    const [x1, setX1] = React.useState(59e6);
+    const [pinnedFiles, setPinnedFiles] = React.useState([]);
+    const [disableBrowserForIE, setDisableBrowserForIE] = React.useState(false);
+    // Indicates ascending or descending order for each sort parameter; true is descending and false is ascending
+    const [sortToggle, setSortToggle] = React.useState(props.sortParam.map(() => true));
+    // Indicates the final (primary) sort applied to the list of files
+    const [primarySort, setPrimarySort] = React.useState(props.sortParam[0] || 'Replicates');
+    const [GV, setGV] = React.useState(null);
+    const chartdisplay = React.useRef(null);
+    const [gene, setGene] = React.useState(null);
 
     /* eslint-disable react/no-did-update-set-state */
-    componentDidUpdate(prevProps, prevState) {
-        console.log('click');
-        if (!(this.state.disableBrowserForIE) && this.GV) {
-            console.log('component did update');
-            // console.log(this.props);
-            // console.log(prevProps);
-
-            if (this.state.contig !== prevState.contig) {
-                console.log('updated location');
-                if (this.state.visualizer) {
-                    this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
-                }
-            }
-
-            if (this.props.assembly !== prevProps.assembly) {
-                console.log('assembly changed');
-                // Determine pinned files based on genome, filter and sort files, compute and draw tracks
-                this.setGenomeAndTracks();
-                // Clear the gene search
-                this.setState({ searchTerm: '' });
-            }
-
-            // If the parent container changed size, we need to update the browser width
-            if (this.props.expanded !== prevProps.expanded) {
-                console.log('resize');
-                setTimeout(this.drawTracksResized, 1000);
-            }
-
-            if (!(_.isEqual(this.props.files, prevProps.files))) {
-                console.log('files updated');
-                const primarySortIndex = this.props.sortParam.indexOf(this.state.primarySort);
-                const primarySortToggle = this.state.sortToggle[primarySortIndex];
-                this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
-            }
-        }
-    }
+    // componentDidUpdate(prevProps, prevState) {
+    //     console.log('click');
+    //     if (!(this.state.disableBrowserForIE) && this.GV) {
+    //         console.log('component did update');
+    //         // console.log(this.props);
+    //         // console.log(prevProps);
+    //
+    //         if (this.state.contig !== prevState.contig) {
+    //             console.log('updated location');
+    //             if (this.state.visualizer) {
+    //                 this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
+    //             }
+    //         }
+    //
+    //         if (this.props.assembly !== prevProps.assembly) {
+    //             console.log('assembly changed');
+    //             // Determine pinned files based on genome, filter and sort files, compute and draw tracks
+    //             this.setGenomeAndTracks();
+    //             // Clear the gene search
+    //             this.setState({ searchTerm: '' });
+    //         }
+    //
+    //         // If the parent container changed size, we need to update the browser width
+    //         if (this.props.expanded !== prevProps.expanded) {
+    //             console.log('resize');
+    //             setTimeout(this.drawTracksResized, 1000);
+    //         }
+    //
+    //         if (!(_.isEqual(this.props.files, prevProps.files))) {
+    //             console.log('files updated');
+    //             const primarySortIndex = this.props.sortParam.indexOf(this.state.primarySort);
+    //             const primarySortToggle = this.state.sortToggle[primarySortIndex];
+    //             this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
+    //         }
+    //     }
+    // }
     /* eslint-enable react/no-did-update-set-state */
 
-    componentWillUnmount() {
-        // Recommendation from George of Valis to clear web-browser memory used by Valis.
-        this.clearBrowserMemory();
-        if (this.state.visualizer) {
-            this.state.visualizer.appCanvasRef.componentWillUnmount();
-        }
+    // componentWillUnmount() {
+    //     // Recommendation from George of Valis to clear web-browser memory used by Valis.
+    //     this.clearBrowserMemory();
+    //     if (this.state.visualizer) {
+    //         this.state.visualizer.appCanvasRef.componentWillUnmount();
+    //     }
+    //
+    //     // save co-ordinates to be used to restore location if user comes back to genome_browser tab/area
+    //     const { x0, x1, contig } = readGenomeBrowserLabelCoordinates();
+    //
+    //     window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify({
+    //         contig,
+    //         x0,
+    //         x1,
+    //         pinnedFiles: this.state.pinnedFiles,
+    //     }));
+    // }
 
-        // save co-ordinates to be used to restore location if user comes back to genome_browser tab/area
-        const { x0, x1, contig } = readGenomeBrowserLabelCoordinates();
+    const handleChange = (e) => {
+        setShowAutoSuggest(true);
+        setSearchTerm(e.target.value);
+    };
 
-        window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify({
-            contig,
-            x0,
-            x1,
-            pinnedFiles: this.state.pinnedFiles,
-        }));
-    }
-
-    handleChange(e) {
-        this.setState({
-            showAutoSuggest: true,
-            searchTerm: e.target.value,
-        });
-    }
-
-    handleAutocompleteClick(term, id, name) {
+    const handleAutocompleteClick = (term, id, name) => {
         const newTerms = {};
-        const inputNode = this.gene;
+        const inputNode = gene;
         inputNode.value = term;
         newTerms[name] = id;
-        this.setState({
-            // terms: newTerms,
-            showAutoSuggest: false,
-            searchTerm: term,
-        });
+        setShowAutoSuggest(true);
+        setSearchTerm(term);
         inputNode.focus();
         // Now let the timer update the terms state when it gets around to it.
-    }
+    };
 
-    handleOnFocus() {
-        this.setState({ showAutoSuggest: false });
-        const coordinateHref = `/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
-        getCoordinateData(coordinateHref, this.context.fetch).then((response) => {
+    const handleOnFocus = () => {
+        setShowAutoSuggest(false);
+        const coordinateHref = `/suggest/?genome=${genome}&q=${searchTerm}`;
+        getCoordinateData(coordinateHref, context.fetch).then((response) => {
             // Find the response line that matches the search
-            const responseIndex = response['@graph'].findIndex((responseLine) => responseLine.text === this.state.searchTerm);
+            const responseIndex = response['@graph'].findIndex((responseLine) => responseLine.text === searchTerm);
 
             // Find the annotation line that matches the genome selected in the fake facets
             const { annotations } = response['@graph'][responseIndex]._source;
-            const annotationIndex = annotations.findIndex((annotation) => annotation.assembly_name === this.state.genome);
+            const annotationIndex = annotations.findIndex((annotation) => annotation.assembly_name === genome);
             const annotation = annotations[annotationIndex];
 
             // Compute gene location information from the annotation
             const annotationLength = +annotation.end - +annotation.start;
-            const contig = `chr${annotation.chromosome}`;
+            const newContig = `chr${annotation.chromosome}`;
             const xStart = +annotation.start - (annotationLength / 2);
             const xEnd = +annotation.end + (annotationLength / 2);
 
             if (contig !== '') {
-                this.state.visualizer.setLocation({
-                    contig,
+                visualizer.setLocation({
+                    newContig,
                     x0: xStart,
                     x1: xEnd,
                 });
             }
         });
+    };
+
+    function setBrowserDefaults(assemblyAnnotation, resolve) {
+        const { newContig, newX0, newX1, newPinnedFiles } = getDefaultCoordinates(assemblyAnnotation);
+        setContig(newContig);
+        setX0(newX0);
+        setX1(newX1);
+        setPinnedFiles(newPinnedFiles);
+        resolve('success!');
     }
 
-    setBrowserDefaults(assemblyAnnotation, resolve) {
-        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation);
-
-        this.setState({ contig, x0, x1, pinnedFiles }, () => {
-            if (resolve) {
-                resolve('success!');
-            }
-        });
-    }
-
-    setGenomeAndTracks() {
-        const genome = mapGenome(this.props.assembly);
-        this.setState({ genome }, () => {
-            // Determine genome and Gencode pinned files for selected assembly
-            const genomePromise = new Promise((resolve) => {
-                this.setBrowserDefaults(genome, resolve);
-            });
-            // Make sure that we have these pinned files before we convert the files to tracks and chart them
-            genomePromise.then(() => {
-                const primarySortIndex = this.props.sortParam.indexOf(this.state.primarySort);
-                const primarySortToggle = this.state.sortToggle[primarySortIndex];
-                this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
-            });
-        });
-    }
-
-    /**
-     * Clear any remains of memory Valis has used within the web browser.
-     */
-    clearBrowserMemory() {
-        if (this.state.visualizer) {
-            this.state.visualizer.stopFrameLoop();
-            this.state.visualizer.clearCaches();
-        }
-    }
-
-    // Sort file object by an arbitrary number of sort parameters
-    // "primarySort" is the primary sort parameter
-    // "sortDirection" refers to ascending or descending order
-    // "sortIdx" keeps track of the index of the primarySort in this.state.sortToggle
-    // "toggleFlag" indicates whether the primarySort has changed and if its sortDirection should be reversed
-    //      (i.e., whether this function is being called upon initialization or upon the user clicking on a sort button)
-    sortFiles(primarySort, sortDirection, sortIdx, toggleFlag) {
-        let propsFiles = [];
-        const domain = `${window.location.protocol}//${window.location.hostname}`;
-
-        // Make sure that the sorting parameter "primarySort" is the last element in the sort array
-        const orderedSortParam = [...this.props.sortParam];
-        const fromIdx = orderedSortParam.indexOf(primarySort);
-        orderedSortParam.splice((orderedSortParam.length - 1), 0, orderedSortParam.splice(fromIdx, 1)[0]);
-
-        // The sort button for "Output type" is secretly also a sort button for "File type", so that all the bigWigs and bigBeds are grouped with each other
-        // Here we add "File type" to the sort array if it's not already there and make sure that it is the sort parameter after "Output type"
-        const fileIdx = orderedSortParam.indexOf('File type');
-        const outputIdx = orderedSortParam.indexOf('Output type');
-        if (fileIdx > -1) {
-            orderedSortParam.splice((outputIdx + 1), 0, orderedSortParam.splice(fileIdx, 1)[0]);
-        } else {
-            orderedSortParam.splice((outputIdx + 1), 0, 'File type');
-        }
-
-        // Initialize files
-        if (domain.includes('localhost')) {
-            propsFiles = dummyFiles;
-        } else {
-            // Filter files to include only bigWig and bigBed formats, and not 'bigBed bedMethyl' formats and only released or in progress files
-            propsFiles = filterForVisualizableFiles(this.props.files);
-        }
-        let files = propsFiles;
-
-        // Apply sort parameters
-        if (this.props.displaySort) {
-            orderedSortParam.forEach((param) => {
-                files = _.chain(files)
-                    .sortBy((obj) => sortLookUp(obj, param));
-            });
-            files = files.value();
-        }
-
-        // sortBy sorts in ascending order and sortDirection is true if descending
-        // We want to reverse the sort order when the sort is toggled and ascending (to make it descending)
-        if (sortDirection && toggleFlag) {
-            files = files.reverse();
-        }
-
-        // Update state if function has been triggered by button click and sort and sort direction are new
-        if (toggleFlag) {
-            this.setState((state) => {
-                const newSortToggle = [...state.sortToggle];
-                newSortToggle[sortIdx] = !newSortToggle[sortIdx];
-                return {
-                    primarySort,
-                    sortToggle: newSortToggle,
-                };
-            });
-        }
-        return files;
-    }
-
-    // Call sortFiles() to sort file object by an arbitrary number of sort parameters
-    // Re-draw the tracks on the genome browser
-    sortAndRefresh(primarySort, sortDirection, sortIdx, toggleFlag) {
-        let files = [];
-        let newFiles = [];
-        const domain = `${window.location.protocol}//${window.location.hostname}`;
-        files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag);
-        newFiles = [...this.state.pinnedFiles, ...files];
-        let tracks = [];
-        if (files.length > 0) {
-            tracks = this.filesToTracks(newFiles, this.props.label, domain);
-        }
-        let { contig, x0, x1 } = this.state;
-        if (this.chartdisplay) {
-            const coordinates = readGenomeBrowserLabelCoordinates();
-
-            ({ x0, x1, contig } = coordinates);
-        }
-        this.setState({
-            trackList: tracks,
-            contig,
-            x0,
-            x1,
-        }, () => {
-            if (this.chartdisplay && tracks.length > 0) {
-                this.drawTracks(this.chartdisplay);
-            }
-        });
-    }
-
-    filesToTracks(files, label, domain) {
+    const filesToTracks = (files, label, domain) => {
         const tracks = files.map((file) => {
             let labelLength = 0;
             const defaultHeight = 34;
@@ -712,7 +559,7 @@ class GenomeBrowser extends React.Component {
             }
             if (file.file_format === 'vdna-dir') {
                 const trackObj = {};
-                trackObj.name = <ul className="gb-info"><li>{this.props.assembly.split(' ')[0]}</li></ul>;
+                trackObj.name = <ul className="gb-info"><li>{props.assembly.split(' ')[0]}</li></ul>;
                 trackObj.type = 'sequence';
                 trackObj.path = file.href;
                 trackObj.heightPx = 40;
@@ -750,20 +597,79 @@ class GenomeBrowser extends React.Component {
             return trackObj;
         });
         return tracks;
-    }
+    };
 
-    drawTracksResized() {
-        if (this.chartdisplay) {
-            this.state.visualizer.render({
-                width: this.chartdisplay.clientWidth,
-                height: this.state.visualizer.getContentHeight(),
-            }, this.chartdisplay);
+    /**
+     * Clear any remains of memory Valis has used within the web browser.
+     */
+    const clearBrowserMemory = () => {
+        if (visualizer) {
+            visualizer.stopFrameLoop();
+            visualizer.clearCaches();
         }
-    }
+    };
 
-    drawTracks(container) {
-        const { contig, x0, x1, trackList } = this.state;
-        const visualizer = new this.GV.GenomeVisualizer({
+    // Sort file object by an arbitrary number of sort parameters
+    // "primarySort" is the primary sort parameter
+    // "sortDirection" refers to ascending or descending order
+    // "sortIdx" keeps track of the index of the primarySort in this.state.sortToggle
+    // "toggleFlag" indicates whether the primarySort has changed and if its sortDirection should be reversed
+    //      (i.e., whether this function is being called upon initialization or upon the user clicking on a sort button)
+    const sortFiles = (sortDirection, sortIdx, toggleFlag) => {
+        let propsFiles = [];
+        const domain = `${window.location.protocol}//${window.location.hostname}`;
+
+        // Make sure that the sorting parameter "primarySort" is the last element in the sort array
+        const orderedSortParam = [...props.sortParam];
+        const fromIdx = orderedSortParam.indexOf(primarySort);
+        orderedSortParam.splice((orderedSortParam.length - 1), 0, orderedSortParam.splice(fromIdx, 1)[0]);
+
+        // The sort button for "Output type" is secretly also a sort button for "File type", so that all the bigWigs and bigBeds are grouped with each other
+        // Here we add "File type" to the sort array if it's not already there and make sure that it is the sort parameter after "Output type"
+        const fileIdx = orderedSortParam.indexOf('File type');
+        const outputIdx = orderedSortParam.indexOf('Output type');
+        if (fileIdx > -1) {
+            orderedSortParam.splice((outputIdx + 1), 0, orderedSortParam.splice(fileIdx, 1)[0]);
+        } else {
+            orderedSortParam.splice((outputIdx + 1), 0, 'File type');
+        }
+
+        // Initialize files
+        if (domain.includes('localhost')) {
+            propsFiles = dummyFiles;
+        } else {
+            // Filter files to include only bigWig and bigBed formats, and not 'bigBed bedMethyl' formats and only released or in progress files
+            propsFiles = filterForVisualizableFiles(props.files);
+        }
+        let files = propsFiles;
+
+        // Apply sort parameters
+        if (props.displaySort) {
+            orderedSortParam.forEach((param) => {
+                files = _.chain(files)
+                    .sortBy((obj) => sortLookUp(obj, param));
+            });
+            files = files.value();
+        }
+
+        // sortBy sorts in ascending order and sortDirection is true if descending
+        // We want to reverse the sort order when the sort is toggled and ascending (to make it descending)
+        if (sortDirection && toggleFlag) {
+            files = files.reverse();
+        }
+
+        // Update state if function has been triggered by button click and sort and sort direction are new
+        if (toggleFlag) {
+            const newSortToggle = [...sortToggle];
+            newSortToggle[sortIdx] = !newSortToggle[sortIdx];
+            setPrimarySort(primarySort);
+            setSortToggle(newSortToggle);
+        }
+        return files;
+    };
+
+    function drawTracks(container) {
+        const newVisualizer = new GV.GenomeVisualizer({
             clampToTracks: true,
             reorderTracks: true,
             removableTracks: false,
@@ -772,77 +678,142 @@ class GenomeBrowser extends React.Component {
             }],
             tracks: trackList,
         });
-        this.setState({ visualizer });
-        this.clearBrowserMemory();
+        setVisualizer(newVisualizer);
+        clearBrowserMemory();
         visualizer.render({
-            width: this.chartdisplay.clientWidth,
+            width: chartdisplay.clientWidth,
             height: visualizer.getContentHeight(),
         }, container);
-        visualizer.addEventListener('track-resize', this.drawTracksResized);
-        window.addEventListener('resize', this.drawTracksResized);
+        // visualizer.addEventListener('track-resize', drawTracksResized);
+        // window.addEventListener('resize', drawTracksResized);
     }
 
-    resetLocation() {
-        const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, true);
-        this.state.visualizer.setLocation({ contig, x0, x1 });
+    // Call sortFiles() to sort file object by an arbitrary number of sort parameters
+    // Re-draw the tracks on the genome browser
+    function sortAndRefresh(sort, sortDirection, sortIdx, toggleFlag) {
+        setPrimarySort(sort);
+        let files = [];
+        let newFiles = [];
+        const domain = `${window.location.protocol}//${window.location.hostname}`;
+        files = sortFiles(primarySort, sortDirection, sortIdx, toggleFlag);
+        console.log(files);
+        console.log(pinnedFiles);
+        // newFiles = [...pinnedFiles, ...files];
+        // let tracks = [];
+        // if (files.length > 0) {
+        //     tracks = filesToTracks(newFiles, props.label, domain);
+        // }
+        // if (chartdisplay) {
+        //     const coordinates = readGenomeBrowserLabelCoordinates();
+        //     const { newX0, newX1, newContig } = coordinates;
+        //     setContig(newContig);
+        //     setX0(newX0);
+        //     setX1(newX1);
+        // }
+        // setTrackList(tracks);
+        // if (chartdisplay && tracks.length > 0) {
+        //     drawTracks(chartdisplay);
+        // }
     }
 
-    render() {
-        return (
-            <>
-                {(this.state.trackList.length > 0 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
-                    <>
-                        { (this.state.genome.indexOf('GRC') !== -1) ?
-                            <div className="gene-search">
-                                <i className="icon icon-search" />
-                                <div className="search-instructions">Search for a gene</div>
-                                <div className="searchform">
-                                    <input id="gene" ref={(input) => { this.gene = input; }} aria-label="search for gene name" placeholder="Enter gene name here" value={this.state.searchTerm} onChange={this.handleChange} />
-                                    {(this.state.showAutoSuggest && this.state.searchTerm) ?
-                                        <FetchedData loadingComplete>
-                                            <Param
-                                                name="auto"
-                                                url={`/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`}
-                                                type="json"
-                                            />
-                                            <AutocompleteBox
-                                                name="annotation"
-                                                userTerm={this.state.searchTerm}
-                                                handleClick={this.handleAutocompleteClick}
-                                            />
-                                        </FetchedData>
-                                    : null}
-                                </div>
-                                <button type="button" className="submit-gene-search btn btn-info" onClick={this.handleOnFocus}>Submit</button>
+    // const drawTracksResized = () => {
+    //     if (this.chartdisplay) {
+    //         visualizer.render({
+    //             width: this.chartdisplay.clientWidth,
+    //             height: visualizer.getContentHeight(),
+    //         }, this.chartdisplay);
+    //     }
+    // };
+
+    const setGenomeAndTracks = () => {
+        setGenome(mapGenome(props.assembly));
+        // Determine genome and Gencode pinned files for selected assembly
+        const genomePromise = new Promise((resolve) => {
+            setBrowserDefaults(genome, resolve);
+        });
+        // Make sure that we have these pinned files before we convert the files to tracks and chart them
+        genomePromise.then(() => {
+            console.log('do we even get here?');
+            const primarySortIndex = props.sortParam.indexOf(primarySort);
+            const primarySortToggle = sortToggle[primarySortIndex];
+            sortAndRefresh(primarySort, primarySortToggle, primarySortIndex, false);
+        });
+    };
+
+    React.useEffect(() => {
+        // Check if browser is IE 11 and disable browser if so
+        if (BrowserFeat.getBrowserCaps('uaTrident')) {
+            setDisableBrowserForIE(true);
+        } else {
+            // Load GenomeVisualizer library
+            // We have to wait for the component to mount because the library relies on window variable
+            require.ensure(['genome-visualizer'], (require) => {
+                setGV(require('genome-visualizer'));
+                // Determine pinned files based on genome, filter and sort files, compute and draw tracks
+                setGenomeAndTracks();
+            });
+        }
+    });
+
+    const resetLocation = () => {
+        const { newContig, newX0, newX1 } = getDefaultCoordinates(genome, true);
+        visualizer.setLocation({ newContig, newX0, newX1 });
+    };
+
+    return (
+        <>
+            {(trackList.length > 0 && genome !== null && !(disableBrowserForIE)) ?
+                <>
+                    { (genome.indexOf('GRC') !== -1) ?
+                        <div className="gene-search">
+                            <i className="icon icon-search" />
+                            <div className="search-instructions">Search for a gene</div>
+                            <div className="searchform">
+                                <input id="gene" ref={(input) => { setGene(input); }} aria-label="search for gene name" placeholder="Enter gene name here" value={searchTerm} onChange={handleChange} />
+                                {(showAutoSuggest && searchTerm) ?
+                                    <FetchedData loadingComplete>
+                                        <Param
+                                            name="auto"
+                                            url={`/suggest/?genome=${genome}&q=${searchTerm}`}
+                                            type="json"
+                                        />
+                                        <AutocompleteBox
+                                            name="annotation"
+                                            userTerm={searchTerm}
+                                            handleClick={handleAutocompleteClick}
+                                        />
+                                    </FetchedData>
+                                : null}
                             </div>
-                        : null}
-                        {this.props.displaySort ?
-                            <div className="sort-control-container">
-                                <div className="sort-label">Sort by: </div>
-                                {this.props.sortParam.map((param, paramIdx) => <button type="button" className={`sort-button ${param === this.state.primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => this.sortAndRefresh(param, this.state.sortToggle[paramIdx], paramIdx, true)}><i className={this.state.sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
-                            </div>
-                        : null}
-                        <div className="browser-container">
-                            <button type="button" className="reset-browser-button" onClick={this.resetLocation}>
-                                <i className="icon icon-undo" />
-                                <span className="reset-title">Reset coordinates</span>
-                            </button>
-                            <div ref={(div) => { this.chartdisplay = div; }} className="valis-browser" />
+                            <button type="button" className="submit-gene-search btn btn-info" onClick={handleOnFocus}>Submit</button>
                         </div>
-                    </>
-                :
-                    <>
-                        {(this.state.disableBrowserForIE) ?
-                            <div className="browser-error valis-browser">The genome browser does not support Internet Explorer. Please upgrade your browser to Edge to visualize files on ENCODE.</div>
-                        :
-                            <div className="browser-error valis-browser">There are no visualizable results.</div>
-                        }
-                    </>
-                }
-            </>
-        );
-    }
-}
+                    : null}
+                    {props.displaySort ?
+                        <div className="sort-control-container">
+                            <div className="sort-label">Sort by: </div>
+                            {props.sortParam.map((param, paramIdx) => <button type="button" className={`sort-button ${param === primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => sortAndRefresh(param, sortToggle[paramIdx], paramIdx, true)}><i className={sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
+                        </div>
+                    : null}
+                    <div className="browser-container">
+                        <button type="button" className="reset-browser-button" onClick={resetLocation}>
+                            <i className="icon icon-undo" />
+                            <span className="reset-title">Reset coordinates</span>
+                        </button>
+                        <div ref={chartdisplay} className="valis-browser" />
+                    </div>
+                </>
+            :
+                <>
+                    {(disableBrowserForIE) ?
+                        <div className="browser-error valis-browser">The genome browser does not support Internet Explorer. Please upgrade your browser to Edge to visualize files on ENCODE.</div>
+                    :
+                        <div className="browser-error valis-browser">There are no visualizable results.</div>
+                    }
+                </>
+            }
+        </>
+    );
+};
 
 GenomeBrowser.propTypes = {
     files: PropTypes.array.isRequired,
