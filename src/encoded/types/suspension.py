@@ -25,5 +25,6 @@ class Suspension(Item, CalculatedDonors, CalculatedBiosampleOntologies):
     embedded = [
         'biosample_ontologies',
         'donors',
-        'donors.organism'
+        'donors.organism',
+        'enriched_cell_types'
     ]

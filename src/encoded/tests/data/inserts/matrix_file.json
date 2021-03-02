@@ -39,7 +39,7 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
+        "genome_annotation": "GENCODE 25",
         "validated": true,
         "cellranger_assay_chemistry": "SC3Pv2",
         "layers": [

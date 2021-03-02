@@ -43,6 +43,10 @@
             "lattice:totalseq_C0050_CD19",
             "lattice:totalseq_C0161_CD11b",
             "lattice:totalseq_C0046_CD8"
+        ],
+        "urls": [
+            "https://chanzuckerberg.com/science/programs-resources/single-cell-biology/seednetworks/a-comprehensive-single-cell-atlas-of-the-human-kidney/",
+            "https://www.protocols.io/"
         ]
     },
     {

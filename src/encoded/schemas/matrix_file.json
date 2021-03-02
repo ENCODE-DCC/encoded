@@ -63,9 +63,6 @@
                     "properties": {
                         "assembly": {
                             "enum": ["GRCh38"]
-                        },
-                        "genome_annotation": {
-                            "enum": ["GENCODE 32", "GENCODE 28", "GENCODE 24"]
                         }
                     }
                 },

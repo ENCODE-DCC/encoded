@@ -12,7 +12,8 @@
             "anna-greka:adult_human_donorA"
         ],
         "derivation_process": [
-            "percutaneous biopsy"
+            "percutaneous biopsy",
+            "cryosection"
         ],
         "biosample_ontology": "UBERON_0001225",
         "collection_to_preservation_interval": "5",
@@ -53,7 +54,11 @@
         "preservation_method": "cryopreservation",
         "fixed": false,
         "starting_quantity": "100",
-        "starting_quantity_units": "g"
+        "starting_quantity_units": "g",
+        "urls": [
+            "https://chanzuckerberg.com/science/programs-resources/single-cell-biology/seednetworks/a-comprehensive-single-cell-atlas-of-the-human-kidney/",
+            "https://www.protocols.io/"
+        ]
     },
     {
         "accession": "LATBS860DDD",

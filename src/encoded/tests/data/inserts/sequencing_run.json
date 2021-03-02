@@ -12,7 +12,7 @@
                 "machine": "A00419"
             }
         ],
-        "platform": "Illumina HiSeq 4000",
+        "platform": "Illumina NextSeq 500",
         "uuid": "2a12eb7b-ed78-466a-9552-7512bdd7f45f",
         "dbxrefs": [
             "SRA:SRR11111"

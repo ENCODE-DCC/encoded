@@ -40,6 +40,7 @@
             "description": "The device used to sequence data.",
             "type": "string",
             "enum": [
+                "Illumina NextSeq 500",
                 "Illumina NovaSeq 6000",
                 "Illumina HiSeq 4000",
                 "Illumina HiSeq 2500",
