@@ -445,8 +445,8 @@ class GenomeBrowser extends React.Component {
         console.log('click');
         if (!(this.state.disableBrowserForIE) && this.GV) {
             console.log('component did update');
-            console.log(this.props);
-            console.log(prevProps);
+            // console.log(this.props);
+            // console.log(prevProps);
 
             if (this.state.contig !== prevState.contig) {
                 console.log('updated location');
@@ -558,16 +558,17 @@ class GenomeBrowser extends React.Component {
 
     setGenomeAndTracks() {
         const genome = mapGenome(this.props.assembly);
-        this.setState({ genome });
-        // Determine genome and Gencode pinned files for selected assembly
-        const genomePromise = new Promise((resolve) => {
-            this.setBrowserDefaults(genome, resolve);
-        });
-        // Make sure that we have these pinned files before we convert the files to tracks and chart them
-        genomePromise.then(() => {
-            const primarySortIndex = this.props.sortParam.indexOf(this.state.primarySort);
-            const primarySortToggle = this.state.sortToggle[primarySortIndex];
-            this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
+        this.setState({ genome }, () => {
+            // Determine genome and Gencode pinned files for selected assembly
+            const genomePromise = new Promise((resolve) => {
+                this.setBrowserDefaults(genome, resolve);
+            });
+            // Make sure that we have these pinned files before we convert the files to tracks and chart them
+            genomePromise.then(() => {
+                const primarySortIndex = this.props.sortParam.indexOf(this.state.primarySort);
+                const primarySortToggle = this.state.sortToggle[primarySortIndex];
+                this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
+            });
         });
     }
 
