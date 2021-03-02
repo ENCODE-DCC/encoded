@@ -3141,7 +3141,8 @@ def test_audit_experiment_wgbs_standards_lambda_ENCODE4(
     testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'assembly': 'GRCh38',
                                              'notes': 'file bam 1 1',
-                                             'derived_from': [file_fastq_3['@id']]})
+                                             'derived_from': [file_fastq_3['@id']],
+                                             'award': encode4_award['uuid']})
     testapp.patch_json(pipeline_bam['@id'], {'title':'gemBS'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': donor_1['@id']})
@@ -3185,7 +3186,8 @@ def test_audit_experiment_wgbs_standards_coverage_ENCODE4(
     testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'assembly': 'GRCh38',
                                              'notes': 'file bam 1 1',
-                                             'derived_from': [file_fastq_3['@id']]})
+                                             'derived_from': [file_fastq_3['@id']],
+                                             'award': encode4_award['uuid']})
     testapp.patch_json(pipeline_bam['@id'], {'title':'gemBS'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': donor_1['@id']})
@@ -3229,12 +3231,14 @@ def test_audit_experiment_wgbs_standards_pearson_ENCODE4(
     testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'assembly': 'GRCh38',
                                              'notes': 'file bam 1 1',
-                                             'derived_from': [file_fastq_3['@id']]})
+                                             'derived_from': [file_fastq_3['@id']],
+                                             'award': encode4_award['uuid']})
     testapp.patch_json(file_bed_methyl['@id'], {
         'step_run': analysis_step_run_bam['@id'],
         'assembly': 'GRCh38',
         'notes': 'file bed methyl',
-        'derived_from': [file_bam_1_1['@id']]})
+        'derived_from': [file_bam_1_1['@id']],
+        'award': encode4_award['uuid']})
     testapp.patch_json(pipeline_bam['@id'], {'title':'gemBS'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': donor_1['@id']})
