@@ -46,7 +46,7 @@ const readGenomeBrowserLabelCoordinates = () => {
  * @param {boolean} [ignoreCache=false] True to not look into cache, false to use cache
  * @returns Default coordinates
  */
-const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
+const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = true) => {
     const assembly = assemblyAnnotation.split(' ')[0];
     // Files to be displayed on all genome browser results
     let pinnedFiles = [];
