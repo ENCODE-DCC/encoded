@@ -34,6 +34,7 @@ module.exports = {
         'import/extensions': 'off',
         'no-await-in-loop': 'off', // Sometimes needed when promise relies on previous promise
         'no-bitwise': 'off', // We use bitwise operators
+        'no-cond-assign': ['error', 'except-parens'], // Valid use case for assigning variable in a conditional statement as long as it's within parentheses.
         'no-console': 'off', // We allow console messages
         'no-param-reassign': 'off',
         'no-multiple-empty-lines': [2, { max: 2 }], // Allow up to 2 empty lines

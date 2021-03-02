@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { FetchedData, Param } from './fetched';
 import { BrowserFeat } from './browserfeat';
 import { filterForVisualizableFiles } from './objectutils';
-import AutocompleteBox from './region_search';
-
+import GeneSearch from './gene_search';
 
 /**
  * Maps long annotation_type values to shorter versions for Valis track labels. Any not included
@@ -119,6 +117,11 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
                 file_format: 'vdna-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/dm6/dm6.vdna-dir',
             },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
+                title: 'BDGP6.22.96',
+            },
         ];
         contig = 'chr2L';
         x0 = 2420509;
@@ -138,6 +141,11 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
             {
                 file_format: 'vdna-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/ce11/ce11.vdna-dir',
+            },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/ce11/Caenorhabditis_elegans.WBcel235.96.vgenes-dir',
+                title: 'WBcel235.96',
             },
         ];
         contig = 'chrII';
@@ -300,6 +308,8 @@ export function getCoordinateData(geneLink, fetch) {
     });
 }
 
+const getAssemblyWithoutGenomeAnnotationOrMinimal = (assembly) => assembly.split(' ')[0].replace('-minimal', '');
+
 function mapGenome(inputAssembly) {
     let genome = inputAssembly.split(' ')[0];
     if (genome === 'hg19') {
@@ -405,8 +415,6 @@ class GenomeBrowser extends React.Component {
         this.state = {
             trackList: [],
             visualizer: null,
-            showAutoSuggest: true,
-            searchTerm: '',
             genome: '',
             contig: 'chr1',
             x0: 0,
@@ -421,9 +429,8 @@ class GenomeBrowser extends React.Component {
         this.filesToTracks = this.filesToTracks.bind(this);
         this.drawTracks = this.drawTracks.bind(this);
         this.drawTracksResized = this.drawTracksResized.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
-        this.handleOnFocus = this.handleOnFocus.bind(this);
+        this.handleGeneSearchResultClick = this.handleGeneSearchResultClick.bind(this);
+        this.scrollToGeneLocation = this.scrollToGeneLocation.bind(this);
         this.setGenomeAndTracks = this.setGenomeAndTracks.bind(this);
         this.resetLocation = this.resetLocation.bind(this);
         this.sortFiles = this.sortFiles.bind(this);
@@ -457,8 +464,6 @@ class GenomeBrowser extends React.Component {
             if (this.props.assembly !== prevProps.assembly) {
                 // Determine pinned files based on genome, filter and sort files, compute and draw tracks
                 this.setGenomeAndTracks();
-                // Clear the gene search
-                this.setState({ searchTerm: '' });
             }
 
             // If the parent container changed size, we need to update the browser width
@@ -493,53 +498,8 @@ class GenomeBrowser extends React.Component {
         }));
     }
 
-    handleChange(e) {
-        this.setState({
-            showAutoSuggest: true,
-            searchTerm: e.target.value,
-        });
-    }
-
-    handleAutocompleteClick(term, id, name) {
-        const newTerms = {};
-        const inputNode = this.gene;
-        inputNode.value = term;
-        newTerms[name] = id;
-        this.setState({
-            // terms: newTerms,
-            showAutoSuggest: false,
-            searchTerm: term,
-        });
-        inputNode.focus();
-        // Now let the timer update the terms state when it gets around to it.
-    }
-
-    handleOnFocus() {
-        this.setState({ showAutoSuggest: false });
-        const coordinateHref = `/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
-        getCoordinateData(coordinateHref, this.context.fetch).then((response) => {
-            // Find the response line that matches the search
-            const responseIndex = response['@graph'].findIndex((responseLine) => responseLine.text === this.state.searchTerm);
-
-            // Find the annotation line that matches the genome selected in the fake facets
-            const { annotations } = response['@graph'][responseIndex]._source;
-            const annotationIndex = annotations.findIndex((annotation) => annotation.assembly_name === this.state.genome);
-            const annotation = annotations[annotationIndex];
-
-            // Compute gene location information from the annotation
-            const annotationLength = +annotation.end - +annotation.start;
-            const contig = `chr${annotation.chromosome}`;
-            const xStart = +annotation.start - (annotationLength / 2);
-            const xEnd = +annotation.end + (annotationLength / 2);
-
-            if (contig !== '') {
-                this.state.visualizer.setLocation({
-                    contig,
-                    x0: xStart,
-                    x1: xEnd,
-                });
-            }
-        });
+    handleGeneSearchResultClick(gene) {
+        this.scrollToGeneLocation(gene);
     }
 
     setBrowserDefaults(assemblyAnnotation, resolve) {
@@ -565,6 +525,16 @@ class GenomeBrowser extends React.Component {
             const primarySortToggle = this.state.sortToggle[primarySortIndex];
             this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
         });
+    }
+
+    scrollToGeneLocation(gene) {
+        this.state.visualizer.setLocation(
+            gene.locationForVisualization(
+                getAssemblyWithoutGenomeAnnotationOrMinimal(
+                    this.props.assembly
+                )
+            )
+        );
     }
 
     /**
@@ -786,53 +756,41 @@ class GenomeBrowser extends React.Component {
         return (
             <>
                 {(this.state.trackList.length > 0 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
-                    <>
-                        { (this.state.genome.indexOf('GRC') !== -1) ?
-                            <div className="gene-search">
-                                <i className="icon icon-search" />
-                                <div className="search-instructions">Search for a gene</div>
-                                <div className="searchform">
-                                    <input id="gene" ref={(input) => { this.gene = input; }} aria-label="search for gene name" placeholder="Enter gene name here" value={this.state.searchTerm} onChange={this.handleChange} />
-                                    {(this.state.showAutoSuggest && this.state.searchTerm) ?
-                                        <FetchedData loadingComplete>
-                                            <Param
-                                                name="auto"
-                                                url={`/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`}
-                                                type="json"
-                                            />
-                                            <AutocompleteBox
-                                                name="annotation"
-                                                userTerm={this.state.searchTerm}
-                                                handleClick={this.handleAutocompleteClick}
-                                            />
-                                        </FetchedData>
-                                    : null}
-                                </div>
-                                <button type="button" className="submit-gene-search btn btn-info" onClick={this.handleOnFocus}>Submit</button>
-                            </div>
-                        : null}
-                        {this.props.displaySort ?
-                            <div className="sort-control-container">
-                                <div className="sort-label">Sort by: </div>
-                                {this.props.sortParam.map((param, paramIdx) => <button type="button" className={`sort-button ${param === this.state.primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => this.sortAndRefresh(param, this.state.sortToggle[paramIdx], paramIdx, true)}><i className={this.state.sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
-                            </div>
-                        : null}
-                        <div className="browser-container">
-                            <button type="button" className="reset-browser-button" onClick={this.resetLocation}>
-                                <i className="icon icon-undo" />
-                                <span className="reset-title">Reset coordinates</span>
-                            </button>
-                            <div ref={(div) => { this.chartdisplay = div; }} className="valis-browser" />
-                        </div>
-                    </>
-                :
-                    <>
-                        {(this.state.disableBrowserForIE) ?
-                            <div className="browser-error valis-browser">The genome browser does not support Internet Explorer. Please upgrade your browser to Edge to visualize files on ENCODE.</div>
-                        :
-                            <div className="browser-error valis-browser">There are no visualizable results.</div>
-                        }
-                    </>
+                 <>
+                     <div className="gene-search">
+                         <i className="icon icon-search" />
+                         <div className="search-instructions">Search for a gene</div>
+                         <GeneSearch
+                             assembly={
+                                 getAssemblyWithoutGenomeAnnotationOrMinimal(
+                                     this.props.assembly
+                                 )
+                             }
+                             handleClick={this.handleGeneSearchResultClick}
+                         />
+                     </div>
+                     {this.props.displaySort ?
+                      <div className="sort-control-container">
+                          <div className="sort-label">Sort by: </div>
+                          {this.props.sortParam.map((param, paramIdx) => <button type="button" className={`sort-button ${param === this.state.primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => this.sortAndRefresh(param, this.state.sortToggle[paramIdx], paramIdx, true)}><i className={this.state.sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
+                      </div>
+                      : null}
+                     <div className="browser-container">
+                         <button type="button" className="reset-browser-button" onClick={this.resetLocation}>
+                             <i className="icon icon-undo" />
+                             <span className="reset-title">Reset coordinates</span>
+                         </button>
+                         <div ref={(div) => { this.chartdisplay = div; }} className="valis-browser" />
+                     </div>
+                 </>
+                 :
+                 <>
+                     {(this.state.disableBrowserForIE) ?
+                      <div className="browser-error valis-browser">The genome browser does not support Internet Explorer. Please upgrade your browser to Edge to visualize files on ENCODE.</div>
+                      :
+                      <div className="browser-error valis-browser">There are no visualizable results.</div>
+                     }
+                 </>
                 }
             </>
         );
