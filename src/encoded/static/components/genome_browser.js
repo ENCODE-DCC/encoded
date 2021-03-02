@@ -442,18 +442,21 @@ class GenomeBrowser extends React.Component {
 
     /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps, prevState) {
+        console.log('click');
         if (!(this.state.disableBrowserForIE) && this.GV) {
             console.log('component did update');
             console.log(this.props);
             console.log(prevProps);
 
             if (this.state.contig !== prevState.contig) {
+                console.log('updated location');
                 if (this.state.visualizer) {
                     this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
                 }
             }
 
             if (this.props.assembly !== prevProps.assembly) {
+                console.log('assembly changed');
                 // Determine pinned files based on genome, filter and sort files, compute and draw tracks
                 this.setGenomeAndTracks();
                 // Clear the gene search
@@ -462,10 +465,12 @@ class GenomeBrowser extends React.Component {
 
             // If the parent container changed size, we need to update the browser width
             if (this.props.expanded !== prevProps.expanded) {
+                console.log('resize');
                 setTimeout(this.drawTracksResized, 1000);
             }
 
             if (!(_.isEqual(this.props.files, prevProps.files))) {
+                console.log('files updated');
                 const primarySortIndex = this.props.sortParam.indexOf(this.state.primarySort);
                 const primarySortToggle = this.state.sortToggle[primarySortIndex];
                 this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
