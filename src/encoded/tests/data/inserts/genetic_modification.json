@@ -380,5 +380,23 @@
         "method": "CRISPR",
         "modified_site_by_target_id": "/targets/CTCF-human/",
         "submitted_by": "dignissim.euismod@amet.habitant"
+    },
+    {
+        "accession": "ENCGM303MPT",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "status": "released",
+        "introduced_tags": [
+            {
+                "name": "mAID",
+                "location": "C-terminal"
+            }
+        ],
+        "modified_site_by_target_id": "/targets/FTO-human/",
+        "lab": "/labs/robert-waterston/",
+        "category": "insertion",
+        "purpose": "tagging",
+        "method": "CRISPR",
+        "award": "/awards/U41HG007355/",
+        "uuid": "10aca140-fb2a-4c27-ac35-a65205e0accf"
     }
 ]

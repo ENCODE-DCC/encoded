@@ -5,6 +5,7 @@
 * A combination of method *CRISPR* with the category of *mutagenesis* and purpose *characterization* may be submitted to describe a genetic modification.
 * The *identifier* regular expression in the *reagents* property was updated to include identifiers from the source GenBank:
   * GenBank: '^genbank:[A-Z]{1,2}\\d{5,6}\\.\\d{1}$', e.g., genbank:MK484105.1
+* *mAID* was added to the *introduced_tags* enum.
 
 ### Schema version 10
 
