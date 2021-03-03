@@ -14,7 +14,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "proximal_tubule",
         "aliases": [
             "lattice:special_cell_type"
@@ -32,7 +31,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "proximal_tubule_VCAM1+",
         "cell_state": "proliferating"
     },
@@ -48,7 +46,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "parietal_epithelial_cells"
     },
     {
@@ -63,7 +60,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "thick_ascending_limb_of_loop_of_Henle"
     },
     {
@@ -81,7 +77,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "distal_convoluted_tubule_1"
     },
     {
@@ -96,7 +91,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "distal_convoluted_tubule_2"
     },
     {
@@ -111,7 +105,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "connecting_tubule"
     },
     {
@@ -126,7 +119,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "principle_cells"
     },
     {
@@ -141,7 +133,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "type_A_intercalated_cells"
     },
     {
@@ -156,7 +147,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "type_B_intercalated_cells"
     },
     {
@@ -171,7 +161,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "podocyte"
     },
     {
@@ -186,7 +175,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "endothelial_cells"
     },
     {
@@ -201,7 +189,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "mesangial_cells"
     },
     {
@@ -216,7 +203,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "fibroblasts"
     },
     {
@@ -231,7 +217,6 @@
         "matrix_files": [
             "LATDF119AAA"
         ],
-        "annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "notes": "leukocytes"
     }
 ]

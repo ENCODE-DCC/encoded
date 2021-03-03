@@ -7320,6 +7320,7 @@
         ],
         "accession": "LATDF119AAA",
         "author_cell_type_column": "celltype",
+        "cell_annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
         "author_cluster_column": "seurat_clusters",
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
         "s3_uri": "s3://submissions-lattice/testing/muto_rna.rds",

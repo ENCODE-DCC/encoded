@@ -392,6 +392,11 @@
             "title": "Author cluster column",
             "description": "The name of the metadata field that holds the researcher's cluster information",
             "type": "string"
+        },
+        "cell_annotation_method": {
+            "title": "Cell annotation method",
+            "description": "The method or software used to annotate the cell population.",
+            "type": "string"
         }
     },
     "facets": {
@@ -463,6 +468,9 @@
         },
         "software": {
             "title": "Software"
+        },
+        "cell_annotation_method": {
+            "title": "Cell annotation method"
         },
         "status": {
             "title": "Status"
