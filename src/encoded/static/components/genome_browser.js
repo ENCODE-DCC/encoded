@@ -46,7 +46,7 @@ const readGenomeBrowserLabelCoordinates = () => {
  * @param {boolean} [ignoreCache=false] True to not look into cache, false to use cache
  * @returns Default coordinates
  */
-const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
+const getDefaultCoordinates = (assemblyAnnotation, assemblyVersion, ignoreCache = true) => {
     const assembly = assemblyAnnotation.split(' ')[0];
     // Files to be displayed on all genome browser results
     let pinnedFiles = [];
@@ -68,7 +68,7 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
             {
                 file_format: 'vgenes-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
-                title: 'GENCODE V29',
+                title: `GENCODE ${assemblyVersion}`,
             },
         ];
         contig = 'chr1';
@@ -83,7 +83,7 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
             {
                 file_format: 'vgenes-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vgenes-dir',
-                title: 'GENCODE V29',
+                title: `GENCODE ${assemblyVersion}`,
             },
         ];
         contig = 'chr21';
@@ -98,7 +98,7 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
             {
                 file_format: 'vgenes-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vgenes-dir',
-                title: 'GENCODE M21',
+                title: `GENCODE ${assemblyVersion}`,
             },
         ];
         contig = 'chr12';
@@ -296,7 +296,10 @@ export function getCoordinateData(geneLink, fetch) {
 }
 
 function mapGenome(inputAssembly) {
-    let genome = inputAssembly.split(' ')[0];
+    const geneInfo = inputAssembly.split(' ');
+    let genome = geneInfo[0];
+    const assemblyVersion = geneInfo[1] || '';
+
     if (genome === 'hg19') {
         genome = 'GRCh37';
     } else if (genome === 'mm9') {
@@ -304,7 +307,11 @@ function mapGenome(inputAssembly) {
     } else if (genome === 'mm10') {
         genome = 'GRCm38';
     }
-    return genome;
+
+    return {
+        genome,
+        assemblyVersion,
+    };
 }
 
 // Map the name of a sort parameter to a file object property and convert to form that can be compared
@@ -537,8 +544,8 @@ class GenomeBrowser extends React.Component {
         });
     }
 
-    setBrowserDefaults(assemblyAnnotation, resolve) {
-        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation);
+    setBrowserDefaults(assemblyAnnotation, assemblyVersion, resolve) {
+        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation, assemblyVersion);
 
         this.setState({ contig, x0, x1, pinnedFiles }, () => {
             if (resolve) {
@@ -548,11 +555,14 @@ class GenomeBrowser extends React.Component {
     }
 
     setGenomeAndTracks() {
-        const genome = mapGenome(this.props.assembly);
-        this.setState({ genome });
+        const geneInfo = mapGenome(this.props.assembly);
+        this.setState({
+            genome: geneInfo.genome,
+            assemblyVersion: geneInfo.assemblyVersion,
+        });
         // Determine genome and Gencode pinned files for selected assembly
         const genomePromise = new Promise((resolve) => {
-            this.setBrowserDefaults(genome, resolve);
+            this.setBrowserDefaults(geneInfo.genome, geneInfo.assemblyVersion, resolve);
         });
         // Make sure that we have these pinned files before we convert the files to tracks and chart them
         genomePromise.then(() => {
@@ -773,7 +783,7 @@ class GenomeBrowser extends React.Component {
     }
 
     resetLocation() {
-        const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, true);
+        const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, this.state.assemblyVersion, true);
         this.state.visualizer.setLocation({ contig, x0, x1 });
     }
 
