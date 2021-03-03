@@ -66,10 +66,12 @@ const assemblySorter = (facetTerms) => (
  * Sorter function for analyses facet terms matches the order from the given analyses which have
  * already been sorted.
  * @param {array} facetTerms Analysis facet terms to sort
+ * @param {array} files Files contributing to facets; unused here
+ * @param {array} analyses Analyses from selected compiled analyses objects
  *
  * @return {array} Same as `facetTerms`
  */
-const analysisSorter = (facetTerms, analyses) => (
+const analysisSorter = (facetTerms, files, analyses) => (
     _(facetTerms).sortBy((facetTerm) => (
         analyses.findIndex((analysis) => analysis.title === facetTerm.term)
     ))
@@ -99,6 +101,15 @@ const analysisFieldMap = (analysisTitles, compiledAnalyses) => {
 
 
 /**
+ * Convert the biological_replicates array to a simple, comma-separated string.
+ * @param {object} file Source of biological_replicate value
+ *
+ * @return {string} Biological replicates converted to comma-separated string
+ */
+const bioRepGetValue = (file) => (file.biological_replicates && file.biological_replicates.length > 0 ? file.biological_replicates.join(', ') : 'None');
+
+
+/**
  * List of allowed dataset types. Generally maps from collection names (e.g. '/experiments/' to a
  * displayable title.
  */
@@ -117,12 +128,14 @@ const DEFAULT_DATASET_TYPE = Object.keys(datasetTypes)[0];
  * - title: Displayed facet title
  * - radio: True if radio-button facet; otherwise checkbox facet
  * - dataset: True to retrieve value from dataset instead of files
+ * - getValue: Transform property into a usable value.
  * - sorter: Function to sort terms within the facet
  * - fieldMapper: Function to generate a batch download query string
  * - preferred: Facet appears when preferred_default selected
  * - calculated: True for facets displaying calculated (not requested) file/dataset props
  * - parent: Copy expanded state of this field; suppress this facet's expander title
  * - expanded: True to appear expanded by default
+ * - css: CSS class to add to the facet <div>
  */
 const displayedFacetFields = [
     {
@@ -178,6 +191,11 @@ const displayedFacetFields = [
     {
         field: 'file_format',
         title: 'File format',
+    },
+    {
+        field: 'biological_replicates',
+        title: 'Biological replicates',
+        getValue: bioRepGetValue,
     },
     {
         field: 'lab.title',
@@ -1259,6 +1277,14 @@ const addToAccumulatingFiles = (files, currentResults) => {
                             const [experimentProp] = datasetFacet.split('.');
                             file[experimentProp] = dataset[experimentProp];
                         });
+
+                        // Adjust any file properties needing transformation. Needed for all
+                        // defined facet fields; not just the visible ones.
+                        displayedFacetFields.forEach((facetField) => {
+                            if (facetField.getValue && file[facetField.field]) {
+                                file[facetField.field] = facetField.getValue(file);
+                            }
+                        });
                         currentFilesPartial.push(file);
                     }
                 });
@@ -1428,7 +1454,7 @@ const assembleFacets = (selectedTerms, files, analyses, usedFacetFields) => {
             // built from it, so no not-found condition needs checking.
             const facetDisplay = usedFacetFields.find((facetField) => facetField.field === facet.field);
             facet.title = facetDisplay.title;
-            facet.terms = facetDisplay.sorter ? facetDisplay.sorter(facet.terms, analyses) : _(facet.terms).sortBy((facetTerm) => facetTerm.term.toLowerCase());
+            facet.terms = facetDisplay.sorter ? facetDisplay.sorter(facet.terms, files, analyses) : _(facet.terms).sortBy((facetTerm) => facetTerm.term.toLowerCase());
         });
     }
 
