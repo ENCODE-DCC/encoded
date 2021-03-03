@@ -1077,17 +1077,16 @@ def check_experiment_wgbs_standards(
                                                             'WGBS paired-end pipeline'])
     if len(alignment_files_encode3) > 0 and pipeline_title is False:
         return
-    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-        return
 
     bismark_metrics = get_metrics(
         cpg_quantifications_encode3, 'BismarkQualityMetric', desired_assembly)
     cpg_metrics = get_metrics(
         cpg_quantifications_encode3, 'CpgCorrelationQualityMetric', desired_assembly)
-
-    samtools_metrics = get_metrics(cpg_quantifications_encode3,
-                                   'SamtoolsFlagstatsQualityMetric',
-                                   desired_assembly)
+    samtools_metrics = get_metrics(
+        cpg_quantifications_encode3,
+        'SamtoolsFlagstatsQualityMetric',
+        desired_assembly
+    )
 
     yield from check_wgbs_coverage(
         samtools_metrics,
@@ -1096,7 +1095,8 @@ def check_experiment_wgbs_standards(
         organism_name,
         get_pipeline_objects(alignment_files))
 
-    yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
+    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+        yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
 
     yield from check_wgbs_lambda(bismark_metrics, 1, pipeline_title)
 
@@ -1109,21 +1109,19 @@ def check_experiment_wgbs_standards(
     if len(alignment_files_encode4) > 0 and pipeline_title is False:
         return
 
-    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-        return
-
     gembs_metrics = get_metrics(
         alignment_files_encode4, 'GembsAlignmentQualityMetric', desired_assembly)
     cpg_metrics = get_metrics(
         cpg_quantifications_encode4, 'CpgCorrelationQualityMetric', desired_assembly)
-    samtools_metrics = get_metrics(
-        cpg_quantifications_encode4, 'SamtoolsFlagstatsQualityMetric', desired_assembly)
 
     yield from check_wgbs_coverage_ENCODE4(
         gembs_metrics,
         pipeline_title,
         get_pipeline_objects(alignment_files_encode4))
-    yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
+
+    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+        yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
+
     yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title)
 
     return
