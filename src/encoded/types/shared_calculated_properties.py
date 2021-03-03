@@ -350,7 +350,7 @@ class CalculatedAssayTitle:
         "type": "string",
     })
     def assay_title(self, request, registry, assay_term_name,
-                    control_type=None, replicates=None, target=None):
+                    control_type=None, replicates=None, target=None, examined_loci=None):
         # This is the preferred name in generate_ontology.py if exists
         assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
@@ -387,23 +387,31 @@ class CalculatedAssayTitle:
                                     gm_object = request.embed(gm, '@@object?skip_calculated=true')
                                     if gm_object.get('purpose') == 'characterization' and gm_object.get('method') == 'CRISPR':
                                         CRISPR_gms.append(gm_object['category'])
-                # Return a specific CRISPR assay title if there is only one category type for CRISPR characterization genetic modifications for all replicate biosample genetic modifications
+                # Return a specific CRISPR assay title if there is only one category type for CRISPR characterization genetic modifications for all replicate biosample genetic modifications. If examined loci is not specified it is considered a growth-based screen.
                 if len(set(CRISPR_gms)) == 1:
+                    if examined_loci is not None:
+                        title_start = 'CRISPR'
+                    else:
+                        title_start = 'growth-based CRISPR'
                     if 'activation' in CRISPR_gms:
-                        preferred_name = 'CRISPR activation screen'
+                        title_end = 'activation screen'
                     elif 'deletion' in CRISPR_gms:
-                        preferred_name = 'CRISPR deletion screen'
+                        title_end = 'deletion screen'
                     elif 'disruption' in CRISPR_gms:
-                        preferred_name = 'CRISPR disruption screen'
+                        title_end = 'disruption screen'
                     elif 'inhibition' in CRISPR_gms:
-                        preferred_name = 'CRISPR inhibition screen'
+                        title_end = 'inhibition screen'
                     elif 'interference' in CRISPR_gms:
-                        preferred_name = 'CRISPR interference screen'
+                        title_end = 'interference screen'
                     elif 'knockout' in CRISPR_gms:
-                        preferred_name = 'CRISPR knockout screen'
+                        title_end = 'knockout screen'
+                    preferred_name = f'{title_start} {title_end}'
                 # If there is more than one category type for CRISPR characterization genetic modifications we cannot return a specific CRISPR assay title
                 if len(set(CRISPR_gms)) > 1:
-                    preferred_name = 'CRISPR screen'
+                    if examined_loci is not None:
+                        preferred_name = 'CRISPR screen'
+                    else:
+                        preferred_name = 'growth-based CRISPR screen'
             elif control_type and assay_term_name in ['eCLIP', 'MPRA', 'CRISPR screen', 'STARR-seq', 'Mint-ChIP-seq']:
                 preferred_name = 'Control {}'.format(assay_term_name)
             return preferred_name or assay_term_name
