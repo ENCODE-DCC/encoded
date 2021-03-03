@@ -32,7 +32,7 @@ const labSortOrder = [
  *      files: Array of files selected with the pipeline lab and assembly
  * }
  */
-const compileAnalysesByTitle = (experiment, files) => {
+const compileAnalysesByTitle = (experiment, files = []) => {
     let compiledAnalyses = [];
     if (experiment.analysis_objects && experiment.analysis_objects.length > 0) {
         // Get all the analysis objects that qualify for inclusion in the Pipeline facet.
