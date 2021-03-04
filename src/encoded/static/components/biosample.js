@@ -77,20 +77,6 @@ class BiosampleComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                {context.product_id ?
-                                    <div data-test="productid">
-                                        <dt>Product ID</dt>
-                                        <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
-                                    </div>
-                                : null}
-
-                                {context.lot_id ?
-                                    <div data-test="lotid">
-                                        <dt>Lot ID</dt>
-                                        <dd>{context.lot_id}</dd>
-                                    </div>
-                                : null}
-
                                 {context.notes ?
                                     <div data-test="notes">
                                         <dt>Notes</dt>
@@ -112,12 +98,6 @@ class BiosampleComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                {context.fixed ?
-                                    <div data-test="fixed">
-                                        <dt>Fixed</dt>
-                                        <dd>{context.fixed}</dd>
-                                    </div>
-                                : null}
                             </dl>
                         </div>
 
@@ -147,13 +127,6 @@ class BiosampleComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                {references ?
-                                    <div data-test="references">
-                                        <dt>References</dt>
-                                        <dd>{references}</dd>
-                                    </div>
-                                : null}
-
                                 {context.aliases ?
                                     <div data-test="aliases">
                                         <dt>Aliases</dt>
@@ -172,13 +145,6 @@ class BiosampleComponent extends React.Component {
                         </PanelBody>
                     : null}
                 </Panel>
-                {context.derived_from && context.derived_from.length > 0 ?
-                    <BiosampleTable
-                        title="Derived from"
-                        items={context.derived_from}
-                        total={context.derived_from.length}
-                    />
-                : null}
 
                 {context.donor ?
                     <div>
