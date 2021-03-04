@@ -200,6 +200,7 @@ const datasetFacets = displayedFacetFields.filter((facetField) => facetField.dat
 const requestedFacetFields = displayedFacetFields.filter((field) => !field.calculated).concat([
     { field: '@id' },
     { field: 'assembly' },
+    { field: 'assay_term_name' },
     { field: 'file_format_type' },
     { field: 'title' },
     { field: 'genome_annotation' },
