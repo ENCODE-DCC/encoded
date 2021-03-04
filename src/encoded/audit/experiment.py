@@ -642,23 +642,13 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             files_structure,
             standards_version)
 
-
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
-        award = value.get('award', {})
-        if award.get('rfa') == 'ENCODE3':
-            yield from check_experiment_wgbs_encode3_standards(
-                value,
-                files_structure,
-                organism_name,
-                desired_assembly)
-            return
-        if award.get('rfa') == 'ENCODE4':
-            yield from check_experiment_wgbs_encode4_standards(
-                value,
-                files_structure,
-                organism_name,
-                desired_assembly)
-            return
+        yield from check_experiment_wgbs_standards(
+            value,
+            files_structure,
+            organism_name,
+            desired_assembly)
+        return
 
     if value['assay_term_name'] == 'ATAC-seq':
         yield from check_experiment_atac_encode4_qc_standards(
@@ -1043,58 +1033,8 @@ def check_experiment_rna_seq_standards(value,
         )
     return
 
-def check_experiment_wgbs_encode3_standards(experiment,
-                                            files_structure,
-                                            organism_name,
-                                            desired_assembly):
 
-    alignment_files = files_structure.get('alignments').values()
-    fastq_files = files_structure.get('fastq_files').values()
-    cpg_quantifications = files_structure.get('cpg_quantifications').values()
-
-    if fastq_files == []:
-        return
-
-    yield from check_wgbs_read_lengths(fastq_files, organism_name, 130, 100)
-
-    read_lengths = get_read_lengths_wgbs(fastq_files)
-
-    pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
-                                                           ['GRCh38', 'mm10'],
-                                                           ['WGBS single-end pipeline - version 2',
-                                                            'WGBS single-end pipeline',
-                                                            'WGBS paired-end pipeline'])
-
-    if pipeline_title is False:
-        return
-
-    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-        return
-
-    bismark_metrics = get_metrics(
-        cpg_quantifications, 'BismarkQualityMetric', desired_assembly)
-    cpg_metrics = get_metrics(
-        cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
-
-    samtools_metrics = get_metrics(cpg_quantifications,
-                                   'SamtoolsFlagstatsQualityMetric',
-                                   desired_assembly)
-
-    yield from check_wgbs_coverage(
-        samtools_metrics,
-        pipeline_title,
-        min(read_lengths),
-        organism_name,
-        get_pipeline_objects(alignment_files))
-
-    yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
-
-    yield from check_wgbs_lambda(bismark_metrics, 1, pipeline_title)
-
-    return
-
-
-def check_experiment_wgbs_encode4_standards(
+def check_experiment_wgbs_standards(
     experiment,
     files_structure,
     organism_name,
@@ -1104,6 +1044,22 @@ def check_experiment_wgbs_encode4_standards(
     fastq_files = files_structure.get('fastq_files').values()
     cpg_quantifications = files_structure.get('cpg_quantifications').values()
 
+    alignment_files_encode3 = []
+    alignment_files_encode4 = []
+    for file in alignment_files:
+        if file.get('award') and file.get('award')['rfa'] == 'ENCODE4':
+            alignment_files_encode4.append(file)
+        else:
+            alignment_files_encode3.append(file)
+
+    cpg_quantifications_encode3 = []
+    cpg_quantifications_encode4 = []
+    for file in cpg_quantifications:
+        if file.get('award') and file.get('award')['rfa'] == 'ENCODE4':
+            cpg_quantifications_encode4.append(file)
+        else:
+            cpg_quantifications_encode3.append(file)
+
     if fastq_files == []:
         return
 
@@ -1111,27 +1067,61 @@ def check_experiment_wgbs_encode4_standards(
 
     read_lengths = get_read_lengths_wgbs(fastq_files)
 
-    pipeline_title = scanFilesForPipelineTitle_not_chipseq(
-        alignment_files, ['GRCh38', 'mm10'], ['gemBS'])
-
-    if pipeline_title is False:
+    '''
+    Check all non-ENCODE4 files.
+    '''
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files_encode3,
+                                                           ['GRCh38', 'mm10'],
+                                                           ['WGBS single-end pipeline - version 2',
+                                                            'WGBS single-end pipeline',
+                                                            'WGBS paired-end pipeline'])
+    if len(alignment_files_encode3) > 0 and pipeline_title is False:
         return
 
-    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+    bismark_metrics = get_metrics(
+        cpg_quantifications_encode3, 'BismarkQualityMetric', desired_assembly)
+    cpg_metrics = get_metrics(
+        cpg_quantifications_encode3, 'CpgCorrelationQualityMetric', desired_assembly)
+    samtools_metrics = get_metrics(
+        cpg_quantifications_encode3,
+        'SamtoolsFlagstatsQualityMetric',
+        desired_assembly
+    )
+
+    yield from check_wgbs_coverage(
+        samtools_metrics,
+        pipeline_title,
+        min(read_lengths),
+        organism_name,
+        get_pipeline_objects(alignment_files))
+
+    if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
+        yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
+
+    yield from check_wgbs_lambda(bismark_metrics, 1, pipeline_title)
+
+    '''
+    Check ENCODE 4 files separately.
+    '''
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(
+        alignment_files_encode4, ['GRCh38', 'mm10'], ['gemBS'])
+
+    if len(alignment_files_encode4) > 0 and pipeline_title is False:
         return
 
     gembs_metrics = get_metrics(
-        alignment_files, 'GembsAlignmentQualityMetric', desired_assembly)
+        alignment_files_encode4, 'GembsAlignmentQualityMetric', desired_assembly)
     cpg_metrics = get_metrics(
-        cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
-    samtools_metrics = get_metrics(
-        cpg_quantifications, 'SamtoolsFlagstatsQualityMetric', desired_assembly)
+        cpg_quantifications_encode4, 'CpgCorrelationQualityMetric', desired_assembly)
 
     yield from check_wgbs_coverage_ENCODE4(
         gembs_metrics,
         pipeline_title,
-        get_pipeline_objects(alignment_files))
-    yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
+        get_pipeline_objects(alignment_files_encode4))
+
+    if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
+        yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
+
     yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title)
 
     return
