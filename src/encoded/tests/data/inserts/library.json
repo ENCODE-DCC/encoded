@@ -37,6 +37,7 @@
         "fragmentation_methods": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
+        "extraction_method": "NucleoBond PC Giga kit (Machery-Nagel cat#: 740548)",
         "nucleic_acid_term_name": "DNA",
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
