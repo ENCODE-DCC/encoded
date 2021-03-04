@@ -1095,7 +1095,7 @@ def check_experiment_wgbs_standards(
         organism_name,
         get_pipeline_objects(alignment_files))
 
-    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+    if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
         yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
 
     yield from check_wgbs_lambda(bismark_metrics, 1, pipeline_title)
@@ -1119,7 +1119,7 @@ def check_experiment_wgbs_standards(
         pipeline_title,
         get_pipeline_objects(alignment_files_encode4))
 
-    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+    if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
         yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
 
     yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title)
