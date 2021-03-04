@@ -2544,7 +2544,7 @@ const TabPanelFacets = (props) => {
     const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef } = props;
 
     // Filter file list to make sure it includes only files that should be displayed
-    const fileList = allFiles;
+    const fileList = currentTab === 'browser' ? filterForVisualizableFiles(allFiles) : allFiles;
 
     // Initialize assembly object
     const assembly = { 'All assemblies': 100 };
