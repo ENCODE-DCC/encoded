@@ -112,7 +112,7 @@ export const BiosampleTableFooter = (props) => {
     return (
         <div className="table-panel__std-footer">
             <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
-            {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
+            {<a className="table-panel__std-footer-search" href={url}>Full report</a>}
         </div>
     );
 };
@@ -200,7 +200,7 @@ const DonorTableFooter = (props) => {
     return (
         <div className="table-panel__std-footer">
             <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
-            {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
+            {<a className="table-panel__std-footer-search" href={url}>Full report</a>}
         </div>
     );
 };
@@ -332,7 +332,7 @@ ReplacementAccessions.propTypes = {
 const LibraryTableFooter = ({ items, total, url }) => (
     <div className="table-panel__std-footer">
         <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
-        {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
+        {<a className="table-panel__std-footer-search" href={url.replace("search", "report")}>Full report</a> }
     </div>
 );
 
@@ -426,7 +426,7 @@ LibraryTable.defaultProps = {
 const DatasetTableFooter = ({ items, total, url }) => (
     <div className="table-panel__std-footer">
         <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
-        {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
+        {<a className="table-panel__std-footer-search" href={url}>Full report</a>}
     </div>
 );
 
