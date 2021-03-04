@@ -394,18 +394,18 @@ class CalculatedAssayTitle:
                     else:
                         title_start = 'growth-based CRISPR'
                     if 'activation' in CRISPR_gms:
-                        title_end = 'activation screen'
+                        title_end = 'activation'
                     elif 'deletion' in CRISPR_gms:
-                        title_end = 'deletion screen'
+                        title_end = 'deletion'
                     elif 'disruption' in CRISPR_gms:
-                        title_end = 'disruption screen'
+                        title_end = 'disruption'
                     elif 'inhibition' in CRISPR_gms:
-                        title_end = 'inhibition screen'
+                        title_end = 'inhibition'
                     elif 'interference' in CRISPR_gms:
-                        title_end = 'interference screen'
+                        title_end = 'interference'
                     elif 'knockout' in CRISPR_gms:
-                        title_end = 'knockout screen'
-                    preferred_name = f'{title_start} {title_end}'
+                        title_end = 'knockout'
+                    preferred_name = f'{title_start} {title_end} screen'
                 # If there is more than one category type for CRISPR characterization genetic modifications we cannot return a specific CRISPR assay title
                 if len(set(CRISPR_gms)) > 1:
                     if examined_loci is not None:
