@@ -2904,8 +2904,9 @@ class FileGalleryRendererComponent extends React.Component {
      * @returns analysis data
      * @memberof FileGalleryRendererComponent
      */
-    getBrowserAnalysis() {
-        const { allFiles, compiledAnalyses } = this.state;
+    getBrowserAnalysis(allExperimentFiles = null, compiledExperimentAnalyses = null) {
+        const allFiles = allExperimentFiles || this.state.allFiles;
+        const compiledAnalyses = compiledExperimentAnalyses || this.state.compiledAnalyses;
 
         const analyses = compiledAnalyses.filter((c) => {
             const analysisFiles = filterForVisualizableFiles(c.files.map((f) => allFiles.find((aF) => aF['@id'] === f)));
@@ -3049,10 +3050,7 @@ class FileGalleryRendererComponent extends React.Component {
             let compiledAnalysis = compileAnalyses(context, allFiles, 'choose analysis');
 
             if (currentTab === 'browser') {
-                compiledAnalysis = compiledAnalysis.filter((c) => {
-                    const analysisFiles = filterForVisualizableFiles(c.files.map((f) => allFiles.find((aF) => aF['@id'] === f)));
-                    return analysisFiles.length > 0;
-                });
+                compiledAnalysis = this.getBrowserAnalysis(allFiles, compiledAnalysis);
                 selectedIndex = this.getBrowserSelectedIndex(compiledAnalysis);
             } else {
                 selectedIndex = dropdown ? dropdown.selectedIndex : null;
