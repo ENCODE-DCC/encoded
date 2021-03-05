@@ -4334,7 +4334,7 @@
         "md5sum": "d2c5c8e3c2da0331ab7f1a4c376f13cc"
     },
     {
-        "accession": "ENCFF210SUR",
+        "accession": "ENCFF039MUS",
         "assembly": "GRCm39",
         "award": "U54HG007010",
         "dataset": "ENCSR127PCE",
@@ -4349,7 +4349,7 @@
         "uuid": "387e47cd-7d3f-4a93-9994-0d359568606a"
     },
     {
-        "accession": "ENCFF210SUR",
+        "accession": "ENCFF033HOM",
         "assembly": "GRCh38",
         "genome_annotation": "V33",
         "award": "U54HG007010",
