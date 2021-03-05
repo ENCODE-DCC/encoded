@@ -37,7 +37,9 @@ class Biosample(Item, CalculatedDonors):
         'biosample_ontology',
         'diseases',
         'donors',
-        'donors.organism'
+        'donors.organism',
+        'donors.ethnicity',
+        'treatments'
     ]
 
     @calculated_property(schema={

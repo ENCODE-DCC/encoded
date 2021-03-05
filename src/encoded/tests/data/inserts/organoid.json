@@ -20,6 +20,9 @@
         "embedded_in_matrigel": true,
         "documents": [
             "anna-greka:C2C12_Wold_protocol"
+        ],
+        "treatments": [
+            "fa76247c-47b5-4523-9f51-2d62d9a5f3c9"
         ]
     },
     {
@@ -47,6 +50,10 @@
         "dbxrefs": [
             "BioSample:SAMEA104103557",
             "EGA:EGAN00001549492"
+        ],
+        "urls": [
+            "https://chanzuckerberg.com/science/programs-resources/single-cell-biology/seednetworks/a-comprehensive-single-cell-atlas-of-the-human-kidney/",
+            "https://www.protocols.io/"
         ]
     },
     {

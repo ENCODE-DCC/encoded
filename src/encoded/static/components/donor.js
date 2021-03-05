@@ -14,7 +14,7 @@ import pubReferenceList from './reference';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { LibraryTable } from './typeutils';
+import { BiosampleTable, DatasetTable, LibraryTable } from './typeutils';
 import formatMeasurement from './../libs/formatMeasurement';
 
 
@@ -291,8 +291,14 @@ class DonorComponent extends React.Component {
 
                 <RelatedItems
                     title={`Libraries from this donor`}
-                    url={`/search/?type=Library&field=assay&field=award.name&field=dataset.accession&field=accession&field=derived_from.biosample_ontology.term_name&field=protocol.title&field=lab.title&donors=${context.accession}`}
+                    url={`/search/?type=Library&donors.uuid=${context.uuid}`}
                     Component={LibraryTable}
+                />
+
+                <RelatedItems
+                    title={`Biosamples from this donor`}
+                    url={`/search/?type=Biosample&donors.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
                 />
             </div>
         );

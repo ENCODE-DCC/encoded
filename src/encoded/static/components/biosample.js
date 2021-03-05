@@ -9,7 +9,7 @@ import { Breadcrumbs } from './navigation';
 import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, ItemAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import Status from './status';
-import { CollectBiosampleDocs, BiosampleTable } from './typeutils';
+import { CollectBiosampleDocs, BiosampleTable, DonorTable } from './typeutils';
 import formatMeasurement from './../libs/formatMeasurement';
 
 
@@ -77,20 +77,6 @@ class BiosampleComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                {context.product_id ?
-                                    <div data-test="productid">
-                                        <dt>Product ID</dt>
-                                        <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
-                                    </div>
-                                : null}
-
-                                {context.lot_id ?
-                                    <div data-test="lotid">
-                                        <dt>Lot ID</dt>
-                                        <dd>{context.lot_id}</dd>
-                                    </div>
-                                : null}
-
                                 {context.notes ?
                                     <div data-test="notes">
                                         <dt>Notes</dt>
@@ -108,16 +94,10 @@ class BiosampleComponent extends React.Component {
                                 {context.derivation_process ?
                                     <div data-test="derivation_process">
                                         <dt>Derivation process</dt>
-                                        <dd>{context.derivation_process}</dd>
+                                        <dd>{context.derivation_process.join(", ")}</dd>
                                     </div>
                                 : null}
 
-                                {context.fixed ?
-                                    <div data-test="fixed">
-                                        <dt>Fixed</dt>
-                                        <dd>{context.fixed}</dd>
-                                    </div>
-                                : null}
                             </dl>
                         </div>
 
@@ -140,17 +120,10 @@ class BiosampleComponent extends React.Component {
                                 : null}
 
 
-                                {dbxrefs ?
+                                {context.dbxrefs ?
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
-                                    </div>
-                                : null}
-
-                                {references ?
-                                    <div data-test="references">
-                                        <dt>References</dt>
-                                        <dd>{references}</dd>
                                     </div>
                                 : null}
 
@@ -172,18 +145,13 @@ class BiosampleComponent extends React.Component {
                         </PanelBody>
                     : null}
                 </Panel>
-                {context.derived_from && context.derived_from.length > 0 ?
-                    <BiosampleTable
-                        title="Derived from"
-                        items={context.derived_from}
-                        total={context.derived_from.length}
-                    />
-                : null}
 
-                {context.donor ?
-                    <div>
-                        {PanelLookup({ context: context.donor, biosample: context })}
-                    </div>
+                {context.donors && context.donors.length > 0 ?
+                    <DonorTable
+                        title="Donors"
+                        items={context.donors}
+                        total={context.donors.length}
+                    />
                 : null}
             </div>
         );

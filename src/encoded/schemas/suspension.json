@@ -15,7 +15,7 @@
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/schema_version"},
-        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/urls"},
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "mixins.json#/source"},
@@ -42,7 +42,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "accession": {
             "accessionType": "SU"
@@ -133,6 +133,7 @@
             "type": "string",
             "enum": [
                 "acridine orange and propidium iodide",
+                "annexin V",
                 "trypan blue staining",
                 "calcein-AM green/ethidium homodimer-1 red staining",
                 "free amine staining",
@@ -145,7 +146,7 @@
             "title": "Percent cell viability",
             "description": "The number in percent of viable cells or intact nuclei.",
             "type": "string",
-            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+            "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
         },
         "enriched_cell_types": {
             "title": "Enriched cell types",
@@ -220,7 +221,7 @@
             "title": "Collection-to-dissociation interval",
             "description": "The amount of time elapsed between tissue collection and cell dissociation.",
             "type": "string",
-            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+            "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
         },
         "collection_to_dissociation_interval_units": {
             "title": "Collection-to-dissociation interval units",
@@ -236,7 +237,7 @@
             "title": "Death-to-dissociation interval",
             "description": "The amount of time elapsed between donor death and cell dissociation.",
             "type": "string",
-            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+            "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
         },
         "death_to_dissociation_interval_units": {
             "title": "Death-to-dissociation interval units",

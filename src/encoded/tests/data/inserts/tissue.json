@@ -12,17 +12,18 @@
             "anna-greka:adult_human_donorA"
         ],
         "derivation_process": [
-            "percutaneous biopsy"
+            "percutaneous biopsy",
+            "cryosection"
         ],
         "biosample_ontology": "UBERON_0001225",
-        "collection_to_preservation_interval": "5",
+        "collection_to_preservation_interval": "5.2",
         "collection_to_preservation_interval_units": "hour",
         "ischemic_temperature": "cold",
-        "ischemic_time": "5",
+        "ischemic_time": "<4.5",
         "ischemic_time_units": "hour",
         "spatial_information": "3cm from top edge",
         "preservation_method": "cryopreservation",
-        "preservation_time": "2",
+        "preservation_time": "2.5-3.5",
         "preservation_time_units": "week",
         "fixed": false,
         "starting_quantity": "50",
@@ -44,8 +45,8 @@
             "dissection"
         ],
         "biosample_ontology": "UBERON_0001225",
-        "collection_to_preservation_interval": "6",
-        "collection_to_preservation_interval_units": "hour",
+        "death_to_preservation_interval": "6.1",
+        "death_to_preservation_interval_units": "hour",
         "ischemic_temperature": "cold",
         "ischemic_time": "5",
         "ischemic_time_units": "hour",
@@ -53,7 +54,11 @@
         "preservation_method": "cryopreservation",
         "fixed": false,
         "starting_quantity": "100",
-        "starting_quantity_units": "g"
+        "starting_quantity_units": "g",
+        "urls": [
+            "https://chanzuckerberg.com/science/programs-resources/single-cell-biology/seednetworks/a-comprehensive-single-cell-atlas-of-the-human-kidney/",
+            "https://www.protocols.io/"
+        ]
     },
     {
         "accession": "LATBS860DDD",

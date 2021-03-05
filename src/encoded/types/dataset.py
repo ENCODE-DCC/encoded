@@ -39,6 +39,8 @@ class Dataset(Item):
     embedded = [
         'libraries',
         'libraries.protocol',
+        'libraries.lab',
+        'libraries.biosample_ontologies',
         'award',
         'references',
         'corresponding_contributors',

@@ -83,6 +83,9 @@ export const dbxrefPrefixMap = {
     EGA: {
         pattern: 'https://www.ebi.ac.uk/ega/datasets/{0}',
     },
+    ENA: {
+        pattern: 'https://www.ebi.ac.uk/ena/browser/view/{0}',
+    },
     ENSEMBL: {
         pattern: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={0}',
         preprocessor: (context) => {

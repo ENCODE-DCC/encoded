@@ -16,6 +16,7 @@ require('./globals');
 require('./graph');
 require('./doc');
 require('./donor');
+require('./library');
 require('./file');
 require('./item');
 require('./page');

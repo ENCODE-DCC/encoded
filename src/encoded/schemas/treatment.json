@@ -95,7 +95,8 @@
                 "activation",
                 "deactivation",
                 "medication",
-                "intervention"
+                "intervention",
+                "stimulation"
             ]
         },
         "temperature": {
@@ -147,7 +148,6 @@
                 "chemical",
                 "irradiation",
                 "protein",
-                "stimulation",
                 "fasting",
                 "virus"
             ]

@@ -45,7 +45,7 @@
             "SRA:SRX122314"
         ],
         "starting_quantity": "10000",
-        "starting_quantity_units": "cells",
+        "starting_quantity_units": "nuclei",
         "rna_integrity_number": 9,
         "chip_id": "chip_100",
         "channel_id": "B",

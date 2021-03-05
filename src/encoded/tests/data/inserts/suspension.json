@@ -27,7 +27,7 @@
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
-        "collection_to_dissociation_interval": "30",
+        "collection_to_dissociation_interval": "30.2",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
         "dissociation_time": 1,
@@ -43,6 +43,10 @@
             "lattice:totalseq_C0050_CD19",
             "lattice:totalseq_C0161_CD11b",
             "lattice:totalseq_C0046_CD8"
+        ],
+        "urls": [
+            "https://chanzuckerberg.com/science/programs-resources/single-cell-biology/seednetworks/a-comprehensive-single-cell-atlas-of-the-human-kidney/",
+            "https://www.protocols.io/"
         ]
     },
     {
@@ -73,8 +77,8 @@
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
-        "collection_to_dissociation_interval": "30",
-        "collection_to_dissociation_interval_units": "minute",
+        "death_to_dissociation_interval": "30.0-30.5",
+        "death_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
         "dissociation_time": 1,
         "dissociation_time_units": "minute",
@@ -109,8 +113,8 @@
         "suspension_type": "nucleus",
         "starting_quantity": "1000",
         "starting_quantity_units": "nuclei/\u03bcl",
-        "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": "95",
+        "cell_viability_method": "annexin V",
+        "percent_cell_viability": "95.5",
         "depleted_cell_types": [
             "CL_0002305"
         ],

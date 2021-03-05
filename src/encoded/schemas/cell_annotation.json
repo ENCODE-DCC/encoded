@@ -64,11 +64,6 @@
                 "type": "string",
                 "linkTo": "MatrixFile"
             }
-        },
-        "annotation_method": {
-            "title": "Annotation method",
-            "description": "The method or software used to annotate the cell population.",
-            "type": "string"
         }
     },
     "facets": {
@@ -91,9 +86,6 @@
         "tissues_sampled.organ_slims": {
             "title": "Organ sampled",
             "type": "typeahead"
-        },
-        "annotation_method": {
-            "title": "Annotation method"
         }
     },
     "columns": {
@@ -117,9 +109,6 @@
         },
         "tissues_sampled.organ_slims": {
             "title": "Organ sampled"
-        },
-        "annotation_method": {
-            "title": "Annotation method"
         }
     },
     "changelog": "/profiles/changelogs/cell_annotation.md"

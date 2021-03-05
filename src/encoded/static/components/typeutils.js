@@ -52,6 +52,33 @@ export function CollectBiosampleDocs(biosample) {
 }
 
 
+function libraryList(values, field) {
+    if (values && values.length > 0) {
+        return Array.from(new Set(values.map(function(value) { return value[field] }))).join(", ");
+    }
+    return null;
+}
+
+
+function libraryLinkList(values) {
+    // Render each of the links, with null for each value without an identifier property
+    if (values && values.length > 0) {
+        const links = _.compact(values.map((value) => {
+            return (
+                <p>
+                    <a href={value}>{value}</a>
+                </p>
+            );
+        }));
+        // Render any links into a ul. Just return null if no links to render.
+        if (links.length > 0) {
+            return links;
+        }
+    }
+    return null;
+}
+
+
 // Display a table of retrieved biosamples related to the displayed biosample
 export const BiosampleTable = (props) => {
     const { items, limit, total, url, title } = props;
@@ -60,7 +87,7 @@ export const BiosampleTable = (props) => {
     // If there's a limit on entries to display and the array is greater than that
     // limit, then clone the array with just that specified number of elements
     if (limit && (limit < items.length)) {
-        // Limit the experiment list by cloning first {limit} elements
+        // Limit the dataset list by cloning first {limit} elements
         biosamples = items.slice(0, limit);
     } else {
         // No limiting; just reference the original array
@@ -94,15 +121,21 @@ BiosampleTable.columns = {
         title: 'Accession',
         display: biosample => <a href={biosample['@id']}>{biosample.accession}</a>,
     },
-    'biosample_ontology.classification': {
+    'type': {
         title: 'Type',
-        getValue: item => item.biosample_ontology && item.biosample_ontology.classification,
+        getValue: item => item['@type'] && item['@type'][0],
     },
     'biosample_ontology.term_name': {
         title: 'Term',
         getValue: item => item.biosample_ontology && item.biosample_ontology.term_name,
     },
-    summary: { title: 'Summary', sorter: false },
+    'derivation_process': {
+        title: 'Derivation process',
+        getValue: item => item.derivation_process.join(", "),
+    },
+    'preservation_method': {
+        title: 'Preservation method',
+    },
 };
 
 
@@ -113,7 +146,7 @@ export const BiosampleTableFooter = (props) => {
     return (
         <div className="table-panel__std-footer">
             <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
-            {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
+            {<a className="table-panel__std-footer-search" href={url}>Full report</a>}
         </div>
     );
 };
@@ -178,8 +211,18 @@ DonorTable.columns = {
         title: 'Species',
         display: donor => (donor.organism && donor.organism.scientific_name ? <i>{donor.organism.scientific_name}</i> : null),
     },
+    life_stage: {
+        title: 'Life Stage',
+    },
+    age_display: {
+        title: 'Age',
+    },
     sex: {
         title: 'Sex',
+    },
+    ethnicity: {
+        title: 'Ethnicity',
+        getValue: item => item.ethnicity && item.ethnicity.term_name,
     },
 };
 
@@ -191,7 +234,7 @@ const DonorTableFooter = (props) => {
     return (
         <div className="table-panel__std-footer">
             <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
-            {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
+            {<a className="table-panel__std-footer-search" href={url}>Full report</a>}
         </div>
     );
 };
@@ -323,7 +366,7 @@ ReplacementAccessions.propTypes = {
 const LibraryTableFooter = ({ items, total, url }) => (
     <div className="table-panel__std-footer">
         <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
-        {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
+        {url ? <a className="table-panel__std-footer-search" href={url.replace("search", "report")}>Full report</a> : null }
     </div>
 );
 
@@ -344,6 +387,7 @@ LibraryTableFooter.defaultProps = {
 const libraryTableColumns = {
     accession: {
         title: 'Accession',
+        display: library => <a href={library['@id']}>{library.accession}</a>,
     },
 
     assay: {
@@ -355,14 +399,9 @@ const libraryTableColumns = {
         getValue: item => item.protocol && item.protocol.title,
     },
 
-    'derived_from.biosample_ontology.term_name': {
-        title: 'Biosample term name',
-        getValue: item => item.derived_from && item.derived_from.biosample_ontology && item.derived_from.biosample_ontology.term_name,
-    },
-
-    'dataset.accession': {
+    'dataset': {
         title: 'Dataset',
-        getValue: item => item.dataset && item.dataset.accession,
+        display: item => <a href={item.dataset}>{item.dataset}</a>,
     },
 
     title: {
@@ -377,6 +416,43 @@ const libraryTableColumns = {
 };
 
 
+const libraryTableColumnsforDS = {
+    accession: {
+        title: 'Accession',
+        display: library => <a href={library['@id']}>{library.accession}</a>,
+    },
+
+    assay: {
+        title: 'Assay',
+    },
+
+    'protocol.title': {
+        title: 'Protocol',
+        getValue: item => item.protocol && item.protocol.title,
+    },
+
+    'derived_from': {
+        title: 'Prepared from',
+        getValue: item => libraryLinkList(item.derived_from),
+    },
+
+    'biosamples': {
+        title: 'Biosamples',
+        getValue: item => libraryList(item.biosample_ontologies, 'term_name'),
+    },
+
+    'donors': {
+        title: 'Donors',
+        getValue: item => libraryLinkList(item.donors),
+    },
+
+    title: {
+        title: 'Lab',
+        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+    },
+};
+
+
 export const LibraryTable = ({ items, limit, total, url, title }) => {
     // If there's a limit on entries to display and the array is greater than that limit, then
     // clone the array with just that specified number of elements.
@@ -387,6 +463,23 @@ export const LibraryTable = ({ items, limit, total, url, title }) => {
             <div>
                 <SortTablePanel title={title}>
                     <SortTable list={libraries} columns={libraryTableColumns} footer={<LibraryTableFooter items={libraries} total={total} url={url} />} />
+                </SortTablePanel>
+            </div>
+        );
+    }
+    return null;
+};
+
+export const LibraryTableforDS = ({ items, limit, total, url, title }) => {
+    // If there's a limit on entries to display and the array is greater than that limit, then
+    // clone the array with just that specified number of elements.
+    if (items.length > 0) {
+        const libraries = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+
+        return (
+            <div>
+                <SortTablePanel title={title}>
+                    <SortTable list={libraries} columns={libraryTableColumnsforDS} footer={<LibraryTableFooter items={libraries} total={total} url={url} />} />
                 </SortTablePanel>
             </div>
         );
@@ -418,70 +511,62 @@ LibraryTable.defaultProps = {
 
 
 /**
- * Display a count of experiments in the footer, with a link to the corresponding search if needed.
+ * Display a count of datasets in the footer, with a link to the corresponding search if needed.
  */
-const ExperimentTableFooter = ({ items, total, url }) => (
+const DatasetTableFooter = ({ items, total, url }) => (
     <div className="table-panel__std-footer">
         <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
-        {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
+        {<a className="table-panel__std-footer-search" href={url}>Full report</a>}
     </div>
 );
 
-ExperimentTableFooter.propTypes = {
-    /** Array of experiments that were displayed in the table */
+DatasetTableFooter.propTypes = {
+    /** Array of datasets that were displayed in the table */
     items: PropTypes.array.isRequired,
-    /** Total number of experiments */
+    /** Total number of datasets */
     total: PropTypes.number,
-    /** URL to link to equivalent experiment search results */
+    /** URL to link to equivalent dataset search results */
     url: PropTypes.string.isRequired,
 };
 
-ExperimentTableFooter.defaultProps = {
+DatasetTableFooter.defaultProps = {
     total: 0,
 };
 
 
-const experimentTableColumns = {
+const datasetTableColumns = {
     accession: {
         title: 'Accession',
-        display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
+        display: item => <a href={item['@id']} title={`View page for dataset ${item.accession}`}>{item.accession}</a>,
     },
 
-    assay_term_name: {
-        title: 'Assay',
+    'award.name': {
+        title: 'Award',
+        getValue: item => item.award && item.award.name,
     },
 
-    'biosample_ontology.term_name': {
-        title: 'Biosample term name',
-        getValue: item => item.biosample_ontology && item.biosample_ontology.term_name,
+    'award.project': {
+        title: 'Project',
+        getValue: item => item.award && item.award.project,
     },
 
-    target: {
-        title: 'Target',
-        getValue: item => item.target && item.target.label,
-    },
-
-    description: {
-        title: 'Description',
-    },
-
-    title: {
-        title: 'Lab',
-        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+    'references.citation': {
+        title: 'References',
+        getValue: item => item.references && item.references.citation,
     },
 };
 
 
-export const ExperimentTable = ({ items, limit, total, url, title }) => {
+export const DatasetTable = ({ items, limit, total, url, title }) => {
     // If there's a limit on entries to display and the array is greater than that limit, then
     // clone the array with just that specified number of elements.
     if (items.length > 0) {
-        const experiments = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+        const datasets = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
 
         return (
             <div>
                 <SortTablePanel title={title}>
-                    <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={total} url={url} />} />
+                    <SortTable list={datasets} columns={datasetTableColumns} footer={<DatasetTableFooter items={datasets} total={total} url={url} />} />
                 </SortTablePanel>
             </div>
         );
@@ -489,23 +574,23 @@ export const ExperimentTable = ({ items, limit, total, url, title }) => {
     return null;
 };
 
-ExperimentTable.propTypes = {
-    /** List of experiments to display in the table */
+DatasetTable.propTypes = {
+    /** List of datasets to display in the table */
     items: PropTypes.array.isRequired,
-    /** Maximum number of experiments to display in the table */
+    /** Maximum number of datasets to display in the table */
     limit: PropTypes.number,
-    /** Total number of experiments */
+    /** Total number of datasets */
     total: PropTypes.number,
     /** URI to go to equivalent search results */
     url: PropTypes.string.isRequired,
-    /** Title for the table of experiments; can be string or component */
+    /** Title for the table of datasets; can be string or component */
     title: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.node,
     ]),
 };
 
-ExperimentTable.defaultProps = {
+DatasetTable.defaultProps = {
     limit: 0,
     total: 0,
     title: '',
@@ -517,14 +602,14 @@ const tableContentMap = {
     Library: 'Libraries',
 };
 /**
- * Display a table of experiments with the dataset in `context` as a possible_controls.
+ * Display a table of datasets with the dataset in `context` as a possible_controls.
  */
 export const ControllingExperiments = ({ context, items, total, url }) => {
     if (items.length > 0) {
         const tableContent = tableContentMap[context['@type'][0]] || 'Experiments';
         return (
             <div>
-                <ExperimentTable
+                <DatasetTable
                     items={items}
                     limit={5}
                     total={total}

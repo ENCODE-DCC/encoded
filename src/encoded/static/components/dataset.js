@@ -17,7 +17,7 @@ import pubReferenceList from './reference';
 import urlList from './url';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingDatasets, DatasetTable } from './typeutils';
+import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, LibraryTableforDS, ReplacementAccessions, ControllingDatasets, DatasetTable } from './typeutils';
 import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 
@@ -308,34 +308,18 @@ LibrarySubmitterComments.propTypes = {
  * Renders both Dataset and FunctionalCharacterizationDataset objects.
  */
 const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
-    let condensedReplicates = [];
     const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const itemClass = globals.itemClass(context, 'view-item');
 
     // Determine whether object is Dataset or FunctionalCharacterizationDataset.
     const datasetType = context['@type'][0];
-    const isFunctionalDataset = datasetType === 'FunctionalCharacterizationDataset';
     let displayType;
     let displayTypeBreadcrumbs;
-    if (isFunctionalDataset) {
-        displayTypeBreadcrumbs = 'Functional Characterization Datasets';
-        displayType = 'Functional Characterization Dataset';
-    } else {
-        displayTypeBreadcrumbs = 'Datasets';
-        displayType = 'Dataset';
-    }
+    displayTypeBreadcrumbs = 'Datasets';
+    displayType = 'Dataset';
 
-    const replicates = context.replicates && context.replicates.length > 0 ? context.replicates : [];
-    if (replicates.length > 0) {
-        // Make an array of arrays of replicates, called “condensed replicates" here. Each top-
-        // level array element represents a library linked to by the replicates inside that
-        // array. Only the first replicate in each library array gets displayed in the table.
-        const condensedReplicatesKeyed = _(replicates).groupBy(replicate => (replicate.library ? replicate.library['@id'] : replicate.uuid));
-        if (Object.keys(condensedReplicatesKeyed).length > 0) {
-            condensedReplicates = _.toArray(condensedReplicatesKeyed);
-        }
-    }
+    const libraries = context.libraries && context.libraries.length > 0 ? context.libraries : [];
 
     // Collect all documents from the dataset itself.
     const documents = (context.documents && context.documents.length > 0) ? context.documents : [];
@@ -344,8 +328,8 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
     // collect up library documents.
     const libraryDocs = [];
     let biosamples = [];
-    if (replicates.length > 0) {
-        biosamples = _.compact(replicates.map((replicate) => {
+    if (libraries.length > 0) {
+        biosamples = _.compact(libraries.map((replicate) => {
             if (replicate.library) {
                 if (replicate.library.documents && replicate.library.documents.length > 0) {
                     Array.prototype.push.apply(libraryDocs, replicate.library.documents);
@@ -596,8 +580,13 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                 </PanelBody>
             </Panel>
 
-            {Object.keys(condensedReplicates).length > 0 ?
-                <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
+
+            {context.libraries && context.libraries.length > 0 ?
+                <LibraryTableforDS
+                    title="Libraries"
+                    items={context.libraries}
+                    total={context.libraries.length}
+                />
             : null}
 
             {/* Display the file widget with the facet, graph, and tables */}
@@ -627,119 +616,3 @@ export default Dataset;
 
 globals.contentViews.register(Dataset, 'Dataset');
 globals.contentViews.register(Dataset, 'FunctionalCharacterizationDataset');
-
-
-const replicateTableColumns = {
-    biological_replicate_number: {
-        title: 'Biological replicate',
-        getValue: condensedReplicate => condensedReplicate[0].biological_replicate_number,
-    },
-
-    technical_replicate_number: {
-        title: 'Technical replicate',
-        getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).sort().join(),
-    },
-
-    summary: {
-        title: 'Summary',
-        display: (condensedReplicate) => {
-            const replicate = condensedReplicate[0];
-
-            // Display protein concentration if it exists
-            if (typeof replicate.rbns_protein_concentration === 'number') {
-                return (
-                    <span>
-                        Protein concentration {replicate.rbns_protein_concentration}
-                        <span className="unit">{replicate.rbns_protein_concentration_units}</span>
-                    </span>
-                );
-            }
-
-            // Else, display biosample summary if the biosample exists
-            if (replicate.library && replicate.library.biosample) {
-                return <span>{BiosampleSummaryString(replicate.library.biosample, true)}</span>;
-            }
-
-            // Else, display nothing
-            return null;
-        },
-        sorter: false,
-    },
-
-    biosample_accession: {
-        title: 'Biosample',
-        display: (condensedReplicate) => {
-            const replicate = condensedReplicate[0];
-            if (replicate.library && replicate.library.biosample) {
-                const biosample = replicate.library.biosample;
-                return <a href={biosample['@id']} title={`View biosample ${biosample.accession}`}>{biosample.accession}</a>;
-            }
-            return null;
-        },
-        objSorter: (a, b) => {
-            const aReplicate = a[0];
-            const bReplicate = b[0];
-            if ((aReplicate.library && aReplicate.library.biosample) && (bReplicate.library && bReplicate.library.biosample)) {
-                const aAccession = aReplicate.library.biosample.accession;
-                const bAccession = bReplicate.library.biosample.accession;
-                return (aAccession < bAccession) ? -1 : ((aAccession > bAccession) ? 1 : 0);
-            }
-            return (aReplicate.library && aReplicate.library.biosample) ? -1 : ((bReplicate.library && bReplicate.library.biosample) ? 1 : 0);
-        },
-    },
-
-    antibody_accession: {
-        title: 'Antibody',
-        display: (condensedReplicate) => {
-            const replicate = condensedReplicate[0];
-            if (replicate.antibody) {
-                return <a href={replicate.antibody['@id']} title={`View antibody ${replicate.antibody.accession}`}>{replicate.antibody.accession}</a>;
-            }
-            return null;
-        },
-        objSorter: (a, b) => {
-            const aReplicate = a[0];
-            const bReplicate = b[0];
-            if (aReplicate.antibody && bReplicate.antibody) {
-                return (aReplicate.antibody.accession < bReplicate.antibody.accession) ? -1 : ((aReplicate.antibody.accession > bReplicate.antibody.accession) ? 1 : 0);
-            }
-            return (aReplicate.antibody) ? -1 : ((bReplicate.antibody) ? 1 : 0);
-        },
-        hide: list => _(list).all(condensedReplicate => !condensedReplicate[0].antibody),
-    },
-
-    library: {
-        title: 'Library',
-        getValue: condensedReplicate => (condensedReplicate[0].library ? condensedReplicate[0].library.accession : ''),
-    },
-};
-
-// Display the table of replicates.
-const ReplicateTable = (props) => {
-    let tableTitle;
-    const { condensedReplicates, replicationType } = props;
-
-    // Determine replicate table title based on the replicate type. Also override the biosample replicate column title
-    if (replicationType === 'anisogenic') {
-        tableTitle = 'Anisogenic replicates';
-        replicateTableColumns.biological_replicate_number.title = 'Anisogenic replicate';
-    } else {
-        tableTitle = 'Isogenic replicates';
-        replicateTableColumns.biological_replicate_number.title = 'Isogenic replicate';
-    }
-
-    return (
-        <SortTablePanel title={tableTitle}>
-            <SortTable list={condensedReplicates} columns={replicateTableColumns} />
-        </SortTablePanel>
-    );
-};
-
-ReplicateTable.propTypes = {
-    condensedReplicates: PropTypes.array.isRequired, // Condensed 'array' of replicate objects
-    replicationType: PropTypes.string, // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
-};
-
-ReplicateTable.defaultProps = {
-    replicationType: '',
-};

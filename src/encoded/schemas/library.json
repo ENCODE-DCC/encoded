@@ -126,6 +126,7 @@
             "enum": [
                 "cell-equivalent",
                 "cells",
+                "nuclei",
                 "mg",
                 "ng",
                 "pg",
@@ -228,6 +229,9 @@
         }
     },
     "columns": {
+        "accession": {
+            "title": "Accession"
+        },
         "dataset": {
             "title": "Dataset"
         },
