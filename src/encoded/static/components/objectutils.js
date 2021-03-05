@@ -821,6 +821,11 @@ export const isFileVisualizable = (file) => {
         && (file.file_format_type !== 'bedLogR')
         && (file.file_format_type !== 'pepMap')
         && (file.file_format_type !== 'modPepMap')
+        && (['methylation state at CHG',
+            'methylation state at CHH',
+            'methylation state at CpG',
+            'smoothed methylation state at CpG',
+        ].indexOf(file.output_type) === -1)
         && ['released', 'in progress', 'archived'].indexOf(file.status) > -1;
 };
 
