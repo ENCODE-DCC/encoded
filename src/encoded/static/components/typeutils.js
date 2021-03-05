@@ -332,7 +332,7 @@ ReplacementAccessions.propTypes = {
 const LibraryTableFooter = ({ items, total, url }) => (
     <div className="table-panel__std-footer">
         <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
-        {<a className="table-panel__std-footer-search" href={url.replace("search", "report")}>Full report</a> }
+        {url ? <a className="table-panel__std-footer-search" href={url.replace("search", "report")}>Full report</a> : null }
     </div>
 );
 
@@ -349,10 +349,10 @@ LibraryTableFooter.defaultProps = {
     total: 0,
 };
 
-
 const libraryTableColumns = {
     accession: {
         title: 'Accession',
+        display: library => <a href={library['@id']}>{library.accession}</a>,
     },
 
     assay: {
@@ -380,6 +380,28 @@ const libraryTableColumns = {
 };
 
 
+const libraryTableColumnsforDS = {
+    accession: {
+        title: 'Accession',
+        display: library => <a href={library['@id']}>{library.accession}</a>,
+    },
+
+    assay: {
+        title: 'Assay',
+    },
+
+    'protocol.title': {
+        title: 'Protocol',
+        getValue: item => item.protocol && item.protocol.title,
+    },
+
+    title: {
+        title: 'Lab',
+        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+    },
+};
+
+
 export const LibraryTable = ({ items, limit, total, url, title }) => {
     // If there's a limit on entries to display and the array is greater than that limit, then
     // clone the array with just that specified number of elements.
@@ -390,6 +412,23 @@ export const LibraryTable = ({ items, limit, total, url, title }) => {
             <div>
                 <SortTablePanel title={title}>
                     <SortTable list={libraries} columns={libraryTableColumns} footer={<LibraryTableFooter items={libraries} total={total} url={url} />} />
+                </SortTablePanel>
+            </div>
+        );
+    }
+    return null;
+};
+
+export const LibraryTableforDS = ({ items, limit, total, url, title }) => {
+    // If there's a limit on entries to display and the array is greater than that limit, then
+    // clone the array with just that specified number of elements.
+    if (items.length > 0) {
+        const libraries = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+
+        return (
+            <div>
+                <SortTablePanel title={title}>
+                    <SortTable list={libraries} columns={libraryTableColumnsforDS} footer={<LibraryTableFooter items={libraries} total={total} url={url} />} />
                 </SortTablePanel>
             </div>
         );

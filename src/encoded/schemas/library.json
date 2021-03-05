@@ -229,6 +229,9 @@
         }
     },
     "columns": {
+        "accession": {
+            "title": "Accession"
+        },
         "dataset": {
             "title": "Dataset"
         },

@@ -39,6 +39,7 @@ class Dataset(Item):
     embedded = [
         'libraries',
         'libraries.protocol',
+        'libraries.lab',
         'award',
         'references',
         'corresponding_contributors',
