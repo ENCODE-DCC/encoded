@@ -96,9 +96,10 @@ a {
     }
 }
 
-.sort-control-container {
+.horizontal-control-container {
     display: flex;
     margin-top: 10px;
+    position: relative;
 
     .sort-label {
         margin: 2px 5px;
@@ -129,6 +130,76 @@ a {
 
     .tcell-asc {
         margin-top: 5px;
+    }
+
+    .legend-button {
+        margin-left: auto;
+        margin-right: 2px;
+    }
+}
+
+.legend-container {
+    text-align: left;
+
+    .legend-element {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 3px;
+    }
+
+    .legend-swatch {
+        flex: 0 1 20px;
+    }
+
+    .legend-label {
+        flex: 0 1 auto;
+    }
+
+    .legend-swatch {
+        height: 20px;
+        width: 20px;
+        margin-right: 5px;
+
+        &.with-border {
+            border: 1px solid #bbb;
+        }
+    }
+}
+
+.legend-label {
+    display: flex;
+
+    .legend-color-container {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: 3px;
+        height: 20px;
+        width: 20px;
+
+        .legend-swatch {
+            height: 10px;
+            width: 10px;
+        }
+    }
+
+    .legend-name {
+        padding: 0 5px;
+    }
+}
+
+#genome-legend {
+    .tooltip-inner {
+        max-width: 880px;
+    }
+
+    .legend-container {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 880px;
+    }
+
+    .legend-block {
+        flex: 0 1 206px;
     }
 }
 

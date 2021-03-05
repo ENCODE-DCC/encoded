@@ -54,6 +54,7 @@ const Tooltip = (props) => {
     const [isMobile, setIsMobile] = React.useState(false);
     const [tooltipLeft, setTooltipLeft] = React.useState(0);
     const [tooltipTop, setTooltipTop] = React.useState(0);
+    const [tooltipWidth, setTooltipWidth] = React.useState(props.size === 'large' ? 880 : 125);
     const { trigger, position, tooltipId, css, innerCss, children, timerFlag, relativeTooltipFlag } = props;
     const wrapperCss = `tooltip-container${css ? ` ${css}` : ''}`;
     const tooltipCss = `${innerCss || `tooltip ${position}`}`;
@@ -67,16 +68,32 @@ const Tooltip = (props) => {
     const positionTooltip = React.useCallback(() => {
         // Determining the position of the tooltip trigger and accounting for vertical scroll
         const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-        const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+        let viewportWidth = 0;
+        if (document.getElementById('content')) {
+            viewportWidth = document.getElementById('content').clientWidth;
+        }
+
+        let tooltipHalfWidth = tooltipWidth / 2;
+        if (props.size === 'large') {
+            const newColumnCount = Math.min(Math.floor(viewportWidth / 206), props.columnCount);
+            setTooltipWidth((newColumnCount * 206) + 25);
+            tooltipHalfWidth = ((newColumnCount * 206) + 25) / 2;
+        }
         const tooltipTriggerRight = buttonRef.current.getBoundingClientRect().right;
         const tooltipTriggerLeft = buttonRef.current.getBoundingClientRect().left;
         const tooltipTriggerTop = scrollTop + buttonRef.current.getBoundingClientRect().top;
+
         // Ascertaining if tooltip bubble needs to be placed to the left or right to stay on document body
-        const rightOverlap = viewportWidth - (tooltipTriggerRight + 125);
-        const leftOverlap = tooltipTriggerLeft - 125;
+        const rightOverlap = viewportWidth - (tooltipTriggerRight + tooltipHalfWidth);
+        const leftOverlap = tooltipTriggerLeft - tooltipHalfWidth;
         const tooltipOverlap = (rightOverlap < 0) ? rightOverlap : (leftOverlap < 0) ? -leftOverlap : 0;
+
         // Setting tooltip bubble parameters
-        setTooltipLeft(tooltipTriggerLeft + tooltipOverlap);
+        if (props.size === 'large') {
+            setTooltipLeft(leftOverlap + 20);
+        } else {
+            setTooltipLeft(tooltipTriggerLeft + tooltipOverlap);
+        }
         setTooltipTop(tooltipTriggerTop + 20);
     }, []);
 
@@ -170,7 +187,7 @@ const Tooltip = (props) => {
                         className={tooltipCss}
                         role="tooltip"
                         id={tooltipId}
-                        style={{ left: `${tooltipLeft}px`, top: `${tooltipTop}px` }}
+                        style={{ left: `${tooltipLeft}px`, top: `${tooltipTop}px`, width: `${tooltipWidth}px` }}
                         onMouseEnter={(e) => SetDefinitionVisibility(true, e)}
                         onMouseLeave={(e) => SetDefinitionVisibility(false, e)}
                         onFocus={(e) => SetDefinitionVisibility(true, e)}
@@ -191,20 +208,24 @@ Tooltip.propTypes = {
     trigger: PropTypes.element.isRequired, // Visible tooltip triggering component
     tooltipId: PropTypes.string.isRequired, // HTML ID of tooltip <div>; unique within page
     position: PropTypes.oneOf(['left', 'top', 'bottom', 'right']), // Position of bootstrap tooltip location
+    size: PropTypes.string, // There is an oversized tooltip on the genome browser
     css: PropTypes.string, // CSS classes to add to tooltip-container wrapper class
     innerCss: PropTypes.string, // CSS classes to add to tooltip class
     children: PropTypes.node, // Tooltip pop-up component
     timerFlag: PropTypes.bool, // Optional flag for when timer should be implemented on mouseLeave
     relativeTooltipFlag: PropTypes.bool, // Optional flag for tooltips that have relative position (touch device only)
+    columnCount: PropTypes.number,
 };
 
 Tooltip.defaultProps = {
     position: 'bottom',
+    size: '',
     css: '',
     innerCss: '',
     children: null,
     timerFlag: true,
     relativeTooltipFlag: false,
+    columnCount: 0,
 };
 
 export default Tooltip;
