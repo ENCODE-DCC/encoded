@@ -94,7 +94,7 @@ class BiosampleComponent extends React.Component {
                                 {context.derivation_process ?
                                     <div data-test="derivation_process">
                                         <dt>Derivation process</dt>
-                                        <dd>{context.derivation_process}</dd>
+                                        <dd>{context.derivation_process.join(", ")}</dd>
                                     </div>
                                 : null}
 

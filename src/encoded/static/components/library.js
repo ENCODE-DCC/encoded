@@ -96,7 +96,7 @@ class LibraryComponent extends React.Component {
                             <dl className="key-value">
                                 <div data-test="dataset">
                                     <dt>Dataset</dt>
-                                    <dd>{context.dataset}</dd>
+                                    <dd><a href={context.dataset}>{context.dataset}</a></dd>
                                 </div>
 
                                 {context.lab ?
