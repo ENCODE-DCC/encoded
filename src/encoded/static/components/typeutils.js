@@ -65,17 +65,14 @@ function libraryLinkList(values) {
     if (values && values.length > 0) {
         const links = _.compact(values.map((value) => {
             return (
-                <li>
+                <p>
                     <a href={value}>{value}</a>
-                </li>
+                </p>
             );
         }));
-
         // Render any links into a ul. Just return null if no links to render.
         if (links.length > 0) {
-            return (
-                <ul>{links}</ul>
-            );
+            return links;
         }
     }
     return null;
