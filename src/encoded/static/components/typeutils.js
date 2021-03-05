@@ -52,6 +52,36 @@ export function CollectBiosampleDocs(biosample) {
 }
 
 
+function libraryList(values, field) {
+    if (values && values.length > 0) {
+        return Array.from(new Set(values.map(function(value) { return value[field] }))).join(", ");
+    }
+    return null;
+}
+
+
+function libraryLinkList(values) {
+    // Render each of the links, with null for each value without an identifier property
+    if (values && values.length > 0) {
+        const links = _.compact(values.map((value) => {
+            return (
+                <li>
+                    <a href={value}>{value}</a>
+                </li>
+            );
+        }));
+
+        // Render any links into a ul. Just return null if no links to render.
+        if (links.length > 0) {
+            return (
+                <ul>{links}</ul>
+            );
+        }
+    }
+    return null;
+}
+
+
 // Display a table of retrieved biosamples related to the displayed biosample
 export const BiosampleTable = (props) => {
     const { items, limit, total, url, title } = props;
@@ -101,6 +131,13 @@ BiosampleTable.columns = {
     'biosample_ontology.term_name': {
         title: 'Term',
         getValue: item => item.biosample_ontology && item.biosample_ontology.term_name,
+    },
+    'derivation_process': {
+        title: 'Derivation process',
+        getValue: item => item.derivation_process.join(", "),
+    },
+    'preservation_method': {
+        title: 'Preservation method',
     },
 };
 
@@ -350,13 +387,6 @@ LibraryTableFooter.defaultProps = {
 };
 
 
-function libraryList(values, field) {
-    if (values && values.length > 0) {
-        return Array.from(new Set(values.map(function(value) { return value[field] }))).join(", ");
-    }
-    return null;
-}
-
 const libraryTableColumns = {
     accession: {
         title: 'Accession',
@@ -373,7 +403,8 @@ const libraryTableColumns = {
     },
 
     'dataset': {
-        title: 'Dataset'
+        title: 'Dataset',
+        display: item => <a href={item.dataset}>{item.dataset}</a>,
     },
 
     title: {
@@ -403,6 +434,11 @@ const libraryTableColumnsforDS = {
         getValue: item => item.protocol && item.protocol.title,
     },
 
+    'derived_from': {
+        title: 'Prepared from',
+        getValue: item => libraryLinkList(item.derived_from),
+    },
+
     'biosamples': {
         title: 'Biosamples',
         getValue: item => libraryList(item.biosample_ontologies, 'term_name'),
@@ -410,6 +446,7 @@ const libraryTableColumnsforDS = {
 
     'donors': {
         title: 'Donors',
+        getValue: item => libraryLinkList(item.donors),
     },
 
     title: {

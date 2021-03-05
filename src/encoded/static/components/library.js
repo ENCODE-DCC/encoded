@@ -137,12 +137,6 @@ class LibraryComponent extends React.Component {
                         total={context.donors.length}
                     />
                 : null}
-
-                {context.donor ?
-                    <div>
-                        {PanelLookup({ context: context.donor, biosample: context })}
-                    </div>
-                : null}
             </div>
         );
     }

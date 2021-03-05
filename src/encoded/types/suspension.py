@@ -22,6 +22,7 @@ from .shared_calculated_properties import (
 class Suspension(Item, CalculatedDonors, CalculatedBiosampleOntologies):
     item_type = 'suspension'
     schema = load_schema('encoded:schemas/suspension.json')
+    name_key = 'accession'
     embedded = [
         'biosample_ontologies',
         'donors',

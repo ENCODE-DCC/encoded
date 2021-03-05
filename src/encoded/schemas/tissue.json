@@ -253,6 +253,9 @@
         "derivation_process": {
             "title": "Derivation process"
         },
+        "preservation_method": {
+            "title": "Preservation method"
+        },
         "status": {
             "title": "Status"
         }

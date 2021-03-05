@@ -9,7 +9,7 @@ import { Breadcrumbs } from './navigation';
 import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, ItemAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import Status from './status';
-import { CollectBiosampleDocs, BiosampleTable } from './typeutils';
+import { CollectBiosampleDocs, BiosampleTable, DonorTable } from './typeutils';
 import formatMeasurement from './../libs/formatMeasurement';
 
 
@@ -120,7 +120,7 @@ class BiosampleComponent extends React.Component {
                                 : null}
 
 
-                                {dbxrefs ?
+                                {context.dbxrefs ?
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
@@ -146,10 +146,12 @@ class BiosampleComponent extends React.Component {
                     : null}
                 </Panel>
 
-                {context.donor ?
-                    <div>
-                        {PanelLookup({ context: context.donor, biosample: context })}
-                    </div>
+                {context.donors && context.donors.length > 0 ?
+                    <DonorTable
+                        title="Donors"
+                        items={context.donors}
+                        total={context.donors.length}
+                    />
                 : null}
             </div>
         );
