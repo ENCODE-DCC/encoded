@@ -349,6 +349,14 @@ LibraryTableFooter.defaultProps = {
     total: 0,
 };
 
+
+function libraryList(values, field) {
+    if (values && values.length > 0) {
+        return Array.from(new Set(values.map(function(value) { return value[field] }))).join(", ");
+    }
+    return null;
+}
+
 const libraryTableColumns = {
     accession: {
         title: 'Accession',
@@ -393,6 +401,15 @@ const libraryTableColumnsforDS = {
     'protocol.title': {
         title: 'Protocol',
         getValue: item => item.protocol && item.protocol.title,
+    },
+
+    'biosamples': {
+        title: 'Biosamples',
+        getValue: item => libraryList(item.biosample_ontologies, 'term_name'),
+    },
+
+    'donors': {
+        title: 'Donors',
     },
 
     title: {
