@@ -76,7 +76,7 @@ const batchDownload = (
     setInProgress(true);
     const visualizableOption = `${visualizable ? '&option=visualizable' : ''}`;
     const rawOption = `${raw ? '&option=raw' : ''}`;
-    const preferredDefaultQuery = preferredDefault ? '&files.preferred_default=true' : '';
+    const preferredDefaultQuery = preferredDefault && !raw && !all ? '&files.preferred_default=true' : '';
     fetch(`/batch_download/?type=${selectedType}${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${visualizableOption}${rawOption}${preferredDefaultQuery}`, {
         method: 'POST',
         headers: {
