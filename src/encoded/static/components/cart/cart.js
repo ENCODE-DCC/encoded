@@ -71,7 +71,7 @@ const assemblySorter = (facetTerms) => (
  *
  * @return {array} Same as `facetTerms`
  */
-const analysisSorter = (facetTerms, files, analyses) => (
+const analysisSorter = (facetTerms, analyses) => (
     _(facetTerms).sortBy((facetTerm) => (
         analyses.findIndex((analysis) => analysis.title === facetTerm.term)
     ))
@@ -1454,7 +1454,7 @@ const assembleFacets = (selectedTerms, files, analyses, usedFacetFields) => {
             // built from it, so no not-found condition needs checking.
             const facetDisplay = usedFacetFields.find((facetField) => facetField.field === facet.field);
             facet.title = facetDisplay.title;
-            facet.terms = facetDisplay.sorter ? facetDisplay.sorter(facet.terms, files, analyses) : _(facet.terms).sortBy((facetTerm) => facetTerm.term.toLowerCase());
+            facet.terms = facetDisplay.sorter ? facetDisplay.sorter(facet.terms, analyses) : _(facet.terms).sortBy((facetTerm) => facetTerm.term.toLowerCase());
         });
     }
 
