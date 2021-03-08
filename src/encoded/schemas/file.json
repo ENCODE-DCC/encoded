@@ -2200,6 +2200,7 @@
          "file_format": 5.0,
          "file_type": 5.0,
          "file_format_type": 2.0,
+         "md5sum": 1.0,
          "output_category": 2.0,
          "output_type": 2.0,
          "status": 1.0,
