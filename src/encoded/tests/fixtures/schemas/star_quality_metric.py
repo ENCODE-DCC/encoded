@@ -7,6 +7,7 @@ def bam_quality_metric_1_1(testapp, analysis_step_run_bam, file_bam_1_1, award, 
         'step_run': analysis_step_run_bam['@id'],
         'quality_metric_of': [file_bam_1_1['@id']],
         'Uniquely mapped reads number': 1000,
+        'Number of reads mapped to multiple loci': 500,
         'award': award['@id'],
         'lab': lab['@id']
     }
