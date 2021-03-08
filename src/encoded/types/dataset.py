@@ -424,6 +424,7 @@ class Annotation(FileSet, CalculatedVisualize):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + [
+        'analysis_objects',
         'biosample_ontology',
         'software_used',
         'software_used.software',
@@ -443,6 +444,12 @@ class Annotation(FileSet, CalculatedVisualize):
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
         'files.library'
+    ]
+    set_status_up = [
+        'analysis_objects'
+    ]
+    set_status_down = [
+        'analysis_objects'
     ]
     rev = Dataset.rev.copy()
     rev.update({

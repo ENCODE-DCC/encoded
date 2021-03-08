@@ -3,6 +3,7 @@
 ### Minor changes since schema version 30
 * Added *curated SNVs*, *dsQTLs*, *eQTLs*, *footprints* and *PWMs* enum to *annotation_type* property.
 * Added *doi* property
+* Added *analysis_objects* property.
 
 ### Schema version 31
 * Changed *blacklist* to *exclusion list* in enum for *annotation_type*
