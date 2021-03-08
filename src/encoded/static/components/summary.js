@@ -5,12 +5,11 @@ import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import QueryString from '../libs/query_string';
 import { Panel, PanelBody } from '../libs/ui/panel';
-import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
+import { LabChart, CategoryChart, createBarChart } from './award';
 import * as globals from './globals';
 import { FacetList, ClearFilters } from './search';
 import { getObjectStatuses, sessionToAccessLevel } from './status';
 import { ViewControls } from './view_controls';
-import BodyMap, { systemsField, organField } from './body_map';
 
 /**
  * Generate an array of data from one facet bucket for displaying in a chart, with one array entry
@@ -21,6 +20,17 @@ import BodyMap, { systemsField, organField } from './body_map';
  * @param {array} labels - Experiment status labels.
  * @return {array} - Data extracted from buckets with an order of values corresponding to `labels`.
  */
+
+// Data field for organism
+// We will display different facets depending on the selected organism
+const organismField = 'donors.organism.scientific_name';
+
+// Mapping of shortened organism name and full scientific organism name
+const organismTerms = [
+    'Homo sapiens',
+    'Mus musculus',
+];
+
 function generateStatusData(buckets, labels) {
     // Fill the array to the proper length with zeroes to start with. Actual non-zero data will
     // overwrite the appropriate entries.
@@ -38,17 +48,9 @@ function generateStatusData(buckets, labels) {
     return statusData;
 }
 
-// Data field for organism
-// We will display different facets depending on the selected organism
-const organismField = 'replicates.library.biosample.donor.organism.scientific_name';
-
-// Mapping of shortened organism name and full scientific organism name
-const organismTerms = [
-    'Homo sapiens',
-    'Mus musculus',
-    'Drosophila melanogaster',
-    'Caenorhabditis elegans',
-];
+function gatherEthnicityNames() {
+    return ['Asian', 'European', 'Korean', 'Taiwanese', 'Hispanic or Latin American', 'not reported']
+}
 
 // Column graph of experiment statuses.
 class SummaryStatusChart extends React.Component {
@@ -80,29 +82,28 @@ class SummaryStatusChart extends React.Component {
 
     createChart() {
         const { statusData } = this.props;
-        const accessLevel = sessionToAccessLevel(this.context.session, this.context.session_properties);
-        const experimentStatuses = getObjectStatuses('Dataset', accessLevel);
+        const ethnicityNames = gatherEthnicityNames();
 
         // Initialize data object to pass to createBarChart.
         const data = {
             anisogenicDataset: null,
             isogenicDataset: null,
             unreplicatedDataset: null,
-            labels: experimentStatuses,
+            labels: ethnicityNames,
         };
 
         // Convert statusData to a form createBarChart understands.
-        let facetData = statusData.find(facet => facet.key === 'anisogenic');
-        data.anisogenicDataset = facetData ? generateStatusData(facetData.status.buckets, data.labels) : [];
-        facetData = statusData.find(facet => facet.key === 'isogenic');
-        data.isogenicDataset = facetData ? generateStatusData(facetData.status.buckets, data.labels) : [];
-        facetData = statusData.find(facet => facet.key === 'unreplicated');
-        data.unreplicatedDataset = facetData ? generateStatusData(facetData.status.buckets, data.labels) : [];
+        let facetData = statusData.find(facet => facet.key === 'female');
+        data.anisogenicDataset = facetData ? generateStatusData(facetData.term_name.buckets, data.labels) : [];
+        facetData = statusData.find(facet => facet.key === 'male');
+        data.isogenicDataset = facetData ? generateStatusData(facetData.term_name.buckets, data.labels) : [];
+        facetData = statusData.find(facet => facet.key === 'unknown');
+        data.unreplicatedDataset = facetData ? generateStatusData(facetData.term_name.buckets, data.labels) : [];
 
         // Generate colors to use for each replicate type.
-        const colors = globals.replicateTypeColors.colorList(globals.replicateTypeList);
+        const colors = globals.replicateTypeColors.colorList(globals.donorSexList);
 
-        createBarChart(this.chartId, data, colors, globals.replicateTypeList, 'Replication', this.props.linkUri, (uri) => { this.context.navigate(uri); })
+        createBarChart(this.chartId, data, colors, globals.donorSexList, 'Donor sex', this.props.linkUri, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -110,18 +111,17 @@ class SummaryStatusChart extends React.Component {
     }
 
     updateChart(chart, statusData) {
-        const replicateTypeColors = globals.replicateTypeColors.colorList(globals.replicateTypeList);
-        const accessLevel = sessionToAccessLevel(this.context.session, this.context.session_properties);
-        const experimentStatuses = getObjectStatuses('Dataset', accessLevel);
+        const replicateTypeColors = globals.replicateTypeColors.colorList(globals.donorSexList);
+        const ethnicityNames = gatherEthnicityNames();
 
         // For each replicate type, extract the data for each status to assign to the existing
         // chart's dataset.
         const datasets = [];
-        globals.replicateTypeList.forEach((replicateType, replicateTypeIndex) => {
+        globals.donorSexList.forEach((replicateType, replicateTypeIndex) => {
             const facetData = statusData.find(facet => facet.key === replicateType);
             if (facetData) {
                 // Get an array of replicate data per status from the facet data.
-                const data = generateStatusData(facetData.status.buckets, experimentStatuses);
+                const data = generateStatusData(facetData.term_name.buckets, ethnicityNames);
 
                 datasets.push({
                     backgroundColor: replicateTypeColors[replicateTypeIndex],
@@ -133,7 +133,7 @@ class SummaryStatusChart extends React.Component {
 
         // Update the chart data, then force a redraw of the chart and legend.
         chart.data.datasets = datasets;
-        chart.data.labels = experimentStatuses;
+        chart.data.labels = ethnicityNames;
         chart.update();
         document.getElementById(`${this.chartId}-legend`).innerHTML = chart.generateLegend();
     }
@@ -181,9 +181,9 @@ SummaryStatusChart.contextTypes = {
 const SummaryHorizontalFacets = ({ context, facetList }, reactContext) => {
     let horizFacets;
     if (facetList === 'all') {
-        horizFacets = context.facets.filter(f => ['biosample_ontology.organ_slims', 'biosample_ontology.cell_slims', 'assay_title', 'date_released', 'date_submitted'].includes(f.field));
+        horizFacets = context.facets.filter(f => ['donors.ethnicity.term_name', 'donors.sex', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.name', 'lab.title'].includes(f.field));
     } else {
-        horizFacets = context.facets.filter(f => ['assay_title', 'biosample_ontology.term_name', 'date_released', 'date_submitted'].includes(f.field));
+        horizFacets = context.facets.filter(f => [].includes(f.field));
     }
 
     // Calculate the searchBase, which is the current search query string fragment that can have
@@ -263,7 +263,7 @@ class SummaryData extends React.Component {
         // Find the labs and assay facets in the search results.
         const labFacet = context.facets.find(facet => facet.field === 'lab.title');
         let labs = labFacet ? labFacet.terms : null;
-        const assayFacet = context.facets.find(facet => facet.field === 'assay_title');
+        const assayFacet = context.facets.find(facet => facet.field === 'assay');
         let assays = assayFacet ? assayFacet.terms : null;
 
         const filteredOutLabs = context.filters.filter(c => c.field === 'lab.title!');
@@ -297,7 +297,7 @@ class SummaryData extends React.Component {
         if (context.filters && context.filters.length > 0) {
             searchQuery = context.filters.map(filter => `${filter.field}=${encoding.encodedURIComponentOLD(filter.term)}`).join('&');
         }
-        const linkUri = `/matrix/?${searchQuery}`;
+        const linkUri = `/report/?${searchQuery}`;
         const displayCharts = this.props.displayCharts;
 
         return (
@@ -305,13 +305,7 @@ class SummaryData extends React.Component {
                 {(displayCharts === 'all' || displayCharts === 'donuts') ?
                     <div className="summary-content__snapshot">
                         {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" filteredOutLabs={filteredOutLabs} /> : null}
-                        {assays ? <CategoryChart categoryData={assays} categoryFacet="assay_title" title="Assay" linkUri={linkUri} ident="assay" filteredOutAssays={filteredOutAssays} /> : null}
-                        {statusDataCount ? <SummaryStatusChart statusData={statusData} totalStatusData={statusDataCount} linkUri={linkUri} ident="status" /> : null}
-                    </div>
-                : null}
-                {(displayCharts === 'all' || displayCharts === 'area') ?
-                    <div className="summary-content__statistics">
-                        <ExperimentDate experiments={context} panelCss="summary-content__panel" panelHeadingCss="summary-content__panel-heading" />
+                        {assays ? <CategoryChart categoryData={assays} categoryFacet="assay" title="Assay" linkUri={linkUri} ident="assay" filteredOutAssays={filteredOutAssays} /> : null}
                     </div>
                 : null}
             </div>
@@ -383,7 +377,7 @@ class SummaryBody extends React.Component {
                     <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
                         <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
                         <div className="view-controls-container">
-                            <ViewControls results={this.props.context} alternativeNames={['Search list', 'Tabular report', 'Summary matrix']} />
+                            <ViewControls results={this.props.context} alternativeNames={['Tabular report', 'Summary matrix']} />
                         </div>
                     </div>
                     {(this.state.selectedOrganism === 'Homo sapiens') ?

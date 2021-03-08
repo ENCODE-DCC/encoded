@@ -2,7 +2,12 @@ from pyramid.view import view_config
 
 from snovault.elasticsearch.searches.interfaces import REPORT_TITLE
 from snovault.elasticsearch.searches.interfaces import SEARCH_TITLE
+from snovault.elasticsearch.searches.interfaces import SUMMARY_MATRIX
+from snovault.elasticsearch.searches.interfaces import SUMMARY_TITLE
+from snovault.elasticsearch.searches.interfaces import MATRIX_TITLE
 from snovault.elasticsearch.searches.fields import AllResponseField
+from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponseField
+from snovault.elasticsearch.searches.fields import MissingMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicReportWithFacetsResponseField
@@ -14,6 +19,7 @@ from snovault.elasticsearch.searches.fields import FiltersResponseField
 from snovault.elasticsearch.searches.fields import IDResponseField
 from snovault.elasticsearch.searches.fields import NotificationResponseField
 from snovault.elasticsearch.searches.fields import NonSortableResponseField
+from snovault.elasticsearch.searches.fields import RawMatrixWithAggsResponseField
 from snovault.elasticsearch.searches.fields import RawSearchWithAggsResponseField
 from snovault.elasticsearch.searches.fields import SearchBaseResponseField
 from snovault.elasticsearch.searches.fields import SortResponseField
@@ -30,6 +36,9 @@ def includeme(config):
     config.add_route('searchv2_raw', '/searchv2_raw{slash:/?}')
     config.add_route('searchv2_quick', '/searchv2_quick{slash:/?}')
     config.add_route('report', '/report{slash:/?}')
+    config.add_route('matrixv2_raw', '/matrixv2_raw{slash:/?}')
+    config.add_route('matrix', '/matrix{slash:/?}')
+    config.add_route('summary', '/summary{slash:/?}')
     config.scan(__name__)
 
 
@@ -149,6 +158,78 @@ def report(context, request):
             ColumnsResponseField(),
             NonSortableResponseField(),
             SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='matrixv2_raw', request_method='GET', permission='search')
+def matrixv2_raw(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            RawMatrixWithAggsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES
+            )
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='matrix', request_method='GET', permission='search')
+def matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=MATRIX_TITLE
+            ),
+            TypeResponseField(
+                at_type=[MATRIX_TITLE]
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            BasicMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='summary', request_method='GET', permission='search')
+def summary(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=SUMMARY_TITLE
+            ),
+            TypeResponseField(
+                at_type=[SUMMARY_TITLE]
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            BasicMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name=SUMMARY_MATRIX
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
             DebugQueryResponseField()
         ]
     )
