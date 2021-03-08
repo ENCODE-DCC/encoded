@@ -74,7 +74,7 @@
 }
 
 .mouse-map, .human-map {
-    path {
+    path, polyline, circle, ellipse, rect, polygon {
         &.disabled {
             pointer-events: none;
         }
