@@ -16,32 +16,34 @@
     }
 }
 
+.btn-copy-action {
+    background-color: #fff;
+    transition: background-color 0.2s linear;
+
+    &.flash {
+        background-color: #f80;
+        transition: background-color 0.01s linear;
+    }
+}
+
 // doi: (Digital Object Identifier) references, including Copy button.
 $doi-ref-border-color: #a0a0a0;
 
 .doi-ref {
     display: flex;
-    margin: -12px 0 10px;
+    margin: -8px 0 10px;
 
-    @at-root #{&}__link {
+    @at-root #{&}__id {
         display: flex;
         align-items: center;
         padding: 0 5px;
-        border: 1px solid $doi-ref-border-color;
     }
 
     @at-root #{&}__copy-button {
         margin: 0;
-        background-color: #f0f0f0;
 
         &.btn {
-            background-color: #f0f0f0;
-            border: 1px solid $doi-ref-border-color;
-            border-left: none;
-            border-radius: 0;
-
             .svg-icon-clipboard {
-                margin-right: 3px;
                 height: 14px;
                 fill: none;
                 stroke: #000;

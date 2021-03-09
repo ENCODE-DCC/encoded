@@ -861,7 +861,7 @@ export const useMount = (fn) => React.useEffect(fn, []);
 /**
  * Display a button that copies the given text when the user clicks the button.
  */
-export const CopyButton = ({ label, copyText, css, titlePre, titlePost }) => {
+export const CopyButton = ({ label, copyText, css }) => {
     /** True if browser has clipboard API */
     const [hasClipboard, setHasClipboard] = React.useState(false);
     /** True if user has clicked Copy */
@@ -876,6 +876,10 @@ export const CopyButton = ({ label, copyText, css, titlePre, titlePost }) => {
         setHasCopied(true);
     };
 
+    const handleTransitionEnd = () => {
+        setHasCopied(false);
+    };
+
     useMount(() => {
         // Display Copy button if browser has clipboard API.
         if (navigator.clipboard) {
@@ -885,8 +889,15 @@ export const CopyButton = ({ label, copyText, css, titlePre, titlePost }) => {
 
     if (hasClipboard) {
         return (
-            <button type="button" disabled={!copyText} className={`btn btn-svgicon${css ? ` ${css}` : ''}`} onClick={handleClick} aria-label={label}>
-                {svgIcon('clipboard')} {`${hasCopied ? titlePost : titlePre}`}
+            <button
+                type="button"
+                disabled={!copyText}
+                className={`btn btn-copy-action${css ? ` ${css}` : ''}${hasCopied ? ' flash' : ''}`}
+                onClick={handleClick}
+                onTransitionEnd={handleTransitionEnd}
+                aria-label={label}
+            >
+                {svgIcon('clipboard')}
             </button>
         );
     }
@@ -902,15 +913,9 @@ CopyButton.propTypes = {
     copyText: PropTypes.string,
     /** CSS classes to add to the copy button */
     css: PropTypes.string,
-    /** Custom title for button; "Copy" by default */
-    titlePre: PropTypes.string,
-    /** Custom title for button after Copy clicked; "Copied" by default */
-    titlePost: PropTypes.string,
 };
 
 CopyButton.defaultProps = {
     copyText: '',
     css: 'btn',
-    titlePre: 'Copy',
-    titlePost: 'Copied',
 };

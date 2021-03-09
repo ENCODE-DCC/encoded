@@ -872,14 +872,12 @@ export const DoiRef = ({ context }) => {
         if (doiHref) {
             return (
                 <div className="doi-ref">
-                    <div className="doi-ref__link">{doiDbxref}</div>
                     <CopyButton
                         label="Copy DOI URL"
                         copyText={doiHref}
                         css="btn-xs doi-ref__copy-button"
-                        titlePre="Copy DOI URL"
-                        titlePost="Copied DOI URL"
                     />
+                    <div className="doi-ref__id">{doiDbxref}</div>
                 </div>
             );
         }
