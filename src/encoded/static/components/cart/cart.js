@@ -87,9 +87,12 @@ const analysisSorter = (facetTerms, analyses) => (
  */
 const analysisFieldMap = (analysisTitles, compiledAnalyses) => {
     const queryElements = analysisTitles.reduce((analysisElements, title) => {
-        const matchingCompiledAnalysis = compiledAnalyses.find((compiledAnalysis) => compiledAnalysis.title === title);
-        if (matchingCompiledAnalysis) {
-            const elements = matchingCompiledAnalysis.analysisObjects.map((analysisObject) => `files.analyses.@id=${analysisObject['@id']}`);
+        const matchingCompiledAnalyses = compiledAnalyses.filter((compiledAnalysis) => compiledAnalysis.title === title);
+        if (matchingCompiledAnalyses.length > 0) {
+            const matchingAnalysisIds = matchingCompiledAnalyses.reduce((accAnalyses, compiledAnalyses) => (
+                accAnalyses.concat(compiledAnalyses.analysisObjects.map((analysis) => analysis['@id']))
+            ), []);
+            const elements = _.uniq(matchingAnalysisIds).map((analysisId) => `files.analyses.@id=${analysisId}`);
             return analysisElements.concat(elements);
         }
         return analysisElements;
