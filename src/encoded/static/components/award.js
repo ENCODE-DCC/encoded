@@ -300,6 +300,124 @@ export function createBarChart(chartId, data, colors, replicateLabels, legendTit
     });
 }
 
+export function createNewBarChart(chartId, data, colors, replicateLabels, legendTitle, baseSearchUri, navigate) {
+    return new Promise((resolve) => {
+        require.ensure(['chart.js'], (require) => {
+            const Chart = require('chart.js');
+            const datasets = [];
+            if (data.unknownDataset.some(x => x > 0)) {
+                datasets.push({ label: 'unknown', data: data.unknownDataset, backgroundColor: colors[0] });
+            }
+            if (data.maleDataset.some(x => x > 0)) {
+                datasets.push({ label: 'male', data: data.maleDataset, backgroundColor: colors[1] });
+            }
+            if (data.femaleDataset.some(x => x > 0)) {
+                datasets.push({ label: 'female', data: data.femaleDataset, backgroundColor: colors[2] });
+            }
+            for (let i = 0; i < datasets.length; i += 1) {
+                datasets[i].backgroundColor = colors[i];
+            }
+
+            // Create the chart.
+            const canvas = document.getElementById(`${chartId}-chart`);
+            const parent = document.getElementById(chartId);
+            canvas.width = parent.offsetWidth;
+            canvas.height = parent.offsetHeight;
+            canvas.style.width = `${parent.offsetWidth}px`;
+            canvas.style.height = `${parent.offsetHeight}px`;
+            const ctx = canvas.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets,
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    legend: {
+                        display: false,
+                    },
+                    scales: {
+                        xAxes: [{
+                            scaleLabel: {
+                                display: false,
+                            },
+                            gridLines: {
+                            },
+                            stacked: true,
+                            ticks: {
+                                autoSkip: false,
+                            },
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                display: false,
+                                color: '#fff',
+                                zeroLineColor: '#fff',
+                                zeroLineWidth: 0,
+                            },
+                            stacked: true,
+                        }],
+                    },
+                    animation: {
+                        duration: 0,
+                    },
+                    legendCallback: (chartInstance) => {
+                        const LegendLabels = [];
+                        const dataColors = [];
+                        // If data array has value, add to legend
+                        for (let i = 0; i < chartInstance.data.datasets.length; i += 1) {
+                            LegendLabels.push(chartInstance.data.datasets[i].label);
+                            dataColors.push(chartInstance.data.datasets[i].backgroundColor);
+                        }
+                        const text = [];
+                        if (legendTitle) {
+                            text.push(`<div class="legend-title">${legendTitle}</div>`);
+                        }
+                        text.push('<ul>');
+                        for (let i = 0; i < LegendLabels.length; i += 1) {
+                            if (LegendLabels[i]) {
+                                text.push(`<li><a href="${baseSearchUri}&donors.sex=${LegendLabels[i]}">`);
+                                text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${dataColors[i]}"></i>`);
+                                text.push(`<span class="chart-legend-label">${LegendLabels[i]}</span>`);
+                                text.push('</a></li>');
+                            }
+                        }
+                        text.push('</ul>');
+                        return text.join('');
+                    },
+                    onClick: function onClick(e) {
+                        const activePoints = chart.getElementAtEvent(e);
+
+                        if (activePoints[0]) { // if click on wrong area, do nothing
+                            const clickedElementIndex = activePoints[0]._index;
+                            const clickedElementdataset = activePoints[0]._datasetIndex;
+                            const term = chart.data.labels[clickedElementIndex];
+                            const item = chart.data.datasets[clickedElementdataset].label;
+                            // chart.options.onClick.baseSearchUri is created or altered based on user input of selected Genus Buttons
+                            // Each type of Object (e.g. Experiments, Annotations, Biosample, AntibodyLot) has a unique
+                            //      query string for the corresponding report search -- cannot simply append something
+                            //      to end of baseSearchUri, as baseSearchUri ends with {searchtype}=
+                            //      so, query string specifying genus must end up somewhere in the middle of the string
+                            //      that is baseSearchUri.
+                            // chart.options.onClick.baseSearchUri must be defined in the type of chart (StatusChart, CategoryChart)
+                            //      that is passed to the createDonutChart or createBarChart functions because cannot directly
+                            //      make changes to the param baseSearchUri in updateChart().
+                            if (chart.options.onClick.baseSearchUri) {
+                                navigate(`${chart.options.onClick.baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
+                            } else {
+                                navigate(`${baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
+                            }
+                        }
+                    },
+                },
+            });
+            document.getElementById(`${chartId}-legend`).innerHTML = chart.generateLegend();
+            resolve(chart);
+        }, 'chartjs');
+    });
+}
 
 // Display and handle clicks in the chart of labs.
 export class LabChart extends React.Component {

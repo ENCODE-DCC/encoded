@@ -330,6 +330,7 @@ export const donorSexList = [
 export const projectColors = new DataColors(projectList);
 export const biosampleTypeColors = new DataColors(biosampleTypeList);
 export const replicateTypeColors = new DataColors(replicateTypeList);
+export const donorSexColors = new DataColors(donorSexList);
 
 
 // Map view icons to svg icons.

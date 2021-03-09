@@ -5,8 +5,9 @@ import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import QueryString from '../libs/query_string';
 import { Panel, PanelBody } from '../libs/ui/panel';
-import { LabChart, CategoryChart, createBarChart } from './award';
+import { LabChart, CategoryChart, createNewBarChart } from './award';
 import * as globals from './globals';
+import { requestSearch } from './objectutils';
 import { FacetList, ClearFilters } from './search';
 import { getObjectStatuses, sessionToAccessLevel } from './status';
 import { ViewControls } from './view_controls';
@@ -48,9 +49,6 @@ function generateStatusData(buckets, labels) {
     return statusData;
 }
 
-function gatherEthnicityNames() {
-    return ['Asian', 'European', 'Korean', 'Taiwanese', 'Hispanic or Latin American', 'not reported']
-}
 
 // Column graph of experiment statuses.
 class SummaryStatusChart extends React.Component {
@@ -82,28 +80,35 @@ class SummaryStatusChart extends React.Component {
 
     createChart() {
         const { statusData } = this.props;
-        const ethnicityNames = gatherEthnicityNames();
+
+        var ethnicityFacet = []
+        this.props.facets.forEach(function(element) {
+            if (element['field'] == 'donors.ethnicity.term_name') {
+                ethnicityFacet = element['terms'];
+            }
+        });
+        const ethnicityNames = Array.from(ethnicityFacet, x => x['key']);
 
         // Initialize data object to pass to createBarChart.
         const data = {
-            anisogenicDataset: null,
-            isogenicDataset: null,
-            unreplicatedDataset: null,
+            femaleDataset: null,
+            maleDataset: null,
+            unknownDataset: null,
             labels: ethnicityNames,
         };
 
         // Convert statusData to a form createBarChart understands.
         let facetData = statusData.find(facet => facet.key === 'female');
-        data.anisogenicDataset = facetData ? generateStatusData(facetData.term_name.buckets, data.labels) : [];
+        data.femaleDataset = facetData ? generateStatusData(facetData["donors.ethnicity.term_name"].buckets, data.labels) : [];
         facetData = statusData.find(facet => facet.key === 'male');
-        data.isogenicDataset = facetData ? generateStatusData(facetData.term_name.buckets, data.labels) : [];
+        data.maleDataset = facetData ? generateStatusData(facetData["donors.ethnicity.term_name"].buckets, data.labels) : [];
         facetData = statusData.find(facet => facet.key === 'unknown');
-        data.unreplicatedDataset = facetData ? generateStatusData(facetData.term_name.buckets, data.labels) : [];
+        data.unknownDataset = facetData ? generateStatusData(facetData["donors.ethnicity.term_name"].buckets, data.labels) : [];
 
-        // Generate colors to use for each replicate type.
-        const colors = globals.replicateTypeColors.colorList(globals.donorSexList);
+        // Generate colors to use for each sex value.
+        const colors = globals.donorSexColors.colorList(globals.donorSexList);
 
-        createBarChart(this.chartId, data, colors, globals.donorSexList, 'Donor sex', this.props.linkUri, (uri) => { this.context.navigate(uri); })
+        createNewBarChart(this.chartId, data, colors, globals.donorSexList, 'Donor sex', this.props.linkUri, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -111,22 +116,29 @@ class SummaryStatusChart extends React.Component {
     }
 
     updateChart(chart, statusData) {
-        const replicateTypeColors = globals.replicateTypeColors.colorList(globals.donorSexList);
-        const ethnicityNames = gatherEthnicityNames();
+        const donorSexColors = globals.donorSexColors.colorList(globals.donorSexList);
 
-        // For each replicate type, extract the data for each status to assign to the existing
+        var ethnicityFacet = []
+        this.props.facets.forEach(function(element) {
+            if (element['field'] == 'donors.ethnicity.term_name') {
+                ethnicityFacet = element['terms'];
+            }
+        });
+        const ethnicityNames = Array.from(ethnicityFacet, x => x['key']);
+
+        // For each sex value, extract the data for each status to assign to the existing
         // chart's dataset.
         const datasets = [];
-        globals.donorSexList.forEach((replicateType, replicateTypeIndex) => {
-            const facetData = statusData.find(facet => facet.key === replicateType);
+        globals.donorSexList.forEach((donorSex, donorSexIndex) => {
+            const facetData = statusData.find(facet => facet.key === donorSex);
             if (facetData) {
                 // Get an array of replicate data per status from the facet data.
-                const data = generateStatusData(facetData.term_name.buckets, ethnicityNames);
+                const data = generateStatusData(facetData["donors.ethnicity.term_name"].buckets, ethnicityNames);
 
                 datasets.push({
-                    backgroundColor: replicateTypeColors[replicateTypeIndex],
+                    backgroundColor: donorSexColors[donorSexIndex],
                     data,
-                    label: replicateType,
+                    label: donorSex,
                 });
             }
         });
@@ -147,7 +159,7 @@ class SummaryStatusChart extends React.Component {
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Status
+                    Donors
                 </div>
                 {totalStatusData ?
                     <div className="award-charts__visual">
@@ -306,6 +318,7 @@ class SummaryData extends React.Component {
                     <div className="summary-content__snapshot">
                         {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" filteredOutLabs={filteredOutLabs} /> : null}
                         {assays ? <CategoryChart categoryData={assays} categoryFacet="assay" title="Assay" linkUri={linkUri} ident="assay" filteredOutAssays={filteredOutAssays} /> : null}
+                        {statusDataCount ? <SummaryStatusChart statusData={statusData} totalStatusData={statusDataCount} linkUri={linkUri} facets={context.facets} ident="term_name" /> : null}
                     </div>
                 : null}
             </div>

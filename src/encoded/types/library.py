@@ -86,37 +86,11 @@ class Library(Item, CalculatedAward, CalculatedBiosampleOntologies):
         return sorted(all_donors)
 
 
-    matrix = {
-        'y': {
-            'group_by': ['donors.ethnicity', 'biosample_ontologies.term_name'],
-            'label': 'Biosample',
-        },
-        'x': {
-            'group_by': ['assay', 'protocol.title'],
-            'label': 'Protocol',
-        },
-    }
-
-
-    summary = {
-        'y': {
-            'group_by': ['donors.ethnicity', 'biosample_ontologies.term_name'],
-            'label': 'Biosample',
-        },
-        'x': {
-            'group_by': ['assay', 'protocol.title'],
-            'label': 'Protocol',
-        },
-    }
-
-
     summary_matrix = {
-        'y': {
-            'group_by': ['donors.ethnicity', 'biosample_ontologies.term_name'],
-            'label': 'Biosample',
-        },
         'x': {
-            'group_by': ['assay', 'protocol.title'],
-            'label': 'Protocol',
+            'group_by': 'donors.ethnicity.term_name'
         },
+        'y': {
+            'group_by': ['donors.sex']
+        }
     }
