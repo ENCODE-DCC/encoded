@@ -14,7 +14,7 @@ import { CopyButton, useMount } from '../objectutils';
  * URL gets placed into a read-only <input> element.
  */
 const CartShareComponent = ({ userCart, locationHref, closeShareCart, inProgress }) => {
-    /** Modal Visit Sharable Cart button */
+    /** Modal Visit Shareable Cart button */
     const submitRef = React.useRef(null);
 
     // Generate the shared cart URL.
@@ -24,10 +24,10 @@ const CartShareComponent = ({ userCart, locationHref, closeShareCart, inProgress
         search: '',
         query: '',
     });
-    const sharableUrl = url.format(parsedUrl);
+    const shareableUrl = url.format(parsedUrl);
 
     useMount(() => {
-        // Focus on the Visit Sharable Cart button on mount.
+        // Focus on the Visit Shareable Cart button on mount.
         submitRef.current.focus();
     });
 
@@ -40,14 +40,14 @@ const CartShareComponent = ({ userCart, locationHref, closeShareCart, inProgress
                     for all people depending on whether they have logged in or not.
                 </p>
                 <div className="cart__share-url">
-                    <input type="text" aria-label="Sharable cart URL" value={sharableUrl} readOnly />
-                    <CopyButton label="Copy shared cart URL" copyText={sharableUrl} css="btn-sm cart__share-button" />
+                    <input type="text" aria-label="Shareable cart URL" value={shareableUrl} readOnly />
+                    <CopyButton label="Copy shared cart URL" copyText={shareableUrl} css="btn-sm cart__share-button" />
                 </div>
             </ModalBody>
             <ModalFooter
                 closeModal={closeShareCart}
                 cancelTitle="Close"
-                submitBtn={<a data-bypass="true" ref={submitRef} disabled={inProgress} target="_self" className="btn btn-info" href={sharableUrl}>Visit sharable cart</a>}
+                submitBtn={<a data-bypass="true" ref={submitRef} disabled={inProgress} target="_self" className="btn btn-info" href={shareableUrl}>Visit shareable cart</a>}
                 closeId="share-cart-close"
             />
         </Modal>
