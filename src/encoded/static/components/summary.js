@@ -365,26 +365,22 @@ class SummaryBody extends React.Component {
         const clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('?type') > 0;
         const context = this.props.context;
         return (
-            <div className="summary-header">
-                <div className="summary-controls">
-                    <div className="search-results">
-                        <div className="search-results__facets">
-                            <FacetList context={context} facets={context.facets} filters={context.filters} searchBase={searchQuery} docTypeTitleSuffix="summary" />
-                        </div>
-                        <div className="search-results__report-list">
-                            <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
-                                <h4>There {this.props.context.total > 1 ? 'are' : 'is'} {this.props.context.total} result{this.props.context.total > 1 ? 's' : ''}</h4>
-                                <div className="view-controls-container">
-                                    <ViewControls results={this.props.context} />
-                                </div>
-                            </div>
-                            <React.Fragment>
-                                <div className="summary-content">
-                                    <SummaryData context={this.props.context} displayCharts={'all'} />
-                                </div>
-                            </React.Fragment>
+            <div className="search-results">
+                <div className="search-results__facets">
+                    <FacetList context={context} facets={context.facets} filters={context.filters} searchBase={searchQuery} docTypeTitleSuffix="summary" />
+                </div>
+                <div className="search-results__report-list">
+                    <h4>{this.props.context.total} result{this.props.context.total > 1 ? 's' : ''}</h4>
+                    <div className="view-controls-container">
+                        <div className="results-table-control__main">
+                            <ViewControls results={this.props.context} />
                         </div>
                     </div>
+                    <React.Fragment>
+                        <div className="summary-content">
+                            <SummaryData context={this.props.context} displayCharts={'all'} />
+                        </div>
+                    </React.Fragment>
                 </div>
             </div>
         );

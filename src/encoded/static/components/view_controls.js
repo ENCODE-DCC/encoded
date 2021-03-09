@@ -54,7 +54,6 @@ import { svgIcon } from '../libs/svg-icons';
  * immutability.
  */
 export const ViewControlTypes = {
-    SEARCH: 'Search',
     REPORT: 'Report',
     MATRIX: 'Matrix',
     SUMMARY: 'Summary',
@@ -70,7 +69,6 @@ Object.freeze(ViewControlTypes);
  * the matrix view control button.
  */
 const viewPathMap = {
-    Search: { path: 'search', icon: 'search', label: 'View results as a list' },
     Report: { path: 'report', icon: 'table', label: 'View tabular report' },
     Matrix: { path: 'matrix', icon: 'matrix', label: 'View summary matrix' },
     Summary: { path: 'summary', icon: 'summary', label: 'View summary report' },
@@ -81,7 +79,6 @@ const viewPathMap = {
  * Specifies the order of the view buttons in the UI. Extend this array if you add new views.
  */
 const viewOrder = [
-    'Search',
     'Report',
     'Matrix',
     'Summary',
@@ -119,11 +116,7 @@ class ViewControl {
      * @param {func} typeFilter Callback for type-specific filtering of views
      */
     register(type, controlTypes, typeFilter) {
-        const defaultViewControlTypes = [ViewControlTypes.SEARCH];
-        if (!parentTypes.includes(type)) {
-            // Add report view if object type has no child types.
-            defaultViewControlTypes.push(ViewControlTypes.REPORT);
-        }
+        const defaultViewControlTypes = [ViewControlTypes.REPORT];
         this._registry[type] = { types: new Set(controlTypes.concat(defaultViewControlTypes)) };
         if (typeFilter) {
             this._registry[type].typeFilter = typeFilter;
@@ -148,11 +141,7 @@ class ViewControl {
         }
 
         // Unregistered search result type. Return all default views that apply to the type.
-        const defaultViewControlTypes = { types: [ViewControlTypes.SEARCH] };
-        if (!parentTypes.includes(resultType)) {
-            // Add report view if object type has no child types.
-            defaultViewControlTypes.types.push(ViewControlTypes.REPORT);
-        }
+        const defaultViewControlTypes = { types: [ViewControlTypes.REPORT] };
         return defaultViewControlTypes;
     }
 }
