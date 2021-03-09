@@ -1081,7 +1081,7 @@ def check_experiment_wgbs_standards(
     bismark_metrics = get_metrics(
         cpg_quantifications_encode3, 'BismarkQualityMetric', desired_assembly)
     cpg_metrics = get_metrics(
-        cpg_quantifications_encode3, 'CpgCorrelationQualityMetric', desired_assembly)
+        cpg_quantifications_encode3, 'CorrelationQualityMetric', desired_assembly)
     samtools_metrics = get_metrics(
         cpg_quantifications_encode3,
         'SamtoolsFlagstatsQualityMetric',
@@ -1948,13 +1948,13 @@ def check_wgbs_coverage_ENCODE4(
 
 def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
     for m in cpg_metrics:
-        if 'Pearson Correlation Coefficient' in m:
-            if m['Pearson Correlation Coefficient'] < threshold:
+        if 'Pearson correlation' in m:
+            if m['Pearson correlation'] < threshold:
                 detail = ('ENCODE experiment processed by {} '
                     'pipeline has CpG quantification Pearson Correlation Coefficient of '
                     '{}, while a value >={} is required.'.format(
                         pipeline_title,
-                        m['Pearson Correlation Coefficient'],
+                        m['Pearson correlation'],
                         threshold
                     )
                 )
