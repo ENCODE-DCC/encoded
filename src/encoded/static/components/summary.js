@@ -108,7 +108,7 @@ class SummaryStatusChart extends React.Component {
         // Generate colors to use for each sex value.
         const colors = globals.donorSexColors.colorList(globals.donorSexList);
 
-        createNewBarChart(this.chartId, data, colors, globals.donorSexList, 'Donor sex', this.props.linkUri, (uri) => { this.context.navigate(uri); })
+        createNewBarChart(this.chartId, data, colors, globals.donorSexList, this.props.linkUri, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -193,7 +193,7 @@ SummaryStatusChart.contextTypes = {
 const SummaryHorizontalFacets = ({ context, facetList }, reactContext) => {
     let horizFacets;
     if (facetList === 'all') {
-        horizFacets = context.facets.filter(f => ['donors.ethnicity.term_name', 'donors.sex', 'donors.life_stage', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title', 'lab.title'].includes(f.field));
+        horizFacets = context.facets.filter(f => ['donors.organism.scientific_name', 'donors.ethnicity.term_name', 'donors.sex', 'donors.life_stage', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title', 'lab.title'].includes(f.field));
     } else {
         horizFacets = context.facets.filter(f => [].includes(f.field));
     }
@@ -373,20 +373,6 @@ class SummaryBody extends React.Component {
                     <ClearFilters searchUri={this.props.context.clear_filters} enableDisplay={!!clearButton} />
                 </div>
                 <div className="summary-controls">
-                    <div className="organism-button-instructions">Choose an organism:</div>
-                    <div className="organism-button-container">
-                        {organismTerms.map(term =>
-                            <button
-                                id={term}
-                                onClick={e => this.chooseOrganism(e)}
-                                className={`organism-button ${term.replace(' ', '-')} ${this.state.selectedOrganism === term ? 'active' : ''}`}
-                                key={term}
-                            >
-                                <img src={`/static/img/bodyMap/organisms/${term.replace(' ', '-')}.png`} alt={term} />
-                                <span>{term}</span>
-                            </button>
-                        )}
-                    </div>
                     <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
                         <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
                         <div className="view-controls-container">

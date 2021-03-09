@@ -300,7 +300,7 @@ export function createBarChart(chartId, data, colors, replicateLabels, legendTit
     });
 }
 
-export function createNewBarChart(chartId, data, colors, replicateLabels, legendTitle, baseSearchUri, navigate) {
+export function createNewBarChart(chartId, data, colors, replicateLabels, baseSearchUri, navigate) {
     return new Promise((resolve) => {
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
@@ -363,30 +363,6 @@ export function createNewBarChart(chartId, data, colors, replicateLabels, legend
                     animation: {
                         duration: 0,
                     },
-                    legendCallback: (chartInstance) => {
-                        const LegendLabels = [];
-                        const dataColors = [];
-                        // If data array has value, add to legend
-                        for (let i = 0; i < chartInstance.data.datasets.length; i += 1) {
-                            LegendLabels.push(chartInstance.data.datasets[i].label);
-                            dataColors.push(chartInstance.data.datasets[i].backgroundColor);
-                        }
-                        const text = [];
-                        if (legendTitle) {
-                            text.push(`<div class="legend-title">${legendTitle}</div>`);
-                        }
-                        text.push('<ul>');
-                        for (let i = 0; i < LegendLabels.length; i += 1) {
-                            if (LegendLabels[i]) {
-                                text.push(`<li><a href="${baseSearchUri}&donors.sex=${LegendLabels[i]}">`);
-                                text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${dataColors[i]}"></i>`);
-                                text.push(`<span class="chart-legend-label">${LegendLabels[i]}</span>`);
-                                text.push('</a></li>');
-                            }
-                        }
-                        text.push('</ul>');
-                        return text.join('');
-                    },
                     onClick: function onClick(e) {
                         const activePoints = chart.getElementAtEvent(e);
 
@@ -413,7 +389,6 @@ export function createNewBarChart(chartId, data, colors, replicateLabels, legend
                     },
                 },
             });
-            document.getElementById(`${chartId}-legend`).innerHTML = chart.generateLegend();
             resolve(chart);
         }, 'chartjs');
     });
