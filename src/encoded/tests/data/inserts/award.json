@@ -6,6 +6,7 @@
         "principal_investigators": [
             "agreka@bwh.harvard.ude"
         ],
+        "coordinating_pi": "agreka@bwh.harvard.ude",
         "project": "HCA Seed Networks",
         "status": "current",
         "title": "A Comprehensive Single Cell Atlas of the Human Kidney",
@@ -25,6 +26,7 @@
         "principal_investigators": [
             "jimmie.ye@ucsf.ude"
         ],
+        "coordinating_pi": "jimmie.ye@ucsf.ude",
         "project": "HCA Seed Networks",
         "status": "current",
         "title": "Human Immune Variation Across Genetic Backgrounds, Gender and Time",
@@ -43,6 +45,7 @@
             "quisque.consequat@venenatis.magna",
             "pas2182@columbia.ude"
         ],
+        "coordinating_pi": "pas2182@columbia.ude",
         "project": "HCA Seed Networks",
         "status": "disabled",
         "title": "A Reference Cell Atlas of Human Liver Diversity Over a Lifespan",
@@ -60,6 +63,7 @@
         "principal_investigators": [
             "netus.lorem@risus.lobortis"
         ],
+        "coordinating_pi": "netus.lorem@risus.lobortis",
         "project": "HCA Seed Networks",
         "status": "deleted",
         "title": "Developing Robust Methods to Process Solid Tissues for Single-Cell RNA-sequencing",

@@ -218,6 +218,9 @@
         "award.project": {
             "title": "Project"
         },
+        "award.coordinating_pi.title": {
+            "title": "Coordinating PI"
+        },
         "award.name": {
             "title": "Award name"
         },
@@ -278,6 +281,9 @@
         },
         "award.name": {
             "title": "Award name"
+        },
+        "award.coordinating_pi.title": {
+            "title": "Coordinating PI"
         },
         "lab.title": {
             "title": "Lab"

@@ -26,6 +26,7 @@ class Library(Item, CalculatedAward, CalculatedBiosampleOntologies):
     rev = {}
     embedded = [
         'award',
+        'award.coordinating_pi',
         'lab',
         'protocol',
         'donors',
