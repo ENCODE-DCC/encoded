@@ -618,7 +618,6 @@ export class CategoryChart extends React.Component {
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
                         </div>
-                        <div id={`${id}-legend`} className="award-charts__legend" />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>

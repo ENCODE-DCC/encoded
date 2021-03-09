@@ -276,14 +276,17 @@ class SummaryData extends React.Component {
         let labs = labFacet ? labFacet.terms : null;
         const assayFacet = context.facets.find(facet => facet.field === 'assay');
         let assays = assayFacet ? assayFacet.terms : null;
+        const awardFacet = context.facets.find(facet => facet.field === 'award.coordinating_pi.title');
+        let awards = awardFacet ? awardFacet.terms : null;
 
         const filteredOutLabs = context.filters.filter(c => c.field === 'lab.title!');
-        const filteredOutAssays = context.filters.filter(c => c.field === 'assay_title!');
+        const filteredOutAssays = context.filters.filter(c => c.field === 'assay!');
+        const filteredOutAwards = context.filters.filter(c => c.field === 'award.coordinating_pi.title!');
 
         // Filter the assay list if any assay facets have been selected so that the assay graph will be
         // filtered accordingly. Find assay_title filters. Same applies to the lab filters.
         if (context.filters && context.filters.length > 0) {
-            const assayTitleFilters = context.filters.filter(filter => filter.field === 'assay_title');
+            const assayTitleFilters = context.filters.filter(filter => filter.field === 'assay');
             if (assayTitleFilters.length > 0) {
                 const assayTitleFilterTerms = assayTitleFilters.map(filter => filter.term);
                 assays = assays.filter(assayItem => assayTitleFilterTerms.indexOf(assayItem.key) !== -1);
@@ -292,6 +295,11 @@ class SummaryData extends React.Component {
             if (labFilters.length > 0) {
                 const labFilterTerms = labFilters.map(filter => filter.term);
                 labs = labs.filter(labItem => labFilterTerms.indexOf(labItem.key) !== -1);
+            }
+            const awardNameFilters = context.filters.filter(filter => filter.field === 'award.coordinating_pi.title');
+            if (awardNameFilters.length > 0) {
+                const awardNameFilterTerms = awardNameFilters.map(filter => filter.term);
+                awards = awards.filter(awardItem => awardNameFilterTerms.indexOf(awardItem.key) !== -1);
             }
         }
 
@@ -315,9 +323,9 @@ class SummaryData extends React.Component {
             <div className="summary-content__data">
                 {(displayCharts === 'all' || displayCharts === 'donuts') ?
                     <div className="summary-content__snapshot">
-                        {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" filteredOutLabs={filteredOutLabs} /> : null}
                         {assays ? <CategoryChart categoryData={assays} categoryFacet="assay" title="Assay" linkUri={linkUri} ident="assay" filteredOutAssays={filteredOutAssays} /> : null}
                         {statusDataCount ? <SummaryStatusChart statusData={statusData} totalStatusData={statusDataCount} linkUri={linkUri} facets={context.facets} ident="term_name" /> : null}
+                        {awards ? <CategoryChart categoryData={awards} categoryFacet="award.coordinating_pi.title" title="Award" linkUri={linkUri} ident="award" filteredOutAwards={filteredOutAwards} /> : null}
                     </div>
                 : null}
             </div>
@@ -372,9 +380,7 @@ class SummaryBody extends React.Component {
                 <div className="search-results__report-list">
                     <h4>{this.props.context.total} result{this.props.context.total > 1 ? 's' : ''}</h4>
                     <div className="view-controls-container">
-                        <div className="results-table-control__main">
-                            <ViewControls results={this.props.context} />
-                        </div>
+                        <ViewControls results={this.props.context} alternativeNames={['Tabular report']} />
                     </div>
                     <React.Fragment>
                         <div className="summary-content">
