@@ -47,6 +47,12 @@
                 "linkTo": "User"
             }
         },
+        "coordinating_pi": {
+            "title": "Coordinating PI",
+            "description": "Coordinating PI of the grant.",
+            "type": "string",
+            "linkTo": "User"
+        },
         "collaborators": {
             "title": "Collaborators",
             "description": "Collaborators of the grant.",

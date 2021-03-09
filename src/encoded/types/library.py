@@ -26,6 +26,7 @@ class Library(Item, CalculatedAward, CalculatedBiosampleOntologies):
     rev = {}
     embedded = [
         'award',
+        'award.coordinating_pi',
         'lab',
         'protocol',
         'donors',
@@ -84,3 +85,13 @@ class Library(Item, CalculatedAward, CalculatedBiosampleOntologies):
             bs_obj = request.embed(bs, '@@object')
             all_donors.update(bs_obj.get('donors'))
         return sorted(all_donors)
+
+
+    summary_matrix = {
+        'x': {
+            'group_by': 'donors.ethnicity.term_name'
+        },
+        'y': {
+            'group_by': ['donors.sex']
+        }
+    }

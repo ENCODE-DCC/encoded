@@ -319,11 +319,18 @@ export const replicateTypeList = [
     'anisogenic',
 ];
 
+export const donorSexList = [
+    'female',
+    'male',
+    'unknown',
+];
+
 
 // Make `project` and `biosample_type` color mappings for downstream modules to use.
 export const projectColors = new DataColors(projectList);
 export const biosampleTypeColors = new DataColors(biosampleTypeList);
 export const replicateTypeColors = new DataColors(replicateTypeList);
+export const donorSexColors = new DataColors(donorSexList);
 
 
 // Map view icons to svg icons.

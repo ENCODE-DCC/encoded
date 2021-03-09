@@ -42,6 +42,7 @@ class Dataset(Item):
         'libraries.lab',
         'libraries.biosample_ontologies',
         'award',
+        'award.coordinating_pi',
         'references',
         'corresponding_contributors',
         'contributors'
