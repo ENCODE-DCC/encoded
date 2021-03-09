@@ -91,6 +91,7 @@ export const MouseList = {
     'lymph node': ['cls-28'],
     'mammary gland': ['breast'],
     'musculature of body': ['cls-14', 'cls-15', 'cls-16'],
+    nose: ['cls-11'],
     ovary: ['cls-6', 'cls-7', 'cls-35'],
     pancreas: ['cls-12'],
     'skin of body': ['cls-1', 'cls-2', 'cls-32', 'cls-3', 'cls-limb1', 'cls-limb2', 'cls-10'],
