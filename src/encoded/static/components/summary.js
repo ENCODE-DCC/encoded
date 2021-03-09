@@ -393,23 +393,12 @@ class SummaryBody extends React.Component {
                             <ViewControls results={this.props.context} alternativeNames={['Tabular report', 'Summary matrix']} />
                         </div>
                     </div>
-                    {(this.state.selectedOrganism === 'Homo sapiens') ?
-                        <React.Fragment>
-                            <div className="flex-container">
-                                <SummaryData context={this.props.context} displayCharts={'donuts'} />
-                            </div>
-                            <div className="summary-content">
-                                <SummaryData context={this.props.context} displayCharts={'area'} />
-                            </div>
-                        </React.Fragment>
-                    :
-                        <React.Fragment>
-                            <SummaryHorizontalFacets context={this.props.context} facetList={'all'} />
-                            <div className="summary-content">
-                                <SummaryData context={this.props.context} displayCharts={'all'} />
-                            </div>
-                        </React.Fragment>
-                    }
+                    <React.Fragment>
+                        <SummaryHorizontalFacets context={this.props.context} facetList={'all'} />
+                        <div className="summary-content">
+                            <SummaryData context={this.props.context} displayCharts={'all'} />
+                        </div>
+                    </React.Fragment>
                 </div>
             </div>
         );
