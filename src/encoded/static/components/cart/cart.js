@@ -5,6 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
+import { encodedURIComponent } from '../../libs/query_encoding';
 import { svgIcon } from '../../libs/svg-icons';
 import * as DropdownButton from '../../libs/ui/button';
 import * as Pager from '../../libs/ui/pager';
@@ -85,20 +86,9 @@ const analysisSorter = (facetTerms, analyses) => (
  *
  * @return {string} Combined query string selecting file.analyses @ids.
  */
-const analysisFieldMap = (analysisTitles, compiledAnalyses) => {
-    const queryElements = analysisTitles.reduce((analysisElements, title) => {
-        const matchingCompiledAnalyses = compiledAnalyses.filter((compiledAnalysis) => compiledAnalysis.title === title);
-        if (matchingCompiledAnalyses.length > 0) {
-            const matchingAnalysisIds = matchingCompiledAnalyses.reduce((accAnalyses, compiledAnalyses) => (
-                accAnalyses.concat(compiledAnalyses.analysisObjects.map((analysis) => analysis['@id']))
-            ), []);
-            const elements = _.uniq(matchingAnalysisIds).map((analysisId) => `files.analyses.@id=${analysisId}`);
-            return analysisElements.concat(elements);
-        }
-        return analysisElements;
-    }, []);
-    return queryElements.join('&');
-};
+const analysisFieldMap = (analysisTitles) => (
+    analysisTitles.map((title) => `files.analyses.title=${encodedURIComponent(title)}`).join('&')
+);
 
 
 /**
