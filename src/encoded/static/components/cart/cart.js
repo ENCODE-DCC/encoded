@@ -82,9 +82,8 @@ const analysisSorter = (facetTerms, analyses) => (
  * analyses with the given titles. More than one title can be selected, and more than one analysis
  * can correspond to a title, so all these get combined into one query string.
  * @param {array} analysisTitles Selected analysis titles from the facet.
- * @param {array} compiledAnalyses All analyses compiled from all experiments in the cart.
  *
- * @return {string} Combined query string selecting file.analyses @ids.
+ * @return {string} Combined query string selecting file.analyses titles.
  */
 const analysisFieldMap = (analysisTitles) => (
     analysisTitles.map((title) => `files.analyses.title=${encodedURIComponent(title)}`).join('&')
