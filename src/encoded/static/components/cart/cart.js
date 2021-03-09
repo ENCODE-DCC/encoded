@@ -5,6 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
+import { encodedURIComponent } from '../../libs/query_encoding';
 import { svgIcon } from '../../libs/svg-icons';
 import * as DropdownButton from '../../libs/ui/button';
 import * as Pager from '../../libs/ui/pager';
@@ -81,21 +82,12 @@ const analysisSorter = (facetTerms, analyses) => (
  * analyses with the given titles. More than one title can be selected, and more than one analysis
  * can correspond to a title, so all these get combined into one query string.
  * @param {array} analysisTitles Selected analysis titles from the facet.
- * @param {array} compiledAnalyses All analyses compiled from all experiments in the cart.
  *
- * @return {string} Combined query string selecting file.analyses @ids.
+ * @return {string} Combined query string selecting file.analyses titles.
  */
-const analysisFieldMap = (analysisTitles, compiledAnalyses) => {
-    const queryElements = analysisTitles.reduce((analysisElements, title) => {
-        const matchingCompiledAnalysis = compiledAnalyses.find((compiledAnalysis) => compiledAnalysis.title === title);
-        if (matchingCompiledAnalysis) {
-            const elements = matchingCompiledAnalysis.analysisObjects.map((analysisObject) => `files.analyses=${analysisObject['@id']}`);
-            return analysisElements.concat(elements);
-        }
-        return analysisElements;
-    }, []);
-    return queryElements.join('&');
-};
+const analysisFieldMap = (analysisTitles) => (
+    analysisTitles.map((title) => `files.analyses.title=${encodedURIComponent(title)}`).join('&')
+);
 
 
 /**
