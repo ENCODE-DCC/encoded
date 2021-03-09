@@ -166,7 +166,6 @@ class SummaryStatusChart extends React.Component {
                         <div id={this.chartId} className="award-charts__canvas">
                             <canvas id={`${this.chartId}-chart`} />
                         </div>
-                        <div id={`${this.chartId}-legend`} className="award-charts__legend" />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
@@ -193,7 +192,7 @@ SummaryStatusChart.contextTypes = {
 const SummaryHorizontalFacets = ({ context, facetList }, reactContext) => {
     let horizFacets;
     if (facetList === 'all') {
-        horizFacets = context.facets.filter(f => ['donors.ethnicity.term_name', 'donors.sex', 'donors.life_stage', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title', 'lab.title'].includes(f.field));
+        horizFacets = context.facets.filter(f => ['donors.organism.scientific_name', 'donors.ethnicity.term_name', 'donors.sex', 'donors.life_stage', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title', 'lab.title'].includes(f.field));
     } else {
         horizFacets = context.facets.filter(f => [].includes(f.field));
     }
@@ -364,41 +363,28 @@ class SummaryBody extends React.Component {
         const nonPersistentQuery = query.clone();
         nonPersistentQuery.deleteKeyValue('?type');
         const clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('?type') > 0;
+        const context = this.props.context;
         return (
             <div className="summary-header">
-                <div className="summary-header__title_control">
-                    <div className="summary-header__title">
-                        <h1>{this.props.context.title}</h1>
-                    </div>
-                    <ClearFilters searchUri={this.props.context.clear_filters} enableDisplay={!!clearButton} />
-                </div>
                 <div className="summary-controls">
-                    <div className="organism-button-instructions">Choose an organism:</div>
-                    <div className="organism-button-container">
-                        {organismTerms.map(term =>
-                            <button
-                                id={term}
-                                onClick={e => this.chooseOrganism(e)}
-                                className={`organism-button ${term.replace(' ', '-')} ${this.state.selectedOrganism === term ? 'active' : ''}`}
-                                key={term}
-                            >
-                                <img src={`/static/img/bodyMap/organisms/${term.replace(' ', '-')}.png`} alt={term} />
-                                <span>{term}</span>
-                            </button>
-                        )}
-                    </div>
-                    <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
-                        <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
-                        <div className="view-controls-container">
-                            <ViewControls results={this.props.context} alternativeNames={['Tabular report', 'Summary matrix']} />
+                    <div className="search-results">
+                        <div className="search-results__facets">
+                            <FacetList context={context} facets={context.facets} filters={context.filters} searchBase={searchQuery} docTypeTitleSuffix="summary" />
+                        </div>
+                        <div className="search-results__report-list">
+                            <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
+                                <h4>There {this.props.context.total > 1 ? 'are' : 'is'} {this.props.context.total} result{this.props.context.total > 1 ? 's' : ''}</h4>
+                                <div className="view-controls-container">
+                                    <ViewControls results={this.props.context} />
+                                </div>
+                            </div>
+                            <React.Fragment>
+                                <div className="summary-content">
+                                    <SummaryData context={this.props.context} displayCharts={'all'} />
+                                </div>
+                            </React.Fragment>
                         </div>
                     </div>
-                    <React.Fragment>
-                        <SummaryHorizontalFacets context={this.props.context} facetList={'all'} />
-                        <div className="summary-content">
-                            <SummaryData context={this.props.context} displayCharts={'all'} />
-                        </div>
-                    </React.Fragment>
                 </div>
             </div>
         );
