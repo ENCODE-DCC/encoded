@@ -815,9 +815,8 @@ def generate_summary_dictionary(
 
     if post_differentiation_time is not None and \
         post_differentiation_time_units is not None:
-        dict_of_phrases['post_differentiation_time'] = '{} post differentiation'.format(
-            pluralize(post_differentiation_time, post_differentiation_time_units)
-            )
+        dict_of_phrases['post_differentiation_time'] = \
+            f'{pluralize(post_differentiation_time, post_differentiation_time_units)} post differentiation'
 
     if ('sample_type' in dict_of_phrases and
         dict_of_phrases['sample_type'] != 'cell line') or \
@@ -945,6 +944,8 @@ def generate_sentence(phrases_dict, values_list):
             elif 'post_nucleic_acid_delivery_time' in key:
                 sentence = sentence.strip() + ', ' + \
                                     phrases_dict[key].strip() + ' '
+            elif 'post_differentiation_time' in key:
+                sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             else:
                 sentence += phrases_dict[key].strip() + ' '
     return sentence.strip()
