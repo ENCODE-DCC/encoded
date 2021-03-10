@@ -1040,6 +1040,7 @@ def check_experiment_wgbs_standards(
     organism_name,
     desired_assembly
 ):
+    experiment_award = experiment.get('award')['rfa']
     alignment_files = files_structure.get('alignments').values()
     fastq_files = files_structure.get('fastq_files').values()
     cpg_quantifications = files_structure.get('cpg_quantifications').values()
@@ -1122,7 +1123,7 @@ def check_experiment_wgbs_standards(
     if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
         yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
 
-    yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title)
+    yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title, experiment_award)
 
     return
 
@@ -1992,16 +1993,28 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
                                    level='WARNING')
 
 
-def check_wgbs_lambda_ENCODE4(gembs_metrics, threshold, pipeline_title):
+def check_wgbs_lambda_ENCODE4(gembs_metrics, threshold, pipeline_title, experiment_award):
     for metric in gembs_metrics:
-        conversion_rate = metric.get('conversion_rate')
-        if conversion_rate < threshold:
-            detail = (f'ENCODE experiment processed by {pipeline_title} '
-                f'pipeline has a lambda rate of {conversion_rate}. '
-                f'The lambda conversion rate should be > 99%.'
+        if 'conversion_rate' in metric:
+            conversion_rate = metric.get('conversion_rate')
+            if conversion_rate < threshold:
+                detail = (
+                    f'ENCODE experiment processed by {pipeline_title} '
+                    f'pipeline has a lambda rate of {conversion_rate}. '
+                    f'The lambda conversion rate should be > 99%.'
+                )
+                yield AuditFailure('low lambda C conversion rate', detail,
+                                   level='WARNING')
+        else:
+            if experiment_award == 'Roadmap':
+                severity = 'WARNING'
+            else:
+                severity = 'ERROR'
+            detail = (
+                f'Missing lambda conversion rate for ENCODE experiment '
+                f'processed by {pipeline_title} pipeline.'
             )
-            yield AuditFailure('low lambda C conversion rate', detail,
-                               level='WARNING')
+            yield AuditFailure('missing lambda C conversion rate', detail, level=severity)
 
 
 def check_file_chip_seq_read_depth(file_to_check,

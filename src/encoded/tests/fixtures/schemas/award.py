@@ -121,3 +121,15 @@ def award_encode4(testapp):
         'viewing_group': 'ENCODE4',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
+
+
+@pytest.fixture
+def roadmap_award(testapp):
+    item = {
+        'name': 'roadmap-award',
+        'rfa': 'Roadmap',
+        'project': 'Roadmap',
+        'title': 'A Generic Roadmap Award',
+        'viewing_group': 'REMC',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
