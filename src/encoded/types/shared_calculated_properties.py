@@ -386,7 +386,9 @@ class CalculatedAssayTitle:
                                 for gm in genetic_modifications:
                                     gm_object = request.embed(gm, '@@object?skip_calculated=true')
                                     if gm_object.get('purpose') == 'characterization' and gm_object.get('method') == 'CRISPR':
-                                        CRISPR_gms.append(gm_object['category'])
+                                        category = gm_object['category']
+                                        if category in ('activation', 'deletion', 'disruption', 'inhibition', 'interference', 'knockout'):
+                                            CRISPR_gms.append(category)
                 # Return a specific CRISPR assay title if there is only one category type for CRISPR characterization genetic modifications for all replicate biosample genetic modifications. If examined loci is not specified it is considered a growth-based screen.
                 if len(set(CRISPR_gms)) == 1:
                     if examined_loci is not None:
@@ -406,8 +408,8 @@ class CalculatedAssayTitle:
                     elif 'knockout' in CRISPR_gms:
                         title_end = 'knockout'
                     preferred_name = f'{title_start} {title_end} screen'
-                # If there is more than one category type for CRISPR characterization genetic modifications we cannot return a specific CRISPR assay title
-                if len(set(CRISPR_gms)) > 1:
+                # If there is more than one category type or no applicable category for CRISPR characterization genetic modifications we cannot return a specific CRISPR assay title
+                if len(set(CRISPR_gms)) != 1:
                     if examined_loci is not None:
                         preferred_name = 'CRISPR screen'
                     else:
