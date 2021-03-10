@@ -809,7 +809,7 @@ def generate_summary_dictionary(
 
     if post_nucleic_acid_delivery_time is not None and \
         post_nucleic_acid_delivery_time_units is not None:
-        dict_of_phrases['post_nucleic_acid_delivery_time'] = '{} post-nucleic acid delivery'.format(
+        dict_of_phrases['post_nucleic_acid_delivery_time'] = '{} post-nucleic acid delivery time'.format(
             pluralize(post_nucleic_acid_delivery_time, post_nucleic_acid_delivery_time_units)
             )
 
