@@ -12,6 +12,7 @@ import * as globals from './globals';
 import { requestObjects, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
+import { DoiRef } from './typeutils';
 
 
 // Only analysis on selected assembly will be used for QC reporting
@@ -649,6 +650,7 @@ class ExperimentSeriesComponent extends React.Component {
                 <header>
                     <TopAccessories context={context} crumbs={crumbs} />
                     <h1>Summary for experiment series {context.accession}</h1>
+                    <DoiRef context={context} />
                     <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} />
                 </header>
                 {auditDetail(context.audit, 'series-audit', { session: this.context.session, sessionProperties: this.context.session_properties })}

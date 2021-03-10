@@ -224,16 +224,30 @@
     @at-root #{&}__share-url {
         display: flex;
         flex-wrap: nowrap;
+        align-items: stretch;
 
         > input {
             flex: 1 1 auto;
+            margin: 0;
+            height: auto;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
         }
 
         > .btn {
             flex: 0 1 auto;
+            margin: 0;
+            height: auto;
             border-left: none;
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
+
+            .svg-icon-clipboard {
+                height: 18px;
+                fill: transparent;
+                stroke-width: 20px;
+                stroke: #000;
+            }
         }
     }
 }

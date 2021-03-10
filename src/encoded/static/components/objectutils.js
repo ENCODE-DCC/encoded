@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
 import * as encoding from '../libs/query_encoding';
+import { svgIcon } from '../libs/svg-icons';
 import { CartToggle, cartGetAllowedTypes } from './cart';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
@@ -863,3 +864,66 @@ TableItemCount.propTypes = {
  * @param {function} fn
  */
 export const useMount = (fn) => React.useEffect(fn, []);
+
+
+/**
+ * Display a button that copies the given text when the user clicks the button.
+ */
+export const CopyButton = ({ label, copyText, css }) => {
+    /** True if browser has clipboard API */
+    const [hasClipboard, setHasClipboard] = React.useState(false);
+    /** True if user has clicked Copy */
+    const [hasCopied, setHasCopied] = React.useState(false);
+
+    /**
+     * Called when the user clicks the Copy button.
+     */
+    const handleClick = async () => {
+        // Copy given text to clipboard.
+        await navigator.clipboard.writeText(copyText);
+        setHasCopied(true);
+    };
+
+    const handleTransitionEnd = () => {
+        setHasCopied(false);
+    };
+
+    useMount(() => {
+        // Display Copy button if browser has clipboard API.
+        if (navigator.clipboard) {
+            setHasClipboard(true);
+        }
+    });
+
+    if (hasClipboard) {
+        return (
+            <button
+                type="button"
+                disabled={!copyText}
+                className={`btn btn-copy-action${css ? ` ${css}` : ''}${hasCopied ? ' flash' : ''}`}
+                onClick={handleClick}
+                onTransitionEnd={handleTransitionEnd}
+                aria-label={label}
+            >
+                {svgIcon('clipboard')}
+            </button>
+        );
+    }
+
+    // No clipboard API.
+    return null;
+};
+
+CopyButton.propTypes = {
+    /** A11Y label for the button */
+    label: PropTypes.string.isRequired,
+    /** Text to copy */
+    copyText: PropTypes.string,
+    /** CSS classes to add to the copy button */
+    css: PropTypes.string,
+};
+
+CopyButton.defaultProps = {
+    copyText: '',
+    css: 'btn',
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
-import { DbxrefList, dbxrefHref } from './dbxref';
+import { DbxrefList, DbxrefItem } from './dbxref';
 import { PickerActions, resultItemClass } from './search';
 import { auditDecor } from './audit';
 import { ItemAccessories, TopAccessories } from './objectutils';
@@ -83,9 +83,7 @@ class Gene extends React.Component {
                         {/* TODO link to NCBI Entrez page? */}
                         <div data-test="gendid">
                             <dt>Entrez GeneID</dt>
-                            <dd>
-                                <a href={dbxrefHref('GeneID', context.geneid)}>{context.geneid}</a>
-                            </dd>
+                            <dd><DbxrefItem context={context} dbxref={`GeneID:${context.geneid}`} title={context.geneid} /></dd>
                         </div>
 
                         {/* TODO link to NADB page? */}
