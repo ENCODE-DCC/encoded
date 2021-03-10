@@ -12,11 +12,16 @@ Snovault instance yourself.
 For issues see [Snovault OSX App Installation][] first.
 
 1. Create a virtual env in your work directory.
-    This example uses the python module venv. Other options would also work, like conda or pyenv
+
+   This example uses the python module venv. Other options would also work, like conda or pyenv.
+   Please note that older versions of `pip` may cause issues when updating the application.
+   On MacOS `pip` `21.0.1` is known to work.
+
     ```
     $ cd your-work-dir
     $ python3 -m venv encoded-venv
     $ source encoded-venv/bin/activate
+    $ pip install -U pip==21.0.1
     ```
 
 2. Clone the repo and `cd` into it
