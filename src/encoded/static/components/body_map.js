@@ -72,11 +72,12 @@ export const HumanList = {
 
 export const MouseList = {
     'adrenal gland': ['cls-27'],
+    'arterial blood vessel': ['cls-26'],
     'bone element': ['cls-bone', 'cls-5', 'cls-bone1', 'cls-bone6'],
     brain: ['cls-21', 'cls-22', 'cls-23', 'cls-24'],
     breast: ['cls-41', 'cls-42'],
     colon: ['cls-colon', 'cls-9'],
-    esophagus: ['cls-esophagus'],
+    esophagus: ['cls-esophagus', 'cls-esophagus2', 'cls-29'],
     'extraembryonic component': ['placenta'],
     eye: ['cls-39', 'cls-40', 'cls-eye'],
     gonad: ['testis', 'ovary'],
@@ -90,16 +91,18 @@ export const MouseList = {
     'lymph node': ['cls-28'],
     'mammary gland': ['breast'],
     'musculature of body': ['cls-14', 'cls-15', 'cls-16'],
-    ovary: ['cls-6', 'cls-7', 'cls-35', 'cls-36'],
+    nose: ['cls-11'],
+    ovary: ['cls-6', 'cls-7', 'cls-35'],
     pancreas: ['cls-12'],
     'skin of body': ['cls-1', 'cls-2', 'cls-32', 'cls-3', 'cls-limb1', 'cls-limb2', 'cls-10'],
     'small intestine': ['cls-8', 'cls-smallintestine', 'cls-smallintestine19'],
     'spinal cord': ['cls-20'],
     spleen: ['cls-13'],
     stomach: ['cls-stomach'],
-    testis: ['cls-37'],
-    thymus: ['cls-29', 'cls-30', 'cls-31'],
+    testis: ['cls-37', 'cls-36'],
+    thymus: ['cls-30', 'cls-31'],
     'urinary bladder': ['cls-38'],
+    vein: ['cls-25'],
 };
 
 // Mapping from cells and tissue types to inset images
@@ -150,7 +153,7 @@ export const HumanSystemsList = {
 
 export const MouseSystemsList = {
     'central nervous system': ['brain', 'spinal cord'],
-    'circulatory system': ['blood', 'heart'],
+    'circulatory system': ['blood', 'heart', 'arterial blood vessel', 'vein'],
     'digestive system': ['large intestine', 'small intestine', 'stomach', 'pancreas', 'colon', 'spleen', 'esophagus'],
     'endocrine system': ['liver', 'pancreas', 'thymus', 'adrenal gland'],
     'excretory system': ['kidney', 'urinary bladder'],
@@ -417,7 +420,7 @@ class BodyMap extends React.Component {
             addingClass('active', 'active', true);
             // Renavigate to fresh url
             const href = clearBodyMapSelectionsFromUrl(this.props.context['@id']);
-            this.context.navigate(href);
+            this.context.navigate(href, { noscroll: true });
         }
     }
 
@@ -603,7 +606,7 @@ class BodyMap extends React.Component {
             }
         }
         const href = `?${query.format()}#openModal`;
-        this.context.navigate(href);
+        this.context.navigate(href, { noscroll: true });
     }
 
     // Executes on click on SVG body map diagram
@@ -718,7 +721,7 @@ class BodyMap extends React.Component {
                     }
                 }
                 const href = `?${query.format()}#openModal`;
-                this.context.navigate(href);
+                this.context.navigate(href, { noscroll: true });
             }
         }
     }

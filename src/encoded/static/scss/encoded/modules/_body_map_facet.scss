@@ -46,13 +46,13 @@
 
     .mus-musculus {
         path, polyline, circle, ellipse, rect, polygon {
-            &:hover:not(.cls-1):not(.cls-2):not(.cls-10):not(.cls-11):not(.cls-thymus):not(.cls-25):not(.cls-26):not(.active) {
+            &:hover:not(.cls-mousebody):not(.cls-10):not(.active) {
                 fill: lighten($Homo-sapiens, 45%);
                 stroke: $Homo-sapiens;
                 cursor: pointer;
             }
 
-            &.highlight:not(.cls-1):not(.cls-2):not(.cls-10):not(.cls-11):not(.cls-thymus):not(.cls-25):not(.cls-26):not(.active) {
+            &.highlight:not(.cls-mousebody):not(.cls-10):not(.active) {
                 fill: lighten($Homo-sapiens, 45%);
                 stroke: lighten($Homo-sapiens, 20%);
                 cursor: pointer;
@@ -74,7 +74,7 @@
 }
 
 .mouse-map, .human-map {
-    path {
+    path, polyline, circle, ellipse, rect, polygon {
         &.disabled {
             pointer-events: none;
         }
@@ -100,13 +100,13 @@
 
 .mus-musculus {
     path, polyline, circle, ellipse, rect, polygon {
-        &:hover:not(.cls-1):not(.cls-2):not(.cls-10):not(.cls-11):not(.cls-thymus):not(.cls-25):not(.cls-26):not(.active) {
+        &:hover:not(.cls-mousebody):not(.cls-10):not(.active) {
             fill: lighten($Homo-sapiens, 45%);
             stroke: $Homo-sapiens;
             cursor: pointer;
         }
 
-        &.highlight:not(.cls-1):not(.cls-2):not(.cls-10):not(.cls-11):not(.cls-thymus):not(.cls-25):not(.cls-26):not(.active) {
+        &.highlight:not(.cls-mousebody):not(.cls-10):not(.active) {
             fill: lighten($Homo-sapiens, 45%);
             stroke: lighten($Homo-sapiens, 20%);
             cursor: pointer;
@@ -131,7 +131,7 @@
 }
 
 .mus-musculus {
-    .cls-1, .cls-2, .cls-10 {
+    .cls-10 {
         &:hover {
             stroke: lighten($Homo-sapiens, 20%);
             cursor: pointer;

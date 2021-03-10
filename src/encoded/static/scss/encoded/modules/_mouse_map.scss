@@ -1,17 +1,36 @@
 .mouse-map {
     .cls-1, .cls-bone1, .cls-limb1 {
-        fill: #e4ecf3;
+        fill: #b7c9d8;
 
         &.active {
             fill: #f7e1d4;
         }
     }
 
-    .cls-2, .cls-limb2 {
-        fill: #bbd0e2;
+    .cls-limb2 {
+        fill: #d8e2ea;
 
         &.active {
             fill: #ccbdb4;
+        }
+    }
+
+    .cls-mousebody {
+        stroke: #85a2b9;
+        fill: #d8e2ea;
+
+        &.active {
+            stroke: none;
+        }
+    }
+
+    .cls-2 {
+        stroke: #85a2b9;
+        fill: #d8e2ea;
+
+        &.active {
+            fill: #ccbdb4;
+            stroke: none;
         }
     }
 
@@ -32,7 +51,7 @@
     }
 
     .cls-1, .cls-2, .cls-10, .cls-32, .cls-5 {
-        stroke: #e4ecf3;
+        stroke: #f9fcff;
 
         &.active {
             stroke: #ebd7ca;
@@ -44,19 +63,20 @@
     }
 
     .cls-19, .cls-20, .cls-21, .cls-22, .cls-23, .cls-24, .cls-29, .cls-30, .cls-31, .cls-32, .cls-33, .cls-34, .cls-5, .cls-8, .cls-lung, .cls-thymus, .cls-smallintestine19 {
-        stroke-width: 2.37px;
+        stroke-width: 2.7px;
     }
 
-    .cls-6, .cls-bone6 {
-        fill: #b7cce0;
+    .cls-bone6 {
+        fill: #8aa9cc;
 
         &.active {
             fill: #f49fcc;
         }
     }
 
-    .cls-35 {
-        fill: #b7cce0;
+    .cls-6, .cls-35 {
+        fill: #8aa9cc;
+        opacity: 0.7;
 
         &.active {
             fill: #f49fcc;
@@ -71,7 +91,33 @@
         }
     }
 
-    .cls-8, .cls-colon, .cls-largeintestine, .cls-lung, .cls-thymus, .cls-esophagus {
+    .cls-largeintestine {
+        fill: #85a5c1;
+
+        &.active {
+            fill: #e06667;
+        }
+    }
+
+    .cls-colon {
+        fill: #f5f8fb;
+        stroke: #9a9999;
+
+        &.active {
+            fill: #b94343;
+            stroke: #fcaea0;
+        }
+    }
+
+    .cls-lung, .cls-thymus, .cls-esophagus, .cls-esophagus2 {
+        fill: #a8c2d9;
+
+        &.active {
+            fill: #fc927e;
+        }
+    }
+
+    .cls-8 {
         fill: #a8c2d9;
 
         &.active {
@@ -80,15 +126,23 @@
     }
 
     .cls-19, .cls-smallintestine, .cls-smallintestine19 {
-        stroke: #ccdce9;
+        stroke: #edf2f5;
 
         &.active {
-            stroke: #fdad9e;
+            stroke: #fdcac1;
         }
     }
 
-    .cls-8, .cls-colon, .cls-largeintestine, .cls-lung, .cls-thymus, .cls-esophagus {
-        stroke: #ccdce9;
+    .cls-smallintestine {
+        stroke-width: 2px;
+    }
+
+    .cls-esophagus2 {
+        opacity: 0.5;
+    }
+
+    .cls-8, .cls-largeintestine, .cls-lung, .cls-thymus, .cls-esophagus, .cls-esophagus2 {
+        stroke: #dde6ec;
 
         &.active {
             stroke: #fcaea0;
@@ -96,10 +150,10 @@
     }
 
     .cls-9, .cls-stomach {
-        fill: #ccdce9;
+        fill: #dde6ec;
 
         &.active {
-            fill: #fdbfa8;
+            fill: #ffd6c6;//#fdbfa8;
             stroke: #fdbeb2;
         }
     }
@@ -121,7 +175,7 @@
     }
 
     .cls-24 {
-        fill: #d1dfeb;
+        fill: #c3d3e0;
 
         &.active {
             fill: #a01d58;
@@ -129,9 +183,9 @@
     }
 
     .cls-12 {
-        stroke: #aac4da;
-        stroke-width: 1.18px;
-        fill: #d1dfeb;
+        stroke: #d0d8de;
+        stroke-width: 2px;
+        fill: #7893ab;
 
         &.active {
             stroke: #f2b855;
@@ -157,15 +211,15 @@
     }
 
     .cls-15, .cls-16 {
-        stroke: #5689b6;
+        stroke: #25537b;
 
         &.active {
-            stroke: #c5496c;
+            stroke: #4e061a;
         }
     }
 
     .cls-16 {
-        stroke-width: 0.79px;
+        stroke-width: 2px;
     }
 
     .cls-17 {
@@ -188,7 +242,8 @@
         stroke: #bbd0e2;
 
         &.active {
-            stroke: #f3f1ef;
+            stroke: #ccbdb4;
+            fill: #f6dfda;
         }
     }
 
@@ -217,10 +272,10 @@
     }
 
     .cls-25 {
-        fill: #729cc2;
+        fill: #bccfe0;
 
         &.active {
-            fill: #667dbd;
+            fill: #63326e;
         }
     }
 
@@ -236,15 +291,15 @@
         fill: #8eb0ce;
 
         &.active {
-            fill: #86a961;
+            fill: #79cc22;
         }
     }
 
     .cls-28 {
-        fill: #afc7dc;
+        fill: #5b7994;
 
         &.active {
-            fill: #fca93f;
+            fill: #b96a04;
         }
     }
 
@@ -252,7 +307,7 @@
         stroke: #dde7f0;
 
         &.active {
-            stroke: #fbbdb0;
+            stroke: #ad341b;
         }
     }
 
@@ -265,10 +320,10 @@
     }
 
     .cls-30, .cls-31 {
-        stroke: #95b5d1;
+        stroke: #7b9cb9;
 
         &.active {
-            stroke: #fd8671;
+            stroke: #ad341b;
         }
     }
 
@@ -288,36 +343,42 @@
         }
     }
 
-    .cls-35 {
+    .cls-35, .cls-6, .cls-7 {
         stroke: #ecf2f7;
         stroke-width: 0.86px;
 
         &.active {
-            stroke: #fc927e;
+            stroke: #f5f5f5;
         }
     }
 
     .cls-36 {
-        fill: #f5f8fb;
+        fill: #49627b;
 
         &.active {
+            fill: #dab077;
             stroke: #f9c2ad;
         }
     }
 
     .cls-37 {
-        fill: #5d8eb9;
+        fill: #376d9c;
+        opacity: 0.7;
 
         &.active {
-            fill: #fffacf;
+            fill: #fff388;
         }
     }
 
     .cls-38 {
-        fill: #6090ba;
+        fill: #3c8ed6;
+        stroke: #d8d8d8;
+        stroke-width: 2px;
 
         &.active {
-            fill: #e82d54;
+            fill: #10b719;
+            stroke: #ff0;
+            stroke-width: 1px;
         }
     }
 
@@ -348,7 +409,8 @@
     }
 
     .cls-41, .cls-42 {
-        stroke: #d1dfeb;
+        stroke: #889198;
+        fill: #c3d5e5;
 
         &.active {
             fill: #edcb57;
