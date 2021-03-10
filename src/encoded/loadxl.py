@@ -637,7 +637,7 @@ PHASE1_PIPELINES = {
         remove_keys('datasets'),
     ],
     'annotation': [
-        remove_keys('related_files', 'software_used'),
+        remove_keys('related_files', 'software_used', 'analysis_objects'),
     ],
     'project': [
         remove_keys('related_files'),
@@ -738,7 +738,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
     'annotation': [
-        skip_rows_missing_all_keys('related_files', 'software_used'),
+        skip_rows_missing_all_keys('related_files', 'software_used', 'analysis_objects'),
     ],
     'project': [
         skip_rows_missing_all_keys('related_files'),
