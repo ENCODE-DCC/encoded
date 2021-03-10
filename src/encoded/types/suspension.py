@@ -27,5 +27,7 @@ class Suspension(Item, CalculatedDonors, CalculatedBiosampleOntologies):
         'biosample_ontologies',
         'donors',
         'donors.organism',
-        'enriched_cell_types'
+        'enriched_cell_types',
+        'donors.ethnicity',
+        'donors.diseases'
     ]

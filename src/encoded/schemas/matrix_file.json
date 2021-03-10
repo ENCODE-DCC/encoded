@@ -397,6 +397,35 @@
             "title": "Cell annotation method",
             "description": "The method or software used to annotate the cell population.",
             "type": "string"
+        },
+        "author_donor_column": {
+            "title": "Author donor column",
+            "description": "The name of the metadata field that holds the researcher's demultiplexed donor assignment of the cell",
+            "type": "string"
+        },
+        "donor_mappings": {
+            "title": "Donor mappings",
+            "description": "Information on what researcher donor identifier in this final matrix that is specified for the associate donor object",
+            "type": "array",
+            "items": {
+                "title": "Donor mapping",
+                "type": "object",
+                "required": ["label", "donor"],
+                "additionalProperties": false,
+                "properties": {
+                    "label": {
+                        "title": "Label",
+                        "description": "The donor identifier found in the author_donor_column that is associated with the corresponding donor object",
+                        "type": "string"
+                    },
+                    "donor": {
+                        "title": "Donor",
+                        "description": "The donor object that is associated with the corresponding donor mapping label",
+                        "type": "string",
+                        "linkTo": "Donor"
+                    }
+                }
+            }
         }
     },
     "facets": {
