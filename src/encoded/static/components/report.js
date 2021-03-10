@@ -7,7 +7,6 @@ import { Panel, PanelBody } from '../libs/ui/panel';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { FacetList } from './search';
-import { ViewControls } from './view_controls';
 
 
 function columnChoices(schema, selected) {
@@ -685,7 +684,6 @@ class Report extends React.Component {
                             <h4>Showing results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}</h4>
                             <div className="results-table-control">
                                 <div className="results-table-control__main">
-                                    <ViewControls results={context} />
                                     <button className="btn btn-info btn-sm" title="Choose columns" onClick={this.handleSelectorClick}>
                                         <i className="icon icon-columns" /> Columns
                                     </button>

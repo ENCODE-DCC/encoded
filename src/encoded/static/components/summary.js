@@ -192,7 +192,7 @@ SummaryStatusChart.contextTypes = {
 const SummaryHorizontalFacets = ({ context, facetList }, reactContext) => {
     let horizFacets;
     if (facetList === 'all') {
-        horizFacets = context.facets.filter(f => ['donors.organism.scientific_name', 'donors.ethnicity.term_name', 'donors.sex', 'donors.life_stage', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title', 'lab.title'].includes(f.field));
+        horizFacets = context.facets.filter(f => ['donors.organism.scientific_name', 'donors.sex', 'donors.life_stage', 'donors.ethnicity.term_name'].includes(f.field));
     } else {
         horizFacets = context.facets.filter(f => [].includes(f.field));
     }
@@ -372,15 +372,23 @@ class SummaryBody extends React.Component {
         nonPersistentQuery.deleteKeyValue('?type');
         const clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('?type') > 0;
         const context = this.props.context;
+        const vertFacetNames = ['assay', 'protocol.title', 'biosample_ontologies.system_slims', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title'];
+        const vertFacets = []
+        context.facets.forEach(x => {
+            if (vertFacetNames.includes(x.field)) vertFacets.push(x);
+            })
         return (
             <div className="search-results">
                 <div className="search-results__facets">
-                    <FacetList context={context} facets={context.facets} filters={context.filters} searchBase={searchQuery} docTypeTitleSuffix="summary" />
+                    <FacetList context={context} facets={vertFacets} filters={context.filters} searchBase={searchQuery} docTypeTitleSuffix="summary" />
                 </div>
                 <div className="search-results__report-list">
-                    <h4>{this.props.context.total} result{this.props.context.total > 1 ? 's' : ''}</h4>
+                    <h4>{this.props.context.total} {this.props.context.total > 1 ? 'libraries' : 'library'}</h4>
                     <div className="view-controls-container">
                         <ViewControls results={this.props.context} alternativeNames={['Tabular report']} />
+                    </div>
+                    <div className="top-facets">
+                        <SummaryHorizontalFacets context={this.props.context} facetList="all" />
                     </div>
                     <React.Fragment>
                         <div className="summary-content">

@@ -57,10 +57,10 @@ const portal = {
                 { id: 'donors', title: 'Donor data' },
                 { id: 'human-postnatal-donor-report', title: 'Human Postnatal', url: '/report/?type=HumanPostnatalDonor', tag: 'collection' },
                 { id: 'human-pretnatal-donor-report', title: 'Human Prenatal', url: '/report/?type=HumanPrenatalDonor', tag: 'collection' },
-                { id: 'mouse-postnatal-donor-report', title: 'Mouse Postnatal', url: '/report/?type=MousePostnatalDonor', tag: 'collection' },
-                { id: 'mouse-pretnatal-donor-report', title: 'Mouse Prenatal', url: '/report/?type=MousePrenatalDonor', tag: 'collection' },
                 { id: 'sep-mm-1' },
                 { id: 'publications', title: 'Publications', url: '/report/?type=Publication' },
+                { id: 'sep-mm-0' },
+                { id: 'lib-summ', title: 'Data summary', url: '/summary/?type=Library&award.project=HCA+Seed+Networks' },
             ],
         },
         {

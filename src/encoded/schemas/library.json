@@ -219,7 +219,8 @@
             "title": "Project"
         },
         "award.coordinating_pi.title": {
-            "title": "Coordinating PI"
+            "title": "Coordinating PI",
+            "type": "typeahead"
         },
         "award.name": {
             "title": "Award name"
@@ -269,12 +270,10 @@
             "title": "Biosample system"
         },
         "biosample_ontologies.organ_slims": {
-            "title": "Biosample organ",
-            "type": "typeahead"
+            "title": "Biosample organ"
         },
         "biosample_ontologies.cell_slims": {
-            "title": "Biosample cell type",
-            "type": "typeahead"
+            "title": "Biosample cell type"
         },
         "award.project": {
             "title": "Project"
