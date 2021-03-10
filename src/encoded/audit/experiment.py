@@ -1120,7 +1120,7 @@ def check_experiment_wgbs_standards(
         get_pipeline_objects(alignment_files_encode4))
 
     if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
-        yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
+        yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
 
     yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title)
 
@@ -1950,7 +1950,8 @@ def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
     for m in cpg_metrics:
         if 'Pearson correlation' in m:
             if m['Pearson correlation'] < threshold:
-                detail = ('ENCODE experiment processed by {} '
+                detail = (
+                    'ENCODE experiment processed by {} '
                     'pipeline has CpG quantification Pearson Correlation Coefficient of '
                     '{}, while a value >={} is required.'.format(
                         pipeline_title,
@@ -1963,23 +1964,6 @@ def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
                                    level='NOT_COMPLIANT')
     return
 
-
-def check_wgbs_pearson_ENCODE4(cpg_metrics, threshold,  pipeline_title):
-    for m in cpg_metrics:
-        if 'Pearson correlation' in m:
-            if m['Pearson correlation'] < threshold:
-                detail = ('ENCODE experiment processed by {} '
-                    'pipeline has CpG quantification Pearson Correlation of '
-                    '{}, while a value >={} is required.'.format(
-                        pipeline_title,
-                        m['Pearson correlation'],
-                        threshold
-                    )
-                )
-                yield AuditFailure('insufficient replicate concordance',
-                                   detail,
-                                   level='NOT_COMPLIANT')
-    return
 
 def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
     for metric in bismark_metrics:
