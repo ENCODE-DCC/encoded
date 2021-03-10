@@ -7355,7 +7355,7 @@
         "software": [
             "cellranger aggr 4.0"
         ],
-        "experimental_variable_disease": "MONDO_0005148",
+        "experimental_variable_disease": "MONDO_0005147",
         "md5sum": "2e883306013203954eb1b69ae063eef1",
         "cell_label_location": "suffix",
         "cell_label_mappings": [
