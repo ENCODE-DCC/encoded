@@ -1,9 +1,11 @@
 ## Changelog for library.json
 
+### Schema version 16
+* *linkers* property was modified to remove *linker a* and *linker b*. The *linkers* property can now accept sequencing linkers for the following: *linker a top*, *linker a bottom*, *linker b top*, and *linker b bottom*.
+* *NucleoBond PC Giga kit (Machery-Nagel cat#: 740548)* was added to the *extraction_method* enum.
+
 ### Minor changes since schema version 15
 * A new property *mixed_biosamples* is now available for specifying the mixture of two or more biosamples used in a technical sample.
-* *NucleoBond PC Giga kit (Machery-Nagel cat#: 740548)* was added to the *extraction_method* enum.
-* *linkers* property can now accept sequencing linkers for the following: *linker a top*, *linker a bottom*, *linker b top*, and *linker b bottom*.
 
 ### Schema version 15
 * *capped mRNA* may now be specified in the property *nucleic_acid_term_name*, this cannot be submitted in combination with *capped mRNA* in *depleted_in_term_name*. Specifying *polyadenylated mRNA* in both *nucleic_acid_term_name* and *depleted_in_term_name* is also disallowed.

@@ -180,20 +180,6 @@
                 {
                     "properties": {
                         "linkers": {
-                            "minItems": 2,
-                            "items": {
-                                "properties": {
-                                    "type": {
-                                        "enum": ["linker a", "linker b"]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "linkers": {
                             "minItems": 4,
                             "items": {
                                 "properties": {
@@ -210,7 +196,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "15"
+            "default": "16"
         },
         "accession": {
             "accessionType": "LB"
@@ -691,8 +677,6 @@
                         "description": "Name of linker.",
                         "type": "string",
                         "enum": [
-                            "linker a",
-                            "linker b",
                             "bridge linker",
                             "linker a top",
                             "linker a bottom",

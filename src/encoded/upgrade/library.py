@@ -281,3 +281,26 @@ def library_14_15(value, system):
             if value['nucleic_acid_term_name'] == 'polyadenylated mRNA':
                 value['nucleic_acid_term_name'] = 'RNA'
                 value['notes'] = (notes + ' The nucleic_acid_term_name of this library was converted to RNA due to a conflict with polyA mRNA in depleted_in_term_name.').strip()
+
+
+@upgrade_step('library', '15', '16')
+def library_15_16(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5753
+    notes = value.get('notes', '')
+    new_linkers = []
+    if 'linkers' in value:
+        for linker in value['linkers']:
+            if 'type' in linker:
+                if linker['type'] == 'linker a':
+                    linker['type'] = 'linker a top'
+                    new_linkers.append(linker)
+                    linker_a_bottom = {'type': 'linker a bottom', 'sequence': linker['sequence']}
+                    new_linkers.append(linker_a_bottom)
+                if linker['type'] == 'linker b':
+                    linker['type'] = 'linker b top'
+                    new_linkers.append(linker)
+                    linker_b_bottom = {'type': 'linker b bottom', 'sequence': linker['sequence']}
+                    new_linkers.append(linker_b_bottom)
+    if len(new_linkers) == 4:
+        value['linkers'] = new_linkers
+        value['notes'] = (notes + ' The linkers of this library were converted as linker a and linker b have been deprecated as linkers type.').strip()

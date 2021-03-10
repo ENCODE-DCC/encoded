@@ -99,3 +99,26 @@ def test_library_upgrade_14_to_15(upgrader, library_schema_14):
     assert value['schema_version'] == '15'
     assert value['nucleic_acid_term_name'] == 'RNA'
     assert value['notes'] == 'The nucleic_acid_term_name of this library was converted to RNA due to a conflict with polyA mRNA in depleted_in_term_name.'
+
+
+def test_library_upgrade_15_to_16(upgrader, library_linkers):
+    value = upgrader.upgrade('library', library_linkers, current_version='15', target_version='16')
+    assert value['schema_version'] == '16'
+    assert len(value['linkers']) == 4
+    assert {
+        'type': 'linker a top',
+        'sequence': 'GGCCGCGATATCTTATCCAAC'
+    } in value['linkers']
+    assert {
+        'type': 'linker a bottom',
+        'sequence': 'GGCCGCGATATCTTATCCAAC'
+    } in value['linkers']
+    assert {
+        'type': 'linker b top',
+        'sequence': 'GTTGGATAAGATATCGC'
+    } in value['linkers']
+    assert {
+        'type': 'linker b bottom',
+        'sequence': 'GTTGGATAAGATATCGC'
+    } in value['linkers']
+    assert value['notes'] == 'The linkers of this library were converted as linker a and linker b have been deprecated as linkers type.'

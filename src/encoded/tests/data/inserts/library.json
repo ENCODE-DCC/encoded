@@ -1083,12 +1083,8 @@
         "lysis_method": "SDS",
         "linkers": [
             {
-                "type": "linker a",
+                "type": "bridge linker",
                 "sequence": "ACGCGATATCTTATCTGACT"
-            },
-            {
-                "type": "linker b",
-                "sequence": "AGTCAGATAAGATATCGCGT"
             }
         ],
         "submitted_by": "mus.mi@porttitor.molestie",
