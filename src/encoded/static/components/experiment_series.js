@@ -44,7 +44,7 @@ function getQualityMetricsByReplicate(qualityMetricReport, field, bioRepNum) {
             (m) => m.biological_replicates.includes(bioRepNum)
         );
         if (metrics && metrics.length > 1) {
-            qualityMetric.metric = '?';
+            qualityMetric.metric = 'inconsistent metadata';
         } else if (metrics && metrics.length === 1 && metrics[0].metric) {
             qualityMetric.metric = metrics[0].metric;
             if (metrics[0].quality && qcModifierMap[metrics[0].quality]) {
@@ -55,19 +55,25 @@ function getQualityMetricsByReplicate(qualityMetricReport, field, bioRepNum) {
     return qualityMetric;
 }
 
+const compareAssays = (seriesAssays, assays) => seriesAssays.every((seriesAssay) => assays.includes(seriesAssay));
+
 // The hideColorCodedColumns is a collection of conditions determine whether
 // corresponding columns, which are all color coded, should be hide or not.
 // It will be used by experimentTableColumns thus its key should match keys in
 // experimentTableColumns. It will also be used to determine whether color
 // legend should be shown or not. So this collection should be color coded
 // columns only.
+
 const hideColorCodedColumns = {
-    readDepth: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    readDepthChip: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    readDepthDnase: (series) => !_.isEqual(series.assay_term_name, ['DNase-seq']),
     NRF: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     NSC: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     PBC1: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     PBC2: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     IDR: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']) || series.target.some((target) => target.investigated_as.includes('histone')),
+    spotScore: (series) => !_.isEqual(series.assay_term_name, ['DNase-seq']),
+    pearsonCorrelation: (series) => !_.isEqual(series.assay_term_name, ['DNase-seq']),
 };
 
 const experimentTableColumns = {
@@ -79,14 +85,14 @@ const experimentTableColumns = {
     file_assembly: {
         title: 'Assembly',
         getValue: (experiment) => _.uniq(experiment.selectedFiles.map((f) => f.assembly)),
-        hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+        hide: (series) => !compareAssays(series.assay_term_name, ['ChIP-seq', 'DNase-seq']),
     },
 
     _biological_replicate_number: {
         title: 'Replicate',
         getValue: (experiment, meta) => meta.bioRepNum,
         replicateSpecific: true,
-        hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+        hide: (series) => !compareAssays(series.assay_term_name, ['ChIP-seq', 'DNase-seq']),
     },
 
     antibody: {
@@ -132,7 +138,7 @@ const experimentTableColumns = {
         getValue: (experiment) => _.uniq(experiment.selectedFiles.map((f) => f.mapped_run_type).filter((l) => l)).join(', '),
     },
 
-    readDepth: {
+    readDepthChip: {
         title: <div>Read depth<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Number of mapped reads passing quality control filtering. Minimum read depth is 5M. For broad histone marks, acceptable read depth is &gt;35M and recommended read depth is &gt;45M. For other targets, acceptable read depth is &gt;10M and recommended read depth is &gt;20M.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
@@ -152,7 +158,30 @@ const experimentTableColumns = {
             return <td className={qcBlock} />;
         },
         replicateSpecific: true,
-        hide: (series) => hideColorCodedColumns.readDepth(series),
+        hide: (series) => hideColorCodedColumns.readDepthChip(series),
+    },
+
+    readDepthDnase: {
+        title: <div>Read depth<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Number of mapped reads passing quality control filtering. For DNase-seq, minimum read depth is 20M and recommended read depth is &gt;50M.</Tooltip></div>,
+        display: (experiment, meta) => {
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'Read depth',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {typeof metricObj.metric === 'number' ? (metricObj.metric / 1000000).toFixed(2).concat('M') : metricObj.metric}
+                        </td>
+                    );
+                }
+            }
+            return <td className={qcBlock} />;
+        },
+        replicateSpecific: true,
+        hide: (series) => hideColorCodedColumns.readDepthDnase(series),
     },
 
     NRF: {
@@ -347,6 +376,52 @@ const experimentTableColumns = {
             return <td className={qcBlock} rowSpan={meta.rowCount} />;
         },
         hide: (series) => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    },
+
+    spotSCORE: {
+        title: <div>SPOT score<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-spot-score" css="tooltip-home-info">Signal Portion of Tags (SPOT) is a measure of enrichment, analogous to the commonly used fraction of reads in peaks metric. Acceptable SPOT score is &gt;0.25 and recommended NSC is &gt;0.4.</Tooltip></div>,
+        display: (experiment, meta) => {
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'SPOT score',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
+                        </td>
+                    );
+                }
+            }
+            return <td className={qcBlock} />;
+        },
+        replicateSpecific: true,
+        hide: (series) => hideColorCodedColumns.spotScore(series),
+    },
+
+    pearsonCorrelation: {
+        title: <div>Pearson Correlation<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-pearson" css="tooltip-home-info">Pearson correlation between signal quantification of the replicates measures replicate concordance. Recommended Pearson correlation is &gt;0.9.</Tooltip></div>,
+        display: (experiment, meta) => {
+            if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
+                const metricObj = getQualityMetricsByReplicate(
+                    experiment.selectedAnalysis.quality_metrics_report,
+                    'Pearson correlation',
+                    meta.bioRepNum
+                );
+                if (metricObj && metricObj.metric) {
+                    return (
+                        <td className={qcModifierMap[metricObj.quality] || qcBlock}>
+                            {typeof metricObj.metric === 'number' ? metricObj.metric.toFixed(2) : metricObj.metric}
+                        </td>
+                    );
+                }
+            }
+            return <td className={qcBlock} />;
+        },
+        replicateSpecific: true,
+        hide: (series) => hideColorCodedColumns.pearsonCorrelation(series),
     },
 
     status: {
