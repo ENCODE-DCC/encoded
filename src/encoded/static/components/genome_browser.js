@@ -18,6 +18,9 @@ export const annotationTypeMap = {
 
 const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
 
+// used to determine if GV_COORDINATES_KEY should be used
+const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
+
 /**
  * Returns Valis coordinates off the bar user inputs data in
  *
@@ -54,8 +57,9 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
     let x0 = null;
     let x1 = null;
     const gVState = ignoreCache ? null : window.sessionStorage.getItem(GV_COORDINATES_KEY);
+    const gVAssembly = window.sessionStorage.getItem(GV_COORDINATES_ASSEMBLY);
 
-    if (gVState) {
+    if (gVState && gVAssembly === assembly) {
         const savedState = gVState ? JSON.parse(gVState) : {};
         ({ contig } = savedState);
         ({ x0, x1, pinnedFiles } = savedState);
@@ -150,6 +154,7 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
         x0 = 232475;
         x1 = 237997;
     }
+    window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, assembly);
 
     return { x0, x1, contig, pinnedFiles };
 };
