@@ -2898,23 +2898,34 @@ class FileGalleryRendererComponent extends React.Component {
         return [];
     }
 
-    getBrowserAnalysis() {
-        const { allFiles, compiledAnalyses } = this.state;
+    /**
+     * Get genome browser data from react state
+     *
+     * @returns analysis data
+     * @memberof FileGalleryRendererComponent
+     */
+    getBrowserAnalysis(allExperimentFiles = null, compiledExperimentAnalyses = null) {
+        const allFiles = allExperimentFiles || this.state.allFiles;
+        const compiledAnalyses = compiledExperimentAnalyses || this.state.compiledAnalyses;
 
         const analyses = compiledAnalyses.filter((c) => {
             const analysisFiles = filterForVisualizableFiles(c.files.map((f) => allFiles.find((aF) => aF['@id'] === f)));
-
             return analysisFiles.length > 0;
         });
 
         return analyses;
     }
 
-    getBrowserSelectedIndex() {
+    /**
+     *  Get selected browser off analysis. The analysis from the parameter is used if provieded, otherwise react state is used.
+     *
+     * @param {*} [compiledAnalyses=null] analysis data
+     * @returns Selected index or 0 if none can be found
+     * @memberof FileGalleryRendererComponent
+     */
+    getBrowserSelectedIndex(compiledAnalyses = null) {
         const { selectedAnalysesIndex } = this.state;
-
-        const analyses = this.getBrowserAnalysis();
-
+        const analyses = compiledAnalyses || this.getBrowserAnalysis();
         const selectedAnalysis = analyses[selectedAnalysesIndex];
 
         if (!selectedAnalysis) {
@@ -3034,14 +3045,16 @@ class FileGalleryRendererComponent extends React.Component {
             let allFiles = datasetFiles.concat(relatedFiles);
             allFiles = this.filterForInclusion(allFiles);
 
-            // set up filesFilteredByAssembly initially with files from drop down
-            const compiledAnalysis = currentTab === 'browser'
-                ? this.getBrowserAnalysis()
-                : compileAnalyses(context, allFiles, 'choose analysis');
             const dropdown = this.analysisSelectorRef.current;
-            const selectedIndex = currentTab === 'browser'
-                ? this.getBrowserSelectedIndex()
-                : dropdown ? dropdown.selectedIndex : null;
+            let selectedIndex = 0;
+            let compiledAnalysis = compileAnalyses(context, allFiles, 'choose analysis');
+
+            if (currentTab === 'browser') {
+                compiledAnalysis = this.getBrowserAnalysis(allFiles, compiledAnalysis);
+                selectedIndex = this.getBrowserSelectedIndex(compiledAnalysis);
+            } else {
+                selectedIndex = dropdown ? dropdown.selectedIndex : null;
+            }
             const analysis = compiledAnalysis[selectedIndex];
             const compileAnalysisFiles = analysis ? analysis.files : null;
             const getFilesDataFromIds = () => allFiles.filter((f) => compileAnalysisFiles && compileAnalysisFiles.includes(f['@id']));

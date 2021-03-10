@@ -810,19 +810,27 @@ export function computeAssemblyAnnotationValue(assembly, annotation) {
  *
  * @return {bool} True if file is visualizable
  */
-export const isFileVisualizable = (file) => (
-    (file.file_format === 'bigWig' || file.file_format === 'bigBed')
+export const isFileVisualizable = (file) => {
+    if (!file || !file.file_format) {
+        return false;
+    }
+
+    return (file.file_format === 'bigWig' || file.file_format === 'bigBed')
         && (file.file_format_type !== 'bedMethyl')
         && (file.file_format_type !== 'bedLogR')
         && (file.file_format_type !== 'pepMap')
         && (file.file_format_type !== 'modPepMap')
-        && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-);
+        && ['released', 'in progress', 'archived'].indexOf(file.status) > -1;
+};
 
 
 // Not all files can be visualized on the Valis genome browser
 // Some of these files should be visualizable later, after updates to browser
 export function filterForVisualizableFiles(fileList) {
+    if (!fileList || fileList.length === 0) {
+        return [];
+    }
+
     return fileList.filter((file) => isFileVisualizable(file));
 }
 
