@@ -223,17 +223,13 @@
             "title": "Assay type"
         },
         "assay_title": {
-            "title": "Assay title",
-            "type": "typeahead"
+            "title": "Assay title"
         },
         "status": {
             "title": "Status"
         },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
+        "biosamples.organism.scientific_name": {
+            "title": "Organism"
         },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
@@ -242,6 +238,15 @@
             "title": "Biosample term name",
             "type": "typeahead",
             "length": "long"
+        },
+        "tissue_with_enhancer_activity": {
+            "title": "Element activity location"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
         },
         "date_released": {
             "title": "Date released"
