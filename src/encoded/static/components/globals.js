@@ -183,6 +183,7 @@ export const assemblyPriority = [
     'GRCh38',
     'GRCh38-minimal',
     'hg19',
+    'GRCm39',
     'mm10',
     'mm10-minimal',
     'mm9',

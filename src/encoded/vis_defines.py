@@ -57,6 +57,13 @@ ASSEMBLY_DETAILS = {
                         'hic':              True,
                         'comment':          'Ensembl DOES NOT WORK'
     },
+    'GRCm39': {         'species':          'Mus musculus',     'assembly_reference': 'GRCm39',
+                        'common_name':      'mouse',
+                        'ucsc_assembly':    'mm39',
+                        'ensembl_host':     'www.ensembl.org',
+                        'quickview':        True,
+                        'comment':          'Ensembl should work'
+    },
     'mm10': {           'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
                         'common_name':      'mouse',
                         'ucsc_assembly':    'mm10',
@@ -128,6 +135,7 @@ ASSEMBLY_TO_UCSC_ID = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
     'GRCh37': 'hg19',
+    'GRCm39': 'mm39',
     'mm10-minimal': 'mm10',
     'GRCm38': 'mm10',
     'NCBI37': 'mm9',
