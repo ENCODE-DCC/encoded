@@ -372,7 +372,7 @@ class SummaryBody extends React.Component {
         nonPersistentQuery.deleteKeyValue('?type');
         const clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('?type') > 0;
         const context = this.props.context;
-        const vertFacetNames = ['assay', 'protocol.title', 'biosample_ontologies.system_slims', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title'];
+        const vertFacetNames = ['assay', 'protocol.title', 'biosample_classification', 'biosample_ontologies.system_slims', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title'];
         const vertFacets = []
         context.facets.forEach(x => {
             if (vertFacetNames.includes(x.field)) vertFacets.push(x);

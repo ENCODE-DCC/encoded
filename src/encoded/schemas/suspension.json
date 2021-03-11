@@ -299,6 +299,9 @@
         "suspension_type": {
             "title": "Suspension type"
         },
+        "biosample_classification": {
+            "title": "Biosample classification"
+        },
         "biosample_ontologies.system_slims": {
             "title": "Biosample system"
         },
@@ -333,6 +336,9 @@
         },
         "donors.sex": {
             "title": "Donor sex"
+        },
+        "biosample_classification": {
+            "title": "Biosample classification"
         },
         "derived_from": {
             "title": "Derived from"
