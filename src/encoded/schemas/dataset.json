@@ -123,6 +123,12 @@
         "libraries.protocol.title": {
             "title": "Library protocol"
         },
+        "libraries.protocol.title": {
+            "title": "Library protocol"
+        },
+        "libraries.biosample_classification": {
+            "title": "Biosample classification"
+        },
         "award.project": {
             "title": "Project"
         },
@@ -161,14 +167,17 @@
         "references.citation": {
             "title": "References"
         },
-        "status": {
-            "title": "Status"
-        },
         "libraries.protocol.title": {
             "title": "Library protocol"
         },
         "libraries.assay": {
             "title": "Assay type"
+        },
+        "libraries.biosample_classification": {
+            "title": "Biosample classification"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "changelog": "/profiles/changelogs/dataset.md"

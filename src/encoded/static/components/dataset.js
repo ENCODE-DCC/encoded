@@ -466,8 +466,19 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
         return null;
     }
 
+    function libraryListList(values, field) {
+        if (values && values.length > 0) {
+            const mySet = new Set();
+            values.forEach(x => x[field].forEach(y => mySet.add(y)));
+            const myList = Array.from(mySet).join(", ");
+            return myList;
+        }
+        return null;
+    }
+
     const library_types  = libraryList(context.libraries, 'assay');
-    const library_titles = libraryList(context.libraries, 'protocol_title');
+    const library_titles = libraryProtocolList(context.libraries, 'title');
+    const biosample_classification = libraryListList(context.libraries, 'biosample_classification');
 
     return (
         <div className={itemClass}>
@@ -496,6 +507,13 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                 <div data-test="description">
                                     <dt>Description</dt>
                                     <dd>{context.description}</dd>
+                                </div>
+                            : null}
+
+                            {biosample_classification ?
+                                <div data-test="biosample_classification">
+                                    <dt>Biosample classification</dt>
+                                    <dd>{biosample_classification}</dd>
                                 </div>
                             : null}
 

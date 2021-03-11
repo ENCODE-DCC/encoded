@@ -296,6 +296,12 @@
         "donors.sex": {
             "title": "Donor sex"
         },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
+        },
         "suspension_type": {
             "title": "Suspension type"
         },
@@ -336,6 +342,12 @@
         },
         "donors.sex": {
             "title": "Donor sex"
+        },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
         },
         "biosample_classification": {
             "title": "Biosample classification"
