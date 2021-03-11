@@ -4262,6 +4262,7 @@
         "uuid": "a86b1412-560b-4107-b9cc-eb0a06d07a08",
         "accession": "ENCFF032PPA",
         "file_format": "bam",
+        "mapped_run_type": "single-ended",
         "output_type": "preprocessed alignments",
         "file_size": 1000,
         "assembly": "GRCh38",
