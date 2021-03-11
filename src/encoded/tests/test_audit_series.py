@@ -53,3 +53,27 @@ def test_treatment_concentration_series_mixed_units(
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent treatment units' for error in errors_list)
+
+
+def test_differentiation_time_series_mixed_units(
+    testapp,
+    base_differentiation_series,
+    experiment_chip_H3K4me3,
+    experiment_chip_H3K27me3,
+    replicate_1_chip,
+    replicate_2_chip,
+    library_1_chip,
+    library_2_chip,
+    biosample_human_1,
+    biosample_human_2
+):
+    testapp.patch_json(base_differentiation_series['@id'], {'related_datasets': [experiment_chip_H3K4me3['@id'], experiment_chip_H3K27me3['@id']]})
+    testapp.patch_json(biosample_human_1['@id'], {'post_differentiation_time': 10, 'post_differentiation_time_units': 'hour'})
+    testapp.patch_json(biosample_human_2['@id'], {'post_differentiation_time': 10, 'post_differentiation_time_units': 'day'})
+    testapp.patch_json(replicate_2_chip['@id'], {'experiment': experiment_chip_H3K4me3['@id']})
+    res = testapp.get(base_differentiation_series['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent differentation time units' for error in errors_list)
