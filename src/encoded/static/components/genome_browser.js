@@ -746,7 +746,6 @@ class GenomeBrowser extends React.Component {
 
                 const opened = openedOutputTypes.includes(file.output_type);
                 trackObj.heightPx = opened ? 95 : trackObj.heightPx;
-                trackObj.expandable = opened;
             }
             return trackObj;
         });
