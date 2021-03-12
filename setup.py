@@ -9,7 +9,7 @@ SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@1.0.54"
 
 INSTALL_REQUIRES = [
     "PasteDeploy==2.1.0",
-    "Pillow==7.0.0",
+    "Pillow==8.1.2",
     "SQLAlchemy==1.3.13",
     "WSGIProxy2==0.4.6",
     "WebOb==1.8.6",
@@ -42,9 +42,9 @@ INSTALL_REQUIRES = [
     "waitress==1.4.3",
     "xlrd==1.2.0",
     "zc.buildout==2.13.2",
-    "zope.interface==4.7.1",
+    "zope.interface==5.2.0",
     "zope.sqlalchemy==1.2",
-    f"snovault @ {SNOVAULT_DEP}",
+    "snovault",
 ]
 
 EXTRAS_REQUIRE = {
