@@ -145,7 +145,7 @@ def audit_mismatched_properties(value, system):
 			audit_link(path_to_text(value['@id']),value['@id']))
 		for target in targets:
 			expt_list = generate_formatted_list_of_experiments(targets[target])
-			if target is 'no target':
+			if target == 'no target':
 				link = target
 			else:
 				link = audit_link(path_to_text(target),target)
@@ -173,7 +173,7 @@ def audit_mismatched_properties(value, system):
 			audit_link(path_to_text(value['@id']),value['@id']))
 		for treatment_key in treatments:
 			expt_list = generate_formatted_list_of_experiments(treatments[treatment_key])
-			if treatment_key is 'no treatment':
+			if treatment_key == 'no treatment':
 				link = treatment_key
 			else:
 				formatted_links = []
@@ -192,7 +192,7 @@ def audit_mismatched_properties(value, system):
 			audit_link(path_to_text(value['@id']),value['@id']))
 		for gm_key in genetic_modifications:
 			expt_list = generate_formatted_list_of_experiments(genetic_modifications[gm_key])
-			if gm_key is 'no genetic modification':
+			if gm_key == 'no genetic modification':
 				links = gm_key
 			else:
 				formatted_links = []
