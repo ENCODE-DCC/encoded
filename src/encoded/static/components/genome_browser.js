@@ -91,6 +91,21 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
         contig = 'chr21';
         x0 = 33031597;
         x1 = 33041570;
+    } else if (assembly === 'GRCm39') {
+        pinnedFiles = [
+            {
+                file_format: 'vdna-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/mm39/mm39.vdna-dir',
+            },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/mm39/gencode.vM26.GRCm39.annotation.vgenes-dir',
+                title: 'GENCODE M26',
+            },
+        ];
+        contig = 'chr7';
+        x0 = 72938479;
+        x1 = 73220239;
     } else if (assembly === 'mm10' || assembly === 'mm10-minimal' || assembly === 'GRCm38') {
         pinnedFiles = [
             {
