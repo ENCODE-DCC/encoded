@@ -1,5 +1,7 @@
 from pyramid.view import view_config
 
+import requests
+
 from encoded.cart_view import CartWithElements
 from encoded.searches.fields import CartSearchResponseField
 from encoded.searches.fields import CartSearchWithFacetsResponseField
@@ -65,6 +67,7 @@ def includeme(config):
     config.add_route('cart-matrix', '/cart-matrix{slash:/?}')
     config.add_route('top-hits-raw', '/top-hits-raw{slash:/?}')
     config.add_route('top-hits', '/top-hits{slash:/?}')
+    config.add_route('rnaget', '/rnaget{slash:/?}')
     config.scan(__name__)
 
 
@@ -283,6 +286,75 @@ def report(context, request):
         ]
     )
     return fr.render()
+
+
+@view_config(route_name='rnaget', request_method='GET', permission='search')
+def rnaget(context, request):
+    genes = request.params.get('genes', 'ENSG00000088320.3') # TODO: default value for testing only
+    units = request.params.get('units', 'tpm')
+    sort = request.params.get('sort')
+
+    params = []
+
+    genes_query = []
+    for gene in genes.split(","):
+        genes_query.append(gene.strip())
+    genes = ",".join(genes_query)
+
+    if genes:
+        params.append("featureIDList=" + genes)
+
+    if units:
+        params.append("units=" + units)
+
+    if sort:
+        params.append("sort=" + sort)
+
+    data_service = context.registry.settings.get('genomic_data_service')
+    data = requests.get(data_service + '/expressions/bytes?format=json&' + '&'.join(params)).json()
+
+    expressions = data['expressions']
+    facets = data['facets']
+
+    # columns are ordered by "the position" in the hash map
+    columns = {
+        'featureID': {'title': 'Feature ID'},
+        'tpm': {'title': 'Counts (TPM)'},
+        'fpkm': {'title': 'Counts (FPKM)'},
+        'assayType': {'title': 'Assay (RNA SubType)'},
+        'libraryPrepProtocol': {'title': 'Experiment'},
+        'expressionID': {'title': 'File'},
+        'annotation': {'title': 'Genome Annotation'}
+    }
+
+    if units == 'tpm':
+        columns.pop('fpkm')
+    elif units == 'fpkm':
+        columns.pop('tpm')
+
+    facets_data = []
+    for facet in facets:
+        facet_data = {
+            'field': facet,
+            'title': columns[facet]['title'],
+            'terms': [{'key': term[0], 'doc_count': term[1]} for term in facets[facet]],
+            'type': 'terms'
+        }
+        facet_data['total'] = sum([term['doc_count'] for term in facet_data['terms']])
+        facets_data.append(facet_data)
+
+    return {
+        "title": "RNA Get",
+        "@type": ["rnaseq"],
+        "@id": request.path_qs,
+        "total": len(expressions),
+        "non_sortable": ['expressionID', 'annotation'],
+        "sort": {},
+        "columns": columns,
+        "filters": [{"field": "type", "term": "Rna Get", "remove": "/rnaget"}],
+        "facets": facets_data,
+        "@graph": expressions
+    }
 
 
 @view_config(route_name='matrixv2_raw', request_method='GET', permission='search')

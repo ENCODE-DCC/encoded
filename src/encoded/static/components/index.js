@@ -26,6 +26,7 @@ require('./platform');
 require('./facets');
 require('./search');
 require('./report');
+require('./rnaget');
 require('./matrix_audit');
 require('./matrix_entex');
 require('./matrix_mouse_development');
