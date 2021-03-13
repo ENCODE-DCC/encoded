@@ -12,5 +12,4 @@
 
 - cloud-init-per once encd-git-repo sudo -u ubuntu git clone %(GIT_REPO)s /home/ubuntu/encoded
 - cloud-init-per once encd-git-branch sudo -u ubuntu git -C /home/ubuntu/encoded checkout -b %(GIT_BRANCH)s %(GIT_REMOTE)s/%(GIT_BRANCH)s
-- cloud-init-per once encd-java sudo -u ubuntu %(SCRIPTS_DIR)s/ami-java.sh
 - cloud-init-per once encd-redis sudo -u ubuntu %(SCRIPTS_DIR)s/ami-redis.sh
