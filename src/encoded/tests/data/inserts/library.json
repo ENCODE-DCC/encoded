@@ -37,6 +37,7 @@
         "fragmentation_methods": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
+        "extraction_method": "NucleoBond PC Giga kit (Machery-Nagel cat#: 740548)",
         "nucleic_acid_term_name": "DNA",
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -1082,12 +1083,8 @@
         "lysis_method": "SDS",
         "linkers": [
             {
-                "type": "linker a",
+                "type": "bridge linker",
                 "sequence": "ACGCGATATCTTATCTGACT"
-            },
-            {
-                "type": "linker b",
-                "sequence": "AGTCAGATAAGATATCGCGT"
             }
         ],
         "submitted_by": "mus.mi@porttitor.molestie",
@@ -1171,5 +1168,36 @@
         "uuid": "ee788ebe-64ed-485a-b762-40e6caa46949",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "UM1HG009442"
+    },
+    {
+        "accession": "ENCLB304CLB",
+        "award": "UM1HG009442",
+        "biosample": "ENCBS630AAA",
+        "lab": "michael-snyder",
+        "library_size_selection_method": "BluePippin",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "350-600",
+        "status": "in progress",
+        "lysis_method": "SDS",
+        "linkers": [
+            {
+                "type": "linker a top",
+                "sequence": "GGCCGCGATATCTTATCCAAC"
+            },
+            {
+                "type": "linker a bottom",
+                "sequence": "GGCCGCGATATCTTATCCAAC"
+            },
+            {
+                "type": "linker b top",
+                "sequence": "GGCCGCGATATACATTCCAAC"
+            },
+            {
+                "type": "linker b bottom",
+                "sequence": "GTTGGAATGTATATCGC"
+            }
+        ],
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "uuid": "9caea93e-ea3b-4bf5-b713-e0a7aa51f69e"
     }
 ]

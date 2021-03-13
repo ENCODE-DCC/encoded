@@ -290,3 +290,23 @@ def library_schema_14(lab, award):
         'nucleic_acid_term_name': 'polyadenylated mRNA',
         'depleted_in_term_name': ['polyadenylated mRNA', 'capped mRNA']
     }
+
+
+@pytest.fixture
+def library_linkers(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'schema_version': '15',
+        'nucleic_acid_term_name': 'DNA',
+        'linkers': [
+            {
+              'type': 'linker a',
+              'sequence': 'GGCCGCGATATCTTATCCAAC'
+            },
+            {
+              'type': 'linker b',
+              'sequence': 'GTTGGATAAGATATCGC'
+            }
+        ]
+    }

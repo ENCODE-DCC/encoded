@@ -180,11 +180,11 @@
                 {
                     "properties": {
                         "linkers": {
-                            "minItems": 2,
+                            "minItems": 4,
                             "items": {
                                 "properties": {
                                     "type": {
-                                        "enum": ["linker a", "linker b"]
+                                        "enum": ["linker a top", "linker a bottom", "linker b top", "linker b bottom"]
                                     }
                                 }
                             }
@@ -196,7 +196,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "15"
+            "default": "16"
         },
         "accession": {
             "accessionType": "LB"
@@ -365,6 +365,7 @@
                         "C1 fluidigm",
                         "Maxwell 16 LEV simpleRNA Cells Kit (Promega cat#: AS1270)",
                         "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                        "NucleoBond PC Giga kit (Machery-Nagel cat#: 740548)",
                         "NucleoBond Xtra Midi kit (Machery-Nagel cat#: 740410)",
                         "QIAGEN DNeasy Blood & Tissue Kit",
                         "Qiagen RNA extraction",
@@ -664,7 +665,7 @@
             "description": "Linker(s) used during ChIA-PET library preparation",
             "uniqueItems": true,
             "minItems": 1,
-            "maxItems": 2,
+            "maxItems": 4,
             "items": {
                 "title": "Linker",
                 "type": "object",
@@ -676,9 +677,11 @@
                         "description": "Name of linker.",
                         "type": "string",
                         "enum": [
-                            "linker a",
-                            "linker b",
-                            "bridge linker"
+                            "bridge linker",
+                            "linker a top",
+                            "linker a bottom",
+                            "linker b top",
+                            "linker b bottom"
                         ]
                     },
                     "sequence": {
