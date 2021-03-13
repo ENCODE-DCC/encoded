@@ -16,7 +16,7 @@ import { ViewControls } from './view_controls';
  * Default number of results when no "limit=x" specified in the query string. Determined by our
  * back-end search code.
  */
-const DEFAULT_PAGE_LIMIT = 25;
+const DEFAULT_PAGE_LIMIT = 100;
 
 /**
  * Maximum number of results we can set "from=x" that elasticsearch allows.
@@ -838,19 +838,14 @@ const RNAGet = ({ context }, reactContext) => {
         return result;
     }, [context.columns, query, fieldOrder]);
 
-    // Get the current value of the "limit=x" query string parameter. No "limit=x" means the
-    // default value applies. The back end allows exactly zero or one "limit=x" parameter.
-    const pageLimit = React.useMemo(() => {
-        const limitValues = query.getKeyValues('limit');
-        return limitValues.length === 1 ? Number(limitValues[0]) || DEFAULT_PAGE_LIMIT : DEFAULT_PAGE_LIMIT;
-    }, [query]);
+    const pageLimit = DEFAULT_PAGE_LIMIT;
 
     // Calculate the current page number and total number of pages. The current page number relies
     // on the current "from=x" query string parameter, which the back end allows exactly zero or
     // one of.
-    const fromIndices = query.getKeyValues('from');
-    const fromIndex = fromIndices.length === 1 ? Number(fromIndices[0]) : 0;
-    const currentPage = (fromIndex / pageLimit) + 1;
+    const pageIndices = query.getKeyValues('page');
+    const currentPage = pageIndices.length === 1 ? Number(pageIndices[0]) : 1;
+
     const viewableTotal = Math.min(context.total, MAX_VIEWABLE_RESULTS - pageLimit);
     const totalPages = Math.trunc(viewableTotal / pageLimit) + (viewableTotal % pageLimit > 0 ? 1 : 0);
 
@@ -884,18 +879,9 @@ const RNAGet = ({ context }, reactContext) => {
     // Called when the user selects a new page number from the pagination control. Generate a
     // query string using a "first=x" query string parameter for the page and navigate to it.
     const handlePagerClick = (newPageNumber) => {
-        // Map the page number to the corresponding "first=x" query string parameter.
-        const firstSearchIndex = (newPageNumber - 1) * pageLimit;
-
-        // Add the new "first=x" query string parameter, or remove it for the first page.
         const indexQuery = query.clone();
-        if (firstSearchIndex === 0) {
-            indexQuery.deleteKeyValue('from');
-        } else {
-            indexQuery.replaceKeyValue('from', firstSearchIndex);
-        }
+        indexQuery.replaceKeyValue('page', newPageNumber);
 
-        // Navigate to the new query string.
         const href = `?${indexQuery.format()}`;
         reactContext.navigate(href);
     };
@@ -918,12 +904,12 @@ const RNAGet = ({ context }, reactContext) => {
 
     React.useEffect(() => {
         // If a facet selection leaves fewer pages than the current page, redirect to the same url
-        // but on the first page, by removing the "from=x" query-string parameter.
+        // but on the first page, by removing the "page=x" query-string parameter.
         if (currentPage > totalPages && !redirectInProgress.current) {
             redirectInProgress.current = true;
-            const noFromQuery = query.clone();
-            noFromQuery.deleteKeyValue('from');
-            reactContext.navigate(`?${noFromQuery.format()}`);
+            const noPageQuery = query.clone();
+            noPageQuery.deleteKeyValue('page');
+            reactContext.navigate(`?${noPageQuery.format()}`);
         }
     }, [currentPage, totalPages, query, reactContext]);
 
@@ -950,7 +936,7 @@ const RNAGet = ({ context }, reactContext) => {
                     {viewableTotal < context.total ?
                         <div className="report-max-warning">Not all items viewable. Download TSV for all items.</div>
                     : null}
-                    <TableItemCount count={`Showing results ${fromIndex + 1} to ${Math.min(context.total, fromIndex + pageLimit)} of ${context.total}`} />
+                    <TableItemCount count={`Showing results ${(currentPage - 1) * pageLimit + 1} to ${Math.min(context.total, (currentPage - 1) * pageLimit + pageLimit)} of ${context.total}`} />
                     <div className="report__table">
                         <table className="table table-striped" ref={tableRef}>
                             <RNAGetHeader context={context} visibleFields={visibleFields} allColumns={allColumns} tableRef={tableRef} />

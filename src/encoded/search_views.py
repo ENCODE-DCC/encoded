@@ -291,30 +291,32 @@ def report(context, request):
 @view_config(route_name='rnaget', request_method='GET', permission='search')
 def rnaget(context, request):
     genes = request.params.get('genes', 'ENSG00000088320.3') # TODO: default value for testing only
+    genes = ",".join([gene.strip() for gene in genes.split(",")])
+
     units = request.params.get('units', 'tpm')
-    sort = request.params.get('sort')
+    sort  = request.params.get('sort')
+    page  = request.params.get('page')
 
     params = []
 
-    genes_query = []
-    for gene in genes.split(","):
-        genes_query.append(gene.strip())
-    genes = ",".join(genes_query)
-
     if genes:
-        params.append("featureIDList=" + genes)
+        params.append(f"featureIDList={genes}")
 
     if units:
-        params.append("units=" + units)
+        params.append(f"units={units}")
 
     if sort:
-        params.append("sort=" + sort)
+        params.append(f"sort={sort}")
+
+    if page:
+        params.append(f"page={page}")
 
     data_service = context.registry.settings.get('genomic_data_service')
     data = requests.get(data_service + '/expressions/bytes?format=json&' + '&'.join(params)).json()
 
     expressions = data['expressions']
     facets = data['facets']
+    total = data['total']
 
     # columns are ordered by "the position" in the hash map
     columns = {
@@ -347,9 +349,8 @@ def rnaget(context, request):
         "title": "RNA Get",
         "@type": ["rnaseq"],
         "@id": request.path_qs,
-        "total": len(expressions),
-        "non_sortable": ['expressionID', 'annotation'],
-        "sort": {},
+        "total": total,
+        "non_sortable": ['annotation'],
         "columns": columns,
         "filters": [{"field": "type", "term": "Rna Get", "remove": "/rnaget"}],
         "facets": facets_data,
