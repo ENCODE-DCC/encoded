@@ -47,12 +47,18 @@ class SummaryStatusChart extends React.Component {
         this.chart = null;
         this.createChart = this.createChart.bind(this);
         this.updateChart = this.updateChart.bind(this);
+        this.state = {
+            unknownCount: 0
+        }
     }
 
     componentDidMount() {
         if (this.props.totalStatusData) {
             this.createChart();
         }
+
+        const query_url = this.props.linkUri.replace('/report/?', '')
+        this.getNoEth(query_url);
     }
 
     componentDidUpdate() {
@@ -68,6 +74,25 @@ class SummaryStatusChart extends React.Component {
         }
     }
 
+    getNoEth(searchBase) {
+        const statusData = this.props.statusData
+        requestSearch(searchBase + '&donors.ethnicity!=*&limit=all').then((results) => {
+            if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
+                this.setState({
+                    unknownCount: results.total
+                })
+                const sexFacet = results['facets'].find(facet => facet.field === 'donors.sex');
+                globals.donorSexList.forEach(x => {const unknownData = sexFacet['terms'].find(facet => facet.key === x) ?
+                    sexFacet['terms'].find(facet => facet.key === x) : null;
+                    const unknownTotal = unknownData.doc_count;
+                    const myData = statusData.find(facet => facet.key === x);
+                    myData.doc_count += unknownTotal;
+                    myData['donors.ethnicity.term_name'].buckets.push({key: 'unknown', doc_count: unknownTotal});
+                })
+            }
+        })
+    }
+
     createChart() {
         const { statusData } = this.props;
 
@@ -78,6 +103,7 @@ class SummaryStatusChart extends React.Component {
             }
         });
         const ethnicityNames = Array.from(ethnicityFacet, x => x['key']);
+        this.state.unknownCount > 0 ? ethnicityNames.push('unknown') : null;
 
         // Initialize data object to pass to createBarChart.
         const data = {
@@ -115,6 +141,7 @@ class SummaryStatusChart extends React.Component {
             }
         });
         const ethnicityNames = Array.from(ethnicityFacet, x => x['key']);
+        this.state.unknownCount > 0 ? ethnicityNames.push('unknown') : null;
 
         // For each sex value, extract the data for each status to assign to the existing
         // chart's dataset.
@@ -261,14 +288,11 @@ class SummaryData extends React.Component {
         const { context } = this.props;
 
         // Find the labs and assay facets in the search results.
-        const labFacet = context.facets.find(facet => facet.field === 'lab.title');
-        let labs = labFacet ? labFacet.terms : null;
         const assayFacet = context.facets.find(facet => facet.field === 'assay');
         let assays = assayFacet ? assayFacet.terms : null;
         const awardFacet = context.facets.find(facet => facet.field === 'award.coordinating_pi.title');
         let awards = awardFacet ? awardFacet.terms : null;
 
-        const filteredOutLabs = context.filters.filter(c => c.field === 'lab.title!');
         const filteredOutAssays = context.filters.filter(c => c.field === 'assay!');
         const filteredOutAwards = context.filters.filter(c => c.field === 'award.coordinating_pi.title!');
 
@@ -279,11 +303,6 @@ class SummaryData extends React.Component {
             if (assayTitleFilters.length > 0) {
                 const assayTitleFilterTerms = assayTitleFilters.map(filter => filter.term);
                 assays = assays.filter(assayItem => assayTitleFilterTerms.indexOf(assayItem.key) !== -1);
-            }
-            const labFilters = context.filters.filter(filter => filter.field === 'lab.title');
-            if (labFilters.length > 0) {
-                const labFilterTerms = labFilters.map(filter => filter.term);
-                labs = labs.filter(labItem => labFilterTerms.indexOf(labItem.key) !== -1);
             }
             const awardNameFilters = context.filters.filter(filter => filter.field === 'award.coordinating_pi.title');
             if (awardNameFilters.length > 0) {
