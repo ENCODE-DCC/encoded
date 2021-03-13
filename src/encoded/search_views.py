@@ -296,7 +296,10 @@ def rnaget(context, request):
     units = request.params.get('units', 'tpm')
     sort  = request.params.get('sort')
     page  = request.params.get('page')
+    assay = request.params.get('assayType')
+    annotation = request.params.get('annotation')
 
+    # TODO: refactor
     params = []
 
     if genes:
@@ -310,6 +313,12 @@ def rnaget(context, request):
 
     if page:
         params.append(f"page={page}")
+
+    if assay:
+        params.append(f"assayType={assay}")
+
+    if annotation:
+        params.append(f"annotation={annotation}")
 
     data_service = context.registry.settings.get('genomic_data_service')
     data = requests.get(data_service + '/expressions/bytes?format=json&' + '&'.join(params)).json()
@@ -346,15 +355,15 @@ def rnaget(context, request):
         facets_data.append(facet_data)
 
     return {
-        "title": "RNA Get",
-        "@type": ["rnaseq"],
-        "@id": request.path_qs,
-        "total": total,
-        "non_sortable": ['annotation'],
-        "columns": columns,
-        "filters": [{"field": "type", "term": "Rna Get", "remove": "/rnaget"}],
-        "facets": facets_data,
-        "@graph": expressions
+        'title': 'RNA Get',
+        '@type': ['rnaseq'],
+        '@id': request.path_qs,
+        'total': total,
+        'non_sortable': ['annotation'],
+        'columns': columns,
+        'filters': [{'field': 'type', 'term': 'Rna Get', 'remove': '/rnaget'}],
+        'facets': facets_data,
+        '@graph': expressions
     }
 
 
