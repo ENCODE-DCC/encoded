@@ -72,7 +72,6 @@ class Experiment(Dataset,
         'replicates.library.biosample.treatments',
         'replicates.library.construction_platform',
         'replicates.library.treatments',
-        'replicates.libraries.mixed_biosamples',
         'possible_controls',
         'target.genes',
         'target.organism'
@@ -111,9 +110,6 @@ class Experiment(Dataset,
         'replicates.library.biosample.pooled_from.biosample_ontology',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
-        'replicates.libraries.biosample.pooled_from.biosample',
-        'replicates.libraries.mixed_biosamples',
-        'replicates.libraries.mixed_biosamples.biosample',
         'target.organism',
     ]
     set_status_up = [

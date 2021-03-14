@@ -35,38 +35,40 @@ def audit_experiment_biosample(value, system, excluded_types):
         yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
 
     for rep in value.get('replicates', []):
-        for lib in rep.get('libraries', []):
-            if 'biosample' not in lib:
-                detail = (
-                    'Library {} is missing biosample, '
-                    'expecting one of type {}'.format(
-                        audit_link(path_to_text(lib['@id']), lib['@id']),
-                        exp_bio_ontology['term_name']
+        lib = rep.get('library')
+        if not lib:
+            continue
+        if 'biosample' not in lib:
+            detail = (
+                'Library {} is missing biosample, '
+                'expecting one of type {}'.format(
+                    audit_link(path_to_text(lib['@id']), lib['@id']),
+                    exp_bio_ontology['term_name']
+                )
+            )
+            yield AuditFailure('missing biosample', detail, level='ERROR')
+            continue
+        biosample = lib['biosample']
+        if biosample['biosample_ontology']['@id'] != exp_bio_ontology['@id']:
+            detail = (
+                "Experiment {} contains a library {} linked to biosample "
+                "type '{}', while experiment's biosample type "
+                "is '{}'.".format(
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    audit_link(path_to_text(lib['@id']), lib['@id']),
+                    audit_link(
+                        path_to_text(biosample['biosample_ontology']['@id']),
+                        biosample['biosample_ontology']['@id']
+                    ),
+                    audit_link(
+                        path_to_text(exp_bio_ontology['@id']),
+                        exp_bio_ontology['@id']
                     )
                 )
-                yield AuditFailure('missing biosample', detail, level='ERROR')
-                continue
-            biosample = lib['biosample']
-            if biosample['biosample_ontology']['@id'] != exp_bio_ontology['@id']:
-                detail = (
-                    "Experiment {} contains a library {} linked to biosample "
-                    "type '{}', while experiment's biosample type "
-                    "is '{}'.".format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        audit_link(path_to_text(lib['@id']), lib['@id']),
-                        audit_link(
-                            path_to_text(biosample['biosample_ontology']['@id']),
-                            biosample['biosample_ontology']['@id']
-                        ),
-                        audit_link(
-                            path_to_text(exp_bio_ontology['@id']),
-                            exp_bio_ontology['@id']
-                        )
-                    )
-                )
-                yield AuditFailure(
-                    'inconsistent library biosample', detail, level='ERROR'
-                )
+            )
+            yield AuditFailure(
+                'inconsistent library biosample', detail, level='ERROR'
+            )
 
 
 def audit_experiment_missing_modification(value, system, excluded_types):
@@ -75,21 +77,23 @@ def audit_experiment_missing_modification(value, system, excluded_types):
     if value['assay_term_name'] == 'pooled clone sequencing':
         return
     for rep in value.get('replicates', []):
-        for lib in rep.get('libraries', []):
-            if 'biosample' in lib:
-                if lib['biosample'].get('applied_modifications', []):
-                    continue
-                detail = (
-                    'Biosample {} has no genetic modifications.'.format(
-                        audit_link(
-                            path_to_text(lib['biosample']['@id']),
-                            lib['biosample']['@id']
-                        ),
-                    )
+        lib = rep.get('library')
+        if not lib:
+            continue
+        if 'biosample' in lib:
+            if lib['biosample'].get('applied_modifications', []):
+                continue
+            detail = (
+                'Biosample {} has no genetic modifications.'.format(
+                    audit_link(
+                        path_to_text(lib['biosample']['@id']),
+                        lib['biosample']['@id']
+                    ),
                 )
-                yield AuditFailure(
-                    'missing genetic modification', detail, level='ERROR'
-                )
+            )
+            yield AuditFailure(
+                'missing genetic modification', detail, level='ERROR'
+            )
 
 
 def audit_experiment_replicate_with_no_files(value, system, excluded_statuses):
@@ -146,11 +150,9 @@ function_dispatcher_with_files = {
         'original_files',
         'original_files.replicate',
         'replicates',
-        'replicates.libraries.biosample',
-        'replicates.libraries.biosample.applied_modifications',
-        'replicates.libraries.biosample.biosample_ontology',
         'replicates.library',
         'replicates.library.biosample',
+        'replicates.library.biosample.biosample_ontology',
         'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.donor',
     ]
