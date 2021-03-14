@@ -47,8 +47,9 @@ const readGenomeBrowserLabelCoordinates = () => {
  * @param {boolean} [ignoreCache=false] True to not look into cache, false to use cache
  * @returns Default coordinates
  */
-const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
+const getDefaultCoordinates = (assemblyAnnotation, geneAnnotation, ignoreCache = false) => {
     const assembly = assemblyAnnotation.split(' ')[0];
+    const annotation = geneAnnotation.split(' ')[0];
     // Files to be displayed on all genome browser results
     let pinnedFiles = [];
     let contig = null;
@@ -73,6 +74,19 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
                 title: 'GENCODE V29',
             },
         ];
+        if (annotation === 'V33') {
+            pinnedFiles = [
+                {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
+                },
+                {
+                    file_format: 'vgenes-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/gencode.v33.GRCh38.p13.annotation.vgenes-dir',
+                    title: 'GENCODE V33',
+                },
+            ];
+        }
         contig = 'chr1';
         x0 = 11102837;
         x1 = 11267747;
@@ -476,7 +490,7 @@ class GenomeBrowser extends React.Component {
                 }
             }
 
-            if (this.props.assembly !== prevProps.assembly) {
+            if (this.props.assembly !== prevProps.assembly || this.props.annotation !== prevProps.annotation) {
                 // Determine pinned files based on genome, filter and sort files, compute and draw tracks
                 this.setGenomeAndTracks();
             }
@@ -517,8 +531,8 @@ class GenomeBrowser extends React.Component {
         this.scrollToGeneLocation(gene);
     }
 
-    setBrowserDefaults(assemblyAnnotation, resolve) {
-        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation);
+    setBrowserDefaults(assemblyAnnotation, geneAnnotation, resolve) {
+        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation, geneAnnotation);
 
         this.setState({ contig, x0, x1, pinnedFiles }, () => {
             if (resolve) {
@@ -529,10 +543,11 @@ class GenomeBrowser extends React.Component {
 
     setGenomeAndTracks() {
         const genome = mapGenome(this.props.assembly);
+        const annotation = mapGenome(this.props.annotation);
         this.setState({ genome });
         // Determine genome and Gencode pinned files for selected assembly
         const genomePromise = new Promise((resolve) => {
-            this.setBrowserDefaults(genome, resolve);
+            this.setBrowserDefaults(genome, annotation, resolve);
         });
         // Make sure that we have these pinned files before we convert the files to tracks and chart them
         genomePromise.then(() => {
@@ -825,14 +840,15 @@ class GenomeBrowser extends React.Component {
 GenomeBrowser.propTypes = {
     files: PropTypes.array.isRequired,
     expanded: PropTypes.bool.isRequired,
-    assembly: PropTypes.string,
+    assembly: PropTypes.string.isRequired,
+    annotation: PropTypes.string,
     label: PropTypes.string.isRequired,
     sortParam: PropTypes.array,
     displaySort: PropTypes.bool,
 };
 
 GenomeBrowser.defaultProps = {
-    assembly: '',
+    annotation: '',
     sortParam: ['Replicates', 'Output type'], // Array of parameters for sorting file object
     displaySort: false, // Determines if sort buttons should be displayed
 };

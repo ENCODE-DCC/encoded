@@ -296,14 +296,12 @@ CartBrowser.propTypes = {
     /** Files of all visualizable tracks, not just on the displayed page */
     files: PropTypes.array.isRequired,
     /** Assembly to display; can be empty before partial files loaded */
-    assembly: PropTypes.string,
+    assembly: PropTypes.string.isRequired,
     /** Page of files to display */
     pageNumber: PropTypes.number.isRequired,
 };
 
-CartBrowser.defaultProps = {
-    assembly: '',
-};
+CartBrowser.defaultProps = {};
 
 
 /**
