@@ -72,18 +72,6 @@ class Experiment(Dataset,
         'replicates.library.biosample.treatments',
         'replicates.library.construction_platform',
         'replicates.library.treatments',
-        'replicates.libraries',
-        'replicates.libraries.biosample.submitted_by',
-        'replicates.libraries.biosample.source',
-        'replicates.libraries.biosample.applied_modifications',
-        'replicates.libraries.biosample.organism',
-        'replicates.libraries.biosample.donor',
-        'replicates.libraries.biosample.donor.organism',
-        'replicates.libraries.biosample.part_of',
-        'replicates.libraries.biosample.part_of.donor',
-        'replicates.libraries.biosample.part_of.treatments',
-        'replicates.libraries.biosample.treatments',
-        'replicates.libraries.treatments',
         'replicates.libraries.mixed_biosamples',
         'possible_controls',
         'target.genes',
@@ -123,21 +111,9 @@ class Experiment(Dataset,
         'replicates.library.biosample.pooled_from.biosample_ontology',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
-        'replicates.libraries.documents',
-        'replicates.libraries.biosample',
-        'replicates.libraries.biosample.organism',
-        'replicates.libraries.biosample.treatments',
-        'replicates.libraries.biosample.applied_modifications',
-        'replicates.libraries.biosample.donor.organism',
-        'replicates.libraries.biosample.donor',
-        'replicates.libraries.biosample.treatments',
-        'replicates.libraries.biosample.originated_from',
-        'replicates.libraries.biosample.part_of',
         'replicates.libraries.biosample.pooled_from.biosample',
         'replicates.libraries.mixed_biosamples',
         'replicates.libraries.mixed_biosamples.biosample',
-        'replicates.libraries.spikeins_used',
-        'replicates.libraries.treatments',
         'target.organism',
     ]
     set_status_up = [
@@ -469,10 +445,6 @@ class Replicate(Item):
         'library.biosample',
         'library.biosample.donor',
         'library.biosample.donor.organism',
-        'libraries',
-        'libraries.biosample',
-        'libraries.biosample.donor',
-        'libraries.biosample.donor.organism',
     ]
     set_status_up = [
         'library',
@@ -492,45 +464,3 @@ class Replicate(Item):
         root = find_root(self)
         experiment = root.get_by_uuid(properties['experiment'])
         return experiment.__ac_local_roles__()
-
-    @calculated_property(schema={
-        "title": "Libraries",
-        "description": "The nucleic acid libraries used in this replicate.",
-        "type": "array",
-        "uniqueItems": True,
-        "items": {
-            "title": "Library",
-            "description": "The nucleic acid library used in this replicate.",
-            "comment": "See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
-        }
-    })
-    def libraries(self, request, status, biological_replicate_number,
-                  technical_replicate_number):
-        if status == 'deleted':
-            return []
-        # Use root.get_by_uuid instead of embed to get reverse link
-        # specifically. This helps avoid infinite loop since calculated
-        # properties of experiment need to embed replicate.
-        properties = self.upgrade_properties()
-        root = find_root(self)
-        experiment = root.get_by_uuid(properties['experiment'])
-        libraries = set()
-        for rep_uuid in experiment.get_rev_links('replicates'):
-            rep_props = root.get_by_uuid(rep_uuid).upgrade_properties()
-            # Only care (check and add to the list) about non-deleted technical
-            # replicates of this replicate, meaning belonging to the same
-            # biological replicate.
-            if (rep_props['biological_replicate_number'] != biological_replicate_number
-                or rep_props['status'] == 'deleted'):
-                continue
-            if rep_props['technical_replicate_number'] < technical_replicate_number:
-                # Found smaller technical replicate, libraries will be
-                # calculated there rather than here.
-                return []
-            if 'library' in rep_props:
-                libraries.add(rep_props['library'])
-        # This is the "first" techinical replicate within the isogenic
-        # replciate. Therefore, libraries should be calculated.
-        return [request.resource_path(root.get_by_uuid(lib)) for lib in libraries]
