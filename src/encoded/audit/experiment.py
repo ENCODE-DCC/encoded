@@ -696,14 +696,13 @@ def check_experiment_dnase_seq_standards(experiment,
                                          link_to_standards):
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
-    signal_files = files_structure.get('signal_files').values()
-    assay_term_name = experiment['assay_term_name']
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
         alignment_files,
         ['GRCh38', 'mm10'],
         ['DNase-HS pipeline single-end - Version 2',
-         'DNase-HS pipeline paired-end - Version 2'])
+         'DNase-HS pipeline paired-end - Version 2',
+         'DNase-seq pipeline'])
     if pipeline_title is False:
         return
     for f in fastq_files:
@@ -711,168 +710,6 @@ def check_experiment_dnase_seq_standards(experiment,
             f, 36,
             pipeline_title,
             link_to_standards)
-
-    pipelines = get_pipeline_objects(alignment_files)
-
-    if pipelines is not None and len(pipelines) > 0:
-        samtools_flagstat_metrics = get_metrics(alignment_files,
-                                                'SamtoolsFlagstatsQualityMetric',
-                                                desired_assembly)
-
-        if samtools_flagstat_metrics is not None and \
-                len(samtools_flagstat_metrics) > 0:
-            for metric in samtools_flagstat_metrics:
-                if 'mapped' in metric and 'quality_metric_of' in metric:
-                    alignment_file = files_structure.get(
-                        'alignments')[metric['quality_metric_of'][0]]
-                    suffix = ('According to ENCODE standards, conventional '
-                        'DNase-seq profile requires a minimum of 20 million uniquely mapped '
-                        'reads to generate a reliable '
-                        'SPOT (Signal Portion of Tags) score. '
-                        'The recommended value is > 50 million. For deep, foot-printing depth '
-                        'DNase-seq 150-200 million uniquely mapped reads are '
-                        'recommended. (See {} )'.format(
-                            audit_link('ENCODE DNase-seq data standards', link_to_standards)
-                        )
-                    )
-                    if 'assembly' in alignment_file:
-                        detail = ('Alignment file {} produced by {} ( {} ) '
-                            'for {} assembly has {} mapped reads. {}'.format(
-                                audit_link(path_to_text(alignment_file['@id']), alignment_file['@id']),
-                                pipelines[0]['title'],
-                                audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id']),
-                                alignment_file['assembly'],
-                                metric['mapped'],
-                                suffix
-                            )
-                        )
-                    else:
-                        detail = ('Alignment file {} produced by {} ( {} ) '
-                            'has {} mapped reads. {}'.format(
-                                audit_link(path_to_text(alignment_file['@id']), alignment_file['@id']),
-                                pipelines[0]['title'],
-                                audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id']),
-                                metric['mapped'],
-                                suffix
-                            )
-                        )
-                    if 20000000 <= metric['mapped'] < 50000000:
-                        yield AuditFailure('low read depth', detail, level='WARNING')
-                    elif metric['mapped'] < 20000000:
-                        yield AuditFailure('extremely low read depth', detail, level='ERROR')
-        elif alignment_files is not None and len(alignment_files) > 0 and \
-                (samtools_flagstat_metrics is None or
-                 len(samtools_flagstat_metrics) == 0):
-            file_list = []
-            for f in alignment_files:
-                file_list.append(f['@id'])
-            file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-            detail = ('Alignment files ( {} ) produced by {} '
-                '( {} ) lack read depth information.'.format(
-                    ', '.join(file_names_links),
-                    pipelines[0]['title'],
-                    audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id'])
-                )
-            )
-            yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
-
-        alignments_assemblies = {}
-        for alignment_file in alignment_files:
-            if 'assembly' in alignment_file:
-                alignments_assemblies[alignment_file['accession']
-                                      ] = alignment_file['assembly']
-
-        # duplication rate audit was removed from v54
-
-        signal_assemblies = {}
-        for signal_file in signal_files:
-            if 'assembly' in signal_file:
-                signal_assemblies[signal_file['accession']
-                                  ] = signal_file['assembly']
-
-        hotspot_quality_metrics = get_metrics(alignment_files,
-                                              'HotspotQualityMetric',
-                                              desired_assembly)
-        if hotspot_quality_metrics is not None and \
-           len(hotspot_quality_metrics) > 0:
-            for metric in hotspot_quality_metrics:
-                if "spot1_score" in metric:
-                    file_names = []
-                    file_list = []
-                    for f in metric['quality_metric_of']:
-                        file_names.append(f.split('/')[2])
-                        file_list.append(f)
-                    file_names_string = str(file_names).replace('\'', ' ')
-                    file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                    detail = ("Signal Portion of Tags (SPOT) is a measure of enrichment, "
-                        "analogous to the commonly used fraction of reads in peaks metric. "
-                        "ENCODE processed alignment files {} produced by {} "
-                        "( {} ) {}"
-                        " have a SPOT1 score of {:.2f}. "
-                        "According to ENCODE standards, "
-                        "SPOT1 score of 0.4 or higher is considered a product of high quality "
-                        "data. "
-                        "Any sample with a SPOT1 score <0.3 should be targeted for replacement "
-                        "with a higher quality sample, and a "
-                        "SPOT1 score of 0.25 is considered minimally acceptable "
-                        "SPOT1 score of 0.25 is considered minimally acceptable "
-                        "for rare and hard to find primary tissues. (See {} )".format(
-                            ', '.join(file_names_links),
-                            pipelines[0]['title'],
-                            audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id']),
-                            assemblies_detail(extract_assemblies(alignments_assemblies, file_names)),
-                            metric["spot1_score"],
-                            audit_link('ENCODE DNase-seq data standards', link_to_standards)
-                        )
-                    )
-
-                    if 0.25 <= metric["spot1_score"] < 0.4:
-                        yield AuditFailure('low spot score', detail, level='WARNING')
-                    elif metric["spot1_score"] < 0.25:
-                        yield AuditFailure('extremely low spot score', detail, level='ERROR')
-
-        if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-            return
-
-        signal_quality_metrics = get_metrics(signal_files,
-                                             'CorrelationQualityMetric',
-                                             desired_assembly)
-        if signal_quality_metrics is not None and \
-           len(signal_quality_metrics) > 0:
-            threshold = 0.9
-            if experiment['replication_type'] == 'anisogenic':
-                threshold = 0.85
-            for metric in signal_quality_metrics:
-                if 'Pearson correlation' in metric:
-                    file_names = []
-                    file_list = []
-                    for f in metric['quality_metric_of']:
-                        file_names.append(f.split('/')[2])
-                        file_list.append(f)
-                    file_names_string = str(file_names).replace('\'', ' ')
-                    file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                    detail = ('Replicate concordance in DNase-seq experiments is measured by '
-                        'calculating the Pearson correlation between signal quantification '
-                        'of the replicates. '
-                        'ENCODE processed signal files {} produced by {} ( {} ) {} '
-                        'have a Pearson correlation of {:.2f}. '
-                        'According to ENCODE standards, in an {} '
-                        'assay a Pearson correlation value > {} '
-                        'is recommended. (See {} )'.format(
-                            ', '.join(file_names_links),
-                            pipelines[0]['title'],
-                            audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id']),
-                            assemblies_detail(extract_assemblies(signal_assemblies, file_names)),
-                            metric['Pearson correlation'],
-                            experiment['replication_type'],
-                            threshold,
-                            audit_link('ENCODE DNase-seq data standards', link_to_standards)
-                        )
-                    )
-
-                    if metric['Pearson correlation'] < threshold:
-                        yield AuditFailure('insufficient replicate concordance',
-                                           detail, level='NOT_COMPLIANT')
     return
 
 
