@@ -66,6 +66,8 @@ class SummaryStatusChart extends React.Component {
             if (this.chart) {
                 this.updateChart(this.chart, this.props.statusData);
             } else {
+                const query_url = this.props.linkUri.replace('/report/?', '')
+                this.getNoEth(query_url);
                 this.createChart();
             }
         } else if (this.chart) {
@@ -82,12 +84,14 @@ class SummaryStatusChart extends React.Component {
                     unknownCount: results.total
                 })
                 const sexFacet = results['facets'].find(facet => facet.field === 'donors.sex');
-                globals.donorSexList.forEach(x => {const unknownData = sexFacet['terms'].find(facet => facet.key === x) ?
-                    sexFacet['terms'].find(facet => facet.key === x) : null;
-                    const unknownTotal = unknownData.doc_count;
-                    const myData = statusData.find(facet => facet.key === x);
-                    myData.doc_count += unknownTotal;
-                    myData['donors.ethnicity.term_name'].buckets.push({key: 'unknown', doc_count: unknownTotal});
+                globals.donorSexList.forEach(x => {
+                    if (sexFacet['terms'].find(facet => facet.key === x)) {
+                        const unknownData = sexFacet['terms'].find(facet => facet.key === x);
+                        const unknownTotal = unknownData.doc_count;
+                        const myData = statusData.find(facet => facet.key === x);
+                        myData.doc_count += unknownTotal;
+                        myData['donors.ethnicity.term_name'].buckets.push({key: 'unknown', doc_count: unknownTotal});
+                    }
                 })
             }
         })

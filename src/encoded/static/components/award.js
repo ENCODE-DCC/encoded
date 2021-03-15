@@ -314,9 +314,6 @@ export function createNewBarChart(chartId, data, colors, replicateLabels, baseSe
             if (data.femaleDataset.some(x => x > 0)) {
                 datasets.push({ label: 'female', data: data.femaleDataset, backgroundColor: colors[2] });
             }
-            for (let i = 0; i < datasets.length; i += 1) {
-                datasets[i].backgroundColor = colors[i];
-            }
 
             // Create the chart.
             const canvas = document.getElementById(`${chartId}-chart`);
@@ -381,9 +378,17 @@ export function createNewBarChart(chartId, data, colors, replicateLabels, baseSe
                             //      that is passed to the createDonutChart or createBarChart functions because cannot directly
                             //      make changes to the param baseSearchUri in updateChart().
                             if (chart.options.onClick.baseSearchUri) {
-                                navigate(`${chart.options.onClick.baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
+                                if (encoding.encodedURIComponentOLD(term) === 'unknown') {
+                                    navigate(`${chart.options.onClick.baseSearchUri}&donors.ethnicity!=*&donors.sex=${item}`);
+                                } else {
+                                    navigate(`${chart.options.onClick.baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
+                                }
                             } else {
-                                navigate(`${baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
+                                if (encoding.encodedURIComponentOLD(term) === 'unknown') {
+                                    navigate(`${baseSearchUri}&donors.ethnicity!=*&donors.sex=${item}`);
+                                } else {
+                                    navigate(`${baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
+                                }
                             }
                         }
                     },
