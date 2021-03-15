@@ -119,11 +119,14 @@ def test_biosample_summary(testapp,
                                             "preservation_method": "cryopreservation",
                                             "post_nucleic_acid_delivery_time": 3,
                                             "post_nucleic_acid_delivery_time_units": "week",
+                                            'pulse_chase_time': 2,
+                                            'pulse_chase_time_units': 'hour',
                                             'treatments': [treatment_5['@id']]})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
         'Homo sapiens male child (10 days) liver tissue with COVID-19 treated with ethanol,'
-        ' 3 weeks post-nucleic acid delivery time, preserved by cryopreservation')
+        ' 3 weeks post-nucleic acid delivery time, subjected to a 2 hour pulse-chase,'
+        ' preserved by cryopreservation')
 
 
 def test_biosample_summary_construct(testapp,

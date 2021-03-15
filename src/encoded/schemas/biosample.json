@@ -345,6 +345,14 @@
                     }
                 }
             }
+        },
+        "pulse_chase_time":{
+            "required": ["pulse_chase_time_units"],
+            "comment": "Biosamples with a specified pulse_chase_time require pulse_chase_time_units to also be specified."
+        },
+        "pulse_chase_time_units": {
+            "required":["pulse_chase_time"],
+            "comment": "Biosamples with a specified pulse_chase_time_units require pulse_chase_time to also be specified."
         }
     },
     "properties": {
@@ -893,6 +901,22 @@
                 "type": "string",
                 "pattern": "^(DOID:[0-9]{2,7}|HP:[0-9]{7})$"
             }
+        },
+        "pulse_chase_time": {
+            "title": "Pulse-chase time",
+            "description": "The time that elapsed in the chase phase of a pulse-chase experiment.",
+            "comment": "Use in conjunction with pulse_chase_time_units to specify time elapsed in the chase phase of a pulse-chase experiment. Use of this property requires pulse_chase_time_units specification.",
+            "type": "integer"
+        },
+        "pulse_chase_time_units": {
+            "title": "Pulse-chase time units",
+            "description": "The units of time that elapsed in the chase phase of a pulse-chase experiment.",
+            "comment": "Use in conjunction with pulse_chase_time and treatment to specify time elapsed in the chase phase of a pulse-chase experiment. Use of this property requires pulse_chase_time specification.",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour"
+            ]
         }
     },
     "facets": {

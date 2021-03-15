@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Minor changes since schema version 25
+
+* Added *pulse_chase_time* and *pulse_chase_time_units* properties
+
 ### Schema version 25
 
 * *disease_term_id* and *disease_term_name* properties were changed to be arrays. The *disease_term_id* regex was adjusted to accept Human Phenotype ontology terms.

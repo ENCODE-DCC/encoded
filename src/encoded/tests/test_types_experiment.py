@@ -100,10 +100,15 @@ def test_experiment_biosample_summary(testapp,
                                             'treatments': [treatment_5['@id']],
                                             'biosample_ontology': s2r_plus['uuid'],
                                             "subcellular_fraction_term_name": "nucleus",
+                                            'pulse_chase_time': 2,
+                                            'pulse_chase_time_units': 'hour',
                                             })
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],
                                             'biosample_ontology': liver['uuid'],
-                                            'treatments': [treatment_5['@id']]})
+                                            'treatments': [treatment_5['@id']],
+                                            'pulse_chase_time': 2,
+                                            'pulse_chase_time_units': 'hour',
+                                            })
 
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
@@ -114,7 +119,8 @@ def test_experiment_biosample_summary(testapp,
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
         'S2R+ cell line nuclear fraction and ' + \
-        'liver tissue male child (1 day), treated with ethanol'
+        'liver tissue male child (1 day), treated with ethanol, ' + \
+        'subjected to a 2 hour pulse-chase'
 
 
 def test_experiment_biosample_summary_2(testapp,

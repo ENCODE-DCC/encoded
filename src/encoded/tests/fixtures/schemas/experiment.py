@@ -801,3 +801,25 @@ def experiment_31(root, experiment):
         'assay_term_name': 'single-nucleus RNA-seq'
     })
     return properties
+
+
+@pytest.fixture
+def BruChase_2h(testapp, lab, award, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'BruChase',
+        'biosample_ontology': heart['uuid']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def BruChase_6h(testapp, lab, award, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'BruChase',
+        'biosample_ontology': heart['uuid']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]

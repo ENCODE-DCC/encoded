@@ -480,6 +480,8 @@ class Biosample(Item):
                 post_nucleic_acid_delivery_time_units=None,
                 post_differentiation_time=None,
                 post_differentiation_time_units=None,
+                pulse_chase_time=None,
+                pulse_chase_time_units=None,
                 treatments=None,
                 part_of=None,
                 originated_from=None,
@@ -501,6 +503,7 @@ class Biosample(Item):
             'treatments_phrase',
             'post_nucleic_acid_delivery_time',
             'post_differentiation_time',
+            'pulse_chase_time',
             'preservation_method',
             'depleted_in',
             'phase',
@@ -590,6 +593,8 @@ class Biosample(Item):
             post_nucleic_acid_delivery_time_units,
             post_differentiation_time,
             post_differentiation_time_units,
+            pulse_chase_time,
+            pulse_chase_time_units,
             treatment_objects_list,
             preservation_method,
             part_of_object,
@@ -644,6 +649,8 @@ def generate_summary_dictionary(
         post_nucleic_acid_delivery_time_units=None,
         post_differentiation_time=None,
         post_differentiation_time_units=None,
+        pulse_chase_time=None,
+        pulse_chase_time_units=None,
         treatment_objects_list=None,
         preservation_method=None,
         part_of_object=None,
@@ -667,7 +674,8 @@ def generate_summary_dictionary(
         'modifications_list': '',
         'strain_background': '',
         'preservation_method': '',
-        'experiment_term_phrase': ''
+        'experiment_term_phrase': '',
+        'pulse_chase_time': ''
     }
 
     if organismObject is not None:
@@ -818,6 +826,10 @@ def generate_summary_dictionary(
         dict_of_phrases['post_differentiation_time'] = \
             f'{pluralize(post_differentiation_time, post_differentiation_time_units)} post differentiation'
 
+    if pulse_chase_time is not None and pulse_chase_time_units is not None:
+        pulse_chase_phrase = str(pulse_chase_time) + ' ' + pulse_chase_time_units
+        dict_of_phrases['pulse_chase_time'] = f'subjected to a {pulse_chase_phrase} pulse-chase'
+
     if ('sample_type' in dict_of_phrases and
         dict_of_phrases['sample_type'] != 'cell line') or \
         ('sample_type' not in dict_of_phrases):
@@ -944,6 +956,8 @@ def generate_sentence(phrases_dict, values_list):
                 sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             elif 'post_differentiation_time' in key:
                 sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
+            elif 'pulse_chase_time' in key:
+                sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             else:
                 sentence += phrases_dict[key].strip() + ' '
     return sentence.strip()
@@ -989,7 +1003,8 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'genetic_modifications': 'not modified',
         'post_nucleic_acid_delivery_time': 'without nucleic acid delivery',
         'post_differentiation_time': 'not differentiated',
-        'preservation_method': 'not preserved'
+        'preservation_method': 'not preserved',
+        'pulse_chase_time': 'not pulse-chased'
     }
     if len(phrases_dictionarys) > 1:
         index = 0
@@ -1034,7 +1049,11 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
             if prefix == '':
                 sentence_to_return = ' and '.join(map(str, sentence_middle))
             else:
-                sentence_to_return = prefix.strip() + ' ' + \
+                if sentence_middle[0].startswith(','):
+                    prefix_strip = prefix.strip()
+                else:
+                    prefix_strip = prefix.strip() + ' '
+                sentence_to_return = prefix_strip + \
                     ' and '.join(map(str, sentence_middle))
             if suffix != '':
                 sentence_to_return += ', ' + suffix

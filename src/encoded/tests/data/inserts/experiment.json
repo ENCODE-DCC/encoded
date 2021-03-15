@@ -1236,5 +1236,31 @@
         "lab": "ali-mortazavi",
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra"
+    },
+    {
+        "_test": "BruChase 2h pulse-chase",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "status": "in progress",
+        "date_submitted": "2020-08-14",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "award": "UM1HG009442",
+        "assay_term_name": "BruChase-seq",
+        "lab": "/labs/ali-mortazavi/",
+        "date_released": "2020-09-11",
+        "accession": "ENCSR200BRU",
+        "uuid": "4873fcf5-d0a7-4e74-8478-4eb6eff43f1f"
+    },
+    {
+        "_test": "BruChase 6h pulse-chase",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "status": "in progress",
+        "date_submitted": "2020-08-14",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "award": "UM1HG009442",
+        "assay_term_name": "BruChase-seq",
+        "lab": "/labs/ali-mortazavi/",
+        "date_released": "2020-09-11",
+        "accession": "ENCSR600BRU",
+        "uuid": "91b503d2-cacf-4258-bbc5-44290a0c2ce8"
     }
 ]

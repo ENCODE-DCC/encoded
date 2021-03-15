@@ -92,6 +92,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.platform',
     'encoded.tests.fixtures.schemas.publication_data',
     'encoded.tests.fixtures.schemas.publication',
+    'encoded.tests.fixtures.schemas.pulse_chase_time_series',
     'encoded.tests.fixtures.schemas.quality_metric',
     'encoded.tests.fixtures.schemas.reference_epigenome',
     'encoded.tests.fixtures.schemas.reference',
