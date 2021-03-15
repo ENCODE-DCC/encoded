@@ -53,8 +53,6 @@ class SummaryStatusChart extends React.Component {
         if (this.props.totalStatusData) {
             this.createChart();
         }
-
-        const query_url = this.props.linkUri.replace('/report/?', '')
     }
 
     componentDidUpdate() {
@@ -62,7 +60,7 @@ class SummaryStatusChart extends React.Component {
             if (this.chart) {
                 this.updateChart(this.chart, this.props.statusData);
             } else {
-                const query_url = this.props.linkUri.replace('/report/?', '')
+                this.createChart();
             }
         } else if (this.chart) {
             this.chart.destroy();
