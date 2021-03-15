@@ -47,9 +47,6 @@ class SummaryStatusChart extends React.Component {
         this.chart = null;
         this.createChart = this.createChart.bind(this);
         this.updateChart = this.updateChart.bind(this);
-        this.state = {
-            unknownCount: 0
-        }
     }
 
     componentDidMount() {
@@ -58,7 +55,6 @@ class SummaryStatusChart extends React.Component {
         }
 
         const query_url = this.props.linkUri.replace('/report/?', '')
-        this.getNoEth(query_url);
     }
 
     componentDidUpdate() {
@@ -67,34 +63,11 @@ class SummaryStatusChart extends React.Component {
                 this.updateChart(this.chart, this.props.statusData);
             } else {
                 const query_url = this.props.linkUri.replace('/report/?', '')
-                this.getNoEth(query_url);
-                this.createChart();
             }
         } else if (this.chart) {
             this.chart.destroy();
             this.chart = null;
         }
-    }
-
-    getNoEth(searchBase) {
-        const statusData = this.props.statusData
-        requestSearch(searchBase + '&donors.ethnicity!=*&limit=all').then((results) => {
-            if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
-                this.setState({
-                    unknownCount: results.total
-                })
-                const sexFacet = results['facets'].find(facet => facet.field === 'donors.sex');
-                globals.donorSexList.forEach(x => {
-                    if (sexFacet['terms'].find(facet => facet.key === x)) {
-                        const unknownData = sexFacet['terms'].find(facet => facet.key === x);
-                        const unknownTotal = unknownData.doc_count;
-                        const myData = statusData.find(facet => facet.key === x);
-                        myData.doc_count += unknownTotal;
-                        myData['donors.ethnicity.term_name'].buckets.push({key: 'unknown', doc_count: unknownTotal});
-                    }
-                })
-            }
-        })
     }
 
     createChart() {
@@ -107,7 +80,6 @@ class SummaryStatusChart extends React.Component {
             }
         });
         const ethnicityNames = Array.from(ethnicityFacet, x => x['key']);
-        this.state.unknownCount > 0 ? ethnicityNames.push('unknown') : null;
 
         // Initialize data object to pass to createBarChart.
         const data = {
@@ -145,7 +117,6 @@ class SummaryStatusChart extends React.Component {
             }
         });
         const ethnicityNames = Array.from(ethnicityFacet, x => x['key']);
-        this.state.unknownCount > 0 ? ethnicityNames.push('unknown') : null;
 
         // For each sex value, extract the data for each status to assign to the existing
         // chart's dataset.

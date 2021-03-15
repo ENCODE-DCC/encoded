@@ -378,17 +378,9 @@ export function createNewBarChart(chartId, data, colors, replicateLabels, baseSe
                             //      that is passed to the createDonutChart or createBarChart functions because cannot directly
                             //      make changes to the param baseSearchUri in updateChart().
                             if (chart.options.onClick.baseSearchUri) {
-                                if (encoding.encodedURIComponentOLD(term) === 'unknown') {
-                                    navigate(`${chart.options.onClick.baseSearchUri}&donors.ethnicity!=*&donors.sex=${item}`);
-                                } else {
-                                    navigate(`${chart.options.onClick.baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
-                                }
+                                navigate(`${chart.options.onClick.baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
                             } else {
-                                if (encoding.encodedURIComponentOLD(term) === 'unknown') {
-                                    navigate(`${baseSearchUri}&donors.ethnicity!=*&donors.sex=${item}`);
-                                } else {
-                                    navigate(`${baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
-                                }
+                                navigate(`${baseSearchUri}&donors.ethnicity.term_name=${encoding.encodedURIComponentOLD(term)}&donors.sex=${item}`);
                             }
                         }
                     },
