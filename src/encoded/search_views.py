@@ -302,6 +302,8 @@ def rnaget(context, request):
     # TODO: refactor
     params = []
 
+    filters = [{'field': 'type', 'term': 'Rna Get', 'remove': '/rnaget'}]
+
     if genes:
         params.append(f"featureIDList={genes}")
 
@@ -316,9 +318,32 @@ def rnaget(context, request):
 
     if assay:
         params.append(f"assayType={assay}")
+        query_string = f'annotation={annotation}'
+
+        query_string = []
+        for param in request.params:
+            if param != 'assayType':
+                query_string.append(f'{param}={request.params.get(param)}')
+
+        filters.append({
+            'field': 'assayType',
+            'term': assay,
+            'remove': f'{request.path}?{"&".join(query_string)}'
+        })
 
     if annotation:
         params.append(f"annotation={annotation}")
+
+        query_string = []
+        for param in request.params:
+            if param != 'annotation':
+                query_string.append(f'{param}={request.params.get(param)}')
+
+        filters.append({
+            'field': 'annotation',
+            'term': annotation,
+            'remove': f'{request.path}?{"&".join(query_string)}'
+        })
 
     data_service = context.registry.settings.get('genomic_data_service')
     data = requests.get(data_service + '/expressions/bytes?format=json&' + '&'.join(params)).json()
@@ -361,7 +386,7 @@ def rnaget(context, request):
         'total': total,
         'non_sortable': ['annotation'],
         'columns': columns,
-        'filters': [{'field': 'type', 'term': 'Rna Get', 'remove': '/rnaget'}],
+        'filters': filters,
         'facets': facets_data,
         '@graph': expressions
     }
