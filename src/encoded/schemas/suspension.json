@@ -334,6 +334,9 @@
         "description": {
             "title": "Description"
         },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
         "donors.organism.scientific_name": {
             "title": "Organism"
         },

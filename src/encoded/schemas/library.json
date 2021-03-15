@@ -266,6 +266,9 @@
         "donors.ethnicity.term_name": {
             "title": "Donor ethnicity"
         },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
         "biosample_classification": {
             "title": "Biosample classification"
         },

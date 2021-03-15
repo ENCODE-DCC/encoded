@@ -10,6 +10,7 @@ from .shared_calculated_properties import (
     CalculatedDonors,
     CalculatedBiosampleOntologies,
     CalculatedBiosampleClassification,
+    CalculatedBiosampleSummary,
 )
 
 
@@ -20,7 +21,11 @@ from .shared_calculated_properties import (
         'title': 'Suspensions',
         'description': 'Listing of Suspensions',
     })
-class Suspension(Item, CalculatedDonors, CalculatedBiosampleOntologies, CalculatedBiosampleClassification):
+class Suspension(Item, 
+                CalculatedDonors,
+                CalculatedBiosampleOntologies,
+                CalculatedBiosampleClassification,
+                CalculatedBiosampleSummary):
     item_type = 'suspension'
     schema = load_schema('encoded:schemas/suspension.json')
     name_key = 'accession'

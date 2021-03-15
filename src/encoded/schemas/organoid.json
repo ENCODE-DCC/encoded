@@ -109,6 +109,9 @@
         "description": {
             "title": "Description"
         },
+        "summary": {
+            "title": "Summary"
+        },
         "donors.organism.scientific_name": {
             "title": "Organism"
         },

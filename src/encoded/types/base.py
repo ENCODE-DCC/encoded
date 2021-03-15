@@ -68,7 +68,7 @@ ALLOW_CURRENT = [
 
 DELETED = [
     (Deny, Everyone, 'visible_for_edit')
-] + ONLY_ADMIN_VIEW
+]
 
 
 # Collection acls
