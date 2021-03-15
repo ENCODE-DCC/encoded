@@ -939,11 +939,9 @@ def generate_sentence(phrases_dict, values_list):
     for key in values_list:
         if phrases_dict[key] != '':
             if 'preservation_method' in key:
-                sentence = sentence.strip() + ', ' + \
-                                    phrases_dict[key].strip() + ' '
+                sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             elif 'post_nucleic_acid_delivery_time' in key:
-                sentence = sentence.strip() + ', ' + \
-                                    phrases_dict[key].strip() + ' '
+                sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             elif 'post_differentiation_time' in key:
                 sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             else:
