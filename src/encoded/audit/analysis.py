@@ -321,7 +321,7 @@ def check_analysis_dnase_seq_standards(
                     f"analogous to the commonly used fraction of reads in peaks metric. "
                     f"ENCODE processed alignment files {', '.join(file_names_links)} "
                     f"produced by {value['pipelines'][0]['title']} "
-                    f"( {audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])} ) "
+                    f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                     f"{assemblies_detail(extract_assemblies(alignments_assemblies, file_names))} "
                     f"have a SPOT1 score of {metric['spot1_score']:.2f}. "
                     f"According to ENCODE standards, SPOT1 score of 0.4 or higher is considered "
@@ -331,7 +331,7 @@ def check_analysis_dnase_seq_standards(
                     f"SPOT1 score of 0.25 is considered minimally acceptable "
                     f"SPOT1 score of 0.25 is considered minimally acceptable "
                     f"for rare and hard to find primary tissues. (See "
-                    f"{audit_link('ENCODE DNase-seq data standards', link_to_standards)} )"
+                    f"{audit_link('ENCODE DNase-seq data standards', link_to_standards)})"
                 )
 
                 if 0.25 <= metric['spot1_score'] < 0.4:
@@ -361,8 +361,8 @@ def check_analysis_dnase_seq_standards(
                     f"Replicate concordance in DNase-seq experiments is measured by "
                     f"calculating the Pearson correlation between signal quantification "
                     f"of the replicates. "
-                    f"ENCODE processed signal files {', '.join(file_names_links)} produced by "
-                    f"{audit_link(path_to_text(value['pipelines'][0]['title']), value['pipelines'][0]['@id'])} "
+                    f"ENCODE processed signal files {', '.join(file_names_links)} produced by {value['pipelines'][0]['title']} "
+                    f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                     f"{assemblies_detail(extract_assemblies(signal_assemblies, file_names))} "
                     f"have a Pearson correlation of {metric['Pearson correlation']:.2f}. "
                     f"According to ENCODE standards, in an {replicated[0]} "
