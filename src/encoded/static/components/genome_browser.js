@@ -18,6 +18,7 @@ const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
 
 // used to determine if GV_COORDINATES_KEY should be used
 const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
+const GV_COORDINATES_ANNOTATION = 'ENCODE-GV-annotation';
 
 /**
  * Returns Valis coordinates off the bar user inputs data in
@@ -57,8 +58,9 @@ const getDefaultCoordinates = (assemblyAnnotation, geneAnnotation, ignoreCache =
     let x1 = null;
     const gVState = ignoreCache ? null : window.sessionStorage.getItem(GV_COORDINATES_KEY);
     const gVAssembly = window.sessionStorage.getItem(GV_COORDINATES_ASSEMBLY);
+    const gVAnnotation = window.sessionStorage.getItem(GV_COORDINATES_ANNOTATION);
 
-    if (gVState && gVAssembly === assembly) {
+    if (gVState && gVAssembly === assembly && gVAnnotation === annotation) {
         const savedState = gVState ? JSON.parse(gVState) : {};
         ({ contig } = savedState);
         ({ x0, x1, pinnedFiles } = savedState);
@@ -192,6 +194,7 @@ const getDefaultCoordinates = (assemblyAnnotation, geneAnnotation, ignoreCache =
         x1 = 237997;
     }
     window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, assembly);
+    window.sessionStorage.setItem(GV_COORDINATES_ANNOTATION, annotation);
 
     return { x0, x1, contig, pinnedFiles };
 };
