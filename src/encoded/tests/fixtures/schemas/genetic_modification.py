@@ -605,6 +605,18 @@ def activation_genetic_modification(testapp, lab, award):
 
 
 @pytest.fixture
+def binding_genetic_modification(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'binding',
+        'purpose': 'characterization',
+        'method': 'CRISPR'
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
 def HR_knockout(lab, award, target):
     return {
         'lab': lab['@id'],

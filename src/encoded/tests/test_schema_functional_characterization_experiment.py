@@ -87,7 +87,7 @@ def test_functional_characterization_experiment_examined_loci_dependency(testapp
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=201)
 
 
-def test_functional_characterization_experiment_crispr_assay_title(testapp, functional_characterization_experiment_disruption_screen, biosample_1, biosample_2, library_1, library_2, replicate_1_fce, replicate_2_fce, disruption_genetic_modification, activation_genetic_modification):
+def test_functional_characterization_experiment_crispr_assay_title(testapp, functional_characterization_experiment_disruption_screen, biosample_1, biosample_2, library_1, library_2, replicate_1_fce, replicate_2_fce, disruption_genetic_modification, activation_genetic_modification, binding_genetic_modification, ctcf):
     testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [disruption_genetic_modification['@id']]})
     testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [disruption_genetic_modification['@id']]})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -95,10 +95,19 @@ def test_functional_characterization_experiment_crispr_assay_title(testapp, func
     testapp.patch_json(replicate_1_fce['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_fce['@id'], {'library': library_2['@id']})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
+    assert res.json['object']['assay_title']=='growth-based CRISPR disruption screen'
+     # patch with examined_loci
+    testapp.patch_json(functional_characterization_experiment_disruption_screen['@id'], {'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 100}]})
+    res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
     assert res.json['object']['assay_title']=='CRISPR disruption screen'
     # more than one CRISPR characterization genetic modifications
     testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [disruption_genetic_modification['@id']]})
     testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [disruption_genetic_modification['@id'], activation_genetic_modification['@id']]})
+    res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
+    assert res.json['object']['assay_title']=='CRISPR screen'
+    # binding CRISPR genetic modification
+    testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [binding_genetic_modification['@id']]})
+    testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [binding_genetic_modification['@id']]})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
     assert res.json['object']['assay_title']=='CRISPR screen'
 
