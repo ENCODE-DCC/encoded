@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 16
 * Calculated properties *replicates* and *antibodies* are removed.
+* Added *Parse Single Cell Whole Transcriptome Kit* to the enum list for *construction_method*
 
 ### Schema version 16
 * *linkers* property was modified to remove *linker a* and *linker b*. The *linkers* property can now accept sequencing linkers for the following: *linker a top*, *linker a bottom*, *linker b top*, and *linker b bottom*.

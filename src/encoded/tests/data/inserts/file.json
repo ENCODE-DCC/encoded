@@ -4363,5 +4363,37 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "bdd1d9c4-7d3f-4a93-9994-0d359568606a"
+    },
+    {
+        "_test": "sparse transcript count matrix for SPLiT-seq",
+        "status": "in progress",
+        "uuid": "627c6726-7fd4-4556-8cb0-6ba6e902b025",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "440b7aeb203ae532d1a8c785cb66198f",
+        "accession": "ENCFF001SCT",
+        "file_format": "h5ad",
+        "award": "/awards/U54HG006998/",
+        "assembly": "GRCh38",
+        "dataset": "/experiments/ENCSR000SCR/",
+        "flowcell_details": [],
+        "alternate_accessions": [],
+        "file_size": 370148294,
+        "output_type": "sparse transcript count matrix",
+        "lab": "/labs/barbara-wold/"
+    },
+    {
+        "_test": "read annotations for SPLiT-seq",
+        "award": "/awards/U54HG006998/",
+        "lab": "/labs/barbara-wold/",
+        "dataset": "ENCSR000SCR",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "b3ee8199-32eb-4f34-9e3c-d002085d56a5",
+        "accession": "ENCFF104REA",
+        "file_format": "tsv",
+        "output_type": "read annotations",
+        "file_size": 100,
+        "assembly": "GRCh38",
+        "md5sum": "49e2dcc52b0825e86063641ab6fa5210"
     }
 ]
