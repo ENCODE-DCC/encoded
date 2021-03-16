@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 
-import requests
+from .genomic_data_service import GenomicDataService
 
 from encoded.cart_view import CartWithElements
 from encoded.searches.fields import CartSearchResponseField
@@ -286,110 +286,6 @@ def report(context, request):
         ]
     )
     return fr.render()
-
-
-@view_config(route_name='rnaget', request_method='GET', permission='search')
-def rnaget(context, request):
-    genes = request.params.get('genes', 'ENSG00000088320.3') # TODO: default value for testing only
-    genes = ",".join([gene.strip() for gene in genes.split(",")])
-
-    units = request.params.get('units', 'tpm')
-    sort  = request.params.get('sort')
-    page  = request.params.get('page')
-    assay = request.params.get('assayType')
-    annotation = request.params.get('annotation')
-
-    # TODO: refactor
-    params = []
-
-    filters = [{'field': 'type', 'term': 'Rna Get', 'remove': '/rnaget'}]
-
-    if genes:
-        params.append(f"featureIDList={genes}")
-
-    if units:
-        params.append(f"units={units}")
-
-    if sort:
-        params.append(f"sort={sort}")
-
-    if page:
-        params.append(f"page={page}")
-
-    if assay:
-        params.append(f"assayType={assay}")
-        query_string = f'annotation={annotation}'
-
-        query_string = []
-        for param in request.params:
-            if param != 'assayType':
-                query_string.append(f'{param}={request.params.get(param)}')
-
-        filters.append({
-            'field': 'assayType',
-            'term': assay,
-            'remove': f'{request.path}?{"&".join(query_string)}'
-        })
-
-    if annotation:
-        params.append(f"annotation={annotation}")
-
-        query_string = []
-        for param in request.params:
-            if param != 'annotation':
-                query_string.append(f'{param}={request.params.get(param)}')
-
-        filters.append({
-            'field': 'annotation',
-            'term': annotation,
-            'remove': f'{request.path}?{"&".join(query_string)}'
-        })
-
-    data_service = context.registry.settings.get('genomic_data_service')
-    data = requests.get(data_service + '/expressions/bytes?format=json&' + '&'.join(params)).json()
-
-    expressions = data['expressions']
-    facets = data['facets']
-    total = data['total']
-
-    # columns are ordered by "the position" in the hash map
-    columns = {
-        'featureID': {'title': 'Feature ID'},
-        'tpm': {'title': 'Counts (TPM)'},
-        'fpkm': {'title': 'Counts (FPKM)'},
-        'assayType': {'title': 'Assay (RNA SubType)'},
-        'libraryPrepProtocol': {'title': 'Experiment'},
-        'expressionID': {'title': 'File'},
-        'annotation': {'title': 'Genome Annotation'}
-    }
-
-    if units == 'tpm':
-        columns.pop('fpkm')
-    elif units == 'fpkm':
-        columns.pop('tpm')
-
-    facets_data = []
-    for facet in facets:
-        facet_data = {
-            'field': facet,
-            'title': columns[facet]['title'],
-            'terms': [{'key': term[0], 'doc_count': term[1]} for term in facets[facet]],
-            'type': 'terms'
-        }
-        facet_data['total'] = sum([term['doc_count'] for term in facet_data['terms']])
-        facets_data.append(facet_data)
-
-    return {
-        'title': 'RNA Get',
-        '@type': ['rnaseq'],
-        '@id': request.path_qs,
-        'total': total,
-        'non_sortable': ['annotation'],
-        'columns': columns,
-        'filters': filters,
-        'facets': facets_data,
-        '@graph': expressions
-    }
 
 
 @view_config(route_name='matrixv2_raw', request_method='GET', permission='search')
@@ -818,3 +714,74 @@ def top_hits(context, request):
         ]
     )
     return fr.render()
+
+
+@view_config(route_name='rnaget', request_method='GET', permission='search')
+def rnaget(context, request):
+    genes = request.params.get('genes')
+    units = request.params.get('units', 'tpm')
+    sort  = request.params.get('sort')
+    page  = request.params.get('page')
+
+    filters = {
+        'assayType': request.params.get('assayType'),
+        'annotation': request.params.get('annotation')
+    }
+
+    filters_data = [{'field': 'type', 'term': 'Rna Get', 'remove': '/rnaget'}]
+
+    for f in filters:
+        if filters.get(f):
+            query_string = []
+
+            for param in request.params:
+                if param != f:
+                    query_string.append(f'{param}={request.params.get(param)}')
+
+            filters_data.append({
+                'field': f,
+                'term': filters[f],
+                'remove': f'{request.path}?{"&".join(query_string)}'
+            })
+
+    # table JS component orders columns by "the position" in the hash map
+    columns = {
+        'featureID': {'title': 'Feature ID'},
+        'tpm': {'title': 'Counts (TPM)'},
+        'fpkm': {'title': 'Counts (FPKM)'},
+        'assayType': {'title': 'Assay (RNA SubType)'},
+        'libraryPrepProtocol': {'title': 'Experiment'},
+        'expressionID': {'title': 'File'},
+        'annotation': {'title': 'Genome Annotation'}
+    }
+
+    if units == 'tpm':
+        columns.pop('fpkm')
+    elif units == 'fpkm':
+        columns.pop('tpm')
+
+    data_service = GenomicDataService(context.registry, default_search='ENSG00000088320.3')
+    expressions, facets, total = data_service.rna_get(genes, sort, units, page, filters)
+
+    facets_data = []
+    for facet in facets:
+        facet_data = {
+            'field': facet,
+            'title': columns[facet]['title'],
+            'terms': [{'key': term[0], 'doc_count': term[1]} for term in facets[facet]],
+            'type': 'terms'
+        }
+        facet_data['total'] = sum([term['doc_count'] for term in facet_data['terms']])
+        facets_data.append(facet_data)
+
+    return {
+        'title': 'RNA Get',
+        '@type': ['rnaseq'],
+        '@id': request.path_qs,
+        'total': total,
+        'non_sortable': ['annotation'],
+        'columns': columns,
+        'filters': filters_data,
+        'facets': facets_data,
+        '@graph': expressions
+    }
