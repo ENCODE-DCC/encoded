@@ -188,6 +188,11 @@ const getDefaultCoordinates = (assemblyAnnotation, geneAnnotation, ignoreCache =
                 file_format: 'vdna-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/ce10/ce10.vdna-dir',
             },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/ce10/c_elegans.WS220.annotations.sorted_chr_fixed.vgenes-dir',
+                title: 'WormBase Annotation WS220',
+            },
         ];
         contig = 'chrII';
         x0 = 232475;
