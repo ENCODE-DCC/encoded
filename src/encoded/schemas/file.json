@@ -57,16 +57,20 @@
         "lab.title": {
             "title": "Lab"
         },
-        "target.label": {
+        "dataset.target.label": {
             "title": "Target of assay",
             "type": "typeahead",
             "length": "long"
         },
-        "assay_term_name": {
+        "dataset.assay_title": {
+            "title": "Assay title",
+            "type": "typeahead"
+        },
+        "dataset.assay_term_name": {
             "title": "Assay term name",
             "type": "typeahead"
         },
-        "biosample_ontology.term_name": {
+        "dataset.biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead",
             "length": "long"
@@ -1884,13 +1888,13 @@
         "file_size": {
             "title": "File size"
         },
-        "assay_term_name": {
+        "dataset.assay_term_name": {
             "title": "Assay term name"
         },
-        "biosample_ontology.term_name": {
+        "dataset.biosample_ontology.term_name": {
             "title": "Biosample name"
         },
-        "target.label": {
+        "dataset.target.label": {
             "title": "Target label"
         },    
         "href": {
@@ -1983,7 +1987,6 @@
         "raw data": "raw data",
         "reporter code counts": "raw data",
         "subreads": "raw data",
-
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
         "gene alignments": "alignment",
@@ -1995,7 +1998,6 @@
         "paternal haplotype mapping": "alignment",
         "phased mapping": "alignment",
         "preprocessed alignments": "alignment",
-
         "minus strand signal of all reads": "signal",
         "plus strand signal of all reads": "signal",
         "signal of all reads": "signal",
@@ -2022,7 +2024,6 @@
         "perturbation signal": "signal",
         "element gene interactions signal": "signal",
         "element gene interactions p-value": "signal",
-
         "bias model": "quantification",
         "enrichment": "quantification",
         "FDR cut rate": "quantification",
@@ -2054,7 +2055,6 @@
         "sparse gene count matrix": "quantification",
         "gene stabilities": "quantification",
         "guide quantifications": "quantification",
-
         "hotspots": "annotation",
         "footprints": "annotation",
         "long range chromatin interactions": "annotation",
@@ -2116,7 +2116,6 @@
         "regulatory elements": "annotation",
         "gRNAs": "annotation",
         "ranked gRNAs": "annotation",
-
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
         "genome index": "reference",
@@ -2150,10 +2149,8 @@
         "enhancers reference": "reference",
         "promoters reference": "reference",
         "DHS regions reference": "reference",
-
         "enhancer validation": "validation",
         "validation": "validation",
-        
         "HMM predicted chromatin state": "annotation",
         "semi-automated genome annotation": "annotation",
         "capture targets": "annotation",
@@ -2209,8 +2206,10 @@
          "output_category": 2.0,
          "output_type": 2.0,
          "status": 1.0,
-         "assay_term_name": 1.0,
-         "biosample_ontology.term_name": 1.0
+         "dataset.assay_title": 1.0,
+         "dataset.assay_term_name": 1.0,
+         "dataset.annotation_type": 1.0,
+         "dataset.biosample_ontology.term_name": 1.0
      },
     "changelog": "/profiles/changelogs/file.md"
 }

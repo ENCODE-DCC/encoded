@@ -119,8 +119,6 @@ class File(Item):
         'analysis_step_version.software_versions.software',
         'quality_metrics',
         'step_run',
-        'biosample_ontology',
-        'target'
     ]
     embedded_with_frame = [
         Path(
@@ -135,6 +133,22 @@ class File(Item):
                 'title',
             ],
         ),
+        Path(
+            'dataset',
+            include=[
+                '@id',
+                '@type',
+                'uuid',
+                'status',
+                'assay_title',
+                'assay_term_name',
+                'annotation_type',
+                'biosample_ontology',
+                'target',
+            ],
+        ),
+        Path('dataset.biosample_ontology'),
+        Path('dataset.target'),
     ]
     audit_inherit = [
         'replicate',
@@ -451,68 +465,6 @@ class File(Item):
         except HTTPNotFound:
             return None
         return 's3://{bucket}/{key}'.format(**external)
-
-    @calculated_property(
-        condition='dataset',
-        define=True,
-        schema={
-            "title": "Assay term name",
-            "type": "string",
-            "notSubmittable": True
-        }
-    )
-    def assay_term_name(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'assay_term_name',
-                    dataset
-                )
-            )
-        )
-
-    @calculated_property(
-        condition='dataset',
-        define=True,
-        schema={
-            "title": "Biosample ontology",
-            "type": "string",
-            "linkTo": "BiosampleType",
-            "notSubmittable": True
-        }
-    )
-    def biosample_ontology(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'biosample_ontology',
-                    dataset
-                )
-            )
-        )
-
-    @calculated_property(
-        condition='dataset',
-        define=True,
-        schema={
-            "title": "Target",
-            "type": "string",
-            "linkTo": "Target",
-            "notSubmittable": True,
-        }
-    )
-    def target(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'target',
-                    dataset
-                )
-            )
-        )
 
     @calculated_property(schema={
         "title": "Analyses",
