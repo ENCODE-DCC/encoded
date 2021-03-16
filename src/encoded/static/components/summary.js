@@ -327,7 +327,7 @@ class SummaryBody extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            CellCount: 0
+            cellCount: 0
         }
         const searchQuery = url.parse(this.props.context['@id']).search;
         const terms = queryString.parse(searchQuery);
@@ -347,7 +347,7 @@ class SummaryBody extends React.Component {
                     var cell_count = 0
                     results2['@graph'].forEach(y => cell_count += y['observation_count']);
                     this.setState({
-                        CellCount: cell_count
+                        cellCount: cell_count
                     })
                 })
             }
@@ -362,7 +362,7 @@ class SummaryBody extends React.Component {
         context.facets.forEach(x => {
             if (vertFacetNames.includes(x.field)) vertFacets.push(x);
             })
-        const cell_count = this.state.CellCount.toLocaleString();
+        const cell_count = this.state.cellCount.toLocaleString();
         return (
             <div className="search-results">
                 <div className="search-results__facets">

@@ -55,10 +55,10 @@ class Biosample(Item, CalculatedDonors):
         if my_type == 'organoid':
             dfrom = set()
             for df in derived_from:
-                df_obj = request.embed(df, '@@object?skip_calculated=true')
-                df_bo = df_obj.get('biosample_ontology')
-                df_bo_obj = request.embed(df_bo, '@@object?skip_calculated=true')
-                dfrom.add(df_bo_obj.get('term_name'))
+                obj = request.embed(df, '@@object?skip_calculated=true')
+                ontology = obj.get('biosample_ontology')
+                ontology_obj = request.embed(ontology, '@@object?skip_calculated=true')
+                dfrom.add(ontology_obj.get('term_name'))
             summ += ','.join(dfrom) + '-derived '
         bo_obj = request.embed(biosample_ontology, '@@object?skip_calculated=true')
         summ += bo_obj.get('term_name') + ' ' + my_type
