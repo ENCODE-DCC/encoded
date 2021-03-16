@@ -1,5 +1,8 @@
 ## Changelog for library.json
 
+### Minor changes since schema version 16
+* Calculated properties *replicates* and *antibodies* are removed.
+
 ### Schema version 16
 * *linkers* property was modified to remove *linker a* and *linker b*. The *linkers* property can now accept sequencing linkers for the following: *linker a top*, *linker a bottom*, *linker b top*, and *linker b bottom*.
 * *NucleoBond PC Giga kit (Machery-Nagel cat#: 740548)* was added to the *extraction_method* enum.

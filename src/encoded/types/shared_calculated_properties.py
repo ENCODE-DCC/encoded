@@ -55,7 +55,7 @@ class CalculatedFileSetBiosample:
     })
     def organism(self, request, related_files):
         return request.select_distinct_values(
-            'library.biosample.organism', *related_files)
+            'replicate.library.biosample.organism', *related_files)
 
 
 class CalculatedFileSetAssay:
@@ -132,7 +132,7 @@ class CalculatedSeriesBiosample:
     })
     def organism(self, request, related_datasets):
         return request.select_distinct_values(
-            'replicates.libraries.biosample.organism', *related_datasets)
+            'replicates.library.biosample.organism', *related_datasets)
 
 
 class CalculatedSeriesTreatment:
@@ -145,7 +145,7 @@ class CalculatedSeriesTreatment:
     })
     def treatment_term_name(self, request, related_datasets):
         return request.select_distinct_values(
-            'replicates.libraries.biosample.treatments.treatment_term_name',
+            'replicates.library.biosample.treatments.treatment_term_name',
             *related_datasets)
 
 
@@ -476,50 +476,29 @@ class CalculatedReplicationType:
         # pooled clone sequencing
         if assay_term_name == 'pooled clone sequencing':
             return None
-        # ENCD-4251 loop through replicates and select one replicate, which has
-        # the smallest technical_replicate_number, per biological replicate.
-        # That replicate should have a libraries property which, as calculated
-        # in replicate.libraries (ENCD-4251), should have collected all
-        # possible technical replicates belong to the biological replicate.
-        # TODO: change this once we remove technical_replicate_number.
-        bio_rep_dict = {}
-        for rep in replicates:
-            replicate_object = request.embed(rep, '@@object')
-            if replicate_object['status'] == 'deleted':
-                continue
-            bio_rep_num = replicate_object['biological_replicate_number']
-            if bio_rep_num not in bio_rep_dict:
-                bio_rep_dict[bio_rep_num] = replicate_object
-                continue
-            tech_rep_num = replicate_object['technical_replicate_number']
-            if tech_rep_num < bio_rep_dict[bio_rep_num]['technical_replicate_number']:
-                bio_rep_dict[bio_rep_num] = replicate_object
-
         # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
+        biosample_dict = {}
         biosample_donor_list = []
         biosample_number_list = []
 
-        for replicate_object in bio_rep_dict.values():
-            if 'libraries' in replicate_object and replicate_object['libraries']:
-                biosamples = request.select_distinct_values(
-                    'biosample', *replicate_object['libraries']
-                )
-                if biosamples:
-                    for b in biosamples:
-                        biosample_object = request.embed(b, '@@object')
-                        biosample_donor_list.append(
-                            biosample_object.get('donor')
-                        )
-                        biosample_number_list.append(
-                            replicate_object.get('biological_replicate_number')
-                        )
-                        biosample_species = biosample_object.get('organism')
-                        biosample_type_object = request.embed(
-                            biosample_object['biosample_ontology'],
-                            '@@object'
-                        )
-                        biosample_type = biosample_type_object.get('classification')
+        for rep in replicates:
+            replicateObject = request.embed(rep, '@@object')
+            if replicateObject['status'] == 'deleted':
+                continue
+            if 'library' in replicateObject:
+                libraryObject = request.embed(replicateObject['library'], '@@object')
+                if 'biosample' in libraryObject:
+                    biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                    biosample_dict[biosampleObject['accession']] = biosampleObject
+                    biosample_donor_list.append(biosampleObject.get('donor'))
+                    biosample_number_list.append(replicateObject.get('biological_replicate_number'))
+                    biosample_species = biosampleObject.get('organism')
+                    biosampleTypeObject = request.embed(
+                        biosampleObject['biosample_ontology'],
+                        '@@object'
+                    )
+                    biosample_type = biosampleTypeObject.get('classification')
                 else:
                     # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
                     # untill we change our mind

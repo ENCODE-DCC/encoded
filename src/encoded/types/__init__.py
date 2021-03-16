@@ -154,7 +154,6 @@ class Library(Item):
         'treatments',
     ]
     set_status_down = []
-    rev = {'replicates': ('Replicate', 'library')}
 
     @calculated_property(condition='nucleic_acid_term_name', schema={
         "title": "Nucleic acid term ID",
@@ -191,37 +190,6 @@ class Library(Item):
             else:
                 term_id.append('Term ID unknown')
         return term_id
-
-    @calculated_property(schema={
-        "title": "Replicates",
-        "type": "array",
-        "uniqueItems": True,
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Replicate.library",
-        },
-    })
-    def replicates(self, request, replicates):
-        return paths_filtered_by_status(request, replicates)
-
-    @calculated_property(condition='replicates', schema={
-        "title": "Antibodies",
-        "description": "For Immunoprecipitation assays, the antibody used.",
-        "comment": "See antibody_lot.json for available identifiers.",
-        "type": "array",
-        "uniqueItems": True,
-        "items": {
-            "type": "string",
-            "linkTo": "AntibodyLot"
-        }
-    })
-    def antibodies(self, request, replicates):
-        antibodies = []
-        for rep_id in replicates:
-            rep = request.embed(rep_id, '@@object?skip_calculated=true')
-            if 'antibody' in rep:
-                antibodies.append(rep['antibody'])
-        return antibodies or None
 
 
 @collection(

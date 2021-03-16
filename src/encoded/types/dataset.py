@@ -443,7 +443,6 @@ class Annotation(FileSet, CalculatedVisualize):
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
-        'files.library'
     ]
     set_status_up = [
         'analysis_objects'
@@ -621,8 +620,7 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
     embedded = FileSet.embedded + [
         'organism',
         'files.dataset',
-        'files.replicate.library',
-        'files.library'
+        'files.replicate.library'
     ]
 
     @calculated_property(condition='files', schema={
@@ -639,13 +637,15 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
             for idx, path in enumerate(files):
                 # Need to cap this due to the large numbers of files in related_files
                 if idx < 100:
-                    f = request.embed(path, '@@object')
-                    if 'library' in f:
-                        lib = request.embed(f['library'], '@@object?skip_calculated=true')
-                        if 'biosample' in lib:
-                            bio = request.embed(lib['biosample'], '@@object?skip_calculated=true')
-                            if 'organism' in bio:
-                                organisms.append(bio['organism'])
+                    f = request.embed(path, '@@object?skip_calculated=true')
+                    if 'replicate' in f:
+                        rep = request.embed(f['replicate'], '@@object?skip_calculated=true')
+                        if 'library' in rep:
+                            lib = request.embed(rep['library'], '@@object?skip_calculated=true')
+                            if 'biosample' in lib:
+                                bio = request.embed(lib['biosample'], '@@object?skip_calculated=true')
+                                if 'organism' in bio:
+                                    organisms.append(bio['organism'])
             if organisms:
                 return paths_filtered_by_status(request, list(set(organisms)))
             else:
@@ -666,7 +666,6 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
         'biosample_ontology',
         'files.dataset',
         'files.replicate.library',
-        'files.library',
         'files.replicate.experiment.target',
         'organism'
     ]
@@ -727,15 +726,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.library.biosample.applied_modifications',
         'related_datasets.replicates.library.spikeins_used',
         'related_datasets.replicates.library.treatments',
-        'related_datasets.replicates.libraries',
-        'related_datasets.replicates.libraries.biosample.submitted_by',
-        'related_datasets.replicates.libraries.biosample.source',
-        'related_datasets.replicates.libraries.biosample.organism',
-        'related_datasets.replicates.libraries.biosample.donor.organism',
-        'related_datasets.replicates.libraries.biosample.treatments',
-        'related_datasets.replicates.libraries.biosample.applied_modifications',
-        'related_datasets.replicates.libraries.spikeins_used',
-        'related_datasets.replicates.libraries.treatments',
         'related_datasets.possible_controls',
         'related_datasets.possible_controls.lab',
         'related_datasets.target.organism',
@@ -749,7 +739,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'files.analysis_step_version.software_versions',
         'files.analysis_step_version.software_versions.software',
         'files.replicate.library.biosample',
-        'files.library.biosample',
         'files.quality_metrics',
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
