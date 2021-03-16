@@ -646,26 +646,6 @@ ColumnSelector.propTypes = {
 
 
 /**
- * Load the schema corresponding to the given type, where `type` contains an encode @type.
- * @param type {string} Selects schema based on @type
- *
- * @return {promise} Schema corresponding to selected `type`; null if error.
- */
-const loadSchemaColumns = (type) => (
-    fetch('/profiles/', {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-    }).then((response) => {
-        // Convert the response to JSON.
-        if (response.ok) {
-            return response.json();
-        }
-        return Promise.resolve(null);
-    }).then((responseJson) => (responseJson ? responseJson[type] : null))
-);
-
-
-/**
  * Generate an object containing the title and visibility status of every possible column for the
  * current type. These get collected from the returned JSON `columns` property as well as the
  * `properties` of the matching schema.
@@ -885,22 +865,6 @@ const RNAGet = ({ context }, reactContext) => {
         const href = `?${indexQuery.format()}`;
         reactContext.navigate(href);
     };
-
-    React.useEffect(() => {
-        // If we haven't yet, load the schema matching the given "type=" type to generate the
-        // columns object.
-        if (!schemaLoadInProgress.current && !allColumns) {
-            schemaLoadInProgress.current = true;
-            loadSchemaColumns(type).then((schema) => {
-                schemaLoadInProgress.current = false;
-
-                // Use the search results and the loaded schema's `properties` to generate a list
-                // of columns to display.
-                const generatedColumns = generateColumns(context, schema);
-                setAllColumns(generatedColumns);
-            });
-        }
-    }, [context, schemaLoadInProgress, allColumns, type]);
 
     React.useEffect(() => {
         // If a facet selection leaves fewer pages than the current page, redirect to the same url
