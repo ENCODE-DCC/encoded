@@ -36,6 +36,22 @@ class StarQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'star_quality_metric'
     schema = load_schema('encoded:schemas/star_quality_metric.json')
 
+    @calculated_property(schema={
+        "title": "Read depth",
+        "type": "number",
+        "description": "Sum of the uniquely mapped reads number and the number of reads mapped to multiple loci.",
+        "comment": "Do not submit. The value is extracted from values reported in the STAR quality metric.",
+        "notSubmittable": True,
+    })
+    def read_depth(self, properties=None):
+        if properties is None:
+            properties = self.upgrade_properties()
+        if 'Uniquely mapped reads number' in properties and \
+                'Number of reads mapped to multiple loci' in properties:
+            unique = properties['Uniquely mapped reads number']
+            multi = properties['Number of reads mapped to multiple loci']
+            return unique + multi
+
 
 @collection(
     name='bismark-quality-metrics',

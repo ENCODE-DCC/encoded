@@ -29,3 +29,8 @@ def test_histone_frip_calculation(testapp, histone_chipseq_quality_metric_frip):
     )
     res = testapp.get(histone_chipseq_quality_metric_frip['@id'])
     assert res.json['frip'] == 20
+
+
+def test_star_read_depth(testapp, bam_quality_metric_1_1):
+    res = testapp.get(bam_quality_metric_1_1['@id'])
+    assert res.json['read_depth'] == 1500
