@@ -986,7 +986,10 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'synchronization': 'not synchronized',
         'treatments_phrase': 'not treated',
         'depleted_in': 'not depleted',
-        'genetic_modifications': 'not modified'
+        'genetic_modifications': 'not modified',
+        'post_nucleic_acid_delivery_time': 'without nucleic acid delivery',
+        'post_differentiation_time': 'not differentiated',
+        'preservation_method': 'not preserved'
     }
     if len(phrases_dictionarys) > 1:
         index = 0
