@@ -49,6 +49,7 @@ ASSEMBLY_FAMILIES = {
     "hg38":             ["GRCh38", "GRCh38-minimal"],
     "GRCh37":           ["hg19", "GRCh37"],  # Is GRCh37 ever in encoded?
     "hg19":             ["hg19", "GRCh37"],
+    "GRCm39":           ["mm39", "GRCm39"],
     "GRCm38":           ["mm10", "mm10-minimal", "GRCm38"],  # Is GRCm38 ever in encoded?
     "mm10":             ["mm10", "mm10-minimal", "GRCm38"],
     "mm10-minimal":     ["mm10", "mm10-minimal", "GRCm38"],

@@ -41,6 +41,11 @@ const ASSEMBLY_DETAILS = {
         ucsc_assembly: 'hg19',
         ensembl_host: 'grch37.ensembl.org',
     },
+    GRCm39: {
+        species: 'Mus musculus',
+        ucsc_assembly: 'mm39',
+        ensembl_host: 'www.ensembl.org',
+    },
     mm10: {
         species: 'Mus musculus',
         ucsc_assembly: 'mm10',
@@ -273,6 +278,7 @@ const ucscAssemblyDetails = {
     GRCh38: { mappedAssembly: 'hg38' },
     'GRCh38-minimal': { mappedAssembly: 'hg38' },
     hg19: { mappedAssembly: 'hg19' },
+    GRCm39: { mappedAssembly: 'mm39' },
     mm10: { mappedAssembly: 'mm10' },
     'mm10-minimal': { mappedAssembly: 'mm10' },
     mm9: { mappedAssembly: 'mm9' },
@@ -309,6 +315,7 @@ const ucscUrlGenerator = (assembly, batchHubUrl, position) => {
 const ensembleAssemblyDetails = {
     GRCh38: { species: 'Homo_sapiens' },
     'GRCh38-minimal': { species: 'Homo_sapiens' },
+    GRCm39: { species: 'Mus_musculus' },
     mm10: { species: 'Mus_musculus' },
     'mm10-minimal': { species: 'Mus_musculus' },
 };
