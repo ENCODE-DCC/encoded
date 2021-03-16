@@ -774,7 +774,7 @@ def rnaget(context, request):
         facet_data['total'] = sum([term['doc_count'] for term in facet_data['terms']])
         facets_data.append(facet_data)
 
-    return {
+    response = {
         'title': 'RNA Get',
         '@type': ['rnaseq'],
         '@id': request.path_qs,
@@ -785,3 +785,18 @@ def rnaget(context, request):
         'facets': facets_data,
         '@graph': expressions
     }
+
+    if sort:
+        response['sort'] = {}
+
+        order = 'asc'
+        if sort[0] == '-':
+            order = 'desc'
+            sort = sort[1:]
+
+        response['sort'][sort] = {
+            'order': order,
+            'unmapped_type': 'keyword'
+        }
+
+    return response
