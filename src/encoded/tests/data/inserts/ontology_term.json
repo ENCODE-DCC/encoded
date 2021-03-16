@@ -1,5 +1,11 @@
 [
     {
+        "uuid": "9ccb9d0b-1747-4ad1-969a-769286937021",
+        "term_name": "unknown",
+        "term_id": "NCIT:C17998",
+        "status": "released"
+    },
+    {
         "uuid": "9a69c3a9-f88c-49db-8b6b-fc69ec3623a5",
         "term_name": "epithelium of left lung",
         "term_id": "UBERON:0003365",

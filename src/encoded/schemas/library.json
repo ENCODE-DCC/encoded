@@ -200,6 +200,9 @@
         "donors.ethnicity.term_name": {
             "title": "Donor ethnicity"
         },
+        "biosample_classification": {
+            "title": "Biosample classification"
+        },
         "biosample_ontologies.system_slims": {
             "title": "Biosample system"
         },
@@ -262,6 +265,12 @@
         },
         "donors.ethnicity.term_name": {
             "title": "Donor ethnicity"
+        },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
+        "biosample_classification": {
+            "title": "Biosample classification"
         },
         "biosample_ontologies.term_name": {
             "title": "Biosample term name"

@@ -296,8 +296,17 @@
         "donors.sex": {
             "title": "Donor sex"
         },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
+        },
         "suspension_type": {
             "title": "Suspension type"
+        },
+        "biosample_classification": {
+            "title": "Biosample classification"
         },
         "biosample_ontologies.system_slims": {
             "title": "Biosample system"
@@ -325,6 +334,9 @@
         "description": {
             "title": "Description"
         },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
         "donors.organism.scientific_name": {
             "title": "Organism"
         },
@@ -333,6 +345,15 @@
         },
         "donors.sex": {
             "title": "Donor sex"
+        },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
+        },
+        "biosample_classification": {
+            "title": "Biosample classification"
         },
         "derived_from": {
             "title": "Derived from"

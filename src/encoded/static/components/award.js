@@ -314,9 +314,6 @@ export function createNewBarChart(chartId, data, colors, replicateLabels, baseSe
             if (data.femaleDataset.some(x => x > 0)) {
                 datasets.push({ label: 'female', data: data.femaleDataset, backgroundColor: colors[2] });
             }
-            for (let i = 0; i < datasets.length; i += 1) {
-                datasets[i].backgroundColor = colors[i];
-            }
 
             // Create the chart.
             const canvas = document.getElementById(`${chartId}-chart`);

@@ -50,7 +50,8 @@
             "title": "Ethnicity",
             "description": "Ethnic group to which the donor belongs, usually self-reported by the donor.",
             "type": "string",
-            "linkTo": "OntologyTerm"
+            "linkTo": "OntologyTerm",
+            "default": "9ccb9d0b-1747-4ad1-969a-769286937021"
         },
         "parents": {
             "title": "Parents",

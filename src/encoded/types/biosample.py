@@ -43,6 +43,28 @@ class Biosample(Item, CalculatedDonors):
     ]
 
     @calculated_property(schema={
+        "title": "Summary",
+        "description": "A summary of the treatments applied to the Biosample.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "notSubmittable": True,
+    })
+    def summary(self, request, biosample_ontology, derived_from):
+        summ = ''
+        my_type = self.item_type.replace('_',' ')
+        if my_type == 'organoid':
+            dfrom = set()
+            for df in derived_from:
+                obj = request.embed(df, '@@object?skip_calculated=true')
+                ontology = obj.get('biosample_ontology')
+                ontology_obj = request.embed(ontology, '@@object?skip_calculated=true')
+                dfrom.add(ontology_obj.get('term_name'))
+            summ += ','.join(dfrom) + '-derived '
+        bo_obj = request.embed(biosample_ontology, '@@object?skip_calculated=true')
+        summ += bo_obj.get('term_name') + ' ' + my_type
+        return summ
+
+    @calculated_property(schema={
         "title": "Treatment summary",
         "description": "A summary of the treatments applied to the Biosample.",
         "comment": "Do not submit. This is a calculated property",

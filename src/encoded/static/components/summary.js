@@ -5,13 +5,12 @@ import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import QueryString from '../libs/query_string';
 import { Panel, PanelBody } from '../libs/ui/panel';
-import { LabChart, CategoryChart, createNewBarChart } from './award';
+import { CategoryChart, createNewBarChart } from './award';
 import * as globals from './globals';
 import { requestSearch } from './objectutils';
 import { FacetList, ClearFilters } from './search';
 import { getObjectStatuses, sessionToAccessLevel } from './status';
 import { ViewControls } from './view_controls';
-import { systemsField, organField } from './body_map';
 
 /**
  * Generate an array of data from one facet bucket for displaying in a chart, with one array entry
@@ -22,16 +21,6 @@ import { systemsField, organField } from './body_map';
  * @param {array} labels - Experiment status labels.
  * @return {array} - Data extracted from buckets with an order of values corresponding to `labels`.
  */
-
-// Data field for organism
-// We will display different facets depending on the selected organism
-const organismField = 'donors.organism.scientific_name';
-
-// Mapping of shortened organism name and full scientific organism name
-const organismTerms = [
-    'Homo sapiens',
-    'Mus musculus',
-];
 
 function generateStatusData(buckets, labels) {
     // Fill the array to the proper length with zeroes to start with. Actual non-zero data will
@@ -272,14 +261,11 @@ class SummaryData extends React.Component {
         const { context } = this.props;
 
         // Find the labs and assay facets in the search results.
-        const labFacet = context.facets.find(facet => facet.field === 'lab.title');
-        let labs = labFacet ? labFacet.terms : null;
         const assayFacet = context.facets.find(facet => facet.field === 'assay');
         let assays = assayFacet ? assayFacet.terms : null;
         const awardFacet = context.facets.find(facet => facet.field === 'award.coordinating_pi.title');
         let awards = awardFacet ? awardFacet.terms : null;
 
-        const filteredOutLabs = context.filters.filter(c => c.field === 'lab.title!');
         const filteredOutAssays = context.filters.filter(c => c.field === 'assay!');
         const filteredOutAwards = context.filters.filter(c => c.field === 'award.coordinating_pi.title!');
 
@@ -290,11 +276,6 @@ class SummaryData extends React.Component {
             if (assayTitleFilters.length > 0) {
                 const assayTitleFilterTerms = assayTitleFilters.map(filter => filter.term);
                 assays = assays.filter(assayItem => assayTitleFilterTerms.indexOf(assayItem.key) !== -1);
-            }
-            const labFilters = context.filters.filter(filter => filter.field === 'lab.title');
-            if (labFilters.length > 0) {
-                const labFilterTerms = labFilters.map(filter => filter.term);
-                labs = labs.filter(labItem => labFilterTerms.indexOf(labItem.key) !== -1);
             }
             const awardNameFilters = context.filters.filter(filter => filter.field === 'award.coordinating_pi.title');
             if (awardNameFilters.length > 0) {
@@ -345,38 +326,43 @@ SummaryData.defaultProps = {
 class SummaryBody extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            cellCount: 0
+        }
         const searchQuery = url.parse(this.props.context['@id']).search;
         const terms = queryString.parse(searchQuery);
-        this.state = {
-            selectedOrganism: terms[organismField] ? terms[organismField] : [],
-        };
-        this.chooseOrganism = this.chooseOrganism.bind(this);
     }
 
-    chooseOrganism(e) {
-        this.setState({
-            selectedOrganism: e.currentTarget.id,
-        });
-        const parsedUrl = url.parse(this.props.context['@id']);
-        const query = new QueryString(parsedUrl.query);
-        query.deleteKeyValue(systemsField);
-        query.deleteKeyValue(organField);
-        query.replaceKeyValue(organismField, e.currentTarget.id, '');
-        const href = `?${query.format()}`;
-        this.context.navigate(href);
+    componentDidMount() {
+        const query_url = this.props.context.search_base.replace('/search/?', '')
+        this.getCellCount(query_url);
     }
+
+    getCellCount(searchBase) {
+        requestSearch(searchBase + '&limit=all').then((results) => {
+            if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
+                var mx_query = 'type=MatrixFile&layers.value_scale=linear&layers.normalized=false&derivation_process=cell calling&field=observation_count&limit=all'
+                results['@graph'].forEach(x => mx_query += '&libraries=' + x['@id']);
+                requestSearch(mx_query).then((results2) => {
+                    var cell_count = 0
+                    results2['@graph'].forEach(y => cell_count += y['observation_count']);
+                    this.setState({
+                        cellCount: cell_count
+                    })
+                })
+            }
+        })
+    }
+
     render() {
         const searchQuery = url.parse(this.props.context['@id']).search;
-        const query = new QueryString(searchQuery);
-        const nonPersistentQuery = query.clone();
-        nonPersistentQuery.deleteKeyValue('?type');
-        const clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('?type') > 0;
         const context = this.props.context;
-        const vertFacetNames = ['assay', 'protocol.title', 'biosample_ontologies.system_slims', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title'];
+        const vertFacetNames = ['assay', 'protocol.title', 'biosample_classification', 'biosample_ontologies.system_slims', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title'];
         const vertFacets = []
         context.facets.forEach(x => {
             if (vertFacetNames.includes(x.field)) vertFacets.push(x);
             })
+        const cell_count = this.state.cellCount.toLocaleString();
         return (
             <div className="search-results">
                 <div className="search-results__facets">
@@ -384,6 +370,7 @@ class SummaryBody extends React.Component {
                 </div>
                 <div className="search-results__report-list">
                     <h4>{this.props.context.total} {this.props.context.total > 1 ? 'libraries' : 'library'}</h4>
+                    <h4>{cell_count} cells</h4>
                     <div className="view-controls-container">
                         <ViewControls results={this.props.context} alternativeNames={['Tabular report']} />
                     </div>

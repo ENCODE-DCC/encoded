@@ -56,3 +56,49 @@ class CalculatedBiosampleOntologies:
             elif bs_obj.get('biosample_ontology'):
                 onts.add(bs_obj.get('biosample_ontology'))
         return sorted(onts)
+
+
+class CalculatedBiosampleClassification:
+    @calculated_property(condition='derived_from', define=True, schema={
+        "title": "Biosample classification",
+        "description": "A property to summarize if the object derived from a tissue, organoid, or cell culture.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": "string"
+        },
+    })
+    def biosample_classification(self, request, derived_from):
+        t = set()
+        for bs in derived_from:
+            bs_obj = request.embed(bs, '@@object')
+            if bs_obj.get('biosample_classification'):
+                t.update(bs_obj.get('biosample_classification'))
+            else:
+                bs_type = bs_obj['@type'][0].lower()
+                if bs_type == 'cellculture':
+                    t.add('cell culture')
+                else:
+                    t.add(bs_type)
+        return sorted(t)
+
+
+class CalculatedBiosampleSummary:
+    @calculated_property(condition='derived_from', define=True, schema={
+        "title": "Biosample summary",
+        "description": "A property to summarize the biosample that this object derived from.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": "string"
+        },
+    })
+    def biosample_summary(self, request, derived_from):
+        summs = set()
+        for bs in derived_from:
+            bs_obj = request.embed(bs, '@@object')
+            if bs_obj.get('biosample_summary'):
+                summs.update(bs_obj.get('biosample_summary'))
+            elif bs_obj.get('summary'):
+                summs.add(bs_obj.get('summary'))
+        return sorted(summs)

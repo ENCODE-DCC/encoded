@@ -60,7 +60,7 @@ const portal = {
                 { id: 'sep-mm-1' },
                 { id: 'publications', title: 'Publications', url: '/report/?type=Publication' },
                 { id: 'sep-mm-0' },
-                { id: 'lib-summ', title: 'Data summary', url: '/summary/?type=Library&award.project=HCA+Seed+Networks' },
+                { id: 'lib-summ', title: 'Data summary', url: '/summary/?type=Library&award.project=HCA+Seed+Networks&donors.organism.scientific_name=Homo+sapiens' },
             ],
         },
         {

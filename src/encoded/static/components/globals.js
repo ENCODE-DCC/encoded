@@ -320,9 +320,9 @@ export const replicateTypeList = [
 ];
 
 export const donorSexList = [
-    'female',
-    'male',
     'unknown',
+    'male',
+    'female',
 ];
 
 
