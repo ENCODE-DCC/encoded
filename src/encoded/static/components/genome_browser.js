@@ -738,9 +738,19 @@ class GenomeBrowser extends React.Component {
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
             if (file.file_format_type &&
                 (['bedrnaelements', 'peptidemapping', 'bedexonscore', 'bed12', 'bed9'].indexOf(file.file_format_type.toLowerCase()) > -1)) {
+                const openedOutputTypes = [
+                    'predicted transcription start sites',
+                    'contigs',
+                    'splice junctions',
+                    'clusters',
+                    'exon quantifications',
+                    'unfiltered peptide quantification',
+                    'filtered peptide quantification',
+                ];
                 trackObj.name = <TrackLabel file={file} label={label} long />;
-                trackObj.heightPx = 95;
-                trackObj.expandable = false;
+
+                const opened = openedOutputTypes.includes(file.output_type);
+                trackObj.heightPx = opened ? 95 : trackObj.heightPx;
             }
             return trackObj;
         });
