@@ -646,34 +646,6 @@ ColumnSelector.propTypes = {
 
 
 /**
- * Generate an object containing the title and visibility status of every possible column for the
- * current type. These get collected from the returned JSON `columns` property as well as the
- * `properties` of the matching schema.
- */
-const generateColumns = (context, schema) => {
-    const generatedColumns = {};
-
-    // Convert `columns` from returned JSON to our columns object, and make an array of column
-    // titles for each de-duping later.
-    const columnTitles = [];
-    Object.keys(context.columns).forEach((column) => {
-        generatedColumns[column] = context.columns[column].title;
-        columnTitles.push(generatedColumns[column]);
-    });
-
-    // Convert the schema properties to our columns object.
-    Object.keys(schema.properties).forEach((column) => {
-        // Only include if the search result columns doesn't already have the property, and only if
-        // the schema property title doesn't match an existing search result columns title.
-        if (!generatedColumns[column] && !columnTitles.includes(schema.properties[column].title)) {
-            generatedColumns[column] = schema.properties[column].title;
-        }
-    });
-    return generatedColumns;
-};
-
-
-/**
  * RNA-Seq Matrix search
  *
  *  Important to extend TextFilter because this class has functionality it lacks like
@@ -687,19 +659,13 @@ class RNASeqMatrixSearch extends TextFilter {
         super();
 
         this.handleChange = this.handleChange.bind(this);
-	this.handleInputChange = this.handleInputChange.bind(this);
-	this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
-	    unitsOption: props.query.getKeyValuesIfPresent('units').join(','),
-	    genes: props.query.getKeyValuesIfPresent('genes').join(',')
+            unitsOption: props.query.getKeyValuesIfPresent('units').join(','),
+            genes: props.query.getKeyValuesIfPresent('genes').join(','),
 	};
-    }
-
-    onKeyDown(e) {
-        if (e.keyCode === 13) {
-            e.preventDefault();
-        }
     }
 
     handleChange(e) {
@@ -711,28 +677,28 @@ class RNASeqMatrixSearch extends TextFilter {
     }
 
     handleSubmit(e) {
-	e.preventDefault();
-	window.location.href = "/rnaget?genes=" + this.state.genes + "&units=" + this.state.unitsOption
+        e.preventDefault();
+        window.location.href = `/rnaget?genes=${this.state.genes}&units=${this.state.unitsOption}`
     }
 
     render() {
         return (
-	    <form onSubmit={this.handleSubmit}>
-              <div className="rna_seq_matrix-search">
-                  <input
-                      type="search"
-                      className="search-query"
-                      placeholder="Enter Gene IDs..."
-                      value={this.state.genes}
-                      onKeyDown={this.onKeyDown}
-                      onChange={this.handleInputChange}
-                  />
-                 <select name="searchOption" onChange={this.handleChange} value={this.state.unitsOption}>
-                      <option value="tpm">TPM</option>
-                      <option value="fpkm">FPKM</option>
-                  </select>
-                  <button>Search</button>
-              </div>
+            <form onSubmit={this.handleSubmit}>
+                <div className="rna_seq_matrix-search">
+                    <input
+                        type="search"
+                        className="search-query"
+                        placeholder="Enter Gene IDs..."
+                        value={this.state.genes}
+                        onKeyDown={this.onKeyDown}
+                        onChange={this.handleInputChange}
+                    />
+                    <select name="searchOption" onChange={this.handleChange} value={this.state.unitsOption}>
+                        <option value="tpm">TPM</option>
+                        <option value="fpkm">FPKM</option>
+                    </select>
+                    <button>Search</button>
+                </div>
             </form>
         );
     }
@@ -785,11 +751,9 @@ PageLimitSelector.propTypes = {
  */
 const RNAGet = ({ context }, reactContext) => {
     /** All possible columns for the current type */
-    const [allColumns, setAllColumns] = React.useState(null);
+    const [allColumns] = React.useState(null);
     /** True if column selector modal visible */
     const [selectorOpen, setSelectorOpen] = React.useState(false);
-    /** True if request for schema in progress */
-    const schemaLoadInProgress = React.useRef(false);
     /** True if we have requested a redirect; prevents state changes from multiple redirects */
     const redirectInProgress = React.useRef(false);
     /** Table DOM element to handle its sticky header */
@@ -828,11 +792,6 @@ const RNAGet = ({ context }, reactContext) => {
 
     const viewableTotal = Math.min(context.total, MAX_VIEWABLE_RESULTS - pageLimit);
     const totalPages = Math.trunc(viewableTotal / pageLimit) + (viewableTotal % pageLimit > 0 ? 1 : 0);
-
-    // Called when the user requests the column-selector modal.
-    const openColumnSelector = () => {
-        setSelectorOpen(true);
-    };
 
     // Called when the user closes the column-selector modal.
     const closeColumnSelector = () => {
@@ -877,9 +836,6 @@ const RNAGet = ({ context }, reactContext) => {
         }
     }, [currentPage, totalPages, query, reactContext]);
 
-    // Compose download-TSV link by keeping the query string and replacing the path with /report.tsv.
-    const downloadTsvPath = `/report.tsv${parsedUrl.path.slice(parsedUrl.pathname.length)}`;
-
     // No filled facets means no results, and we should display the notification from the back end
     // instead of the report.
     const facetdisplay = context.facets && context.facets.some((facet) => facet.total > 0);
@@ -887,10 +843,10 @@ const RNAGet = ({ context }, reactContext) => {
         return (
             <div className="search-results">
                 <div className="title-facets">
-                   <h1>RNA Get</h1>
-                   <RNASeqMatrixSearch query={query} />
-                   <FacetList context={context} facets={context.facets} filters={context.filters} docTypeTitleSuffix="report" />
-		</div>
+                    <h1>RNA Get</h1>
+                    <RNASeqMatrixSearch query={query} />
+                    <FacetList context={context} facets={context.facets} filters={context.filters} docTypeTitleSuffix="report" />
+                </div>
                 <div className="search-results__report-list">
                     <div className="results-table-control__pager">
                         {totalPages > 1 ?
