@@ -140,7 +140,9 @@ _app_settings = {
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
     'retry.attempts': 3,
-    'ontology_path': pkg_resources.resource_filename('encoded', '../../ontology.json'),
+    "ontology_path": (
+        pkg_resources.resource_filename("snowflakes", "") + "../../ontology.json",
+    ),
 }
 _app_settings['local_storage_host'] = sno_settings['local_storage_host']
 _app_settings['local_storage_port'] = sno_settings['local_storage_port']
