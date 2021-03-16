@@ -38,6 +38,7 @@ ORDER = [
     'platform',
     'library',
     'experiment',
+    'low_throughput_single_cell_experiment',
     'functional_characterization_experiment',
     'transgenic_enhancer_experiment',
     'replicate',
