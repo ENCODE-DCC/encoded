@@ -681,7 +681,7 @@ class File(Item):
             except ClientError as e:
                 # Demo trying to set ACL on production object?
                 if e.response['Error']['Code'] == 'AccessDenied':
-                    logging.warn(e)
+                    logging.warning(e)
                 else:
                     raise e
         return True
