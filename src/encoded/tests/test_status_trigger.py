@@ -286,10 +286,10 @@ def test_set_status_catch_access_denied_error(mocker, testapp, file):
     )
     mocker.patch('encoded.types.file.File._get_external_sheet')
     File._get_external_sheet.return_value = {'bucket': 'abc', 'key': 'def'}
-    mocker.patch('encoded.types.file.logging.warn')
+    mocker.patch('encoded.types.file.logging.warning')
     testapp.patch_json(file['@id'] + '@@set_status?update=true', {'status': 'released'})
     # Should log AccessDenied error but shouldn't raise error.
-    assert logging.warn.call_count == 2
+    assert logging.warning.call_count == 2
 
 
 def test_set_status_raise_other_error(mocker, testapp, file):
