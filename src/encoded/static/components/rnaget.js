@@ -9,7 +9,6 @@ import QueryString from '../libs/query_string';
 import * as globals from './globals';
 import { TableItemCount } from './objectutils';
 import { FacetList, TextFilter } from './search';
-import { ViewControls } from './view_controls';
 
 
 /**
@@ -665,7 +664,7 @@ class RNASeqMatrixSearch extends TextFilter {
         this.state = {
             unitsOption: props.query.getKeyValuesIfPresent('units').join(','),
             genes: props.query.getKeyValuesIfPresent('genes').join(','),
-	};
+        };
     }
 
     handleChange(e) {
@@ -678,7 +677,7 @@ class RNASeqMatrixSearch extends TextFilter {
 
     handleSubmit(e) {
         e.preventDefault();
-        window.location.href = `/rnaget?genes=${this.state.genes}&units=${this.state.unitsOption}`
+        window.location.href = `/rnaget?genes=${this.state.genes}&units=${this.state.unitsOption}`;
     }
 
     render() {
@@ -697,7 +696,7 @@ class RNASeqMatrixSearch extends TextFilter {
                         <option value="tpm">TPM</option>
                         <option value="fpkm">FPKM</option>
                     </select>
-                    <button>Search</button>
+                    <button type="submit">Search</button>
                 </div>
             </form>
         );

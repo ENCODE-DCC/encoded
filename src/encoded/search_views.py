@@ -774,6 +774,11 @@ def rnaget(context, request):
         facet_data['total'] = sum([term['doc_count'] for term in facet_data['terms']])
         facets_data.append(facet_data)
 
+    # this forces the current components to show an empty state
+    if total == 0:
+        for facet in facets_data:
+            facet['total'] += 1
+
     response = {
         'title': 'RNA Get',
         '@type': ['rnaseq'],
