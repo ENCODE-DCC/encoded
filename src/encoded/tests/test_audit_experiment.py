@@ -3143,7 +3143,7 @@ def test_audit_experiment_wgbs_standards_lambda_ENCODE4(
                                              'notes': 'file bam 1 1',
                                              'derived_from': [file_fastq_3['@id']],
                                              'award': encode4_award['uuid']})
-    testapp.patch_json(pipeline_bam['@id'], {'title':'gemBS'})
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'gemBS'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': donor_1['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -3160,6 +3160,62 @@ def test_audit_experiment_wgbs_standards_lambda_ENCODE4(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'low lambda C conversion rate' for error in collect_audit_errors(res))
+
+    gembs_qc = testapp.get(gembs_quality_metric['@id'] + '@@edit').json
+    gembs_qc.pop('conversion_rate')
+    testapp.put_json(gembs_quality_metric['@id'], gembs_qc)
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] ==
+                'missing lambda C conversion rate' for error in collect_audit_errors(res, ['ERROR']))
+
+
+def test_audit_roadmap_experiment_wgbs_standards_lambda_ENCODE4(
+    testapp,
+    base_experiment,
+    file_fastq_3,
+    replicate_1_1,
+    replicate_2_1,
+    library_1,
+    library_2,
+    biosample_1,
+    biosample_2,
+    donor_1,
+    file_bam_1_1,
+    file_bed_methyl,
+    gembs_quality_metric,
+    cpg_correlation_quality_metric,
+    analysis_step_run_bam,
+    analysis_step_version_bam,
+    analysis_step_bam,
+    pipeline_bam,
+    encode4_award,
+    roadmap_award
+):
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'GRCh38',
+                                             'notes': 'file bam 1 1',
+                                             'derived_from': [file_fastq_3['@id']],
+                                             'award': encode4_award['uuid']})
+    gembs_qc = testapp.get(gembs_quality_metric['@id'] + '@@edit').json
+    gembs_qc.pop('conversion_rate')
+    testapp.put_json(gembs_quality_metric['@id'], gembs_qc)
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'gemBS'})
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {
+        'status': 'released',
+        'date_released': '2021-01-01',
+        'replicates': [replicate_1_1['@id'], replicate_2_1['@id']],
+        'assay_term_name': 'whole-genome shotgun bisulfite sequencing',
+        'award': roadmap_award['uuid'],
+    })
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] ==
+                'missing lambda C conversion rate' for error in collect_audit_errors(res, ['WARNING']))
 
 
 def test_audit_experiment_wgbs_standards_coverage_ENCODE4(
@@ -3205,6 +3261,56 @@ def test_audit_experiment_wgbs_standards_coverage_ENCODE4(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'extremely low coverage' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_wgbs_standards_pearson_ENCODE3(
+    testapp,
+    base_experiment,
+    file_fastq_3,
+    replicate_1_1,
+    replicate_2_1,
+    library_1,
+    library_2,
+    biosample_1,
+    biosample_2,
+    donor_1,
+    file_bam_1_1,
+    file_bed_methyl,
+    correlation_quality_metric,
+    analysis_step_run_bam,
+    analysis_step_version_bam,
+    analysis_step_bam,
+    pipeline_bam,
+    ENCODE3_award
+):
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'GRCh38',
+                                             'derived_from': [file_fastq_3['@id']],
+                                             'award': ENCODE3_award['uuid']})
+    testapp.patch_json(correlation_quality_metric['@id'], {'quality_metric_of': [file_bed_methyl['@id']]})
+    testapp.patch_json(file_bed_methyl['@id'], {
+        'step_run': analysis_step_run_bam['@id'],
+        'assembly': 'GRCh38',
+        'notes': 'file bed methyl',
+        'derived_from': [file_bam_1_1['@id']],
+        'award': ENCODE3_award['uuid']})
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'WGBS paired-end pipeline'})
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {
+        'status': 'released',
+        'date_released': '2021-01-01',
+        'replicates': [replicate_1_1['@id'], replicate_2_1['@id']],
+        'assay_term_name': 'whole-genome shotgun bisulfite sequencing',
+        'award': ENCODE3_award['uuid'],
+    })
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'insufficient replicate concordance' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_wgbs_standards_pearson_ENCODE4(

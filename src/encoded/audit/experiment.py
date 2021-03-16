@@ -1040,6 +1040,7 @@ def check_experiment_wgbs_standards(
     organism_name,
     desired_assembly
 ):
+    experiment_award = experiment.get('award')['rfa']
     alignment_files = files_structure.get('alignments').values()
     fastq_files = files_structure.get('fastq_files').values()
     cpg_quantifications = files_structure.get('cpg_quantifications').values()
@@ -1081,7 +1082,7 @@ def check_experiment_wgbs_standards(
     bismark_metrics = get_metrics(
         cpg_quantifications_encode3, 'BismarkQualityMetric', desired_assembly)
     cpg_metrics = get_metrics(
-        cpg_quantifications_encode3, 'CpgCorrelationQualityMetric', desired_assembly)
+        cpg_quantifications_encode3, 'CorrelationQualityMetric', desired_assembly)
     samtools_metrics = get_metrics(
         cpg_quantifications_encode3,
         'SamtoolsFlagstatsQualityMetric',
@@ -1120,9 +1121,9 @@ def check_experiment_wgbs_standards(
         get_pipeline_objects(alignment_files_encode4))
 
     if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
-        yield from check_wgbs_pearson_ENCODE4(cpg_metrics, 0.8, pipeline_title)
+        yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
 
-    yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title)
+    yield from check_wgbs_lambda_ENCODE4(gembs_metrics, 0.98, pipeline_title, experiment_award)
 
     return
 
@@ -1948,28 +1949,11 @@ def check_wgbs_coverage_ENCODE4(
 
 def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
     for m in cpg_metrics:
-        if 'Pearson Correlation Coefficient' in m:
-            if m['Pearson Correlation Coefficient'] < threshold:
-                detail = ('ENCODE experiment processed by {} '
-                    'pipeline has CpG quantification Pearson Correlation Coefficient of '
-                    '{}, while a value >={} is required.'.format(
-                        pipeline_title,
-                        m['Pearson Correlation Coefficient'],
-                        threshold
-                    )
-                )
-                yield AuditFailure('insufficient replicate concordance',
-                                   detail,
-                                   level='NOT_COMPLIANT')
-    return
-
-
-def check_wgbs_pearson_ENCODE4(cpg_metrics, threshold,  pipeline_title):
-    for m in cpg_metrics:
         if 'Pearson correlation' in m:
             if m['Pearson correlation'] < threshold:
-                detail = ('ENCODE experiment processed by {} '
-                    'pipeline has CpG quantification Pearson Correlation of '
+                detail = (
+                    'ENCODE experiment processed by {} '
+                    'pipeline has CpG quantification Pearson Correlation Coefficient of '
                     '{}, while a value >={} is required.'.format(
                         pipeline_title,
                         m['Pearson correlation'],
@@ -1980,6 +1964,7 @@ def check_wgbs_pearson_ENCODE4(cpg_metrics, threshold,  pipeline_title):
                                    detail,
                                    level='NOT_COMPLIANT')
     return
+
 
 def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
     for metric in bismark_metrics:
@@ -2008,16 +1993,28 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
                                    level='WARNING')
 
 
-def check_wgbs_lambda_ENCODE4(gembs_metrics, threshold, pipeline_title):
+def check_wgbs_lambda_ENCODE4(gembs_metrics, threshold, pipeline_title, experiment_award):
     for metric in gembs_metrics:
-        conversion_rate = metric.get('conversion_rate')
-        if conversion_rate < threshold:
-            detail = (f'ENCODE experiment processed by {pipeline_title} '
-                f'pipeline has a lambda rate of {conversion_rate}. '
-                f'The lambda conversion rate should be > 99%.'
+        if 'conversion_rate' in metric:
+            conversion_rate = metric.get('conversion_rate')
+            if conversion_rate < threshold:
+                detail = (
+                    f'ENCODE experiment processed by {pipeline_title} '
+                    f'pipeline has a lambda rate of {conversion_rate}. '
+                    f'The lambda conversion rate should be > 99%.'
+                )
+                yield AuditFailure('low lambda C conversion rate', detail,
+                                   level='WARNING')
+        else:
+            if experiment_award == 'Roadmap':
+                severity = 'WARNING'
+            else:
+                severity = 'ERROR'
+            detail = (
+                f'Missing lambda conversion rate for ENCODE experiment '
+                f'processed by {pipeline_title} pipeline.'
             )
-            yield AuditFailure('low lambda C conversion rate', detail,
-                               level='WARNING')
+            yield AuditFailure('missing lambda C conversion rate', detail, level=severity)
 
 
 def check_file_chip_seq_read_depth(file_to_check,
