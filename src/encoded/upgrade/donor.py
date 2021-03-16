@@ -43,7 +43,7 @@ def human_donor_2_3(value, system):
     # http://encode.stanford.edu/issues/1596
     if 'age' in value:
         age = value['age']
-        if re.match('\d+.0(-\d+.0)?', age):
+        if re.match(r'\d+.0(-\d+.0)?', age):
             new_age = age.replace('.0', '')
             value['age'] = new_age
 

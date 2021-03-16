@@ -535,9 +535,9 @@ def file_9_10(value, system):
         if '%' in rest:
             rest = re.sub(r'%', 'pct', rest)
         if '[' or '{' in rest:
-            rest = re.sub('[\[{]', '(', rest)
+            rest = re.sub(r'[\[{]', '(', rest)
         if ']' or '}' in rest:
-            rest = re.sub('[\]}]', ')', rest)
+            rest = re.sub(r'[\]}]', ')', rest)
 
         new_alias = ':'.join([namespace, rest])
         if new_alias not in aliases:

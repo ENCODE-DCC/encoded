@@ -369,7 +369,7 @@ class Item(snovault.Item):
         validate = asbool(request.params.get('validate', True))
         self._update_status(new_status, current_status, properties, schema, request, item_id, update, validate=validate)
         request._set_status_considered_paths.add((item_id, current_status, new_status))
-        logging.warn(
+        logging.warning(
             'Considering {} from status {} to status {}'.format(item_id, current_status, new_status)
         )
         block_children = self._calculate_block_children(request, force_transition)

@@ -140,7 +140,7 @@ def biosample_8_9(value, system):
 
     if 'model_organism_age' in value:
         age = value['model_organism_age']
-        if re.match('\d+.0(-\d+.0)?', age):
+        if re.match(r'\d+.0(-\d+.0)?', age):
             new_age = age.replace('.0', '')
             value['model_organism_age'] = new_age
 

@@ -6,7 +6,7 @@ def audit_link(linkText, uri):
 
 def path_to_text(path):
     """Convert object path to the text portion."""
-    accession = re.match('\/.*\/(.*)\/', path)
+    accession = re.match(r'\/.*\/(.*)\/', path)
     return accession.group(1) if accession else None
 
 def space_in_words(objects_string):
