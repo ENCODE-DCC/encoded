@@ -674,3 +674,21 @@ def annotation_30_31(value, system):
     if annotation_type == "blacklist":
         value['annotation_type'] = 'exclusion list'
     return
+
+
+@upgrade_step('experiment', '31', '32')
+def experiment_31_32(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5787
+    if value.get('assay_term_name') == 'single-nucleus RNA-seq':
+        value['assay_term_name'] = 'single-cell RNA sequencing assay'
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. This assay was previously labeled single-nucleus RNA-seq.'
+        else:
+            value['notes'] = f'This assay was previously labeled single-nucleus RNA-seq.'
+    if value.get('assay_term_name') == 'genotyping by high throughput sequencing assay':
+        value['assay_term_name'] = 'whole genome sequencing assay'
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. This assay was previously labeled genotyping HTS.'
+        else:
+            value['notes'] = f'This assay was previously labeled genotyping HTS.'
+    return

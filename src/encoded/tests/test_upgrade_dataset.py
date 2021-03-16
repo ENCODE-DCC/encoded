@@ -454,3 +454,11 @@ def test_upgrade_annotation_30_to_31(upgrader, annotation_30):
     )
     assert value['schema_version'] == '31'
     assert value['annotation_type'] == 'exclusion list'
+
+
+def test_upgrade_experiment_31_to_32(upgrader, experiment_31):
+    assert experiment_31['schema_version'] == '31'
+    value = upgrader.upgrade('experiment', experiment_31, current_version='31', target_version='32')
+    assert value['schema_version'] == '32'
+    assert value['assay_term_name'] == 'single-cell RNA sequencing assay'
+    assert value['notes'] == 'This assay was previously labeled single-nucleus RNA-seq.'

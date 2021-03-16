@@ -260,14 +260,40 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000627": {
+    "NTR:0000642": {
         "assay": ['Transcription'],
         "category": [],
         "developmental": [],
-        "name": "single-nucleus RNA-seq",
+        "name": "long read single-cell RNA-seq",
         "objectives": [],
         "organs": [],
-        "preferred_name": "snRNA-seq",
+        "preferred_name": "long read scRNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000641": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "GRO-cap",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "GRO-cap",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000640": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "GRO-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "GRO-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],

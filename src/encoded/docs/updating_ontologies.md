@@ -26,7 +26,7 @@ How to update the ontology versions
 
 2. Run generate-ontology, an example is: 
 
-	$ bin/generate-ontology --uberon-url=http://svn.code.sf.net/p/obo/svn/uberon/releases/YYYY-MM-DD/composite-metazoan.owl --efo-url=http://www.ebi.ac.uk/efo/efo_inferred.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl --clo-url=http://purl.obolibrary.org/obo/clo.owl --doid-url=http://purl.obolibrary.org/obo/doid.owl
+	$ generate-ontology --uberon-url=http://svn.code.sf.net/p/obo/svn/uberon/releases/YYYY-MM-DD/composite-metazoan.owl --efo-url=http://www.ebi.ac.uk/efo/efo_inferred.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl --clo-url=http://purl.obolibrary.org/obo/clo.owl --doid-url=http://purl.obolibrary.org/obo/doid.owl
 
 3. Rename the ```ontology.json``` to one with the date that it was generated:
 
@@ -42,13 +42,13 @@ How to update the ontology versions
 
 6.  Update the following information
     
-    Site release version: 111
-    ontology.json file: ontology-2021-01-05.json
+    Site release version: 114
+    ontology.json file: ontology-2021-03-16.json
     [UBERON release date]: 2020-09-16
     [OBI release date]: 2020-12-16
-    [EFO release date]: 2020-12-15
+    [EFO release date]: 2021-03-15
     [CLO release date]: 2019-02-10
-    [DOID release date]: 2020-12-22
+    [DOID release date]: 2021-02-24
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
 [Cell Ontology (CL)]: http://cellontology.org/

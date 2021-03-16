@@ -40,3 +40,13 @@ def software_6_7(value, system):
     for i, p in enumerate(value.get('purpose', [])):
         if p == 'single cell isolation followed by RNA-seq':
             value['purpose'][i] = 'single-cell RNA sequencing assay'
+
+
+@upgrade_step('software', '7', '8')
+def software_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5787
+    for i, p in enumerate(value.get('purpose', [])):
+        if p == 'single-nucleus RNA-seq':
+            value['purpose'][i] = 'single-cell RNA sequencing assay'
+        elif p == 'genotyping by high throughput sequencing assay':
+            value['purpose'][i] = 'whole genome sequencing assay'
