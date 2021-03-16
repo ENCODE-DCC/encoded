@@ -1097,11 +1097,14 @@ table.matrix th.group-all-groups-cell {
     flex-direction: row;
     flex-wrap: nowrap !important;
     justify-content: space-between;
-
     margin-top: 12px;
     margin-right: 10px;
 
-    select {
+    input {
+        flex: 1 1 auto;
+    }
+
+    select, button {
         margin-left: 5px;
     }
 }
