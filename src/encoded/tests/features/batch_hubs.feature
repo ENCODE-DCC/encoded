@@ -1,4 +1,4 @@
-@batchhubs @usefixtures(index_workbook)
+@batchhubs
 Feature: Batch Hubs
     Background:
         When I visit "/search/?type=Experiment&status=released"

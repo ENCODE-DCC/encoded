@@ -6,7 +6,7 @@ Feature: Title
         And I wait for the content to load
         Then the title should contain the text "Series search – ENCODE"
 
-@Summary @usefixtures(index_workbook)
+@Summary
 Feature: Series search
     Background:
         When I visit "/series-search/?type=OrganismDevelopmentSeries"

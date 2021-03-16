@@ -1,4 +1,4 @@
-@targets @usefixtures(index_workbook)
+@targets
 Feature: Targets
 
     Scenario: Collection

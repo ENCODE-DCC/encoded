@@ -6,7 +6,7 @@ Feature: Title
         And I wait for the content to load
         Then the title should contain the text "Audit – ENCODE"
 
-@audit @usefixtures(index_workbook)
+@audit
 Feature: Audit
     Background:
         When I visit "/audit/?type=Experiment"

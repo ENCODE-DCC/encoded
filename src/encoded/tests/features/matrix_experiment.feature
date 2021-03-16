@@ -10,7 +10,7 @@ Feature: Title
         And I wait for the content to load
         Then the title should contain the text "Matrix – ENCODE"
 
-@matrix @usefixtures(index_workbook)
+@matrix
 Feature: Matrix
     Background:
         When I visit "/matrix/?type=Experiment&status=released"

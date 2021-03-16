@@ -1,4 +1,4 @@
-@matrix @usefixtures(index_workbook)
+@matrix
 Feature: Matrix
     Scenario: SESCC-Stem-Cell-Matrix
         When I visit "/"

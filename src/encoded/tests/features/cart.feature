@@ -1,4 +1,4 @@
-@cart @usefixtures(index_workbook)
+@cart
 Feature: Cart
     Scenario: Search result cart toggles:
         When I visit "/search/?type=Experiment&status=released&perturbed=false"

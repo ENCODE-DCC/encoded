@@ -1,4 +1,4 @@
-@experiments @usefixtures(index_workbook)
+@experiments
 Feature: Experiments
 
     Scenario: Collection
