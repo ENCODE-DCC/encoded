@@ -50,7 +50,7 @@ INSTALL_REQUIRES = [
 EXTRAS_REQUIRE = {
     "tests": [
         "coverage==5.0.3",
-        "moto==1.3.14",
+        "moto[s3,sts]==2.0.2",
         "pytest-bdd==3.2.1",
         "pytest-cov==2.8.1",
         "pytest-exact-fixtures==0.3",
