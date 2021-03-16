@@ -78,39 +78,15 @@ def get_metrics(files_list, metric_type):
 
 
 def create_files_mapping(files, excluded_files):
-    to_return = {'original_files': {},
-                 'fastq_files': {},
-                 'alignments': {},
-                 'unfiltered_alignments': {},
-                 'alignments_unfiltered_alignments': {},
-                 'transcriptome_alignments': {},
-                 'peaks_files': {},
-                 'gene_quantifications_files': {},
-                 'transcript_quantifications_files': {},
-                 'microRNA_quantifications_files': {},
-                 'signal_files': {},
-                 'normalized_signal_files': {},
-                 'preferred_default_idr_peaks': {},
-                 'idr_thresholded_peaks': {},
-                 'cpg_quantifications': {},
-                 'contributing_files': {},
-                 'chromatin_interaction_files': {},
-                 'raw_data': {},
-                 'processed_data': {},
-                 'pseudo_replicated_peaks_files': {},
-                 'overlap_and_idr_peaks': {},
-                 'excluded_types': excluded_files}
+    to_return = {
+        'alignments': {},
+        'normalized_signal_files': {},
+    }
     for file_object in files:
         if file_object['status'] not in excluded_files:
-            to_return['original_files'][file_object['@id']] = file_object
 
             file_format = file_object.get('file_format')
             file_output = file_object.get('output_type')
-            file_output_category = file_object.get('output_category')
-
-            if file_format and file_format == 'fastq' and \
-                    file_output and file_output == 'reads':
-                to_return['fastq_files'][file_object['@id']] = file_object
 
             if file_format and file_format == 'bam' and \
                     file_output and (
@@ -118,79 +94,9 @@ def create_files_mapping(files, excluded_files):
                         file_output and file_output == 'redacted alignments'):
                 to_return['alignments'][file_object['@id']] = file_object
 
-            if file_format and file_format == 'bam' and \
-                    file_output and (
-                        file_output == 'unfiltered alignments' or
-                        file_output == 'redacted unfiltered alignments'):
-                to_return['unfiltered_alignments'][file_object['@id']
-                                                   ] = file_object
-
-            if file_format and file_format == 'bam' and \
-                    file_output and file_output == 'transcriptome alignments':
-                to_return['transcriptome_alignments'][file_object['@id']
-                                                      ] = file_object
-
-            if file_format and file_format == 'bed' and \
-                    file_output and file_output in ['peaks',
-                                                    'peaks and background as input for IDR']:
-                to_return['peaks_files'][file_object['@id']] = file_object
-
-            if file_output and file_output == 'gene quantifications':
-                to_return['gene_quantifications_files'][file_object['@id']
-                                                        ] = file_object
-
-            if file_output and file_output == 'transcript quantifications':
-                to_return['transcript_quantifications_files'][file_object['@id']] = file_object
-
-            if file_output and file_output == 'microRNA quantifications':
-                to_return['microRNA_quantifications_files'][file_object['@id']] = file_object
-
-            if file_output and file_output in ['chromatin interactions', 'long range chromatin interactions']:
-                to_return['chromatin_interaction_files'][file_object['@id']] = file_object
-
-            if file_output and file_output == 'signal of unique reads':
-                to_return['signal_files'][file_object['@id']] = file_object
-
             if file_output and file_output == 'read-depth normalized signal':
                 to_return['normalized_signal_files'][file_object['@id']] = file_object
 
-            if file_output and file_output == 'optimal IDR thresholded peaks':
-                to_return['preferred_default_idr_peaks'][file_object['@id']] = file_object
-
-            if (
-                file_object.get('preferred_default')
-                and file_output == 'IDR thresholded peaks'
-            ):
-                to_return['preferred_default_idr_peaks'][
-                    file_object['@id']
-                ] = file_object
-            if file_output and file_output == 'IDR thresholded peaks':
-                to_return['idr_thresholded_peaks'][
-                    file_object['@id']
-                ] = file_object
-            if file_output and file_output == 'methylation state at CpG':
-                to_return['cpg_quantifications'][file_object['@id']
-                                                 ] = file_object
-            if (
-                file_format
-                and file_format == 'bed'
-                and file_output
-                and file_output == 'pseudoreplicated peaks'
-            ):
-                to_return['pseudo_replicated_peaks_files'][
-                    file_object['@id']
-                ] = file_object
-
-            if file_format and file_format == 'bed' and file_output and \
-                    file_output in ['replicated peaks', 'pseudoreplicated peaks',
-                                    'conservative IDR thresholded peaks',
-                                    'IDR thresholded peaks']:
-                to_return['overlap_and_idr_peaks'][file_object['@id']] = file_object
-
-            if file_output_category == 'raw data':
-                to_return['raw_data'][file_object['@id']] = file_object
-            else:
-                to_return['processed_data'][file_object['@id']] = file_object
     return to_return
 
 
