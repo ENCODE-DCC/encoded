@@ -52,3 +52,86 @@ $doi-ref-border-color: #a0a0a0;
         }
     }
 }
+
+// Generic, custom-styled checkbox.
+$checkbox-dimensions: 18px;
+$checkbox-padding: 3px;
+
+.checkbox {
+    position: relative;
+    padding: $checkbox-padding;
+
+    // Hide default input checkbox border.
+    input {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        width: $checkbox-dimensions;
+        height: $checkbox-dimensions;
+        top: $checkbox-padding;
+        left: $checkbox-padding;
+        opacity: 0;
+        z-index: 1;
+
+        &:checked {
+            border: none;
+
+            + label {
+                &::before {
+                    background-color: #008000;
+                }
+
+                svg {
+                    opacity: 1;
+                }
+            }
+        }
+
+        &:focus {
+            + label {
+                &::before {
+                    border-color: black;
+                }
+            }
+        }
+
+        // Push label over from absolutely positioned checkbox
+        + label {
+            padding: 3px 3px 0 $checkbox-dimensions + 5px;
+            z-index: 0;
+
+            // Style custom checkbox border.
+            &::before {
+                position: absolute;
+                content: "";
+                left: $checkbox-padding;
+                top: 0;
+                width: $checkbox-dimensions;
+                height: $checkbox-dimensions;
+                background-color: transparent;
+                border: 1px solid #c0c0c0;
+                border-radius: 3px;
+            }
+
+            + label::after {
+                opacity: 1;
+            }
+
+            svg {
+                position: absolute;
+                height: $checkbox-dimensions - 4px;
+                width: $checkbox-dimensions - 4px;
+                top: 2px;
+                left: $checkbox-padding + 2px;
+                fill: white;
+                stroke: none;
+                opacity: 0;
+                z-index: 0;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}

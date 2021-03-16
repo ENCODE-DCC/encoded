@@ -20,6 +20,7 @@ import {
     computeAssemblyAnnotationValue,
     filterForVisualizableFiles,
     filterForPreferredFiles,
+    Checkbox,
 } from '../objectutils';
 import { ResultTableList } from '../search';
 import { compileDatasetAnalyses, sortDatasetAnalyses } from './analysis';
@@ -794,64 +795,6 @@ Facet.defaultProps = {
 
 
 /**
- * Display a checkbox and label to allow users to filter out facet terms not included in any
- * visualizable files.
- */
-const VisualizableTermsToggle = ({ visualizableOnly, handleClick }) => (
-    <div className="cart-checkbox">
-        <button type="button" id="checkbox-toggle" role="checkbox" aria-checked={visualizableOnly} onClick={handleClick}>
-            <div className={`cart-checkbox__check${visualizableOnly ? ' cart-checkbox__check--checked' : ''}`}>
-                {visualizableOnly ? <i className="icon icon-check" /> : null}
-            </div>
-            <label htmlFor="viz-terms-toggle">
-                <div className="cart-checkbox__label-text">Show visualizable data only</div>
-                <div className="cart-checkbox__icon">{svgIcon('genomeBrowser')}</div>
-            </label>
-        </button>
-    </div>
-);
-
-VisualizableTermsToggle.propTypes = {
-    /** True to display checkbox as checked */
-    visualizableOnly: PropTypes.bool,
-    /** Callback when button is clicked */
-    handleClick: PropTypes.func.isRequired,
-};
-
-VisualizableTermsToggle.defaultProps = {
-    visualizableOnly: false,
-};
-
-
-/**
- * Display a checkbox and label to allow users to select preferred_default files only.
- */
-const PreferredOnlyToggle = ({ preferredOnly, handleClick }) => (
-    <div className="cart-checkbox">
-        <button type="button" id="cart-checkbox-toggle" role="checkbox" aria-checked={preferredOnly} onClick={handleClick}>
-            <div className={`cart-checkbox__check${preferredOnly ? ' cart-checkbox__check--checked' : ''}`}>
-                {preferredOnly ? <i className="icon icon-check" /> : null}
-            </div>
-            <label htmlFor="cart-checkbox-toggle">
-                <div className="cart-checkbox__label-text">Show default data only</div>
-            </label>
-        </button>
-    </div>
-);
-
-PreferredOnlyToggle.propTypes = {
-    /** True to display checkbox as checked */
-    preferredOnly: PropTypes.bool,
-    /** Callback when button is clicked */
-    handleClick: PropTypes.func.isRequired,
-};
-
-PreferredOnlyToggle.defaultProps = {
-    preferredOnly: false,
-};
-
-
-/**
  * Display the file facets. These display the number of files involved -- not the number of
  * experiments with files matching a criteria. As the primary input to this component is currently
  * an array of experiment IDs while these facets displays all the files involved with those
@@ -919,8 +862,8 @@ const FileFacets = ({
             <FileCount fileCount={selectedFileCount} facetLoadProgress={facetLoadProgress} />
             {facetLoadProgress === -1 ?
                 <>
-                    <PreferredOnlyToggle preferredOnly={preferredOnly} handleClick={preferredOnlyChangeHandler} />
-                    {!preferredOnly ? <VisualizableTermsToggle visualizableOnly={visualizableOnly} handleClick={visualizableOnlyChangeHandler} /> : null}
+                    <Checkbox label="Show default data only" id="default-data-toggle" checked={preferredOnly} css="cart-checkbox" clickHandler={preferredOnlyChangeHandler} />
+                    {!preferredOnly ? <Checkbox label="Show visualizable data only" id="visualizable-data-toggle" checked={visualizableOnly} css="cart-checkbox" clickHandler={visualizableOnlyChangeHandler} /> : null}
                 </>
             : null}
             {facets && facets.length > 0 ?

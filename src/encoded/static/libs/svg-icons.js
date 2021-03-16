@@ -124,6 +124,15 @@ const clipboard = (style) => (
     </svg>
 );
 
+const checkbox = (style) => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style={style} className="svg-icon svg-icon-checkbox">
+        <path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206
+            0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095
+            72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0
+            36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"
+        />
+    </svg>
+);
 
 const icons = {
     disclosure: (style) => <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style={style} className="svg-icon svg-icon-disclosure"><circle cx="240" cy="240" r="240" /><polyline points="401.79 175.66 240 304.34 78.21 175.66" /></svg>,
@@ -146,6 +155,7 @@ const icons = {
     lockOpen,
     lockClosed,
     clipboard,
+    checkbox,
 };
 
 /**
