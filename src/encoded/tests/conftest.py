@@ -141,7 +141,7 @@ _app_settings = {
     'postgresql.statement_timeout': 20,
     'retry.attempts': 3,
     "ontology_path": (
-        pkg_resources.resource_filename("snowflakes", "") + "../../ontology.json"
+        pkg_resources.resource_filename("snowflakes", "") + "/../../ontology.json"
     ),
 }
 _app_settings['local_storage_host'] = sno_settings['local_storage_host']
