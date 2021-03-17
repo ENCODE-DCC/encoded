@@ -478,6 +478,8 @@ class Biosample(Item):
                 post_treatment_time_units=None,
                 post_nucleic_acid_delivery_time=None,
                 post_nucleic_acid_delivery_time_units=None,
+                post_differentiation_time=None,
+                post_differentiation_time_units=None,
                 treatments=None,
                 part_of=None,
                 originated_from=None,
@@ -498,6 +500,7 @@ class Biosample(Item):
             'disease_term_name',
             'treatments_phrase',
             'post_nucleic_acid_delivery_time',
+            'post_differentiation_time',
             'preservation_method',
             'depleted_in',
             'phase',
@@ -585,6 +588,8 @@ class Biosample(Item):
             post_treatment_time_units,
             post_nucleic_acid_delivery_time,
             post_nucleic_acid_delivery_time_units,
+            post_differentiation_time,
+            post_differentiation_time_units,
             treatment_objects_list,
             preservation_method,
             part_of_object,
@@ -637,6 +642,8 @@ def generate_summary_dictionary(
         post_treatment_time_units=None,
         post_nucleic_acid_delivery_time=None,
         post_nucleic_acid_delivery_time_units=None,
+        post_differentiation_time=None,
+        post_differentiation_time_units=None,
         treatment_objects_list=None,
         preservation_method=None,
         part_of_object=None,
@@ -655,6 +662,7 @@ def generate_summary_dictionary(
         'originated_from': '',
         'treatments_phrase': '',
         'post_nucleic_acid_delivery_time': '',
+        'post_differentiation_time': '',
         'depleted_in': '',
         'modifications_list': '',
         'strain_background': '',
@@ -805,6 +813,10 @@ def generate_summary_dictionary(
             pluralize(post_nucleic_acid_delivery_time, post_nucleic_acid_delivery_time_units)
             )
 
+    if post_differentiation_time is not None and \
+        post_differentiation_time_units is not None:
+        dict_of_phrases['post_differentiation_time'] = \
+            f'{pluralize(post_differentiation_time, post_differentiation_time_units)} post differentiation'
 
     if ('sample_type' in dict_of_phrases and
         dict_of_phrases['sample_type'] != 'cell line') or \
@@ -927,11 +939,11 @@ def generate_sentence(phrases_dict, values_list):
     for key in values_list:
         if phrases_dict[key] != '':
             if 'preservation_method' in key:
-                sentence = sentence.strip() + ', ' + \
-                                    phrases_dict[key].strip() + ' '
+                sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             elif 'post_nucleic_acid_delivery_time' in key:
-                sentence = sentence.strip() + ', ' + \
-                                    phrases_dict[key].strip() + ' '
+                sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
+            elif 'post_differentiation_time' in key:
+                sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             else:
                 sentence += phrases_dict[key].strip() + ' '
     return sentence.strip()
@@ -974,7 +986,10 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'synchronization': 'not synchronized',
         'treatments_phrase': 'not treated',
         'depleted_in': 'not depleted',
-        'genetic_modifications': 'not modified'
+        'genetic_modifications': 'not modified',
+        'post_nucleic_acid_delivery_time': 'without nucleic acid delivery',
+        'post_differentiation_time': 'not differentiated',
+        'preservation_method': 'not preserved'
     }
     if len(phrases_dictionarys) > 1:
         index = 0

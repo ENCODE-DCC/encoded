@@ -79,6 +79,8 @@ def biosample_summary_information(request, biosampleObject):
         biosampleObject.get('post_treatment_time_units'),
         biosampleObject.get('post_nucleic_acid_delivery_time'),
         biosampleObject.get('post_nucleic_acid_delivery_time_units'),
+        biosampleObject.get('post_differentiation_time'),
+        biosampleObject.get('post_differentiation_time_units'),
         treatment_objects_list,
         preservation_method,
         part_of_object,
