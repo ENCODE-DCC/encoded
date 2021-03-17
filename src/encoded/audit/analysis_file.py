@@ -10,6 +10,35 @@ from .formatter import (
 from .item import STATUS_LEVEL
 
 
+def audit_read_count_compare(value, system):
+    '''
+    We check fastq metadata against the expected values based on the
+    library protocol used to generate the sequence data.
+    '''
+    if value.get('quality_metrics'):
+        input_reads = {}
+        for df in value.get('derived_from'):
+            if df['@type'][0] not in ['RawSequenceFile','ReferenceFile']:
+                return
+            if df.get('read_count'):
+                seqrun_reads = df.get('read_count')
+                seqrun = df['derived_from'][0]['uuid']
+                input_reads[seqrun] = seqrun_reads
+        in_reads = 0
+        for v in input_reads.values():
+            in_reads += v
+        for qc in value.get('quality_metrics'):
+            out_reads = qc.get('number_of_reads')
+            if in_reads != out_reads:
+                detail = ('File {} has {} reads but input objects total {} reads.'.format(
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    out_reads,
+                    in_reads
+                    )
+                )
+                yield AuditFailure('inconsistent read counts', detail, level='ERROR')
+
+
 def audit_validated(value, system):
     '''
     We check fastq metadata against the expected values based on the
@@ -89,6 +118,7 @@ def audit_analysis_library_types(value, system):
 
 
 function_dispatcher = {
+    'audit_read_count_compare': audit_read_count_compare,
     'audit_validated': audit_validated,
     'audit_file_ref_info': audit_file_ref_info,
     'audit_analysis_library_types': audit_analysis_library_types
@@ -97,6 +127,8 @@ function_dispatcher = {
 
 @audit_checker('AnalysisFile',
                frame=['derived_from',
+                      'derived_from.derived_from',
+                      'quality_metrics',
                       'libraries',
                       'libraries.protocol'])
 def audit_file(value, system):
