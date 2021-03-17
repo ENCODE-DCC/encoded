@@ -101,6 +101,7 @@ const portal = {
             title: 'Help',
             children: [
                 { id: 'gettingstarted', title: 'Using the portal', url: '/help/getting-started/' },
+                { id: 'interactivehelp', title: 'Interactive help', url: '/?walkme=19-976547', attr: { 'data-reload': '' } },
                 { id: 'cart', title: 'Cart', url: '/help/cart/' },
                 { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
                 { id: 'citingencode', title: 'Citing ENCODE', url: '/help/citing-encode' },
@@ -626,6 +627,11 @@ class App extends React.Component {
             options.noscroll = true;
         }
 
+        // data-reload forces a page reload after navigating.
+        if (target.getAttribute('data-reload') !== null) {
+            options.reload = true;
+        }
+
         // Ensure this is a plain click
         if (nativeEvent.which > 1 || nativeEvent.shiftKey || nativeEvent.altKey || nativeEvent.metaKey) {
             return;
@@ -969,7 +975,8 @@ class App extends React.Component {
 
         // options.skipRequest only used by collection search form
         // options.replace only used handleSubmit, handlePopState, handleAuth0Login
-        // options.noscroll to prevent scrolling to the top of the page after navigating.
+        // options.noscroll to prevent scrolling to the top of the page after navigating
+        // options.reload to force reloading the URL
         let mutatableHref = url.resolve(this.state.href, href);
 
         // Strip url fragment.
@@ -989,7 +996,7 @@ class App extends React.Component {
             decodedHref = mutatableHref;
         }
         const isDownload = decodedHref.includes('/@@download') || decodedHref.includes('/batch_download/');
-        if (!this.constructor.historyEnabled() || isDownload) {
+        if (!this.constructor.historyEnabled() || isDownload || mutatableOptions.reload) {
             this.fallbackNavigate(mutatableHref, fragment, mutatableOptions);
             return null;
         }
