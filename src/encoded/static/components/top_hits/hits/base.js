@@ -160,7 +160,10 @@ class Hit {
     */
     formatBiosample() {
         return (
-            (this.item.biosample_ontology || this.item.dataset_details.biosample_ontology) &&
+            (
+                this.item.biosample_ontology ||
+                (this.item.dataset_details && this.item.dataset_details.biosample_ontology)
+            ) &&
             this.maybeGetBiosampleOntologyFromArray()
         );
     }
