@@ -66,10 +66,6 @@
             "title": "Assay title",
             "type": "typeahead"
         },
-        "assay_term_name": {
-            "title": "Assay term name",
-            "type": "typeahead"
-        },
         "annotation_type": {
             "title": "Annotation type",
             "type": "typeahead"
