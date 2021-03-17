@@ -202,7 +202,7 @@ const CartBatchDownloadComponent = (
         <>
             <DropdownButton.Selected
                 labels={{
-                    processed: disabledMessage || 'Download processed data files',
+                    processed: disabledMessage || `Download ${preferredDefault ? 'default' : 'processed'} data files`,
                     raw: disabledMessage || 'Download raw data files',
                     all: disabledMessage || 'Download all files',
                 }}
