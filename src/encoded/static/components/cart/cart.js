@@ -1754,9 +1754,9 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
     // Compiled analyses applicable to the current datasets.
     const [analyses, setAnalyses] = React.useState([]);
     // Currently displayed page number for each tab panes; for pagers.
-    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, processeddata: 0, defaultdata: 0, rawdata: 0 });
+    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
     // Total number of displayed pages for each tab pane; for pagers.
-    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, processeddata: 0, defaultdata: 0, rawdata: 0 });
+    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
     // Currently displayed tab; match key of first TabPanelPane initially.
     const [displayedTab, setDisplayedTab] = React.useState('datasets');
     // Facet-loading progress bar value; null=indeterminate; -1=disable
@@ -1911,12 +1911,10 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
         const datasetPageCount = calcTotalPageCount(cartDatasetsForType.length, PAGE_ELEMENT_COUNT);
         const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, PAGE_TRACK_COUNT);
         const processedDataPageCount = calcTotalPageCount(selectedFiles.length, PAGE_FILE_COUNT);
-        const defaultDataPageCount = calcTotalPageCount(defaultFiles.length, PAGE_FILE_COUNT);
         const rawdataPageCount = calcTotalPageCount(rawdataFiles.length, PAGE_FILE_COUNT);
         dispatchTotalPageCounts({ tab: 'datasets', totalPageCount: datasetPageCount });
         dispatchTotalPageCounts({ tab: 'browser', totalPageCount: browserPageCount });
         dispatchTotalPageCounts({ tab: 'processeddata', totalPageCount: processedDataPageCount });
-        dispatchTotalPageCounts({ tab: 'defaultdata', totalPageCount: defaultDataPageCount });
         dispatchTotalPageCounts({ tab: 'rawdata', totalPageCount: rawdataPageCount });
 
         // Go to first page if current page number goes out of range of new page count.
@@ -1928,9 +1926,6 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
         }
         if (pageNumbers.processeddata >= processedDataPageCount) {
             dispatchPageNumbers({ tab: 'processeddata', pageNumber: 0 });
-        }
-        if (pageNumbers.defaultdata >= defaultDataPageCount) {
-            dispatchPageNumbers({ tab: 'defaultdata', pageNumber: 0 });
         }
         if (pageNumbers.rawdata >= rawdataPageCount) {
             dispatchPageNumbers({ tab: 'rawdata', pageNumber: 0 });
@@ -1990,12 +1985,11 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                             />
                             <TabPanel
                                 tabPanelCss="cart__display-content"
-                                tabs={{ datasets: 'All datasets', browser: 'Genome browser', processeddata: 'Processed data', defaultdata: 'Default data', rawdata: 'Raw data' }}
+                                tabs={{ datasets: 'All datasets', browser: 'Genome browser', processeddata: 'Processed data', rawdata: 'Raw data' }}
                                 tabDisplay={{
                                     datasets: <CounterTab title={datasetTypes[selectedDatasetType].title} count={cartDatasetsForType.length} voice="datasets" />,
                                     browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} voice="visualizable tracks" />,
                                     processeddata: <CounterTab title="Processed data" count={selectedFiles.length} voice="processed data files" />,
-                                    defaultdata: <CounterTab title="Default data" count={defaultFiles.length} voice="default data files" />,
                                     rawdata: <CounterTab title="Raw data" count={rawdataFiles.length} voice="raw data files" />,
                                 }}
                                 handleTabClick={handleTabClick}
@@ -2027,14 +2021,6 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         updateCurrentPage={updateDisplayedPage}
                                     />
                                     <CartFiles files={selectedFiles} currentPage={pageNumbers.processeddata} defaultOnly={defaultOnly} />
-                                </TabPanelPane>
-                                <TabPanelPane key="defaultdata">
-                                    <CartPager
-                                        currentPage={pageNumbers.processeddata}
-                                        totalPageCount={totalPageCount.processeddata}
-                                        updateCurrentPage={updateDisplayedPage}
-                                    />
-                                    <CartFiles files={defaultFiles} currentPage={pageNumbers.defaultdata} defaultOnly={defaultOnly} />
                                 </TabPanelPane>
                                 <TabPanelPane key="rawdata">
                                     <CartPager
