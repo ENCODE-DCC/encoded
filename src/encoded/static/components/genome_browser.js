@@ -163,6 +163,11 @@ const getDefaultCoordinates = (assemblyAnnotation, geneAnnotation, ignoreCache =
                 file_format: 'vdna-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/dm3/dm3.vdna-dir',
             },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/dm3/dmel-all-r5.12.sorted.trimmed.chrM_fixed.vgenes-dir',
+                title: 'FlyBase Annotation 5.12',
+            },
         ];
         contig = 'chr2L';
         x0 = 2428372;
