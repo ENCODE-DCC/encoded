@@ -1019,7 +1019,11 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
             if prefix == '':
                 sentence_to_return = ' and '.join(map(str, sentence_middle))
             else:
-                sentence_to_return = prefix.strip() + ' ' + \
+                if sentence_middle[0].startswith(','):
+                    prefix_strip = prefix.strip()
+                else:
+                    prefix_strip = prefix.strip() + ' '
+                sentence_to_return = prefix_strip + \
                     ' and '.join(map(str, sentence_middle))
             if suffix != '':
                 sentence_to_return += ', ' + suffix
