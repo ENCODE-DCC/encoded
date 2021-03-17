@@ -213,7 +213,7 @@ const CartBatchDownloadComponent = (
                 disabled={!!disabledMessage}
             >
                 <button type="button" id="processed" className="menu-item">
-                    <div className="cart-download__option-title">Processed data files</div>
+                    <div className="cart-download__option-title">{preferredDefault ? 'Default' : 'Processed'} data files</div>
                     <div className="cart-download__option-description">
                         Downloads files using the selected filters.
                     </div>
