@@ -62,15 +62,33 @@
             "type": "typeahead",
             "length": "long"
         },
+        "assay_title": {
+            "title": "Assay title",
+            "type": "typeahead"
+        },
         "assay_term_name": {
             "title": "Assay term name",
+            "type": "typeahead"
+        },
+        "annotation_type": {
+            "title": "Annotation type",
             "type": "typeahead"
         },
         "biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead",
             "length": "long"
-        }
+        },
+        "target.label": {
+            "title": "Target of assay",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "targets.label": {
+            "title": "Targets of assay",
+            "type": "typeahead",
+            "length": "long"
+        },
     },
     "dependencies": {
         "no_file_available":{
