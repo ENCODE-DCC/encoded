@@ -48,9 +48,7 @@ const readGenomeBrowserLabelCoordinates = () => {
  * @param {boolean} [ignoreCache=false] True to not look into cache, false to use cache
  * @returns Default coordinates
  */
-const getDefaultCoordinates = (assemblyAnnotation, geneAnnotation, ignoreCache = false) => {
-    const assembly = assemblyAnnotation.split(' ')[0];
-    const annotation = geneAnnotation.split(' ')[0];
+const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
     // Files to be displayed on all genome browser results
     let pinnedFiles = [];
     let contig = null;
@@ -458,6 +456,7 @@ class GenomeBrowser extends React.Component {
             trackList: [],
             visualizer: null,
             genome: '',
+            annotation: '',
             contig: 'chr1',
             x0: 0,
             x1: 59e6,
@@ -544,8 +543,8 @@ class GenomeBrowser extends React.Component {
         this.scrollToGeneLocation(gene);
     }
 
-    setBrowserDefaults(assemblyAnnotation, geneAnnotation, resolve) {
-        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation, geneAnnotation);
+    setBrowserDefaults(assembly, annotation, resolve) {
+        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assembly, annotation);
 
         this.setState({ contig, x0, x1, pinnedFiles }, () => {
             if (resolve) {
@@ -556,8 +555,8 @@ class GenomeBrowser extends React.Component {
 
     setGenomeAndTracks() {
         const genome = mapGenome(this.props.assembly);
-        const annotation = mapGenome(this.props.annotation);
-        this.setState({ genome });
+        const { annotation } = this.props;
+        this.setState({ genome, annotation });
         // Determine genome and Gencode pinned files for selected assembly
         const genomePromise = new Promise((resolve) => {
             this.setBrowserDefaults(genome, annotation, resolve);
@@ -801,7 +800,7 @@ class GenomeBrowser extends React.Component {
     }
 
     resetLocation() {
-        const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, true);
+        const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, this.state.annotation, true);
         this.state.visualizer.setLocation({ contig, x0, x1 });
     }
 

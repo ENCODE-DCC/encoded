@@ -301,8 +301,6 @@ CartBrowser.propTypes = {
     pageNumber: PropTypes.number.isRequired,
 };
 
-CartBrowser.defaultProps = {};
-
 
 /**
  * Display the list of files selected by the current cart facet selections.
