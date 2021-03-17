@@ -74,6 +74,22 @@ ENCODE_PROCESSING_PIPELINE_UUID = 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d'
 RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts', 'intensity values', 'idat red channel', 'idat green channel']
 
 
+# We use a common set of fields to take advantage of a
+# cached dataset object in all of the calculated_properties.
+EMBEDDED_DATASET_FIELDS = [
+    '@id',
+    '@type',
+    'uuid',
+    'status',
+    'assay_title',
+    'assay_term_name',
+    'annotation_type',
+    'biosample_ontology',
+    'target',
+    'targets',
+]
+
+
 def file_is_md5sum_constrained(properties):
     conditions = [
         properties.get('lab') != ENCODE_PROCESSING_PIPELINE_UUID,
@@ -477,21 +493,21 @@ class File(Item):
         define=True,
         schema={
             "title": "Biosample ontology",
-            "type": "string",
-            "linkTo": "BiosampleType",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "BiosampleType"
+            },
             "notSubmittable": True
         }
     )
     def biosample_ontology(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'biosample_ontology',
-                    dataset
-                )
-            )
-        )
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        path = Path('dataset.biosample_ontology')
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('biosample_ontology')
 
     @calculated_property(
         condition='dataset',
