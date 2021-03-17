@@ -1794,7 +1794,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
     ), [defaultOnly]);
 
     // Build the facets based on the currently selected facet terms.
-    const { facets, selectedFiles, defaultFiles } = React.useMemo(() => {
+    const { facets, selectedFiles } = React.useMemo(() => {
         let files = defaultOnly ? filterForDefaultFiles(allFiles) : allFiles;
         files = visualizableOnly ? filterForVisualizableFiles(files) : files;
         return assembleFacets(selectedTerms, files, analyses, usedFacetFields);
