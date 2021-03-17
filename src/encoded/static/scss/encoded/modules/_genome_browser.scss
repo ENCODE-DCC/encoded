@@ -261,6 +261,28 @@ a {
             background: white;
             color: black;
             margin-top: 0;
+
+            li {
+                margin: 0;
+                padding: 0;
+                cursor: pointer;
+
+                button {
+                    margin: 0;
+                    padding: 5px 15px;
+                    font-size: 13px;
+                    cursor: pointer;
+                    background: none;
+                    border: none;
+                    width: 100%;
+                    text-align: left;
+
+                    &:hover {
+                        color: #404040;
+                        background-color: #e0e0e0;
+                    }
+                }
+            }
         }
     }
 
@@ -386,4 +408,8 @@ a {
     > li {
         margin: 2px 0;
     }
+}
+
+.matching-text {
+    font-weight: bold;
 }
