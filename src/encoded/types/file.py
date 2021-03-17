@@ -134,7 +134,7 @@ class File(Item):
             ],
         ),
         Path(
-            'dataset',
+            'dataset_details',
             include=[
                 '@id',
                 '@type',
@@ -147,8 +147,8 @@ class File(Item):
                 'target',
             ],
         ),
-        Path('dataset.biosample_ontology'),
-        Path('dataset.target'),
+        Path('dataset_details.biosample_ontology'),
+        Path('dataset_details.target'),
     ]
     audit_inherit = [
         'replicate',
@@ -479,6 +479,21 @@ class File(Item):
     })
     def analyses(self, request, analyses):
         return paths_filtered_by_status(request, analyses)
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Dataset details",
+            "description": "Place to store details embedded from dataset.",
+            "comment": "Do not submit.",
+            "type": "string",
+            "linkTo": "Dataset",
+            "notSubmittable": True,
+        }
+    )
+    def dataset_details(self, dataset):
+        return dataset
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):

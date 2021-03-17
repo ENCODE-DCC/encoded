@@ -57,20 +57,20 @@
         "lab.title": {
             "title": "Lab"
         },
-        "dataset.target.label": {
+        "dataset_details.target.label": {
             "title": "Target of assay",
             "type": "typeahead",
             "length": "long"
         },
-        "dataset.assay_title": {
+        "dataset_details.assay_title": {
             "title": "Assay title",
             "type": "typeahead"
         },
-        "dataset.assay_term_name": {
+        "dataset_details.assay_term_name": {
             "title": "Assay term name",
             "type": "typeahead"
         },
-        "dataset.biosample_ontology.term_name": {
+        "dataset_details.biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead",
             "length": "long"
@@ -1888,13 +1888,13 @@
         "file_size": {
             "title": "File size"
         },
-        "dataset.assay_term_name": {
+        "dataset_details.assay_term_name": {
             "title": "Assay term name"
         },
-        "dataset.biosample_ontology.term_name": {
+        "dataset_details.biosample_ontology.term_name": {
             "title": "Biosample name"
         },
-        "dataset.target.label": {
+        "dataset_details.target.label": {
             "title": "Target label"
         },    
         "href": {
@@ -2206,10 +2206,11 @@
          "output_category": 2.0,
          "output_type": 2.0,
          "status": 1.0,
-         "dataset.assay_title": 1.0,
-         "dataset.assay_term_name": 1.0,
-         "dataset.annotation_type": 1.0,
-         "dataset.biosample_ontology.term_name": 1.0
+         "dataset_details.assay_term_name": 1.0,
+         "dataset_details.assay_title": 1.0,
+         "dataset_details.annotation_type": 1.0,
+         "dataset_details.biosample_ontology.term_name": 1.0,
+         "dataset_details.target.label": 1.0
      },
     "changelog": "/profiles/changelogs/file.md"
 }
