@@ -10,6 +10,34 @@ from .formatter import (
 from .item import STATUS_LEVEL
 
 
+def no_read_type(value, system):
+    if not value.get('read_type'):
+        detail = ('File {} does not have a read_type.'.format(
+            audit_link(path_to_text(value['@id']), value['@id'])
+            )
+        )
+        yield AuditFailure('no read_type', detail, level='ERROR')
+        return
+
+
+def no_file_name(value, system):
+    if not value.get('submitted_file_name'):
+        detail = ('File {} does not have a submitted_file_name.'.format(
+            audit_link(path_to_text(value['@id']), value['@id'])
+            )
+        )
+        yield AuditFailure('no submitted_file_name', detail, level='ERROR')
+        return
+    elif (value.get('submitted_file_name').startswith('/') or value.get('submitted_file_name').endswith('/')):
+        detail = ('File {} submitted_file_name {} has a leading or trailing slash.'.format(
+            audit_link(path_to_text(value['@id']), value['@id'],),
+            value.get('submitted_file_name')
+            )
+        )
+        yield AuditFailure('invalid submitted_file_name', detail, level='ERROR')
+        return
+
+
 def audit_library_protocol_standards(value, system):
     '''
     We check fastq metadata against the expected values based on the
@@ -104,6 +132,8 @@ def audit_library_protocol_standards(value, system):
 
 
 function_dispatcher = {
+    'no_read_type': no_read_type,
+    'no_file_name': no_file_name,
     'audit_library_protocol_standards': audit_library_protocol_standards
 }
 
