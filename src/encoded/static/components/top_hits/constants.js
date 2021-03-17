@@ -27,6 +27,7 @@ export const TOP_HITS_PARAMS = (
     '&field=lot_id' +
     '&field=product_id' +
     '&field=annotation_type' +
+    '&field=dataset_details.annotation_type' +
     '&field=news_excerpt' +
     '&field=abstract' +
     '&field=authors' +
