@@ -149,7 +149,7 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
             {
                 file_format: 'vgenes-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
-                title: 'BDGP6.22.96',
+                title: 'FlyBase Annotation 6.04',
             },
         ];
         contig = 'chr2L';
@@ -179,7 +179,7 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
             {
                 file_format: 'vgenes-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/ce11/Caenorhabditis_elegans.WBcel235.96.vgenes-dir',
-                title: 'WBcel235.96',
+                title: 'WormBase Annotation WS235',
             },
         ];
         contig = 'chrII';
