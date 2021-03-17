@@ -28,6 +28,7 @@ class FileHit extends Hit {
     getValues() {
         return [
             ['name', this.formatName()],
+            ['annotationType', this.formatAnnotationType()],
             ['title', this.formatTitle()],
             ['biosample', this.formatBiosample()],
             ['target', this.formatTarget()],
@@ -37,6 +38,5 @@ class FileHit extends Hit {
         ];
     }
 }
-
 
 export default FileHit;
