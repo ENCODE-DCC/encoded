@@ -842,13 +842,14 @@ export function filterForVisualizableFiles(fileList) {
 
 
 /**
- * Filter the given files to only include those with the `preferred_default` flag set.
+ * Filter the given files to only include those with the `preferred_default` or `pseudo_default`
+ * flag set.
  * @param {array} fileList Files to filter
  *
  * @return {array} Members of `fileList` that have preferred_default flag set.
  */
-export const filterForPreferredFiles = (fileList) => (
-    fileList.filter((file) => file.preferred_default)
+export const filterForDefaultFiles = (fileList) => (
+    fileList.filter((file) => file.preferred_default || file.pseudo_default)
 );
 
 

@@ -19,7 +19,7 @@ import {
     isFileVisualizable,
     computeAssemblyAnnotationValue,
     filterForVisualizableFiles,
-    filterForPreferredFiles,
+    filterForDefaultFiles,
     Checkbox,
 } from '../objectutils';
 import { ResultTableList } from '../search';
@@ -309,16 +309,25 @@ CartBrowser.defaultProps = {
 /**
  * Display the list of files selected by the current cart facet selections.
  */
-const CartFiles = ({ files, currentPage }) => {
+const CartFiles = ({ files, currentPage, defaultOnly }) => {
     if (files.length > 0) {
         const pageStartIndex = currentPage * PAGE_FILE_COUNT;
         const currentPageFiles = files.slice(pageStartIndex, pageStartIndex + PAGE_ELEMENT_COUNT);
+        const pseudoDefaultFiles = files.filter((file) => file.pseudo_default);
         return (
             <div className="cart-list cart-list--file">
+                {defaultOnly && pseudoDefaultFiles.length > 0
+                    ? (
+                        <div className="cart-list__no-dl">
+                            Uncheck &ldquo;Show default data only&rdquo; to download gray files.
+                        </div>
+                    )
+                    : null}
                 {currentPageFiles.map((file) => (
-                    <a key={file['@id']} href={file['@id']} className="cart-list-item">
+                    <a key={file['@id']} href={file['@id']} className={`cart-list-item${defaultOnly && file.pseudo_default ? ' cart-list-item--no-dl' : ''}`}>
                         <div className={`cart-list-item__file-type cart-list-item__file-type--${file.file_format}`}>
                             <div className="cart-list-item__format">{file.file_format}</div>
+                            {defaultOnly && file.pseudo_default ? <div className="cart-list-item__no-dl">Not downloadable</div> : null}
                         </div>
                         <div className="cart-list-item__props">
                             <div className="cart-list-item__details">
@@ -365,6 +374,12 @@ CartFiles.propTypes = {
     files: PropTypes.array.isRequired,
     /** Page of results to display */
     currentPage: PropTypes.number.isRequired,
+    /** True if only displaying default files */
+    defaultOnly: PropTypes.bool,
+};
+
+CartFiles.defaultProps = {
+    defaultOnly: false,
 };
 
 
@@ -598,7 +613,7 @@ const requestDatasets = (elements, fetch, session) => {
         sessionPromise = fetch('/session');
     } else {
         // We have a session CSRF token, so retrieve it immediately.
-        sessionPromise = Promise.resolve(session._csrft);
+        sessionPromise = Promise.resolve(session._csrft_);
     }
 
     // We could have more dataset @ids than the /search/ endpoint can handle in the query string,
@@ -610,7 +625,7 @@ const requestDatasets = (elements, fetch, session) => {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken,
+                'X-CSRF-Token': csrfToken,
             },
             body: JSON.stringify({
                 '@id': elements,
@@ -1367,7 +1382,7 @@ const assembleFacets = (selectedTerms, files, analyses, usedFacetFields) => {
         });
     }
 
-    return { facets: assembledFacets.length > 0 ? assembledFacets : [], selectedFiles };
+    return { facets: assembledFacets.length > 0 ? assembledFacets : [], selectedFiles, defaultFiles: filterForDefaultFiles(selectedFiles) };
 };
 
 
@@ -1557,6 +1572,67 @@ const processFilesAnalyses = (files, analyses) => {
 
 
 /**
+ * Mutate the files of the given datasets that have no files with preferred_default set so that
+ * they appear as though they had preferred_default set. Once wranglers have patched all
+ * appropriate files' preferred_default properties, this function serves no purpose. A number of
+ * criteria determine how and whether any files within a dataset get this modification. Exported
+ * for Jest test.
+ * @param {array} datasets Datasets containing files to mutate with preferred_default
+ */
+export const processPseudoDefaultFiles = (datasets = []) => {
+    datasets.forEach((dataset) => {
+        // Consider only the visualizable files of datasets that contain no default files.
+        if (dataset.files && dataset.files.length > 0 && filterForDefaultFiles(dataset.files).length === 0) {
+            const visualizableFiles = filterForVisualizableFiles(dataset.files);
+            if (visualizableFiles.length > 0) {
+                let pseudoDefaultFiles = [];
+                const mixedBioRepFiles = visualizableFiles.filter((file) => file.biological_replicates.length > 1);
+                if (mixedBioRepFiles.length > 0) {
+                    // Process files with multiple biological replicates. Don't modify any of the
+                    // other files.
+                    pseudoDefaultFiles = mixedBioRepFiles;
+                } else {
+                    // No files have multiple biological replicates. Get all the output_type values
+                    // from all visualizable files.
+                    const outputTypes = visualizableFiles.reduce((accOutputTypes, file) => accOutputTypes.add(file.output_type), new Set());
+                    if (outputTypes.size > 1) {
+                        // Multiple output types among the files. Group first by replicate and then
+                        // by output_type.
+                        const replicateFiles = _(visualizableFiles).groupBy((file) => file.biological_replicates[0]);
+                        Object.keys(replicateFiles).forEach((replicate) => {
+                            const outputTypeFiles = _(replicateFiles[replicate]).groupBy((file) => file.output_type);
+                            Object.keys(outputTypeFiles).forEach((outputType) => {
+                                // Select the first bigWig and first bigBed within each
+                                // output_type within each replicate.
+                                const firstBigWig = outputTypeFiles[outputType].find((file) => file.file_format === 'bigWig');
+                                const firstBigBed = outputTypeFiles[outputType].find((file) => file.file_format === 'bigBed');
+                                pseudoDefaultFiles.push(..._.compact([firstBigWig, firstBigBed]));
+                            });
+                        });
+                    } else {
+                        // Single output type among all the files. Get all files with a single
+                        // biological replicate value of 1 and select the first bigWig and bigBed
+                        // of those.
+                        const bioRep1Files = visualizableFiles.filter((file) => file.biological_replicates && file.biological_replicates[0] === 1);
+                        if (bioRep1Files.length > 0) {
+                            const firstBigWig = bioRep1Files.find((file) => file.file_format === 'bigWig');
+                            const firstBigBed = bioRep1Files.find((file) => file.file_format === 'bigBed');
+                            pseudoDefaultFiles = _.compact([firstBigWig, firstBigBed]);
+                        }
+                    }
+                }
+
+                // Mutate the selected pseudo default files to have the preferred_default property.
+                pseudoDefaultFiles.forEach((file) => {
+                    file.pseudo_default = true;
+                });
+            }
+        }
+    });
+};
+
+
+/**
  * Retrieve partial file objects for all given datasets, as well as a list of datasets viewable at
  * the user's access level -- needed for shared carts.
  * @param {array} datasetsIds Array of dataset @ids to retrieve
@@ -1592,6 +1668,11 @@ const retrieveDatasetsFiles = (datasetsIds, facetProgressHandler, fetch, session
             requestDatasets(currentChunk, fetch, session).then((currentResults) => {
                 // Update progress on each chunk.
                 facetProgressHandler(Math.round(((currentChunkIndex + 1) / chunks.length) * 100));
+
+                // * Temporary code until all experiments have preferred_default files set: Mutate
+                // * the files in each returned dataset to include a preferred_default property
+                // * if they meet certain criteria.
+                processPseudoDefaultFiles(currentResults['@graph']);
 
                 // Add the chunk's worth of results to the array of partial files and facets
                 // we're accumulating.
@@ -1673,17 +1754,17 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
     // Compiled analyses applicable to the current datasets.
     const [analyses, setAnalyses] = React.useState([]);
     // Currently displayed page number for each tab panes; for pagers.
-    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
+    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, processeddata: 0, defaultdata: 0, rawdata: 0 });
     // Total number of displayed pages for each tab pane; for pagers.
-    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
+    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, processeddata: 0, defaultdata: 0, rawdata: 0 });
     // Currently displayed tab; match key of first TabPanelPane initially.
     const [displayedTab, setDisplayedTab] = React.useState('datasets');
     // Facet-loading progress bar value; null=indeterminate; -1=disable
     const [facetProgress, setFacetProgress] = React.useState(null);
     // True if only facet terms for visualizable files displayed.
     const [visualizableOnly, setVisualizableOnly] = React.useState(false);
-    // True if only facet terms for visualizable files displayed.
-    const [preferredOnly, setPreferredOnly] = React.useState(true);
+    // True if only preferred_default files displayed.
+    const [defaultOnly, setDefaultOnly] = React.useState(true);
     // All partial file objects in the cart datasets. Not affected by currently selected facets.
     const [allFiles, setAllFiles] = React.useState([]);
 
@@ -1707,22 +1788,22 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
 
     // Filter out conditional facets.
     const usedFacetFields = React.useMemo(() => (
-        preferredOnly
+        defaultOnly
             ? displayedFacetFields.filter((facetField) => facetField.preferred)
             : displayedFacetFields
-    ), [preferredOnly]);
+    ), [defaultOnly]);
 
     // Build the facets based on the currently selected facet terms.
-    const { facets, selectedFiles } = React.useMemo(() => {
-        let files = preferredOnly ? filterForPreferredFiles(allFiles) : allFiles;
+    const { facets, selectedFiles, defaultFiles } = React.useMemo(() => {
+        let files = defaultOnly ? filterForDefaultFiles(allFiles) : allFiles;
         files = visualizableOnly ? filterForVisualizableFiles(files) : files;
         return assembleFacets(selectedTerms, files, analyses, usedFacetFields);
-    }, [selectedTerms, visualizableOnly, preferredOnly, allFiles, analyses, usedFacetFields]);
+    }, [selectedTerms, visualizableOnly, defaultOnly, allFiles, analyses, usedFacetFields]);
 
     // Construct the file lists for the genome browser and raw file tabs.
     const rawdataFiles = React.useMemo(() => allFiles.filter((files) => !files.assembly), [allFiles]);
     const selectedVisualizableFiles = React.useMemo(() => {
-        const files = preferredOnly ? filterForPreferredFiles(allFiles) : allFiles;
+        const files = defaultOnly ? filterForDefaultFiles(allFiles) : allFiles;
         return getSelectedVisualizableFiles(filterForVisualizableFiles(files), selectedTerms);
     }, [allFiles, selectedTerms]);
 
@@ -1781,7 +1862,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
 
     // Called when the user clicks the Show Default Data Only checkbox.
     const handlePreferredOnlyChange = React.useCallback(() => {
-        setPreferredOnly((prevPreferredOnly) => !prevPreferredOnly);
+        setDefaultOnly((prevPreferredOnly) => !prevPreferredOnly);
         setVisualizableOnly(false);
         setSelectedTerms({});
     }, []);
@@ -1798,12 +1879,12 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
 
     // Use the file information to build the facets and its initial selections.
     React.useEffect(() => {
-        const files = preferredOnly ? filterForPreferredFiles(allFiles) : allFiles;
+        const files = defaultOnly ? filterForDefaultFiles(allFiles) : allFiles;
         const allVisualizableFiles = filterForVisualizableFiles(files);
         const consideredFiles = visualizableOnly ? allVisualizableFiles : files;
         const newSelectedTerms = resetFacets(consideredFiles, analyses, usedFacetFields);
         setSelectedTerms(newSelectedTerms);
-    }, [visualizableOnly, preferredOnly, analyses, usedFacetFields, allFiles]);
+    }, [visualizableOnly, defaultOnly, analyses, usedFacetFields, allFiles]);
 
     // After mount, we can fetch all datasets in the cart that are viewable at the user's
     // permission level and from them extract all their files.
@@ -1830,10 +1911,12 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
         const datasetPageCount = calcTotalPageCount(cartDatasetsForType.length, PAGE_ELEMENT_COUNT);
         const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, PAGE_TRACK_COUNT);
         const processedDataPageCount = calcTotalPageCount(selectedFiles.length, PAGE_FILE_COUNT);
+        const defaultDataPageCount = calcTotalPageCount(defaultFiles.length, PAGE_FILE_COUNT);
         const rawdataPageCount = calcTotalPageCount(rawdataFiles.length, PAGE_FILE_COUNT);
         dispatchTotalPageCounts({ tab: 'datasets', totalPageCount: datasetPageCount });
         dispatchTotalPageCounts({ tab: 'browser', totalPageCount: browserPageCount });
         dispatchTotalPageCounts({ tab: 'processeddata', totalPageCount: processedDataPageCount });
+        dispatchTotalPageCounts({ tab: 'defaultdata', totalPageCount: defaultDataPageCount });
         dispatchTotalPageCounts({ tab: 'rawdata', totalPageCount: rawdataPageCount });
 
         // Go to first page if current page number goes out of range of new page count.
@@ -1845,6 +1928,9 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
         }
         if (pageNumbers.processeddata >= processedDataPageCount) {
             dispatchPageNumbers({ tab: 'processeddata', pageNumber: 0 });
+        }
+        if (pageNumbers.defaultdata >= defaultDataPageCount) {
+            dispatchPageNumbers({ tab: 'defaultdata', pageNumber: 0 });
         }
         if (pageNumbers.rawdata >= rawdataPageCount) {
             dispatchPageNumbers({ tab: 'rawdata', pageNumber: 0 });
@@ -1880,7 +1966,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                             sharedCart={context}
                             fileCounts={{ processed: selectedFiles.length, raw: rawdataFiles.length, all: allFiles.length }}
                             visualizable={visualizableOnly}
-                            preferredDefault={preferredOnly}
+                            preferredDefault={defaultOnly}
                         />
                         {selectedTerms.assembly && selectedTerms.assembly[0] ? <div className="cart-assembly-indicator">{selectedTerms.assembly[0]}</div> : null}
                     </PanelHeading>
@@ -1897,18 +1983,19 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                 selectedFileCount={selectedFiles.length}
                                 visualizableOnly={visualizableOnly}
                                 visualizableOnlyChangeHandler={handleVisualizableOnlyChange}
-                                preferredOnly={preferredOnly}
+                                preferredOnly={defaultOnly}
                                 preferredOnlyChangeHandler={handlePreferredOnlyChange}
                                 facetLoadProgress={facetProgress}
                                 disabled={displayedTab === 'rawdata'}
                             />
                             <TabPanel
                                 tabPanelCss="cart__display-content"
-                                tabs={{ datasets: 'All datasets', browser: 'Genome browser', processeddata: 'Processed data', rawdata: 'Raw data' }}
+                                tabs={{ datasets: 'All datasets', browser: 'Genome browser', processeddata: 'Processed data', defaultdata: 'Default data', rawdata: 'Raw data' }}
                                 tabDisplay={{
                                     datasets: <CounterTab title={datasetTypes[selectedDatasetType].title} count={cartDatasetsForType.length} voice="datasets" />,
                                     browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} voice="visualizable tracks" />,
                                     processeddata: <CounterTab title="Processed data" count={selectedFiles.length} voice="processed data files" />,
+                                    defaultdata: <CounterTab title="Default data" count={defaultFiles.length} voice="default data files" />,
                                     rawdata: <CounterTab title="Raw data" count={rawdataFiles.length} voice="raw data files" />,
                                 }}
                                 handleTabClick={handleTabClick}
@@ -1939,7 +2026,15 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         totalPageCount={totalPageCount.processeddata}
                                         updateCurrentPage={updateDisplayedPage}
                                     />
-                                    <CartFiles files={selectedFiles} currentPage={pageNumbers.processeddata} />
+                                    <CartFiles files={selectedFiles} currentPage={pageNumbers.processeddata} defaultOnly={defaultOnly} />
+                                </TabPanelPane>
+                                <TabPanelPane key="defaultdata">
+                                    <CartPager
+                                        currentPage={pageNumbers.processeddata}
+                                        totalPageCount={totalPageCount.processeddata}
+                                        updateCurrentPage={updateDisplayedPage}
+                                    />
+                                    <CartFiles files={defaultFiles} currentPage={pageNumbers.defaultdata} defaultOnly={defaultOnly} />
                                 </TabPanelPane>
                                 <TabPanelPane key="rawdata">
                                     <CartPager
