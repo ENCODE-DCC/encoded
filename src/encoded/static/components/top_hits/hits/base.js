@@ -123,7 +123,7 @@ class Hit {
     */
     getLabelsFromTargets() {
         const labels = (
-            this.item.targets || []
+            this.item.targets || this.item.dataset_details.targets || []
         ).map(
             (target) => target.label
         );
@@ -179,7 +179,10 @@ class Hit {
                 this.item.dataset_details.target &&
                 this.item.dataset_details.target.label
             ) ||
-            (this.item.targets && this.getLabelsFromTargets())
+                (
+                    this.item.targets ||
+                    (this.item.dataset_details && this.item.dataset_details.targets)
+                    && this.getLabelsFromTargets())
         );
     }
 

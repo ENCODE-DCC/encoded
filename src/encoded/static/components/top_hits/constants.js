@@ -15,6 +15,7 @@ export const TOP_HITS_PARAMS = (
     '&field=target.label' +
     '&field=targets.label' +
     '&field=dataset_details.target.label' +
+    '&field=dataset_details.targets.label' +
     '&field=assay_title' +
     '&field=dataset_details.assay_title' +
     '&field=output_type' +

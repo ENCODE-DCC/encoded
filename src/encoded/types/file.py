@@ -145,10 +145,12 @@ class File(Item):
                 'annotation_type',
                 'biosample_ontology',
                 'target',
+                'targets',
             ],
         ),
         Path('dataset_details.biosample_ontology'),
         Path('dataset_details.target'),
+        Path('dataset_details.targets'),
     ]
     audit_inherit = [
         'replicate',
