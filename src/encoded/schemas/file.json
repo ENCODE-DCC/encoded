@@ -2210,7 +2210,7 @@
          "dataset_details.assay_title": 1.0,
          "dataset_details.annotation_type": 1.0,
          "dataset_details.biosample_ontology.term_name": 1.0,
-         "dataset_details.target.label": 1.0
+         "dataset_details.target.label": 1.0,
          "dataset_details.targets.label": 1.0
      },
     "changelog": "/profiles/changelogs/file.md"
