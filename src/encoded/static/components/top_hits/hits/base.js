@@ -136,7 +136,9 @@ class Hit {
     formatTitle() {
         return (
             this.item.assay_title ||
+            (this.item.dataset_details && this.item.dataset_details.assay_title) ||
             this.item.assay_term_name ||
+            (this.item.dataset_details && this.item.dataset_details.assay_term_name) ||
             this.item.term_name ||
             this.item.category ||
             this.item.assay_term_names
@@ -147,7 +149,10 @@ class Hit {
     * @return {string|undefined} Annotation type pulled from annotation.
     */
     formatAnnotationType() {
-        return this.item.annotation_type;
+        return (
+            this.item.annotation_type ||
+            (this.item.dataset_details && this.item_dataset_details.annotation_type)
+        );
     }
 
     /**
