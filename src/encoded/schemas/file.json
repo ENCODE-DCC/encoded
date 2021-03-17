@@ -88,7 +88,7 @@
             "title": "Targets of assay",
             "type": "typeahead",
             "length": "long"
-        },
+        }
     },
     "dependencies": {
         "no_file_available":{
