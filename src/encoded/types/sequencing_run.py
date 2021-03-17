@@ -45,7 +45,7 @@ class SequencingRun(Item):
         "linkTo": "Dataset"
     })
     def dataset(self, request, derived_from):
-        library_obj = request.embed(derived_from, '@@object?skip_calculated=true')
+        library_obj = request.embed(derived_from[0], '@@object?skip_calculated=true')
         return library_obj.get('dataset')
 
 
@@ -57,7 +57,7 @@ class SequencingRun(Item):
         "linkTo": "Lab"
     })
     def lab(self, request, derived_from):
-        library_obj = request.embed(derived_from, '@@object?skip_calculated=true')
+        library_obj = request.embed(derived_from[0], '@@object?skip_calculated=true')
         return library_obj.get('lab')
 
 
@@ -127,7 +127,7 @@ class SequencingRun(Item):
 
     @calculated_property(schema={
         "title": "i5 index file",
-        "description": "The ii5 index DataFile belonging to this sequencing run.",
+        "description": "The i5 index DataFile belonging to this sequencing run.",
         "comment": "Do not submit. This is a calculated property",
         "type": "string",
         "linkFrom": "RawSequenceFile.derived_from",

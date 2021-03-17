@@ -60,6 +60,7 @@
             "title": "Derived from",
             "description": "The sequencing run designation for the file.",
             "type": "array",
+            "maxItems": 1,
             "items": {
                 "type": "string",
                 "linkTo": "SequencingRun"

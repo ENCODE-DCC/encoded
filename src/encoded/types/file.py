@@ -29,7 +29,7 @@ import pytz
 
 def inherit_protocol_prop(request, seqrun_id, propname, read_type):
     seqrun_obj = request.embed(seqrun_id, '@@object?skip_calculated=true')
-    lib_id = seqrun_obj.get('derived_from')
+    lib_id = seqrun_obj.get('derived_from')[0]
     lib_obj = request.embed(lib_id, '@@object?skip_calculated=true')
     libprot_id = lib_obj.get('protocol')
     libprot_obj = request.embed(libprot_id, '@@object?skip_calculated=true')
@@ -269,7 +269,7 @@ class RawSequenceFile(DataFile):
     def libraries(self, request, derived_from):
         seqrun_id = derived_from[0]
         seqrun_obj = request.embed(seqrun_id, '@@object?skip_calculated=true')
-        lib_id = seqrun_obj.get('derived_from')
+        lib_id = seqrun_obj.get('derived_from')[0]
         return [lib_id]
 
 

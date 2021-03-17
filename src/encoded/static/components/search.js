@@ -158,7 +158,7 @@ class BiosampleComponent extends React.Component {
                         </a>
                         <div className="result-item__data-row">
                             <div><strong>Type: </strong>{result.biosample_ontology.term_name}</div>
-                            {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
+                            {result.summary ? <div><strong>Summary: </strong>{result.summary}</div> : null}
                             {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
                             {result.source ? <div><strong>Source: </strong>{result.source}</div> : null }
                         </div>

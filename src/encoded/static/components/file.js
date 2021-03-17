@@ -269,7 +269,7 @@ class FileComponent extends React.Component {
         const { context, auditDetail, auditIndicators } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const aliasList = (context.aliases && context.aliases.length > 0) ? context.aliases.join(', ') : '';
-        const datasetAccession = (context.dataset) ? globals.atIdToAccession(context.dataset) : globals.atIdToAccession(context.fileset);
+        const datasetAccession = (context.dataset) ? globals.atIdToAccession(context.dataset) : '';
         const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const adminUser = !!this.context.session_properties.admin;
 
@@ -301,10 +301,12 @@ class FileComponent extends React.Component {
                                     <dd><Status item={context} inline /></dd>
                                 </div>
 
+                                {context.datasetAccession ?
                                 <div data-test="term-name">
                                     <dt>Dataset</dt>
                                     <dd><a href={context.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a></dd>
                                 </div>
+                                : null}
 
                                 <div data-test="outputtype">
                                     <dt>File format</dt>

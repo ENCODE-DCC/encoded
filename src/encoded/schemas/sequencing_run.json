@@ -19,7 +19,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "dbxrefs": {
             "items": {
@@ -32,8 +32,12 @@
         "derived_from": {
             "title": "Derived from",
             "description": "The experimental library designation for the file.",
-            "type": "string",
-            "linkTo": "Library"
+            "type": "array",
+            "maxItems": 1,
+            "items": {
+                "type": "string",
+                "linkTo": "Library"
+            }
         },
         "platform": {
             "title": "Platform",
