@@ -684,11 +684,11 @@ def experiment_31_32(value, system):
         if 'notes' in value:
             value['notes'] = f'{value.get("notes")}. This assay was previously labeled single-nucleus RNA-seq.'
         else:
-            value['notes'] = f'This assay was previously labeled single-nucleus RNA-seq.'
+            value['notes'] = 'This assay was previously labeled single-nucleus RNA-seq.'
     if value.get('assay_term_name') == 'genotyping by high throughput sequencing assay':
         value['assay_term_name'] = 'whole genome sequencing assay'
         if 'notes' in value:
             value['notes'] = f'{value.get("notes")}. This assay was previously labeled genotyping HTS.'
         else:
-            value['notes'] = f'This assay was previously labeled genotyping HTS.'
+            value['notes'] = 'This assay was previously labeled genotyping HTS.'
     return
