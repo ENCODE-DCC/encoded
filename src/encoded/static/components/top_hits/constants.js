@@ -22,6 +22,7 @@ export const TOP_HITS_PARAMS = (
     '&field=organism.scientific_name' +
     '&field=term_name' +
     '&field=biosample_ontology.term_name' +
+    '&field=dataset_details.iosample_ontology.term_name' +
     '&field=classification' +
     '&field=document_type' +
     '&field=attachment.download' +

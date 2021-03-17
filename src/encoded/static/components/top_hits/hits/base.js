@@ -86,7 +86,7 @@ class Hit {
     */
     maybeGetBiosampleOntologyFromArray() {
         return maybeGetUniqueFieldsFromArray(
-            this.item.biosample_ontology,
+            this.item.biosample_ontology || this.dataset_details.biosample_ontology,
             TERM_NAME
         );
     }
@@ -159,7 +159,10 @@ class Hit {
     * @return {string|undefined} Biosample value pulled from item.
     */
     formatBiosample() {
-        return this.item.biosample_ontology && this.maybeGetBiosampleOntologyFromArray();
+        return (
+            (this.item.biosample_ontology || this.item.dataset_details.biosample_ontology) &&
+            this.maybeGetBiosampleOntologyFromArray()
+        );
     }
 
     /**
