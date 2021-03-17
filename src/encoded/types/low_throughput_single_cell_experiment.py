@@ -46,12 +46,11 @@ class LowThroughputSingleCellExperiment(
     CalculatedReplicationType):
     item_type = 'low_throughput_single_cell_experiment'
     schema = load_schema('encoded:schemas/low_throughput_single_cell_experiment.json')
-    embedded = Dataset.embedded + [
-        'biosample_ontology',
-        'examined_loci.gene',
-        'files.platform',
-        'files.analysis_step_version.analysis_step',
-        'files.analysis_step_version.analysis_step.pipelines',
+    embedded = [
+        'submitted_by',
+        'lab',
+        'award.pi.lab',
+        'biosample_ontology',       
         'related_series',
         'replicates.antibody',
         'replicates.library',
@@ -74,39 +73,6 @@ class LowThroughputSingleCellExperiment(
         'target.organism',
     ]
     audit_inherit = [
-        'original_files',
-        'original_files.replicate',
-        'original_files.platform',
-        'target',
-        'files.analysis_step_version.analysis_step.pipelines',
-        'revoked_files',
-        'revoked_files.replicate',
-        'submitted_by',
-        'lab',
-        'award',
-        'documents',
-        'replicates.antibody.characterizations.biosample_ontology',
-        'replicates.antibody.characterizations',
-        'replicates.antibody.targets',
-        'replicates.library',
-        'replicates.library.documents',
-        'replicates.library.biosample',
-        'replicates.library.biosample.biosample_ontology',
-        'replicates.library.biosample.organism',
-        'replicates.library.biosample.treatments',
-        'replicates.library.biosample.applied_modifications',
-        'replicates.library.biosample.donor.organism',
-        'replicates.library.biosample.donor',
-        'replicates.library.biosample.treatments',
-        'replicates.library.biosample.originated_from',
-        'replicates.library.biosample.originated_from.biosample_ontology',
-        'replicates.library.biosample.part_of',
-        'replicates.library.biosample.part_of.biosample_ontology',
-        'replicates.library.biosample.pooled_from',
-        'replicates.library.biosample.pooled_from.biosample_ontology',
-        'replicates.library.spikeins_used',
-        'replicates.library.treatments',
-        'target.organism',
     ]
     set_status_up = [
         'original_files',

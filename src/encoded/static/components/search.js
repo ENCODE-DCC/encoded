@@ -51,6 +51,7 @@ const types = {
     ucsc_browser_composite: { title: 'UCSC browser composite file set' },
     functional_characterization_experiment: { title: 'Functional characterization experiments' },
     transgenic_enhancer_experiment: { title: 'Transgenic enhancer experiments' },
+    low_throughput_single_cell_experiment: {title: 'Low Throughput Single Cell Experiments' },
     gene_silencing_series: { title: 'Gene silencing series' },
     differentiation_series: { title: 'Differentiation series' },
 };
@@ -76,6 +77,7 @@ const datasetTypes = {
     TransgenicEnhancerExperiment: types.transgenic_enhancer_experiment.title,
     GeneSilencingSeries: types.gene_silencing_series.title,
     DifferentiationSeries: types.differentiation_series.title,
+    LowThroughputSingleCellExperiment: types.low_throughput_single_cell_experiment.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));
@@ -281,7 +283,7 @@ globals.listingViews.register(Biosample, 'Biosample');
 
 
 /**
- * Renders both Experiment, FunctionalCharacterizationExperiment, TransgenicEnhancerExperiment search results.
+ * Renders both Experiment, FunctionalCharacterizationExperiment, TransgenicEnhancerExperiment,  search results.
  */
 const ExperimentComponent = (props, reactContext) => {
     const { context: result, cartControls, mode } = props;
@@ -290,15 +292,18 @@ const ExperimentComponent = (props, reactContext) => {
     // Determine if search result is allowed in carts.
     const isResultAllowedInCart = cartGetAllowedTypes().includes(result['@type'][0]);
 
-    // Determine whether object is Experiment, FunctionalCharacterizationExperiment, or TransgenicEnhancerExperiment.
+    // Determine whether object is Experiment, FunctionalCharacterizationExperiment, TransgenicEnhancerExperiment or LowThroughputSingleCellExperiment.
     const experimentType = result['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
     const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
+    const isSingleCellExperiment = experimentType === 'LowThroughputSingleCellExperiment';
     let displayType;
     if (isFunctionalExperiment) {
         displayType = 'Functional Characterization Experiment';
     } else if (isEnhancerExperiment) {
         displayType = 'Transgenic Enhancer Experiment';
+    } else if (isSingleCellExperiment) {
+        displayType = 'Low Throughput Single Cell Experiment';
     } else {
         displayType = 'Experiment';
     }
@@ -487,7 +492,7 @@ const Experiment = auditDecor(ExperimentComponent);
 globals.listingViews.register(Experiment, 'Experiment');
 globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
 globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
-
+globals.listingViews.register(Experiment, 'LowThroughputSingleCellExperiment');
 
 const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicators, auditDetail }, reactContext) => (
     <li className={resultItemClass(result)}>

@@ -55,18 +55,15 @@
     },
     "properties": {
         "schema_version": {
-
-            "default": "6"
+            "default": "1"
         },
         "assay_term_name": {
             "title": "Assay name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "type": "string",
             "enum": [
-                "CRISPR screen",
-                "MPRA",
-                "pooled clone sequencing",
-                "STARR-seq"
+                "single-cell RNA sequencing assay",
+                "single-nucleus ATAC-seq"
             ]
         },
         "date_submitted": {
@@ -85,27 +82,6 @@
             "linkTo": "Target",
             "permission": "import_items"
         },
-        "target_expression_range_minimum": {
-            "title": "Target expression range minimum",
-            "description": "Target expression read-out range minimum percentage value",
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100
-        },
-        "target_expression_range_maximum": {
-            "title": "Target expression range maximum",
-            "description": "Target expression read-out range maximum percentage value",
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100
-        },
-            "target_expression_percentile": {
-            "title": "Target expression percentile",
-            "description": "Target expression read-out expressed as a percentile",
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100
-        },
         "possible_controls": {
             "title": "Controls",
             "description": "Dataset that contain files that can serve as scientific controls for this functional characterization experiment.",
@@ -120,34 +96,6 @@
                 "linkTo": "Dataset"
             }
         },
-        "elements_references": {
-            "title": "Elements references",
-            "description": "Datasets that contain reference files listing the elements being characterized in this functional characterization experiment.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Reference",
-                "description": "Dataset that contain reference file or annotation listing the elements being characterized in this functional characterization experiment.",
-                "comment": "See reference.json or annotation.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": ["Reference", "Annotation"]
-            }
-        },
-        "elements_cloning": {
-            "title": "Elements cloning",
-            "description": "A pooled clone sequencing experiment that validates the presence and distribution of elements being characterized.",
-            "comment": "See FunctionalCharacterizationExperiment.json for a list of available identifiers.",
-            "type": "string",
-            "linkTo": "FunctionalCharacterizationExperiment"
-        },
-        "elements_mapping": {
-            "title": "Elements mapping",
-            "description": "A functional characterization experiment that contains mapping of elements being characterized to barcodes.",
-            "comment": "See FunctionalCharacterizationExperiment.json for a list of available identifiers.",
-            "type": "string",
-            "linkTo": "FunctionalCharacterizationExperiment"
-        },
         "supersedes": {
             "title": "Supersedes" ,
             "description": "The functional characterization experiment(s) that this functional characterization experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
@@ -157,7 +105,7 @@
             "items": {
                 "comment": "See functional_characterization_experiment.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "FunctionalCharacterizationExperiment"
+                "linkTo": "LowThroughputSingleCellExperiment"
             }
         },
         "control_type": {
@@ -167,71 +115,6 @@
             "enum": [
                 "control"
             ]
-        },
-        "plasmids_library_type": {
-            "title": "Plasmids library type",
-            "description": "The purpose of a pooled clone sequencing experiment.",
-            "type": "string",
-            "enum": [
-                "elements cloning",
-                "elements mapping",
-                "gRNA cloning"
-            ]
-        },
-        "examined_loci": {
-            "title": "Examined loci",
-            "description": "The loci whose expression or product is under investigation for the functional characterization experiment.",
-            "type": "array",
-            "uniqueItems": true,
-            "minItems": 1,
-            "items": {
-                "title": "Locus",
-                "description": "The gene whose expression or product is under investigation for the functional characterization experiment.",
-                "type": "object",
-                "additionalProperties": false,
-                "required": ["gene"],
-                "properties": {
-                    "gene": {
-                        "title": "Gene",
-                        "description": "The gene under investigation.",
-                        "type": "string",
-                        "linkTo": "Gene"
-                    },
-                    "expression_percentile": {
-                        "title": "Gene expression percentile",
-                        "description": "Gene expression read-out expressed as a percentile.",
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 100
-                    },
-                    "expression_range_minimum": {
-                        "title": "Gene expression range minimum",
-                        "description": "Gene expression read-out range minimum percentage value.",
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 100
-                    },
-                    "expression_range_maximum": {
-                        "title": "Gene expression range maximum",
-                        "description": "Gene expression read-out range maximum percentage value.",
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 100
-                    }
-                },
-                "dependencies": {
-                    "expression_range_minimum": ["expression_range_maximum"],
-                    "expression_range_maximum": ["expression_range_minimum"],
-                    "expression_percentile": {
-                        "not": {
-                            "anyOf": [
-                                {"required": ["expression_range_minimum"]},
-                                {"required": ["expression_range_maximum"]}
-                            ]
-                        }
-                    }
-                }
-            }
         }
     },
     "facets": {

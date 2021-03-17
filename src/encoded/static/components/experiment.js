@@ -354,10 +354,11 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const itemClass = globals.itemClass(context, 'view-item');
 
-    // Determine whether object is Experiment, FunctionalCharacterizationExperiment or TransgenicEnhancerExperiment.
+    // Determine whether object is Experiment, FunctionalCharacterizationExperiment, TransgenicEnhancerExperiment or LowThroughputSingleCellExperiment.
     const experimentType = context['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
     const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
+    const isSingleCellExperiment = experimentType === 'LowThroughputSingleCellExperiment';
     let displayType;
     let displayTypeBreadcrumbs;
     if (isFunctionalExperiment) {
@@ -366,6 +367,9 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     } else if (isEnhancerExperiment) {
         displayTypeBreadcrumbs = 'Transgenic Enhancer Experiments';
         displayType = 'Transgenic Enhancer Experiment';
+    } else if (isSingleCellExperiment) {
+        displayTypeBreadcrumbs = 'Low Throughput Single Cell Experiments';
+        displayType = 'Low Throughput Single Cell Experiment';
     } else {
         displayTypeBreadcrumbs = 'Experiments';
         displayType = 'Experiment';
@@ -554,7 +558,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const fcexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&possible_controls.accession=${context.accession}`;
     const fcelementsmappingUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_mapping=${context['@id']}`;
     const fcelementscloningUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_cloning=${context['@id']}`;
-
+    const scexperimentsUrl = `/search/?type=LowThroughputSingleCellExperiment&possible_controls.accession=${context.accession}`;
 
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
@@ -938,6 +942,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
             <FetchedItems context={context} url={fcexperimentsUrl} Component={ControllingExperiments} />
 
+            <FetchedItems context={context} url={scexperimentsUrl} Component={ControllingExperiments} />
+            
             <FetchedItems
                 context={context}
                 url={fcelementsmappingUrl}
@@ -981,6 +987,7 @@ export default Experiment;
 globals.contentViews.register(Experiment, 'Experiment');
 globals.contentViews.register(Experiment, 'FunctionalCharacterizationExperiment');
 globals.contentViews.register(Experiment, 'TransgenicEnhancerExperiment');
+globals.contentViews.register(Experiment, 'LowThroughputSingleCellExperiment');
 
 
 const replicateTableColumns = {
