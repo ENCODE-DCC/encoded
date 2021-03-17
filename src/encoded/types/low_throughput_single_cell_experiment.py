@@ -72,27 +72,3 @@ class LowThroughputSingleCellExperiment(
         'replicates': ('Replicate', 'experiment'),
         'superseded_by': ('FunctionalCharacterizationExperiment', 'supersedes')
     })
-
-    @calculated_property(schema={
-        "title": "Related series",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Series.related_datasets",
-        },
-        "notSubmittable": True,
-    })
-    def related_series(self, request, related_series):
-        return paths_filtered_by_status(request, related_series)
-
-    @calculated_property(schema={
-            "title": "Superseded by",
-            "type": "array",
-            "items": {
-                "type": ['string', 'object'],
-                "linkFrom": "FunctionalCharacterizationExperiment.supersedes",
-            },
-            "notSubmittable": True,
-    })
-    def superseded_by(self, request, superseded_by):
-        return paths_filtered_by_status(request, superseded_by)
