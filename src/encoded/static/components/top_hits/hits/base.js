@@ -168,6 +168,11 @@ class Hit {
     formatTarget() {
         return (
             (this.item.target && this.item.target.label) ||
+            (
+                this.item.dataset_details &&
+                this.item.dataset_details.target &&
+                this.item.dataset_details.target.label
+            ) ||
             (this.item.targets && this.getLabelsFromTargets())
         );
     }
