@@ -8,3 +8,11 @@ def heart_ontology(testapp):
         'term_name': 'heart blood vessel',
     }
     return testapp.post_json('/ontology_term', item).json['@graph'][0]
+
+@pytest.fixture
+def european_ontology(testapp):
+    item = {
+        'term_id': 'MONDO:17998',
+        'term_name': 'European',
+    }
+    return testapp.post_json('/ontology_term', item).json['@graph'][0]
