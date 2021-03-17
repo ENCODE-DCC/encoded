@@ -151,7 +151,7 @@ class Hit {
     formatAnnotationType() {
         return (
             this.item.annotation_type ||
-            (this.item.dataset_details && this.item_dataset_details.annotation_type)
+            (this.item.dataset_details && this.item.dataset_details.annotation_type)
         );
     }
 
