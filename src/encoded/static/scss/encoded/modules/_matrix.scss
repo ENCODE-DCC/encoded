@@ -1091,6 +1091,24 @@ table.matrix th.group-all-groups-cell {
     margin: 10px;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
+.rna_seq_matrix {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap !important;
+    justify-content: space-between;
+    margin-top: 12px;
+    margin-right: 10px;
+
+    input {
+        flex: 1 1 auto;
+    }
+
+    select, button {
+        margin-left: 5px;
+    }
+}
+
 /**
  * Styles specific to the ENTEx matrix.
  */

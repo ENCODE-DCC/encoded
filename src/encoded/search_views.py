@@ -1,5 +1,7 @@
 from pyramid.view import view_config
 
+from .genomic_data_service import GenomicDataService
+
 from encoded.cart_view import CartWithElements
 from encoded.searches.fields import CartSearchResponseField
 from encoded.searches.fields import CartSearchWithFacetsResponseField
@@ -65,6 +67,7 @@ def includeme(config):
     config.add_route('cart-matrix', '/cart-matrix{slash:/?}')
     config.add_route('top-hits-raw', '/top-hits-raw{slash:/?}')
     config.add_route('top-hits', '/top-hits{slash:/?}')
+    config.add_route('rnaget', '/rnaget{slash:/?}')
     config.scan(__name__)
 
 
@@ -711,3 +714,10 @@ def top_hits(context, request):
         ]
     )
     return fr.render()
+
+
+@view_config(route_name='rnaget', request_method='GET', permission='search')
+def rnaget(context, request):
+    data_service = GenomicDataService(context.registry, request)
+    return data_service.rna_get()
+
