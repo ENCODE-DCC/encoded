@@ -38,25 +38,16 @@ def audit_required_files(value, system):
         return
 
     not_found = []
-    protocol = value['derived_from'].get('protocol')
+    protocol = value['derived_from'][0].get('protocol')
     for f in protocol['required_files']:
         file_prop_name = (f + '_file').replace('Read ', 'read_')
         if not value.get(file_prop_name):
             not_found.append(f)
-    if len(not_found) == 1:
-        detail = ('SequencingRun {} is missing file {}, required based on standards for {}.'.format(
-            audit_link(path_to_text(value['@id']), value['@id']),
-            not_found[0],
-            audit_link(path_to_text(value['derived_from']['protocol']['@id']), value['derived_from']['protocol']['@id'])
-            )
-        )
-        yield AuditFailure('missing required file', detail, level='ERROR')
-        return
-    elif len(not_found) > 1:
-        detail = ('SequencingRun {} is missing files {}, required based on standards for {}.'.format(
+    if not_found:
+        detail = ('SequencingRun {} is missing {}, required based on standards for {}.'.format(
             audit_link(path_to_text(value['@id']), value['@id']),
             ','.join(not_found),
-            audit_link(path_to_text(value['derived_from']['protocol']['@id']), value['derived_from']['protocol']['@id'])
+            audit_link(path_to_text(protocol['@id']), protocol['@id'])
             )
         )
         yield AuditFailure('missing required file', detail, level='ERROR')
