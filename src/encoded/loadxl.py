@@ -39,6 +39,7 @@ ORDER = [
     'library',
     'experiment',
     'low_throughput_single_cell_experiment',
+    'high_throughput_single_cell_experiment',
     'functional_characterization_experiment',
     'transgenic_enhancer_experiment',
     'replicate',
@@ -658,6 +659,12 @@ PHASE1_PIPELINES = {
     'functional_characterization_series': [
         remove_keys('related_datasets'),
     ],
+    'low_throughput_single_cell_experiment': [
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
+    ],
+    'high_throughput_single_cell_experiment': [
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
+    ],
     'single_cell_rna_series': [
         remove_keys('related_datasets'),
     ],
@@ -725,6 +732,12 @@ PHASE2_PIPELINES = {
     ],
     'transgenic_enhancer_experiment': [
         skip_rows_missing_all_keys('related_files', 'supersedes'),
+    ],
+    'low_throughput_single_cell_experiment': [
+        skip_rows_missing_all_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
+    ],
+    'high_throughput_single_cell_experiment': [
+        skip_rows_missing_all_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
     ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),

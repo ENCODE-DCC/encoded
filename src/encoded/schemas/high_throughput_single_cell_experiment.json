@@ -1,8 +1,8 @@
 {
-    "title": "Low Throughput Single Cell Experiment",
-    "description": "Schema for submitting metadata for a low throughput single cell assay (such as Fluidigm C1).",
-    "comment": "A low throughput single cell experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
-    "id": "/profiles/low_throughput_single_cell_experiment.json",
+    "title": "High Throughput Single Cell Experiment",
+    "description": "Schema for submitting metadata for a high throughput single cell assay (such as 10X).",
+    "comment": "A high throughput single cell experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
+    "id": "/profiles/high_throughput_single_cell_experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
@@ -60,14 +60,14 @@
         },
         "supersedes": {
             "title": "Supersedes" ,
-            "description": "The low throughput single cell experiment(s) that this low throughput single cell experiment experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "description": "The high throughput single cell experiment(s) that this high throughput single cell experiment experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                "comment": "See low_throughput_single_cell_experiment.json for a list of available identifiers.",
+                "comment": "See high_throughput_single_cell_experiment.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "LowThroughputSingleCellExperiment"
+                "linkTo": "HighThroughputSingleCellExperiment"
             }
         }
     },
@@ -207,5 +207,5 @@
         "biosample_summary": 12.0,
         "description": 8.0
     },
-    "changelog": "/profiles/changelogs/low_throughput_single_cell_experiment.md"
+    "changelog": "/profiles/changelogs/high_throughput_single_cell_experiment.md"
 }
