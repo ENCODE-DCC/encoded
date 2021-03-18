@@ -1571,6 +1571,12 @@ const processFilesAnalyses = (files, analyses) => {
 };
 
 
+const pseudoDefaultFileStatusOrder = ['released', 'archived', 'in progress'];
+const sortPseudoDefaultFilesByStatus = (files) => (
+    _(files).sortBy((file) => pseudoDefaultFileStatusOrder.findIndex((status) => status === file.status))
+);
+
+
 /**
  * Mutate the files of the given datasets that have no files with preferred_default set so that
  * they appear as though they had preferred_default set. Once wranglers have patched all
@@ -1583,7 +1589,7 @@ export const processPseudoDefaultFiles = (datasets = []) => {
     datasets.forEach((dataset) => {
         // Consider only the visualizable files of datasets that contain no default files.
         if (dataset.files && dataset.files.length > 0 && filterForDefaultFiles(dataset.files).length === 0) {
-            const visualizableFiles = filterForVisualizableFiles(dataset.files);
+            const visualizableFiles = sortPseudoDefaultFilesByStatus(filterForVisualizableFiles(dataset.files));
             if (visualizableFiles.length > 0) {
                 let pseudoDefaultFiles = [];
                 const mixedBioRepFiles = visualizableFiles.filter((file) => file.biological_replicates.length > 1);
