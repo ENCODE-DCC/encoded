@@ -56,6 +56,9 @@ const inclusionStatuses = [
     'replaced',
 ];
 
+/** Get data set */
+const getDataFiles = (items) => _((items && items.length > 0) ? items : []).uniq((file) => file['@id']);
+
 /**
  * Compile the usable experiment analysis objects into a form for rendering a dropdown of pipeline
  * labs. Export for Jest test.
@@ -259,7 +262,7 @@ export class FileTable extends React.Component {
 
         const nonAnalysisObjectPrefix = 'Other';
 
-        let datasetFiles = _((items && items.length > 0) ? items : []).uniq((file) => file['@id']);
+        let datasetFiles = getDataFiles(items);
         if (datasetFiles.length > 0) {
             const unfilteredCount = datasetFiles.length;
 
@@ -1397,8 +1400,9 @@ class FilterControls extends React.Component {
     }
 
     render() {
-        const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler, context, inclusionOn } = this.props;
+        const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler, context, inclusionOn, items } = this.props;
         const contextFiles = (context.files || []).filter((file) => (inclusionOn ? file : inclusionStatuses.indexOf(file.status) === -1));
+        const datasetFiles = getDataFiles(items);
 
         const visualizerControls = (filterOptions.length > 0 || browsers.length > 0) ?
             (
@@ -1419,7 +1423,7 @@ class FilterControls extends React.Component {
             )
         : null;
 
-        const downloadBtn = contextFiles.length > 0 ?
+        const downloadBtn = datasetFiles.length > 0 ?
             <div className="file-gallery-controls__download">
                 <button className="btn btn-info" type="button" onClick={() => this.setDownloadModalVisibility(true)}>Download All</button>
                 {
@@ -1463,6 +1467,8 @@ FilterControls.propTypes = {
     visualizeHandler: PropTypes.func.isRequired,
     /** include-deprecated check box checked status */
     inclusionOn: PropTypes.bool,
+    /** Array of files to appear in the table */
+    items: PropTypes.array,
 };
 
 FilterControls.defaultProps = {
@@ -1471,6 +1477,7 @@ FilterControls.defaultProps = {
     currentBrowser: '',
     filters: [],
     inclusionOn: false,
+    items: [],
 };
 
 FilterControls.contextTypes = {
@@ -3377,6 +3384,7 @@ class FileGalleryRendererComponent extends React.Component {
                                     browserChangeHandler={this.handleBrowserChange}
                                     visualizeHandler={this.handleVisualize}
                                     context={context}
+                                    items={includedFiles}
                                 />
                                 {/* If logged in and dataset is released, need to combine search of files that reference
                                     this dataset to get released and unreleased ones. If not logged in, then just get
@@ -3400,6 +3408,7 @@ class FileGalleryRendererComponent extends React.Component {
                             browserChangeHandler={this.handleBrowserChange}
                             visualizeHandler={this.handleVisualize}
                             context={context}
+                            items={includedFiles}
                         />
                         {fileTable}
                     </div>
