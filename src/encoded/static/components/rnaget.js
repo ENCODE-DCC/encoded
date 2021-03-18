@@ -683,7 +683,7 @@ class RNASeqMatrixSearch extends TextFilter {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <div className="rna_seq_matrix-search">
+                <div className="rna_seq_matrix">
                     <input
                         type="search"
                         className="search-query"
