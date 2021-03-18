@@ -7,17 +7,24 @@
         },
         "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
         "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "sortOrder": [ "Biosample", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Methylation at CpG", "Methylation at CHG",
-                             "Methylation at CHH", "Signal" ],
+            "group_order": [
+                "Methylation at CpG",
+                "Methylation at CHG",
+                "Methylation at CHH",
+                "Signal",
+                "Plus-strand CpG Methylation Signal",
+                "Minus-strand CpG Methylation Signal",
+                "CpG Coverage"
+            ],
             "groups": {
                 "Methylation at CpG": {
                     "tag": "aCpG",
                     "visibility": "dense",
                     "type": "bigBed",
-                    "file_format_type": [ "bedMethyl" ],
+                    "file_format_type": ["bedMethyl", "bed9+"],
                     "itemRgb":"on",
                     "scoreFilter":"0:1000",
                     "output_type": [ "methylation state at CpG" ]
@@ -26,7 +33,7 @@
                     "tag": "mCHG",
                     "visibility": "hide",
                     "type": "bigBed",
-                    "file_format_type": [ "bedMethyl" ],
+                    "file_format_type": ["bedMethyl", "bed9+"],
                     "itemRgb":"on",
                     "scoreFilter":"0:1000",
                     "output_type": [ "methylation state at CHG" ]
@@ -35,7 +42,7 @@
                     "tag": "mCHH",
                     "visibility": "hide",
                     "type": "bigBed",
-                    "file_format_type": [ "bedMethyl" ],
+                    "file_format_type": ["bedMethyl", "bed9+"],
                     "itemRgb":"on",
                     "scoreFilter":"0:1000",
                     "output_type": [ "methylation state at CHH" ]
@@ -49,6 +56,36 @@
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "signal" ]
+                },
+                "Plus-strand CpG Methylation Signal": {
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "output_type": ["plus strand methylation state at CpG"],
+                    "tag": "pSIG",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "visibility": "full",
+                    "windowingFunction": "mean+whiskers"
+                },
+                "Minus-strand CpG Methylation Signal": {
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "output_type": ["minus strand methylation state at CpG"],
+                    "tag": "mSIG",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "visibility": "full",
+                    "windowingFunction": "mean+whiskers"
+                },
+                "CpG Coverage": {
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "output_type": ["CpG sites coverage"],
+                    "tag": "COV",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "visibility": "hide",
+                    "windowingFunction": "mean+whiskers"
                 }
             }
         },
@@ -68,15 +105,11 @@
                 "Biosample": {
                     "tag": "BS",
                     "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-                },
-                "Targets": {
-                    "tag": "TARG",
-                    "groups": { "one": { "title_mask": "{target.label}"} }
                 }
             }
         },
         "file_defs": {
-            "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
             "shortLabel": "{replicate} {output_type_short_label}"
         }
     }
