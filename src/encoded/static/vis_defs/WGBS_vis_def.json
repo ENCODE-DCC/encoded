@@ -74,7 +74,7 @@
                     "autoScale": "off",
                     "maxHeightPixels": "64:18:8",
                     "output_type": ["CpG sites coverage"],
-                    "tag": "mSIG",
+                    "tag": "COV",
                     "type": "bigWig",
                     "viewLimits": "0:10",
                     "visibility": "hide",
