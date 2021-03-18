@@ -118,8 +118,11 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
         'Roadmap'
     ]:
         return
+    if len(value['pipeline_labs']) != 1 or \
+            value['pipeline_labs'][0]['@id'] != '/labs/encode-processing-pipeline/':
+        return
 
-    if value['pipelines'][0]['title'] == 'DNase-seq pipeline':
+    if any(pipeline['title'] == 'DNase-seq pipeline' for pipeline in value['pipelines']):
         yield from check_analysis_dnase_seq_standards(
             value,
             files_structure,
@@ -127,16 +130,18 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             '/data-standards/dnase-seq-encode4/')
         return
 
-    if value['pipelines'][0]['title'] in [
-                'DNase-HS pipeline single-end - Version 2',
-                'DNase-HS pipeline paired-end - Version 2'
-    ]:
+    if any(pipeline['title'] in [
+            'DNase-HS pipeline single-end - Version 2',
+            'DNase-HS pipeline paired-end - Version 2']
+            for pipeline in value['pipelines']):
         yield from check_analysis_dnase_seq_standards(
             value,
             files_structure,
             [
                 'DNase-HS pipeline single-end - Version 2',
-                'DNase-HS pipeline paired-end - Version 2'
+                'DNase-HS pipeline paired-end - Version 2',
+                'DNase-HS pipeline (single-end)',
+                'DNase-HS pipeline (paired-end)'
             ],
             '/data-standards/dnase-seq/')
         return
@@ -152,7 +157,10 @@ def check_analysis_dnase_seq_standards(
     signal_files = files_structure.get('normalized_signal_files').values()
 
     pipeline_titles = [pipeline['title'] for pipeline in value['pipelines']]
-    if len(set(pipeline_titles)) != 1 and pipeline_titles[0] not in expected_pipeline_titles:
+    if any(
+        title not in expected_pipeline_titles
+        for title in pipeline_titles
+    ):
         return
 
     samtools_flagstat_metrics = get_metrics(alignment_files, 'SamtoolsFlagstatsQualityMetric')
