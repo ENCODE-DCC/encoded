@@ -2818,7 +2818,10 @@ def test_audit_experiment_dnase_low_correlation(testapp,
                                                 analysis_step_version_bam,
                                                 analysis_step_bam,
                                                 pipeline_bam):
-    testapp.patch_json(bigWig_file['@id'], {'dataset': base_experiment['@id']})
+    testapp.patch_json(bigWig_file['@id'], {
+        'dataset': base_experiment['@id'],
+        'output_type': 'read-depth normalized signal'
+    })
     testapp.patch_json(
         correlation_quality_metric['@id'], {'quality_metric_of': [bigWig_file['@id']],
                                             'Pearson correlation': 0.15})

@@ -696,7 +696,7 @@ def check_experiment_dnase_seq_standards(experiment,
                                          link_to_standards):
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
-    signal_files = files_structure.get('signal_files').values()
+    signal_files = files_structure.get('normalized_signal_files').values()
     assay_term_name = experiment['assay_term_name']
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
@@ -849,7 +849,6 @@ def check_experiment_dnase_seq_standards(experiment,
                     for f in metric['quality_metric_of']:
                         file_names.append(f.split('/')[2])
                         file_list.append(f)
-                    file_names_string = str(file_names).replace('\'', ' ')
                     file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
                     detail = ('Replicate concordance in DNase-seq experiments is measured by '
                         'calculating the Pearson correlation between signal quantification '
@@ -5205,6 +5204,7 @@ def create_files_mapping(files_list, excluded):
                  'transcript_quantifications_files': {},
                  'microRNA_quantifications_files': {},
                  'signal_files': {},
+                 'normalized_signal_files': {},
                  'preferred_default_idr_peaks': {},
                  'idr_thresholded_peaks': {},
                  'cpg_quantifications': {},
@@ -5268,6 +5268,9 @@ def create_files_mapping(files_list, excluded):
 
                 if file_output and file_output == 'signal of unique reads':
                     to_return['signal_files'][file_object['@id']] = file_object
+
+                if file_output and file_output == 'read-depth normalized signal':
+                    to_return['normalized_signal_files'][file_object['@id']] = file_object
 
                 if file_output and file_output == 'optimal IDR thresholded peaks':
                     to_return['preferred_default_idr_peaks'][
