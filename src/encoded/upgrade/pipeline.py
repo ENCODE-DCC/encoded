@@ -98,7 +98,8 @@ def pipeline_11_12(value, system):
         elif a == 'genotyping by high throughput sequencing assay':
             value['assay_term_names'][i] = 'whole genome sequencing assay'
             notes += 'This pipeline is now compatible with WGS, upgraded from genotyping HTS assay.'
-    if 'notes' in value:
-        value['notes'] = f'{value.get("notes")}. {notes}'
-    else:
-        value['notes'] = notes
+    if notes != '':
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {notes}'
+        else:
+            value['notes'] = notes

@@ -93,4 +93,3 @@ def test_award_upgrade_milestones3(upgrader, award_8):
             key=lambda x: x['assay_term_name']
         )
     )
-    assert 'This milestone now lists WGS, upgraded from genotyping HTS assay.' in value['notes']

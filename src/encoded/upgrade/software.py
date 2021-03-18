@@ -53,7 +53,8 @@ def software_7_8(value, system):
         elif p == 'genotyping by high throughput sequencing assay':
             value['purpose'][i] = 'whole genome sequencing assay'
             notes += 'The purpose for this software is now WGS, upgraded from genotyping HTS assay.'
-    if 'notes' in value:
-        value['notes'] = f'{value.get("notes")}. {notes}'
-    else:
-        value['notes'] = notes
+    if notes != '':
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {notes}'
+        else:
+            value['notes'] = notes
