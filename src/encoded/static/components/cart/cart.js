@@ -1571,9 +1571,17 @@ const processFilesAnalyses = (files, analyses) => {
 };
 
 
+/**
+ * Sort an array of files by their statuses according to their order in
+ * pseudoDefaultFileStatusOrder. Anything not in pseudoDefaultFileStatusOrder gets sorted randomly
+ * at the end.
+ */
 const pseudoDefaultFileStatusOrder = ['released', 'archived', 'in progress'];
 const sortPseudoDefaultFilesByStatus = (files) => (
-    _(files).sortBy((file) => pseudoDefaultFileStatusOrder.findIndex((status) => status === file.status))
+    _(files).sortBy((file) => {
+        const foundIndex = pseudoDefaultFileStatusOrder.indexOf(file.status);
+        return foundIndex !== -1 ? foundIndex : pseudoDefaultFileStatusOrder.length;
+    })
 );
 
 
