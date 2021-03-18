@@ -92,6 +92,7 @@ def test_audit_dnase_encode3(
     pipeline_dnase_encode4,
     encode4_award,
     ENCODE3_award,
+    encode_lab
 ):
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -142,7 +143,8 @@ def test_audit_dnase_encode3(
         {
             'analysis_steps': [analysis_step_dnase_encode4['@id']],
             'award': ENCODE3_award['@id'],
-            'title': 'DNase-HS pipeline single-end - Version 2'
+            'title': 'DNase-HS pipeline single-end - Version 2',
+            'lab': encode_lab['@id']
         }
     )
     res = testapp.get(base_analysis['@id'] + '@@index-data')
@@ -175,6 +177,7 @@ def test_audit_dnase_encode4(
     analysis_step_dnase_encode4,
     pipeline_dnase_encode4,
     encode4_award,
+    encode_lab
 ):
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -225,7 +228,8 @@ def test_audit_dnase_encode4(
         {
             'analysis_steps': [analysis_step_dnase_encode4['@id']],
             'award': encode4_award['@id'],
-            'title': 'DNase-seq pipeline'
+            'title': 'DNase-seq pipeline',
+            'lab': encode_lab['@id']
         }
     )
     res = testapp.get(base_analysis['@id'] + '@@index-data')
@@ -253,6 +257,7 @@ def test_audit_dnase_missing_read_depth(
     analysis_step_dnase_encode4,
     pipeline_dnase_encode4,
     ENCODE3_award,
+    encode_lab
 ):
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -289,7 +294,8 @@ def test_audit_dnase_missing_read_depth(
         {
             'analysis_steps': [analysis_step_dnase_encode4['@id']],
             'award': ENCODE3_award['@id'],
-            'title': 'DNase-HS pipeline single-end - Version 2'
+            'title': 'DNase-HS pipeline single-end - Version 2',
+            'lab': encode_lab['@id']
         }
     )
     res = testapp.get(base_analysis['@id'] + '@@index-data')

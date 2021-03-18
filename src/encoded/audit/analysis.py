@@ -119,7 +119,7 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     ]:
         return
     if len(value['pipeline_labs']) != 1 or \
-            value['pipeline_labs'][0]['@id'] != '/labs/encode-processing-pipeline/':
+            value['pipeline_labs'][0] != '/labs/encode-processing-pipeline/':
         return
 
     if any(pipeline['title'] == 'DNase-seq pipeline' for pipeline in value['pipelines']):
