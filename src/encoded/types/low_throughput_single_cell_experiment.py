@@ -42,8 +42,7 @@ class LowThroughputSingleCellExperiment(
     CalculatedAssayTitle,
     CalculatedCategorySlims,
     CalculatedTypeSlims,
-    CalculatedObjectiveSlims,
-    CalculatedReplicationType):
+    CalculatedObjectiveSlims):
     item_type = 'low_throughput_single_cell_experiment'
     schema = load_schema('encoded:schemas/low_throughput_single_cell_experiment.json')
     embedded = [
@@ -52,22 +51,6 @@ class LowThroughputSingleCellExperiment(
         'award.pi.lab',
         'biosample_ontology',       
         'related_series',
-        'replicates.antibody',
-        'replicates.library',
-        'replicates.library.biosample.biosample_ontology',
-        'replicates.library.biosample.submitted_by',
-        'replicates.library.biosample.source',
-        'replicates.library.biosample.applied_modifications',
-        'replicates.library.biosample.applied_modifications.documents',
-        'replicates.library.biosample.organism',
-        'replicates.library.biosample.donor',
-        'replicates.library.biosample.donor.organism',
-        'replicates.library.biosample.part_of',
-        'replicates.library.biosample.part_of.donor',
-        'replicates.library.biosample.part_of.treatments',
-        'replicates.library.biosample.treatments',
-        'replicates.library.construction_platform',
-        'replicates.library.treatments',
         'possible_controls',
         'target.genes',
         'target.organism',
