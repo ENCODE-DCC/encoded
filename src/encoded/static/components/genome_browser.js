@@ -18,6 +18,7 @@ const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
 
 // used to determine if GV_COORDINATES_KEY should be used
 const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
+const GV_COORDINATES_ANNOTATION = 'ENCODE-GV-annotation';
 
 /**
  * Returns Valis coordinates off the bar user inputs data in
@@ -47,8 +48,7 @@ const readGenomeBrowserLabelCoordinates = () => {
  * @param {boolean} [ignoreCache=false] True to not look into cache, false to use cache
  * @returns Default coordinates
  */
-const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
-    const assembly = assemblyAnnotation.split(' ')[0];
+const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
     // Files to be displayed on all genome browser results
     let pinnedFiles = [];
     let contig = null;
@@ -56,8 +56,9 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
     let x1 = null;
     const gVState = ignoreCache ? null : window.sessionStorage.getItem(GV_COORDINATES_KEY);
     const gVAssembly = window.sessionStorage.getItem(GV_COORDINATES_ASSEMBLY);
+    const gVAnnotation = window.sessionStorage.getItem(GV_COORDINATES_ANNOTATION);
 
-    if (gVState && gVAssembly === assembly) {
+    if (gVState && gVAssembly === assembly && gVAnnotation === annotation) {
         const savedState = gVState ? JSON.parse(gVState) : {};
         ({ contig } = savedState);
         ({ x0, x1, pinnedFiles } = savedState);
@@ -73,6 +74,19 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
                 title: 'GENCODE V29',
             },
         ];
+        if (annotation === 'V33') {
+            pinnedFiles = [
+                {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
+                },
+                {
+                    file_format: 'vgenes-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/gencode.v33.GRCh38.p13.annotation.vgenes-dir',
+                    title: 'GENCODE V33',
+                },
+            ];
+        }
         contig = 'chr1';
         x0 = 11102837;
         x1 = 11267747;
@@ -91,6 +105,21 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
         contig = 'chr21';
         x0 = 33031597;
         x1 = 33041570;
+    } else if (assembly === 'GRCm39') {
+        pinnedFiles = [
+            {
+                file_format: 'vdna-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/mm39/mm39.vdna-dir',
+            },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/mm39/gencode.vM26.GRCm39.annotation.vgenes-dir',
+                title: 'GENCODE M26',
+            },
+        ];
+        contig = 'chr7';
+        x0 = 72938479;
+        x1 = 73220239;
     } else if (assembly === 'mm10' || assembly === 'mm10-minimal' || assembly === 'GRCm38') {
         pinnedFiles = [
             {
@@ -120,7 +149,7 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
             {
                 file_format: 'vgenes-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
-                title: 'BDGP6.22.96',
+                title: 'FlyBase Annotation 6.04',
             },
         ];
         contig = 'chr2L';
@@ -131,6 +160,11 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
             {
                 file_format: 'vdna-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/dm3/dm3.vdna-dir',
+            },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/dm3/dmel-all-r5.12.sorted.trimmed.chrM_fixed.vgenes-dir',
+                title: 'FlyBase Annotation 5.12',
             },
         ];
         contig = 'chr2L';
@@ -145,7 +179,7 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
             {
                 file_format: 'vgenes-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/ce11/Caenorhabditis_elegans.WBcel235.96.vgenes-dir',
-                title: 'WBcel235.96',
+                title: 'WormBase Annotation WS235',
             },
         ];
         contig = 'chrII';
@@ -157,12 +191,18 @@ const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
                 file_format: 'vdna-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/ce10/ce10.vdna-dir',
             },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/ce10/c_elegans.WS220.annotations.sorted_chr_fixed.vgenes-dir',
+                title: 'WormBase Annotation WS220',
+            },
         ];
         contig = 'chrII';
         x0 = 232475;
         x1 = 237997;
     }
     window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, assembly);
+    window.sessionStorage.setItem(GV_COORDINATES_ANNOTATION, annotation);
 
     return { x0, x1, contig, pinnedFiles };
 };
@@ -416,6 +456,7 @@ class GenomeBrowser extends React.Component {
             trackList: [],
             visualizer: null,
             genome: '',
+            annotation: '',
             contig: 'chr1',
             x0: 0,
             x1: 59e6,
@@ -461,7 +502,7 @@ class GenomeBrowser extends React.Component {
                 }
             }
 
-            if (this.props.assembly !== prevProps.assembly) {
+            if (this.props.assembly !== prevProps.assembly || this.props.annotation !== prevProps.annotation) {
                 // Determine pinned files based on genome, filter and sort files, compute and draw tracks
                 this.setGenomeAndTracks();
             }
@@ -502,8 +543,8 @@ class GenomeBrowser extends React.Component {
         this.scrollToGeneLocation(gene);
     }
 
-    setBrowserDefaults(assemblyAnnotation, resolve) {
-        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation);
+    setBrowserDefaults(assembly, annotation, resolve) {
+        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assembly, annotation);
 
         this.setState({ contig, x0, x1, pinnedFiles }, () => {
             if (resolve) {
@@ -514,10 +555,11 @@ class GenomeBrowser extends React.Component {
 
     setGenomeAndTracks() {
         const genome = mapGenome(this.props.assembly);
-        this.setState({ genome });
+        const { annotation } = this.props;
+        this.setState({ genome, annotation });
         // Determine genome and Gencode pinned files for selected assembly
         const genomePromise = new Promise((resolve) => {
-            this.setBrowserDefaults(genome, resolve);
+            this.setBrowserDefaults(genome, annotation, resolve);
         });
         // Make sure that we have these pinned files before we convert the files to tracks and chart them
         genomePromise.then(() => {
@@ -758,7 +800,7 @@ class GenomeBrowser extends React.Component {
     }
 
     resetLocation() {
-        const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, true);
+        const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, this.state.annotation, true);
         this.state.visualizer.setLocation({ contig, x0, x1 });
     }
 
@@ -810,14 +852,15 @@ class GenomeBrowser extends React.Component {
 GenomeBrowser.propTypes = {
     files: PropTypes.array.isRequired,
     expanded: PropTypes.bool.isRequired,
-    assembly: PropTypes.string,
+    assembly: PropTypes.string.isRequired,
+    annotation: PropTypes.string,
     label: PropTypes.string.isRequired,
     sortParam: PropTypes.array,
     displaySort: PropTypes.bool,
 };
 
 GenomeBrowser.defaultProps = {
-    assembly: '',
+    annotation: '',
     sortParam: ['Replicates', 'Output type'], // Array of parameters for sorting file object
     displaySort: false, // Determines if sort buttons should be displayed
 };

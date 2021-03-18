@@ -3342,7 +3342,8 @@ class FileGalleryRendererComponent extends React.Component {
                                     files={includedFiles}
                                     label="file gallery"
                                     expanded={this.state.facetsOpen}
-                                    assembly={this.state.selectedAssembly}
+                                    assembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : ''}
+                                    annotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : ''}
                                     displaySort
                                 />
                             </TabPanelPane>
