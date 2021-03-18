@@ -7,11 +7,18 @@
         },
         "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
         "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "sortOrder": [ "Biosample", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Methylation at CpG", "Methylation at CHG",
-                             "Methylation at CHH", "Signal" ],
+            "group_order": [
+                "Methylation at CpG",
+                "Methylation at CHG",
+                "Methylation at CHH",
+                "Signal",
+                "Plus-strand CpG Methylation Signal",
+                "Minus-strand CpG Methylation Signal",
+                "CpG Coverage"
+            ],
             "groups": {
                 "Methylation at CpG": {
                     "tag": "aCpG",
@@ -98,15 +105,11 @@
                 "Biosample": {
                     "tag": "BS",
                     "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-                },
-                "Targets": {
-                    "tag": "TARG",
-                    "groups": { "one": { "title_mask": "{target.label}"} }
                 }
             }
         },
         "file_defs": {
-            "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
             "shortLabel": "{replicate} {output_type_short_label}"
         }
     }
