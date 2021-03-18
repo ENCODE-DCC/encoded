@@ -53,6 +53,7 @@ def test_pipeline_upgrade_10_11(upgrader, pipeline_8):
 
 def test_pipeline_upgrade_11_12(upgrader, pipeline_8):
     pipeline_8['schema_version'] = '11'
+    pipeline_8['notes'] = 'Notes'
     pipeline_8['assay_term_names'] = ['single-nucleus RNA-seq',
                                       'genotyping by high throughput sequencing assay']
     value = upgrader.upgrade('pipeline', pipeline_8, target_version='12')
@@ -62,3 +63,4 @@ def test_pipeline_upgrade_11_12(upgrader, pipeline_8):
         sorted(['single-cell RNA sequencing assay',
                 'whole genome sequencing assay'])
     )
+    assert 'This pipeline is now compatible with scRNA-seq, upgraded from snRNA-seq.' in value['notes']

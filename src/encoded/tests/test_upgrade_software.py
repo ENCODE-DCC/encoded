@@ -42,3 +42,4 @@ def test_software_upgrade_7_8(upgrader, software_1):
         sorted(['single-cell RNA sequencing assay',
                 'whole genome sequencing assay'])
     )
+    assert 'The purpose for this software is now WGS, upgraded from genotyping HTS assay.' in value['notes']

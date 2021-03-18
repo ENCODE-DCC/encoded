@@ -45,8 +45,15 @@ def software_6_7(value, system):
 @upgrade_step('software', '7', '8')
 def software_7_8(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5787
+    notes = ''
     for i, p in enumerate(value.get('purpose', [])):
         if p == 'single-nucleus RNA-seq':
             value['purpose'][i] = 'single-cell RNA sequencing assay'
+            notes += 'The purpose for this software is now scRNA-seq, upgraded from snRNA-seq.'
         elif p == 'genotyping by high throughput sequencing assay':
             value['purpose'][i] = 'whole genome sequencing assay'
+            notes += 'The purpose for this software is now WGS, upgraded from genotyping HTS assay.'
+    if 'notes' in value:
+        value['notes'] = f'{value.get("notes")}. {notes}'
+    else:
+        value['notes'] = notes
