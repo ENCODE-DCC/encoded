@@ -1532,6 +1532,7 @@
                         "raw signal",
                         "ranked gRNAs",
                         "read-depth normalized signal",
+                        "read annotations",
                         "reads",
                         "reference variants",
                         "regulatory elements",
@@ -1553,6 +1554,7 @@
                         "spike-ins",
                         "smoothed methylation state at CpG",
                         "sparse gene count matrix",
+                        "sparse transcript count matrix",
                         "splice junctions",
                         "subreads",
                         "topologically associated domains",
@@ -2054,6 +2056,7 @@
         "sparse gene count matrix": "quantification",
         "gene stabilities": "quantification",
         "guide quantifications": "quantification",
+        "sparse transcript count matrix": "quantification",
 
         "hotspots": "annotation",
         "footprints": "annotation",
@@ -2116,6 +2119,7 @@
         "regulatory elements": "annotation",
         "gRNAs": "annotation",
         "ranked gRNAs": "annotation",
+        "read annotations": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",

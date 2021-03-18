@@ -1199,5 +1199,16 @@
         ],
         "submitted_by": "mus.mi@porttitor.molestie",
         "uuid": "9caea93e-ea3b-4bf5-b713-e0a7aa51f69e"
+    },
+    {
+        "_test": "SPLiT-seq lib",
+        "accession": "ENCLB128SPL",
+        "lab": "ali-mortazavi",
+        "status": "in progress",
+        "nucleic_acid_term_name": "RNA",
+        "uuid": "cc32b056-04bc-420c-8370-3c4df21e6169",
+        "construction_method": "Parse Single Cell Whole Transcriptome Kit",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "award": "U54HG006998"
     }
 ]
