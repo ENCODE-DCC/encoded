@@ -63,9 +63,6 @@ const AnnotationComponent = (props, reactContext) => {
     // Make a biosample summary string
     const biosampleSummary = annotationBiosampleSummary(context);
 
-    // Determine this experiment's ENCODE version
-    const encodevers = globals.encodeVersion(context);
-
     // Set up the breadcrumbs
     const datasetType = context['@type'][1];
     const filesetType = context['@type'][0];
@@ -237,7 +234,7 @@ const AnnotationComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} encodevers={encodevers} showReplicateNumber={false} />
+            <FileGallery context={context} showReplicateNumber={false} />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -755,7 +752,7 @@ const ReferenceComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
+            <FileGallery context={context} hideGraph hideControls collapseNone />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -937,7 +934,7 @@ const ProjectComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
+            <FileGallery context={context} hideGraph hideControls collapseNone />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -1103,7 +1100,7 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
+            <FileGallery context={context} hideGraph hideControls collapseNone />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -1949,7 +1946,6 @@ export const SeriesComponent = (props, reactContext) => {
                 url={`/search/?limit=all&type=File&dataset=${context['@id']}`}
                 Component={DatasetFiles}
                 filePanelHeader={<FilePanelHeader context={context} />}
-                encodevers={globals.encodeVersion(context)}
                 session={reactContext.session}
             />
 

@@ -178,7 +178,7 @@ export class FileTable extends React.Component {
             collapsed: {
                 // Keeps track of which tables are collapsed
                 ref: false,
-                Other: true,
+                Other: !props.options.collapseNone,
                 ...analysisObjects,
             },
         };
@@ -237,7 +237,6 @@ export class FileTable extends React.Component {
             items,
             graphedFiles,
             filePanelHeader,
-            encodevers,
             showFileCount,
             setInfoNodeId,
             setInfoNodeVisible,
@@ -245,8 +244,7 @@ export class FileTable extends React.Component {
             session,
             filters,
             adminUser,
-            showReplicateNumber,
-            inclusionOn,
+            options,
         } = this.props;
         const sessionProperties = this.context.session_properties;
         const loggedIn = !!(session && session['auth.userid']);
@@ -316,7 +314,7 @@ export class FileTable extends React.Component {
             // be NOT (!)-ed to match with hide-functionality
             // TODO: (1)Move .hide to FileTable.procTableColumns declaration
             // (2) move showReplicateNumber to meta
-            FileTable.procTableColumns.biological_replicates.hide = () => !showReplicateNumber;
+            FileTable.procTableColumns.biological_replicates.hide = () => !options.showReplicateNumber;
 
             const analysisObjectKeys = Object.keys(files).filter((file) => file.includes('ENCAN'));
             const otherKeys = Object.keys(files).filter((file) => file === nonAnalysisObjectPrefix); // all files not parts of an analysis object
@@ -331,18 +329,18 @@ export class FileTable extends React.Component {
             return (
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
-                    <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
+                    <SortTablePanel header={filePanelHeader} noDefaultClasses={options.noDefaultClasses}>
                         <RawSequencingTable
                             files={files.raw}
                             indexFiles={files.index}
-                            showReplicateNumber={showReplicateNumber}
+                            showReplicateNumber={options.showReplicateNumber}
                             context={context}
                             outputCategory="raw data"
                             outputType="reads"
                             filters={filters}
-                            inclusionOn={inclusionOn}
+                            inclusionOn={options.inclusionOn}
+                            isDownloadable={!options.hideDownload}
                             meta={{
-                                encodevers,
                                 replicationType: context.replication_type,
                                 fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
                                 graphedFiles,
@@ -354,13 +352,13 @@ export class FileTable extends React.Component {
                         />
                         <RawFileTable
                             files={files.rawArray}
-                            showReplicateNumber={showReplicateNumber}
+                            showReplicateNumber={options.showReplicateNumber}
                             context={context}
                             outputCategory="raw data"
                             filters={filters}
-                            inclusionOn={inclusionOn}
+                            inclusionOn={options.inclusionOn}
+                            isDownloadable={!options.hideDownload}
                             meta={{
-                                encodevers,
                                 replicationType: context.replication_type,
                                 fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
                                 graphedFiles,
@@ -372,6 +370,7 @@ export class FileTable extends React.Component {
                         />
                         {[...analysisObjectKeys, ...otherKeys].map((key) => (
                             <SortTable
+                                key={key}
                                 title={
                                     <CollapsingTitle
                                         title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)} processed data`}
@@ -381,8 +380,13 @@ export class FileTable extends React.Component {
                                         analysisObjectKey={key}
                                         filters={filters}
                                         totalFiles={files && files[key] ? files[key].length : 0}
-                                        isDownloadable={key !== nonAnalysisObjectPrefix && context.analysis_objects && ['released', 'archived'].includes(context.analysis_objects.find((a) => a.accession === key).status)}
-                                        inclusionOn={inclusionOn}
+                                        isDownloadable={
+                                            !options.hideDownload
+                                            && key !== nonAnalysisObjectPrefix
+                                            && context.analysis_objects
+                                            && ['released', 'archived'].includes(context.analysis_objects.find((a) => a.accession === key).status)
+                                        }
+                                        inclusionOn={options.inclusionOn}
                                         files={files[key]}
                                     />
                                 }
@@ -392,7 +396,6 @@ export class FileTable extends React.Component {
                                 columns={FileTable.procTableColumns}
                                 sortColumn="default"
                                 meta={{
-                                    encodevers,
                                     replicationType: context.replication_type,
                                     hoverDL: this.hoverDL,
                                     restrictedTip: this.state.restrictedTip,
@@ -414,7 +417,8 @@ export class FileTable extends React.Component {
                                     outputCategory="reference"
                                     filters={filters}
                                     totalFiles={files && files.ref ? files.ref.length : 0}
-                                    inclusionOn={inclusionOn}
+                                    inclusionOn={options.inclusionOn}
+                                    isDownloadable={!options.hideDownload}
                                     files={files.ref}
                                 />
                             }
@@ -423,7 +427,6 @@ export class FileTable extends React.Component {
                             list={files.ref}
                             columns={FileTable.refTableColumns}
                             meta={{
-                                encodevers,
                                 replicationType: context.replication_type,
                                 hoverDL: this.hoverDL,
                                 restrictedTip: this.state.restrictedTip,
@@ -451,8 +454,6 @@ FileTable.propTypes = {
     graphedFiles: PropTypes.object,
     /** Table header component */
     filePanelHeader: PropTypes.object,
-    /** ENCODE version of the experiment */
-    encodevers: PropTypes.string,
     browserOptions: PropTypes.shape({
         /** Currently selected genome browser */
         currentBrowser: PropTypes.string,
@@ -473,18 +474,23 @@ FileTable.propTypes = {
     adminUser: PropTypes.bool,
     /** Object from /profiles/ containing all schemas */
     schemas: PropTypes.object,
-    /** True to strip SortTable panel of default CSS classes */
-    noDefaultClasses: PropTypes.bool,
-    /** True to show replicate number */
-    showReplicateNumber: PropTypes.bool,
+    options: PropTypes.shape({
+        /** True to strip SortTable panel of default CSS classes */
+        noDefaultClasses: PropTypes.bool,
+        /** True to show replicate number */
+        showReplicateNumber: PropTypes.bool,
+        /** True if Include Deprecated is checked */
+        inclusionOn: PropTypes.bool,
+        /** True to hide download button in table section headers */
+        hideDownload: PropTypes.bool,
+        collapseNone: PropTypes.bool,
+    }),
     filters: PropTypes.object, // filters user selected
-    inclusionOn: PropTypes.bool, // where or not inclusion is checked or not
 };
 
 FileTable.defaultProps = {
     graphedFiles: null,
     filePanelHeader: null,
-    encodevers: '',
     showFileCount: false,
     browserOptions: {
         currentBrowser: '',
@@ -496,10 +502,14 @@ FileTable.defaultProps = {
     session: null,
     adminUser: false,
     schemas: null,
-    noDefaultClasses: false,
-    showReplicateNumber: true,
+    options: {
+        noDefaultClasses: false,
+        showReplicateNumber: true,
+        inclusionOn: false,
+        hideDownload: false,
+        collapseNone: false,
+    },
     filters: {},
-    inclusionOn: false,
 };
 
 FileTable.contextTypes = {
@@ -700,7 +710,18 @@ class RawSequencingTable extends React.Component {
     }
 
     render() {
-        const { files, indexFiles, meta, showReplicateNumber, context, filters, outputCategory, outputType, inclusionOn } = this.props;
+        const {
+            files,
+            indexFiles,
+            meta,
+            showReplicateNumber,
+            context,
+            filters,
+            outputCategory,
+            outputType,
+            inclusionOn,
+            isDownloadable,
+        } = this.props;
         const { loggedIn, adminUser } = meta;
 
         if (files && files.length > 0) {
@@ -829,6 +850,7 @@ class RawSequencingTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
+                                    isDownloadable={isDownloadable}
                                     files={files}
                                 />
                             </th>
@@ -972,9 +994,10 @@ RawSequencingTable.propTypes = {
     meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
     showReplicateNumber: PropTypes.bool,
     outputCategory: PropTypes.string, // output category object
-    outputType: PropTypes.object, // output type object
+    outputType: PropTypes.string, // output type object
     filters: PropTypes.object, // user selected filters
     inclusionOn: PropTypes.bool.isRequired, // whether or not inclusion on is checked
+    isDownloadable: PropTypes.bool.isRequired, // True to include download button in table header
 };
 
 RawSequencingTable.defaultProps = {
@@ -1005,7 +1028,7 @@ class RawFileTable extends React.Component {
     }
 
     render() {
-        const { files, meta, showReplicateNumber, context, filters, outputCategory, inclusionOn } = this.props;
+        const { files, meta, showReplicateNumber, context, filters, outputCategory, inclusionOn, isDownloadable } = this.props;
         const { loggedIn, adminUser } = meta;
 
         if (files && files.length > 0) {
@@ -1044,6 +1067,7 @@ class RawFileTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
+                                    isDownloadable={isDownloadable}
                                     files={files}
                                 />
                             </th>
@@ -1167,6 +1191,7 @@ RawFileTable.propTypes = {
     context: PropTypes.object.isRequired, // context object from server
     filters: PropTypes.object, // user-selected filters
     inclusionOn: PropTypes.bool.isRequired, // whether or not inclusion on is checked
+    isDownloadable: PropTypes.bool.isRequired, // True to include download button in table header
 };
 
 RawFileTable.defaultProps = {
@@ -1201,25 +1226,35 @@ DatasetFiles.defaultProps = {
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-export const FileGallery = ({ context, encodevers, hideGraph, altFilterDefault, showReplicateNumber }, reactContext) => (
+export const FileGallery = ({ context, hideGraph, hideControls, collapseNone, altFilterDefault, showReplicateNumber }, reactContext) => (
     <FetchedData>
         <Param name="data" url={`/search/?limit=all&type=File&dataset=${context['@id']}`} />
         <Param name="schemas" url="/profiles/" />
-        <FileGalleryRenderer context={context} session={reactContext.session} encodevers={encodevers} hideGraph={hideGraph} altFilterDefault={altFilterDefault} showReplicateNumber={showReplicateNumber} />
+        <FileGalleryRenderer
+            context={context}
+            session={reactContext.session}
+            hideGraph={hideGraph}
+            hideControls={hideControls}
+            collapseNone={collapseNone}
+            altFilterDefault={altFilterDefault}
+            showReplicateNumber={showReplicateNumber}
+        />
     </FetchedData>
 );
 
 FileGallery.propTypes = {
     context: PropTypes.object.isRequired, // Dataset object whose files we're rendering
-    encodevers: PropTypes.string, // ENCODE version number
-    hideGraph: PropTypes.bool, // T to hide graph display
+    hideGraph: PropTypes.bool, // T to only render file-table pane
+    hideControls: PropTypes.bool, // True to hide visualize/download controls in table header
+    collapseNone: PropTypes.bool, // True to have no file subtables collapsed
     altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
     showReplicateNumber: PropTypes.bool, // True to show replicate number
 };
 
 FileGallery.defaultProps = {
-    encodevers: '',
     hideGraph: false,
+    hideControls: false,
+    collapseNone: false,
     altFilterDefault: false,
     showReplicateNumber: true,
 };
@@ -3032,7 +3067,7 @@ class FileGalleryRendererComponent extends React.Component {
         // Request them and add them to the files from the original file request.
         let relatedPromise;
         if (loggedIn !== prevLoggedIn || !this.relatedFilesRequested) {
-            relatedPromise = requestFiles(relatedFileAtIds, datasetFiles);
+            relatedPromise = requestFiles(relatedFileAtIds);
             this.relatedFilesRequested = true;
         } else {
             relatedPromise = Promise.resolve(this.prevRelatedFiles);
@@ -3211,7 +3246,7 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     render() {
-        const { context, schemas, hideGraph, showReplicateNumber } = this.props;
+        const { context, schemas, hideGraph, hideControls, collapseNone, showReplicateNumber } = this.props;
         let allGraphedFiles;
         let meta;
         // If filters other than assembly are chosen, we want to highlight the filtered files
@@ -3278,17 +3313,20 @@ class FileGalleryRendererComponent extends React.Component {
                     currentBrowser: this.state.currentBrowser,
                     selectedBrowserFiles: this.state.selectedBrowserFiles,
                 }}
-                encodevers={globals.encodeVersion(context)}
                 session={this.context.session}
                 infoNodeId={this.state.infoNode}
                 setInfoNodeId={this.setInfoNodeId}
                 infoNodeVisible={this.state.infoNodeVisible}
                 setInfoNodeVisible={this.setInfoNodeVisible}
                 showFileCount
-                noDefaultClasses
+                options={{
+                    noDefaultClasses: true,
+                    showReplicateNumber,
+                    inclusionOn: this.state.inclusionOn,
+                    hideDownload: hideControls,
+                    collapseNone,
+                }}
                 adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
-                showReplicateNumber={showReplicateNumber}
-                inclusionOn={this.state.inclusionOn}
             />
         );
 
@@ -3305,6 +3343,22 @@ class FileGalleryRendererComponent extends React.Component {
         const modalClass = meta ? `graph-modal--${modalTypeMap[meta.type]}` : '';
         const browsers = this.getAvailableBrowsers();
         const tabs = { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
+        const filterControls = (
+            <FilterControls
+                selectedFilterValue={this.state.selectedFilterValue}
+                filterOptions={this.state.availableAssembliesAnnotations}
+                filters={this.state.fileFilters}
+                inclusionOn={this.state.inclusionOn}
+                browsers={browsers}
+                currentBrowser={this.state.currentBrowser}
+                selectedBrowserFiles={this.state.selectedBrowserFiles}
+                handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                handleInclusionChange={this.handleInclusionChange}
+                browserChangeHandler={this.handleBrowserChange}
+                visualizeHandler={this.handleVisualize}
+                context={context}
+            />
+        );
 
         return (
             <Panel>
@@ -3364,43 +3418,16 @@ class FileGalleryRendererComponent extends React.Component {
                                 />
                             </TabPanelPane>
                             <TabPanelPane key="tables">
-                                <FilterControls
-                                    selectedFilterValue={this.state.selectedFilterValue}
-                                    filterOptions={this.state.availableAssembliesAnnotations}
-                                    filters={this.state.fileFilters}
-                                    inclusionOn={this.state.inclusionOn}
-                                    browsers={browsers}
-                                    currentBrowser={this.state.currentBrowser}
-                                    selectedBrowserFiles={this.state.selectedBrowserFiles}
-                                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                                    handleInclusionChange={this.handleInclusionChange}
-                                    browserChangeHandler={this.handleBrowserChange}
-                                    visualizeHandler={this.handleVisualize}
-                                    context={context}
-                                />
-                                {/* If logged in and dataset is released, need to combine search of files that reference
-                                    this dataset to get released and unreleased ones. If not logged in, then just get
-                                    files from dataset.files */}
+                                {filterControls}
                                 {fileTable}
                             </TabPanelPane>
                         </TabPanel>
                     </div>
                 :
                     <div>
-                        <FilterControls
-                            selectedFilterValue={this.state.selectedFilterValue}
-                            filterOptions={this.state.availableAssembliesAnnotations}
-                            filters={this.state.fileFilters}
-                            inclusionOn={this.state.inclusionOn}
-                            browsers={browsers}
-                            currentBrowser={this.state.currentBrowser}
-                            selectedBrowserFiles={this.state.selectedBrowserFiles}
-                            handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                            handleInclusionChange={this.handleInclusionChange}
-                            browserChangeHandler={this.handleBrowserChange}
-                            visualizeHandler={this.handleVisualize}
-                            context={context}
-                        />
+                        {!hideControls ?
+                            <>{filterControls}</>
+                        : null}
                         {fileTable}
                     </div>
                 }
@@ -3430,6 +3457,10 @@ FileGalleryRendererComponent.propTypes = {
     schemas: PropTypes.object,
     /** True to hide graph display */
     hideGraph: PropTypes.bool,
+    /** True to hide download/visualize controls */
+    hideControls: PropTypes.bool,
+    /** True to have no file subtables come up collapsed by default */
+    collapseNone: PropTypes.bool,
     /** True to default to All Assemblies and Annotations */
     altFilterDefault: PropTypes.bool,
     /** Inherited from auditDecor HOC */
@@ -3446,6 +3477,8 @@ FileGalleryRendererComponent.defaultProps = {
     data: null,
     schemas: null,
     hideGraph: false,
+    hideControls: false,
+    collapseNone: false,
     altFilterDefault: false,
     showReplicateNumber: true,
 };
@@ -3533,9 +3566,9 @@ CollapsingTitle.propTypes = {
     handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
     collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
     filters: PropTypes.object, // filters
-    analysisObjectKey: PropTypes.object, // analysis object
-    outputCategory: PropTypes.string, //  output category object
-    outputType: PropTypes.object, // outout type object
+    analysisObjectKey: PropTypes.string, // Accession of analysis this title applies to
+    outputCategory: PropTypes.string, // output category object
+    outputType: PropTypes.string, // output type to display in title
     totalFiles: PropTypes.number, // total file count
     isDownloadable: PropTypes.bool, // whether or not the section can have it's files downloaded
     inclusionOn: PropTypes.bool.isRequired, // inclusion box checked or not

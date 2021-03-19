@@ -90,6 +90,10 @@
         "date_created": "2019-07-01T22:14:15.601240+00:00",
         "lab": "/labs/ali-mortazavi/",
         "reference_type": "sequence adapters",
+        "related_files": [
+            "/files/ENCFF026HBG/",
+            "/files/ENCFF379BCO/"
+        ],
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "status": "in progress",
         "accession": "ENCSR819DEL"
@@ -116,6 +120,10 @@
         ],
         "lab": "/labs/greg-cooper/",
         "reference_type": "functional elements",
+        "related_files": [
+            "/files/ENCFF026HBG/",
+            "/files/ENCFF027HBG/"
+        ],
         "status": "in progress"
     },
     {

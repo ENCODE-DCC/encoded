@@ -199,18 +199,6 @@ export const browserPriority = [
     'Ensembl',
 ];
 
-// Determine the given object's ENCODE version
-export function encodeVersion(context) {
-    let encodevers = '';
-    if (context.award && context.award.rfa) {
-        encodevers = encodeVersionMap[context.award.rfa.substring(0, 7)];
-        if (typeof encodevers === 'undefined') {
-            encodevers = '';
-        }
-    }
-    return encodevers;
-}
-
 // Display a human-readable form of the file size given the size of a file in bytes. Returned as a
 // string.
 export function humanFileSize(size) {

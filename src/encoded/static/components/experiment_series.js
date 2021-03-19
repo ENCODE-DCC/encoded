@@ -858,7 +858,6 @@ class ExperimentSeriesComponent extends React.Component {
                     url={`/search/?limit=all&type=File&dataset=${context['@id']}`}
                     Component={DatasetFiles}
                     filePanelHeader={<FilePanelHeader context={context} />}
-                    encodevers={globals.encodeVersion(context)}
                     session={this.context.session}
                 />
             </div>
