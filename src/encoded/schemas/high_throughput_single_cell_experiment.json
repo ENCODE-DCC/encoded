@@ -204,7 +204,6 @@
         "notes": 1.0,
         "internal_tags": 1.0,
         "doi": 1.0,
-        "biosample_summary": 12.0,
         "description": 8.0
     },
     "changelog": "/profiles/changelogs/high_throughput_single_cell_experiment.md"

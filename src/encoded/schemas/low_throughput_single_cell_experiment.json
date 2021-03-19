@@ -145,9 +145,6 @@
         "target.genes.symbol": {
             "title": "Target gene symbol"
         },
-        "biosample_summary": {
-            "title": "Biosample summary"
-        },
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
@@ -204,7 +201,6 @@
         "notes": 1.0,
         "internal_tags": 1.0,
         "doi": 1.0,
-        "biosample_summary": 12.0,
         "description": 8.0
     },
     "changelog": "/profiles/changelogs/low_throughput_single_cell_experiment.md"

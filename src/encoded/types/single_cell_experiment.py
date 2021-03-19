@@ -19,8 +19,7 @@ from .shared_calculated_properties import (
     CalculatedAssayTitle,
     CalculatedCategorySlims,
     CalculatedTypeSlims,
-    CalculatedObjectiveSlims,
-    CalculatedReplicationType
+    CalculatedObjectiveSlims
 )
 
 from .assay_data import assay_terms
@@ -37,19 +36,17 @@ class SingleCellExperiment(
     CalculatedAssaySynonyms,
     CalculatedAssayTermID,
     CalculatedVisualize,
-    CalculatedBiosampleSummary,
-    CalculatedReplicates,
     CalculatedAssaySlims,
     CalculatedAssayTitle,
     CalculatedCategorySlims,
     CalculatedTypeSlims,
-    CalculatedObjectiveSlims):
+    CalculatedObjectiveSlims,
+    ):
     item_type = 'single_cell_experiment'
     base_types = ['SingleCellExperiment'] + Dataset.base_types
     schema = load_schema('encoded:schemas/single_cell_experiment.json')
     embedded = Dataset.embedded + [
         'biosample_ontology',
-        'examined_loci.gene',
         'files.platform',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
@@ -83,7 +80,9 @@ class SingleCellExperiment(
         'title': 'Low throughput single cell experiments',
         'description': 'Listing of Low Throughput Single Cell Experiments',
     })
-class LowThroughputSingleCellExperiment(SingleCellExperiment):
+class LowThroughputSingleCellExperiment(
+    SingleCellExperiment
+    ):
     item_type = 'low_throughput_single_cell_experiment'
     schema = load_schema('encoded:schemas/low_throughput_single_cell_experiment.json')
     embedded = [
@@ -147,7 +146,11 @@ class LowThroughputSingleCellExperiment(SingleCellExperiment):
         'title': 'High throughput single cell experiments',
         'description': 'Listing of High Throughput Single Cell Experiments',
     })
-class HighThroughputSingleCellExperiment(SingleCellExperiment):
+class HighThroughputSingleCellExperiment(
+    SingleCellExperiment,
+    CalculatedBiosampleSummary,
+    CalculatedReplicates,
+    ):
     item_type = 'high_throughput_single_cell_experiment'
     schema = load_schema('encoded:schemas/high_throughput_single_cell_experiment.json')
     embedded = Dataset.embedded + [
