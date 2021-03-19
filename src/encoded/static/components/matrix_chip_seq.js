@@ -4,6 +4,7 @@ import pluralize from 'pluralize';
 import url from 'url';
 import PubSub from 'pubsub-js';
 import _ from 'underscore';
+import { Column, Table } from 'react-virtualized';
 import QueryString from '../libs/query_string';
 import { Panel, PanelBody, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody } from '../libs/ui/modal';
@@ -133,6 +134,31 @@ const isMatrixUpdateLarge = (currentChIPSeqData, newChIPSeqData) => {
 
     return isCurrentMatrixLarge || isNewMatrixLarge;
 };
+
+// /////////////
+const convertTargetDataToVisualizableTable = (chIPSeqData, selectedTabLevel3) => {
+    const formattedData = [];
+
+    if (!chIPSeqData || !chIPSeqData.headerRow || !chIPSeqData.dataRow) {
+        return formattedData;
+    }
+
+    const headerLength = chIPSeqData.headerRow.length;
+    const dataRowLength = chIPSeqData.dataRow.length;
+
+    for (let i = 0; i < dataRowLength; i += 1) {
+        const entry = {};
+        entry._ = chIPSeqData.dataRow[i][0];
+
+        for (let j = 0; j < headerLength; j += 1) {
+            entry[chIPSeqData.headerRow[j]] = chIPSeqData.dataRow[i][j + 1];
+        }
+        formattedData.push(entry);
+    }
+
+    return formattedData;
+};
+// /////////////
 
 /**
  * Transform chIP Seq data to a form DataTable-object can understand.
@@ -852,6 +878,11 @@ class ChIPSeqMatrixPresentation extends React.Component {
             tabLevel2[i].url = `replicates.library.biosample.donor.organism.scientific_name=${organismName}&assay_title=${assay}${assay === 'Histone ChIP-seq' ? '&assay_title=Mint-ChIP-seq' : ''}`;
         }
 
+        // /////////
+        const formattedData = convertTargetDataToVisualizableTable(chIPSeqData, selectedTabLevel3);
+        const formattedDataKeys = Object.keys(formattedData[0] || []);
+        // //////////
+
         return (
             <div className="matrix__presentation">
                 <Spinner isActive={spinnerActive} />
@@ -867,7 +898,18 @@ class ChIPSeqMatrixPresentation extends React.Component {
                             <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedTabLevel3} handleTabClick={this.subTabClicked}>
                                 {chIPSeqData && chIPSeqData.headerRow && chIPSeqData.headerRow.length !== 0 && chIPSeqData.dataRow && chIPSeqData.dataRow.length !== 0 ?
                                       <div className="chip_seq_matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
-                                          <DataTable tableData={convertTargetDataToDataTable(chIPSeqData, selectedTabLevel3)} />
+
+                                          <Table
+                                              width={300}
+                                              height={300}
+                                              headerHeight={20}
+                                              rowHeight={30}
+                                              rowCount={formattedData.length}
+                                              rowGetter={({ index }) => formattedData[index]}
+                                          >
+                                              {formattedDataKeys.map((key) => <Column label={key} dataKey={key} width={700} key={key} />)}
+                                          </Table>
+
                                       </div>
                                   :
                                       <div className="chip_seq_matrix__warning">

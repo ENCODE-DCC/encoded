@@ -96,6 +96,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^5.0.7",
+    "react-virtualized": "^9.22.3",
     "redux": "^3.7.2",
     "redux-thunk": "^2.3.0",
     "scriptjs": "^2.5.7",
