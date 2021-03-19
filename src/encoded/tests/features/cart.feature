@@ -24,7 +24,7 @@ Feature: Cart
         And I click the link to "/cart-view/"
         And I wait for the content to load
         Then I should see 6 elements with the css selector ".result-item"
-        And I should see "3 files selected"
+        And I should see "5 files selected"
         When I press "default-data-toggle"
         Then I should see "2 files selected"
         When I click the link to "#processeddata"
