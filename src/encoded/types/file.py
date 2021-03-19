@@ -74,6 +74,22 @@ ENCODE_PROCESSING_PIPELINE_UUID = 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d'
 RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts', 'intensity values', 'idat red channel', 'idat green channel']
 
 
+# We use a common set of fields to take advantage of a
+# cached dataset object in all of the calculated_properties.
+EMBEDDED_DATASET_FIELDS = [
+    '@id',
+    '@type',
+    'uuid',
+    'status',
+    'assay_title',
+    'assay_term_name',
+    'annotation_type',
+    'biosample_ontology',
+    'target',
+    'targets',
+]
+
+
 def file_is_md5sum_constrained(properties):
     conditions = [
         properties.get('lab') != ENCODE_PROCESSING_PIPELINE_UUID,
@@ -120,7 +136,8 @@ class File(Item):
         'quality_metrics',
         'step_run',
         'biosample_ontology',
-        'target'
+        'target',
+        'targets'
     ]
     embedded_with_frame = [
         Path(
@@ -456,63 +473,112 @@ class File(Item):
         condition='dataset',
         define=True,
         schema={
+            "title": "Assay title",
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+            "notSubmittable": True
+        }
+    )
+    def assay_title(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('assay_title')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
             "title": "Assay term name",
-            "type": "string",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
             "notSubmittable": True
         }
     )
     def assay_term_name(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'assay_term_name',
-                    dataset
-                )
-            )
-        )
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('assay_term_name')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Annotation type",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "notSubmittable": True
+        }
+    )
+    def annotation_type(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('annotation_type')
 
     @calculated_property(
         condition='dataset',
         define=True,
         schema={
             "title": "Biosample ontology",
-            "type": "string",
-            "linkTo": "BiosampleType",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "BiosampleType"
+            },
             "notSubmittable": True
         }
     )
     def biosample_ontology(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'biosample_ontology',
-                    dataset
-                )
-            )
-        )
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('biosample_ontology')
 
     @calculated_property(
         condition='dataset',
         define=True,
         schema={
             "title": "Target",
-            "type": "string",
-            "linkTo": "Target",
-            "notSubmittable": True,
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "Target"
+            },
+            "notSubmittable": True
         }
     )
     def target(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'target',
-                    dataset
-                )
-            )
-        )
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('target')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Targets",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "Target"
+            },
+            "notSubmittable": True
+        }
+    )
+    def targets(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('targets')
 
     @calculated_property(schema={
         "title": "Analyses",

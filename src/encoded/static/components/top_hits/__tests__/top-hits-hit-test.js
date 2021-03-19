@@ -495,6 +495,7 @@ describe('Hit formatting', () => {
                 {
                     '@type': ['SomeSubType', 'SomeType'],
                     assay_title: 'my assay title',
+                    annotation_type: 'imputation',
                     biosample_ontology: {
                         term_name: 'a549',
                     },
@@ -517,6 +518,7 @@ describe('Hit formatting', () => {
             expect(fileHit.getValues()).toEqual(
                 [
                     ['name', 'abc123'],
+                    ['annotationType', 'imputation'],
                     ['title', 'my assay title'],
                     ['biosample', 'a549'],
                     ['target', 'target label'],
