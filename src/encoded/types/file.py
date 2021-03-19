@@ -164,7 +164,8 @@ class File(Item):
         'analysis_step_version.analysis_step.pipelines',
         'analysis_step_version.analysis_step.versions',
         'analysis_step_version.software_versions',
-        'analysis_step_version.software_versions.software'
+        'analysis_step_version.software_versions.software',
+        'analyses'
     ]
     set_status_up = [
         'quality_metrics',
