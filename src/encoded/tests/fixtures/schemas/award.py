@@ -133,3 +133,13 @@ def roadmap_award(testapp):
         'viewing_group': 'REMC',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
+
+
+@pytest.fixture
+def award_8(award_1):
+    item = award_1.copy()
+    item.update({
+        'schema_version': '8',
+        'viewing_group': 'ENCODE',
+    })
+    return item

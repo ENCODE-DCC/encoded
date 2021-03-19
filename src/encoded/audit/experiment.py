@@ -66,7 +66,9 @@ seq_assays = [
     'CUT&RUN',
     'CUT&Tag',
     'Capture Hi-C',
-    'single-nucleus RNA-seq',
+    'GRO-cap',
+    'GRO-seq',
+    'long read single-cell RNA-seq'
 ]
 
 

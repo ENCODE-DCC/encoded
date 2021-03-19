@@ -1151,7 +1151,7 @@
         "assay_term_name": "Capture Hi-C"
     },
     {
-        "_test": "single-nucleus RNA-seq test",
+        "_test": "single-cell (nucleus) RNA-seq test",
         "uuid": "6478af14-38ef-482e-aa5b-3b3cd06f8248",
         "accession": "ENCSR410JXF",
         "lab": "/labs/michael-snyder/",
@@ -1159,7 +1159,7 @@
         "status": "released",
         "date_released": "2015-08-31",
         "biosample_ontology": "tissue_UBERON_0001891",
-        "assay_term_name": "single-nucleus RNA-seq"
+        "assay_term_name": "single-cell RNA sequencing assay"
     },
     {
         "_test": "ATAC-seq reg Tcell",
@@ -1199,5 +1199,42 @@
         "date_released": "2020-09-11",
         "accession": "ENCSR309ART",
         "uuid": "cd18b797-db64-458a-b117-10de5210130a"
+    },
+    {
+        "_test": "GRO-cap example",
+        "accession": "ENCSR999GRO",
+        "assay_term_name": "GRO-cap",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_submitted": "2019-01-01",
+        "date_released": "2020-01-13",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "2578eaf9-a858-43ec-b75d-03e9695cb235"
+    },
+    {
+        "_test": "GRO-seq example",
+        "accession": "ENCSR888GRO",
+        "assay_term_name": "GRO-seq",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_submitted": "2019-01-01",
+        "date_released": "2020-01-13",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "610e797b-08ee-4503-9fdf-424b24a09308"
+    },
+    {
+        "_test": "long read scRNA SPLiT-seq example",
+        "uuid": "c2e86d28-f03a-46b3-9e23-a6cb044f9662",
+        "accession": "ENCSR000LSC",
+        "assay_term_name": "long read single-cell RNA-seq",
+        "award": "U54HG006991",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "lab": "ali-mortazavi",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra"
     }
 ]

@@ -85,3 +85,21 @@ def pipeline_10_11(value, system):
     for i, a in enumerate(value.get('assay_term_names', [])):
         if a == 'single cell isolation followed by RNA-seq':
             value['assay_term_names'][i] = 'single-cell RNA sequencing assay'
+
+
+@upgrade_step('pipeline', '11', '12')
+def pipeline_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5787
+    notes = ''
+    for i, a in enumerate(value.get('assay_term_names', [])):
+        if a == 'single-nucleus RNA-seq':
+            value['assay_term_names'][i] = 'single-cell RNA sequencing assay'
+            notes += 'This pipeline is now compatible with scRNA-seq, upgraded from snRNA-seq.'
+        elif a == 'genotyping by high throughput sequencing assay':
+            value['assay_term_names'][i] = 'whole genome sequencing assay'
+            notes += 'This pipeline is now compatible with WGS, upgraded from genotyping HTS assay.'
+    if notes != '':
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {notes}'
+        else:
+            value['notes'] = notes

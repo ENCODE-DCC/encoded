@@ -1,5 +1,9 @@
 ## Changelog for software.json
 
+### Schema version 8
+
+* Added *GRO-cap*, *GRO-seq*, and *long read single-cell RNA-seq* to *assay_term_name* enum;  *single-nucleus RNA-seq* and *genotyping by high throughput sequencing assay* were removed and remapped to *single-cell RNA sequencing assay* and *whole genome sequencing assay* respectively
+
 ### Minor changes since schema version 7
 * Added *CUT&RUN* to *purpose* enum
 * Added *SPRITE-IP* to *purpose* enum

@@ -29,3 +29,17 @@ def test_software_upgrade_6_7(upgrader, software_1):
         sorted(value['purpose']),
         sorted(['single-cell RNA sequencing assay', 'RNA-seq'])
     )
+
+
+def test_software_upgrade_7_8(upgrader, software_1):
+    software_1['schema_version'] = '7'
+    software_1['purpose'] = ['single-nucleus RNA-seq',
+                             'genotyping by high throughput sequencing assay']
+    value = upgrader.upgrade('software', software_1, target_version='8')
+    assert value['schema_version'] == '8'
+    TestCase().assertListEqual(
+        sorted(value['purpose']),
+        sorted(['single-cell RNA sequencing assay',
+                'whole genome sequencing assay'])
+    )
+    assert 'The purpose for this software is now WGS, upgraded from genotyping HTS assay.' in value['notes']

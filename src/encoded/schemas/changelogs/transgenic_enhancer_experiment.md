@@ -9,3 +9,4 @@
 * Added *Capture Hi-C* and *single-nucleus RNA-seq* to *assay_term_name* enum
 * Added *LRGASP* to the *internal_tags* enum
 * Added *doi* property
+* Added *GRO-cap*, *GRO-seq*, and *long read single-cell RNA-seq* to *assay_term_name* enum;  *single-nucleus RNA-seq* and *genotyping by high throughput sequencing assay* were removed and remapped to *single-cell RNA sequencing assay* and *whole genome sequencing assay* respectively

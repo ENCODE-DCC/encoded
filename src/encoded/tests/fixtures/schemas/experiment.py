@@ -790,3 +790,14 @@ def ChIA_PET_experiment(testapp, lab, encode4_award, heart):
         'biosample_ontology': heart['uuid']
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_31(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '31',
+        'assay_term_name': 'single-nucleus RNA-seq'
+    })
+    return properties

@@ -28,7 +28,6 @@ assay_terms = {
       'PAS-seq': 'OBI:0002045',
       'RIP-chip': 'OBI:0001918',
       'RNA-PET': 'OBI:0001850',
-      'genotyping by high throughput sequencing assay': 'OBI:0001247',
       'CRISPR genome editing followed by RNA-seq': 'NTR:0003814',
       'protein sequencing by tandem mass spectrometry assay': 'OBI:0001923',
       '5C': 'OBI:0001919',
@@ -74,5 +73,7 @@ assay_terms = {
       'CUT&RUN': 'NTR:0000557',
       'CUT&Tag': 'NTR:0000564',
       'Capture Hi-C': 'NTR:0000626',
-      'single-nucleus RNA-seq': 'NTR:0000627',
+      'GRO-seq': 'NTR:0000640',
+      'GRO-cap': 'NTR:0000641',
+      'long read single-cell RNA-seq': 'NTR:0000642',
 }

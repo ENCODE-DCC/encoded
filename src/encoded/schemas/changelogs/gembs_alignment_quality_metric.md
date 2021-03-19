@@ -5,3 +5,4 @@
 * Added *CUT&Tag* to *assay_term_name* enum
 * Added *correct_pairs*, *general_reads*, *average_coverage* and *pct_general_reads* properties
 * Added *Capture Hi-C* and *single-nucleus RNA-seq* to *assay_term_name* enum
+* Added *GRO-cap*, *GRO-seq*, and *long read single-cell RNA-seq* to *assay_term_name* enum;  *single-nucleus RNA-seq* and *genotyping by high throughput sequencing assay* were removed and remapped to *single-cell RNA sequencing assay* and *whole genome sequencing assay* respectively
