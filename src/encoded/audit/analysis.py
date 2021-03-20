@@ -156,6 +156,8 @@ def check_analysis_dnase_seq_standards(
     alignment_files = files_structure.get('alignments').values()
     signal_files = files_structure.get('normalized_signal_files').values()
 
+    if value['assembly'] == 'hg19':
+        return
     pipeline_titles = [pipeline['title'] for pipeline in value['pipelines']]
     if any(
         title not in expected_pipeline_titles
@@ -307,11 +309,9 @@ function_dispatcher_with_files = {
         'datasets'
     ])
 def audit_analysis(value, system):
-    excluded_files = ['revoked', 'archived']
+    excluded_files = ['revoked']
     if value['status'] == 'revoked':
         excluded_files = []
-    if value['status'] == 'archived':
-        excluded_files = ['revoked']
     files_structure = create_files_mapping(
         value['files'], excluded_files)
 
