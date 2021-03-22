@@ -1571,6 +1571,8 @@ const processFilesAnalyses = (files, analyses) => {
  * Sort an array of files by their statuses according to their order in
  * pseudoDefaultFileStatusOrder. Anything not in pseudoDefaultFileStatusOrder gets sorted randomly
  * at the end.
+ * @param {array} files Files to sort
+ * @return {array} Files sorted by the three following statuses
  */
 const pseudoDefaultFileStatusOrder = ['released', 'archived', 'in progress'];
 const sortPseudoDefaultFilesByStatus = (files) => (
@@ -1578,6 +1580,19 @@ const sortPseudoDefaultFilesByStatus = (files) => (
         const foundIndex = pseudoDefaultFileStatusOrder.indexOf(file.status);
         return foundIndex !== -1 ? foundIndex : pseudoDefaultFileStatusOrder.length;
     })
+);
+
+
+/**
+ * Sort an array of assemblies, newer assemblies first. Carts don’t track genome_annotation, so those
+ * don't enter into this sorting.
+ * @param {array} files Files to sort
+ * @return {array} Files sorted by assembly.
+ */
+const sortAssemblies = (assemblies) => (
+    _(assemblies).sortBy((assembly) => (
+        -computeAssemblyAnnotationValue(assembly)
+    ))
 );
 
 
@@ -1606,17 +1621,21 @@ export const processPseudoDefaultFiles = (datasets = []) => {
                     // from all visualizable files.
                     const outputTypes = visualizableFiles.reduce((accOutputTypes, file) => accOutputTypes.add(file.output_type), new Set());
                     if (outputTypes.size > 1) {
-                        // Multiple output types among the files. Group first by replicate and then
-                        // by output_type.
-                        const replicateFiles = _(visualizableFiles).groupBy((file) => file.biological_replicates[0]);
-                        Object.keys(replicateFiles).forEach((replicate) => {
-                            const outputTypeFiles = _(replicateFiles[replicate]).groupBy((file) => file.output_type);
-                            Object.keys(outputTypeFiles).forEach((outputType) => {
-                                // Select the first bigWig and first bigBed within each
-                                // output_type within each replicate.
-                                const firstBigWig = outputTypeFiles[outputType].find((file) => file.file_format === 'bigWig');
-                                const firstBigBed = outputTypeFiles[outputType].find((file) => file.file_format === 'bigBed');
-                                pseudoDefaultFiles.push(..._.compact([firstBigWig, firstBigBed]));
+                        // Multiple output types among the files. Group first by sorted assembly,
+                        // then replicate, and then by output_type.
+                        const assemblyFiles = _(visualizableFiles).groupBy((file) => file.assembly);
+                        const sortedAssemblies = sortAssemblies(Object.keys(assemblyFiles));
+                        sortedAssemblies.forEach((assembly) => {
+                            const replicateFiles = _(assemblyFiles[assembly]).groupBy((file) => file.biological_replicates[0]);
+                            Object.keys(replicateFiles).forEach((replicate) => {
+                                const outputTypeFiles = _(replicateFiles[replicate]).groupBy((file) => file.output_type);
+                                Object.keys(outputTypeFiles).forEach((outputType) => {
+                                    // Select the first bigWig and first bigBed within each
+                                    // output_type within each replicate.
+                                    const firstBigWig = outputTypeFiles[outputType].find((file) => file.file_format === 'bigWig');
+                                    const firstBigBed = outputTypeFiles[outputType].find((file) => file.file_format === 'bigBed');
+                                    pseudoDefaultFiles.push(..._.compact([firstBigWig, firstBigBed]));
+                                });
                             });
                         });
                     } else {
@@ -2022,7 +2041,9 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         totalPageCount={totalPageCount.browser}
                                         updateCurrentPage={updateDisplayedPage}
                                     />
-                                    {Object.keys(selectedTerms).length > 0 ? <CartBrowser files={selectedVisualizableFiles} assembly={selectedTerms.assembly[0]} pageNumber={pageNumbers.browser} /> : null}
+                                    {Object.keys(selectedTerms).length > 0 && selectedTerms.assembly && selectedTerms.assembly.length > 0
+                                        ? <CartBrowser files={selectedVisualizableFiles} assembly={selectedTerms.assembly[0]} pageNumber={pageNumbers.browser} />
+                                        : null}
                                 </TabPanelPane>
                                 <TabPanelPane key="processeddata">
                                     <CartPager
