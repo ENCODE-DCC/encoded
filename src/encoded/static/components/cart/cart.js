@@ -1568,13 +1568,18 @@ const processFilesAnalyses = (files, analyses) => {
 
 
 /**
+ * Use the following order when sortnig files by status for evaluating pseudo-default files.
+ */
+const pseudoDefaultFileStatusOrder = ['released', 'archived', 'in progress'];
+
+
+/**
  * Sort an array of files by their statuses according to their order in
  * pseudoDefaultFileStatusOrder. Anything not in pseudoDefaultFileStatusOrder gets sorted randomly
  * at the end.
  * @param {array} files Files to sort
  * @return {array} Files sorted by the three following statuses
  */
-const pseudoDefaultFileStatusOrder = ['released', 'archived', 'in progress'];
 const sortPseudoDefaultFilesByStatus = (files) => (
     _(files).sortBy((file) => {
         const foundIndex = pseudoDefaultFileStatusOrder.indexOf(file.status);
@@ -1586,7 +1591,7 @@ const sortPseudoDefaultFilesByStatus = (files) => (
 /**
  * Sort an array of assemblies, newer assemblies first. Carts don’t track genome_annotation, so those
  * don't enter into this sorting.
- * @param {array} files Files to sort
+ * @param {array} assemblies Assemblies to sort
  * @return {array} Files sorted by assembly.
  */
 const sortAssemblies = (assemblies) => (
@@ -2041,7 +2046,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         totalPageCount={totalPageCount.browser}
                                         updateCurrentPage={updateDisplayedPage}
                                     />
-                                    {Object.keys(selectedTerms).length > 0 && selectedTerms.assembly && selectedTerms.assembly.length > 0
+                                    {selectedTerms.assembly && selectedTerms.assembly.length > 0
                                         ? <CartBrowser files={selectedVisualizableFiles} assembly={selectedTerms.assembly[0]} pageNumber={pageNumbers.browser} />
                                         : null}
                                 </TabPanelPane>
