@@ -81,7 +81,7 @@
     "dayjs": "^1.8.16",
     "domready": "^1.0.8",
     "form-serialize": "^0.6.0",
-    "genome-visualizer": "git://github.com/ENCODE-DCC/valis-hpgv.git#ENCD-5770-add-legend-to-browser",
+    "genome-visualizer": "git://github.com/ENCODE-DCC/valis-hpgv.git#1.8.0",
     "google-analytics": "file:node_shims/google-analytics",
     "graphlib": "git://github.com/ENCODE-DCC/graphlib.git#v1.0.8",
     "immutable": "^3.7.5",

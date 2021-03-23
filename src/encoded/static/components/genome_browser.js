@@ -825,7 +825,7 @@ class GenomeBrowser extends React.Component {
                 }));
             }
             let labelLength = 0;
-            const defaultHeight = 34;
+            const defaultHeight = 29;
             const extraLineHeight = 12;
             const maxCharPerLine = 26;
             // Some labels on the cart which have a target, assay name, and biosample are too long for one line (some actually extend to three lines)
@@ -856,7 +856,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.type = 'signal';
                 trackObj.path = domain + file.href;
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
-                trackObj.expandedHeightPx = 140;
+                trackObj.expandedHeightPx = 135;
                 return trackObj;
             }
             if (file.file_format === 'vdna-dir') {
@@ -864,7 +864,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.name = <ul className="gb-info"><li>{this.props.assembly.split(' ')[0]}</li></ul>;
                 trackObj.type = 'sequence';
                 trackObj.path = file.href;
-                trackObj.heightPx = 40;
+                trackObj.heightPx = 35;
                 trackObj.expandable = false;
                 return trackObj;
             }
@@ -873,7 +873,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.name = <ul className="gb-info"><li>{file.title}</li></ul>;
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
-                trackObj.heightPx = 120;
+                trackObj.heightPx = 115;
                 trackObj.expandable = false;
                 trackObj.displayLabels = true;
                 return trackObj;
@@ -886,7 +886,7 @@ class GenomeBrowser extends React.Component {
             trackObj.expandable = true;
             trackObj.displayLabels = false;
             trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
-            trackObj.expandedHeightPx = 140;
+            trackObj.expandedHeightPx = 135;
             trackObj.fileFormatType = file.file_format_type;
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
