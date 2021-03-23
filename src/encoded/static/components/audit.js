@@ -217,7 +217,7 @@ class AuditGroup extends React.Component {
         return (
             <div className={alertClass}>
                 <div className="audit-detail__summary">
-                    <div className={`icon audit-detail__trigger--${level}`}>
+                    <div className={`audit-detail__trigger audit-detail__trigger--${level}`}>
                         <button type="button" onClick={this.detailSwitch} className="collapsing-title">
                             {collapseIcon(!detailOpen)}
                         </button>
@@ -266,6 +266,32 @@ export function auditsDisplayed(audits, session) {
 
     return (audits && Object.keys(audits).length > 0) && (loggedIn || !(Object.keys(audits).length === 1 && audits.INTERNAL_ACTION));
 }
+
+
+/**
+ * Filter the given audit object (as it appears in the object JSON) and generate a new audit object
+ * only containing the audits relevant to the given path, e.g. /experiments/ACCESSION/. An empty
+ * object in the `audit` parameter results in an empty object returned.
+ * @param {object} audit System audit object
+ * @param {string} path Returned audits all refer to this path/@id
+ * @return {object} System audit object but only with keys and values relevant to the given path
+ */
+export const filterAuditByPath = (audit, path) => (
+    Object.keys(audit).reduce((accAudit, auditSection) => {
+        // Within an audit section, get all the audits relevant to the given path.
+        const auditsForPath = audit[auditSection].filter((singleAudit) => (
+            singleAudit.path === path
+        ));
+
+        // Add this audit section's relevant audits to the accumulating filtered audits.
+        if (auditsForPath.length > 0) {
+            return { ...accAudit, [auditSection]: auditsForPath };
+        }
+
+        // No audits in this section relevant to the given path.
+        return accAudit;
+    }, {})
+);
 
 
 /**
@@ -334,12 +360,17 @@ export const auditDecor = (AuditComponent) => (class extends React.Component {
         super();
         this.state = { auditDetailOpen: false };
         this.toggleAuditDetail = this.toggleAuditDetail.bind(this);
+        this.auditCloseDetail = this.auditCloseDetail.bind(this);
         this.auditIndicators = this.auditIndicators.bind(this);
         this.auditDetail = this.auditDetail.bind(this);
     }
 
     toggleAuditDetail() {
         this.setState((prevState) => ({ auditDetailOpen: !prevState.auditDetailOpen }));
+    }
+
+    auditCloseDetail() {
+        this.setState({ auditDetailOpen: false });
     }
 
     auditIndicators(audits, id, options) {
@@ -412,6 +443,7 @@ export const auditDecor = (AuditComponent) => (class extends React.Component {
                 {...this.props}
                 auditIndicators={this.auditIndicators}
                 auditDetail={this.auditDetail}
+                auditCloseDetail={this.auditCloseDetail}
             />
         );
     }
