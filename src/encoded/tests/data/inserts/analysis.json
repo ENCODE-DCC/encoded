@@ -10,8 +10,12 @@
         "uuid": "dcdf12fd-f377-42c2-9aa2-34f08c6e130f",
         "accession": "ENCAN545UKN",
         "complete": false,
+        "documents": [
+            "encode-processing-pipeline:cromwell-metadata-dc52ccc3-96aa-4422-ae8b-72cca0d9c2c7"
+        ],
         "files": ["ENCFF101RCZ"],
-        "pipeline_version": "1.2.3"
+        "pipeline_version": "1.2.3",
+        "status": "released"
     },
     {
         "uuid": "c334db96-ef24-461e-93c4-ba5f1f0f8d9b",

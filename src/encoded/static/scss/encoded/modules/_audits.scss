@@ -105,11 +105,23 @@ $audit-types:
     }
 }
 
-%audit-detail-trigger {
-    display: block;
+.audit-detail__trigger {
     flex: 0 0 $audit-group-height;
     height: $audit-group-height;
     width: $audit-group-height;
+
+    .collapsing-title {
+        display: flex;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+
+        .collapsing-title-control {
+            display: block;
+        }
+    }
 }
 
 // Area that toggles appearance when audit indicators are clicked on.
@@ -132,6 +144,7 @@ $audit-types:
     @at-root #{&}__info {
         flex: 1 1 auto;
         padding: 4px 10px;
+        font-size: 1rem;
         line-height: $audit-group-height - 10;
         border-left: 1px solid #a0a0a0;
     }
@@ -187,8 +200,6 @@ $audit-types:
     }
 
     .audit-detail__trigger--#{$audit-type} {
-        @extend %audit-detail-trigger;
-
         &:hover {
             background-color: darken(fg-to-bg-color($color), 10%);
         }
@@ -199,6 +210,7 @@ $audit-types:
         background-color: darken(fg-to-bg-color($color), 10%);
         border-top: 1px solid #a0a0a0;
         font-weight: 400;
+        font-size: 1rem;
     }
 }
 

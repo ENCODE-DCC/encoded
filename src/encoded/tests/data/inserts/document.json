@@ -436,5 +436,17 @@
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "b87f5cec-882e-42a5-be82-5932a8ea6166"
+    },
+    {
+        "aliases": [
+            "encode-processing-pipeline:cromwell-metadata-dc52ccc3-96aa-4422-ae8b-72cca0d9c2c7"
+        ],
+        "attachment": "ENCSR292QBA_dc52ccc3-96aa-4422-ae8b-72cca0d9c2c7_metadata.json",
+        "award": "U54HG007010",
+        "document_type": "workflow metadata",
+        "lab": "/labs/encode-processing-pipeline/",
+        "status": "in progress",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "uuid": "e0fb3512-f78b-4e0c-9f5f-725726eff117"
     }
 ]

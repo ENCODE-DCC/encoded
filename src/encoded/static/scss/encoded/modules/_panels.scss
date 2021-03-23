@@ -659,15 +659,14 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
 
 // Collapsing title bar
 .collapsing-title {
-    position: relative;
-    display: block;
-    padding: 10px;
-    height: 100%;
+    display: flex;
+    align-items: center;
     border: none;
     background-color: transparent;
 
     h4 {
-        margin: 0 0 0 40px;
+        margin: 0;
+        padding-left: 10px;
         text-align: left;
     }
 
@@ -687,6 +686,23 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
 
         &--no-download-shade {
             opacity: 0.3;
+        }
+    }
+
+    // Audit trigger button inside collapsing title
+    .audit-indicators {
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+    // Audit details drop-down panel displayed just below collapsing title
+    @at-root #{&}__audit-details {
+        background-color: #b5bbc2;
+
+        .audit-detail {
+            margin: 0 0 0 40px;
+            border-right: none;
+            border-radius: 0;
         }
     }
 }
@@ -717,12 +733,12 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
 }
 
 .collapsing-title-trigger {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 41px;
-    padding: 10px;
+    display: flex;
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
     border-top: none;
     border-right: 1px solid #fff;
     border-bottom: none;
