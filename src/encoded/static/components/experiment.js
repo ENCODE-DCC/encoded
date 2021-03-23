@@ -493,9 +493,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     analysisStepDocs = analysisStepDocs.length > 0 ? _.uniq(analysisStepDocs) : [];
     pipelineDocs = pipelineDocs.length > 0 ? _.uniq(pipelineDocs) : [];
 
-    // Determine this experiment's ENCODE version.
-    const encodevers = globals.encodeVersion(context);
-
     // Make list of statuses.
     const statuses = [{ status: context.status, title: 'Status' }];
     if (adminUser && context.internal_status) {
@@ -930,7 +927,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
             {/* Display the file widget with the facet, graph, and tables for Experiment and FunctionalCharacterizationExperiment only. */}
             {!isEnhancerExperiment ?
-                <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
+                <FileGallery context={context} anisogenic={anisogenic} />
             : null}
 
             {biosampleCharacterizations && biosampleCharacterizations.length > 0 ?
