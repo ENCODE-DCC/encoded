@@ -29,7 +29,7 @@ from .assay_data import assay_terms
     name='single-cell-experiments',
     unique_key='accession',
     properties={
-        'title': "Single cell experiment",
+        'title': "Single cell experiments",
         'description': 'Listing of all types of single cell experiments.',
     })
 class SingleCellExperiment(
@@ -255,11 +255,11 @@ class HighThroughputSingleCellExperiment(
 
 
 @collection(
-    name='single-cell-unit-dataset',
+    name='single-cell-unit-datasets',
     unique_key='accession',
     properties={
         'title': 'Single cell unit datasets',
-        'description': 'Listing of High Throughput Single Cell Experiments',
+        'description': 'Listing of single cell unit datasets',
     })
 class SingleCellUnitDataset(
     Dataset,
