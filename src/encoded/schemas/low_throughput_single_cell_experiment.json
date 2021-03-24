@@ -71,7 +71,7 @@
             }
         },
         "single_cell_unit_datasets": {
-            "title": "The single cell unit datasets comprise the low throughput single cell experiment",
+            "title": "The single cell unit datasets that comprise the low throughput single cell experiment",
             "description": "List of datasets to be associated with the experiment.",
             "type": "array",
             "default": [],
