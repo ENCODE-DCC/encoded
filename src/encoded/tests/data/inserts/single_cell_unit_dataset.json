@@ -1,0 +1,30 @@
+[
+    {
+        "_test": "single cell unit one",
+        "accession": "ENCSR324SCU",
+        "assay_term_name": "single-cell RNA sequencing assay",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "one single cell",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_submitted": "2015-01-20",
+        "date_released": "2015-12-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "d9032a57-9ba6-4512-af8d-79f31953f6e3"
+    },
+    {
+        "_test": "single cell unit two",
+        "accession": "ENCSR423OSC",
+        "assay_term_name": "single-cell RNA sequencing assay",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "low dilution single cell",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_submitted": "2015-01-20",
+        "date_released": "2015-12-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "e3a8ea8f-5237-49db-8e3f-f2605b448cb7"
+    }
+]

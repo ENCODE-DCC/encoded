@@ -1,0 +1,17 @@
+[
+    {
+        "_test": "fluidigm",
+        "accession": "ENCSR857FDG",
+        "assay_term_name": "single-cell RNA sequencing assay",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "single-cell RNA sequencing assay experiment",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_submitted": "2015-01-20",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "31d378f3-aba4-428d-908b-d0d3f60d6e2e",
+        "single_cell_unit_datasets": ["ENCSR324SCU", "ENCSR423OSC"]
+    }
+]
