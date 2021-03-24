@@ -64,6 +64,77 @@ const inclusionStatuses = [
 ];
 
 /**
+ *  In the Analysis Collection array of object-argument, loop through all the object's keys that match the key-argument.
+ *  In the keys matching the key-argument, get all values that match any entry in the filters-argument.
+ *  Stop after getting any result and return the result.
+ *
+ *  For example, if -
+ *      analyis = [{'a': 1, 'b': 2}, {'a': 3, 'c': '5'}, {'c': 1, 'a': 2}]
+ *      filters = ['c', 'b']
+ *      key = 'c'
+ *
+ *  The result will be {'a': 3, 'c': '5'} as the first key-argument 'c' is in the filter-argument 'c'
+ *  and it matches the entry {'a': 3, 'c': '5'} first.
+ *
+ * @param {array} group Analysis collection
+ * @param {array} filters Filter collection
+ * @param {string} key Part of analysis collection to filter on
+ * @returns All entries that satisfies the first filter-entry based on  key
+*/
+const filterAnalysisByKey = (group, filters, key) => {
+    for (let i = 0; i < filters.length; i += 1) {
+        const filter = filters[i];
+        const filteredGroup = group.filter((analysis) => analysis[key].includes(filter));
+
+        if (filteredGroup.length > 0) {
+            return filteredGroup;
+        }
+    }
+
+    return [...group];
+};
+
+/**
+ * Sort analyses by assembly in descending order. Then return all analyses-entry containing the first assembly
+ *
+ * @param {array} analysesGroup
+ * @returns All analyses entries that contains the earliest assembly
+ */
+const filterAssembly = (analysesGroup) => {
+    if (!analysesGroup || analysesGroup.length > 2) {
+        return analysesGroup;
+    }
+
+    const sortedAnalysesGroup = analysesGroup.sort((a, b) => (b.assembly || '').toLowerCase() - (a.assembly || '').toLowerCase());
+    const { assembly } = sortedAnalysesGroup[0];
+
+    return sortedAnalysesGroup.filter((f) => f.assembly === assembly);
+};
+
+/**
+ * Sort analyses by version
+ *
+ * @param {array} analysesGroup
+ * @returns Sorted analyses group by version
+*/
+const sortAnalysisByVersion = (analysesGroup) => {
+    const sortedAnalysesAwarded = analysesGroup.sort((a, b) => {
+        // remove text
+        const numbersInTitle1 = a.title.replace(/\D/g, '');
+        const numbersInTitle2 = b.title.replace(/\D/g, '');
+
+        // add numbers so ones with version have the same number of digits as non-versioned ones
+        const number1 = numbersInTitle1.padEnd ? numbersInTitle1.padEnd(8, 0) : numbersInTitle1;
+        const number2 = numbersInTitle2.padEnd ? numbersInTitle2.padEnd(8, 0) : numbersInTitle2;
+
+        // sort
+        return parseInt(number2, 10) - parseInt(number1, 10);
+    });
+
+    return sortedAnalysesAwarded;
+};
+
+/**
  * Compile the usable experiment analysis objects into a form for rendering a dropdown of pipeline
  * labs. Export for Jest test.
  * @param {array} analyses Analyses to compile, from one or more datasets
@@ -2600,46 +2671,28 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
     });
 
     /**
-     * Selects certain awards as the default if listed.
+     * Select default for "Choose Analysis".
+     *
+     * It runs after all renders to keep current with analyses
     */
-    useMount(() => {
-        const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed labs', 'Lab custom']; // ordered in decreasing precedence
-        const analysesAwarded = analyses.filter((analysis) => awardSuffix.some((award) => (analysis.title || '').includes(award)));
+    React.useEffect(() => {
+        const awardSuffixes = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
+        const statuses = ['released', 'in progress', 'archived', 'revoked', 'deleted']; // ordered in decreasing precedence
 
-        // a bit hacky, removes text and use number to determine sorting
-        const sortedAnalysesAwarded = analysesAwarded.sort((a, b) => {
-            // remove text
-            const numbersInTitle1 = a.title.replace(/\D/g, '');
-            const numbersInTitle2 = b.title.replace(/\D/g, '');
+        // Narrow down analysis until we have the default as the first entry
+        let analysisGroup = [];
+        analysisGroup = filterAnalysisByKey(analyses, awardSuffixes, 'title');
+        analysisGroup = filterAnalysisByKey(analysisGroup, statuses, 'status');
+        analysisGroup = sortAnalysisByVersion(analysisGroup);
+        analysisGroup = filterAssembly(analysisGroup);
 
-            // add numbers so ones with version have the same number of digits as non-versioned ones
-            const number1 = numbersInTitle1.padEnd ? numbersInTitle1.padEnd(8, 0) : numbersInTitle1;
-            const number2 = numbersInTitle2.padEnd ? numbersInTitle2.padEnd(8, 0) : numbersInTitle2;
-
-            // sort
-            return parseInt(number2, 10) - parseInt(number1, 10);
-        });
-
-        // search for the analysis based on precedence and get the index
-        let selectedAnalysis = null;
-
-        awardSuffix.every((award) => {
-            sortedAnalysesAwarded.every((analysis) => {
-                selectedAnalysis = analysis.title && analysis.title.includes(award) ? analysis : null;
-
-                return !selectedAnalysis; // kills loop if this evaluates to true
-            });
-
-            return !selectedAnalysis; // kills loop if this evaluates to true
-        });
-
-        selectedAnalysis = selectedAnalysis || analyses[0];
+        const selectedAnalysis = analysisGroup[0] || analyses[0];
         const selectedIndex = analyses.findIndex((a) => a.title === selectedAnalysis.title);
 
         if (selectedIndex !== -1) {
             handleAnalysesSelection(selectedIndex);
         }
-    });
+    }, [analyses]);
 
     // Called when the user changes the dropdown selection. Tells the file gallery so it can update
     // its state that tracks this.
