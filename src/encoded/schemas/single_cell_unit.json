@@ -1,8 +1,8 @@
 {
-    "title": "Single Cell Unit Dataset",
-    "description": "Schema for submitting metadata for a single cell unit dataset.",
-    "comment": "A single cell unit dataset is a special case of dataset. It includes assay metadata, replicate information and data files.",
-    "id": "/profiles/single_cell_unit_dataset.json",
+    "title": "Single Cell Unit",
+    "description": "Schema for submitting metadata for a single cell unit.",
+    "comment": "A single cell unit is a special case of dataset. It includes assay metadata, replicate information and data files.",
+    "id": "/profiles/single_cell_unit.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
@@ -206,5 +206,5 @@
         "doi": 1.0,
         "description": 8.0
     },
-    "changelog": "/profiles/changelogs/single_cell_unit_dataset.md"
+    "changelog": "/profiles/changelogs/single_cell_unit.md"
 }

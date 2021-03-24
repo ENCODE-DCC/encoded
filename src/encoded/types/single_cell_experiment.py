@@ -255,13 +255,13 @@ class HighThroughputSingleCellExperiment(
 
 
 @collection(
-    name='single-cell-unit-datasets',
+    name='single-cell-units',
     unique_key='accession',
     properties={
-        'title': 'Single cell unit datasets',
-        'description': 'Listing of single cell unit datasets',
+        'title': 'Single cell units',
+        'description': 'Listing of single cell units',
     })
-class SingleCellUnitDataset(
+class SingleCellUnit(
     Dataset,
     CalculatedBiosampleSummary,
     CalculatedReplicates,
@@ -274,8 +274,8 @@ class SingleCellUnitDataset(
     CalculatedTypeSlims,
     CalculatedObjectiveSlims
     ):
-    item_type = 'single_cell_unit_dataset'
-    schema = load_schema('encoded:schemas/single_cell_unit_dataset.json')
+    item_type = 'single_cell_unit'
+    schema = load_schema('encoded:schemas/single_cell_unit.json')
     embedded = Dataset.embedded + [
         'biosample_ontology',
         'files.platform',
@@ -351,7 +351,7 @@ class SingleCellUnitDataset(
     rev.update({
         'related_series': ('Series', 'related_datasets'),
         'replicates': ('Replicate', 'experiment'),
-        'superseded_by': ('SingleCellUnitDataset', 'supersedes')
+        'superseded_by': ('SingleCellUnit', 'supersedes')
     })
 
     @calculated_property(schema={
@@ -371,7 +371,7 @@ class SingleCellUnitDataset(
             "type": "array",
             "items": {
                 "type": ['string', 'object'],
-                "linkFrom": "SingleCellUnitDataset.supersedes",
+                "linkFrom": "SingleCellUnit.supersedes",
             },
             "notSubmittable": True,
     })

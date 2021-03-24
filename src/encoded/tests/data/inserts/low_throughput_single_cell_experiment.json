@@ -12,6 +12,6 @@
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "31d378f3-aba4-428d-908b-d0d3f60d6e2e",
-        "single_cell_unit_datasets": ["ENCSR324SCU", "ENCSR423OSC"]
+        "single_cell_units": ["ENCSR324SCU", "ENCSR423OSC"]
     }
 ]

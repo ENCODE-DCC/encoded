@@ -70,8 +70,8 @@
                 "linkTo": "LowThroughputSingleCellExperiment"
             }
         },
-        "single_cell_unit_datasets": {
-            "title": "The single cell unit datasets that comprise the low throughput single cell experiment",
+        "single_cell_units": {
+            "title": "The single cell units that comprise the low throughput single cell experiment",
             "description": "List of datasets to be associated with the experiment.",
             "type": "array",
             "default": [],
@@ -80,7 +80,7 @@
                 "title": "Dataset",
                 "comment": "See dataset.json for available identifiers.",
                 "type": "string",
-                "linkTo": "SingleCellUnitDataset"
+                "linkTo": "SingleCellUnit"
             }
         }
     },
