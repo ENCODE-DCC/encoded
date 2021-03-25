@@ -373,7 +373,7 @@ def _get_instances_tag_data(main_args, build_type_template_name):
 
 
 def _get_ec2_client(main_args, instances_tag_data):
-    session = boto3.Session(region_name='us-west-2', profile_name=main_args.profile_name)
+    session = boto3.Session(region_name=main_args.aws_region, profile_name=main_args.profile_name)
     ec2 = session.resource('ec2')
     name_to_check = instances_tag_data['name']
     if main_args.node_name:
@@ -1057,6 +1057,7 @@ def _parse_args():
             "repo"
         )
     )
+    parser.add_argument('--aws-region', default='us-west-2', help="AWS region to deploy to")
     args = parser.parse_args()
     # If needed, get ami.
     if not args.image_id:
