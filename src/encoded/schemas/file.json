@@ -633,9 +633,13 @@
                             }
                         },
                         {
-                            "required": [
+                            "oneOf":[
+                                {"required": [
                                 "replicate",
-                                "platform"
+                                "platform"]},
+                            {"required": [
+                                "library",
+                                "platform"]}
                             ],
                             "properties": {
                                 "file_format": {
@@ -670,10 +674,17 @@
                             ]
                         },
                         {
-                            "required": [
-                                "replicate",
-                                "platform",
-                                "run_type"
+                            "oneOf":[
+                                {"required": [
+                                    "replicate",
+                                    "platform",
+                                    "run_type"
+                                ]},
+                                {"required": [
+                                    "library",
+                                    "platform",
+                                    "run_type"
+                                ]}
                             ],
                             "properties": {
                                 "file_format": {
@@ -1031,6 +1042,13 @@
         }
     },
     "properties": {
+        "library": {
+            "title": "Library",
+            "description": "The nucleic acid library used in this replicate.",
+            "comment": "See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
+        },
          "date_created": {
             "rdfs:subPropertyOf": "dc:created",
             "title": "Date created",
