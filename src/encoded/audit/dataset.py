@@ -8,11 +8,25 @@ from .formatter import (
 )
 
 
+def audit_dataset_no_raw_files(value, system):
+    if value['status'] not in ['released','in progress']:
+        return
+    raw_data = False
+    if 'original_files' in value:
+        for f in value['original_files']:
+            if f['@type'][0] == 'RawSequenceFile':
+                raw_data = True
+    if raw_data == False:
+        detail = ('Released dataset {} does not contain any raw sequence files.'.format(
+                audit_link(path_to_text(value['@id']), value['@id'])
+            )
+        )
+        yield AuditFailure('no raw data', detail, level='ERROR')
+    return
+
+
 def audit_dataset_dcp_required_properties(value, system):
-    '''
-    A released experiment should not have unreleased files
-    '''
-    if value['status'] != 'released':
+    if value['status'] not in ['released','in progress']:
         return
     dcp_reqs = ['dataset_title', 'description', 'funding_organizations']
     for req in dcp_reqs:
@@ -48,6 +62,7 @@ def audit_experiment_released_with_unreleased_files(value, system):
 
 
 function_dispatcher_with_files = {
+    'audit_dataset_no_raw_files': audit_dataset_no_raw_files,
     'audit_dataset_dcp_required_properties': audit_dataset_dcp_required_properties,
     'audit_released_with_unreleased_files': audit_experiment_released_with_unreleased_files
 }
