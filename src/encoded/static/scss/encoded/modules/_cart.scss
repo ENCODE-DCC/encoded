@@ -410,24 +410,34 @@ $cart-facet-visualizable-padding: 2px;
     // Button to expand or collapse a facet
     @at-root #{&}__expander {
         display: flex;
-        justify-content: space-between;
+        align-items: center;
+        width: 100%;
         padding: 10px 0;
-        margin: 5px 5px 10px;
+        margin: 0;
         border-bottom: 1px solid #c0c0c0;
         cursor: pointer;
+        background-color: transparent;
+        border: none;
 
         @at-root #{&}-title {
             flex: 0 1 auto;
+            position: relative;
+            top: 1px; // Offset for all uppercase lack of decenders
             text-transform: uppercase;
             font-weight: bold;
         }
 
         .icon {
             flex: 0 0 auto;
+            margin-left: auto;
         }
 
         &[aria-expanded="false"] {
             border-bottom: none;
+        }
+
+        @at-root #{&}--non-collapsable {
+            cursor: default;
         }
     }
 
@@ -444,8 +454,11 @@ $cart-facet-visualizable-padding: 2px;
         // Covers all the components within a facet term.
         @at-root #{&}__item {
             display: flex;
+            width: 100%;
             justify-content: space-between;
             cursor: pointer;
+            background-color: transparent;
+            border: none;
         }
 
         // Checkbox for a facet term
@@ -491,6 +504,7 @@ $cart-facet-visualizable-padding: 2px;
         @at-root #{&}__text {
             padding: 0 5px;
             flex: 1 0 60%;
+            text-align: left;
             font-size: 0.95rem;
         }
 
@@ -502,6 +516,7 @@ $cart-facet-visualizable-padding: 2px;
             padding: 0 5px 0;
             width: auto;
             height: $cart-facet-magnitude-size;
+            line-height: $cart-facet-magnitude-size;
             border-radius: $cart-facet-magnitude-size / 2;
 
             > span {
@@ -531,9 +546,12 @@ $cart-facet-visualizable-padding: 2px;
 }
 
 // File-count note above facet
-.cart__facet-file-count {
+.cart__facet-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
-    padding: 5px;
+    padding: 2px 5px 3px;
     margin: 0 -10px 10px;
     background-color: #d8d8d8;
     text-align: center;
@@ -556,6 +574,13 @@ $cart-facet-visualizable-padding: 2px;
         z-index: 0;
         animation-duration: 0.2s;
         animation-name: change-flash;
+    }
+
+    .svg-icon {
+        margin-right: 5px;
+        width: 20px;
+        height: 20px;
+        fill: #000;
     }
 }
 
@@ -858,6 +883,14 @@ $deleted-bg: #ffe0e0;
             display: block;
         }
     }
+
+    // Icon in cart tab
+    .svg-icon {
+        margin-right: 5px;
+        width: 16px;
+        height: 16px;
+        fill: #000;
+    }
 }
 
 // Defines cart-list identifier colors based on `file_format`
@@ -1133,9 +1166,6 @@ $file-type-colors: (
 
 .cart-pager-area {
     display: flex;
-    padding: 3px;
-    justify-content: flex-end;
-    border-bottom: 1px solid #ccc;
 }
 
 .nav {
@@ -1349,6 +1379,53 @@ $file-type-colors: (
             &:hover {
                 text-decoration: none;
             }
+        }
+    }
+}
+
+// Controls at the top of search results, below the tabs.
+.cart-search-results-controls {
+    display: flex;
+    padding: 5px;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+}
+
+// Control to clear all seletions within a facet.
+.cart-facet-clear {
+    position: relative;
+    margin: 0 0 0 5px;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    width: 10px;
+    height: 10px;
+
+    .cart-facet-clear__control {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        .svg-icon-circle {
+            display: block;
+            fill: #008000;
+        }
+
+        .svg-icon-multiplication {
+            display: none;
+            fill: #b24342;
+        }
+    }
+
+    &:hover {
+        .svg-icon-circle {
+            display: none;
+        }
+
+        .svg-icon-multiplication {
+            display: block;
         }
     }
 }

@@ -879,6 +879,20 @@ export const filterForDefaultFiles = (fileList) => (
 
 
 /**
+ * Filter the given files to only include those that appear in the given datasets.
+ * @param {array} fileList Files to filter
+ *
+ * @return {array} Members of `fileList` that have preferred_default flag set.
+ */
+export const filterForDatasetFiles = (fileList, datasets) => {
+    const datasetFilePaths = datasets
+        .reduce((files, dataset) => (dataset.files ? files.concat(dataset.files) : files), [])
+        .map((file) => file['@id']);
+    return fileList.filter((file) => datasetFilePaths.includes(file['@id']));
+};
+
+
+/**
  * Displays an item count intended for the tops of table, normally reflecting a search result count.
  */
 export const TableItemCount = ({ count }) => (

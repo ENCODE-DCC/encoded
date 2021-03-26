@@ -51,6 +51,14 @@ export const uc = {
     rdquo: '\u201d', // Right double quote
 };
 
+// Used to compare keyboard event key codes.
+export const keyCode = {
+    RETURN: 13,
+    ESC: 27,
+    SPACE: 32,
+};
+
+
 // Report-page cell components
 export const reportCell = new Registry();
 
