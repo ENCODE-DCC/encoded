@@ -54,7 +54,7 @@
         "life_stage": "adult",
         "times_pregnant": 2,
         "living_at_sample_collection": true,
-        "family_history_breast_cancer": [
+        "family_members_history_breast_cancer": [
             "mother", "maternal grandmother"
         ],
         "body_mass_index": 25,
@@ -103,7 +103,7 @@
         "height_unit": "in",
         "times_pregnant": 1,
         "genotype": "XhXh",
-        "family_history_breast_cancer": [
+        "family_members_history_breast_cancer": [
             "sister","paternal grandmother"
         ],
         "smoking_history": "2 packs a week, 1 year since cessation",
