@@ -72,7 +72,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "life_stage": {
             "comment": "Based on the Human Developmental Stages ontology, newborn is birth to 1 mo, infant is 1 mo to 2 yr, child is 2 to 13 yr, adolescent is 13 to 19 yr, adult is 19 yr and over.",
@@ -95,8 +95,8 @@
             "description": "If true, the donor was alive at the time of sample collection.",
             "type": "boolean"
         },
-        "family_history_breast_cancer": {
-            "title": "Family history breast cancer",
+        "family_members_history_breast_cancer": {
+            "title": "Family members history breast cancer",
             "description": "Familial relations with history of breast cancer.",
             "type":  "array",
             "items": {

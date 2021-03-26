@@ -203,6 +203,21 @@ class HumanPostnatalDonor(HumanDonor):
     }
 
     @calculated_property(schema={
+        "description": "Whether or not there is a family history of breast cancer for this Donor.",
+        "comment": "Do not submit. This is a calculated property",
+        "title": "Breast cancer family history",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def breast_cancer_family_history(self, request, family_members_history_breast_cancer=None):
+        if family_members_history_breast_cancer:
+            if family_members_history_breast_cancer == ["none"]:
+                return False
+            else:
+                return True
+
+
+    @calculated_property(schema={
         "description": "Human donor(s) that have this human donor in their parent property.",
         "comment": "Do not submit. This is a calculated property",
         "title": "Children",
