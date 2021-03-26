@@ -107,3 +107,39 @@ export const getIsCartSearch = (context) => {
 export const getCartSearchTypes = (context) => (
     _.uniq(context['@graph'].map((result) => result['@type'][0]))
 );
+
+
+/**
+ * Extract the file @ids of the analyses selected by the given analysis titles.
+ * @param {array} availableAnalyses Compiled analysis objects.
+ * @param {array} analysisTitles Titles of analyses from which to extract file @ids.
+ *
+ * @return {array} Combined @ids of selected analysis files.
+ */
+export const getAnalysesFileIds = (availableAnalyses, analysisTitles = []) => {
+    const selectedFileIds = availableAnalyses.reduce((fileIds, analysis) => {
+        if (analysisTitles.length === 0 || analysisTitles.includes(analysis.title)) {
+            return fileIds.concat(analysis.files);
+        }
+        return fileIds;
+    }, []);
+    return _.uniq(selectedFileIds);
+};
+
+
+/**
+ * Extract the value of an object property based on a dotted-notation field,
+ * e.g. { a: 1, b: { c: 5 }} you could retrieve the 5 by passing 'b.c' in `field`.
+ * Based on https://stackoverflow.com/questions/6393943/convert-javascript-string-in-dot-notation-into-an-object-reference#answer-6394168
+ * @param {object} object Object containing the value you want to extract.
+ * @param {string} field  Dotted notation for the property to extract.
+ *
+ * @return {value} Whatever value the dotted notation specifies, or undefined.
+ */
+export const getObjectFieldValue = (object, field) => {
+    const parts = field.split('.');
+    if (parts.length === 1) {
+        return object[field];
+    }
+    return parts.reduce((partObject, part) => partObject && partObject[part], object);
+};

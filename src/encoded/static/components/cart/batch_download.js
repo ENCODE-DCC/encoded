@@ -26,8 +26,8 @@ const batchDownload = (
     cartType,
     elements,
     analyses,
-    selectedTerms,
-    selectedType,
+    selectedFileTerms,
+    selectedDatasetTerms,
     facetFields,
     savedCartObj,
     sharedCart,
@@ -48,27 +48,33 @@ const batchDownload = (
         cartId = savedCartObj && savedCartObj['@id'];
     }
 
-    // Form query string from currently selected file formats.
-    const datasetFacets = facetFields.filter((facetField) => facetField.dataset).map((facetField) => facetField.field);
-    const fileFormatSelections = (raw || all)
+    // Form query string from currently selected dataset and file facets.
+    const combinedTerms = { ...selectedFileTerms, ...selectedDatasetTerms };
+    const formatSelections = (raw || all)
         ? []
         : (
-            _.compact(Object.keys(selectedTerms).map((field) => {
-                let subQueryString = '';
-                let mappedQuery = '';
-                if (selectedTerms[field].length > 0) {
-                    const matchingFacetField = facetFields.find((facetField) => facetField.field === field);
-                    if (matchingFacetField && matchingFacetField.fieldMapper) {
-                        mappedQuery = matchingFacetField.fieldMapper(selectedTerms[field], analyses);
-                    } else {
-                        // Build the query string from `files` properties in the dataset, or from the
-                        // dataset properties itself for fields marked in `facets`.
-                        subQueryString = selectedTerms[field].map((term) => (
-                            `${datasetFacets.includes(field) ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
-                        )).join('&');
+            _.compact(Object.keys(combinedTerms).map((field) => {
+                if (field !== 'type') {
+                    let subQueryString = '';
+                    let mappedQuery = '';
+                    if (combinedTerms[field].length > 0) {
+                        const matchingFacetField = facetFields.find((facetField) => facetField.field === field);
+                        if (matchingFacetField && matchingFacetField.fieldMapper) {
+                            // Transform terms to a query for those terms that require that.
+                            mappedQuery = matchingFacetField.fieldMapper(combinedTerms[field], analyses);
+                        } else {
+                            // Build the query string from the selected dataset and file terms without
+                            // transformation specific to each term.
+                            subQueryString = combinedTerms[field].map((term) => (
+                                `${field in selectedDatasetTerms ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
+                            )).join('&');
+                        }
                     }
+                    return `${subQueryString}${mappedQuery ? `&${mappedQuery}` : ''}`;
                 }
-                return `${subQueryString}${mappedQuery ? `&${mappedQuery}` : ''}`;
+
+                // Don't do anything for the type facet; it gets included separately.
+                return null;
             }))
         );
 
@@ -77,7 +83,9 @@ const batchDownload = (
     const visualizableOption = `${visualizable ? '&option=visualizable' : ''}`;
     const rawOption = `${raw ? '&option=raw' : ''}`;
     const preferredDefaultQuery = preferredDefault && !raw && !all ? '&files.preferred_default=true' : '';
-    fetch(`/batch_download/?type=${selectedType}${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${visualizableOption}${rawOption}${preferredDefaultQuery}`, {
+    const query = `${formatSelections.length > 0 ? `&${formatSelections.join('&')}` : ''}`;
+    const selectedType = selectedDatasetTerms.type[0];
+    fetch(`/batch_download/?type=${selectedType}${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${query}${visualizableOption}${rawOption}${preferredDefaultQuery}`, {
         method: 'POST',
         headers: {
             Accept: 'text/plain',
@@ -147,8 +155,8 @@ const CartBatchDownloadComponent = (
         cartType,
         elements,
         analyses,
-        selectedTerms,
-        selectedType,
+        selectedFileTerms,
+        selectedDatasetTerms,
         facetFields,
         savedCartObj,
         sharedCart,
@@ -182,7 +190,7 @@ const CartBatchDownloadComponent = (
             options.all = true;
         }
         options.preferredDefault = preferredDefault;
-        batchDownload(cartType, elements, analyses, selectedTerms, selectedType, facetFields, savedCartObj, sharedCart, setInProgress, options, fetch);
+        batchDownload(cartType, elements, analyses, selectedFileTerms, selectedDatasetTerms, facetFields, savedCartObj, sharedCart, setInProgress, options, fetch);
     };
 
     // Called when the user clicks the button to make the batch-download modal appear.
@@ -265,10 +273,10 @@ CartBatchDownloadComponent.propTypes = {
     elements: PropTypes.array,
     /** All compiled analyses in the cart */
     analyses: PropTypes.array.isRequired,
-    /** Selected facet terms */
-    selectedTerms: PropTypes.object,
-    /** Selected object type */
-    selectedType: PropTypes.string.isRequired,
+    /** Selected file facet terms */
+    selectedFileTerms: PropTypes.object,
+    /** Selected dataset facet terms */
+    selectedDatasetTerms: PropTypes.object,
     /** Used facet field definitions */
     facetFields: PropTypes.array.isRequired,
     /** Cart as it exists in the database; use JSON payload method if none */
@@ -293,7 +301,8 @@ CartBatchDownloadComponent.propTypes = {
 
 CartBatchDownloadComponent.defaultProps = {
     elements: [],
-    selectedTerms: null,
+    selectedFileTerms: null,
+    selectedDatasetTerms: null,
     savedCartObj: null,
     sharedCart: null,
     fileCounts: {},
