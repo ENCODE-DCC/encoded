@@ -42,6 +42,17 @@
                 "pattern": "^(ENCSR\\d{3}[A-Z]{3})$|^(TSTSR\\d{6})$"
             }
         },
+        "analysis_objects": {
+            "title": "Analysis objects",
+            "description": "A list of analysis objects.",
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "linkTo": "Analysis"
+            }
+        },
         "description": {
             "title": "Description",
             "description": "A plain text description of the dataset.",
