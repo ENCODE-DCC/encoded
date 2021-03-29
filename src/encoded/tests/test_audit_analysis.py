@@ -900,6 +900,113 @@ def test_audit_chip_modern(
                'borderline replicate concordance' for error in res.json['audit'].get('WARNING', []))
 
 
+def test_audit_chip_missing_read_depth(
+    testapp,
+    base_analysis,
+    base_experiment,
+    file_bam_1_chip,
+    file_bam_2_chip,
+    file_bed_narrowPeak_chip_peaks,
+    chip_align_enrich_quality_metric,
+    chipseq_filter_quality_metric,
+    chip_alignment_quality_metric_extremely_low_read_depth,
+    chip_replication_quality_metric_borderline_replicate_concordance,
+    chip_library_quality_metric_severe_bottlenecking_poor_complexity,
+    library_1,
+    library_2,
+    biosample_1,
+    mouse_donor_1_6,
+    replicate_1_1,
+    replicate_2_1,
+    analysis_step_run_chip_encode4,
+    analysis_step_version_chip_encode4,
+    analysis_step_chip_encode4,
+    pipeline_chip_encode4,
+    encode4_award,
+    encode_lab
+):
+    testapp.patch_json(file_bam_1_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(file_bam_2_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(file_bed_narrowPeak_chip_peaks['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(
+        chip_alignment_quality_metric_extremely_low_read_depth['@id'],
+        {'quality_metric_of': [file_bed_narrowPeak_chip_peaks['@id']]})
+    testapp.patch_json(base_analysis['@id'], {
+        'files': [
+            file_bam_1_chip['@id'],
+            file_bam_2_chip['@id'],
+            file_bed_narrowPeak_chip_peaks['@id']
+        ]}
+    )
+    testapp.patch_json(
+        pipeline_chip_encode4['@id'],
+        {'award': encode4_award['@id'], 'lab': encode_lab['@id']}
+    )
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'missing read depth' for error in res.json['audit'].get('INTERNAL_ACTION', []))
+
+
+def test_audit_chip_encode4_redacted_alignments(
+    testapp,
+    base_analysis,
+    base_experiment,
+    file_bam_1_chip,
+    file_bam_2_chip,
+    file_bed_narrowPeak_chip_peaks,
+    chip_align_enrich_quality_metric,
+    chipseq_filter_quality_metric,
+    chip_alignment_quality_metric_extremely_low_read_depth,
+    chip_replication_quality_metric_borderline_replicate_concordance,
+    chip_library_quality_metric_severe_bottlenecking_poor_complexity,
+    library_1,
+    library_2,
+    biosample_1,
+    mouse_donor_1_6,
+    replicate_1_1,
+    replicate_2_1,
+    analysis_step_run_chip_encode4,
+    analysis_step_version_chip_encode4,
+    analysis_step_chip_encode4,
+    pipeline_chip_encode4,
+    encode4_award,
+    encode_lab
+):
+    testapp.patch_json(file_bam_1_chip['@id'], {
+        'output_type': 'redacted alignments',
+        'step_run': analysis_step_run_chip_encode4['@id']
+    })
+    testapp.patch_json(file_bam_2_chip['@id'], {
+        'output_type': 'redacted alignments',
+        'step_run': analysis_step_run_chip_encode4['@id']
+    })
+    testapp.patch_json(file_bed_narrowPeak_chip_peaks['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_analysis['@id'], {
+        'files': [
+            file_bam_1_chip['@id'],
+            file_bam_2_chip['@id'],
+            file_bed_narrowPeak_chip_peaks['@id']
+        ]}
+    )
+    testapp.patch_json(
+        pipeline_chip_encode4['@id'],
+        {'award': encode4_award['@id'], 'lab': encode_lab['@id']}
+    )
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'extremely low read depth' for error in res.json['audit'].get('ERROR', []))
+
+
 def test_audit_wgbs_encode3(
     testapp,
     base_analysis,

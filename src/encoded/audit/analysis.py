@@ -1030,7 +1030,6 @@ def check_file_chip_seq_read_depth(
     else:
         return
 
-    yield AuditFailure('in read depth audit', 'test', level='ERROR')
     if control_type == 'input library':
         if read_depth >= marks['narrow']['recommended'] and read_depth < marks['broad']['recommended']:
             assembly_detail_phrase = ''
@@ -1070,7 +1069,7 @@ def check_file_chip_seq_read_depth(
             else:
                 yield AuditFailure('extremely low read depth',
                                    detail, level='ERROR')
-    elif 'broad histone mark' in target_investigated_as:  # target_name in broad_peaks_targets:
+    elif 'broad histone mark' in target_investigated_as:
         if target_name in ['H3K9me3-human', 'H3K9me3-mouse'] and read_depth < marks['broad']['recommended']:
             detail = (
                 f"Processed {file_to_check['output_type']} file "
