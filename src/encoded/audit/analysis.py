@@ -950,8 +950,8 @@ def get_file_read_depth_from_alignment(alignment_file, target):
 
     mapped_run_type = alignment_file.get('mapped_run_type', None)
     if target is not False and \
-       'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
-       # exception (mapped reads). Unfiltered bam QC metrics are used for H3K9me3 only
+            'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
+        # exception (mapped reads). Unfiltered bam QC metrics are used for H3K9me3 only
         for metric in quality_metrics:
             if 'mapped_reads' in metric:  # chip-alignment-quality-metrics (ENCODE 4)
                 mappedReads = metric['mapped_reads']
@@ -960,11 +960,16 @@ def get_file_read_depth_from_alignment(alignment_file, target):
             if 'processing_stage' in metric and \
                 metric['processing_stage'] == 'unfiltered' and \
                     ('mapped' in metric or 'mapped_reads' in metric):
-                if (mapped_run_type and mapped_run_type == 'paired-ended') or \
-                        ('read1' in metric and 'read2' in metric):
-                    return int(mappedReads / 2)
+                if mapped_run_type:
+                    if mapped_run_type == 'paired-ended':
+                        return int(mappedReads / 2)
+                    else:
+                        return int(mappedReads)
                 else:
-                    return int(mappedReads)
+                    if ('read1' in metric and 'read2' in metric):
+                        return int(mappedReads / 2)
+                    else:
+                        return int(mappedReads)
 
     else:
         # not exception (useful fragments). All marks other than H3K9me3
@@ -981,11 +986,16 @@ def get_file_read_depth_from_alignment(alignment_file, target):
             if ('total' in metric or 'total_reads' in metric) and \
                (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
                     ('processing_stage' not in metric)):
-                if (mapped_run_type and mapped_run_type == 'paired-ended') or \
-                        ('read1' in metric and 'read2' in metric):
-                    return int(totalReads / 2)
+                if mapped_run_type:
+                    if mapped_run_type == 'paired-ended':
+                        return int(totalReads / 2)
+                    else:
+                        return int(totalReads)
                 else:
-                    return int(totalReads)
+                    if ('read1' in metric and 'read2' in metric):
+                        return int(totalReads / 2)
+                    else:
+                        return int(totalReads)
 
     return False
 
@@ -1782,11 +1792,16 @@ def check_analysis_atac_encode4_qc_standards(
             if 'mapped_reads' in metric:
                 mappedReads = metric['mapped_reads']
                 mapped_run_type = alignment_file.get('mapped_run_type', None)
-                if (mapped_run_type and mapped_run_type == 'paired-ended') or \
-                        ('read1' in metric and 'read2' in metric):
-                    mappedReads = int(mappedReads / 2)
+                if mapped_run_type:
+                    if mapped_run_type == 'paired-ended':
+                        mappedReads = int(mappedReads / 2)
+                    else:
+                        mappedReads = int(mappedReads)
                 else:
-                    mappedReads = int(mappedReads)
+                    if ('read1' in metric and 'read2' in metric):
+                        mappedReads = int(mappedReads / 2)
+                    else:
+                        mappedReads = int(mappedReads)
 
                 detail = (
                     f"Alignment file {audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
