@@ -13,6 +13,7 @@ import { MatrixBadges, DisplayAsJson } from './objectutils';
 import { SearchFilter } from './matrix';
 import { TextFilter } from './search';
 import DataTable from './datatable';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const SEARCH_PERFORMED_PUBSUB = 'searchPerformed';
@@ -161,6 +162,7 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
     dataTable.push({
         rowContent: [{ header: null }, ...headerRow],
         css: 'matrix__col-category-header',
+        key: uuidv4(),
     });
 
     const rowLength = chIPSeqData.dataRow.length > 0 ? chIPSeqData.dataRow[0].length : 0;
@@ -188,13 +190,22 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
         });
         const css = 'matrix__row-data';
 
-        return { rowContent, css };
+        const key = uuidv4();
+
+        return { rowContent, css, key };
     });
 
     dataTable.push(...rowData);
 
+    const uuids = [];
+
+    for (let i = 0; i < dataTable.length + 1; i += 1) {
+        uuids.push(uuidv4());
+    }
+
     const matrixConfig = {
         rows: dataTable,
+        rowKeys: uuids,
         tableCss: 'matrix',
     };
 
@@ -867,7 +878,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
                             <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedTabLevel3} handleTabClick={this.subTabClicked}>
                                 {chIPSeqData && chIPSeqData.headerRow && chIPSeqData.headerRow.length !== 0 && chIPSeqData.dataRow && chIPSeqData.dataRow.length !== 0 ?
                                       <div className="chip_seq_matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
-                                          <DataTable tableData={convertTargetDataToDataTable(chIPSeqData, selectedTabLevel3)} />
+                                          <DataTable tableData={convertTargetDataToDataTable(chIPSeqData, selectedTabLevel3)} showLoadMore />
                                       </div>
                                   :
                                       <div className="chip_seq_matrix__warning">

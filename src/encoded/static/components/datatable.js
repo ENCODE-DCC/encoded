@@ -85,6 +85,7 @@
  *   - to add a CSS class to the <tr> for a specific row
  */
 
+import React from 'react';
 import PropTypes from 'prop-types';
 
 
@@ -101,81 +102,114 @@ const tableDataMaxWidth = (tableData) => {
 /**
  * Display a table of data with customizable styles per cell and per row, and with column spans.
  */
-const DataTable = ({ tableData }) => {
+const DataTable = ({ tableData, showLoadMore }) => {
     let colNumber;
     let cellContent;
     let maxWidth;
+    const rowIncrement = 100;
+    const [currentRowCount, setCurrentRowCount] = React.useState(rowIncrement);
+    const [allRows] = React.useState(tableData.rows);
+    const getTableData = (r, count) => (r ? r.splice(0, count) : []);
+    const [rows, setRows] = React.useState(getTableData([...tableData.rows], rowIncrement));
+    const rowsR = React.useMemo(() => rows, [rows]);
+    const loadMoreBtn = React.useRef(null);
+
+    const loadMore = () => {
+        const count = currentRowCount + rowIncrement;
+        setRows(getTableData([...(allRows || [])], count));
+        setCurrentRowCount(count);
+    };
+
+    React.useEffect(() => {
+        if (loadMoreBtn && loadMoreBtn.current) {
+            loadMoreBtn.current.scrollIntoView({
+                behavior: 'smooth',
+            });
+        }
+    }, [rows]);
 
     return (
-        <table className={tableData.tableCss || null}>
-            <tbody>
-                {tableData.rows.map((row, rowNumber) => {
-                    // Get array of values representing a row or the `rowContent` array if the row
-                    // is an object.
-                    const cells = Array.isArray(row) ? row : row.rowContent;
-                    const rowKey = tableData.rowKeys ? tableData.rowKeys[rowNumber] : rowNumber;
-                    colNumber = 0;
-                    return (
-                        <tr key={rowKey} className={row.css || tableData.rowCss || null} style={row.style || null}>
-                            {cells.map((cell, colIndex) => {
+        <>
+            <table className={tableData.tableCss || null}>
+                <tbody>
+                    {rowsR.map((row, rowNumber) => {
+                        // Get array of values representing a row or the `rowContent` array if the row
+                        // is an object.
+                        const cells = Array.isArray(row) ? row : row.rowContent;
+                        const rowKey = tableData.rowKeys ? tableData.rowKeys[rowNumber] : rowNumber;
+                        colNumber = 0;
+                        return (
+                            <tr key={rowKey} className={row.css || tableData.rowCss || null} style={row.style || null}>
+                                {cells.map((cell, colIndex) => {
                                 // Extract the cell's content from itself, its object, or its
                                 // function. JS says `typeof null` is "object."
-                                const cellType = typeof cell;
-                                const cellValue = (cell !== null) && (cell.content || cell.header);
-                                if (cellType === 'object' && cell !== null) {
-                                    if (typeof cellValue === 'function') {
+                                    const cellType = typeof cell;
+                                    const cellValue = (cell !== null) && (cell.content || cell.header);
+                                    if (cellType === 'object' && cell !== null) {
+                                        if (typeof cellValue === 'function') {
                                         // Need to call a function to get the cell's content.
-                                        cellContent = cellValue(colNumber, rowNumber, cell.value, cell.meta);
-                                    } else {
+                                            cellContent = cellValue(colNumber, rowNumber, cell.value, cell.meta);
+                                        } else {
                                         // The cell content is right in the `content` or `header`.
-                                        cellContent = cellValue;
-                                    }
-                                } else {
+                                            cellContent = cellValue;
+                                        }
+                                    } else {
                                     // The array element itself is the value.
-                                    cellContent = cell;
-                                }
-                                colNumber += 1;
+                                        cellContent = cell;
+                                    }
+                                    colNumber += 1;
 
-                                // Cell's colSpan can be a specific number, 0 (full width), or
-                                // undefined (default of 1).
-                                let cellColSpan = (typeof cell === 'object' && cell !== null) && cell.colSpan;
-                                if (cellColSpan === 0) {
+                                    // Cell's colSpan can be a specific number, 0 (full width), or
+                                    // undefined (default of 1).
+                                    let cellColSpan = (typeof cell === 'object' && cell !== null) && cell.colSpan;
+                                    if (cellColSpan === 0) {
                                     // Request for colSpan to be whatever the maximum width of the
                                     // table. Use or get cached value.
-                                    if (maxWidth === undefined) {
-                                        maxWidth = tableDataMaxWidth(tableData);
-                                    }
-                                    cellColSpan = maxWidth;
-                                } else if (cellColSpan === undefined) {
+                                        if (maxWidth === undefined) {
+                                            maxWidth = tableDataMaxWidth(tableData);
+                                        }
+                                        cellColSpan = maxWidth;
+                                    } else if (cellColSpan === undefined) {
                                     // No colSpan defined for this cell, so it's 1.
-                                    cellColSpan = 1;
-                                }
-
-                                // Render the cell, which could have a column span.
-                                const cellCss = (cell && cell.css) || null;
-                                const cellStyle = (cell && cell.style) || null;
-                                if (cellColSpan > 1) {
-                                    if (cell && cell.header) {
-                                        return <th key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle}>{cellContent}</th>;
+                                        cellColSpan = 1;
                                     }
-                                    return <td key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle}>{cellContent}</td>;
-                                }
-                                if (cell && cell.header) {
-                                    return <th key={colIndex} className={cellCss} style={cellStyle}>{cellContent}</th>;
-                                }
-                                return <td key={colIndex} className={cellCss} style={cellStyle}>{cellContent}</td>;
-                            })}
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
+
+                                    // Render the cell, which could have a column span.
+                                    const cellCss = (cell && cell.css) || null;
+                                    const cellStyle = (cell && cell.style) || null;
+                                    if (cellColSpan > 1) {
+                                        if (cell && cell.header) {
+                                            return <th key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle}>{cellContent}</th>;
+                                        }
+                                        return <td key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle}>{cellContent}</td>;
+                                    }
+                                    if (cell && cell.header) {
+                                        return <th key={colIndex} className={cellCss} style={cellStyle}>{cellContent}</th>;
+                                    }
+                                    return <td key={colIndex} className={cellCss} style={cellStyle}>{cellContent}</td>;
+                                })}
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+            {showLoadMore && (rows.length < allRows.length)
+                ? <button ref={loadMoreBtn} type="button" className="btn btn-default" onClick={loadMore}>Load More</button>
+                : null
+            }
+        </>
     );
 };
 
 DataTable.propTypes = {
     /** Whole table data */
     tableData: PropTypes.object.isRequired,
+    /** True if load more button show */
+    showLoadMore: PropTypes.bool,
+};
+
+DataTable.defaultProps = {
+    showLoadMore: false,
 };
 
 export default DataTable;
