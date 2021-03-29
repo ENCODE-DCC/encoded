@@ -325,6 +325,9 @@
         "replicates.library.biosample.life_stage": {
             "title": "Life stage"
         },
+        "replicates.library.biosample.disease_term_name": {
+            "title": "Disease"
+        },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
         },
