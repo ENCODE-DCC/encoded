@@ -162,6 +162,18 @@ def analysis_step_dnase_encode4(testapp):
 
 
 @pytest.fixture
+def analysis_step_rna_encode4(testapp):
+    item = {
+        'step_label': 'rna-pipeline-step',
+        'title': 'RNA seq pipeline step',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation', 'alignment'],
+        'major_version': 1
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
 def analysis_step_atac_encode4_alignment(testapp):
     item = {
         'step_label': 'atac-seq-alignment-step',

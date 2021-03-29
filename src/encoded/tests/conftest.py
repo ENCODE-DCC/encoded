@@ -98,6 +98,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.reference',
     'encoded.tests.fixtures.schemas.replicate',
     'encoded.tests.fixtures.schemas.samtools_flagstats_quality_metric',
+    'encoded.tests.fixtures.schemas.samtools_stats_quality_metric',
     'encoded.tests.fixtures.schemas.single_cell_rna_series',
     'encoded.tests.fixtures.schemas.software_version',
     'encoded.tests.fixtures.schemas.software',
