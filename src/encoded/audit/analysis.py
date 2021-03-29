@@ -197,11 +197,8 @@ def negative_coefficients(metric, coefficients, files_structure):
 
 
 def check_idr(metrics, rescue, self_consistency):
-    yield AuditFailure('in check idr 1', metrics, level='WARNING')
     for m in metrics:
-        yield AuditFailure('in check idr', '', level='WARNING')
         if 'rescue_ratio' in m and 'self_consistency_ratio' in m:
-            yield AuditFailure('in check idr 2', m['rescue_ratio'], level='WARNING')
             rescue_r = m['rescue_ratio']
             self_r = m['self_consistency_ratio']
 
