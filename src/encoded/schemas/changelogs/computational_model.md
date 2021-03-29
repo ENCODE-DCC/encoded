@@ -4,3 +4,4 @@
 * *software_used* list was updated to enforce item uniqueness.
 * Added *LRGASP* to the *internal_tags* enum
 * Added *doi* property
+* Added *analysis_objects* property.

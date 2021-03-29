@@ -4,6 +4,7 @@
 * Updated schema description.
 * Added *LRGASP* to the *internal_tags* enum
 * Added *doi* property
+* Added *analysis_objects* property.
 
 ### Schema version 18
 
