@@ -805,7 +805,6 @@ def check_analysis_chip_seq_standards(
     ListofMetrics.extend([get_metrics(idr_peaks_files, 'IDRQualityMetric'), get_metrics(idr_peaks_files, 'ChipReplicationQualityMetric')])
     if ListofMetrics:
         for idr_metrics in ListofMetrics:
-            yield AuditFailure('dispatch idr', idr_metrics, level='INTERNAL_ACTION')
             yield from check_idr(idr_metrics, 2, 2)
     return
 
