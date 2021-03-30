@@ -17,6 +17,30 @@ const mockStore = configureStore();
 
 
 describe('Experiment Page', () => {
+    beforeAll(() => {
+        // Mock the node fetch() call within App.fetch().
+        global.fetch = jest.fn().mockImplementation(() => (
+            new Promise((resolve) => {
+                resolve({
+                    ok: true,
+                    headers: {
+                        get: () => null,
+                    },
+                    json: () => (
+                        ({
+                            '@type': [
+                                'JSONSchemas',
+                            ],
+                            AntibodyLot: 'Antibody lot',
+                            CpgCorrelationQualityMetric: 'CpG correlation quality metric',
+                            PublicationData: 'Publication data',
+                        })
+                    ),
+                });
+            })
+        ));
+    });
+
     describe('Minimal Experiment', () => {
         let experiment;
         let summarySections;

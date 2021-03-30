@@ -15,7 +15,7 @@ import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
-import { FileGallery, DatasetFiles } from './filegallery';
+import { FileGallery } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
 
@@ -1690,6 +1690,33 @@ export const SeriesComponent = (props, reactContext) => {
     });
     experiments = _.values(experiments);
 
+    // Accumulate all files and analyses in related datasets.
+    const files = context.related_datasets
+        ? (
+            context.related_datasets.reduce(
+                (datasetFiles, dataset) => (
+                    datasetFiles.concat(
+                        dataset.files.filter(
+                            (file) => file.preferred_default
+                        )
+                    )
+                ), []
+            )
+        ) : null;
+    const analyses = context.related_datasets
+        ? (
+            context.related_datasets.reduce(
+                (datasetAnalyses, dataset) => (
+                    dataset.analysis_objects
+                        ? datasetAnalyses.concat(
+                            dataset.analysis_objects.filter(
+                                (analysis) => analysis.status === 'released'
+                            )
+                        ) : datasetAnalyses
+                ), []
+            )
+        ) : null;
+
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
@@ -1942,13 +1969,7 @@ export const SeriesComponent = (props, reactContext) => {
             : null}
 
             {/* Display list of released and unreleased files */}
-            <FetchedItems
-                {...props}
-                url={`/search/?limit=all&type=File&dataset=${context['@id']}`}
-                Component={DatasetFiles}
-                filePanelHeader={<FilePanelHeader context={context} />}
-                session={reactContext.session}
-            />
+            <FileGallery context={context} files={files} analyses={analyses} showReplicateNumber={false} collapseNone hideGraph hideControls showDetailedTracks />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
