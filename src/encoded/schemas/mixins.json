@@ -362,6 +362,16 @@
                 "type": "string",
                 "linkTo": "OntologyTerm"
             }
+        },
+        "disease_state": {
+            "title": "Disease state",
+            "description": "The state of the relevant disease at the time of sample collection.",
+            "type": "string",
+            "enum": [
+                "flare",
+                "managed",
+                "treated"
+            ]
         }
     },
     "quality_metric_of": {

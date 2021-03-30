@@ -369,6 +369,7 @@
         "diseases": [
             "MONDO_0005147"
         ],
+        "disease_state": "managed",
         "derived_from": [
             "peter-sims:prenatal_donor3"
         ],

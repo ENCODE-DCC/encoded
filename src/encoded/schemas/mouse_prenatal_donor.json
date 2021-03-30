@@ -85,7 +85,8 @@
         "knee_heel_length": ["knee_heel_length_units"],
         "knee_heel_length_units": ["knee_heel_length"],
         "product_id": ["source"],
-        "lot_id": ["source", "product_id"]
+        "lot_id": ["source", "product_id"],
+        "disease_state": ["diseases"]
     },
     "properties": {
         "schema_version": {

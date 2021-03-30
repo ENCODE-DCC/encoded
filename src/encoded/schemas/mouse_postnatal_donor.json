@@ -54,7 +54,8 @@
         "weight": ["weight_unit"],
         "weight_unit": ["weight"],
         "product_id": ["source"],
-        "lot_id": ["source", "product_id"]
+        "lot_id": ["source", "product_id"],
+        "disease_state": ["diseases"]
     },
     "properties": {
         "schema_version": {
