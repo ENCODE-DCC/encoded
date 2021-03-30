@@ -8,6 +8,22 @@ from .formatter import (
 )
 
 
+def audit_contributor_lists(value, system):
+    duplicates = []
+    if 'contributors' in value and 'corresponding_contributors' in value:
+        for user in value['corresponding_contributors']:
+            if user in value.get('contributors'):
+                duplicates.append(user)
+    if duplicates:
+        detail = ('Dataset {} contains duplicated contributors {}.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                ', '.join(duplicates)
+            )
+        )
+        yield AuditFailure('duplicated contributors', detail, level='ERROR')
+    return
+
+
 def audit_dataset_no_raw_files(value, system):
     if value['status'] not in ['released','in progress']:
         return
@@ -17,7 +33,7 @@ def audit_dataset_no_raw_files(value, system):
             if f['@type'][0] == 'RawSequenceFile':
                 raw_data = True
     if raw_data == False:
-        detail = ('Released dataset {} does not contain any raw sequence files.'.format(
+        detail = ('Dataset {} does not contain any raw sequence files.'.format(
                 audit_link(path_to_text(value['@id']), value['@id'])
             )
         )
@@ -62,6 +78,7 @@ def audit_experiment_released_with_unreleased_files(value, system):
 
 
 function_dispatcher_with_files = {
+    'audit_contributor_lists': audit_contributor_lists,
     'audit_dataset_no_raw_files': audit_dataset_no_raw_files,
     'audit_dataset_dcp_required_properties': audit_dataset_dcp_required_properties,
     'audit_released_with_unreleased_files': audit_experiment_released_with_unreleased_files
