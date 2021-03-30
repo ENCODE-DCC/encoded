@@ -917,6 +917,9 @@
         "life_stage": {
             "title": "Life stage"
         },
+        "disease_term_name": {
+            "title": "Disease"
+        },
         "subcellular_fraction_term_name": {
             "title": "Subcellular fraction"
         },
