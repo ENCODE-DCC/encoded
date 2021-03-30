@@ -5,7 +5,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 # Edit Snovault version after the `@` here, can be a branch or tag
-SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@SNO-138-fix-pytest-warnings"
+SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@SNO-197-add-range-queries-and-min-max-aggs"
 
 INSTALL_REQUIRES = [
     "PasteDeploy==2.1.0",
