@@ -1593,7 +1593,7 @@ def check_analysis_wgbs_encode3_standards(
             detail = (
                 f"Replicate of experiment processed by {pipeline_title} "
                 f"( {audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])} ) "
-                f"has a coverage of {int(coverage)}X. The minimum ENCODE "
+                f"has a coverage of {coverage:.2f}X. The minimum ENCODE "
                 f"standard coverage for each replicate in a WGBS assay "
                 f"is 25X and the recommended value is > 30X "
                 f"(See { audit_link('ENCODE WGBS data standards', link_to_standards)})"
@@ -1664,7 +1664,7 @@ def check_analysis_wgbs_encode4_standards(
             detail = (
                 f"Replicate of experiment processed by {pipeline_title} "
                 f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
-                f"has a coverage of {coverage}X. The minimum ENCODE standard coverage for each "
+                f"has a coverage of {coverage:.2f}X. The minimum ENCODE standard coverage for each "
                 f"replicate in a WGBS assay is 25X and the recommended value is "
                 f"> 30X (See {audit_link('ENCODE WGBS data standards', link_to_standards)})."
             )
