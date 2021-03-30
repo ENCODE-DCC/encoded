@@ -84,6 +84,7 @@ class FunctionalCharacterizationExperiment(
         'revoked_files.replicate',
         'submitted_by',
         'lab',
+        'analysis_objects',
         'award',
         'documents',
         'replicates.antibody.characterizations.biosample_ontology',
