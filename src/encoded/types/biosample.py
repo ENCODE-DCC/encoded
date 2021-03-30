@@ -670,12 +670,12 @@ def generate_summary_dictionary(
         'treatments_phrase': '',
         'post_nucleic_acid_delivery_time': '',
         'post_differentiation_time': '',
+        'pulse_chase_time': '',
         'depleted_in': '',
         'modifications_list': '',
         'strain_background': '',
         'preservation_method': '',
-        'experiment_term_phrase': '',
-        'pulse_chase_time': ''
+        'experiment_term_phrase': ''
     }
 
     if organismObject is not None:
@@ -1003,8 +1003,8 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'genetic_modifications': 'not modified',
         'post_nucleic_acid_delivery_time': 'without nucleic acid delivery',
         'post_differentiation_time': 'not differentiated',
-        'preservation_method': 'not preserved',
-        'pulse_chase_time': 'not pulse-chased'
+        'pulse_chase_time': 'not pulse-chased',
+        'preservation_method': 'not preserved'
     }
     if len(phrases_dictionarys) > 1:
         index = 0
