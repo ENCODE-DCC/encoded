@@ -40,3 +40,4 @@ ExistsFacet.defaultProps = {
 FacetRegistry.Facet.register('datasets', ExistsFacet);
 FacetRegistry.Facet.register('publication_data', ExistsFacet);
 FacetRegistry.Facet.register('nih_institutional_certification', ExistsFacet);
+FacetRegistry.Facet.register('control_type', ExistsFacet);
