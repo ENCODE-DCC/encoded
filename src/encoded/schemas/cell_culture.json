@@ -38,7 +38,8 @@
         "starting_quantity": ["starting_quantity_units"],
         "starting_quantity_units": ["starting_quantity"],
         "product_id": ["source"],
-        "lot_id": ["source", "product_id"]
+        "lot_id": ["source", "product_id"],
+        "disease_state": ["diseases"]
     },
     "properties": {
         "schema_version": {

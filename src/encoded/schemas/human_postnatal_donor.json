@@ -68,7 +68,8 @@
         "weight": ["weight_unit"],
         "weight_unit": ["weight"],
         "height": ["height_unit"],
-        "height_unit": ["height"]
+        "height_unit": ["height"],
+        "disease_state": ["diseases"]
     },
     "properties": {
         "schema_version": {
