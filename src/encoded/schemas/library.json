@@ -63,6 +63,7 @@
             "title": "Derived from",
             "description": "The biosamples that nucleic acid was isolated from to generate the library.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Derived from",
                 "description": "A biosample that nucleic acid was isolated from to generate the library.",

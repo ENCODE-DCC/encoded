@@ -45,6 +45,7 @@
             "title": "Library metrics",
             "description": "Metrics of reads per library prior to and after depth normalization.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Library metric",
                 "description": "Metric of reads per library prior to and after depth normalization.",

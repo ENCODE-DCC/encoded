@@ -58,6 +58,7 @@
             "title": "Corresponding contributors",
             "description": "The user who is the primary external contact for the dataset.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "type": "string",
                 "linkTo": "User"
@@ -67,6 +68,7 @@
             "title": "Contributors",
             "description": "The user who is the primary external contact for the dataset.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "type": "string",
                 "linkTo": "User"
@@ -82,6 +84,7 @@
             "title": "Funding organizations",
             "description": "The list of organizations that contributed funding to the generation of these data.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "type": "string"
             }

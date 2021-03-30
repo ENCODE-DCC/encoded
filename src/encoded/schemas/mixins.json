@@ -105,6 +105,7 @@
             "description": "Accessions previously assigned to objects that have been merged with this object.",
 	        "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
+            "uniqueItems": true,
             "permission": "import_items"
         }
     },
@@ -377,6 +378,7 @@
             "title": "Viewing access groups",
             "description": "The groups that determines which set of data the user has permission to view.",
             "type": "array",
+            "uniqueItems": true,
             "permission": "import-items",
             "items": {
                 "title": "View access group",

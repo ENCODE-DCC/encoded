@@ -183,6 +183,7 @@
             "title": "Layers",
             "description": "",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Layer",
                 "description": "",
@@ -281,6 +282,7 @@
                         "title": "Filtering cutoffs",
                         "description": "The list of cutoffs that were used for filtering in generating the matrix.",
                         "type": "array",
+                        "uniqueItems": true,
                         "items": {
                             "title": "Filtering cutoff",
                             "type": "object",
@@ -357,6 +359,7 @@
             "title": "Cell label mappings",
             "description": "Information on what label was added to cell identifiers in this final matrix that is specific for the associated raw matrix",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Cell label mapping",
                 "type": "object",
@@ -407,6 +410,7 @@
             "title": "Donor mappings",
             "description": "Information on what researcher donor identifier in this final matrix that is specified for the associate donor object",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Donor mapping",
                 "type": "object",

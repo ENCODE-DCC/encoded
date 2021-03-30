@@ -77,6 +77,7 @@
             "title": "Derivation process",
             "description": "The method(s) by which this object was derived.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Derivation process",
                 "description": "A method by which this object was derived.",
@@ -152,6 +153,7 @@
             "title": "Enriched cell types",
             "description": "Embedded property for linking to biosample types which describes the ontology of the enriched cell types.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Enriched cell type",
                 "description": "Embedded property to linking to biosample type which describes the ontology of an enriched cell type.",
@@ -168,6 +170,7 @@
             "title": "Depleted cell types",
             "description": "Embedded property for linking to biosample type which describes the ontology of the depleted cell types.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Depleted cell type",
                 "description": "Embedded property for linking to biosample type which describes the ontology of a depleted cell type.",
@@ -278,6 +281,7 @@
             "title": "Feature antibodies",
             "description": "Antibodies used for cell surface protein detection in Feature Barcoding technologies (aka: CITEseq) during biosample preparation",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Feature antibodies",
                 "description": "Antibodies used for cell surface protein detection in Feature Barcoding technologies (aka: CITEseq) during biosample preparation",

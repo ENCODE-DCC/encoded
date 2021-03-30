@@ -112,6 +112,7 @@
             "title": "Gene biotypes included",
             "description": "The list of allowable gene biotypes that are found in the filtered gtf file.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Gene biotype included",
                 "description": "A gene biotypes found in the filtered gtf file.",

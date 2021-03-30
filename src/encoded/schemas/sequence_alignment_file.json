@@ -141,6 +141,7 @@
             "title": "Sample barcodes",
             "description": "The list of sample index barcodes associated with the sequences in the alignment file.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Sample barcode",
                 "description": "A sample index barcode associated with the sequences in the alignment file.",

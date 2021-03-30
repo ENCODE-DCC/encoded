@@ -42,6 +42,7 @@
             "title": "Derivation process",
             "description": "The method(s) by which this object was derived.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Derivation process",
                 "description": "A method by which this object was derived.",
