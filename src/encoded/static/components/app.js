@@ -53,6 +53,7 @@ const portal = {
                 { id: 'sep-mm-1' },
                 { id: 'cloud', title: 'Cloud Resources' },
                 { id: 'aws-link', title: 'AWS Open Data', url: 'https://registry.opendata.aws/encode-project/', tag: 'cloud' },
+                { id: 'azure-link', title: 'Azure Open Datasets', url: 'https://azure.microsoft.com/en-us/services/open-datasets/catalog/genomics-encode/', tag: 'azure' },
                 { id: 'sep-mm-2' },
                 { id: 'collections', title: 'Collections' },
                 { id: 'encore', title: 'RNA-protein interactions (ENCORE)', url: '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE', tag: 'collection' },
