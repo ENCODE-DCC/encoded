@@ -34,6 +34,7 @@
             "title": "Principal Investigators",
             "description": "Principal Investigators of the lab.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "description": "A Principal Investigators of the lab",
                 "type": "string",

@@ -47,10 +47,11 @@
         	"type": "number"
         },
         "library_metrics": {
-        	"title": "Library metrics",
-        	"description": "Metrics of read pairs and fragments prior to and after depth normalization",
-        	"type": "array",
-        	"items": {
+            "title": "Library metrics",
+            "description": "Metrics of read pairs and fragments prior to and after depth normalization",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
         		"title": "Library metric",
         		"description": "Metric of read pairs and fragments prior to and after depth normalization",
         		"type": "object",

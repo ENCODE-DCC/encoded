@@ -282,6 +282,7 @@
             "title": "Sequence file standards",
             "description": "The expected raw sequencing metrics based on the library protocol",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Standards",
                 "type": "object",

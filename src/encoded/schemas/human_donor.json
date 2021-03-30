@@ -30,6 +30,7 @@
             "title": "Ancestry",
             "description": "Ancestry of the donor, as determined by genotype.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "type": "object",
                 "properties": {

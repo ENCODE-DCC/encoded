@@ -41,6 +41,7 @@
             "title": "Software",
             "description": "The software used to generate the file.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "type": "string"
             }

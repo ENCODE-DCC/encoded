@@ -34,6 +34,7 @@
             "title": "Enriched marker genes",
             "description": "Gene symbols for relatively postively expressed genes that were used for cell type annotation.",
             "type":  "array",
+            "uniqueItems": true,
             "items": {
                 "type": "string"
             }
@@ -42,6 +43,7 @@
             "title": "Depleted marker genes",
             "description": "Gene symbols for relatively negatively expressed genes that were used for cell type annotation.",
             "type":  "array",
+            "uniqueItems": true,
             "items": {
                 "type": "string"
             }
@@ -60,6 +62,7 @@
             "title": "Matrix files",
             "description": "The matrix files that this cell annotation was applied to.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "type": "string",
                 "linkTo": "MatrixFile"
