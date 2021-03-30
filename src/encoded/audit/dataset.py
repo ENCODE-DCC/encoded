@@ -30,7 +30,7 @@ def audit_dataset_no_raw_files(value, system):
     raw_data = False
     if 'original_files' in value:
         for f in value['original_files']:
-            if f['@type'][0] == 'RawSequenceFile':
+            if f['@type'][0] == 'RawSequenceFile' and f['no_file_available'] != True:
                 raw_data = True
     if raw_data == False:
         detail = ('Dataset {} does not contain any raw sequence files.'.format(
