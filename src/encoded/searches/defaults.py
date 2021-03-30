@@ -42,7 +42,7 @@ DEFAULT_ITEM_TYPES = [
     'Gene',
     'Target',
     'File',
-    'Lab'
+    'Lab',
 ]
 
 TOP_HITS_ITEM_TYPES = [
