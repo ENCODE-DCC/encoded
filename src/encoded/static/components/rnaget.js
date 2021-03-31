@@ -100,7 +100,7 @@ RNAGetDataRegistry.register({ field: 'analysis' }, AtIdRenderer);
  * @id cell renderer that displays links to genes from the RNAGet API.
  */
 const RNAGetIdRenderer = ({ value }) => (
-    <a href={'/genes/' + value.split('/')[1]}>{value.split('/')[0]}</a>
+    <a href={`/genes/${value.split('/')[1]}`}>{value.split('/')[0]}</a>
 );
 
 RNAGetIdRenderer.propTypes = {
