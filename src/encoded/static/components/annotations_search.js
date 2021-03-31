@@ -7,6 +7,7 @@ import QueryString from '../libs/query_string';
 import * as globals from './globals';
 import GenomeBrowser from './genome_browser';
 import { BodyMapThumbnailAndModal } from './body_map';
+import getSeriesData from './series_search.js';
 
 // The series search page includes the following five series
 const annotationsList = {
@@ -52,70 +53,57 @@ const encyclopediaVersions = [
     'Roadmap',
 ];
 
-
-// Fetch data from href
-function getSeriesData(seriesLink, fetch) {
-    return fetch(seriesLink, {
-        method: 'GET',
-        headers: {
-            Accept: 'application/json',
-        },
-    }).then((response) => {
-        if (response.ok) {
-            return response.json();
-        }
-        throw new Error('not ok');
-    }).catch((e) => {
-        console.log('OBJECT LOAD ERROR: %s', e);
-    });
-}
+//&encyclopedia_version=${encyclopediaVersion}
 
 // The series search page displays a table of results corresponding to a selected series
 // Buttons for each series are displayed like tabs or links
 const AnnotationsSearch = (props, context) => {
-    const parsedUrl = url.parse(props.context['@id']);
-    const query = new QueryString(parsedUrl.query);
+    // const parsedUrl = url.parse(props.context['@id']);
+    // const query = new QueryString(parsedUrl.query);
 
-    const [encyclopediaVersion, setEncyclopediaVersion] = React.useState(query.getKeyValues('encyclopedia_version')[0] || 'ENCODE v2');
+    const [encyclopediaVersion, setEncyclopediaVersion] = React.useState('ENCODE v2');
     const [annotationType, setAnnotationType] = React.useState('chromatin state');
-    const [annotationData, setAnnotationData] = React.useState([]);
-    const [biosampleType, setBiosampleType] = React.useState('chromatin state');
-    const [biosampleData, setBiosampleData] = React.useState([]);
+    const [annotationPanel, setAnnotationPanel] = React.useState({
+        props: [],
+        data: [],
+        facets: [],
+        total: 0,
+        columns: [],
+        filters: [],
+        notification: '',
+    });
+    const [annotationHref, setAnnotationHref] = React.useState('');
+
+    // const [annotationData, setAnnotationData] = React.useState(null);
+    const [biosampleType, setBiosampleType] = React.useState('candidate Cis-Regulatory Elements');
+    const [biosamplePanel, setBiosamplePanel] = React.useState({
+        props: [],
+        data: [],
+        facets: [],
+        total: 0,
+        columns: [],
+        filters: [],
+        notification: '',
+    });
+    const [biosampleHref, setBiosampleHref] = React.useState('');
+    // const [biosampleData, setBiosampleData] = React.useState(null);
 
     // const [descriptionData, setDescriptionData] = React.useState(null);
     const searchBase = url.parse(context.location_href).search || '';
-
-    const { facets, total, columns, filters } = props.context;
-    const results = props.context['@graph'];
+    // const results = props.context['@graph'];
     const label = 'results';
     // const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
 
     const handleTabClick = React.useCallback((series) => {
         setAnnotationType(series);
-        const href = `/annotations-search/?type=Annotation&encyclopedia_version=${encyclopediaVersion}&annotation_type=${series}`;
-        context.navigate(href);
-        // Get series description from schema
-        // const seriesDescriptionHref = `/profiles/${annotationsList[series].schema}.json`;
-        // getSeriesData(seriesDescriptionHref, context.fetch).then((response) => {
-        //     setDescriptionData(response.description);
-        // });
+        const href = `/search/?type=Annotation&annotation_type=${series}`;
+        setAnnotationHref(href);
     }, [context]);
 
     const handleSecondaryTabClick = React.useCallback((series) => {
-        console.log(series);
         setBiosampleType(series);
-        const href = `/search/?type=Annotation&encyclopedia_version=${encyclopediaVersion}&annotation_type=${series}`;
-        // context.navigate(href);
-        setBiosampleData(getSeriesData(href, context.fetch));
-
-        console.log(context.fetch);
-
-        console.log(getSeriesData(href, context.fetch));
-        // Get series description from schema
-        // const seriesDescriptionHref = `/profiles/${annotationsList[series].schema}.json`;
-        // getSeriesData(seriesDescriptionHref, context.fetch).then((response) => {
-        //     setDescriptionData(response.description);
-        // });
+        const href = `/search/?type=Annotation&annotation_type=${series}`;
+        setBiosampleHref(href);
     }, [context]);
 
     const onFilter = (e) => {
@@ -125,25 +113,13 @@ const AnnotationsSearch = (props, context) => {
         e.preventDefault();
     };
 
-    // const currentRegion = (assembly, region) => {
-    //     let lastRegion = {};
-    //     if (assembly && region) {
-    //         lastRegion = {
-    //             assembly,
-    //             region,
-    //         };
-    //     }
-    //     return lastRegion;
-    // };
-
     const seriesTabs = {};
     Object.keys(annotationsList).forEach((s) => {
-        seriesTabs[s] =
+        seriesTabs[annotationsList[s].search] =
             <div className="tab-inner">
                 {s}
             </div>;
     });
-    console.log(seriesTabs);
 
     const secondarySeriesTabs = {};
     Object.keys(secondaryAnnotationsList).forEach((s) => {
@@ -152,27 +128,75 @@ const AnnotationsSearch = (props, context) => {
                 {s}
             </div>;
     });
-    console.log(secondarySeriesTabs);
 
     const selectEncyclopedia = (e) => {
         setEncyclopediaVersion(e.target.value);
         const href = `?type=Annotation&encyclopedia_version=${e.target.value}&annotation_type=${annotationType}`;
-        context.navigate(href);
+        // context.navigate(href);
     };
 
+    function redirectClick(e, panel) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (e.target.closest('a')) {
+            const closestLink = e.target.closest('a');
+            let linkHref = closestLink.getAttribute('href');
+            console.log(linkHref);
+            if (linkHref === '/annotations-search?type=Annotation') {
+                if (panel === 'biosample') {
+                    linkHref = `/search/?type=Annotation&annotation_type=${biosampleType}`;
+                } else {
+                    linkHref = `/search/?type=Annotation&annotation_type=${annotationType}`;
+                }
+            }
+            if (panel === 'biosample') {
+                setBiosampleHref(linkHref);
+            } else {
+                setAnnotationHref(linkHref);
+            }
+        }
+    }
+
     // Select series from tab buttons
-    // React.useEffect(() => {
-    //     // const seriesDescriptionHref = `/profiles/${annotationsList[selectedSeries].schema}.json`;
-    //     // getSeriesData(seriesDescriptionHref, context.fetch).then((response) => {
-    //     //     setDescriptionData(response.description);
-    //     // });
-    //     if (!(query.getKeyValues('annotation_type')[0])) {
-    //         query.addKeyValue('annotation_type', annotationType);
-    //         const href = `?type=Annotation&encyclopedia_version=${encyclopediaVersion}&${query.format()}`;
-    //         console.log(href);
-    //         context.navigate(href);
-    //     }
-    // }, [context, context.fetch, query]);
+    React.useEffect(() => {
+        getSeriesData(biosampleHref, context.fetch).then((response) => {
+            setBiosamplePanel({
+                props: response,
+                data: response['@graph'],
+                facets: response.facets,
+                total: response.total,
+                columns: response.columns,
+                filters: response.filters,
+                notification: response.notification,
+            });
+        });
+    }, [biosampleHref]);
+
+    // Select series from tab buttons
+    React.useEffect(() => {
+        getSeriesData(annotationHref, context.fetch).then((response) => {
+            setAnnotationPanel({
+                props: response,
+                data: response['@graph'],
+                facets: response.facets,
+                total: response.total,
+                columns: response.columns,
+                filters: response.filters,
+                notification: response.notification,
+            });
+        });
+    }, [annotationHref]);
+
+    React.useEffect(() => {
+        if (annotationHref === '') {
+            const href = `/search/?type=Annotation&annotation_type=${annotationType}`;
+            setAnnotationHref(href);
+        }
+        if (biosampleHref === '') {
+            const href = `/search/?type=Annotation&annotation_type=${biosampleType}`;
+            setBiosampleHref(href);
+        }
+    }, []);
 
     return (
         <div className="layout">
@@ -203,15 +227,35 @@ const AnnotationsSearch = (props, context) => {
                                 <div className="series-wrapper">
                                     <Panel>
                                         <PanelBody>
-                                            <div className="annotations-results-wrapper">
+                                            <div className="annotations-results-wrapper" onClick={e => redirectClick(e, 'annotation')}>
+                                                <div className="body-map-facets-container">
+                                                    <BodyMapThumbnailAndModal context={annotationPanel.props} location={annotationHref} />
+                                                    {annotationPanel.props ?
+                                                        <FacetList
+                                                            context={annotationPanel.props}
+                                                            facets={annotationPanel.facets}
+                                                            filters={annotationPanel.filters}
+                                                            searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                                                            onFilter={onFilter}
+                                                            hideDocType
+                                                        />
+                                                    : null}
+                                                </div>
                                                 <div className="browser-list-container">
-                                                    <h4>Showing {results.length} of {total} {label}</h4>
-                                                    {props.context.notification === 'Success' ?
+                                                    <h4>Showing {annotationPanel.data.length} of {annotationPanel.total} {annotationPanel.label}</h4>
+                                                    <GenomeBrowser
+                                                        files={[]}
+                                                        label="file gallery"
+                                                        expanded
+                                                        assembly="hg19"
+                                                        displaySort
+                                                    />
+                                                    {annotationPanel.notification === 'Success' ?
                                                         <div className="search-results__result-list">
-                                                            <ResultTableList results={results} columns={columns} cartControls />
+                                                            <ResultTableList results={annotationPanel.data} columns={annotationPanel.columns} cartControls />
                                                         </div>
                                                     :
-                                                        <h4>{context.notification}</h4>
+                                                        <h4>{annotationPanel.notification}</h4>
                                                     }
                                                 </div>
                                             </div>
@@ -225,7 +269,7 @@ const AnnotationsSearch = (props, context) => {
                     <div className="outer-tab-container">
                         <TabPanel
                             tabs={secondarySeriesTabs}
-                            selectedTab={annotationType}
+                            selectedTab={biosampleType}
                             handleTabClick={handleSecondaryTabClick}
                             tabCss="tab-button"
                             tabPanelCss="tab-container series-tabs"
@@ -234,26 +278,27 @@ const AnnotationsSearch = (props, context) => {
                                 <div className="series-wrapper">
                                     <Panel>
                                         <PanelBody>
-                                            <div className="annotations-results-wrapper">
+                                            <div className="annotations-results-wrapper" onClick={e => redirectClick(e, 'biosample')}>
                                                 <div className="body-map-facets-container">
-                                                    <BodyMapThumbnailAndModal context={context} location={context.location_href} />
-                                                    <FacetList
-                                                        {...props}
-                                                        facets={facets}
-                                                        filters={filters}
-                                                        searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-                                                        onFilter={onFilter}
-                                                        hideDocType
-                                                    />
+                                                    {biosamplePanel.props ?
+                                                        <FacetList
+                                                            context={biosamplePanel.props}
+                                                            facets={biosamplePanel.facets}
+                                                            filters={biosamplePanel.filters}
+                                                            searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                                                            onFilter={onFilter}
+                                                            hideDocType
+                                                        />
+                                                    : null}
                                                 </div>
                                                 <div className="browser-list-container">
-                                                    <h4>Showing {biosampleData.length} of {total} {label}</h4>
-                                                    {props.context.notification === 'Success' ?
+                                                    <h4>Showing {biosamplePanel.data.length} of {biosamplePanel.total} {biosamplePanel.label}</h4>
+                                                    {biosamplePanel.notification === 'Success' ?
                                                         <div className="search-results__result-list">
-                                                            <ResultTableList results={biosampleData} columns={columns} cartControls />
+                                                            <ResultTableList results={biosamplePanel.data} columns={biosamplePanel.columns} cartControls />
                                                         </div>
                                                     :
-                                                        <h4>{context.notification}</h4>
+                                                        <h4>{biosamplePanel.notification}</h4>
                                                     }
                                                 </div>
                                             </div>
@@ -268,14 +313,6 @@ const AnnotationsSearch = (props, context) => {
         </div>
     );
 };
-
-// <GenomeBrowser
-//     files={[]}
-//     label="file gallery"
-//     expanded
-//     assembly="hg19"
-//     displaySort
-// />
 
 AnnotationsSearch.propTypes = {
     context: PropTypes.object.isRequired,
