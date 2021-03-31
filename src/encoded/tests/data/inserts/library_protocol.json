@@ -1,5 +1,12 @@
 [
     {
+        "name": "visium-10x-3'-v3",
+        "title": "Visium 10x 3' v3",
+        "status": "released",
+        "library_type": "RNA-seq",
+        "biological_macromolecule": "RNA"
+    },
+    {
         "name": "10x-5'-v1",
         "title": "10x 5' v1",
         "status": "released",

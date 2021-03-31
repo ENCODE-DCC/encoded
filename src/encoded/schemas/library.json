@@ -70,7 +70,8 @@
                 "type": "string",
                 "linkTo": [
                     "Biosample",
-                    "Suspension"
+                    "Suspension",
+                    "TissueSection"
                 ]
             }
         },
@@ -177,6 +178,20 @@
             "comment": "Date should be submitted in as YYYY-MM-DD.",
             "type": "string",
             "format": "date"
+        },
+        "permeabilization_time": {
+            "title": "Permeabilization time",
+            "description": "",
+            "type": "string",
+            "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
+        },
+        "permeabilization_time_units": {
+            "title": "Permeabilization time units",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "minute"
+            ]
         }
     },
     "facets": {

@@ -1,5 +1,17 @@
 [
     {
+        "status": "released",
+        "uuid": "156d9247-f386-4657-b234-a756584bc20f",
+        "dataset": "anna-greka:large_test_dataset",
+        "protocol": "visium-10x-3'-v3",
+        "lab": "Anna Greka, Broad",
+        "derived_from": [
+            "anna-greka:liver-section1"
+        ],
+        "permeabilization_time": "16",
+        "permeabilization_time_units": "minute"
+    },
+    {
         "accession": "LATLB200DDD",
         "aliases": [
             "anna-greka:citeseq_library_donorA1"
