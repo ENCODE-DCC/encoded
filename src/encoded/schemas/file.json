@@ -57,11 +57,6 @@
         "lab.title": {
             "title": "Lab"
         },
-        "target.label": {
-            "title": "Target of assay",
-            "type": "typeahead",
-            "length": "long"
-        },
         "assay_title": {
             "title": "Assay title",
             "type": "typeahead"
