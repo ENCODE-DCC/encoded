@@ -10,6 +10,7 @@ const labSortOrder = [
     'ENCODE4',
     'ENCODE3',
     'Uniform',
+    'Mixed labs',
     'Lab custom',
 ];
 

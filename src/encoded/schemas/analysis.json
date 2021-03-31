@@ -37,7 +37,6 @@
             "type": "array",
             "minItems": 1,
             "uniqueItems": true,
-            "permission": "import_items",
             "items": {
                 "title": "Analysis file",
                 "comment": "See file.json for available identifiers.",

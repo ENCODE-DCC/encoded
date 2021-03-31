@@ -2523,7 +2523,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
      * Selects certain awards as the default if listed.
     */
     useMount(() => {
-        const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
+        const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed labs', 'Lab custom']; // ordered in decreasing precedence
         const analysesAwarded = analyses.filter((analysis) => awardSuffix.some((award) => (analysis.title || '').includes(award)));
 
         // a bit hacky, removes text and use number to determine sorting
