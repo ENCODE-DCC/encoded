@@ -61,7 +61,7 @@
             "title": "Derived from",
             "description": "The donor(s) or sample(s) from which this object was directly derived.",
             "type": "array",
-            "uniqueItems": true,            
+            "uniqueItems": true,
             "items": {
                 "title": "Derived from",
                 "description": "A donor or sample from which this object was directly derived.",
