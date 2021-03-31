@@ -422,13 +422,13 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     '''
 
     if any(pipeline['title'] == 'RAMPAGE (paired-end, stranded)' for pipeline in value['pipelines']):
-        yield from check_experiment_cage_rampage_standards(
+        yield from check_analysis_cage_rampage_standards(
             value,
             files_structure,
             ['RAMPAGE (paired-end, stranded)'],
             '/data-standards/rampage/')
     if any(pipeline['title'] == 'Small RNA-seq single-end pipeline' for pipeline in value['pipelines']):
-        yield from check_experiment_small_rna_standards(
+        yield from check_analysis_small_rna_standards(
             value,
             files_structure,
             ['Small RNA-seq single-end pipeline'],
@@ -438,7 +438,7 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             'RNA-seq of long RNAs (single-end, unstranded)',
             'Bulk RNA-seq']
             for pipeline in value['pipelines']):
-        yield from check_experiment_long_rna_standards(
+        yield from check_analysis_bulk_rna_standards(
             value,
             files_structure,
             [
@@ -449,14 +449,14 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             '/data-standards/rna-seq/long-rnas/'
         )
     if any(pipeline['title'] == 'microRNA-seq pipeline' for pipeline in value['pipelines']):
-        yield from check_experiment_micro_rna_standards(
+        yield from check_analysis_micro_rna_standards(
             value,
             files_structure,
             ['microRNA-seq pipeline'],
             '/microrna/microrna-seq-encode4/'
         )
     if any(pipeline['title'] == 'Long read RNA-seq pipeline' for pipeline in value['pipelines']):
-        yield from check_experiment_long_read_rna_standards(
+        yield from check_analysis_long_read_rna_standards(
             value,
             files_structure,
             ['Long read RNA-seq pipeline'],
@@ -1234,7 +1234,7 @@ def audit_missing_star_quality_metric(value, alignment_files, pipeline):
     yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
 
 
-def check_experiment_long_rna_standards(
+def check_analysis_bulk_rna_standards(
     value,
     files_structure,
     expected_pipeline_titles,
@@ -1318,7 +1318,7 @@ def check_experiment_long_rna_standards(
     return
 
 
-def check_experiment_small_rna_standards(
+def check_analysis_small_rna_standards(
     value,
     files_structure,
     expected_pipeline_titles,
@@ -1371,7 +1371,7 @@ def check_experiment_small_rna_standards(
     return
 
 
-def check_experiment_cage_rampage_standards(
+def check_analysis_cage_rampage_standards(
     value,
     files_structure,
     expected_pipeline_titles,
@@ -1422,7 +1422,7 @@ def check_experiment_cage_rampage_standards(
     return
 
 
-def check_experiment_micro_rna_standards(
+def check_analysis_micro_rna_standards(
     value,
     files_structure,
     expected_pipeline_titles,
@@ -1473,7 +1473,7 @@ def check_experiment_micro_rna_standards(
     return
 
 
-def check_experiment_long_read_rna_standards(
+def check_analysis_long_read_rna_standards(
     value,
     files_structure,
     expected_pipeline_titles,
@@ -1735,7 +1735,7 @@ def check_analysis_atac_encode4_qc_standards(
         return
     else:
         assembly = value['assembly']
-    if len(value['datasets']) != 1 or len(value['pipelines']) != 1:
+    if len(value['datasets']) != 1:
         return
 
     pipeline_titles = [pipeline['title'] for pipeline in value['pipelines']]
@@ -2158,6 +2158,8 @@ function_dispatcher_with_files = {
         'datasets.target',
     ])
 def audit_analysis(value, system):
+    if value['status'] == 'deleted':
+        return
     excluded_files = ['revoked']
     if value['status'] == 'revoked':
         excluded_files = []
