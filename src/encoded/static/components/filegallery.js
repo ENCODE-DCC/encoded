@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc';
 import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { collapseIcon } from '../libs/svg-icons';
-import { auditDecor, auditsDisplayed } from './audit';
+import { auditDecor, auditsDisplayed, filterAuditByPath } from './audit';
 import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
@@ -61,7 +61,7 @@ const inclusionStatuses = [
  * labs. Export for Jest test.
  * @param {object} experiment Contains the analyses to convert into an pipeline labs dropdown
  * @param {array} files Array of all files from search that gets included in file gallery
- * @dataFormat{string} Massages data to a be in a particular strucuture if set
+ * @dataFormat{string} Massages data to a be in a particular structure if set
  *
  * @return {array} Compiled analyses information, each element with the form:
  * {
@@ -289,7 +289,7 @@ export class FileTable extends React.Component {
                 }))
                 : null;
 
-            // Extract four kinds of file arrays
+            // Extract any of the four kinds of file arrays, or files belonging to an analysis.
             const files = _(datasetFiles).groupBy((file) => {
                 if (file.output_category === 'raw data') {
                     if (file.output_type === 'reads') {
@@ -388,6 +388,7 @@ export class FileTable extends React.Component {
                                         }
                                         inclusionOn={options.inclusionOn}
                                         files={files[key]}
+                                        audit={context.audit}
                                     />
                                 }
                                 rowClasses={this.rowClasses}
@@ -2237,8 +2238,6 @@ const FileGraph = (props) => {
                 nodeClickHandler={handleNodeClick}
                 schemas={schemas}
                 colorize={colorize}
-                auditIndicators={props.auditIndicators}
-                auditDetail={props.auditDetail}
             />
         );
     }
@@ -2256,8 +2255,6 @@ FileGraph.propTypes = {
     handleNodeClick: PropTypes.func.isRequired, // Parent function to call when a graph node is clicked
     colorize: PropTypes.bool, // True to enable node colorization based on status
     loggedIn: PropTypes.bool, // True if current user has logged in
-    auditIndicators: PropTypes.func, // Inherited from auditDecor HOC
-    auditDetail: PropTypes.func, // Inherited from auditDecor HOC
 };
 
 FileGraph.defaultProps = {
@@ -2267,8 +2264,6 @@ FileGraph.defaultProps = {
     schemas: null,
     colorize: false,
     loggedIn: false,
-    auditIndicators: null,
-    auditDetail: null,
 };
 
 
@@ -2952,7 +2947,7 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     /**
-     *  Get selected browser off analysis. The analysis from the parameter is used if provieded, otherwise react state is used.
+     *  Get selected browser off analysis. The analysis from the parameter is used if provided, otherwise react state is used.
      *
      * @param {*} [compiledAnalyses=null] analysis data
      * @returns Selected index or 0 if none can be found
@@ -3246,7 +3241,16 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     render() {
-        const { context, schemas, hideGraph, hideControls, collapseNone, showReplicateNumber } = this.props;
+        const {
+            context,
+            schemas,
+            hideGraph,
+            hideControls,
+            collapseNone,
+            showReplicateNumber,
+            auditIndicators,
+            auditDetail,
+        } = this.props;
         let allGraphedFiles;
         let meta;
         // If filters other than assembly are chosen, we want to highlight the filtered files
@@ -3301,7 +3305,7 @@ class FileGalleryRendererComponent extends React.Component {
 
         const fileTable = (
             <FileTable
-                {...this.props}
+                context={context}
                 items={includedFiles}
                 selectedFilterValue={this.state.selectedFilterValue}
                 filters={this.state.fileFilters}
@@ -3327,11 +3331,12 @@ class FileGalleryRendererComponent extends React.Component {
                     collapseNone,
                 }}
                 adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
+                schemas={schemas}
             />
         );
 
         if (this.state.infoNode) {
-            meta = globals.graphDetail.lookup(this.state.infoNode)(this.state.infoNode, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
+            meta = globals.graphDetail.lookup(this.state.infoNode)(this.state.infoNode, this.handleNodeClick, auditIndicators, auditDetail, this.context.session, this.context.sessionProperties);
         }
 
         // Prepare to display the file information modal.
@@ -3413,8 +3418,6 @@ class FileGalleryRendererComponent extends React.Component {
                                     colorize={this.state.inclusionOn}
                                     handleNodeClick={this.handleNodeClick}
                                     loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
-                                    auditIndicators={this.props.auditIndicators}
-                                    auditDetail={this.props.auditDetail}
                                 />
                             </TabPanelPane>
                             <TabPanelPane key="tables">
@@ -3493,23 +3496,32 @@ FileGalleryRendererComponent.contextTypes = {
 const FileGalleryRenderer = auditDecor(FileGalleryRendererComponent);
 
 
-const CollapsingTitle = (props, reactContext) => {
-    const { title, handleCollapse, collapsed, context, filters, analysisObjectKey, outputCategory, outputType, totalFiles, isDownloadable, inclusionOn, files } = props;
-
+const CollapsingTitleComponent = ({
+    title,
+    handleCollapse,
+    collapsed,
+    context,
+    filters,
+    analysisObjectKey,
+    outputCategory,
+    outputType,
+    totalFiles,
+    isDownloadable,
+    inclusionOn,
+    files,
+    auditIndicators,
+    auditDetail,
+    auditCloseDetail,
+    audit,
+}, reactContext) => {
     const [downloadModalVisibility, setDownloadModalVisibility] = useState(false);
+    const analysis = context.analysis_objects
+        ? context.analysis_objects.find((analysisObject) => analysisObject.accession === analysisObjectKey)
+        : null;
 
     const handleDownloadClick = () => {
         const { accession } = context;
         const type = context && context['@type'] ? context['@type'][0] : 'Experiment';
-        let analysisObjectId = '';
-
-        if (context.analysis_objects) {
-            const analysisObjects = context.analysis_objects.find((analysisObject) => analysisObject.accession === analysisObjectKey);
-
-            if (analysisObjects) {
-                analysisObjectId = analysisObjects['@id'];
-            }
-        }
 
         const fileTypes = filters.file_type && filters.file_type.length > 0
             ? filters.file_type.map((fileType) => `&files.file_type=${encodedURIComponent(fileType)}`).join('')
@@ -3529,38 +3541,59 @@ const CollapsingTitle = (props, reactContext) => {
         if (outputCategoryQueryString) {
             reactContext.navigate(`/batch_download/?type=${type}&accession=${accession}${outputCategoryQueryString}${outputTypeQueryString}${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
         } else {
-            reactContext.navigate(`/batch_download/?type=Analysis&@id=${analysisObjectId}&${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
+            reactContext.navigate(`/batch_download/?type=Analysis&@id=${analysis ? analysis['@id'] : ''}&${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
         }
         setDownloadModalVisibility(false);
     };
 
     const canDownload = downloadEnabled(files);
 
+    // Filter to audits relevant to the current analysis.
+    const filteredAudit = analysis ? filterAuditByPath(audit, analysis['@id']) : {};
+
+    React.useEffect(() => {
+        if (collapsed) {
+            auditCloseDetail();
+        }
+    }, [collapsed]);
+
     return (
-        <div className="collapsing-title">
-            {downloadModalVisibility
-                ? <BatchDownloadModal
-                    closeModalHandler={() => setDownloadModalVisibility(false)}
-                    downloadClickHandler={handleDownloadClick}
-                />
-                :
-                null}
-            <button type="button" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
-            <h4>
-                {title} <span className="collapsing-title-file-count">({`${totalFiles} File${totalFiles !== 1 ? 's' : ''}`})</span>  &nbsp;&nbsp;
-                {isDownloadable ?
-                    <span className="collapsing-title__file-download" onClick={() => (canDownload ? setDownloadModalVisibility(true) : null)} role="button" tabIndex={0} onKeyDown={() => {}}>
-                        <i className={`icon icon-download ${canDownload ? '' : 'collapsing-title__file-download--no-download-shade'}`}>
-                            <span className="sr-only">Download</span>
-                        </i>
-                    </span>
-                : null}
-            </h4>
-        </div>
+        <>
+            <div className="collapsing-title">
+                {downloadModalVisibility
+                    ? <BatchDownloadModal
+                        closeModalHandler={() => setDownloadModalVisibility(false)}
+                        downloadClickHandler={handleDownloadClick}
+                    />
+                    :
+                    null}
+                <button type="button" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
+                <h4>
+                    {title} <span className="collapsing-title-file-count">({`${totalFiles} File${totalFiles !== 1 ? 's' : ''}`})</span>  &nbsp;&nbsp;
+                    {isDownloadable ?
+                        <span className="collapsing-title__file-download" onClick={() => (canDownload ? setDownloadModalVisibility(true) : null)} role="button" tabIndex={0} onKeyDown={() => {}}>
+                            <i className={`icon icon-download ${canDownload ? '' : 'collapsing-title__file-download--no-download-shade'}`}>
+                                <span className="sr-only">Download</span>
+                            </i>
+                        </span>
+                    : null}
+                </h4>
+                {analysisObjectKey && analysis ? <Status item={analysis} css="collapsing-title__status" badgeSize="small" /> : null}
+                {auditIndicators(filteredAudit, title, { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+            </div>
+            {auditsDisplayed(filteredAudit, reactContext.session)
+                ? (
+                    <div className="collapsing-title__audit-details">
+                        {auditDetail(filteredAudit, title, { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+                    </div>
+                )
+                : null
+            }
+        </>
     );
 };
 
-CollapsingTitle.propTypes = {
+CollapsingTitleComponent.propTypes = {
     context: PropTypes.object.isRequired, // context
     title: PropTypes.string.isRequired, // Title to display in the title bar
     handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
@@ -3573,9 +3606,17 @@ CollapsingTitle.propTypes = {
     isDownloadable: PropTypes.bool, // whether or not the section can have it's files downloaded
     inclusionOn: PropTypes.bool.isRequired, // inclusion box checked or not
     files: PropTypes.array, // associated files
+    /** Audit data from experiment */
+    audit: PropTypes.object,
+    /** Audit HOC decorator function to show button that triggers the audit details */
+    auditIndicators: PropTypes.func.isRequired,
+    /** Audit HOD decorator to close the audit detail */
+    auditCloseDetail: PropTypes.func.isRequired,
+    /** Audit HOC decorator function to show each audit's details */
+    auditDetail: PropTypes.func.isRequired,
 };
 
-CollapsingTitle.defaultProps = {
+CollapsingTitleComponent.defaultProps = {
     collapsed: false,
     filters: [],
     analysisObjectKey: '',
@@ -3584,11 +3625,17 @@ CollapsingTitle.defaultProps = {
     totalFiles: 0,
     isDownloadable: true,
     files: [],
+    audit: {},
 };
 
-CollapsingTitle.contextTypes = {
+CollapsingTitleComponent.contextTypes = {
     navigate: PropTypes.func,
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
+
+const CollapsingTitle = auditDecor(CollapsingTitleComponent);
+
 
 // Display a filtering <select>. `filterOptions` is an array of objects with two properties:
 // `assembly` and `annotation`. Both are strings that get concatenated to form each menu item. The
