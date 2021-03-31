@@ -304,3 +304,12 @@ def library_15_16(value, system):
     if len(new_linkers) == 4:
         value['linkers'] = new_linkers
         value['notes'] = (notes + ' The linkers of this library were converted as linker a and linker b have been deprecated as linkers type.').strip()
+
+
+@upgrade_step('library', '16', '17')
+def library_16_17(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5844
+    notes = value.get('notes', '')
+    if 'strand_specificity' not in value:
+        value['strand_specificity'] = 'unstranded'
+        value['notes'] = (notes + ' The strand_specificity of this library was defaulted to unstranded in an upgrade.').strip()

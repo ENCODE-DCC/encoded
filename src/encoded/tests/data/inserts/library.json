@@ -22,7 +22,8 @@
         "mint_mixture_identifier": "MoChrPreps 252",
         "dbxrefs": [
             "GEO:GSM433174"
-        ]
+        ],
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB310ZZZ",
@@ -42,7 +43,8 @@
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "rna_integrity_number": 2.0,
-        "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9"
+        "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB055ZZZ",
@@ -202,7 +204,8 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2"
+        "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB304ZZZ",
@@ -217,7 +220,8 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "835e166d-0253-41ce-add2-de67429a3612"
+        "uuid": "835e166d-0253-41ce-add2-de67429a3612",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB071ZZZ",
@@ -232,7 +236,8 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77"
+        "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB000ANI",
@@ -247,7 +252,8 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "7126310d-93c5-40af-988c-edb532fe6e7f"
+        "uuid": "7126310d-93c5-40af-988c-edb532fe6e7f",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB001ANI",
@@ -262,7 +268,8 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "35c0e686-00a2-4b24-8b8f-1bcf3379824b"
+        "uuid": "35c0e686-00a2-4b24-8b8f-1bcf3379824b",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB058ZZZ",
@@ -293,7 +300,8 @@
         "lab": "richard-myers",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "9a230485-0062-4590-be42-6ea7c4258941"
+        "uuid": "9a230485-0062-4590-be42-6ea7c4258941",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "test -new",
@@ -307,7 +315,8 @@
         "lab": "richard-myers",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79"
+        "uuid": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "test -new",
@@ -318,7 +327,8 @@
         "lab": "richard-myers",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "27ad2ec3-d1ff-49df-a1f7-2cf1d9cfa816"
+        "uuid": "27ad2ec3-d1ff-49df-a1f7-2cf1d9cfa816",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "DNA-me pipeline",
@@ -333,7 +343,8 @@
         "award": "/awards/U54HG006998/",
         "lab": "/labs/richard-myers/",
         "size_range": "100-300",
-        "biosample": "ENCBS039ENC"
+        "biosample": "ENCBS039ENC",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB723GTS",
@@ -343,7 +354,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
+        "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB209APR",
@@ -353,7 +365,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26"
+        "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB209APS",
@@ -363,7 +376,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "de797662-a71b-45d5-96bf-9dd800194907"
+        "uuid": "de797662-a71b-45d5-96bf-9dd800194907",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Paired set 1 library",
@@ -374,7 +388,8 @@
         "award": "U54HG007010",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "0766f43b-8be7-4d46-8aac-dc503931e939"
+        "uuid": "0766f43b-8be7-4d46-8aac-dc503931e939",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Paired set 2 library",
@@ -385,7 +400,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "2b0693ed-6f10-449f-82c2-ca3bd6b34daa",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Organism development series 1 library",
@@ -401,7 +417,8 @@
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "aliases": ["robert-waterston:library_RB884_80_1_1"],
         "depleted_in_term_name": ["rRNA"],
-        "extraction_method": "Trizol"
+        "extraction_method": "Trizol",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Organism development series 2 library",
@@ -417,7 +434,8 @@
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "aliases": ["robert-waterston:library_RB884_680_1_1"],
         "depleted_in_term_name": ["rRNA"],
-        "extraction_method": "Trizol"
+        "extraction_method": "Trizol",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Organism development series 3 library",
@@ -433,7 +451,8 @@
         "size_range": "350-600",
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "depleted_in_term_name": ["rRNA"],
-        "extraction_method": "Trizol"
+        "extraction_method": "Trizol",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Treatment time series 1 library",
@@ -447,7 +466,8 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB001SER",
         "biosample": "ENCBS001SER",
-        "uuid": "74f6be13-0f69-40b9-9c40-6a6931fa5f6a"
+        "uuid": "74f6be13-0f69-40b9-9c40-6a6931fa5f6a",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Treatment time series 2 library",
@@ -461,7 +481,8 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB002SER",
         "biosample": "ENCBS002SER",
-        "uuid": "605efe1e-f774-407b-8a51-7af9bf7631ef"
+        "uuid": "605efe1e-f774-407b-8a51-7af9bf7631ef",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Treatment time series 3 library",
@@ -475,7 +496,8 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB003SER",
         "biosample": "ENCBS003SER",
-        "uuid": "3d0d9ef4-5e1c-4e0b-b958-6e2364cd629e"
+        "uuid": "3d0d9ef4-5e1c-4e0b-b958-6e2364cd629e",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Treatment concentration series 1 library",
@@ -489,7 +511,8 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB001CON",
         "biosample": "ENCBS001SER",
-        "uuid": "1f262751-7820-403b-a0dc-f9ead4467a89"
+        "uuid": "1f262751-7820-403b-a0dc-f9ead4467a89",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Treatment time series 2 library",
@@ -503,7 +526,8 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB002CON",
         "biosample": "ENCBS002CON",
-        "uuid": "f1c0f296-d0fb-437b-b6a1-1f1068fe0e0d"
+        "uuid": "f1c0f296-d0fb-437b-b6a1-1f1068fe0e0d",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Treatment time series 3 library",
@@ -517,7 +541,8 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB003CON",
         "biosample": "ENCBS003CON",
-        "uuid": "9e2dab86-21d8-43fd-a0df-28105bda006d"
+        "uuid": "9e2dab86-21d8-43fd-a0df-28105bda006d",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Reference epigenome series 1 library RNA-seq",
@@ -531,7 +556,8 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB001EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "0028b17f-bacd-40b2-80d0-36b825933edc"
+        "uuid": "0028b17f-bacd-40b2-80d0-36b825933edc",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Reference epigenome series 1 library WGBS",
@@ -543,7 +569,8 @@
         "size_range": "150-200",
         "accession": "ENCLB002EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "b98607e6-2c2d-4799-b0fc-cc9905e33b91"
+        "uuid": "b98607e6-2c2d-4799-b0fc-cc9905e33b91",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Reference epigenome series 1 library H3K4me1",
@@ -555,7 +582,8 @@
         "size_range": "150-200",
         "accession": "ENCLB003EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89"
+        "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Reference epigenome series 1 library H3K4me3",
@@ -567,7 +595,8 @@
         "size_range": "150-200",
         "accession": "ENCLB004EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62"
+        "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Reference epigenome series 1 library H3K27ac",
@@ -579,7 +608,8 @@
         "size_range": "150-200",
         "accession": "ENCLB005EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba"
+        "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Reference epigenome series 1 library H3K27ac",
@@ -591,7 +621,8 @@
         "size_range": "150-200",
         "accession": "ENCLB006EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa"
+        "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Reference epigenome series 1 library H3K27me3",
@@ -603,7 +634,8 @@
         "size_range": "150-200",
         "accession": "ENCLB007EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137"
+        "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Reference epigenome series 1 library H3K9me3",
@@ -615,7 +647,8 @@
         "size_range": "150-200",
         "accession": "ENCLB008EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c"
+        "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Reference epigenome series 1 library control",
@@ -627,7 +660,8 @@
         "size_range": "150-200",
         "accession": "ENCLB009EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136"
+        "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Replication timing series 1 library",
@@ -639,7 +673,8 @@
         "size_range": "150-200",
         "accession": "ENCLB001REP",
         "biosample": "ENCBS001REP",
-        "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6"
+        "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Replication timing series 2 library",
@@ -651,7 +686,8 @@
         "size_range": "150-250",
         "accession": "ENCLB002REP",
         "biosample": "ENCBS002REP",
-        "uuid": "1ed1c288-0541-46b8-a827-b771cef26970"
+        "uuid": "1ed1c288-0541-46b8-a827-b771cef26970",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Replication timing series 3 library",
@@ -663,7 +699,8 @@
         "size_range": "170-200",
         "accession": "ENCLB003REP",
         "biosample": "ENCBS003REP",
-        "uuid": "cc6238c1-5650-4139-8927-7150154d18e0"
+        "uuid": "cc6238c1-5650-4139-8927-7150154d18e0",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "RCC files",
@@ -674,7 +711,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "65a36949-a525-4f2b-ba22-3a7eee53edfd",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "RCC files",
@@ -685,7 +723,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "1ad8e550-4ca7-4121-8168-748efc2c5895",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "idat files",
@@ -696,7 +735,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "bbadf7f4-40ca-4440-b6c2-3003f98b49fe",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "single cell barcodes",
@@ -718,7 +758,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "bbadf7f4-41ca-4410-b6c2-3003f98b41fe",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "CRISPR screen library",
@@ -730,7 +771,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "eb4b1710-70f0-11e9-a923-1681be663d3e",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "pooled clone sequencing library",
@@ -742,7 +784,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "eb4b19ea-70f0-11e9-a923-1681be663d3e",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "MPRA library",
@@ -753,7 +796,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "eb4b19ea-10f0-11e4-a923-1681be663d2e",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "STARR-seq library",
@@ -764,7 +808,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "eb4b29ea-10f0-11e4-a921-1681be563d2e",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "eCLIP control library",
@@ -802,7 +847,8 @@
               "type": "read1 5' adapter",
               "file": "ENCFF980GYX"
             }
-        ]
+        ],
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "microRNA-seq rep2 library",
@@ -827,7 +873,8 @@
               "type": "read1 5' adapter",
               "file": "ENCFF379BCO"
             }
-        ]
+        ],
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -851,7 +898,8 @@
               "type": "read1 5' adapter",
               "sequence": "GGGGGGCNA"
             }
-        ]
+        ],
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -865,7 +913,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "e7bd9164-9646-4352-b6e3-3acb74fa3416"
+        "uuid": "e7bd9164-9646-4352-b6e3-3acb74fa3416",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -879,7 +928,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "5faff51d-e5e0-4012-8263-364adf49edfa"
+        "uuid": "5faff51d-e5e0-4012-8263-364adf49edfa",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -893,7 +943,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476c"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476c",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -907,7 +958,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476d"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476d",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -921,7 +973,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476e"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476e",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -935,7 +988,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476f"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476f",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -949,7 +1003,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee43e476d"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee43e476d",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -964,7 +1019,8 @@
         "extraction_method": "NucleoBond Xtra Midi kit (Machery-Nagel cat#: 740410)",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ef33e476e"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ef33e476e",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "Fragmentation duration variation library",
@@ -980,7 +1036,8 @@
         "extraction_method": "Animal tissue kit (Norgen Biotek cat#: 25700)",
         "accession": "ENCLB001FRA",
         "biosample": "ENCBS124ENC",
-        "uuid": "0017c28f-bacd-40b2-80d0-36b825933edc"
+        "uuid": "0017c28f-bacd-40b2-80d0-36b825933edc",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB642NXW",
@@ -995,7 +1052,8 @@
         "size_range": "200-7000",
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "3b602e58-f527-490b-8171-b4fe533cc2a9"
+        "uuid": "3b602e58-f527-490b-8171-b4fe533cc2a9",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB643NXW",
@@ -1007,7 +1065,8 @@
         "size_range": "200-7000",
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "de54ef3e-bfbd-4105-b495-428424ccb480"
+        "uuid": "de54ef3e-bfbd-4105-b495-428424ccb480",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB543LDY",
@@ -1023,7 +1082,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "a0223fde-021d-4d0b-875e-3fa7ad731862"
+        "uuid": "a0223fde-021d-4d0b-875e-3fa7ad731862",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB031QDV",
@@ -1040,7 +1100,8 @@
         "size_range": "200-7000",
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "0e71dd42-2565-4720-bf3b-db9bc296f02e"
+        "uuid": "0e71dd42-2565-4720-bf3b-db9bc296f02e",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB723ATA",
@@ -1050,7 +1111,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "60c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
+        "uuid": "60c0d6d6-3d79-430b-bbdf-6b035fdb4b29",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB414HBO",
@@ -1088,7 +1150,8 @@
             }
         ],
         "submitted_by": "mus.mi@porttitor.molestie",
-        "uuid": "35c3c851-544a-4b6d-8f18-f235c166d5a1"
+        "uuid": "35c3c851-544a-4b6d-8f18-f235c166d5a1",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB741SFV",
@@ -1098,7 +1161,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "9252caa7-6a95-4c10-9e54-3da14d7094d1",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "UM1HG009390"
+        "award": "UM1HG009390",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB102GPS",
@@ -1107,7 +1171,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "29da50f8-0de3-4352-8b9d-13fdd04b1355",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB102CAP",
@@ -1116,7 +1181,8 @@
         "nucleic_acid_term_name": "capped mRNA",
         "uuid": "30eb50f8-0de3-4352-8b9d-13fdd04b1355",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "ChIA-PET lib",
@@ -1126,7 +1192,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "fa626696-aeee-4272-9284-be8aa57f7176",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG006998"
+        "award": "U54HG006998",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "mixed library",
@@ -1137,7 +1204,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "4cc2c563-1e17-413a-b120-15cbf77eda20",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "award": "U54HG007010",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB345CTR",
@@ -1147,7 +1215,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "677e6b41-74e5-400b-9946-0f2664a9c8ff",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "UM1HG009442"
+        "award": "UM1HG009442",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB027CMT",
@@ -1157,7 +1226,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "1ee22fd9-c61c-40bd-bc67-c26ed724e18a",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "UM1HG009442"
+        "award": "UM1HG009442",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB849DQW",
@@ -1167,7 +1237,8 @@
         "nucleic_acid_term_name": "DNA",
         "uuid": "ee788ebe-64ed-485a-b762-40e6caa46949",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "UM1HG009442"
+        "award": "UM1HG009442",
+        "strand_specificity": "unstranded"
     },
     {
         "accession": "ENCLB304CLB",
@@ -1198,7 +1269,8 @@
             }
         ],
         "submitted_by": "mus.mi@porttitor.molestie",
-        "uuid": "9caea93e-ea3b-4bf5-b713-e0a7aa51f69e"
+        "uuid": "9caea93e-ea3b-4bf5-b713-e0a7aa51f69e",
+        "strand_specificity": "unstranded"
     },
     {
         "_test": "SPLiT-seq lib",
@@ -1209,6 +1281,7 @@
         "uuid": "cc32b056-04bc-420c-8370-3c4df21e6169",
         "construction_method": "Parse Single Cell Whole Transcriptome Kit",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG006998"
+        "award": "U54HG006998",
+        "strand_specificity": "unstranded"
     }
 ]

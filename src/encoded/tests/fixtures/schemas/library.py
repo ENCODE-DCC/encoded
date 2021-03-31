@@ -310,3 +310,11 @@ def library_linkers(lab, award):
             }
         ]
     }
+
+
+@pytest.fixture
+def library_schema_16(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid']
+    }
