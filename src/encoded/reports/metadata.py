@@ -244,6 +244,7 @@ class MetadataReport:
     def _should_not_report_file(self, file_):
         conditions = [
             not file_matches_file_params(file_, self.positive_file_param_set),
+            not file_satisfies_inequality_constraints(file_, self.positive_file_inequalities),
             self.visualizable_only and not is_file_visualizable(file_),
             self.raw_only and file_.get('assembly'),
             file_.get('restricted'),
@@ -318,6 +319,7 @@ class MetadataReport:
         self._split_column_and_fields_by_experiment_and_file()
         self._set_split_file_filters()
         self._set_positive_file_param_set()
+        self._set_positive_file_inequalities()
 
     def _build_params(self):
         self._add_fields_to_param_list()

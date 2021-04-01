@@ -1262,6 +1262,17 @@ def test_metadata_metadata_report_initialize_report(dummy_request):
     assert len(mr.header) == 57
     assert len(mr.experiment_column_to_fields_mapping.keys()) == 26, f'{len(mr.experiment_column_to_fields_mapping.keys())}'
     assert len(mr.file_column_to_fields_mapping.keys()) == 30, f'{len(mr.file_column_to_fields_mapping.keys())}'
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&replicates.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+        '&files.file_size=gte:3000&files.read_count=lt:500000'
+        '&files.file_size!=lt:9999'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    assert len(mr.positive_file_param_set) == 2
+    assert len(mr.positive_file_inequalities) == 2
 
 
 def test_metadata_metadata_report_build_params(dummy_request):
@@ -1389,6 +1400,43 @@ def test_metadata_metadata_report_should_not_report_file(dummy_request):
     mr._initialize_report()
     mr._build_params()
     # File not raw.
+    assert mr._should_not_report_file(file_())
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_format=bed&files.file_size=gt:50000'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    assert not mr._should_not_report_file(file_())
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_format=bed&files.file_size=gt:50000'
+        '&files.file_size=lte:99999999999&files.biological_replicates=gte:2'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    assert not mr._should_not_report_file(file_())
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_format=bed&files.file_size=gt:3356650'
+        '&files.file_size=lte:99999999999'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    assert mr._should_not_report_file(file_())
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.replicates.rbns_protein_concentration=gt:30'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    assert mr._should_not_report_file(file_())
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.title=lt:ENCFF244PJU'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
     assert mr._should_not_report_file(file_())
 
 
