@@ -668,7 +668,7 @@ class ExperimentSeriesComponent extends React.Component {
             // Experiment table data
             Object.keys(viewableDatasets).forEach((datasetAtId) => {
                 // Select one analysis based on analysis award
-                const analysisObjects = viewableDatasets[datasetAtId].analysis_objects || [];
+                const analysisObjects = viewableDatasets[datasetAtId].analyses || [];
                 viewableDatasets[datasetAtId].selectedAnalysis = analysisObjects.filter(
                     (analysis) => selectedAssembly.includes(analysis.assembly)
                         && analysis.pipeline_award_rfas.includes(this.state.selectedAnalysisRFA)

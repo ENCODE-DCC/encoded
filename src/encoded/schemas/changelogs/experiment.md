@@ -1,5 +1,8 @@
 ## Changelog for experiment.json
 
+### Schema version 34
+* Changed the *analysis_objects* property to be *analyses*
+
 ### Schema version 33
 * Removed *single-cell ATAC-seq* from *assay_term_name* enum and remapped to *single-nucleus ATAC-seq*
 

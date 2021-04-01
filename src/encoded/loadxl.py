@@ -615,7 +615,7 @@ PHASE1_PIPELINES = {
         remove_keys('spikeins_used', 'adapters'),
     ],
     'experiment': [
-        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
     ],
     'functional_characterization_experiment': [
         remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analysis_objects'),
@@ -642,7 +642,7 @@ PHASE1_PIPELINES = {
         remove_keys('datasets'),
     ],
     'annotation': [
-        remove_keys('related_files', 'software_used', 'analysis_objects'),
+        remove_keys('related_files', 'software_used', 'analyses'),
     ],
     'project': [
         remove_keys('related_files'),
@@ -725,7 +725,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('spikeins_used', 'adapters'),
     ],
     'experiment': [
-        skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analysis_objects'),
+        skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses'),
     ],
     'functional_characterization_experiment': [
         skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analysis_objects'),
@@ -749,7 +749,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
     'annotation': [
-        skip_rows_missing_all_keys('related_files', 'software_used', 'analysis_objects'),
+        skip_rows_missing_all_keys('related_files', 'software_used', 'analyses'),
     ],
     'project': [
         skip_rows_missing_all_keys('related_files'),

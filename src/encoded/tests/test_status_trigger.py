@@ -727,7 +727,7 @@ def test_set_status_experiment_analysis(testapp, root, experiment, file, base_an
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress', 'dataset': experiment['@id']})
     testapp.patch_json(base_analysis['@id'], {'status': 'in progress', 'files':[file['@id']]})
-    testapp.patch_json(experiment['@id'], {'analysis_objects': [base_analysis['@id']]})
+    testapp.patch_json(experiment['@id'], {'analyses': [base_analysis['@id']]})
     for encode_item in [experiment, base_analysis]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'in progress'

@@ -3,7 +3,7 @@ import { compileAnalyses } from '../filegallery';
 
 
 const experiment0 = {
-    analysis_objects: [
+    analyses: [
         {
             files: [
                 '/files/ENCFF003MRN/',

@@ -647,7 +647,7 @@ class Annotation(FileSet, CalculatedVisualize):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + [
-        'analysis_objects',
+        'analyses',
         'biosample_ontology',
         'software_used',
         'software_used.software',
@@ -668,10 +668,10 @@ class Annotation(FileSet, CalculatedVisualize):
         'files.replicate.library',
     ]
     set_status_up = [
-        'analysis_objects'
+        'analyses'
     ]
     set_status_down = [
-        'analysis_objects'
+        'analyses'
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -1152,7 +1152,7 @@ class ExperimentSeries(Series):
         'contributing_awards',
         'contributors',
         'organism',
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
         'related_datasets.award',
         'related_datasets.lab',
         'related_datasets.replicates.library.biosample',

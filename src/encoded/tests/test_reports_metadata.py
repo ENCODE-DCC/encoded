@@ -41,7 +41,7 @@ def experiment():
         "supersedes": [],
         "related_files": [],
         "internal_status": "release ready",
-        "analysis_objects": [
+        "analyses": [
             "/analyses/ENCAN823NHJ/"
         ],
         "replication_type": "isogenic",

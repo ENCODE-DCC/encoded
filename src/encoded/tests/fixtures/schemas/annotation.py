@@ -181,3 +181,13 @@ def annotation_dhs(testapp, award, lab):
         'encyclopedia_version': 'ENCODE v5'
     }
     return testapp.post_json('/annotation', item).json['@graph'][0]
+
+@pytest.fixture
+def annotation_31(award, lab, analysis_released_2):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '31',
+        'annotation_type': 'candidate regulatory elements',
+        'analysis_objects': [analysis_released_2['uuid']]
+    }
