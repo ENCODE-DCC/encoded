@@ -26,10 +26,10 @@ def partial_inequality(operator, RHS):
     return inequality
 
 
-def make_inequality_from_relation_and_operand(relation, operand):
+def make_inequality_from_relation_and_operand(relation, RHS):
     return partial_inequality(
         relation_to_operator[relation],
-        operand
+        RHS
     )
 
 
