@@ -38,16 +38,41 @@ def test_reports_inequalties_partial_inequality():
 
 def test_reports_inequalities_parse_inequality_param_value():
     from encoded.reports.inequalities import parse_inequality_param_value
-    relation, value = parse_inequality_param_value('lte:3000')
+    relation, operand = parse_inequality_param_value('lte:3000')
     assert relation == 'lte'
-    assert value == '3000'
-    relation, value = parse_inequality_param_value('gte:3000:300')
+    assert operand == '3000'
+    relation, operand = parse_inequality_param_value('gte:3000:300')
     assert relation == 'gte'
-    assert value == '3000:300'
+    assert operand == '3000:300'
 
 
-def test_reports_inequalities_make_inequality_from_relation_and_value():
-    from encoded.reports.inequalities import make_inequality_from_relation_and_value
-    inequality = make_inequality_from_relation_and_value('lt', 3000)
+def test_reports_inequalities_make_inequality_from_relation_and_operand():
+    from encoded.reports.inequalities import make_inequality_from_relation_and_operand
+    inequality = make_inequality_from_relation_and_operand('lt', 3000)
     assert inequality(200)
     assert not inequality(5000)
+
+
+def test_reports_inequalities_map_param_values_to_inequalities():
+    from encoded.reports.inequalities import map_param_values_to_inequalities
+    lte_3000, gt_22, lt_ENCSR000AAB, gte_97_54, lt_true = map_param_values_to_inequalities(
+        [
+            'lte:3000',
+            'gt:22',
+            'lt:ENCSR000AAB',
+            'gte:97.54',
+            'lt:true',
+        ]
+    )
+    assert lte_3000(2999)
+    assert lte_3000(3000)
+    assert not lte_3000(3001)
+    assert gt_22(23)
+    assert not gt_22(-1)
+    assert lt_ENCSR000AAB('ENCSR000AAA')
+    assert not lt_ENCSR000AAB('ENCSR000ABC')
+    assert gte_97_54('97.54')
+    assert gte_97_54('97.56')
+    assert not gte_97_54('96.54')
+    assert notlt_true(True)
+    assert lt_true(False)

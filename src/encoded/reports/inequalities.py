@@ -1,5 +1,6 @@
 import operator
 
+from encoded.reports.serializers import map_string_to_boolean_and_int
 from snovault.elasticsearch.searches.interfaces import COLON
 
 
@@ -25,8 +26,21 @@ def partial_inequality(operator, RHS):
     return inequality
 
 
-def make_inequality_from_relation_and_value(relation, value):
+def make_inequality_from_relation_and_operand(relation, operand):
     return partial_inequality(
         relation_to_operator[relation],
-        value
+        operand
     )
+
+
+def map_param_values_to_inequalities(values):
+    inequalities = []
+    for value in values:
+        relation, operand = parse_inequality_param_value(value)
+        inequalities.append(
+            make_inequality_from_relation_and_operand(
+                relation,
+                map_string_to_boolean_and_int(operand)
+            )
+        )
+    return inequalities
