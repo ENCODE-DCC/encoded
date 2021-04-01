@@ -76,4 +76,6 @@ assay_terms = {
       'GRO-seq': 'NTR:0000640',
       'GRO-cap': 'NTR:0000641',
       'long read single-cell RNA-seq': 'NTR:0000642',
+      'perturbation followed by scRNA-seq': 'NTR:0000643',
+      'perturbation followed by snATAC-seq': 'NTR:0000644',
 }

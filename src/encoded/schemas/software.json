@@ -128,6 +128,8 @@
                     "MPRA",
                     "MRE-seq",
                     "PAS-seq",
+                    "perturbation followed by scRNA-seq",
+                    "perturbation followed by snATAC-seq",
                     "PLAC-seq",
                     "pooled clone sequencing",
                     "PRO-cap",

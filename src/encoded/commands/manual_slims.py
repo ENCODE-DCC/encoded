@@ -4,7 +4,6 @@ slim_shims = {
         # DNA accessibility
         'OBI:0001924': ['DNA accessibility'],  # 'OBI:0000870' / MNase-seq
         'OBI:0002039': ['DNA accessibility'],  # 'OBI:0000870', / ATAC-seq,
-        'OBI:0002762': ['DNA accessibility'],  # 'OBI:0000870', / snATAC-seq,
         'OBI:0002764': ['DNA accessibility'],  # 'OBI:0000870', / scATAC-seq,
         'OBI:0001853': ['DNA accessibility'],  # 'OBI:0000870', / DNase-seq
         'OBI:0001859': ['DNA accessibility'],  # 'OBI:0000870', / OBI:0000424  / FAIRE-seq
@@ -22,7 +21,6 @@ slim_shims = {
         'OBI:0002045': ['Transcription'],  # PAS-seq
         'OBI:0002571': ['Transcription'],  # polyA plus RNA-seq
         'OBI:0002572': ['Transcription'],  # polyA minus RNA-seq
-        'OBI:0002631': ['Transcription'],  # scRNA-seq
         'OBI:0002112': ['Transcription'],  # small RNA-seq
         'OBI:0001271': ['Transcription'],  # total RNA-seq
         'OBI:0002753': ['Transcription'],  # PRO-cap
@@ -34,7 +32,9 @@ slim_shims = {
         'OBI:0000716': ['DNA binding'], # ChIP-seq
         'OBI:0001919': ['3D chromatin structure'], # 5C
         'OBI:0002160': ['DNA binding'],  # Mint-ChIP-seq
-        'OBI:0002675': ['Functional characterization'] # MPRA
+        'OBI:0002675': ['Functional characterization'], # MPRA
+        'OBI:0002762': ['Single cell'],  # snATAC-seq,
+        'OBI:0002631': ['Single cell']  # scRNA-seq
     },
     'cell': {
         'CL:0000038': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
