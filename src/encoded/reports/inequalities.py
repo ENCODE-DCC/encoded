@@ -44,3 +44,10 @@ def map_param_values_to_inequalities(values):
             )
         )
     return inequalities
+
+
+def try_to_evaluate_inequality(inequality, LHS):
+    try:
+        return inequality(LHS)
+    except TypeError:
+        return False

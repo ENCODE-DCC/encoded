@@ -76,3 +76,53 @@ def test_reports_inequalities_map_param_values_to_inequalities():
     assert not gte_97_54('96.54')
     assert notlt_true(True)
     assert lt_true(False)
+
+
+def test_reports_inequalities_try_to_evaluate_inequality():
+    from encoded.reports.inequalities import map_param_values_to_inequalities
+    from encoded.reports.inequalities import try_to_evaluate_inequality
+    lte_3000, gt_22, lt_ENCSR000AAB, gte_97_54, lt_true = map_param_values_to_inequalities(
+        [
+            'lte:3000',
+            'gt:22',
+            'lt:ENCSR000AAB',
+            'gte:97.54',
+            'lt:true',
+        ]
+    )
+    assert try_to_evaluate_inequality(
+        lte_3000, 2000
+    )
+    assert try_to_evaluate_inequality(
+        lte_3000, 3000
+    )
+    assert not try_to_evaluate_inequality(
+        lte_3000, 3001
+    )
+    assert not try_to_evaluate_inequality(
+        lte_3000, 'abc123'
+    )
+    assert try_to_evaluate_inequality(
+        gt_22, 26
+    )
+    assert try_to_evaluate_inequality(
+        gt_22, 26.0
+    )
+    assert try_to_evaluate_inequality(
+        gt_22, 26.4
+    )
+    assert not try_to_evaluate_inequality(
+        gt_22, 'ENCSR000AAA'
+    )
+    assert try_to_evaluate_inequality(
+        lt_ENCSR000AAB, 'ENCSR000AAA'
+    )
+    assert try_to_evaluate_inequality(
+        lt_true, False
+    )
+    assert not try_to_evaluate_inequality(
+        lt_true, 'false'
+    )
+    assert not try_to_evaluate_inequality(
+        lt_true, '000123'
+    )
