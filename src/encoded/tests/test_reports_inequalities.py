@@ -4,7 +4,6 @@ import pytest
 def test_reports_inequalties_syntax_to_operator():
     from encoded.reports.inequalities import syntax_to_operator
     import operator
-    print(syntax_to_operator['gt'])
     assert syntax_to_operator['gt'].__name__ == 'gt'
     assert syntax_to_operator['gte'].__name__ == 'ge'
     assert syntax_to_operator['lt'].__name__ == 'lt'
