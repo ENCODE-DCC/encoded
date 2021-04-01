@@ -184,6 +184,7 @@
         "rfa": {
             "title": "RFA",
             "description": "The name of the bioproject phase.",
+            "comment": "The order of enums below reflects the priority when we consider selecting default analysis for a dataset.",
             "type": "string",
             "enum": [
                 "ENCODE4",
