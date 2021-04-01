@@ -1756,6 +1756,38 @@ def test_metadata_contains_all_values(index_workbook, testapp):
             assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
 
 
+def test_metadata_contains_all_values_inequality_filter_file_size(index_workbook, testapp):
+    from pkg_resources import resource_filename
+    r = testapp.get('/metadata/?type=Experiment&files.file_size=lt:1000')
+    actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_metadata_file_size_inequality.tsv')
+    # To write new expected_metadata.tsv change 'r' to 'w' and f.write(r.text); return;
+    with open(expected_path, 'r') as f:
+        expected = sorted([tuple(x.split('\t')) for x in f.readlines()])
+    for i, row in enumerate(actual):
+        for j, column in enumerate(row):
+            # Sometimes lists are out of order.
+            expected_value = tuple(sorted([x.strip() for x in expected[i][j].split(',')]))
+            actual_value = tuple(sorted([x.strip() for x in column.split(',')]))
+            assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
+
+
+def test_metadata_contains_all_values_inequality_filter_read_length(index_workbook, testapp):
+    from pkg_resources import resource_filename
+    r = testapp.get('/metadata/?type=Experiment&files.read_length=lte:75&files.read_length=gt:36')
+    actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_metadata_read_length_inequality.tsv')
+    # To write new expected_metadata.tsv change 'r' to 'w' and f.write(r.text); return;
+    with open(expected_path, 'r') as f:
+        expected = sorted([tuple(x.split('\t')) for x in f.readlines()])
+    for i, row in enumerate(actual):
+        for j, column in enumerate(row):
+            # Sometimes lists are out of order.
+            expected_value = tuple(sorted([x.strip() for x in expected[i][j].split(',')]))
+            actual_value = tuple(sorted([x.strip() for x in column.split(',')]))
+            assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
+
+
 def test_metadata_contains_all_annotation_values(index_workbook, testapp):
     from pkg_resources import resource_filename
     r = testapp.get('/metadata/?type=Annotation')

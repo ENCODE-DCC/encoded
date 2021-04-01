@@ -3,7 +3,6 @@ import pytest
 
 def test_reports_inequalties_relation_to_operator():
     from encoded.reports.inequalities import relation_to_operator
-    import operator
     assert relation_to_operator['gt'].__name__ == 'gt'
     assert relation_to_operator['gte'].__name__ == 'ge'
     assert relation_to_operator['lt'].__name__ == 'lt'
