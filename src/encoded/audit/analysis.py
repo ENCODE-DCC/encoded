@@ -2158,7 +2158,7 @@ function_dispatcher_with_files = {
         'datasets.target',
     ])
 def audit_analysis(value, system):
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted', 'revoked']:
         return
     excluded_files = ['revoked']
     if value['status'] == 'revoked':
