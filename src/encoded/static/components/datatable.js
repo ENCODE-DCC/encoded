@@ -109,7 +109,7 @@ const DataTable = ({ tableData, showLoadMore }) => {
     const rowIncrement = 100;
     const [currentRowCount, setCurrentRowCount] = React.useState(rowIncrement);
     const [allRows] = React.useState(tableData.rows);
-    const getTableData = (r, count) => (r ? r.splice(0, count) : []);
+    const getTableData = (r, count) => (r ? r.splice((count - rowIncrement), count) : []);
     const [rows, setRows] = React.useState(getTableData([...tableData.rows], rowIncrement));
     const rowsR = React.useMemo(() => rows, [rows]);
     const loadMoreBtn = React.useRef(null);
