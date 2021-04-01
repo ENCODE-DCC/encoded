@@ -74,7 +74,7 @@ def test_reports_inequalities_map_param_values_to_inequalities():
     assert gte_97_54('97.54')
     assert gte_97_54('97.56')
     assert not gte_97_54('96.54')
-    assert notlt_true(True)
+    assert not lt_true(True)
     assert lt_true(False)
 
 
