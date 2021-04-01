@@ -1687,7 +1687,7 @@
         "assembly": {
             "title": "Genome assembly",
             "description": "Genome assembly that files were mapped to.",
-            "comment": "Required property for bam, sam, gtf, idx, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
+            "comment": "Required property for bam, sam, gtf, idx, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files. The order of enums below reflects the priority when we consider selecting default analysis for a dataset.",
             "type": "string",
             "enum": [
                 "GRCh38",
@@ -1707,7 +1707,7 @@
         "genome_annotation": {
             "title": "Genome annotation",
             "description": "Genome annotation that file was generated with.",
-            "comment": "Applies to files created using annotations.",
+            "comment": "Applies to files created using annotations. The order of enums below reflects the priority when we consider selecting default analysis for a dataset.",
             "type": "string",
             "enum": [
                 "V33",
