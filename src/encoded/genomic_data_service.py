@@ -1,7 +1,7 @@
 import requests
 
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
-RNA_GET_FACETS = ['assayType', 'annotation', 'biosample_sex']
+RNA_GET_FACETS = ['assayType', 'annotation', 'biosample_term_name', 'biosample_classification', 'biosample_sex', 'biosample_organ',  'biosample_system']
 RNA_GET_ENDPOINT = '/expressions/bytes'
 
 # react component orders columns by "the position" in the hash map
@@ -12,9 +12,13 @@ RNA_GET_COLUMNS = {
     'assayType': {'title': 'Assay (RNA SubType)'},
     'libraryPrepProtocol': {'title': 'Experiment'},
     'expressionID': {'title': 'File'},
-    'annotation': {'title': 'Genome Annotation'},
-    'biosample_sex': {'title': 'Biosample Sex'},
-    'analysis': {'title': 'Analysis'}
+    'annotation': {'title': 'Annotation'},
+    'biosample_term_name': {'title': 'Term Name'},
+    'biosample_classification': {'title': 'Classification'},
+    'biosample_sex': {'title': 'Sex'},
+    'biosample_organ': {'title': 'Organ'},
+    'biosample_system': {'title': 'System'},
+    'biosample_summary': {'title': 'Summary'}
 }
 
 class GenomicDataService():
