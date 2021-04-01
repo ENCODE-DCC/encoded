@@ -58,7 +58,7 @@ def get_non_tophat_alignment_files(files_list):
                 if 'software' in soft_version and \
                    soft_version['software']['uuid'] == '7868f960-50ac-11e4-916c-0800200c9a66':
                     tophat_flag = True
-        if tophat_flag is False and \
+        if not tophat_flag and \
            f['lab'] == '/labs/encode-processing-pipeline/':
             list_to_return.append(f)
     return list_to_return
@@ -1173,7 +1173,7 @@ def check_file_modERN_chip_seq_read_depth(
 
     modERN_cutoff = pipelines_with_read_depth[
         'Transcription factor ChIP-seq pipeline (modERN)']
-    if read_depth is False:
+    if not read_depth:
         detail = (
             f"ENCODE processed {file_to_check['output_type']} file "
             f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
