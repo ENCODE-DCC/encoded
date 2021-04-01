@@ -488,6 +488,76 @@ def test_metadata_file_matches_file_params():
     assert not file_matches_file_params(abstract_file(), file_param_list)
 
 
+def test_metadata_some_value_satisfies_inequalities():
+    from encoded.reports.metadata import some_value_satisfies_inequalities
+    from encoded.reports.inequalities import map_param_values_to_inequalities
+    inequalities = map_param_values_to_inequalities(
+        [
+            'gt:1',
+            'lte:2',
+            'lt:3000',
+        ]
+    )
+    assert some_value_satisfies_inequalities([2], inequalities)
+    assert not some_value_satisfies_inequalities([1], inequalities)
+    assert not some_value_satisfies_inequalities([0, 1, -2], inequalities)
+    assert some_value_satisfies_inequalities([0, 1, -2, 2], inequalities)
+    inequalities = map_param_values_to_inequalities(
+        [
+            'lte:ENCSR000AAB',
+        ]
+    )
+    assert some_value_satisfies_inequalities(['ENCSR000AAA'], inequalities)
+    assert not some_value_satisfies_inequalities(['ENCSR000AAC'], inequalities)
+    assert not some_value_satisfies_inequalities(['ENCSR000AAC', 'ENCSR000ZZZ'], inequalities)
+    assert some_value_satisfies_inequalities(['ENCSR000AAC', 'ENCSR000ZZZ', 'ENCSR000AAA'], inequalities)
+    assert not some_value_satisfies_inequalities([6000, 3000], inequalities)
+    inequalities = map_param_values_to_inequalities(
+        [
+            'gte:97.32',
+        ]
+    )
+    assert some_value_satisfies_inequalities(['97.32'], inequalities)
+    assert not some_value_satisfies_inequalities(['96.32'], inequalities)
+    assert not some_value_satisfies_inequalities([0], inequalities)
+
+
+def test_metadata_file_satisfies_inequality_constraints():
+    from encoded.reports.metadata import file_satisfies_inequality_constraints
+    from encoded.reports.inequalities import map_param_values_to_inequalities
+    positive_file_inequalities = {
+        'file_size':  map_param_values_to_inequalities(['gt:500'])
+    }
+    assert file_satisfies_inequality_constraints(file_(), positive_file_inequalities)
+    positive_file_inequalities = {
+        'file_size':  map_param_values_to_inequalities(['gt:500', 'gte:3356650', 'lt: 8356650'])
+    }
+    assert file_satisfies_inequality_constraints(file_(), positive_file_inequalities)
+    positive_file_inequalities = {
+        'file_size':  map_param_values_to_inequalities(['gt:500', 'gte:3356650', 'lt: 8356650']),
+        'missing_field':  map_param_values_to_inequalities(['gt:500']),
+    }
+    assert not file_satisfies_inequality_constraints(file_(), positive_file_inequalities)
+    positive_file_inequalities = {
+        'missing_field':  map_param_values_to_inequalities(['gt:500']),
+    }
+    assert not file_satisfies_inequality_constraints(file_(), positive_file_inequalities)
+    positive_file_inequalities = {
+        'file_size':  map_param_values_to_inequalities(['gte:50000']),
+        'title':  map_param_values_to_inequalities(['lte:ENCFF244PJU', 'lte:ENCFF300PJU']),
+        'biological_replicates': map_param_values_to_inequalities(['gt:1']),
+        'replicate.rbns_protein_concentration': map_param_values_to_inequalities(['gt:10', 'lt:30']),
+    }
+    assert file_satisfies_inequality_constraints(file_(), positive_file_inequalities)
+    positive_file_inequalities = {
+        'file_size':  map_param_values_to_inequalities(['gte:50000']),
+        'title':  map_param_values_to_inequalities(['lte:ENCFF244PJU', 'lte:ENCFF300PJU']),
+        'biological_replicates': map_param_values_to_inequalities(['gt:1']),
+        'replicate.rbns_protein_concentration': map_param_values_to_inequalities(['gt:10', 'lt:15']),
+    }
+    assert not file_satisfies_inequality_constraints(file_(), positive_file_inequalities)
+
+
 def test_metadata_group_audits_by_files_and_type():
     from encoded.reports.metadata import group_audits_by_files_and_type
     grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(audits_())
@@ -754,8 +824,11 @@ def test_metadata_metadata_report_set_positive_file_param_set(dummy_request):
         'type=Experiment&files.file_type=bigWig&files.file_type=bam'
         '&files.replicate.library.size_range=50-100'
         '&files.status!=archived&files.biological_replicates=2'
+        '&files.file_size=gt:3000&files.file_size=lte:5000000&files.read_count=lt:26'
+        '&files.accession=gte:ENCFF000AAA'
     )
     mr = MetadataReport(dummy_request)
+    mr._set_split_file_filters()
     mr._set_positive_file_param_set()
     expected_positive_file_param_set = {
         'file_type': set(['bigWig', 'bam']),
@@ -764,6 +837,29 @@ def test_metadata_metadata_report_set_positive_file_param_set(dummy_request):
     }
     for k, v in mr.positive_file_param_set.items():
         assert tuple(sorted(expected_positive_file_param_set[k])) == tuple(sorted(v))
+
+
+def test_metadata_metadata_report_set_positive_file_inequalities(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+        '&files.file_size=gt:3000&files.file_size=lte:5000000&files.read_count=lt:26'
+        '&files.accession=gte:ENCFF000AAA'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._set_split_file_filters()
+    mr._set_positive_file_inequalities()
+    assert len(mr.positive_file_inequalities) == 3
+    assert len(mr.positive_file_inequalities['accession']) == 1
+    assert len(mr.positive_file_inequalities['file_size']) == 2
+    assert len(mr.positive_file_inequalities['read_count']) == 1
+    assert all(
+        inequality(5000)
+        for inequality
+        in mr.positive_file_inequalities['file_size']
+    )
 
 
 def test_metadata_metadata_report_add_positive_file_filters_as_fields_to_param_list(dummy_request):
