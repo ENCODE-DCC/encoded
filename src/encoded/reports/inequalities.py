@@ -1,12 +1,18 @@
 import operator
 
+from snovault.elasticsearch.searches.interfaces import COLON
 
-syntax_to_operator = {
+
+relation_to_operator = {
     'gt': operator.gt,
     'gte': operator.ge,
     'lt': operator.lt,
     'lte': operator.le,
 }
+
+
+def parse_inequality_param_value(value):
+    return value.split(COLON, 1)
 
 
 def partial_inequality(operator, RHS):
@@ -15,8 +21,12 @@ def partial_inequality(operator, RHS):
     comparison operator for repeated use.
     '''
     def inequality(LHS):
-        try:
-            return operator(LHS, RHS)
-        except TypeError:
-            return False
+        return operator(LHS, RHS)
     return inequality
+
+
+def make_inequality_from_relation_and_value(relation, value):
+    return partial_inequality(
+        relation_to_operator[relation],
+        value
+    )
