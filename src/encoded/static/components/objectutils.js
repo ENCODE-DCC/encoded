@@ -133,14 +133,14 @@ export function requestSearch(query) {
  *
  * @return {promise} Array of objects requested from the server
  */
-const MAX_URL_LENGTH = 4000;
+const MAX_URL_LENGTH = 3800;
 export const requestObjects = async (identifiers, uri, queryProp = '@id') => {
     if (identifiers.length > 0) {
         // Calculate a roughly reasonable chunk size based on an estimate of how many query-string
         // elements will fit within the maximum URL size. Assume the first identifier has a length
         // typical for all the identifiers.
         const singleQuerySize = queryProp.length + identifiers[0].length;
-        const chunkLength = Math.trunc(MAX_URL_LENGTH / singleQuerySize) - Math.trunc(uri.length / singleQuerySize);
+        const chunkLength = Math.trunc(MAX_URL_LENGTH / singleQuerySize) - uri.length;
 
         // Break `identifiers` into an array of arrays of <= the calculated chunk size.
         const objectChunks = [];
