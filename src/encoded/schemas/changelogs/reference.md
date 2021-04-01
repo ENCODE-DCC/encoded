@@ -6,6 +6,7 @@
 * *reference_type* was updated to include the enum *sequence barcodes*
 * Added *LRGASP* to the *internal_tags* enum
 * Added *doi* property
+* Added *analyses* property
 
 ### Schema version 19
 
