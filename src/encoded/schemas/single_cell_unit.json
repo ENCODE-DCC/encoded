@@ -17,7 +17,6 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "single_cell_experiment.json#/properties" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_ontology" },
@@ -58,6 +57,23 @@
         "schema_version": {
             "default": "1"
         },
+        "assay_term_name": {
+            "title": "Assay name",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+            "type": "string",
+            "enum": [
+                "single-cell RNA sequencing assay",
+                "single-nucleus ATAC-seq"
+            ]
+        },
+        "date_submitted": {
+            "title": "Date submitted" ,
+            "description": "The date that the experiment received all required replicates and files",
+            "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.",
+            "type": "string",
+            "format": "date",
+            "permission": "import_items"
+        },
         "supersedes": {
             "title": "Supersedes" ,
             "description": "The single unit dataset(s) that this single cell unit dataset supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
@@ -69,6 +85,20 @@
                 "type": "string",
                 "linkTo": "SingleCellUnitDataset"
             }
+        },
+        "possible_controls": {
+            "title": "Controls",
+            "description": "Dataset that contain files that can serve as scientific controls for this experiment.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Control",
+                "description": "A dataset that contains files that can serve as a scientific control for this experiment.",
+                "comment": "See dataset.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
+                "type": "string",
+                "linkTo": "Dataset"
+            }
         }
     },
     "facets": {
@@ -79,15 +109,6 @@
         },
         "status": {
             "title": "Status",
-            "open_on_load": true
-        },
-        "target.investigated_as": {
-            "title": "Target category"
-        },
-        "target.label": {
-            "title": "Target of assay",
-            "type": "typeahead",
-            "length": "long",
             "open_on_load": true
         },
         "biosample_ontology.classification": {
@@ -139,12 +160,6 @@
         "assay_title": {
             "title": "Assay title"
         },
-        "target.label": {
-            "title": "Target of assay"
-        },
-        "target.genes.symbol": {
-            "title": "Target gene symbol"
-        },
         "biosample_summary": {
             "title": "Biosample summary"
         },
@@ -194,12 +209,6 @@
         "lab.title": 1.0,
         "possible_controls.accession": 1.0,
         "possible_controls.alternate_accessions": 1.0,
-        "target.aliases": 1.0,
-        "target.genes.symbol": 1.0,
-        "target.label": 1.0,
-        "target.genes.dbxrefs": 1.0,
-        "target.organism.name": 1.0,
-        "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0,

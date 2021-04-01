@@ -39,8 +39,6 @@ ORDER = [
     'library',
     'experiment',
     'single_cell_unit',
-    'high_throughput_single_cell_experiment',
-    'low_throughput_single_cell_experiment',
     'functional_characterization_experiment',
     'transgenic_enhancer_experiment',
     'replicate',
@@ -625,12 +623,6 @@ PHASE1_PIPELINES = {
     'single_cell_unit': [
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
     ],
-    'high_throughput_single_cell_experiment': [
-        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
-    ],
-    'low_throughput_single_cell_experiment': [
-        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
-    ],
     'transgenic_enhancer_experiment': [
         remove_keys('related_files', 'supersedes'),
     ],
@@ -740,12 +732,6 @@ PHASE2_PIPELINES = {
     ],
     'single_cell_unit': [
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
-    ],
-    'low_throughput_single_cell_experiment': [
-        skip_rows_missing_all_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
-    ],
-    'high_throughput_single_cell_experiment': [
-        skip_rows_missing_all_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
     ],
     'transgenic_enhancer_experiment': [
         skip_rows_missing_all_keys('related_files', 'supersedes'),

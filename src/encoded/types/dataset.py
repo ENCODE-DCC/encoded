@@ -17,6 +17,9 @@ from .shared_calculated_properties import (
     CalculatedAssayTermID,
     CalculatedAssayTitle,
     CalculatedAssaySlims,
+    CalculatedBiosampleSummary,
+    CalculatedReplicates,
+    CalculatedReplicationType,
     CalculatedCategorySlims,
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
@@ -32,6 +35,8 @@ from .shared_calculated_properties import (
 from .biosample import construct_biosample_summary
 
 from .shared_biosample import biosample_summary_information
+
+from .assay_data import assay_terms
 
 from itertools import chain
 import datetime
@@ -335,6 +340,126 @@ class TransgenicEnhancerExperiment(
             ]
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
+
+
+@collection(
+    name='single-cell-units',
+    unique_key='accession',
+    properties={
+        'title': 'Single cell units',
+        'description': 'Listing of single cell units',
+    })
+class SingleCellUnit(
+    Dataset,
+    CalculatedBiosampleSummary,
+    CalculatedReplicates,
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedVisualize,
+    CalculatedAssaySlims,
+    CalculatedAssayTitle,
+    CalculatedCategorySlims,
+    CalculatedTypeSlims,
+    CalculatedObjectiveSlims,
+    CalculatedReplicationType):
+    item_type = 'single_cell_unit'
+    schema = load_schema('encoded:schemas/single_cell_unit.json')
+    embedded = Dataset.embedded + [
+        'biosample_ontology',
+        'files.platform',
+        'files.analysis_step_version.analysis_step',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'related_series',
+        'replicates.antibody',
+        'replicates.library',
+        'replicates.library.biosample.biosample_ontology',
+        'replicates.library.biosample.submitted_by',
+        'replicates.library.biosample.source',
+        'replicates.library.biosample.applied_modifications',
+        'replicates.library.biosample.applied_modifications.documents',
+        'replicates.library.biosample.organism',
+        'replicates.library.biosample.donor',
+        'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.part_of',
+        'replicates.library.biosample.part_of.donor',
+        'replicates.library.biosample.part_of.treatments',
+        'replicates.library.biosample.treatments',
+        'replicates.library.construction_platform',
+        'replicates.library.treatments',
+        'possible_controls',
+    ]
+    audit_inherit = [
+        'original_files',
+        'original_files.replicate',
+        'original_files.platform',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'revoked_files',
+        'revoked_files.replicate',
+        'submitted_by',
+        'lab',
+        'award',
+        'documents',
+        'replicates.antibody.characterizations.biosample_ontology',
+        'replicates.antibody.characterizations',
+        'replicates.antibody.targets',
+        'replicates.library',
+        'replicates.library.documents',
+        'replicates.library.biosample',
+        'replicates.library.biosample.biosample_ontology',
+        'replicates.library.biosample.organism',
+        'replicates.library.biosample.treatments',
+        'replicates.library.biosample.applied_modifications',
+        'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.donor',
+        'replicates.library.biosample.treatments',
+        'replicates.library.biosample.originated_from',
+        'replicates.library.biosample.originated_from.biosample_ontology',
+        'replicates.library.biosample.part_of',
+        'replicates.library.biosample.part_of.biosample_ontology',
+        'replicates.library.biosample.pooled_from',
+        'replicates.library.biosample.pooled_from.biosample_ontology',
+        'replicates.library.spikeins_used',
+        'replicates.library.treatments',
+    ]
+    set_status_up = [
+        'original_files',
+        'replicates',
+        'documents',
+    ]
+    set_status_down = [
+        'original_files',
+        'replicates',
+    ]
+    rev = Dataset.rev.copy()
+    rev.update({
+        'related_series': ('Series', 'related_datasets'),
+        'replicates': ('Replicate', 'experiment'),
+        'superseded_by': ('SingleCellUnit', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Related series",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Series.related_datasets",
+        },
+        "notSubmittable": True,
+    })
+    def related_series(self, request, related_series):
+        return paths_filtered_by_status(request, related_series)
+
+    @calculated_property(schema={
+            "title": "Superseded by",
+            "type": "array",
+            "items": {
+                "type": ['string', 'object'],
+                "linkFrom": "SingleCellUnit.supersedes",
+            },
+            "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 
 class FileSet(Dataset):
