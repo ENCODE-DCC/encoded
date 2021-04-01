@@ -140,7 +140,7 @@ export const requestObjects = async (identifiers, uri, queryProp = '@id') => {
         // elements will fit within the maximum URL size. Assume the first identifier has a length
         // typical for all the identifiers.
         const singleQuerySize = queryProp.length + identifiers[0].length;
-        const chunkLength = Math.trunc(MAX_URL_LENGTH / singleQuerySize) - uri.length;
+        const chunkLength = Math.trunc((MAX_URL_LENGTH - uri.length) / singleQuerySize);
 
         // Break `identifiers` into an array of arrays of <= the calculated chunk size.
         const objectChunks = [];
