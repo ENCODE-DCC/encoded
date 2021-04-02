@@ -546,7 +546,7 @@ FileTable.procTableColumns = {
     },
     default: {
         title: 'Default',
-        display: (item) => (item.preferred_default ? <span className="tcell-center">{'\u2B50'}</span> : ''),
+        display: (item) => (item.preferred_default ? <span className="tcell-center">🟣</span> : ''),
         objSorter: (a, b) => {
             const aPreferredDefault = a.preferred_default;
             const bPreferredDefault = b.preferred_default;
@@ -2031,7 +2031,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
             const fileCssClass = fileCssClassGen(file, !!(infoNode && infoNode.id === fileNodeId), highlightToggle, colorize);
             const fileRef = file;
             const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
-            const preferredDefaultText = file.preferred_default ? '  \u2B50' : '';
+            const preferredDefaultText = file.preferred_default ? ' 🟣' : '';
             let metricsInfo;
 
             // Add QC metrics info from the file to the list to generate the nodes later.
