@@ -1254,7 +1254,7 @@ class IhecDefines(object):
 
         sample["biomaterial_type"] = [self.biomaterial_type(biosample.get('biosample_ontology', {}).get('classification'))] # ["Cell Line","Primary Cell", ...
         source = biosample.get('source')
-        sample["biomaterial_provider"] = source['title']
+        sample["biomaterial_provider"] = [source['title']]
         sample["line"] = biosample.get('biosample_ontology', {}).get('term_name', 'none')
         sample["medium"] = "unknown"                                                    # We don't have
         sample["disease"] = [biosample.get('health_status',"Healthy").capitalize()]  #  assume all samples are healthy - hitz
