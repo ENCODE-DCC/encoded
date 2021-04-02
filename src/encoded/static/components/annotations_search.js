@@ -64,7 +64,7 @@ const AnnotationsSearch = (props, context) => {
     const [encyclopediaVersion, setEncyclopediaVersion] = React.useState('ENCODE v2');
     const [annotationType, setAnnotationType] = React.useState('chromatin state');
     const [annotationPanel, setAnnotationPanel] = React.useState({
-        props: [],
+        props: {},
         data: [],
         facets: [],
         total: 0,
@@ -77,7 +77,7 @@ const AnnotationsSearch = (props, context) => {
     // const [annotationData, setAnnotationData] = React.useState(null);
     const [biosampleType, setBiosampleType] = React.useState('candidate Cis-Regulatory Elements');
     const [biosamplePanel, setBiosamplePanel] = React.useState({
-        props: [],
+        props: {},
         data: [],
         facets: [],
         total: 0,
@@ -229,7 +229,6 @@ const AnnotationsSearch = (props, context) => {
                                         <PanelBody>
                                             <div className="annotations-results-wrapper" onClick={e => redirectClick(e, 'annotation')}>
                                                 <div className="body-map-facets-container">
-                                                    <BodyMapThumbnailAndModal context={annotationPanel.props} location={annotationHref} />
                                                     {annotationPanel.props ?
                                                         <FacetList
                                                             context={annotationPanel.props}
@@ -314,70 +313,16 @@ const AnnotationsSearch = (props, context) => {
     );
 };
 
-AnnotationsSearch.propTypes = {
-    context: PropTypes.object.isRequired,
-};
-
 AnnotationsSearch.contextTypes = {
     location_href: PropTypes.string,
     navigate: PropTypes.func,
     fetch: PropTypes.func,
 };
 
-// export class ResultTable extends React.Component {
-//     constructor(props) {
-//         super(props);
-//
-//         // Bind `this` to non-React methods.
-//         this.onFilter = this.onFilter.bind(this);
-//     }
-//
-//     getChildContext() {
-//         return {
-//             actions: this.props.actions,
-//         };
-//     }
-//
-//     onFilter(e) {
-//         const searchStr = e.currentTarget.getAttribute('href');
-//         this.props.onChange(searchStr);
-//         e.stopPropagation();
-//         e.preventDefault();
-//     }
-//
-//     render() {
-//         const { context, searchBase, actions, hideDocType } = this.props;
-//         const { facets, total, columns, filters } = context;
-//         const results = context['@graph'];
-//         const label = 'results';
-//         const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
-//
-//         return (
-//             <div className="search-results">
-//                 <FacetList
-//                     {...this.props}
-//                     facets={facets}
-//                     filters={filters}
-//                     searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-//                     onFilter={this.onFilter}
-//                     hideDocType={hideDocType}
-//                 />
-//                 {context.notification === 'Success' ?
-//                     <div className="search-results__result-list">
-//                         <h4>Showing {results.length} of {total} {label}</h4>
-//                         <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle />
-//                         {!(actions && actions.length > 0) ?
-//                             <CartSearchControls searchResults={context} />
-//                         : null}
-//                         <ResultTableList results={results} columns={columns} cartControls />
-//                     </div>
-//                 :
-//                     <h4>{context.notification}</h4>
-//                 }
-//             </div>
-//         );
-//     }
-// }
-
+// <BodyMapThumbnailAndModal
+//     context={annotationPanel.props}
+//     location={annotationHref}
+//     organism="Homo sapiens"
+// />
 
 globals.contentViews.register(AnnotationsSearch, 'AnnotationsSearch');
