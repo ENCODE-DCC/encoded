@@ -114,6 +114,11 @@ form.table-filter {
     @extend %tcenter;
 }
 
+.tcell-preferred-default {
+    color: transparent;
+    text-shadow: 0 0 0#663399;
+}
+
 /* initial state is hidden (see template; class=hide) */
 #total-records {
     font-weight: normal;

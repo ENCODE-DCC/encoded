@@ -546,7 +546,7 @@ FileTable.procTableColumns = {
     },
     default: {
         title: 'Default',
-        display: (item) => (item.preferred_default ? <span className="tcell-center">{'\u2B50'}</span> : ''),
+        display: (item) => (item.preferred_default ? <span className="tcell-center tcell-preferred-default">{'\u2B50'}</span> : ''),
         objSorter: (a, b) => {
             const aPreferredDefault = a.preferred_default;
             const bPreferredDefault = b.preferred_default;
