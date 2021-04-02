@@ -46,8 +46,8 @@ def test_reports_inequalities_parse_inequality_param_value():
 
 
 def test_reports_inequalities_make_inequality_from_relation_and_operand():
-    from encoded.reports.inequalities import make_inequality_from_relation_and_operand
-    inequality = make_inequality_from_relation_and_operand('lt', 3000)
+    from encoded.reports.inequalities import make_inequality_from_relation_and_right_operand
+    inequality = make_inequality_from_relation_and_right_operand('lt', 3000)
     assert inequality(200)
     assert not inequality(5000)
 

@@ -26,7 +26,7 @@ def partial_inequality(operator, right_operand):
     return inequality
 
 
-def make_inequality_from_relation_and_operand(relation, right_operand):
+def make_inequality_from_relation_and_right_operand(relation, right_operand):
     return partial_inequality(
         relation_to_operator[relation],
         right_operand
@@ -36,11 +36,11 @@ def make_inequality_from_relation_and_operand(relation, right_operand):
 def map_param_values_to_inequalities(values):
     inequalities = []
     for value in values:
-        relation, operand = parse_inequality_param_value(value)
+        relation, right_operand = parse_inequality_param_value(value)
         inequalities.append(
-            make_inequality_from_relation_and_operand(
+            make_inequality_from_relation_and_right_operand(
                 relation,
-                map_string_to_boolean_and_int(operand)
+                map_string_to_boolean_and_int(right_operand)
             )
         )
     return inequalities
