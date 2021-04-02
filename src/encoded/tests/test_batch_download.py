@@ -47,7 +47,7 @@ def test_batch_download_report_download(testapp, index_workbook, threadlocals):
         b'Post-synchronization time', b'Post-synchronization time units',
         b'Replicates', b'Mixed biosamples',
     ]
-    assert len(lines) == 83
+    assert len(lines) == 85
 
 
 def test_batch_download_report_download_with_cart(testapp, index_workbook, threadlocals):

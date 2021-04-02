@@ -28,3 +28,8 @@ def test_gene_silencing_series(testapp, base_gene_silencing_series):
 def test_assay_differentiation_series(testapp, base_differentiation_series):
     res = testapp.get(base_differentiation_series['@id'] + '@@index-data')
     assert sorted(res.json['object']['assay_term_name']) == ['RNA-seq']
+
+
+def test_assay_pulse_chase_time_series(testapp, base_pulse_chase_time_series):
+    res = testapp.get(base_pulse_chase_time_series['@id'] + '@@index-data')
+    assert sorted(res.json['object']['assay_term_name']) == ['RNA-seq']

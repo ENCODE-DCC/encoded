@@ -58,6 +58,7 @@ ORDER = [
     'experiment_series',
     'gene_silencing_series',
     'differentiation_series',
+    'pulse_chase_time_series',
     'reference_epigenome',
     'software',
     'software_version',
@@ -681,6 +682,9 @@ PHASE1_PIPELINES = {
     'differentiation_series': [
         remove_keys('related_datasets'),
     ],
+    'pulse_chase_time_series': [
+        remove_keys('related_datasets'),
+    ],
     'reference_epigenome': [
         remove_keys('related_datasets', 'supersedes'),
     ],
@@ -780,6 +784,9 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'differentiation_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'pulse_chase_time_series': [
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'reference_epigenome': [

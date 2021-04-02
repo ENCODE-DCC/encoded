@@ -299,7 +299,8 @@ class TransgenicEnhancerExperiment(
                 'originated_from',
                 'treatments_phrase',
                 'depleted_in',
-                'disease_term_name'
+                'disease_term_name',
+                'pulse_chase_time'
             ]
         elif add_classification_flag is True:
             sentence_parts = [
@@ -314,7 +315,8 @@ class TransgenicEnhancerExperiment(
                 'originated_from',
                 'treatments_phrase',
                 'depleted_in',
-                'disease_term_name'
+                'disease_term_name',
+                'pulse_chase_time'
             ]
         else:
             sentence_parts = [
@@ -328,7 +330,8 @@ class TransgenicEnhancerExperiment(
                 'originated_from',
                 'treatments_phrase',
                 'depleted_in',
-                'disease_term_name'
+                'disease_term_name',
+                'pulse_chase_time'
             ]
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
@@ -1028,4 +1031,17 @@ class GeneSilencingSeries(Series):
 class DifferentiationSeries(Series):
     item_type = 'differentiation_series'
     schema = load_schema('encoded:schemas/differentiation_series.json')
+    embedded = Series.embedded
+
+
+@collection(
+    name='pulse-chase-time-series',
+    unique_key='accession',
+    properties={
+        'title': "Pulse chase time series",
+        'description': 'A series that groups experiments investigating biosamples using pulse-chase analysis.',
+    })
+class PulseChaseTimeSeries(Series):
+    item_type = 'pulse_chase_time_series'
+    schema = load_schema('encoded:schemas/pulse_chase_time_series.json')
     embedded = Series.embedded

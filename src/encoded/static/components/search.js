@@ -53,6 +53,7 @@ const types = {
     transgenic_enhancer_experiment: { title: 'Transgenic enhancer experiments' },
     gene_silencing_series: { title: 'Gene silencing series' },
     differentiation_series: { title: 'Differentiation series' },
+    pulse_chase_time_series: { title: 'Pulse-chase time series' },
 };
 
 const datasetTypes = {
@@ -76,6 +77,7 @@ const datasetTypes = {
     TransgenicEnhancerExperiment: types.transgenic_enhancer_experiment.title,
     GeneSilencingSeries: types.gene_silencing_series.title,
     DifferentiationSeries: types.differentiation_series.title,
+    PulseChaseTimeSeries: types.pulse_chase_time_series.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));

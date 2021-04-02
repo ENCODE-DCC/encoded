@@ -243,6 +243,15 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
                                 </div>
                             : null}
 
+                            {context.pulse_chase_time && context.pulse_chase_time_units ?
+                                <div data-test="pulsechasetime">
+                                    <dt>Pulse-chase time</dt>
+                                    <dd>
+                                        {formatMeasurement(context.pulse_chase_time, context.pulse_chase_time_units)}
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.subcellular_fraction_term_name ?
                                 <div data-test="subcellulartermname">
                                     <dt>Subcellular fraction</dt>

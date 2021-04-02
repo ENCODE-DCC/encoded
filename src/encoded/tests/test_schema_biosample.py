@@ -135,3 +135,27 @@ def test_biosample_disease_term_id(testapp, biosample_data):
     testapp.post_json('/biosample', biosample_data, status=422)
     biosample_data.update({'disease_term_id': ['DOID:0080600']})
     testapp.post_json('/biosample', biosample_data, status=201)
+
+
+def test_biosample_pulse_chase_time_props(testapp, biosample_data):
+    bio = testapp.post_json('/biosample', biosample_data).json['@graph'][0]
+    res = testapp.patch_json(
+        bio['@id'],
+        {'pulse_chase_time': 2},
+        expect_errors=True
+    )
+    assert res.status_code == 422
+    res = testapp.patch_json(
+        bio['@id'],
+        {'pulse_chase_time_units': 'hour'},
+        expect_errors=True
+    )
+    assert res.status_code == 422
+    res = testapp.patch_json(
+        bio['@id'],
+        {
+            'pulse_chase_time': 2,
+            'pulse_chase_time_units': 'hour'
+        }
+    )
+    assert res.status_code == 200

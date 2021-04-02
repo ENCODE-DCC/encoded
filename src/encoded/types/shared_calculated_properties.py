@@ -283,7 +283,8 @@ class CalculatedBiosampleSummary:
                 'originated_from',
                 'treatments_phrase',
                 'depleted_in',
-                'disease_term_name'
+                'disease_term_name',
+                'pulse_chase_time'
             ]
         elif add_classification_flag is True:
             sentence_parts = [
@@ -300,7 +301,8 @@ class CalculatedBiosampleSummary:
                 'originated_from',
                 'treatments_phrase',
                 'depleted_in',
-                'disease_term_name'
+                'disease_term_name',
+                'pulse_chase_time'
             ]
         else:
             sentence_parts = [
@@ -316,7 +318,8 @@ class CalculatedBiosampleSummary:
                 'originated_from',
                 'treatments_phrase',
                 'depleted_in',
-                'disease_term_name'
+                'disease_term_name',
+                'pulse_chase_time'
             ]
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
