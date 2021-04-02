@@ -75,6 +75,7 @@ const defaultObjectStatuses = {
             'deleted',
         ],
     },
+    Analysis: standardStatuses,
     AnalysisStepRun: standardStatuses,
     AnalysisStepVersion: standardStatuses,
     AnalysisStep: standardStatuses,

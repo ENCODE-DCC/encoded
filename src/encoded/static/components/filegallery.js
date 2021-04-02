@@ -22,7 +22,7 @@ import {
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
-import Status from './status';
+import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
 import { BatchDownloadModal } from './view_controls';
 import { encodedURIComponent } from '../libs/query_encoding';
@@ -119,13 +119,17 @@ const filterAssembly = (analysesGroup) => {
 */
 const sortAnalysisByVersion = (analysesGroup) => {
     const sortedAnalysesAwarded = analysesGroup.sort((a, b) => {
-        // remove text
-        const numbersInTitle1 = a.title.replace(/\D/g, '');
-        const numbersInTitle2 = b.title.replace(/\D/g, '');
+        if (!a || !b) {
+            return 0;
+        }
+
+        // extract numbers relevant for versioning
+        const aNumber = `${(a.pipelineAwardRfa || '').replace(/\D/g, '')}${(a.pipeline_version || '').replace(/\D/g, '')}`;
+        const bNumber = `${(b.pipelineAwardRfa || '').replace(/\D/g, '')}${(b.pipeline_version || '').replace(/\D/g, '')}`;
 
         // add numbers so ones with version have the same number of digits as non-versioned ones
-        const number1 = numbersInTitle1.padEnd ? numbersInTitle1.padEnd(8, 0) : numbersInTitle1;
-        const number2 = numbersInTitle2.padEnd ? numbersInTitle2.padEnd(8, 0) : numbersInTitle2;
+        const number1 = aNumber.padEnd ? aNumber.padEnd(8, 0) : aNumber;
+        const number2 = bNumber.padEnd ? bNumber.padEnd(8, 0) : bNumber;
 
         // sort
         return parseInt(number2, 10) - parseInt(number1, 10);
@@ -183,7 +187,7 @@ export const compileAnalyses = (analyses, files, dataFormat = null) => {
                     // the experiment's files.
                     const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analysis) => accFiles.concat(analysis.files), []).filter((file) => fileIds.includes(file)));
                     // eslint-disable-next-line camelcase
-                    const { status, accession, pipeline_award_rfas, title } = analysesByAssembly[assembly][0];
+                    const { status, accession, pipeline_award_rfas, title,  pipeline_version } = analysesByAssembly[assembly][0];
 
                     if (assemblyFiles.length > 0) {
                         compiledAnalyses.push({
@@ -192,6 +196,7 @@ export const compileAnalyses = (analyses, files, dataFormat = null) => {
                             assembly,
                             status,
                             accession,
+                            pipeline_version,
                             pipelineAwardRfa: pipeline_award_rfas[0] || '',
                             assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assembly, analysesByAssembly[assembly][0].genome_annotation),
                             files: _.uniq(assemblyFiles),
@@ -2661,7 +2666,7 @@ function createFacetObject(propertyKey, fileList, filters) {
  * Display the analyses selector, a dropdown menu to choose which pipeline lab's files to view in
  * the file association graph.
  */
-const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef }) => {
+const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef }, context) => {
     React.useEffect(() => {
         if (selectedAnalysesIndex === -1 && analyses.length > 0) {
             // No selected pipeline lab analyses, but if we have at least one qualifying one,
@@ -2677,7 +2682,8 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
     */
     React.useEffect(() => {
         const awardSuffixes = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
-        const statuses = ['released', 'in progress', 'archived', 'revoked', 'deleted']; // ordered in decreasing precedence
+        const accessLevel = sessionToAccessLevel(context.session, context.session_properties);
+        const statuses = getObjectStatuses('Analysis', accessLevel); // ordered in decreasing precedence
 
         // Narrow down analysis until we have the default as the first entry
         let analysisGroup = [];
@@ -2727,6 +2733,10 @@ AnalysesSelector.propTypes = {
     analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
 };
 
+AnalysesSelector.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
+};
 
 const TabPanelFacets = ({
     open,
