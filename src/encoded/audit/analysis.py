@@ -2158,7 +2158,10 @@ function_dispatcher_with_files = {
         'datasets.target',
     ])
 def audit_analysis(value, system):
-    if value['status'] in ['deleted', 'revoked']:
+    if value['status'] in ['deleted', 'revoked', 'archived']:
+        return
+    dataset_awards = [x['award']['rfa'] for x in value['datasets']]
+    if any(award in ['community', 'GGR', 'modENCODE'] for award in dataset_awards):
         return
     excluded_files = ['revoked']
     if value['status'] == 'revoked':
