@@ -4,7 +4,7 @@
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "nucleic_acid_term_name"],
+    "required": [ "award", "lab", "nucleic_acid_term_name", "strand_specificity"],
     "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -196,7 +196,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "16"
+            "default": "17"
         },
         "accession": {
             "accessionType": "LB"
@@ -567,13 +567,14 @@
         },
         "strand_specificity": {
             "title": "Strand specificity",
-            "description": "The forward or reverse strandedness of the library resulting from a strand-specific protocol.",
+            "description": "The strandedness of the library, forward or reverse resulting from a strand-specific protocol or unstranded.",
             "type": "string",
             "oneOf": [
                 {
                     "enum": [
                         "forward",
-                        "reverse"
+                        "reverse",
+                        "unstranded"
                     ]
                 },
                 {

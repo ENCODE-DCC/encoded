@@ -122,3 +122,10 @@ def test_library_upgrade_15_to_16(upgrader, library_linkers):
         'sequence': 'GTTGGATAAGATATCGC'
     } in value['linkers']
     assert value['notes'] == 'The linkers of this library were converted as linker a and linker b have been deprecated as linkers type.'
+
+
+def test_library_upgrade_16_to_17(upgrader, library_schema_16):
+    value = upgrader.upgrade('library', library_schema_16, target_version='17')
+    assert value['schema_version'] == '17'
+    assert value['strand_specificity'] == 'unstranded'
+    assert value['notes'] == 'The strand_specificity of this library was defaulted to unstranded in an upgrade.'

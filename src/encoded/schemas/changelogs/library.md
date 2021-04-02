@@ -1,5 +1,8 @@
 ## Changelog for library.json
 
+### Schema version 17
+* The *strand_specificity* property is now required for all library objects; unstranded libraries should use the new enum *unstranded*.
+
 ### Minor changes since schema version 16
 * Calculated properties *replicates* and *antibodies* are removed.
 * Added *Parse Single Cell Whole Transcriptome Kit* to the enum list for *construction_method*
