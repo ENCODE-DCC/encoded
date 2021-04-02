@@ -194,7 +194,7 @@ def series_search(context, request):
 
 
 @view_config(route_name='annotations_search', request_method='GET', permission='search')
-def series_search(context, request):
+def annotations_search(context, request):
     # Note the order of rendering matters for some fields, e.g. AllResponseField and
     # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
     fr = FieldedResponse(
