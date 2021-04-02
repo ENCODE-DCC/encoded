@@ -16,20 +16,20 @@ def parse_inequality_param_value(value):
     return value.split(COLON, 1)
 
 
-def partial_inequality(operator, RHS):
+def partial_inequality(operator, right_operand):
     '''
     Used to bind the right-hand side argument to
     comparison operator for repeated use.
     '''
-    def inequality(LHS):
-        return operator(LHS, RHS)
+    def inequality(left_operand):
+        return operator(left_operand, right_operand)
     return inequality
 
 
-def make_inequality_from_relation_and_operand(relation, RHS):
+def make_inequality_from_relation_and_operand(relation, right_operand):
     return partial_inequality(
         relation_to_operator[relation],
-        RHS
+        right_operand
     )
 
 
@@ -46,8 +46,8 @@ def map_param_values_to_inequalities(values):
     return inequalities
 
 
-def try_to_evaluate_inequality(inequality, LHS):
+def try_to_evaluate_inequality(inequality, left_operand):
     try:
-        return inequality(LHS)
+        return inequality(left_operand)
     except TypeError:
         return False
