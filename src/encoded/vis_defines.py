@@ -1177,12 +1177,12 @@ class IhecDefines(object):
         experiment_type = vis_dataset.get('ihec_exp_type')
         if experiment_type is None:
             return {}
-        attributes["experiment_type"] = experiment_type
-        attributes["experiment_ontology_uri"] = 'http://purl.obolibrary.org/obo/' + assay_id.replace(':','_')
+        attributes["experiment_type"] = [experiment_type]
+        attributes["experiment_ontology_uri"] = ['http://purl.obolibrary.org/obo/' + assay_id.replace(':','_')]
         assay_name = vis_dataset.get('assay_term_name')
         if assay_name:
             attributes["assay_type"] = assay_name
-        attributes['library_strategy'] = IHEC_LIB_STRATEGY[assay_name]
+        attributes['library_strategy'] = [IHEC_LIB_STRATEGY[assay_name]]
         query = (
             '/search/?type=ReferenceEpigenome&related_datasets.accession={}'
             '&status=released&field=dbxrefs&limit=all'
@@ -1190,7 +1190,7 @@ class IhecDefines(object):
         for ref_epi in self._request.embed(query)['@graph']:
             for dbxref in ref_epi.get('dbxrefs', []):
                 if dbxref.startswith('IHEC:IHECRE'):
-                    attributes['reference_registry_id'] = dbxref[5:].split('.')[0]
+                    attributes['reference_registry_id'] = [dbxref[5:].split('.')[0]]
                     break
         return attributes
 
@@ -1250,17 +1250,19 @@ class IhecDefines(object):
         sample['differentiation_stage'] = self.differentiation(biosample, 'unknown')
         term_id = biosample.get('biosample_ontology', {}).get('term_id')
         if term_id:
-            sample["sample_ontology_uri"] = term_id
+            sample["sample_ontology_uri"] = [term_id]
 
-        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_ontology', {}).get('classification')) # ["Cell Line","Primary Cell", ...
+        sample["biomaterial_type"] = [self.biomaterial_type(biosample.get('biosample_ontology', {}).get('classification'))] # ["Cell Line","Primary Cell", ...
+        source = biosample.get('source')
+        sample["biomaterial_provider"] = source['title']
         sample["line"] = biosample.get('biosample_ontology', {}).get('term_name', 'none')
         sample["medium"] = "unknown"                                                    # We don't have
-        sample["disease"] = biosample.get('health_status',"Healthy").capitalize()  #  assume all samples are healthy - hitz
+        sample["disease"] = [biosample.get('health_status',"Healthy").capitalize()]  #  assume all samples are healthy - hitz
         if sample["disease"] == "Healthy":
-            sample["disease_ontology_uri"] = "http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"
+            sample["disease_ontology_uri"] = ["http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"]
         else:
             # Note only term for disease ontology is healthy=C115935.  No search url syntax known
-            sample["disease_ontology_uri"] = "https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"
+            sample["disease_ontology_uri"] = ["https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"]
         sample["sex"] = biosample.get('sex','unknown').capitalize()
 
         if sample["biomaterial_type"] in ["Primary Tissue", "Primary Cell Culture"]:
@@ -1286,7 +1288,7 @@ class IhecDefines(object):
                 sample["tissue_depot"] = biosample.get('source',{}).get('description','unknown')
             elif sample["biomaterial_type"] == "Primary Cell Culture":
                 sample["cell_type"] = sample["line"]
-                sample["culture_conditions"] = "unknwon" # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
+                sample["culture_conditions"] = "unknown" # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
         self.samples[sample_id] = sample
         return sample
 
@@ -1411,7 +1413,7 @@ class IhecDefines(object):
             if experiment_attributes:
                 dataset['experiment_attributes'] = experiment_attributes
             else:
-                log.warn('Could not determine IHEC experiment attributes for %s', accession)
+                log.warn('Could not determine IHEC experiment attributes for %s', accession) # do we still include the dataset without attributes?
 
             # Find/create sample:
             biosample_accession = vis_dataset.get('biosample_accession')
