@@ -1,4 +1,4 @@
-@matrix @usefixtures(index_workbook)
+@matrix
 Feature: Matrix
     Scenario: Matrix Reference Epigenome
         When I visit "/"

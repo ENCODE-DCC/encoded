@@ -1,4 +1,4 @@
-@search @usefixtures(index_workbook)
+@search
 Feature: Search
     Background:
         When I visit "/searchv2_raw/?type=Experiment"

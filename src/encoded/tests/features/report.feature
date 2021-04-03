@@ -6,7 +6,7 @@ Feature: Title
         And I wait for the content to load
         Then the title should contain the text "Report – ENCODE"
 
-@report @usefixtures(index_workbook)
+@report
 Feature: Report
     Background:
         When I visit "/report/?type=Experiment"

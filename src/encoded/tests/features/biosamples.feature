@@ -1,4 +1,4 @@
-@biosamples @usefixtures(index_workbook)
+@biosamples
 Feature: Biosamples
 
     Scenario: Detail page

@@ -6,7 +6,7 @@ Feature: Title
         And I wait for the content to load
         Then the title should contain the text "Summary – ENCODE"
 
-@Summary @usefixtures(index_workbook)
+@Summary
 Feature: Summary
     Background:
         When I visit "/summary/?type=Experiment&status=released"
