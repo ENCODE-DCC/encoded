@@ -346,6 +346,10 @@
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
         },
+        "control_type": {
+            "type": "exists",
+            "title": "Show control experiments"
+        },
         "award.project": {
             "title": "Project"
         },

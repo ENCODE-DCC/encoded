@@ -283,6 +283,10 @@
         "assembly": {
             "title": "Genome assembly"
         },
+        "control_type": {
+            "type": "exists",
+            "title": "Show control experiments"
+        },
         "files.file_type": {
             "title": "Available file types"
         },

@@ -270,6 +270,14 @@ export function donorDiversity(dataset) {
     return diversity;
 }
 
+/**
+ * Get the control type part of the url
+ *
+ * @param {string} type Type
+ * @returns Control Type part of URL
+ */
+export const controlTypeParameter = (type) => (['Experiment', 'FunctionalCharacterizationExperiment'].includes(type) ? '&control_type!=*' : '');
+
 
 // Render the Download icon while allowing the hovering tooltip.
 class DownloadIcon extends React.Component {
@@ -751,7 +759,7 @@ export const TopAccessories = ({ context, crumbs }) => {
 
     return (
         <div className="top-accessories">
-            <Breadcrumbs root={`/search/?type=${type}`} crumbs={crumbs} crumbsReleased={context.status === 'released'} />
+            <Breadcrumbs root={`/search/?type=${type}${controlTypeParameter(type)}`} crumbs={crumbs} crumbsReleased={context.status === 'released'} />
             {isItemAllowedInCart ?
                 <CartToggle element={context} displayName />
             : null}

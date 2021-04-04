@@ -964,7 +964,7 @@ const ListingComponent = (props, reactContext) => {
                     <div className="result-item__meta-title">Experiment Series</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <div className="result-experiment-series-search">
-                        <a href={`/search/?type=Experiment&related_series.@id=${result['@id']}${searchableDatasetStatusQuery}`}>View {totalDatasetCount} datasets</a>
+                        <a href={`/search/?type=Experiment&control_type!=*&related_series.@id=${result['@id']}${searchableDatasetStatusQuery}`}>View {totalDatasetCount} datasets</a>
                     </div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}

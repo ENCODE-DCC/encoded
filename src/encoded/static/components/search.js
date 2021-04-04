@@ -1049,6 +1049,16 @@ export const FacetList = (props) => {
     // Combine facets from search results with special facets, and treat them mostly the same.
     const allFacets = SpecialFacetRegistry.Facet.getFacets().concat(facets);
 
+    const clearFiltersUrl = (contextObj) => {
+        if (!contextObj || !contextObj.clear_filters) {
+            return '';
+        }
+
+        const hasControlType = contextObj.facets.map((c) => c.field).includes('control_type');
+
+        return `${contextObj.clear_filters}${hasControlType ? '&control_type!=*' : ''}`;
+    };
+
     return (
         <div className="search-results__facets">
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
@@ -1059,7 +1069,7 @@ export const FacetList = (props) => {
                                 <DocTypeTitle searchResults={context} wrapper={(children) => <h1>{children} {docTypeTitleSuffix}</h1>} />
                             : null}
                             {context.clear_filters ?
-                                <ClearFilters searchUri={context.clear_filters} enableDisplay={clearButton} />
+                                <ClearFilters searchUri={clearFiltersUrl(context)} enableDisplay={clearButton} />
                             : null}
                         </div>
                     : null}

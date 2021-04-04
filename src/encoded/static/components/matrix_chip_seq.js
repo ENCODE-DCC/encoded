@@ -155,7 +155,7 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
 
     const dataTable = [];
     const headerRow = chIPSeqData.headerRow.map((x) => ({
-        header: <a href={`/search/?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.term_name=${x}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}`} title={x}>{x}</a>,
+        header: <a href={`/search/?type=Experiment&control_type!=*&status=released&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.term_name=${x}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}`} title={x}>{x}</a>,
     }));
 
     dataTable.push({
@@ -172,7 +172,7 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
             if (yIndex === 0) {
                 const borderLeft = '1px solid #fff'; // make left-most side border white
                 content = {
-                    header: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>{y}</a>,
+                    header: <a href={`/search/?type=Experiment&control_type!=*&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>{y}</a>,
                     style: { borderLeft },
                 };
             } else {
@@ -180,7 +180,7 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
                 const backgroundColor = y === 0 ? '#FFF' : '#688878'; // determined if box is colored or not
                 const borderRight = yIndex === rowLength - 1 ? '1px solid #f0f0f0' : ''; // add border color to right-most rows
                 content = {
-                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>&nbsp;</a>,
+                    content: <a href={`/search/?type=Experiment&control_type!=*&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>&nbsp;</a>,
                     style: { backgroundColor, borderTop, borderRight },
                 };
             }

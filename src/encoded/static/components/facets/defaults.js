@@ -101,6 +101,81 @@ DefaultBooleanFacet.contextTypes = {
     navigate: PropTypes.func,
 };
 
+/** Render a binary state boolean facte for the "exists" facet. This doesn't get registered as a
+ * default facet component, but is provided so we have one component to render all "exists" facets
+ * consistently. For future expansion, note that all properties available to facet-rendering
+ * components are available, but this particular implementation only uses a subset of them. */
+export const DefaultExistsBinaryFacet = ({ facet, relevantFilters, queryString, defaultValue }, reactContext) => {
+    let currentOption = defaultValue; // default
+    if (relevantFilters.length === 1 && relevantFilters[0].term === '*') {
+        if (facet.field === relevantFilters[0].field) {
+            currentOption = 'yes';
+        } else {
+            currentOption = 'no';
+        }
+    }
+
+    // Sort yes/no facet terms into yes - no order.
+    const sortedTerms = _(facet.terms.filter((term) => term.doc_count > 0)).sortBy((term) => ['yes', 'no'].indexOf(term.key));
+
+    // We have to build the new query string unless the user clicked the "either" radio button,
+    // which uses the `remove` link from the relevant filter. This callback gets memoized to avoid
+    // needlessly re-rendering this component, and its dependencies should normally not change until
+    // the user clicks a term.
+    const handleRadioClick = React.useCallback((event) => {
+        const { value } = event.target;
+
+        // User clicked the "yes" or "no" radio buttons. Replace any existing relevant query
+        // element with one corresponding to the clicked radio button.
+        const query = new QueryString(queryString);
+        query.replaceKeyValue(facet.field, '*', value === 'no');
+        const href = `?${query.format()}`;
+
+        reactContext.navigate(href);
+    }, [facet.field, queryString, reactContext, relevantFilters]);
+
+    const query = new QueryString(queryString);
+    const isFieldPartOfSearchQuery = !!query.getKeyValuesIfPresent(facet.field)[0];
+
+    return (
+        facet.total > 0 || isFieldPartOfSearchQuery ?
+            <fieldset className="facet">
+                <legend>{facet.title}</legend>
+                <div className="facet__content--exists">
+                    {sortedTerms.map((term) => (
+                        <div key={term.key} className="facet__radio">
+                            <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
+                            <label htmlFor={term.key}>
+                                <div className="facet__radio-label">{term.key}</div>
+                                <div className="facet__radio-count">{term.doc_count}</div>
+                            </label>
+                        </div>
+                    ))}
+                </div>
+            </fieldset>
+        : null
+    );
+};
+
+DefaultExistsBinaryFacet.propTypes = {
+    /** Relevant `facet` object from `facets` array in `results` */
+    facet: PropTypes.object.isRequired,
+    /** Filters relevant to the current facet */
+    relevantFilters: PropTypes.array.isRequired,
+    /** Query-string portion of current URL without initial ? */
+    queryString: PropTypes.string,
+    /** Default selection */
+    defaultValue: PropTypes.string,
+};
+
+DefaultExistsBinaryFacet.defaultProps = {
+    queryString: '',
+    defaultValue: 'yes',
+};
+
+DefaultExistsBinaryFacet.contextTypes = {
+    navigate: PropTypes.func,
+};
 
 /**
  * Render a tri-state boolean facet for the "exists" facets. This doesn't get registered as a
