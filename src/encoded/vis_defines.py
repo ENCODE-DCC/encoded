@@ -1268,7 +1268,7 @@ class IhecDefines(object):
         passage = biosample.get('passage_number', None)
 
         if "Cell Line" in sample["biomaterial_type"]:
-            sample["differentation_method"] = ["NA"]
+            sample["differentiation_method"] = ["NA"]
             sample["batch"] = ["NA"]
             sample["medium"] = ["unknown"] # We don't have this information
             sample['lineage'] = [self.lineage(biosample, 'unknown')]
