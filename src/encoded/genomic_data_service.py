@@ -13,7 +13,7 @@ RNA_GET_COLUMNS = {
     'libraryPrepProtocol': {'title': 'Experiment'},
     'expressionID': {'title': 'File'},
     'annotation': {'title': 'Annotation'},
-    'biosample_term_name': {'title': 'Term Name'},
+    'biosample_term_name': {'title': 'Biosample'},
     'biosample_classification': {'title': 'Classification'},
     'biosample_sex': {'title': 'Sex'},
     'biosample_organ': {'title': 'Organ'},
@@ -47,9 +47,9 @@ class GenomicDataService():
             self.sort_order = 'desc' if desc else 'asc'
 
         self.filter_params = {}
-        for filter_ in RNA_GET_FACETS:
-            if params.get(filter_):
-                self.filter_params[filter_] = params.get(filter_)
+        for facet in RNA_GET_FACETS:
+            if params.get(facet):
+                self.filter_params[facet] = params.get(facet)
 
         self.filters = [{'field': 'type', 'term': 'Rna Get', 'remove': '/rnaget'}]
 
