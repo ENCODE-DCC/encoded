@@ -22,7 +22,7 @@ import {
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
-import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
+import Status from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
 import { BatchDownloadModal } from './view_controls';
 import { encodedURIComponent } from '../libs/query_encoding';
@@ -187,7 +187,7 @@ export const compileAnalyses = (analyses, files, dataFormat = null) => {
                     // the experiment's files.
                     const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analysis) => accFiles.concat(analysis.files), []).filter((file) => fileIds.includes(file)));
                     // eslint-disable-next-line camelcase
-                    const { status, accession, pipeline_award_rfas, title,  pipeline_version } = analysesByAssembly[assembly][0];
+                    const { status, accession, pipeline_award_rfas, title, pipeline_version } = analysesByAssembly[assembly][0];
 
                     if (assemblyFiles.length > 0) {
                         compiledAnalyses.push({
@@ -2666,7 +2666,7 @@ function createFacetObject(propertyKey, fileList, filters) {
  * Display the analyses selector, a dropdown menu to choose which pipeline lab's files to view in
  * the file association graph.
  */
-const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef }, context) => {
+const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef }) => {
     React.useEffect(() => {
         if (selectedAnalysesIndex === -1 && analyses.length > 0) {
             // No selected pipeline lab analyses, but if we have at least one qualifying one,
