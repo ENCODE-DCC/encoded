@@ -825,6 +825,7 @@ def BruChase_6h(testapp, lab, award, heart):
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
 
+@pytest.fixture
 def single_cell_ATAC_experiment(root, experiment):
     item = root.get_by_uuid(experiment['uuid'])
     properties = item.properties.copy()
