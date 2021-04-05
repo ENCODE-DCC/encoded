@@ -1,6 +1,3 @@
-from pyramid.security import (
-    Allow,
-)
 from snovault import (
     calculated_property,
     collection,
@@ -8,7 +5,6 @@ from snovault import (
 )
 from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 from .base import (
-    ALLOW_SUBMITTER_ADD,
     Item,
     paths_filtered_by_status
 )
@@ -89,7 +85,6 @@ def make_quality_metric_report(request, file_objects, quality_metric_definition)
 
 @collection(
     name='analyses',
-    acl=ALLOW_SUBMITTER_ADD,
     unique_key='accession',
     properties={
         'title': 'Analyses',
@@ -352,12 +347,6 @@ class Analysis(Item):
             if not (genome_annotation == 'mixed' and assembly == 'mixed'):
                 analysis_annotation = f' {genome_annotation}'
         return f'{analysis_type}{analysis_version}{analysis_assembly}{analysis_annotation}'
-
-    STATUS_ACL = Item.STATUS_ACL.copy()
-    STATUS_ACL['in progress'] = [(Allow, 'role.submitter', ['view', 'edit'])]
-
-    def __ac_local_roles__(self):
-        return {f'userid.{self.properties["submitted_by"]}': 'role.submitter'}
 
 
 @collection(
