@@ -1,0 +1,17 @@
+[
+	{
+		"uuid": "59bb1e91-c6ae-4b17-a474-7742f9a73bec",
+		"derived_from": [
+			"anna-greka:human_tissue_donorB"
+		],
+		"derivation_process": [
+			"cryosection"
+		],
+		"sectioning_method": "microtome",
+		"thickness": "16",
+		"thickness_units": "μm",
+		"aliases": [
+			"anna-greka:liver-section1"
+		]
+	}
+]

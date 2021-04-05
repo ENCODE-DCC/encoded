@@ -1,5 +1,140 @@
 [
     {
+        "name": "Slide-seq2",
+        "title": "Slide-seq2",
+        "status": "in progress",
+        "end_bias": "3'",
+        "library_type": "RNA-seq",
+        "read_structure": [
+            {
+                "end": 41,
+                "start": 34,
+                "sequence_element": "UMI",
+                "located_in_read_type": "Read 1"
+            }
+        ],
+        "polyA_selection": true,
+        "strand_specificity": "first",
+        "first_strand_primer": "poly(dT)",
+        "polyA_selection_method": "poly(dT)",
+        "sequence_file_standards": [
+            {
+                "required": false,
+                "read_type": "Read 1",
+                "read_length": 42,
+                "sequence_elements": [
+                    "spatial barcode",
+                    "UMI"
+                ],
+                "read_length_specification": "exact"
+            },
+            {
+                "required": false,
+                "read_type": "Read 2",
+                "read_length": 41,
+                "sequence_elements": [
+                    "3' of molecule"
+                ],
+                "read_length_specification": "minimum"
+            },
+            {
+                "required": false,
+                "read_type": "i7 index",
+                "read_length": 8,
+                "sequence_elements": [
+                    "sample index"
+                ],
+                "read_length_specification": "exact"
+            }
+        ],
+        "biological_macromolecule": "RNA",
+        "library_amplification_method": "PCR",
+        "library_preamplification_method": "RT-PCR",
+        "library_preparation_environment": "slide",
+        "uuid": "6312392a-f3de-4851-808e-59e4d430d632",
+        "spatial_resolution": "10",
+        "spatial_resolution_units": "μm"
+    },
+    {
+        "name": "Visium-10x-GE",
+        "title": "Visium 10x GE",
+        "status": "in progress",
+        "end_bias": "3'",
+        "library_type": "RNA-seq",
+        "read_structure": [
+            {
+                "end": 16,
+                "start": 1,
+                "sequence_element": "spatial barcode",
+                "located_in_read_type": "Read 1"
+            },
+            {
+                "end": 28,
+                "start": 17,
+                "sequence_element": "UMI",
+                "located_in_read_type": "Read 1"
+            }
+        ],
+        "polyA_selection": true,
+        "strand_specificity": "first",
+        "first_strand_primer": "poly(dT)",
+        "fragmentation_method": "enzymatic",
+        "second_strand_primer": "TSO",
+        "construction_platform": "10x",
+        "polyA_selection_method": "poly(dT)",
+        "sequence_file_standards": [
+            {
+                "required": true,
+                "read_type": "Read 1",
+                "read_length": 28,
+                "sequence_elements": [
+                    "spatial barcode",
+                    "UMI"
+                ],
+                "demultiplexed_type": "R1",
+                "read_length_specification": "minimum"
+            },
+            {
+                "required": true,
+                "read_type": "Read 2",
+                "read_length": 90,
+                "sequence_elements": [
+                    "3' of molecule"
+                ],
+                "demultiplexed_type": "R2",
+                "read_length_specification": "minimum"
+            },
+            {
+                "required": false,
+                "read_type": "i7 index",
+                "read_length": 10,
+                "sequence_elements": [
+                    "sample index"
+                ],
+                "demultiplexed_type": "I1",
+                "read_length_specification": "exact"
+            },
+            {
+                "required": false,
+                "read_type": "i5 index",
+                "read_length": 10,
+                "sequence_elements": [
+                    "sample index"
+                ],
+                "demultiplexed_type": "I2",
+                "read_length_specification": "exact"
+            }
+        ],
+        "biological_macromolecule": "RNA",
+        "library_amplification_method": "PCR",
+        "library_size_selection_method": "SPRIselect",
+        "library_preamplification_method": "RT-PCR",
+        "library_preparation_environment": "slide",
+        "uuid": "ce9cab78-00b2-4d1e-95e2-abef3e3768ff",
+        "spatial_resolution": "55",
+        "spatial_resolution_units": "μm"
+    },
+    {
         "name": "10x-5'-v1",
         "title": "10x 5' v1",
         "status": "released",

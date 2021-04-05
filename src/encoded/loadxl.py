@@ -32,6 +32,7 @@ ORDER = [
     'cell_culture',
     'organoid',
     'suspension',
+    'tissue_section',
     'dataset',
     'library',
     'reference_file',

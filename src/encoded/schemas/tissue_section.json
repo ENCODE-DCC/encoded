@@ -1,0 +1,179 @@
+{
+    "title": "Tissue section",
+    "description": "Schema for submitting a section of a tissue sample.",
+    "id": "/profiles/tissue_section.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["derived_from", "derivation_process"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/urls"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/accessioned_status"},
+        {"$ref": "mixins.json#/source"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/treatments"},
+        {"$ref": "mixins.json#/references"},
+        {"$ref": "mixins.json#/preservation"}
+    ],
+    "dependencies": {
+        "thickness": ["thickness_units"],
+        "thickness_units": ["thickness"],
+        "permeabilization_time": ["permeabilization_time_units"],
+        "permeabilization_time_units": ["permeabilization_time"]
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "accession": {
+            "accessionType": "TS"
+        },
+        "alternate_accessions": {
+            "items": {
+                "title": "Alternate Accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment": "Only accessions of objects that have status equal replaced will work here.",
+                "type": "string",
+                "format": "accession",
+                "pattern": "^(LATTS\\d{3}[A-Z]{3})$"
+            }
+        },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The sample(s) from which this object was directly derived.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Derived from",
+                "description": "A sample from which this object was directly derived.",
+                "type": "string",
+                "maxItems": 1,
+                "linkTo": [
+                    "Organoid",
+                    "Tissue"
+                ]
+            }
+        },
+        "derivation_process": {
+            "title": "Derivation process",
+            "description": "The method(s) by which this object was derived.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string"
+            }
+        },
+        "dbxrefs": {
+            "items": {
+                "title": "External identifier",
+                "description": "An identifier from external resource.",
+                "type":  "string",
+                "pattern": "^((EGA:EGAN\\d+)|(BioSample:SAM(E|N|D)(A|G)?\\d+)|(GEO:SAM(E|N|D)(A|G)?\\d+)|(SRA:SRS\\d+)|(ENA:ERS\\d+))$"
+            }
+        },
+        "sectioning_method": {
+            "title": "Sectioning method",
+            "description": "",
+            "type": "string"
+        },
+        "thickness": {
+            "title": "Thickness",
+            "description": "",
+            "type": "string",
+            "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
+        },
+        "thickness_units": {
+            "title": "Thickness units",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "μm"
+            ]
+        }
+    },
+    "facets": {
+        "donors.organism.scientific_name": {
+            "title": "Organism"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
+        },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
+        },
+        "biosample_ontologies.system_slims": {
+            "title": "Biosample system"
+        },
+        "biosample_ontologies.organ_slims": {
+            "title": "Biosample organ",
+            "type": "typeahead"
+        },
+        "biosample_ontologies.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "description": {
+            "title": "Description"
+        },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
+        "sectioning_method": {
+            "title": "Sectioning method"
+        },
+        "thickness": {
+            "title": "Thickness"
+        },
+        "thickness_units": {
+            "title": "Thickness units"
+        },
+        "donors.organism.scientific_name": {
+            "title": "Organism"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
+        },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
+        },
+        "derived_from": {
+            "title": "Derived from"
+        },
+        "derivation_process": {
+            "title": "Derivation process"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/tissue_section.md"
+}

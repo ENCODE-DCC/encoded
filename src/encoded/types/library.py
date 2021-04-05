@@ -55,7 +55,8 @@ class Library(Item,
             "snRNA-seq",
             "CITE-seq",
             "bulk ATAC-seq",
-            "bulk RNA-seq"
+            "bulk RNA-seq",
+            "spatial transcriptomics"
         ]
     })
     def assay(self, request, derived_from, protocol):
@@ -63,13 +64,18 @@ class Library(Item,
         if protocolObject.get('library_type') in ['CITE-seq']:
             return protocolObject.get('library_type')
         elif derived_from:
-            derfrObject = request.embed(derived_from[0], '@@object?skip_calculated=true')
-            if derfrObject.get('suspension_type') == 'cell':
+            derfrObject = request.embed(derived_from[0], '@@object')
+            df_type = derfrObject['@type'][0]
+            if df_type == 'TissueSection' and protocolObject.get('library_type') == 'RNA-seq':
+                return 'spatial transcriptomics'
+            elif df_type != 'Suspension':
+                mat_type = 'bulk '
+            elif derfrObject.get('suspension_type') == 'cell':
                 mat_type = 'sc'
             elif derfrObject.get('suspension_type') == 'nucleus':
                 mat_type = 'sn'
             else:
-                mat_type = 'bulk '
+                return protocolObject.get('library_type')
             return mat_type + protocolObject.get('library_type')
         else:
             return protocolObject.get('library_type')

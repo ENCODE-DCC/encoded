@@ -70,7 +70,8 @@
                 "type": "string",
                 "linkTo": [
                     "Biosample",
-                    "Suspension"
+                    "Suspension",
+                    "TissueSection"
                 ]
             }
         },
@@ -177,6 +178,36 @@
             "comment": "Date should be submitted in as YYYY-MM-DD.",
             "type": "string",
             "format": "date"
+        },
+        "slide_id": {
+            "title": "Slide ID",
+            "description": "For spatial data from tissue sections, the identifier for the slide or puck from which the library was constructed.",
+            "type": "string"
+        },
+        "slide_area_id": {
+            "title": "Slide area ID",
+            "description": "For spatial data from tissue sections, the identifier for the area within the slide or puck from which the library was constructed.",
+            "type": "string",
+            "enum": [
+                "A1",
+                "B1",
+                "C1",
+                "D1"
+            ]
+        },
+        "permeabilization_time": {
+            "title": "Permeabilization time",
+            "description": "",
+            "type": "string",
+            "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
+        },
+        "permeabilization_time_units": {
+            "title": "Permeabilization time units",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "minute"
+            ]
         }
     },
     "facets": {
