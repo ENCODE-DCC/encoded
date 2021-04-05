@@ -28,6 +28,7 @@ IHEC_LIB_STRATEGY = {
     'MeDIP-seq': 'MeDIP-Seq',
     'microRNA-seq': 'miRNA-Seq',
     'microRNA counts': 'miRNA-Seq',
+    'small RNA-seq': 'smRNA-seq',
     'MRE-seq': 'MRE-Seq',
     'polyA plus RNA-seq': 'RNA-Seq',
     'RNA-seq': 'RNA-Seq',
@@ -1147,7 +1148,7 @@ class IhecDefines(object):
         if 'assay_term_name' not in dataset:
             return None
         assay = dataset['assay_term_name']
-        if assay in ['microRNA-seq', 'small RNA-seq']:
+        if assay in ('microRNA-seq', 'small RNA-seq'):
             return 'smRNA-Seq'
         if assay == 'polyA plus RNA-seq':
             return 'mRNA-Seq'
