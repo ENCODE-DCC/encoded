@@ -33,8 +33,8 @@
         "files": ["ENCFF004MRN", "ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"],
         "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
         "pipeline_version": "1.1.2-prerelease+meta",
-        "lab": "ENCODE2",
-        "award": "richard-myers"
+        "lab": "cfb789b8-46f3-4d59-a2b3-adc39e7df93a",
+        "award": "8bafd685-aa17-43fe-95aa-37bc1c90074a"
     },
     {
         "uuid": "860f157c-e4da-a330-1f14-e5b89bf40423",
