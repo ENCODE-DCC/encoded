@@ -58,3 +58,14 @@ def software_7_8(value, system):
             value['notes'] = f'{value.get("notes")}. {notes}'
         else:
             value['notes'] = notes
+
+
+@upgrade_step('software', '8', '9')
+def software_8_9(value, system):
+    for i, p in enumerate(value.get('purpose', [])):
+        if p == 'single-cell ATAC-seq':
+            value['purpose'][i] = 'single-nucleus ATAC-seq'
+            if 'notes' in value:
+                value['notes'] = f'{value.get("notes")}. The purpose for this software is now snATAC-seq, upgraded from scATAC-seq.'
+            else:
+                value['notes'] = 'The purpose for this software is now snATAC-seq, upgraded from scATAC-seq.'

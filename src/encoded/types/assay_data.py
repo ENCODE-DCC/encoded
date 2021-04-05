@@ -52,7 +52,6 @@ assay_terms = {
       'Mint-ChIP-seq': 'OBI:0002160',
       'single-nucleus ATAC-seq': 'OBI:0002762',
       'icSHAPE': 'NTR:0000433',
-      'single-cell ATAC-seq': 'OBI:0002764',
       'long read RNA-seq': 'NTR:0000445',
       'STARR-seq': 'OBI:0002041',
       'direct RNA-seq': 'OBI:0002629',

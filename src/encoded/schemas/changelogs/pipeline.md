@@ -1,8 +1,8 @@
 ## Changelog for pipeline.json
 
-### Minor changes since schema version 12
+### Schema version 13
 
-* Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *assay_term_name* enum
+* Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *assay_term_names* enum; *single-cell ATAC-seq* was removed from the *assay_term_names* enum and remapped to *single-nucleus ATAC-seq*
 
 ### Schema version 12
 

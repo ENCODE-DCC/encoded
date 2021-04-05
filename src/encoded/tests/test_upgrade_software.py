@@ -43,3 +43,15 @@ def test_software_upgrade_7_8(upgrader, software_1):
                 'whole genome sequencing assay'])
     )
     assert 'The purpose for this software is now WGS, upgraded from genotyping HTS assay.' in value['notes']
+
+
+def test_software_upgrade_8_9(upgrader, software_1):
+    software_1['schema_version'] = '8'
+    software_1['purpose'] = ['single-cell ATAC-seq', 'ATAC-seq']
+    value = upgrader.upgrade('software', software_1, target_version='9')
+    assert value['schema_version'] == '9'
+    TestCase().assertListEqual(
+        sorted(value['purpose']),
+        sorted(['single-nucleus ATAC-seq', 'ATAC-seq'])
+    )
+    assert 'The purpose for this software is now snATAC-seq, upgraded from scATAC-seq.' in value['notes']

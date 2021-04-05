@@ -59,3 +59,12 @@ def award_8_9(value, system):
             milestone['assay_term_name'] = 'whole genome sequencing assay'
         if assay_term_name == 'single-nucleus RNA-seq':
             milestone['assay_term_name'] = 'single-cell RNA sequencing assay'
+
+
+@upgrade_step('award', '9', '10')
+def award_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5828
+    for milestone in value.get('milestones', []):
+        assay_term_name = milestone.get('assay_term_name', '')
+        if assay_term_name == 'single-cell ATAC-seq':
+            milestone['assay_term_name'] = 'single-nucleus ATAC-seq'

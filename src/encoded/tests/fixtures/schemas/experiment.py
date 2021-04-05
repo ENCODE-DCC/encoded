@@ -823,3 +823,13 @@ def BruChase_6h(testapp, lab, award, heart):
         'biosample_ontology': heart['uuid']
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+def single_cell_ATAC_experiment(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '32',
+        'assay_term_name': 'single-cell ATAC-seq'
+    })
+    return properties

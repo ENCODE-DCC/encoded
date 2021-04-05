@@ -4,7 +4,6 @@ slim_shims = {
         # DNA accessibility
         'OBI:0001924': ['DNA accessibility'],  # 'OBI:0000870' / MNase-seq
         'OBI:0002039': ['DNA accessibility'],  # 'OBI:0000870', / ATAC-seq,
-        'OBI:0002764': ['DNA accessibility'],  # 'OBI:0000870', / scATAC-seq,
         'OBI:0001853': ['DNA accessibility'],  # 'OBI:0000870', / DNase-seq
         'OBI:0001859': ['DNA accessibility'],  # 'OBI:0000870', / OBI:0000424  / FAIRE-seq
         'OBI:0002042': ['3D chromatin structure'],  # 'OBI:0000870' (Hi-C)

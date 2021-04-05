@@ -1,8 +1,8 @@
 ## Changelog for award.json
 
-### Minor changes since schema version 9
+### Schema version 10
 
-* Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *milestones.assay_term_name* enum
+* Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *milestones.assay_term_name* enum; *single-cell ATAC-seq* was removed from *milestones.assay_term_name* enum and remapped to *single-nucleus ATAC-seq*
 
 ### Schema version 9
 
