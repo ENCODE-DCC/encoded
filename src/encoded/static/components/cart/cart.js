@@ -197,7 +197,7 @@ const requestedFacetFields = displayedFacetFields.filter((field) => !field.calcu
     { field: 'href' },
     { field: 'dataset' },
     { field: 'biological_replicates' },
-    { field: 'analysis_objects', dataset: true },
+    { field: 'analyses', dataset: true },
     { field: 'preferred_default' },
     { field: 'annotation_subtype', dataset: true },
     { field: 'biochemical_inputs', dataset: true },
