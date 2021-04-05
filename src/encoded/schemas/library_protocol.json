@@ -173,7 +173,8 @@
                 "plate",
                 "valve",
                 "droplet",
-                "nanowell"
+                "nanowell",
+                "slide"
             ]
         },
         "polyA_selection": {
@@ -213,6 +214,7 @@
                         "enum": [
                             "cell barcode",
                             "feature barcode",
+                            "spatial barcode",
                             "UMI"
                         ]
                     },
@@ -315,6 +317,7 @@
                                 "molecule",
                                 "feature barcode",
                                 "cell barcode",
+                                "spatial barcode",
                                 "sample index",
                                 "UMI",
                                 "fragment"

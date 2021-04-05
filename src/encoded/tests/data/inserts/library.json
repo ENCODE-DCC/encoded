@@ -3,7 +3,7 @@
         "status": "released",
         "uuid": "156d9247-f386-4657-b234-a756584bc20f",
         "dataset": "anna-greka:large_test_dataset",
-        "protocol": "visium-10x-3'-v3",
+        "protocol": "Visium-10x-GE",
         "lab": "Anna Greka, Broad",
         "derived_from": [
             "anna-greka:liver-section1"
