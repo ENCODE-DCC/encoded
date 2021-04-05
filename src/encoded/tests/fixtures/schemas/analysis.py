@@ -46,3 +46,19 @@ def analysis_released_2(testapp, file1, admin):
         'submitted_by': admin['@id'],
     }
     return testapp.post_json('/analysis', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_no_lab(file1):
+    return {
+        'files': [file1['@id']],
+    }
+
+
+@pytest.fixture
+def analysis_with_lab(file1, award, lab):
+    return {
+        'files': [file1['@id']],
+        'award': award['@id'],
+        'lab': lab['@id'],
+    }

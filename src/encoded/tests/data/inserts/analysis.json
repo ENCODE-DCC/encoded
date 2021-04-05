@@ -47,6 +47,8 @@
         "accession": "ENCAN913ASZ",
         "files": ["ENCFF762DWI"],
         "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
-        "status": "released"
+        "status": "released",
+        "lab": "ENCODE2",
+        "award": "richard-myers"
     }
 ]
