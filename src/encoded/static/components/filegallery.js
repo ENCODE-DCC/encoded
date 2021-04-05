@@ -2682,8 +2682,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
     */
     React.useEffect(() => {
         const awardSuffixes = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
-        const accessLevel = sessionToAccessLevel(context.session, context.session_properties);
-        const statuses = getObjectStatuses('Analysis', accessLevel); // ordered in decreasing precedence
+        const statuses = ['released', 'in progress', 'archived', 'deleted', 'revoked']; // ordered in decreasing precedence
 
         // Narrow down analysis until we have the default as the first entry
         let analysisGroup = [];
