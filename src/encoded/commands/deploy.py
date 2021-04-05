@@ -326,20 +326,6 @@ def _get_commit_sha_for_branch(branch_name):
     ).decode('utf-8').strip()
 
 
-def _get_base_branch_info() -> str:
-    """
-    Returns information about the last common commit between origin/dev and the branch
-    being deployed.
-    """
-    last_common_commit = subprocess.check_output(
-        ["git", "merge-base", "HEAD", "origin/dev"]
-    ).strip()
-    base_branch_info = subprocess.check_output(
-        ["git", "show", "-s", "--format='%C(auto)%h %s'", last_common_commit], text=True
-    ).strip("\n'")
-    return base_branch_info
-
-
 def _get_instances_tag_data(main_args, build_type_template_name):
     instances_tag_data = {
         'branch': main_args.branch,
@@ -751,8 +737,6 @@ def main():
         sys.exit(0)
     # AWS - Below
     print('Create instance and wait for running state')
-    base_branch_info = _get_base_branch_info()
-    print("Base branch:", base_branch_info)
     ec2_client = _get_ec2_client(main_args, instances_tag_data)
     if ec2_client is None:
         sys.exit(20)
