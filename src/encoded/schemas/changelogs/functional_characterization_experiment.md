@@ -5,6 +5,7 @@
 * Restricted submission of *target* property to admins only.
 * Added *LRGASP* to the *internal_tags* enum
 * Added *doi* property
+* Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *assay_term_name* enum
 
 ### Schema version 6
 
