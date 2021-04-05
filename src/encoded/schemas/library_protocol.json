@@ -280,6 +280,20 @@
                 "adapter"
             ]
         },
+        "spatial_resolution": {
+            "title": "Spatial resolution",
+            "description": "The resolution at which the protocol can make measurements, as the diameter",
+            "type": "string",
+            "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
+        },
+        "spatial_resolution_units": {
+            "title": "Spatial resolution units",
+            "description": "The units by which the resolution is measured",
+            "type": "string",
+            "enum": [
+                "μm"
+            ]
+        },
         "sequence_file_standards": {
             "title": "Sequence file standards",
             "description": "The expected raw sequencing metrics based on the library protocol",

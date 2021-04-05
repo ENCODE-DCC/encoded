@@ -51,7 +51,9 @@
         "library_amplification_method": "PCR",
         "library_preamplification_method": "RT-PCR",
         "library_preparation_environment": "slide",
-        "uuid": "6312392a-f3de-4851-808e-59e4d430d632"
+        "uuid": "6312392a-f3de-4851-808e-59e4d430d632",
+        "spatial_resolution": "10",
+        "spatial_resolution_units": "μm"
     },
     {
         "name": "Visium-10x-GE",
@@ -128,7 +130,9 @@
         "library_size_selection_method": "SPRIselect",
         "library_preamplification_method": "RT-PCR",
         "library_preparation_environment": "slide",
-        "uuid": "ce9cab78-00b2-4d1e-95e2-abef3e3768ff"
+        "uuid": "ce9cab78-00b2-4d1e-95e2-abef3e3768ff",
+        "spatial_resolution": "55",
+        "spatial_resolution_units": "μm"
     },
     {
         "name": "10x-5'-v1",

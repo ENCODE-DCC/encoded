@@ -9,7 +9,9 @@
             "anna-greka:liver-section1"
         ],
         "permeabilization_time": "16",
-        "permeabilization_time_units": "minute"
+        "permeabilization_time_units": "minute",
+        "slide_id" : "V19J25-123",
+        "slide_area_id": "A1"
     },
     {
         "accession": "LATLB200DDD",
