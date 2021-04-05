@@ -1,7 +1,7 @@
 import pytest
 
 
-def test_audit_dnase_footprints(
+def test_audit_analysis_dnase_footprints(
     testapp,
     base_analysis,
     GRCh38_file,
@@ -70,7 +70,7 @@ def test_audit_dnase_footprints(
     )
 
 
-def test_audit_dnase_encode3(
+def test_audit_analysis_dnase_encode3(
     testapp,
     base_analysis,
     base_experiment,
@@ -156,7 +156,7 @@ def test_audit_dnase_encode3(
                'insufficient replicate concordance' for error in res.json['audit'].get('NOT_COMPLIANT', []))
 
 
-def test_audit_dnase_encode4(
+def test_audit_analysis_dnase_encode4(
     testapp,
     base_analysis,
     base_experiment,
@@ -239,7 +239,7 @@ def test_audit_dnase_encode4(
                'extremely low read depth' for error in res.json['audit'].get('ERROR', []))
 
 
-def test_audit_dnase_missing_read_depth(
+def test_audit_analysis_dnase_missing_read_depth(
     testapp,
     base_analysis,
     base_experiment,
@@ -303,7 +303,7 @@ def test_audit_dnase_missing_read_depth(
                'missing read depth' for error in res.json['audit'].get('INTERNAL_ACTION', []))
 
 
-def test_audit_rampage(
+def test_audit_analysis_rampage(
     testapp,
     base_analysis,
     base_experiment,
@@ -380,7 +380,7 @@ def test_audit_rampage(
                'low replicate concordance' for error in res.json['audit'].get('WARNING', []))
 
 
-def test_audit_small_rna_seq(
+def test_audit_analysis_small_rna_seq(
     testapp,
     base_analysis,
     base_experiment,
@@ -457,7 +457,7 @@ def test_audit_small_rna_seq(
                'low replicate concordance' for error in res.json['audit'].get('WARNING', []))
 
 
-def test_audit_bulk_rna_seq(
+def test_audit_analysis_bulk_rna_seq(
     testapp,
     base_analysis,
     base_experiment,
@@ -534,7 +534,7 @@ def test_audit_bulk_rna_seq(
                'low replicate concordance' for error in res.json['audit'].get('WARNING', []))
 
 
-def test_audit_micro_rna_seq(
+def test_audit_analysis_micro_rna_seq(
     testapp,
     base_analysis,
     base_experiment,
@@ -616,7 +616,7 @@ def test_audit_micro_rna_seq(
                'insufficient microRNAs expressed' for error in res.json['audit'].get('NOT_COMPLIANT', []))
 
 
-def test_audit_long_read_rna_seq(
+def test_audit_analysis_long_read_rna_seq(
     testapp,
     base_analysis,
     base_experiment,
@@ -697,7 +697,7 @@ def test_audit_long_read_rna_seq(
                'insufficient genes detected' for error in res.json['audit'].get('NOT_COMPLIANT', []))
 
 
-def test_audit_rna_seq_missing_read_depth(
+def test_audit_analysis_rna_seq_missing_read_depth(
     testapp,
     base_analysis,
     base_experiment,
@@ -787,7 +787,7 @@ def test_audit_rna_seq_missing_read_depth(
         for error in res.json['audit'].get('INTERNAL_ACTION', []))
 
 
-def test_audit_chip_encode4(
+def test_audit_analysis_chip_encode4(
     testapp,
     base_analysis,
     base_experiment,
@@ -844,7 +844,7 @@ def test_audit_chip_encode4(
                'borderline replicate concordance' for error in res.json['audit'].get('WARNING', []))
 
 
-def test_audit_chip_modern(
+def test_audit_analysis_chip_modern(
     testapp,
     base_analysis,
     base_experiment,
@@ -900,7 +900,7 @@ def test_audit_chip_modern(
                'borderline replicate concordance' for error in res.json['audit'].get('WARNING', []))
 
 
-def test_audit_chip_missing_read_depth(
+def test_audit_analysis_chip_missing_read_depth(
     testapp,
     base_analysis,
     base_experiment,
@@ -952,7 +952,7 @@ def test_audit_chip_missing_read_depth(
                'missing read depth' for error in res.json['audit'].get('INTERNAL_ACTION', []))
 
 
-def test_audit_chip_encode4_redacted_alignments(
+def test_audit_analysis_chip_encode4_redacted_alignments(
     testapp,
     base_analysis,
     base_experiment,
@@ -1007,7 +1007,7 @@ def test_audit_chip_encode4_redacted_alignments(
                'extremely low read depth' for error in res.json['audit'].get('ERROR', []))
 
 
-def test_audit_wgbs_encode3(
+def test_audit_analysis_wgbs_encode3(
     testapp,
     base_analysis,
     base_experiment,
@@ -1082,7 +1082,7 @@ def test_audit_wgbs_encode3(
                'insufficient replicate concordance' for error in res.json['audit'].get('NOT_COMPLIANT', []))
 
 
-def test_audit_wgbs_encode4(
+def test_audit_analysis_wgbs_encode4(
     testapp,
     base_analysis,
     base_experiment,
@@ -1168,7 +1168,7 @@ def test_audit_wgbs_encode4(
                'missing lambda C conversion rate' for error in res.json['audit'].get('WARNING', []))
 
 
-def test_audit_analysis_ATAC_ENCODE4_QC_standards(
+def test_audit_analysis_atac_encode4(
     testapp,
     base_analysis,
     ATAC_bam,
@@ -1283,7 +1283,7 @@ def test_audit_analysis_ATAC_ENCODE4_QC_standards(
     assert any(error['category'] == 'duplicate QC metrics' for error in audit_errors.get('ERROR', []))
 
 
-def test_audit_analysis_chia_encode4_qc_standards(
+def test_audit_analysis_chia_pet_encode4(
     testapp,
     base_analysis,
     encode2_award,
