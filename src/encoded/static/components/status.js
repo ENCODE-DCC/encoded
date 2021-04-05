@@ -75,7 +75,17 @@ const defaultObjectStatuses = {
             'deleted',
         ],
     },
-    Analysis: standardStatuses,
+    Analysis: {
+        external: [
+            'released',
+            'archived',
+            'revoked',
+        ],
+        administrator: [
+            'in progress',
+            'deleted',
+        ],
+    },
     AnalysisStepRun: standardStatuses,
     AnalysisStepVersion: standardStatuses,
     AnalysisStep: standardStatuses,

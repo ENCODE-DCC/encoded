@@ -22,7 +22,7 @@ import {
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
-import Status from './status';
+import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
 import { BatchDownloadModal } from './view_controls';
 import { encodedURIComponent } from '../libs/query_encoding';
@@ -2666,7 +2666,7 @@ function createFacetObject(propertyKey, fileList, filters) {
  * Display the analyses selector, a dropdown menu to choose which pipeline lab's files to view in
  * the file association graph.
  */
-const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef }) => {
+const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef }, context) => {
     React.useEffect(() => {
         if (selectedAnalysesIndex === -1 && analyses.length > 0) {
             // No selected pipeline lab analyses, but if we have at least one qualifying one,
@@ -2682,7 +2682,8 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
     */
     React.useEffect(() => {
         const awardSuffixes = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
-        const statuses = ['released', 'in progress', 'archived', 'deleted', 'revoked']; // ordered in decreasing precedence
+        const accessLevel = sessionToAccessLevel(context.session, context.session_properties);
+        const statuses = getObjectStatuses('Analysis', accessLevel); // ordered in decreasing precedence
 
         // Narrow down analysis until we have the default as the first entry
         let analysisGroup = [];
@@ -2729,7 +2730,8 @@ AnalysesSelector.propTypes = {
     selectedAnalysesIndex: PropTypes.number.isRequired,
     /** Called when the user chooses a pipeline lab from the menu */
     handleAnalysesSelection: PropTypes.func.isRequired,
-    analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
+    /** analysis selector DOM object */
+    analysisSelectorRef: PropTypes.object.isRequired,
 };
 
 AnalysesSelector.contextTypes = {
