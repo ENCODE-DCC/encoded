@@ -948,7 +948,7 @@ def get_file_read_depth_from_alignment(alignment_file, target):
         return False
 
     mapped_run_type = alignment_file.get('mapped_run_type', None)
-    if target is not False and \
+    if target and \
             'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
         # exception (mapped reads). Unfiltered bam QC metrics are used for H3K9me3 only
         for metric in quality_metrics:
