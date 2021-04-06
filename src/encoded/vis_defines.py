@@ -28,7 +28,7 @@ IHEC_LIB_STRATEGY = {
     'MeDIP-seq': 'MeDIP-Seq',
     'microRNA-seq': 'miRNA-Seq',
     'microRNA counts': 'miRNA-Seq',
-    'small RNA-seq': 'RNA-seq',
+    'small RNA-seq': 'RNA-Seq',
     'MRE-seq': 'MRE-Seq',
     'polyA plus RNA-seq': 'RNA-Seq',
     'RNA-seq': 'RNA-Seq',
@@ -1151,7 +1151,7 @@ class IhecDefines(object):
         if assay == 'microRNA-seq':
             return 'smRNA-Seq'
         if assay == 'small RNA-seq':
-            return 'RNA-seq'
+            return 'RNA-Seq'
         if assay == 'polyA plus RNA-seq':
             return 'mRNA-Seq'
         if assay == 'RNA-seq':
