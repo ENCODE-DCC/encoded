@@ -2152,6 +2152,8 @@ function_dispatcher_with_files = {
     frame=[
         'files',
         'files.quality_metrics',
+        'files.analysis_step_version',
+        'files.analysis_step_version.software_versions',
         'pipelines',
         'datasets',
         'datasets.award',
