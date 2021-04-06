@@ -54,6 +54,7 @@ const types = {
     gene_silencing_series: { title: 'Gene silencing series' },
     differentiation_series: { title: 'Differentiation series' },
     pulse_chase_time_series: { title: 'Pulse-chase time series' },
+    single_cell_unit: { title: 'Single cell units' },
 };
 
 const datasetTypes = {
@@ -78,6 +79,7 @@ const datasetTypes = {
     GeneSilencingSeries: types.gene_silencing_series.title,
     DifferentiationSeries: types.differentiation_series.title,
     PulseChaseTimeSeries: types.pulse_chase_time_series.title,
+    SingleCellUnit: types.single_cell_unit.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));
