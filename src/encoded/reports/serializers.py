@@ -49,8 +49,12 @@ def maybe_int(value):
         return value
 
 
+def map_string_to_boolean_and_int(value):
+    return BOOLEAN_MAP.get(value, maybe_int(value))
+
+
 def map_strings_to_booleans_and_ints(values):
     return [
-        BOOLEAN_MAP.get(v, maybe_int(v))
+        map_string_to_boolean_and_int(v)
         for v in values
     ]

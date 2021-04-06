@@ -187,7 +187,6 @@ AT_IDS_AS_JSON_DATA_LINK = (
 )
 
 
-
 BOOLEAN_MAP = {
     'true': True,
     'false': False

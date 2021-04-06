@@ -8,6 +8,8 @@ from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
 from encoded.reports.constants import PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.csv import CSVGenerator
 from encoded.reports.decorators import allowed_types
+from encoded.reports.inequalities import map_param_values_to_inequalities
+from encoded.reports.inequalities import try_to_evaluate_inequality
 from encoded.reports.search import BatchedSearchGenerator
 from encoded.reports.serializers import make_experiment_cell
 from encoded.reports.serializers import make_file_cell
@@ -17,6 +19,9 @@ from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from pyramid.view import view_config
+from snovault.elasticsearch.searches.interfaces import EXISTS
+from snovault.elasticsearch.searches.interfaces import MUST
+from snovault.elasticsearch.searches.interfaces import RANGES
 from snovault.elasticsearch.searches.parsers import QueryString
 from snovault.util import simple_path_ids
 
@@ -27,7 +32,7 @@ def includeme(config):
 
 
 def file_matches_file_params(file_, positive_file_param_set):
-    # Expects file_param_set where 'files.' has been
+    # Expects file_param_set where FILES_PREFIX (e.g. 'files.') has been
     # stripped off of key (files.file_type -> file_type)
     # and params with field negation (i.e. file_type!=bigWig)
     # have been filtered out. Param values should be
@@ -40,6 +45,26 @@ def file_matches_file_params(file_, positive_file_param_set):
         if '*' in set_of_param_values:
             continue
         if not set_of_param_values.intersection(file_value):
+            return False
+    return True
+
+
+def some_value_satisfies_inequalities(values, inequalities):
+    return all(
+        any(
+            try_to_evaluate_inequality(inequality, value)
+            for value in values
+        )
+        for inequality in inequalities
+    )
+
+
+def file_satisfies_inequality_constraints(file_, positive_file_inequalities):
+    for field, inequalities in positive_file_inequalities.items():
+        file_value = list(simple_path_ids(file_, field))
+        if not file_value:
+            return False
+        if not some_value_satisfies_inequalities(file_value, inequalities):
             return False
     return True
 
@@ -77,12 +102,15 @@ class MetadataReport:
     ]
     CONTENT_TYPE = 'text/tsv'
     CONTENT_DISPOSITION = 'attachment; filename="metadata.tsv"'
+    FILES_PREFIX = 'files.'
 
     def __init__(self, request):
         self.request = request
         self.query_string = QueryString(request)
         self.param_list = self.query_string.group_values_by_key()
+        self.split_file_filters = {}
         self.positive_file_param_set = {}
+        self.positive_file_inequalities = {}
         self.header = []
         self.experiment_column_to_fields_mapping = OrderedDict()
         self.file_column_to_fields_mapping = OrderedDict()
@@ -102,19 +130,38 @@ class MetadataReport:
         
     def _split_column_and_fields_by_experiment_and_file(self):
         for column, fields in self._get_column_to_fields_mapping().items():
-            if fields[0].startswith('files'):
+            if fields[0].startswith(self.FILES_PREFIX):
                 self.file_column_to_fields_mapping[column] = [
-                    field.replace('files.', '')
+                    field.replace(self.FILES_PREFIX, '')
                     for field in fields
                 ]
             else:
                 self.experiment_column_to_fields_mapping[column] = fields
 
+    def _set_split_file_filters(self):
+        file_params = self.query_string.get_filters_by_condition(
+            key_and_value_condition=lambda k, _: k.startswith(self.FILES_PREFIX)
+        )
+        self.split_file_filters = self.query_string.split_filters(
+            params=file_params
+        )
+
     def _set_positive_file_param_set(self):
+        grouped_positive_file_params = self.query_string.group_values_by_key(
+            params=self.split_file_filters[MUST] + self.split_file_filters[EXISTS]
+        )
         self.positive_file_param_set = {
-            k.replace('files.', ''): set(map_strings_to_booleans_and_ints(v))
-            for k, v in self.param_list.items()
-            if k.startswith('files.') and '!' not in k
+            k.replace(self.FILES_PREFIX, ''): set(map_strings_to_booleans_and_ints(v))
+            for k, v in grouped_positive_file_params.items()
+        }
+
+    def _set_positive_file_inequalities(self):
+        grouped_positive_file_inequalities = self.query_string.group_values_by_key(
+            params=self.split_file_filters[RANGES]
+        )
+        self.positive_file_inequalities = {
+            k.replace(self.FILES_PREFIX, ''): map_param_values_to_inequalities(v)
+            for k, v in grouped_positive_file_inequalities.items()
         }
 
     def _add_positive_file_filters_as_fields_to_param_list(self):
@@ -123,7 +170,7 @@ class MetadataReport:
             (
                 k
                 for k, v in self.query_string._get_original_params()
-                if k.startswith('files.') and '!' not in k
+                if k.startswith(self.FILES_PREFIX) and '!' not in k
             )
         )
 
@@ -198,6 +245,7 @@ class MetadataReport:
     def _should_not_report_file(self, file_):
         conditions = [
             not file_matches_file_params(file_, self.positive_file_param_set),
+            not file_satisfies_inequality_constraints(file_, self.positive_file_inequalities),
             self.visualizable_only and not is_file_visualizable(file_),
             self.raw_only and file_.get('assembly'),
             file_.get('restricted'),
@@ -270,7 +318,9 @@ class MetadataReport:
     def _initialize_report(self):
         self._build_header()
         self._split_column_and_fields_by_experiment_and_file()
+        self._set_split_file_filters()
         self._set_positive_file_param_set()
+        self._set_positive_file_inequalities()
 
     def _build_params(self):
         self._add_fields_to_param_list()
@@ -357,9 +407,9 @@ class PublicationDataMetadataReport(MetadataReport):
 
     def _convert_experiment_params_to_file_params(self):
         return [
-            (k.replace('files.', ''), v)
+            (k.replace(self.FILES_PREFIX, ''), v)
             for k, v in self.query_string._get_original_params()
-            if k.startswith('files.')
+            if k.startswith(self.FILES_PREFIX)
         ]
 
     def _add_experiment_file_filters_as_fields_to_file_params(self):
@@ -383,7 +433,7 @@ class PublicationDataMetadataReport(MetadataReport):
         self.query_string.params = [
             (k, v)
             for k, v in self.query_string.params
-            if not k.startswith('files.')
+            if not k.startswith(self.FILES_PREFIX)
         ]
 
     # Overrides parent.

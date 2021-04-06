@@ -154,6 +154,16 @@ def test_reports_serializers_maybe_int():
     assert maybe_int('3356650') == 3356650
 
 
+def test_map_string_to_boolean_and_int():
+    from encoded.reports.serializers import map_string_to_boolean_and_int
+    assert map_string_to_boolean_and_int('true') == True
+    assert map_string_to_boolean_and_int('false') == False
+    assert map_string_to_boolean_and_int('GRCh38') == 'GRCh38'
+    assert map_string_to_boolean_and_int('97.32') == '97.32'
+    assert map_string_to_boolean_and_int('2') == 2
+    assert map_string_to_boolean_and_int('5000000000') == 5000000000
+
+
 def test_map_strings_to_booleans_and_ints():
     from encoded.reports.serializers import map_strings_to_booleans_and_ints
     assert map_strings_to_booleans_and_ints(['true']) == [True]

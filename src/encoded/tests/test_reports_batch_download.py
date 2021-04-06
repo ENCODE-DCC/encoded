@@ -52,6 +52,17 @@ def test_reports_batch_download_contains_all_values(index_workbook, testapp):
     assert set(actual) == set(expected), f'{set(actual) - set(expected)} not expected'
 
 
+def test_reports_batch_download_contains_all_values_file_size_inequality(index_workbook, testapp):
+    from pkg_resources import resource_filename
+    r = testapp.get('/batch_download/?type=Experiment&files.file_size=lte:99')
+    actual = r.text.strip().split('\n')
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_batch_download_file_size_inequality.tsv')
+    # To write new expected_batch_download.tsv change 'r' to 'w' and f.write(r.text); return;
+    with open(expected_path, 'r') as f:
+        expected = [x.strip() for x in f.readlines()]
+    assert set(actual) == set(expected), f'{set(actual) - set(expected)} not expected'
+
+
 def test_reports_batch_download_contains_all_annotation_values(index_workbook, testapp):
     from pkg_resources import resource_filename
     r = testapp.get('/batch_download/?type=Annotation')
