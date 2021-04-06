@@ -106,7 +106,7 @@ def check_file_read_depth(
     detail = (
         f"Processed {file_to_check['output_type']} file "
         f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-        f"produced by {audit_link(pipeline_title, pipeline['@id'])} "
+        f"processed by {assay_term_name} {pipeline_title} "
         f"{assembly_text}has {read_depth} aligned reads. {second_half_of_detail}"
     )
     if read_depth >= middle_threshold and read_depth < upper_threshold:
@@ -634,7 +634,7 @@ def check_analysis_dnase_seq_standards(
                     assembly_detail_phrase = ''
                 detail = (
                     f"Alignment file {audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])} "
-                    f"produced by {assay_term_name} {value['title']} pipeline"
+                    f"processed by {assay_term_name} {value['title']} pipeline"
                     f"( {audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])} ) "
                     f"{assembly_detail_phrase}has {metric['mapped']} mapped reads. {suffix}"
                 )
@@ -652,7 +652,7 @@ def check_analysis_dnase_seq_standards(
         file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
         detail = (
             f"Alignment files ( {', '.join(file_names_links)} ) "
-            f"produced by {assay_term_name} {value['title']} pipeline "
+            f"processed by {assay_term_name} {value['title']} pipeline "
             f"( {audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])} ) "
             f"lack read depth information."
         )
@@ -683,7 +683,7 @@ def check_analysis_dnase_seq_standards(
                     f"Signal Portion of Tags (SPOT) is a measure of enrichment, "
                     f"analogous to the commonly used fraction of reads in peaks metric. "
                     f"ENCODE processed alignment files {', '.join(file_names_links)} "
-                    f"produced by {assay_term_name} {value['title']} "
+                    f"processed by {assay_term_name} {value['title']} "
                     f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                     f"{assemblies_detail(extract_assemblies(alignments_assemblies, file_names))} "
                     f"have a SPOT1 score of {metric['spot1_score']:.2f}. "
@@ -724,7 +724,7 @@ def check_analysis_dnase_seq_standards(
                     f"Replicate concordance in DNase-seq experiments is measured by "
                     f"calculating the Pearson correlation between signal quantification "
                     f"of the replicates. ENCODE processed signal files {', '.join(file_names_links)} "
-                    f"produced by {assay_term_name} {value['title']} pipeline"
+                    f"processed by {assay_term_name} {value['title']} pipeline"
                     f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                     f"{assemblies_detail(extract_assemblies(signal_assemblies, file_names))} "
                     f"have a Pearson correlation of {metric['Pearson correlation']:.2f}. "
@@ -903,7 +903,7 @@ def check_file_chip_seq_library_complexity(alignment_file, assay_term_name, pipe
             detail = (
                 f"{nrf_detail} ENCODE processed {alignment_file['output_type']} file "
                 f"{audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])} "
-                f"produced by {assay_term_name} {pipeline_title} pipeline "
+                f"processed by {assay_term_name} {pipeline_title} pipeline "
                 f"was generated from a library with NRF value of {NRF_value:.2f}."
             )
             if NRF_value < 0.5:
@@ -917,7 +917,7 @@ def check_file_chip_seq_library_complexity(alignment_file, assay_term_name, pipe
             detail = (
                 f"{pbc1_detail} ENCODE processed {alignment_file['output_type']} file "
                 f"{audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])} "
-                f"produced by {assay_term_name} {pipeline_title} pipeline "
+                f"processed by {assay_term_name} {pipeline_title} pipeline "
                 f"was generated from a library with PBC1 value of {PBC1_value:.2f}."
             )
             if PBC1_value < 0.5:
@@ -935,7 +935,7 @@ def check_file_chip_seq_library_complexity(alignment_file, assay_term_name, pipe
             detail = (
                 f"{pbc2_detail} ENCODE processed {alignment_file['output_type']} file "
                 f"{audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])} "
-                f"produced by {assay_term_name} {pipeline_title} pipeline "
+                f"processed by {assay_term_name} {pipeline_title} pipeline "
                 f"was generated from a library with PBC2 value of {PBC2_value:.2f}."
             )
             if PBC2_value < 1:
@@ -1050,7 +1050,7 @@ def check_file_chip_seq_read_depth(
             detail = (
                 f"Control {file_to_check['output_type']} file "
                 f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-                f"produced by {assay_term_name} {pipeline_title} pipeline "
+                f"processed by {assay_term_name} {pipeline_title} pipeline "
                 f"{assembly_detail_phrase}has {read_depth} usable fragments. "
                 f"The minimum ENCODE standard for a control of ChIP-seq assays targeting broad "
                 f"histone marks is 20 million usable fragments, the recommended number of usable "
@@ -1066,7 +1066,7 @@ def check_file_chip_seq_read_depth(
             detail = (
                 f"Control {file_to_check['output_type']} file "
                 f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-                f"produced by {assay_term_name} {pipeline_title} pipeline "
+                f"processed by {assay_term_name} {pipeline_title} pipeline "
                 f"{assembly_detail_phrase}has {read_depth} usable fragments. "
                 f"The minimum ENCODE standard for a control of ChIP-seq assays targeting broad "
                 f"histone marks is 20 million usable fragments, the recommended number of usable "
@@ -1088,7 +1088,7 @@ def check_file_chip_seq_read_depth(
             detail = (
                 f"Processed {file_to_check['output_type']} file "
                 f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-                f"produced by {assay_term_name} {pipeline_title} pipeline "
+                f"processed by {assay_term_name} {pipeline_title} pipeline "
                 f"has {read_depth} mapped reads. "
                 f"The minimum ENCODE standard for each replicate in a ChIP-seq "
                 f"experiment targeting {target_name} and investigated as "
@@ -1106,7 +1106,7 @@ def check_file_chip_seq_read_depth(
             detail = (
                 f"Processed {file_to_check['output_type']} file "
                 f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-                f"produced by {assay_term_name} {pipeline_title} pipeline "
+                f"processed by {assay_term_name} {pipeline_title} pipeline "
                 f"has {read_depth} usable fragments. "
                 f"The minimum ENCODE standard for each replicate in a ChIP-seq "
                 f"experiment targeting {target_name} and investigated as "
@@ -1125,7 +1125,7 @@ def check_file_chip_seq_read_depth(
         detail = (
             f"Processed {file_to_check['output_type']} file "
             f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-            f"produced by {assay_term_name} {pipeline_title} pipeline "
+            f"processed by {assay_term_name} {pipeline_title} pipeline "
             f"has {read_depth} usable fragments. "
             f"The minimum ENCODE standard for each replicate in a ChIP-seq "
             f"experiment targeting {target_name} and investigated as "
@@ -1145,7 +1145,7 @@ def check_file_chip_seq_read_depth(
         detail = (
             f"Processed {file_to_check['output_type']} file "
             f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-            f"produced by {assay_term_name} {pipeline_title} pipeline "
+            f"processed by {assay_term_name} {pipeline_title} pipeline "
             f"has {read_depth} usable fragments. "
             f"The minimum ENCODE standard for each replicate in a ChIP-seq "
             f"experiment targeting {target_name} and investigated as "
@@ -1186,7 +1186,7 @@ def check_file_modERN_chip_seq_read_depth(
         detail = (
             f"ENCODE processed {file_to_check['output_type']} file "
             f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-            f"produced by {assay_term_name} {pipeline_title} pipeline"
+            f"processed by {assay_term_name} {pipeline_title} pipeline"
             f"has no read depth information."
         )
         yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
@@ -1225,8 +1225,8 @@ RNA-seq and transcription assay audits
 def audit_missing_read_depth(file, assay_term_name, pipeline_title):
     detail = (
         f"Processed {file['output_type']} file "
-        f"{audit_link(path_to_text(file['@id']), file['@id'])} produced by "
-        f"{assay_term_name} {pipeline_title} pipeline"
+        f"{audit_link(path_to_text(file['@id']), file['@id'])} processed by "
+        f"{assay_term_name} {pipeline_title} pipeline "
         f"has no read depth information."
     )
     yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
@@ -1238,8 +1238,8 @@ def audit_missing_star_quality_metric(value, alignment_files, assay_term_name, p
     file_links = [audit_link(path_to_text(file), file) for file in file_ids]
     detail = (
         f"Alignment file(s) {', '.join(file_links)} in "
-        f"{audit_link(path_to_text(value['@id']), value['@id'])} produced by "
-        f"{assay_term_name} {pipeline_title} pipeline"
+        f"{audit_link(path_to_text(value['@id']), value['@id'])} processed by "
+        f"{assay_term_name} {pipeline_title} pipeline "
         f"have no read depth containing quality metric associated with it."
     )
     yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
@@ -1285,7 +1285,7 @@ def check_analysis_bulk_rna_standards(
                         middle_threshold=10000000,
                         lower_threshold=1000000,
                         assay_term_name=assay_term_name,
-                        pipeline_title=pipeline_title,
+                        pipeline_title=value['title'],
                         pipeline=value['pipelines'][0],
                         standards_link=link_to_standards)
                 elif assay_term_name == 'single-cell RNA sequencing assay':
@@ -1296,7 +1296,7 @@ def check_analysis_bulk_rna_standards(
                         middle_threshold=5000000,
                         lower_threshold=500000,
                         assay_term_name=assay_term_name,
-                        pipeline_title=pipeline_title,
+                        pipeline_title=value['title'],
                         pipeline=value['pipelines'][0],
                         standards_link=link_to_standards)
                 else:
@@ -1307,7 +1307,7 @@ def check_analysis_bulk_rna_standards(
                         middle_threshold=20000000,
                         lower_threshold=1000000,
                         assay_term_name=assay_term_name,
-                        pipeline_title=pipeline_title,
+                        pipeline_title=value['title'],
                         pipeline=value['pipelines'][0],
                         standards_link=link_to_standards)
             else:
@@ -2179,6 +2179,7 @@ function_dispatcher_with_files = {
         'files.quality_metrics',
         'files.analysis_step_version',
         'files.analysis_step_version.software_versions',
+        'files.analysis_step_version.software_versions.software',
         'pipelines',
         'datasets',
         'datasets.award',
