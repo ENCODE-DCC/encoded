@@ -1554,7 +1554,7 @@ const addToAccumulatingAnalyses = (analyses, currentResults) => {
 
 
 /**
- * Replace the files' analysis_objects property with the titles of the compiled analyses that refer
+ * Replace the files' analyses property with the titles of the compiled analyses that refer
  * to them. Mutates the files in `files`.
  * @param {array} files Partial file objects to alter
  * @param {array} analyses Compiled analysis objects for all datasets in cart
