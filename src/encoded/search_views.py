@@ -1,8 +1,11 @@
 from pyramid.view import view_config
 
-from .genomic_data_service import GenomicDataService
+from encoded.genomic_data_service import GenomicDataService
 
 from encoded.cart_view import CartWithElements
+from encoded.searches.defaults import DEFAULT_ITEM_TYPES
+from encoded.searches.defaults import RESERVED_KEYS
+from encoded.searches.defaults import TOP_HITS_ITEM_TYPES
 from encoded.searches.fields import CartSearchResponseField
 from encoded.searches.fields import CartSearchWithFacetsResponseField
 from encoded.searches.fields import CartReportWithFacetsResponseField
@@ -71,63 +74,6 @@ def includeme(config):
     config.scan(__name__)
 
 
-DEFAULT_ITEM_TYPES = [
-    'Analysis',
-    'AntibodyLot',
-    'Award',
-    'Biosample',
-    'BiosampleType',
-    'Dataset',
-    'Document',
-    'Donor',
-    'GeneticModification',
-    'Page',
-    'Pipeline',
-    'Publication',
-    'Software',
-    'Gene',
-    'Target',
-    'File',
-    'Lab'
-]
-
-
-TOP_HITS_ITEM_TYPES = [
-    'AntibodyLot',
-    'Award',
-    'Biosample',
-    'BiosampleType',
-    'Annotation',
-    'Experiment',
-    'Document',
-    'HumanDonor',
-    'FlyDonor',
-    'WormDonor',
-    'MouseDonor',
-    'GeneticModification',
-    'Page',
-    'Pipeline',
-    'Publication',
-    'Software',
-    'Gene',
-    'Target',
-    'File',
-    'Lab',
-    'GeneSilencingSeries',
-    'ReferenceEpigenome',
-    'OrganismDevelopmentSeries',
-    'TreatmentTimeSeries',
-    'ReplicationTimingSeries',
-    'MatchedSet',
-    'TreatmentConcentrationSeries',
-    'AggregateSeries',
-    'FunctionalCharacterizationExperiment',
-    'TransgenicEnhancerExperiment',
-    'Reference',
-    'PublicationData',
-]
-
-
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request):
     # Note the order of rendering matters for some fields, e.g. AllResponseField and
@@ -146,7 +92,8 @@ def search(context, request):
             IDResponseField(),
             ContextResponseField(),
             BasicSearchWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
             NotificationResponseField(),
@@ -178,7 +125,8 @@ def series_search(context, request):
             IDResponseField(),
             ContextResponseField(),
             BasicSearchWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
             NotificationResponseField(),
@@ -200,7 +148,8 @@ def searchv2_raw(context, request):
         },
         response_fields=[
             RawSearchWithAggsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             )
         ]
     )
@@ -215,7 +164,8 @@ def searchv2_quick(context, request):
         },
         response_fields=[
             BasicSearchResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             )
         ]
     )
@@ -233,7 +183,8 @@ def search_generator(request):
         },
         response_fields=[
             BasicSearchResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             )
         ]
     )
@@ -253,6 +204,7 @@ def cart_search_generator(request):
             CartSearchResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 cart=CartWithElements(request),
+                reserved_keys=RESERVED_KEYS,
             )
         ]
     )
@@ -274,7 +226,10 @@ def report(context, request):
             ),
             IDResponseField(),
             ContextResponseField(),
-            BasicReportWithFacetsResponseField(),
+            BasicReportWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
+            ),
             AllResponseField(),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -296,7 +251,8 @@ def matrixv2_raw(context, request):
         },
         response_fields=[
             RawMatrixWithAggsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             )
         ]
     )
@@ -320,7 +276,8 @@ def matrix(context, request):
             SearchBaseResponseField(),
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -350,6 +307,7 @@ def sescc_stem_cell_matrix(context, request):
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 matrix_definition_name='sescc_stem_cell_matrix',
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -379,6 +337,7 @@ def chip_seq_matrix(context, request):
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 matrix_definition_name='chip_seq_matrix',
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -407,7 +366,8 @@ def reference_epigenome_matrix(context, request):
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name='reference_epigenome'
+                matrix_definition_name='reference_epigenome',
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -436,7 +396,8 @@ def entex_matrix(context, request):
             ContextResponseField(),
             MissingMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name='entex'
+                matrix_definition_name='entex',
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -465,7 +426,8 @@ def mouse_development(context, request):
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name='mouse_development'
+                matrix_definition_name='mouse_development',
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -494,7 +456,8 @@ def encore_matrix(context, request):
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name='encore_matrix'
+                matrix_definition_name='encore_matrix',
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -523,7 +486,8 @@ def encore_rna_seq_matrix(context, request):
             ContextResponseField(),
             MissingMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name='encore_rna_seq_matrix'
+                matrix_definition_name='encore_rna_seq_matrix',
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -552,7 +516,8 @@ def summary(context, request):
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name=SUMMARY_MATRIX
+                matrix_definition_name=SUMMARY_MATRIX,
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -580,7 +545,8 @@ def audit(context, request):
             SearchBaseResponseField(),
             ContextResponseField(),
             AuditMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             FiltersResponseField(),
@@ -614,6 +580,7 @@ def cart_search(context, request):
             CartSearchWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 cart=CartWithElements(request),
+                reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
             NotificationResponseField(),
@@ -643,7 +610,9 @@ def cart_report(context, request):
             IDResponseField(),
             ContextResponseField(),
             CartReportWithFacetsResponseField(
-                cart=CartWithElements(request)
+                default_item_types=DEFAULT_ITEM_TYPES,
+                cart=CartWithElements(request),
+                reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
             NotificationResponseField(),
@@ -679,6 +648,7 @@ def cart_matrix(context, request):
             CartMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 cart=CartWithElements(request),
+                reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
             CartFiltersResponseField(),
@@ -697,7 +667,8 @@ def top_hits_raw(context, request):
         },
         response_fields=[
             RawTopHitsResponseField(
-                default_item_types=TOP_HITS_ITEM_TYPES
+                default_item_types=TOP_HITS_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             )
         ]
     )
@@ -720,4 +691,3 @@ def top_hits(context, request):
 def rnaget(context, request):
     data_service = GenomicDataService(context.registry, request)
     return data_service.rna_get()
-
