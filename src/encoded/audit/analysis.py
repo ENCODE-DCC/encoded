@@ -1242,7 +1242,7 @@ def check_analysis_bulk_rna_standards(
 ):
     if value['assembly'] not in ['GRCh38', 'mm10']:
         return
-    if len(value['datasets']) != 1 or len(value['pipelines']) != 1:
+    if len(value['datasets']) != 1:
         return
     else:
         assay_term_name = value['datasets'][0]['assay_term_name']
