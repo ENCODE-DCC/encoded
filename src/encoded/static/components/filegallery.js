@@ -316,7 +316,7 @@ export class FileTable extends React.Component {
             // (2) move showReplicateNumber to meta
             FileTable.procTableColumns.biological_replicates.hide = () => !options.showReplicateNumber;
 
-            const analysisObjectKeys = Object.keys(files).filter((file) => file.includes('ENCAN'));
+            const analysisObjectKeys = Object.keys(files).filter((file) => file.includes('ENCAN') || file.includes('TSTAN'));
             const otherKeys = Object.keys(files).filter((file) => file === nonAnalysisObjectPrefix); // all files not parts of an analysis object
             const compileAnalysis = compileAnalyses(context, datasetFiles, 'processed data');
 
