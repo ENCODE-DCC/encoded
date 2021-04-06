@@ -28,7 +28,7 @@ IHEC_LIB_STRATEGY = {
     'MeDIP-seq': 'MeDIP-Seq',
     'microRNA-seq': 'miRNA-Seq',
     'microRNA counts': 'miRNA-Seq',
-    'small RNA-seq': 'smRNA-seq',
+    'small RNA-seq': 'RNA-seq',
     'MRE-seq': 'MRE-Seq',
     'polyA plus RNA-seq': 'RNA-Seq',
     'RNA-seq': 'RNA-Seq',
@@ -1148,8 +1148,10 @@ class IhecDefines(object):
         if 'assay_term_name' not in dataset:
             return None
         assay = dataset['assay_term_name']
-        if assay in ('microRNA-seq', 'small RNA-seq'):
+        if assay == 'microRNA-seq':
             return 'smRNA-Seq'
+        if assay == 'small RNA-seq':
+            return 'RNA-seq'
         if assay == 'polyA plus RNA-seq':
             return 'mRNA-Seq'
         if assay == 'RNA-seq':
@@ -1243,13 +1245,6 @@ class IhecDefines(object):
         if sample_id in self.samples:
             return self.samples[sample_id]
 
-        '''
-        molecule = self.molecule(dataset) #note in schema anymore
-        if molecule is None:
-            return {}
-        #sample['molecule'] = molecule
-        '''
-
         term_id = biosample.get('biosample_ontology', {}).get('term_id')
         if term_id:
             sample["sample_ontology_uri"] = [term_id]
@@ -1266,18 +1261,13 @@ class IhecDefines(object):
             sample["disease_ontology_uri"] = ["https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"]
         sample["sex"] = [biosample.get('sex','unknown').capitalize()]
 
-        passage = biosample.get('passage_number', None)
-
         if "Cell Line" in sample["biomaterial_type"]:
             sample["differentiation_method"] = ["NA"]
             sample["batch"] = ["NA"]
             sample["medium"] = ["unknown"] # We don't have this information
             sample['lineage'] = [self.lineage(biosample, 'unknown')]
             sample['differentiation_stage'] = [self.differentiation(biosample, 'unknown')]
-            if passage is not None:
-                sample['passage'] = [passage]
-            else:
-                sample['passage'] = ["NA"]
+            sample['passage'] = [biosample.get('passage_number', 'NA')]
 
         if "Primary Tissue" in sample["biomaterial_type"] or "Primary Cell Culture" in sample["biomaterial_type"]:
             sample["donor_sex"] = sample["sex"]
@@ -1306,10 +1296,7 @@ class IhecDefines(object):
                 sample["cell_type"] = sample["line"]
                 sample["culture_conditions"] = ["unknown"] # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
                 sample["markers"] = ["unknown"] # not collected by us
-                if passage is not None:
-                    sample['passage_if_expanded'] = [passage]
-                else:
-                    sample['passage_if_expanded'] = ["NA"]
+                sample["passage_if_expanded"] = [biosample.get('passage_number', 'NA')]
                 sample["origin_sample"] = ["unknown"]
                 sample["origin_sample_ontology_curie"] = sample["sample_ontology_uri"]
         self.samples[sample_id] = sample
