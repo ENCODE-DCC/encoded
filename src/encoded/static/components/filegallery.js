@@ -153,6 +153,29 @@ export const compileAnalyses = (experiment, files, dataFormat = null) => {
     return _(compiledAnalyses).sortBy((compiledAnalysis) => -compiledAnalysis.assemblyAnnotationValue);
 };
 
+
+/**
+ * Filter to files that, based on their status and that of the experiment itself, get included in
+ * batch download. Must be kept in sync with criteria used in the `files` calculated property in
+ * dataset.py.
+ * @param {object} context Dataset context object
+ * @param {array} files Files to filter
+ * @return {array} `files` but only including downloadable files.
+ */
+const filterDownloadableFilesByStatus = (context, files) => {
+    if (files) {
+        let filteredFiles = files.filter((file) => !file.restricted && !file.no_file_available);
+        if (context.status === 'released') {
+            filteredFiles = filteredFiles.filter((file) => ['released', 'archived'].includes(file.status));
+        } else {
+            filteredFiles = filteredFiles.filter((file) => !['revoked', 'deleted', 'replaced'].includes(file.status));
+        }
+        return filteredFiles;
+    }
+    return [];
+};
+
+
 /**
  * True if there is at least one file that can be downloaded. False others
  *
@@ -385,6 +408,7 @@ export class FileTable extends React.Component {
                                             && key !== nonAnalysisObjectPrefix
                                             && context.analysis_objects
                                             && ['released', 'archived'].includes(context.analysis_objects.find((a) => a.accession === key).status)
+                                            && filterDownloadableFilesByStatus(context, files[key]).length > 0
                                         }
                                         inclusionOn={options.inclusionOn}
                                         files={files[key]}
@@ -419,7 +443,7 @@ export class FileTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files && files.ref ? files.ref.length : 0}
                                     inclusionOn={options.inclusionOn}
-                                    isDownloadable={!options.hideDownload}
+                                    isDownloadable={!options.hideDownload && filterDownloadableFilesByStatus(context, files.ref).length > 0}
                                     files={files.ref}
                                 />
                             }
@@ -678,6 +702,7 @@ const sortBioReps = (a, b) => {
     return result;
 };
 
+
 class RawSequencingTable extends React.Component {
     constructor() {
         super();
@@ -851,7 +876,7 @@ class RawSequencingTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
-                                    isDownloadable={isDownloadable}
+                                    isDownloadable={isDownloadable && filterDownloadableFilesByStatus(context, files).length > 0}
                                     files={files}
                                 />
                             </th>
@@ -1068,7 +1093,7 @@ class RawFileTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
-                                    isDownloadable={isDownloadable}
+                                    isDownloadable={isDownloadable && filterDownloadableFilesByStatus(context, files).length > 0}
                                     files={files}
                                 />
                             </th>

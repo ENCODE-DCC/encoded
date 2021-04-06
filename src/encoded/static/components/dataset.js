@@ -752,7 +752,7 @@ const ReferenceComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} hideGraph hideControls collapseNone />
+            <FileGallery context={context} hideGraph collapseNone />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -934,7 +934,7 @@ const ProjectComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} hideGraph hideControls collapseNone />
+            <FileGallery context={context} hideGraph collapseNone />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -1100,7 +1100,7 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} hideGraph hideControls collapseNone />
+            <FileGallery context={context} hideGraph collapseNone />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 

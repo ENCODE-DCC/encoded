@@ -5,6 +5,9 @@ METADATA_ALLOWED_TYPES = [
     'Experiment',
     'Annotation',
     'FunctionalCharacterizationExperiment',
+    'Reference',
+    'Project',
+    'UcscBrowserComposite',
     'PublicationData',
     'Analysis',
 ]
