@@ -776,7 +776,7 @@ def check_analysis_chip_seq_standards(
 
     # Check read depth
     # For ChIP-seq targeting H3K9me3 only, read depth should be checked in unfiltered alignments.
-    if target and target['name'] in ['/targets/H3K9me3-human/', '/targets/H3K9me3-mouse']:
+    if target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
         files_to_check_for_read_depth = unfiltered_alignment_files
     else:
         files_to_check_for_read_depth = alignment_files
