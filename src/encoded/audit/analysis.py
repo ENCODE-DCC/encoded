@@ -298,6 +298,7 @@ def create_files_mapping(files, excluded_files):
     }
     for file_object in files:
         if file_object['status'] not in excluded_files and \
+                'analysis_step_version' in file_object and \
                 'file_format' in file_object and \
                 'output_type' in file_object:
             file_format = file_object.get('file_format')
@@ -603,6 +604,7 @@ def check_analysis_dnase_seq_standards(
 
     if value['assembly'] == 'hg19':
         return
+    assay_term_name = value['datasets'][0]['assay_term_name']
     pipeline_titles = [pipeline['title'] for pipeline in value['pipelines']]
     if any(
         title not in expected_pipeline_titles
@@ -632,7 +634,7 @@ def check_analysis_dnase_seq_standards(
                     assembly_detail_phrase = ''
                 detail = (
                     f"Alignment file {audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])} "
-                    f"produced by {pipeline_titles[0]} "
+                    f"produced by {assay_term_name} {value['title']} pipeline"
                     f"( {audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])} ) "
                     f"{assembly_detail_phrase}has {metric['mapped']} mapped reads. {suffix}"
                 )
@@ -650,7 +652,7 @@ def check_analysis_dnase_seq_standards(
         file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
         detail = (
             f"Alignment files ( {', '.join(file_names_links)} ) "
-            f"produced by {pipeline_titles[0]} "
+            f"produced by {assay_term_name} {value['title']} pipeline "
             f"( {audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])} ) "
             f"lack read depth information."
         )
@@ -681,7 +683,7 @@ def check_analysis_dnase_seq_standards(
                     f"Signal Portion of Tags (SPOT) is a measure of enrichment, "
                     f"analogous to the commonly used fraction of reads in peaks metric. "
                     f"ENCODE processed alignment files {', '.join(file_names_links)} "
-                    f"produced by {value['pipelines'][0]['title']} "
+                    f"produced by {assay_term_name} {value['title']} "
                     f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                     f"{assemblies_detail(extract_assemblies(alignments_assemblies, file_names))} "
                     f"have a SPOT1 score of {metric['spot1_score']:.2f}. "
@@ -721,8 +723,8 @@ def check_analysis_dnase_seq_standards(
                 detail = (
                     f"Replicate concordance in DNase-seq experiments is measured by "
                     f"calculating the Pearson correlation between signal quantification "
-                    f"of the replicates. "
-                    f"ENCODE processed signal files {', '.join(file_names_links)} produced by {value['pipelines'][0]['title']} "
+                    f"of the replicates. ENCODE processed signal files {', '.join(file_names_links)} "
+                    f"produced by {assay_term_name} {value['title']} pipeline"
                     f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                     f"{assemblies_detail(extract_assemblies(signal_assemblies, file_names))} "
                     f"have a Pearson correlation of {metric['Pearson correlation']:.2f}. "
@@ -794,7 +796,7 @@ def check_analysis_chip_seq_standards(
 
     # Check library_complexity
     for f in alignment_files:
-        yield from check_file_chip_seq_library_complexity(f)
+        yield from check_file_chip_seq_library_complexity(f, assay_term_name, value['title'])
 
     # Check IDR
     replicated = value['datasets'][0]['replication_type'] if 'replication_type' in value['datasets'][0] else None
@@ -818,6 +820,7 @@ def check_analysis_modERN_chip_seq_standards(
     if len(value['datasets']) != 1 or len(value['pipelines']) != 1:
         return
     else:
+        assay_term_name = value['datasets'][0]['assay_term_name']
         target = get_target(value['datasets'][0])
         control_type = get_control_type(value['datasets'][0])
 
@@ -830,12 +833,13 @@ def check_analysis_modERN_chip_seq_standards(
 
     for f in alignment_files:
 
-        yield from check_file_chip_seq_library_complexity(f)
+        yield from check_file_chip_seq_library_complexity(f, assay_term_name, value['title'])
 
         read_depth = get_file_read_depth_from_alignment(f, target)
         yield from check_file_modERN_chip_seq_read_depth(
             file_to_check=f,
-            pipeline_title=pipeline_title,
+            assay_term_name=assay_term_name,
+            pipeline_title=value['title'],
             control_type=control_type,
             target=target,
             read_depth=read_depth,
@@ -857,7 +861,7 @@ def check_analysis_modERN_chip_seq_standards(
     return
 
 
-def check_file_chip_seq_library_complexity(alignment_file):
+def check_file_chip_seq_library_complexity(alignment_file, assay_term_name, pipeline_title):
     '''
     An alignment file from the ENCODE ChIP-seq processing pipeline
     should have minimal library complexity in accordance with the criteria
@@ -899,8 +903,8 @@ def check_file_chip_seq_library_complexity(alignment_file):
             detail = (
                 f"{nrf_detail} ENCODE processed {alignment_file['output_type']} file "
                 f"{audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])} "
-                f"was generated from a library with "
-                f"NRF value of {NRF_value:.2f}."
+                f"produced by {assay_term_name} {pipeline_title} pipeline "
+                f"was generated from a library with NRF value of {NRF_value:.2f}."
             )
             if NRF_value < 0.5:
                 yield AuditFailure('poor library complexity', detail,
@@ -913,6 +917,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
             detail = (
                 f"{pbc1_detail} ENCODE processed {alignment_file['output_type']} file "
                 f"{audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])} "
+                f"produced by {assay_term_name} {pipeline_title} pipeline "
                 f"was generated from a library with PBC1 value of {PBC1_value:.2f}."
             )
             if PBC1_value < 0.5:
@@ -930,6 +935,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
             detail = (
                 f"{pbc2_detail} ENCODE processed {alignment_file['output_type']} file "
                 f"{audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])} "
+                f"produced by {assay_term_name} {pipeline_title} pipeline "
                 f"was generated from a library with PBC2 value of {PBC2_value:.2f}."
             )
             if PBC2_value < 1:
@@ -1044,6 +1050,7 @@ def check_file_chip_seq_read_depth(
             detail = (
                 f"Control {file_to_check['output_type']} file "
                 f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
+                f"produced by {assay_term_name} {pipeline_title} pipeline "
                 f"{assembly_detail_phrase}has {read_depth} usable fragments. "
                 f"The minimum ENCODE standard for a control of ChIP-seq assays targeting broad "
                 f"histone marks is 20 million usable fragments, the recommended number of usable "
@@ -1059,6 +1066,7 @@ def check_file_chip_seq_read_depth(
             detail = (
                 f"Control {file_to_check['output_type']} file "
                 f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
+                f"produced by {assay_term_name} {pipeline_title} pipeline "
                 f"{assembly_detail_phrase}has {read_depth} usable fragments. "
                 f"The minimum ENCODE standard for a control of ChIP-seq assays targeting broad "
                 f"histone marks is 20 million usable fragments, the recommended number of usable "
@@ -1158,6 +1166,7 @@ def check_file_chip_seq_read_depth(
 
 def check_file_modERN_chip_seq_read_depth(
     file_to_check,
+    assay_term_name,
     pipeline_title,
     control_type,
     target,
@@ -1177,6 +1186,7 @@ def check_file_modERN_chip_seq_read_depth(
         detail = (
             f"ENCODE processed {file_to_check['output_type']} file "
             f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
+            f"produced by {assay_term_name} {pipeline_title} pipeline"
             f"has no read depth information."
         )
         yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
@@ -1212,23 +1222,24 @@ RNA-seq and transcription assay audits
 '''
 
 
-def audit_missing_read_depth(file):
+def audit_missing_read_depth(file, assay_term_name, pipeline_title):
     detail = (
         f"Processed {file['output_type']} file "
-        f"{audit_link(path_to_text(file['@id']), file['@id'])} "
+        f"{audit_link(path_to_text(file['@id']), file['@id'])} produced by "
+        f"{assay_term_name} {pipeline_title} pipeline"
         f"has no read depth information."
     )
     yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
     return
 
 
-def audit_missing_star_quality_metric(value, alignment_files, pipeline):
+def audit_missing_star_quality_metric(value, alignment_files, assay_term_name, pipeline_title):
     file_ids = [f['@id'] for f in alignment_files]
     file_links = [audit_link(path_to_text(file), file) for file in file_ids]
     detail = (
         f"Alignment file(s) {', '.join(file_links)} in "
-        f"{audit_link(path_to_text(value['@id']), value['@id'])} processed by "
-        f"{audit_link(path_to_text(value['pipelines'][0]['title']), value['pipelines'][0]['@id'])} "
+        f"{audit_link(path_to_text(value['@id']), value['@id'])} produced by "
+        f"{assay_term_name} {pipeline_title} pipeline"
         f"have no read depth containing quality metric associated with it."
     )
     yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
@@ -1300,10 +1311,10 @@ def check_analysis_bulk_rna_standards(
                         pipeline=value['pipelines'][0],
                         standards_link=link_to_standards)
             else:
-                yield from audit_missing_read_depth(alignment_file)
+                yield from audit_missing_read_depth(alignment_file, assay_term_name, value['title'])
     elif alignment_files is not None and len(alignment_files) > 0 and \
             (star_quality_metrics is None or len(star_quality_metrics) == 0):
-        yield from audit_missing_star_quality_metric(value, alignment_files, value['pipelines'][0])
+        yield from audit_missing_star_quality_metric(value, alignment_files, assay_term_name, value['title'])
 
     replicated = value['datasets'][0]['replication_type'] if 'replication_type' in value['datasets'][0] else None
     if assay_term_name != 'single-cell RNA sequencing assay':
@@ -1558,6 +1569,7 @@ def check_analysis_wgbs_encode3_standards(
     if len(value['datasets']) != 1:
         return
 
+    assay_term_name = value['datasets'][0]['assay_term_name']
     pipeline_titles = [pipeline['title'] for pipeline in value['pipelines']]
     if any(
         title not in expected_pipeline_titles
@@ -1590,12 +1602,12 @@ def check_analysis_wgbs_encode3_standards(
             elif value['assembly'] == 'GRCh38':
                 coverage = float(m['mapped'] * min(read_lengths)) / 3300000000.0
             detail = (
-                f"Replicate of experiment processed by {pipeline_title} "
+                f"Replicate of experiment processed by {assay_term_name} {value['title']} "
                 f"( {audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])} ) "
                 f"has a coverage of {coverage:.2f}X. The minimum ENCODE "
                 f"standard coverage for each replicate in a WGBS assay "
                 f"is 25X and the recommended value is > 30X "
-                f"(See { audit_link('ENCODE WGBS data standards', link_to_standards)})"
+                f"(See {audit_link('ENCODE WGBS data standards', link_to_standards)})"
             )
             if coverage < 5:
                 yield AuditFailure('extremely low coverage', detail, level='ERROR')
@@ -1621,7 +1633,7 @@ def check_analysis_wgbs_encode3_standards(
             if (lambdaCpG > 1 and lambdaCHG > 1 and lambdaCHH > 1) or \
                     (((lambdaCpG * 0.25) + (lambdaCHG * 0.25) + (lambdaCHH * 0.5)) > 1):
                 detail = (
-                    f"ENCODE experiment processed by {pipeline_title} "
+                    f"ENCODE experiment processed by {assay_term_name} {value['title']} "
                     f"pipeline has the following %C methylated in different contexts. "
                     f"lambda C methylated in CpG context was {lambdaCpG}%, "
                     f"lambda C methylated in CHG context was {lambdaCHG}%, "
@@ -1644,6 +1656,7 @@ def check_analysis_wgbs_encode4_standards(
     if len(value['datasets']) != 1 or len(value['pipelines']) != 1:
         return
     else:
+        assay_term_name = value['datasets'][0]['assay_term_name']
         experiment_award = value['datasets'][0]['award']['rfa']
 
     pipeline_title = value['pipelines'][0]['title']
@@ -1661,7 +1674,7 @@ def check_analysis_wgbs_encode4_standards(
         if 'average_coverage' in m:
             coverage = m['average_coverage']
             detail = (
-                f"Replicate of experiment processed by {pipeline_title} "
+                f"Replicate of experiment processed by {assay_term_name} {value['title']} "
                 f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                 f"has a coverage of {coverage:.2f}X. The minimum ENCODE standard coverage for each "
                 f"replicate in a WGBS assay is 25X and the recommended value is "
@@ -1679,7 +1692,7 @@ def check_analysis_wgbs_encode4_standards(
         value['datasets'][0]['replication_type']
         if 'replication_type' in value['datasets'][0] else None)
     if replicated and replicated != 'unreplicated':
-        yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
+        yield from check_wgbs_pearson(cpg_metrics, 0.8, value['title'])
 
     # Check lambda C methylation ratio
     for metric in gembs_metrics:
@@ -1687,9 +1700,9 @@ def check_analysis_wgbs_encode4_standards(
             conversion_rate = metric.get('conversion_rate')
             if conversion_rate < 0.98:
                 detail = (
-                    f'ENCODE experiment processed by {pipeline_title} '
-                    f'pipeline has a lambda rate of {conversion_rate}. '
-                    f'The lambda conversion rate should be > 99%.'
+                    f"ENCODE experiment processed by {assay_term_name} {value['title']} "
+                    f"pipeline has a lambda rate of {conversion_rate}. "
+                    f"The lambda conversion rate should be > 99%."
                 )
                 yield AuditFailure('low lambda C conversion rate', detail, level='WARNING')
         else:
@@ -1697,19 +1710,19 @@ def check_analysis_wgbs_encode4_standards(
             if experiment_award == 'Roadmap':
                 severity = 'WARNING'
             detail = (
-                f'Missing lambda conversion rate for ENCODE experiment '
-                f'processed by {pipeline_title} pipeline.'
+                f"Missing lambda conversion rate for ENCODE experiment "
+                f"processed by {assay_term_name} {value['title']} pipeline."
             )
             yield AuditFailure('missing lambda C conversion rate', detail, level=severity)
     return
 
 
-def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
+def check_wgbs_pearson(cpg_metrics, threshold, assay_term_name, pipeline_title):
     for m in cpg_metrics:
         if 'Pearson correlation' in m:
             if m['Pearson correlation'] < threshold:
                 detail = (
-                    f"ENCODE experiment processed by {pipeline_title} "
+                    f"ENCODE experiment processed by {assay_term_name} {pipeline_title} "
                     f"pipeline has CpG quantification Pearson Correlation Coefficient of "
                     f"{m['Pearson correlation']}, while a value >={threshold} is required."
                 )
@@ -1734,6 +1747,7 @@ def check_analysis_atac_encode4_qc_standards(
     if value['assembly'] not in ['GRCh38', 'mm10']:
         return
     else:
+        assay_term_name = value['datasets'][0]['assay_term_name']
         assembly = value['assembly']
     if len(value['datasets']) != 1:
         return
@@ -1778,7 +1792,8 @@ def check_analysis_atac_encode4_qc_standards(
                 pct_mapped = str(metric['pct_mapped_reads'])
                 detail = (
                     f"Alignment file "
-                    f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} has "
+                    f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} pipeline has "
                     f"{pct_mapped}% mapped reads. According to ENCODE4 standards, ATAC-seq assays "
                     f"processed by the uniform processing pipeline require a minimum of 80% reads "
                     f"mapped. The recommended value is over 95%, but 80-95% is acceptable."
@@ -1804,9 +1819,10 @@ def check_analysis_atac_encode4_qc_standards(
 
                 detail = (
                     f"Alignment file {audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
-                    f"has {mappedReads} usable fragments. According to ENCODE4 standards, ATAC-seq "
-                    f"assays processed by the uniform processing pipeline should have > 25 million "
-                    f"usable fragments. 20-25 million is acceptable and < 15 million is not compliant."
+                    f"processed by {assay_term_name} {value['title']} pipeline has {mappedReads} "
+                    f"usable fragments. According to ENCODE4 standards, ATAC-seq assays processed by "
+                    f"the uniform processing pipeline should have > 25 million usable fragments. "
+                    f"20-25 million is acceptable and < 15 million is not compliant."
                 )
 
                 marks = pipelines_with_read_depth['ATAC-seq (unreplicated)']
@@ -1821,7 +1837,8 @@ def check_analysis_atac_encode4_qc_standards(
                 if not metric['nfr_peak_exists']:
                     detail = (
                         f"Alignment file {audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
-                        f"indicates that there are no peaks in nucleosome-free regions (NFR); ENCODE4 standards "
+                        f"processed by {assay_term_name} {value['title']} pipeline indicates that "
+                        f"there are no peaks in nucleosome-free regions (NFR); ENCODE4 standards "
                         f"require that ATAC-seq experiments have some overlap between NFR and peaks."
                     )
                     yield AuditFailure('no peaks in nucleosome-free regions', detail, level='NOT_COMPLIANT')
@@ -1839,8 +1856,9 @@ def check_analysis_atac_encode4_qc_standards(
                     mouse_detail = (
                         f"Transcription Start Site (TSS) enrichment values for alignments "
                         f"to the mouse genome mm10 are concerning when < 10, acceptable "
-                        f"between 10 and 15, and ideal when > 15. ENCODE processed "
-                        f"file {audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                        f"between 10 and 15, and ideal when > 15. ENCODE processed file "
+                        f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                        f"processed by {assay_term_name} {value['title']} pipeline "
                         f"has a TSS enrichment value of {tss}."
                     )
                     if tss < 10:
@@ -1852,8 +1870,9 @@ def check_analysis_atac_encode4_qc_standards(
                     human_detail = (
                         f"Transcription Start Site (TSS) enrichment values for alignments "
                         f"to the human genome GRCh38 are concerning when < 5, acceptable "
-                        f"between 5 and 7, and ideal when > 7. ENCODE processed "
-                        f"file {audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                        f"between 5 and 7, and ideal when > 7. ENCODE processed file "
+                        f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                        f"processed by {assay_term_name} {value['title']} pipeline "
                         f"has a TSS enrichment value of {tss}."
                         )
                     if tss < 5:
@@ -1878,6 +1897,7 @@ def check_analysis_atac_encode4_qc_standards(
                     f"and >= 0.9 high complexity. NRF value > 0.9 is recommended, "
                     f"but > 0.7 is acceptable. ENCODE processed file "
                     f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} pipeline "
                     f"was generated from a library with NRF value of {NRF_value}."
                     )
                 if NRF_value < 0.7:
@@ -1897,6 +1917,7 @@ def check_analysis_atac_encode4_qc_standards(
                     f"bottlenecking, and > 0.9 is no bottlenecking. PBC1 value > "
                     f"0.9 is recommended, but > 0.7 is acceptable. ENCODE processed file "
                     f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} pipeline "
                     f"was generated from a library with a PBC1 value of {PBC1:.2f}."
                     )
                 if PBC1 < 0.7:
@@ -1919,6 +1940,7 @@ def check_analysis_atac_encode4_qc_standards(
                     f"bottlenecking, > 10 is no bottlenecking. PBC2 value > 10 is "
                     f"recommended, but > 3 is acceptable. ENCODE processed file "
                     f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} pipeline "
                     f"was generated from a library with a PBC2 value of {PBC2:.2f}."
                     )
                 if PBC2 < 1:
@@ -1938,6 +1960,7 @@ def check_analysis_atac_encode4_qc_standards(
                     f"called peak regions) scores > 0.3. FRiP scores 0.2-0.3 are acceptable, "
                     f"and < 0.2 are not compliant. "
                     f"{audit_link(path_to_text(overlap_peaks_file['@id']),overlap_peaks_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} pipeline "
                     f" has a FRiP score of {frip:.2f}.")
                 if frip < 0.2:
                     yield AuditFailure('low FRiP score', detail, level='NOT_COMPLIANT')
@@ -1993,8 +2016,9 @@ def check_analysis_atac_encode4_qc_standards(
                                 f"ATAC-seq assays processed by the uniform processing pipeline "
                                 f"should have a rescue ratio and self-consistency ratio < 2. "
                                 f"Having only one of these ratios < 2 is acceptable. "
-                                f"{audit_link(path_to_text(f['@id']),f['@id'])} "
-                                f" has a rescue ratio of {rescue:.2f} and self-consistency ratio "
+                                f"{audit_link(path_to_text(f['@id']),f['@id'])} processed by "
+                                f"{assay_term_name} {value['title']} pipeline "
+                                f"has a rescue ratio of {rescue:.2f} and self-consistency ratio "
                                 f"of {self_consistency:.2f}."
                                 )
                             if rescue >= 2 and self_consistency >= 2:
@@ -2015,11 +2039,11 @@ def check_analysis_atac_encode4_qc_standards(
         audit_peaks = ' and '.join(m[0] for m in detail_items)
         file_links = ' and '.join((audit_link(path_to_text(m[1]), m[1])) + m[2] for m in detail_items)
         detail = (
-            f'According to ENCODE4 standards, ATAC-seq assays processed by the uniform processing '
-            f'pipeline should have either >150k reproducible peaks in an overlap peaks file, or '
-            f'>70k in an IDR thresholded peaks file. 100-150k or 50-70k peaks respectively is '
-            f'acceptable, and <100k or <50k respectively is not compliant. '
-            f'File(s) {file_links} have {audit_peaks} peaks.')
+            f"According to ENCODE4 standards, ATAC-seq assays processed by the uniform processing "
+            f"pipeline should have either >150k reproducible peaks in an overlap peaks file, or "
+            f">70k in an IDR thresholded peaks file. 100-150k or 50-70k peaks respectively is "
+            f"acceptable, and <100k or <50k respectively is not compliant. File(s) {file_links} "
+            f"processed by {assay_term_name} {value['title']} pipeline have {audit_peaks} peaks.")
         if 'pass' in peaks_report.values():
             return
         elif 'warning' in peaks_report.values():
@@ -2044,6 +2068,7 @@ def check_analysis_chiapet_encode4_qc_standards(
     if len(value['datasets']) != 1 or len(value['pipelines']) != 1:
         return
 
+    assay_term_name = value['datasets'][0]['assay_term_name']
     pipeline_titles = [pipeline['title'] for pipeline in value['pipelines']]
     if any(
         title not in expected_pipeline_titles
@@ -2165,9 +2190,9 @@ def audit_analysis(value, system):
     dataset_awards = [x['award']['rfa'] for x in value['datasets']]
     if any(award in ['community', 'GGR', 'modENCODE'] for award in dataset_awards):
         return
-    excluded_files = ['revoked']
+    excluded_files = ['revoked', 'deleted']
     if value['status'] == 'revoked':
-        excluded_files = []
+        excluded_files = ['deleted']
     files_structure = create_files_mapping(
         value['files'], excluded_files)
 
