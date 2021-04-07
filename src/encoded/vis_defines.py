@@ -1267,7 +1267,7 @@ class IhecDefines(object):
             sample["medium"] = ["unknown"] # We don't have this information
             sample['lineage'] = [self.lineage(biosample, 'unknown')]
             sample['differentiation_stage'] = [self.differentiation(biosample, 'unknown')]
-            sample['passage'] = [biosample.get('passage_number', 'NA')]
+            sample['passage'] = [str(biosample.get('passage_number', 'NA'))]
 
         if "Primary Tissue" in sample["biomaterial_type"] or "Primary Cell Culture" in sample["biomaterial_type"]:
             sample["donor_sex"] = sample["sex"]
@@ -1283,9 +1283,13 @@ class IhecDefines(object):
                 sample["donor_age_unit"] = [donor.get('age_units','year')]  # unknown is not supported
                 sample["donor_life_stage"] = [donor.get('life_stage','unknown')]
                 sample["donor_health_status"] = sample["disease"]
-                sample["donor_health_status_uri"] = sample["disease_ontology_uri"]
+                sample["donor_health_status_ontology_uri"] = sample["disease_ontology_uri"]
                 if donor.get('organism',{}).get('name','unknown') == 'human':
-                    sample["donor_ethnicity"] = [donor.get('ethnicity','unknown')]
+                    ethnicity = donor.get('ethnicity')
+                    if ethnicity is not None:
+                        sample["donor_ethnicity"] = ethnicity
+                    else:
+                        sample["donor_ethnicity"] = ['unknown']
                 else:
                     sample["donor_ethnicity"] = ['NA']
             if "Primary Tissue" in sample["biomaterial_type"]:
@@ -1296,9 +1300,9 @@ class IhecDefines(object):
                 sample["cell_type"] = sample["line"]
                 sample["culture_conditions"] = ["unknown"] # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
                 sample["markers"] = ["unknown"] # not collected by us
-                sample["passage_if_expanded"] = [biosample.get('passage_number', 'NA')]
+                sample["passage_if_expanded"] = [str(biosample.get('passage_number', 'NA'))]
                 sample["origin_sample"] = ["unknown"]
-                sample["origin_sample_ontology_curie"] = sample["sample_ontology_uri"]
+                sample["origin_sample_ontology_uri"] = sample["sample_ontology_uri"]
         self.samples[sample_id] = sample
         return sample
 
