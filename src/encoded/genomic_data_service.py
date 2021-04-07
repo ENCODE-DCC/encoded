@@ -2,7 +2,8 @@ import requests
 
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
 RNA_GET_FACETS = ['assayType', 'annotation', 'biosample_term_name', 'biosample_classification', 'biosample_sex', 'biosample_organ',  'biosample_system']
-RNA_GET_ENDPOINT = '/expressions/bytes'
+RNA_GET_EXPRESSIONS = '/expressions/bytes'
+RNA_GET_AUTOCOMPLETE = '/autocomplete'
 
 # react component orders columns by "the position" in the hash map
 RNA_GET_COLUMNS = {
@@ -40,6 +41,7 @@ class GenomicDataService():
         self.sort    = params.get('sort')
         self.columns = RNA_GET_COLUMNS.copy()
         self.columns.pop('tpm' if self.units == 'fpkm' else 'fpkm')
+        self.autocomplete_query = params.get('q', '')
 
         if self.sort:
             desc = self.sort[0] == '-'
@@ -92,8 +94,8 @@ class GenomicDataService():
         return '&'.join(params)
 
 
-    def rna_get_request(self, format_='json'):
-        url = f'{self.path}{RNA_GET_ENDPOINT}?{self.rna_get_request_query_string(format_)}'
+    def rna_get_request(self, endpoint=RNA_GET_EXPRESSIONS, format_='json'):
+        url = f'{self.path}{endpoint}?{self.rna_get_request_query_string(format_)}'
 
         results = requests.get(url, timeout=3).json()
 
@@ -115,6 +117,28 @@ class GenomicDataService():
         if self.total == 0:
             for facet in self.facets:
                 facet['total'] += 1
+
+
+    def rna_get_autocomplete(self):
+        suggestions = []
+
+        if self.autocomplete_query:
+            try:
+                url = f'{self.path}{RNA_GET_AUTOCOMPLETE}?gene={self.autocomplete_query}'
+
+                results = requests.get(url, timeout=3).json()
+
+                if 'genes' in results:
+                    suggestions = [{'text': result} for result in results['genes']]
+            except:
+                pass
+
+        return {
+            '@graph': suggestions,
+            '@type': ['suggest'],
+            '@id': f'/rnaget_autocomplete?q={self.autocomplete_query}',
+            'title': 'Suggest'
+        }
 
 
     def rna_get(self):

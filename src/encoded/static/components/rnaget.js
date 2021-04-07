@@ -9,6 +9,39 @@ import QueryString from '../libs/query_string';
 import * as globals from './globals';
 import { TableItemCount } from './objectutils';
 import { FacetList, TextFilter } from './search';
+import { FetchedData, Param } from './fetched';
+
+
+const AutocompleteBox = (props) => {
+    const terms = props.suggestions['@graph'];
+    const { handleClick } = props;
+
+    if (terms && terms.length > 0) {
+        return (
+            <ul className="rnaseq-search-autocomplete">
+                {terms.map((term) => {
+                    return (
+			<li tabIndex="0" onClick={ () => handleClick(term.text) }>
+                            { term.text }
+                        </li>
+                    );
+                }, this)}
+            </ul>
+        );
+    }
+
+    return null;
+};
+
+AutocompleteBox.propTypes = {
+    suggestions: PropTypes.object,
+    handleClick: PropTypes.func
+};
+
+AutocompleteBox.defaultProps = {
+    suggestions: {},
+    handleClick: null
+};
 
 
 /**
@@ -673,22 +706,40 @@ class RNASeqMatrixSearch extends TextFilter {
     constructor(props) {
         super();
 
-        this.handleChange = this.handleChange.bind(this);
+        this.onUnitsChange = this.onUnitsChange.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
+        this.lastGene = this.lastGene.bind(this);
 
         this.state = {
             unitsOption: props.query.getKeyValuesIfPresent('units').join(','),
             genes: props.query.getKeyValuesIfPresent('genes').join(','),
+            showAutoSuggest: false
         };
     }
 
-    handleChange(e) {
+    onUnitsChange(e) {
         this.setState({ unitsOption: e.target.value });
     }
 
+    lastGene() {
+        const inputNode = this.geneInput;
+
+        if (inputNode == undefined)
+            return "";
+
+        var geneTerms = inputNode.value.split(",");
+        return (geneTerms[geneTerms.length - 1].trim());
+    }
+
     handleInputChange(e) {
-        this.setState({ genes: e.target.value });
+        this.setState({ showAutoSuggest: (this.lastGene() != ""), genes: this.geneInput.value });
+    }
+
+    onKeyDown(e) {
+        this.setState({ showAutoSuggest: (this.lastGene() != "") });
     }
 
     handleSubmit(e) {
@@ -696,19 +747,39 @@ class RNASeqMatrixSearch extends TextFilter {
         window.location.href = `/rnaget?genes=${this.state.genes}&units=${this.state.unitsOption}`;
     }
 
+    handleAutocompleteClick(term) {
+        const inputNode = this.geneInput;
+
+        var geneTerms = inputNode.value.split(",");
+        geneTerms[geneTerms.length - 1] = term;
+
+        geneTerms = geneTerms.map(function(gene) { return gene.trim(); }).join(", ");
+
+        this.setState({ showAutoSuggest: false, genes: geneTerms });
+        inputNode.focus();
+    }
+
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} autoComplete="off">
                 <div className="rna_seq_matrix">
                     <input
                         type="search"
+                        id="geneInput"
                         className="search-query"
                         placeholder="Enter Gene IDs..."
-                        value={this.state.genes}
-                        onKeyDown={this.onKeyDown}
-                        onChange={this.handleInputChange}
+                        value={ this.state.genes }
+                        onKeyDown={ this.onKeyDown }
+                        onChange={ this.handleInputChange }
+                        ref={(input) => { this.geneInput = input; }}
                     />
-                    <select name="searchOption" onChange={this.handleChange} value={this.state.unitsOption}>
+                    {this.state.showAutoSuggest ?
+                        <FetchedData loadingComplete>
+                            <Param name="suggestions" url={`/rnaget_autocomplete?q=${this.lastGene()}`} type="json" />
+                            <AutocompleteBox handleClick={this.handleAutocompleteClick} />
+                        </FetchedData>
+		    : null}
+                    <select name="searchOption" onChange={this.onUnitsChange} value={this.state.unitsOption}>
                         <option value="tpm">TPM</option>
                         <option value="fpkm">FPKM</option>
                     </select>

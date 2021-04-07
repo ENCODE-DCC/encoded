@@ -71,6 +71,7 @@ def includeme(config):
     config.add_route('top-hits-raw', '/top-hits-raw{slash:/?}')
     config.add_route('top-hits', '/top-hits{slash:/?}')
     config.add_route('rnaget', '/rnaget{slash:/?}')
+    config.add_route('rnaget_autocomplete', '/rnaget_autocomplete{slash:/?}')
     config.scan(__name__)
 
 
@@ -691,3 +692,10 @@ def top_hits(context, request):
 def rnaget(context, request):
     data_service = GenomicDataService(context.registry, request)
     return data_service.rna_get()
+
+
+@view_config(route_name='rnaget_autocomplete', request_method='GET', permission='search')
+def rnaget_autocomplete(context, request):
+    data_service = GenomicDataService(context.registry, request)
+    return data_service.rna_get_autocomplete()
+
