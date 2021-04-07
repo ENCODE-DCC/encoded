@@ -3386,7 +3386,7 @@ class FileGalleryRendererComponent extends React.Component {
         const facetFiles = this.filterForInclusion(this.state.allFiles);
 
         // Compile pipeline lab information for pipeline lab dropdown.
-        if (this.state.compiledAnalyses.length > 0 && this.state.selectedAssembly) {
+        if (!hideAnalysisSelector && this.state.compiledAnalyses.length > 0 && this.state.selectedAssembly) {
             // Filter renderable and visualizable files to include only those in the matching
             // analyses plus raw-data files. If no matching analyses, all files get included.
             // entries can  get hidden, so the or-condition is needed.
