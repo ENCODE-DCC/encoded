@@ -3199,7 +3199,7 @@ class FileGalleryRendererComponent extends React.Component {
             let selectedIndex = 0;
             let compiledAnalysis = compileAnalyses(analyses, allFiles, 'choose analysis');
 
-            if (currentTab === 'browser') {
+            if (currentTab === 'browser' && !hideAnalysisSelector) {
                 compiledAnalysis = this.getBrowserAnalysis(allFiles, compiledAnalysis);
                 selectedIndex = this.getBrowserSelectedIndex(compiledAnalysis);
             } else {
