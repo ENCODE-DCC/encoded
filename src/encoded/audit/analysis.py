@@ -1619,7 +1619,7 @@ def check_analysis_wgbs_encode3_standards(
     # Check Pearson correlation
     replicated = value['datasets'][0]['replication_type'] if 'replication_type' in value['datasets'][0] else None
     if replicated and replicated != 'unreplicated':
-        yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
+        yield from check_wgbs_pearson(cpg_metrics, 0.8, assay_term_name, value['title'])
 
     # Check lambda C methylation ratio
     for metric in bismark_metrics:
@@ -1692,7 +1692,7 @@ def check_analysis_wgbs_encode4_standards(
         value['datasets'][0]['replication_type']
         if 'replication_type' in value['datasets'][0] else None)
     if replicated and replicated != 'unreplicated':
-        yield from check_wgbs_pearson(cpg_metrics, 0.8, value['title'])
+        yield from check_wgbs_pearson(cpg_metrics, 0.8, assay_term_name, value['title'])
 
     # Check lambda C methylation ratio
     for metric in gembs_metrics:
