@@ -1969,7 +1969,7 @@ export const SeriesComponent = (props, reactContext) => {
             : null}
 
             {/* Display list of released and unreleased files */}
-            <FileGallery context={context} files={files} analyses={analyses} showReplicateNumber={false} collapseNone hideGraph hideControls showDetailedTracks />
+            <FileGallery context={context} files={files} analyses={analyses} showReplicateNumber={false} collapseNone hideGraph hideControls showDetailedTracks hideAnalysisSelector />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 

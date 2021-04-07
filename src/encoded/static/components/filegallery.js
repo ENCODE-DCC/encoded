@@ -1279,6 +1279,7 @@ export const FileGallery = ({
     collapseNone,
     showReplicateNumber,
     showDetailedTracks,
+    hideAnalysisSelector,
 }, reactContext) => {
     // Holds all schemas loaded from a request; used by the file graph.
     const [schemas, setSchemas] = React.useState(null);
@@ -1317,6 +1318,7 @@ export const FileGallery = ({
             collapseNone={collapseNone}
             showReplicateNumber={showReplicateNumber}
             showDetailedTracks={showDetailedTracks}
+            hideAnalysisSelector={hideAnalysisSelector}
         />
     );
 };
@@ -1348,6 +1350,7 @@ FileGallery.propTypes = {
     collapseNone: PropTypes.bool, // True to have no file subtables collapsed
     showReplicateNumber: PropTypes.bool, // True to show replicate number
     showDetailedTracks: PropTypes.bool, // True to show more detailed tracks in browser
+    hideAnalysisSelector: PropTypes.bool, // True to hide analysis selector dropdown
 };
 
 FileGallery.defaultProps = {
@@ -1359,6 +1362,7 @@ FileGallery.defaultProps = {
     collapseNone: false,
     showReplicateNumber: true,
     showDetailedTracks: false,
+    hideAnalysisSelector: false,
 };
 
 FileGallery.contextTypes = {
@@ -2671,9 +2675,21 @@ AnalysesSelector.propTypes = {
 };
 
 
-const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef } = props;
-
+const TabPanelFacets = ({
+    open,
+    currentTab,
+    filters,
+    allFiles,
+    filterFiles,
+    toggleFacets,
+    clearFileFilters,
+    experimentType,
+    analyses,
+    selectedAnalysesIndex,
+    handleAnalysesSelection,
+    analysisSelectorRef,
+    hideAnalysisSelector,
+}) => {
     // Filter file list to make sure it includes only files that should be displayed
     const fileList = currentTab === 'browser' ? filterForVisualizableFiles(allFiles) : allFiles;
 
@@ -2698,7 +2714,7 @@ const TabPanelFacets = (props) => {
         replicate = createFacetObject('biological_replicates', fileList, filters);
     }
 
-    const selector = currentTab === 'tables'
+    const selector = currentTab === 'tables' || hideAnalysisSelector
         ? ''
         : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0
             ? <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} analysisSelectorRef={analysisSelectorRef} />
@@ -2746,10 +2762,13 @@ TabPanelFacets.propTypes = {
     /** Function to call when the user changes the currently selected pipeline lab analyses */
     handleAnalysesSelection: PropTypes.func.isRequired,
     analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
+    /** True to hide the analysis selector dropdown */
+    hideAnalysisSelector: PropTypes.bool,
 };
 
 TabPanelFacets.defaultProps = {
     analyses: [],
+    hideAnalysisSelector: false,
 };
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
@@ -3348,10 +3367,10 @@ class FileGalleryRendererComponent extends React.Component {
             schemas,
             hideGraph,
             hideControls,
-            hideAnalyses,
             collapseNone,
             showReplicateNumber,
             showDetailedTracks,
+            hideAnalysisSelector,
             auditIndicators,
             auditDetail,
         } = this.props;
@@ -3494,6 +3513,7 @@ class FileGalleryRendererComponent extends React.Component {
                         handleAnalysesSelection={this.handleAnalysesSelection}
                         analysisSelectorRef={this.analysisSelectorRef}
                         context={context}
+                        hideAnalysisSelector={hideAnalysisSelector}
                     />
                     <TabPanel
                         tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
@@ -3577,6 +3597,8 @@ FileGalleryRendererComponent.propTypes = {
     altFilterDefault: PropTypes.bool,
     /** True to show detailed track info in genome browser */
     showDetailedTracks: PropTypes.bool,
+    /** True to hide the analysis selector dropdown */
+    hideAnalysisSelector: PropTypes.bool,
     /** Inherited from auditDecor HOC */
     auditIndicators: PropTypes.func.isRequired,
     /** Inherited from auditDecor HOC */
@@ -3597,6 +3619,7 @@ FileGalleryRendererComponent.defaultProps = {
     collapseNone: false,
     altFilterDefault: false,
     showDetailedTracks: false,
+    hideAnalysisSelector: false,
     showReplicateNumber: true,
     session: null,
 };
