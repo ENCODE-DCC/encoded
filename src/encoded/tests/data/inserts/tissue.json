@@ -54,7 +54,7 @@
         "preservation_method": "cryopreservation",
         "fixed": false,
         "starting_quantity": "100",
-        "starting_quantity_units": "g",
+        "starting_quantity_units": "ml",
         "urls": [
             "https://chanzuckerberg.com/science/programs-resources/single-cell-biology/seednetworks/a-comprehensive-single-cell-atlas-of-the-human-kidney/",
             "https://www.protocols.io/"
