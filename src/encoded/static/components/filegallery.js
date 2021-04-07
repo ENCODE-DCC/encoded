@@ -3613,7 +3613,6 @@ FileGalleryRendererComponent.defaultProps = {
     schemas: null,
     hideGraph: false,
     hideControls: false,
-    hideAnalyses: true,
     collapseNone: false,
     altFilterDefault: false,
     showDetailedTracks: false,
