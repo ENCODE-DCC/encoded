@@ -7,7 +7,7 @@
 * Added *V33* and *M26* enums to *genome_annotation* and *GRCm39* enum to *assembly*.
 * Calculated properties *replicate_libraries* and *library* are removed.
 * Added *sparse transcript count matrix* and *read annotations* to the enum list for *output_type*
-* The order of *assembly* enums and *genome_annotation* enums were adjusted to reflect the priority when we consider selecting default analysis for a dataset,
+
 
 ### Schema version 28
 * *output_type* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
