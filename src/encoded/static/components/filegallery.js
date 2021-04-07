@@ -3171,7 +3171,7 @@ class FileGalleryRendererComponent extends React.Component {
      * combined files so we can choose a visualization browser.
      */
     updateFiles(prevLoggedIn, updateAssembly) {
-        const { context, data, analyses } = this.props;
+        const { context, data, analyses, hideAnalysisSelector } = this.props;
         const { session } = this.context;
         const { currentTab } = this.state;
         const loggedIn = !!(session && session['auth.userid']);
