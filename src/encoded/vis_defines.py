@@ -1427,7 +1427,7 @@ class IhecDefines(object):
             if experiment_attributes:
                 dataset['experiment_attributes'] = experiment_attributes
             else:
-                log.warn('Could not determine IHEC experiment attributes for %s', accession) # do we still include the dataset without attributes?
+                log.warn('Could not determine IHEC experiment attributes for %s', accession)
 
             # Find/create sample:
             biosample_accession = vis_dataset.get('biosample_accession')
