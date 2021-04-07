@@ -21,7 +21,7 @@ const AutocompleteBox = (props) => {
             <ul className="rnaseq-search-autocomplete">
                 {terms.map((term) => {
                     return (
-			<li tabIndex="0" onClick={ () => handleClick(term.text) }>
+                        <li tabIndex="0" key={ term.text } onClick={ () => handleClick(term.text) }>
                             { term.text }
                         </li>
                     );
@@ -763,6 +763,12 @@ class RNASeqMatrixSearch extends TextFilter {
         return (
             <form onSubmit={this.handleSubmit} autoComplete="off">
                 <div className="rna_seq_matrix">
+                    {this.state.showAutoSuggest ?
+                        <FetchedData loadingComplete>
+                            <Param name="suggestions" url={`/rnaget-autocomplete?q=${this.lastGene()}`} type="json" />
+                            <AutocompleteBox handleClick={this.handleAutocompleteClick} />
+                        </FetchedData>
+                    : null}
                     <input
                         type="search"
                         id="geneInput"
@@ -773,12 +779,6 @@ class RNASeqMatrixSearch extends TextFilter {
                         onChange={ this.handleInputChange }
                         ref={(input) => { this.geneInput = input; }}
                     />
-                    {this.state.showAutoSuggest ?
-                        <FetchedData loadingComplete>
-                            <Param name="suggestions" url={`/rnaget_autocomplete?q=${this.lastGene()}`} type="json" />
-                            <AutocompleteBox handleClick={this.handleAutocompleteClick} />
-                        </FetchedData>
-		    : null}
                     <select name="searchOption" onChange={this.onUnitsChange} value={this.state.unitsOption}>
                         <option value="tpm">TPM</option>
                         <option value="fpkm">FPKM</option>
