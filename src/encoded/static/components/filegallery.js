@@ -3589,8 +3589,6 @@ FileGalleryRendererComponent.propTypes = {
     hideGraph: PropTypes.bool,
     /** True to hide download/visualize controls */
     hideControls: PropTypes.bool,
-    /** True to not consider nor display analyses */
-    hideAnalyses: PropTypes.bool,
     /** True to have no file subtables come up collapsed by default */
     collapseNone: PropTypes.bool,
     /** True to default to All Assemblies and Annotations */
