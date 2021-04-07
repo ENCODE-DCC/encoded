@@ -125,7 +125,9 @@ def check_spearman(
     replication_type,
     isogenic_threshold,
     anisogenic_threshold,
-    pipeline
+    pipeline,
+    assay_term_name,
+    analysis_title
 ):
     if replication_type == 'anisogenic':
         threshold = anisogenic_threshold
@@ -147,6 +149,7 @@ def check_spearman(
                     f'calculating the Spearman correlation between gene quantifications '
                     f'of the replicates. '
                     f'ENCODE processed gene quantification files {", ".join(file_names_links)} '
+                    f"processed by {assay_term_name} {analysis_title} "
                     f'have a Spearman correlation of {spearman_correlation:.2f}. '
                     f'According to ENCODE standards, in an {replication_type} '
                     f'assay analyzed using the {pipeline} pipeline, '
@@ -160,7 +163,9 @@ def check_spearman(
 def check_spearman_technical_replicates(
     metrics,
     pipeline,
-    unreplicated_threshold
+    unreplicated_threshold,
+    assay_term_name,
+    analysis_title
 ):
     for m in metrics:
         if 'Spearman correlation' in m:
@@ -174,7 +179,8 @@ def check_spearman_technical_replicates(
                     f'Replicate concordance in RNA-seq experiments is measured by '
                     f'calculating the Spearman correlation between gene quantifications '
                     f'of the replicates. ENCODE processed gene quantification files '
-                    f'{file_names_links} have a Spearman correlation of '
+                    f'{file_names_links} processed by {assay_term_name} {analysis_title} '
+                    f'have a Spearman correlation of '
                     f'{spearman_correlation:.2f} comparing technical replicates. '
                     f'For isogenic biological replicates analyzed using the {pipeline} pipeline, '
                     f'ENCODE standards recommend a Spearman correlation value > 0.9.'
@@ -183,20 +189,21 @@ def check_spearman_technical_replicates(
     return
 
 
-def negative_coefficients(metric, coefficients, files_structure):
+def negative_coefficients(metric, coefficients, files_structure, assay_term_name, analysis_title):
     for coefficient in coefficients:
         if coefficient in metric and metric[coefficient] < 0 and 'quality_metric_of' in metric:
             alignment_file = files_structure.get(
                 'alignments')[metric['quality_metric_of'][0]]
             detail = (
                 f"Alignment file {audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                f"processed by {assay_term_name} {analysis_title} "
                 f"has a negative {coefficient} value of {metric[coefficient]}. "
                 f"The {coefficient} value is expected to be a positive number."
             )
             yield AuditFailure(f"negative {coefficient}", detail, level='ERROR')
 
 
-def check_idr(metrics, rescue, self_consistency):
+def check_idr(metrics, rescue, self_consistency, assay_term_name, analysis_title):
     for m in metrics:
         if 'rescue_ratio' in m and 'self_consistency_ratio' in m:
             rescue_r = m['rescue_ratio']
@@ -211,6 +218,7 @@ def check_idr(metrics, rescue, self_consistency):
                     f"Replicate concordance in ChIP-seq experiments is measured by "
                     f"calculating IDR values (Irreproducible Discovery Rate). "
                     f"ENCODE processed IDR thresholded peaks files {', '.join(file_names_links)} "
+                    f"processed by {assay_term_name} {analysis_title} "
                     f"have a rescue ratio of {rescue_r:.2f} and a "
                     f"self consistency ratio of {self_r:.2f}. "
                     f"According to ENCODE standards, having both rescue ratio "
@@ -229,6 +237,7 @@ def check_idr(metrics, rescue, self_consistency):
                     f"Replicate concordance in ChIP-seq experiments is measured by "
                     f"calculating IDR values (Irreproducible Discovery Rate). "
                     f"ENCODE processed IDR thresholded peaks files {', '.join(file_names_links)} "
+                    f"processed by {assay_term_name} {analysis_title} "
                     f"have a rescue ratio of {rescue_r:.2f} and a "
                     f"self consistency ratio of {self_r:.2f}. "
                     f"According to ENCODE standards, having both rescue ratio "
@@ -246,6 +255,8 @@ def check_replicate_metric_dual_threshold(
     audit_name,
     upper_limit,
     lower_limit,
+    assay_term_name,
+    analysis_title,
     metric_description=None,
 ):
     """
@@ -266,7 +277,8 @@ def check_replicate_metric_dual_threshold(
                 audit_name_severity = 'insufficient'
             file_names_links = [audit_link(path_to_text(file), file) for file in files]
             detail = (
-                f"Files {', '.join(file_names_links)} have {metric_description} "
+                f"Files {', '.join(file_names_links)} processed by "
+                f"{assay_term_name} {analysis_title} have {metric_description} "
                 f"of {metric_value}, which is below ENCODE {standards_severity}. "
                 f"According to ENCODE data standards, a number for this property "
                 f"in a replicate of > {lower_limit:,} is required, "
@@ -774,7 +786,13 @@ def check_analysis_chip_seq_standards(
     align_enrich_metrics = get_metrics(alignment_files, 'ChipAlignmentEnrichmentQualityMetric')
     if align_enrich_metrics is not None and len(align_enrich_metrics) > 0:
         for metric in align_enrich_metrics:
-            yield from negative_coefficients(metric, ['NSC', 'RSC'], files_structure)
+            yield from negative_coefficients(
+                metric,
+                ['NSC', 'RSC'],
+                files_structure,
+                assay_term_name,
+                value['title']
+            )
 
     # Check read depth
     # For ChIP-seq targeting H3K9me3 only, read depth should be checked in unfiltered alignments.
@@ -807,7 +825,7 @@ def check_analysis_chip_seq_standards(
     ListofMetrics.extend([get_metrics(idr_peaks_files, 'IDRQualityMetric'), get_metrics(idr_peaks_files, 'ChipReplicationQualityMetric')])
     if ListofMetrics:
         for idr_metrics in ListofMetrics:
-            yield from check_idr(idr_metrics, 2, 2)
+            yield from check_idr(idr_metrics, 2, 2, assay_term_name, value['title'])
     return
 
 
@@ -857,7 +875,7 @@ def check_analysis_modERN_chip_seq_standards(
     ])
     if ListofMetrics:
         for idr_metrics in ListofMetrics:
-            yield from check_idr(idr_metrics, 2, 2)
+            yield from check_idr(idr_metrics, 2, 2, assay_term_name, value['title'])
     return
 
 
@@ -1321,10 +1339,10 @@ def check_analysis_bulk_rna_standards(
         mad_metrics = get_metrics(gene_quantifications, 'MadQualityMetric')
         if replicated == 'unreplicated' and len(value['datasets'][0]['replicates']) > 1:
             yield from check_spearman_technical_replicates(
-                mad_metrics, pipeline_title, 0.9)
+                mad_metrics, pipeline_title, 0.9, assay_term_name, value['title'])
             return
         else:
-            yield from check_spearman(mad_metrics, replicated, 0.9, 0.8, pipeline_title)
+            yield from check_spearman(mad_metrics, replicated, 0.9, 0.8, pipeline_title, assay_term_name, value['title'])
             return
     return
 
@@ -1378,7 +1396,7 @@ def check_analysis_small_rna_standards(
 
     mad_metrics = get_metrics(gene_quantifications, 'MadQualityMetric')
 
-    yield from check_spearman(mad_metrics, replicated, 0.9, 0.8, pipeline_title)
+    yield from check_spearman(mad_metrics, replicated, 0.9, 0.8, pipeline_title, assay_term_name, value['title'])
     return
 
 
@@ -1429,7 +1447,7 @@ def check_analysis_cage_rampage_standards(
         return
     mad_metrics = get_metrics(gene_quantifications, 'MadQualityMetric')
 
-    yield from check_spearman(mad_metrics, replicated, 0.9, 0.8, pipeline_title)
+    yield from check_spearman(mad_metrics, replicated, 0.9, 0.8, pipeline_title, assay_term_name, value['title'])
     return
 
 
@@ -1444,6 +1462,7 @@ def check_analysis_micro_rna_standards(
     if len(value['datasets']) != 1 or len(value['pipelines']) != 1:
         return
 
+    assay_term_name = value['datasets'][0]['assay_term_name']
     pipeline_title = value['pipelines'][0]['title']
     if pipeline_title not in expected_pipeline_titles:
         return
@@ -1464,6 +1483,8 @@ def check_analysis_micro_rna_standards(
         audit_name='replicate concordance',
         upper_limit=0.85,
         lower_limit=0.8,
+        assay_term_name=assay_term_name,
+        analysis_title=value['title']
     )
     # Audit flnc read counts
     yield from check_replicate_metric_dual_threshold(
@@ -1472,6 +1493,8 @@ def check_analysis_micro_rna_standards(
         audit_name='number of aligned reads',
         upper_limit=5000000,
         lower_limit=3000000,
+        assay_term_name=assay_term_name,
+        analysis_title=value['title']
     )
     # Audit mapping rate
     yield from check_replicate_metric_dual_threshold(
@@ -1480,6 +1503,8 @@ def check_analysis_micro_rna_standards(
         audit_name='microRNAs expressed',
         upper_limit=300,
         lower_limit=200,
+        assay_term_name=assay_term_name,
+        analysis_title=value['title']
     )
     return
 
@@ -1495,6 +1520,7 @@ def check_analysis_long_read_rna_standards(
     if len(value['datasets']) != 1 or len(value['pipelines']) != 1:
         return
 
+    assay_term_name = value['datasets'][0]['assay_term_name']
     pipeline_title = value['pipelines'][0]['title']
     if pipeline_title not in expected_pipeline_titles:
         return
@@ -1522,6 +1548,8 @@ def check_analysis_long_read_rna_standards(
         audit_name='replicate concordance',
         upper_limit=0.8,
         lower_limit=0.6,
+        assay_term_name=assay_term_name,
+        analysis_title=value['title']
     )
     # Audit flnc read counts
     yield from check_replicate_metric_dual_threshold(
@@ -1530,6 +1558,8 @@ def check_analysis_long_read_rna_standards(
         audit_name='sequencing depth',
         upper_limit=600000,
         lower_limit=400000,
+        assay_term_name=assay_term_name,
+        analysis_title=value['title'],
         metric_description='full-length non-chimeric (FLNC) read count',
     )
     # Audit mapping rate
@@ -1539,6 +1569,8 @@ def check_analysis_long_read_rna_standards(
         audit_name='mapping rate',
         upper_limit=0.9,
         lower_limit=0.6,
+        assay_term_name=assay_term_name,
+        analysis_title=value['title'],
         metric_description='mapping rate',
     )
     # Audit gene quantifications
@@ -1548,6 +1580,8 @@ def check_analysis_long_read_rna_standards(
         audit_name='genes detected',
         upper_limit=8000,
         lower_limit=4000,
+        assay_term_name=assay_term_name,
+        analysis_title=value['title'],
         metric_description='GENCODE genes detected',
     )
     return
@@ -1846,7 +1880,13 @@ def check_analysis_atac_encode4_qc_standards(
     # Checks in AtacAlignmentEnrichmentQualityMetric
     if align_enrich_metrics is not None and len(align_enrich_metrics) > 0:
         for metric in align_enrich_metrics:
-            yield from negative_coefficients(metric, ['NSC', 'RSC'], files_structure)
+            yield from negative_coefficients(
+                metric,
+                ['NSC', 'RSC'],
+                files_structure,
+                assay_term_name,
+                value['title']
+            )
             if 'tss_enrichment' in metric and 'quality_metric_of' in metric:
                 alignment_file = files_structure.get(
                     'alignments')[metric['quality_metric_of'][0]]
@@ -2092,7 +2132,8 @@ def check_analysis_chiapet_encode4_qc_standards(
                 total_reads = metric['total_rp']
                 detail = (
                     f"Alignment file "
-                    f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} has "
+                    f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} has "
                     f"{total_reads} total read pairs. According to ENCODE4 standards, "
                     f"ChIA-PET assays performed with the in-situ protocol require a minimum of "
                     f"150,000,000 total read pairs. For assays performed with the long reads "
@@ -2105,7 +2146,8 @@ def check_analysis_chiapet_encode4_qc_standards(
                 fraction_bl = float(metric['frp_bl'])
                 detail = (
                     f"Alignment file "
-                    f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} has "
+                    f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} has "
                     f"a fraction of read pairs with bridge linker value of {fraction_bl:.2f}. "
                     f"According to ENCODE4 standards, ChIA-PET assays require a minimum "
                     f"value of 0.5 for fraction of read pairs with bridge linker."
@@ -2117,7 +2159,8 @@ def check_analysis_chiapet_encode4_qc_standards(
                 nonred_pet = metric['nr_pet']
                 detail = (
                     f"Alignment file "
-                    f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} has "
+                    f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} has "
                     f"{nonred_pet} total non-redundant PET. According to ENCODE4 standards, "
                     f"ChIA-PET assays require a minimum of 10,000,000 non-redundant PET."
                 )
@@ -2132,7 +2175,8 @@ def check_analysis_chiapet_encode4_qc_standards(
                 peaks = metric['binding_peaks']
                 detail = (
                     f"Peaks file "
-                    f"{audit_link(path_to_text(peak_file['@id']),peak_file['@id'])} has "
+                    f"{audit_link(path_to_text(peak_file['@id']),peak_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} has "
                     f"{peaks} total peaks. According to ENCODE4 standards, ChIA-PET "
                     f"assays require a minimum of 10,000 protein factor binding peaks."
                 )
@@ -2148,6 +2192,7 @@ def check_analysis_chiapet_encode4_qc_standards(
                 detail = (
                     f"Chromatin interactions file "
                     f"{audit_link(path_to_text(int_file['@id']),int_file['@id'])} "
+                    f"processed by {assay_term_name} {value['title']} "
                     f"has a ratio of intra/inter-chr PET of {int_ratio:.2f}. "
                     f"According to ENCODE4 standards, ChIA-PET assays performed "
                     f"with the in-situ protocol require a minimum ratio of 1. "
