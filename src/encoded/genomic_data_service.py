@@ -136,7 +136,7 @@ class GenomicDataService():
         return {
             '@graph': suggestions,
             '@type': ['suggest'],
-            '@id': f'/rnaget_autocomplete?q={self.autocomplete_query}',
+            '@id': f'/rnaget-autocomplete?q={self.autocomplete_query}',
             'title': 'Suggest'
         }
 
