@@ -16,12 +16,14 @@ const AutocompleteBox = (props) => {
     const terms = props.suggestions['@graph'];
     const { handleClick } = props;
 
+    /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events, arrow-body-style */
+
     if (terms && terms.length > 0) {
         return (
             <ul className="rnaseq-search-autocomplete">
                 {terms.map((term) => {
                     return (
-                        <li tabIndex="0" key={ term.text } onClick={ () => handleClick(term.text) }>
+                        <li tabIndex="0" key={term.text} onClick={() => handleClick(term.text)}>
                             { term.text }
                         </li>
                     );
@@ -30,17 +32,19 @@ const AutocompleteBox = (props) => {
         );
     }
 
+    /* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events, arrow-body-style */
+
     return null;
 };
 
 AutocompleteBox.propTypes = {
     suggestions: PropTypes.object,
-    handleClick: PropTypes.func
+    handleClick: PropTypes.func,
 };
 
 AutocompleteBox.defaultProps = {
     suggestions: {},
-    handleClick: null
+    handleClick: null,
 };
 
 
@@ -716,7 +720,7 @@ class RNASeqMatrixSearch extends TextFilter {
         this.state = {
             unitsOption: props.query.getKeyValuesIfPresent('units').join(','),
             genes: props.query.getKeyValuesIfPresent('genes').join(','),
-            showAutoSuggest: false
+            showAutoSuggest: false,
         };
     }
 
@@ -727,19 +731,20 @@ class RNASeqMatrixSearch extends TextFilter {
     lastGene() {
         const inputNode = this.geneInput;
 
-        if (inputNode == undefined)
-            return "";
+        if (inputNode === undefined) {
+            return '';
+        }
 
-        var geneTerms = inputNode.value.split(",");
+        const geneTerms = inputNode.value.split(',');
         return (geneTerms[geneTerms.length - 1].trim());
     }
 
-    handleInputChange(e) {
-        this.setState({ showAutoSuggest: (this.lastGene() != ""), genes: this.geneInput.value });
+    handleInputChange() {
+        this.setState({ showAutoSuggest: (this.lastGene() !== ''), genes: this.geneInput.value });
     }
 
-    onKeyDown(e) {
-        this.setState({ showAutoSuggest: (this.lastGene() != "") });
+    onKeyDown() {
+        this.setState({ showAutoSuggest: (this.lastGene() !== '') });
     }
 
     handleSubmit(e) {
@@ -750,10 +755,10 @@ class RNASeqMatrixSearch extends TextFilter {
     handleAutocompleteClick(term) {
         const inputNode = this.geneInput;
 
-        var geneTerms = inputNode.value.split(",");
+        let geneTerms = inputNode.value.split(',');
         geneTerms[geneTerms.length - 1] = term;
 
-        geneTerms = geneTerms.map(function(gene) { return gene.trim(); }).join(", ");
+        geneTerms = geneTerms.map((gene) => gene.trim()).join(', ');
 
         this.setState({ showAutoSuggest: false, genes: geneTerms });
         inputNode.focus();
@@ -774,9 +779,9 @@ class RNASeqMatrixSearch extends TextFilter {
                         id="geneInput"
                         className="search-query"
                         placeholder="Enter Gene IDs..."
-                        value={ this.state.genes }
-                        onKeyDown={ this.onKeyDown }
-                        onChange={ this.handleInputChange }
+                        value={this.state.genes}
+                        onKeyDown={this.onKeyDown}
+                        onChange={this.handleInputChange}
                         ref={(input) => { this.geneInput = input; }}
                     />
                     <select name="searchOption" onChange={this.onUnitsChange} value={this.state.unitsOption}>
