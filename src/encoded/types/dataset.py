@@ -365,6 +365,7 @@ class SingleCellUnit(
     item_type = 'single_cell_unit'
     schema = load_schema('encoded:schemas/single_cell_unit.json')
     embedded = Dataset.embedded + [
+        'analysis_objects',
         'biosample_ontology',
         'files.platform',
         'files.analysis_step_version.analysis_step',
@@ -398,6 +399,7 @@ class SingleCellUnit(
         'submitted_by',
         'lab',
         'award',
+        'analysis_objects',
         'documents',
         'replicates.antibody.characterizations.biosample_ontology',
         'replicates.antibody.characterizations',
@@ -425,10 +427,12 @@ class SingleCellUnit(
         'original_files',
         'replicates',
         'documents',
+        'analysis_objects',
     ]
     set_status_down = [
         'original_files',
         'replicates',
+        'analysis_objects',
     ]
     rev = Dataset.rev.copy()
     rev.update({

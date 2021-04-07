@@ -285,7 +285,7 @@ globals.listingViews.register(Biosample, 'Biosample');
 
 
 /**
- * Renders both Experiment, FunctionalCharacterizationExperiment, TransgenicEnhancerExperiment search results.
+ * Renders both Experiment, FunctionalCharacterizationExperiment, SingleCellUnit, and TransgenicEnhancerExperiment search results.
  */
 const ExperimentComponent = (props, reactContext) => {
     const { context: result, cartControls, mode } = props;
@@ -297,10 +297,13 @@ const ExperimentComponent = (props, reactContext) => {
     // Determine whether object is Experiment, FunctionalCharacterizationExperiment, or TransgenicEnhancerExperiment.
     const experimentType = result['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
+    const isSingleCellUnit = experimentType === 'SingleCellUnit';
     const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
     let displayType;
     if (isFunctionalExperiment) {
         displayType = 'Functional Characterization Experiment';
+    } else if (isSingleCellUnit) {
+        displayType = 'Single Cell Unit';
     } else if (isEnhancerExperiment) {
         displayType = 'Transgenic Enhancer Experiment';
     } else {
@@ -490,6 +493,7 @@ const Experiment = auditDecor(ExperimentComponent);
 
 globals.listingViews.register(Experiment, 'Experiment');
 globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
+globals.listingViews.register(Experiment, 'SingleCellUnit');
 globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 
