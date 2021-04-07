@@ -1,5 +1,5 @@
 [
-	{
+    {
         "_test": "reference epigenome",
         "accession": "ENCSR300EPI",
         "award": "ENCODE2",
@@ -21,7 +21,7 @@
         "uuid": "7ae7b199-e881-4906-b977-2b1b62de70f7",
         "date_released": "2016-01-01"
     },
-	{
+    {
         "_test": "reference epigenome",
         "accession": "ENCSR571AGY",
         "award": "U41HG006992",
@@ -69,5 +69,19 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "820465fa-b66d-4a67-abaf-7706472fd69f"
+    },
+    {
+        "accession": "ENCSR525XSO",
+        "award": "U41HG006992",
+        "date_released": "2019-10-08",
+        "description": "Reference epigenome for human right atrium auricular region (51 year old female)",
+        "lab": "encode-consortium",
+        "related_datasets": [
+            "/experiments/ENCSR123MRN/",
+            "/experiments/ENCSR000AEN/"
+        ],
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "ee03c00e-1cc6-47ac-ab84-8b9eab1e6ff7"
     }
 ]

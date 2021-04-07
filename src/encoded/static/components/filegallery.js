@@ -3348,6 +3348,7 @@ class FileGalleryRendererComponent extends React.Component {
             schemas,
             hideGraph,
             hideControls,
+            hideAnalyses,
             collapseNone,
             showReplicateNumber,
             showDetailedTracks,
@@ -3568,6 +3569,8 @@ FileGalleryRendererComponent.propTypes = {
     hideGraph: PropTypes.bool,
     /** True to hide download/visualize controls */
     hideControls: PropTypes.bool,
+    /** True to not consider nor display analyses */
+    hideAnalyses: PropTypes.bool,
     /** True to have no file subtables come up collapsed by default */
     collapseNone: PropTypes.bool,
     /** True to default to All Assemblies and Annotations */
@@ -3590,6 +3593,7 @@ FileGalleryRendererComponent.defaultProps = {
     schemas: null,
     hideGraph: false,
     hideControls: false,
+    hideAnalyses: true,
     collapseNone: false,
     altFilterDefault: false,
     showDetailedTracks: false,
