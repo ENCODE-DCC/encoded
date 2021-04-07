@@ -4,7 +4,8 @@
         "accession": "ENCAN050LQR",
         "complete": true,
         "files": ["ENCFF001RCV", "ENCFF001RCZ"],
-        "pipeline_version": "0.0.4"
+        "pipeline_version": "0.0.4",
+        "status": "released"
     },
     {
         "uuid": "dcdf12fd-f377-42c2-9aa2-34f08c6e130f",
@@ -22,13 +23,15 @@
         "quality_standard": "a05a6a79-024c-47b9-b507-1fa5e323044c",
         "accession": "ENCAN820ARO",
         "files": ["ENCFF003MRN", "ENCFF005MRN"],
-        "pipeline_version": "10.20.30"
+        "pipeline_version": "10.20.30",
+        "status": "released"
     },
     {
         "uuid": "02c08844-fbda-436d-a359-c6ff32835404",
         "accession": "ENCAN914ASY",
         "files": ["ENCFF004MRN", "ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"],
-        "pipeline_version": "1.1.2-prerelease+meta"
+        "pipeline_version": "1.1.2-prerelease+meta",
+        "status": "released"
     },
     {
         "uuid": "860f157c-e4da-a330-1f14-e5b89bf40423",
