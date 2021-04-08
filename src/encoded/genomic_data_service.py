@@ -1,7 +1,7 @@
 import requests
 
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
-RNA_GET_FILTERS = ['assayType', 'annotation']
+RNA_GET_FACETS = ['assayType', 'annotation', 'biosample_term_name', 'biosample_classification', 'biosample_sex', 'biosample_organ',  'biosample_system']
 RNA_GET_ENDPOINT = '/expressions/bytes'
 
 # react component orders columns by "the position" in the hash map
@@ -12,7 +12,13 @@ RNA_GET_COLUMNS = {
     'assayType': {'title': 'Assay (RNA SubType)'},
     'libraryPrepProtocol': {'title': 'Experiment'},
     'expressionID': {'title': 'File'},
-    'annotation': {'title': 'Genome Annotation'}
+    'annotation': {'title': 'Annotation'},
+    'biosample_term_name': {'title': 'Biosample'},
+    'biosample_classification': {'title': 'Classification'},
+    'biosample_sex': {'title': 'Sex'},
+    'biosample_organ': {'title': 'Organ'},
+    'biosample_system': {'title': 'System'},
+    'biosample_summary': {'title': 'Summary'}
 }
 
 class GenomicDataService():
@@ -41,9 +47,9 @@ class GenomicDataService():
             self.sort_order = 'desc' if desc else 'asc'
 
         self.filter_params = {}
-        for filter_ in RNA_GET_FILTERS:
-            if params.get(filter_):
-                self.filter_params[filter_] = params.get(filter_)
+        for facet in RNA_GET_FACETS:
+            if params.get(facet):
+                self.filter_params[facet] = params.get(facet)
 
         self.filters = [{'field': 'type', 'term': 'Rna Get', 'remove': '/rnaget'}]
 
@@ -113,6 +119,19 @@ class GenomicDataService():
 
     def rna_get(self):
         self.rna_get_request()
+
+        for expression in self.expressions:
+            expression['featureID'] += f"/{expression['encodeID'].split('/')[-2]}"
+
+            for key in expression:
+                if expression[key] == None:
+                    expression[key] = ''
+
+                if key == 'analysis' and expression[key]:
+                    expression[key] = expression[key][1:-1]
+
+                if key == 'libraryPrepProtocol' and expression[key]:
+                    expression[key] = expression[key].split('/')[-1]
 
         response = {
             'title': 'RNA Get',

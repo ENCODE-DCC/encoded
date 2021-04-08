@@ -64,6 +64,11 @@
                     }
                 }
             ]
+        },
+        "annotation_subtype": {
+            "properties": {
+                "annotation_type": {"enum": ["candidate Cis-Regulatory Elements"]}
+            }
         }
     },
     "properties": {
@@ -95,6 +100,7 @@
                 "chromatin state",
                 "consensus DNase hypersensitivity sites",
                 "enhancer predictions",
+                "fine-mapped variants",
                 "footprints",
                 "functional characterization elements",
                 "gene expression",
@@ -111,6 +117,19 @@
                 "transcription start sites",
                 "validated enhancers",
                 "variant calls"
+            ]
+        },
+        "annotation_subtype": {
+            "title": "Annotation subtype",
+            "description": "The category of elements in a cell-type agnostic candidate Cis-Regulatory Elements annotation.",
+            "type": "string",
+            "enum": [
+                "all",
+                "promoter-like",
+                "proximal enhancer-like",
+                "distal enhancer-like",
+                "DNase-H3K4me3",
+                "CTCF-only"
             ]
         },
         "encyclopedia_version": {
@@ -243,6 +262,11 @@
         "annotation_type": {
             "title": "Annotation type",
             "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
+        },
+        "annotation_type": {
+            "title": "Annotation type",
             "length": "long",
             "open_on_load": true
         },
@@ -399,6 +423,7 @@
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
         "annotation_type": 1.0,
+        "annotation_subtype": 1.0,
         "internal_tags": 1.0,
         "doi": 1.0
     },

@@ -165,6 +165,7 @@
         "accession": "ENCSR129CCR",
         "award": "U54HG007004",
         "annotation_type": "candidate Cis-Regulatory Elements",
+        "annotation_subtype": "all",
         "description": "Aggregated cCRE track",
         "encyclopedia_version": "ENCODE v5",
         "lab": "j-michael-cherry",

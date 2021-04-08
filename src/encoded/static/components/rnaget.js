@@ -93,6 +93,22 @@ AtIdRenderer.propTypes = {
 RNAGetDataRegistry.register({ field: '@id' }, AtIdRenderer);
 RNAGetDataRegistry.register({ field: 'libraryPrepProtocol' }, AtIdRenderer);
 RNAGetDataRegistry.register({ field: 'expressionID' }, AtIdRenderer);
+RNAGetDataRegistry.register({ field: 'analysis' }, AtIdRenderer);
+
+
+/**
+ * @id cell renderer that displays links to genes from the RNAGet API.
+ */
+const RNAGetIdRenderer = ({ value }) => (
+    <a href={`/genes/${value.split('/')[1]}`}>{value.split('/')[0]}</a>
+);
+
+RNAGetIdRenderer.propTypes = {
+    /** @id value to render */
+    value: PropTypes.any.isRequired,
+};
+
+RNAGetDataRegistry.register({ field: 'featureID' }, RNAGetIdRenderer);
 
 
 /**

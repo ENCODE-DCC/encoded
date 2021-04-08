@@ -330,7 +330,9 @@ class Analysis(Item):
         pipeline_version=None
     ):
         analysis_type = 'Lab custom'
-        if pipeline_labs == ['/labs/encode-processing-pipeline/']:
+        if len(set(pipeline_labs)) > 1:
+            analysis_type = 'Mixed pipelines'
+        elif pipeline_labs == ['/labs/encode-processing-pipeline/']:
             analysis_type = 'Uniform'
             if pipeline_award_rfas:
                 analysis_type = ', '.join(pipeline_award_rfas)

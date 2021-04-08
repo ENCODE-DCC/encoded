@@ -28,14 +28,6 @@ import Tooltip from '../libs/ui/tooltip';
 import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
 
-const anisogenicValues = [
-    'anisogenic, sex-matched and age-matched',
-    'anisogenic, age-matched',
-    'anisogenic, sex-matched',
-    'anisogenic',
-];
-
-
 /**
  * List of displayable library properties, the title to display it with, and the value to use for
  * its data-test attribute.
@@ -503,10 +495,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         statuses.push({ status: context.internal_status, title: 'Internal' });
     }
 
-    // Determine whether the experiment is isogenic or anisogenic. No replication_type
-    // indicates isogenic.
-    const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
-
     // Get a map of related datasets, possibly filtering on their status and
     // categorized by their type.
     let seriesMap = {};
@@ -932,7 +920,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
             {/* Display the file widget with the facet, graph, and tables for Experiment and FunctionalCharacterizationExperiment only. */}
             {!isEnhancerExperiment ?
-                <FileGallery context={context} anisogenic={anisogenic} />
+                <FileGallery context={context} />
             : null}
 
             {biosampleCharacterizations && biosampleCharacterizations.length > 0 ?

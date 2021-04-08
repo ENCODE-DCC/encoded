@@ -84,6 +84,8 @@ EMBEDDED_DATASET_FIELDS = [
     'assay_title',
     'assay_term_name',
     'annotation_type',
+    'annotation_subtype',
+    'biochemical_inputs',
     'biosample_ontology',
     'target',
     'targets',
@@ -523,6 +525,43 @@ class File(Item):
         path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
         path.expand(request, properties)
         return properties.get('dataset', {}).get('annotation_type')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Annotation subtype",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "notSubmittable": True
+        }
+    )
+    def annotation_subtype(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('annotation_subtype')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Biochemical inputs",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "notSubmittable": True
+        }
+    )
+    def biochemical_inputs(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        if properties.get('dataset', {}).get('biochemical_inputs'):
+            return properties.get('dataset', {}).get('biochemical_inputs')
 
     @calculated_property(
         condition='dataset',

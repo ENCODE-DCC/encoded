@@ -7,11 +7,18 @@ import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor, auditsDisplayed, filterAuditByPath } from './audit';
-import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
-import { requestFiles, DownloadableAccession, computeAssemblyAnnotationValue, filterForVisualizableFiles, useMount } from './objectutils';
+import {
+    requestFiles,
+    DownloadableAccession,
+    computeAssemblyAnnotationValue,
+    filterForVisualizableFiles,
+    useMount,
+    requestSearch,
+    requestUri,
+} from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -59,9 +66,9 @@ const inclusionStatuses = [
 /**
  * Compile the usable experiment analysis objects into a form for rendering a dropdown of pipeline
  * labs. Export for Jest test.
- * @param {object} experiment Contains the analyses to convert into an pipeline labs dropdown
+ * @param {array} analyses Analyses to compile, from one or more datasets
  * @param {array} files Array of all files from search that gets included in file gallery
- * @dataFormat{string} Massages data to a be in a particular structure if set
+ * @param {string} dataFormat Massages data to a be in a particular structure if set
  *
  * @return {array} Compiled analyses information, each element with the form:
  * {
@@ -74,13 +81,13 @@ const inclusionStatuses = [
  *      files: Array of files selected with the pipeline lab and assembly
  * }
  */
-export const compileAnalyses = (experiment, files, dataFormat = null) => {
+export const compileAnalyses = (analyses, files, dataFormat = null) => {
     let compiledAnalyses = [];
-    if (experiment.analysis_objects && experiment.analysis_objects.length > 0) {
+    if (analyses && analyses.length > 0) {
         // Get all the analysis objects that qualify for inclusion in the Pipeline facet.
         // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
         // `UNIFORM_PIPELINE_LAB` is only valid if alone.
-        const qualifyingAnalyses = experiment.analysis_objects.filter((analysis) => (
+        const qualifyingAnalyses = analyses.filter((analysis) => (
             analysis.assembly
             && analysis.assembly !== 'mixed'
             && analysis.genome_annotation !== 'mixed'));
@@ -153,6 +160,29 @@ export const compileAnalyses = (experiment, files, dataFormat = null) => {
     return _(compiledAnalyses).sortBy((compiledAnalysis) => -compiledAnalysis.assemblyAnnotationValue);
 };
 
+
+/**
+ * Filter to files that, based on their status and that of the experiment itself, get included in
+ * batch download. Must be kept in sync with criteria used in the `files` calculated property in
+ * dataset.py.
+ * @param {object} context Dataset context object
+ * @param {array} files Files to filter
+ * @return {array} `files` but only including downloadable files.
+ */
+const filterDownloadableFilesByStatus = (context, files) => {
+    if (files) {
+        let filteredFiles = files.filter((file) => !file.restricted && !file.no_file_available);
+        if (context.status === 'released') {
+            filteredFiles = filteredFiles.filter((file) => ['released', 'archived'].includes(file.status));
+        } else {
+            filteredFiles = filteredFiles.filter((file) => !['revoked', 'deleted', 'replaced'].includes(file.status));
+        }
+        return filteredFiles;
+    }
+    return [];
+};
+
+
 /**
  * True if there is at least one file that can be downloaded. False others
  *
@@ -169,7 +199,7 @@ export class FileTable extends React.Component {
         super(props);
 
         const analysisObjects = {};
-        (props.context.analysis_objects || []).forEach((analysisObject) => {
+        (props.analyses || []).forEach((analysisObject) => {
             analysisObjects[analysisObject.accession] = analysisObject.status !== 'released';
         });
 
@@ -234,6 +264,7 @@ export class FileTable extends React.Component {
     render() {
         const {
             context,
+            analyses,
             items,
             graphedFiles,
             filePanelHeader,
@@ -274,8 +305,8 @@ export class FileTable extends React.Component {
                 return true;
             });
             const filteredCount = datasetFiles.length;
-            const analysisObjectsFiles = context.analysis_objects
-                ? context.analysis_objects.sort((a, b) => {
+            const analysisObjectsFiles = analyses
+                ? analyses.sort((a, b) => {
                     if (a.status === 'released') {
                         return -1;
                     }
@@ -318,7 +349,7 @@ export class FileTable extends React.Component {
 
             const analysisObjectKeys = Object.keys(files).filter((file) => file.includes('ENCAN'));
             const otherKeys = Object.keys(files).filter((file) => file === nonAnalysisObjectPrefix); // all files not parts of an analysis object
-            const compileAnalysis = compileAnalyses(context, datasetFiles, 'processed data');
+            const compileAnalysis = compileAnalyses(analyses, datasetFiles, 'processed data');
 
             const getAnalysisName = (accession) => {
                 const selectedAnalysis = compileAnalysis.find((c) => c.accession === accession);
@@ -377,6 +408,7 @@ export class FileTable extends React.Component {
                                         collapsed={this.state.collapsed[key]}
                                         handleCollapse={() => this.handleCollapse(key)}
                                         context={context}
+                                        analyses={analyses}
                                         analysisObjectKey={key}
                                         filters={filters}
                                         totalFiles={files && files[key] ? files[key].length : 0}
@@ -384,7 +416,9 @@ export class FileTable extends React.Component {
                                             !options.hideDownload
                                             && key !== nonAnalysisObjectPrefix
                                             && context.analysis_objects
-                                            && ['released', 'archived'].includes(context.analysis_objects.find((a) => a.accession === key).status)
+                                            && analyses
+                                            && ['released', 'archived'].includes(analyses.find((a) => a.accession === key).status)
+                                            && filterDownloadableFilesByStatus(context, files[key]).length > 0
                                         }
                                         inclusionOn={options.inclusionOn}
                                         files={files[key]}
@@ -419,7 +453,7 @@ export class FileTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files && files.ref ? files.ref.length : 0}
                                     inclusionOn={options.inclusionOn}
-                                    isDownloadable={!options.hideDownload}
+                                    isDownloadable={!options.hideDownload && filterDownloadableFilesByStatus(context, files.ref).length > 0}
                                     files={files.ref}
                                 />
                             }
@@ -449,6 +483,8 @@ export class FileTable extends React.Component {
 FileTable.propTypes = {
     /** Dataset-type object being rendered */
     context: PropTypes.object.isRequired,
+    /** Analysis objects from context or collected separately */
+    analyses: PropTypes.array,
     /** Array of files to appear in the table */
     items: PropTypes.array.isRequired,
     /** Specifies which files are in the graph */
@@ -484,12 +520,14 @@ FileTable.propTypes = {
         inclusionOn: PropTypes.bool,
         /** True to hide download button in table section headers */
         hideDownload: PropTypes.bool,
+        /** True to have no file tables appear collapsed when selecting File Details tab */
         collapseNone: PropTypes.bool,
     }),
     filters: PropTypes.object, // filters user selected
 };
 
 FileTable.defaultProps = {
+    analyses: null,
     graphedFiles: null,
     filePanelHeader: null,
     showFileCount: false,
@@ -678,6 +716,7 @@ const sortBioReps = (a, b) => {
     return result;
 };
 
+
 class RawSequencingTable extends React.Component {
     constructor() {
         super();
@@ -851,7 +890,7 @@ class RawSequencingTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
-                                    isDownloadable={isDownloadable}
+                                    isDownloadable={isDownloadable && filterDownloadableFilesByStatus(context, files).length > 0}
                                     files={files}
                                 />
                             </th>
@@ -1068,7 +1107,7 @@ class RawFileTable extends React.Component {
                                     filters={filters}
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
-                                    isDownloadable={isDownloadable}
+                                    isDownloadable={isDownloadable && filterDownloadableFilesByStatus(context, files).length > 0}
                                     files={files}
                                 />
                             </th>
@@ -1223,41 +1262,107 @@ DatasetFiles.defaultProps = {
 };
 
 
-// File display widget, showing a facet list, a table, and a graph (and maybe a BioDalliance).
-// This component only triggers the data retrieval, which is done with a search for files associated
-// with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
-// to the experiment URL, but they apply to the file search -- not the experiment itself.
-export const FileGallery = ({ context, hideGraph, hideControls, collapseNone, altFilterDefault, showReplicateNumber }, reactContext) => (
-    <FetchedData>
-        <Param name="data" url={`/search/?limit=all&type=File&dataset=${context['@id']}`} />
-        <Param name="schemas" url="/profiles/" />
+/**
+ * File display widget, showing a facet list, Valis, a table, and a graph. This component only
+ * triggers the data retrieval, which is done with a search for files associated with the given
+ * experiment (in `context`). The source of files gets specified either by `fileQuery` or
+ * `fileProp`. With `fileQuery` a search request with the given query string goes to the server,
+ * and displayed files come from the results. With `fileProp` a property embedded in the dataset
+ */
+export const FileGallery = ({
+    context,
+    fileQuery,
+    files,
+    analyses,
+    hideGraph,
+    hideControls,
+    collapseNone,
+    showReplicateNumber,
+    showDetailedTracks,
+    hideAnalysisSelector,
+}, reactContext) => {
+    // Holds all schemas loaded from a request; used by the file graph.
+    const [schemas, setSchemas] = React.useState(null);
+    // Holds file search results from a request.
+    const [data, setData] = React.useState([]);
+
+    useMount(() => {
+        // Retrieve schemas for file graph.
+        requestUri('/profiles/').then((schemaData) => {
+            setSchemas(schemaData);
+        });
+    });
+
+    React.useEffect(() => {
+        if (files) {
+            // Array of files provided, so set without a request to the server.
+            setData(files);
+        } else {
+            // Request files from the server.
+            const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}`;
+            requestSearch(query).then((requestedData) => {
+                setData(requestedData['@graph']);
+            });
+        }
+    }, [fileQuery, files]);
+
+    return (
         <FileGalleryRenderer
             context={context}
-            session={reactContext.session}
+            data={data}
+            analyses={analyses || context.analysis_objects}
+            schemas={schemas}
+            session={reactContext && reactContext.session}
             hideGraph={hideGraph}
             hideControls={hideControls}
             collapseNone={collapseNone}
-            altFilterDefault={altFilterDefault}
             showReplicateNumber={showReplicateNumber}
+            showDetailedTracks={showDetailedTracks}
+            hideAnalysisSelector={hideAnalysisSelector}
         />
-    </FetchedData>
-);
+    );
+};
+
+/**
+ * Custom PropType validator to have `fileQuery` or `fileProp` or neither, but not both, and either
+ * must be a string.
+ */
+const testFileGalleryProps = (props, propName, componentName) => {
+    if (props.fileQuery && props.files) {
+        return new Error(`At most one of props 'fileQuery' or 'files' allowed in '${componentName}'.`);
+    }
+    if (propName === 'fileQuery' && props[propName] && typeof props[propName] !== 'string') {
+        return new Error(`Prop '${propName}' in '${componentName}' must be string.`);
+    }
+    if (propName === 'files' && props[propName] && !Array.isArray(props[propName])) {
+        return new Error(`Prop '${propName}' in '${componentName}' must be an array of files.`);
+    }
+    return null;
+};
 
 FileGallery.propTypes = {
     context: PropTypes.object.isRequired, // Dataset object whose files we're rendering
+    fileQuery: testFileGalleryProps, // Query string for file search; default if not given
+    files: testFileGalleryProps, // Dataset property name from which to retrieve files
+    analyses: PropTypes.array, // Array of analyses, if not using context.analyses
     hideGraph: PropTypes.bool, // T to only render file-table pane
     hideControls: PropTypes.bool, // True to hide visualize/download controls in table header
     collapseNone: PropTypes.bool, // True to have no file subtables collapsed
-    altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
     showReplicateNumber: PropTypes.bool, // True to show replicate number
+    showDetailedTracks: PropTypes.bool, // True to show more detailed tracks in browser
+    hideAnalysisSelector: PropTypes.bool, // True to hide analysis selector dropdown
 };
 
 FileGallery.defaultProps = {
+    fileQuery: '',
+    files: null,
+    analyses: null,
     hideGraph: false,
     hideControls: false,
     collapseNone: false,
-    altFilterDefault: false,
     showReplicateNumber: true,
+    showDetailedTracks: false,
+    hideAnalysisSelector: false,
 };
 
 FileGallery.contextTypes = {
@@ -2498,7 +2603,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
      * Selects certain awards as the default if listed.
     */
     useMount(() => {
-        const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
+        const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed labs', 'Lab custom']; // ordered in decreasing precedence
         const analysesAwarded = analyses.filter((analysis) => awardSuffix.some((award) => (analysis.title || '').includes(award)));
 
         // a bit hacky, removes text and use number to determine sorting
@@ -2570,9 +2675,21 @@ AnalysesSelector.propTypes = {
 };
 
 
-const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef } = props;
-
+const TabPanelFacets = ({
+    open,
+    currentTab,
+    filters,
+    allFiles,
+    filterFiles,
+    toggleFacets,
+    clearFileFilters,
+    experimentType,
+    analyses,
+    selectedAnalysesIndex,
+    handleAnalysesSelection,
+    analysisSelectorRef,
+    hideAnalysisSelector,
+}) => {
     // Filter file list to make sure it includes only files that should be displayed
     const fileList = currentTab === 'browser' ? filterForVisualizableFiles(allFiles) : allFiles;
 
@@ -2597,7 +2714,7 @@ const TabPanelFacets = (props) => {
         replicate = createFacetObject('biological_replicates', fileList, filters);
     }
 
-    const selector = currentTab === 'tables'
+    const selector = currentTab === 'tables' || hideAnalysisSelector
         ? ''
         : (currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0
             ? <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} analysisSelectorRef={analysisSelectorRef} />
@@ -2645,10 +2762,13 @@ TabPanelFacets.propTypes = {
     /** Function to call when the user changes the currently selected pipeline lab analyses */
     handleAnalysesSelection: PropTypes.func.isRequired,
     analysisSelectorRef: PropTypes.object.isRequired, // analysis selector DOM object
+    /** True to hide the analysis selector dropdown */
+    hideAnalysisSelector: PropTypes.bool,
 };
 
 TabPanelFacets.defaultProps = {
     analyses: [],
+    hideAnalysisSelector: false,
 };
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
@@ -2660,7 +2780,7 @@ class FileGalleryRendererComponent extends React.Component {
 
         const loggedIn = !!(context.session && context.session['auth.userid']);
         const adminUser = loggedIn && !!(context.session_properties && context.session_properties.admin);
-        const datasetFiles = props.data ? props.data['@graph'] : [];
+        const datasetFiles = props.data;
 
         this.experimentType = props.context['@type'][0];
 
@@ -2691,7 +2811,7 @@ class FileGalleryRendererComponent extends React.Component {
             /** Current tab: 'browser', 'graph', or 'tables' */
             currentTab: 'tables',
             /** Sorted compiled dataset analysis objects filtered by available assemblies */
-            compiledAnalyses: compileAnalyses(props.context, datasetFiles, 'choose analysis'),
+            compiledAnalyses: compileAnalyses(props.analyses, datasetFiles, 'choose analysis'),
             /** Index of currently/last selected `compiledAnalyses`. */
             selectedAnalysesIndex: 0,
         };
@@ -2780,7 +2900,7 @@ class FileGalleryRendererComponent extends React.Component {
             this.updateChooseAnalysis(analyses, selectedIndex);
         }
 
-        const updateAssembly = prevState.currentTab !== this.state.currentTab || prevState.inclusionOn !== this.state.inclusionOn || prevProps.data !== this.props.data;
+        const updateAssembly = prevState.currentTab !== this.state.currentTab || prevState.inclusionOn !== this.state.inclusionOn || prevProps.data.length !== this.props.data.length;
         this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']), updateAssembly);
     }
 
@@ -3051,12 +3171,12 @@ class FileGalleryRendererComponent extends React.Component {
      * combined files so we can choose a visualization browser.
      */
     updateFiles(prevLoggedIn, updateAssembly) {
-        const { context, data } = this.props;
+        const { context, data, analyses, hideAnalysisSelector } = this.props;
         const { session } = this.context;
         const { currentTab } = this.state;
         const loggedIn = !!(session && session['auth.userid']);
         const relatedFileAtIds = context.related_files && context.related_files.length > 0 ? context.related_files : [];
-        const datasetFiles = data ? data['@graph'] : [];
+        const datasetFiles = data;
 
         // The number of related_files has changed (or we have related_files for the first time).
         // Request them and add them to the files from the original file request.
@@ -3077,9 +3197,9 @@ class FileGalleryRendererComponent extends React.Component {
 
             const dropdown = this.analysisSelectorRef.current;
             let selectedIndex = 0;
-            let compiledAnalysis = compileAnalyses(context, allFiles, 'choose analysis');
+            let compiledAnalysis = compileAnalyses(analyses, allFiles, 'choose analysis');
 
-            if (currentTab === 'browser') {
+            if (currentTab === 'browser' && !hideAnalysisSelector) {
                 compiledAnalysis = this.getBrowserAnalysis(allFiles, compiledAnalysis);
                 selectedIndex = this.getBrowserSelectedIndex(compiledAnalysis);
             } else {
@@ -3134,7 +3254,7 @@ class FileGalleryRendererComponent extends React.Component {
                     // Determine available assemblies
                     const assemblyList = this.setAssemblyList(allFiles);
                     // Update compiled analyses filtered by available assemblies
-                    if (context.analysis_objects && context.analysis_objects.length > 0) {
+                    if (this.props.analyses && this.props.analyses.length > 0) {
                         availableCompiledAnalyses = compiledAnalysis;
                     }
                     if (availableCompiledAnalyses.length > 0) {
@@ -3243,11 +3363,14 @@ class FileGalleryRendererComponent extends React.Component {
     render() {
         const {
             context,
+            analyses,
             schemas,
             hideGraph,
             hideControls,
             collapseNone,
             showReplicateNumber,
+            showDetailedTracks,
+            hideAnalysisSelector,
             auditIndicators,
             auditDetail,
         } = this.props;
@@ -3263,7 +3386,7 @@ class FileGalleryRendererComponent extends React.Component {
         const facetFiles = this.filterForInclusion(this.state.allFiles);
 
         // Compile pipeline lab information for pipeline lab dropdown.
-        if (this.state.compiledAnalyses.length > 0 && this.state.selectedAssembly) {
+        if (!hideAnalysisSelector && this.state.compiledAnalyses.length > 0 && this.state.selectedAssembly) {
             // Filter renderable and visualizable files to include only those in the matching
             // analyses plus raw-data files. If no matching analyses, all files get included.
             // entries can  get hidden, so the or-condition is needed.
@@ -3307,6 +3430,7 @@ class FileGalleryRendererComponent extends React.Component {
             <FileTable
                 context={context}
                 items={includedFiles}
+                analyses={analyses}
                 selectedFilterValue={this.state.selectedFilterValue}
                 filters={this.state.fileFilters}
                 filterOptions={this.state.availableAssembliesAnnotations}
@@ -3347,23 +3471,26 @@ class FileGalleryRendererComponent extends React.Component {
         };
         const modalClass = meta ? `graph-modal--${modalTypeMap[meta.type]}` : '';
         const browsers = this.getAvailableBrowsers();
-        const tabs = { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
-        const filterControls = (
-            <FilterControls
-                selectedFilterValue={this.state.selectedFilterValue}
-                filterOptions={this.state.availableAssembliesAnnotations}
-                filters={this.state.fileFilters}
-                inclusionOn={this.state.inclusionOn}
-                browsers={browsers}
-                currentBrowser={this.state.currentBrowser}
-                selectedBrowserFiles={this.state.selectedBrowserFiles}
-                handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                handleInclusionChange={this.handleInclusionChange}
-                browserChangeHandler={this.handleBrowserChange}
-                visualizeHandler={this.handleVisualize}
-                context={context}
-            />
-        );
+        const tabs = hideGraph
+            ? { browser: 'Genome browser', tables: 'File details' }
+            : { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
+        const filterControls = !hideControls
+            ? (
+                <FilterControls
+                    selectedFilterValue={this.state.selectedFilterValue}
+                    filterOptions={this.state.availableAssembliesAnnotations}
+                    filters={this.state.fileFilters}
+                    inclusionOn={this.state.inclusionOn}
+                    browsers={browsers}
+                    currentBrowser={this.state.currentBrowser}
+                    selectedBrowserFiles={this.state.selectedBrowserFiles}
+                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                    handleInclusionChange={this.handleInclusionChange}
+                    browserChangeHandler={this.handleBrowserChange}
+                    visualizeHandler={this.handleVisualize}
+                    context={context}
+                />
+            ) : null;
 
         return (
             <Panel>
@@ -3371,69 +3498,67 @@ class FileGalleryRendererComponent extends React.Component {
                     <h4>Files</h4>
                 </PanelHeading>
 
-                { (!hideGraph) ?
-                    <div className="file-gallery-container">
-                        <TabPanelFacets
-                            open={this.state.facetsOpen}
-                            currentTab={this.state.currentTab}
-                            filters={this.state.fileFilters}
-                            allFiles={facetFiles}
-                            filterFiles={this.filterFiles}
-                            toggleFacets={this.toggleFacets}
-                            clearFileFilters={this.clearFileFilters}
-                            experimentType={this.experimentType}
-                            analyses={this.state.compiledAnalyses}
-                            selectedAnalysesIndex={this.state.selectedAnalysesIndex}
-                            handleAnalysesSelection={this.handleAnalysesSelection}
-                            analysisSelectorRef={this.analysisSelectorRef}
-                            context={context}
-                        />
-                        <TabPanel
-                            tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
-                            tabs={tabs}
-                            decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
-                            decorationClasses="file-gallery__inclusion-selector"
-                            selectedTab={this.state.currentTab}
-                            handleTabClick={this.handleTabClick}
-                        >
-                            <TabPanelPane key="browser">
-                                <GenomeBrowser
-                                    files={includedFiles}
-                                    label="file gallery"
-                                    expanded={this.state.facetsOpen}
-                                    assembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : ''}
-                                    annotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : ''}
-                                    displaySort
-                                />
-                            </TabPanelPane>
-                            <TabPanelPane key="graph">
-                                <FileGraph
-                                    dataset={context}
-                                    files={graphIncludedFiles}
-                                    highlightedFiles={highlightedFiles}
-                                    infoNode={this.state.infoNode}
-                                    selectedAssembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : undefined}
-                                    selectedAnnotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : undefined}
-                                    schemas={schemas}
-                                    colorize={this.state.inclusionOn}
-                                    handleNodeClick={this.handleNodeClick}
-                                    loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
-                                />
-                            </TabPanelPane>
-                            <TabPanelPane key="tables">
-                                {filterControls}
-                                {fileTable}
-                            </TabPanelPane>
-                        </TabPanel>
-                    </div>
-                :
-                    <div>
-                        {!hideControls ?
-                            <>{filterControls}</>
-                        : null}
-                        {fileTable}
-                    </div>
-                }
+                <div className="file-gallery-container">
+                    <TabPanelFacets
+                        open={this.state.facetsOpen}
+                        currentTab={this.state.currentTab}
+                        filters={this.state.fileFilters}
+                        allFiles={facetFiles}
+                        filterFiles={this.filterFiles}
+                        toggleFacets={this.toggleFacets}
+                        clearFileFilters={this.clearFileFilters}
+                        experimentType={this.experimentType}
+                        analyses={this.state.compiledAnalyses}
+                        selectedAnalysesIndex={this.state.selectedAnalysesIndex}
+                        handleAnalysesSelection={this.handleAnalysesSelection}
+                        analysisSelectorRef={this.analysisSelectorRef}
+                        context={context}
+                        hideAnalysisSelector={hideAnalysisSelector}
+                    />
+                    <TabPanel
+                        tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
+                        tabs={tabs}
+                        decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
+                        decorationClasses="file-gallery__inclusion-selector"
+                        selectedTab={this.state.currentTab}
+                        handleTabClick={this.handleTabClick}
+                    >
+                        <TabPanelPane key="browser">
+                            <GenomeBrowser
+                                files={includedFiles}
+                                label={showDetailedTracks ? 'cart' : 'file gallery'}
+                                expanded={this.state.facetsOpen}
+                                assembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : ''}
+                                annotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : ''}
+                                displaySort
+                            />
+                        </TabPanelPane>
+                        {!hideGraph
+                            ? (
+                                <TabPanelPane key="graph">
+                                    <FileGraph
+                                        dataset={context}
+                                        files={graphIncludedFiles}
+                                        highlightedFiles={highlightedFiles}
+                                        infoNode={this.state.infoNode}
+                                        selectedAssembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : undefined}
+                                        selectedAnnotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : undefined}
+                                        schemas={schemas}
+                                        colorize={this.state.inclusionOn}
+                                        handleNodeClick={this.handleNodeClick}
+                                        loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
+                                        auditIndicators={this.props.auditIndicators}
+                                        auditDetail={this.props.auditDetail}
+                                    />
+                                </TabPanelPane>
+                            )
+                            : null}
+                        <TabPanelPane key="tables">
+                            {filterControls}
+                            {fileTable}
+                        </TabPanelPane>
+                    </TabPanel>
+                </div>
 
                 {meta && this.state.infoNodeVisible ?
                     <Modal closeModal={this.closeModal}>
@@ -3455,7 +3580,9 @@ FileGalleryRendererComponent.propTypes = {
     /** Dataset whose files we're rendering */
     context: PropTypes.object.isRequired,
     /** File data retrieved from search request */
-    data: PropTypes.object,
+    data: PropTypes.array,
+    /** Analyses independently gathered or from context */
+    analyses: PropTypes.array,
     /** Schemas for the entire system; used for QC property titles */
     schemas: PropTypes.object,
     /** True to hide graph display */
@@ -3466,6 +3593,10 @@ FileGalleryRendererComponent.propTypes = {
     collapseNone: PropTypes.bool,
     /** True to default to All Assemblies and Annotations */
     altFilterDefault: PropTypes.bool,
+    /** True to show detailed track info in genome browser */
+    showDetailedTracks: PropTypes.bool,
+    /** True to hide the analysis selector dropdown */
+    hideAnalysisSelector: PropTypes.bool,
     /** Inherited from auditDecor HOC */
     auditIndicators: PropTypes.func.isRequired,
     /** Inherited from auditDecor HOC */
@@ -3473,17 +3604,21 @@ FileGalleryRendererComponent.propTypes = {
     /** True to show replicate number */
     showReplicateNumber: PropTypes.bool,
     /** ENCODE session object from <App> */
-    session: PropTypes.object.isRequired,
+    session: PropTypes.object,
 };
 
 FileGalleryRendererComponent.defaultProps = {
-    data: null,
+    data: [],
+    analyses: null,
     schemas: null,
     hideGraph: false,
     hideControls: false,
     collapseNone: false,
     altFilterDefault: false,
+    showDetailedTracks: false,
+    hideAnalysisSelector: false,
     showReplicateNumber: true,
+    session: null,
 };
 
 FileGalleryRendererComponent.contextTypes = {
@@ -3501,6 +3636,7 @@ const CollapsingTitleComponent = ({
     handleCollapse,
     collapsed,
     context,
+    analyses,
     filters,
     analysisObjectKey,
     outputCategory,
@@ -3515,8 +3651,8 @@ const CollapsingTitleComponent = ({
     audit,
 }, reactContext) => {
     const [downloadModalVisibility, setDownloadModalVisibility] = useState(false);
-    const analysis = context.analysis_objects
-        ? context.analysis_objects.find((analysisObject) => analysisObject.accession === analysisObjectKey)
+    const analysis = analyses
+        ? analyses.find((analysisObject) => analysisObject.accession === analysisObjectKey)
         : null;
 
     const handleDownloadClick = () => {
@@ -3595,6 +3731,7 @@ const CollapsingTitleComponent = ({
 
 CollapsingTitleComponent.propTypes = {
     context: PropTypes.object.isRequired, // context
+    analyses: PropTypes.array,
     title: PropTypes.string.isRequired, // Title to display in the title bar
     handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
     collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
@@ -3617,6 +3754,7 @@ CollapsingTitleComponent.propTypes = {
 };
 
 CollapsingTitleComponent.defaultProps = {
+    analyses: null,
     collapsed: false,
     filters: [],
     analysisObjectKey: '',
