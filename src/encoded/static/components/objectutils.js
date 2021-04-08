@@ -100,11 +100,13 @@ export function treatmentDisplay(treatment) {
 }
 
 
-// Do a search of an arbitrary query string passed in the `query` parameter, and return a promise.
-// If, for whatever reason, no results could be had, an empty object gets returned from the
-// promise.
-export function requestSearch(query) {
-    return fetch(`/search/?${query}`, {
+/**
+ * Perform a request to the given URI and return the results in a promise.
+ * @param {string} URI to request from the server
+ * @return {promise} Contains request results
+ */
+export const requestUri = (queryUri) => (
+    fetch(queryUri, {
         method: 'GET',
         headers: {
             Accept: 'application/json',
@@ -115,7 +117,19 @@ export function requestSearch(query) {
             return response.json();
         }
         return Promise.resolve(null);
-    }).then((responseJson) => responseJson || {});
+    }).then((responseJson) => responseJson || {})
+);
+
+
+/**
+ * Do a search of an arbitrary query string passed in the `query` parameter, and return a promise.
+ * If, for whatever reason, no results could be had, an empty object gets returned from the
+ * promise.
+ * @param {string} query Query string, not including ?
+ * @return {promise} Contains search results object
+ */
+export function requestSearch(query) {
+    return requestUri(`/search/?${query}`);
 }
 
 
