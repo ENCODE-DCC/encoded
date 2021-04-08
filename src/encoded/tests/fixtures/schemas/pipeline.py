@@ -35,6 +35,17 @@ def pipeline_dnase_encode4(testapp, lab, award, analysis_step_dnase_encode4):
 
 
 @pytest.fixture
+def pipeline_rna_encode4(testapp, lab, award, analysis_step_rna_encode4):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'title': "RNA-seq pipeline",
+        'analysis_steps': [analysis_step_rna_encode4['@id']]
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
 def pipeline_1():
     return {
         'schema_version': '1',
@@ -136,5 +147,22 @@ def ATAC_pipeline(testapp, encode_lab, award,
         'analysis_steps': [analysis_step_atac_encode4_alignment['@id'],
                            analysis_step_atac_encode4_pseudoreplicate_concordance['@id'],
                            analysis_step_atac_encode4_partition_concordance['@id']]
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
+def ChIA_PIPE_pipeline(
+    testapp,
+    encode_lab,
+    award,
+    analysis_step_chia_alignment
+):
+    item = {
+        'award': award['uuid'],
+        'lab': encode_lab['uuid'],
+        'title': 'Ruan Lab ChIA-PIPE Pipeline',
+        'assay_term_names': ['ChIA-PET'],
+        'analysis_steps': [analysis_step_chia_alignment['@id']]
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
