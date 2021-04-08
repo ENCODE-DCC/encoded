@@ -271,7 +271,7 @@ export function donorDiversity(dataset) {
 }
 
 /**
- * Get the control type part of the url
+ * Return control type if needed or empty string other wise.
  *
  * @param {string} type Type
  * @returns Control Type part of URL

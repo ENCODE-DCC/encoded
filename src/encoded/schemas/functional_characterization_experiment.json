@@ -348,7 +348,7 @@
         },
         "control_type": {
             "type": "exists",
-            "title": "Show control experiments"
+            "title": "Hide control experiments"
         },
         "award.project": {
             "title": "Project"

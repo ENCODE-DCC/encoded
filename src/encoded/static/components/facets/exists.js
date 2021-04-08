@@ -52,7 +52,7 @@ const ExistsBooleanFacet = ({ facet, results, mode, relevantFilters, pathname, q
         relevantFilters={relevantFilters}
         pathname={pathname}
         queryString={queryString}
-        defaultValue="no"
+        defaultValue="yes"
     />
 );
 

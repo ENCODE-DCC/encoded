@@ -101,24 +101,45 @@ DefaultBooleanFacet.contextTypes = {
     navigate: PropTypes.func,
 };
 
-/** Render a binary state boolean facte for the "exists" facet. This doesn't get registered as a
- * default facet component, but is provided so we have one component to render all "exists" facets
+/** Render a binary state boolean facet for the "exists" facet. None of the radio buttons are selected
+ * if the hyperlink does not match YES or NO options.
+ *
+ * YES- <facet>!=*
+ * NO - No facet selected
+ * NEITHER SELECTED - <facet>!=<value> or <facet>=*
+ *
+ * This doesn't get registered as a  default facet component, but is provided so we have one
+ * component to render all "exists" facets
  * consistently. For future expansion, note that all properties available to facet-rendering
  * components are available, but this particular implementation only uses a subset of them. */
 export const DefaultExistsBinaryFacet = ({ facet, relevantFilters, queryString, defaultValue }, reactContext) => {
-    let currentOption = defaultValue; // default
-    if (relevantFilters.length === 1 && relevantFilters[0].term === '*') {
-        if (facet.field === relevantFilters[0].field) {
+    let currentOption = defaultValue;
+
+    if (relevantFilters.length === 1) {
+        if (relevantFilters[0].term === '*' && `${facet.field}!` === relevantFilters[0].field) {
             currentOption = 'yes';
+        } else if (relevantFilters[0].term !== '*') {
+            currentOption = undefined; // neither radio button is selected
         } else {
             currentOption = 'no';
         }
+    } else {
+        currentOption = 'no';
     }
 
-    // Sort yes/no facet terms into yes - no order.
-    const sortedTerms = _(facet.terms.filter((term) => term.doc_count > 0)).sortBy((term) => ['yes', 'no'].indexOf(term.key));
+    const facetYesTerm = facet.terms.find((term) => term.key === 'yes');
+    const facetNOTerm = facet.terms.find((term) => term.key === 'no');
 
-    // We have to build the new query string unless the user clicked the "either" radio button,
+    // This may  be counterintuitive! YES-radio button option means set the facet to "facet!=*", so display
+    // nothing with the facet. The NO-radio button means include all facet values.
+    // So set YES-radio button to the facet-no count and set the NO-radio button to both the combined
+    // facet-yes and facet-no counts
+    const terms = [
+        { key: 'yes', doc_count: facetNOTerm.doc_count },
+        { key: 'no', doc_count: facetYesTerm.doc_count + facetNOTerm.doc_count },
+    ];
+
+    // We have to build the new query string
     // which uses the `remove` link from the relevant filter. This callback gets memoized to avoid
     // needlessly re-rendering this component, and its dependencies should normally not change until
     // the user clicks a term.
@@ -128,7 +149,22 @@ export const DefaultExistsBinaryFacet = ({ facet, relevantFilters, queryString, 
         // User clicked the "yes" or "no" radio buttons. Replace any existing relevant query
         // element with one corresponding to the clicked radio button.
         const query = new QueryString(queryString);
-        query.replaceKeyValue(facet.field, '*', value === 'no');
+        const { field } = facet;
+
+        currentOption = value;
+
+        if (value === 'yes') {
+            // delete all entries of the specified field so it can be added anew.
+            // This help avoid issues of having multiple copies of the specified field and
+            // the code and getting in an unspecified state
+            query.deleteKeyValue(field);
+            query.addKeyValue(field, '*', true);
+        } else if (value === 'no') {
+            query.deleteKeyValue(field);
+        } else {
+            currentOption = undefined;
+        }
+
         const href = `?${query.format()}`;
 
         reactContext.navigate(href);
@@ -142,7 +178,7 @@ export const DefaultExistsBinaryFacet = ({ facet, relevantFilters, queryString, 
             <fieldset className="facet">
                 <legend>{facet.title}</legend>
                 <div className="facet__content--exists">
-                    {sortedTerms.map((term) => (
+                    {terms.map((term) => (
                         <div key={term.key} className="facet__radio">
                             <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
                             <label htmlFor={term.key}>
