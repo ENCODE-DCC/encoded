@@ -360,3 +360,16 @@ def test_file_reset_file_upload_bucket_on_upload_credentials(testapp, root, dumm
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'test_file_bucket'
     assert res.json['@graph'][0]['upload_credentials']['upload_url'] == 's3://test_file_bucket/xyz.bed'
+
+
+def test_file_embedded_annotation_properties(testapp, annotation_ccre, file_ccre):
+    testapp.patch_json(
+        annotation_ccre['@id'],
+        {
+            'annotation_subtype': 'CTCF-only',
+            'biochemical_inputs': ['CTCF']
+        }
+    )
+    res = testapp.get(annotation_ccre['@id'] + '@@index-data')
+    assert res.json['object']['annotation_subtype'] == 'CTCF-only'
+    assert res.json['object']['biochemical_inputs'] == ['CTCF']
