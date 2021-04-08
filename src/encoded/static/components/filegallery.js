@@ -2678,7 +2678,6 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
     /**
      * Select default for "Choose Analysis".
      *
-     * It runs after all renders to keep current with analyses
     */
     React.useEffect(() => {
         const awardSuffixes = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
@@ -2731,11 +2730,6 @@ AnalysesSelector.propTypes = {
     handleAnalysesSelection: PropTypes.func.isRequired,
     /** analysis selector DOM object */
     analysisSelectorRef: PropTypes.object.isRequired,
-};
-
-AnalysesSelector.contextTypes = {
-    session: PropTypes.object,
-    session_properties: PropTypes.object,
 };
 
 const TabPanelFacets = ({
