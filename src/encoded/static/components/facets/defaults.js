@@ -118,7 +118,7 @@ export const DefaultExistsBinaryFacet = ({ facet, relevantFilters, queryString, 
     if (relevantFilters.length === 1) {
         if (relevantFilters[0].term === '*' && `${facet.field}!` === relevantFilters[0].field) {
             currentOption = 'yes';
-        } else if (relevantFilters[0].term !== '*') {
+        } else if (relevantFilters[0].term !== '*' || (relevantFilters[0].term === '*' && `${facet.field}` === relevantFilters[0].field)) {
             currentOption = undefined; // neither radio button is selected
         } else {
             currentOption = 'no';
