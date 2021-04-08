@@ -317,12 +317,15 @@ def create_files_mapping(files, excluded_files):
             file_output = file_object.get('output_type')
 
             # Alignments
-            if file_format == 'bam' and \
-                    file_output and (
-                        file_output == 'alignments' or
-                        file_output and file_output == 'redacted alignments'):
+            if file_format == 'bam' and file_output in [
+                'alignments',
+                'redacted alignments'
+            ]:
                 to_return['alignments'][file_object['@id']] = file_object
-            if file_output == 'unfiltered alignments':
+            if file_format == 'bam' and file_output in [
+                'unfiltered alignments',
+                'redacted unfiltered alignments'
+            ]:
                 to_return['unfiltered_alignments'][file_object['@id']] = file_object
 
             # Signal
