@@ -358,11 +358,11 @@ class Dataset(Item):
             if selected_pipeline_version < current_pipeline_version:
                 continue
             # Same pipeline version so rank on date created seventhly.
-            selected_date = datetime.datetime.fromisoformat(
-                selected_analysis['date_created']
+            selected_date = datetime.datetime.strptime(
+                selected_analysis['date_created'], "%Y-%m-%dT%H:%M:%S.%f%z"
             )
-            current_date = datetime.datetime.fromisoformat(
-                anal_obj['date_created']
+            current_date = datetime.datetime.strptime(
+                anal_obj['date_created'], "%Y-%m-%dT%H:%M:%S.%f%z"
             )
             selected_analysis = anal_obj
             if selected_date > current_date:
