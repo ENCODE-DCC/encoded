@@ -366,10 +366,9 @@ def test_file_embedded_annotation_properties(testapp, annotation_ccre, file_ccre
     testapp.patch_json(
         annotation_ccre['@id'],
         {
-            'annotation_subtype': 'CTCF-only',
-            'biochemical_inputs': ['CTCF']
+            'annotation_subtype': 'CTCF-only'
         }
     )
     res = testapp.get(annotation_ccre['@id'] + '@@index-data')
     assert res.json['object']['annotation_subtype'] == 'CTCF-only'
-    assert res.json['object']['biochemical_inputs'] == ['CTCF']
+    assert res.json['object']['biochemical_inputs'] == ['cDHS', 'rDHS']
