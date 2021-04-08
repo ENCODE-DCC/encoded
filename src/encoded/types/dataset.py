@@ -359,10 +359,10 @@ class Dataset(Item):
                 continue
             # Same pipeline version so rank on date created seventhly.
             selected_date = datetime.datetime.strptime(
-                selected_analysis['date_created'], "%Y-%m-%dT%H:%M:%S.%f%z"
+                convert_date_string(selected_analysis['date_created']), "%Y-%m-%dT%H:%M:%S.%f%z"
             )
             current_date = datetime.datetime.strptime(
-                anal_obj['date_created'], "%Y-%m-%dT%H:%M:%S.%f%z"
+                convert_date_string(anal_obj['date_created']), "%Y-%m-%dT%H:%M:%S.%f%z"
             )
             selected_analysis = anal_obj
             if selected_date > current_date:
@@ -371,6 +371,12 @@ class Dataset(Item):
             # Very unlikely given our system date-time but if this is also the
             # same, I'll accept that and won't update `selected_analysis`.
         return selected_analysis.get('id')
+
+
+def convert_date_string(date_string):
+    if ":" == date_string[-3]:
+        date_string = date_string[:-3]+date_string[-2:]
+    return date_string
 
 
 @collection(
