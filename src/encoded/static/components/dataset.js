@@ -1659,6 +1659,67 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
 };
 
 
+/**
+ * Collect released analyses from all the related datasets in the given Series object.
+ * @param {object} context Series object
+ * @return {array} All released analyses from all related datasets; empty if none
+ */
+const collectSeriesAnalyses = (context) => (
+    context.related_datasets
+        ? (
+            context.related_datasets.reduce(
+                (datasetAnalyses, dataset) => (
+                    dataset.analysis_objects
+                        ? datasetAnalyses.concat(
+                            dataset.analysis_objects.filter(
+                                (analysis) => analysis.status === 'released'
+                            )
+                        ) : datasetAnalyses
+                ), []
+            )
+        ) : []
+);
+
+
+/**
+ * Collect default files from all related datasets to the given Series object. This only includes
+ * files also in the given array of analyses. If no analyses given, then just return all default
+ * files.
+ * @param {object} context Series object
+ * @param {array} analyses Analyses from the related datasets of the Series object
+ */
+const collectSeriesFiles = (context, analyses) => {
+    const analysesFilePaths = analyses.reduce((paths, analysis) => paths.concat(analysis.files), []);
+    const files = context.related_datasets
+        ? (
+            context.related_datasets.reduce(
+                (datasetFiles, dataset) => (
+                    datasetFiles.concat(
+                        dataset.files.filter(
+                            // If the analysis array has zero length, include all default files.
+                            // Otherwise, include default files included in the given analyses.
+                            (file) => file.preferred_default && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
+                        )
+                    )
+                ), []
+            )
+        ) : null;
+    return files;
+};
+
+
+/**
+ * Collect all the analyses and files from the related datasets of the given series object.
+ * @param {object} context Series object
+ * @return {object} arrays of qualified analyses and files
+ */
+const collectSeriesAnalysesAndFiles = (context) => {
+    const analyses = collectSeriesAnalyses(context);
+    const files = collectSeriesFiles(context, analyses);
+    return { analyses, files };
+};
+
+
 // Map series @id to title and table columns
 const seriesComponents = {
     MatchedSet: { title: 'matched set series', table: basicTableColumns },
@@ -1690,32 +1751,9 @@ export const SeriesComponent = (props, reactContext) => {
     });
     experiments = _.values(experiments);
 
-    // Accumulate all files and analyses in related datasets.
-    const files = context.related_datasets
-        ? (
-            context.related_datasets.reduce(
-                (datasetFiles, dataset) => (
-                    datasetFiles.concat(
-                        dataset.files.filter(
-                            (file) => file.preferred_default
-                        )
-                    )
-                ), []
-            )
-        ) : null;
-    const analyses = context.related_datasets
-        ? (
-            context.related_datasets.reduce(
-                (datasetAnalyses, dataset) => (
-                    dataset.analysis_objects
-                        ? datasetAnalyses.concat(
-                            dataset.analysis_objects.filter(
-                                (analysis) => analysis.status === 'released'
-                            )
-                        ) : datasetAnalyses
-                ), []
-            )
-        ) : null;
+    // Collect all the default files from all the related datasets of the given Series object,
+    // filtered by the files in the released analyses of the related datasets, if any.
+    const { analyses, files } = collectSeriesAnalysesAndFiles(context);
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
