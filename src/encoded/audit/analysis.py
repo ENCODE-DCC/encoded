@@ -106,7 +106,7 @@ def check_file_read_depth(
     detail = (
         f"Processed {file_to_check['output_type']} file "
         f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-        f"processed by {assay_term_name} {pipeline_title} "
+        f"processed by {assay_term_name} {pipeline_title} pipeline"
         f"{assembly_text}has {read_depth} aligned reads. {second_half_of_detail}"
     )
     if read_depth >= middle_threshold and read_depth < upper_threshold:
@@ -149,7 +149,7 @@ def check_spearman(
                     f'calculating the Spearman correlation between gene quantifications '
                     f'of the replicates. '
                     f'ENCODE processed gene quantification files {", ".join(file_names_links)} '
-                    f"processed by {assay_term_name} {analysis_title} "
+                    f"processed by {assay_term_name} {analysis_title} pipeline "
                     f'have a Spearman correlation of {spearman_correlation:.2f}. '
                     f'According to ENCODE standards, in an {replication_type} '
                     f'assay analyzed using the {pipeline} pipeline, '
@@ -179,7 +179,7 @@ def check_spearman_technical_replicates(
                     f'Replicate concordance in RNA-seq experiments is measured by '
                     f'calculating the Spearman correlation between gene quantifications '
                     f'of the replicates. ENCODE processed gene quantification files '
-                    f'{file_names_links} processed by {assay_term_name} {analysis_title} '
+                    f'{file_names_links} processed by {assay_term_name} {analysis_title} pipeline '
                     f'have a Spearman correlation of '
                     f'{spearman_correlation:.2f} comparing technical replicates. '
                     f'For isogenic biological replicates analyzed using the {pipeline} pipeline, '
@@ -196,7 +196,7 @@ def negative_coefficients(metric, coefficients, files_structure, assay_term_name
                 'alignments')[metric['quality_metric_of'][0]]
             detail = (
                 f"Alignment file {audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
-                f"processed by {assay_term_name} {analysis_title} "
+                f"processed by {assay_term_name} {analysis_title} pipeline "
                 f"has a negative {coefficient} value of {metric[coefficient]}. "
                 f"The {coefficient} value is expected to be a positive number."
             )
@@ -218,7 +218,7 @@ def check_idr(metrics, rescue, self_consistency, assay_term_name, analysis_title
                     f"Replicate concordance in ChIP-seq experiments is measured by "
                     f"calculating IDR values (Irreproducible Discovery Rate). "
                     f"ENCODE processed IDR thresholded peaks files {', '.join(file_names_links)} "
-                    f"processed by {assay_term_name} {analysis_title} "
+                    f"processed by {assay_term_name} {analysis_title} pipeline "
                     f"have a rescue ratio of {rescue_r:.2f} and a "
                     f"self consistency ratio of {self_r:.2f}. "
                     f"According to ENCODE standards, having both rescue ratio "
@@ -237,7 +237,7 @@ def check_idr(metrics, rescue, self_consistency, assay_term_name, analysis_title
                     f"Replicate concordance in ChIP-seq experiments is measured by "
                     f"calculating IDR values (Irreproducible Discovery Rate). "
                     f"ENCODE processed IDR thresholded peaks files {', '.join(file_names_links)} "
-                    f"processed by {assay_term_name} {analysis_title} "
+                    f"processed by {assay_term_name} {analysis_title} pipeline "
                     f"have a rescue ratio of {rescue_r:.2f} and a "
                     f"self consistency ratio of {self_r:.2f}. "
                     f"According to ENCODE standards, having both rescue ratio "
@@ -278,7 +278,7 @@ def check_replicate_metric_dual_threshold(
             file_names_links = [audit_link(path_to_text(file), file) for file in files]
             detail = (
                 f"Files {', '.join(file_names_links)} processed by "
-                f"{assay_term_name} {analysis_title} have {metric_description} "
+                f"{assay_term_name} {analysis_title} pipeline have {metric_description} "
                 f"of {metric_value}, which is below ENCODE {standards_severity}. "
                 f"According to ENCODE data standards, a number for this property "
                 f"in a replicate of > {lower_limit:,} is required, "
@@ -695,7 +695,7 @@ def check_analysis_dnase_seq_standards(
                     f"Signal Portion of Tags (SPOT) is a measure of enrichment, "
                     f"analogous to the commonly used fraction of reads in peaks metric. "
                     f"ENCODE processed alignment files {', '.join(file_names_links)} "
-                    f"processed by {assay_term_name} {value['title']} "
+                    f"processed by {assay_term_name} {value['title']} pipeline"
                     f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                     f"{assemblies_detail(extract_assemblies(alignments_assemblies, file_names))} "
                     f"have a SPOT1 score of {metric['spot1_score']:.2f}. "
@@ -1636,7 +1636,7 @@ def check_analysis_wgbs_encode3_standards(
             elif value['assembly'] == 'GRCh38':
                 coverage = float(m['mapped'] * min(read_lengths)) / 3300000000.0
             detail = (
-                f"Replicate of experiment processed by {assay_term_name} {value['title']} "
+                f"Replicate of experiment processed by {assay_term_name} {value['title']} pipeline "
                 f"( {audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])} ) "
                 f"has a coverage of {coverage:.2f}X. The minimum ENCODE "
                 f"standard coverage for each replicate in a WGBS assay "
@@ -1708,7 +1708,7 @@ def check_analysis_wgbs_encode4_standards(
         if 'average_coverage' in m:
             coverage = m['average_coverage']
             detail = (
-                f"Replicate of experiment processed by {assay_term_name} {value['title']} "
+                f"Replicate of experiment processed by {assay_term_name} {value['title']} pipeline "
                 f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                 f"has a coverage of {coverage:.2f}X. The minimum ENCODE standard coverage for each "
                 f"replicate in a WGBS assay is 25X and the recommended value is "
@@ -2133,7 +2133,7 @@ def check_analysis_chiapet_encode4_qc_standards(
                 detail = (
                     f"Alignment file "
                     f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
-                    f"processed by {assay_term_name} {value['title']} has "
+                    f"processed by {assay_term_name} {value['title']} pipeline has "
                     f"{total_reads} total read pairs. According to ENCODE4 standards, "
                     f"ChIA-PET assays performed with the in-situ protocol require a minimum of "
                     f"150,000,000 total read pairs. For assays performed with the long reads "
@@ -2147,7 +2147,7 @@ def check_analysis_chiapet_encode4_qc_standards(
                 detail = (
                     f"Alignment file "
                     f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
-                    f"processed by {assay_term_name} {value['title']} has "
+                    f"processed by {assay_term_name} {value['title']} pipeline has "
                     f"a fraction of read pairs with bridge linker value of {fraction_bl:.2f}. "
                     f"According to ENCODE4 standards, ChIA-PET assays require a minimum "
                     f"value of 0.5 for fraction of read pairs with bridge linker."
@@ -2160,7 +2160,7 @@ def check_analysis_chiapet_encode4_qc_standards(
                 detail = (
                     f"Alignment file "
                     f"{audit_link(path_to_text(alignment_file['@id']),alignment_file['@id'])} "
-                    f"processed by {assay_term_name} {value['title']} has "
+                    f"processed by {assay_term_name} {value['title']} pipeline has "
                     f"{nonred_pet} total non-redundant PET. According to ENCODE4 standards, "
                     f"ChIA-PET assays require a minimum of 10,000,000 non-redundant PET."
                 )
@@ -2176,7 +2176,7 @@ def check_analysis_chiapet_encode4_qc_standards(
                 detail = (
                     f"Peaks file "
                     f"{audit_link(path_to_text(peak_file['@id']),peak_file['@id'])} "
-                    f"processed by {assay_term_name} {value['title']} has "
+                    f"processed by {assay_term_name} {value['title']} pipeline has "
                     f"{peaks} total peaks. According to ENCODE4 standards, ChIA-PET "
                     f"assays require a minimum of 10,000 protein factor binding peaks."
                 )
@@ -2192,7 +2192,7 @@ def check_analysis_chiapet_encode4_qc_standards(
                 detail = (
                     f"Chromatin interactions file "
                     f"{audit_link(path_to_text(int_file['@id']),int_file['@id'])} "
-                    f"processed by {assay_term_name} {value['title']} "
+                    f"processed by {assay_term_name} {value['title']} pipeline "
                     f"has a ratio of intra/inter-chr PET of {int_ratio:.2f}. "
                     f"According to ENCODE4 standards, ChIA-PET assays performed "
                     f"with the in-situ protocol require a minimum ratio of 1. "
