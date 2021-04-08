@@ -3,6 +3,7 @@ from .biosample import generate_summary_dictionary
 def biosample_summary_information(request, biosampleObject):
     drop_age_sex_flag = False
     add_classification_flag = False
+    drop_originated_from_flag = False
 
     biosampleTypeObject = request.embed(biosampleObject['biosample_ontology'], '@@object')
     if biosampleTypeObject.get('classification') in ['in vitro differentiated cells']:
@@ -30,8 +31,13 @@ def biosample_summary_information(request, biosampleObject):
         part_of_object = request.embed(biosampleObject['part_of'], '@@object')
 
     originated_from_object = None
+    originated_from_ontology_object = None
     if 'originated_from' in biosampleObject:
         originated_from_object = request.embed(biosampleObject['originated_from'], '@@object')
+        originated_from_ontology_object = request.embed(originated_from_object['biosample_ontology'], '@@object')
+    if originated_from_ontology_object and biosampleTypeObject.get('term_name') == \
+            originated_from_ontology_object.get('term_name'):
+        drop_originated_from_flag = True
 
     modifications_list = None
     genetic_modifications = biosampleObject.get('applied_modifications')
@@ -90,4 +96,4 @@ def biosample_summary_information(request, biosampleObject):
         modifications_list,
         True)
 
-    return (dictionary_to_add, drop_age_sex_flag, add_classification_flag)
+    return (dictionary_to_add, drop_age_sex_flag, add_classification_flag, drop_originated_from_flag)

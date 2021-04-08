@@ -100,11 +100,13 @@ export function treatmentDisplay(treatment) {
 }
 
 
-// Do a search of an arbitrary query string passed in the `query` parameter, and return a promise.
-// If, for whatever reason, no results could be had, an empty object gets returned from the
-// promise.
-export function requestSearch(query) {
-    return fetch(`/search/?${query}`, {
+/**
+ * Perform a request to the given URI and return the results in a promise.
+ * @param {string} URI to request from the server
+ * @return {promise} Contains request results
+ */
+export const requestUri = (queryUri) => (
+    fetch(queryUri, {
         method: 'GET',
         headers: {
             Accept: 'application/json',
@@ -115,9 +117,25 @@ export function requestSearch(query) {
             return response.json();
         }
         return Promise.resolve(null);
-    }).then((responseJson) => responseJson || {});
+    }).then((responseJson) => responseJson || {})
+);
+
+
+/**
+ * Do a search of an arbitrary query string passed in the `query` parameter, and return a promise.
+ * If, for whatever reason, no results could be had, an empty object gets returned from the
+ * promise.
+ * @param {string} query Query string, not including ?
+ * @return {promise} Contains search results object
+ */
+export function requestSearch(query) {
+    return requestUri(`/search/?${query}`);
 }
 
+
+const SINGLE_QUERY_SIZE_PADDING = 10;
+const MAX_DOMAIN_LENGTH = 64 + 19 + 8; // Max AWS domain name + .demo.encodedcc.org + https://
+const MAX_URL_LENGTH = 4000 - MAX_DOMAIN_LENGTH;
 
 /**
  * Do a search of the specific objects whose @ids are listed in the `identifiers` parameter. Because
@@ -133,14 +151,13 @@ export function requestSearch(query) {
  *
  * @return {promise} Array of objects requested from the server
  */
-const MAX_URL_LENGTH = 4000;
 export const requestObjects = async (identifiers, uri, queryProp = '@id') => {
     if (identifiers.length > 0) {
         // Calculate a roughly reasonable chunk size based on an estimate of how many query-string
         // elements will fit within the maximum URL size. Assume the first identifier has a length
         // typical for all the identifiers.
-        const singleQuerySize = queryProp.length + identifiers[0].length;
-        const chunkLength = Math.trunc(MAX_URL_LENGTH / singleQuerySize) - Math.trunc(uri.length / singleQuerySize);
+        const singleQuerySize = queryProp.length + identifiers[0].length + SINGLE_QUERY_SIZE_PADDING;
+        const chunkLength = Math.trunc((MAX_URL_LENGTH - uri.length) / singleQuerySize);
 
         // Break `identifiers` into an array of arrays of <= the calculated chunk size.
         const objectChunks = [];

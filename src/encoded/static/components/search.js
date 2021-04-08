@@ -54,6 +54,7 @@ const types = {
     gene_silencing_series: { title: 'Gene silencing series' },
     differentiation_series: { title: 'Differentiation series' },
     pulse_chase_time_series: { title: 'Pulse-chase time series' },
+    single_cell_unit: { title: 'Single cell units' },
 };
 
 const datasetTypes = {
@@ -78,6 +79,7 @@ const datasetTypes = {
     GeneSilencingSeries: types.gene_silencing_series.title,
     DifferentiationSeries: types.differentiation_series.title,
     PulseChaseTimeSeries: types.pulse_chase_time_series.title,
+    SingleCellUnit: types.single_cell_unit.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));
@@ -283,7 +285,7 @@ globals.listingViews.register(Biosample, 'Biosample');
 
 
 /**
- * Renders both Experiment, FunctionalCharacterizationExperiment, TransgenicEnhancerExperiment search results.
+ * Renders both Experiment, FunctionalCharacterizationExperiment, SingleCellUnit, and TransgenicEnhancerExperiment search results.
  */
 const ExperimentComponent = (props, reactContext) => {
     const { context: result, cartControls, mode } = props;
@@ -295,10 +297,13 @@ const ExperimentComponent = (props, reactContext) => {
     // Determine whether object is Experiment, FunctionalCharacterizationExperiment, or TransgenicEnhancerExperiment.
     const experimentType = result['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
+    const isSingleCellUnit = experimentType === 'SingleCellUnit';
     const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
     let displayType;
     if (isFunctionalExperiment) {
         displayType = 'Functional Characterization Experiment';
+    } else if (isSingleCellUnit) {
+        displayType = 'Single Cell Unit';
     } else if (isEnhancerExperiment) {
         displayType = 'Transgenic Enhancer Experiment';
     } else {
@@ -488,6 +493,7 @@ const Experiment = auditDecor(ExperimentComponent);
 
 globals.listingViews.register(Experiment, 'Experiment');
 globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
+globals.listingViews.register(Experiment, 'SingleCellUnit');
 globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 

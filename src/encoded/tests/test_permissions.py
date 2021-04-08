@@ -300,3 +300,15 @@ def test_experiment_submitter_no_edit_status(submitter_testapp, lab, award, expe
 
 def test_submitter_post_analysis_step(submitter_testapp, analysis_step_run_with_no_status):
     submitter_testapp.post_json('/analysis-step-runs', analysis_step_run_with_no_status, status=201)
+
+
+def test_submitter_post_analysis_no_lab(submitter_testapp, analysis_no_lab):
+    submitter_testapp.post_json('/analyses', analysis_no_lab, status=403)
+
+
+def test_submitter_post_analysis_with_lab(submitter_testapp, analysis_with_lab):
+    submitter_testapp.post_json('/analyses', analysis_with_lab, status=201)
+
+
+def test_wrangler_post_analysis_no_lab(wrangler_testapp, analysis_no_lab):
+    wrangler_testapp.post_json('/analyses', analysis_no_lab, status=201)

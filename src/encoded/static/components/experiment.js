@@ -28,14 +28,6 @@ import Tooltip from '../libs/ui/tooltip';
 import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
 
-const anisogenicValues = [
-    'anisogenic, sex-matched and age-matched',
-    'anisogenic, age-matched',
-    'anisogenic, sex-matched',
-    'anisogenic',
-];
-
-
 /**
  * List of displayable library properties, the title to display it with, and the value to use for
  * its data-test attribute.
@@ -354,9 +346,10 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const itemClass = globals.itemClass(context, 'view-item');
 
-    // Determine whether object is Experiment, FunctionalCharacterizationExperiment or TransgenicEnhancerExperiment.
+    // Determine whether object is Experiment, FunctionalCharacterizationExperiment, SingleCellUnit or TransgenicEnhancerExperiment.
     const experimentType = context['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
+    const isSingleCell = experimentType === 'SingleCellUnit';
     const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
     let displayType;
     let displayTypeBreadcrumbs;
@@ -366,6 +359,9 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     } else if (isEnhancerExperiment) {
         displayTypeBreadcrumbs = 'Transgenic Enhancer Experiments';
         displayType = 'Transgenic Enhancer Experiment';
+    } else if (isSingleCell) {
+        displayTypeBreadcrumbs = 'Single Cell Units';
+        displayType = 'Single Cell Unit';
     } else {
         displayTypeBreadcrumbs = 'Experiments';
         displayType = 'Experiment';
@@ -499,10 +495,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         statuses.push({ status: context.internal_status, title: 'Internal' });
     }
 
-    // Determine whether the experiment is isogenic or anisogenic. No replication_type
-    // indicates isogenic.
-    const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
-
     // Get a map of related datasets, possibly filtering on their status and
     // categorized by their type.
     let seriesMap = {};
@@ -554,6 +546,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const fcexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&possible_controls.accession=${context.accession}`;
     const fcelementsmappingUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_mapping=${context['@id']}`;
     const fcelementscloningUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_cloning=${context['@id']}`;
+    const singlecellunitsUrl = `/search/?type=SingleCellUnit&possible_controls.accession=${context.accession}`;
 
 
     // Make a list of reference links, if any.
@@ -702,7 +695,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {/* Display library properties for Experiment and FunctionalCharacterizationExperiment only. */}
+                            {/* Display library properties for Experiment, FunctionalCharacterizationExperiment, and SingleCellUnit only. */}
                             {!isEnhancerExperiment ?
                                 <>
                                     <LibraryProperties replicates={replicates} />
@@ -927,7 +920,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
             {/* Display the file widget with the facet, graph, and tables for Experiment and FunctionalCharacterizationExperiment only. */}
             {!isEnhancerExperiment ?
-                <FileGallery context={context} anisogenic={anisogenic} />
+                <FileGallery context={context} />
             : null}
 
             {biosampleCharacterizations && biosampleCharacterizations.length > 0 ?
@@ -937,6 +930,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
             <FetchedItems context={context} url={fcexperimentsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems context={context} url={singlecellunitsUrl} Component={ControllingExperiments} />
 
             <FetchedItems
                 context={context}
@@ -980,6 +975,7 @@ export default Experiment;
 
 globals.contentViews.register(Experiment, 'Experiment');
 globals.contentViews.register(Experiment, 'FunctionalCharacterizationExperiment');
+globals.contentViews.register(Experiment, 'SingleCellUnit');
 globals.contentViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 

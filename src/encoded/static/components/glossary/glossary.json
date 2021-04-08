@@ -36,6 +36,24 @@
         ]
     },
     {
+        "term": "element gene interactions p-value",
+        "section": "File output types",
+        "file_formats": "bed, bigBed",
+        "definition": "Arcs linking candidate regulatory elements with their target genes, and the significance of the measured change in expression upon CRISPR-based perturbation of the regulatory element."
+    },
+    {
+        "term": "element gene interactions signal",
+        "section": "File output types",
+        "file_formats": "bed, bigBed",
+        "definition": "Arcs linking candidate regulatory elements with their target genes, and the measured change in expression upon CRISPR-based perturbation of the regulatory element."
+    },
+    {
+        "term": "element quantifications",
+        "section": "File output types",
+        "file_formats": "tsv",
+        "definition": "The identifying information and expression change measurements at candidate regulatory elements on the evaluated examined loci following perturbations in a pooled CRISPR screen experiment."
+    },
+    {
         "term": "enrichment",
         "section": "File output types",
         "definition": "Elements or regions that appear at a statistically elevated rate compared to the control or baseline.",
@@ -52,6 +70,12 @@
         "section": "File output types",
         "definition": "Genomic regions with statistically significant enrichments, or \"hotspots\", of DNase I cleavage activity at different false discovery rates.",
         "file_formats": "bed, bigBed"
+    },
+    {
+        "term": "fine-mapped variants",
+        "section": "File output types",
+        "file_formats": "tsv",
+        "definition": "Variants identified by fine-mapping, the process by which a trait-associated region from a genome-wide association study (GWAS) is analysed to identify the particular genetic variants that are likely to causally influence the examined trait."
     },
     {
         "term": "fold change over control",
@@ -124,6 +148,12 @@
                 "title": "ENCODE Reference Sequences"
             }
         ]
+    },
+    {
+        "term": "guide quantifications",
+        "section": "File output types",
+        "file_formats": "tsv",
+        "definition": "The identifying information and sequencing read counts for each gRNA in a pooled CRISPR screen experiment."
     },
     {
         "term": "hotspots",
@@ -304,6 +334,12 @@
                 "title": "ATAC-seq"
             }
         ]
+    },
+    {
+        "term": "perturbation signal",
+        "section": "File output types",
+        "file_formats": "bigWig",
+        "definition": "Guide RNA effect size track, with effects averaged across all gRNAs at a given nucleotide position."
     },
     {
         "term": "plus strand signal of all reads",

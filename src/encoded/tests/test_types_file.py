@@ -360,3 +360,19 @@ def test_file_reset_file_upload_bucket_on_upload_credentials(testapp, root, dumm
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'test_file_bucket'
     assert res.json['@graph'][0]['upload_credentials']['upload_url'] == 's3://test_file_bucket/xyz.bed'
+
+
+def test_file_embedded_annotation_properties(testapp, file_ccre,
+                                             annotation_ccre,
+                                             file_ccre_2, file_ccre_3):
+    # https://encodedcc.atlassian.net/browse/ENCD-5806
+    testapp.patch_json(
+        annotation_ccre['@id'],
+        {
+            'annotation_subtype': 'CTCF-only'
+        }
+    )
+    testapp.patch_json(file_ccre['@id'], {'derived_from': [file_ccre_2['@id'], file_ccre_3['@id']]})
+    res = testapp.get(file_ccre['@id'] + '@@index-data')
+    assert res.json['object']['annotation_subtype'] == 'CTCF-only'
+    assert res.json['object']['biochemical_inputs'] == ['cDHS', 'rDHS']

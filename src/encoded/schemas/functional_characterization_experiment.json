@@ -77,6 +77,8 @@
                             "enum": [
                                 "CRISPR screen",
                                 "MPRA",
+                                "perturbation followed by scRNA-seq",
+                                "perturbation followed by snATAC-seq",
                                 "STARR-seq"
                             ]
                         }
@@ -113,6 +115,8 @@
             "enum": [
                 "CRISPR screen",
                 "MPRA",
+                "perturbation followed by scRNA-seq",
+                "perturbation followed by snATAC-seq",
                 "pooled clone sequencing",
                 "STARR-seq"
             ]

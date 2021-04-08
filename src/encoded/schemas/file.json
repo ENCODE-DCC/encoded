@@ -65,6 +65,10 @@
             "title": "Annotation type",
             "type": "typeahead"
         },
+        "annotation_subtype": {
+            "title": "Annotation subtype",
+            "length": "long"
+        },
         "biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead",
@@ -1455,6 +1459,7 @@
                         "differential expression quantifications",
                         "differential splicing quantifications",
                         "dsQTLs",
+                        "element barcode mapping",
                         "elements reference",
                         "element gene interactions p-value",
                         "element gene interactions signal",
@@ -1472,6 +1477,7 @@
                         "filtered peaks",
                         "filtered regions",
                         "filtered SNPs",
+                        "fine-mapped variants",
                         "fold change over control",
                         "footprints",
                         "gene alignments",
@@ -1563,6 +1569,7 @@
                         "spike-ins",
                         "smoothed methylation state at CpG",
                         "sparse gene count matrix",
+                        "sparse gRNA count matrix",
                         "sparse transcript count matrix",
                         "splice junctions",
                         "subreads",
@@ -1981,6 +1988,12 @@
         },
         "status": {
             "title": "Status"
+        },
+        "annotation_subtype": {
+            "title": "Annotation subtype"
+        },
+        "biochemical_inputs": {
+            "title": "Biochemical inputs"
         }
     },
     "output_type_output_category": {
@@ -2066,6 +2079,7 @@
         "gene stabilities": "quantification",
         "guide quantifications": "quantification",
         "sparse transcript count matrix": "quantification",
+        "sparse gRNA count matrix": "quantification",
 
         "hotspots": "annotation",
         "footprints": "annotation",
@@ -2129,6 +2143,7 @@
         "gRNAs": "annotation",
         "ranked gRNAs": "annotation",
         "read annotations": "annotation",
+        "fine-mapped variants": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -2163,6 +2178,7 @@
         "enhancers reference": "reference",
         "promoters reference": "reference",
         "DHS regions reference": "reference",
+        "element barcode mapping": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
@@ -2225,6 +2241,7 @@
          "assay_title": 1.0,
          "assay_term_name": 1.0,
          "annotation_type": 1.0,
+         "annotation_subtype": 1.0,
          "biosample_ontology.term_name": 1.0,
          "target.label": 1.0,
          "targets.label": 1.0

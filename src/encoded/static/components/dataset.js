@@ -15,7 +15,7 @@ import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
-import { FileGallery, DatasetFiles } from './filegallery';
+import { FileGallery } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
 
@@ -157,7 +157,10 @@ const AnnotationComponent = (props, reactContext) => {
                             {context.annotation_type ?
                                 <div data-test="type">
                                     <dt>Annotation type</dt>
-                                    <dd className="sentence-case">{context.annotation_type}</dd>
+                                    <dd className="sentence-case">
+                                        <span>{context.annotation_type}</span>
+                                        {context.annotation_subtype ? <span> ({context.annotation_subtype})</span> : null}
+                                    </dd>
                                 </div>
                             : null}
 
@@ -752,7 +755,7 @@ const ReferenceComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} hideGraph hideControls collapseNone />
+            <FileGallery context={context} hideGraph collapseNone />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -934,7 +937,7 @@ const ProjectComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} hideGraph hideControls collapseNone />
+            <FileGallery context={context} hideGraph collapseNone />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -1100,7 +1103,7 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
             </Panel>
 
             {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} hideGraph hideControls collapseNone />
+            <FileGallery context={context} hideGraph collapseNone />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -1659,6 +1662,67 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
 };
 
 
+/**
+ * Collect released analyses from all the related datasets in the given Series object.
+ * @param {object} context Series object
+ * @return {array} All released analyses from all related datasets; empty if none
+ */
+const collectSeriesAnalyses = (context) => (
+    context.related_datasets
+        ? (
+            context.related_datasets.reduce(
+                (datasetAnalyses, dataset) => (
+                    dataset.analysis_objects
+                        ? datasetAnalyses.concat(
+                            dataset.analysis_objects.filter(
+                                (analysis) => analysis.status === 'released'
+                            )
+                        ) : datasetAnalyses
+                ), []
+            )
+        ) : []
+);
+
+
+/**
+ * Collect default files from all related datasets to the given Series object. This only includes
+ * files also in the given array of analyses. If no analyses given, then just return all default
+ * files.
+ * @param {object} context Series object
+ * @param {array} analyses Analyses from the related datasets of the Series object
+ */
+const collectSeriesFiles = (context, analyses) => {
+    const analysesFilePaths = analyses.reduce((paths, analysis) => paths.concat(analysis.files), []);
+    const files = context.related_datasets
+        ? (
+            context.related_datasets.reduce(
+                (datasetFiles, dataset) => (
+                    datasetFiles.concat(
+                        dataset.files.filter(
+                            // If the analysis array has zero length, include all default files.
+                            // Otherwise, include default files included in the given analyses.
+                            (file) => file.preferred_default && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
+                        )
+                    )
+                ), []
+            )
+        ) : null;
+    return files;
+};
+
+
+/**
+ * Collect all the analyses and files from the related datasets of the given series object.
+ * @param {object} context Series object
+ * @return {object} arrays of qualified analyses and files
+ */
+const collectSeriesAnalysesAndFiles = (context) => {
+    const analyses = collectSeriesAnalyses(context);
+    const files = collectSeriesFiles(context, analyses);
+    return { analyses, files };
+};
+
+
 // Map series @id to title and table columns
 const seriesComponents = {
     MatchedSet: { title: 'matched set series', table: basicTableColumns },
@@ -1689,6 +1753,10 @@ export const SeriesComponent = (props, reactContext) => {
         }
     });
     experiments = _.values(experiments);
+
+    // Collect all the default files from all the related datasets of the given Series object,
+    // filtered by the files in the released analyses of the related datasets, if any.
+    const { analyses, files } = collectSeriesAnalysesAndFiles(context);
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
@@ -1942,13 +2010,7 @@ export const SeriesComponent = (props, reactContext) => {
             : null}
 
             {/* Display list of released and unreleased files */}
-            <FetchedItems
-                {...props}
-                url={`/search/?limit=all&type=File&dataset=${context['@id']}`}
-                Component={DatasetFiles}
-                filePanelHeader={<FilePanelHeader context={context} />}
-                session={reactContext.session}
-            />
+            <FileGallery context={context} files={files} analyses={analyses} showReplicateNumber={false} collapseNone hideGraph hideControls showDetailedTracks hideAnalysisSelector />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 

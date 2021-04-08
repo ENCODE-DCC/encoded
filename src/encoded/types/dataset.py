@@ -17,6 +17,9 @@ from .shared_calculated_properties import (
     CalculatedAssayTermID,
     CalculatedAssayTitle,
     CalculatedAssaySlims,
+    CalculatedBiosampleSummary,
+    CalculatedReplicates,
+    CalculatedReplicationType,
     CalculatedCategorySlims,
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
@@ -32,6 +35,8 @@ from .shared_calculated_properties import (
 from .biosample import construct_biosample_summary
 
 from .shared_biosample import biosample_summary_information
+
+from .assay_data import assay_terms
 
 from itertools import chain
 import datetime
@@ -335,6 +340,130 @@ class TransgenicEnhancerExperiment(
             ]
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
+
+
+@collection(
+    name='single-cell-units',
+    unique_key='accession',
+    properties={
+        'title': 'Single cell units',
+        'description': 'Listing of single cell units',
+    })
+class SingleCellUnit(
+    Dataset,
+    CalculatedBiosampleSummary,
+    CalculatedReplicates,
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedVisualize,
+    CalculatedAssaySlims,
+    CalculatedAssayTitle,
+    CalculatedCategorySlims,
+    CalculatedTypeSlims,
+    CalculatedObjectiveSlims,
+    CalculatedReplicationType):
+    item_type = 'single_cell_unit'
+    schema = load_schema('encoded:schemas/single_cell_unit.json')
+    embedded = Dataset.embedded + [
+        'analysis_objects',
+        'biosample_ontology',
+        'files.platform',
+        'files.analysis_step_version.analysis_step',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'related_series',
+        'replicates.antibody',
+        'replicates.library',
+        'replicates.library.biosample.biosample_ontology',
+        'replicates.library.biosample.submitted_by',
+        'replicates.library.biosample.source',
+        'replicates.library.biosample.applied_modifications',
+        'replicates.library.biosample.applied_modifications.documents',
+        'replicates.library.biosample.organism',
+        'replicates.library.biosample.donor',
+        'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.part_of',
+        'replicates.library.biosample.part_of.donor',
+        'replicates.library.biosample.part_of.treatments',
+        'replicates.library.biosample.treatments',
+        'replicates.library.construction_platform',
+        'replicates.library.treatments',
+        'possible_controls',
+    ]
+    audit_inherit = [
+        'original_files',
+        'original_files.replicate',
+        'original_files.platform',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'revoked_files',
+        'revoked_files.replicate',
+        'submitted_by',
+        'lab',
+        'award',
+        'analysis_objects',
+        'documents',
+        'replicates.antibody.characterizations.biosample_ontology',
+        'replicates.antibody.characterizations',
+        'replicates.antibody.targets',
+        'replicates.library',
+        'replicates.library.documents',
+        'replicates.library.biosample',
+        'replicates.library.biosample.biosample_ontology',
+        'replicates.library.biosample.organism',
+        'replicates.library.biosample.treatments',
+        'replicates.library.biosample.applied_modifications',
+        'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.donor',
+        'replicates.library.biosample.treatments',
+        'replicates.library.biosample.originated_from',
+        'replicates.library.biosample.originated_from.biosample_ontology',
+        'replicates.library.biosample.part_of',
+        'replicates.library.biosample.part_of.biosample_ontology',
+        'replicates.library.biosample.pooled_from',
+        'replicates.library.biosample.pooled_from.biosample_ontology',
+        'replicates.library.spikeins_used',
+        'replicates.library.treatments',
+    ]
+    set_status_up = [
+        'original_files',
+        'replicates',
+        'documents',
+        'analysis_objects',
+    ]
+    set_status_down = [
+        'original_files',
+        'replicates',
+        'analysis_objects',
+    ]
+    rev = Dataset.rev.copy()
+    rev.update({
+        'related_series': ('Series', 'related_datasets'),
+        'replicates': ('Replicate', 'experiment'),
+        'superseded_by': ('SingleCellUnit', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Related series",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Series.related_datasets",
+        },
+        "notSubmittable": True,
+    })
+    def related_series(self, request, related_series):
+        return paths_filtered_by_status(request, related_series)
+
+    @calculated_property(schema={
+            "title": "Superseded by",
+            "type": "array",
+            "items": {
+                "type": ['string', 'object'],
+                "linkFrom": "SingleCellUnit.supersedes",
+            },
+            "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 
 class FileSet(Dataset):
@@ -715,6 +844,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.files.analysis_step_version',
         'related_datasets.files.analysis_step_version.analysis_step',
         'related_datasets.files.analysis_step_version.analysis_step.pipelines',
+        'related_datasets.files.target',
         'related_datasets.lab',
         'related_datasets.submitted_by',
         'related_datasets.award.pi.lab',
@@ -731,7 +861,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.library.treatments',
         'related_datasets.possible_controls',
         'related_datasets.possible_controls.lab',
-        'related_datasets.target.organism',
         'files.platform',
         'files.lab',
         'files.analysis_step_version.analysis_step',
@@ -804,7 +933,9 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
 class MatchedSet(Series):
     item_type = 'matched_set'
     schema = load_schema('encoded:schemas/matched_set.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
 
 @collection(
@@ -817,7 +948,9 @@ class MatchedSet(Series):
 class AggregateSeries(Series):
     item_type = 'aggregate_series'
     schema = load_schema('encoded:schemas/aggregate_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
 
 @collection(
@@ -830,7 +963,9 @@ class AggregateSeries(Series):
 class TreatmentTimeSeries(Series):
     item_type = 'treatment_time_series'
     schema = load_schema('encoded:schemas/treatment_time_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
 
 @collection(
@@ -843,7 +978,9 @@ class TreatmentTimeSeries(Series):
 class TreatmentConcentrationSeries(Series):
     item_type = 'treatment_concentration_series'
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
 
 @collection(
@@ -856,7 +993,9 @@ class TreatmentConcentrationSeries(Series):
 class OrganismDevelopmentSeries(Series):
     item_type = 'organism_development_series'
     schema = load_schema('encoded:schemas/organism_development_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
 
 @collection(
@@ -869,7 +1008,9 @@ class OrganismDevelopmentSeries(Series):
 class ReplicationTimingSeries(Series):
     item_type = 'replication_timing_series'
     schema = load_schema('encoded:schemas/replication_timing_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
 
 @collection(
@@ -882,7 +1023,9 @@ class ReplicationTimingSeries(Series):
 class ReferenceEpigenome(Series):
     item_type = 'reference_epigenome'
     schema = load_schema('encoded:schemas/reference_epigenome.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
     rev = Dataset.rev.copy()
     rev.update({
@@ -992,7 +1135,9 @@ class ExperimentSeries(Series):
 class SingleCellRnaSeries(Series):
     item_type = 'single_cell_rna_series'
     schema = load_schema('encoded:schemas/single_cell_rna_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
 
 @collection(
@@ -1018,7 +1163,9 @@ class FunctionalCharacterizationSeries(Series):
 class GeneSilencingSeries(Series):
     item_type = 'gene_silencing_series'
     schema = load_schema('encoded:schemas/gene_silencing_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
 
 @collection(
@@ -1031,7 +1178,9 @@ class GeneSilencingSeries(Series):
 class DifferentiationSeries(Series):
     item_type = 'differentiation_series'
     schema = load_schema('encoded:schemas/differentiation_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]
 
 
 @collection(
@@ -1044,4 +1193,6 @@ class DifferentiationSeries(Series):
 class PulseChaseTimeSeries(Series):
     item_type = 'pulse_chase_time_series'
     schema = load_schema('encoded:schemas/pulse_chase_time_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]

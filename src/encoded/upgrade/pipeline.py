@@ -103,3 +103,15 @@ def pipeline_11_12(value, system):
             value['notes'] = f'{value.get("notes")}. {notes}'
         else:
             value['notes'] = notes
+
+
+@upgrade_step('pipeline', '12', '13')
+def pipeline_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5828
+    for i, a in enumerate(value.get('assay_term_names', [])):
+        if a == 'single-cell ATAC-seq':
+            value['assay_term_names'][i] = 'single-nucleus ATAC-seq'
+            if 'notes' in value:
+                value['notes'] = f'{value.get("notes")}. This pipeline is now compatible with snATAC-seq, upgraded from scATAC-seq.'
+            else:
+                value['notes'] = 'This pipeline is now compatible with snATAC-seq, upgraded from scATAC-seq.'

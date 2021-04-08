@@ -7,3 +7,4 @@
 * *fourier_transform_eleven* was updated to not include minimal value
 * Added *defect_mode* property to indicate if the pipeline was run in defect mode.
 * Added *GRO-cap*, *GRO-seq*, and *long read single-cell RNA-seq* to *assay_term_name* enum;  *single-nucleus RNA-seq* and *genotyping by high throughput sequencing assay* were removed and remapped to *single-cell RNA sequencing assay* and *whole genome sequencing assay* respectively
+* Removed *single-cell ATAC-seq* from *assay_term_name* enum and remapped to *single-nucleus ATAC-seq*

@@ -172,5 +172,17 @@
         "elements_references": ["ENCSR001REF"],
         "submitted_by": "felis.senectus@hymenaeos.nibh",
         "uuid": "242dcf83-6173-4e7c-8c71-2ee28998352f"
+    },
+    {
+        "accession": "ENCSR041PSC",
+        "assay_term_name": "perturbation followed by scRNA-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0001086",
+        "description": "perturbed scRNA-seq in A549",
+        "lab": "tim-reddy",
+        "status": "in progress",
+        "elements_references": ["ENCSR001REF"],
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "dca5442b-2246-407f-9634-e62734363971"
     }
 ]

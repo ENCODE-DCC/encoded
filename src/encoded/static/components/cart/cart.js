@@ -183,9 +183,6 @@ const displayedFacetFields = [
     },
 ];
 
-/** Facet `field` values for properties from dataset instead of files */
-const datasetFacets = displayedFacetFields.filter((facetField) => facetField.dataset).map((facetField) => facetField.field);
-
 /**
  * File facet fields to request from server -- superset of those displayed in facets, minus
  * calculated props.
@@ -202,7 +199,12 @@ const requestedFacetFields = displayedFacetFields.filter((field) => !field.calcu
     { field: 'biological_replicates' },
     { field: 'analysis_objects', dataset: true },
     { field: 'preferred_default' },
+    { field: 'annotation_subtype', dataset: true },
+    { field: 'biochemical_inputs', dataset: true },
 ]);
+
+/** Facet `field` values for properties from dataset instead of files */
+const datasetFacets = displayedFacetFields.concat(requestedFacetFields).filter((facetField) => facetField.dataset).map((facetField) => facetField.field);
 
 
 /**
@@ -275,7 +277,7 @@ CartSearchResults.defaultProps = {
 const CartBrowser = ({ files, assembly, pageNumber }) => {
     // Extract the current page of file objects.
     const pageStartingIndex = pageNumber * PAGE_TRACK_COUNT;
-    const pageFiles = files.slice(pageStartingIndex, pageStartingIndex + PAGE_TRACK_COUNT);
+    const pageFiles = files.slice(pageStartingIndex, pageStartingIndex + PAGE_TRACK_COUNT).map((file) => ({ ...file }));
 
     // Shorten long annotation_type values for the Valis track label; fine to mutate `pageFiles` as
     // it holds a copy of a segment of `files`.

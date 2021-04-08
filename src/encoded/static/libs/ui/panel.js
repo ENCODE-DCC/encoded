@@ -163,7 +163,7 @@ class TabPanel extends React.Component {
         // here too so that each pane knows whether it's the active one or not. ### React14
         if (this.props.children) {
             children = React.Children.map(this.props.children, (child, i) => {
-                if (child.type === TabPanelPane) {
+                if (child !== null && child.type === TabPanelPane) {
                     firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
 
                     // Replace the existing child <TabPanelPane> component

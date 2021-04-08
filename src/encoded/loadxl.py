@@ -38,6 +38,7 @@ ORDER = [
     'platform',
     'library',
     'experiment',
+    'single_cell_unit',
     'functional_characterization_experiment',
     'transgenic_enhancer_experiment',
     'replicate',
@@ -619,6 +620,9 @@ PHASE1_PIPELINES = {
     'functional_characterization_experiment': [
         remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analysis_objects'),
     ],
+    'single_cell_unit': [
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
+    ],
     'transgenic_enhancer_experiment': [
         remove_keys('related_files', 'supersedes'),
     ],
@@ -725,6 +729,9 @@ PHASE2_PIPELINES = {
     ],
     'functional_characterization_experiment': [
         skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analysis_objects'),
+    ],
+    'single_cell_unit': [
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
     ],
     'transgenic_enhancer_experiment': [
         skip_rows_missing_all_keys('related_files', 'supersedes'),

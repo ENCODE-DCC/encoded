@@ -462,3 +462,11 @@ def test_upgrade_experiment_31_to_32(upgrader, experiment_31):
     assert value['schema_version'] == '32'
     assert value['assay_term_name'] == 'single-cell RNA sequencing assay'
     assert value['notes'] == 'This assay was previously labeled single-nucleus RNA-seq.'
+
+
+def test_upgrade_experiment_32_to_33(upgrader, single_cell_ATAC_experiment):
+    assert single_cell_ATAC_experiment['schema_version'] == '32'
+    value = upgrader.upgrade('experiment', single_cell_ATAC_experiment, current_version='32', target_version='33')
+    assert value['schema_version'] == '33'
+    assert value['assay_term_name'] == 'single-nucleus ATAC-seq'
+    assert value['notes'] == 'This assay was previously labeled single-cell ATAC-seq.'

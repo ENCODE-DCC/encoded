@@ -326,6 +326,21 @@ def _get_commit_sha_for_branch(branch_name):
     ).decode('utf-8').strip()
 
 
+def _get_base_branch_info() -> str:
+    """
+    Returns information about the last common commit between origin/dev and the branch
+    being deployed.
+    """
+    last_common_commit = subprocess.check_output(
+        ["git", "merge-base", "HEAD", "origin/dev"]
+    ).strip()
+    base_branch_info = subprocess.check_output(
+        ["git", "show", "-s", "--format='%C(auto)%h %s'", last_common_commit],
+        universal_newlines=True,
+    ).strip("\n'")
+    return base_branch_info
+
+
 def _get_instances_tag_data(main_args, build_type_template_name):
     instances_tag_data = {
         'branch': main_args.branch,
@@ -707,6 +722,8 @@ def main():
     if not is_tag and not is_branch:
         print('Failure: Not a tag or branch')
         sys.exit(1)
+    base_branch_info = _get_base_branch_info()
+    print("Base branch:", base_branch_info)
     run_args = _get_run_args(main_args, instances_tag_data, assembled_template, is_tag=is_tag)
     # run_args has the asseblmed_template filled with run variables in 'user_data' key
     bdm = _get_bdm(main_args)
