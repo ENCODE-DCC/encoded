@@ -2667,7 +2667,7 @@ function createFacetObject(propertyKey, fileList, filters) {
  * the file association graph.
  */
 const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection, analysisSelectorRef }) => {
-    React.useEffect(() => {
+    useMount(() => {
         if (selectedAnalysesIndex === -1 && analyses.length > 0) {
             // No selected pipeline lab analyses, but if we have at least one qualifying one,
             // automatically select the first one.
