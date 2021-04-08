@@ -157,7 +157,10 @@ const AnnotationComponent = (props, reactContext) => {
                             {context.annotation_type ?
                                 <div data-test="type">
                                     <dt>Annotation type</dt>
-                                    <dd className="sentence-case">{context.annotation_type}</dd>
+                                    <dd className="sentence-case">
+                                        <span>{context.annotation_type}</span>
+                                        {context.annotation_subtype ? <span> ({context.annotation_subtype})</span> : null}
+                                    </dd>
                                 </div>
                             : null}
 

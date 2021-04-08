@@ -398,6 +398,7 @@ const TrackLabel = ({ file, label, long }) => {
             file.assay_term_name,
             file.biosample_ontology && file.biosample_ontology.term_name,
             file.annotation_type,
+            file.annotation_subtype,
         ]).join(', ');
     }
 
@@ -412,6 +413,7 @@ const TrackLabel = ({ file, label, long }) => {
                             <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
                             <li>{file.output_type}</li>
                             {biologicalReplicates ? <li>{`rep ${biologicalReplicates}`}</li> : null}
+                            {file.biochemical_inputs ? <li>{(file.biochemical_inputs).join(', ')}</li> : null}
                         </>
                     : null}
                 </ul>
@@ -427,6 +429,8 @@ const TrackLabel = ({ file, label, long }) => {
                             {file.target ? <li>{file.target.label}</li> : null}
                             {file.assay_term_name ? <li>{file.assay_term_name}</li> : null}
                             <li>{file.output_type}</li>
+                            {file.annotation_subtype ? <li>{(file.annotation_subtype)}</li> : null}
+                            {file.biochemical_inputs ? <li>{(file.biochemical_inputs).join(', ')}</li> : null}
                         </>
                     : null}
                 </ul>
@@ -696,6 +700,8 @@ class GenomeBrowser extends React.Component {
                 labelLength += file.assay_term_name ? file.assay_term_name.length + 2 : 0;
                 labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length + 2 : 0;
                 labelLength += file.annotation_type ? file.annotation_type.length : 0;
+                labelLength += file.annotation_subtype ? file.annotation_subtype.length : 0;
+                labelLength += file.biochemical_inputs ? file.biochemical_inputs.length : 0;
                 labelLength = Math.floor(labelLength / maxCharPerLine);
             }
             if (file.name) {
