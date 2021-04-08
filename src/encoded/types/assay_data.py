@@ -52,7 +52,6 @@ assay_terms = {
       'Mint-ChIP-seq': 'OBI:0002160',
       'single-nucleus ATAC-seq': 'OBI:0002762',
       'icSHAPE': 'NTR:0000433',
-      'single-cell ATAC-seq': 'OBI:0002764',
       'long read RNA-seq': 'NTR:0000445',
       'STARR-seq': 'OBI:0002041',
       'direct RNA-seq': 'OBI:0002629',
@@ -76,4 +75,6 @@ assay_terms = {
       'GRO-seq': 'NTR:0000640',
       'GRO-cap': 'NTR:0000641',
       'long read single-cell RNA-seq': 'NTR:0000642',
+      'perturbation followed by scRNA-seq': 'NTR:0000643',
+      'perturbation followed by snATAC-seq': 'NTR:0000644',
 }

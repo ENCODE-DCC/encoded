@@ -1,5 +1,9 @@
 ## Changelog for award.json
 
+### Schema version 10
+
+* Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *milestones.assay_term_name* enum; *single-cell ATAC-seq* was removed from *milestones.assay_term_name* enum and remapped to *single-nucleus ATAC-seq*
+
 ### Schema version 9
 
 * Added *GRO-cap*, *GRO-seq*, and *long read single-cell RNA-seq* to *milestones.assay_term_name* enum;  *single-nucleus RNA-seq* and *genotyping by high throughput sequencing assay* were removed and remapped to *single-cell RNA sequencing assay* and *whole genome sequencing assay* respectively

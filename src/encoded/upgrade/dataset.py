@@ -692,3 +692,15 @@ def experiment_31_32(value, system):
         else:
             value['notes'] = 'This assay was previously labeled genotyping HTS.'
     return
+
+
+@upgrade_step('experiment', '32', '33')
+def experiment_32_33(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5828
+    if value.get('assay_term_name') == 'single-cell ATAC-seq':
+        value['assay_term_name'] = 'single-nucleus ATAC-seq'
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. This assay was previously labeled single-cell ATAC-seq.'
+        else:
+            value['notes'] = 'This assay was previously labeled single-cell ATAC-seq.'
+    return

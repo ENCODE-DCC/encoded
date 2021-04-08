@@ -299,6 +299,32 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
+    "NTR:0000643": {
+        "assay": ['Single cell'],
+        "category": [],
+        "developmental": [],
+        "name": "perturbation followed by scRNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "perturbation followed by scRNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000644": {
+        "assay": ['Single cell'],
+        "category": [],
+        "developmental": [],
+        "name": "perturbation followed by snATAC-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "perturbation followed by snATAC-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
 }
 
 ntr_biosamples = {

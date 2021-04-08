@@ -20,7 +20,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "software_type": {
             "title": "Software type",
@@ -128,6 +128,8 @@
                     "MPRA",
                     "MRE-seq",
                     "PAS-seq",
+                    "perturbation followed by scRNA-seq",
+                    "perturbation followed by snATAC-seq",
                     "PLAC-seq",
                     "pooled clone sequencing",
                     "PRO-cap",
@@ -143,7 +145,6 @@
                     "RNA-seq",
                     "RRBS",
                     "shRNA knockdown followed by RNA-seq",
-                    "single-cell ATAC-seq",
                     "single-cell RNA sequencing assay",
                     "single-nucleus ATAC-seq",
                     "siRNA knockdown followed by RNA-seq",

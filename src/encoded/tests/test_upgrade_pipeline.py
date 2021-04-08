@@ -70,3 +70,16 @@ def test_pipeline_upgrade_11_12(upgrader, pipeline_8):
     value.pop('notes')
     value = upgrader.upgrade('pipeline', pipeline_8, target_version='12')
     assert 'notes' not in value
+
+
+def test_pipeline_upgrade_12_13(upgrader, pipeline_8):
+    pipeline_8['schema_version'] = '12'
+    pipeline_8['notes'] = 'Notes'
+    pipeline_8['assay_term_names'] = ['single-cell ATAC-seq', 'ATAC-seq']
+    value = upgrader.upgrade('pipeline', pipeline_8, target_version='13')
+    assert value['schema_version'] == '13'
+    TestCase().assertListEqual(
+        sorted(value['assay_term_names']),
+        sorted(['single-nucleus ATAC-seq', 'ATAC-seq'])
+    )
+    assert 'This pipeline is now compatible with snATAC-seq, upgraded from scATAC-seq.' in value['notes']
