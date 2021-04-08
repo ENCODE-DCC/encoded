@@ -62,11 +62,9 @@ const colorGenome = {
 };
 
 const colorGenes = {
-    Transcript: '#bdc5c0',
+    Transcript: '#6b6d88',
     Coding: '#575f5a',
     'Non-coding': '#f9ce70',
-    'Coding max score': '#575f5a',
-    'Non-coding max score': '#575f5a',
     Untranslated: '#c14953',
 };
 
