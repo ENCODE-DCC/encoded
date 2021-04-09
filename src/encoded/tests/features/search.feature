@@ -119,7 +119,7 @@ Feature: Search
         And I wait for the content to load
         And I click the element with the css selector ".facet__expander--header[aria-label='assay_title']"
         And I wait for the content to load
-        And I click the link to "?type=Experiment&control_type!=*&assay_title=TF+ChIP-seq"
+        And I click the link to "?type=Experiment&assay_title=TF+ChIP-seq"
         And I wait for the content to load
         Then I should see "Showing 9 of 9 results"
 
@@ -132,7 +132,7 @@ Feature: Search
         And I click all elements with the css selector "[data-test='facetcontainer'] .facet__expander--header[aria-pressed='true']"
         And I wait for the content to load
         And I click the element with the css selector ".facet__expander--header[aria-label='assay_title']"
-        And I click the link to "?type=Experiment&control_type!=*&assay_title=Histone+ChIP-seq"
+        And I click the link to "?type=Experiment&assay_title=Histone+ChIP-seq"
         And I wait for the content to load
         Then I should see "Showing 8 of 8 results"
 
@@ -146,7 +146,7 @@ Feature: Search
         And I wait for the content to load
         And I click the element with the css selector ".facet__expander--header[aria-label='assay_title']"
         And I wait for the content to load
-        And I click the link to "?type=Experiment&control_type!=*&assay_title=total+RNA-seq"
+        And I click the link to "?type=Experiment&assay_title=total+RNA-seq"
         And I wait for the content to load
         Then I should see "Showing 13 of 13 results"
 
