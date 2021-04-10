@@ -126,7 +126,7 @@ def admin_user(browser, base_url):
 @pytest.yield_fixture(scope='session')
 def submitter_user(browser, base_url, admin_user):
     browser.visit(base_url + '/#!impersonate-user')
-    browser.find_by_css('.item-picker input[type="text"]').first.fill('860c4750-8d3c-40f5-8f2c-90c5e5d19e88')
+    browser.find_by_css('.item-picker input[type="text"]').first.fill('J. Michael Cherry')
     browser.find_by_css('.btn-primary').first.click()  # First click opens on blur, then closes
     browser.find_by_css('.btn-primary').first.click()
     browser.find_by_text('Select').first.click()
