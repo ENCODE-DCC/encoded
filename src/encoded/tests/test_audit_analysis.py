@@ -1322,3 +1322,52 @@ def test_audit_analysis_chia_pet_encode4(
     assert any(error['category'] == 'low non-redundant PET' for error in audit_errors.get('NOT_COMPLIANT', []))
     assert any(error['category'] == 'low protein factor binding peaks' for error in audit_errors.get('NOT_COMPLIANT', []))
     assert any(error['category'] == 'low intra/inter-chr PET ratio' for error in audit_errors.get('WARNING', []))
+
+
+def test_audit_analysis_multiple_rfas(
+    testapp,
+    base_analysis,
+    encode2_award,
+    file_bam_1_chip,
+    file_tsv_1_2,
+    analysis_step_run_dnase_encode4,
+    analysis_step_run_rna_encode4,
+    pipeline_dnase_encode4,
+    pipeline_rna_encode4
+):
+    testapp.patch_json(base_analysis['@id'], {
+        'files': [
+            file_bam_1_chip['@id'],
+            file_tsv_1_2['@id']
+        ]}
+    )
+    testapp.patch_json(
+        file_bam_1_chip['@id'],
+        {'step_run': analysis_step_run_dnase_encode4['@id']})
+    testapp.patch_json(
+        file_tsv_1_2['@id'],
+        {'step_run': analysis_step_run_rna_encode4['@id']})
+    testapp.patch_json(
+        pipeline_dnase_encode4['@id'],
+        {'award': encode2_award['@id']})
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    audit_errors = res.json['audit']
+    assert any(error['category'] == 'multiple rfas' for error in audit_errors.get('INTERNAL_ACTION', []))
+
+
+def test_audit_analysis_multiple_datasets(
+    testapp,
+    base_analysis,
+    encode2_award,
+    file_bam_1_chip,
+    file_tsv_1_2
+):
+    testapp.patch_json(base_analysis['@id'], {
+        'files': [
+            file_bam_1_chip['@id'],
+            file_tsv_1_2['@id']
+        ]}
+    )
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    audit_errors = res.json['audit']
+    assert any(error['category'] == 'multiple datasets' for error in audit_errors.get('INTERNAL_ACTION', []))
