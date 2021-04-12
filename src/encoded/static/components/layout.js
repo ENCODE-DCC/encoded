@@ -270,20 +270,17 @@ class BlockAddButton extends React.Component {
     render() {
         const classes = `icon-lg ${this.props.blockprops.icon}`;
         return (
-            <span>
-                <button
-                    type="button"
-                    className="btn btn-primary navbar-btn btn-sm"
-                    onClick={BlockAddButton.click}
-                    draggable="true"
-                    onDragStart={this.dragStart}
-                    onDragEnd={this.context.dragEnd}
-                    title={this.props.blockprops.label}
-                >
-                    <span className={classes} />
-                </button>
-                {' '}
-            </span>
+            <button
+                type="button"
+                className="btn btn-primary navbar-btn btn-sm"
+                onClick={BlockAddButton.click}
+                draggable="true"
+                onDragStart={this.dragStart}
+                onDragEnd={this.context.dragEnd}
+                title={this.props.blockprops.label}
+            >
+                <span className={classes} />
+            </button>
         );
     }
 }
