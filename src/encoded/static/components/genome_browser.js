@@ -53,19 +53,19 @@ const colorCCREs = {
 };
 
 const colorGenome = {
-    'nucleobase A': '#0c7489',
-    'nucleobase T': '#f9ce70',
-    'nucleobase G': '#0fa3b1',
-    'nucleobase C': '#c14953',
-    'gc-banding-low': '#0c7489',
-    'gc-banding-high': '#f9ce70',
+    'Nucleobase A': '#0c7489',
+    'Nucleobase T': '#f9ce70',
+    'Nucleobase G': '#0fa3b1',
+    'Nucleobase C': '#c14953',
+    'GC-low': '#0c7489',
+    'GC-rich': '#f9ce70',
 };
 
 const colorGenes = {
-    Transcript: '#6b6d88',
-    Coding: '#575f5a',
-    'Non-coding': '#f9ce70',
-    Untranslated: '#c14953',
+    Transcript: '#cfd7c7',
+    'Protein coding': '#575f5a',
+    'Non-protein coding': '#f9ce70',
+    UTR: '#c14953',
 };
 
 /**
@@ -433,10 +433,10 @@ const sortLookUp = (obj, param) => {
 const LegendLabel = () => (
     <div className="legend-label">
         <div className="legend-color-container">
-            <div className="legend-swatch" style={{ background: `${colorGenome['nucleobase A']}` }} />
-            <div className="legend-swatch" style={{ background: `${colorGenome['nucleobase T']}` }} />
-            <div className="legend-swatch" style={{ background: `${colorGenome['nucleobase C']}` }} />
-            <div className="legend-swatch" style={{ background: `${colorGenome['nucleobase G']}` }} />
+            <div className="legend-swatch" style={{ background: `${colorGenome['Nucleobase A']}` }} />
+            <div className="legend-swatch" style={{ background: `${colorGenome['Nucleobase T']}` }} />
+            <div className="legend-swatch" style={{ background: `${colorGenome['Nucleobase C']}` }} />
+            <div className="legend-swatch" style={{ background: `${colorGenome['Nucleobase G']}` }} />
         </div>
         <div className="legend-name">Legend</div>
     </div>
