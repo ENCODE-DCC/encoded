@@ -1,5 +1,35 @@
 Changes
 =======
+115.0 (released) snovault 1.0.56
+--------------------------------
+1.	ENCD-5870-fix-bdd-submitter-test
+2.	ENCD-5864-add-analysis-objects-to-fce (#3840)
+3.	ENCD-5827-migrate-audits-to-analysis (#3813)
+4.	SNO-200-remove-nonsubstring-filter-from-mapping (#3837)
+5.	ENCD-5856-TSTAN-not-showing (#3835)
+6.	ENCD-5828-single-cell-experiments (#3828)
+7.	SNO-199-allow-customization-of-search-fields (#3841)
+8.	ENCD-5825-series-files (#3836)
+9.	ENCD-5806-cCRE-annotation-subtypes-and-other-file-output-types (#3838)
+10.	ENCD-5154-print-base-branch-deploy (#3832)
+11.	ENCD-5831-add-metadata-columns-and-small-improvements-to-rnaget-ui (#3825)
+12.	ENCD-5850-fix-analysis-title-and-permission (#3824)
+13.	ENCD-5750-update-glossary-with-file-output-types (#3833)
+14.	ENCD-5841-remove-redundant-originated-from (#3823)
+15.	ENCD-5829-allow-batch-download-from-more-dataset-pages (#3827)
+16.	SNO-197-add-range-queries-and-min-max-aggs (#3812)
+17.	ENCD-5847-add-azure-link (#3818)
+18.	SNO-198-allow-configuration-of-reserved-search-params (#3816)
+19.	SNO-138-fix-pytest-warnings (#3826)
+20.	ENCD-5807 compare to literal with == instead of is in experiment_series audit (#3778)
+21.	ENCD-5842 do not clone the private config repo in runcmd_all (#3821)
+22.	ENCD-5844-add-unstranded-enum-to-library-objects (#3822)
+23.	ENCD-5778-add-pulse-chase-series-and-pulse-chase-properties (#3817)	
+24.	ENCD-5843-add-disease-facet (#3815)
+25.	ENCD-5833-analysis-audits (#3810)
+26.	ENCD-5836 Remove duplicate definition (#3806)
+27.	ENCD-5818 Remove ssh key copying from app-final.sh (#3800)
+
 114.0 (released) snovault 1.0.55
 --------------------------------
 1. ENCD-5832 Consider assembly when choosing pseudo-default files (#3804)
