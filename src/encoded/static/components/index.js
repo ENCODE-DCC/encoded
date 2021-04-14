@@ -47,6 +47,7 @@ require('./user');
 require('./schema');
 require('./summary');
 require('./region_search');
+require('./annotations_search');
 require('./gene');
 require('./biosample_type');
 require('./experiment_series');
