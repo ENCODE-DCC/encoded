@@ -81,8 +81,8 @@ const AnnotationsSearch = (props, context) => {
     React.useEffect(() => {
         const vizHref = '/annotations-search/?annotation_subtype=all';
         getSeriesData(vizHref, context.fetch).then((response) => {
-            console.log(response.description);
-            setVizData(response.description);
+            console.log(response);
+            setVizData(response);
         });
         if (!(query.getKeyValues('annotation_subtype')[0])) {
             query.addKeyValue('annotation_subtype', selectedSeries);
