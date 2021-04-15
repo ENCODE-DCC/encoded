@@ -1,9 +1,12 @@
 ## Changelog for award.json
 
+### Minor changes since schema version 10
+
+* The order of *rfa* enums was adjusted to reflect the priority when we consider selecting default analysis for a dataset
+
 ### Schema version 10
 
 * Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *milestones.assay_term_name* enum; *single-cell ATAC-seq* was removed from *milestones.assay_term_name* enum and remapped to *single-nucleus ATAC-seq*
-* The order of *rfa* enums was adjusted to reflect the priority when we consider selecting default analysis for a dataset
 
 ### Schema version 9
 
