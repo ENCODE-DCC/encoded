@@ -281,6 +281,7 @@ def test_experiment_default_analysis(
     pipeline_dnase_encode4,
     encode_lab,
     encode4_award,
+    ENCODE3_award,
 ):
     # Guard relevant schema enum orders
     status_order = load_schema(
@@ -419,3 +420,17 @@ def test_experiment_default_analysis(
     testapp.patch_json(analysis_2['@id'], {'status': 'archived'})
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['default_analysis'] == analysis_1['@id']
+
+    # Rfa is working for different versions of pipeline
+    testapp.patch_json(analysis_1['@id'], {'status': 'archived'})
+    testapp.patch_json(analysis_2['@id'], {"pipeline_version": "1.6.1"})
+    testapp.patch_json(
+        pipeline_dnase_encode4['@id'], {'award': encode4_award['@id']}
+    )
+    testapp.patch_json(
+        pipeline_chip_encode4['@id'], {'award': ENCODE3_award['@id']}
+    )
+    testapp.patch_json(file_bam_1_1['@id'], {'assembly': 'mm10'})
+    testapp.patch_json(file_bam_2_1['@id'], {'genome_annotation': 'M21'})
+    res = testapp.get(base_experiment['@id']+'@@index-data')
+    assert res.json['object']['default_analysis'] == analysis_2['@id']

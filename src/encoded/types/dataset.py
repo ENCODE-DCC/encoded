@@ -352,10 +352,10 @@ class Dataset(Item):
             current_pipeline_version = parse_version(
                 anal_obj.get('pipeline_version', '')
             )
-            if selected_pipeline_version > current_pipeline_version:
+            if selected_pipeline_version < current_pipeline_version:
                 selected_analysis = anal_obj
                 continue
-            if selected_pipeline_version < current_pipeline_version:
+            if selected_pipeline_version > current_pipeline_version:
                 continue
             # Same pipeline version so rank on date created seventhly.
             selected_date = datetime.datetime.strptime(
