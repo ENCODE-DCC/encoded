@@ -184,6 +184,7 @@ class Item(snovault.Item):
 
         'archived': ALLOW_CURRENT,
     }
+    schema = {}
 
     # Empty by default. Children objects to iterate through when changing status
     # of parent object.
