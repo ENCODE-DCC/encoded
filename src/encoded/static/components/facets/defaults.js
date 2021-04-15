@@ -653,6 +653,85 @@ DefaultDateSelectorFacet.contextTypes = {
 
 
 /**
+ * Write something here
+ */
+export const DefaultMultiselectFacet = ({ facet, queryString }, reactContext) => {
+    const [biochemicalInput, setBiochemicalInput] = React.useState([]);
+    const isMounted = React.useRef(false);
+
+    const handleClick = React.useCallback((event) => {
+        const newInput = event.target.getAttribute('id').toString();
+        const newInputIdx = biochemicalInput.indexOf(newInput);
+        if (newInputIdx > -1) {
+            const biochemicalInputCopy = biochemicalInput.filter((input) => input !== newInput);
+            setBiochemicalInput(biochemicalInputCopy);
+        } else {
+            const biochemicalInputCopy = biochemicalInput.concat([newInput]);
+            setBiochemicalInput(biochemicalInputCopy);
+        }
+    });
+
+    React.useEffect(() => {
+        const query = new QueryString(queryString);
+        console.log(biochemicalInput);
+        if (biochemicalInput.length > 0) {
+            query.replaceKeyValue('advancedQuery', `biochemical_inputs:(${(Array.isArray(biochemicalInput) && (biochemicalInput.length > 1)) ? biochemicalInput.join(' AND ') : biochemicalInput})`);
+            const href = `?${query.format()}`;
+            reactContext.navigate(href);
+        } else if (isMounted.current === true) {
+            query.deleteKeyValue('advancedQuery');
+            const href = `?${query.format()}`;
+            console.log(href);
+            reactContext.navigate(href);
+        }
+    }, [biochemicalInput]);
+
+    React.useEffect(() => {
+        // Find url for page without any organs or systems selected
+        const query = new QueryString(queryString);
+        const originalInputs = query.getKeyValues('advancedQuery');
+        console.log('original inputs');
+        console.log(originalInputs);
+        if (originalInputs.length > 0) {
+            const originalInputsArray = originalInputs[0].toString().replace('biochemical_inputs:(', '').replace(')', '').split(' AND ');
+            if (originalInputs[0].indexOf('biochemical_inputs') > -1) {
+                setBiochemicalInput(originalInputsArray);
+            }
+        }
+        isMounted.current = true;
+    }, []);
+
+    return (
+        <div className="facet">
+            <h5>{facet.title}</h5>
+            <div className="facet__multiselect">
+                {facet.terms.sort((a, b) => (a.key).localeCompare(b.key)).map((term) => (
+                    <button className={(biochemicalInput.indexOf(term.key) > -1) ? 'selected' : ''} key={term.key} id={term.key} onClick={handleClick} type="button">
+                        {term.key}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+DefaultMultiselectFacet.propTypes = {
+    /** Relevant `facet` object from `facets` array in `results` */
+    facet: PropTypes.object.isRequired,
+    /** Query-string portion of current URL without initial ? */
+    queryString: PropTypes.string,
+};
+
+DefaultMultiselectFacet.defaultProps = {
+    queryString: '',
+};
+
+DefaultMultiselectFacet.contextTypes = {
+    navigate: PropTypes.func,
+};
+
+
+/**
  * Default component to render the title of a facet.
  */
 export const DefaultTitle = ({ facet }) => (

@@ -748,7 +748,7 @@ class GenomeBrowser extends React.Component {
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
             trackObj.expandable = true;
-            trackObj.displayLabels = false;
+            trackObj.displayLabels = true;
             trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
             trackObj.expandedHeightPx = 140;
             trackObj.fileFormatType = file.file_format_type;
