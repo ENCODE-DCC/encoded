@@ -345,7 +345,11 @@ class SummaryBody extends React.Component {
                 results['@graph'].forEach(x => mx_query += '&libraries=' + x['@id']);
                 requestSearch(mx_query).then((results2) => {
                     var cell_count = 0
-                    results2['@graph'].forEach(y => cell_count += y['observation_count']);
+                    results2['@graph'].forEach(y => {
+                        if (y['observation_count']) {
+                            cell_count += y['observation_count']
+                        }
+                    });
                     this.setState({
                         cellCount: cell_count
                     })
@@ -370,7 +374,7 @@ class SummaryBody extends React.Component {
                 </div>
                 <div className="search-results__report-list">
                     <h4>{this.props.context.total} {this.props.context.total > 1 ? 'libraries' : 'library'}</h4>
-                    <h4>{cell_count} cells</h4>
+                    <h4>{cell_count} cells/nuclei</h4>
                     <div className="view-controls-container">
                         <ViewControls results={this.props.context} alternativeNames={['Tabular report']} />
                     </div>
