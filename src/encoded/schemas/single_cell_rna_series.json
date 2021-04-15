@@ -47,6 +47,19 @@
     "properties": {
         "schema_version": {
             "default": "3"
+        },
+        "related_datasets": {
+            "title": "Additional datasets",
+            "description": "List of datasets to be associated with the series.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Dataset",
+                "comment": "See dataset.json for available identifiers.",
+                "type": "string",
+                "linkTo": ["Experiment", "SingleCellUnit"]
+            }
         }
     },
     "facets": {

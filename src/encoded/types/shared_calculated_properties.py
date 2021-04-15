@@ -109,6 +109,19 @@ class CalculatedSeriesAssay:
             'assay_term_id', *related_datasets)
 
 
+class CalculatedSeriesAssayType:
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_slims(self, request, related_datasets):
+        return request.select_distinct_values(
+            'assay_slims', *related_datasets)
+
+
 class CalculatedSeriesBiosample:
     @calculated_property(condition='related_datasets', schema={
         "title": "Biosample ontology",

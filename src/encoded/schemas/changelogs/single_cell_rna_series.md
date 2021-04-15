@@ -5,6 +5,7 @@
 * Added *LRGASP* to the *internal_tags* enum
 * Added *doi* property
 * Added *analyses* property
+* *related_datasets* now includes SingleCellUnit.json
 
 ### Schema version 3
 
