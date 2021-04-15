@@ -17,8 +17,7 @@
         "derived_from": [
             "anna-greka:sc_donorA1_S1_L002_I1_001.fastq",
             "anna-greka:sc_donorA1_S1_L002_R1_001.fastq",
-            "anna-greka:sc_donorA1_S1_L002_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorA1_S1_L002_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -52,8 +51,7 @@
         "derived_from": [
             "anna-greka:sc_donorA2_S2_L002_I1_001.fastq",
             "anna-greka:sc_donorA2_S2_L002_R1_001.fastq",
-            "anna-greka:sc_donorA2_S2_L002_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorA2_S2_L002_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -84,8 +82,7 @@
         "derived_from": [
             "anna-greka:sc_donorB1_S3_L002_I1_001.fastq",
             "anna-greka:sc_donorB1_S3_L002_R1_001.fastq",
-            "anna-greka:sc_donorB1_S3_L002_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorB1_S3_L002_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -117,8 +114,7 @@
         "derived_from": [
             "anna-greka:sc_donorB2_S4_L002_I1_001.fastq",
             "anna-greka:sc_donorB2_S4_L002_R1_001.fastq",
-            "anna-greka:sc_donorB2_S4_L002_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorB2_S4_L002_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -150,8 +146,7 @@
         "derived_from": [
             "anna-greka:sc_donorC1a_S1_L004_I1_001.fastq",
             "anna-greka:sc_donorC1a_S1_L004_R1_001.fastq",
-            "anna-greka:sc_donorC1a_S1_L004_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorC1a_S1_L004_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -183,8 +178,7 @@
         "derived_from": [
             "anna-greka:sc_donorC1b_S2_L004_I1_001.fastq",
             "anna-greka:sc_donorC1b_S2_L004_R1_001.fastq",
-            "anna-greka:sc_donorC1b_S2_L004_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorC1b_S2_L004_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -216,8 +210,7 @@
         "derived_from": [
             "anna-greka:sc_donorC2a_S3_L004_I1_001.fastq",
             "anna-greka:sc_donorC2a_S3_L004_R1_001.fastq",
-            "anna-greka:sc_donorC2a_S3_L004_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorC2a_S3_L004_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -249,8 +242,7 @@
         "derived_from": [
             "anna-greka:sc_donorC2b_S4_L004_I1_001.fastq",
             "anna-greka:sc_donorC2b_S4_L004_R1_001.fastq",
-            "anna-greka:sc_donorC2b_S4_L004_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorC2b_S4_L004_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -282,8 +274,7 @@
         "derived_from": [
             "anna-greka:sc_donorD1a_S5_L004_I1_001.fastq",
             "anna-greka:sc_donorD1a_S5_L004_R1_001.fastq",
-            "anna-greka:sc_donorD1a_S5_L004_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorD1a_S5_L004_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -315,8 +306,7 @@
         "derived_from": [
             "anna-greka:sc_donorD1b_S6_L004_I1_001.fastq",
             "anna-greka:sc_donorD1b_S6_L004_R1_001.fastq",
-            "anna-greka:sc_donorD1b_S6_L004_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorD1b_S6_L004_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -348,8 +338,7 @@
         "derived_from": [
             "anna-greka:sc_donorD2a_S7_L004_I1_001.fastq",
             "anna-greka:sc_donorD2a_S7_L004_R1_001.fastq",
-            "anna-greka:sc_donorD2a_S7_L004_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorD2a_S7_L004_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -381,8 +370,7 @@
         "derived_from": [
             "anna-greka:sc_donorD2b_S8_L004_I1_001.fastq",
             "anna-greka:sc_donorD2b_S8_L004_R1_001.fastq",
-            "anna-greka:sc_donorD2b_S8_L004_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorD2b_S8_L004_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -414,8 +402,7 @@
         "derived_from": [
             "anna-greka:sc_donorCD1_S1_L001_I1_001.fastq",
             "anna-greka:sc_donorCD1_S1_L001_R1_001.fastq",
-            "anna-greka:sc_donorCD1_S1_L001_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorCD1_S1_L001_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -447,8 +434,7 @@
         "derived_from": [
             "anna-greka:sc_donorCD2_S1_L001_I1_001.fastq",
             "anna-greka:sc_donorCD2_S1_L001_R1_001.fastq",
-            "anna-greka:sc_donorCD2_S1_L001_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorCD2_S1_L001_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -480,8 +466,7 @@
         "derived_from": [
             "anna-greka:sc_donorCD1_S1_L002_I1_001.fastq",
             "anna-greka:sc_donorCD1_S1_L002_R1_001.fastq",
-            "anna-greka:sc_donorCD1_S1_L002_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorCD1_S1_L002_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -513,8 +498,7 @@
         "derived_from": [
             "anna-greka:sc_donorCD2_S1_L002_I1_001.fastq",
             "anna-greka:sc_donorCD2_S1_L002_R1_001.fastq",
-            "anna-greka:sc_donorCD2_S1_L002_R2_001.fastq",
-            "lattice:cellranger_2020-A"
+            "anna-greka:sc_donorCD2_S1_L002_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -546,8 +530,7 @@
         "derived_from": [
             "anna-greka:sc_donorE_S1_L003_I1_001.fastq",
             "anna-greka:sc_donorE_S1_L003_R1_001.fastq",
-            "anna-greka:sc_donorE_S1_L003_R2_001.fastq",
-            "lattice:cellranger_gex_mm10_2020-A"
+            "anna-greka:sc_donorE_S1_L003_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -580,8 +563,7 @@
         "derived_from": [
             "anna-greka:sc_donorF_S3_L003_I1_001.fastq",
             "anna-greka:sc_donorF_S3_L003_R1_001.fastq",
-            "anna-greka:sc_donorF_S3_L003_R2_001.fastq",
-            "lattice:cellranger_gex_mm10_2020-A"
+            "anna-greka:sc_donorF_S3_L003_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -613,8 +595,7 @@
         "derived_from": [
             "anna-greka:sc_donorG_S5_L003_I1_001.fastq",
             "anna-greka:sc_donorG_S5_L003_R1_001.fastq",
-            "anna-greka:sc_donorG_S5_L003_R2_001.fastq",
-            "lattice:cellranger_gex_mm10_2020-A"
+            "anna-greka:sc_donorG_S5_L003_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -646,8 +627,7 @@
         "derived_from": [
             "anna-greka:sc_donorH_S7_L003_I1_001.fastq",
             "anna-greka:sc_donorH_S7_L003_R1_001.fastq",
-            "anna-greka:sc_donorH_S7_L003_R2_001.fastq",
-            "lattice:cellranger_gex_mm10_2020-A"
+            "anna-greka:sc_donorH_S7_L003_R2_001.fastq"
         ],
         "mapped_run_type": "single-ended",
         "assembly": "GRCh38",
@@ -679,8 +659,7 @@
             "anna-greka:snATAC_donorA1_S1_L003_I1_001.fastq",
             "anna-greka:snATAC_donorA1_S1_L003_R1_001.fastq",
             "anna-greka:snATAC_donorA1_S1_L003_R2_001.fastq",
-            "anna-greka:snATAC_donorA1_S1_L003_R3_001.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "anna-greka:snATAC_donorA1_S1_L003_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -712,8 +691,7 @@
             "anna-greka:snATAC_donorA2_S2_L003_I1_001.fastq",
             "anna-greka:snATAC_donorA2_S2_L003_R1_001.fastq",
             "anna-greka:snATAC_donorA2_S2_L003_R2_001.fastq",
-            "anna-greka:snATAC_donorA2_S2_L003_R3_001.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "anna-greka:snATAC_donorA2_S2_L003_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -745,8 +723,7 @@
             "anna-greka:snATAC_donorB1_S3_L003_I1_001.fastq",
             "anna-greka:snATAC_donorB1_S3_L003_R1_001.fastq",
             "anna-greka:snATAC_donorB1_S3_L003_R2_001.fastq",
-            "anna-greka:snATAC_donorB1_S3_L003_R3_001.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "anna-greka:snATAC_donorB1_S3_L003_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -778,8 +755,7 @@
             "anna-greka:snATAC_donorB2_S4_L003_I1_001.fastq",
             "anna-greka:snATAC_donorB2_S4_L003_R1_001.fastq",
             "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq",
-            "anna-greka:snATAC_donorB2_S4_L003_R3_001.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "anna-greka:snATAC_donorB2_S4_L003_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -811,8 +787,7 @@
             "anna-greka:snATAC_donorC1_S1_L001_I1_001.fastq",
             "anna-greka:snATAC_donorC1_S1_L001_R1_001.fastq",
             "anna-greka:snATAC_donorC1_S1_L001_R2_001.fastq",
-            "anna-greka:snATAC_donorC1_S1_L001_R3_001.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "anna-greka:snATAC_donorC1_S1_L001_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -844,8 +819,7 @@
             "anna-greka:snATAC_donorC2_S2_L001_I1_001.fastq",
             "anna-greka:snATAC_donorC2_S2_L001_R1_001.fastq",
             "anna-greka:snATAC_donorC2_S2_L001_R2_001.fastq",
-            "anna-greka:snATAC_donorC2_S2_L001_R3_001.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "anna-greka:snATAC_donorC2_S2_L001_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -877,8 +851,7 @@
             "anna-greka:snATAC_donorD1_S3_L001_I1_001.fastq",
             "anna-greka:snATAC_donorD1_S3_L001_R1_001.fastq",
             "anna-greka:snATAC_donorD1_S3_L001_R2_001.fastq",
-            "anna-greka:snATAC_donorD1_S3_L001_R3_001.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "anna-greka:snATAC_donorD1_S3_L001_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -910,8 +883,7 @@
             "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq",
             "anna-greka:snATAC_donorD2_S4_L001_R1_001.fastq",
             "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq",
-            "anna-greka:snATAC_donorD2_S4_L001_R2_001.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "anna-greka:snATAC_donorD2_S4_L001_R2_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -943,8 +915,7 @@
             "anna-greka:snATAC_donorE1_S1_L004_I1_001.fastq",
             "anna-greka:snATAC_donorE1_S1_L004_R1_001.fastq",
             "anna-greka:snATAC_donorE1_S1_L004_R2_001.fastq",
-            "anna-greka:snATAC_donorE1_S1_L004_R3_001.fastq",
-            "lattice:cellranger_atac_mm10_1.2.0"
+            "anna-greka:snATAC_donorE1_S1_L004_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -976,8 +947,7 @@
             "anna-greka:snATAC_donorE2_S2_L004_I1_001.fastq",
             "anna-greka:snATAC_donorE2_S2_L004_R1_001.fastq",
             "anna-greka:snATAC_donorE2_S2_L004_R2_001.fastq",
-            "anna-greka:snATAC_donorE2_S2_L004_R3_001.fastq",
-            "lattice:cellranger_atac_mm10_1.2.0"
+            "anna-greka:snATAC_donorE2_S2_L004_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1009,8 +979,7 @@
             "anna-greka:snATAC_donorF1_S3_L004_I1_001.fastq",
             "anna-greka:snATAC_donorF1_S3_L004_R1_001.fastq",
             "anna-greka:snATAC_donorF1_S3_L004_R2_001.fastq",
-            "anna-greka:snATAC_donorF1_S3_L004_R3_001.fastq",
-            "lattice:cellranger_atac_mm10_1.2.0"
+            "anna-greka:snATAC_donorF1_S3_L004_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1042,8 +1011,7 @@
             "anna-greka:snATAC_donorF2_S4_L004_I1_001.fastq",
             "anna-greka:snATAC_donorF2_S4_L004_R1_001.fastq",
             "anna-greka:snATAC_donorF2_S4_L004_R2_001.fastq",
-            "anna-greka:snATAC_donorF2_S4_L004_R3_001.fastq",
-            "lattice:cellranger_atac_mm10_1.2.0"
+            "anna-greka:snATAC_donorF2_S4_L004_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1075,8 +1043,7 @@
             "anna-greka:snATAC_donorG1_S5_L004_I1_001.fastq",
             "anna-greka:snATAC_donorG1_S5_L004_R1_001.fastq",
             "anna-greka:snATAC_donorG1_S5_L004_R2_001.fastq",
-            "anna-greka:snATAC_donorG1_S5_L004_R3_001.fastq",
-            "lattice:cellranger_atac_mm10_1.2.0"
+            "anna-greka:snATAC_donorG1_S5_L004_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1108,8 +1075,7 @@
             "anna-greka:snATAC_donorG2_S6_L004_I1_001.fastq",
             "anna-greka:snATAC_donorG2_S6_L004_R1_001.fastq",
             "anna-greka:snATAC_donorG2_S6_L004_R2_001.fastq",
-            "anna-greka:snATAC_donorG2_S6_L004_R3_001.fastq",
-            "lattice:cellranger_atac_mm10_1.2.0"
+            "anna-greka:snATAC_donorG2_S6_L004_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1141,8 +1107,7 @@
             "anna-greka:snATAC_donorH1_S7_L004_I1_001.fastq",
             "anna-greka:snATAC_donorH1_S7_L004_R1_001.fastq",
             "anna-greka:snATAC_donorH1_S7_L004_R2_001.fastq",
-            "anna-greka:snATAC_donorH1_S7_L004_R3_001.fastq",
-            "lattice:cellranger_atac_mm10_1.2.0"
+            "anna-greka:snATAC_donorH1_S7_L004_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1174,8 +1139,7 @@
             "anna-greka:snATAC_donorH2_S8_L004_I1_001.fastq",
             "anna-greka:snATAC_donorH2_S8_L004_R1_001.fastq",
             "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq",
-            "anna-greka:snATAC_donorH2_S8_L004_R3_001.fastq",
-            "lattice:cellranger_atac_mm10_1.2.0"
+            "anna-greka:snATAC_donorH2_S8_L004_R3_001.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1207,8 +1171,7 @@
             "jimmie-ye:prenatal_1a_R1.fastq",
             "jimmie-ye:prenatal_1a_R2.fastq",
             "jimmie-ye:prenatal_1a_R3.fastq",
-            "jimmie-ye:prenatal_1a_I1.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "jimmie-ye:prenatal_1a_I1.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1240,8 +1203,7 @@
             "jimmie-ye:prenatal_1b_R1.fastq",
             "jimmie-ye:prenatal_1b_R2.fastq",
             "jimmie-ye:prenatal_1b_R3.fastq",
-            "jimmie-ye:prenatal_1b_I1.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "jimmie-ye:prenatal_1b_I1.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1273,8 +1235,7 @@
             "jimmie-ye:prenatal_1c_R1.fastq",
             "jimmie-ye:prenatal_1c_R2.fastq",
             "jimmie-ye:prenatal_1c_R3.fastq",
-            "jimmie-ye:prenatal_1c_I1.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "jimmie-ye:prenatal_1c_I1.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1306,8 +1267,7 @@
             "jimmie-ye:prenatal_2a_R1.fastq",
             "jimmie-ye:prenatal_2a_R2.fastq",
             "jimmie-ye:prenatal_2a_R3.fastq",
-            "jimmie-ye:prenatal_2a_I1.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "jimmie-ye:prenatal_2a_I1.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1339,8 +1299,7 @@
             "jimmie-ye:prenatal_2b_R1.fastq",
             "jimmie-ye:prenatal_2b_R2.fastq",
             "jimmie-ye:prenatal_2b_R3.fastq",
-            "jimmie-ye:prenatal_2b_I1.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "jimmie-ye:prenatal_2b_I1.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1372,8 +1331,7 @@
             "jimmie-ye:prenatal_2c_R1.fastq",
             "jimmie-ye:prenatal_2c_R2.fastq",
             "jimmie-ye:prenatal_2c_R3.fastq",
-            "jimmie-ye:prenatal_2c_I1.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "jimmie-ye:prenatal_2c_I1.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1405,8 +1363,7 @@
             "jimmie-ye:prenatal_3a_R1.fastq",
             "jimmie-ye:prenatal_3a_R2.fastq",
             "jimmie-ye:prenatal_3a_R3.fastq",
-            "jimmie-ye:prenatal_3a_I1.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "jimmie-ye:prenatal_3a_I1.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1438,8 +1395,7 @@
             "jimmie-ye:prenatal_3b_R1.fastq",
             "jimmie-ye:prenatal_3b_R2.fastq",
             "jimmie-ye:prenatal_3b_R3.fastq",
-            "jimmie-ye:prenatal_3b_I1.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "jimmie-ye:prenatal_3b_I1.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1471,8 +1427,7 @@
             "jimmie-ye:prenatal_3c_R1.fastq",
             "jimmie-ye:prenatal_3c_R2.fastq",
             "jimmie-ye:prenatal_3c_R3.fastq",
-            "jimmie-ye:prenatal_3c_I1.fastq",
-            "lattice:cellranger_atac_grch38_1.2.0"
+            "jimmie-ye:prenatal_3c_I1.fastq"
         ],
         "mapped_run_type": "paired-ended",
         "assembly": "GRCh38",
@@ -1504,8 +1459,7 @@
         "derived_from": [
             "peter-sims:sequence_3a_R1.fastq",
             "peter-sims:sequence_3a_R2.fastq",
-            "peter-sims:sequence_3a_I1.fastq",
-            "lattice:cellranger_2020-A"
+            "peter-sims:sequence_3a_I1.fastq"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
@@ -1543,8 +1497,7 @@
         "derived_from": [
             "peter-sims:sequence_3b_R1.fastq",
             "peter-sims:sequence_3b_R2.fastq",
-            "peter-sims:sequence_3b_I1.fastq",
-            "lattice:cellranger_2020-A"
+            "peter-sims:sequence_3b_I1.fastq"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
@@ -1582,8 +1535,7 @@
         "derived_from": [
             "peter-sims:sequence_3c_R1.fastq",
             "peter-sims:sequence_3c_R2.fastq",
-            "peter-sims:sequence_3c_I1.fastq",
-            "lattice:cellranger_2020-A"
+            "peter-sims:sequence_3c_I1.fastq"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
@@ -1621,8 +1573,7 @@
         "derived_from": [
             "peter-sims:sequence_2a_R1.fastq",
             "peter-sims:sequence_2a_R2.fastq",
-            "peter-sims:sequence_2a_I1.fastq",
-            "lattice:cellranger_2020-A"
+            "peter-sims:sequence_2a_I1.fastq"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
@@ -1660,8 +1611,7 @@
         "derived_from": [
             "peter-sims:sequence_2b_R1.fastq",
             "peter-sims:sequence_2b_R2.fastq",
-            "peter-sims:sequence_2b_I1.fastq",
-            "lattice:cellranger_2020-A"
+            "peter-sims:sequence_2b_I1.fastq"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
@@ -1699,8 +1649,7 @@
         "derived_from": [
             "peter-sims:sequence_2c_R1.fastq",
             "peter-sims:sequence_2c_R2.fastq",
-            "peter-sims:sequence_2c_I1.fastq",
-            "lattice:cellranger_2020-A"
+            "peter-sims:sequence_2c_I1.fastq"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
@@ -1738,8 +1687,7 @@
         "derived_from": [
             "peter-sims:sequence_1a_R1.fastq",
             "peter-sims:sequence_1a_R2.fastq",
-            "peter-sims:sequence_1a_I1.fastq",
-            "lattice:cellranger_2020-A"
+            "peter-sims:sequence_1a_I1.fastq"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
@@ -1777,8 +1725,7 @@
         "derived_from": [
             "peter-sims:sequence_1b_R1.fastq",
             "peter-sims:sequence_1b_R2.fastq",
-            "peter-sims:sequence_1b_I1.fastq",
-            "lattice:cellranger_2020-A"
+            "peter-sims:sequence_1b_I1.fastq"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
@@ -1816,8 +1763,7 @@
         "derived_from": [
             "peter-sims:sequence_1c_R1.fastq",
             "peter-sims:sequence_1c_R2.fastq",
-            "peter-sims:sequence_1c_I1.fastq",
-            "lattice:cellranger_2020-A"
+            "peter-sims:sequence_1c_I1.fastq"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [

@@ -8,14 +8,6 @@ def test_file_upgrade_1_2(upgrader, raw_sequence_file_base):
 	assert 'award' not in value
 
 
-def test_reference_file_upgrade_1_2(upgrader, reference_file_base):
-	dummy_fileset = {'description': 'group of ref files'}
-	reference_file_base['fileset'] = dummy_fileset
-	value = upgrader.upgrade('reference_file', reference_file_base, current_version='1', target_version='2')
-	assert value['schema_version'] == '2'
-	assert 'fileset' not in value
-
-
 def test_matrix_file_upgrade_2_3(upgrader, matrix_file_base):
 	del matrix_file_base['layers']
 	matrix_file_base['value_scale'] = 'linear'

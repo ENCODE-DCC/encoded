@@ -362,16 +362,3 @@ class MatrixFile(AnalysisFile):
     def cell_annotations(self, request, cell_annotations=None):
         if cell_annotations:
             return paths_filtered_by_status(request, cell_annotations)
-
-
-@collection(
-    name='reference-files',
-    unique_key='accession',
-    properties={
-        'title': "Reference Files",
-        'description': "",
-    })
-class ReferenceFile(File):
-    item_type = 'reference_file'
-    schema = load_schema('encoded:schemas/reference_file.json')
-    embedded = File.embedded + ['organism']
