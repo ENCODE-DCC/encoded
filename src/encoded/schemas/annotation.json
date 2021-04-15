@@ -278,6 +278,9 @@
             "type": "typeahead",
             "open_on_load": true
         },
+        "biochemical_inputs": {
+            "title": "Biochemical inputs"
+        },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
         },

@@ -11,6 +11,7 @@ import { DefaultFacet, DefaultTitle, DefaultTerm, DefaultTermName, DefaultSelect
 // Custom facet-renderer modules imported here. Keep them alphabetically sorted.
 import './audit';
 import './audit_processed_data';
+import './biochemical_inputs';
 import './date_selector';
 import './exists';
 import './internal_status';

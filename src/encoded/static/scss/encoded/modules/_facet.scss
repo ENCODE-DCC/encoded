@@ -121,6 +121,20 @@
         }
     }
 
+    @at-root #{&}__multiselect {
+        button {
+            margin: 3px;
+            font-size: 0.9rem;
+
+            &.selected {
+                color: white;
+                background-color: #4183c4;
+                border-radius: 3px;
+                border: 2px solid #4183c4;
+            }
+        }
+    }
+
     &:last-child {
         border-bottom: none;
         padding-bottom: 0;

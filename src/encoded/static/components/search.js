@@ -1089,7 +1089,12 @@ export const FacetList = (props) => {
     }
 
     // Combine facets from search results with special facets, and treat them mostly the same.
-    const allFacets = SpecialFacetRegistry.Facet.getFacets().concat(facets);
+    let allFacets = SpecialFacetRegistry.Facet.getFacets().concat(facets);
+
+    // Biochemical inputs facet exists for annotations but we only want to display it for the Encyclopedia page
+    if (context['@type'].indexOf('Encyclopedia') === -1) {
+        allFacets = allFacets.filter((facet) => facet.field !== 'biochemical_inputs');
+    }
 
     return (
         <div className="search-results__facets">

@@ -764,6 +764,88 @@ DefaultDateSelectorFacet.contextTypes = {
 
 
 /**
+ * Multiselect works just like a regular facet but negating is not allowed, links look more like buttons, and there is an "All" button to select all possible terms
+ */
+export const DefaultMultiselectFacet = ({ facet, relevantFilters, queryString }, reactContext) => {
+    let initializeBiochemicalInput = relevantFilters.map((filter) => filter.term);
+    if (relevantFilters.length === facet.terms.length) {
+        initializeBiochemicalInput = initializeBiochemicalInput.concat(['All']);
+    }
+    const [biochemicalInput, setBiochemicalInput] = React.useState(initializeBiochemicalInput);
+
+    // Select or de-select biochemical input terms
+    const handleClick = React.useCallback((event) => {
+        const newInput = event.target.getAttribute('id').toString();
+        const newInputIdx = biochemicalInput.indexOf(newInput);
+        const query = new QueryString(queryString);
+        // New term is "All" and "All" is already selected so we want to de-select all biochemical inputs
+        if (newInput === 'All' && (newInputIdx > -1)) {
+            setBiochemicalInput([]);
+            query.deleteKeyValue('biochemical_inputs');
+        // New term is "All" and "All" is not already selected so we want to select all biochemical inputs
+        } else if (newInput === 'All' && (newInputIdx === -1)) {
+            facet.terms.forEach((term) => {
+                if (biochemicalInput.indexOf(term.key) === -1) {
+                    query.addKeyValue('biochemical_inputs', term.key);
+                }
+            });
+            const allBiochemicalInputs = facet.terms.map((term) => term.key).concat(['All']);
+            setBiochemicalInput(allBiochemicalInputs);
+        // "All" is not selected and term already is in list so remove term
+        } else if (newInputIdx > -1) {
+            const biochemicalInputCopy = biochemicalInput.filter((input) => input !== newInput);
+            setBiochemicalInput(biochemicalInputCopy);
+            query.deleteKeyValue('biochemical_inputs', newInput);
+        // "All" is not selected and term is not in list so add term
+        // Check to see if this means all terms are selected
+        } else {
+            let biochemicalInputCopy = biochemicalInput.concat([newInput]);
+            if (biochemicalInputCopy.length === facet.terms.length) {
+                biochemicalInputCopy = biochemicalInputCopy.concat(['All']);
+            }
+            setBiochemicalInput(biochemicalInputCopy);
+            query.addKeyValue('biochemical_inputs', newInput);
+        }
+        const href = `?${query.format()}`;
+        reactContext.navigate(href);
+    });
+
+    return (
+        <div className="facet">
+            <h5>{facet.title}</h5>
+            <div className="facet__multiselect">
+                {facet.terms.sort((a, b) => (a.key).localeCompare(b.key)).map((term) => (
+                    <button className={(biochemicalInput.indexOf(term.key) > -1) ? 'selected' : ''} key={term.key} id={term.key} onClick={handleClick} type="button">
+                        {term.key}
+                    </button>
+                ))}
+                <button className={(biochemicalInput.indexOf('All') > -1) ? 'selected' : ''} key="All" id="All" onClick={handleClick} type="button">
+                    All
+                </button>
+            </div>
+        </div>
+    );
+};
+
+DefaultMultiselectFacet.propTypes = {
+    /** Relevant `facet` object from `facets` array in `results` */
+    facet: PropTypes.object.isRequired,
+    /** Filters relevant to the current facet */
+    relevantFilters: PropTypes.array.isRequired,
+    /** Query-string portion of current URL without initial ? */
+    queryString: PropTypes.string,
+};
+
+DefaultMultiselectFacet.defaultProps = {
+    queryString: '',
+};
+
+DefaultMultiselectFacet.contextTypes = {
+    navigate: PropTypes.func,
+};
+
+
+/**
  * Default component to render the title of a facet.
  */
 export const DefaultTitle = ({ facet }) => (
