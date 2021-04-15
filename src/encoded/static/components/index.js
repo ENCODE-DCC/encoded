@@ -19,6 +19,7 @@ require('./globals');
 require('./graph');
 require('./doc');
 require('./donor');
+require('./encyclopedia');
 require('./file');
 require('./item');
 require('./page');

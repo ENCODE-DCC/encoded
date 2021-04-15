@@ -254,8 +254,8 @@
             "length": "long",
             "open_on_load": true
         },
-        "annotation_type": {
-            "title": "Annotation type",
+        "annotation_subtype": {
+            "title": "Annotation subtype",
             "length": "long",
             "open_on_load": true
         },
@@ -269,6 +269,9 @@
         "organism.scientific_name": {
             "title": "Organism",
             "open_on_load": true
+        },
+        "biochemical_inputs": {
+            "title": "Biochemical inputs"
         },
         "targets.investigated_as": {
             "title": "Target category"
