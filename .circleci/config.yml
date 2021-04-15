@@ -52,7 +52,7 @@ commands:
             sudo dpkg -i libmagic-dev_5.38-4_amd64.deb
             sudo apt-get install -f
             sudo chown -R circleci /etc/elasticsearch
-            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/10/bin:$PATH\n;' $BASH_ENV
+            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/11/bin:$PATH\n;' $BASH_ENV
       - run:
           name: Install application and run buildout
           command: |
