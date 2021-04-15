@@ -35,7 +35,6 @@ ORDER = [
     'tissue_section',
     'dataset',
     'library',
-    'reference_file',
     'sequencing_run',
     'raw_sequence_file',
     'sequence_alignment_file',

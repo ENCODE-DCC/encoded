@@ -9,12 +9,6 @@ def analysis_file_1_2(value, system):
 		del value['award']
 
 
-@upgrade_step('reference_file', '1', '2')
-def reference_file_1_2(value, system):
-	if 'fileset' in value:
-		del value['fileset']
-
-
 @upgrade_step('matrix_file', '2', '3')
 def matrix_file_2_3(value, system):
 	properties = [

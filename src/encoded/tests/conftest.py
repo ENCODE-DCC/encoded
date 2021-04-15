@@ -35,7 +35,6 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.page',
     'encoded.tests.fixtures.schemas.publication',
     'encoded.tests.fixtures.schemas.raw_sequence_file',
-    'encoded.tests.fixtures.schemas.reference_file',
     'encoded.tests.fixtures.schemas.sequence_alignment_file',
     'encoded.tests.fixtures.schemas.sequencing_run',
     'encoded.tests.fixtures.schemas.suspension',
