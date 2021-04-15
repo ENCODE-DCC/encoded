@@ -142,6 +142,11 @@
                 ]
             }
         },
+        "intronic_reads_counted": {
+            "title": "Intronic reads counted",
+            "description": "True if reads mapped to intronic regions were used for gene quantifications.",
+            "type": "boolean"
+        },
         "feature_keys": {
             "title": "Feature keys",
             "description": "The category of identifiers used as the key for the features of the matrix.",

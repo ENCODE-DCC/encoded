@@ -245,7 +245,8 @@
                 "value_units": "UMI",
                 "normalized": false
             }
-        ]
+        ],
+        "intronic_reads_counted": true
     },
     {
         "aliases": [
@@ -306,7 +307,8 @@
                 "value_units": "UMI",
                 "normalized": false
             }
-        ]
+        ],
+        "intronic_reads_counted": false
     },
     {
         "aliases": [
