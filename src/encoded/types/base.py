@@ -25,7 +25,8 @@ from snovault.schema_utils import validate_request
 from snovault.auditor import traversed_path_ids
 from snovault import (
     AfterModified,
-    BeforeModified
+    BeforeModified,
+    abstract_collection,
 )
 
 
@@ -152,6 +153,9 @@ class Collection(snovault.Collection, AbstractCollection):
             self.__acl__ = ALLOW_SUBMITTER_ADD
 
 
+@abstract_collection(
+    name='items',
+)
 class Item(snovault.Item):
     AbstractCollection = AbstractCollection
     Collection = Collection

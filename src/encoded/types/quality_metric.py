@@ -20,6 +20,7 @@ from .shared_calculated_properties import CalculatedAssayTermID
     })
 class QualityMetric(ItemWithAttachment, CalculatedAssayTermID, Item):
     base_types = ['QualityMetric'] + Item.base_types
+    schema = load_schema('encoded:schemas/quality_metric.json')
     set_status_up = [
         'step_run',
         ]
