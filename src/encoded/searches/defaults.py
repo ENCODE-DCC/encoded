@@ -16,6 +16,7 @@ OPTIONAL_PARAMS = [
     'remove',
     'sort',
     'type',
+    'config',
 ]
 
 FREE_TEXT_QUERIES = [

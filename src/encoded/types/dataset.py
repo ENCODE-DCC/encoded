@@ -466,6 +466,14 @@ class SingleCellUnit(
         return paths_filtered_by_status(request, superseded_by)
 
 
+@collection(
+    name='file-set',
+    unique_key='accession',
+    properties={
+        'title': "File set",
+        'description': 'A set of files.',
+    }
+)
 class FileSet(Dataset):
     item_type = 'file_set'
     base_types = ['FileSet'] + Dataset.base_types
