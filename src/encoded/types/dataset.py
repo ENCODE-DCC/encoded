@@ -67,6 +67,7 @@ def calculate_assembly(request, files_list, status):
     })
 class Dataset(Item):
     base_types = ['Dataset'] + Item.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
     embedded = [
         'files',
         'files.replicate',
