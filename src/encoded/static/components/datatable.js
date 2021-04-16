@@ -178,4 +178,38 @@ DataTable.propTypes = {
     tableData: PropTypes.object.isRequired,
 };
 
-export default DataTable;
+/**
+ * This generates a table but built with div-tags rather than table-tag
+ *
+ * @param {tableData} Data for the table. It should be an array of arrays of object. For example-
+ * [
+ *  [{className: id: 'an-id', 'a-class', style: 'a-style', content: <span>text</span>}],
+ *  [{className: id: 'an-id2', 'a-class-2', style: 'a-style-2', content: <span>text 2</span>}],
+ * ]
+ *
+ * For entires, id is the key for react. className is the class or classes associated with entry. The style should be an object (key/value pair)
+ * of styles. The content should be be markup to display in the table
+ *
+ * @returns Div-based table
+ */
+const DivTable = ({ tableData }) => (
+    <div className="div-table-matrix">
+        {tableData.map((row, rowIndex) => (
+            <div key={rowIndex} className="div-table-matrix__row">
+                {row.map((rowItem) => (
+                    <div key={rowItem.id} className={rowItem.className || (rowIndex === 0 ? 'div-table-matrix__row__header-item' : 'div-table-matrix__row__data-row-item')} style={rowItem.style || null}>
+                        {rowItem.content}
+                    </div>))}
+            </div>))}
+    </div>
+);
+
+DivTable.propTypes = {
+    /** Whole table data */
+    tableData: PropTypes.array.isRequired,
+};
+
+export {
+    DataTable,
+    DivTable,
+};
