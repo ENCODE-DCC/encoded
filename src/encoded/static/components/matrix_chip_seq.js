@@ -12,12 +12,11 @@ import * as globals from './globals';
 import { MatrixBadges, DisplayAsJson } from './objectutils';
 import { SearchFilter } from './matrix';
 import { TextFilter } from './search';
-import DataTable from './datatable';
+import { DivTable } from './datatable';
 
 
 const SEARCH_PERFORMED_PUBSUB = 'searchPerformed';
 const CLEAR_SEARCH_BOX_PUBSUB = 'clearSearchBox';
-const LARGE_MATRIX_MIN_SIZE = 150;
 
 /**
  * Transform context to a form where easier to fetch information
@@ -118,22 +117,6 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
     };
 };
 
-
-/**
- * Determines if the matrix update is large
- *
- * @param {*} currentChIPSeqData
- * @param {*} newChIPSeqData
- * @returns
- * Note- This is hacky and needs to be reconsidered
- */
-const isMatrixUpdateLarge = (currentChIPSeqData, newChIPSeqData) => {
-    const isCurrentMatrixLarge = currentChIPSeqData && currentChIPSeqData.dataRow && (currentChIPSeqData.dataRow.length > LARGE_MATRIX_MIN_SIZE);
-    const isNewMatrixLarge = newChIPSeqData && newChIPSeqData.dataRow && (newChIPSeqData.dataRow.length > LARGE_MATRIX_MIN_SIZE);
-
-    return isCurrentMatrixLarge || isNewMatrixLarge;
-};
-
 /**
  * Transform chIP Seq data to a form DataTable-object can understand.
  *
@@ -141,27 +124,30 @@ const isMatrixUpdateLarge = (currentChIPSeqData, newChIPSeqData) => {
  * @param {string} selectedTabLevel3 - Sub tab to use
  * @returns {object} DataTable-ready structure.
  */
-const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
+const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3) => {
     if (!chIPSeqData || !chIPSeqData.headerRow || !chIPSeqData.dataRow) {
-        return {
-            rows: [],
-            rowKeys: [],
-            tableCss: 'matrix',
-        };
+        return [];
     }
 
     // add assay_title = Mint chip-seq if the assay selected in Histone chip-seq
     const isAssayTitleHistone = chIPSeqData.assayTitle === 'Histone ChIP-seq';
+    const removeSpecialCharacters = (name) => (!name ? name : name.replace(/[^\w\s]/gi, ''));
 
-    const dataTable = [];
-    const headerRow = chIPSeqData.headerRow.map((x) => ({
-        header: <a href={`/search/?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.term_name=${x}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}`} title={x}>{x}</a>,
-    }));
 
-    dataTable.push({
-        rowContent: [{ header: null }, ...headerRow],
-        css: 'matrix__col-category-header',
-    });
+    const headerRow = [
+        {
+            id: 'header00',
+            content: '\u00A0',
+            style: {},
+            className: 'div-table-matrix__row__header-item',
+        },
+        ...chIPSeqData.headerRow.map((x) => ({
+            id: removeSpecialCharacters(`${x}`),
+            content: <a href={`/search/?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.term_name=${x}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}`} title={x}>{x}</a>,
+            className: 'div-table-matrix__row__header-item',
+            style: {},
+        })),
+    ];
 
     const rowLength = chIPSeqData.dataRow.length > 0 ? chIPSeqData.dataRow[0].length : 0;
 
@@ -172,33 +158,30 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
             if (yIndex === 0) {
                 const borderLeft = '1px solid #fff'; // make left-most side border white
                 content = {
-                    header: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>{y}</a>,
+                    id: removeSpecialCharacters(`${y}`),
+                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>{y}</a>,
                     style: { borderLeft },
+                    className: 'div-table-matrix__row__data-row-item',
                 };
             } else {
                 const borderTop = rIndex === 0 ? '1px solid #f0f0f0' : ''; // add border color to topmost rows
                 const backgroundColor = y === 0 ? '#FFF' : '#688878'; // determined if box is colored or not
                 const borderRight = yIndex === rowLength - 1 ? '1px solid #f0f0f0' : ''; // add border color to right-most rows
                 content = {
+                    id: removeSpecialCharacters(`${row[0]}${chIPSeqData.headerRow[yIndex - 1]}`),
                     content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>&nbsp;</a>,
                     style: { backgroundColor, borderTop, borderRight },
+                    className: 'div-table-matrix__row__data-row-item',
                 };
             }
             return content;
         });
-        const css = 'matrix__row-data';
 
-        return { rowContent, css };
+        return rowContent;
     });
 
-    dataTable.push(...rowData);
-
-    const matrixConfig = {
-        rows: dataTable,
-        tableCss: 'matrix',
-    };
-
-    return matrixConfig;
+    const chIpSeqTable = [headerRow, ...rowData];
+    return chIpSeqTable;
 };
 
 /**
@@ -631,22 +614,13 @@ class ChIPSeqMatrixPresentation extends React.Component {
             showOrganismRequest, // determines if organism modal shows
         };
 
-        const isMatrixLarge = isMatrixUpdateLarge(chIPSeqData, this.state.chIPSeqData);
-
         this.setState({ spinnerActive: true }, () => {
-            if (!isMatrixLarge) {
-                this.setState(matrixUpdate);
-                this.setState({ spinnerActive: false });
-            } else {
-                // defer is used to allow ending of spinner most likely after matrix is drawn. It is hacky.
-                _.defer(() => {
-                    this.setState(matrixUpdate, () => {
-                        _.defer(() => {
-                            this.setState({ spinnerActive: false });
-                        });
-                    });
+            // deferred so spinner is painted on screen before matrix is painted
+            _.defer(() => {
+                this.setState(matrixUpdate, () => {
+                    this.setState({ spinnerActive: false });
                 });
-            }
+            });
         });
 
         this.searchSubcription = PubSub.subscribe(SEARCH_PERFORMED_PUBSUB, this.performSearch);
@@ -713,28 +687,15 @@ class ChIPSeqMatrixPresentation extends React.Component {
         window.sessionStorage.setItem('encodeSelectedTabLevel3', selectedTabLevel3);
         const chIPSeqData = this.ChIPSeqMatrixData.chIPSeqData[selectedTabLevel3];
 
-
-        const isMatrixLarge = isMatrixUpdateLarge(chIPSeqData, this.state.chIPSeqData);
-
         this.setState({ spinnerActive: true }, () => {
-            if (!isMatrixLarge) {
+            // deferred so spinner is painted on screen before matrix is painted
+            _.defer(() => {
                 this.setState({ chIPSeqData: null }, () => { // chIPSeqData set to null to prevent react from doing a diff
                     this.setState({ selectedTabLevel3, chIPSeqData }, () => {
                         this.setState({ spinnerActive: false });
                     });
                 });
-            } else {
-                // defer is used to allow ending of spinner most likely after painting of matrix DOM is complete. It is hacky.
-                _.defer(() => {
-                    this.setState({ chIPSeqData: null }, () => { // chIPSeqData set to null to prevent react from doing a diff
-                        this.setState({ selectedTabLevel3, chIPSeqData }, () => {
-                            _.defer(() => {
-                                this.setState({ spinnerActive: false });
-                            });
-                        });
-                    });
-                });
-            }
+            });
         });
     }
 
@@ -804,27 +765,15 @@ class ChIPSeqMatrixPresentation extends React.Component {
             chIPSeqData.dataRow = dataRow;
         }
 
-        const isMatrixLarge = isMatrixUpdateLarge(chIPSeqData, this.state.chIPSeqData);
-
         this.setState({ spinnerActive: true }, () => {
-            if (!isMatrixLarge) {
+            // deferred so spinner is painted on screen before matrix is painted
+            _.defer(() => {
                 this.setState({ chIPSeqData: null }, () => {
                     this.setState({ chIPSeqData }, () => {
                         this.setState({ spinnerActive: false });
                     });
                 });
-            } else {
-                // defer is used to allow painting of DOM after matrix is drawn. It is hacky.
-                _.defer(() => {
-                    this.setState({ chIPSeqData: null }, () => {
-                        this.setState({ chIPSeqData }, () => {
-                            _.defer(() => {
-                                this.setState({ spinnerActive: false });
-                            });
-                        });
-                    });
-                });
-            }
+            });
         });
     }
 
@@ -866,8 +815,8 @@ class ChIPSeqMatrixPresentation extends React.Component {
                         <ChIPSeqTabPanel tabList={filteredTabLevel2} selectedTab={selectedTabLevel2}>
                             <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedTabLevel3} handleTabClick={this.subTabClicked}>
                                 {chIPSeqData && chIPSeqData.headerRow && chIPSeqData.headerRow.length !== 0 && chIPSeqData.dataRow && chIPSeqData.dataRow.length !== 0 ?
-                                      <div className="chip_seq_matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
-                                          <DataTable tableData={convertTargetDataToDataTable(chIPSeqData, selectedTabLevel3)} />
+                                      <div className="div-table-matrix-container" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
+                                          <DivTable tableData={convertTargetDataToTable(chIPSeqData, selectedTabLevel3)} />
                                       </div>
                                   :
                                       <div className="chip_seq_matrix__warning">

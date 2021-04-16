@@ -4,7 +4,7 @@ import _ from 'underscore';
 import * as encoding from '../libs/query_encoding';
 import { svgIcon } from '../libs/svg-icons';
 import { Panel, PanelBody } from '../libs/ui/panel';
-import DataTable from './datatable';
+import { DataTable } from './datatable';
 import * as globals from './globals';
 import { MATRIX_VISUALIZE_LIMIT, SearchFilter } from './matrix';
 import { MatrixBadges } from './objectutils';

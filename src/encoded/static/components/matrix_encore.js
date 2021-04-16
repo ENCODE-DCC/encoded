@@ -6,7 +6,7 @@ import QueryString from '../libs/query_string';
 import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
-import DataTable from './datatable';
+import { DataTable } from './datatable';
 import * as globals from './globals';
 import { MatrixBadges } from './objectutils';
 
