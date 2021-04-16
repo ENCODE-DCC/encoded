@@ -224,23 +224,15 @@ class Dataset(Item):
     })
     def default_analysis(self, request, status, analysis_objects):
         unreleased_status = ['in progress', 'submitted', 'deleted', 'replaced']
-        status_order = load_schema(
-            'encoded:schemas/analysis.json'
-        )['properties']['status']['enum']
+        status_order = request.registry['types']['analysis'].schema['properties']['status']['enum']
         if status not in unreleased_status:
             status_order = [
                 s for s in status_order if s not in unreleased_status
             ]
-        award_rfa_order = load_schema(
-            'encoded:schemas/award.json'
-        )['properties']['rfa']['enum']
-        assembly_order = load_schema(
-            'encoded:schemas/file.json'
-        )['properties']['assembly']['enum']
+        award_rfa_order = request.registry['types']['award'].schema['properties']['rfa']['enum']
+        assembly_order = request.registry['types']['file'].schema['properties']['assembly']['enum']
         assembly_order.append('mixed')
-        genome_annotation_order = load_schema(
-            'encoded:schemas/file.json'
-        )['properties']['genome_annotation']['enum']
+        genome_annotation_order = request.registry['types']['file'].schema['properties']['genome_annotation']['enum']
         genome_annotation_order.append('mixed')
         selected_analysis = {}
         # Allow the first qualified analysis to be selected
