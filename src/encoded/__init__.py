@@ -263,6 +263,7 @@ def main(global_config, **local_config):
     # registered.
     config.include('.upgrade')
     config.include('.audit')
+    config.include('.searches.configs')
 
     app = config.make_wsgi_app()
 

@@ -1,6 +1,10 @@
 from snovault.elasticsearch.searches.configs import search_config
 
 
+def includeme(config):
+    config.scan(__name__)
+
+
 @search_config(
     name='custom'
 )
