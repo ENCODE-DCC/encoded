@@ -618,10 +618,10 @@ PHASE1_PIPELINES = {
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
     ],
     'functional_characterization_experiment': [
-        remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analysis_objects'),
+        remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analyses'),
     ],
     'single_cell_unit': [
-        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
     ],
     'transgenic_enhancer_experiment': [
         remove_keys('related_files', 'supersedes'),
@@ -728,10 +728,10 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses'),
     ],
     'functional_characterization_experiment': [
-        skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analysis_objects'),
+        skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analyses'),
     ],
     'single_cell_unit': [
-        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
     ],
     'transgenic_enhancer_experiment': [
         skip_rows_missing_all_keys('related_files', 'supersedes'),

@@ -472,7 +472,7 @@ def test_upgrade_experiment_32_to_33(upgrader, single_cell_ATAC_experiment):
     assert value['notes'] == 'This assay was previously labeled single-cell ATAC-seq.'
 
 
-def test_upgrade_dataset_29_to_30(upgrader, experiment_33, annotation_31):
+def test_upgrade_dataset_29_to_30(upgrader, experiment_33, annotation_31, fcc_experiment_analysis, single_cell_unit_1):
     assert experiment_33['schema_version'] == '33'
     value = upgrader.upgrade('experiment', experiment_33, current_version='33', target_version='34')
     assert value['schema_version'] == '34'
@@ -481,5 +481,15 @@ def test_upgrade_dataset_29_to_30(upgrader, experiment_33, annotation_31):
     assert annotation_31['schema_version'] == '31'
     value = upgrader.upgrade('annotation', annotation_31, current_version='31', target_version='32')
     assert value['schema_version'] == '32'
+    assert 'analysis_objects' not in value
+    assert 'analyses' in value
+    assert fcc_experiment_analysis['schema_version'] == '6'
+    value = upgrader.upgrade('functional_characterization_experiment', fcc_experiment_analysis, current_version='6', target_version='7')
+    assert value['schema_version'] == '7'
+    assert 'analysis_objects' not in value
+    assert 'analyses' in value
+    assert single_cell_unit_1['schema_version'] == '1'
+    value = upgrader.upgrade('single_cell_unit', single_cell_unit_1, current_version='1', target_version='2')
+    assert value['schema_version'] == '2'
     assert 'analysis_objects' not in value
     assert 'analyses' in value

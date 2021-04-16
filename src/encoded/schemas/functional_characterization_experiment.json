@@ -105,8 +105,7 @@
     },
     "properties": {
         "schema_version": {
-
-            "default": "6"
+            "default": "7"
         },
         "assay_term_name": {
             "title": "Assay name",
@@ -283,17 +282,6 @@
                         }
                     }
                 }
-            }
-        },
-        "analysis_objects": {
-            "title": "Analysis objects",
-            "description": "A list of analysis objects.",
-            "type": "array",
-            "minItems": 1,
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "linkTo": "Analysis"
             }
         }
     },

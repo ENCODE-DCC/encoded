@@ -707,6 +707,8 @@ def experiment_32_33(value, system):
 
 @upgrade_step('experiment', '33', '34')
 @upgrade_step('annotation', '31', '32')
+@upgrade_step('functional_characterization_experiment', '6', '7')
+@upgrade_step('single_cell_unit', '1', '2')
 def dataset_29_30(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5840
     if not value.get('analysis_objects'):
