@@ -466,7 +466,7 @@ class SingleCellUnit(
         return paths_filtered_by_status(request, superseded_by)
 
 
-@collection(
+@abstract_collection(
     name='file-set',
     unique_key='accession',
     properties={
