@@ -11,14 +11,9 @@ EPILOG = __doc__
 
 OWLNS = Namespace("http://www.w3.org/2002/07/owl#")
 OBO_OWL = Namespace("http://www.geneontology.org/formats/oboInOwl#")
-EFO = Namespace("http://www.ebi.ac.uk/efo/")
-OBO = Namespace("http://purl.obolibrary.org/obo/")
 
-OBO_Synonym = OBO["IAO_0000118"]
 Synonym = OBO_OWL["hasExactSynonym"]
 Ontology = OWLNS["Ontology"]
-
-Restriction = OWLNS["Restriction"]
 Class = OWLNS["Class"]
 Thing = OWLNS["Thing"]
 OnProperty = OWLNS["onProperty"]
@@ -27,10 +22,7 @@ IntersectionOf = OWLNS["intersectionOf"]
 
 PART_OF = "http://purl.obolibrary.org/obo/BFO_0000050"
 DEVELOPS_FROM = "http://purl.obolibrary.org/obo/RO_0002202"
-HUMAN_TAXON = "http://purl.obolibrary.org/obo/NCBITaxon_9606"
-HAS_PART = "http://purl.obolibrary.org/obo/BFO_0000051"
 DERIVES_FROM = "http://www.obofoundry.org/ro/ro.owl#derives_from"
-ACHIEVES_PLANNED_OBJECTIVE = "http://purl.obolibrary.org/obo/OBI_0000417"
 DEFAULT_LANGUAGE = "en"
 
 
@@ -157,7 +149,7 @@ class Inspector(object):
             for ch in children:
                 self.__buildClassTree(ch, out)
 
-    # methods for getting ancestores and descendants of classes: by default, we do not include blank nodes
+    # methods for getting ancestors and descendants of classes: by default, we do not include blank nodes
     def get_classDirectSupers(self, aClass, excludeBnodes=True, sortUriName=False):
         returnlist = []
         for o in self.rdfGraph.objects(aClass, RDFS.subClassOf):
@@ -191,24 +183,11 @@ class Inspector(object):
 
         return sort_uri_list_by_name(remove_duplicates(returnlist))
 
-    def entitySynonyms(self, anEntity, language=DEFAULT_LANGUAGE, getall=True):
-        if getall:
-            temp = []
-            # Uberon synonyms
-            for o in self.rdfGraph.objects(anEntity, Synonym):
-                temp += [o]
-            # EFO synonyms
-            for o in self.rdfGraph.objects(anEntity, Synonym):
-                temp += [o]
-            # OBI synonyms
-            for o in self.rdfGraph.objects(anEntity, OBO_Synonym):
-                temp += [o]
-            return temp
-        else:
-            for o in self.rdfGraph.objects(anEntity, Synonym):
-                if getattr(o, 'language') and getattr(o, 'language') == language:
-                    return o
-            return ""
+    def entitySynonyms(self, anEntity, getall=True):
+        temp = []
+        for o in self.rdfGraph.objects(anEntity, Synonym):
+            temp += [o]
+        return temp
 
     def classFind(self, name, exact=False):
         temp = []
@@ -286,11 +265,8 @@ def splitNameFromNamespace(aUri):
     return (name, ns)
 
 
-def iterativeChildren(nodes, terms, closure):
-    if closure == 'data':
-        data = 'data'
-    else:
-        data = 'data_with_develops_from'
+def iterativeChildren(nodes, terms):
+    data = 'data_with_develops_from'
     results = []
     while 1:
         newNodes = []
@@ -313,13 +289,9 @@ def getTermStructure():
         'name': '',
         'parents': [],
         'part_of': [],
-        'has_part': [],
         'derives_from': [],
         'develops_from': [],
-        'achieves_planned_objective': [],
-        'closure': [],
-        'data': [],
-        'closure_with_develops_from': [],
+        'ancestors': [],
         'data_with_develops_from': [],
         'synonyms': []
     }
@@ -365,25 +337,24 @@ def main():
                             col_list = []
                             for col in data.rdfGraph.objects(collection[1]):
                                 col_list.append(col.__str__())
-                            if HUMAN_TAXON in col_list:
-                                if PART_OF in col_list:
-                                    for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
-                                        term_id = splitNameFromNamespace(
-                                            collection[0])[0].replace('_', ':')
-                                        if term_id.split(':')[0] in url_whitelist[url]:
-                                            if term_id not in terms:
-                                                terms[term_id] = getTermStructure()
-                                            terms[term_id]['part_of'].append(
-                                                splitNameFromNamespace(subC)[0].replace('_', ':'))
-                                elif DEVELOPS_FROM in col_list:
-                                    for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
-                                        term_id = splitNameFromNamespace(
-                                            collection[0])[0].replace('_', ':')
-                                        if term_id.split(':')[0] in url_whitelist[url]:
-                                            if term_id not in terms:
-                                                terms[term_id] = getTermStructure()
-                                            terms[term_id]['develops_from'].append(
-                                                splitNameFromNamespace(subC)[0].replace('_', ':'))
+                            if PART_OF in col_list:
+                                for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
+                                    term_id = splitNameFromNamespace(
+                                        collection[0])[0].replace('_', ':')
+                                    if term_id.split(':')[0] in url_whitelist[url]:
+                                        if term_id not in terms:
+                                            terms[term_id] = getTermStructure()
+                                        terms[term_id]['part_of'].append(
+                                            splitNameFromNamespace(subC)[0].replace('_', ':'))
+                            elif DEVELOPS_FROM in col_list:
+                                for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
+                                    term_id = splitNameFromNamespace(
+                                        collection[0])[0].replace('_', ':')
+                                    if term_id.split(':')[0] in url_whitelist[url]:
+                                        if term_id not in terms:
+                                            terms[term_id] = getTermStructure()
+                                        terms[term_id]['develops_from'].append(
+                                            splitNameFromNamespace(subC)[0].replace('_', ':'))
             else:
                 term_id = splitNameFromNamespace(c)[0].replace('_', ':')
                 if term_id.split(':')[0] in url_whitelist[url]:
@@ -410,11 +381,6 @@ def main():
                                         if not isBlankNode(o1):
                                             terms[term_id]['develops_from'].append(
                                                 splitNameFromNamespace(o1)[0].replace('_', ':'))
-                                elif o.__str__() == HAS_PART:
-                                    for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
-                                        if not isBlankNode(o1):
-                                            terms[term_id]['has_part'].append(
-                                                splitNameFromNamespace(o1)[0].replace('_', ':'))
                                 elif o.__str__() == DERIVES_FROM:
                                     for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                         if not isBlankNode(o1):
@@ -439,11 +405,6 @@ def main():
                                                                                 if not isBlankNode(o9):
                                                                                     terms[term_id]['derives_from'].append(
                                                                                         splitNameFromNamespace(o9)[0].replace('_', ':'))
-                                elif o.__str__() == ACHIEVES_PLANNED_OBJECTIVE:
-                                    for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
-                                        if not isBlankNode(o1):
-                                            terms[term_id]['achieves_planned_objective'].append(
-                                                splitNameFromNamespace(o1)[0].replace('_', ':'))
                         else:
                             terms[term_id]['parents'].append(
                                 splitNameFromNamespace(parent)[0].replace('_', ':'))
@@ -454,31 +415,30 @@ def main():
                         except:
                             pass
     for term in terms:
-        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(
-            terms[term]['derives_from']) | set(terms[term]['achieves_planned_objective']))
-        terms[term]['data_with_develops_from'] = list(
-            set(terms[term]['data']) | set(terms[term]['develops_from']))
+        terms[term]['data_with_develops_from'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(
+            terms[term]['derives_from']) | set(terms[term]['develops_from']))
 
     for term in terms:
-        words = iterativeChildren(terms[term]['data'], terms, 'data')
-        for word in words:
-            terms[term]['closure'].append(word)
-
+        ont_whitelist = [i for sublist in url_whitelist.values() for i in sublist]
         d = iterativeChildren(
-            terms[term]['data_with_develops_from'], terms, 'data_with_develops_from')
+            terms[term]['data_with_develops_from'], terms)
         for dd in d:
-            terms[term]['closure_with_develops_from'].append(dd)
+            if dd.split(':')[0] in ont_whitelist:
+                terms[term]['ancestors'].append(dd)
 
-        terms[term]['closure'].append(term)
-        terms[term]['closure_with_develops_from'].append(term)
+        terms[term]['ancestors'].append(term)
 
     for term in terms:
         del terms[term]['parents'], terms[term]['develops_from'], terms[term]['derives_from']
-        del terms[term]['has_part'], terms[term]['part_of'], terms[term]['achieves_planned_objective']
-        del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
+        del terms[term]['part_of'], terms[term]['id'], terms[term]['data_with_develops_from']
 
+    for ntr in ntr_biosamples:
+        terms[ntr['term_id']] = {
+            'name': ntr['name'],
+            'synonyms': ntr['synonyms'],
+            'ancestors': [terms[parent]['ancestors'] for parent in ntr.get('child_of')]
+        }
 
-    terms.update(ntr_biosamples)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)
 
