@@ -128,15 +128,15 @@ export const DefaultExistsBinaryFacet = ({ facet, relevantFilters, queryString, 
     }
 
     const facetYesTerm = facet.terms.find((term) => term.key === 'yes');
-    const facetNOTerm = facet.terms.find((term) => term.key === 'no');
+    const facetNoTerm = facet.terms.find((term) => term.key === 'no');
 
     // This may  be counterintuitive! YES-radio button option means set the facet to "facet!=*", so display
     // nothing with the facet. The NO-radio button means include all facet values.
     // So set YES-radio button to the facet-no count and set the NO-radio button to both the combined
     // facet-yes and facet-no counts
     const terms = [
-        { key: 'yes', doc_count: facetNOTerm.doc_count },
-        { key: 'no', doc_count: facetYesTerm.doc_count + facetNOTerm.doc_count },
+        { key: 'yes', doc_count: facetNoTerm.doc_count },
+        { key: 'no', doc_count: facetYesTerm.doc_count + facetNoTerm.doc_count },
     ];
 
     // We have to build the new query string
