@@ -8,22 +8,21 @@ Ontologies used
 
 | Ontology |  File used | Version in use | Version reference |
 |:--|:--|:--|:--|
-| [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON download] | 2020-09-16 | [UBERON release date] |
+| [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON download] | 2021-02-12 | [UBERON release] |
 | [Cell Ontology (CL)] | incl. w/ UBERON | incl. w/ UBERON | incl. w/ UBERON |
-| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-01-18 (3.26.0) | [EFO releases] |
-| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-01-29 | [MONDO release date] |
+| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-04-15 (3.29.0) | [EFO releases] |
+| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-04-07 | [MONDO release date] |
 | [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2021-01-04 (2.5) | [HANCESTRO releases] |
 
-**Current ontology.json:** `ontology-2021-02-09.json`
-**Updated with site version:** 1
+**Current ontology.json:** `ontology-2021-04-19.json`
 
 How to update the ontology versions
 ---------------- 
 
 1. Run generate-ontology  
-*note: first look up the latest [EFO release] and include the version in the `efo-url`*
+*note: first look up the latest [UBERON release] and [EFO release] and include the versions each url*
 ```
-	$ bin/generate-ontology --uberon-url=http://purl.obolibrary.org/obo/uberon/composite-vertebrate.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl --hancestro-url=http://purl.obolibrary.org/obo/hancestro/hancestro.owl
+	$ bin/generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/vYYYY-MM-DD/composite-vertebrate.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl --hancestro-url=http://purl.obolibrary.org/obo/hancestro/hancestro.owl
 ```
 
 2. Rename the `ontology.json` to one with the date that it was generated
@@ -38,12 +37,12 @@ How to update the ontology versions
 
 	`curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-YYYY-MM-DD.json`
 
-5.  Update the **Version in use** and ontology.json/site versions above
+5.  Update the **Version in use** and **Current ontology.json:** above
 
 
 [Uber-anatomy ontology (UBERON)]: http://uberon.org/
-[UBERON download]: http://uberon.github.io/downloads.html
-[UBERON release date]: http://svn.code.sf.net/p/obo/svn/uberon/releases/
+[UBERON download]: https://github.com/obophenotype/uberon/releases/
+[UBERON release]: https://github.com/obophenotype/uberon/releases/
 [Cell Ontology (CL)]: https://github.com/obophenotype/cell-ontology
 [Experimental Factor Ontology (EFO)]: http://www.ebi.ac.uk/efo
 [EFO releases]: https://github.com/EBISPOT/efo/releases
