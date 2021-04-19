@@ -243,7 +243,7 @@ class Dataset(Item):
         selected_genome_annotation_rank = len(genome_annotation_order)
         selected_pipeline_version = parse_version('')
         for aid in analysis_objects:
-            anal_obj = request.embed(
+            analysis = request.embed(
                 aid,
                 '@@object_with_select_calculated_properties'
                 '?field=pipeline_labs'
@@ -251,14 +251,14 @@ class Dataset(Item):
                 '&field=assembly'
                 '&field=genome_annotation',
             )
-            anal_obj['id'] = aid
+            analysis['id'] = aid
             # Filter out unreleased analysis if needed
-            if anal_obj['status'] not in status_order:
+            if analysis['status'] not in status_order:
                 continue
             # Rank on status first
-            current_status_rank = status_order.index(anal_obj['status'])
+            current_status_rank = status_order.index(analysis['status'])
             if current_status_rank < selected_status_rank:
-                selected_analysis = anal_obj
+                selected_analysis = analysis
                 selected_status_rank = current_status_rank
                 continue
             if current_status_rank > selected_status_rank:
@@ -271,11 +271,11 @@ class Dataset(Item):
                 'pipeline_labs', []
             ):
                 selected_lab = 'Uniform'
-            if '/labs/encode-processing-pipeline/' in anal_obj.get(
+            if '/labs/encode-processing-pipeline/' in analysis.get(
                 'pipeline_labs', []
             ):
                 if selected_lab == 'Lab custom':
-                    selected_analysis = anal_obj
+                    selected_analysis = analysis
                     continue
             elif selected_lab == 'Uniform':
                 continue
@@ -289,15 +289,15 @@ class Dataset(Item):
                 )
             else:
                 selected_pipeline_award_rfa_rank = len(award_rfa_order)
-            if anal_obj.get('pipeline_award_rfa'):
+            if analysis.get('pipeline_award_rfa'):
                 current_pipeline_award_rfa_rank = min(
                     award_rfa_order.index(rfa)
-                    for rfa in anal_obj['pipeline_award_rfa']
+                    for rfa in analysis['pipeline_award_rfa']
                 )
             else:
                 current_pipeline_award_rfa_rank = len(award_rfa_order)
             if current_pipeline_award_rfa_rank < selected_pipeline_award_rfa_rank:
-                selected_analysis = anal_obj
+                selected_analysis = analysis
                 continue
             if current_pipeline_award_rfa_rank > selected_pipeline_award_rfa_rank:
                 continue
@@ -308,14 +308,14 @@ class Dataset(Item):
                 )
             else:
                 selected_assembly_rank = len(assembly_order)
-            if anal_obj.get('assembly'):
+            if analysis.get('assembly'):
                 current_assembly_rank = assembly_order.index(
-                    anal_obj['assembly']
+                    analysis['assembly']
                 )
             else:
                 current_assembly_rank = len(assembly_order)
             if current_assembly_rank < selected_assembly_rank:
-                selected_analysis = anal_obj
+                selected_analysis = analysis
                 continue
             if current_assembly_rank > selected_assembly_rank:
                 continue
@@ -326,14 +326,14 @@ class Dataset(Item):
                 )
             else:
                 selected_genome_annotation_rank = len(genome_annotation_order)
-            if anal_obj.get('genome_annotation'):
+            if analysis.get('genome_annotation'):
                 current_genome_annotation_rank = genome_annotation_order.index(
-                    anal_obj['genome_annotation']
+                    analysis['genome_annotation']
                 )
             else:
                 current_genome_annotation_rank = len(genome_annotation_order)
             if current_genome_annotation_rank < selected_genome_annotation_rank:
-                selected_analysis = anal_obj
+                selected_analysis = analysis
                 continue
             if current_genome_annotation_rank > selected_genome_annotation_rank:
                 continue
@@ -342,10 +342,10 @@ class Dataset(Item):
                 selected_analysis.get('pipeline_version', '')
             )
             current_pipeline_version = parse_version(
-                anal_obj.get('pipeline_version', '')
+                analysis.get('pipeline_version', '')
             )
             if selected_pipeline_version < current_pipeline_version:
-                selected_analysis = anal_obj
+                selected_analysis = analysis
                 continue
             if selected_pipeline_version > current_pipeline_version:
                 continue
@@ -354,11 +354,11 @@ class Dataset(Item):
                 convert_date_string(selected_analysis['date_created']), "%Y-%m-%dT%H:%M:%S.%f%z"
             )
             current_date = datetime.datetime.strptime(
-                convert_date_string(anal_obj['date_created']), "%Y-%m-%dT%H:%M:%S.%f%z"
+                convert_date_string(analysis['date_created']), "%Y-%m-%dT%H:%M:%S.%f%z"
             )
-            selected_analysis = anal_obj
+            selected_analysis = analysis
             if selected_date > current_date:
-                selected_analysis = anal_obj
+                selected_analysis = analysis
                 continue
             # Very unlikely given our system date-time but if this is also the
             # same, I'll accept that and won't update `selected_analysis`.
