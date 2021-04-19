@@ -14,7 +14,7 @@ Ontologies used
 | [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-04-07 | [MONDO release date] |
 | [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2021-01-04 (2.5) | [HANCESTRO releases] |
 
-**Current ontology.json:** `ontology-2021-04-16.json`
+**Current ontology.json:** `ontology-2021-04-19.json`
 
 How to update the ontology versions
 ---------------- 
@@ -37,7 +37,7 @@ How to update the ontology versions
 
 	`curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-YYYY-MM-DD.json`
 
-5.  Update the **Version in use** and ontology.json/site versions above
+5.  Update the **Version in use** and **Current ontology.json:** above
 
 
 [Uber-anatomy ontology (UBERON)]: http://uberon.org/

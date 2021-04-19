@@ -433,10 +433,13 @@ def main():
         del terms[term]['part_of'], terms[term]['id'], terms[term]['data_with_develops_from']
 
     for ntr in ntr_biosamples:
+        ancestors = set()
+        for parent in ntr.get('child_of'):
+            ancestors.update(terms[parent]['ancestors'])
         terms[ntr['term_id']] = {
             'name': ntr['name'],
             'synonyms': ntr['synonyms'],
-            'ancestors': [terms[parent]['ancestors'] for parent in ntr.get('child_of')]
+            'ancestors': list(ancestors)
         }
 
     with open('ontology.json', 'w') as outfile:
