@@ -6,6 +6,7 @@
 * Added *doi* property
 * Added *analyses* property
 * *related_datasets* now includes SingleCellUnit.json
+* Added *assay_slims* calculated property
 
 ### Schema version 3
 
