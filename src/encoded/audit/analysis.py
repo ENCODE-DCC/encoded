@@ -106,7 +106,7 @@ def check_file_read_depth(
     detail = (
         f"Processed {file_to_check['output_type']} file "
         f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-        f"processed by {assay_term_name} {pipeline_title} pipeline"
+        f"processed by {assay_term_name} {pipeline_title} pipeline "
         f"{assembly_text}has {read_depth} aligned reads. {second_half_of_detail}"
     )
     if read_depth >= middle_threshold and read_depth < upper_threshold:
@@ -649,7 +649,7 @@ def check_analysis_dnase_seq_standards(
                     assembly_detail_phrase = ''
                 detail = (
                     f"Alignment file {audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])} "
-                    f"processed by {assay_term_name} {value['title']} pipeline"
+                    f"processed by {assay_term_name} {value['title']} pipeline "
                     f"( {audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])} ) "
                     f"{assembly_detail_phrase}has {metric['mapped']} mapped reads. {suffix}"
                 )
@@ -698,7 +698,7 @@ def check_analysis_dnase_seq_standards(
                     f"Signal Portion of Tags (SPOT) is a measure of enrichment, "
                     f"analogous to the commonly used fraction of reads in peaks metric. "
                     f"ENCODE processed alignment files {', '.join(file_names_links)} "
-                    f"processed by {assay_term_name} {value['title']} pipeline"
+                    f"processed by {assay_term_name} {value['title']} pipeline "
                     f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                     f"{assemblies_detail(extract_assemblies(alignments_assemblies, file_names))} "
                     f"have a SPOT1 score of {metric['spot1_score']:.2f}. "
@@ -739,7 +739,7 @@ def check_analysis_dnase_seq_standards(
                     f"Replicate concordance in DNase-seq experiments is measured by "
                     f"calculating the Pearson correlation between signal quantification "
                     f"of the replicates. ENCODE processed signal files {', '.join(file_names_links)} "
-                    f"processed by {assay_term_name} {value['title']} pipeline"
+                    f"processed by {assay_term_name} {value['title']} pipeline "
                     f"({audit_link(path_to_text(value['pipelines'][0]['@id']), value['pipelines'][0]['@id'])}) "
                     f"{assemblies_detail(extract_assemblies(signal_assemblies, file_names))} "
                     f"have a Pearson correlation of {metric['Pearson correlation']:.2f}. "
@@ -1207,7 +1207,7 @@ def check_file_modERN_chip_seq_read_depth(
         detail = (
             f"ENCODE processed {file_to_check['output_type']} file "
             f"{audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])} "
-            f"processed by {assay_term_name} {pipeline_title} pipeline"
+            f"processed by {assay_term_name} {pipeline_title} pipeline "
             f"has no read depth information."
         )
         yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
