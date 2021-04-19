@@ -69,6 +69,7 @@ def calculate_assembly(request, files_list, status):
 class Dataset(Item):
     base_types = ['Dataset'] + Item.base_types
     embedded = [
+        'analyses',
         'files',
         'files.replicate',
         'files.replicate.experiment',
@@ -456,7 +457,6 @@ class SingleCellUnit(
     item_type = 'single_cell_unit'
     schema = load_schema('encoded:schemas/single_cell_unit.json')
     embedded = Dataset.embedded + [
-        'analyses',
         'biosample_ontology',
         'files.platform',
         'files.analysis_step_version.analysis_step',
@@ -647,7 +647,6 @@ class Annotation(FileSet, CalculatedVisualize):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + [
-        'analyses',
         'biosample_ontology',
         'software_used',
         'software_used.software',

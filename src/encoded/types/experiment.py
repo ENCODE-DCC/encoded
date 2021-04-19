@@ -50,7 +50,6 @@ class Experiment(Dataset,
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
-        'analyses',
         'biosample_ontology',
         'files.platform',
         'files.analysis_step_version.analysis_step',
