@@ -223,146 +223,80 @@ class Dataset(Item):
         "notSubmittable": True
     })
     def default_analysis(self, request, status, analysis_objects):
+        types = request.registry['types']
         unreleased_status = ['in progress', 'submitted', 'deleted', 'replaced']
-        status_order = list(request.registry['types']['analysis'].schema['properties']['status']['enum'])
-        if status not in unreleased_status:
-            status_order = [
-                s for s in status_order if s not in unreleased_status
-            ]
-        award_rfa_order = list(request.registry['types']['award'].schema['properties']['rfa']['enum'])
-        assembly_order = list(request.registry['types']['file'].schema['properties']['assembly']['enum'])
-        assembly_order.append('mixed')
-        genome_annotation_order = list(request.registry['types']['file'].schema['properties']['genome_annotation']['enum'])
-        genome_annotation_order.append('mixed')
-        selected_analysis = {}
-        # Allow the first qualified analysis to be selected
-        selected_status_rank = len(status_order)
-        selected_lab = 'Lab custom'
-        selected_pipeline_award_rfa_rank = len(award_rfa_order)
-        selected_assembly_rank = len(assembly_order)
-        selected_genome_annotation_rank = len(genome_annotation_order)
-        selected_pipeline_version = parse_version('')
-        for aid in analysis_objects:
-            analysis = request.embed(
-                aid,
+        # Easier to sort everything by max, so reverse order of all
+        status_order = list(reversed(types['analysis'].schema['properties']['status']['enum']))
+        award_rfa_order = list(reversed(types['award'].schema['properties']['rfa']['enum']))
+        assembly_order = list(reversed(types['file'].schema['properties']['assembly']['enum'] + ['mixed']))
+        genome_annotation_order = list(reversed(types['file'].schema['properties']['genome_annotation']['enum'] + ['mixed']))
+
+        analyses = (
+            request.embed(
+                analysis_id,
                 '@@object_with_select_calculated_properties'
-                '?field=pipeline_labs'
+                '?field=@id'
+                '&field=pipeline_labs'
                 '&field=pipeline_award_rfas'
                 '&field=assembly'
                 '&field=genome_annotation',
             )
-            analysis['id'] = aid
-            # Filter out unreleased analysis if needed
-            if analysis['status'] not in status_order:
-                continue
-            # Rank on status first
-            current_status_rank = status_order.index(analysis['status'])
-            if current_status_rank < selected_status_rank:
-                selected_analysis = analysis
-                selected_status_rank = current_status_rank
-                continue
-            if current_status_rank > selected_status_rank:
-                continue
-            # Same status level so rank on lab secondly. Should already have at
-            # least one analysis selected. Only two lab levels:
-            # /labs/encode-processing-pipeline/ > other cases. `selected_lab`
-            # could have changed due to status update above.
-            if '/labs/encode-processing-pipeline/' in selected_analysis.get(
-                'pipeline_labs', []
-            ):
-                selected_lab = 'Uniform'
-            if '/labs/encode-processing-pipeline/' in analysis.get(
-                'pipeline_labs', []
-            ):
-                if selected_lab == 'Lab custom':
-                    selected_analysis = analysis
-                    continue
-            elif selected_lab == 'Uniform':
-                continue
-            # Same lab level so rank on pipeline award RFA thirdly.
-            # `selected_pipeline_award_rfa_rank` could have changed due to
-            # updates above.
-            if selected_analysis.get('pipeline_award_rfa'):
-                selected_pipeline_award_rfa_rank = min(
-                    award_rfa_order.index(rfa)
-                    for rfa in selected_analysis['pipeline_award_rfa']
-                )
-            else:
-                selected_pipeline_award_rfa_rank = len(award_rfa_order)
-            if analysis.get('pipeline_award_rfa'):
-                current_pipeline_award_rfa_rank = min(
-                    award_rfa_order.index(rfa)
-                    for rfa in analysis['pipeline_award_rfa']
-                )
-            else:
-                current_pipeline_award_rfa_rank = len(award_rfa_order)
-            if current_pipeline_award_rfa_rank < selected_pipeline_award_rfa_rank:
-                selected_analysis = analysis
-                continue
-            if current_pipeline_award_rfa_rank > selected_pipeline_award_rfa_rank:
-                continue
-            # Same pipeline award RFA level so rank on assembly fourthly.
-            if selected_analysis.get('assembly'):
-                selected_assembly_rank = assembly_order.index(
-                    selected_analysis['assembly']
-                )
-            else:
-                selected_assembly_rank = len(assembly_order)
-            if analysis.get('assembly'):
-                current_assembly_rank = assembly_order.index(
-                    analysis['assembly']
-                )
-            else:
-                current_assembly_rank = len(assembly_order)
-            if current_assembly_rank < selected_assembly_rank:
-                selected_analysis = analysis
-                continue
-            if current_assembly_rank > selected_assembly_rank:
-                continue
-            # Same assembly level so rank on genome annotation fifthly.
-            if selected_analysis.get('genome_annotation'):
-                selected_genome_annotation_rank = genome_annotation_order.index(
-                    selected_analysis['genome_annotation']
-                )
-            else:
-                selected_genome_annotation_rank = len(genome_annotation_order)
-            if analysis.get('genome_annotation'):
-                current_genome_annotation_rank = genome_annotation_order.index(
-                    analysis['genome_annotation']
-                )
-            else:
-                current_genome_annotation_rank = len(genome_annotation_order)
-            if current_genome_annotation_rank < selected_genome_annotation_rank:
-                selected_analysis = analysis
-                continue
-            if current_genome_annotation_rank > selected_genome_annotation_rank:
-                continue
-            # Same genome annotation level so rank on pipeline version sixthly.
-            selected_pipeline_version = parse_version(
-                selected_analysis.get('pipeline_version', '')
+            for analysis_id in analysis_objects
+        )
+        if status not in unreleased_status:
+            status_order = [
+                s
+                for s in status_order
+                if s not in unreleased_status
+            ]
+            analyses = (
+                analysis
+                for analysis in analyses
+                if  analysis['status'] in status_order
             )
-            current_pipeline_version = parse_version(
-                analysis.get('pipeline_version', '')
+        analysis_ranking = {}
+
+        for analysis in analyses:
+            status_rank = status_order.index(analysis['status'])
+            # True ranked higher than False.
+            lab_rank = '/labs/encode-processing-pipeline/' in analysis.get('pipeline_labs', [])
+            # Get max index or zero if field doesn't exist.
+            pipeline_award_rfa_rank = max(chain(
+                (award_rfa_order.index(rfa)
+                for rfa in analysis.get('pipeline_award_rfa', [])), [0])
             )
-            if selected_pipeline_version < current_pipeline_version:
-                selected_analysis = analysis
-                continue
-            if selected_pipeline_version > current_pipeline_version:
-                continue
-            # Same pipeline version so rank on date created seventhly.
-            selected_date = datetime.datetime.strptime(
-                convert_date_string(selected_analysis['date_created']), "%Y-%m-%dT%H:%M:%S.%f%z"
+            # Get max index or zero if field doesn't exist. 
+            assembly_rank = 0
+            if analysis.get('assembly', '') in assembly_order:
+                assembly_rank = assembly_order.index(analysis.get('assembly', ''))
+            genome_annotation_rank = 0
+            if analysis.get('genome_annotation', '') in genome_annotation_order:
+                genome_annotation_rank = genome_annotation_order.index(analysis.get('genome_annotation', ''))
+            # We reverse sort order at the end so later version numbers will rank higher.
+            pipeline_version_rank = parse_version(analysis.get('pipeline_version', ''))
+            # We reverse sort order at the end so later dates rank higher.
+            date_rank = datetime.datetime.strptime(
+                convert_date_string(
+                    analysis['date_created']
+                ),
+                "%Y-%m-%dT%H:%M:%S.%f%z"
             )
-            current_date = datetime.datetime.strptime(
-                convert_date_string(analysis['date_created']), "%Y-%m-%dT%H:%M:%S.%f%z"
-            )
-            selected_analysis = analysis
-            if selected_date > current_date:
-                selected_analysis = analysis
-                continue
-            # Very unlikely given our system date-time but if this is also the
-            # same, I'll accept that and won't update `selected_analysis`.
-        return selected_analysis.get('id')
+            # Store all the ranking numbers for an analysis in a tuple that can be sorted.
+            analysis_ranking[
+                (
+                    status_rank,
+                    lab_rank,
+                    pipeline_award_rfa_rank,
+                    assembly_rank,
+                    genome_annotation_rank,
+                    pipeline_version_rank,
+                    date_rank,
+                )
+            ] = analysis['@id']
+        
+        if analysis_ranking:
+            # We want highest version, date, etc. so reverse sort order. Access value from top item.
+            return sorted(analysis_ranking.items(), reverse=True)[0][1]
 
 
 def convert_date_string(date_string):
