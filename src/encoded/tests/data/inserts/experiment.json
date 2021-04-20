@@ -763,7 +763,10 @@
         "date_released": "2015-08-31",
         "internal_tags": ["LRGASP"],
         "accession": "ENCSR751ISO",
-        "aliases": ["christopher-vollmers:namespace_test", "angela-brooks:namespace_test"],
+        "aliases": ["christopher-vollmers:namespace_test",
+                    "angela-brooks:namespace_test",
+                    "ana-conesa:namespace_test"
+        ],
         "uuid": "6dde71b6-555c-4bed-9bb7-7bec3771893b"
     },
     {
