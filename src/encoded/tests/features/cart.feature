@@ -14,21 +14,21 @@ Feature: Cart
         When I press "Data"
         And I click the link with text that contains "High-throughput assays"
         And I wait for the content to load
-        Then I should see 3 elements with the css selector ".result-item__cart-control"
+        Then I should see 4 elements with the css selector ".result-item__cart-control"
 
         When I press "Add all items to cart"
-        Then I should see 3 elements with the css selector ".cart-toggle--in-cart"
+        Then I should see 4 elements with the css selector ".cart-toggle--in-cart"
 
     Scenario: Cart page load
         When I press "cart-control"
         And I click the link to "/cart-view/"
         And I wait for the content to load
-        Then I should see 6 elements with the css selector ".result-item"
+        Then I should see 7 elements with the css selector ".result-item"
         And I should see "5 files selected"
         When I press "default-data-toggle"
-        Then I should see "2 files selected"
+        Then I should see "4 files selected"
         When I click the link to "#processeddata"
-        Then I should see 2 elements with the css selector ".cart-list-item"
+        Then I should see 4 elements with the css selector ".cart-list-item"
         When I click the link to "#rawdata"
         Then I should see 0 elements with the css selector ".cart-list-item"
 
