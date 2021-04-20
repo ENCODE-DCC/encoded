@@ -36,8 +36,8 @@ commands:
               openjdk-11-jdk \
               postgresql-10 \
               redis-server
-            sudo apt-get install -y python3.7-dev python3-pip
-            sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 0
+            sudo apt-get install -y python3.6-dev python3-pip
+            sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 0
             sed -i '1s;^;alias python=python3\n;' $BASH_ENV
             wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.16.deb
             wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb
