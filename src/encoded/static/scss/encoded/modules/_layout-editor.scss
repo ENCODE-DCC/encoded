@@ -114,9 +114,11 @@
     z-index: 1030;
 
     @at-root #{&}__tools {
+        display: flex;
         flex: 0 1 auto;
 
         .btn {
+            margin-right: 2px;
             cursor: move;
         }
     }
