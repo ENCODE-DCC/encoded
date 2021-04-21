@@ -673,15 +673,13 @@ export const DefaultMultiselectFacet = ({ facet, queryString }, reactContext) =>
 
     React.useEffect(() => {
         const query = new QueryString(queryString);
-        console.log(biochemicalInput);
         if (biochemicalInput.length > 0) {
-            query.replaceKeyValue('advancedQuery', `biochemical_inputs:(${(Array.isArray(biochemicalInput) && (biochemicalInput.length > 1)) ? biochemicalInput.join(' AND ') : biochemicalInput})`);
+            query.replaceKeyValue('advancedQuery', `biochemical_inputs:(${(Array.isArray(biochemicalInput) && (biochemicalInput.length > 1)) ? biochemicalInput.join(' OR ') : biochemicalInput})`);
             const href = `?${query.format()}`;
             reactContext.navigate(href);
         } else if (isMounted.current === true) {
             query.deleteKeyValue('advancedQuery');
             const href = `?${query.format()}`;
-            console.log(href);
             reactContext.navigate(href);
         }
     }, [biochemicalInput]);
@@ -690,10 +688,8 @@ export const DefaultMultiselectFacet = ({ facet, queryString }, reactContext) =>
         // Find url for page without any organs or systems selected
         const query = new QueryString(queryString);
         const originalInputs = query.getKeyValues('advancedQuery');
-        console.log('original inputs');
-        console.log(originalInputs);
         if (originalInputs.length > 0) {
-            const originalInputsArray = originalInputs[0].toString().replace('biochemical_inputs:(', '').replace(')', '').split(' AND ');
+            const originalInputsArray = originalInputs[0].toString().replace('biochemical_inputs:(', '').replace(')', '').split(' OR ');
             if (originalInputs[0].indexOf('biochemical_inputs') > -1) {
                 setBiochemicalInput(originalInputsArray);
             }
