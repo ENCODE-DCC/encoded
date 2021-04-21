@@ -4429,5 +4429,21 @@
         "assembly": "GRCh38",
         "md5sum": "b45ba95a5575607fc2d2ce597dbb5984",
         "replicate": "df1f66d6-70ef-11e9-a923-1681be663d3e"
+    },
+    {
+        "_test": "R2C2 subreads fastq file for LRGASP",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/ali-mortazavi/",
+        "dataset": "ENCSR751ISO",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "4d6cf18c-1637-4ed1-b92f-8aa389613fed",
+        "accession": "ENCFF033ONT",
+        "file_format": "fastq",
+        "output_type": "R2C2 subreads",
+        "file_size": 1000,
+        "platform": "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+        "md5sum": "35878d128f4bbdd9cfb4aee3ac6fe1b8",
+        "replicate": "3b427e79-556e-4125-8102-f6723471807e"
     }
 ]

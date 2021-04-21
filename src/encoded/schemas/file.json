@@ -345,7 +345,7 @@
             ]
         },
         "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio or Nanopore platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
             "oneOf":[
                 {
                     "properties": {
@@ -505,7 +505,7 @@
                     "required": ["replicate"],
                     "properties": {
                         "output_type": {
-                            "enum": ["nanopore signal"]
+                            "enum": ["nanopore signal", "R2C2 subreads"]
                         },
                         "platform": {
                             "linkTo": "Platform",
@@ -522,7 +522,7 @@
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal", "R2C2 subreads"]
                             }
                         }
                     }
@@ -564,6 +564,13 @@
                         "properties": {
                             "output_type": {
                                 "enum": ["nanopore signal"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["R2C2 subreads"]
                             }
                         }
                     }
@@ -662,7 +669,7 @@
                                 {
                                     "properties": {
                                         "output_type": {
-                                            "enum": ["index reads"]
+                                            "enum": ["index reads", "R2C2 subreads"]
                                         }
                                     }
                                 }
@@ -701,7 +708,7 @@
                                     {
                                         "properties": {
                                             "output_type": {
-                                                "enum": ["index reads"]
+                                                "enum": ["index reads", "R2C2 subreads"]
                                             }
                                         }
                                     }
@@ -849,7 +856,8 @@
                                         "raw data",
                                         "reporter code counts",
                                         "nanopore signal",
-                                        "repeat elements annotation"
+                                        "repeat elements annotation",
+                                        "R2C2 subreads"
                                     ]
                                 }
                             }
@@ -911,7 +919,8 @@
                                             "raw data",
                                             "reporter code counts",
                                             "restriction enzyme site locations",
-                                            "nanopore signal"
+                                            "nanopore signal",
+                                            "R2C2 subreads"
                                         ]
                                     }
                                 }
@@ -1544,6 +1553,7 @@
                         "pseudoreplicated peaks",
                         "pseudoreplicated IDR thresholded peaks",
                         "PWMs",
+                        "R2C2 subreads",
                         "raw minus strand signal",
                         "raw normalized signal",
                         "raw plus strand signal",
@@ -2011,6 +2021,7 @@
         "raw data": "raw data",
         "reporter code counts": "raw data",
         "subreads": "raw data",
+        "R2C2 subreads": "raw data",
 
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
