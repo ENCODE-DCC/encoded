@@ -34,3 +34,20 @@ def test_histone_frip_calculation(testapp, histone_chipseq_quality_metric_frip):
 def test_star_read_depth(testapp, bam_quality_metric_1_1):
     res = testapp.get(bam_quality_metric_1_1['@id'])
     assert res.json['read_depth'] == 1500
+
+
+def test_usable_fragments(testapp, atac_alignment_quality_metric_low):
+    res = testapp.get(atac_alignment_quality_metric_low['@id'])
+    assert 'usable_fragments' not in res.json
+    testapp.patch_json(
+        atac_alignment_quality_metric_low['@id'],
+        {'processing_stage': 'filtered'}
+    )
+    res = testapp.get(atac_alignment_quality_metric_low['@id'])
+    assert res.json['usable_fragments'] == 880479
+    testapp.patch_json(
+        atac_alignment_quality_metric_low['@id'],
+        {'read1': 400000, 'read2': 400000}
+    )
+    res = testapp.get(atac_alignment_quality_metric_low['@id'])
+    assert res.json['usable_fragments'] == 440239

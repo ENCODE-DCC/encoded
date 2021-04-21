@@ -196,6 +196,25 @@ class SamtoolsFlagstatsQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'samtools_flagstats_quality_metric'
     schema = load_schema('encoded:schemas/samtools_flagstats_quality_metric.json')
 
+    @calculated_property(schema={
+        "title": "Usable fragments",
+        "type": "number",
+        "description": "Usable fragments, based on the mapped value.",
+        "comment": "Do not submit. The value is extracted from values reported in the Samtools Flagstats quality metric.",
+        "notSubmittable": True,
+    })
+    def usable_fragments(self, properties=None):
+        if properties is None:
+            properties = self.upgrade_properties()
+        if 'processing_stage' in properties and \
+                properties['processing_stage'] == 'filtered' and\
+                'mapped' in properties:
+            if 'read1' in properties and 'read2' in properties and \
+                    properties['read1'] != 0 and properties['read2'] != 0:
+                return int(properties['mapped']/2)
+            else:
+                return int(properties['mapped'])
+
 
 @collection(
     name='samtools-stats-quality-metrics',
@@ -337,6 +356,25 @@ class ChipAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'chip_alignment_samstat_quality_metric'
     schema = load_schema('encoded:schemas/chip_alignment_samstat_quality_metric.json')
 
+    @calculated_property(schema={
+        "title": "Usable fragments",
+        "type": "number",
+        "description": "Usable fragments, based on the mapped_reads value.",
+        "comment": "Do not submit. The value is extracted from values reported in the ChIP Alignment quality metric.",
+        "notSubmittable": True,
+    })
+    def usable_fragments(self, properties=None):
+        if properties is None:
+            properties = self.upgrade_properties()
+        if 'processing_stage' in properties and \
+                properties['processing_stage'] == 'filtered' and \
+                'mapped_reads' in properties:
+            if 'read1' in properties and 'read2' in properties and \
+                    properties['read1'] != 0 and properties['read2'] != 0:
+                return int(properties['mapped_reads']/2)
+            else:
+                return int(properties['mapped_reads'])
+
 
 @collection(
     name='chip-alignment-enrichment-quality-metrics',
@@ -386,6 +424,25 @@ class ChipReplicationQualityMetric(QualityMetric, CalculatedAssayTermID):
 class AtacAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'atac_alignment_quality_metric'
     schema = load_schema('encoded:schemas/atac_alignment_quality_metric.json')
+
+    @calculated_property(schema={
+        "title": "Usable fragments",
+        "type": "number",
+        "description": "Usable fragments, based on the mapped_reads value.",
+        "comment": "Do not submit. The value is extracted from values reported in the ATAC Alignment quality metric.",
+        "notSubmittable": True,
+    })
+    def usable_fragments(self, properties=None):
+        if properties is None:
+            properties = self.upgrade_properties()
+        if 'processing_stage' in properties and \
+                properties['processing_stage'] == 'filtered' and \
+                'mapped_reads' in properties:
+            if 'read1' in properties and 'read2' in properties and \
+                    properties['read1'] != 0 and properties['read2'] != 0:
+                return int(properties['mapped_reads']/2)
+            else:
+                return int(properties['mapped_reads'])
 
 
 @collection(
