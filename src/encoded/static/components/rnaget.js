@@ -18,8 +18,8 @@ const AutocompleteBox = (props) => {
 
     /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events, arrow-body-style */
 
-    if (terms && terms.length > 0) {
-        return (
+    return (terms && terms.length > 0) ?
+        (
             <ul className="rnaseq-search-autocomplete">
                 {terms.map((term) => {
                     return (
@@ -29,12 +29,9 @@ const AutocompleteBox = (props) => {
                     );
                 }, this)}
             </ul>
-        );
-    }
+         ) : null;
 
     /* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events, arrow-body-style */
-
-    return null;
 };
 
 AutocompleteBox.propTypes = {
@@ -731,7 +728,7 @@ class RNASeqMatrixSearch extends TextFilter {
     lastGene() {
         const inputNode = this.geneInput;
 
-        if (inputNode === undefined) {
+        if (!inputNode) {
             return '';
         }
 
