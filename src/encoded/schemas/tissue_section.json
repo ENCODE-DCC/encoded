@@ -80,20 +80,15 @@
                 "pattern": "^((EGA:EGAN\\d+)|(BioSample:SAM(E|N|D)(A|G)?\\d+)|(GEO:SAM(E|N|D)(A|G)?\\d+)|(SRA:SRS\\d+)|(ENA:ERS\\d+))$"
             }
         },
-        "sectioning_method": {
-            "title": "Sectioning method",
-            "description": "",
-            "type": "string"
-        },
         "thickness": {
             "title": "Thickness",
-            "description": "",
+            "description": "The distance from the top, or imaged side, of the tissue section, to the bottom.",
             "type": "string",
             "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
         },
         "thickness_units": {
             "title": "Thickness units",
-            "description": "",
+            "description": "The unit of thickness measurement of the tissue section.",
             "type": "string",
             "enum": [
                 "μm"
