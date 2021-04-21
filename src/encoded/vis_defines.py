@@ -28,6 +28,7 @@ IHEC_LIB_STRATEGY = {
     'MeDIP-seq': 'MeDIP-Seq',
     'microRNA-seq': 'miRNA-Seq',
     'microRNA counts': 'miRNA-Seq',
+    'small RNA-seq': 'RNA-Seq',
     'MRE-seq': 'MRE-Seq',
     'polyA plus RNA-seq': 'RNA-Seq',
     'RNA-seq': 'RNA-Seq',
@@ -1149,6 +1150,8 @@ class IhecDefines(object):
         assay = dataset['assay_term_name']
         if assay == 'microRNA-seq':
             return 'smRNA-Seq'
+        if assay == 'small RNA-seq':
+            return 'RNA-Seq'
         if assay == 'polyA plus RNA-seq':
             return 'mRNA-Seq'
         if assay == 'RNA-seq':
@@ -1177,12 +1180,12 @@ class IhecDefines(object):
         experiment_type = vis_dataset.get('ihec_exp_type')
         if experiment_type is None:
             return {}
-        attributes["experiment_type"] = experiment_type
-        attributes["experiment_ontology_uri"] = 'http://purl.obolibrary.org/obo/' + assay_id.replace(':','_')
+        attributes["experiment_type"] = [experiment_type]
+        attributes["experiment_ontology_uri"] = ['http://purl.obolibrary.org/obo/' + assay_id.replace(':','_')]
         assay_name = vis_dataset.get('assay_term_name')
         if assay_name:
             attributes["assay_type"] = assay_name
-        attributes['library_strategy'] = IHEC_LIB_STRATEGY[assay_name]
+        attributes['library_strategy'] = [IHEC_LIB_STRATEGY[assay_name]]
         query = (
             '/search/?type=ReferenceEpigenome&related_datasets.accession={}'
             '&status=released&field=dbxrefs&limit=all'
@@ -1190,7 +1193,7 @@ class IhecDefines(object):
         for ref_epi in self._request.embed(query)['@graph']:
             for dbxref in ref_epi.get('dbxrefs', []):
                 if dbxref.startswith('IHEC:IHECRE'):
-                    attributes['reference_registry_id'] = dbxref[5:].split('.')[0]
+                    attributes['reference_registry_id'] = [dbxref[5:].split('.')[0]]
                     break
         return attributes
 
@@ -1242,51 +1245,64 @@ class IhecDefines(object):
         if sample_id in self.samples:
             return self.samples[sample_id]
 
-        molecule = self.molecule(dataset)
-        if molecule is None:
-            return {}
-        sample['molecule'] = molecule
-        sample['lineage'] = self.lineage(biosample, 'unknown')
-        sample['differentiation_stage'] = self.differentiation(biosample, 'unknown')
         term_id = biosample.get('biosample_ontology', {}).get('term_id')
         if term_id:
-            sample["sample_ontology_uri"] = term_id
+            sample["sample_ontology_uri"] = [term_id]
 
-        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_ontology', {}).get('classification')) # ["Cell Line","Primary Cell", ...
-        sample["line"] = biosample.get('biosample_ontology', {}).get('term_name', 'none')
-        sample["medium"] = "unknown"                                                    # We don't have
-        sample["disease"] = biosample.get('health_status',"Healthy").capitalize()  #  assume all samples are healthy - hitz
-        if sample["disease"] == "Healthy":
-            sample["disease_ontology_uri"] = "http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"
+        sample["biomaterial_type"] = [self.biomaterial_type(biosample.get('biosample_ontology', {}).get('classification'))] # ["Cell Line","Primary Cell", ...
+        source = biosample.get('source')
+        sample["biomaterial_provider"] = [source['title']]
+        sample["line"] = [biosample.get('biosample_ontology', {}).get('term_name', 'none')]
+        sample["disease"] = [biosample.get('health_status',"Healthy").capitalize()]  #  assume all samples are healthy - hitz
+        if "Healthy" in sample["disease"]:
+            sample["disease_ontology_uri"] = ["http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"]
         else:
             # Note only term for disease ontology is healthy=C115935.  No search url syntax known
-            sample["disease_ontology_uri"] = "https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"
-        sample["sex"] = biosample.get('sex','unknown').capitalize()
+            sample["disease_ontology_uri"] = ["https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"]
+        sample["sex"] = [biosample.get('sex','unknown').capitalize()]
 
-        if sample["biomaterial_type"] in ["Primary Tissue", "Primary Cell Culture"]:
+        if "Cell Line" in sample["biomaterial_type"]:
+            sample["differentiation_method"] = ["NA"]
+            sample["batch"] = ["NA"]
+            sample["medium"] = ["unknown"] # We don't have this information
+            sample['lineage'] = [self.lineage(biosample, 'unknown')]
+            sample['differentiation_stage'] = [self.differentiation(biosample, 'unknown')]
+            sample['passage'] = [str(biosample.get('passage_number', 'NA'))]
+
+        if "Primary Tissue" in sample["biomaterial_type"] or "Primary Cell Culture" in sample["biomaterial_type"]:
             sample["donor_sex"] = sample["sex"]
             donor = biosample.get('donor')
             if donor is not None:
-                sample["donor_id"] = donor['accession']
+                sample["donor_id"] = [donor['accession']]
                 if donor.get('age', 'NA').isdigit():
-                    sample["donor_age"] = int(donor['age'])
+                    sample["donor_age"] = [int(donor['age'])]
                 elif donor.get('age', 'NA') == 'unknown':
-                    sample["donor_age"] = 'NA'
+                    sample["donor_age"] = ['NA']
                 else:
-                    sample["donor_age"] = donor.get('age', 'NA')
-                sample["donor_age_unit"] = donor.get('age_units','year')  # unknwn is not supported
-                sample["donor_life_stage"] = donor.get('life_stage','unknown')
+                    sample["donor_age"] = [donor.get('age', 'NA')]
+                sample["donor_age_unit"] = [donor.get('age_units','year')]  # unknown is not supported
+                sample["donor_life_stage"] = [donor.get('life_stage','unknown')]
                 sample["donor_health_status"] = sample["disease"]
+                sample["donor_health_status_ontology_uri"] = sample["disease_ontology_uri"]
                 if donor.get('organism',{}).get('name','unknown') == 'human':
-                    sample["donor_ethnicity"] = donor.get('ethnicity','unknown')
+                    ethnicity = donor.get('ethnicity')
+                    if ethnicity is not None:
+                        sample["donor_ethnicity"] = ethnicity
+                    else:
+                        sample["donor_ethnicity"] = ['unknown']
                 else:
-                    sample["donor_ethnicity"] = 'NA'
-            if sample["biomaterial_type"] == "Primary Tissue":
+                    sample["donor_ethnicity"] = ['NA']
+            if "Primary Tissue" in sample["biomaterial_type"]:
                 sample["tissue_type"] = sample["line"]
-                sample["tissue_depot"] = biosample.get('source',{}).get('description','unknown')
-            elif sample["biomaterial_type"] == "Primary Cell Culture":
+                sample["tissue_depot"] = [biosample.get('source',{}).get('description','unknown')]
+                sample["collection_method"] = ["unknown"] # we don't have this information
+            elif "Primary Cell Culture" in sample["biomaterial_type"]:
                 sample["cell_type"] = sample["line"]
-                sample["culture_conditions"] = "unknwon" # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
+                sample["culture_conditions"] = ["unknown"] # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
+                sample["markers"] = ["unknown"] # not collected by us
+                sample["passage_if_expanded"] = [str(biosample.get('passage_number', 'NA'))]
+                sample["origin_sample"] = ["unknown"]
+                sample["origin_sample_ontology_uri"] = sample["sample_ontology_uri"]
         self.samples[sample_id] = sample
         return sample
 
