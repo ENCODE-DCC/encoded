@@ -215,7 +215,7 @@ class Dataset(Item):
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
-    @calculated_property(condition='analysis_objects', schema={
+    @calculated_property(condition='analyses', schema={
         "title": "Default analysis",
         "description": "One default analysis that should be checked first.",
         "comment": "Do not submit. This field is calculated from files in this analysis.",
@@ -223,7 +223,7 @@ class Dataset(Item):
         "linkTo": "Analysis",
         "notSubmittable": True
     })
-    def default_analysis(self, request, status, analysis_objects):
+    def default_analysis(self, request, status, analyses):
         types = request.registry['types']
         unreleased_status = ['in progress', 'submitted', 'deleted', 'replaced']
         # Easier to sort everything by max, so reverse order of all
@@ -242,7 +242,7 @@ class Dataset(Item):
                 '&field=assembly'
                 '&field=genome_annotation',
             )
-            for analysis_id in analysis_objects
+            for analysis_id in analyses
         )
         if status not in unreleased_status:
             status_order = [
