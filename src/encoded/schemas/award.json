@@ -185,19 +185,20 @@
         "rfa": {
             "title": "RFA",
             "description": "The name of the bioproject phase.",
+            "comment": "The order of enums below reflects the priority when we consider selecting default analysis for a dataset.",
             "type": "string",
             "enum": [
-                "community",
-                "ENCODE",
-                "ENCODE2-Mouse",
-                "ENCODE2",
-                "ENCODE3",
                 "ENCODE4",
+                "ENCODE3",
+                "ENCODE2",
+                "ENCODE2-Mouse",
+                "ENCODE",
                 "GGR",
+                "ENCORE",
+                "Roadmap",
                 "modENCODE",
                 "modERN",
-                "Roadmap",
-                "ENCORE"
+                "community"
             ]
         },
         "project": {

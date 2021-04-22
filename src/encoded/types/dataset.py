@@ -39,6 +39,7 @@ from .shared_biosample import biosample_summary_information
 from .assay_data import assay_terms
 
 from itertools import chain
+from pkg_resources import parse_version
 import datetime
 
 
@@ -212,6 +213,96 @@ class Dataset(Item):
     })
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
+
+    @calculated_property(condition='analysis_objects', schema={
+        "title": "Default analysis",
+        "description": "One default analysis that should be checked first.",
+        "comment": "Do not submit. This field is calculated from files in this analysis.",
+        "type": "string",
+        "linkTo": "Analysis",
+        "notSubmittable": True
+    })
+    def default_analysis(self, request, status, analysis_objects):
+        types = request.registry['types']
+        unreleased_status = ['in progress', 'submitted', 'deleted', 'replaced']
+        # Easier to sort everything by max, so reverse order of all
+        status_order = list(reversed(types['analysis'].schema['properties']['status']['enum']))
+        award_rfa_order = list(reversed(types['award'].schema['properties']['rfa']['enum']))
+        assembly_order = list(reversed(types['file'].schema['properties']['assembly']['enum'] + ['mixed']))
+        genome_annotation_order = list(reversed(types['file'].schema['properties']['genome_annotation']['enum'] + ['mixed']))
+
+        analyses = (
+            request.embed(
+                analysis_id,
+                '@@object_with_select_calculated_properties'
+                '?field=@id'
+                '&field=pipeline_labs'
+                '&field=pipeline_award_rfas'
+                '&field=assembly'
+                '&field=genome_annotation',
+            )
+            for analysis_id in analysis_objects
+        )
+        if status not in unreleased_status:
+            status_order = [
+                s
+                for s in status_order
+                if s not in unreleased_status
+            ]
+            analyses = (
+                analysis
+                for analysis in analyses
+                if  analysis['status'] in status_order
+            )
+        analysis_ranking = {}
+
+        for analysis in analyses:
+            status_rank = status_order.index(analysis['status'])
+            # True ranked higher than False.
+            lab_rank = '/labs/encode-processing-pipeline/' in analysis.get('pipeline_labs', [])
+            # Get max index or zero if field doesn't exist.
+            pipeline_award_rfa_rank = max(chain(
+                (award_rfa_order.index(rfa)
+                for rfa in analysis.get('pipeline_award_rfa', [])), [0])
+            )
+            # Get max index or zero if field doesn't exist. 
+            assembly_rank = 0
+            if analysis.get('assembly', '') in assembly_order:
+                assembly_rank = assembly_order.index(analysis.get('assembly', ''))
+            genome_annotation_rank = 0
+            if analysis.get('genome_annotation', '') in genome_annotation_order:
+                genome_annotation_rank = genome_annotation_order.index(analysis.get('genome_annotation', ''))
+            # We reverse sort order at the end so later version numbers will rank higher.
+            pipeline_version_rank = parse_version(analysis.get('pipeline_version', ''))
+            # We reverse sort order at the end so later dates rank higher.
+            date_rank = datetime.datetime.strptime(
+                convert_date_string(
+                    analysis['date_created']
+                ),
+                "%Y-%m-%dT%H:%M:%S.%f%z"
+            )
+            # Store all the ranking numbers for an analysis in a tuple that can be sorted.
+            analysis_ranking[
+                (
+                    status_rank,
+                    lab_rank,
+                    pipeline_award_rfa_rank,
+                    assembly_rank,
+                    genome_annotation_rank,
+                    pipeline_version_rank,
+                    date_rank,
+                )
+            ] = analysis['@id']
+        
+        if analysis_ranking:
+            # We want highest version, date, etc. so reverse sort order. Access value from top item.
+            return sorted(analysis_ranking.items(), reverse=True)[0][1]
+
+
+def convert_date_string(date_string):
+    if ":" == date_string[-3]:
+        date_string = date_string[:-3]+date_string[-2:]
+    return date_string
 
 
 @collection(

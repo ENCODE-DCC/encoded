@@ -1,4 +1,6 @@
 import pytest
+from encoded.tests.fixtures.schemas.analysis import analysis_1
+from snovault import load_schema
 
 
 def test_isogenic_replicate_type(testapp, base_experiment, donor_1, donor_2,biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1 ):
@@ -265,3 +267,163 @@ def test_experiment_life_stage_age(testapp, base_experiment, donor_1, donor_2,bi
     testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['life_stage_age'] == 'adult 25 years'
+
+def test_experiment_default_analysis(
+    testapp,
+    dummy_request,
+    base_experiment,
+    analysis_1,
+    analysis_2,
+    file_bam_1_1,
+    file_bam_2_1,
+    analysis_step_run_chip_encode4,
+    pipeline_chip_encode4,
+    analysis_step_run_dnase_encode4,
+    pipeline_dnase_encode4,
+    encode_lab,
+    encode4_award,
+    ENCODE3_award,
+):
+    # Guard relevant schema enum orders
+    status_order = list(dummy_request.registry['types']['analysis'].schema['properties']['status']['enum'])
+    assert status_order == [
+        'in progress',
+        'released',
+        'archived',
+        'deleted',
+        'revoked',
+    ]
+    award_rfa_order = list(dummy_request.registry['types']['award'].schema['properties']['rfa']['enum'])
+    assert award_rfa_order == [
+        'ENCODE4',
+        'ENCODE3',
+        'ENCODE2',
+        'ENCODE2-Mouse',
+        'ENCODE',
+        'GGR',
+        'ENCORE',
+        'Roadmap',
+        'modENCODE',
+        'modERN',
+        'community'
+    ]
+    assembly_order = list(dummy_request.registry['types']['file'].schema['properties']['assembly']['enum'])
+    assert assembly_order == [
+        'GRCh38',
+        'GRCh38-minimal',
+        'hg19',
+        'GRCm39',
+        'mm10',
+        'mm10-minimal',
+        'mm9',
+        'dm6',
+        'dm3',
+        'ce11',
+        'ce10',
+        'J02459.1',
+    ]
+    genome_annotation_order = list(dummy_request.registry['types']['file'].schema['properties']['genome_annotation']['enum'])
+    assert genome_annotation_order == [
+        'V33',
+        'V30',
+        'V29',
+        'V24',
+        'V22',
+        'V19',
+        'V10',
+        'V7',
+        'V3c',
+        'miRBase V21',
+        'M26',
+        'M21',
+        'M14',
+        'M7',
+        'M4',
+        'M3',
+        'M2',
+        'ENSEMBL V65',
+        'WS245',
+        'WS235',
+        'None',
+    ]
+
+    testapp.patch_json(
+        analysis_1['@id'],
+        {'status': 'in progress', 'files': [file_bam_1_1['@id']]}
+    )
+    testapp.patch_json(
+        analysis_2['@id'],
+        {'status': 'in progress', 'files': [file_bam_2_1['@id']]}
+    )
+    testapp.patch_json(
+        base_experiment['@id'],
+        {
+            'analysis_objects': [analysis_1['@id'], analysis_2['@id']],
+            'status': 'in progress'
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    # Date-time makes the decision here
+    assert res.json['object']['default_analysis'] == analysis_2['@id']
+
+    # Released experiment with only in progress analyses
+    testapp.patch_json(
+        base_experiment['@id'],
+        {'status': 'released', 'date_released': '2021-03-31'}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert 'default_analysis' not in res.json['object']
+
+    # Having annotation is better than no annotation
+    testapp.patch_json(analysis_1['@id'], {'status': 'released'})
+    testapp.patch_json(analysis_2['@id'], {'status': 'released'})
+    testapp.patch_json(file_bam_1_1['@id'], {'genome_annotation': 'M21'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert res.json['object']['default_analysis'] == analysis_1['@id']
+
+    # Assembly is more important than annotation
+    testapp.patch_json(file_bam_1_1['@id'], {'assembly': 'mm9'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert res.json['object']['default_analysis'] == analysis_2['@id']
+
+    # ENCODE uniform processing > lab processing before RFA
+    testapp.patch_json(
+        file_bam_1_1['@id'],
+        {'step_run': analysis_step_run_chip_encode4['@id']}
+    )
+    testapp.patch_json(
+        file_bam_2_1['@id'],
+        {'step_run': analysis_step_run_dnase_encode4['@id']}
+    )
+    testapp.patch_json(pipeline_chip_encode4['@id'], {'lab': encode_lab['@id']})
+    testapp.patch_json(
+        pipeline_dnase_encode4['@id'], {'award': encode4_award['@id']}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert res.json['object']['default_analysis'] == analysis_1['@id']
+
+    # Pipeline award RFA rank
+    testapp.patch_json(
+        pipeline_dnase_encode4['@id'], {'lab': encode_lab['@id']}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert res.json['object']['default_analysis'] == analysis_2['@id']
+
+    # Released > archived
+    testapp.patch_json(analysis_2['@id'], {'status': 'archived'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert res.json['object']['default_analysis'] == analysis_1['@id']
+
+    # Rfa is working for different versions of pipeline
+    testapp.patch_json(analysis_1['@id'], {'status': 'archived'})
+    testapp.patch_json(analysis_2['@id'], {"pipeline_version": "1.6.1"})
+    testapp.patch_json(
+        pipeline_dnase_encode4['@id'], {'award': encode4_award['@id']}
+    )
+    testapp.patch_json(
+        pipeline_chip_encode4['@id'], {'award': ENCODE3_award['@id']}
+    )
+    testapp.patch_json(file_bam_1_1['@id'], {'assembly': 'mm10'})
+    testapp.patch_json(file_bam_2_1['@id'], {'genome_annotation': 'M21'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert res.json['object']['default_analysis'] == analysis_2['@id']
