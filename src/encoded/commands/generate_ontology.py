@@ -21,7 +21,6 @@ SomeValuesFrom = OWLNS["someValuesFrom"]
 IntersectionOf = OWLNS["intersectionOf"]
 
 PART_OF = "http://purl.obolibrary.org/obo/BFO_0000050"
-DEVELOPS_FROM = "http://purl.obolibrary.org/obo/RO_0002202"
 DERIVES_FROM = "http://www.obofoundry.org/ro/ro.owl#derives_from"
 DEFAULT_LANGUAGE = "en"
 
@@ -266,7 +265,7 @@ def splitNameFromNamespace(aUri):
 
 
 def iterativeChildren(nodes, terms):
-    data = 'data_with_develops_from'
+    data = 'data'
     results = []
     while 1:
         newNodes = []
@@ -290,9 +289,8 @@ def getTermStructure():
         'parents': [],
         'part_of': [],
         'derives_from': [],
-        'develops_from': [],
         'ancestors': [],
-        'data_with_develops_from': [],
+        'data': [],
         'synonyms': []
     }
 
@@ -346,15 +344,6 @@ def main():
                                             terms[term_id] = getTermStructure()
                                         terms[term_id]['part_of'].append(
                                             splitNameFromNamespace(subC)[0].replace('_', ':'))
-                            elif DEVELOPS_FROM in col_list:
-                                for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
-                                    term_id = splitNameFromNamespace(
-                                        collection[0])[0].replace('_', ':')
-                                    if term_id.split(':')[0] in url_whitelist[url]:
-                                        if term_id not in terms:
-                                            terms[term_id] = getTermStructure()
-                                        terms[term_id]['develops_from'].append(
-                                            splitNameFromNamespace(subC)[0].replace('_', ':'))
             else:
                 term_id = splitNameFromNamespace(c)[0].replace('_', ':')
                 if term_id.split(':')[0] in url_whitelist[url]:
@@ -375,11 +364,6 @@ def main():
                                     for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                         if not isBlankNode(o1):
                                             terms[term_id]['part_of'].append(
-                                                splitNameFromNamespace(o1)[0].replace('_', ':'))
-                                elif o.__str__() == DEVELOPS_FROM:
-                                    for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
-                                        if not isBlankNode(o1):
-                                            terms[term_id]['develops_from'].append(
                                                 splitNameFromNamespace(o1)[0].replace('_', ':'))
                                 elif o.__str__() == DERIVES_FROM:
                                     for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
@@ -415,13 +399,13 @@ def main():
                         except:
                             pass
     for term in terms:
-        terms[term]['data_with_develops_from'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(
-            terms[term]['derives_from']) | set(terms[term]['develops_from']))
+        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(
+            terms[term]['derives_from']))
 
     for term in terms:
         ont_whitelist = [i for sublist in url_whitelist.values() for i in sublist]
         d = iterativeChildren(
-            terms[term]['data_with_develops_from'], terms)
+            terms[term]['data'], terms)
         for dd in d:
             if dd.split(':')[0] in ont_whitelist:
                 terms[term]['ancestors'].append(dd)
@@ -429,8 +413,8 @@ def main():
         terms[term]['ancestors'].append(term)
 
     for term in terms:
-        del terms[term]['parents'], terms[term]['develops_from'], terms[term]['derives_from']
-        del terms[term]['part_of'], terms[term]['id'], terms[term]['data_with_develops_from']
+        del terms[term]['parents'], terms[term]['derives_from']
+        del terms[term]['part_of'], terms[term]['id'], terms[term]['data']
 
     for ntr in ntr_biosamples:
         ancestors = set()

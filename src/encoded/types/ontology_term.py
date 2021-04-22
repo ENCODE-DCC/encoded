@@ -8,12 +8,6 @@ from .base import (
 )
 
 
-developmental_slims = {
-    'UBERON:0000924': 'ectoderm',
-    'UBERON:0000925': 'endoderm',
-    'UBERON:0000926': 'mesoderm'
-}
-
 system_slims = {
     'UBERON:0000363': 'reticuloendothelial system', #subclass of UBERON:0002405
     'UBERON:0002405': 'immune system',
@@ -230,19 +224,6 @@ class OntologyTerm(SharedItem):
     })
     def cell_slims(self, registry, term_id):
         return self._get_ontology_slims(registry, term_id, cell_slims)
-
-
-    @calculated_property(condition='term_id', schema={
-        "title": "Developmental slims",
-        "description": "The developmental stages that this term is an ontological descendent of.",
-        "comment": "Do not submit. This is a calculated property",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def developmental_slims(self, registry, term_id):
-        return self._get_ontology_slims(registry, term_id, developmental_slims)
 
 
     @calculated_property(condition='term_id', schema={
