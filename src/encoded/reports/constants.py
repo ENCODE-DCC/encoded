@@ -1,6 +1,23 @@
 from collections import OrderedDict
 
 
+# All series subtypes allowed to download files
+METADATA_SERIES_TYPES = [
+    'AggregateSeries',
+    'DifferentiationSeries',
+    'DiseaseSeries',
+    'FunctionalCharacterizationSeries',
+    'GeneSilencingSeries',
+    'MatchedSet',
+    'MultiomicsSeries',
+    'OrganismDevelopmentSeries',
+    'ReferenceEpigenome',
+    'SingleCellRnaSeries',
+    'TreatmentConcentrationSeries',
+    'TreatmentTimeSeries',
+]
+
+
 METADATA_ALLOWED_TYPES = [
     'Experiment',
     'Annotation',
@@ -10,7 +27,7 @@ METADATA_ALLOWED_TYPES = [
     'UcscBrowserComposite',
     'PublicationData',
     'Analysis',
-]
+] + METADATA_SERIES_TYPES
 
 
 METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
@@ -172,9 +189,64 @@ PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
 )
 
 
+SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
+    [
+        ('File accession', ['related_datasets.files.title']),
+        ('File format', ['related_datasets.files.file_type']),
+        ('File type', ['related_datasets.files.file_format']),
+        ('File format type', ['related_datasets.files.file_format_type']),
+        ('Output type', ['related_datasets.files.output_type']),
+        ('File assembly', ['related_datasets.files.assembly']),
+        ('Series accession', ['accession']),
+        ('Biosample term id', ['biosample_ontology.term_id']),
+        ('Biosample term name', ['biosample_ontology.term_name']),
+        ('Biosample type', ['biosample_ontology.classification']),
+        ('Experiment target', ['target.name']),
+        ('Series date released', ['date_released']),
+        ('Project', ['award.project']),
+        (
+            'RBNS protein concentration', [
+                'related_datasets.files.replicate.rbns_protein_concentration',
+                'related_datasets.files.replicate.rbns_protein_concentration_units'
+            ]
+        ),
+        ('Biological replicate(s)', ['related_datasets.files.biological_replicates']),
+        ('Technical replicate(s)', ['related_datasets.files.technical_replicates']),
+        ('Read length', ['related_datasets.files.read_length']),
+        ('Mapped read length', ['related_datasets.files.mapped_read_length']),
+        ('Run type', ['related_datasets.files.run_type']),
+        ('Paired end', ['related_datasets.files.paired_end']),
+        ('Paired with', ['related_datasets.files.paired_with']),
+        ('Index of', ['related_datasets.files.index_of']),
+        ('Derived from', ['related_datasets.files.derived_from']),
+        ('Size', ['related_datasets.files.file_size']),
+        ('Lab', ['related_datasets.files.lab.title']),
+        ('md5sum', ['related_datasets.files.md5sum']),
+        ('dbxrefs', ['related_datasets.files.dbxrefs']),
+        ('File download URL', ['related_datasets.files.href']),
+        ('Genome annotation', ['related_datasets.files.genome_annotation']),
+        ('Platform', ['related_datasets.files.platform.title']),
+        ('Controlled by', ['related_datasets.files.controlled_by']),
+        ('File Status', ['related_datasets.files.status']),
+        ('No File Available', ['related_datasets.files.no_file_available']),
+        ('Restricted', ['related_datasets.files.restricted']),
+        ('s3_uri', ['related_datasets.files.s3_uri']),
+        ('File analysis title', ['related_datasets.files.analyses.title']),
+        ('File analysis status', ['related_datasets.files.analyses.status']),
+    ]
+)
+
+
 BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
     [
         ('File download URL', ['files.href']),
+    ]
+)
+
+
+SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
+    [
+        ('File download URL', ['related_datasets.files.href']),
     ]
 )
 

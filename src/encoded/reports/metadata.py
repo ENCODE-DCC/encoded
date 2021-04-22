@@ -6,6 +6,8 @@ from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
 from encoded.reports.constants import PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
+from encoded.reports.constants import SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
+from encoded.reports.constants import METADATA_SERIES_TYPES
 from encoded.reports.csv import CSVGenerator
 from encoded.reports.decorators import allowed_types
 from encoded.reports.inequalities import map_param_values_to_inequalities
@@ -478,6 +480,53 @@ class PublicationDataMetadataReport(MetadataReport):
                 )
 
 
+class SeriesMetadataReport(MetadataReport):
+
+    DEFAULT_PARAMS = [
+        ('limit', 'all'),
+        ('field', 'related_datasets.files.@id'),
+        ('field', 'related_datasets.files.href'),
+        ('field', 'related_datasets.files.restricted'),
+        ('field', 'related_datasets.files.no_file_available'),
+        ('field', 'related_datasets.files.file_format'),
+        ('field', 'related_datasets.files.file_format_type'),
+        ('field', 'related_datasets.files.preferred_default'),
+        ('field', 'related_datasets.files.status'),
+        ('field', 'related_datasets.files.assembly'),
+        ('field', 'related_datasets.files.related_datasets'),
+    ]
+    FILES_PREFIX = 'related_datasets.files.'
+
+    def _get_column_to_fields_mapping(self):
+        return SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
+
+    def _should_not_report_file(self, file_):
+        """Only include preferred_default files in addition to existing
+        criteria.
+        """
+        is_file_not_reportable = super()._should_not_report_file(file_)
+        return is_file_not_reportable or not file_.get('preferred_default', False)
+
+    def _generate_rows(self):
+        yield self.csv.writerow(self.header)
+        for series in self._get_search_results_generator():
+            related_datasets = series.get('related_datasets', [])
+            if not related_datasets:
+                continue
+            series_data = self._get_experiment_data(series)
+            for related_dataset in related_datasets:
+                files = related_dataset.get('files', [])
+                if not files:
+                    continue
+                for file_ in files:
+                    if self._should_not_report_file(file_):
+                        continue
+                    file_data = self._get_file_data(file_)
+                    yield self.csv.writerow(
+                        self._output_sorted_row(series_data, file_data)
+                    )
+
+
 def _get_metadata(context, request):
     metadata_report = MetadataReport(request)
     return metadata_report.generate()
@@ -493,6 +542,11 @@ def _get_publication_data_metadata(context, request):
     return publication_data_metadata_report.generate()
 
 
+def _get_series_metadata(context, request):
+    series_metadata_report = SeriesMetadataReport(request)
+    return series_metadata_report.generate()
+
+
 def metadata_report_factory(context, request):
     qs = QueryString(request)
     specified_type = qs.get_one_value(
@@ -502,6 +556,8 @@ def metadata_report_factory(context, request):
         return _get_annotation_metadata(context, request)
     elif specified_type == 'PublicationData':
         return _get_publication_data_metadata(context, request)
+    elif specified_type in METADATA_SERIES_TYPES:
+        return _get_series_metadata(context, request)
     else:
         return _get_metadata(context, request)
 
