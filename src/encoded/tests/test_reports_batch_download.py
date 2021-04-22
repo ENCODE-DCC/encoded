@@ -190,6 +190,21 @@ def test_reports_publication_data_batch_download_and_metadata_contain_same_numbe
     assert len(metadata_results) == len(batch_download_results)
 
 
+def test_reports_series_batch_download_and_metadata_contain_same_number_of_results(index_workbook, testapp):
+    batch_download_results = testapp.get('/batch_download/?type=ReferenceEpigenome').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=ReferenceEpigenome').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=ReferenceEpigenome&related_datasets.files.preferred_default=true').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=ReferenceEpigenome&related_datasets.files.preferred_default=true').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=ReferenceEpigenome&related_datasets.files.preferred_default=true&related_datasets.files.output_type=signal+of+all+reads').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=ReferenceEpigenome&related_datasets.files.preferred_default=true&related_datasets.files.output_type=signal+of+all+reads').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+
+
 def get_batch_download_and_metadata_results(testapp, query_string):
     batch_download_results = testapp.get(
         '/batch_download/' + query_string

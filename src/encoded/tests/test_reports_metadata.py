@@ -1727,6 +1727,13 @@ def test_metadata_view_publication_data(index_workbook, testapp):
     assert len(r.text.split('\n')) >= 7
 
 
+def test_metadata_view_series(index_workbook, testapp):
+    r = testapp.get(
+        '/metadata/?type=ReferenceEpigenome&@id=/reference-epigenomes/ENCSR284DRW/'
+    )
+    assert len(r.text.split('\n')) >= 14
+
+
 def test_metadata_contains_audit_values(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Experiment')
     audit_values = [
@@ -1809,6 +1816,22 @@ def test_metadata_contains_all_publication_data_values(index_workbook, testapp):
     r = testapp.get('/metadata/?type=PublicationData&@id=/publication-data/ENCSR727WCB/')
     actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
     expected_path = resource_filename('encoded', 'tests/data/inserts/expected_publication_data_metadata.tsv')
+    # To write new expected_metadata.tsv change 'r' to 'w' and f.write(r.text); return;
+    with open(expected_path, 'r') as f:
+        expected = sorted([tuple(x.split('\t')) for x in f.readlines()])
+    for i, row in enumerate(actual):
+        for j, column in enumerate(row):
+            # Sometimes lists are out of order.
+            expected_value = tuple(sorted([x.strip() for x in expected[i][j].split(',')]))
+            actual_value = tuple(sorted([x.strip() for x in column.split(',')]))
+            assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
+
+
+def test_metadata_contains_all_series_values(index_workbook, testapp):
+    from pkg_resources import resource_filename
+    r = testapp.get('/metadata/?type=ReferenceEpigenome&@id=/reference-epigenomes/ENCSR284DRW/')
+    actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_series_metadata.tsv')
     # To write new expected_metadata.tsv change 'r' to 'w' and f.write(r.text); return;
     with open(expected_path, 'r') as f:
         expected = sorted([tuple(x.split('\t')) for x in f.readlines()])
@@ -2271,3 +2294,18 @@ def test_metadata_publication_data_metadata_report_generate_rows(index_workbook,
     results = list(pdmr._generate_rows())
     # One header, two TSV.
     assert len(results) == 3
+
+
+def test_metadata_series_metadata_report_generate_rows(index_workbook, dummy_request):
+    from encoded.reports.metadata import SeriesMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=ReferenceEpigenome'
+        '&@id=/reference-epigenomes/ENCSR284DRW/'
+        '&related_datasets.files.preferred_default=true'
+    )
+    pdmr = SeriesMetadataReport(dummy_request)
+    pdmr._initialize_report()
+    pdmr._build_params()
+    results = list(pdmr._generate_rows())
+    # One header, two TSV.
+    assert len(results) == 4

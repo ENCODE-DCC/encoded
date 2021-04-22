@@ -1,9 +1,12 @@
 from encoded.reports.constants import BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
+from encoded.reports.constants import SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_LINK
 from encoded.reports.constants import AT_IDS_AS_JSON_DATA_LINK
 from encoded.reports.metadata import MetadataReport
 from encoded.reports.metadata import PublicationDataMetadataReport
+from encoded.reports.metadata import SeriesMetadataReport
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
+from encoded.reports.constants import METADATA_SERIES_TYPES
 from encoded.reports.decorators import allowed_types
 from pyramid.view import view_config
 from snovault.elasticsearch.searches.parsers import QueryString
@@ -82,6 +85,38 @@ class BatchDownload(BatchDownloadMixin, MetadataReport):
                     self._output_sorted_row({}, file_data)
                 )
 
+class SeriesBatchDownload(BatchDownloadMixin, SeriesMetadataReport):
+
+    DEFAULT_PARAMS = [
+        ('field', 'related_datasets.files.@id'),
+        ('field', 'related_datasets.files.href'),
+        ('field', 'related_datasets.files.restricted'),
+        ('field', 'related_datasets.files.no_file_available'),
+        ('field', 'related_datasets.files.file_format'),
+        ('field', 'related_datasets.files.file_format_type'),
+        ('field', 'related_datasets.files.preferred_default'),
+        ('field', 'related_datasets.files.status'),
+        ('field', 'related_datasets.files.assembly'),
+        ('field', 'related_datasets.files.related_datasets'),
+        ('limit', 'all'),
+    ]
+    FILES_PREFIX = 'related_datasets.files.'
+
+    def _get_column_to_fields_mapping(self):
+        return SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
+
+    def _generate_rows(self):
+        yield self._get_encoded_metadata_link_with_newline()
+        for series in self._get_search_results_generator():
+            for related_dataset in series.get('related_datasets', []):
+                for file_ in related_dataset.get('files', []):
+                    if self._should_not_report_file(file_):
+                        continue
+                    file_data = self._get_file_data(file_)
+                    yield self.csv.writerow(
+                        self._output_sorted_row({}, file_data)
+                    )
+
 
 class PublicationDataBatchDownload(BatchDownloadMixin, PublicationDataMetadataReport):
 
@@ -115,6 +150,11 @@ def _get_publication_data_batch_download(context, request):
     return publication_data_batch_download.generate()
 
 
+def _get_series_batch_download(context, request):
+    series_batch_download = SeriesBatchDownload(request)
+    return series_batch_download.generate()
+
+
 def batch_download_factory(context, request):
     qs = QueryString(request)
     specified_type = qs.get_one_value(
@@ -122,6 +162,8 @@ def batch_download_factory(context, request):
     )
     if specified_type == 'PublicationData':
         return _get_publication_data_batch_download(context, request)
+    elif specified_type in METADATA_SERIES_TYPES:
+        return _get_series_batch_download(context, request)
     else:
         return _get_batch_download(context, request)
 

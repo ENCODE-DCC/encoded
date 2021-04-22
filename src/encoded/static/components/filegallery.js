@@ -1350,12 +1350,14 @@ export const FileGallery = ({
     fileQuery,
     files,
     analyses,
+    fileQueryKey,
     hideGraph,
     hideControls,
     collapseNone,
     showReplicateNumber,
     showDetailedTracks,
     hideAnalysisSelector,
+    defaultOnly,
 }, reactContext) => {
     // Holds all schemas loaded from a request; used by the file graph.
     const [schemas, setSchemas] = React.useState(null);
@@ -1387,6 +1389,7 @@ export const FileGallery = ({
             context={context}
             data={data}
             analyses={analyses || context.analyses}
+            fileQueryKey={fileQueryKey}
             schemas={schemas}
             session={reactContext && reactContext.session}
             hideGraph={hideGraph}
@@ -1395,6 +1398,7 @@ export const FileGallery = ({
             showReplicateNumber={showReplicateNumber}
             showDetailedTracks={showDetailedTracks}
             hideAnalysisSelector={hideAnalysisSelector}
+            defaultOnly={defaultOnly}
         />
     );
 };
@@ -1421,11 +1425,13 @@ FileGallery.propTypes = {
     fileQuery: testFileGalleryProps, // Query string for file search; default if not given
     files: testFileGalleryProps, // Dataset property name from which to retrieve files
     analyses: PropTypes.array, // Array of analyses, if not using context.analyses
+    fileQueryKey: PropTypes.string, // Query key to specify qualifying files to download
     hideGraph: PropTypes.bool, // T to only render file-table pane
     hideControls: PropTypes.bool, // True to hide visualize/download controls in table header
     collapseNone: PropTypes.bool, // True to have no file subtables collapsed
     showReplicateNumber: PropTypes.bool, // True to show replicate number
     showDetailedTracks: PropTypes.bool, // True to show more detailed tracks in browser
+    defaultOnly: PropTypes.bool, // True to batch download preferred_default files only
     hideAnalysisSelector: PropTypes.bool, // True to hide analysis selector dropdown
 };
 
@@ -1433,12 +1439,14 @@ FileGallery.defaultProps = {
     fileQuery: '',
     files: null,
     analyses: null,
+    fileQueryKey: 'files',
     hideGraph: false,
     hideControls: false,
     collapseNone: false,
     showReplicateNumber: true,
     showDetailedTracks: false,
     hideAnalysisSelector: false,
+    defaultOnly: false,
 };
 
 FileGallery.contextTypes = {
@@ -1581,31 +1589,34 @@ class FilterControls extends React.Component {
     }
 
     handleDownloadClick() {
-        const { context, filters, inclusionOn } = this.props;
+        const { context, filters, inclusionOn, fileQueryKey, defaultOnly } = this.props;
         const { accession } = context;
         const type = context && context['@type'] ? context['@type'][0] : 'Experiment';
         let assemblies = '';
 
         if (filters.assembly && filters.assembly.length > 0 && filters.assembly[0] !== 'All assemblies') {
             const analysis = filters.assembly[0].split(' ');
-            const assembly = analysis[0] ? `&files.assembly=${encodedURIComponent(analysis[0])}` : '';
-            const genomeAnnotation = analysis[1] ? `&files.genome_annotation=${encodedURIComponent(analysis[1])}` : '';
+            const assembly = analysis[0] ? `&${fileQueryKey}.assembly=${encodedURIComponent(analysis[0])}` : '';
+            const genomeAnnotation = analysis[1] ? `&${fileQueryKey}.genome_annotation=${encodedURIComponent(analysis[1])}` : '';
             assemblies = `${[assembly, genomeAnnotation].filter((a) => a !== '').join('')}`;
         }
         const fileTypes = filters.file_type && filters.file_type.length > 0 ?
-            filters.file_type.map((fileType) => `&files.file_type=${encodedURIComponent(fileType)}`).join('') :
+            filters.file_type.map((fileType) => `&${fileQueryKey}.file_type=${encodedURIComponent(fileType)}`).join('') :
             '';
         const biologicalReplicates = filters.biological_replicates && filters.biological_replicates.length > 0 ?
-            filters.biological_replicates.map((replicate) => `&files.biological_replicates=${encodedURIComponent(replicate)}`).join('') :
+            filters.biological_replicates.map((replicate) => `&${fileQueryKey}.biological_replicates=${encodedURIComponent(replicate)}`).join('') :
             '';
         const outputTypes = filters.output_type && filters.output_type.length > 0 ?
-            filters.output_type.map((outputType) => `&files.output_type=${encodedURIComponent(outputType)}`).join('') :
+            filters.output_type.map((outputType) => `&${fileQueryKey}.output_type=${encodedURIComponent(outputType)}`).join('') :
             '';
         const fileStatus = inclusionOn ?
             '' :
-            '&files.status=released&files.status=in progress';
+            `&${fileQueryKey}.status=released&${fileQueryKey}.status=${encodedURIComponent('in progress')}`;
+        const preferredDefault = defaultOnly
+            ? `&${fileQueryKey}.preferred_default=true`
+            : '';
 
-        this.navigate(`/batch_download/?type=${type}&accession=${accession}${assemblies}${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
+        this.navigate(`/batch_download/?type=${type}&accession=${accession}${assemblies}${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}${preferredDefault}`);
         this.setDownloadModalVisibility(false);
     }
 
@@ -1614,8 +1625,8 @@ class FilterControls extends React.Component {
     }
 
     render() {
-        const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler, context, inclusionOn } = this.props;
-        const contextFiles = (context.files || []).filter((file) => (inclusionOn ? file : inclusionStatuses.indexOf(file.status) === -1));
+        const { files, filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler, inclusionOn } = this.props;
+        const contextFiles = (files).filter((file) => (inclusionOn ? file : inclusionStatuses.indexOf(file.status) === -1));
 
         const visualizerControls = (filterOptions.length > 0 || browsers.length > 0) ?
             (
@@ -1660,14 +1671,18 @@ class FilterControls extends React.Component {
 }
 
 FilterControls.propTypes = {
-    /** Context */
+    /** Dataset object being displayed */
     context: PropTypes.object.isRequired,
-    /** filters */
+    /** Files to consider when deciding to render specific controls */
+    files: PropTypes.array.isRequired,
+    /** Currently selected facets */
     filters: PropTypes.object,
     /** Assembly/annotation combos available */
     filterOptions: PropTypes.array.isRequired,
     /** Currently-selected assembly/annotation <select> value */
     selectedFilterValue: PropTypes.string,
+    /** Query key to specify qualifying files to download */
+    fileQueryKey: PropTypes.string.isRequired,
     /** Array of browsers available in this experiment */
     browsers: PropTypes.array,
     /** Name of currently selected browser */
@@ -1680,6 +1695,8 @@ FilterControls.propTypes = {
     visualizeHandler: PropTypes.func.isRequired,
     /** include-deprecated check box checked status */
     inclusionOn: PropTypes.bool,
+    /** True to only download files with preferred_default set */
+    defaultOnly: PropTypes.bool,
 };
 
 FilterControls.defaultProps = {
@@ -1688,6 +1705,7 @@ FilterControls.defaultProps = {
     currentBrowser: '',
     filters: [],
     inclusionOn: false,
+    defaultOnly: false,
 };
 
 FilterControls.contextTypes = {
@@ -3421,6 +3439,7 @@ class FileGalleryRendererComponent extends React.Component {
         const {
             context,
             analyses,
+            fileQueryKey,
             schemas,
             hideGraph,
             hideControls,
@@ -3428,6 +3447,7 @@ class FileGalleryRendererComponent extends React.Component {
             showReplicateNumber,
             showDetailedTracks,
             hideAnalysisSelector,
+            defaultOnly,
             auditIndicators,
             auditDetail,
         } = this.props;
@@ -3534,9 +3554,11 @@ class FileGalleryRendererComponent extends React.Component {
         const filterControls = !hideControls
             ? (
                 <FilterControls
+                    files={includedFiles}
                     selectedFilterValue={this.state.selectedFilterValue}
                     filterOptions={this.state.availableAssembliesAnnotations}
                     filters={this.state.fileFilters}
+                    fileQueryKey={fileQueryKey}
                     inclusionOn={this.state.inclusionOn}
                     browsers={browsers}
                     currentBrowser={this.state.currentBrowser}
@@ -3546,6 +3568,7 @@ class FileGalleryRendererComponent extends React.Component {
                     browserChangeHandler={this.handleBrowserChange}
                     visualizeHandler={this.handleVisualize}
                     context={context}
+                    defaultOnly={defaultOnly}
                 />
             ) : null;
 
@@ -3640,6 +3663,8 @@ FileGalleryRendererComponent.propTypes = {
     data: PropTypes.array,
     /** Analyses independently gathered or from context */
     analyses: PropTypes.array,
+    /** Query key to specify qualifying files to download */
+    fileQueryKey: PropTypes.string.isRequired,
     /** Schemas for the entire system; used for QC property titles */
     schemas: PropTypes.object,
     /** True to hide graph display */
@@ -3654,6 +3679,8 @@ FileGalleryRendererComponent.propTypes = {
     showDetailedTracks: PropTypes.bool,
     /** True to hide the analysis selector dropdown */
     hideAnalysisSelector: PropTypes.bool,
+    /** True to select only preferred_default files for download */
+    defaultOnly: PropTypes.bool,
     /** Inherited from auditDecor HOC */
     auditIndicators: PropTypes.func.isRequired,
     /** Inherited from auditDecor HOC */
@@ -3674,6 +3701,7 @@ FileGalleryRendererComponent.defaultProps = {
     altFilterDefault: false,
     showDetailedTracks: false,
     hideAnalysisSelector: false,
+    defaultOnly: false,
     showReplicateNumber: true,
     session: null,
 };
