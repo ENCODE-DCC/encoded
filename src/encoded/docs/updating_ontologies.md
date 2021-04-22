@@ -10,11 +10,11 @@ Ontologies used
 |:--|:--|:--|:--|
 | [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON download] | 2021-02-12 | [UBERON release] |
 | [Cell Ontology (CL)] | incl. w/ UBERON | incl. w/ UBERON | incl. w/ UBERON |
-| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-04-15 (3.29.0) | [EFO releases] |
+| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-04-20 (3.29.1) | [EFO releases] |
 | [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-04-07 | [MONDO release date] |
 | [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2021-01-04 (2.5) | [HANCESTRO releases] |
 
-**Current ontology.json:** `ontology-2021-04-19.json`
+**Current ontology.json:** `ontology-2021-04-22.json`
 
 How to update the ontology versions
 ---------------- 
