@@ -4,7 +4,7 @@
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "nucleic_acid_term_name", "strand_specificity"],
+    "required": [ "award", "lab", "nucleic_acid_term_name"],
     "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -63,6 +63,33 @@
                                 }
                             }
                         }
+                    }
+                }
+            ]
+        },
+        "nucleic_acid_term_name": {
+            "oneOf": [
+                {
+                    "required": ["strand_specificity"],
+                        "properties": {
+                            "nucleic_acid_term_name": {
+                                "enum": [
+                                    "RNA",
+                                    "miRNA",
+                                    "polyadenylated mRNA",
+                                    "capped mRNA"
+                                ]
+                            }
+                        }
+                },
+                {
+                    "properties": {
+                            "nucleic_acid_term_name": {
+                                "enum": [
+                                    "DNA",
+                                    "protein"
+                                ]
+                            }
                     }
                 }
             ]

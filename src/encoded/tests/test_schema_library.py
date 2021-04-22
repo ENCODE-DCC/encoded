@@ -146,3 +146,12 @@ def test_library_biosample_and_mixed_biosample(testapp, library, biosample_1, bi
     testapp.post_json('/library', library, status=201)
     library.update({'biosample': biosample_2})
     testapp.post_json('/library', library, status=422)
+
+
+def test_library_strand_specificity_required_for_RNA(testapp, library, file):
+    # https://encodedcc.atlassian.net/browse/ENCD-5894
+    testapp.post_json('/library', library, status=201)
+    library.update({'nucleic_acid_term_name': 'RNA'})
+    testapp.post_json('/library', library, status=422)
+    library.update({'strand_specificity': 'unstranded'})
+    testapp.post_json('/library', library, status=201)
