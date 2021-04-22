@@ -71,25 +71,25 @@
             "oneOf": [
                 {
                     "required": ["strand_specificity"],
-                        "properties": {
-                            "nucleic_acid_term_name": {
-                                "enum": [
-                                    "RNA",
-                                    "miRNA",
-                                    "polyadenylated mRNA",
-                                    "capped mRNA"
-                                ]
-                            }
+                    "properties": {
+                        "nucleic_acid_term_name": {
+                            "enum": [
+                                "RNA",
+                                "miRNA",
+                                "polyadenylated mRNA",
+                                "capped mRNA"
+                            ]
                         }
+                    }
                 },
                 {
                     "properties": {
-                            "nucleic_acid_term_name": {
-                                "enum": [
-                                    "DNA",
-                                    "protein"
-                                ]
-                            }
+                        "nucleic_acid_term_name": {
+                            "enum": [
+                                "DNA",
+                                "protein"
+                            ]
+                        }
                     }
                 }
             ]
