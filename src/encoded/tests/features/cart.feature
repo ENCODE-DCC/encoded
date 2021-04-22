@@ -8,7 +8,7 @@ Feature: Cart
         When I press "/experiments/ENCSR611ZAL/"
         And I press "/experiments/ENCSR000INT/"
         And I press "/experiments/ENCSR000DZQ/"
-        And I wait for the content to load
+        And I wait for 5 seconds
         Then I should see 3 elements with the css selector ".cart-toggle--in-cart"
         And I should see an element with the css selector ".cart__nav-button"
 
@@ -24,8 +24,8 @@ Feature: Cart
         When I press "cart-control"
         And I click the link to "/cart-view/"
         And I wait for the content to load
-        Then I should see 6 elements with the css selector ".result-item"
-        And I should see "6 datasets selected"
+        Then I should see 7 elements with the css selector ".result-item"
+        And I should see "7 datasets selected"
         When I press "cart-facet-term-Experiment"
         Then I should see "3 datasets selected"
 
@@ -54,10 +54,11 @@ Feature: Cart
         When I press "Close"
         Then I should not see an element with the css selector ".modal"
         When I click the link to "#datasets"
+        And I wait for 5 seconds
         And I press "/experiments/ENCSR000INT/"
         And I wait for the content to load
-        Then I should see 5 elements with the css selector ".result-item"
-        And I should see "5 datasets selected"
+        Then I should see 6 elements with the css selector ".result-item"
+        And I should see "6 datasets selected"
 
     Scenario: Download menu
         When I press "cart-facet-term-Experiment"

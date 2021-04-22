@@ -807,7 +807,7 @@ const FacetExpander = ({ title, field, labelId, expanded, selectionCount, expand
     return (
         <div className="cart-facet__expander cart-facet__expander--non-collapsable">
             <FacetTitle title={title} />
-            <FacetSelectionControl selectionCount={selectionCount} clearSelectionHandler={controlClickHandler} />
+            <FacetSelectionControl name={field} selectionCount={selectionCount} clearSelectionHandler={controlClickHandler} />
         </div>
     );
 };
