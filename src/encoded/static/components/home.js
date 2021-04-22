@@ -63,7 +63,7 @@ class EncodeSearch extends React.Component {
                 <div className="site-search__reference">
                     <a href="/help/project-overview/" className="btn btn-info btn-sm">About ENCODE Project</a>
                     <a href="/help/getting-started/" className="btn btn-info btn-sm">Getting Started</a>
-                    <a href="/matrix/?type=Experiment&status=released" className="btn btn-info btn-sm">Experiments</a>
+                    <a href="/matrix/?type=Experiment&control_type!=*&status=released" className="btn btn-info btn-sm">Experiments</a>
                 </div>
                 <form action="/search/">
                     <fieldset>
@@ -81,7 +81,7 @@ class EncodeSearch extends React.Component {
                         </div>
                         <div className="site-search__submit">
                             <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="btn btn-info btn-sm site-search__submit-element">ENCODE <i className="icon icon-search" /></button>
-                            <a href="/search/?type=FunctionalCharacterizationExperiment" className="btn btn-info btn-sm">Functional Characterization Experiments</a>
+                            <a href="/search/?type=FunctionalCharacterizationExperiment&control_type!=*" className="btn btn-info btn-sm">Functional Characterization Experiments</a>
                         </div>
                     </fieldset>
                 </form>

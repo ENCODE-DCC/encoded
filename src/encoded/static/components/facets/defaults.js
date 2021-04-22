@@ -101,6 +101,117 @@ DefaultBooleanFacet.contextTypes = {
     navigate: PropTypes.func,
 };
 
+/** Render a binary state boolean facet for the "exists" facet. None of the radio buttons are selected
+ * if the hyperlink does not match YES or NO options.
+ *
+ * YES- <facet>!=*
+ * NO - No facet selected
+ * NEITHER SELECTED - <facet>!=<value> or <facet>=*
+ *
+ * This doesn't get registered as a  default facet component, but is provided so we have one
+ * component to render all "exists" facets
+ * consistently. For future expansion, note that all properties available to facet-rendering
+ * components are available, but this particular implementation only uses a subset of them. */
+export const DefaultExistsBinaryFacet = ({ facet, relevantFilters, queryString, defaultValue }, reactContext) => {
+    let currentOption = defaultValue;
+
+    if (relevantFilters.length === 1) {
+        if (relevantFilters[0].term === '*' && `${facet.field}!` === relevantFilters[0].field) {
+            currentOption = 'yes';
+        } else if (relevantFilters[0].term !== '*' || (facet.field === relevantFilters[0].field)) {
+            currentOption = undefined; // neither radio button is selected
+        } else {
+            currentOption = 'no';
+        }
+    } else {
+        currentOption = 'no';
+    }
+
+    const facetYesTerm = facet.terms.find((term) => term.key === 'yes');
+    const facetNoTerm = facet.terms.find((term) => term.key === 'no');
+
+    // This may  be counterintuitive! YES-radio button option means set the facet to "facet!=*", so display
+    // nothing with the facet. The NO-radio button means include all facet values.
+    // So set YES-radio button to the facet-no count and set the NO-radio button to both the combined
+    // facet-yes and facet-no counts
+    const terms = [
+        { key: 'yes', doc_count: facetNoTerm.doc_count },
+        { key: 'no', doc_count: facetYesTerm.doc_count + facetNoTerm.doc_count },
+    ];
+
+    // We have to build the new query string
+    // which uses the `remove` link from the relevant filter. This callback gets memoized to avoid
+    // needlessly re-rendering this component, and its dependencies should normally not change until
+    // the user clicks a term.
+    const handleRadioClick = React.useCallback((event) => {
+        const { value } = event.target;
+
+        // User clicked the "yes" or "no" radio buttons. Replace any existing relevant query
+        // element with one corresponding to the clicked radio button.
+        const query = new QueryString(queryString);
+        const { field } = facet;
+
+        currentOption = value;
+
+        if (value === 'yes') {
+            // delete all entries of the specified field so it can be added anew.
+            // This help avoid issues of having multiple copies of the specified field and
+            // the code and getting in an unspecified state
+            query.deleteKeyValue(field);
+            query.addKeyValue(field, '*', true);
+        } else if (value === 'no') {
+            query.deleteKeyValue(field);
+        } else {
+            currentOption = undefined;
+        }
+
+        const href = `?${query.format()}`;
+
+        reactContext.navigate(href);
+    }, [facet.field, queryString, reactContext, relevantFilters]);
+
+    const query = new QueryString(queryString);
+    const isFieldPartOfSearchQuery = !!query.getKeyValuesIfPresent(facet.field)[0];
+
+    return (
+        facet.total > 0 || isFieldPartOfSearchQuery ?
+            <fieldset className="facet">
+                <legend>{facet.title}</legend>
+                <div className="facet__content--exists">
+                    {terms.map((term) => (
+                        <div key={term.key} className="facet__radio">
+                            <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
+                            <label htmlFor={term.key}>
+                                <div className="facet__radio-label">{term.key}</div>
+                                <div className="facet__radio-count">{term.doc_count}</div>
+                            </label>
+                        </div>
+                    ))}
+                </div>
+            </fieldset>
+        : null
+    );
+};
+
+DefaultExistsBinaryFacet.propTypes = {
+    /** Relevant `facet` object from `facets` array in `results` */
+    facet: PropTypes.object.isRequired,
+    /** Filters relevant to the current facet */
+    relevantFilters: PropTypes.array.isRequired,
+    /** Query-string portion of current URL without initial ? */
+    queryString: PropTypes.string,
+    /** Default selection */
+    defaultValue: PropTypes.string,
+};
+
+DefaultExistsBinaryFacet.defaultProps = {
+    queryString: '',
+    defaultValue: 'yes',
+};
+
+DefaultExistsBinaryFacet.contextTypes = {
+    navigate: PropTypes.func,
+};
 
 /**
  * Render a tri-state boolean facet for the "exists" facets. This doesn't get registered as a

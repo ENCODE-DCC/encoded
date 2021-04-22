@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
 import DataColors from './datacolors';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, controlTypeParameter } from './objectutils';
 
 
 // Maximum number of facet charts to display.
@@ -13,6 +13,15 @@ const MAX_FACET_CHARTS = 3;
 const collectionColors = new DataColors(); // Get a list of colors to use for the lab chart
 const collectionColorList = collectionColors.colorList();
 
+const getControlType = (link) => {
+    if (!link) {
+        return '';
+    }
+
+    const type = link.replace('/search/?type=', '');
+
+    return controlTypeParameter(type);
+};
 
 class FacetChart extends React.Component {
     constructor() {
@@ -77,7 +86,7 @@ class FacetChart extends React.Component {
                             const text = [];
                             text.push('<ul>');
                             for (let i = 0; i < chartData.length; i += 1) {
-                                const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[i]).replace(/%20/g, '+')}`;
+                                const searchUri = `${baseSearchUri}${getControlType(baseSearchUri)}&${facet.field}=${encodeURIComponent(chartLabels[i]).replace(/%20/g, '+')}`;
                                 if (chartData[i]) {
                                     text.push(`<li><a href="${searchUri}">`);
                                     text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
@@ -94,7 +103,7 @@ class FacetChart extends React.Component {
                             if (activePoints[0]) {
                                 const clickedElementIndex = activePoints[0]._index;
                                 const chartLabels = this.chartInstance.data.labels;
-                                const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[clickedElementIndex]).replace(/%20/g, '+')}`;
+                                const searchUri = `${baseSearchUri}${getControlType(baseSearchUri)}&${facet.field}=${encodeURIComponent(chartLabels[clickedElementIndex]).replace(/%20/g, '+')}`;
                                 this.context.navigate(searchUri);
                             }
                         },

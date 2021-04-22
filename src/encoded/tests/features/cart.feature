@@ -1,7 +1,7 @@
 @cart
 Feature: Cart
     Scenario: Search result cart toggles:
-        When I visit "/search/?type=Experiment&status=released&perturbed=false"
+        When I visit "/search/?type=Experiment&control_type!=*&status=released&perturbed=false"
         And I wait for the content to load
         Then I should see 25 elements with the css selector ".result-item__cart-control"
 
