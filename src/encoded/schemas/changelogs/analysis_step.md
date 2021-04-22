@@ -4,6 +4,7 @@
 * Added *curated binding sites*, *curated SNVs*, *dsQTLs*, *eQTLs* and *PWMs* to the enum list for *input_file_types* and *output_file_types*
 * Added *sparse transcript count matrix* and *read annotations* to the enum list for *input_file_types* and *output_file_types*
 * Added *sparse gRNA count matrix*, *element barcode mapping*, and *fine-mapped variants* to the enum list for *input_file_types* and *output_file_types*
+* Added *repeat elements annotation* to the enum list for *input_file_types* and *output_file_types*
 
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 

@@ -848,7 +848,8 @@
                                         "rejected reads",
                                         "raw data",
                                         "reporter code counts",
-                                        "nanopore signal"
+                                        "nanopore signal",
+                                        "repeat elements annotation"
                                     ]
                                 }
                             }
@@ -1551,6 +1552,7 @@
                         "read-depth normalized signal",
                         "read annotations",
                         "reads",
+                        "repeat elements annotation",
                         "reference variants",
                         "regulatory elements",
                         "relative replication signal",
