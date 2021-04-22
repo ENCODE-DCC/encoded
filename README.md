@@ -92,5 +92,5 @@ $ pytest -m $PYTEST_MARK
     Eventually, the demo-config.ini will default to a demonstration configuration
 
 
-[Snovault OSX System Installation]: https://github.com/ENCODE-DCC/snovault/blob/master/README.md#system-installation-osx-catlina-10152
-[Snovault OSX App Installation]: https://github.com/ENCODE-DCC/snovault/blob/master/README.md#application-installation
+[Snovault OSX System Installation]: https://github.com/ENCODE-DCC/snovault/blob/dev/README.rst#system-installation-osx-catlina-10152
+[Snovault OSX App Installation]: https://github.com/ENCODE-DCC/snovault/blob/dev/README.rst#application-installation
