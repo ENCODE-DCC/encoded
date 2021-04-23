@@ -6,8 +6,7 @@ def library_no_biosample(testapp, lab, award):
     item = {
         'nucleic_acid_term_name': 'DNA',
         'lab': lab['@id'],
-        'award': award['@id'],
-        'strand_specificity': 'unstranded'
+        'award': award['@id']
     }
     return testapp.post_json('/library', item).json['@graph'][0]
 
@@ -53,8 +52,7 @@ def library(lab, award):
     return {
         'lab': lab['uuid'],
         'award': award['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'strand_specificity': 'unstranded'
+        'nucleic_acid_term_name': 'DNA'
     }
 
 
@@ -64,8 +62,7 @@ def library_url(testapp, lab, award, biosample):
         'nucleic_acid_term_name': 'DNA',
         'lab': lab['@id'],
         'award': award['@id'],
-        'biosample': biosample['@id'],
-        'strand_specificity': 'unstranded'
+        'biosample': biosample['@id']
     }
     return testapp.post_json('/library', item).json['@graph'][0]
 
@@ -115,8 +112,7 @@ def library_0_0(lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'nucleic_acid_term_id': 'SO:0000352',
-        'nucleic_acid_term_name': 'DNA',
-        'strand_specificity': 'unstranded'
+        'nucleic_acid_term_name': 'DNA'
     }
 
 
@@ -168,8 +164,7 @@ def library_schema_9(lab, award):
         'lab': lab['uuid'],
         'extraction_method': 'Trizol (Invitrogen 15596-026)',
         'lysis_method': 'Possibly Trizol',
-        'library_size_selection_method': 'Gel',
-        'strand_specificity': 'unstranded'
+        'library_size_selection_method': 'Gel'
     }
 
 
@@ -179,8 +174,7 @@ def library_schema_9b(lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'extraction_method': 'see document ',
-        'lysis_method': 'test',
-        'strand_specificity': 'unstranded'
+        'lysis_method': 'test'
     }
 
 
@@ -199,8 +193,7 @@ def library_1_chip(testapp, lab, award, biosample_human_1):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'biosample': biosample_human_1['@id'],
-        'nucleic_acid_term_name': 'DNA',
-        'strand_specificity': 'unstranded'
+        'nucleic_acid_term_name': 'DNA'
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
 
@@ -211,8 +204,7 @@ def library_2_chip(testapp, lab, award, biosample_human_2):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'biosample': biosample_human_2['@id'],
-        'nucleic_acid_term_name': 'DNA',
-        'strand_specificity': 'unstranded'
+        'nucleic_acid_term_name': 'DNA'
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
 
@@ -240,8 +232,7 @@ def library_schema_11a(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'fragmentation_methods': ['chemical (HindIII/DpnII restriction)', 'shearing (generic)'],
-        'strand_specificity': 'unstranded'
+        'fragmentation_methods': ['chemical (HindIII/DpnII restriction)', 'shearing (generic)']
     }
 
 
@@ -250,8 +241,7 @@ def library_schema_11b(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'fragmentation_methods': ['chemical (HindIII/DpnII restriction)', 'chemical (DpnII restriction)', 'shearing (generic)'],
-        'strand_specificity': 'unstranded'
+        'fragmentation_methods': ['chemical (HindIII/DpnII restriction)', 'chemical (DpnII restriction)', 'shearing (generic)']
     }
 
 
@@ -270,8 +260,7 @@ def library_schema_12(library, award, lab, biosample_human_2):
             {
               'sequence': 'GGGGGGCN'
             }
-        ],
-        'strand_specificity': 'unstranded'
+        ]
     }
 
 
@@ -325,8 +314,7 @@ def library_linkers(lab, award):
               'type': 'linker b',
               'sequence': 'GTTGGATAAGATATCGC'
             }
-        ],
-        'strand_specificity': 'unstranded'
+        ]
     }
 
 

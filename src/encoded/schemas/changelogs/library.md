@@ -1,7 +1,7 @@
 ## Changelog for library.json
 
 ### Schema version 17
-* The *strand_specificity* property is now required for all library objects; unstranded libraries should use the new enum *unstranded*.
+* The *strand_specificity* property is now required for all RNA library objects; unstranded libraries may use the new enum *unstranded*.
 
 ### Minor changes since schema version 16
 * Calculated properties *replicates* and *antibodies* are removed.
