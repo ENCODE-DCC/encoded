@@ -1406,7 +1406,7 @@ def check_analysis_small_rna_standards(
                     middle_threshold=20000000,
                     lower_threshold=1000000,
                     assay_term_name=assay_term_name,
-                    pipeline_title=pipeline_title,
+                    pipeline_title=value['title'],
                     pipeline=value['pipelines'][0],
                     standards_link=link_to_standards)
             else:
@@ -1458,7 +1458,7 @@ def check_analysis_cage_rampage_standards(
                     middle_threshold=10000000,
                     lower_threshold=1000000,
                     assay_term_name=assay_term_name,
-                    pipeline_title=pipeline_title,
+                    pipeline_title=value['title'],
                     pipeline=value['pipelines'][0],
                     standards_link=link_to_standards)
             else:
