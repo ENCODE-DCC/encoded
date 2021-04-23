@@ -674,6 +674,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                                     {/* 0 is falsy but we still want it to display, so 0 is explicitly checked for */}
                                                     {loci.expression_percentile || loci.expression_percentile === 0 ? <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span> : null}
                                                     {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ? <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span> : null}
+                                                    {loci.expression_measurement_method || loci.expression_measurement_method === 0 ? <span>{' by '}{loci.expression_measurement_method}</span> : null}
                                                 </span>
                                             : null
                                         ))}

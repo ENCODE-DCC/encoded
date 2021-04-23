@@ -5,6 +5,7 @@
 * Added *LRGASP* to the *internal_tags* enum
 * Added *doi* property
 * Added *analyses* property
+* Added *expression_measurement_method* to the *examined_loci* property
 
 ### Schema version 3
 
