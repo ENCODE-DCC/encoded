@@ -288,6 +288,28 @@ def check_replicate_metric_dual_threshold(
     return
 
 
+'''
+Universal audits
+'''
+
+
+def audit_analysis_multiple_rfas(value, system):
+    if len(value['pipeline_award_rfas']) > 1:
+        detail = f"More than one RFA is associated with analysis {value['accession']}."
+        yield AuditFailure('multiple rfas', detail, level='INTERNAL_ACTION')
+
+
+def audit_analysis_multiple_datasets(value, system):
+    if len(value['datasets']) > 1:
+        detail = f"More than one dataset is associated with analysis {value['accession']}."
+        yield AuditFailure('multiple datasets', detail, level='INTERNAL_ACTION')
+
+
+'''
+Dispatcher and helper function for assay-specific audits
+'''
+
+
 def create_files_mapping(files, excluded_files):
     to_return = {
         'alignments': {},
@@ -2213,6 +2235,8 @@ Function dispatcher
 
 function_dispatcher = {
     'audit_dnase_footprints': audit_dnase_footprints,
+    'audit_analysis_multiple_rfas': audit_analysis_multiple_rfas,
+    'audit_analysis_multiple_datasets': audit_analysis_multiple_datasets
 }
 
 function_dispatcher_with_files = {
