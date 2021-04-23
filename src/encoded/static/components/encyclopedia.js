@@ -4,8 +4,6 @@ import { Panel, PanelBody } from '../libs/ui/panel';
 import { ResultTable } from './search';
 import * as globals from './globals';
 
-// The series search page displays a table of results corresponding to a selected series
-// Buttons for each series are displayed like tabs or links
 const Encyclopedia = (props, context) => {
     const searchBase = url.parse(context.location_href).search || '';
 
