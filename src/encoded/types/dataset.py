@@ -1318,3 +1318,18 @@ class DiseaseSeries(Series):
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+
+@collection(
+    name='multiomics-series',
+    unique_key='accession',
+    properties={
+        'title': "Multiomics series",
+        'description': 'Experimental data investigating biosamples via multiple genomic analyses.',
+    })
+class MultiomicsSeries(Series):
+    item_type = 'multiomics_series'
+    schema = load_schema('encoded:schemas/multiomics_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]

@@ -56,6 +56,7 @@ const types = {
     pulse_chase_time_series: { title: 'Pulse-chase time series' },
     single_cell_unit: { title: 'Single cell units' },
     disease_series: { title: 'Disease series' },
+    multiomics_series: { title: 'Multiomics series' },
 };
 
 const datasetTypes = {
@@ -82,6 +83,7 @@ const datasetTypes = {
     PulseChaseTimeSeries: types.pulse_chase_time_series.title,
     SingleCellUnit: types.single_cell_unit.title,
     DiseaseSeries: types.disease_series.title,
+    MultiomicsSeries: types.multiomics_series.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));

@@ -1,0 +1,17 @@
+[
+    {
+        "_test": "multiomics series",
+        "accession": "ENCSR001MUL",
+        "award": "UM1HG009390",
+        "description": "Multiomics series.",
+        "lab": "ali-mortazavi",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR000LSC",
+            "/experiments/ENCSR000SSC"
+        ],
+        "uuid": "2ca86d6c-5081-4f85-9279-e8b89687d646",
+        "date_released": "2020-09-11"
+    }
+]
