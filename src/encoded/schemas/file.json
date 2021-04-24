@@ -856,7 +856,20 @@
                                         "raw data",
                                         "reporter code counts",
                                         "nanopore signal",
-                                        "repeat elements annotation",
+                                        "repeat elements annotation"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "fastq"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
                                         "R2C2 subreads"
                                     ]
                                 }
