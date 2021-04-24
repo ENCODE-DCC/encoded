@@ -179,3 +179,27 @@ class HumanDonor(Donor):
     })
     def children(self, request, children):
         return paths_filtered_by_status(request, children)
+
+
+@collection(
+    name='manatee-donors',
+    unique_key='accession',
+    properties={
+        'title': 'Manatee donors',
+        'description': 'Listing Biosample Donors',
+    })
+class ManateeDonor(Donor):
+    item_type = 'manatee_donor'
+    schema = load_schema('encoded:schemas/manatee_donor.json')
+    embedded = Donor.embedded + ['organism',
+                                 'genetic_modifications',
+                                 'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.modified_site_by_target_id.genes',
+                                 'genetic_modifications.treatments']
+    set_status_up = [
+        'characterizations',
+        'source',
+        'genetic_modifications',
+        'documents',
+    ]
+    set_status_down = []

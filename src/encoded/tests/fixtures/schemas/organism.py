@@ -99,3 +99,15 @@ def fly(testapp):
         'status': 'released'
     }
     return testapp.post_json('/organism', item).json['@graph'][0]
+
+
+@pytest.fixture
+def manatee(testapp):
+    item = {
+        'uuid': '82c70528-ff35-4fc2-b7c0-f20ad0bd5e73',
+        'name': 'manatee',
+        'scientific_name': 'Trichechus manatus',
+        'taxon_id': '9778',
+        'status': 'released'
+    }
+    return testapp.post_json('/organism', item).json['@graph'][0]

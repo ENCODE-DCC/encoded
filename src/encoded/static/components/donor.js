@@ -453,6 +453,95 @@ globals.panelViews.register(FlyWormDonor, 'FlyDonor');
 globals.panelViews.register(FlyWormDonor, 'WormDonor');
 
 
+const ManateeDonor = (props) => {
+    const { context, biosample } = props;
+
+    return (
+        <div>
+            <Panel>
+                <PanelHeading>
+                    <h4>Strain information</h4>
+                </PanelHeading>
+                <PanelBody>
+                    <dl className="key-value">
+                        <div data-test="status">
+                            <dt>Status</dt>
+                            <dd><Status item={context} inline /></dd>
+                        </div>
+
+                        <div data-test="accession">
+                            <dt>Accession</dt>
+                            <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
+                        </div>
+
+                        {context.aliases.length > 0 ?
+                            <div data-test="aliases">
+                                <dt>Aliases</dt>
+                                <dd>{context.aliases.join(', ')}</dd>
+                            </div>
+                        : null}
+
+                        {context.external_ids && context.external_ids.length > 0 ?
+                            <div data-test="externalid">
+                                <dt>Donor external identifiers</dt>
+                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
+                            </div>
+                        : null}
+
+                        {context.organism.scientific_name ?
+                            <div data-test="species">
+                                <dt>Species</dt>
+                                <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                            </div>
+                        : null}
+
+                        {context.age ?
+                            <div data-test="age">
+                                <dt>Age</dt>
+                                <dd className="sentence-case">{formatMeasurement(context.age, context.age_units)}</dd>
+                            </div>
+                        : null}
+
+                        {context.sex ?
+                            <div data-test="sex">
+                                <dt>Sex</dt>
+                                <dd className="sentence-case">{context.sex}</dd>
+                            </div>
+                        : null}
+
+                        {context.dbxrefs && context.dbxrefs.length > 0 ?
+                            <div data-test="external-resources">
+                                <dt>External resources</dt>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
+                            </div>
+                        : null}
+
+
+                        {context.submitter_comment ?
+                            <div data-test="submittercomment">
+                                <dt>Submitter comment</dt>
+                                <dd>{context.submitter_comment}</dd>
+                            </div>
+                        : null}
+                    </dl>
+                </PanelBody>
+            </Panel>
+        </div>
+    );
+};
+
+ManateeDonor.propTypes = {
+    context: PropTypes.object.isRequired, // Manatee donor object being rendered
+    biosample: PropTypes.object, // Biosample object this donor belongs to
+};
+
+ManateeDonor.defaultProps = {
+    biosample: null,
+};
+
+globals.panelViews.register(ManateeDonor, 'ManateeDonor');
+
+
 // This component activates for any donors that aren't any of the above registered types.
 class DonorComponent extends React.Component {
     constructor() {
@@ -708,7 +797,12 @@ const FlyListing = (props) => (
     <DonorListing {...props} organismTitle="Fly donor" />
 );
 
+const ManateeListing = (props) => (
+    <DonorListing {...props} organismTitle="Manatee donor" />
+);
+
 globals.listingViews.register(HumanListing, 'HumanDonor');
 globals.listingViews.register(MouseListing, 'MouseDonor');
 globals.listingViews.register(WormListing, 'WormDonor');
 globals.listingViews.register(FlyListing, 'FlyDonor');
+globals.listingViews.register(ManateeListing, 'ManateeDonor');
