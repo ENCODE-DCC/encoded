@@ -1712,8 +1712,6 @@ $rnaseq-term-name-colors:
 
     .div-table-matrix {
         &__row {
-            $c__row: &;
-
             margin: 0;
             padding: 0;
             display: flex;
@@ -1764,11 +1762,11 @@ $rnaseq-term-name-colors:
 
             // get second child (no space after &)
             &:nth-child(2) {
-                #{$c__row}__data-row-item:nth-child(2) {
+                :nth-child(2) {
                     border-top-left-radius: 14px;
                 }
 
-                #{$c__row}__data-row-item:last-child {
+                :last-child {
                     border-top-right-radius: 14px;
                 }
             }
