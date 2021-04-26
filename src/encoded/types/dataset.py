@@ -1226,9 +1226,8 @@ class ExperimentSeries(Series):
 class SingleCellRnaSeries(Series):
     item_type = 'single_cell_rna_series'
     schema = load_schema('encoded:schemas/single_cell_rna_series.json')
-    embedded = Series.embedded + [
-        'related_datasets.analyses',
-    ]
+    audit_inherit = []
+    embedded = []
 
 
 @collection(
