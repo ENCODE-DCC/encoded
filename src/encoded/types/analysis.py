@@ -337,7 +337,7 @@ class Analysis(Item):
             if pipeline_award_rfas:
                 analysis_type = ', '.join(pipeline_award_rfas)
                 if len(pipeline_award_rfas) > 1:
-                    analysis_type = f'Mixed uniform {analysis_type}'   
+                    analysis_type = f'Mixed uniform ({analysis_type})'   
         analysis_version = ''
         if pipeline_version and not analysis_type.startswith('Mixed uniform'):
             analysis_version = f' v{pipeline_version}'
