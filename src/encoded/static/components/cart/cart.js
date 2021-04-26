@@ -1093,13 +1093,14 @@ const DatasetFacets = ({
     selectedTerms,
     selectedDatasetCount,
     termClickHandler,
+    facetLoadProgress,
     clearFacetSelections,
 }) => {
     const [expandedStates, handleExpanderClick] = useExpanders(displayedDatasetFacetFields);
 
     return (
         <div className="cart__display-facets">
-            <FacetCount count={selectedDatasetCount} element="dataset" facetLoadProgress={-1} />
+            <FacetCount count={selectedDatasetCount} element="dataset" facetLoadProgress={facetLoadProgress} />
             {displayedDatasetFacetFields.map((facetField) => {
                 const facetContent = facets.find((facet) => facet.field === facetField.field);
                 if (facetContent) {
@@ -1132,6 +1133,8 @@ DatasetFacets.propTypes = {
     selectedDatasetCount: PropTypes.number,
     /** Callback when the user clicks on a file format facet item */
     termClickHandler: PropTypes.func.isRequired,
+    /** Facet-loading progress for progress bar, or null if not displayed */
+    facetLoadProgress: PropTypes.number,
     /** Callback for clearing a single facet's selections */
     clearFacetSelections: PropTypes.func.isRequired,
 };
@@ -1140,6 +1143,7 @@ DatasetFacets.defaultProps = {
     facets: [],
     selectedTerms: null,
     selectedDatasetCount: 0,
+    facetLoadProgress: null,
 };
 
 
@@ -2237,19 +2241,19 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
     ), [selectedDatasetTerms, viewableDatasets]);
 
     // Build the facets based on the currently selected facet terms.
-    const datasetFiles = React.useMemo(() => filterForDatasetFiles(allFiles, selectedDatasets), [allFiles, selectedDatasets]);
+    const selectedDatasetFiles = React.useMemo(() => filterForDatasetFiles(allFiles, selectedDatasets), [allFiles, selectedDatasets]);
     const { fileFacets, selectedFiles } = React.useMemo(() => {
-        let files = defaultOnly ? filterForDefaultFiles(datasetFiles) : datasetFiles;
+        let files = defaultOnly ? filterForDefaultFiles(selectedDatasetFiles) : selectedDatasetFiles;
         files = visualizableOnly ? filterForVisualizableFiles(files) : files;
         return assembleFileFacets(selectedFileTerms, files, analyses, usedFileFacetFields);
-    }, [selectedFileTerms, selectedDatasets, visualizableOnly, defaultOnly, datasetFiles, analyses, usedFileFacetFields]);
+    }, [selectedFileTerms, selectedDatasets, visualizableOnly, defaultOnly, selectedDatasetFiles, analyses, usedFileFacetFields]);
 
     // Construct the file lists for the genome browser and raw file tabs.
-    const rawdataFiles = React.useMemo(() => datasetFiles.filter((files) => !files.assembly), [datasetFiles]);
+    const rawdataFiles = React.useMemo(() => selectedDatasetFiles.filter((files) => !files.assembly), [selectedDatasetFiles]);
     const selectedVisualizableFiles = React.useMemo(() => {
-        const files = defaultOnly ? filterForDefaultFiles(datasetFiles) : datasetFiles;
+        const files = defaultOnly ? filterForDefaultFiles(selectedDatasetFiles) : selectedDatasetFiles;
         return getSelectedVisualizableFiles(filterForVisualizableFiles(files), selectedFileTerms);
-    }, [datasetFiles, selectedFileTerms]);
+    }, [selectedDatasetFiles, selectedFileTerms]);
 
     // Called when the user selects a new page of items to view using the pager.
     const updateDisplayedPage = (newDisplayedPage) => {
@@ -2479,6 +2483,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         facets={datasetFacets}
                                         selectedTerms={selectedDatasetTerms}
                                         selectedDatasetCount={selectedDatasets.length}
+                                        facetLoadProgress={facetProgress}
                                         termClickHandler={handleDatasetTermClick}
                                         clearFacetSelections={clearDatasetFacetSelections}
                                     />
