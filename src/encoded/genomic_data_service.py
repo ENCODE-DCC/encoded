@@ -8,6 +8,7 @@ RNA_GET_AUTOCOMPLETE = '/autocomplete'
 # react component orders columns by "the position" in the hash map
 RNA_GET_COLUMNS = {
     'featureID': {'title': 'Feature ID'},
+    'gene_symbol': {'title': 'Gene'},
     'tpm': {'title': 'Counts (TPM)'},
     'fpkm': {'title': 'Counts (FPKM)'},
     'assayType': {'title': 'Assay (RNA SubType)'},
