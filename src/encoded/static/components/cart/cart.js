@@ -93,8 +93,8 @@ const analysisFieldMap = (analysisTitles) => (
 
 
 /**
- * Field `getValue` function so that files without a `biosample_ontology` can have a "None" facet
- * term for those files lacking a biosample ontology.
+ * `getValue` function that retrieves a file's `biosample_ontology`, or returns "None" for those
+ * files lacking a biosample ontology so that we can have a "None" facet term.
  * @param {object} file ...from which to extract the `biosample_ontology` property
  * @return {object} file's biosample_ontology property, or one containing "None"
  */
