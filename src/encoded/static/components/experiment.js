@@ -236,7 +236,7 @@ const LibraryProperties = ({ replicates }) => {
                         const strandSpecificityFirstValue = strandSpecificValues[0];
 
                         if (strandSpecificValues.every((value) => value === strandSpecificityFirstValue)) {
-                            strandSpecificity = `Strand-specific${strandSpecificityFirstValue === 'strand-specific' ? '' : ` (${strandSpecificityFirstValue})`}`;
+                            strandSpecificity = strandSpecificityFirstValue === 'unstranded' ? strandSpecificityFirstValue : `Strand-specific${strandSpecificityFirstValue === 'strand-specific' ? '' : ` (${strandSpecificityFirstValue})`}`;
                         } else {
                             strandSpecificity = 'Strand-specific (mixed)';
                         }
