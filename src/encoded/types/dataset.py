@@ -1286,3 +1286,18 @@ class PulseChaseTimeSeries(Series):
     embedded = Series.embedded + [
         'related_datasets.analyses',
     ]
+
+
+@collection(
+    name='disease-series',
+    unique_key='accession',
+    properties={
+        'title': "Disease series",
+        'description': 'A series that groups experiments investigating samples with an identified disease.',
+    })
+class DiseaseSeries(Series):
+    item_type = 'disease_series'
+    schema = load_schema('encoded:schemas/disease_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analysis_objects',
+    ]

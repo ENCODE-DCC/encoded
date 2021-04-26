@@ -1,0 +1,16 @@
+[
+    {
+        "_test": "disease series",
+        "accession": "ENCSR021DIS",
+        "award": "UM1HG009390",
+        "description": "Disease series in the test data.",
+        "lab": "ali-mortazavi",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR000INT"
+        ],
+        "uuid": "1ca86d6c-5081-4f15-9279-e8b19687d641",
+        "date_released": "2020-01-11"
+    }
+]
