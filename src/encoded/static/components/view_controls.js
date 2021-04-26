@@ -349,3 +349,72 @@ BatchDownloadControls.defaultProps = {
 BatchDownloadControls.contextTypes = {
     navigate: PropTypes.func,
 };
+
+/**
+ * Display batch download button if the search results qualify for one.
+ */
+export const BatchDownloadEncyclopedia = ({ results, queryString, additionalFilters, modalText, canDownload, additionalContent }, reactContext) => {
+    const filters = results ? results.filters.concat(additionalFilters) : null;
+
+    const handleDownloadClick = () => {
+        const downloadQueryString = filters ? getQueryFromFilters(filters) : queryString;
+        reactContext.navigate(`/batch_download/?${downloadQueryString}`);
+    };
+
+    if (results) {
+        // No Download button if the search path is prohibited.
+        const hasProhibitedPath = BATCH_DOWNLOAD_PROHIBITED_PATHS.some((path) => results['@id'].startsWith(path));
+        if (hasProhibitedPath) {
+            return null;
+        }
+
+        // No download button if "type=" for an allowed type doesn't exist in query string.
+        const hasDownloadDocType = filters.some((filter) => filter.field === 'type' && BATCH_DOWNLOAD_DOC_TYPES.includes(filter.term));
+        if (!hasDownloadDocType) {
+            return null;
+        }
+
+        // No download button if no files.
+        const hasFiles = results.facets.some((facet) => facet.field === 'files.file_type' && facet.total > 0);
+        if (!hasFiles) {
+            return null;
+        }
+    }
+
+    return <BatchDownloadButton
+        handleDownloadClick={handleDownloadClick}
+        modalText={modalText}
+        canDownload={canDownload}
+        title={svgIcon('download')}
+        additionalContent={additionalContent}
+    />;
+};
+
+BatchDownloadEncyclopedia.propTypes = {
+    /** Search results object */
+    results: testBatchDownloadControlsProps,
+    /** Query string used directly for /batch_download/ if not using `results` */
+    queryString: testBatchDownloadControlsProps,
+    /** Filters not included in results.filters */
+    additionalFilters: PropTypes.array,
+    /** Message in modal body */
+    modalText: PropTypes.element,
+    /** Yes if download option is available, false otherwise */
+    canDownload: PropTypes.bool,
+    /** Additional content in modal as component */
+    additionalContent: PropTypes.object,
+
+};
+
+BatchDownloadEncyclopedia.defaultProps = {
+    results: null,
+    queryString: '',
+    additionalFilters: [],
+    modalText: modalDefaultText,
+    canDownload: true,
+    additionalContent: null,
+};
+
+BatchDownloadEncyclopedia.contextTypes = {
+    navigate: PropTypes.func,
+};

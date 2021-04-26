@@ -1,0 +1,58 @@
+.active {
+    background-color: #d2d2d2;
+}
+
+.encyclopedia-tabs {
+    .nav-tabs {
+        li {
+            padding: 10px 5px;
+        }
+    }
+}
+
+.download-wrapper {
+    label, button {
+        display: inline-block;
+    }
+
+    label {
+        padding: 5px 10px;
+    }
+
+    button {
+        margin-left: 10px;
+    }
+
+    hr {
+        border: 0;
+        width: 100%;
+        margin: 5px auto;
+        border-top: 1px solid #f2f2f2;
+    }
+}
+
+.select-annotation-type-wrapper {
+    button {
+        background: none;
+        border: none;
+    }
+}
+
+.bubble {
+    width: 10px;
+    height: 10px;
+    background-color: lightgray;
+    display: inline-block;
+    border-radius: 10px;
+    margin-right: 4px;
+
+    &.active {
+        background-color: red;
+    }
+}
+
+.encyclopedia-tabs {
+    .file-gallery-facets {
+        border-right: 0;
+    }
+}

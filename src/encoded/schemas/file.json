@@ -9,7 +9,7 @@
             "required": ["dataset", "file_format", "output_type", "award", "lab", "md5sum"]
         },
         {
-            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]   
+            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]
         }
     ],
     "identifyingProperties": ["uuid", "accession", "aliases"],
@@ -83,6 +83,9 @@
             "title": "Targets of assay",
             "type": "typeahead",
             "length": "long"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version"
         }
     },
     "dependencies": {
@@ -99,7 +102,7 @@
                 {
                     "allOf": [
                         {
-                            "required": ["md5sum"],       
+                            "required": ["md5sum"],
                             "properties": {
                                 "no_file_available": {
                                     "enum": [false]
@@ -2030,11 +2033,17 @@
         "status": {
             "title": "Status"
         },
+        "annotation_type": {
+            "title": "Annotation type"
+        },
         "annotation_subtype": {
             "title": "Annotation subtype"
         },
         "biochemical_inputs": {
             "title": "Biochemical inputs"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version"
         }
     },
     "output_type_output_category": {

@@ -2494,7 +2494,7 @@ InclusionSelector.propTypes = {
 // Display facets for files
 // Only one assembly can be chosen so controls for 'Assembly' facet look like radio buttons
 // Multiple terms may be chosen for facets that are not Assembly so those look like regular buttons
-const FileFacet = (props) => {
+export const FileFacet = (props) => {
     const { facetObject, facetTitle, filterFiles, facetKey, selectedFilters, currentTab } = props;
     // Determine how many total files there are
     let objSum = 0;

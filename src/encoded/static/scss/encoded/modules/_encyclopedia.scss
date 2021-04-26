@@ -1,0 +1,56 @@
+.fa-download {
+    height: 15px;
+    width: 15px;
+}
+
+.encyclopedia-tabs {
+    .download-wrapper {
+        padding-top: 10px;
+
+        .download-line {
+            padding: 3px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        button {
+            height: 22px;
+            padding: 0 5px !important;
+            margin: 0 !important;
+            margin-right: 5px !important;
+        }
+    }
+}
+
+.download-selections {
+    margin-top: 20px;
+
+    .download-checkbox {
+        display: block;
+    }
+}
+
+.facet-term {
+    &.annotation-type {
+        border: 0;
+    }
+
+    .dot {
+        height: 10px;
+        width: 10px;
+        border-radius: 10px;
+        border: 2px solid #5a5a5a;
+        margin-right: 5px;
+
+        &.full-dot {
+            background: #4183c4;
+            border: 2px solid #4183c4;
+        }
+    }
+}
+
+.encyclopedia-badge {
+    padding: 5px 10px;
+    background: #d2d2d2;
+    border-radius: 5px;
+}
