@@ -2237,19 +2237,19 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
     ), [selectedDatasetTerms, viewableDatasets]);
 
     // Build the facets based on the currently selected facet terms.
+    const datasetFiles = React.useMemo(() => filterForDatasetFiles(allFiles, selectedDatasets), [allFiles, selectedDatasets]);
     const { fileFacets, selectedFiles } = React.useMemo(() => {
-        let files = defaultOnly ? filterForDefaultFiles(allFiles) : allFiles;
+        let files = defaultOnly ? filterForDefaultFiles(datasetFiles) : datasetFiles;
         files = visualizableOnly ? filterForVisualizableFiles(files) : files;
-        files = filterForDatasetFiles(files, selectedDatasets);
         return assembleFileFacets(selectedFileTerms, files, analyses, usedFileFacetFields);
-    }, [selectedFileTerms, selectedDatasets, visualizableOnly, defaultOnly, allFiles, analyses, usedFileFacetFields]);
+    }, [selectedFileTerms, selectedDatasets, visualizableOnly, defaultOnly, datasetFiles, analyses, usedFileFacetFields]);
 
     // Construct the file lists for the genome browser and raw file tabs.
-    const rawdataFiles = React.useMemo(() => allFiles.filter((files) => !files.assembly), [allFiles]);
+    const rawdataFiles = React.useMemo(() => datasetFiles.filter((files) => !files.assembly), [datasetFiles]);
     const selectedVisualizableFiles = React.useMemo(() => {
-        const files = defaultOnly ? filterForDefaultFiles(allFiles) : allFiles;
+        const files = defaultOnly ? filterForDefaultFiles(datasetFiles) : datasetFiles;
         return getSelectedVisualizableFiles(filterForVisualizableFiles(files), selectedFileTerms);
-    }, [allFiles, selectedFileTerms]);
+    }, [datasetFiles, selectedFileTerms]);
 
     // Called when the user selects a new page of items to view using the pager.
     const updateDisplayedPage = (newDisplayedPage) => {
