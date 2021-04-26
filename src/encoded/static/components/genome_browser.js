@@ -470,7 +470,9 @@ const sortLookUp = (obj, param) => {
     case 'Assay term name':
         return obj.assay_term_name.toLowerCase();
     case 'Biosample term name':
-        return obj.biosample_ontology.term_name.toLowerCase();
+        return obj.biosample_ontology ? obj.biosample_ontology.term_name.toLowerCase() : null;
+    case 'Annotation type':
+        return obj.annotation_type.toLowerCase();
     default:
         return null;
     }
@@ -584,7 +586,6 @@ const TrackLabel = ({ file, label, long }) => {
             fileTarget && fileTarget.label,
             file.assay_term_name,
             file.biosample_ontology && file.biosample_ontology.term_name,
-            file.annotation_type,
             file.annotation_subtype,
         ]).join(', ');
     }
@@ -855,7 +856,8 @@ class GenomeBrowser extends React.Component {
         newFiles = _.uniq(newFiles, (file) => file.href);
         let tracks = [];
         if (files.length > 0) {
-            tracks = this.filesToTracks(newFiles, this.props.label, domain);
+            const maxCharPerLine = this.props.maxCharPerLine || 26;
+            tracks = this.filesToTracks(newFiles, this.props.label, domain, maxCharPerLine);
         }
         let { contig, x0, x1 } = this.state;
         if (this.chartdisplay) {
@@ -875,7 +877,7 @@ class GenomeBrowser extends React.Component {
         });
     }
 
-    filesToTracks(files, label, domain) {
+    filesToTracks(files, label, domain, maxCharPerLine) {
         const tracks = files.map((file) => {
             if (file.output_type === 'candidate Cis-Regulatory Elements' && this.state.colorBlock.indexOf('ccres') === -1) {
                 this.setState((prevState) => ({
@@ -887,21 +889,19 @@ class GenomeBrowser extends React.Component {
                     colorBlock: [...prevState.colorBlock, 'chromatin'],
                 }));
             }
-            const defaultHeight = 29;
+            const defaultHeight = 30;
             const extraLineHeight = 14;
-            const maxCharPerLine = 26;
             let labelLength = file.title ? Math.floor(file.title.length / maxCharPerLine) : 0;
             // Some labels on the cart which have a target, assay name, and biosample are too long for one line (some actually extend to three lines)
             // Here we do some approximate math to try to figure out how many lines the labels extend to assuming that ~30 characters fit on one line
             // Labels on the experiment pages are short enough to fit on one line (they contain less information) so we can bypass these calculations for those pages
             if (label === 'cart') {
+                file.annotation_type = file.annotation_type === 'candidate Cis-Regulatory Elements' ? 'cCRE' : file.annotation_type;
                 const fileTarget = getFileTarget(file);
                 labelLength += fileTarget && fileTarget.label ? fileTarget.label.length + 2 : 0;
                 labelLength += file.assay_term_name ? file.assay_term_name.length + 2 : 0;
                 labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length + 2 : 0;
-                labelLength += file.annotation_type ? file.annotation_type.length : 0;
                 labelLength += file.annotation_subtype ? file.annotation_subtype.length : 0;
-                labelLength += file.biochemical_inputs ? file.biochemical_inputs.length : 0;
                 labelLength = Math.floor(labelLength / maxCharPerLine);
             }
             if (file.name) {
@@ -985,9 +985,8 @@ class GenomeBrowser extends React.Component {
                     'unfiltered peptide quantification',
                     'filtered peptide quantification',
                 ];
-                trackObj.name = <TrackLabel file={file} label={label} long />;
-
                 const opened = openedOutputTypes.includes(file.output_type);
+                trackObj.name = <TrackLabel file={file} label={label} long={opened} />;
                 trackObj.heightPx = opened ? 95 : trackObj.heightPx;
             }
             return trackObj;
@@ -1086,12 +1085,14 @@ GenomeBrowser.propTypes = {
     label: PropTypes.string.isRequired,
     sortParam: PropTypes.array,
     displaySort: PropTypes.bool,
+    maxCharPerLine: PropTypes.number,
 };
 
 GenomeBrowser.defaultProps = {
     annotation: '',
     sortParam: ['Replicates', 'Output type'], // Array of parameters for sorting file object
     displaySort: false, // Determines if sort buttons should be displayed
+    maxCharPerLine: null,
 };
 
 GenomeBrowser.contextTypes = {

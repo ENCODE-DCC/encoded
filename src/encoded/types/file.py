@@ -104,6 +104,7 @@ EMBEDDED_DATASET_FIELDS = [
     'biosample_ontology',
     'target',
     'targets',
+    'encyclopedia_version'
 ]
 
 
@@ -369,6 +370,21 @@ class File(Item):
             for uuid in replicates
         }
         return sorted(techreps)
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Encyclopedia version",
+            "type": "string",
+            "notSubmittable": True
+        }
+    )
+    def encyclopedia_version(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('encyclopedia_version')
 
     @calculated_property(schema={
         "title": "Donor",

@@ -18,6 +18,7 @@ import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
 import { BatchDownloadControls, ViewControls } from './view_controls';
 import { BrowserSelector } from './vis_defines';
+import { BodyMapThumbnailAndModal } from './body_map';
 
 
 // Should really be singular...
@@ -1146,6 +1147,18 @@ export const FacetList = (props) => {
                     : null}
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
                     <div className="facet-wrapper">
+                        {props.bodyMap ?
+                            <BodyMapThumbnailAndModal
+                                context={context}
+                                location={context['@id']}
+                                organism="Homo sapiens"
+                            />
+                        : null}
+                        {props.additionalFacet ?
+                            <>
+                                {props.additionalFacet}
+                            </>
+                        : null}
                         {allFacets.map((facet) => {
                             // Filter the filters to just the ones relevant to the current facet,
                             // matching negation filters too.
@@ -1204,6 +1217,8 @@ FacetList.propTypes = {
     onFilter: PropTypes.func,
     /** True if the collapsible, false otherwise  */
     isExpandable: PropTypes.bool,
+    bodyMap: PropTypes.bool,
+    additionalFacet: PropTypes.object,
 };
 
 FacetList.defaultProps = {
@@ -1216,11 +1231,14 @@ FacetList.defaultProps = {
     supressTitle: false,
     onFilter: null,
     isExpandable: true,
+    bodyMap: false,
+    additionalFacet: null,
 };
 
 FacetList.contextTypes = {
     session: PropTypes.object,
     session_properties: PropTypes.object,
+    location_href: PropTypes.string,
 };
 
 
@@ -1383,7 +1401,7 @@ export class ResultTable extends React.Component {
     }
 
     render() {
-        const { context, searchBase, actions, hideDocType } = this.props;
+        const { context, searchBase, actions, hideDocType, bodyMap } = this.props;
         const { facets, total, columns, filters } = context;
         const results = context['@graph'];
         const label = 'results';
@@ -1398,6 +1416,7 @@ export class ResultTable extends React.Component {
                     searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
                     onFilter={this.onFilter}
                     hideDocType={hideDocType}
+                    bodyMap={bodyMap}
                 />
                 {context.notification === 'Success' ?
                     <div className="search-results__result-list">
@@ -1423,6 +1442,7 @@ ResultTable.propTypes = {
     onChange: PropTypes.func.isRequired,
     currentRegion: PropTypes.func,
     hideDocType: PropTypes.bool,
+    bodyMap: PropTypes.bool,
 };
 
 ResultTable.defaultProps = {
@@ -1430,6 +1450,7 @@ ResultTable.defaultProps = {
     searchBase: '',
     currentRegion: null,
     hideDocType: false,
+    bodyMap: false,
 };
 
 ResultTable.childContextTypes = {

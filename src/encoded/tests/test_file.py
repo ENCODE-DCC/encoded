@@ -87,6 +87,10 @@ def test_file_calculated_assay_term_name(testapp, fastq_pair_1):
     assert r.json['assay_term_name'] == 'RNA-seq'
 
 
+def test_file_calculated_encylopedia_version(testapp, file_ccre):
+    assert file_ccre['encyclopedia_version'] == 'ENCODE v5'
+
+
 def test_file_calculated_biosample_ontology(testapp, fastq_pair_1):
     r = testapp.post_json('/file', fastq_pair_1, status=201)
     file_id = r.json['@graph'][0]['@id']

@@ -1,0 +1,128 @@
+.fa-download {
+    height: 15px;
+    width: 15px;
+}
+
+.encyclopedia-tabs {
+    .nav-tabs {
+        li {
+            padding: 10px 5px;
+        }
+    }
+
+    .file-gallery-facets {
+        border-right: 0;
+    }
+
+    .download-wrapper {
+        padding-top: 10px;
+
+        .download-line {
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .batch-download-actuator {
+            padding: 3px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        button {
+            height: 22px;
+        }
+    }
+}
+
+.download-wrapper {
+    label, button {
+        display: inline-block;
+    }
+
+    label {
+        padding: 5px 10px;
+    }
+
+    hr {
+        border: 0;
+        width: 100%;
+        margin: 5px auto;
+        border-top: 1px solid #f2f2f2;
+    }
+}
+
+.select-annotation-type-wrapper {
+    button {
+        background: none;
+        border: none;
+    }
+}
+
+.encyclopedia-info-wrapper {
+    display: flex;
+    justify-content: space-between;
+
+    .related-links-container {
+        margin-top: 20px;
+
+        .boder-container {
+            display: inline-block;
+            border: 1px solid #a8a8a8;
+            padding: 10px;
+        }
+    }
+}
+
+.encyclopedia-subhead {
+    font-family: 'Oswald';
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+.encyclopedia-file-gallery {
+    .file-gallery-facet-redirect {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 0 300px;
+        }
+
+        .search-header-control {
+            display: none;
+        }
+    }
+
+    .reset-encyclopedia {
+        margin-bottom: 10px;
+    }
+}
+
+.download-selections {
+    .download-checkbox {
+        display: block;
+    }
+}
+
+.facet-term {
+    &.annotation-type {
+        border: 0;
+    }
+
+    .dot {
+        height: 10px;
+        width: 10px;
+        border-radius: 10px;
+        border: 2px solid #5a5a5a;
+        margin-right: 5px;
+
+        &.full-dot {
+            background: #4183c4;
+            border: 2px solid #4183c4;
+        }
+    }
+}
+
+.encyclopedia-badge {
+    padding: 5px 10px;
+    background: #d2d2d2;
+    border-radius: 5px;
+}

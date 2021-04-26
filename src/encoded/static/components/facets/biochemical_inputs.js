@@ -153,7 +153,7 @@ const BiochemicalInputsFacet = ({ results, facet, queryString }, reactContext) =
     return (
         <div className={`facet ${results['@type'].indexOf('Encyclopedia') === -1 ? 'hide' : ''}`}>
             <h5>{facet.title}</h5>
-            <div className="biochemical-toggle-description">When the toggle is on, your search results will be an exact match for your biochemical inputs selections. When the toggle is off, your selections will appear in your search results and may include additional inputs.</div>
+            <div className="biochemical-toggle-description">When the toggle is on, your search results will be an exact match for your biochemical inputs selections. When the toggle is off, your selections will appear in your search results and may include additional inputs. rDHS input is included by default.</div>
             <label className="boolean-switch">
                 <div style={switchStyles} className="boolean-switch__frame">
                     <div style={actuatorStyles} className="boolean-switch__actuator" />
