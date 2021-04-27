@@ -131,7 +131,7 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3) => {
 
     // add assay_title = Mint chip-seq if the assay selected in Histone chip-seq
     const isAssayTitleHistone = chIPSeqData.assayTitle === 'Histone ChIP-seq';
-    const removeSpecialCharacters = (name) => (!name ? name : name.replace(/[^\w\s]/gi, ''));
+    const removeSpecialCharacters = (name) => (!name ? name : name.replace(/\s/g, ''));
 
 
     const headerRow = [
