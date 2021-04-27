@@ -1107,6 +1107,36 @@ table.matrix th.group-all-groups-cell {
     select, button {
         margin-left: 5px;
     }
+
+    .error {
+        display: none;
+    }
+
+    .rnaseq-search-autocomplete {
+        position: absolute;
+        z-index: 10;
+        padding: 0;
+        max-height: 300px;
+        overflow-y: scroll;
+        color: #fff;
+        background-color: #0a253d;
+        border: 1px solid #ccc;
+        list-style: none;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+        margin-top: 34px;
+
+        li {
+            margin: 0;
+            padding: 5px 15px;
+            font-size: 13px;
+            cursor: pointer;
+
+            &:hover {
+                color: #404040;
+                background-color: #e0e0e0;
+            }
+        }
+    }
 }
 
 /**
