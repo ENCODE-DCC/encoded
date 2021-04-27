@@ -8,6 +8,9 @@ from .base import (
     Item,
     paths_filtered_by_status,
 )
+from .shared_calculated_properties import (
+    CalculatedTreatmentSummary,
+)
 
 
 @abstract_collection(
@@ -17,7 +20,7 @@ from .base import (
         'title': "Donors",
         'description': 'Listing of all types of donor.',
     })
-class Donor(Item):
+class Donor(Item, CalculatedTreatmentSummary):
     base_types = ['Donor'] + Item.base_types
     embedded = [
         'diseases',
