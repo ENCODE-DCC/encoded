@@ -312,3 +312,7 @@ def test_submitter_post_analysis_with_lab(submitter_testapp, analysis_with_lab):
 
 def test_wrangler_post_analysis_no_lab(wrangler_testapp, analysis_no_lab):
     wrangler_testapp.post_json('/analyses', analysis_no_lab, status=201)
+
+
+def test_experiment_submitter_edit_bam_tun_type(submitter_testapp, lab, award, file_with_replicate):
+    submitter_testapp.patch_json(file_with_replicate['@id'], {'mapped_run_type': 'single-ended'}, status=200)
