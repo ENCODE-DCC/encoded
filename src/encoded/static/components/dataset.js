@@ -1672,9 +1672,9 @@ const collectSeriesAnalyses = (context) => (
         ? (
             context.related_datasets.reduce(
                 (datasetAnalyses, dataset) => (
-                    dataset.analysis_objects
+                    dataset.analyses
                         ? datasetAnalyses.concat(
-                            dataset.analysis_objects.filter(
+                            dataset.analyses.filter(
                                 (analysis) => analysis.status === 'released'
                             )
                         ) : datasetAnalyses

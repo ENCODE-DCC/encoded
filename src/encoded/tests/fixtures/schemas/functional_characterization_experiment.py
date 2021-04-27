@@ -148,3 +148,13 @@ def pooled_clone_sequencing(testapp, lab, award, liver):
     return testapp.post_json(
         '/functional_characterization_experiment', item
     ).json['@graph'][0]
+
+
+@pytest.fixture
+def fcc_experiment_analysis(pce_fcc_experiment, analysis_1):
+    item = pce_fcc_experiment.copy()
+    item.update({
+        'schema_version': '6',
+        'analysis_objects': [analysis_1['uuid']]
+    })
+    return item

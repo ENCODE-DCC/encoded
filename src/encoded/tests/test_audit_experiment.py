@@ -2800,7 +2800,7 @@ def test_audit_experiment_inconsistent_analysis_status(testapp, experiment_with_
     # https://encodedcc.atlassian.net/browse/ENCD-5705
     # Released analysis objects are disallowed in non-released datasets
     testapp.patch_json(experiment_with_analysis['@id'],
-                       {"analysis_objects": [analysis_released["@id"]]})
+                       {"analyses": [analysis_released["@id"]]})
     res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent analysis status'
                and 'not released' in error['detail']
@@ -2809,7 +2809,7 @@ def test_audit_experiment_inconsistent_analysis_status(testapp, experiment_with_
     testapp.patch_json(
         experiment_with_analysis['@id'], {'status': 'released', 'date_released': '2021-01-01'})
     testapp.patch_json(
-        experiment_with_analysis['@id'], {"analysis_objects": [analysis_1["@id"]]})
+        experiment_with_analysis['@id'], {"analyses": [analysis_1["@id"]]})
     res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent analysis status'
                and 'lacks a released analysis' in error['detail']
@@ -2817,12 +2817,12 @@ def test_audit_experiment_inconsistent_analysis_status(testapp, experiment_with_
     # Multiple released analyses in a dataset is disallowed
     testapp.patch_json(
         experiment_with_analysis['@id'], {
-            "analysis_objects": [analysis_released["@id"], analysis_released_2["@id"]]})
+            "analyses": [analysis_released["@id"], analysis_released_2["@id"]]})
     res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent analysis status'
                and 'released analyses' in error['detail']
                for error in collect_audit_errors(res))
-    # Datasets lacking a released analysis (no analysis_objects at all) are flagged
+    # Datasets lacking a released analysis (no analyses at all) are flagged
     res = testapp.get(experiment_rna['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent analysis status'
                and 'lacks a released analysis' in error['detail']

@@ -21,7 +21,7 @@
     {
         "_test": "domain annotation dataset",
         "accession": "ENCSR575ZXX",
-        "analysis_objects": ["ENCAN913ASZ"],
+        "analyses": ["ENCAN913ASZ"],
         "award": "U54HG007004",
         "annotation_type": "chromatin state",
         "description": "Domain annotation of IMR90 created by Segway with graph-based regularization",

@@ -358,7 +358,7 @@ def test_experiment_default_analysis(
     testapp.patch_json(
         base_experiment['@id'],
         {
-            'analysis_objects': [analysis_1['@id'], analysis_2['@id']],
+            'analyses': [analysis_1['@id'], analysis_2['@id']],
             'status': 'in progress'
         }
     )

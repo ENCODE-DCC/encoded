@@ -47,7 +47,6 @@ class FunctionalCharacterizationExperiment(
     item_type = 'functional_characterization_experiment'
     schema = load_schema('encoded:schemas/functional_characterization_experiment.json')
     embedded = Dataset.embedded + [
-        'analysis_objects',
         'biosample_ontology',
         'examined_loci.gene',
         'files.platform',
@@ -85,7 +84,7 @@ class FunctionalCharacterizationExperiment(
         'submitted_by',
         'lab',
         'award',
-        'analysis_objects',
+        'analyses',
         'documents',
         'replicates.antibody.characterizations.biosample_ontology',
         'replicates.antibody.characterizations',
@@ -115,12 +114,12 @@ class FunctionalCharacterizationExperiment(
         'replicates',
         'documents',
         'target',
-        'analysis_objects',
+        'analyses',
     ]
     set_status_down = [
         'original_files',
         'replicates',
-        'analysis_objects',
+        'analyses',
     ]
     rev = Dataset.rev.copy()
     rev.update({

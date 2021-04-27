@@ -69,6 +69,7 @@ def calculate_assembly(request, files_list, status):
 class Dataset(Item):
     base_types = ['Dataset'] + Item.base_types
     embedded = [
+        'analyses',
         'files',
         'files.replicate',
         'files.replicate.experiment',
@@ -214,7 +215,7 @@ class Dataset(Item):
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
-    @calculated_property(condition='analysis_objects', schema={
+    @calculated_property(condition='analyses', schema={
         "title": "Default analysis",
         "description": "One default analysis that should be checked first.",
         "comment": "Do not submit. This field is calculated from files in this analysis.",
@@ -222,7 +223,7 @@ class Dataset(Item):
         "linkTo": "Analysis",
         "notSubmittable": True
     })
-    def default_analysis(self, request, status, analysis_objects):
+    def default_analysis(self, request, status, analyses):
         types = request.registry['types']
         unreleased_status = ['in progress', 'submitted', 'deleted', 'replaced']
         # Easier to sort everything by max, so reverse order of all
@@ -241,7 +242,7 @@ class Dataset(Item):
                 '&field=assembly'
                 '&field=genome_annotation',
             )
-            for analysis_id in analysis_objects
+            for analysis_id in analyses
         )
         if status not in unreleased_status:
             status_order = [
@@ -456,7 +457,6 @@ class SingleCellUnit(
     item_type = 'single_cell_unit'
     schema = load_schema('encoded:schemas/single_cell_unit.json')
     embedded = Dataset.embedded + [
-        'analysis_objects',
         'biosample_ontology',
         'files.platform',
         'files.analysis_step_version.analysis_step',
@@ -490,7 +490,7 @@ class SingleCellUnit(
         'submitted_by',
         'lab',
         'award',
-        'analysis_objects',
+        'analyses',
         'documents',
         'replicates.antibody.characterizations.biosample_ontology',
         'replicates.antibody.characterizations',
@@ -518,12 +518,12 @@ class SingleCellUnit(
         'original_files',
         'replicates',
         'documents',
-        'analysis_objects',
+        'analyses',
     ]
     set_status_down = [
         'original_files',
         'replicates',
-        'analysis_objects',
+        'analyses',
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -647,7 +647,6 @@ class Annotation(FileSet, CalculatedVisualize):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + [
-        'analysis_objects',
         'biosample_ontology',
         'software_used',
         'software_used.software',
@@ -668,10 +667,10 @@ class Annotation(FileSet, CalculatedVisualize):
         'files.replicate.library',
     ]
     set_status_up = [
-        'analysis_objects'
+        'analyses'
     ]
     set_status_down = [
-        'analysis_objects'
+        'analyses'
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -1025,7 +1024,7 @@ class MatchedSet(Series):
     item_type = 'matched_set'
     schema = load_schema('encoded:schemas/matched_set.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
 
@@ -1040,7 +1039,7 @@ class AggregateSeries(Series):
     item_type = 'aggregate_series'
     schema = load_schema('encoded:schemas/aggregate_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
 
@@ -1055,7 +1054,7 @@ class TreatmentTimeSeries(Series):
     item_type = 'treatment_time_series'
     schema = load_schema('encoded:schemas/treatment_time_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
 
@@ -1070,7 +1069,7 @@ class TreatmentConcentrationSeries(Series):
     item_type = 'treatment_concentration_series'
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
 
@@ -1085,7 +1084,7 @@ class OrganismDevelopmentSeries(Series):
     item_type = 'organism_development_series'
     schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
 
@@ -1100,7 +1099,7 @@ class ReplicationTimingSeries(Series):
     item_type = 'replication_timing_series'
     schema = load_schema('encoded:schemas/replication_timing_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
 
@@ -1115,7 +1114,7 @@ class ReferenceEpigenome(Series):
     item_type = 'reference_epigenome'
     schema = load_schema('encoded:schemas/reference_epigenome.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
     rev = Dataset.rev.copy()
@@ -1152,7 +1151,7 @@ class ExperimentSeries(Series):
         'contributing_awards',
         'contributors',
         'organism',
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
         'related_datasets.award',
         'related_datasets.lab',
         'related_datasets.replicates.library.biosample',
@@ -1227,7 +1226,7 @@ class SingleCellRnaSeries(Series):
     item_type = 'single_cell_rna_series'
     schema = load_schema('encoded:schemas/single_cell_rna_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
 
@@ -1255,7 +1254,7 @@ class GeneSilencingSeries(Series):
     item_type = 'gene_silencing_series'
     schema = load_schema('encoded:schemas/gene_silencing_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
 
@@ -1270,7 +1269,7 @@ class DifferentiationSeries(Series):
     item_type = 'differentiation_series'
     schema = load_schema('encoded:schemas/differentiation_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
 
 
@@ -1285,5 +1284,5 @@ class PulseChaseTimeSeries(Series):
     item_type = 'pulse_chase_time_series'
     schema = load_schema('encoded:schemas/pulse_chase_time_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]

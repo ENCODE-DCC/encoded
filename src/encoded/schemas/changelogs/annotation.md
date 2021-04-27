@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Schema version 31
+
+* Changed the *analysis_objects* property to be *analyses*
+
 ### Minor changes since schema version 30
 * Added *curated SNVs*, *dsQTLs*, *eQTLs*, *footprints* and *PWMs* enum to *annotation_type* property.
 * Added *doi* property

@@ -35,9 +35,9 @@ const labSortOrder = [
  */
 const compileAnalysesByTitle = (experiment, files = []) => {
     let compiledAnalyses = [];
-    if (experiment.analysis_objects && experiment.analysis_objects.length > 0) {
+    if (experiment.analyses && experiment.analyses.length > 0) {
         // Get all the analysis objects that qualify for inclusion in the Pipeline facet.
-        const qualifyingAnalyses = experiment.analysis_objects.filter((analysis) => {
+        const qualifyingAnalyses = experiment.analyses.filter((analysis) => {
             const rfas = _.uniq(analysis.pipeline_award_rfas);
 
             // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
@@ -173,7 +173,7 @@ export const sortDatasetAnalyses = (compiledAnalyses) => {
  * Compile the analyses_objects for all the given datasets and combine them into an array of
  * compiled analyses applying to all the given datasets. No duplicate analyses get generated, and
  * any duplicates found get their files combined into one compiled analysis object.
- * @param {array} datasets All datasets whose analysis_objects need extracting
+ * @param {array} datasets All datasets whose analyses need extracting
  *
  * @return {array} Compiled analyses applying to all datasets and combining their files
  */

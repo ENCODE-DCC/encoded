@@ -3,7 +3,7 @@ import { compileAnalyses } from '../filegallery';
 
 
 const experiment0 = {
-    analysis_objects: [
+    analyses: [
         {
             files: [
                 '/files/ENCFF003MRN/',
@@ -221,7 +221,7 @@ const files0 = [
 describe('createPipelineFacetObject', () => {
     describe('Both processed', () => {
         it('Has both ENCODE Uniform and Lab Custom facet terms and count', () => {
-            const analysisObjects = compileAnalyses(experiment0.analysis_objects, files0);
+            const analysisObjects = compileAnalyses(experiment0.analyses, files0);
             expect(analysisObjects).toHaveLength(5);
             expect(analysisObjects[0].pipelineLab).toEqual('accession0');
             expect(analysisObjects[0].assembly).toEqual('GRCh38 V24');

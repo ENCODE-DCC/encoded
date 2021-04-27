@@ -1,5 +1,9 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Schema version 7
+
+* Changed the *analysis_objects* property to be *analyses*
+
 ### Minor changes since schema version 6
 
 * Restricted submission of *target* property to admins only.

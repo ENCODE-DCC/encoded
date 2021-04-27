@@ -673,7 +673,7 @@ def experiment_with_analysis(testapp, lab, award, heart, analysis_1):
         'assay_term_name': 'ChIP-seq',
         'status': 'in progress',
         'biosample_ontology': heart['uuid'],
-        'analysis_objects': [analysis_1['@id']]
+        'analyses': [analysis_1['@id']]
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -686,7 +686,7 @@ def experiment_with_analysis_2(testapp, lab, award, heart, analysis_2):
         'assay_term_name': 'ChIP-seq',
         'status': 'in progress',
         'biosample_ontology': heart['uuid'],
-        'analysis_objects': [analysis_2['@id']]
+        'analyses': [analysis_2['@id']]
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -832,5 +832,16 @@ def single_cell_ATAC_experiment(root, experiment):
     properties.update({
         'schema_version': '32',
         'assay_term_name': 'single-cell ATAC-seq'
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_33(root, experiment, analysis_released):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '33',
+        'analysis_objects': [analysis_released['uuid']]
     })
     return properties

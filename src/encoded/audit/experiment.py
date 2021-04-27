@@ -2906,9 +2906,9 @@ def audit_experiment_inconsistent_analysis_files(value, system, files_structure)
     processed_data = files_structure.get('processed_data')
     files_not_in_analysis = []
     files_not_in_processed_data = []
-    if processed_data and 'analysis_objects' in value:
+    if processed_data and 'analyses' in value:
         analysis_outputs = set()
-        for analysis in value['analysis_objects']:
+        for analysis in value['analyses']:
             for f in analysis['files']:
                 analysis_outputs.add(f)
         for processed_file_id in processed_data:
@@ -3032,7 +3032,7 @@ def audit_experiment_inconsistent_analysis_status(value, system, excluded_types)
     Experiments that are released should have exactly 1 released analysis object.
     Unreleased experiments should not have any released analysis object(s).
     '''
-    if 'analysis_objects' not in value:
+    if 'analyses' not in value:
         if value['status'] == 'released':
             detail = (
                 f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is released '
@@ -3043,7 +3043,7 @@ def audit_experiment_inconsistent_analysis_status(value, system, excluded_types)
         analysis_statuses = set()
         released_analyses = []
         released_analyses_links = []
-        for analysis in value['analysis_objects']:
+        for analysis in value['analyses']:
             analysis_statuses.add(analysis['status'])
             if analysis.get('status') == 'released':
                 released_analyses.append(analysis['@id'])
@@ -3674,7 +3674,7 @@ function_dispatcher_with_files = {
 @audit_checker(
     'Experiment',
     frame=[
-        'analysis_objects',
+        'analyses',
         'biosample_ontology',
         'award',
         'target',

@@ -50,7 +50,6 @@ class Experiment(Dataset,
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
-        'analysis_objects',
         'biosample_ontology',
         'files.platform',
         'files.analysis_step_version.analysis_step',
@@ -87,7 +86,7 @@ class Experiment(Dataset,
         'submitted_by',
         'lab',
         'award',
-        'analysis_objects',
+        'analyses',
         'documents',
         'replicates.antibody.characterizations.biosample_ontology',
         'replicates.antibody.characterizations',
@@ -117,12 +116,12 @@ class Experiment(Dataset,
         'replicates',
         'documents',
         'target',
-        'analysis_objects',
+        'analyses',
     ]
     set_status_down = [
         'original_files',
         'replicates',
-        'analysis_objects',
+        'analyses',
     ]
     rev = Dataset.rev.copy()
     rev.update({

@@ -163,7 +163,7 @@
         "award": "UM1HG009390",
         "biosample_ontology": "cell_line_EFO_0009747",
         "description": "STARR-seq on undifferentiated WTC11",
-        "analysis_objects": ["ENCAN913ASZ"],
+        "analyses": ["ENCAN913ASZ"],
         "lab": "kevin-white",
         "status": "released",
         "date_submitted": "2019-02-20",

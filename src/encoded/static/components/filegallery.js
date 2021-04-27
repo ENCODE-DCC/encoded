@@ -491,7 +491,7 @@ export class FileTable extends React.Component {
                                         isDownloadable={
                                             !options.hideDownload
                                             && key !== nonAnalysisObjectPrefix
-                                            && context.analysis_objects
+                                            && context.analyses
                                             && analyses
                                             && ['released', 'archived'].includes(analyses.find((a) => a.accession === key).status)
                                             && filterDownloadableFilesByStatus(context, files[key]).length > 0
@@ -1386,7 +1386,7 @@ export const FileGallery = ({
         <FileGalleryRenderer
             context={context}
             data={data}
-            analyses={analyses || context.analysis_objects}
+            analyses={analyses || context.analyses}
             schemas={schemas}
             session={reactContext && reactContext.session}
             hideGraph={hideGraph}

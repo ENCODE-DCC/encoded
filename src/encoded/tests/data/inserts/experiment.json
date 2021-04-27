@@ -198,7 +198,7 @@
     {
         "_test": "shared biosample",
         "accession": "ENCSR000AEN",
-        "analysis_objects": ["ENCAN050LQR"],
+        "analyses": ["ENCAN050LQR"],
         "assay_term_name": "shRNA knockdown followed by RNA-seq",
         "award": "U54HG007005",
         "biosample_ontology": "cell_line_EFO_0002067",
@@ -794,7 +794,7 @@
         "lab": "/labs/encode-processing-pipeline/",
         "date_released": "2015-08-31",
         "accession": "ENCSR123MRN",
-        "analysis_objects": ["ENCAN545UKN", "ENCAN820ARO", "ENCAN914ASY"],
+        "analyses": ["ENCAN545UKN", "ENCAN820ARO", "ENCAN914ASY"],
         "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e"
     },
     {
