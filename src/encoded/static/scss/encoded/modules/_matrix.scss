@@ -1707,14 +1707,19 @@ $rnaseq-term-name-colors:
     }
 }
 
+// For large DOM collections, nested "display: flex" partially renders in Chrome and Safari dies trying.
+// "display: table-row" and "display: table-cell" work okay despite performance issues in Chrome and Safari;
+// but better than nothing
 .div-table-matrix-container {
-    display: flex;
-
     .div-table-matrix {
+        // Hiding "display: table" here made the page load a bit  faster. It may be re-added if
+        // future Chrome updates improve rendering-performance
+        //display: table;
+
         &__row {
             margin: 0;
             padding: 0;
-            display: flex;
+            display: table-row;
 
             a {
                 color: #000;
@@ -1738,6 +1743,7 @@ $rnaseq-term-name-colors:
                     text-align: right;
                     padding-right: 5px;
                     text-decoration: none;
+                    text-overflow: ellipsis;
                 }
             }
 
@@ -1746,7 +1752,6 @@ $rnaseq-term-name-colors:
                 width: 25px;
 
                 a {
-                    font: bold;
                     text-decoration: none;
                 }
             }
@@ -1772,26 +1777,24 @@ $rnaseq-term-name-colors:
             }
 
             &__header-item {
-                writing-mode: vertical-rl;
-                transform: rotate(180deg);
-                text-overflow: ellipsis;
-                font-weight: 400;
-                padding-bottom: 20px;
-                height: 200px;
-                overflow: hidden;
-                white-space: nowrap;
+                display: table-cell;
 
                 a {
+                    writing-mode: vertical-rl;
+                    transform: rotate(180deg);
+                    font-weight: 700;
+                    padding-bottom: 20px;
+                    height: 200px;
                     padding-top: 10px;
-                    font-weight: bold;
                     text-overflow: ellipsis;
                     overflow: hidden;
                     white-space: nowrap;
+                    width: 25px;
                 }
 
                 &:first-child {
                     border-width: 0 !important;
-                    border-left: 4px solid !important;
+                    border-right: 4px solid !important;
                     border-image: linear-gradient(#ebebe0, #d7d7c1) 0 100% !important;
                 }
             }
@@ -1800,6 +1803,7 @@ $rnaseq-term-name-colors:
                 border-left: 1px solid #f0f0f0;
                 border-right: 1px solid #f0f0f0;
                 border-bottom: 1px solid #f0f0f0;
+                display: table-cell;
 
                 a {
                     display: block;
