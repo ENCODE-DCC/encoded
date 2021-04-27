@@ -1079,7 +1079,14 @@ def _parse_args():
     args = parser.parse_args()
     # If needed, get ami.
     if not args.image_id:
-        current_ami_id = _fetch_ami_id()
+        if args.profile_name == "default":
+            print("Fetching development AMI.")
+            current_ami_id = _fetch_ami_id()
+        elif args.profile_name == "production":
+            print("Fetching production AMI.")
+            current_ami_id = _fetch_ami_id(key="ami-id/production/current_ami_id.txt")
+        else:
+            raise ValueError("--profile-name must be default or production")
         args.image_id = current_ami_id
     # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
