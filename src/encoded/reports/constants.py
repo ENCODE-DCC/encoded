@@ -14,7 +14,7 @@ METADATA_SERIES_TYPES = [
     'ReferenceEpigenome',
     'SingleCellRnaSeries',
     'TreatmentConcentrationSeries',
-    'TreatmentTimeSeries'
+    'TreatmentTimeSeries',
 ]
 
 
