@@ -460,7 +460,7 @@ const ManateeDonor = (props) => {
         <div>
             <Panel>
                 <PanelHeading>
-                    <h4>Strain information</h4>
+                    <h4>Donor information</h4>
                 </PanelHeading>
                 <PanelBody>
                     <dl className="key-value">

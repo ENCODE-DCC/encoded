@@ -122,6 +122,20 @@
                 "type":  "string",
                 "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
+        },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some donors are part of particular data collections",
+            "type": "array",
+            "permission": "import_items",
+            "uniqueItems": true,
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "LRGASP"
+                ]
+            }
         }
     },
     "facets": {
