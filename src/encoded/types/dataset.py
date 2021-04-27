@@ -1299,5 +1299,22 @@ class DiseaseSeries(Series):
     item_type = 'disease_series'
     schema = load_schema('encoded:schemas/disease_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
+    
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('DiseaseSeries', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "DiseaseSeries.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
