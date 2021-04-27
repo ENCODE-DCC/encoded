@@ -47,10 +47,27 @@ const Target = ({ context }) => {
                         </div>
 
                         {geneIDs.length > 0 ?
-                            <div data-test="gene">
-                                <dt>Target gene</dt>
+                            <div data-test="gene-id">
+                                <dt>Target gene ID</dt>
                                 <dd>
                                     <DbxrefList context={context} dbxrefs={geneIDs} />
+                                </dd>
+                            </div>
+                        : null}
+
+                        {context.genes && context.genes.length > 0 ?
+                            <div data-test="gene-symbol">
+                                <dt>Target gene symbol</dt>
+                                <dd>
+                                    <ul>
+                                        {context.genes.map((gene) => (
+                                            <li key={gene['@id']} className="multi-comman">
+                                                <a href={gene['@id']}>
+                                                    {gene.symbol}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </dd>
                             </div>
                         : null}
