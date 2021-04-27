@@ -1331,5 +1331,5 @@ class MultiomicsSeries(Series):
     item_type = 'multiomics_series'
     schema = load_schema('encoded:schemas/multiomics_series.json')
     embedded = Series.embedded + [
-        'related_datasets.analysis_objects',
+        'related_datasets.analyses',
     ]
