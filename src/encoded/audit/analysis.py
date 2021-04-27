@@ -459,11 +459,11 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     RNA-seq analyses
     '''
 
-    if any(pipeline['title'] == 'RAMPAGE (paired-end, stranded)' for pipeline in value['pipelines']):
+    if any(pipeline['title'] == 'RAMPAGE or CAGE (paired-end)' for pipeline in value['pipelines']):
         yield from check_analysis_cage_rampage_standards(
             value,
             files_structure,
-            ['RAMPAGE (paired-end, stranded)'],
+            ['RAMPAGE or CAGE (paired-end)'],
             '/data-standards/rampage/')
     if any(pipeline['title'] == 'Small RNA-seq single-end pipeline' for pipeline in value['pipelines']):
         yield from check_analysis_small_rna_standards(
@@ -1406,7 +1406,7 @@ def check_analysis_small_rna_standards(
                     middle_threshold=20000000,
                     lower_threshold=1000000,
                     assay_term_name=assay_term_name,
-                    pipeline_title=pipeline_title,
+                    pipeline_title=value['title'],
                     pipeline=value['pipelines'][0],
                     standards_link=link_to_standards)
             else:
@@ -1458,7 +1458,7 @@ def check_analysis_cage_rampage_standards(
                     middle_threshold=10000000,
                     lower_threshold=1000000,
                     assay_term_name=assay_term_name,
-                    pipeline_title=pipeline_title,
+                    pipeline_title=value['title'],
                     pipeline=value['pipelines'][0],
                     standards_link=link_to_standards)
             else:

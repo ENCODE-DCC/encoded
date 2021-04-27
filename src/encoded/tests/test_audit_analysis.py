@@ -369,7 +369,7 @@ def test_audit_analysis_rampage(
         {
             'analysis_steps': [analysis_step_rna_encode4['@id']],
             'award': ENCODE3_award['@id'],
-            'title': 'RAMPAGE (paired-end, stranded)',
+            'title': 'RAMPAGE or CAGE (paired-end)',
             'lab': encode_lab['@id']
         }
     )
