@@ -9,7 +9,6 @@
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
-        {"$ref": "mixins.json#/dbxrefs" },
         {"$ref": "donor.json#/properties"}
     ],
     "properties": {
@@ -24,14 +23,6 @@
                 "type": "string",
                 "format": "accession",
                 "pattern": "^(LATMD\\d{3}[A-Z]{3})$"
-            }
-        },
-        "dbxrefs": {
-            "items": {
-                "title": "Database external identifier",
-                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-                "type":  "string",
-                "pattern": "^(GEO:SAMN\\d+)$"
             }
         },
         "strain_background": {

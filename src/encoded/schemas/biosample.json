@@ -61,7 +61,7 @@
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((EGA:EGAN\\d+)|(BioSample:SAM(E|N|D)(A|G)?\\d+)|(GEO:SAM(E|N|D)(A|G)?\\d+)|(SRA:SRS\\d+)|(ENA:ERS\\d+))$"
+                "pattern": "^((EGA:EGAN\\d+)|(BioSample:SAM(E|N|D)(A|G)?\\d+)|(SRA:SRS\\d+)|(ENA:ERS\\d+))$"
             }
         },
         "date_obtained": {
