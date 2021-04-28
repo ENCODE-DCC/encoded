@@ -847,6 +847,7 @@ def experiment_33(root, experiment, analysis_released):
     return properties
 
 
+@pytest.fixture
 def base_single_cell_experiment_submitted(testapp, lab, award, heart):
     item = {
         'award': award['uuid'],
