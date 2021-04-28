@@ -72,6 +72,7 @@ const batchDownload = (
             }))
         );
 
+    // Form query string from currently selected datset facets.
     const datasetFormatSelections = (raw || all)
         ? []
         : (
@@ -83,8 +84,7 @@ const batchDownload = (
                     if (matchingFacetField && matchingFacetField.fieldMapper) {
                         mappedQuery = matchingFacetField.fieldMapper(selectedFileTerms[field], analyses);
                     } else {
-                        // Build the query string from `files` properties in the dataset, or from the
-                        // dataset properties itself for fields marked in `facets`.
+                        // Build the query string from the selected dataset terms.
                         subQueryString = selectedDatasetTerms[field].map((term) => (
                             `${field}=${encoding.encodedURIComponent(term)}`
                         )).join('&');
@@ -99,7 +99,7 @@ const batchDownload = (
     const visualizableOption = `${visualizable ? '&option=visualizable' : ''}`;
     const rawOption = `${raw ? '&option=raw' : ''}`;
     const preferredDefaultQuery = preferredDefault && !raw && !all ? '&files.preferred_default=true' : '';
-    const query = `${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${datasetFormatSelections.length > 0 ? `&${datasetFormatSelections.join('&')}` : ''}`;
+    const query = `${datasetFormatSelections.length > 0 ? `&${datasetFormatSelections.join('&')}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}` : ''}`;
     fetch(`/batch_download/?${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${query}${visualizableOption}${rawOption}${preferredDefaultQuery}`, {
         method: 'POST',
         headers: {
@@ -205,8 +205,6 @@ const CartBatchDownloadComponent = (
             options.all = true;
         }
         options.preferredDefault = preferredDefault;
-
-        // Combine the selected file and dataset terms.
         batchDownload(cartType, elements, analyses, selectedFileTerms, selectedDatasetTerms, facetFields, savedCartObj, sharedCart, setInProgress, options, fetch);
     };
 
