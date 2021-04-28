@@ -93,20 +93,6 @@ const analysisFieldMap = (analysisTitles) => (
 
 
 /**
- * `getValue` function that retrieves a file's `biosample_ontology`, or returns "None" for those
- * files lacking a biosample ontology so that we can have a "None" facet term.
- * @param {object} file ...from which to extract the `biosample_ontology` property
- * @return {object} file's biosample_ontology property, or one containing "None"
- */
-const fileBiosampleValue = (file) => {
-    if (file.biosample_ontology) {
-        return file.biosample_ontology;
-    }
-    return { term_name: 'None' };
-};
-
-
-/**
  * Field `getValue` function to extract the top @type from the given dataset.
  * @param {object} dataset ...from which to extract its @type
  * @return {string} Top-level @type of given dataset
@@ -160,7 +146,7 @@ const displayedFileFacetFields = [
         expanded: true,
     },
     {
-        field: 'analysis',
+        field: 'analyses',
         title: 'Analysis',
         dataset: true,
         sorter: analysisSorter,
@@ -168,24 +154,6 @@ const displayedFileFacetFields = [
         calculated: true,
         parent: 'assembly',
         css: 'cart-facet--analysis',
-    },
-    {
-        field: 'assay_title',
-        title: 'Assay',
-        dataset: true,
-        preferred: true,
-    },
-    {
-        field: 'biosample_ontology.term_name',
-        title: 'Biosample',
-        preferred: true,
-        getValue: fileBiosampleValue,
-    },
-    {
-        field: 'target.label',
-        title: 'Target of assay',
-        dataset: true,
-        preferred: true,
     },
     {
         field: 'annotation_type',
@@ -240,7 +208,7 @@ const displayedFileFacetFields = [
 
 const displayedDatasetFacetFields = [
     {
-        field: 'datasetType',
+        field: 'type',
         title: 'Dataset type',
         getValue: datasetTypeValue,
         termDisplay: DatasetTypeTermDisplay,
@@ -281,6 +249,7 @@ const requestedFacetFields = displayedFileFacetFields
     .filter((field) => !field.calculated).concat([
         { field: '@id' },
         { field: 'accession', dataset: true },
+        { field: 'biosample_summary', dataset: true },
         { field: 'assembly' },
         { field: 'assay_term_name' },
         { field: 'file_format_type' },
@@ -1264,7 +1233,8 @@ CartAccessories.defaultProps = {
 const CartTools = ({
     elements,
     analyses,
-    selectedTerms,
+    selectedFileTerms,
+    selectedDatasetTerms,
     selectedDatasetType,
     facetFields,
     savedCartObj,
@@ -1290,7 +1260,8 @@ const CartTools = ({
                 <CartBatchDownload
                     elements={elements}
                     analyses={analyses}
-                    selectedTerms={selectedTerms}
+                    selectedFileTerms={selectedFileTerms}
+                    selectedDatasetTerms={selectedDatasetTerms}
                     selectedType={selectedDatasetType}
                     facetFields={facetFields}
                     cartType={cartType}
@@ -1317,8 +1288,10 @@ CartTools.propTypes = {
     elements: PropTypes.array,
     /** All compiled analyses for the cart */
     analyses: PropTypes.array,
-    /** Selected facet terms */
-    selectedTerms: PropTypes.object,
+    /** Selected file facet terms */
+    selectedFileTerms: PropTypes.object,
+    /** Selected file facet terms */
+    selectedDatasetTerms: PropTypes.object,
     /** Selected dataset type */
     selectedDatasetType: PropTypes.string.isRequired,
     /** Currently used facet field definitions */
@@ -1340,7 +1313,8 @@ CartTools.propTypes = {
 CartTools.defaultProps = {
     elements: [],
     analyses: [],
-    selectedTerms: null,
+    selectedFileTerms: null,
+    selectedDatasetTerms: null,
     savedCartObj: null,
     sharedCart: null,
     fileCounts: {},
@@ -2262,8 +2236,8 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
     };
 
     // Get the currently selected dataset type if the user selected exactly one.
-    const selectedDatasetType = selectedDatasetTerms.datasetType && selectedDatasetTerms.datasetType.length === 1
-        ? selectedDatasetTerms.datasetType[0]
+    const selectedDatasetType = selectedDatasetTerms.type && selectedDatasetTerms.type.length === 1
+        ? selectedDatasetTerms.type[0]
         : '';
 
     // Called when the user clicks any term in any facet.
@@ -2461,9 +2435,10 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                             elements={cartDatasets}
                             analyses={analyses}
                             savedCartObj={savedCartObj}
-                            selectedTerms={selectedFileTerms}
+                            selectedFileTerms={selectedFileTerms}
+                            selectedDatasetTerms={selectedDatasetTerms}
                             selectedDatasetType={selectedDatasetType}
-                            facetFields={usedFileFacetFields}
+                            facetFields={requestedFacetFields}
                             viewableDatasets={viewableDatasets}
                             cartType={cartType}
                             sharedCart={context}

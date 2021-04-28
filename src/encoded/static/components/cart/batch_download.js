@@ -26,8 +26,8 @@ const batchDownload = (
     cartType,
     elements,
     analyses,
-    selectedTerms,
-    selectedType,
+    selectedFileTerms,
+    selectedDatasetTerms,
     facetFields,
     savedCartObj,
     sharedCart,
@@ -53,18 +53,40 @@ const batchDownload = (
     const fileFormatSelections = (raw || all)
         ? []
         : (
-            _.compact(Object.keys(selectedTerms).map((field) => {
+            _.compact(Object.keys(selectedFileTerms).map((field) => {
                 let subQueryString = '';
                 let mappedQuery = '';
-                if (selectedTerms[field].length > 0) {
+                if (selectedFileTerms[field].length > 0) {
                     const matchingFacetField = facetFields.find((facetField) => facetField.field === field);
                     if (matchingFacetField && matchingFacetField.fieldMapper) {
-                        mappedQuery = matchingFacetField.fieldMapper(selectedTerms[field], analyses);
+                        mappedQuery = matchingFacetField.fieldMapper(selectedFileTerms[field], analyses);
                     } else {
                         // Build the query string from `files` properties in the dataset, or from the
                         // dataset properties itself for fields marked in `facets`.
-                        subQueryString = selectedTerms[field].map((term) => (
+                        subQueryString = selectedFileTerms[field].map((term) => (
                             `${datasetFacets.includes(field) ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
+                        )).join('&');
+                    }
+                }
+                return `${subQueryString}${mappedQuery ? `&${mappedQuery}` : ''}`;
+            }))
+        );
+
+    const datasetFormatSelections = (raw || all)
+        ? []
+        : (
+            _.compact(Object.keys(selectedDatasetTerms).map((field) => {
+                let subQueryString = '';
+                let mappedQuery = '';
+                if (selectedDatasetTerms[field].length > 0) {
+                    const matchingFacetField = facetFields.find((facetField) => facetField.field === field);
+                    if (matchingFacetField && matchingFacetField.fieldMapper) {
+                        mappedQuery = matchingFacetField.fieldMapper(selectedFileTerms[field], analyses);
+                    } else {
+                        // Build the query string from `files` properties in the dataset, or from the
+                        // dataset properties itself for fields marked in `facets`.
+                        subQueryString = selectedDatasetTerms[field].map((term) => (
+                            `${field}=${encoding.encodedURIComponent(term)}`
                         )).join('&');
                     }
                 }
@@ -77,7 +99,8 @@ const batchDownload = (
     const visualizableOption = `${visualizable ? '&option=visualizable' : ''}`;
     const rawOption = `${raw ? '&option=raw' : ''}`;
     const preferredDefaultQuery = preferredDefault && !raw && !all ? '&files.preferred_default=true' : '';
-    fetch(`/batch_download/?type=${selectedType}${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${visualizableOption}${rawOption}${preferredDefaultQuery}`, {
+    const query = `${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${datasetFormatSelections.length > 0 ? `&${datasetFormatSelections.join('&')}` : ''}`;
+    fetch(`/batch_download/?${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${query}${visualizableOption}${rawOption}${preferredDefaultQuery}`, {
         method: 'POST',
         headers: {
             Accept: 'text/plain',
@@ -147,8 +170,8 @@ const CartBatchDownloadComponent = (
         cartType,
         elements,
         analyses,
-        selectedTerms,
-        selectedType,
+        selectedFileTerms,
+        selectedDatasetTerms,
         facetFields,
         savedCartObj,
         sharedCart,
@@ -182,7 +205,9 @@ const CartBatchDownloadComponent = (
             options.all = true;
         }
         options.preferredDefault = preferredDefault;
-        batchDownload(cartType, elements, analyses, selectedTerms, selectedType, facetFields, savedCartObj, sharedCart, setInProgress, options, fetch);
+
+        // Combine the selected file and dataset terms.
+        batchDownload(cartType, elements, analyses, selectedFileTerms, selectedDatasetTerms, facetFields, savedCartObj, sharedCart, setInProgress, options, fetch);
     };
 
     // Called when the user clicks the button to make the batch-download modal appear.
@@ -265,10 +290,10 @@ CartBatchDownloadComponent.propTypes = {
     elements: PropTypes.array,
     /** All compiled analyses in the cart */
     analyses: PropTypes.array.isRequired,
-    /** Selected facet terms */
-    selectedTerms: PropTypes.object,
-    /** Selected object type */
-    selectedType: PropTypes.string.isRequired,
+    /** Selected file facet terms */
+    selectedFileTerms: PropTypes.object,
+    /** Selected dataset facet terms */
+    selectedDatasetTerms: PropTypes.object,
     /** Used facet field definitions */
     facetFields: PropTypes.array.isRequired,
     /** Cart as it exists in the database; use JSON payload method if none */
@@ -293,7 +318,8 @@ CartBatchDownloadComponent.propTypes = {
 
 CartBatchDownloadComponent.defaultProps = {
     elements: [],
-    selectedTerms: null,
+    selectedFileTerms: null,
+    selectedDatasetTerms: null,
     savedCartObj: null,
     sharedCart: null,
     fileCounts: {},
