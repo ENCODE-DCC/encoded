@@ -6,7 +6,7 @@ orbs:
 executors:
   encoded-executor:
     docker:
-      - image: circleci/buildpack-deps:focal
+      - image: circleci/buildpack-deps:bionic
     working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
@@ -30,17 +30,14 @@ commands:
       - run:
           name: Install dependencies
           command: |
-            sudo wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/pg_gpg_key
-            sudo apt-key add /etc/apt/pg_gpg_key
-            echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" | sudo tee -a /etc/apt/sources.list
-            sudo apt-get update && sudo apt-get install -y postgresql-11
-
             sudo apt-get install -y \
               graphviz \
               nodejs \
               openjdk-11-jdk \
+              postgresql-10 \
               redis-server
-            sudo apt-get install -y python3-dev python3-pip
+            sudo apt-get install -y python3.6-dev python3-pip
+            sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 0
             sed -i '1s;^;alias python=python3\n;' $BASH_ENV
             wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.16.deb
             wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb
@@ -52,7 +49,7 @@ commands:
             sudo dpkg -i libmagic-dev_5.38-4_amd64.deb
             sudo apt-get install -f
             sudo chown -R circleci /etc/elasticsearch
-            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/11/bin:$PATH\n;' $BASH_ENV
+            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/10/bin:$PATH\n;' $BASH_ENV
       - run:
           name: Install application and run buildout
           command: |

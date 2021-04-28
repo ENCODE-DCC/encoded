@@ -442,7 +442,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'PG_OPEN': 'true' if main_args.pg_open else 'false',
         'PG_IP': main_args.pg_ip,
         'SQLALCHEMY_URL': sqlalchemy_url,
-        'PY3_PATH': '/usr/bin/python3',
+        'PY3_PATH': '/usr/bin/python3.6',
         'REDIS_PORT': main_args.redis_port,
         'REMOTE_INDEXING': 'true' if main_args.remote_indexing else 'false',
         'ROLE': main_args.role,
