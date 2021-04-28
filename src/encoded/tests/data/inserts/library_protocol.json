@@ -320,7 +320,7 @@
     {
         "name": "10x-3'-v3",
         "title": "10x 3' v3",
-        "term_id": "EFO:0009922",
+        "assay_ontology": "EFO_0009922",
         "status": "released",
         "construction_platform": "10x",
         "construction_platform_version": 3,
@@ -401,7 +401,7 @@
     {
         "biological_macromolecule": "RNA",
         "library_type": "RNA-seq",
-        "term_id": "EFO:0009899",
+        "assay_ontology": "EFO_0009899",
         "name": "10x-3'-v2",
         "title": "10x 3' v2"
     }

@@ -19,6 +19,9 @@ class LibraryProtocol(Item):
     item_type = 'library_protocol'
     schema = load_schema('encoded:schemas/library_protocol.json')
     name_key = 'name'
+    embedded = [
+        'assay_ontology'
+    ]
 
 
     @calculated_property(define=True,
