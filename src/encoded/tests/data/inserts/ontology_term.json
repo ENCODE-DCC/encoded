@@ -1,5 +1,17 @@
 [
     {
+        "uuid": "e99862c3-4bd8-4f77-a944-e8febdafef02",
+        "term_name": "10x 3' v2 sequencing",
+        "term_id": "EFO:0009899",
+        "status": "released"
+    },
+    {
+        "uuid": "147d4022-0af5-4243-877a-caffb5ec3115",
+        "term_name": "10x 3' v3 sequencing",
+        "term_id": "EFO:0009922",
+        "status": "released"
+    },
+    {
         "uuid": "9ccb9d0b-1747-4ad1-969a-769286937021",
         "term_name": "unknown",
         "term_id": "NCIT:C17998",
