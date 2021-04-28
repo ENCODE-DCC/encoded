@@ -157,7 +157,7 @@ sudo -u root mkdir -p "$WALE_DIR"
 sudo -u root chown postgres:postgres "$WALE_DIR"
 sudo -u root cp "$WALE_REQS_SRC" "$WALE_REQS_DST"
 sudo -u root chown postgres:postgres "$WALE_REQS_DST"
-sudo -H -u postgres /usr/bin/python3/6 -m venv "$WALE_VENV"
+sudo -H -u postgres /usr/bin/python3.6 -m venv "$WALE_VENV"
 if [ ! -f "$WALE_BIN/pip" ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: Wale bin does not exist"
     touch "$encd_failed_flag"
