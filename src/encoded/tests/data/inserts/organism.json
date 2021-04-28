@@ -160,5 +160,12 @@
         "scientific_name": "enterobacteria phage t7",
         "uuid": "e426f5b3-e577-4afb-8bb5-ce57a6d4d050",
         "status": "released"
+    },
+    {
+        "name": "manatee",
+        "taxon_id": "9778",
+        "scientific_name": "Trichechus manatus",
+        "uuid": "82c70528-ff35-4fc2-b7c0-f20ad0bd5e73",
+        "status": "released"
     }
 ]

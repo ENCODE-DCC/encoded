@@ -30,6 +30,7 @@ ORDER = [
     'fly_donor',
     'worm_donor',
     'human_donor',
+    'manatee_donor',
     'donor_characterization',
     'genetic_modification',
     'genetic_modification_characterization',
