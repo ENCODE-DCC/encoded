@@ -61,6 +61,7 @@ ORDER = [
     'differentiation_series',
     'pulse_chase_time_series',
     'reference_epigenome',
+    'disease_series',
     'software',
     'software_version',
     'analysis_step',
@@ -692,6 +693,9 @@ PHASE1_PIPELINES = {
     'reference_epigenome': [
         remove_keys('related_datasets', 'supersedes'),
     ],
+    'disease_series': [
+        remove_keys('related_datasets', 'supersedes'),
+    ],
     'matched_set': [
         remove_keys('related_datasets'),
     ],
@@ -797,6 +801,9 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'reference_epigenome': [
+        skip_rows_missing_all_keys('related_datasets', 'supersedes'),
+    ],
+    'disease_series': [
         skip_rows_missing_all_keys('related_datasets', 'supersedes'),
     ],
     'matched_set': [

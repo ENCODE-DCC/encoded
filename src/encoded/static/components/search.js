@@ -55,6 +55,7 @@ const types = {
     differentiation_series: { title: 'Differentiation series' },
     pulse_chase_time_series: { title: 'Pulse-chase time series' },
     single_cell_unit: { title: 'Single cell units' },
+    disease_series: { title: 'Disease series' },
 };
 
 const datasetTypes = {
@@ -80,6 +81,7 @@ const datasetTypes = {
     DifferentiationSeries: types.differentiation_series.title,
     PulseChaseTimeSeries: types.pulse_chase_time_series.title,
     SingleCellUnit: types.single_cell_unit.title,
+    DiseaseSeries: types.disease_series.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));
