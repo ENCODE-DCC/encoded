@@ -1026,7 +1026,7 @@ def _parse_args():
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production-pg11')
 
     # AWS
-    parser.add_argument('--profile-name', default='default', choices = ("default", "production"), help="AWS creds profile")
+    parser.add_argument('--profile-name', default='default', choices=("default", "production"), help="AWS creds profile")
     parser.add_argument('--iam-role', default='encoded-instance', help="Frontend AWS iam role")
     parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="ES AWS iam role")
     parser.add_argument(
