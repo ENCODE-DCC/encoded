@@ -1168,6 +1168,81 @@ def test_audit_analysis_wgbs_encode4(
                'missing lambda C conversion rate' for error in res.json['audit'].get('WARNING', []))
 
 
+def test_audit_analysis_rrbs(
+    testapp,
+    base_analysis,
+    base_experiment,
+    correlation_quality_metric,
+    samtools_stats_quality_metric,
+    chip_seq_quality_metric,
+    wgbs_quality_metric,
+    file_bam_1_1,
+    file_bam_2_1,
+    file_bed_methyl,
+    library_1,
+    library_2,
+    biosample_1,
+    mouse_donor_1_6,
+    replicate_1_1,
+    replicate_2_1,
+    analysis_step_run_bam,
+    analysis_step_version_bam,
+    analysis_step_bam,
+    pipeline_bam,
+    ENCODE3_award,
+    encode_lab
+):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RRBS'})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(correlation_quality_metric['@id'], {
+        'quality_metric_of': [file_bed_methyl['@id']],
+        'Pearson correlation': 0.15})
+    testapp.patch_json(chip_seq_quality_metric['@id'], {
+        'quality_metric_of': [file_bed_methyl['@id']],
+        'mapped': 1000})
+    testapp.patch_json(wgbs_quality_metric['@id'], {'quality_metric_of': [file_bed_methyl['@id']],})
+    testapp.patch_json(samtools_stats_quality_metric['@id'], {
+        'quality_metric_of': [file_bam_1_1['@id']],
+        'average length': 100})
+    testapp.patch_json(file_bed_methyl['@id'], {
+        'step_run': analysis_step_run_bam['@id'],
+        'assembly': 'GRCh38',
+        'award': ENCODE3_award['uuid']})
+    testapp.patch_json(file_bam_1_1['@id'], {
+        'step_run': analysis_step_run_bam['@id'],
+        'assembly': 'GRCh38',
+        'award': ENCODE3_award['uuid']})
+    testapp.patch_json(file_bam_2_1['@id'], {
+        'step_run': analysis_step_run_bam['@id'],
+        'assembly': 'GRCh38',
+        'award': ENCODE3_award['uuid']})
+    testapp.patch_json(base_analysis['@id'], {
+        'files': [
+            file_bam_1_1['@id'],
+            file_bam_2_1['@id'],
+            file_bed_methyl['@id'],
+        ]}
+    )
+    testapp.patch_json(
+        pipeline_bam['@id'],
+        {
+            'title': 'WGBS paired-end pipeline',
+            'lab': encode_lab['@id']
+        }
+    )
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    assert all(error['category'] !=
+               'high lambda C methylation ratio' for error in res.json['audit'].get('WARNING', []))
+    assert all(error['category'] !=
+               'extremely low coverage' for error in res.json['audit'].get('ERROR', []))
+    assert all(error['category'] !=
+               'insufficient replicate concordance' for error in res.json['audit'].get('NOT_COMPLIANT', []))
+
+
 def test_audit_analysis_atac_encode4(
     testapp,
     base_analysis,

@@ -1629,6 +1629,8 @@ def check_analysis_wgbs_encode3_standards(
         return
 
     assay_term_name = value['datasets'][0]['assay_term_name']
+    if assay_term_name == 'RRBS':
+        return
     pipeline_titles = [pipeline['title'] for pipeline in value['pipelines']]
     if any(
         title not in expected_pipeline_titles
@@ -1718,6 +1720,8 @@ def check_analysis_wgbs_encode4_standards(
         assay_term_name = value['datasets'][0]['assay_term_name']
         experiment_award = value['datasets'][0]['award']['rfa']
 
+    if assay_term_name == 'RRBS':
+        return
     pipeline_title = value['pipelines'][0]['title']
     if pipeline_title not in expected_pipeline_titles:
         return
