@@ -146,7 +146,7 @@ const displayedFileFacetFields = [
         expanded: true,
     },
     {
-        field: 'analyses',
+        field: 'analysis',
         title: 'Analysis',
         dataset: true,
         sorter: analysisSorter,
@@ -258,7 +258,7 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'href' },
         { field: 'dataset' },
         { field: 'biological_replicates' },
-        { field: 'analysis_objects', dataset: true },
+        { field: 'analyses', dataset: true },
         { field: 'preferred_default' },
         { field: 'annotation_subtype', dataset: true },
         { field: 'biochemical_inputs', dataset: true },
@@ -267,7 +267,7 @@ const requestedFacetFields = displayedFileFacetFields
     ]);
 
 /** Facet `field` values for properties from dataset instead of files */
-const datasetFieldFileFacets = displayedFileFacetFields.concat(requestedFacetFields).filter((facetField) => facetField.dataset).map((facetField) => facetField.field);
+const datasetFieldFileFacets = displayedFileFacetFields.filter((facetField) => facetField.dataset).map((facetField) => facetField.field);
 
 /** Map of abbreviations for the allowed dataset types */
 const datasetTabTitles = {
@@ -2438,7 +2438,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                             selectedFileTerms={selectedFileTerms}
                             selectedDatasetTerms={selectedDatasetTerms}
                             selectedDatasetType={selectedDatasetType}
-                            facetFields={requestedFacetFields}
+                            facetFields={displayedFileFacetFields.concat(displayedDatasetFacetFields)}
                             viewableDatasets={viewableDatasets}
                             cartType={cartType}
                             sharedCart={context}
