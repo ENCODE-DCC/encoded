@@ -1026,7 +1026,7 @@ def _parse_args():
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production-pg11')
 
     # AWS
-    parser.add_argument('--profile-name', default='default', help="AWS creds profile")
+    parser.add_argument('--profile-name', default='default', choices = ("default", "production"), help="AWS creds profile")
     parser.add_argument('--iam-role', default='encoded-instance', help="Frontend AWS iam role")
     parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="ES AWS iam role")
     parser.add_argument(
@@ -1077,16 +1077,14 @@ def _parse_args():
         )
     )
     args = parser.parse_args()
-    # If needed, get ami.
+    # If needed, get ami. Only allowed values for the arg are default and production.
     if not args.image_id:
         if args.profile_name == "default":
             print("Fetching development AMI.")
             current_ami_id = _fetch_ami_id()
-        elif args.profile_name == "production":
+        if args.profile_name == "production":
             print("Fetching production AMI.")
             current_ami_id = _fetch_ami_id(key="ami-id/production/current_ami_id.txt")
-        else:
-            raise ValueError("--profile-name must be default or production")
         args.image_id = current_ami_id
     # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
