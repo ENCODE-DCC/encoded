@@ -1047,19 +1047,6 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
-/* stylelint-disable-next-line selector-class-pattern */
-.chip_seq_matrix__data {
-    table {
-        tr:nth-child(2) td:nth-child(2) {
-            border-top-left-radius: 14px;
-        }
-
-        tr:nth-child(2) td:last-child {
-            border-top-right-radius: 14px;
-        }
-    }
-}
-
 // Contents of organism-selection modal.
 .matrix-reference-epigenome__organism-selector {
     > div {
@@ -1747,5 +1734,111 @@ $rnaseq-term-name-colors:
     .general-search-entry {
         margin-bottom: 0;
         padding-bottom: 0;
+    }
+}
+
+// For large DOM collections, nested "display: flex" partially renders in Chrome and Safari dies trying.
+// "display: table-row" and "display: table-cell" work okay despite performance issues in Chrome and Safari;
+// but better than nothing
+.div-table-matrix-container {
+    .div-table-matrix {
+        // Hiding "display: table" here made the page load a bit  faster. It may be re-added if
+        // future Chrome updates improve rendering-performance
+        //display: table;
+
+        &__row {
+            margin: 0;
+            padding: 0;
+            display: table-row;
+
+            a {
+                color: #000;
+                text-decoration: none;
+                text-overflow: ellipsis;
+                width: 100%;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+
+            // get all first children (space needed after &)
+            & div:first-child {
+                border: 1px solid #fff;
+                width: 150px;
+                position: sticky;
+                left: 0;
+                z-index: 1;
+                background-color: #fff;
+
+                a {
+                    text-align: right;
+                    padding-right: 5px;
+                    text-decoration: none;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            // get all non-first chilren
+            & div:not(div:first-child) {
+                width: 25px;
+
+                a {
+                    text-decoration: none;
+                }
+            }
+
+            // in all non-first rows, get all non-first child
+            &:not(div:first-child) {
+                & div:first-child {
+                    border-width: 0 !important;
+                    border-right: 4px solid !important;
+                    border-image: linear-gradient(#ebebe0, #d7d7c1) 0 100% !important;
+                }
+            }
+
+            // get second child (no space after &)
+            &:nth-child(2) {
+                :nth-child(2) {
+                    border-top-left-radius: 14px;
+                }
+
+                :last-child {
+                    border-top-right-radius: 14px;
+                }
+            }
+
+            &__header-item {
+                display: table-cell;
+
+                a {
+                    writing-mode: vertical-rl;
+                    transform: rotate(180deg);
+                    font-weight: 700;
+                    padding-bottom: 20px;
+                    height: 200px;
+                    padding-top: 10px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    width: 25px;
+                }
+
+                &:first-child {
+                    border-width: 0 !important;
+                    border-right: 4px solid !important;
+                    border-image: linear-gradient(#ebebe0, #d7d7c1) 0 100% !important;
+                }
+            }
+
+            &__data-row-item {
+                border-left: 1px solid #f0f0f0;
+                border-right: 1px solid #f0f0f0;
+                border-bottom: 1px solid #f0f0f0;
+                display: table-cell;
+
+                a {
+                    display: block;
+                }
+            }
+        }
     }
 }

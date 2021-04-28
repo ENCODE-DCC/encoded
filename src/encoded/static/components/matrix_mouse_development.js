@@ -7,7 +7,7 @@ import QueryString from '../libs/query_string';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
-import DataTable from './datatable';
+import { DataTable } from './datatable';
 import * as globals from './globals';
 import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT } from './matrix';
 import matrixAssaySortOrder from './matrix_reference_epigenome';

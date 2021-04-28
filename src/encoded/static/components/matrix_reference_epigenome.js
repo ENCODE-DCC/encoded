@@ -8,7 +8,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { Modal, ModalHeader, ModalBody } from '../libs/ui/modal';
 import { Panel, PanelBody, TabPanel } from '../libs/ui/panel';
 import { tintColor, isLight } from './datacolors';
-import DataTable from './datatable';
+import { DataTable } from './datatable';
 import * as globals from './globals';
 import { RowCategoryExpander } from './matrix';
 import { BodyMapThumbnailAndModal, organField, systemsField, clearBodyMapSelectionsFromUrl } from './body_map';
