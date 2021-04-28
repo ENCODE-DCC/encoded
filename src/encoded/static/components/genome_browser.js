@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { BrowserFeat } from './browserfeat';
 import { filterForVisualizableFiles } from './objectutils';
+import Tooltip from '../libs/ui/tooltip';
 import GeneSearch from './gene_search';
 
 /**
@@ -19,6 +20,53 @@ const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
 // used to determine if GV_COORDINATES_KEY should be used
 const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
 const GV_COORDINATES_ANNOTATION = 'ENCODE-GV-annotation';
+
+const colorChromatinState = {
+    'Active TSS': '#ff0000',
+    'Flanking TSS': '#ff4400',
+    'Flanking TSS upstream': '#ff4500',
+    'Flanking TSS downstream': '#ff4500',
+    'Strong transcription': '#008000',
+    'Weak transcription': '#006400',
+    'Genic enhancer 1': '#c4e105',
+    'Genic enhancer 2': '#c4e105',
+    'Active enhancer 1': '#ffc44d',
+    'Active enhancer 2': '#ffc44d',
+    'Weak enhancer': '#ffff00',
+    'ZNF genes & repeats': '#66cdaa',
+    Heterochromatin: '#8a91d0',
+    'Bivalent/Poised TSS': '#cd5c5c',
+    'Bivalent enhancer': '#bdb86b',
+    'Repressed PolyComb': '#808080, #8937df',
+    'Weak Repressed PolyComb': '#c0c0c0, #9750e3',
+    'Quiescent/Low': '#ffffff',
+};
+
+const colorCCREs = {
+    'Promoter-like': '#ff0000',
+    'Proximal enhancer-like': '#ffa700',
+    'Distal enhancer-like': '#ffcd00',
+    'DNase-H3K4me3': '#ffaaaa',
+    'CTCF-only': '#00b0f0',
+    'DNase-only': '#06da93',
+    'Low-DNase': '#ffffff',
+};
+
+const colorGenome = {
+    'Nucleobase A': '#0c7489',
+    'Nucleobase T': '#f9ce70',
+    'Nucleobase G': '#0fa3b1',
+    'Nucleobase C': '#c14953',
+    'GC-low': '#0c7489',
+    'GC-rich': '#f9ce70',
+};
+
+const colorGenes = {
+    Transcript: '#cfd7c7',
+    'Protein coding': '#575f5a',
+    'Non-protein coding': '#f9ce70',
+    UTR: '#c14953',
+};
 
 /**
  * Returns Valis coordinates off the bar user inputs data in
@@ -382,6 +430,83 @@ const sortLookUp = (obj, param) => {
     }
 };
 
+const LegendLabel = () => (
+    <div className="legend-label">
+        <div className="legend-color-container">
+            <div className="legend-swatch" style={{ background: `${colorGenome['Nucleobase A']}` }} />
+            <div className="legend-swatch" style={{ background: `${colorGenome['Nucleobase T']}` }} />
+            <div className="legend-swatch" style={{ background: `${colorGenome['Nucleobase C']}` }} />
+            <div className="legend-swatch" style={{ background: `${colorGenome['Nucleobase G']}` }} />
+        </div>
+        <div className="legend-name">Legend</div>
+    </div>
+);
+
+/**
+ * Display a legend
+ */
+const GenomeLegend = (props) => (
+    <Tooltip
+        trigger={<LegendLabel />}
+        tooltipId="genome-legend"
+        css="legend-button"
+        size="large"
+        columnCount={props.colorBlock.length + 2}
+    >
+        <div className="legend-container">
+            <div className="legend-block">
+                <h5>Genome</h5>
+                {Object.keys(colorGenome).map((nucleobase) => (
+                    <div className="legend-element" key={nucleobase}>
+                        <div className={`legend-swatch ${colorGenome[nucleobase] === '#ffffff' ? 'with-border' : ''}`} style={{ background: `${colorGenome[nucleobase]}` }} />
+                        <div className="legend-label">{nucleobase}</div>
+                    </div>
+                ))}
+            </div>
+            <div className="legend-block">
+                <h5>Genes</h5>
+                {Object.keys(colorGenes).map((gene) => (
+                    <div className="legend-element" key={gene}>
+                        <div className={`legend-swatch ${colorGenes[gene] === '#ffffff' ? 'with-border' : ''}`} style={{ background: `${colorGenes[gene]}` }} />
+                        <div className="legend-label">{gene}</div>
+                    </div>
+                ))}
+            </div>
+            {(props.colorBlock.indexOf('ccres') > -1) ?
+                <div className="legend-block">
+                    <h5>CCREs</h5>
+                    {Object.keys(colorCCREs).map((ccre) => (
+                        <div className="legend-element" key={ccre}>
+                            <div className={`legend-swatch ${colorCCREs[ccre] === '#ffffff' ? 'with-border' : ''}`} style={{ background: `${colorCCREs[ccre]}` }} />
+                            <div className="legend-label">{ccre}</div>
+                        </div>
+                    ))}
+                </div>
+            : null}
+            {(props.colorBlock.indexOf('chromatin') > -1) ?
+                <div className="legend-block">
+                    <h5>Chromatin</h5>
+                    {Object.keys(colorChromatinState).map((state) => (
+                        <div className="legend-element" key={state}>
+                            {(colorChromatinState[state].indexOf(', ') === -1) ?
+                                <div className={`legend-swatch ${colorChromatinState[state] === '#ffffff' ? 'with-border' : ''}`} style={{ background: `${colorChromatinState[state]}` }} />
+                            :
+                                <div className={`legend-swatch ${colorChromatinState[state] === '#ffffff' ? 'with-border' : ''}`} style={{ 'background-image': `-webkit-linear-gradient(45deg, ${colorChromatinState[state].split(', ')[0]} 50%, ${colorChromatinState[state].split(', ')[1]} 50%)` }} />
+                            }
+                            <div className="legend-label">{state}</div>
+                        </div>
+                    ))}
+                </div>
+            : null}
+        </div>
+    </Tooltip>
+);
+
+GenomeLegend.propTypes = {
+    colorBlock: PropTypes.array.isRequired,
+};
+
+
 /**
  * Display a label for a file’s track.
  */
@@ -468,6 +593,7 @@ class GenomeBrowser extends React.Component {
             disableBrowserForIE: false,
             sortToggle: this.props.sortParam.map(() => true), // Indicates ascending or descending order for each sort parameter; true is descending and false is ascending
             primarySort: this.props.sortParam[0] || 'Replicates', // Indicates the final (primary) sort applied to the list of files
+            colorBlock: [], // Legend entries
         };
         this.setBrowserDefaults = this.setBrowserDefaults.bind(this);
         this.clearBrowserMemory = this.clearBrowserMemory.bind(this);
@@ -688,6 +814,16 @@ class GenomeBrowser extends React.Component {
 
     filesToTracks(files, label, domain) {
         const tracks = files.map((file) => {
+            if (file.output_type === 'candidate Cis-Regulatory Elements' && this.state.colorBlock.indexOf('ccres') === -1) {
+                this.setState((prevState) => ({
+                    colorBlock: [...prevState.colorBlock, 'ccres'],
+                }));
+            }
+            if (file.output_type === 'semi-automated genome annotation' && this.state.colorBlock.indexOf('chromatin') === -1) {
+                this.setState((prevState) => ({
+                    colorBlock: [...prevState.colorBlock, 'chromatin'],
+                }));
+            }
             let labelLength = 0;
             const defaultHeight = 34;
             const extraLineHeight = 12;
@@ -827,12 +963,15 @@ class GenomeBrowser extends React.Component {
                              handleClick={this.handleGeneSearchResultClick}
                          />
                      </div>
-                     {this.props.displaySort ?
-                      <div className="sort-control-container">
-                          <div className="sort-label">Sort by: </div>
-                          {this.props.sortParam.map((param, paramIdx) => <button type="button" className={`sort-button ${param === this.state.primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => this.sortAndRefresh(param, this.state.sortToggle[paramIdx], paramIdx, true)}><i className={this.state.sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
-                      </div>
-                      : null}
+                     <div className="horizontal-control-container">
+                         {this.props.displaySort ?
+                              <>
+                                  <div className="sort-label">Sort by: </div>
+                                  {this.props.sortParam.map((param, paramIdx) => <button type="button" className={`sort-button ${param === this.state.primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => this.sortAndRefresh(param, this.state.sortToggle[paramIdx], paramIdx, true)}><i className={this.state.sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
+                              </>
+                         : null}
+                         <GenomeLegend colorBlock={this.state.colorBlock} />
+                     </div>
                      <div className="browser-container">
                          <button type="button" className="reset-browser-button" onClick={this.resetLocation}>
                              <i className="icon icon-undo" />
