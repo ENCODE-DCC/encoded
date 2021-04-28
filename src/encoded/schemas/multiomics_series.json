@@ -47,6 +47,18 @@
     "properties": {
         "schema_version": {
             "default": "1"
+        },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The multiomics series this series object supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See multiomics_series.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "MultiomicsSeries"
+            }
         }
     },
     "facets": {
