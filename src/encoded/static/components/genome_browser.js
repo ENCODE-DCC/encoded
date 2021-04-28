@@ -121,6 +121,11 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
                 title: 'GENCODE V29',
             },
+            {
+                title: 'dbSNP (153)',
+                file_format: 'variant',
+                path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38-dbSNP153.vvariants-dir',
+            },
         ];
         if (annotation === 'V33') {
             pinnedFiles = [
@@ -875,6 +880,16 @@ class GenomeBrowser extends React.Component {
                 trackObj.path = file.href;
                 trackObj.heightPx = 120;
                 trackObj.expandable = false;
+                trackObj.displayLabels = true;
+                return trackObj;
+            }
+            if (file.file_format === 'variant') {
+                const trackObj = {};
+                trackObj.name = <ul className="gb-info"><li>{file.title}</li></ul>;
+                trackObj.type = 'variant';
+                trackObj.path = file.href || file.path; // some titles like dBSNP set path
+                trackObj.heightPx = 40;
+                trackObj.expandable = true;
                 trackObj.displayLabels = true;
                 return trackObj;
             }
