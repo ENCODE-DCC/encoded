@@ -68,6 +68,9 @@ export const dbxrefPrefixMap = {
     BioProject: {
         pattern: 'https://www.ncbi.nlm.nih.gov/bioproject/{0}',
     },
+    BioSample: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/biosample/{0}',
+    },
     BioStudies: {
         pattern: 'https://www.ebi.ac.uk/biostudies/studies/{0}',
     },
@@ -98,15 +101,6 @@ export const dbxrefPrefixMap = {
     },
     GEO: {
         pattern: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={0}',
-        preprocessor: (context, dbxref) => {
-            // If the first four characters of the GEO value is "SAMN" then we need to use a
-            // different URL pattern.
-            const value = dbxref.split(':');
-            if (value[1] && value[1].substr(0, 4) === 'SAMN') {
-                return { altUrlPattern: 'https://www.ncbi.nlm.nih.gov/biosample/{0}' };
-            }
-            return {};
-        },
     },
     HGNC: {
         pattern: 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id={0}',

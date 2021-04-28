@@ -20,7 +20,7 @@
             "anna-greka:mouse.wgEncodeSydhHist"
         ],
         "dbxrefs": [
-            "GEO:SAMN043324"
+            "BioSample:SAMN043324"
         ]
     },
         {
@@ -44,7 +44,7 @@
             "anna-greka:mouse.wgEncodeSydhHist"
         ],
         "dbxrefs": [
-            "GEO:SAMN043323"
+            "BioSample:SAMN043323"
         ]
     }
 ]

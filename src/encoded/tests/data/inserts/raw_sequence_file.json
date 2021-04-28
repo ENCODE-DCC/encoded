@@ -25,7 +25,9 @@
         ],
         "md5sum": "fc33724fb1dc16163432e7bd6bf6d4ed",
         "s3_uri": "s3://submissions-lattice/fastq/19D014_per_I1_sample.fastq.gz",
-        "validated": true
+        "validated": true,
+        "crc32c": "7865F0A4",
+        "sha256": "7d79a6ab6b64171c30e2a7e3e723400d7a793d14caf422ff7bbd96c6b667b732"
     },
     {
         "aliases": [

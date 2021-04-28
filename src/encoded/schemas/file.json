@@ -37,7 +37,7 @@
         },
         "md5sum": {
             "title": "MD5sum",
-            "description": "The md5sum of the file being transferred.",
+            "description": "The md5sum of the file.",
             "comment":  "Do not submit. This will be filled in during checkfiles validation.",
             "type": "string",
             "format": "hex",
@@ -53,6 +53,23 @@
             "format": "hex",
             "maxLength": 32,
             "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
+        },
+        "sha256": {
+            "title": "SHA-256",
+            "description": "The SHA-256 of the file.",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+            "type": "string",
+            "permission": "import_items",
+            "format": "hex",
+            "maxLength": 64,
+            "pattern": "[A-Fa-f\\d]{64}"
+        },
+        "crc32c": {
+            "title": "CRC32C",
+            "description": "The CRC32C of the file.",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+            "type": "string",
+            "permission": "import_items"
         },
         "file_size": {
             "title": "File size",
