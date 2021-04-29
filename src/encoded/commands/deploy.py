@@ -18,7 +18,8 @@ import boto3
 from pathlib import Path
 
 
-REPO_DIR = f"{str(Path().parent.absolute())}"
+REPO_PATH = Path().parent.absolute()
+REPO_DIR = f"{str(REPO_PATH)}"
 
 
 def _fetch_ami_id(bucket: str = "packer-ami-id-and-log", key: str = "ami-id/current_ami_id.txt") -> str:
@@ -407,6 +408,16 @@ def _get_ec2_client(main_args, instances_tag_data):
     return ec2
 
 
+def _get_pyramid_config_name(role: str, remote_indexing: bool) -> str:
+    if remote_indexing:
+        pyramid_config_name = f"{role}_frontend"
+    else:
+        pyramid_config_name = role
+    if not (REPO_PATH / "conf" / "pyramid" / f"{pyramid_config_name}.ini").exists():
+        raise ValueError(f"Could not find INI file for {pyramid_config_name}")
+    return pyramid_config_name
+
+
 def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     build_type = instances_tag_data['build_type']  # template_name
     sqlalchemy_url = 'postgresql:///encoded'
@@ -415,6 +426,10 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     master_user_data = None
     git_remote = 'origin' if not is_tag else 'tags'
     home = "/srv/encoded"
+    pyramid_config_name = _get_pyramid_config_name(
+        role=main_args.role,
+        remote_indexing=main_args.remote_indexing
+    )
     data_insert = {
         'APP_WORKERS': 'notused',
         'BATCHUPGRADE': 'true' if main_args.do_batchupgrade else 'false',
@@ -434,8 +449,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'INDEX_PRIMARY': 'false',
         'INDEX_VIS': 'false',
         'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
-        'INDEX_PROCS': main_args.index_procs,
-        'INDEX_CHUNK_SIZE': main_args.index_chunk_size,
         'INSTALL_TAG': 'encd-install',
         'JVM_GIGS': 'notused',
         'PG_VERSION': main_args.postgres_version,
@@ -443,6 +456,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'PG_IP': main_args.pg_ip,
         'SQLALCHEMY_URL': sqlalchemy_url,
         'PY3_PATH': '/usr/bin/python3.6',
+        "PYRAMID_CONFIG_NAME": pyramid_config_name,
         'REDIS_PORT': main_args.redis_port,
         'REMOTE_INDEXING': 'true' if main_args.remote_indexing else 'false',
         'ROLE': main_args.role,
@@ -983,18 +997,6 @@ def _parse_args():
         '--remote-indexing',
         action='store_true',
         help="Remote indexing"
-    )
-    parser.add_argument(
-        '--index-procs',
-        default=24,
-        type=int,
-        help="Remote indexing"
-    )
-    parser.add_argument(
-        '--index-chunk-size',
-        default=1024,
-        type=int,
-        help="Should be set lower for single-node demos"
     )
     # Cluster
     parser.add_argument(

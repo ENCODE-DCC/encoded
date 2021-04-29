@@ -12,10 +12,21 @@ executors:
       - BASH_ENV: /home/circleci/.bashrc
       - ES_JAVA_OPTS: -Xms2g -Xmx3g
       - JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+  node:
+    docker:
+      - image: cimg/node:10.23.3
+    working_directory: ~/encoded
+
+# Avoid repetition in requires for tests
+requires-lint: &requires-lint
+  requires:
+    - eslint
+    - stylelint
+    - config
 
 commands:
-  buildout:
-    description: A buildout process based on encoded-executor
+  install-app:
+    description: Install dependencies and application based on encoded-executor
     steps:
       - checkout
       # Do not use caching for now to avoid potential conflicts/bugs
@@ -51,17 +62,27 @@ commands:
             sudo chown -R circleci /etc/elasticsearch
             sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/10/bin:$PATH\n;' $BASH_ENV
       - run:
-          name: Install application and run buildout
+          name: Install application
           command: |
-            sudo pip3 install --upgrade pip setuptools==51.3.3
-            pip3 install -e ".[dev]"
-            buildout
+            sudo pip3 install --upgrade pip
+            make install
+  install-jsonnet:
+    description: Install Jsonnet including formatter jsonnetfmt
+    steps:
+      - run:
+          name: Install Jsonnet
+          command: |
+            curl -Ls https://github.com/google/jsonnet/releases/download/v0.16.0/jsonnet-bin-v0.16.0-linux.tar.gz | \
+              tar xz && \
+              sudo mv jsonnet jsonnetfmt /usr/local/bin
+
 jobs:
   bdd:
     executor: encoded-executor
     resource_class: xlarge
     steps:
-      - buildout
+      - install-jsonnet
+      - install-app
       # orb dependencies
       - run: sudo apt-get update -y && sudo apt-get install -y libgbm1
       # Use install tasks from the orb
@@ -86,7 +107,8 @@ jobs:
     executor: encoded-executor
     resource_class: large
     steps:
-      - buildout
+      - install-jsonnet
+      - install-app
       - run:
           name: indexing tests
           command: |
@@ -101,7 +123,8 @@ jobs:
     executor: encoded-executor
     resource_class: large
     steps:
-      - buildout
+      - install-jsonnet
+      - install-app
       - run:
           name: indexer tests
           command: |
@@ -116,7 +139,8 @@ jobs:
     executor: encoded-executor
     resource_class: medium
     steps:
-      - buildout
+      - install-jsonnet
+      - install-app
       - run:
           name: non bdd non indexing tests
           command: |
@@ -127,10 +151,13 @@ jobs:
       - store_test_results:
           path: test-results
   npm:
-    executor: encoded-executor
+    executor: node
     resource_class: medium
     steps:
-      - buildout
+      - checkout
+      - run:
+          name: Install Javascript packages and build
+          command: make javascript
       - run:
           name: npm tests
           command: |
@@ -140,10 +167,10 @@ jobs:
       - store_test_results:
           path: test-results
   eslint:
-    executor: encoded-executor
-    resource_class: medium
+    executor: node
+    resource_class: small
     steps:
-      -  buildout
+      - checkout
       - run:
           name: Install eslint
           command: sudo npm install eslint
@@ -151,25 +178,50 @@ jobs:
           name: Lint the code with Eslint
           command: node_modules/.bin/eslint src/encoded/static/components/
   stylelint:
-    executor: encoded-executor
-    resource_class: medium
+    executor: node
+    resource_class: small
     steps:
-      -  buildout
+      - checkout
       - run:
           name: Install stylelint
           command: sudo npm install stylelint
       - run:
           name: Lint the style sheet with StyleLint
           command: node_modules/.bin/stylelint src/encoded/static/scss/
+  config:
+    docker:
+      - image: cimg/base:2020.01
+    working_directory: ~/encoded
+    resource_class: small
+    description: Generate templated config and fail if it is different than what was checked in
+    steps:
+      - checkout
+      - install-jsonnet
+      - run:
+          name: Autoformat jsonnet files and generate config
+          command: make config
+      - run:
+          name: Verify checked-in config is up to date and jsonnet was properly formatted
+          command: |
+            git diff --quiet
+            if [[ $? -ne 0 ]]; then
+              exit 1
+            fi
 
 workflows:
   version: 2
   encoded-tests:
     jobs:
-      - bdd
-      - indexing
-      - indexer
-      - not-bdd-non-indexing
-      - npm
       - eslint
       - stylelint
+      - config
+      - bdd:
+          <<: *requires-lint
+      - indexing:
+          <<: *requires-lint
+      - indexer:
+          <<: *requires-lint
+      - not-bdd-non-indexing:
+          <<: *requires-lint
+      - npm:
+          <<: *requires-lint

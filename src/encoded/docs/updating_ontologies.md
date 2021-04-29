@@ -36,7 +36,7 @@ How to update the ontology versions
 
 	$ aws s3 cp ontology-YYYY-MM-DD.json s3://encoded-build/ontology/
 
-5.  Update the ontology version in the [buildout.cfg]:
+5.  Update the ontology version in the [Makefile]:
 
 	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-YYYY-MM-DD.json
 
@@ -61,7 +61,7 @@ How to update the ontology versions
 [OBI download]: http://www.ontobee.org/ontology/OBI
 [CLO download]: http://www.ontobee.org/ontology/CLO
 [DOID download]: http://www.ontobee.org/ontology/DOID
-[buildout.cfg]: ../../../buildout.cfg
+[Makefile]: ../../../Makefile
 [UBERON release date]: http://svn.code.sf.net/p/obo/svn/uberon/releases/
 [OBI release date]: http://www.ontobee.org/ontology/OBI 
 [EFO release date]: https://github.com/EBISPOT/efo/blob/master/ExFactor%20Ontology%20release%20notes.txt
