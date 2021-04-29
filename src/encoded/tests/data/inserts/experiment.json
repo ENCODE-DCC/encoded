@@ -1241,6 +1241,17 @@
         "submitted_by": "elementum.mus@dictumst.nostra"
     },
     {
+        "_test": "short read scRNA SPLiT-seq example",
+        "uuid": "b748001a-07b0-4995-8581-1ffc80094ac8",
+        "accession": "ENCSR000SSC",
+        "assay_term_name": "single-cell RNA sequencing assay",
+        "award": "U54HG006991",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "lab": "ali-mortazavi",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra"
+    },
+    {
         "_test": "BruChase 2h pulse-chase",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "status": "in progress",

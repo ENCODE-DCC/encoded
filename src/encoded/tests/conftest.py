@@ -88,6 +88,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.micro_rna_mapping_quality_metric',
     'encoded.tests.fixtures.schemas.micro_rna_quantification_quality_metric',
     'encoded.tests.fixtures.schemas.mouse_donor',
+    'encoded.tests.fixtures.schemas.multiomics_series',
     'encoded.tests.fixtures.schemas.organism',
     'encoded.tests.fixtures.schemas.page',
     'encoded.tests.fixtures.schemas.pipeline',

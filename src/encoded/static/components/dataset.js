@@ -1739,6 +1739,7 @@ const seriesComponents = {
     DifferentiationSeries: { title: 'differentiation series', table: basicTableColumns },
     PulseChaseTimeSeries: { title: 'pulse chase time series', table: basicTableColumns },
     DiseaseSeries: { title: 'disease series', table: basicTableColumns },
+    MultiomicsSeries: { title: 'multiomics series', table: basicTableColumns },
 };
 
 export const SeriesComponent = (props, reactContext) => {
