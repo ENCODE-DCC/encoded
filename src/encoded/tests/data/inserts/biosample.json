@@ -1319,5 +1319,24 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "843516f2-c2df-4689-ba92-ad7cf4ed686e"
+    },
+    {
+        "accession": "ENCBS888CRI",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "description": "WTC11 cell line",
+        "donor": "ENCDO000HUM",
+        "lab": "bing-ren",
+        "organism": "human",
+        "genetic_modifications": [
+            "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b"
+        ],
+        "source": "dana-levasseur",
+        "status": "released",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
+        "uuid": "dc21931b-2838-4279-944c-470ef4fb4fce",
+        "genetic_modifications": [
+            "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b"
+        ]
     }
 ]

@@ -3,6 +3,7 @@
 ### Schema version 7
 
 * Changed the *analysis_objects* property to be *analyses*
+* Added *expression_measurement_method* to the *examined_loci* property
 
 ### Minor changes since schema version 6
 

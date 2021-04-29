@@ -152,10 +152,12 @@
         "uuid": "f4455f2b-8dd3-462b-aa00-4d0ea471714a",
         "examined_loci": [{
             "gene": "/genes/912/",
-            "expression_percentile": 80
+            "expression_percentile": 80,
+            "expression_measurement_method": "PrimeFlow"
         }, {"gene": "/genes/2995/",
             "expression_range_minimum": 2,
-            "expression_range_maximum": 70}]
+            "expression_range_maximum": 70,
+            "expression_measurement_method": "PrimeFlow"}]
     },
     {
         "accession": "ENCSR928SVL",
