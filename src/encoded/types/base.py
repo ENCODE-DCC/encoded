@@ -27,6 +27,7 @@ from snovault import (
     AfterModified,
     BeforeModified
 )
+from snovault.elasticsearch.searches.configs import search_config
 
 
 @lru_cache()
@@ -378,6 +379,23 @@ class Item(snovault.Item):
         related_objects = self._get_related_object(child_paths, embedded_properties, request)
         self._set_status_on_related_objects(new_status, related_objects, root, request)
         return True
+
+
+@search_config(
+    name='Item'
+)
+def item_search_config():
+    return {
+        'facets': {
+            'type': {
+                'title': 'Data Type',
+                'exclude': ['Item']
+            },
+            'status': {
+                'title': 'Item status'
+            },
+        }
+    }
 
 
 class SharedItem(Item):

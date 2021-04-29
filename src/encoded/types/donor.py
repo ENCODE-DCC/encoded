@@ -21,6 +21,7 @@ from .base import (
     })
 class Donor(Item):
     base_types = ['Donor'] + Item.base_types
+    schema = load_schema('encoded:schemas/donor.json')
     embedded = [
         'organism',
         'characterizations',

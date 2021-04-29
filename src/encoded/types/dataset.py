@@ -69,6 +69,7 @@ def calculate_assembly(request, files_list, status):
     })
 class Dataset(Item):
     base_types = ['Dataset'] + Item.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
     embedded = [
         'analyses',
         'files',
@@ -558,6 +559,14 @@ class SingleCellUnit(
         return paths_filtered_by_status(request, superseded_by)
 
 
+@abstract_collection(
+    name='file-set',
+    unique_key='accession',
+    properties={
+        'title': "File set",
+        'description': 'A set of files.',
+    }
+)
 class FileSet(Dataset):
     item_type = 'file_set'
     base_types = ['FileSet'] + Dataset.base_types
