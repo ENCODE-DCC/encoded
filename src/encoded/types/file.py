@@ -60,6 +60,7 @@ def file_is_md5sum_constrained(properties):
 class File(Item):
     base_types = ['File'] + Item.base_types
     embedded = []
+    audit_inherit = []
 
     @property
     def __name__(self):
@@ -179,6 +180,7 @@ class DataFile(File, CalculatedAward):
     embedded = File.embedded + ['lab', 'award']
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
+    audit_inherit = File.audit_inherit + []
 
 
     @calculated_property(schema={
@@ -255,6 +257,7 @@ class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
     embedded = DataFile.embedded + ['derived_from', 'derived_from.flowcell_details']
+    audit_inherit = DataFile.audit_inherit + ['derived_from']
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",

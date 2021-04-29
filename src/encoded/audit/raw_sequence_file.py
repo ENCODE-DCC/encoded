@@ -40,6 +40,22 @@ def no_file_name(value, system):
             return
 
 
+def no_file_stats(value, system):
+    if value.get('no_file_available') != True and value.get('validated') == True:
+        missing = []
+        for stat in ['file_size','sha256','crc32c']:
+            if not value.get(stat):
+                missing.append(stat)
+        if missing:
+            detail = ('File {} does not have {}.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                ','.join(missing)
+                )
+            )
+            yield AuditFailure('missing file stats', detail, level='ERROR')
+            return
+
+
 def not_validated(value, system):
     if value.get('no_file_available') != True:
         if value.get('validated') != True:
@@ -58,7 +74,7 @@ def no_uri(value, system):
                 audit_link(path_to_text(value['@id']), value['@id'])
                 )
             )
-            yield AuditFailure('file access not specified', detail, level='WARNING')
+            yield AuditFailure('file access not specified', detail, level='ERROR')
             return
 
 
@@ -142,6 +158,7 @@ def audit_library_protocol_standards(value, system):
 function_dispatcher = {
     'no_read_type': no_read_type,
     'no_file_name': no_file_name,
+    'no_file_stats': no_file_stats,
     'not_validated': not_validated,
     'no_uri': no_uri,
     'audit_library_protocol_standards': audit_library_protocol_standards

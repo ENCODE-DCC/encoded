@@ -8,6 +8,19 @@ from .formatter import (
 )
 
 
+def no_platform(value, system):
+    if value['status'] in ['deleted']:
+        return
+
+    if not value.get('platform'):
+        detail = ('SequencingRun {} has no platform specified.'.format(
+            audit_link(path_to_text(value['@id']), value['@id'])
+            )
+        )
+        yield AuditFailure('no platform specified', detail, level='ERROR')
+        return
+
+
 def audit_read_counts(value, system):
     '''
     All sequence files belonging to a SequencingRun
@@ -56,7 +69,8 @@ def audit_required_files(value, system):
 
 function_dispatcher = {
     'audit_read_counts': audit_read_counts,
-    'audit_required_files': audit_required_files
+    'audit_required_files': audit_required_files,
+    'no_platform': no_platform
 }
 
 
@@ -65,7 +79,7 @@ function_dispatcher = {
                       'derived_from',
                       'derived_from.protocol',
                       'files'])
-def audit_ontology_term(value, system):
+def audit_sequencing_run(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
             yield failure
