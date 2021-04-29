@@ -24,6 +24,7 @@ from .shared_calculated_properties import (
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
     CalculatedSeriesAssay,
+    CalculatedSeriesAssayType,
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
     CalculatedSeriesTarget,
@@ -919,7 +920,7 @@ class ComputationalModel(FileSet):
         'title': "Series",
         'description': 'Listing of all types of series datasets.',
     })
-class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
+class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
     item_type = 'series'
     base_types = ['Series'] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
@@ -1225,8 +1226,10 @@ class ExperimentSeries(Series):
 class SingleCellRnaSeries(Series):
     item_type = 'single_cell_rna_series'
     schema = load_schema('encoded:schemas/single_cell_rna_series.json')
-    embedded = Series.embedded + [
-        'related_datasets.analyses',
+    embedded = [
+        'lab',
+        'award',
+        'submitted_by'
     ]
 
 

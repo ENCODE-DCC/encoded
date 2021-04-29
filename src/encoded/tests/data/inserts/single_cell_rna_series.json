@@ -8,10 +8,25 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "related_datasets": [
-            "/experiments/ENCSR001EPI",
-            "/experiments/ENCSR374GSQ"
+            "/experiments/ENCSR410JXF",
+            "/experiments/ENCSR000SCR"
         ],
         "uuid": "47b3339e-1b2a-4fd1-9e41-5dd51f299c81",
         "date_released": "2019-01-01"
+    },
+    {
+        "_test": "single cell unit RNA series",
+        "accession": "ENCSR415URS",
+        "award": "U54HG006996",
+        "description": "C1 single cell RNA-seq unit series.",
+        "lab": "barbara-wold",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/single-cell-units/ENCSR324SCU",
+            "/single-cell-units/ENCSR423OSC"
+        ],
+        "uuid": "7771bece-13c2-447d-bf74-0fd0e0d5a4ac",
+        "date_released": "2020-01-01"
     }
 ]

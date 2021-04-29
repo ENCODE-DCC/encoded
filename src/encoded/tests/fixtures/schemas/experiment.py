@@ -845,3 +845,16 @@ def experiment_33(root, experiment, analysis_released):
         'analysis_objects': [analysis_released['uuid']]
     })
     return properties
+
+
+@pytest.fixture
+def base_single_cell_experiment_submitted(testapp, lab, award, heart):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'single-cell RNA sequencing assay',
+        'biosample_ontology': heart['uuid'],
+        'status': 'submitted',
+        'date_submitted': '2015-07-23',
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]

@@ -33,3 +33,8 @@ def test_assay_differentiation_series(testapp, base_differentiation_series):
 def test_assay_pulse_chase_time_series(testapp, base_pulse_chase_time_series):
     res = testapp.get(base_pulse_chase_time_series['@id'] + '@@index-data')
     assert sorted(res.json['object']['assay_term_name']) == ['RNA-seq']
+
+
+def test_assay_type_single_cell_rna_series(testapp, single_cell_series):
+    res = testapp.get(single_cell_series['@id'] + '@@index-data')
+    assert sorted(res.json['object']['assay_slims']) == ['Single cell']

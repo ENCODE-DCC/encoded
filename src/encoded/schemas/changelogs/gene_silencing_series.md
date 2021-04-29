@@ -6,3 +6,4 @@
 * Added *LRGASP* to the *internal_tags* enum
 * Added *doi* property
 * Added *analyses* property
+* Added *assay_slims* calculated property
