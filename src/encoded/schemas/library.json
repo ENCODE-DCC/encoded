@@ -208,6 +208,18 @@
             "enum": [
                 "minute"
             ]
+        },
+        "bead_batch": {
+            "title": "Bead batch",
+            "description": "The identifier for the larger batch of barcoded beads that those used in this library construction originated from.",
+            "type": "string"
+        },
+        "date_spatial_indexed": {
+            "title": "Date spatial indexed",
+            "description": "The date the slide, or puck, was sequenced in order to acquire the spatial mapping of barcode sequences.",
+            "comment": "Date should be submitted in as YYYY-MM-DD.",
+            "type": "string",
+            "format": "date"
         }
     },
     "facets": {

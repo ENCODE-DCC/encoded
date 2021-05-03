@@ -29,7 +29,6 @@
             "type": "string",
             "enum": [
                 "cell dissociation protocol",
-                "cell isolation protocol",
                 "dedifferentiation protocol",
                 "depletion protocol",
                 "differentiation protocol",
@@ -40,7 +39,6 @@
                 "growth protocol",
                 "library preparation protocol",
                 "nuclei dissociation protocol",
-                "nuclei isolation protocol",
                 "pipeline protocol",
                 "preservation protocol",
                 "sequencing protocol",

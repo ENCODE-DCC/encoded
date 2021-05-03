@@ -313,6 +313,7 @@
                                         "genes/nuclei",
                                         "umi/cell",
                                         "umi/nuclei",
+                                        "umi/bead",
                                         "cells/gene",
                                         "nuclei/gene",
                                         "percent mitochondrial/cell",
