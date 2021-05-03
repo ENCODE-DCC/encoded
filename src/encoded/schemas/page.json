@@ -190,6 +190,13 @@
                     }
                 ]
             }
+        },
+        "redirect_url":{
+            "title": "Redirect URL",
+            "description": "The URL the page redirects to. For example a redirect to a specific collection page on the portal.",
+            "comment": "Do not submit. The field would be posted by DCC.",
+            "type": "string",
+            "permission": "import_items"
         }
     },
     "facets": {
