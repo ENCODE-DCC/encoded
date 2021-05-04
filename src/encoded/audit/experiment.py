@@ -1524,7 +1524,7 @@ def audit_experiment_replicated(value, system, excluded_types):
         '''
         Excluding single cell experiments
         '''
-        if value['biosample_ontology']['classification'] == 'single cell':
+        if value['assay_term_name'] in ['single-cell RNA sequencing assay', 'single-nucleus ATAC-seq']:
             return
         # different levels of severity for different biosample classifications
         else:
