@@ -936,8 +936,8 @@
     {
         "accession": "ENCBS175SCS",
         "award": "UM1HG009390",
-        "biosample_ontology": "single_cell_CL_0002322",
-        "description": "Undifferentiated mouse embryonic stem single cell",
+        "biosample_ontology": "in_vitro_differentiated_cells_CL_0002322",
+        "description": "Undifferentiated mouse embryonic stem cell",
         "donor": "ENCDO015AAA",
         "lab": "john-stamatoyannopoulos",
         "model_organism_health_status": "unknown",
@@ -1170,7 +1170,7 @@
             "michael-snyder:mBsAC-W62 left lung CRYO 1"
         ],
         "award": "UM1HG009442",
-        "biosample_ontology": "single_cell_UBERON_0002168",
+        "biosample_ontology": "tissue_UBERON_0002168",
         "date_obtained": "2017-06-09",
         "donor": "ENCDO575EGL",
         "lab": "michael-snyder",

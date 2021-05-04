@@ -96,7 +96,7 @@
     "term_id": "CL:0002322",
     "status": "released"
 }, {
-    "classification": "single cell",
+    "classification": "in vitro differentiated cells",
     "uuid": "70a81e48-20c3-4de9-a5aa-ef92ff9b6e27",
     "term_name": "embryonic stem cell",
     "term_id": "CL:0002322",
@@ -133,10 +133,10 @@
     "status": "released"
 }, {
     "_test": "BiosampleType audit inconsistent ontology term",
-    "classification": "single cell",
+    "classification": "cell line",
     "uuid": "9996c871-33ca-44ef-ba3b-38359170f1ca",
     "term_name": "heart",
-    "term_id": "EFO:0002067",
+    "term_id": "EFO:0003045",
     "status": "released"
 }, {
     "classification": "cell-free sample",
@@ -193,7 +193,7 @@
     "term_id": "NTR:0000545",
     "status": "released"
 }, {
-    "classification": "single cell",
+    "classification": "tissue",
     "status": "released",
     "term_id": "UBERON:0002168",
     "term_name": "left lung",
