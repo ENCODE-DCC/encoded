@@ -39,6 +39,15 @@
                 "linkTo": "Library"
             }
         },
+        "demultiplexed_link": {
+            "title": "Demultiplexed link",
+            "description": "The pre-pooled sample that the sequencing is assigned to, if from a library of pooled samples, subsequently demultiplexed.",
+            "type": "string",
+            "linkTo": [
+                "Biosample",
+                "Suspension"
+            ]
+        },
         "platform": {
             "title": "Platform",
             "description": "The device used to sequence data.",

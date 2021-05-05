@@ -1,5 +1,107 @@
 [
     {
+        "accession": "LATDF302DMX",
+        "uuid": "009ba2f6-9bdd-4aca-9731-83c8b28ea0bf",
+        "dataset": "lattice:multiplexed_dataset",
+        "read_type": "Read 2",
+        "file_format": "fastq",
+        "lab": "j-michael-cherry",
+        "output_types": [
+            "assigned reads"
+        ],
+        "derived_from": [
+            "lattice:demux_run_3"
+        ],
+        "derivation_process": [
+            "demultiplexing"
+        ]
+    },
+    {
+        "accession": "LATDF301DMX",
+        "uuid": "8d08ba5a-b6d5-4fa0-923d-b8dd4d455d47",
+        "dataset": "lattice:multiplexed_dataset",
+        "read_type": "Read 1",
+        "file_format": "fastq",
+        "lab": "j-michael-cherry",
+        "output_types": [
+            "assigned reads"
+        ],
+        "derived_from": [
+            "lattice:demux_run_3"
+        ],
+        "derivation_process": [
+            "demultiplexing"
+        ]
+    },
+    {
+        "accession": "LATDF202DMX",
+        "uuid": "0b522079-5a5c-4c8b-ba9b-a4db5f25a2f7",
+        "dataset": "lattice:multiplexed_dataset",
+        "read_type": "Read 2",
+        "file_format": "fastq",
+        "lab": "j-michael-cherry",
+        "output_types": [
+            "assigned reads"
+        ],
+        "derived_from": [
+            "lattice:demux_run_2"
+        ],
+        "derivation_process": [
+            "demultiplexing"
+        ]
+    },
+    {
+        "accession": "LATDF201DMX",
+        "uuid": "9998c791-666f-4336-af55-6b79ccb7d5a1",
+        "dataset": "lattice:multiplexed_dataset",
+        "read_type": "Read 1",
+        "file_format": "fastq",
+        "lab": "j-michael-cherry",
+        "output_types": [
+            "assigned reads"
+        ],
+        "derived_from": [
+            "lattice:demux_run_2"
+        ],
+        "derivation_process": [
+            "demultiplexing"
+        ]
+    },
+    {
+        "accession": "LATDF102DMX",
+        "uuid": "81867b7d-8298-491b-ae76-40fd896fd565",
+        "dataset": "lattice:multiplexed_dataset",
+        "read_type": "Read 2",
+        "file_format": "fastq",
+        "lab": "j-michael-cherry",
+        "output_types": [
+            "assigned reads"
+        ],
+        "derived_from": [
+            "lattice:demux_run_1"
+        ],
+        "derivation_process": [
+            "demultiplexing"
+        ]
+    },
+    {
+        "accession": "LATDF101DMX",
+        "uuid": "8ba834fa-f23e-47aa-8771-76d14774fe95",
+        "dataset": "lattice:multiplexed_dataset",
+        "read_type": "Read 1",
+        "file_format": "fastq",
+        "lab": "j-michael-cherry",
+        "output_types": [
+            "assigned reads"
+        ],
+        "derived_from": [
+            "lattice:demux_run_1"
+        ],
+        "derivation_process": [
+            "demultiplexing"
+        ]
+    },
+    {
         "aliases": [
             "anna-greka:citeseq_donorA1_S1_L001_I1_001.fastq"
         ],
