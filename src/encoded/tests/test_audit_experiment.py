@@ -2730,6 +2730,14 @@ def test_audit_experiment_inconsistent_analysis_files(testapp, experiment_with_a
         })
     res = testapp.get(experiment_with_analysis_2['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent analysis files' for error in collect_audit_errors(res))
+    testapp.patch_json(file_bam_1_1['@id'], {
+        'status': 'deleted',
+        })
+    testapp.patch_json(file_bam_2_1['@id'], {
+        'status': 'deleted',
+        })
+    res = testapp.get(experiment_with_analysis_2['@id'] + '@@index-data')
+    assert not any(error['category'] == 'inconsistent analysis files' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_inconsistent_genetic_modifications(

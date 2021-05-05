@@ -2910,7 +2910,8 @@ def audit_experiment_inconsistent_analysis_files(value, system, files_structure)
         analysis_outputs = set()
         for analysis in value['analyses']:
             for f in analysis['files']:
-                analysis_outputs.add(f)
+                if f['status'] != 'deleted':
+                    analysis_outputs.add(f['@id'])
         for processed_file_id in processed_data:
             if processed_file_id in analysis_outputs:
                 continue
@@ -3675,6 +3676,7 @@ function_dispatcher_with_files = {
     'Experiment',
     frame=[
         'analyses',
+        'analyses.files',
         'biosample_ontology',
         'award',
         'target',
