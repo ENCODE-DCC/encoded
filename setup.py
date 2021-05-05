@@ -64,7 +64,7 @@ EXTRAS_REQUIRE["dev"] = EXTRAS_REQUIRE["tests"]
 
 setup(
     name='encoded',
-    version='115.0',
+    version='116.0',
     description='Metadata database for ENCODE',
     long_description=README + '\n\n' + CHANGES,
     packages=find_packages('src'),

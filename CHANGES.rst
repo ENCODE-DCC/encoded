@@ -1,5 +1,45 @@
 Changes
 =======
+116.0 (released) snovault 1.0.57
+--------------------------------
+1. update snovault 1.0.57 (#3882)
+2. SNO-201-add-search-config-registry (#3855)
+3. ENCD-5858-add-single-cell-units-to-series (#3858)
+4. ENCD-5561-organize-pyramid-config (#3781)
+5. ENCD-5896-add-MultiomicsSeries-object (#3873)
+6. ENCD-5147-add-expression-measurement-method-to-examined-loci-FCE (#3876)
+7. VALIS-36 remove expander (#3805)
+8. ENCD-5863-speed-up-chip-matrix (#3868)
+9. revert SNO-202-python3.8.5-upgrade (#3881)
+11. VALIS-40-dbSNP-track (#3866)
+12. ENCD-5770 add legend to browser (#3829)
+13. ENCD-5892-add-ManateeDonor-object (#3872)
+14. ENCD-5874-disease-series (#3875)
+15. ENCD-5895-adjust-strand-specificity-display (#3871)
+16. ENCD-5891-exclude-rrbs-from-audits (#3860)
+17. ENCD-5902 bam mapped run type and read length (#3877)
+18. ENCD-5880 analysis title (#3874)
+19. ENCD-5900-fix-smallrna-cage-audit-detail (#3870)
+20. ENCD-5728-add-gene-target-page (#3863)
+21. ENCD-5867-add-R2C2-subreads-output-type (#3864)
+22. ENCD-5830-autocomplete-rnaget-ui (#3839)
+23. NCD-5840-analysis-objects-to-analyses-move-to-dataset (#3834)
+24. ENCD-5820-select-better-analysis-by-default (#3809)
+25. ENCD-5894-restrict-strand-specificity-requirement-to-RNA-libraries (#3867)
+26. ENCD-5857 Add audits for analyses with multiple rfas or datasets (#3856)
+27. ENCD-5860 Add repeat elements annotation file output type (#3852)
+28. ENCD-5887-crispr-file-format-types (#3862)
+29. ENCD-5804-add-ctl_type-to-FCC-n-Exp-search-pg (#3831)
+30. ENCD-5865-add-ana-conesa-to-alias-regex (#3861)
+31. ENCD-5834-add-default-analysis-calculation (#3842)
+32. SNO-202-python3.8.5-upgrade (#3865)
+33. ENCD-5885-update-snovault-link-readme (#3851)
+34. ENCD-5685-stacked-buttons (#3847)
+35. ENCD-5853-ihec-json-updates (#3849)
+36. ENCD-5872-usable-fragments (#3846)
+37. ENCD-5866-python-36-circleci (#3845)
+38. ENCD-5884 Add spaces in audit details (#3850)
+
 115.0 (released) snovault 1.0.56
 --------------------------------
 1.	ENCD-5870-fix-bdd-submitter-test
