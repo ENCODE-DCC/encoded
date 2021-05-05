@@ -1,5 +1,19 @@
 [
     {
+        "uuid": "0b5af766-56af-47e3-9e28-e016ddd63bc9",
+        "dataset": "lattice:multiplexed_dataset",
+        "protocol": "10x-3'-v3",
+        "lab": "j-michael-cherry",
+        "derived_from": [
+            "anna-greka:sc_citeseq_suspension_donorA",
+            "anna-greka:sc_citeseq_suspension_donorB",
+            "anindita-basu:suspension_A"
+        ],
+        "aliases": [
+            "lattice:pooled_lib"
+        ]
+    },
+    {
         "status": "released",
         "uuid": "156d9247-f386-4657-b234-a756584bc20f",
         "dataset": "anna-greka:large_test_dataset",

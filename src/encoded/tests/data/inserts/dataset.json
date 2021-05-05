@@ -1,6 +1,19 @@
 [
     {
         "aliases": [
+            "lattice:multiplexed_dataset"
+        ],
+        "dataset_title": "Dataset with a multiplexed Library",
+        "description": "Used to test tools with pooling and demultiplexing",
+        "accession": "LATDS888DMX",
+        "uuid": "c534f486-a442-4ee2-a41e-8ffe007eb6ee",
+        "award": "CZI039LAT",
+        "funding_organizations": [
+            "Chan Zuckerberg Institute"
+        ]
+    },
+    {
+        "aliases": [
             "anna-greka:large_test_dataset"
         ],
         "dataset_title": "The best dataset around",
