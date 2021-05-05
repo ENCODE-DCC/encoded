@@ -1539,6 +1539,25 @@ def audit_experiment_replicated(value, system, excluded_types):
     return
 
 
+def audit_experiment_single_cell_libraries(value, system, excluded_types):
+    if value['assay_term_name'] not in ['single-cell RNA sequencing assay', 'single-nucleus ATAC-seq']:
+        if value['status'] in ['deleted', 'replaced', 'revoked']:
+            return
+        if len(value['replicates']) == 0:
+            return
+        for rep in value['replicates']:
+            library = rep.get('library', {})
+            barcode_details = library.get('barcode_details')
+            if barcode_details:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has '
+                    f'a library {audit_link(path_to_text(library["@id"]),library["@id"])} '
+                    f'that specifies barcode_details, which should only be specified on libraries'
+                    f'from single cell experiments.'
+                )
+                yield AuditFailure('inconsistent barcode details', detail, level='WARNING')
+
+
 def audit_experiment_replicates_with_no_libraries(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -3652,6 +3671,7 @@ function_dispatcher_without_files = {
     'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed,
     'audit_mixed_strand_specificities': audit_experiment_mixed_strand_specific_libraries,
     'audit_inconsistent_analysis_status': audit_experiment_inconsistent_analysis_status,
+    'audit_single_cell_libraries': audit_experiment_single_cell_libraries,
 }
 
 function_dispatcher_with_files = {

@@ -2840,3 +2840,15 @@ def test_audit_experiment_mixed_biosamples_replication_type(testapp, base_experi
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] != 'undetermined replication_type'
                for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_single_cell_libraries(testapp, base_experiment, base_replicate, base_library):
+    testapp.patch_json(base_library['@id'], {'barcode_details': [{'barcode': 'ATTTCGC'}]})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent barcode details'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'single-cell RNA sequencing assay'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert not any(error['category'] == 'inconsistent barcode details'
+               for error in collect_audit_errors(res))
