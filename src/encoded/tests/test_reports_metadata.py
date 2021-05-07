@@ -676,6 +676,7 @@ def test_metadata_metadata_report_build_header(dummy_request):
         'File assembly',
         'Experiment accession',
         'Assay',
+        'Donor(s)',
         'Biosample term id',
         'Biosample term name',
         'Biosample type',
@@ -745,6 +746,7 @@ def test_metadata_metadata_report_split_column_and_fields_by_experiment_and_file
         'File assembly': ['assembly'],
         'Biological replicate(s)': ['biological_replicates'],
         'Technical replicate(s)': ['technical_replicates'],
+        'Donor(s)': ['donors'],
         'Read length': ['read_length'],
         'Mapped read length': ['mapped_read_length'],
         'Run type': ['run_type'],
@@ -901,6 +903,7 @@ def test_metadata_metadata_report_add_fields_to_param_list(dummy_request):
         'files.assembly',
         'accession',
         'assay_title',
+        'files.donors',
         'biosample_ontology.term_id',
         'biosample_ontology.term_name',
         'biosample_ontology.classification',
@@ -1098,6 +1101,7 @@ def test_metadata_metadata_report_get_field_params(dummy_request):
         ('field', 'files.assembly'),
         ('field', 'accession'),
         ('field', 'assay_title'),
+        ('field', 'files.donors'),
         ('field', 'biosample_ontology.term_id'),
         ('field', 'biosample_ontology.term_name'),
         ('field', 'biosample_ontology.classification'),
@@ -1259,9 +1263,9 @@ def test_metadata_metadata_report_initialize_report(dummy_request):
     )
     mr = MetadataReport(dummy_request)
     mr._initialize_report()
-    assert len(mr.header) == 57
+    assert len(mr.header) == 58
     assert len(mr.experiment_column_to_fields_mapping.keys()) == 26, f'{len(mr.experiment_column_to_fields_mapping.keys())}'
-    assert len(mr.file_column_to_fields_mapping.keys()) == 30, f'{len(mr.file_column_to_fields_mapping.keys())}'
+    assert len(mr.file_column_to_fields_mapping.keys()) == 31, f'{len(mr.file_column_to_fields_mapping.keys())}'
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&files.file_type=bigWig&files.file_type=bam'
         '&replicates.library.size_range=50-100'
@@ -1285,7 +1289,7 @@ def test_metadata_metadata_report_build_params(dummy_request):
     dummy_request.json = {'elements': ['/experiments/ENCSR123ABC/']}
     mr = MetadataReport(dummy_request)
     mr._build_params()
-    assert len(mr.param_list['field']) == 65, f'{len(mr.param_list["field"])} not expected'
+    assert len(mr.param_list['field']) == 66, f'{len(mr.param_list["field"])} not expected'
     assert len(mr.param_list['@id']) == 1
 
 
@@ -1311,7 +1315,7 @@ def test_metadata_metadata_report_build_new_request(dummy_request):
         '&files.replicate.library=%2A&field=audit&field=files.%40id&field=files.restricted'
         '&field=files.no_file_available&field=files.file_format&field=files.file_format_type'
         '&field=files.status&field=files.assembly&limit=all&field=files.title&field=files.file_type'
-        '&field=files.output_type&field=accession&field=assay_title&field=biosample_ontology.term_id'
+        '&field=files.output_type&field=accession&field=assay_title&field=files.donors&field=biosample_ontology.term_id'
         '&field=biosample_ontology.term_name&field=biosample_ontology.classification'
         '&field=replicates.library.biosample.organism.scientific_name'
         '&field=replicates.library.biosample.treatments.treatment_term_name'
@@ -1582,6 +1586,7 @@ def test_metadata_metadata_report_output_sorted_row(dummy_request):
         'GRCh38',
         'ENCSR434TGY',
         'DNase-seq',
+        '',
         'EFO:0005914',
         'ZHBTc4',
         'cell line',
