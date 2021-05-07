@@ -23,6 +23,7 @@ METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('File assembly', ['files.assembly']),
         ('Experiment accession', ['accession']),
         ('Assay', ['assay_title']),
+        ('Donor(s)', ['files.donors']),
         ('Biosample term id', ['biosample_ontology.term_id']),
         ('Biosample term name', ['biosample_ontology.term_name']),
         ('Biosample type', ['biosample_ontology.classification']),
