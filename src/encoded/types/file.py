@@ -352,6 +352,56 @@ class File(Item):
         return sorted(techreps)
 
     @calculated_property(schema={
+        "title": "Donor",
+        "description": "The donor(s) associated with this file.",
+        "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
+        "type": "array",
+        "items": {
+            "title": "Donor",
+            "description": "Accession of donor object",
+            "type": "string"
+        }
+    })
+    def donors(self, request, registry, root, replicate=None):
+        if replicate is not None:
+            replicate_obj = traverse(root, replicate)['context']
+            rep = replicate_obj.__json__(request)
+            if 'library' in rep:
+                library_obj = traverse(root, rep['library'])['context']
+                library = library_obj.__json__(request)
+                if 'biosample' in library:
+                    biosample_obj = traverse(root, library['biosample'])['context']
+                    biosample = biosample_obj.__json__(request)
+                    if 'donor' in biosample:
+                        donor_obj = traverse(root, biosample['donor'])['context']
+                        donor = donor_obj.__json__(request)
+                        return [donor['accession']]
+
+        conn = registry[CONNECTION]
+        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
+        dataset_uuid = self.__json__(request)['dataset']
+        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
+        replicates = {
+            props['replicate']
+            for props in obj_props
+            if props['dataset'] == dataset_uuid and 'replicate' in props
+        }
+        donors = set()
+        for uuid in replicates:
+            rep = conn.get_by_uuid(uuid).__json__(request)
+            if 'library' in rep:
+                library_obj = traverse(root, rep['library'])['context']
+                library = library_obj.__json__(request)
+                if 'biosample' in library:
+                    biosample_obj = traverse(root, library['biosample'])['context']
+                    biosample = biosample_obj.__json__(request)
+                    if 'donor' in biosample:
+                        donor_obj = traverse(root, biosample['donor'])['context']
+                        donor = donor_obj.__json__(request)
+                        donors.add(donor['accession'])
+        return sorted(donors)
+
+    @calculated_property(schema={
         "title": "Analysis Step Version",
         "description": "The step version of the pipeline from which this file is an output.",
         "comment": "Do not submit.  This field is calculated from step_run.",
