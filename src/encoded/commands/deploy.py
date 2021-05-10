@@ -1015,7 +1015,7 @@ def _parse_args():
         type=hostname,
         help="Name of single node to add to already existing cluster"
     )
-    parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
+    parser.add_argument('--jvm-gigs', default='16', help="JVM Xms and Xmx gigs")
 
     # Database
     parser.add_argument('--postgres-version', default='11', help="Postegres version. '9.3' or '11'")
