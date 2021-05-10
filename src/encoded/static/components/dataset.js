@@ -1794,7 +1794,7 @@ export const SeriesComponent = (props, reactContext) => {
         if (d.replicates && d.replicates.length > 0) {
             biosamples = d.replicates.map((replicate) => replicate.library && replicate.library.biosample);
         }
-        if (biosamples && biosamples.length > 0) {
+        if (biosamples && biosamples.treatments && biosamples.length > 0) {
             biosamples.forEach((biosample) => biosample.treatments.forEach((treatment) => {
                 if (treatment.duration) {
                     treatmentDuration.push(`${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`);
@@ -1913,7 +1913,7 @@ export const SeriesComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {terms.length > 0 || speciesRender ?
+                            {seriesType !== 'SingleCellRnaSeries' && (terms.length > 0 || speciesRender) ?
                                 <div data-test="biosamplesummary">
                                     <dt>Biosample summary</dt>
                                     <dd>
