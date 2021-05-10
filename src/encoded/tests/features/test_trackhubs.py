@@ -202,6 +202,7 @@ def test_visualize(submitter_testapp, index_workbook, at_id, expected):
     "    type bigInteract",
     "    visibility full",
     "    interactUp True",
+    "    spectrum on",
     "        track ENCFF727BIF",
     "        parent ENCSR270OQH_CHRINTR_view on",
     "        bigDataUrl /files/ENCFF727BIF/@@download/ENCFF727BIF.bigInteract?proxy=true",

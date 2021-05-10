@@ -17,6 +17,9 @@
                     "type": "bigInteract",
                     "visibility": "full",
                     "interactUp": true,
+                    "maxHeightPixels": "200:50:16",
+                    "spectrum": "on",
+                    "scoreMin": "10",
                     "output_type": [ "chromatin interactions", "long range chromatin interactions" ]
                 },
                 "Long range interactions": {
