@@ -170,10 +170,13 @@
                 "type": "string",
                 "enum": [
                     "community",
+                    "DAC",
+                    "DCC",
                     "ENCODE",
                     "modENCODE",
                     "modERN",
-                    "mouseENCODE"
+                    "mouseENCODE",
+                    "uniform processing pipelines"
                 ]
             }
         },
@@ -191,6 +194,9 @@
         },
         "purpose": {
             "title": "Purpose"
+        },
+        "used_by": {
+            "title": "Used by"
         }
     },
    "columns": {
