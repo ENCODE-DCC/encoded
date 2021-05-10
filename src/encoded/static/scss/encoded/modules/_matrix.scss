@@ -988,8 +988,7 @@ table.matrix th.group-all-groups-cell {
 .matrix__content--target {
     @extend .matrix__content--reference-epigenome;
 
-    /* stylelint-disable-next-line selector-class-pattern */
-    .chip_seq_matrix__data-wrapper {
+    .chip-seq-matrix__data-wrapper {
         .tab-content {
             border-right: 1px solid $tab-color;
             border-left: 1px solid $tab-color;
@@ -1029,21 +1028,49 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
-/* stylelint-disable-next-line selector-class-pattern */
-.chip_seq_matrix__data-wrapper {
-    .tab-content {
-        overflow-x: auto;
+.chip-seq-matrix {
+    &__data-wrapper {
+        .tab-content {
+            overflow-x: auto;
+        }
     }
-}
 
-/* stylelint-disable-next-line selector-class-pattern */
-.chip_seq_matrix-search {
-    display: flex;
-    flex-wrap: nowrap !important;
-    justify-content: space-between;
+    &-search {
+        display: flex;
+        flex-wrap: nowrap !important;
+        justify-content: space-between;
 
-    select {
-        margin-left: 5px;
+        select {
+            margin-left: 5px;
+        }
+    }
+
+    &__facet {
+        margin-top: 20px;
+
+        button {
+            i {
+                pointer-events: none;
+            }
+        }
+
+        &--active-facet {
+            background-color: blue;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: inline;
+            padding-right: 10px;
+
+            button {
+                display: inline;
+            }
+        }
     }
 }
 
@@ -1068,12 +1095,12 @@ table.matrix th.group-all-groups-cell {
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
-.chip_seq_matrix__organism-selector {
+.chip-seq-matrix__organism-selector {
     @extend .matrix-reference-epigenome__organism-selector;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
-.chip_seq_matrix__warning {
+.chip-seq-matrix__warning {
     min-height: 40px;
     margin: 10px;
 }

@@ -9,7 +9,7 @@ import { Panel, PanelBody, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { MatrixBadges, DisplayAsJson } from './objectutils';
+import { MatrixBadges, DisplayAsJson, useMount } from './objectutils';
 import { SearchFilter } from './matrix';
 import { TextFilter } from './search';
 import { DivTable } from './datatable';
@@ -17,6 +17,39 @@ import { DivTable } from './datatable';
 
 const SEARCH_PERFORMED_PUBSUB = 'searchPerformed';
 const CLEAR_SEARCH_BOX_PUBSUB = 'clearSearchBox';
+const ENCODE_FACET_CHIP_SEQ_PREFIX = 'encode_facet_chip_seq_prefix';
+
+const removeNonAlphaNumeric = (name) => (name && name.replace ? name.replace(/\W+|_/g, '') : '');
+
+const FACET_SET = [
+    {
+        field: 'perturbed',
+        title: 'Perturbation',
+        terms: [
+            { key: 1, key_as_string: 'true' },
+        ],
+    },
+    {
+        field: 'target.investigated_as',
+        title: 'Target category',
+        terms: [
+            { key: 'broad histone mark' },
+            { key: 'chromatin remodeler' },
+            { key: 'histone' },
+            { key: 'narrow histone mark' },
+            { key: 'other context' },
+            { key: 'RNA binding protein' },
+            { key: 'cofactor' },
+            { key: 'cohesin' },
+            { key: 'DNA replication' },
+            { key: 'DNA repair' },
+            { key: 'RNA polymerase complex' },
+            { key: 'synthetic tag' },
+            { key: 'tag' },
+            { key: 'transcription factor' },
+        ],
+    },
+];
 
 /**
  * Transform context to a form where easier to fetch information
@@ -77,8 +110,8 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
 
         yData.forEach((y) => {
             const yKey = Object.keys(y)[0];
-            dataRowT[yKey] = dataRowT[yKey] || Array(headerRowLength + 1).fill(0);
-            dataRowT[yKey][0] = yKey;
+            dataRowT[yKey] = dataRowT[yKey] || Array(headerRowLength + 1).fill({ content: 0, hasProteinTag: false });
+            dataRowT[yKey][0] = { content: yKey };
 
             const keyDocCountPair = y[yKey].reduce((a, b) => a.concat(b), []);
 
@@ -86,7 +119,10 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
                 const { key } = kp;
                 const docCount = kp.doc_count;
                 const index = headerRowIndex[key];
-                dataRowT[yKey][index + 1] = docCount;
+                dataRowT[yKey][index + 1] = {
+                    content: docCount,
+                    hasProteinTag: kp['protein_tags.name'].buckets[0].key !== 'no_protein_tags',
+                };
             });
         });
 
@@ -159,17 +195,23 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3) => {
                 const borderLeft = '1px solid #fff'; // make left-most side border white
                 content = {
                     id: removeSpecialCharacters(`${y}`),
-                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>{y}</a>,
+                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0].content}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y.content}>{y.content}</a>,
                     style: { borderLeft },
                     className: 'div-table-matrix__row__data-row-item',
                 };
             } else {
                 const borderTop = rIndex === 0 ? '1px solid #f0f0f0' : ''; // add border color to topmost rows
-                const backgroundColor = y === 0 ? '#FFF' : '#688878'; // determined if box is colored or not
+                let backgroundColor;
+
+                if (y.hasProteinTag) {
+                    backgroundColor = '#22a8a8';
+                } else {
+                    backgroundColor = y.content === 0 ? '#fff' : '#688878'; // determined if box is colored or not
+                }
                 const borderRight = yIndex === rowLength - 1 ? '1px solid #f0f0f0' : ''; // add border color to right-most rows
                 content = {
-                    id: removeSpecialCharacters(`${row[0]}${chIPSeqData.headerRow[yIndex - 1]}`),
-                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>&nbsp;</a>,
+                    id: removeSpecialCharacters(`${row[0].content}${chIPSeqData.headerRow[yIndex - 1]}`),
+                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0].content}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y.content}>&nbsp;</a>,
                     style: { backgroundColor, borderTop, borderRight },
                     className: 'div-table-matrix__row__data-row-item',
                 };
@@ -323,7 +365,7 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
             'Enter any text string such as ac or H3 to filter ChIP target';
 
         return (
-            <div className="facet chip_seq_matrix-search">
+            <div className="facet chip-seq-matrix-search">
                 <input
                     type="search"
                     className="search-query"
@@ -341,6 +383,176 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
         );
     }
 }
+
+// const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
+const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
+    const { context } = props;
+    const [selectedFacet, setSelectedFacet] = React.useState(FACET_SET.length > 0 ? FACET_SET[0] : null);
+    const [activeButtonId, setActiveButtonId] = React.useState(null);
+    const facetRegion = React.useRef();
+
+    const facetClicked = (e, facet) => {
+        const { id } = e.target;
+
+        setSelectedFacet(facet);
+
+        let idStored = id;
+        if (id === activeButtonId) {
+            idStored = activeButtonId ? null : id;
+        }
+
+        setActiveButtonId(idStored);
+
+        const sessionKey = `${ENCODE_FACET_CHIP_SEQ_PREFIX}-active-button`;
+        window.sessionStorage.setItem(sessionKey, idStored);
+    };
+
+    const trinaryFacetChanged = (e) => {
+        const field = e.target.getAttribute('field');
+        const { value } = e.target;
+        const query = new QueryString(context['@id']);
+
+        query.deleteKeyValue(field);
+
+        if (value !== 'exclude') {
+            query.addKeyValue(field, value);
+        }
+
+        reactContext.navigate(query.format());
+    };
+
+    const multiFacetChanged = (e) => {
+        const field = e.target.getAttribute('field');
+        const equalsymbol = e.target.getAttribute('equalsymbol');
+        const { id, value } = e.target;
+        const query = new QueryString(context['@id']);
+
+        query.deleteKeyValue(field, value);
+        query.deleteKeyValue(`${field}!`, value);
+
+        if (equalsymbol !== 'none') {
+            query.addKeyValue(field, value, equalsymbol !== 'true');
+        }
+
+        reactContext.navigate(query.format());
+    };
+
+    useMount(() => {
+        // set active region
+        const activeButtonSessionKey = `${ENCODE_FACET_CHIP_SEQ_PREFIX}-active-button`;
+        const storedButtonId = window.sessionStorage.getItem(activeButtonSessionKey);
+
+        setActiveButtonId(storedButtonId);
+
+        const radioButtons = facetRegion.current.querySelectorAll('[type=radio].exclude-filter');
+
+        for (let i = 0; i < radioButtons.length; i += 1) {
+            radioButtons[i].checked = true;
+        }
+
+        const fields = FACET_SET.map((facet) => facet.field);
+        const contextFilters = context.filters.filter((filter) => fields.includes(filter.field.replace('!', '')));
+
+        for (let i = 0; i < contextFilters.length; i += 1) {
+            const contextFilter = contextFilters[i];
+            const { field, term } = contextFilter;
+            let id = null;
+
+            if (contextFilter.term === 'true' || contextFilter.term === 'false') {
+                id = `${field}-${term}`;
+            } else {
+                id = `${removeNonAlphaNumeric(contextFilter.term)}-${field.includes('!') ? 'notEqual' : 'equal'}`;
+            }
+
+            const element = document.querySelector(`#${id}`);
+
+
+            if (element) {
+                element.checked = true;
+            }
+        }
+    });
+
+    return (
+        <div className="chip-seq-matrix__facet">
+            <div className="chip-seq-matrix__facet--header">
+                Facet
+            </div>
+            <ul>
+                {
+                    FACET_SET.map((facet) => {
+                        const id = `${removeNonAlphaNumeric(facet.title)}-facet-btn`;
+                        return (
+                            <li key={`${facet.field}-btn`}>
+                                <button id={id} className={`btn ${facet.field === selectedFacet.field ? 'btn-primary' : ''}`} type="button" onClick={(e) => facetClicked(e, facet)}>
+                                    {facet.title} <i className={`${id !== activeButtonId ? 'icon icon-minus-circle' : 'icon icon-plus-circle'}`} />
+                                </button>
+                            </li>);
+                    })
+                }
+                <li>
+                    <a href={context.clear_filters}>Clear</a>
+                </li>
+            </ul>
+            <div ref={facetRegion}>
+                {
+                    FACET_SET.map((facet) => {
+                        const buttonId = `${removeNonAlphaNumeric(facet.title)}-facet-btn`;
+
+                        return (facet.terms.map((term) => {
+                            const formattedKey = removeNonAlphaNumeric(term.key);
+                            const formattedField = removeNonAlphaNumeric(facet.field);
+
+                            return (
+                                <div key={`${formattedKey}-selection-region`} className="tristate-radio" hidden={activeButtonId !== buttonId}>
+                                    {
+                                        term.key_as_string ?
+                                        <>
+                                            <label className="yes">
+                                                <input type="radio" id={`${facet.field}-true`} name={`${formattedField}-${term.key}`} field={facet.field} value="true" onChange={(e) => trinaryFacetChanged(e)} />
+                                                <span htmlFor={`${facet.field}-true`}>{'\u003D'}</span>
+                                            </label>
+                                            <label className="not-used">
+                                                <input type="radio" id={`${facet.field}-exclude`} className="exclude-filter" name={`${formattedField}-${term.key}`} field={facet.field} value="exclude" onChange={(e) => trinaryFacetChanged(e)} />
+                                                <span htmlFor={`${facet.field}-exclude`}>{'\u20E0'}</span>
+                                            </label>
+                                            <label className="no">
+                                                <input type="radio" id={`${facet.field}-false`} name={`${formattedField}-${term.key}`} field={facet.field} value="false" onChange={(e) => trinaryFacetChanged(e)} />
+                                                <span htmlFor={`${facet.field}-false`}>{'\u2260'}</span>
+                                            </label>
+                                        </> :
+                                        <>
+                                            <label className="yes">
+                                                <input type="radio" id={`${formattedKey}-equal`} name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="true" value={term.key} onChange={(e) => multiFacetChanged(e)} />
+                                                <span>{'\u003D'}</span>
+                                            </label>
+                                            <label className="not-used">
+                                                <input type="radio" id={`${formattedKey}-exclude`} className="exclude-filter" name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="none" value={term.key} onChange={(e) => multiFacetChanged(e)} />
+                                                <span>{'\u20E0'}</span>
+                                            </label>
+                                            <label className="no">
+                                                <input type="radio" id={`${formattedKey}-notEqual`} name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="false" value={term.key} onChange={(e) => multiFacetChanged(e)} />
+                                                <span>{'\u2260'}</span>
+                                            </label>
+                                            <span htmlFor="">{' '}{term.key}</span>
+                                        </>
+                                    }
+                                </div>
+                            );
+                        }));
+                    })
+                }
+            </div>
+        </div>);
+};
+
+ChIPSeqMatrixFacets.propTypes = {
+    props: PropTypes.object.isRequired,
+};
+
+ChIPSeqMatrixFacets.contextTypes = {
+    navigate: PropTypes.func,
+};
 
 /**
  * Hold code and markup for search
@@ -401,6 +613,7 @@ const ChIPSeqMatrixHeader = (props) => {
                     </div>
                 </div>
             </div>
+            <ChIPSeqMatrixFacets props={props} />
         </div>
     );
 };
@@ -452,7 +665,7 @@ class ChIPSeqTabPanel extends React.Component {
         const baseUrl = '/chip-seq-matrix/?type=Experiment';
 
         return (
-            <div className="chip_seq_matrix__data-wrapper">
+            <div className="chip-seq-matrix__data-wrapper">
                 <div className="tab-nav">
                     <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
                         {tabList.map((tab, index) => (
@@ -529,7 +742,7 @@ const SelectOrganismModal = () => (
         <ModalHeader closeModal={false} addCss="matrix__modal-header">
             <h2>ChIP-Seq Matrix &mdash; choose organism</h2>
         </ModalHeader>
-        <ModalBody addCss="chip_seq_matrix__organism-selector">
+        <ModalBody addCss="chip-seq-matrix__organism-selector">
             <div>Organism to view in matrix:</div>
             <div className="selectors">
                 {tabLevel1.map((tab, index) => (
@@ -819,7 +1032,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
                                           <DivTable tableData={convertTargetDataToTable(chIPSeqData, selectedTabLevel3)} />
                                       </div>
                                   :
-                                      <div className="chip_seq_matrix__warning">
+                                      <div className="chip-seq-matrix__warning">
                                           { chIPSeqData && Object.keys(chIPSeqData).length === 0 ? 'Select an organism to view data.' : 'No data to display.' }
                                       </div>
                                 }

@@ -326,12 +326,12 @@ class Experiment(Dataset,
         'y': {
             'group_by': [
                 'replicates.library.biosample.donor.organism.scientific_name',
-                'target.label',
+                'target.label'
             ],
             'label': 'Target',
         },
         'x': {
-            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name', ('protein_tags.name', 'no_protein_tags')],
             'label': 'Term Name',
         },
     }

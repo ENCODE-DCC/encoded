@@ -25,3 +25,47 @@ select {
     background-color: #b24342;
     border-radius: 3px;
 }
+
+.tristate-radio {
+    margin-bottom: 5px;
+
+    & label {
+        float: left;
+        width: 100px;
+        border-radius: 10px;
+        border: 1px solid #d0d0d0;
+        overflow: auto;
+        margin-right: 0.9rem;
+
+        & span {
+            text-align: center;
+            display: block;
+            height: 23px;
+        }
+
+        & input {
+            position: absolute;
+            top: -20px;
+        }
+    }
+
+    & input:checked + span {
+        background-color: blue;
+        color: #f7f7f7;
+    }
+
+    & .not-used {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    & .no {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .yes {
+        cursor: pointer;
+        font-weight: bold;
+    }
+}
