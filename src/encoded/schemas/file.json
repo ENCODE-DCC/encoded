@@ -519,10 +519,25 @@
                     }
                 },
                 {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "bed",
+                                "bigBed"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "guide locations"
+                            ]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal", "R2C2 subreads"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal", "R2C2 subreads", "guide locations"]
                             }
                         }
                     }
@@ -1510,6 +1525,7 @@
                         "genome index",
                         "genome reference",
                         "gRNAs",
+                        "guide locations",
                         "guide quantifications",
                         "hotspots",
                         "hotspots1 reference",
@@ -2205,6 +2221,7 @@
         "promoters reference": "reference",
         "DHS regions reference": "reference",
         "element barcode mapping": "reference",
+        "guide locations": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
