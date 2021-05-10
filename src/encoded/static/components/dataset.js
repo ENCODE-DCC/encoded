@@ -1913,7 +1913,7 @@ export const SeriesComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {seriesType !== 'SingleCellRnaSeries' && (terms.length > 0 || speciesRender) ?
+                            {terms.length > 0 || speciesRender ?
                                 <div data-test="biosamplesummary">
                                     <dt>Biosample summary</dt>
                                     <dd>

@@ -1236,9 +1236,11 @@ class SingleCellRnaSeries(Series):
     item_type = 'single_cell_rna_series'
     schema = load_schema('encoded:schemas/single_cell_rna_series.json')
     embedded = [
+        'biosample_ontology',
+        'organism',
         'lab',
         'award',
-        'submitted_by'
+        'submitted_by',
     ]
 
 
