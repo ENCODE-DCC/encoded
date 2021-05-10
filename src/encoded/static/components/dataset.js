@@ -1794,7 +1794,7 @@ export const SeriesComponent = (props, reactContext) => {
         if (d.replicates && d.replicates.length > 0) {
             biosamples = d.replicates.map((replicate) => replicate.library && replicate.library.biosample);
         }
-        if (biosamples && biosamples.length > 0) {
+        if (biosamples && biosamples.treatments && biosamples.length > 0) {
             biosamples.forEach((biosample) => biosample.treatments.forEach((treatment) => {
                 if (treatment.duration) {
                     treatmentDuration.push(`${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`);
@@ -1818,19 +1818,21 @@ export const SeriesComponent = (props, reactContext) => {
     // Calculate the biosample summary
     let speciesRender = null;
     if (context.organism && context.organism.length > 0) {
-        const speciesList = [...new Set(context.organism.map((organism) => organism.scientific_name))];
-        speciesRender = (
-            <span>
-                {speciesList.map((species, i) => (
-                    <span key={i}>
-                        {i > 0 ? <span> and </span> : null}
-                        <i>{species}</i>
-                    </span>
-                ))}
-            </span>
-        );
+        const speciesList = [...new Set(context.organism.map((organism) => organism.scientific_name))].filter((o) => o);
+        if (speciesList.length > 0) {
+            speciesRender = (
+                <span>
+                    {speciesList.map((species, i) => (
+                        <span key={i}>
+                            {i > 0 ? <span> and </span> : null}
+                            <i>{species}</i>
+                        </span>
+                    ))}
+                </span>
+            );
+        }
     }
-    const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? [...new Set(context.biosample_ontology.map((b) => b.term_name))] : [];
+    const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? [...new Set(context.biosample_ontology.map((b) => b.term_name))].filter((b) => b) : [];
 
     // Calculate the donor diversity.
     const diversity = donorDiversity(context);
