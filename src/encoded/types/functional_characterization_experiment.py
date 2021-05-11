@@ -49,6 +49,7 @@ class FunctionalCharacterizationExperiment(
     embedded = Dataset.embedded + [
         'biosample_ontology',
         'examined_loci.gene',
+        'elements_references.examined_loci',
         'files.platform',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',

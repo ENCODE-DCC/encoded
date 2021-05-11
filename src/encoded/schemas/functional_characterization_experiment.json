@@ -309,6 +309,11 @@
             "title": "Status",
             "open_on_load": true
         },
+        "elements_references.examined_loci.symbol": {
+            "title": "Investigated loci",
+            "type": "typeahead",
+            "open_on_load": true
+        },
         "target.investigated_as": {
             "title": "Target category"
         },
