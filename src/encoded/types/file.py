@@ -153,15 +153,7 @@ class File(Item):
                 'pipeline_version',
                 'title',
             ],
-        ),
-        Path(
-            'replicate.library.biosample',
-            include=[
-                '@id',
-                '@type',
-                'donor'
-            ],
-        ),
+        )
     ]
     audit_inherit = [
         'replicate',
@@ -370,40 +362,63 @@ class File(Item):
             "type": "string"
         }
     })
-    def donors(self, request, registry, root, replicate=None):
-        donor = None
+    def donors(self, request, registry, dataset, root, replicate=None):
+        calculated_donors = []
+        # If the file has a replicate just get the donor property from it.
         if replicate is not None:
-            library = request.embed(replicate, '@@object?skip_calculated=true').get('library', {})
-            if library:
-                biosample = request.embed(library, '@@object?skip_calculated=true').get('biosample', {})
-                if biosample:
-                    donor = request.embed(biosample, '@@object?skip_calculated=true').get('donor', '')
-            return [donor]
-
-        conn = registry[CONNECTION]
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
-        dataset_uuid = self.__json__(request)['dataset']
-        obj_props = (request.resource_path(conn.get_by_uuid(uuid)) for uuid in derived_from_closure)
-        # replicates = {
-        #     props['replicate']
-        #     for props in obj_props
-        #     if props['dataset'] == dataset_uuid and 'replicate' in props
-        # }
-        # donors = set()
-        # for uuid in replicates:
-        #     rep = conn.get_by_uuid(uuid).__json__(request)
-        #     if 'library' in rep:
-        #         library_obj = traverse(root, rep['library'])['context']
-        #         library = library_obj.__json__(request)
-        #         if 'biosample' in library:
-        #             biosample_obj = traverse(root, library['biosample'])['context']
-        #             biosample = biosample_obj.__json__(request)
-        #             if 'donor' in biosample:
-        #                 donor_obj = traverse(root, biosample['donor'])['context']
-        #                 donor = donor_obj.__json__(request)
-        #                 donors.add(donor['accession'])
-        donors = [str(request.embed(prop, '@@object')) for prop in obj_props]
-        return sorted(donors)
+            properties = {'replicate': replicate}
+            path = Path(
+                'replicate.library.biosample',
+                include=[
+                    '@id',
+                    '@type',
+                    'library',
+                    'biosample',
+                    'donor'
+                ]
+            )
+            path.expand(request, properties)
+            donor = properties.get(
+                'replicate', {}
+            ).get(
+                'library', {}
+            ).get(
+                'biosample', {}
+            ).get(
+                'donor'
+            )
+            if donor:
+                calculated_donors.append(donor)
+        else:
+            # If the file doesn't have a replicate then traceback to the files it
+            # derived_from.
+            derived_from_file_at_ids = (
+                request.resource_path(root[uuid])
+                for uuid in property_closure(request, 'derived_from', self.uuid)
+            )
+            # Just get the properties from those files needed for filtering.
+            properties = {
+                'files': list(derived_from_file_at_ids)
+            }
+            path = Path('files', include=['@id', '@type', 'dataset', 'replicate'])
+            path.expand(request, properties)
+            # Filter on files that have replicates and belong to the same dataset.
+            filtered_derived_from_file_at_ids = (
+                file_['@id']
+                for file_ in properties['files']
+                if 'replicate' in file_ and file_['dataset'] == dataset
+            )
+            # Now just pull the calculated donor property from those files with replicates.
+            properties = {
+                'files': list(filtered_derived_from_file_at_ids)
+            }
+            path = Path('files', include=['@id', '@type', 'donors'])
+            path.expand(request, properties)
+            # Add the donors from those files.
+            for file_ in properties['files']:
+                calculated_donors.extend(file_.get('donors', []))
+        # Return a unique list.
+        return list(set(calculated_donors))
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
