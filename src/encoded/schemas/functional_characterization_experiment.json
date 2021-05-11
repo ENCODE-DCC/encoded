@@ -310,7 +310,7 @@
             "open_on_load": true
         },
         "elements_references.examined_loci.symbol": {
-            "title": "Investigated loci",
+            "title": "Targeted loci",
             "type": "typeahead",
             "open_on_load": true
         },
