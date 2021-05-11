@@ -154,6 +154,14 @@ class File(Item):
                 'title',
             ],
         ),
+        Path(
+            'replicate.library.biosample',
+            include=[
+                '@id',
+                '@type',
+                'donor'
+            ],
+        ),
     ]
     audit_inherit = [
         'replicate',
@@ -363,42 +371,38 @@ class File(Item):
         }
     })
     def donors(self, request, registry, root, replicate=None):
+        donor = None
         if replicate is not None:
-            replicate_obj = traverse(root, replicate)['context']
-            rep = replicate_obj.__json__(request)
-            if 'library' in rep:
-                library_obj = traverse(root, rep['library'])['context']
-                library = library_obj.__json__(request)
-                if 'biosample' in library:
-                    biosample_obj = traverse(root, library['biosample'])['context']
-                    biosample = biosample_obj.__json__(request)
-                    if 'donor' in biosample:
-                        donor_obj = traverse(root, biosample['donor'])['context']
-                        donor = donor_obj.__json__(request)
-                        return [donor['accession']]
+            library = request.embed(replicate, '@@object?skip_calculated=true').get('library', {})
+            if library:
+                biosample = request.embed(library, '@@object?skip_calculated=true').get('biosample', {})
+                if biosample:
+                    donor = request.embed(biosample, '@@object?skip_calculated=true').get('donor', '')
+            return [donor]
 
         conn = registry[CONNECTION]
         derived_from_closure = property_closure(request, 'derived_from', self.uuid)
         dataset_uuid = self.__json__(request)['dataset']
-        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
-        replicates = {
-            props['replicate']
-            for props in obj_props
-            if props['dataset'] == dataset_uuid and 'replicate' in props
-        }
-        donors = set()
-        for uuid in replicates:
-            rep = conn.get_by_uuid(uuid).__json__(request)
-            if 'library' in rep:
-                library_obj = traverse(root, rep['library'])['context']
-                library = library_obj.__json__(request)
-                if 'biosample' in library:
-                    biosample_obj = traverse(root, library['biosample'])['context']
-                    biosample = biosample_obj.__json__(request)
-                    if 'donor' in biosample:
-                        donor_obj = traverse(root, biosample['donor'])['context']
-                        donor = donor_obj.__json__(request)
-                        donors.add(donor['accession'])
+        obj_props = (request.resource_path(conn.get_by_uuid(uuid)) for uuid in derived_from_closure)
+        # replicates = {
+        #     props['replicate']
+        #     for props in obj_props
+        #     if props['dataset'] == dataset_uuid and 'replicate' in props
+        # }
+        # donors = set()
+        # for uuid in replicates:
+        #     rep = conn.get_by_uuid(uuid).__json__(request)
+        #     if 'library' in rep:
+        #         library_obj = traverse(root, rep['library'])['context']
+        #         library = library_obj.__json__(request)
+        #         if 'biosample' in library:
+        #             biosample_obj = traverse(root, library['biosample'])['context']
+        #             biosample = biosample_obj.__json__(request)
+        #             if 'donor' in biosample:
+        #                 donor_obj = traverse(root, biosample['donor'])['context']
+        #                 donor = donor_obj.__json__(request)
+        #                 donors.add(donor['accession'])
+        donors = [str(request.embed(prop, '@@object')) for prop in obj_props]
         return sorted(donors)
 
     @calculated_property(schema={
