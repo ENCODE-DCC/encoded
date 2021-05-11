@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 31
+* Added  *ENCYCLOPEDIAv6* to *internal_tags* enums list
+
 ### Schema version 31
 
 * Changed the *analysis_objects* property to be *analyses*

@@ -1119,7 +1119,7 @@
         "date_released": "2017-12-06",
         "date_submitted": "2017-11-21",
         "description": "RNA-seq on HepG2 cells treated with an shRNA knockdown against ZC3H8. (ZC3H8-BGHLV37-B)",
-        "internal_tags": ["ENCYCLOPEDIAv5", "ENCORE"],
+        "internal_tags": ["ENCYCLOPEDIAv5", "ENCORE", "ENCYCLOPEDIAv6"],
         "lab": "brenton-graveley",
         "status": "released",
         "submitted_by": "mus.mi@porttitor.molestie",
