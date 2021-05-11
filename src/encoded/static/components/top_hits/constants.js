@@ -58,3 +58,49 @@ export const DONOR = 'Donor';
 export const TERM_NAME = 'term_name';
 
 export const SCIENTIFIC_NAME = 'scientific_name';
+
+export const COLLECTION_ENDPOINT_URLS = [
+    {
+        title: 'ENTEx',
+        details: 'Epigenomes from four individuals',
+        searchURL: '/search/?type=Experiment&status=released&internal_tags=ENTEx&limit=0',
+        linkURL: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx'
+    },
+    {
+        title: 'SESCC',
+        details: 'Stem Cell Development Matrix',
+        searchURL: '/search/?type=Experiment&internal_tags=SESCC&limit=0',
+        linkURL: '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
+    },
+    {
+        title: 'ENCORE',
+        details: 'RNA-protein interactions',
+        searchURL: '/search/?type=Experiment&status=released&internal_tags=ENCORE&limit=0',
+        linkURL: '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE',
+    },
+    {
+        title: 'Human reference epigenomes',
+        details: null,
+        searchURL: (
+            '/search/?type=Experiment&related_series.@type=ReferenceEpigenome' +
+            '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'
+        )
+        linkURL: (
+            '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome' +
+            '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'
+        )
+    },
+    {
+        title: 'Mouse development matrix',
+        details: null,
+        searchURL: (
+            '/search/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries' +
+            '&replicates.library.biosample.organism.scientific_name=Mus+musculus'
+        ),
+        linkURL: (
+            '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries' +
+            '&replicates.library.biosample.organism.scientific_name=Mus+musculus'
+        ),
+    }
+
+]
