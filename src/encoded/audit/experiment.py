@@ -2902,45 +2902,65 @@ def audit_experiment_no_processed_data(value, system, files_structure):
         yield AuditFailure('lacking processed data', detail, level='WARNING')
 
 
-def audit_experiment_inconsistent_analysis_files(value, system, files_structure):
+def audit_experiment_inconsistent_analysis_files_mismatched_dataset(value, system, files_structure):
+    files_in_different_dataset = []
+    if 'analyses' not in value:
+        return
+
+    for analysis in value['analyses']:
+        if analysis['status'] == 'deleted':
+            continue
+        for file in analysis['files']:
+            if file['dataset'] != value['@id']:
+                files_in_different_dataset .append(file['@id'])
+        if len(files_in_different_dataset) > 0:
+            files_in_different_dataset_links = [
+                audit_link(path_to_text(file), file) for file in files_in_different_dataset
+            ]
+            detail = (
+                f"Analysis {audit_link(path_to_text(analysis['@id']), analysis['@id'])} "
+                f"contains file(s) {', '.join(files_in_different_dataset_links)} "
+                f'belonging to another dataset.'
+            )
+            yield AuditFailure('inconsistent analysis files', detail, level='INTERNAL_ACTION')
+
+
+def audit_experiment_inconsistent_analysis_files_mismatched_analysis(value, system, files_structure):
     processed_data = files_structure.get('processed_data')
     files_not_in_analysis = []
-    files_not_in_processed_data = []
-    if processed_data and 'analyses' in value:
-        analysis_outputs = set()
-        for analysis in value['analyses']:
-            for f in analysis['files']:
-                if f['status'] != 'deleted':
-                    analysis_outputs.add(f['@id'])
-        for processed_file_id in processed_data:
-            if processed_file_id in analysis_outputs:
-                continue
-            if processed_file_id not in analysis_outputs:
-                files_not_in_analysis.append(processed_file_id)
-        for analysis_file_id in analysis_outputs:
-            if analysis_file_id in processed_data:
-                continue
-            if analysis_file_id not in processed_data:
-                files_not_in_processed_data.append(analysis_file_id)
+    files_in_analysis_of_other_datasets = []
+    analysis_ids = []
+    if 'analyses' in value:
+        analysis_ids = [analysis['@id'] for analysis in value['analyses']]
+
+    if processed_data:
+        for file in processed_data:
+            if 'analyses' in processed_data[file] and len(processed_data[file]['analyses']) > 0:
+                for analysis in processed_data[file]['analyses']:
+                    if analysis not in analysis_ids:
+                        files_in_analysis_of_other_datasets.append(processed_data[file]['@id'])
+            else:
+                files_not_in_analysis.append(processed_data[file]['@id'])
+
     if len(files_not_in_analysis) > 0:
-        files_not_in_analysis_links = [audit_link(path_to_text(file), file) for file in files_not_in_analysis]
-        detail = ('Experiment {} '
-                'contains processed file(s) {} '
-                'not in an analysis'.format(
-                    audit_link(path_to_text(value['@id']), value['@id']),
-                    ', '.join(files_not_in_analysis_links)
-                )
-            )
+        files_not_in_analysis_links = [
+            audit_link(path_to_text(file), file) for file in files_not_in_analysis
+        ]
+        detail = (
+            f"Experiment {audit_link(path_to_text(value['@id']), value['@id'])} "
+            f"contains processed file(s) {', '.join(files_not_in_analysis_links)} "
+            f'not in an analysis.'
+        )
         yield AuditFailure('inconsistent analysis files', detail, level='INTERNAL_ACTION')
-    if len(files_not_in_processed_data) > 0:
-        files_not_in_processed_data_links = [audit_link(path_to_text(file), file) for file in files_not_in_processed_data]
-        detail = ('Experiment {} '
-                'contains file(s) in an analysis {} '
-                'not in processed data'.format(
-                    audit_link(path_to_text(value['@id']), value['@id']),
-                    ', '.join(files_not_in_processed_data_links)
-                )
-            )
+    if len(files_in_analysis_of_other_datasets) > 0:
+        files_in_analysis_of_other_datasets_links = [
+            audit_link(path_to_text(file), file) for file in files_in_analysis_of_other_datasets
+        ]
+        detail = (
+            f"Experiment {audit_link(path_to_text(value['@id']), value['@id'])} "
+            f"contains processed file(s) {', '.join(files_in_analysis_of_other_datasets_links)} "
+            f'belonging to an analysis associated with a different dataset.'
+        )
         yield AuditFailure('inconsistent analysis files', detail, level='INTERNAL_ACTION')
 
 
@@ -3668,7 +3688,8 @@ function_dispatcher_with_files = {
     'audit_experiment_standards': audit_experiment_standards_dispatcher,
     'audit_submitted_status': audit_experiment_status,
     'audit_no_processed_data': audit_experiment_no_processed_data,
-    'audit_experiment_inconsistent_analysis_files': audit_experiment_inconsistent_analysis_files,
+    'audit_experiment_inconsistent_analysis_files_mismatched_analysis': audit_experiment_inconsistent_analysis_files_mismatched_analysis,
+    'audit_experiment_inconsistent_analysis_files_mismatched_dataset': audit_experiment_inconsistent_analysis_files_mismatched_dataset,
 }
 
 
