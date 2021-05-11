@@ -59,33 +59,33 @@ export const TERM_NAME = 'term_name';
 
 export const SCIENTIFIC_NAME = 'scientific_name';
 
-export const COLLECTION_ENDPOINT_URLS = [
+export const COLLECTIONS = [
     {
         title: 'ENTEx',
         details: 'Epigenomes from four individuals',
-        searchURL: '/search/?type=Experiment&status=released&internal_tags=ENTEx&limit=0',
-        linkURL: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx'
+        searchUrl: '/search/?type=Experiment&status=released&internal_tags=ENTEx&limit=0',
+        '@id': '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx'
     },
     {
         title: 'SESCC',
         details: 'Stem Cell Development Matrix',
-        searchURL: '/search/?type=Experiment&internal_tags=SESCC&limit=0',
-        linkURL: '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
+        searchUrl: '/search/?type=Experiment&internal_tags=SESCC&limit=0',
+        '@id': '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
     },
     {
         title: 'ENCORE',
         details: 'RNA-protein interactions',
-        searchURL: '/search/?type=Experiment&status=released&internal_tags=ENCORE&limit=0',
-        linkURL: '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE',
+        searchUrl: '/search/?type=Experiment&status=released&internal_tags=ENCORE&limit=0',
+        '@id': '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE',
     },
     {
         title: 'Human reference epigenomes',
         details: null,
-        searchURL: (
+        searchUrl: (
             '/search/?type=Experiment&related_series.@type=ReferenceEpigenome' +
             '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'
         )
-        linkURL: (
+        '@id': (
             '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome' +
             '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'
         )
@@ -93,14 +93,16 @@ export const COLLECTION_ENDPOINT_URLS = [
     {
         title: 'Mouse development matrix',
         details: null,
-        searchURL: (
+        searchUrl: (
             '/search/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries' +
             '&replicates.library.biosample.organism.scientific_name=Mus+musculus'
         ),
-        linkURL: (
+        '@id': (
             '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries' +
             '&replicates.library.biosample.organism.scientific_name=Mus+musculus'
         ),
     }
 
 ]
+
+export const COLLECTIONS_KEY = 'Data collections'
