@@ -570,22 +570,58 @@ ImageWithFallback.propTypes = {
  * Maps an internal tag to the corresponding image file name. Exported for Jest testing.
  */
 export const internalTagsMap = {
-    ccre_inputv1: 'tag-ccre_inputv1.svg',
-    ccre_inputv2: 'tag-ccre_inputv2.svg',
-    cre_inputv10: 'tag-cre_inputv10.svg',
-    cre_inputv11: 'tag-cre_inputv11.svg',
-    dbGaP: 'tag-dbGaP.png',
-    DREAM: 'tag-DREAM.png',
-    ENCORE: 'tag-ENCORE.svg',
-    ENCYCLOPEDIAv3: 'tag-ENCYCLOPEDIAv3.svg',
-    ENCYCLOPEDIAv4: 'tag-ENCYCLOPEDIAv4.svg',
-    ENCYCLOPEDIAv5: 'tag-ENCYCLOPEDIAv5.svg',
-    ENTEx: 'tag-ENTEx.png',
-    LRGASP: 'tag-LRGASP.png',
-    MouseDevSeries: 'tag-MouseDevSeries.svg',
-    PGP: 'tag-PGP.png',
-    RegulomeDB: 'tag-RegulomeDB.png',
-    SESCC: 'tag-SESCC.svg',
+    ccre_inputv1: {
+        badgeFilename: 'tag-ccre_inputv1.svg',
+    },
+    ccre_inputv2: {
+        badgeFilename: 'tag-ccre_inputv2.svg',
+    },
+    cre_inputv10: {
+        badgeFilename: 'tag-cre_inputv10.svg',
+    },
+    cre_inputv11: {
+        badgeFilename: 'tag-cre_inputv11.svg',
+    },
+    dbGaP: {
+        badgeFilename: 'tag-dbGaP.png',
+    },
+    DREAM: {
+        badgeFilename: 'tag-DREAM.png',
+    },
+    ENCORE: {
+        badgeFilename: 'tag-ENCORE.svg',
+        collectionPath: '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE',
+    },
+    ENCYCLOPEDIAv3: {
+        badgeFilename: 'tag-ENCYCLOPEDIAv3.svg',
+    },
+    ENCYCLOPEDIAv4: {
+        badgeFilename: 'tag-ENCYCLOPEDIAv4.svg',
+    },
+    ENCYCLOPEDIAv5: {
+        badgeFilename: 'tag-ENCYCLOPEDIAv5.svg',
+    },
+    ENTEx: {
+        badgeFilename: 'tag-ENTEx.png',
+        collectionPath: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx',
+    },
+    LRGASP: {
+        badgeFilename: 'tag-LRGASP.png',
+    },
+    MouseDevSeries: {
+        badgeFilename: 'tag-MouseDevSeries.svg',
+        collectionPath: '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries&replicates.library.biosample.organism.scientific_name=Mus+musculus',
+    },
+    PGP: {
+        badgeFilename: 'tag-PGP.png',
+    },
+    RegulomeDB: {
+        badgeFilename: 'tag-RegulomeDB.png',
+    },
+    SESCC: {
+        badgeFilename: 'tag-SESCC.svg',
+        collectionPath: '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
+    },
 };
 
 /**
@@ -612,7 +648,7 @@ export const MatrixBadges = ({ context, type }) => {
     )).map((filter) => filter.term));
     if (internalTags.length > 0) {
         return internalTags.map((tag) => {
-            const filename = internalTagsMap[tag];
+            const filename = internalTagsMap[tag].badgeFilename;
             if (filename) {
                 return <img className="badge-image" src={`/static/img/${filename}`} alt={`${tag} logo`} key={tag} />;
             }
@@ -651,8 +687,12 @@ export const InternalTags = ({ internalTags, objectType, css }) => {
     const tagBadges = internalTags.map((tag) => {
         const filename = internalTagsMap[tag];
         if (filename) {
+            if (filename.collectionPath) {
+                const tagSearchUrl = filename.collectionPath;
+                return <a href={tagSearchUrl} key={tag}><img src={`/static/img/${filename.badgeFilename}`} alt={`Visit collection page for ${tag}`} /></a>;
+            }
             const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${encoding.encodedURIComponentOLD(tag)}&status=released`;
-            return <a href={tagSearchUrl} key={tag}><img src={`/static/img/${filename}`} alt={`Search for all ${objectType} with internal tag ${tag}`} /></a>;
+            return <a href={tagSearchUrl} key={tag}><img src={`/static/img/${filename.badgeFilename}`} alt={`Search for all ${objectType} with internal tag ${tag}`} /></a>;
         }
         return null;
     });

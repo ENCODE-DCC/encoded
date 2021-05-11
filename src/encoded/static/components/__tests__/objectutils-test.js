@@ -29,7 +29,7 @@ describe('InternalTags', () => {
 
 
     test('generates the right images in each link', () => {
-        const uris = testTags.map((tag) => `/static/img/${internalTagsMap[tag]}`);
+        const uris = testTags.map((tag) => `/static/img/${internalTagsMap[tag].badgeFilename}`);
         wrapper.find('a').forEach((link, i) => {
             const image = link.find('img');
             expect(image).toHaveLength(1);
