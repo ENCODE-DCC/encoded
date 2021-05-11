@@ -1552,7 +1552,7 @@ def audit_experiment_single_cell_libraries(value, system, excluded_types):
                 detail = (
                     f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has '
                     f'a library {audit_link(path_to_text(library["@id"]),library["@id"])} '
-                    f'that specifies barcode_details, which should only be specified on libraries'
+                    f'that specifies barcode_details, which should only be specified on libraries '
                     f'from single cell experiments.'
                 )
                 yield AuditFailure('inconsistent barcode details', detail, level='WARNING')
