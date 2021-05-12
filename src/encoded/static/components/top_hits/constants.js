@@ -62,47 +62,52 @@ export const SCIENTIFIC_NAME = 'scientific_name';
 export const COLLECTIONS = [
     {
         title: 'ENTEx',
-        details: 'Epigenomes from four individuals',
-        searchUrl: '/search/?type=Experiment&status=released&internal_tags=ENTEx&limit=0',
-        '@id': '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx'
+        description: 'Epigenomes from four individuals',
+        searchUrl: '/search/?type=Experiment&status=released&internal_tags=ENTEx&limit=0&format=json',
+        '@id': '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx',
+        '@type': ['DataCollection'],
     },
     {
         title: 'SESCC',
-        details: 'Stem Cell Development Matrix',
-        searchUrl: '/search/?type=Experiment&internal_tags=SESCC&limit=0',
+        description: 'Stem Cell Development Matrix',
+        searchUrl: '/search/?type=Experiment&internal_tags=SESCC&limit=0&format=json',
         '@id': '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
+        '@type': ['DataCollection'],
     },
     {
         title: 'ENCORE',
-        details: 'RNA-protein interactions',
-        searchUrl: '/search/?type=Experiment&status=released&internal_tags=ENCORE&limit=0',
+        description: 'RNA-protein interactions',
+        searchUrl: '/search/?type=Experiment&status=released&internal_tags=ENCORE&limit=0&format=json',
         '@id': '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE',
+        '@type': ['DataCollection'],
     },
     {
         title: 'Human reference epigenomes',
-        details: null,
+        description: null,
         searchUrl: (
             '/search/?type=Experiment&related_series.@type=ReferenceEpigenome' +
-            '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'
-        )
+            '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&limit=0&format=json'
+        ),
         '@id': (
             '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome' +
             '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'
-        )
+        ),
+        '@type': ['DataCollection'],
     },
     {
         title: 'Mouse development matrix',
-        details: null,
+        description: null,
         searchUrl: (
             '/search/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries' +
-            '&replicates.library.biosample.organism.scientific_name=Mus+musculus'
+            '&replicates.library.biosample.organism.scientific_name=Mus+musculus&limit=0&format=json'
         ),
         '@id': (
             '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries' +
             '&replicates.library.biosample.organism.scientific_name=Mus+musculus'
         ),
+        '@type': ['DataCollection'],
     }
 
 ]
 
-export const COLLECTIONS_KEY = 'Data collections'
+export const COLLECTIONS_KEY = 'DataCollection'
