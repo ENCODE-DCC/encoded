@@ -26,7 +26,7 @@ def ntr_biosample_type(testapp):
     item = {
         'term_id': 'NTR:0000022',
         'term_name': 'heart',
-        'classification': 'single cell',
+        'classification': 'tissue',
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
 
@@ -36,7 +36,7 @@ def id_nonexist_biosample_type(testapp):
     item = {
         'term_id': 'CL:99999999',
         'term_name': 'heart',
-        'classification': 'single cell',
+        'classification': 'primary cell',
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
 
@@ -189,11 +189,11 @@ def s2r_plus(testapp):
 
 
 @pytest.fixture
-def single_cell(testapp):
+def heart_tissue(testapp):
     item = {
             'term_id': "UBERON:349829",
             'term_name': 'heart',
-            'classification': 'single cell'
+            'classification': 'tissue'
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
 
@@ -203,7 +203,7 @@ def inconsistent_biosample_type(testapp):
     item = {
         'term_id': 'EFO:0002067',
         'term_name': 'heart',
-        'classification': 'single cell',
+        'classification': 'cell line',
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
 

@@ -23,18 +23,6 @@
                     "properties": {
                         "classification": {
                             "enum" : [
-                                "single cell"
-                            ]
-                        },
-                        "term_id":{
-                            "pattern": "^(CL|CLO|EFO|UBERON|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "classification": {
-                            "enum" : [
                                 "tissue",
                                 "whole organisms",
                                 "organoid"
@@ -140,7 +128,6 @@
             "permission": "import_items",
             "type": "string",
             "enum" : [
-                "single cell",
                 "cell line",
                 "in vitro differentiated cells",
                 "primary cell",

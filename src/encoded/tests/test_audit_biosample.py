@@ -180,7 +180,7 @@ def test_audit_biosample_part_of_consistency_ontology_part_of(testapp,
     assert all(error['category'] != 'inconsistent BiosampleType term' for error in errors_list)
 
 
-def test_audit_biosample_phase(testapp, base_biosample, single_cell):
+def test_audit_biosample_phase(testapp, base_biosample, s2r_plus):
     target_err_cat = 'biosample cannot have defined cell cycle phase'
 
     testapp.patch_json(base_biosample['@id'], {'phase': 'G1'})
@@ -189,14 +189,14 @@ def test_audit_biosample_phase(testapp, base_biosample, single_cell):
                for error_cat in errors.values()
                for error in error_cat)
 
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': single_cell['uuid']})
+    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': s2r_plus['uuid']})
     errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
     assert all(error['category'] != target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
 
-def test_audit_biosample_pmi(testapp, base_biosample, single_cell):
+def test_audit_biosample_pmi(testapp, base_biosample, s2r_plus):
     target_err_cat = 'non-tissue sample has PMI'
 
     testapp.patch_json(base_biosample['@id'], {'PMI': 10,
@@ -206,14 +206,14 @@ def test_audit_biosample_pmi(testapp, base_biosample, single_cell):
                for error_cat in errors.values()
                for error in error_cat)
 
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': single_cell['uuid']})
+    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': s2r_plus['uuid']})
     errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
     assert any(error['category'] == target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
 
-def test_audit_biosample_cell_isolation_method(testapp, base_biosample, single_cell):
+def test_audit_biosample_cell_isolation_method(testapp, base_biosample, s2r_plus):
     target_err_cat = 'non-cell sample has cell_isolation_method'
 
     testapp.patch_json(base_biosample['@id'], {'cell_isolation_method': 'micropipetting'})
@@ -222,14 +222,14 @@ def test_audit_biosample_cell_isolation_method(testapp, base_biosample, single_c
                for error_cat in errors.values()
                for error in error_cat)
 
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': single_cell['uuid']})
+    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': s2r_plus['uuid']})
     errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
     assert all(error['category'] != target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
 
-def test_audit_biosample_depleted_in_term_name(testapp, base_biosample, single_cell):
+def test_audit_biosample_depleted_in_term_name(testapp, base_biosample, s2r_plus):
     target_err_cat = 'non-tissue sample has parts depleted'
 
     testapp.patch_json(base_biosample['@id'],
@@ -239,7 +239,7 @@ def test_audit_biosample_depleted_in_term_name(testapp, base_biosample, single_c
                for error_cat in errors.values()
                for error in error_cat)
 
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': single_cell['uuid']})
+    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': s2r_plus['uuid']})
     errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
     assert any(error['category'] == target_err_cat
                for error_cat in errors.values()

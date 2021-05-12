@@ -1011,7 +1011,7 @@
         ],
         "assay_term_name": "single-nucleus ATAC-seq",
         "award": "UM1HG009442",
-        "biosample_ontology": "single_cell_UBERON_0002168",
+        "biosample_ontology": "tissue_UBERON_0002168",
         "description": "scATAC-seq on human left lung",
         "internal_status": "unreviewed",
         "lab": "michael-snyder",
