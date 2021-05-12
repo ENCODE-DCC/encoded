@@ -101,7 +101,7 @@ append_with_user "$ENCD_WALE_S3_PREFIX" 'postgres' "$PG_CONF_DEST/WALE_S3_PREFIX
 #
 wale_push_cmd="archive_command = '\
 $WALE_BIN/envdir $WALE_ENV \
-$WALE_BIN/wal-e \
+wal-g \
 wal-push \"%p\"\
 '"
 
@@ -113,7 +113,7 @@ fi
 ## pg conf recovery.conf
 wale_fetch_cmd="restore_command = '\
 $WALE_BIN/envdir $WALE_ENV \
-$WALE_BIN/wal-e \
+wal-g \
 wal-fetch \"%f\" \"%p\"\
 '"
 
@@ -153,22 +153,14 @@ sudo -u root mkdir -p "$WALE_DIR"
 sudo -u root chown postgres:postgres "$WALE_DIR"
 sudo -u root cp "$WALE_REQS_SRC" "$WALE_REQS_DST"
 sudo -u root chown postgres:postgres "$WALE_REQS_DST"
-sudo -H -u postgres "$ENCD_PY3_PATH" -m venv "$WALE_VENV"
-if [ ! -f "$WALE_BIN/pip" ]; then
-    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: Wale bin does not exist"
-    touch "$encd_failed_flag"
-    exit 1
-fi
-sudo -H -u postgres "$WALE_BIN/pip" install pip==20.2.4 setuptools --upgrade
-sudo -H -u postgres "$WALE_BIN/pip" install -r "$WALE_REQS_DST"
-sudo -u postgres git clone --branch v1.1.1 https://github.com/wal-e/wal-e.git "$WALE_DIR/wal-e"
-sudo -H -u postgres "$WALE_BIN/pip" install -e "$WALE_DIR/wal-e"
-
+wget https://github.com/wal-g/wal-g/releases/download/v0.2.19/wal-g.linux-amd64.tar.gz
+tar -zxvf wal-g.linux-amd64.tar.gz
+sudo mv wal-g /usr/local/bin/
 ### Postgres
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Do initial wal-e backup-fetch"
 ## Update db from wale backup
 sudo -u postgres pg_ctlcluster 11 main stop
-sudo -u postgres "$WALE_BIN/envdir" "$WALE_ENV" "$WALE_BIN/wal-e" backup-fetch "$PG_DATA" LATEST
+sudo -u postgres "$WALE_BIN/envdir" "$WALE_ENV" wal-g backup-fetch "$PG_DATA" LATEST
 
 ## Restart
 if [ "$ENCD_PG_OPEN" == 'true' ]; then
