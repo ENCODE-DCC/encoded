@@ -202,6 +202,11 @@ export const flattenArrays = (arrays) => (
 );
 
 
+export const sortResultsByCount = (results) => (
+    results.sort((a, b) => b.count - a.count)
+);
+
+
 class TopHitsAndCollectionsQuery {
     constructor(searchTerm) {
         this.searchTerm = searchTerm;
@@ -222,6 +227,8 @@ class TopHitsAndCollectionsQuery {
             )
         ).then(
             (results) =>  flattenArrays(results)
+        ).then(
+            (results) => sortResultsByCount(results)
         );
     }
 }
