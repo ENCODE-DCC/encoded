@@ -21,6 +21,11 @@ import {
 export const makeTitle = (result) => `${result.key} (${result.count})`;
 
 
+export const makeLink = (result, input) => {
+    return result.href || `/search/?type=${result.key}&searchTerm=${input}`;
+};
+
+
 // Items are mapped to an Item component.
 export const Items = ({ items }) => (
     <ul>
@@ -84,7 +89,7 @@ const Results = ({ input, results, handleClickAway }) => {
                         <Section
                             key={result.key}
                             title={makeTitle(result)}
-                            href={`/search/?type=${result.key}&searchTerm=${input}`}
+                            href={makeLink(result, input)}
                             items={result.hits}
                         />
                     )
