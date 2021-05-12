@@ -153,8 +153,8 @@ sudo -u root mkdir -p "$WALE_DIR"
 sudo -u root chown postgres:postgres "$WALE_DIR"
 sudo -u root cp "$WALE_REQS_SRC" "$WALE_REQS_DST"
 sudo -u root chown postgres:postgres "$WALE_REQS_DST"
-wget https://github.com/wal-g/wal-g/releases/download/v0.2.19/wal-g.linux-amd64.tar.gz
-tar -zxvf wal-g.linux-amd64.tar.gz
+sudo wget https://github.com/wal-g/wal-g/releases/download/v0.2.19/wal-g.linux-amd64.tar.gz
+sudo tar -zxvf wal-g.linux-amd64.tar.gz
 sudo mv wal-g /usr/local/bin/
 ### Postgres
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Do initial wal-e backup-fetch"
