@@ -1,5 +1,8 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Schema version 8
+* Added the boolean property *proliferation_screen*, which should be submitted as *True* for CRISPR growth screens
+
 ### Schema version 7
 
 * Changed the *analysis_objects* property to be *analyses*

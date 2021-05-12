@@ -94,9 +94,11 @@ def test_functional_characterization_experiment_crispr_assay_title(testapp, func
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_fce['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_fce['@id'], {'library': library_2['@id']})
+    testapp.patch_json(functional_characterization_experiment_disruption_screen['@id'], {'proliferation_screen': True})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
     assert res.json['object']['assay_title']=='growth-based CRISPR disruption screen'
-     # patch with examined_loci
+     # patch with examined_loci, proliferation_screen is now False
+    testapp.patch_json(functional_characterization_experiment_disruption_screen['@id'], {'proliferation_screen': False})
     testapp.patch_json(functional_characterization_experiment_disruption_screen['@id'], {'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 100}]})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
     assert res.json['object']['assay_title']=='CRISPR disruption screen'
@@ -117,3 +119,14 @@ def test_functional_characterization_experiment_target_import_items(testapp, sub
     res = testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_item, status=201)
     submitter_testapp.patch_json(res.json['@graph'][0]['@id'], {'target': target['uuid']}, status=422)
     testapp.patch_json(res.json['@graph'][0]['@id'], {'target': target['uuid']}, status=200)
+
+
+def test_functional_characterization_experiment_proliferation_screen(testapp, functional_characterization_experiment_6):
+    # proliferation_screen can only be True for CRISPR screens lacking examined_loci
+    functional_characterization_experiment_6.update({'proliferation_screen': True})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=422)
+    functional_characterization_experiment_6.pop('examined_loci', None)
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=201)
+    functional_characterization_experiment_6.update({'proliferation_screen': False})
+    functional_characterization_experiment_6.update({'assay_term_name': 'MPRA'})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=201)

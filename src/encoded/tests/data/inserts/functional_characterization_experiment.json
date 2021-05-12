@@ -136,7 +136,8 @@
         "submitted_by": "tristique.sem@faucibus.semper",
         "target": "FTO-human",
         "target_expression_percentile": 90,
-        "uuid": "bbd32130-4f13-4c45-9117-3cdebe0ad40a"
+        "uuid": "bbd32130-4f13-4c45-9117-3cdebe0ad40a",
+        "proliferation_screen": true
     },
     {
         "accession": "ENCSR114CEL",

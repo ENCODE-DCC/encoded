@@ -101,11 +101,42 @@
                     "enum": ["pooled clone sequencing"]
                 }
             }
+        },
+        "proliferation_screen": {
+            "comment": "CRISPR screens with examined_loci may not be specified as proliferation screens, CRISPR screens lacking examined_loci must be proliferation screens.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "assay_term_name": {
+                            "enum": ["CRISPR screen"]
+                        },
+                        "proliferation_screen": {
+                            "enum": [true]
+                        }
+                    },
+                    "not": {
+                        "required": ["examined_loci"]
+                    }
+                },
+                {
+                    "properties": {
+                        "proliferation_screen": {
+                            "enum": [false]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "required":
+                            ["proliferation_screen"]
+                    }
+                }
+            ]
         }
     },
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "assay_term_name": {
             "title": "Assay name",
@@ -297,6 +328,11 @@
                     }
                 }
             }
+        },
+        "proliferation_screen": {
+            "title": "Proliferation screen",
+            "description": "Whether profiferation is used to assess results in a CRISPR screen assay.",
+            "type": "boolean"
         }
     },
     "facets": {

@@ -18,3 +18,10 @@ def test_functional_characterization_experiment_upgrade_5_to_6(upgrader, pce_fcc
     assert value['schema_version'] == '6'
     assert value['plasmids_library_type'] == 'elements cloning'
     assert value['notes'] == 'The plasmids_library_type of this pooled clone sequencing experiment needs to be checked as it was automatically upgraded by ENCD-5303.'
+
+
+def test_functional_characterization_experiment_upgrade_7_to_8(upgrader, functional_characterization_experiment_7):
+    value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_7, current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    assert value['proliferation_screen'] == True
+    assert value['notes'] == 'The proliferation_screen property should be verified; it was automatically added by ENCD-5911 upgrade.'
