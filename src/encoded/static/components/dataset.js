@@ -1791,10 +1791,10 @@ export const SeriesComponent = (props, reactContext) => {
     let combinedTreatmentAmounts;
     context.related_datasets.forEach((d) => {
         let biosamples;
-        if (d.replicates && d.replicates.length > 0) {
+        if (seriesType !== 'SingleCellRnaSeries' && d.replicates && d.replicates.length > 0) {
             biosamples = d.replicates.map((replicate) => replicate.library && replicate.library.biosample);
         }
-        if (biosamples && biosamples.treatments && biosamples.length > 0) {
+        if (biosamples && biosamples.length > 0) {
             biosamples.forEach((biosample) => biosample.treatments.forEach((treatment) => {
                 if (treatment.duration) {
                     treatmentDuration.push(`${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`);
