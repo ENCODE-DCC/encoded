@@ -1,14 +1,12 @@
 ## Changelog for aggregate_series.json
 
 ### Minor changes since schema version 3
-* Added  *ENCYCLOPEDIAv6* to *internal_tags* enums list
-
-### Minor changes since schema version 3
 
 * Added *LRGASP* to the *internal_tags* enum
 * Added *doi* property
 * Added *analyses* property
 * Added *assay_slims* calculated property
+* Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
 
 ### Schema version 3
 

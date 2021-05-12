@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 7
 
-* Added  *ENCYCLOPEDIAv6* to *internal_tags* enums list
+* Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
 
 ### Schema version 7
 

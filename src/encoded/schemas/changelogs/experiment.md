@@ -1,7 +1,7 @@
 ## Changelog for experiment.json
 
 ### Minor changes since schema version 34
-* Added  *ENCYCLOPEDIAv6* to *internal_tags* enums list
+* Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
 
 ### Schema version 34
 * Changed the *analysis_objects* property to be *analyses*
