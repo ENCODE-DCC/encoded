@@ -412,6 +412,23 @@ def test_experiment_default_analysis(
     # Released > archived
     testapp.patch_json(analysis_2['@id'], {'status': 'archived'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
+
+    analysis_1_audits = testapp.get(analysis_1['@id'] + '@@index-data').json['audit']
+    analysis_2_audits = testapp.get(analysis_2['@id'] + '@@index-data').json['audit']
+    experiment_audits = res.json['audit']
+
+    for audit_type in analysis_1_audits:
+        for audit_instance in analysis_1_audits[audit_type]:
+            audit_detail = audit_instance['detail']
+            assert any(experiment_audit['detail'] == audit_detail
+               for experiment_audit in experiment_audits.get(audit_type))
+
+    for audit_type in analysis_2_audits:
+        for audit_instance in analysis_2_audits[audit_type]:
+            audit_detail = audit_instance['detail']
+            assert all(experiment_audit['detail'] != audit_detail
+               for experiment_audit in experiment_audits.get(audit_type))
+ 
     assert res.json['object']['default_analysis'] == analysis_1['@id']
 
     # Rfa is working for different versions of pipeline
@@ -426,4 +443,22 @@ def test_experiment_default_analysis(
     testapp.patch_json(file_bam_1_1['@id'], {'assembly': 'mm10'})
     testapp.patch_json(file_bam_2_1['@id'], {'genome_annotation': 'M21'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
+
+
+    analysis_1_audits = testapp.get(analysis_1['@id'] + '@@index-data').json['audit']
+    analysis_2_audits = testapp.get(analysis_2['@id'] + '@@index-data').json['audit']
+    experiment_audits = res.json['audit']
+
+    for audit_type in analysis_1_audits:
+        for audit_instance in analysis_1_audits[audit_type]:
+            audit_detail = audit_instance['detail']
+            assert all(experiment_audit['detail'] != audit_detail
+               for experiment_audit in experiment_audits.get(audit_type))
+
+    for audit_type in analysis_2_audits:
+        for audit_instance in analysis_2_audits[audit_type]:
+            audit_detail = audit_instance['detail']
+            assert any(experiment_audit['detail'] == audit_detail
+               for experiment_audit in experiment_audits.get(audit_type))
+
     assert res.json['object']['default_analysis'] == analysis_2['@id']
