@@ -2912,7 +2912,7 @@ def audit_experiment_inconsistent_analysis_files_mismatched_dataset(value, syste
             continue
         for file in analysis['files']:
             if file['dataset'] != value['@id']:
-                files_in_different_dataset .append(file['@id'])
+                files_in_different_dataset.append(file['@id'])
         if len(files_in_different_dataset) > 0:
             files_in_different_dataset_links = [
                 audit_link(path_to_text(file), file) for file in files_in_different_dataset
