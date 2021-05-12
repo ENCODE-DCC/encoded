@@ -742,9 +742,9 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dd>
                                         <ul>
                                             {context.elements_references.map((reference) => (
-                                                <li key={reference} className="multi-comma">
-                                                    <a href={reference}>
-                                                        {globals.atIdToAccession(reference)}
+                                                <li key={reference['@id']} className="multi-comma">
+                                                    <a href={reference['@id']}>
+                                                        {reference.accession}
                                                     </a>
                                                 </li>
                                             ))}
