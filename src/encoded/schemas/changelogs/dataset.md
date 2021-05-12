@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 15
 
-* Added *LRGASP*, *ENCYCLOPEDIAv6*to the *internal_tags* enums list
+* Added *LRGASP* and *ENCYCLOPEDIAv6* to the *internal_tags* enums list
 * Added *doi* property
 * Added *analyses* property
 
