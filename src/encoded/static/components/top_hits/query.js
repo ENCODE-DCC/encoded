@@ -100,9 +100,24 @@ class Query {
 export const makeCollectionUrl = (searchUrl, searchTerm) => `${searchUrl}&searchTerm=${searchTerm}`;
 
 
-export const fetchTotalResultsFromCollection = (url) => (
+export const addTotalToCollection = (total, collection) => (
+    {
+        total,
+        ...collection
+    }
+);
+
+
+export const filterCollectionsWithNoResults = (collections) => (
+    collections.filter(
+        ({total}) => total > 0
+    )
+);
+
+
+export const fetchTotalResultsFromCollection = (collection, searchTerm) => (
     fetch(
-        url,
+        makeCollectionUrl(collection.searchUrl, searchTerm),
         {
             method: 'GET',
             headers: {
@@ -110,26 +125,20 @@ export const fetchTotalResultsFromCollection = (url) => (
             },
         }
     ).then(
-        (response) => (response.ok ? response.json() : [])
+        (response) => (response.ok ? response.json() : {total: 0})
     ).then(
-        (results) => results.total
+        (result) => addTotalToCollection(result.total, collection)
     )
 );
 
 
 export const getHitsFromCollections = (collections, searchTerm) => (
-    collections.map(
-        (collection) => (
-            {
-                total: fetchTotalResultsFromCollection(
-                    makeCollectionUrl(
-                        collection.searchUrl,
-                        searchTerm,
-                    )
-                ),
-                ...collection,
-            }
+    Promise.all(
+        collections.map(
+            (collection) => fetchTotalResultsFromCollection(collection, searchTerm)
         )
+    ).then(
+        (collections) => filterCollectionsWithNoResults(collections)
     )
 );
 
@@ -141,6 +150,9 @@ export const getCountFromCollectionsHits = (hits) => (
 );
 
 
+export const getCollectionLink = () => `/help/project-overview/`;
+
+
 class CollectionsQuery {
     constructor(searchTerm) {
         this.searchTerm = searchTerm;
@@ -148,14 +160,25 @@ class CollectionsQuery {
     }
 
     getCollectionsWithResults() {
-        let hits = getHitsFromCollections(this.collections, this.searchTerm);
-        return [
-            {
-                key: COLLECTIONS_KEY,
-                count: getCountFromCollectionsHits(hits),
-                hits: hits,
-            }
-        ];
+        return getHitsFromCollections(
+            this.collections,
+            this.searchTerm
+        ).then(
+            (hits) => (
+                [
+                    {
+                        key: COLLECTIONS_KEY,
+                        count: getCountFromCollectionsHits(hits),
+                        hits: hits,
+                        href: getCollectionLink()
+                    }
+                ]
+            )
+        ).then(
+            (results) => results.filter(
+                ({count}) => count > 0
+            )
+        );
     }
 
     getResults() {
@@ -174,20 +197,34 @@ export const getCollectionsQuery = (searchTerm) => (
 );
 
 
-class TopHitsAndCollectionQuery {
+export const flattenArrays = (arrays) => (
+    arrays.reduce((a, b) => a.concat(b), [])
+);
+
+
+class TopHitsAndCollectionsQuery {
     constructor(searchTerm) {
         this.searchTerm = searchTerm;
-        this.topHitsQuery = getTopHitsQuery(searchTerm);
-        this.collectionsQuery = getCollectionsQuery(searchTerm);
+    }
+
+    getQueries() {
+        return [
+            getCollectionsQuery(this.searchTerm),
+            getTopHitsQuery(this.searchTerm),
+        ];
     }
 
     getResults() {
-        return (
-            this.collectionsQuery.getResults() +
-            this.topHitsQuery.getResults()
+        let queries = this.getQueries();
+        return Promise.all(
+            queries.map(
+                (query) => query.getResults()
+            )
+        ).then(
+            (results) =>  flattenArrays(results)
         );
     }
 }
 
 
-export default Query;
+export default TopHitsAndCollectionsQuery;
