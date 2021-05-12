@@ -153,11 +153,21 @@ sudo -u root mkdir -p "$WALE_DIR"
 sudo -u root chown postgres:postgres "$WALE_DIR"
 sudo -u root cp "$WALE_REQS_SRC" "$WALE_REQS_DST"
 sudo -u root chown postgres:postgres "$WALE_REQS_DST"
+sudo -H -u postgres "$ENCD_PY3_PATH" -m venv "$WALE_VENV"
+if [ ! -f "$WALE_BIN/pip" ]; then
+    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: Wale bin does not exist"
+    touch "$encd_failed_flag"
+    exit 1
+fi
+sudo -H -u postgres "$WALE_BIN/pip" install pip==20.2.4 setuptools --upgrade
+sudo -H -u postgres "$WALE_BIN/pip" install -r "$WALE_REQS_DST"
+sudo -u postgres git clone --branch v1.1.1 https://github.com/wal-e/wal-e.git "$WALE_DIR/wal-e"
+sudo -H -u postgres "$WALE_BIN/pip" install -e "$WALE_DIR/wal-e"
 sudo wget https://github.com/wal-g/wal-g/releases/download/v0.2.19/wal-g.linux-amd64.tar.gz
 sudo tar -zxvf wal-g.linux-amd64.tar.gz
 sudo mv wal-g /usr/local/bin/
 ### Postgres
-echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Do initial wal-e backup-fetch"
+echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Do initial wal-g backup-fetch"
 ## Update db from wale backup
 sudo -u postgres pg_ctlcluster 11 main stop
 sudo -u postgres "$WALE_BIN/envdir" "$WALE_ENV" wal-g backup-fetch "$PG_DATA" LATEST
