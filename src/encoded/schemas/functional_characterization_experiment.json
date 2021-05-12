@@ -103,7 +103,7 @@
             }
         },
         "proliferation_screen": {
-            "comment": "CRISPR screens with examined_loci may not be specified as proliferation screens, CRISPR screens lacking examined_loci must be proliferation screens.",
+            "comment": "Only CRISPR screens lacking examined_loci may be specified as proliferation screens.",
             "oneOf": [
                 {
                     "properties": {
