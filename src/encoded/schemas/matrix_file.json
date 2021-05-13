@@ -93,7 +93,6 @@
                 "type": "string",
                 "linkTo": [
                     "RawSequenceFile",
-                    "ReferenceFile",
                     "MatrixFile",
                     "Library"
                 ]
