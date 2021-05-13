@@ -14,7 +14,15 @@
         ],
         "derivation_process": [
             "demultiplexing"
-        ]
+        ],
+        "validated": true,
+        "submitted_file_name": "run3_r2.fastq.gz",
+        "s3_uri": "s3://bucket/run3_r2.fastq.gz",
+        "file_size": 8,
+        "read_length": 91,
+        "md5sum": "11aaa0a073e01af2839c972711467c04",
+        "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
+        "crc32c": "C76ABAA9"
     },
     {
         "accession": "LATDF301DMX",
@@ -31,7 +39,15 @@
         ],
         "derivation_process": [
             "demultiplexing"
-        ]
+        ],
+        "validated": true,
+        "submitted_file_name": "run3_r1.fastq.gz",
+        "s3_uri": "s3://bucket/run3_r1.fastq.gz",
+        "file_size": 8,
+        "read_length": 28,
+        "md5sum": "11aaa0a073e01af2839c972711467c04",
+        "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
+        "crc32c": "C76ABAA9"
     },
     {
         "accession": "LATDF202DMX",
@@ -48,7 +64,15 @@
         ],
         "derivation_process": [
             "demultiplexing"
-        ]
+        ],
+        "validated": true,
+        "submitted_file_name": "run2_r2.fastq.gz",
+        "s3_uri": "s3://bucket/run2_r2.fastq.gz",
+        "file_size": 8,
+        "read_length": 91,
+        "md5sum": "11aaa0a073e01af2839c972711467c04",
+        "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
+        "crc32c": "C76ABAA9"
     },
     {
         "accession": "LATDF201DMX",
@@ -65,7 +89,15 @@
         ],
         "derivation_process": [
             "demultiplexing"
-        ]
+        ],
+        "validated": true,
+        "submitted_file_name": "run2_r1.fastq.gz",
+        "s3_uri": "s3://bucket/run2_r1.fastq.gz",
+        "file_size": 8,
+        "read_length": 28,
+        "md5sum": "11aaa0a073e01af2839c972711467c04",
+        "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
+        "crc32c": "C76ABAA9"
     },
     {
         "accession": "LATDF102DMX",
@@ -82,7 +114,15 @@
         ],
         "derivation_process": [
             "demultiplexing"
-        ]
+        ],
+        "validated": true,
+        "submitted_file_name": "run1_r2.fastq.gz",
+        "s3_uri": "s3://bucket/run1_r2.fastq.gz",
+        "file_size": 8,
+        "read_length": 91,
+        "md5sum": "11aaa0a073e01af2839c972711467c04",
+        "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
+        "crc32c": "C76ABAA9"
     },
     {
         "accession": "LATDF101DMX",
@@ -99,7 +139,15 @@
         ],
         "derivation_process": [
             "demultiplexing"
-        ]
+        ],
+        "validated": true,
+        "submitted_file_name": "run1_r1.fastq.gz",
+        "s3_uri": "s3://bucket/run1_r1.fastq.gz",
+        "file_size": 8,
+        "read_length": 28,
+        "md5sum": "11aaa0a073e01af2839c972711467c04",
+        "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
+        "crc32c": "C76ABAA9"
     },
     {
         "aliases": [

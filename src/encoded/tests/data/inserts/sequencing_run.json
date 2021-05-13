@@ -5,7 +5,8 @@
         ],
         "derived_from": ["lattice:pooled_lib"],
         "uuid": "93bfa031-44a2-47ce-bbf0-f5b912ff41ea",
-        "demultiplexed_link": "anindita-basu:suspension_A"
+        "demultiplexed_link": "anindita-basu:suspension_A",
+        "platform": "Illumina NovaSeq 6000"
     },
     {
         "aliases": [
@@ -13,7 +14,8 @@
         ],
         "derived_from": ["lattice:pooled_lib"],
         "uuid": "71beedec-18ef-449a-bb5c-15f34d7ad5cd",
-        "demultiplexed_link": "anna-greka:sc_citeseq_suspension_donorB"
+        "demultiplexed_link": "anna-greka:sc_citeseq_suspension_donorB",
+        "platform": "Illumina NovaSeq 6000"
     },
     {
         "aliases": [
@@ -21,7 +23,8 @@
         ],
         "derived_from": ["lattice:pooled_lib"],
         "uuid": "457805b8-7000-4e77-acfb-66f0da50ed92",
-        "demultiplexed_link": "anna-greka:sc_citeseq_suspension_donorA"
+        "demultiplexed_link": "anna-greka:sc_citeseq_suspension_donorA",
+        "platform": "Illumina NovaSeq 6000"
     },
     {
         "aliases": [
