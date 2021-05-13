@@ -1894,10 +1894,12 @@ export const SeriesComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            <div data-test="donordiversity">
-                                <dt>Donor diversity</dt>
-                                <dd>{diversity}</dd>
-                            </div>
+                            {seriesType !== 'SingleCellRnaSeries' ?
+                                <div data-test="donordiversity">
+                                    <dt>Donor diversity</dt>
+                                    <dd>{diversity}</dd>
+                                </div>
+                            : null}
 
                             {context.assay_term_name && context.assay_term_name.length > 0 ?
                                 <div data-test="description">

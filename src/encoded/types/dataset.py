@@ -1241,6 +1241,7 @@ class SingleCellRnaSeries(Series):
         'lab',
         'award',
         'submitted_by',
+        'related_datasets.lab',
     ]
 
 
