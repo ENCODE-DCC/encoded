@@ -163,14 +163,7 @@
         "spike_ins_used": {
             "title": "Spike-ins datasets used",
             "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",
-            "type": "array",
-            "uniqueItems": true,
-            "items" : {
-                "title": "A spike-ins dataset.",
-                "description": "A specific spike-ins type dataset",
-                "type": "string",
-                "linkTo": "ReferenceFileSet"
-            }
+            "type": "string"
         },
         "date_constructed": {
             "title": "Date constructed",
