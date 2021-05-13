@@ -3,7 +3,7 @@
 ### Minor changes since schema version 1
 
 * Updated schema description.
-* Added *LRGASP* to the *internal_tags* enum
+* Added *LRGASP* and *ENCYCLOPEDIAv6* to the *internal_tags* enums list
 * Added *doi* property
 * Added *analyses* property
 * Added *assay_slims* calculated property

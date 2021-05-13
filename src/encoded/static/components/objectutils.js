@@ -601,6 +601,9 @@ export const internalTagsMap = {
     ENCYCLOPEDIAv5: {
         badgeFilename: 'tag-ENCYCLOPEDIAv5.svg',
     },
+    ENCYCLOPEDIAv6: {
+        badgeFilename: 'tag-ENCYCLOPEDIAv6.svg',
+    },
     ENTEx: {
         badgeFilename: 'tag-ENTEx.png',
         collectionPath: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx',

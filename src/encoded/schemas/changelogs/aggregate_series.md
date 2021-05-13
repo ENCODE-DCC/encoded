@@ -6,6 +6,7 @@
 * Added *doi* property
 * Added *analyses* property
 * Added *assay_slims* calculated property
+* Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
 
 ### Schema version 3
 
