@@ -193,6 +193,21 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
                                 </div>
                             : null}
 
+                            {context.disease_term_name && context.disease_term_name.length > 0 ?
+                                <div data-test="possible-controls">
+                                    <dt>Health status</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.disease_term_name.map((disease) => (
+                                                <li key={disease} className="multi-comma">
+                                                    {disease}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.donor && context.donor.organism.name !== 'human' && context.life_stage ?
                                 <div data-test="life-stage">
                                     <dt>Life stage</dt>
