@@ -424,7 +424,7 @@ const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
     const multiFacetChanged = (e) => {
         const field = e.target.getAttribute('field');
         const equalsymbol = e.target.getAttribute('equalsymbol');
-        const { id, value } = e.target;
+        const { value } = e.target;
         const query = new QueryString(context['@id']);
 
         query.deleteKeyValue(field, value);
@@ -444,28 +444,48 @@ const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
 
         setActiveButtonId(storedButtonId);
 
-        const radioButtons = facetRegion.current.querySelectorAll('[type=radio].exclude-filter');
-
-        for (let i = 0; i < radioButtons.length; i += 1) {
-            radioButtons[i].checked = true;
-        }
-
         const fields = FACET_SET.map((facet) => facet.field);
         const contextFilters = context.filters.filter((filter) => fields.includes(filter.field.replace('!', '')));
+
+        /// ///
+        let idBases = FACET_SET.map((facet) => {
+            if (facet.terms && facet.terms.length > 0 && facet.terms[0].key_as_string) {
+                return facet.field;
+            }
+            const terms = facet.terms.map((term) => term.key);
+            return terms.map((term) => `${removeNonAlphaNumeric(term)}-${removeNonAlphaNumeric(facet.field)}`);
+        }).reduce((accumulator, currentValue) => {
+            const m = accumulator.concat(currentValue);
+            return m;
+        }, []);
+        /// ///
+
 
         for (let i = 0; i < contextFilters.length; i += 1) {
             const contextFilter = contextFilters[i];
             const { field, term } = contextFilter;
             let id = null;
+            let keyField;
 
             if (contextFilter.term === 'true' || contextFilter.term === 'false') {
+                keyField = field;
                 id = `${field}-${term}`;
             } else {
-                id = `${removeNonAlphaNumeric(contextFilter.term)}-${field.includes('!') ? 'notEqual' : 'equal'}`;
+                keyField = `${removeNonAlphaNumeric(contextFilter.term)}-${removeNonAlphaNumeric(field)}`;
+                id = `${keyField}-${field.includes('!') ? 'notEqual' : 'equal'}`;
             }
 
+            idBases = idBases.filter((k) => k !== keyField);
             const element = document.querySelector(`#${id}`);
 
+            if (element) {
+                element.checked = true;
+            }
+        }
+
+        for (let i = 0; i < idBases.length; i += 1) {
+            const id = `${idBases[i]}-exclude`;
+            const element = document.querySelector(`#${id}`);
 
             if (element) {
                 element.checked = true;
@@ -502,6 +522,7 @@ const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
                         return (facet.terms.map((term) => {
                             const formattedKey = removeNonAlphaNumeric(term.key);
                             const formattedField = removeNonAlphaNumeric(facet.field);
+                            const formattedKeyAndField = `${formattedKey}-${formattedField}`;
 
                             return (
                                 <div key={`${formattedKey}-selection-region`} className="tristate-radio" hidden={activeButtonId !== buttonId}>
@@ -523,15 +544,15 @@ const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
                                         </> :
                                         <>
                                             <label className="yes">
-                                                <input type="radio" id={`${formattedKey}-equal`} name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="true" value={term.key} onChange={(e) => multiFacetChanged(e)} />
+                                                <input type="radio" id={`${formattedKeyAndField}-equal`} name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="true" value={term.key} onChange={(e) => multiFacetChanged(e)} />
                                                 <span>{'\u003D'}</span>
                                             </label>
                                             <label className="not-used">
-                                                <input type="radio" id={`${formattedKey}-exclude`} className="exclude-filter" name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="none" value={term.key} onChange={(e) => multiFacetChanged(e)} />
+                                                <input type="radio" id={`${formattedKeyAndField}-exclude`} className="exclude-filter" name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="none" value={term.key} onChange={(e) => multiFacetChanged(e)} />
                                                 <span>{'\u20E0'}</span>
                                             </label>
                                             <label className="no">
-                                                <input type="radio" id={`${formattedKey}-notEqual`} name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="false" value={term.key} onChange={(e) => multiFacetChanged(e)} />
+                                                <input type="radio" id={`${formattedKeyAndField}-notEqual`} name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="false" value={term.key} onChange={(e) => multiFacetChanged(e)} />
                                                 <span>{'\u2260'}</span>
                                             </label>
                                             <span htmlFor="">{' '}{term.key}</span>
