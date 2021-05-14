@@ -15,14 +15,17 @@ def audit_read_count_compare(value, system):
     We check fastq metadata against the expected values based on the
     library protocol used to generate the sequence data.
     '''
+    if value['status'] in ['deleted']:
+        return
+
     if value.get('quality_metrics'):
         input_reads = {}
         for df in value.get('derived_from'):
-            if df['@type'][0] not in ['RawSequenceFile','ReferenceFile']:
+            if df['@type'][0] != 'RawSequenceFile' or df.get('validated') != True:
                 return
-            if df.get('read_count'):
+            seqrun = df['derived_from'][0]['uuid']
+            if seqrun not in input_reads.keys():
                 seqrun_reads = df.get('read_count')
-                seqrun = df['derived_from'][0]['uuid']
                 input_reads[seqrun] = seqrun_reads
         in_reads = 0
         for v in input_reads.values():
@@ -47,6 +50,9 @@ def audit_validated(value, system):
     We check fastq metadata against the expected values based on the
     library protocol used to generate the sequence data.
     '''
+    if value['status'] in ['deleted']:
+        return
+
     if value.get('no_file_available') != True:
         if value.get('s3_uri') or value.get('external_uri'):
             if value.get('validated') != True and value.get('file_format') in ['hdf5']:
@@ -70,8 +76,9 @@ def audit_file_ref_info(value, system):
     A file's reference metadata should match the reference
     metadata of any file it was derived from
     '''
-    if 'derived_from' not in value and 'AnalysisFile' not in value.get('@type'):
+    if value['status'] in ['deleted']:
         return
+
     for f in value['derived_from']:
         for ref_prop in ['assembly', 'genome_annotation']:
             if f.get(ref_prop) and value.get(ref_prop) and \
@@ -96,7 +103,7 @@ def audit_analysis_library_types(value, system):
     if it is from an RNA-seq library.
     We expect CITE-seq libraries to be paired with RNA-seq libraries.
     '''
-    if 'AnalysisFile' not in value.get('@type'):
+    if value['status'] in ['deleted']:
         return
 
     lib_types = set()
