@@ -8,6 +8,22 @@ from .formatter import (
 )
 
 
+def audit_contributor_email(value, system):
+    need_email = []
+    if 'corresponding_contributors' in value:
+        for user in value['corresponding_contributors']:
+            if not user.get('email'):
+                need_email.append(user.get('uuid'))
+    if need_email:
+        detail = ('Dataset {} contains corresponding_contributors {} that do not have an email.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                ', '.join(need_email)
+            )
+        )
+        yield AuditFailure('no corresponding email', detail, level='ERROR')
+    return
+
+
 def audit_contributor_lists(value, system):
     duplicates = []
     if 'contributors' in value and 'corresponding_contributors' in value:
@@ -53,6 +69,15 @@ def audit_dataset_dcp_required_properties(value, system):
                 )
             )
             yield AuditFailure('missing DCP-required field', detail, level='ERROR')
+    dcp_optional = ['corresponding_contributors', 'contributors']
+    for opt in dcp_optional:
+        if opt not in value:
+            detail = ('Dataset {} does not have {}, strongly encouraged by the DCP.'.format(
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    opt
+                )
+            )
+            yield AuditFailure('missing DCP-encouraged field', detail, level='ERROR')
     return
 
 
@@ -78,6 +103,7 @@ def audit_experiment_released_with_unreleased_files(value, system):
 
 
 function_dispatcher_with_files = {
+    'audit_contributor_email': audit_contributor_email,
     'audit_contributor_lists': audit_contributor_lists,
     'audit_dataset_no_raw_files': audit_dataset_no_raw_files,
     'audit_dataset_dcp_required_properties': audit_dataset_dcp_required_properties,
@@ -85,7 +111,8 @@ function_dispatcher_with_files = {
 }
 
 @audit_checker('Dataset',
-               frame=['original_files'])
+               frame=['original_files',
+                    'corresponding_contributors'])
 def audit_experiment(value, system):
     for function_name in function_dispatcher_with_files.keys():
         yield from function_dispatcher_with_files[function_name](value, system)
