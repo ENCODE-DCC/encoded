@@ -40,13 +40,6 @@ const Donor = (props) => {
                             <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
                         </div>
 
-                        {context.aliases > 0 ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{context.aliases.join(', ')}</dd>
-                            </div>
-                        : null}
-
                         {context.organism.scientific_name ?
                             <div data-test="species">
                                 <dt>Species</dt>
@@ -100,6 +93,13 @@ const Donor = (props) => {
                             <div data-test="references">
                                 <dt>References</dt>
                                 <dd>{references}</dd>
+                            </div>
+                        : null}
+
+                        {context.aliases ?
+                            <div data-test="aliases">
+                                <dt>Aliases</dt>
+                                <dd>{context.aliases.join(', ')}</dd>
                             </div>
                         : null}
 
