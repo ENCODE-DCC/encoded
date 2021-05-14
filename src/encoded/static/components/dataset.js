@@ -580,13 +580,6 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                 </div>
                             : null}
 
-                            {context.date_released ?
-                                <div data-test="date-released">
-                                    <dt>Date released</dt>
-                                    <dd>{dayjs(context.date_released).format('MMMM D, YYYY')}</dd>
-                                </div>
-                            : null}
-
                             {context.submitter_comment ?
                                 <div data-test="submittercomment">
                                     <dt>Submitter comment</dt>
