@@ -21,11 +21,11 @@ def audit_read_count_compare(value, system):
     if value.get('quality_metrics'):
         input_reads = {}
         for df in value.get('derived_from'):
-            if df['@type'][0] not in ['RawSequenceFile']:
+            if df['@type'][0] != 'RawSequenceFile' or df.get('validated') != True:
                 return
-            if df.get('read_count'):
+            seqrun = df['derived_from'][0]['uuid']
+            if seqrun not in input_reads.keys():
                 seqrun_reads = df.get('read_count')
-                seqrun = df['derived_from'][0]['uuid']
                 input_reads[seqrun] = seqrun_reads
         in_reads = 0
         for v in input_reads.values():

@@ -31,6 +31,8 @@ def audit_read_counts(value, system):
 
     read_count_lib = set()
     for f in value.get('files'):
+        if f.get('validated') != True:
+            return
         read_count_lib.add(f.get('read_count'))
     if len(read_count_lib) != 1:
         detail = ('SequencingRun {} has files of variable read counts - {}.'.format(
@@ -52,19 +54,20 @@ def audit_required_files(value, system):
 
     not_found = []
     protocol = value['derived_from'][0].get('protocol')
-    for f in protocol['required_files']:
-        file_prop_name = (f + '_file').replace('Read ', 'read_')
-        if not value.get(file_prop_name):
-            not_found.append(f)
-    if not_found:
-        detail = ('SequencingRun {} is missing {}, required based on standards for {}.'.format(
-            audit_link(path_to_text(value['@id']), value['@id']),
-            ','.join(not_found),
-            audit_link(path_to_text(protocol['@id']), protocol['@id'])
+    if protocol.get('required_files'):
+        for f in protocol['required_files']:
+            file_prop_name = (f + '_file').replace('Read ', 'read_')
+            if not value.get(file_prop_name):
+                not_found.append(f)
+        if not_found:
+            detail = ('SequencingRun {} is missing {}, required based on standards for {}.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                ','.join(not_found),
+                audit_link(path_to_text(protocol['@id']), protocol['@id'])
+                )
             )
-        )
-        yield AuditFailure('missing required file', detail, level='ERROR')
-        return
+            yield AuditFailure('missing required file', detail, level='ERROR')
+            return
 
 
 def audit_duplicated_read_types(value, system):
