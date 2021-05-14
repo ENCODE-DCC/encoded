@@ -523,7 +523,8 @@ def test_chip_seq_matrix_view(index_workbook, testapp):
     assert 'matrix' in res
     assert res['matrix']['x']['group_by'] == [
         'biosample_ontology.classification',
-        'biosample_ontology.term_name'
+        'biosample_ontology.term_name',
+        ["protein_tags.name", "no_protein_tags"]
     ]
     assert res['matrix']['x']['label'] == 'Term Name'
     assert res['matrix']['y']['group_by'] == [

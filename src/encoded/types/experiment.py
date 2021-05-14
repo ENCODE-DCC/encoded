@@ -331,7 +331,7 @@ class Experiment(Dataset,
             'label': 'Target',
         },
         'x': {
-            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name', ('protein_tags.name', 'no_protein_tags')],
             'label': 'Term Name',
         },
     }
