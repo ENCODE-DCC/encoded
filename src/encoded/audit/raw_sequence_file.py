@@ -11,6 +11,9 @@ from .item import STATUS_LEVEL
 
 
 def no_read_type(value, system):
+    if value['status'] in ['deleted']:
+        return
+
     if value.get('no_file_available') != True:
         if not value.get('read_type'):
             detail = ('File {} does not have a read_type.'.format(
@@ -22,6 +25,9 @@ def no_read_type(value, system):
 
 
 def no_file_name(value, system):
+    if value['status'] in ['deleted']:
+        return
+
     if value.get('no_file_available') != True:
         if not value.get('submitted_file_name'):
             detail = ('File {} does not have a submitted_file_name.'.format(
@@ -41,6 +47,9 @@ def no_file_name(value, system):
 
 
 def no_file_stats(value, system):
+    if value['status'] in ['deleted']:
+        return
+
     if value.get('no_file_available') != True and value.get('validated') == True:
         missing = []
         for stat in ['file_size','sha256','crc32c']:
@@ -57,6 +66,9 @@ def no_file_stats(value, system):
 
 
 def not_validated(value, system):
+    if value['status'] in ['deleted']:
+        return
+
     if value.get('no_file_available') != True:
         if value.get('validated') != True:
             detail = ('File {} has not been validated.'.format(
@@ -68,6 +80,9 @@ def not_validated(value, system):
 
 
 def no_uri(value, system):
+    if value['status'] in ['deleted']:
+        return
+
     if value.get('no_file_available') != True:
         if not (value.get('s3_uri') or value.get('external_uri')):
             detail = ('File {} has no s3_uri, external_uri, and is not marked as no_file_available.'.format(
@@ -83,6 +98,9 @@ def audit_library_protocol_standards(value, system):
     We check fastq metadata against the expected values based on the
     library protocol used to generate the sequence data.
     '''
+    if value['status'] in ['deleted']:
+        return
+
     if value.get('no_file_available') != True and value.get('validated') == True:
         lib_prots = set()
         for l in value.get('libraries'):

@@ -9,6 +9,9 @@ from .formatter import (
 
 
 def audit_contributor_email(value, system):
+    if value['status'] in ['deleted']:
+        return
+
     need_email = []
     if 'corresponding_contributors' in value:
         for user in value['corresponding_contributors']:
@@ -25,6 +28,9 @@ def audit_contributor_email(value, system):
 
 
 def audit_contributor_lists(value, system):
+    if value['status'] in ['deleted']:
+        return
+
     duplicates = []
     if 'contributors' in value and 'corresponding_contributors' in value:
         for user in value['corresponding_contributors']:
@@ -41,8 +47,9 @@ def audit_contributor_lists(value, system):
 
 
 def audit_dataset_no_raw_files(value, system):
-    if value['status'] not in ['released','in progress']:
+    if value['status'] in ['deleted']:
         return
+
     raw_data = False
     if 'original_files' in value:
         for f in value['original_files']:
@@ -58,8 +65,9 @@ def audit_dataset_no_raw_files(value, system):
 
 
 def audit_dataset_dcp_required_properties(value, system):
-    if value['status'] not in ['released','in progress']:
+    if value['status'] in ['deleted']:
         return
+
     dcp_reqs = ['dataset_title', 'description', 'funding_organizations']
     for req in dcp_reqs:
         if req not in value:
