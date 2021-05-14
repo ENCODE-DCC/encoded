@@ -65,7 +65,7 @@ const portal = {
                 { id: 'sep-mm-3' },
                 { id: 'region-search', title: 'Search by region', url: '/region-search/' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
-                { id: 'rna-get', title: 'RNA Get (beta)', url: '/rnaget/' },
+                { id: 'rna-get', title: 'RNA-Get (gene expression)', url: '/rnaget/' },
             ],
         },
         {
