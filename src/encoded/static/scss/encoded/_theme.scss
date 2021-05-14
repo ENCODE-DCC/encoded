@@ -31,16 +31,18 @@ select {
 
     & label {
         float: left;
-        width: 100px;
+        width: 24px;
         border-radius: 10px;
         border: 1px solid #d0d0d0;
         overflow: auto;
-        margin-right: 0.9rem;
+        margin-right: 0.4rem;
+        height: 25px;
 
         & span {
             text-align: center;
             display: block;
             height: 23px;
+            font-size: 0.7rem;
         }
 
         & input {

@@ -1052,10 +1052,21 @@ table.matrix th.group-all-groups-cell {
             i {
                 pointer-events: none;
             }
+
+            background-color: white;
+            border: 0 solid #fff;
         }
 
         &--active-facet {
             background-color: blue;
+        }
+
+        .facet-label {
+            font-size: 0.9rem;
+
+            @media screen and (min-width: $screen-md-min) {
+                margin-left: 10px;
+            }
         }
 
         ul {

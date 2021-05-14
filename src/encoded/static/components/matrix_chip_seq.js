@@ -384,70 +384,43 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
     }
 }
 
-// const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
 const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
     const { context } = props;
-    const [selectedFacet, setSelectedFacet] = React.useState(FACET_SET.length > 0 ? FACET_SET[0] : null);
-    const [activeButtonId, setActiveButtonId] = React.useState(null);
-    const facetRegion = React.useRef();
+    const [facetOpened, setfacetOpenStatus] = React.useState(false); // TODO: Remove
 
-    const facetClicked = (e, facet) => {
-        const { id } = e.target;
+    const facetStatusChanged = () => {
+        const facetSessionKey = `${ENCODE_FACET_CHIP_SEQ_PREFIX}-facet-status`;
+        const facetOpendedInverse = !facetOpened;
 
-        setSelectedFacet(facet);
-
-        let idStored = id;
-        if (id === activeButtonId) {
-            idStored = activeButtonId ? null : id;
-        }
-
-        setActiveButtonId(idStored);
-
-        const sessionKey = `${ENCODE_FACET_CHIP_SEQ_PREFIX}-active-button`;
-        window.sessionStorage.setItem(sessionKey, idStored);
+        window.sessionStorage.setItem(facetSessionKey, facetOpendedInverse);
+        setfacetOpenStatus(facetOpendedInverse);
     };
 
-    const trinaryFacetChanged = (e) => {
+    const facetChanged = (e) => {
         const field = e.target.getAttribute('field');
-        const { value } = e.target;
-        const query = new QueryString(context['@id']);
-
-        query.deleteKeyValue(field);
-
-        if (value !== 'exclude') {
-            query.addKeyValue(field, value);
-        }
-
-        reactContext.navigate(query.format());
-    };
-
-    const multiFacetChanged = (e) => {
-        const field = e.target.getAttribute('field');
-        const equalsymbol = e.target.getAttribute('equalsymbol');
+        const responseSymbol = e.target.getAttribute('responseSymbol');
         const { value } = e.target;
         const query = new QueryString(context['@id']);
 
         query.deleteKeyValue(field, value);
         query.deleteKeyValue(`${field}!`, value);
 
-        if (equalsymbol !== 'none') {
-            query.addKeyValue(field, value, equalsymbol !== 'true');
+        if (responseSymbol !== 'none') {
+            query.addKeyValue(field, value, responseSymbol !== 'true');
         }
 
         reactContext.navigate(query.format());
     };
 
     useMount(() => {
-        // set active region
-        const activeButtonSessionKey = `${ENCODE_FACET_CHIP_SEQ_PREFIX}-active-button`;
-        const storedButtonId = window.sessionStorage.getItem(activeButtonSessionKey);
+        const facetSessionKey = `${ENCODE_FACET_CHIP_SEQ_PREFIX}-facet-status`;
+        const IsFacetOpened = window.sessionStorage.getItem(facetSessionKey);
 
-        setActiveButtonId(storedButtonId);
+        setfacetOpenStatus(!!IsFacetOpened);
 
         const fields = FACET_SET.map((facet) => facet.field);
         const contextFilters = context.filters.filter((filter) => fields.includes(filter.field.replace('!', '')));
 
-        /// ///
         let idBases = FACET_SET.map((facet) => {
             if (facet.terms && facet.terms.length > 0 && facet.terms[0].key_as_string) {
                 return facet.field;
@@ -458,9 +431,8 @@ const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
             const m = accumulator.concat(currentValue);
             return m;
         }, []);
-        /// ///
 
-
+        // check all facts that should be checked, based on URL
         for (let i = 0; i < contextFilters.length; i += 1) {
             const contextFilter = contextFilters[i];
             const { field, term } = contextFilter;
@@ -472,7 +444,7 @@ const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
                 id = `${field}-${term}`;
             } else {
                 keyField = `${removeNonAlphaNumeric(contextFilter.term)}-${removeNonAlphaNumeric(field)}`;
-                id = `${keyField}-${field.includes('!') ? 'notEqual' : 'equal'}`;
+                id = `${keyField}-${field.includes('!') ? 'minus' : 'positive'}`;
             }
 
             idBases = idBases.filter((k) => k !== keyField);
@@ -496,72 +468,41 @@ const ChIPSeqMatrixFacets = ({ props }, reactContext) => {
     return (
         <div className="chip-seq-matrix__facet">
             <div className="chip-seq-matrix__facet--header">
-                Facet
+                Facet <button onClick={facetStatusChanged} type="button"> <i className={`${facetOpened ? 'icon icon-plus-circle' : 'icon icon-minus-circle'}`} /> </button> <a href={context.clear_filters}>Clear</a>
             </div>
-            <ul>
+            <div hidden={!facetOpened}>
                 {
-                    FACET_SET.map((facet) => {
-                        const id = `${removeNonAlphaNumeric(facet.title)}-facet-btn`;
-                        return (
-                            <li key={`${facet.field}-btn`}>
-                                <button id={id} className={`btn ${facet.field === selectedFacet.field ? 'btn-primary' : ''}`} type="button" onClick={(e) => facetClicked(e, facet)}>
-                                    {facet.title} <i className={`${id !== activeButtonId ? 'icon icon-minus-circle' : 'icon icon-plus-circle'}`} />
-                                </button>
-                            </li>);
-                    })
-                }
-                <li>
-                    <a href={context.clear_filters}>Clear</a>
-                </li>
-            </ul>
-            <div ref={facetRegion}>
-                {
-                    FACET_SET.map((facet) => {
-                        const buttonId = `${removeNonAlphaNumeric(facet.title)}-facet-btn`;
+                    FACET_SET.map((facet) => (
+                        <fieldset key={removeNonAlphaNumeric(facet.title)}>
+                            <legend>{facet.title}</legend>
+                            {
+                                facet.terms.map((term) => {
+                                    const formattedKey = removeNonAlphaNumeric(term.key);
+                                    const formattedField = removeNonAlphaNumeric(facet.field);
+                                    const hasKeyAsString = facet.terms && facet.terms.length > 0 && facet.terms[0].key_as_string;
+                                    const formattedKeyAndField = `${hasKeyAsString ? '' : formattedKey}${hasKeyAsString ? '' : '-'}${formattedField}`;
 
-                        return (facet.terms.map((term) => {
-                            const formattedKey = removeNonAlphaNumeric(term.key);
-                            const formattedField = removeNonAlphaNumeric(facet.field);
-                            const formattedKeyAndField = `${formattedKey}-${formattedField}`;
-
-                            return (
-                                <div key={`${formattedKey}-selection-region`} className="tristate-radio" hidden={activeButtonId !== buttonId}>
-                                    {
-                                        term.key_as_string ?
-                                        <>
+                                    return (
+                                        <div key={`${formattedKey}-selection-region`} className="tristate-radio">
                                             <label className="yes">
-                                                <input type="radio" id={`${facet.field}-true`} name={`${formattedField}-${term.key}`} field={facet.field} value="true" onChange={(e) => trinaryFacetChanged(e)} />
-                                                <span htmlFor={`${facet.field}-true`}>{'\u003D'}</span>
+                                                <input type="radio" id={`${formattedKeyAndField}-positive`} name={`${formattedField}-${term.key}`} field={facet.field} responseSymbol="true" value={term.key} onChange={(e) => facetChanged(e)} />
+                                                <span>{'\u002B'}</span>
                                             </label>
                                             <label className="not-used">
-                                                <input type="radio" id={`${facet.field}-exclude`} className="exclude-filter" name={`${formattedField}-${term.key}`} field={facet.field} value="exclude" onChange={(e) => trinaryFacetChanged(e)} />
+                                                <input type="radio" id={`${formattedKeyAndField}-exclude`} className="exclude-filter" name={`${formattedField}-${term.key}`} field={facet.field} responseSymbol="none" value="exclude" onChange={(e) => facetChanged(e)} />
                                                 <span htmlFor={`${facet.field}-exclude`}>{'\u20E0'}</span>
                                             </label>
                                             <label className="no">
-                                                <input type="radio" id={`${facet.field}-false`} name={`${formattedField}-${term.key}`} field={facet.field} value="false" onChange={(e) => trinaryFacetChanged(e)} />
-                                                <span htmlFor={`${facet.field}-false`}>{'\u2260'}</span>
+                                                <input type="radio" id={`${formattedKeyAndField}-minus`} name={`${formattedField}-${term.key}`} field={facet.field} responseSymbol="false" value={term.key} onChange={(e) => facetChanged(e)} />
+                                                <span>{'\u2212'}</span>
                                             </label>
-                                        </> :
-                                        <>
-                                            <label className="yes">
-                                                <input type="radio" id={`${formattedKeyAndField}-equal`} name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="true" value={term.key} onChange={(e) => multiFacetChanged(e)} />
-                                                <span>{'\u003D'}</span>
-                                            </label>
-                                            <label className="not-used">
-                                                <input type="radio" id={`${formattedKeyAndField}-exclude`} className="exclude-filter" name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="none" value={term.key} onChange={(e) => multiFacetChanged(e)} />
-                                                <span>{'\u20E0'}</span>
-                                            </label>
-                                            <label className="no">
-                                                <input type="radio" id={`${formattedKeyAndField}-notEqual`} name={`${formattedField}-${term.key}`} field={facet.field} equalsymbol="false" value={term.key} onChange={(e) => multiFacetChanged(e)} />
-                                                <span>{'\u2260'}</span>
-                                            </label>
-                                            <span htmlFor="">{' '}{term.key}</span>
-                                        </>
-                                    }
-                                </div>
-                            );
-                        }));
-                    })
+                                            <span className="facet-label" htmlFor="">{' '}{hasKeyAsString ? facet.field : term.key}</span>
+                                        </div>
+                                    );
+                                })
+                            }
+                        </fieldset>
+                    ))
                 }
             </div>
         </div>);
