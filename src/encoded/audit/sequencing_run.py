@@ -67,10 +67,57 @@ def audit_required_files(value, system):
         return
 
 
+def audit_duplicated_read_types(value, system):
+    '''
+    Should not have multiple reads assigned to this SequencingRun
+    if they are the same read_type
+    '''
+    if value['status'] in ['deleted']:
+        return
+
+    read_types = {}
+    for f in value.get('files'):
+        if f.get('read_type'):
+            if f['read_type'] in read_types.keys():
+                read_types[f['read_type']].append(f['uuid'])
+            else:
+                read_types[f['read_type']] = [f['uuid']]
+
+    for k,v in read_types.items():
+        if len(v) > 1:
+            detail = ('SequencingRun {} has multiple {} files: {}.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                k,
+                ','.join(v)
+                )
+            )
+            yield AuditFailure('duplicated read type', detail, level='ERROR')
+    return
+
+
+
+    not_found = []
+    protocol = value['derived_from'][0].get('protocol')
+    for f in protocol['required_files']:
+        file_prop_name = (f + '_file').replace('Read ', 'read_')
+        if not value.get(file_prop_name):
+            not_found.append(f)
+    if not_found:
+        detail = ('SequencingRun {} is missing {}, required based on standards for {}.'.format(
+            audit_link(path_to_text(value['@id']), value['@id']),
+            ','.join(not_found),
+            audit_link(path_to_text(protocol['@id']), protocol['@id'])
+            )
+        )
+        yield AuditFailure('missing required file', detail, level='ERROR')
+        return
+
+
 function_dispatcher = {
     'audit_read_counts': audit_read_counts,
     'audit_required_files': audit_required_files,
-    'no_platform': no_platform
+    'no_platform': no_platform,
+    'audit_duplicated_read_types': audit_duplicated_read_types
 }
 
 
