@@ -441,6 +441,12 @@
         "assays": {
             "title": "Assays"
         },
+        "assembly": {
+            "title": "Genome assembly"
+        },
+        "genome_annotation": {
+            "title": "Genome annotation"
+        },
         "output_types": {
             "title": "Output type"
         },
