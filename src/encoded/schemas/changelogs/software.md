@@ -1,5 +1,9 @@
 ## Changelog for software.json
 
+### Minor changes since schema version 9
+
+* Added *DAC*, *DCC*, and *uniform processing pipelines* to *used_by* enum
+
 ### Schema version 9
 
 * Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *purpose* enum; *single-cell ATAC-seq* was removed from the *purpose* enum and remapped to *single-nucleus ATAC-seq*

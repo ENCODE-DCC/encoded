@@ -170,10 +170,13 @@
                 "type": "string",
                 "enum": [
                     "community",
+                    "DAC",
+                    "DCC",
                     "ENCODE",
                     "modENCODE",
                     "modERN",
-                    "mouseENCODE"
+                    "mouseENCODE",
+                    "uniform processing pipelines"
                 ]
             }
         },
@@ -187,10 +190,21 @@
     },
     "facets": {
         "software_type": {
-            "title": "Software type"
+            "title": "Software type",
+            "open_on_load": true
         },
         "purpose": {
-            "title": "Purpose"
+            "title": "Purpose",
+            "open_on_load": true
+        },
+        "used_by": {
+            "title": "Used by"
+        },
+        "award.component": {
+            "title": "Award"
+        },
+        "lab.title": {
+            "title": "Lab"
         }
     },
    "columns": {

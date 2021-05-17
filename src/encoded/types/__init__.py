@@ -272,7 +272,9 @@ class Software(Item):
     schema = load_schema('encoded:schemas/software.json')
     name_key = 'name'
     embedded = [
-        'versions'
+        'versions',
+        'lab',
+        'award'
     ]
     embedded_with_frame = [
         Path('references', exclude=['datasets', 'publication_data']),
