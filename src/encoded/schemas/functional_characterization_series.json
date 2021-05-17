@@ -95,6 +95,16 @@
         "biosample_ontology.cell_slims": {
             "title": "Cell"
         },
+        "related_datasets.crispr_screen_readout": {
+            "title": "CRISPR screen readout"
+        },
+        "related_datasets.examined_loci.gene.symbol": {
+            "title": "Examined loci",
+            "type": "typeahead"
+        },
+        "related_datasets.perturbation_type": {
+            "title": "Perturbation type"
+        },
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage"
         },
@@ -218,6 +228,18 @@
         },
         "related_datasets.replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units",
+            "type": "string"
+        },
+        "related_datasets.perturbation_type": {
+            "title": "Perturbation type",
+            "type": "string"
+        },
+        "related_datasets.examined_loci.gene.symbol": {
+            "title": "Examined loci",
+            "type": "string"
+        },
+        "related_datasets.crispr_screen_readout": {
+            "title": "CRISPR screen readout",
             "type": "string"
         }
     },

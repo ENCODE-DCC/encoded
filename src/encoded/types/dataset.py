@@ -1252,8 +1252,10 @@ class SingleCellRnaSeries(Series):
 class FunctionalCharacterizationSeries(Series):
     item_type = 'functional_characterization_series'
     schema = load_schema('encoded:schemas/functional_characterization_series.json')
-    embedded = Series.embedded
-
+    embedded = Series.embedded + [
+        'related_datasets.examined_loci',
+        'related_datasets.examined_loci.gene',
+    ]
 
 @collection(
     name='gene-silencing-series',
