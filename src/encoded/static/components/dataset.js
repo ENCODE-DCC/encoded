@@ -2012,7 +2012,18 @@ export const SeriesComponent = (props, reactContext) => {
             : null}
 
             {/* Display list of released and unreleased files */}
-            <FileGallery context={context} files={files} analyses={analyses} showReplicateNumber={false} collapseNone hideGraph hideControls showDetailedTracks hideAnalysisSelector />
+            <FileGallery
+                context={context}
+                files={files}
+                analyses={analyses}
+                fileQueryKey="related_datasets.files"
+                showReplicateNumber={false}
+                collapseNone
+                hideGraph
+                showDetailedTracks
+                hideAnalysisSelector
+                defaultOnly
+            />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
