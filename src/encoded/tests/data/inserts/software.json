@@ -137,7 +137,7 @@
         "name": "bwa_wrapper",
         "title":  "BWA wrapper",
         "description": "Wrapper to run bwa.",
-        "software_type": ["other"],
+        "software_type": ["other", "framework"],
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "source_url": "https://github.com/",
