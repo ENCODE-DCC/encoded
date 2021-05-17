@@ -48,6 +48,7 @@ class FunctionalCharacterizationExperiment(
     schema = load_schema('encoded:schemas/functional_characterization_experiment.json')
     embedded = Dataset.embedded + [
         'biosample_ontology',
+        'examined_loci',
         'examined_loci.gene',
         'elements_references.examined_loci',
         'files.platform',
@@ -152,3 +153,70 @@ class FunctionalCharacterizationExperiment(
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Perturbation type",
+        "type": "string",
+        "notSubmittable": True,
+        })
+    def perturbation_type(self, request, assay_term_name, replicates=None):
+        # https://encodedcc.atlassian.net/browse/ENCD-5911
+        perturbation_type = None
+        if assay_term_name == 'CRISPR screen':
+            if replicates is not None:
+                CRISPR_gms = []
+                for rep in replicates:
+                    replicate_object = request.embed(rep, '@@object?skip_calculated=true')
+                    if replicate_object['status'] in ('deleted', 'revoked'):
+                        continue
+                    if 'library' in replicate_object:
+                        library_object = request.embed(replicate_object['library'], '@@object?skip_calculated=true')
+                        if library_object['status'] in ('deleted', 'revoked'):
+                            continue
+                        if 'biosample' in library_object:
+                            biosample_object = request.embed(library_object['biosample'], '@@object')
+                            if biosample_object['status'] in ('deleted', 'revoked'):
+                                continue
+                            genetic_modifications = biosample_object.get('applied_modifications')
+                            if genetic_modifications:
+                                for gm in genetic_modifications:
+                                    gm_object = request.embed(gm, '@@object?skip_calculated=true')
+                                    if gm_object.get('purpose') == 'characterization' and gm_object.get('method') == 'CRISPR':
+                                        category = gm_object['category']
+                                        if category in ('activation', 'deletion', 'disruption', 'inhibition', 'interference', 'knockout'):
+                                            CRISPR_gms.append(category)
+                # Return a specific perturbation_type if there is only one category type for CRISPR characterization genetic modifications for all replicate biosample genetic modifications
+                if len(set(CRISPR_gms)) == 1:
+                    if 'activation' in CRISPR_gms:
+                        perturbation_type = 'activation'
+                    elif 'deletion' in CRISPR_gms:
+                        perturbation_type = 'deletion'
+                    elif 'disruption' in CRISPR_gms:
+                        perturbation_type = 'disruption'
+                    elif 'inhibition' in CRISPR_gms:
+                        perturbation_type = 'inhibition'
+                    elif 'interference' in CRISPR_gms:
+                        perturbation_type = 'interference'
+                    elif 'knockout' in CRISPR_gms:
+                        perturbation_type = 'knockout'
+            return perturbation_type
+
+    @calculated_property(schema={
+        "title": "CRISPR screen readout",
+        "type": "string",
+        "notSubmittable": True,
+    })
+    def crispr_screen_readout(self, request, assay_term_name, examined_loci=None):
+        crispr_screen_readout = None
+        if assay_term_name == 'CRISPR screen':
+            # Return a specific CRISPR screen readout if there is only one method used in examined_loci, no examined_loci at all indicates a growth screen
+            if examined_loci == None:
+                crispr_screen_readout = 'proliferation'
+            else:
+                methods = []
+                for locus in examined_loci:
+                    if 'expression_measurement_method' in locus:
+                        methods.append(locus['expression_measurement_method'])
+                if len(set(methods)) == 1:
+                    crispr_screen_readout = str(methods[0])
+            return crispr_screen_readout

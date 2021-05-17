@@ -661,6 +661,13 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
+                            {context.perturbation_type ?
+                                <div data-test="perturbationtype">
+                                    <dt>Perturbation type</dt>
+                                    <dd>{context.perturbation_type}</dd>
+                                </div>
+                            : null}
+
                             {context.examined_loci && context.examined_loci.length > 0 ?
                                 <div data-test="examined-loci">
                                     <dt>Examined Loci</dt>
@@ -674,11 +681,17 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                                     {/* 0 is falsy but we still want it to display, so 0 is explicitly checked for */}
                                                     {loci.expression_percentile || loci.expression_percentile === 0 ? <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span> : null}
                                                     {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ? <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span> : null}
-                                                    {loci.expression_measurement_method || loci.expression_measurement_method === 0 ? <span>{' by '}{loci.expression_measurement_method}</span> : null}
                                                 </span>
                                             : null
                                         ))}
                                     </dd>
+                                </div>
+                            : null}
+
+                            {context.crispr_screen_readout ?
+                                <div data-test="crisprscreenreadout">
+                                    <dt>CRISPR screen readout</dt>
+                                    <dd>{context.crispr_screen_readout}</dd>
                                 </div>
                             : null}
 

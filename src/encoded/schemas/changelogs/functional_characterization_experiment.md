@@ -1,5 +1,8 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Schema version 8
+* The *HCR-FlowFish* enum in *expression_measurement_method* has been adjusted to *HCR-FlowFISH*
+
 ### Minor changes since schema version 7
 
 * Added *ENCYCLOPEDIAv6* to *internal_tags* enums list

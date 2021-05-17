@@ -158,3 +158,19 @@ def fcc_experiment_analysis(pce_fcc_experiment, analysis_1):
         'analysis_objects': [analysis_1['uuid']]
     })
     return item
+
+
+@pytest.fixture
+def functional_characterization_experiment_7(testapp, lab, award, ctcf, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'examined_loci': [{
+             'gene': ctcf['uuid'],
+             'expression_measurement_method': 'HCR-FlowFish'
+         }]
+    }
+    return item
