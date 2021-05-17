@@ -2709,20 +2709,40 @@ def test_audit_experiment_control(testapp, base_matched_set, ChIP_experiment, ex
     assert not any(error['category'] == 'inconsistent control' for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_inconsistent_analysis_files(testapp, experiment_with_analysis, experiment_with_analysis_2, file_bam_1_1, file_bam_2_1, bigWig_file):
+def test_audit_experiment_inconsistent_analysis_files(
+    testapp,
+    experiment_with_analysis,
+    experiment_with_analysis_2,
+    analysis_1,
+    analysis_2,
+    analysis_released,
+    file_bam_1_1,
+    file_bam_2_1,
+    bigWig_file,
+    bam_file
+):
+    # No inconsistencies, all files in analyses and all analyses associated with dataset
     testapp.patch_json(file_bam_1_1['@id'], {
         'dataset': experiment_with_analysis['@id'],
         })
     testapp.patch_json(file_bam_2_1['@id'], {
         'dataset': experiment_with_analysis['@id'],
         })
+    testapp.patch_json(bam_file['@id'], {
+        'dataset': experiment_with_analysis['@id'],
+        })
+    testapp.patch_json(experiment_with_analysis['@id'], {
+        'analyses': [analysis_1['@id'], analysis_2['@id'], analysis_released['@id']]
+        })
     res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
     assert not any(error['category'] == 'inconsistent analysis files' for error in collect_audit_errors(res))
+    # Processed file not in any analysis
     testapp.patch_json(bigWig_file['@id'], {
         'dataset': experiment_with_analysis['@id'],
         })
     res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent analysis files' for error in collect_audit_errors(res))
+    # Files in analysis belonging to a different dataset
     testapp.patch_json(file_bam_1_1['@id'], {
         'dataset': experiment_with_analysis_2['@id'],
         })
@@ -2731,6 +2751,20 @@ def test_audit_experiment_inconsistent_analysis_files(testapp, experiment_with_a
         })
     res = testapp.get(experiment_with_analysis_2['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent analysis files' for error in collect_audit_errors(res))
+    # Deleted files are excluded from processed data
+    testapp.patch_json(file_bam_1_1['@id'], {
+        'status': 'deleted'
+        })
+    testapp.patch_json(file_bam_2_1['@id'], {
+        'status': 'deleted'
+        })
+    testapp.patch_json(bam_file['@id'], {
+        'dataset': experiment_with_analysis_2['@id'],
+        'status': 'deleted'
+        })
+    res = testapp.get(experiment_with_analysis_2['@id'] + '@@index-data')
+    print(res.json['audit'])
+    assert not any(error['category'] == 'inconsistent analysis files' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_inconsistent_genetic_modifications(
