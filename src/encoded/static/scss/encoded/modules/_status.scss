@@ -18,8 +18,8 @@ $status-colors: (
     pending-dcc-review: $brand-info,
     submitted: $brand-info,
     uploading: $brand-info,
-    upload-failed: $brand-danger,
-    content-error: $brand-danger,
+    upload-failed: #63326e,
+    content-error: #63326e,
 
     // Admin
     deleted: $brand-warning,
