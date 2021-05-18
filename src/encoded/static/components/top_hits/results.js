@@ -108,3 +108,51 @@ Results.propTypes = {
 
 
 export default Results;
+
+
+export const CollectionSection = ({ items }) => (
+    <>
+        <Items
+            items={items}
+        />
+    </>
+);
+
+
+Section.propTypes = {
+    items: PropTypes.array.isRequired,
+};
+
+
+export const CollectionResults = ({ input, results, handleClickAway }) => {
+    useEffect(
+        () => {
+            document.addEventListener('click', handleClickAway, true);
+            return () => {
+                document.removeEventListener('click', handleClickAway, true);
+            };
+        },
+        [handleClickAway]
+    );
+    return (
+        <div className="top-hits-search__results">
+            {
+                results.map(
+                    (result) => (
+                        <CollectionSection
+                            key={result.key}
+                            items={result.hits}
+                        />
+                    )
+                )
+            }
+        </div>
+    );
+};
+
+
+CollectionResults.propTypes = {
+    input: PropTypes.string.isRequired,
+    results: PropTypes.array.isRequired,
+    handleClickAway: PropTypes.func.isRequired,
+};

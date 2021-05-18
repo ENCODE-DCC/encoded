@@ -1,3 +1,12 @@
+import {
+    Query as TopHitsQuery,
+    CollectionsQuery,
+} from './query';
+import Results, {
+    CollectionResults
+} from './results';
+
+
 export const TOP_HITS_URL = '/top-hits-raw/';
 
 export const TOP_HITS_PARAMS = (
@@ -111,3 +120,8 @@ export const COLLECTIONS = [
 ]
 
 export const COLLECTIONS_KEY = 'DataCollection'
+
+export const queries = [
+    ['dataCollections', CollectionsQuery, CollectionResults, 'Data collections'],
+    ['topHits', TopHitsQuery, Results, 'Top results by type'],
+];

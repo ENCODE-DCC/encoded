@@ -74,7 +74,7 @@ export const fetchAndParseTopHits = (url) => (
 * >>> const topHitsQuery = new Query('a549');
 * >>> const results = topHitsQuery.getResults();
 */
-class Query {
+export class Query {
     constructor(searchTerm) {
         this.searchTerm = searchTerm;
     }
@@ -153,7 +153,7 @@ export const getCountFromCollectionsHits = (hits) => (
 export const getCollectionLink = () => `/help/project-overview/`;
 
 
-class CollectionsQuery {
+export class CollectionsQuery {
     constructor(searchTerm) {
         this.searchTerm = searchTerm;
         this.collections = COLLECTIONS;

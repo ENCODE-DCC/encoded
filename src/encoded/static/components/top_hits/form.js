@@ -13,9 +13,9 @@ const Form = (props) => (
         {
             !!props.results.length > 0 &&
             <Results
-                input={props.input}
-                results={props.results}
-                handleClickAway={props.handleClickAway}
+               input={props.input}
+               results={props.results}
+               handleClickAway={props.handleClickAway}
             />
         }
     </form>
