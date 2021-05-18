@@ -320,11 +320,12 @@
             span {
                 &.group-title {
                     display: block;
-                    font-size: 0.9rem;
+                    font-size: 0.8rem;
                     text-transform: uppercase;
                     color: #b24342;
-                    padding-top: 5px;
-                    text-align: center;
+                    padding-top: 10px;
+                    padding-left: 7px;
+                    padding-bottom: 5px;
                     font-weight: 600;
                 }
             }
