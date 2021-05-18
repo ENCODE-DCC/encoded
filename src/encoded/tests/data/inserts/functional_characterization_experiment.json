@@ -131,6 +131,7 @@
         "description": "Test submission for CRISPR screen experiment",
         "elements_mapping": "ENCSR212POL",
         "elements_cloning": "ENCSR127PCE",
+        "elements_references": ["ENCSR580ZYI"],
         "lab": "bing-ren",
         "status": "in progress",
         "submitted_by": "tristique.sem@faucibus.semper",
