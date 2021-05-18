@@ -42,27 +42,28 @@ const Group = (props) => {
 
 /** Renders the input and dropdown (if there are any results). */
 const MultiResultsForm = (props) => {
+    const results = queries.map(
+        ([name, , Component, title]) => (
+            shouldRenderResults(name, props.results) &&
+            <Group
+                title={title}
+                key={name}
+                input={props.input}
+                results={props.results[name]}
+                component={Component}
+                handleClickAway={props.handleClickAway}
+            />
+        )
+    ).filter(
+        (value) => Boolean(value)
+    );
     return (
         <form className="multisearch__multiform" action="/search/">
             {props.children}
             {
-                !_.isEmpty(props.results) &&
+                results.length > 0 &&
                 <div className="multisearch__results-container">
-                    {
-                        queries.map(
-                        ([name, , Component, title]) => (
-                                 shouldRenderResults(name, props.results) &&
-                                     <Group
-                                         title={title}
-                                         key={name}
-                                         input={props.input}
-                                         results={props.results[name]}
-                                         component={Component}
-                                         handleClickAway={props.handleClickAway}
-                                     />
-                             )
-                        )
-                   }
+                    {results}
                 </div>
             }
         </form>
