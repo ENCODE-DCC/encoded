@@ -202,7 +202,7 @@
         left: 0;
         right: 0;
         top: 100%;
-        z-index: 3;
+        z-index: 5;
         background-color: white;
         border: 1px solid #a0a0a0;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -217,7 +217,7 @@
             border: none;
             background-color: transparent;
             box-shadow: none;
-            z-index: 4;
+            z-index: 6;
 
             ul {
                 list-style: none;
@@ -322,11 +322,87 @@
                     display: block;
                     font-size: 0.8rem;
                     text-transform: uppercase;
-                    color: #b24342;
+                    color: black;
                     padding-top: 10px;
                     padding-left: 7px;
-                    padding-bottom: 5px;
-                    font-weight: 600;
+                    padding-bottom: 3px;
+                    text-align: center;
+                    overflow: hidden;
+                }
+
+                &.group-title:before,
+                &.group-title:after {
+                    background-color: #000;
+                    content: "";
+                    display: inline-block;
+                    height: 1px;
+                    position: relative;
+                    vertical-align: middle;
+                    width: 50%;
+                }
+
+                &.group-title:before {
+                    right: 0.5em;
+                    margin-left: -50%;
+                }
+
+                &.group-title:after {
+                    left: 0.5em;
+                    margin-right: -50%;
+                }
+            }
+        }
+
+        .multisearch__results {
+            position: relative;
+            overflow-y: visible;
+            border: none;
+            background-color: transparent;
+            box-shadow: none;
+            z-index: 6;
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            li {
+                margin: 0;
+                padding: 0;
+            }
+
+            a {
+                display: block;
+                width: 100%;
+                color: inherit;
+                font-size: 1rem;
+                text-align: left;
+                text-decoration: none;
+                background: none;
+                border: none;
+                padding-left: 15px;
+
+                &.section-item {
+                    padding-top: 3px;
+                    padding-bottom: 3px;
+                }
+
+                &.section-item--selected {
+                    padding-top: 3px;
+                    padding-bottom: 3px;
+                    background-color: #0a253d;
+                    color: #fff;
+                }
+
+                span {
+                    padding-right: 5px;
+                    text-align: left;
+
+                    &.item-accession {
+                        font-size: 0.9rem;
+                        display: inline-block;
+                    }
                 }
             }
         }

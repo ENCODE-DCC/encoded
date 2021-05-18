@@ -135,7 +135,7 @@ export const CollectionResults = ({ input, results, handleClickAway }) => {
         [handleClickAway]
     );
     return (
-        <div className="top-hits-search__results">
+        <div className="multisearch__results">
             {
                 results.map(
                     (result) => (
