@@ -211,8 +211,8 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3, context) => {
                 };
             } else {
                 const borderTop = rIndex === 0 ? '1px solid #f0f0f0' : ''; // add border color to topmost rows
-                const primaryBoxColor = '#688878';
-                const proteinColor = '#dae6f5';
+                const primaryBoxColor = '#5064c8';
+                const proteinColor = '#b4c8ff';
                 let backgroundColor; // determined if box is colored or not
                 let backgroundImage;
                 const borderRight = yIndex === rowLength - 1 ? '1px solid #f0f0f0' : ''; // add border color to right-most rows
