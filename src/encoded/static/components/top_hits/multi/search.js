@@ -1,15 +1,15 @@
 import { cloneElement, useState } from 'react';
 import PropTypes from 'prop-types';
-import debounce from './debounce';
+import debounce from '../debounce';
 import {
-    MultiResultsNavBarForm,
-} from './multiform';
+    NavBarForm,
+} from './form';
 import {
     queries
 } from './constants';
 
 
-const MultiSearch = ({ children }) => {
+const Search = ({ children }) => {
     const [input, setInput] = useState('');
     const [results, setResults] = useState({});
     const [debounceTimer, setDebounceTimer] = useState(null);
@@ -71,21 +71,20 @@ const MultiSearch = ({ children }) => {
 };
 
 
-MultiSearch.contextTypes = {
+Search.contextTypes = {
     fetch: PropTypes.func,
 };
 
 
-MultiSearch.propTypes = {
+Search.propTypes = {
     children: PropTypes.element.isRequired,
 };
 
 
 export const NavBarMultiSearch = () => (
     <li className="navbar__item navbar__item--search">
-        <MultiSearch>
-            <MultiResultsNavBarForm />
-        </MultiSearch>
+        <Search>
+            <NavBarForm />
+        </Search>
     </li>
 );
-

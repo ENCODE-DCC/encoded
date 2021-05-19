@@ -7,7 +7,7 @@ import { CartStatus } from './cart';
 import { isProductionHost } from './globals';
 import Tooltip from '../libs/ui/tooltip';
 import { BrowserFeat } from './browserfeat';
-import { NavBarMultiSearch } from './top_hits/multisearch';
+import { NavBarMultiSearch } from './top_hits/multi/search';
 
 /**
  * Navigation bar home-page button.

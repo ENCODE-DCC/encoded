@@ -21,11 +21,6 @@ import {
 export const makeTitle = (result) => `${result.key} (${result.count})`;
 
 
-export const makeLink = (result, input) => {
-    return result.href || `/search/?type=${result.key}&searchTerm=${input}`;
-};
-
-
 // Items are mapped to an Item component.
 export const Items = ({ items }) => (
     <ul>
@@ -89,7 +84,7 @@ const Results = ({ input, results, handleClickAway }) => {
                         <Section
                             key={result.key}
                             title={makeTitle(result)}
-                            href={makeLink(result, input)}
+                            href={`/search/?type=${result.key}&searchTerm=${input}`}
                             items={result.hits}
                         />
                     )
@@ -108,51 +103,3 @@ Results.propTypes = {
 
 
 export default Results;
-
-
-export const CollectionSection = ({ items }) => (
-    <>
-        <Items
-            items={items}
-        />
-    </>
-);
-
-
-Section.propTypes = {
-    items: PropTypes.array.isRequired,
-};
-
-
-export const CollectionResults = ({ input, results, handleClickAway }) => {
-    useEffect(
-        () => {
-            document.addEventListener('click', handleClickAway, true);
-            return () => {
-                document.removeEventListener('click', handleClickAway, true);
-            };
-        },
-        [handleClickAway]
-    );
-    return (
-        <div className="multisearch__results">
-            {
-                results.map(
-                    (result) => (
-                        <CollectionSection
-                            key={result.key}
-                            items={result.hits}
-                        />
-                    )
-                )
-            }
-        </div>
-    );
-};
-
-
-CollectionResults.propTypes = {
-    input: PropTypes.string.isRequired,
-    results: PropTypes.array.isRequired,
-    handleClickAway: PropTypes.func.isRequired,
-};

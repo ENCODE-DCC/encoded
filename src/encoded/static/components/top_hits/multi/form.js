@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
     Input,
     InputWithIcon,
-} from './input';
+} from '../input';
 import {
     queries
 } from './constants';
@@ -14,7 +14,7 @@ const shouldRenderResults = (name, results) => {
 };
 
 
-const GroupTitle = ({title}) => (
+const Title = ({title}) => (
     <span className="group-title">
         {title}
     </span>
@@ -25,7 +25,7 @@ const Group = (props) => {
     const Component = props.component;
     return (
         <>
-            <GroupTitle
+            <Title
                 title={props.title}
             />
             <Component
@@ -38,8 +38,7 @@ const Group = (props) => {
 };
 
 
-/** Renders the input and dropdown (if there are any results). */
-const MultiResultsForm = (props) => {
+const Form = (props) => {
     const results = queries.map(
         ([name, , Component, title]) => (
             shouldRenderResults(name, props.results) &&
@@ -69,7 +68,7 @@ const MultiResultsForm = (props) => {
 };
 
 
-MultiResultsForm.propTypes = {
+Form.propTypes = {
     children: PropTypes.element.isRequired,
     input: PropTypes.string.isRequired,
     results: PropTypes.object.isRequired,
@@ -77,25 +76,24 @@ MultiResultsForm.propTypes = {
 };
 
 
-/** Uses input form with icon */
-export const MultiResultsNavBarForm = (props) => (
-    <MultiResultsForm {...props}>
+export const NavBarForm = (props) => (
+    <Form {...props}>
         <InputWithIcon
             input={props.input}
             onChange={props.handleInputChange}
         />
-    </MultiResultsForm>
+    </Form>
 );
 
 
 /** Required but set in cloneElement */
-MultiResultsNavBarForm.propTypes = {
+NavBarForm.propTypes = {
     input: PropTypes.string,
     handleInputChange: PropTypes.func,
 };
 
 
-MultiResultsNavBarForm.defaultProps = {
+NavBarForm.defaultProps = {
     input: null,
     handleInputChange: null,
 };
