@@ -198,6 +198,10 @@
                 "A1c": {
                     "title": "Hemoglobin A1C",
                     "type": "string"
+                },
+                "LVEF": {
+                    "title": "Left ventricular ejection fraction",
+                    "type": "string"
                 }
             },
             "additionalProperties": true
