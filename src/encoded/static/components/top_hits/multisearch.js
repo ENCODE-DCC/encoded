@@ -16,20 +16,18 @@ const MultiSearch = ({ children }) => {
     const debounceTime = 200;
 
     const makeSearchAndSetResults = (searchTerm) => {
-        queries.forEach(
+        const results = queries.map(
             ([name, Query]) => {
                 const query = new Query(searchTerm);
-                query.getResults().then(
-                    (newResults) => setResults(
-                        (oldResults) => (
-                            {
-                                ...oldResults,
-                                [name]: newResults,
-                            }
-                        )
-                    )
+                return query.getResults().then(
+                    (result) => ({[name]: result})
                 );
             }
+        );
+        Promise.all(results).then(
+            (results) => Object.assign({}, ...results)
+        ).then(
+            (results) => setResults(results)
         );
     };
 
