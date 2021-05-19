@@ -126,6 +126,29 @@ def audit_experiment_replicate_with_no_files(value, system, excluded_statuses):
         )
 
 
+def audit_experiment_mixed_expression_measurement_methods(value, system, excluded_types):
+    if value['status'] in excluded_types:
+        return
+    if value['assay_term_name'] != 'CRISPR screen':
+        return
+    if 'examined_loci' not in value:
+        return
+    methods = []
+    for locus in value.get('examined_loci'):
+        if 'expression_measurement_method' not in locus:
+            methods.append('none')
+        else:
+            methods.append(locus.get('expression_measurement_method'))
+    if len(set(methods)) == 1:
+        return
+    else:
+        methods_detail = ', '.join(methods)
+        detail = f'This experiment uses multiple expression measurement methods, {methods_detail}.'
+        yield AuditFailure(
+            'mixed expression_measurement_method', detail, level='NOT_COMPLIANT'
+        )
+
+
 function_dispatcher_without_files = {
     'audit_biosample': audit_experiment_biosample,
     'audit_documents': audit_experiment_documents,
@@ -135,7 +158,8 @@ function_dispatcher_without_files = {
     'audit_replicates_biosample': audit_experiment_replicates_biosample,
     'audit_replicates_no_libraries': audit_experiment_replicates_with_no_libraries,
     'audit_technical_replicates_same_library': audit_experiment_technical_replicates_same_library,
-    'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications
+    'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
+    'audit_experiment_mixed_expression_measurement_methods': audit_experiment_mixed_expression_measurement_methods
 }
 function_dispatcher_with_files = {
     'audit_no_processed_data': audit_experiment_no_processed_data,

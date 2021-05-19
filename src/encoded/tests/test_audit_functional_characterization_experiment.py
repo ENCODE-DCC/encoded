@@ -363,3 +363,31 @@ def test_audit_experiment_inconsistent_genetic_modifications(
                        {'genetic_modifications': [construct_genetic_modification['@id'], genetic_modification['@id']]})
     res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent genetic modifications' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_mixed_expression_measurement_methods(
+        testapp, file, functional_characterization_experiment_disruption_screen, ctcf):
+    # https://encodedcc.atlassian.net/browse/ENCD-5903
+    testapp.patch_json(
+        functional_characterization_experiment_disruption_screen['@id'],
+        {'examined_loci': [
+            {'gene': ctcf['uuid'], 'expression_percentile': 100, 'expression_measurement_method': 'HCR-FlowFISH'},
+            {'gene': ctcf['uuid'], 'expression_percentile': 10, 'expression_measurement_method': 'PrimeFlow'}
+        ]})
+    res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'mixed expression_measurement_method'
+        for error in collect_audit_errors(res)
+    )
+    # an entry lacking expression_measurement_method is also considered mixed
+    testapp.patch_json(
+        functional_characterization_experiment_disruption_screen['@id'],
+        {'examined_loci': [
+            {'gene': ctcf['uuid'], 'expression_percentile': 100},
+            {'gene': ctcf['uuid'], 'expression_percentile': 10, 'expression_measurement_method': 'PrimeFlow'}
+        ]})
+    res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'mixed expression_measurement_method'
+        for error in collect_audit_errors(res)
+    )
