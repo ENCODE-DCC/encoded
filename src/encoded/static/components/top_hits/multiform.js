@@ -15,11 +15,9 @@ const shouldRenderResults = (name, results) => {
 
 
 const GroupTitle = ({title}) => (
-    <div className="top-hits-search__results">
-        <span className="group-title">
-            {title}
-        </span>
-    </div>
+    <span className="group-title">
+        {title}
+    </span>
 );
 
 

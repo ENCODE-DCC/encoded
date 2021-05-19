@@ -95,6 +95,7 @@
             &.section-item {
                 padding-top: 3px;
                 padding-bottom: 3px;
+                overflow-x: scroll;
             }
 
             &.section-item--selected {
@@ -102,6 +103,7 @@
                 padding-bottom: 3px;
                 background-color: #0a253d;
                 color: #fff;
+                overflow-x: scroll;
             }
 
             span {
@@ -218,139 +220,38 @@
             background-color: transparent;
             box-shadow: none;
             z-index: 6;
+        }
 
-            ul {
-                list-style: none;
-                margin: 0;
-                padding: 0;
-            }
+        .group-title {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: black;
+            padding-top: 10px;
+            padding-bottom: 3px;
+            text-align: center;
+            overflow: hidden;
+        }
 
-            li {
-                margin: 0;
-                padding: 0;
-            }
+        .group-title:before,
+        .group-title:after {
+            background-color: #000;
+            content: "";
+            display: inline-block;
+            height: 1px;
+            position: relative;
+            vertical-align: middle;
+            width: 50%;
+        }
 
-            a {
-                display: block;
-                width: 100%;
-                color: inherit;
-                font-size: 1rem;
-                text-align: left;
-                text-decoration: none;
-                background: none;
-                border: none;
-                padding-left: 15px;
+        .group-title:before {
+            right: 0.5em;
+            margin-left: -50%;
+        }
 
-                &.section-title {
-                    background-color: white;
-                    color: gray;
-                    font-weight: bold;
-                    text-decoration: underline;
-                    padding-left: 7px;
-                }
-
-                &.section-title--selected {
-                    background-color: #0a253d;
-                    color: #fff;
-                    font-weight: bold;
-                    text-decoration: underline;
-                    padding-left: 7px;
-                }
-
-                &.section-item {
-                    padding-top: 3px;
-                    padding-bottom: 3px;
-                }
-
-                &.section-item--selected {
-                    padding-top: 3px;
-                    padding-bottom: 3px;
-                    background-color: #0a253d;
-                    color: #fff;
-                }
-
-                span {
-                    padding-right: 5px;
-                    text-align: left;
-
-                    &.item-other {
-                        color: gray;
-                        font-size: 0.9rem;
-                        display: inline-block;
-                    }
-
-                    &.item-organism {
-                        color: gray;
-                        font-size: 0.9rem;
-                        font-style: italic;
-                    }
-
-                    &.item-target {
-                        color: gray;
-                        font-size: 0.9rem;
-                        font-style: italic;
-                    }
-
-                    &.item-description {
-                        display: block;
-                        font-size: 0.8rem;
-                        font-style: italic;
-                    }
-
-                    &.item-authors {
-                        display: block;
-                        color: gray;
-                        font-size: 0.8rem;
-                        padding-top: 2px;
-                        padding-bottom: 2px;
-                    }
-
-                    &.item-accession {
-                        font-weight: bold;
-                        font-size: 0.9rem;
-                    }
-
-                    &.item-title {
-                        font-size: 0.9rem;
-                        display: inline-block;
-                    }
-                }
-            }
-
-            span {
-                &.group-title {
-                    display: block;
-                    font-size: 0.8rem;
-                    text-transform: uppercase;
-                    color: black;
-                    padding-top: 10px;
-                    padding-left: 7px;
-                    padding-bottom: 3px;
-                    text-align: center;
-                    overflow: hidden;
-                }
-
-                &.group-title:before,
-                &.group-title:after {
-                    background-color: #000;
-                    content: "";
-                    display: inline-block;
-                    height: 1px;
-                    position: relative;
-                    vertical-align: middle;
-                    width: 50%;
-                }
-
-                &.group-title:before {
-                    right: 0.5em;
-                    margin-left: -50%;
-                }
-
-                &.group-title:after {
-                    left: 0.5em;
-                    margin-right: -50%;
-                }
-            }
+        .group-title:after {
+            left: 0.5em;
+            margin-right: -50%;
         }
 
         .multisearch__results {
@@ -386,6 +287,7 @@
                 &.section-item {
                     padding-top: 3px;
                     padding-bottom: 3px;
+                    overflow-x: scroll;
                 }
 
                 &.section-item--selected {
@@ -393,6 +295,7 @@
                     padding-bottom: 3px;
                     background-color: #0a253d;
                     color: #fff;
+                    overflow-x: scroll;
                 }
 
                 span {
