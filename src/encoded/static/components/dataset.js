@@ -1805,7 +1805,7 @@ export const SeriesComponent = (props, reactContext) => {
     let combinedTreatmentAmounts;
     context.related_datasets.forEach((d) => {
         let biosamples;
-        if (d.replicates && d.replicates.length > 0) {
+        if (seriesType !== 'SingleCellRnaSeries' && d.replicates && d.replicates.length > 0) {
             biosamples = d.replicates.map((replicate) => replicate.library && replicate.library.biosample);
         }
         if (biosamples && biosamples.length > 0) {
@@ -1847,7 +1847,7 @@ export const SeriesComponent = (props, reactContext) => {
     const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? [...new Set(context.biosample_ontology.map((b) => b.term_name))] : [];
 
     // Calculate the donor diversity.
-    const diversity = donorDiversity(context);
+    const diversity = seriesType !== 'SingleCellRnaSeries' ? donorDiversity(context) : null;
 
     // Filter out any files we shouldn't see.
     const experimentList = context.related_datasets.filter((dataset) => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
@@ -1908,10 +1908,12 @@ export const SeriesComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            <div data-test="donordiversity">
-                                <dt>Donor diversity</dt>
-                                <dd>{diversity}</dd>
-                            </div>
+                            {diversity ?
+                                <div data-test="donordiversity">
+                                    <dt>Donor diversity</dt>
+                                    <dd>{diversity}</dd>
+                                </div>
+                            : null}
 
                             {context.assay_term_name && context.assay_term_name.length > 0 ?
                                 <div data-test="description">
