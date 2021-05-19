@@ -518,11 +518,11 @@ CartPager.propTypes = {
 /**
  * Displays controls at the top of search results within the tab content areas.
  */
-const CartSearchResultsControls = ({ currentTab, elements, currentPage, totalPageCount, updateCurrentPage, loading }) => {
+const CartSearchResultsControls = ({ currentTab, elements, currentPage, totalPageCount, updateCurrentPage, cartType, loading }) => {
     if (currentTab === 'datasets' || totalPageCount > 1) {
         return (
             <div className="cart-search-results-controls">
-                {currentTab === 'datasets'
+                {currentTab === 'datasets' && cartType === 'ACTIVE'
                     ? <CartRemoveElements elements={elements.map((element) => element['@id'])} loading={loading} />
                     : <div />}
                 {totalPageCount > 1
@@ -545,6 +545,8 @@ CartSearchResultsControls.propTypes = {
     totalPageCount: PropTypes.number.isRequired,
     /** Called when user clicks pager controls */
     updateCurrentPage: PropTypes.func.isRequired,
+    /** Current cart type, e.g. ACTIVE, SHARED... */
+    cartType: PropTypes.string.isRequired,
     /** True if cart still loading on page */
     loading: PropTypes.bool.isRequired,
 };
@@ -1285,6 +1287,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         currentPage={pageNumbers.datasets}
                                         totalPageCount={totalPageCount.datasets}
                                         updateCurrentPage={updateDisplayedPage}
+                                        cartType={cartType}
                                         loading={facetProgress !== -1}
                                     />
                                     <CartSearchResults
@@ -1301,6 +1304,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         currentPage={pageNumbers.browser}
                                         totalPageCount={totalPageCount.browser}
                                         updateCurrentPage={updateDisplayedPage}
+                                        cartType={cartType}
                                         loading={facetProgress !== -1}
                                     />
                                     {selectedFileTerms.assembly && selectedFileTerms.assembly.length > 0
@@ -1314,6 +1318,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         currentPage={pageNumbers.processeddata}
                                         totalPageCount={totalPageCount.processeddata}
                                         updateCurrentPage={updateDisplayedPage}
+                                        cartType={cartType}
                                         loading={facetProgress !== -1}
                                     />
                                     <CartFiles files={selectedFiles} currentPage={pageNumbers.processeddata} defaultOnly={defaultOnly} loading={facetProgress !== -1} />
@@ -1325,6 +1330,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         currentPage={pageNumbers.rawdata}
                                         totalPageCount={totalPageCount.rawdata}
                                         updateCurrentPage={updateDisplayedPage}
+                                        cartType={cartType}
                                         loading={facetProgress !== -1}
                                     />
                                     <CartFiles files={rawdataFiles} currentPage={pageNumbers.rawdata} loading={facetProgress !== -1} />
