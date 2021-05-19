@@ -223,6 +223,7 @@
         "collection_to_dissociation_interval": {
             "title": "Collection-to-dissociation interval",
             "description": "The amount of time elapsed between tissue collection and cell dissociation.",
+            "comment": "Only used if the sample is not preserved prior to dissociation",
             "type": "string",
             "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
         },
@@ -239,6 +240,7 @@
         "death_to_dissociation_interval": {
             "title": "Death-to-dissociation interval",
             "description": "The amount of time elapsed between donor death and cell dissociation.",
+            "comment": "Only used if the sample is not preserved prior to dissociation",
             "type": "string",
             "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
         },

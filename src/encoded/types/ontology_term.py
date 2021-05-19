@@ -151,7 +151,8 @@ disease_slims = {
     'MONDO:0005044': 'hypertensive disorder',
     'MONDO:0005240': 'kidney disease',
     'MONDO:0005084': 'mental disorder',
-    'MONDO:0100081': 'sleep disorder'
+    'MONDO:0100081': 'sleep disorder',
+    'MONDO:0007179': 'autoimmune disease'
 }
 
 

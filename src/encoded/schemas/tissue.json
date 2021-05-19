@@ -119,6 +119,7 @@
         "death_to_preservation_interval": {
             "title": "Death to preservation interval",
             "description": "The amount of time elapsed since death until the tissue was preserved.",
+            "comment": "Only used if the tissue is preserved prior to dissociation",
             "type": "string",
             "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
         },
@@ -137,6 +138,7 @@
         "collection_to_preservation_interval": {
             "title": "Collection to preservation interval",
             "description": "The amount of time elapsed from tissue collection from a donor to preservation.",
+            "comment": "Only used if the tissue is preserved prior to dissociation",
             "type": "string",
             "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
         },
