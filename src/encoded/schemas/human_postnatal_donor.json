@@ -128,6 +128,11 @@
                 ]
             }
         },
+        "risk_score_tyrer_cuzick_lifetime": {
+            "title": "Risk score Tyrer-Cuzick lifetime",
+            "description": "The score from the Tyrer-Cuzick model, or IBIS tool, to estimate he likelihood of a woman developing breast cancer over the course of her lifetime.",
+            "type": "number"
+        },
         "smoking_history": {
             "title": "Smoking history",
             "description": "Assessment of smoking history in the form # unit per time frame over length of time in years smoked and since cessation. E.g. 1 pack a day for 10 years. 2 years since cessation.",

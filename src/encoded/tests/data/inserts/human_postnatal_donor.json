@@ -49,6 +49,7 @@
         "description": "Healthy kidney donorA",
         "ethnicity": "HANCESTRO_0022",
         "sex": "female",
+        "risk_score_tyrer_cuzick_lifetime": 21,
         "age": "45-50",
         "age_units": "year",
         "life_stage": "adult",
