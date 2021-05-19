@@ -20,7 +20,7 @@ Feature: Matrix
         When I visit "/chip-seq-matrix/?type=Experiment"
         And I wait for the content to load
         Then I should see exactly one element with the css selector ".modal"
-        And I should see at least 2 elements with the css selector ".chip_seq_matrix__organism-selector > .selectors > .btn"
+        And I should see at least 2 elements with the css selector ".chip-seq-matrix__organism-selector > .selectors > .btn"
 
         When I click the element with the css selector ".btn__selector--Homo-sapiens"
         And I wait for the content to load

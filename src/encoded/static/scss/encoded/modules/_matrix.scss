@@ -989,7 +989,7 @@ table.matrix th.group-all-groups-cell {
     @extend .matrix__content--reference-epigenome;
 
     /* stylelint-disable-next-line selector-class-pattern */
-    .chip_seq_matrix__data-wrapper {
+    .chip-seq-matrix__data-wrapper {
         .tab-content {
             border-right: 1px solid $tab-color;
             border-left: 1px solid $tab-color;
@@ -1029,24 +1029,6 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
-/* stylelint-disable-next-line selector-class-pattern */
-.chip_seq_matrix__data-wrapper {
-    .tab-content {
-        overflow-x: auto;
-    }
-}
-
-/* stylelint-disable-next-line selector-class-pattern */
-.chip_seq_matrix-search {
-    display: flex;
-    flex-wrap: nowrap !important;
-    justify-content: space-between;
-
-    select {
-        margin-left: 5px;
-    }
-}
-
 // Contents of organism-selection modal.
 .matrix-reference-epigenome__organism-selector {
     > div {
@@ -1067,15 +1049,68 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
-/* stylelint-disable-next-line selector-class-pattern */
-.chip_seq_matrix__organism-selector {
-    @extend .matrix-reference-epigenome__organism-selector;
-}
+// this needs to be refactored in the future
+.chip-seq-matrix {
+    &__organism-selector {
+        @extend .matrix-reference-epigenome__organism-selector;
+    }
 
-/* stylelint-disable-next-line selector-class-pattern */
-.chip_seq_matrix__warning {
-    min-height: 40px;
-    margin: 10px;
+    &__facet {
+        &__expander-wrapper {
+            display: flex;
+            margin-top: 30px;
+            margin-bottom: 20px;
+
+            button {
+                background-color: white;
+                right: -2px;
+                border: 1px solid #fff;
+            }
+
+            &--control {
+                cursor: pointer;
+                margin-right: 30px;
+            }
+
+            &--clear {
+                min-width: 100px;
+            }
+        }
+
+        &__content {
+            margin-bottom: 10px;
+
+            // override the setting in FacetList component
+            .facet-wrapper {
+                display: flex !important;
+
+                .facet {
+                    flex: auto !important;
+                }
+            }
+        }
+    }
+
+    &__warning {
+        min-height: 40px;
+        margin: 10px;
+    }
+
+    &__data-wrapper {
+        .tab-content {
+            overflow-x: auto;
+        }
+    }
+
+    &-search {
+        display: flex;
+        flex-wrap: nowrap !important;
+        justify-content: space-between;
+
+        select {
+            margin-left: 5px;
+        }
+    }
 }
 
 /* stylelint-disable-next-line selector-class-pattern */

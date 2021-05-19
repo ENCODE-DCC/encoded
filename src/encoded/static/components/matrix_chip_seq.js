@@ -9,14 +9,16 @@ import { Panel, PanelBody, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { MatrixBadges, DisplayAsJson } from './objectutils';
+import { MatrixBadges, DisplayAsJson, useMount } from './objectutils';
 import { SearchFilter } from './matrix';
-import { TextFilter } from './search';
+import { TextFilter, FacetList, ClearFilters } from './search';
 import { DivTable } from './datatable';
 
 
 const SEARCH_PERFORMED_PUBSUB = 'searchPerformed';
 const CLEAR_SEARCH_BOX_PUBSUB = 'clearSearchBox';
+const FACET_SESSION_SUFFIX = 'chip_seq_facet_session_';
+const displayedFacets = ['target.investigated_as', 'perturbed'];
 
 /**
  * Transform context to a form where easier to fetch information
@@ -77,8 +79,8 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
 
         yData.forEach((y) => {
             const yKey = Object.keys(y)[0];
-            dataRowT[yKey] = dataRowT[yKey] || Array(headerRowLength + 1).fill(0);
-            dataRowT[yKey][0] = yKey;
+            dataRowT[yKey] = dataRowT[yKey] || Array(headerRowLength + 1).fill({ content: 0, proteinTagStatus: 'no_tagged_protein' });
+            dataRowT[yKey][0] = { content: yKey };
 
             const keyDocCountPair = y[yKey].reduce((a, b) => a.concat(b), []);
 
@@ -86,7 +88,33 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
                 const { key } = kp;
                 const docCount = kp.doc_count;
                 const index = headerRowIndex[key];
-                dataRowT[yKey][index + 1] = docCount;
+                const kpProteinBucket = kp['protein_tags.name'].buckets.map((b) => b.key);
+
+                const getProteinTagStatus = (proteinTagBucket) => {
+                    const separatedProteinBucket = proteinTagBucket.reduce((acc, cv) => {
+                        if (cv === 'no_protein_tags') {
+                            acc.noTaggedProteinCount += 1;
+                        } else {
+                            acc.taggedProteinCount += 1;
+                        }
+                        return acc;
+                    }, { taggedProteinCount: 0, noTaggedProteinCount: 0 });
+
+                    if (separatedProteinBucket.noTaggedProteinCount === 0) {
+                        return 'all_proteins_tagged';
+                    }
+
+                    if (separatedProteinBucket.taggedProteinCount === 0) {
+                        return 'no_tagged_protein';
+                    }
+
+                    return 'mixed';
+                };
+
+                dataRowT[yKey][index + 1] = {
+                    content: docCount,
+                    proteinTagStatus: getProteinTagStatus(kpProteinBucket),
+                };
             });
         });
 
@@ -124,7 +152,7 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
  * @param {string} selectedTabLevel3 - Sub tab to use
  * @returns {object} DataTable-ready structure.
  */
-const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3) => {
+const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3, context) => {
     if (!chIPSeqData || !chIPSeqData.headerRow || !chIPSeqData.dataRow) {
         return [];
     }
@@ -132,7 +160,14 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3) => {
     // add assay_title = Mint chip-seq if the assay selected in Histone chip-seq
     const isAssayTitleHistone = chIPSeqData.assayTitle === 'Histone ChIP-seq';
     const removeSpecialCharacters = (name) => (!name ? name : name.replace(/\s/g, ''));
+    const headerQuery = new QueryString(context.search_base);
 
+    headerQuery.addKeyValue('replicates.library.biosample.donor.organism.scientific_name', chIPSeqData.organismName);
+    headerQuery.addKeyValue('replicates.library.biosample.donor.organism.scientific_name', chIPSeqData.assayTitle);
+
+    if (isAssayTitleHistone) {
+        headerQuery.addKeyValue('assay_title', 'Mint-ChIP-seq');
+    }
 
     const headerRow = [
         {
@@ -143,7 +178,7 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3) => {
         },
         ...chIPSeqData.headerRow.map((x) => ({
             id: removeSpecialCharacters(`${x}`),
-            content: <a href={`/search/?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.term_name=${x}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}`} title={x}>{x}</a>,
+            content: <a href={`${headerQuery.format()}`} title={x}>{x}</a>,
             className: 'div-table-matrix__row__header-item',
             style: {},
         })),
@@ -154,23 +189,68 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3) => {
     const rowData = chIPSeqData.dataRow.map((row, rIndex) => {
         const rowContent = row.map((y, yIndex) => {
             let content;
+            const yQuery = new QueryString(context.search_base);
+
+            yQuery.addKeyValue('assay_title', chIPSeqData.assayTitle);
+            yQuery.addKeyValue('target.label', row[0].content);
+            yQuery.addKeyValue('replicates.library.biosample.donor.organism.scientific_name', chIPSeqData.organismName);
+            yQuery.addKeyValue('biosample_ontology.classification', selectedTabLevel3);
 
             if (yIndex === 0) {
                 const borderLeft = '1px solid #fff'; // make left-most side border white
+
+                if (isAssayTitleHistone) {
+                    yQuery.addKeyValue('assay_title', 'Mint-ChIP-seq');
+                }
+
                 content = {
                     id: removeSpecialCharacters(`${y}`),
-                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>{y}</a>,
+                    content: <a href={`${yQuery.format()}`} title={y.content}>{y.content}</a>,
                     style: { borderLeft },
                     className: 'div-table-matrix__row__data-row-item',
                 };
             } else {
                 const borderTop = rIndex === 0 ? '1px solid #f0f0f0' : ''; // add border color to topmost rows
-                const backgroundColor = y === 0 ? '#FFF' : '#688878'; // determined if box is colored or not
+                const primaryBoxColor = '#5064c8';
+                const proteinColor = '#b4c8ff';
+                let backgroundColor; // determined if box is colored or not
+                let backgroundImage;
                 const borderRight = yIndex === rowLength - 1 ? '1px solid #f0f0f0' : ''; // add border color to right-most rows
+
+                yQuery.addKeyValue('biosample_ontology.term_name', chIPSeqData.headerRow[yIndex - 1]);
+
+                if (isAssayTitleHistone) {
+                    yQuery.addKeyValue('assay_title', 'Mint-ChIP-seq');
+                }
+
+                backgroundColor = y.content === 0 ? '#fff' : primaryBoxColor; // determined if box is colored or not
+
+                if (y.content === 0) {
+                    backgroundColor = '#fff';
+                } else if (y.proteinTagStatus === 'all_proteins_tagged') {
+                    backgroundColor = proteinColor;
+                } else if (y.proteinTagStatus === 'no_tagged_protein') {
+                    backgroundColor = primaryBoxColor;
+                } else {
+                    backgroundImage = `linear-gradient(135deg, ${primaryBoxColor} 50%, ${proteinColor} 50%)`;
+                }
+
+                let proteinTitle = ' ';
+
+                if (y.content === 0) {
+                    proteinTitle = '';
+                } else if (y.proteinTagStatus === 'all_proteins_tagged') {
+                    proteinTitle = ' with all proteins tagged';
+                } else if (y.proteinTagStatus === 'mixed') {
+                    proteinTitle = ' with some proteins tagged';
+                } else {
+                    proteinTitle = ' with no protein tagged';
+                }
+
                 content = {
-                    id: removeSpecialCharacters(`${row[0]}${chIPSeqData.headerRow[yIndex - 1]}`),
-                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>&nbsp;</a>,
-                    style: { backgroundColor, borderTop, borderRight },
+                    id: removeSpecialCharacters(`${row[0].content}${chIPSeqData.headerRow[yIndex - 1]}`),
+                    content: <a href={yQuery.format()} title={`${y.content} experiment${y.content === 1 ? '' : 's'}${proteinTitle}`}>&nbsp;</a>,
+                    style: { backgroundColor, borderTop, borderRight, backgroundImage },
                     className: 'div-table-matrix__row__data-row-item',
                 };
             }
@@ -323,7 +403,7 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
             'Enter any text string such as ac or H3 to filter ChIP target';
 
         return (
-            <div className="facet chip_seq_matrix-search">
+            <div className="facet chip-seq-matrix-search">
                 <input
                     type="search"
                     className="search-query"
@@ -401,6 +481,7 @@ const ChIPSeqMatrixHeader = (props) => {
                     </div>
                 </div>
             </div>
+            <ChIPSeqMatrixFacets context={context} />
         </div>
     );
 };
@@ -452,7 +533,7 @@ class ChIPSeqTabPanel extends React.Component {
         const baseUrl = '/chip-seq-matrix/?type=Experiment';
 
         return (
-            <div className="chip_seq_matrix__data-wrapper">
+            <div className="chip-seq-matrix__data-wrapper">
                 <div className="tab-nav">
                     <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
                         {tabList.map((tab, index) => (
@@ -529,7 +610,7 @@ const SelectOrganismModal = () => (
         <ModalHeader closeModal={false} addCss="matrix__modal-header">
             <h2>ChIP-Seq Matrix &mdash; choose organism</h2>
         </ModalHeader>
-        <ModalBody addCss="chip_seq_matrix__organism-selector">
+        <ModalBody addCss="chip-seq-matrix__organism-selector">
             <div>Organism to view in matrix:</div>
             <div className="selectors">
                 {tabLevel1.map((tab, index) => (
@@ -816,10 +897,10 @@ class ChIPSeqMatrixPresentation extends React.Component {
                             <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedTabLevel3} handleTabClick={this.subTabClicked}>
                                 {chIPSeqData && chIPSeqData.headerRow && chIPSeqData.headerRow.length !== 0 && chIPSeqData.dataRow && chIPSeqData.dataRow.length !== 0 ?
                                       <div className="div-table-matrix-container" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
-                                          <DivTable tableData={convertTargetDataToTable(chIPSeqData, selectedTabLevel3)} />
+                                          <DivTable tableData={convertTargetDataToTable(chIPSeqData, selectedTabLevel3, context)} />
                                       </div>
                                   :
-                                      <div className="chip_seq_matrix__warning">
+                                      <div className="chip-seq-matrix__warning">
                                           { chIPSeqData && Object.keys(chIPSeqData).length === 0 ? 'Select an organism to view data.' : 'No data to display.' }
                                       </div>
                                 }
@@ -870,6 +951,60 @@ ChIPSeqMatrix.contextTypes = {
     location_href: PropTypes.string,
     navigate: PropTypes.func,
     biosampleTypeColors: PropTypes.object, // DataColor instance for experiment project
+};
+
+/**
+ * Render the vertical facets.
+ */
+const ChIPSeqMatrixFacets = ({ context }) => {
+    const [facetOpen, setFacetOpen] = React.useState(false);
+
+    useMount(() => {
+        const facetOpenSession = window.sessionStorage.getItem(`${FACET_SESSION_SUFFIX}_facetOpen`);
+
+        if (facetOpenSession) {
+            setFacetOpen(facetOpenSession === 'true');
+        }
+    });
+
+    const facetClicked = () => {
+        const isFacetOpen = !facetOpen;
+
+        setFacetOpen(isFacetOpen);
+        window.sessionStorage.setItem(`${FACET_SESSION_SUFFIX}_facetOpen`, isFacetOpen.toString());
+    };
+
+    return (
+        <div className="chip-seq-matrix__facet">
+            <div className="chip-seq-matrix__facet__expander-wrapper">
+                <div className="chip-seq-matrix__facet__expander-wrapper--control" title={`${facetOpen ? 'Click to expand' : 'Click to collapse'}`}>
+                    <button type="button" onClick={facetClicked}>
+                        Facet <i className={`${facetOpen ? 'icon icon-chevron-up' : 'icon icon-chevron-down'}`} />
+                    </button>
+                </div>
+                <div className="chip-seq-matrix__facet__expander-wrapper--clear">
+                    <ClearFilters searchUri={context.clear_filters} enableDisplay={facetOpen} />
+                </div>
+            </div>
+            <div className="chip-seq-matrix__facet__content">
+                { facetOpen ?
+                    <FacetList
+                        context={context}
+                        facets={context.facets.filter((facet) => displayedFacets.includes(facet.field))}
+                        filters={context.filters}
+                        addClasses="matrix-facets"
+                        supressTitle
+                    />
+                    : null
+                }
+            </div>
+        </div>
+    );
+};
+
+ChIPSeqMatrixFacets.propTypes = {
+    /** Matrix search result object */
+    context: PropTypes.object.isRequired,
 };
 
 globals.contentViews.register(ChIPSeqMatrix, 'ChipSeqMatrix');

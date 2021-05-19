@@ -335,7 +335,7 @@ def chip_seq_matrix(context, request):
             IDResponseField(),
             SearchBaseResponseField(),
             ContextResponseField(),
-            BasicMatrixWithFacetsResponseField(
+            MissingMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 matrix_definition_name='chip_seq_matrix',
                 reserved_keys=RESERVED_KEYS,
