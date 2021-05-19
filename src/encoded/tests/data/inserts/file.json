@@ -4453,5 +4453,21 @@
         "platform": "6c275b37-018d-4bf8-85f6-6e3b830524a9",
         "md5sum": "35878d128f4bbdd9cfb4aee3ac6fe1b8",
         "replicate": "3b427e79-556e-4125-8102-f6723471807e"
+    },
+    {
+        "accession": "ENCFF999GLO",
+        "award": "/awards/U54HG007010/",
+        "dataset": "ENCSR001ADI",
+        "file_format": "bed",
+        "file_format_type": "bed6+",
+        "file_size": 2433593,
+        "lab": "j-michael-cherry",
+        "md5sum": "9f39f46aa18273f2693605353db40ab0",
+        "output_type": "guide locations",
+        "status": "released",
+        "assembly": "GRCh38",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "3db40ab0-e5f0-44f9-997a-f9caef22be08"
     }
 ]
