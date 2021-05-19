@@ -619,5 +619,40 @@
         "term": "transcription factor",
         "section": "Target categories",
         "definition": "A protein or a member of a complex that interacts selectively and non-covalently with chromatin or a specific DNA sequence (sometimes referred to as a motif) to modulate gene transcription."
+    },
+    {
+        "term": "candidate Cis-Regulatory Elements (cCREs)",
+        "section": "candidate Cis-Regulatory Element (cCRE) subtypes",
+        "definition": "Elements classified by integrative analysis of biochemical signatures such as histone modifications to fall within distinct regulatory categories (see subtypes in this section)."
+    },
+    {
+        "term": "CTCF-only",
+        "section": "candidate Cis-Regulatory Element (cCRE) subtypes",
+        "definition": "Elements (cCREs) defined by a signature of high DNase and CTCF signal and low H3K4me3 and H3K27ac signal."
+    },
+    {
+        "term": "distal enhancer-like (dELS)",
+        "section": "candidate Cis-Regulatory Element (cCRE) subtypes",
+        "definition": "Elements (cCREs) putatively labeled as enhancers, defined by a signature of high DNase and H3K27ac signal. They are denoted distal due to their presence outside 2 kb of an annotated GENCODE transcription start site (TSS)."
+    },
+    {
+        "term": "DNase-H3K4me3",
+        "section": "candidate Cis-Regulatory Element (cCRE) subtypes",
+        "definition": "Elements (cCREs) defined by a signature of high DNase and H3K4me3 signal and low H3K27ac signal, and fall outside 200 bp of an annotated GENCODE transcription start site (TSS)."
+    },
+    {
+        "term": "promoter-like (PLS)",
+        "section": "candidate Cis-Regulatory Element (cCRE) subtypes",
+        "definition": "Elements (cCREs) putatively labeled as promoters defined by a signature of high DNase and H3K4me3 signal and that lie within 200 bp of an annotated GENCODE transcription start site (TSS)."
+    },
+    {
+        "term": "proximal enhancer-like (pELS)",
+        "section": "candidate Cis-Regulatory Element (cCRE) subtypes",
+        "definition": "Elements (cCREs) putatively labeled as enhancers, defined by a signature of high DNase and H3K27ac signal. They are denoted proximal due to their presence within 2 kb of an annotated GENCODE transcription start site (TSS)."
+    },
+    {
+        "term": "representative DNase hypersensitivity sites (rDHS)",
+        "section": "candidate Cis-Regulatory Element (cCRE) subtypes",
+        "definition": "Regions of chromatin sensitive to DNase cleavage, called DNase hypersensitivity sites (DHS), collected from many DNase-seq datasets for an organism which are then iteratively clustered and filtered to select a list of non-overlapping representative sites in that organism."
     }
 ]
