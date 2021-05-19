@@ -24,3 +24,12 @@ def functional_characterization_experiment_5_6(value, system):
         value['plasmids_library_type'] = 'elements cloning'
         value['notes'] = (notes + ' The plasmids_library_type of this pooled clone sequencing experiment needs to be checked as it was automatically upgraded by ENCD-5303.').strip()
     return
+
+
+@upgrade_step('functional_characterization_experiment', '7', '8')
+def functional_characterization_experiment_7_8(value, system):
+    if 'examined_loci' in value:
+        for locus in value['examined_loci']:
+            if 'expression_measurement_method' in locus:
+                if locus['expression_measurement_method'] == 'HCR-FlowFish':
+                    locus['expression_measurement_method'] = 'HCR-FlowFISH'

@@ -105,7 +105,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "assay_term_name": {
             "title": "Assay name",
@@ -276,7 +276,7 @@
                         "enum": [
                             "antibody Sort-seq",
                             "endogenous protein Sort-seq",
-                            "HCR-FlowFish",
+                            "HCR-FlowFISH",
                             "magnetic separation Sort-seq",
                             "PrimeFlow",
                             "qPCR",
@@ -313,6 +313,17 @@
             "title": "Targeted loci",
             "type": "typeahead",
             "open_on_load": true
+        },
+        "examined_loci.gene.symbol": {
+            "title": "Examined loci",
+            "type": "typeahead",
+            "open_on_load": true
+        },
+        "perturbation_type": {
+            "title": "Perturbation type"
+        },
+        "crispr_screen_readout": {
+            "title": "CRISPR screen readout"
         },
         "target.investigated_as": {
             "title": "Target category"
@@ -424,6 +435,9 @@
         },
         "target.genes.symbol": {
             "title": "Target gene symbol"
+        },
+        "examined_loci": {
+            "title": "Examined loci"
         },
         "biosample_summary": {
             "title": "Biosample summary"
@@ -567,6 +581,7 @@
         "target.genes.dbxrefs": 1.0,
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
+        "examined_loci.gene.symbol": 1.0,
         "references.title": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0,

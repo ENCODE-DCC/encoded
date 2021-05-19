@@ -347,7 +347,7 @@ class CalculatedAssayTitle:
         "type": "string",
     })
     def assay_title(self, request, registry, assay_term_name,
-                    control_type=None, replicates=None, target=None, examined_loci=None):
+                    control_type=None, target=None):
         # This is the preferred name in generate_ontology.py if exists
         assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
@@ -364,53 +364,6 @@ class CalculatedAssayTitle:
                         preferred_name = 'Histone ChIP-seq'
                     else:
                         preferred_name = 'TF ChIP-seq'
-            elif preferred_name == 'CRISPR screen' and not control_type and replicates is not None:
-                CRISPR_gms = []
-                for rep in replicates:
-                    replicate_object = request.embed(rep, '@@object?skip_calculated=true')
-                    if replicate_object['status'] in ('deleted', 'revoked'):
-                        continue
-                    if 'library' in replicate_object:
-                        library_object = request.embed(replicate_object['library'], '@@object?skip_calculated=true')
-                        if library_object['status'] in ('deleted', 'revoked'):
-                            continue
-                        if 'biosample' in library_object:
-                            biosample_object = request.embed(library_object['biosample'], '@@object')
-                            if biosample_object['status'] in ('deleted', 'revoked'):
-                                continue
-                            genetic_modifications = biosample_object.get('applied_modifications')
-                            if genetic_modifications:
-                                for gm in genetic_modifications:
-                                    gm_object = request.embed(gm, '@@object?skip_calculated=true')
-                                    if gm_object.get('purpose') == 'characterization' and gm_object.get('method') == 'CRISPR':
-                                        category = gm_object['category']
-                                        if category in ('activation', 'deletion', 'disruption', 'inhibition', 'interference', 'knockout'):
-                                            CRISPR_gms.append(category)
-                # Return a specific CRISPR assay title if there is only one category type for CRISPR characterization genetic modifications for all replicate biosample genetic modifications. If examined loci is not specified it is considered a growth-based screen.
-                if len(set(CRISPR_gms)) == 1:
-                    if examined_loci is not None:
-                        title_start = 'CRISPR'
-                    else:
-                        title_start = 'growth-based CRISPR'
-                    if 'activation' in CRISPR_gms:
-                        title_end = 'activation'
-                    elif 'deletion' in CRISPR_gms:
-                        title_end = 'deletion'
-                    elif 'disruption' in CRISPR_gms:
-                        title_end = 'disruption'
-                    elif 'inhibition' in CRISPR_gms:
-                        title_end = 'inhibition'
-                    elif 'interference' in CRISPR_gms:
-                        title_end = 'interference'
-                    elif 'knockout' in CRISPR_gms:
-                        title_end = 'knockout'
-                    preferred_name = f'{title_start} {title_end} screen'
-                # If there is more than one category type or no applicable category for CRISPR characterization genetic modifications we cannot return a specific CRISPR assay title
-                if len(set(CRISPR_gms)) != 1:
-                    if examined_loci is not None:
-                        preferred_name = 'CRISPR screen'
-                    else:
-                        preferred_name = 'growth-based CRISPR screen'
             elif control_type and assay_term_name in ['eCLIP', 'MPRA', 'CRISPR screen', 'STARR-seq', 'Mint-ChIP-seq']:
                 preferred_name = 'Control {}'.format(assay_term_name)
             return preferred_name or assay_term_name
