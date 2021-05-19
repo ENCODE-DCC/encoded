@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import PropTypes from 'prop-types';
+import Group from './group';
 import {
     Input,
     InputWithIcon,
@@ -11,30 +12,6 @@ import {
 
 const shouldRenderResults = (name, results) => {
     return results[name] && results[name].length > 0;
-};
-
-
-const Title = ({title}) => (
-    <span className="group-title">
-        {title}
-    </span>
-);
-
-
-const Group = (props) => {
-    const Component = props.component;
-    return (
-        <>
-            <Title
-                title={props.title}
-            />
-            <Component
-                input={props.input}
-                results={props.results}
-                handleClickAway={props.handleClickAway}
-            />
-        </>
-    );
 };
 
 
