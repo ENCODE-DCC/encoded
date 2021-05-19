@@ -793,7 +793,7 @@ class GenomeBrowser extends React.Component {
         let files = [];
         let newFiles = [];
         const domain = `${window.location.protocol}//${window.location.hostname}`;
-        files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag);
+        files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag).filter((file) => file.assembly === this.props.assembly);
         newFiles = [...this.state.pinnedFiles, ...files];
         let tracks = [];
         if (files.length > 0) {
@@ -824,7 +824,7 @@ class GenomeBrowser extends React.Component {
                     colorBlock: [...prevState.colorBlock, 'ccres'],
                 }));
             }
-            if (file.output_type === 'semi-automated genome annotation' && this.state.colorBlock.indexOf('chromatin') === -1) {
+            if ((file.output_type === 'semi-automated genome annotation' || file.output_type === 'HMM predicted chromatin state') && this.state.colorBlock.indexOf('chromatin') === -1) {
                 this.setState((prevState) => ({
                     colorBlock: [...prevState.colorBlock, 'chromatin'],
                 }));
