@@ -931,7 +931,7 @@ const RNAGet = ({ context }, reactContext) => {
         return (
             <div className="search-results">
                 <div className="title-facets">
-                    <h1>RNA Get</h1>
+                    <h1>RNA Get (beta)</h1>
                     <RNASeqMatrixSearch query={query} />
                     <FacetList context={context} facets={context.facets} filters={context.filters} docTypeTitleSuffix="report" />
                 </div>
