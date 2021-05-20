@@ -2186,6 +2186,7 @@
         "ranked gRNAs": "annotation",
         "read annotations": "annotation",
         "fine-mapped variants": "annotation",
+        "repeat elements annotation": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
