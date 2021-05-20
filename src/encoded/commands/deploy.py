@@ -1015,7 +1015,7 @@ def _parse_args():
         type=hostname,
         help="Name of single node to add to already existing cluster"
     )
-    parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
+    parser.add_argument('--jvm-gigs', default='16', help="JVM Xms and Xmx gigs")
 
     # Database
     parser.add_argument('--postgres-version', default='11', help="Postegres version. '9.3' or '11'")
@@ -1090,9 +1090,9 @@ def _parse_args():
     if not args.instance_type:
         if args.es_elect or args.es_wait:
             # datanode
-            args.instance_type = 'm5.xlarge'
+            args.instance_type = 'r5.xlarge'
             # Head node
-            args.eshead_instance_type = 'm5.xlarge'
+            args.eshead_instance_type = 'r5.xlarge'
         elif args.arm_image_id:
             # Type/Size for arm architecture
             args.instance_type = 'm6g.4xlarge'
