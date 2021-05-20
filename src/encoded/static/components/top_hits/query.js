@@ -108,13 +108,6 @@ export const addTotalToCollection = (total, collection) => (
 );
 
 
-export const filterCollectionsWithNoResults = (collections) => (
-    collections.filter(
-        ({total}) => total > 0
-    )
-);
-
-
 export const fetchTotalResultsFromCollection = (collection, searchTerm) => (
     fetch(
         makeCollectionUrl(collection.searchUrl, searchTerm),
@@ -132,106 +125,48 @@ export const fetchTotalResultsFromCollection = (collection, searchTerm) => (
 );
 
 
-export const getHitsFromCollections = (collections, searchTerm) => (
+export const filterCollectionsWithNoResults = (collections) => (
+    collections.filter(
+        ({total}) => total > 0
+    )
+);
+
+
+export const formatCollections = (collections) => {
+    if (collections.length > 0) {
+        return [
+            {
+                key: COLLECTIONS_KEY,
+                hits: collections,
+            }
+        ];
+    }
+    return collections;
+};
+
+
+export const getHitsFromCollections = (searchTerm) => (
     Promise.all(
-        collections.map(
+        COLLECTIONS.map(
             (collection) => fetchTotalResultsFromCollection(collection, searchTerm)
         )
     ).then(
         (collections) => filterCollectionsWithNoResults(collections)
+    ).then(
+        (collections) => formatCollections(collections)
     )
 );
-
-
-export const getCountFromCollectionsHits = (hits) => (
-    hits.reduce(
-        (accumulator, {total}) => accumulator + total, 0
-    )
-);
-
-
-export const getCollectionLink = () => `/help/project-overview/`;
 
 
 export class CollectionsQuery {
     constructor(searchTerm) {
         this.searchTerm = searchTerm;
-        this.collections = COLLECTIONS;
-    }
-
-    getCollectionsWithResults() {
-        return getHitsFromCollections(
-            this.collections,
-            this.searchTerm
-        ).then(
-            (hits) => (
-                [
-                    {
-                        key: COLLECTIONS_KEY,
-                        count: getCountFromCollectionsHits(hits),
-                        hits: hits,
-                        href: getCollectionLink()
-                    }
-                ]
-            )
-        ).then(
-            (results) => results.filter(
-                ({count}) => count > 0
-            )
-        );
     }
 
     getResults() {
-        return this.getCollectionsWithResults();
+        return getHitsFromCollections(this.searchTerm);
     }
 }
 
 
-export const getTopHitsQuery = (searchTerm) => (
-    new Query(searchTerm)
-);
-
-
-export const getCollectionsQuery = (searchTerm) => (
-    new CollectionsQuery(searchTerm)
-);
-
-
-export const flattenArrays = (arrays) => (
-    arrays.reduce((a, b) => a.concat(b), [])
-);
-
-
-export const sortResultsByCount = (results) => (
-    results.sort((a, b) => b.count - a.count)
-);
-
-
-class TopHitsAndCollectionsQuery {
-    constructor(searchTerm) {
-        this.searchTerm = searchTerm;
-    }
-
-    getQueries() {
-        return [
-            getCollectionsQuery(this.searchTerm),
-            getTopHitsQuery(this.searchTerm),
-        ];
-    }
-
-    getResults() {
-        let queries = this.getQueries();
-        return Promise.all(
-            queries.map(
-                (query) => query.getResults()
-            )
-        ).then(
-            (results) =>  flattenArrays(results)
-        ).then(
-            (results) => sortResultsByCount(results)
-        );
-    }
-}
-
-
-export default TopHitsAndCollectionsQuery;
+export default Query
