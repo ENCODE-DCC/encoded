@@ -59,6 +59,8 @@ export const TERM_NAME = 'term_name';
 
 export const SCIENTIFIC_NAME = 'scientific_name';
 
+// Specifies all of the details needed for searchinig over data collections with a
+// given user searchTerm and returning results that can be rendered by dropdown.
 export const COLLECTIONS = [
     {
         title: 'Epigenomes from four individuals (ENTEx)',
