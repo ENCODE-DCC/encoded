@@ -15,8 +15,8 @@ const shouldRenderResults = (name, results) => {
 };
 
 
-const Form = (props) => {
-    const results = queries.map(
+const makeGroupsForResults = (props) => (
+    queries.map(
         ([name, , Component, title]) => (
             shouldRenderResults(name, props.results) &&
             <Group
@@ -29,15 +29,20 @@ const Form = (props) => {
             />
         )
     ).filter(
-        (value) => Boolean(value)
-    );
+        (group) => Boolean(group)
+    )
+);
+
+
+const Form = (props) => {
+    const groups = makeGroupsForResults(props);
     return (
         <form className="multisearch__multiform" action="/search/">
             {props.children}
             {
-                results.length > 0 &&
+                groups.length > 0 &&
                 <div className="multisearch__results-container">
-                    {results}
+                    {groups}
                 </div>
             }
         </form>
