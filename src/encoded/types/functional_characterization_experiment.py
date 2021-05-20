@@ -206,10 +206,12 @@ class FunctionalCharacterizationExperiment(
         "type": "string",
         "notSubmittable": True,
     })
-    def crispr_screen_readout(self, request, assay_term_name, examined_loci=None):
+    def crispr_screen_readout(self, request, assay_term_name, examined_loci=None, control_type=None):
         crispr_screen_readout = None
         if assay_term_name == 'CRISPR screen':
             # Return a specific CRISPR screen readout if there is only one method used in examined_loci, no examined_loci at all indicates a growth screen
+            if control_type == 'control':
+                return
             if examined_loci == None:
                 crispr_screen_readout = 'proliferation'
             else:

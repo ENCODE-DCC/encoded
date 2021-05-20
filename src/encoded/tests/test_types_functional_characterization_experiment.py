@@ -59,3 +59,7 @@ def test_fcc_crispr_assay_readout_method(testapp, functional_characterization_ex
         {'gene': ctcf['uuid'], 'expression_percentile': 10, 'expression_measurement_method': 'PrimeFlow'}]})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
     assert 'crispr_screen_readout' not in res.json['object']
+    # controls should not receive crispr_screen_readout property
+    testapp.patch_json(functional_characterization_experiment_disruption_screen['@id'], {'control_type': 'control'})
+    res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
+    assert 'crispr_screen_readout' not in res.json['object']
