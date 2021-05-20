@@ -7,7 +7,7 @@ import { CartStatus } from './cart';
 import { isProductionHost } from './globals';
 import Tooltip from '../libs/ui/tooltip';
 import { BrowserFeat } from './browserfeat';
-import { NavBarSearch } from './top_hits/search';
+import NavBarMultiSearch from './top_hits/multi/search';
 
 /**
  * Navigation bar home-page button.
@@ -280,7 +280,7 @@ const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }, context)
 
     return (
         <Nav>
-            <NavBarSearch />
+            <NavBarMultiSearch />
             {isHomePage ? null : <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />}
             <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
             <li className="dropdown" id="user-actions-footer">{userActionRender}</li>

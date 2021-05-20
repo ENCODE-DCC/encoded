@@ -95,6 +95,7 @@
             &.section-item {
                 padding-top: 3px;
                 padding-bottom: 3px;
+                overflow-x: scroll;
             }
 
             &.section-item--selected {
@@ -102,6 +103,7 @@
                 padding-bottom: 3px;
                 background-color: #0a253d;
                 color: #fff;
+                overflow-x: scroll;
             }
 
             span {
@@ -148,6 +150,161 @@
                 &.item-title {
                     font-size: 0.9rem;
                     display: inline-block;
+                }
+            }
+        }
+    }
+}
+
+.multisearch {
+    width: 100%;
+
+    @at-root #{&}__multiform {
+        position: relative;
+        display: flex;
+        margin: 3px 10px;
+        padding: 0;
+        border-radius: 14px;
+        background-color: #fff;
+        border: none;
+        box-shadow: none;
+
+        input[type="text"] {
+            display: block;
+            flex: 1 1 auto;
+            margin: 0;
+            padding: 5px 10px;
+            width: 220px;
+            border-radius: 0;
+            border: none;
+            background: transparent;
+            box-shadow: none;
+            transition: width 0.1s ease-out;
+            -ms-transition: width 0.1s ease-out;
+            -moz-transition: width 0.1s ease-out;
+            -webkit-transition: width 0.1s ease-out;
+
+            &.selected {
+                width: 375px;
+                transition: width 0.1s ease-out;
+                background: transparent;
+            }
+        }
+
+        .search-button {
+            flex: 0 1 auto;
+            border: none;
+            background: transparent;
+        }
+    }
+
+    @at-root #{&}__results-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        z-index: 5;
+        background-color: white;
+        border: 1px solid #a0a0a0;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        margin: 0;
+        padding: 0;
+        max-height: 600px;
+        overflow-y: scroll;
+
+        .top-hits-search__results {
+            position: relative;
+            overflow-y: visible;
+            border: none;
+            background-color: transparent;
+            box-shadow: none;
+            z-index: 6;
+        }
+
+        .group-title {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: black;
+            padding-top: 10px;
+            padding-bottom: 3px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .group-title::before,
+        .group-title::after {
+            background-color: #000;
+            content: "";
+            display: inline-block;
+            height: 1px;
+            position: relative;
+            vertical-align: middle;
+            width: 50%;
+        }
+
+        .group-title::before {
+            right: 0.5em;
+            margin-left: -50%;
+        }
+
+        .group-title::after {
+            left: 0.5em;
+            margin-right: -50%;
+        }
+
+        .multisearch__results {
+            position: relative;
+            overflow-y: visible;
+            border: none;
+            background-color: transparent;
+            box-shadow: none;
+            z-index: 6;
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            li {
+                margin: 0;
+                padding: 0;
+            }
+
+            a {
+                display: block;
+                width: 100%;
+                color: inherit;
+                font-size: 1rem;
+                text-align: left;
+                text-decoration: none;
+                background: none;
+                border: none;
+                padding-left: 15px;
+
+                &.section-item {
+                    padding-top: 3px;
+                    padding-bottom: 3px;
+                    overflow-x: scroll;
+                }
+
+                &.section-item--selected {
+                    padding-top: 3px;
+                    padding-bottom: 3px;
+                    background-color: #0a253d;
+                    color: #fff;
+                    overflow-x: scroll;
+                }
+
+                span {
+                    padding-right: 5px;
+                    text-align: left;
+
+                    &.item-accession {
+                        font-size: 0.9rem;
+                        display: inline-block;
+                    }
                 }
             }
         }

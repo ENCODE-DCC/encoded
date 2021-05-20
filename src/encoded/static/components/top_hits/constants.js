@@ -58,3 +58,53 @@ export const DONOR = 'Donor';
 export const TERM_NAME = 'term_name';
 
 export const SCIENTIFIC_NAME = 'scientific_name';
+
+// Specifies all of the details needed for searching over data collections with a
+// given user searchTerm and returning results that can be rendered by dropdown.
+export const COLLECTIONS = [
+    {
+        title: 'Epigenomes from four individuals (ENTEx)',
+        searchUrl: '/search/?type=Experiment&status=released&internal_tags=ENTEx&limit=0&format=json',
+        '@id': '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx',
+        '@type': ['DataCollection'],
+    },
+    {
+        title: 'Stem Cell Development Matrix (SESCC)',
+        searchUrl: '/search/?type=Experiment&internal_tags=SESCC&limit=0&format=json',
+        '@id': '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
+        '@type': ['DataCollection'],
+    },
+    {
+        title: 'RNA-protein interactions (ENCORE)',
+        searchUrl: '/search/?type=Experiment&status=released&internal_tags=ENCORE&limit=0&format=json',
+        '@id': '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE',
+        '@type': ['DataCollection'],
+    },
+    {
+        title: 'Human reference epigenomes',
+        searchUrl: (
+            '/search/?type=Experiment&related_series.@type=ReferenceEpigenome' +
+            '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&limit=0&format=json'
+        ),
+        '@id': (
+            '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome' +
+            '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'
+        ),
+        '@type': ['DataCollection'],
+    },
+    {
+        title: 'Mouse development matrix',
+        searchUrl: (
+            '/search/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries' +
+            '&replicates.library.biosample.organism.scientific_name=Mus+musculus&limit=0&format=json'
+        ),
+        '@id': (
+            '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries' +
+            '&replicates.library.biosample.organism.scientific_name=Mus+musculus'
+        ),
+        '@type': ['DataCollection'],
+    },
+
+];
+
+export const COLLECTIONS_KEY = 'DataCollection';
