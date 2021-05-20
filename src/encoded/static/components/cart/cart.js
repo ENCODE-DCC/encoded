@@ -85,6 +85,7 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'biochemical_inputs', dataset: true },
         { field: 'award.project', dataset: true },
         { field: 'description', dataset: true },
+        { field: 'dbxrefs', dataset: true },
     ]);
 
 
