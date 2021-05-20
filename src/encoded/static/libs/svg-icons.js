@@ -134,6 +134,34 @@ const checkbox = (style) => (
     </svg>
 );
 
+const dataset = (style) => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" style={style} className="svg-icon svg-icon-archive">
+        <polygon points="354.26,235.5 314.26,235.5 314.26,277.69 185.74,277.69 185.74,235.5 145.74,235.5 145.74,317.69 354.26,317.69" />
+        <path d="M500.5,37.5h-501v148h38v278h425v-278h38V37.5z M39.5,77.5h421v68h-421V77.5z M422.5,423.5h-345v-238h345V423.5z" />
+        <polygon points="354.26,317.69 145.74,317.69 145.74,235.5 185.74,235.5 185.74,277.69 314.26,277.69 314.26,235.5 354.26,235.5" />
+    </svg>
+);
+
+const file = (style) => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" style={style} className="svg-icon svg-icon-file">
+        <g>
+            <path d="M156.73,187.92c-28.12,0-44.92-18.83-44.92-50.31v-16.64c0-31.48,16.8-50.31,44.92-50.31s44.92,18.83,44.92,50.31v16.64
+                C201.65,169.09,184.85,187.92,156.73,187.92z M172.51,137.29v-16.02c0-18.44-4.92-26.88-15.78-26.88s-15.78,8.44-15.78,26.88v16.02
+                c0,18.44,4.92,26.88,15.78,26.88S172.51,155.73,172.51,137.29z"/>
+            <path d="M211.28,185.65v-22.27h28.12V98.77h-1.48l-26.64,18.36V92.45l28.12-19.53h27.89v90.47h26.72v22.27H211.28z" />
+            <path d="M343.43,187.92c-28.12,0-44.92-18.83-44.92-50.31v-16.64c0-31.48,16.8-50.31,44.92-50.31s44.92,18.83,44.92,50.31v16.64
+                C388.36,169.09,371.56,187.92,343.43,187.92z M359.22,137.29v-16.02c0-18.44-4.92-26.88-15.78-26.88s-15.78,8.44-15.78,26.88v16.02
+                c0,18.44,4.92,26.88,15.78,26.88S359.22,155.73,359.22,137.29z"/>
+            <path d="M118.68,325.65v-22.27h28.12v-64.61h-1.48l-26.64,18.36v-24.69l28.12-19.53h27.89v90.47h26.72v22.27H118.68z" />
+            <path d="M211.2,325.65v-22.27h28.12v-64.61h-1.48l-26.64,18.36v-24.69l28.12-19.53h27.89v90.47h26.72v22.27H211.2z" />
+            <path d="M343.35,327.92c-28.12,0-44.92-18.83-44.92-50.31v-16.64c0-31.48,16.8-50.31,44.92-50.31s44.92,18.83,44.92,50.31v16.64
+                C388.28,309.09,371.48,327.92,343.35,327.92z M359.14,277.29v-16.02c0-18.44-4.92-26.88-15.78-26.88s-15.78,8.44-15.78,26.88v16.02
+                c0,18.44,4.92,26.88,15.78,26.88S359.14,295.73,359.14,277.29z"/>
+        </g>
+        <path d="M0,0v500h349h40.98H390v-0.02L499.98,390H500v-0.02V350V0H0z M40,40h420v310H350v110H40V40z M390,443.41V390h53.41 L390,443.41z" />
+    </svg>
+);
+
 const icons = {
     disclosure: (style) => <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style={style} className="svg-icon svg-icon-disclosure"><circle cx="240" cy="240" r="240" /><polyline points="401.79 175.66 240 304.34 78.21 175.66" /></svg>,
     table,
@@ -145,6 +173,8 @@ const icons = {
     asterisk: (style) => <svg id="Asterisk" data-name="Asterisk" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" style={style}><polygon points="15.68 5.3 14.18 2.7 8.94 6.38 9.5 0 6.5 0 7.06 6.38 1.82 2.7 0.32 5.3 6.13 8 0.32 10.7 1.82 13.3 7.06 9.62 6.5 16 9.5 16 8.94 9.62 14.18 13.3 15.68 10.7 9.87 8 15.68 5.3" /></svg>,
     chevronDown: (style) => <svg id="Chevron Down" data-name="Chevron Down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 124" style={style}><polygon points="249,57 124.5,124 0,57 0,0 124.5,67 249,0" /></svg>,
     chevronUp: (style) => <svg id="Chevron Up" data-name="Chevron Up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 124" style={style}><polygon points="249,67 124.5,0 0,67 0,124 124.5,57 249,124" /></svg>,
+    circle: (style) => <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" style={style} className="svg-icon svg-icon-circle"><circle cx="250" cy="250" r="250" /></svg>,
+    multiplication: (style) => <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" style={style} className="svg-icon svg-icon-multiplication"><polygon points="500,99 401,0 250,151.01 99,0 0,99 151.01,250 0,401 99,500 250,348.99 401,500 500,401 348.99,250" /></svg>,
     chevronLeft,
     chevronRight,
     spinner,
@@ -156,6 +186,8 @@ const icons = {
     lockClosed,
     clipboard,
     checkbox,
+    dataset,
+    file,
 };
 
 /**
@@ -178,7 +210,7 @@ export const collapseIcon = (collapsed, addClasses) => (
                 <line className="content-line" x1="151.87" y1="256" x2="360.13" y2="256" />
                 <line className="content-line" x1="256" y1="151.87" x2="256" y2="360.13" />
             </g>
-        :
+            :
             <g>
                 <title>Panel open</title>
                 <circle className="bg" cx="256" cy="256" r="240" />

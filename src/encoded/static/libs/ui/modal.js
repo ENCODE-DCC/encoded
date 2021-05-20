@@ -87,47 +87,47 @@ import PropTypes from 'prop-types';
 // http://jamesknelson.com/rendering-react-components-to-the-document-body/
 
 
-export class ModalHeader extends React.Component {
-    constructor() {
-        super();
+export const ModalHeader = ({ title, closeModal, addCss, labelId, focusClose, children, cCloseModal }) => {
+    /** Holds ref of header close box */
+    const closeRef = React.useRef(null);
 
-        // Bind this to non-React methods.
-        this.closeModal = this.closeModal.bind(this);
-    }
-
-    closeModal() {
-        // Call close button's existing close handler if it had one first.
-        if (this.chainedCloseModal) {
-            this.chainedCloseModal();
+    const internalCloseModal = () => {
+        // Call directly given close handler.
+        if (typeof closeModal === 'function') {
+            closeModal();
         }
 
         // Now call the standard close handler.
-        this.props.c_closeModal();
+        cCloseModal();
+    };
+
+    // Handle the string and React component cases for the title
+    let titleRender = null;
+    if (title) {
+        titleRender = typeof title === 'string' ? <h2>{title}</h2> : <div>{title}</div>;
     }
 
-    render() {
-        const { title, closeModal, addCss, labelId } = this.props;
-        let titleRender = null;
-
-        // Handle the string and React component cases for the title
-        if (title) {
-            titleRender = typeof title === 'string' ? <h2>{title}</h2> : <div>{title}</div>;
+    React.useEffect(() => {
+        // If requested, set keyboard focus to the header bar close button.
+        if (focusClose) {
+            closeRef.current.focus();
         }
+    }, []);
 
-        // Chain in the given closeBtn function if given
-        if (typeof closeModal === 'function') {
-            this.chainedCloseModal = closeModal;
-        }
-
-        return (
-            <div className={`modal__header${addCss ? ` ${addCss}` : ''}`} id={labelId}>
-                {titleRender ? <div className="modal__header-title">{titleRender}</div> : null}
-                {this.props.children}
-                {closeModal ? <button type="button" className="modal__header-close" aria-label="Close" onClick={this.closeModal}><span aria-hidden="true">&times;</span></button> : null}
-            </div>
-        );
-    }
-}
+    return (
+        <div className={`modal__header${addCss ? ` ${addCss}` : ''}`} id={labelId}>
+            {titleRender ? <div className="modal__header-title">{titleRender}</div> : null}
+            {children}
+            {closeModal
+                ? (
+                    <button type="button" className="modal__header-close" name="close-modal" aria-label="Close" onClick={internalCloseModal} ref={closeRef}>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                )
+                : null}
+        </div>
+    );
+};
 
 ModalHeader.propTypes = {
     addCss: PropTypes.string, // CSS classes to add to modal header
@@ -140,8 +140,9 @@ ModalHeader.propTypes = {
         PropTypes.func, // If not using an actuator on <Modal>, provide a function to close the modal
     ]),
     labelId: PropTypes.string, // id of header element to match aria-labelledby in modal title
+    focusClose: PropTypes.bool, // True to automatically set keyboard focus on the close icon
     children: PropTypes.node,
-    c_closeModal: PropTypes.func, // Auto-added
+    cCloseModal: PropTypes.func, // Auto-added
 };
 
 ModalHeader.defaultProps = {
@@ -149,8 +150,9 @@ ModalHeader.defaultProps = {
     title: null,
     closeModal: null,
     labelId: '',
+    focusClose: false,
     children: null,
-    c_closeModal: null,
+    cCloseModal: null,
 };
 
 
@@ -187,7 +189,7 @@ export class ModalFooter extends React.Component {
         }
 
         // Now call the standard close handler.
-        this.props.c_closeModal();
+        this.props.cCloseModal();
     }
 
     submitModal() {
@@ -231,7 +233,7 @@ export class ModalFooter extends React.Component {
         // `null` in the closeModal property, this component thinks that's a function because of an
         // old Javascript characteristic.
         if (closeModal) {
-            const closeBtnFunc = (typeof closeModal === 'function') ? closeModal : (typeof closeModal === 'boolean' ? this.props.c_closeModal : null);
+            const closeBtnFunc = (typeof closeModal === 'function') ? closeModal : (typeof closeModal === 'boolean' ? this.props.cCloseModal : null);
             closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button type="button" className="btn btn-default" onClick={closeBtnFunc} id={this.props.closeId}>{cancelTitle}</button>;
         }
 
@@ -264,7 +266,7 @@ ModalFooter.propTypes = {
     ]),
     dontClose: PropTypes.bool, // True to *not* close the modal when the user clicks Submit
     closeId: PropTypes.string, // id to assign to default Close button
-    c_closeModal: PropTypes.func, // Auto-add
+    cCloseModal: PropTypes.func, // Auto-add
     children: PropTypes.node,
 };
 
@@ -276,7 +278,7 @@ ModalFooter.defaultProps = {
     closeModal: undefined,
     dontClose: false,
     closeId: '',
-    c_closeModal: null,
+    cCloseModal: null,
     children: null,
 };
 
@@ -440,7 +442,7 @@ export class Modal extends React.Component {
         // needing to do it explicitly.
         const modalChildren = React.Children.map(this.props.children, (child) => {
             if (child.type === ModalHeader || child.type === ModalBody || child.type === ModalFooter) {
-                return React.cloneElement(child, { c_closeModal: this.closeModal, c_modalOpen: this.state.modalOpen });
+                return React.cloneElement(child, { cCloseModal: this.closeModal, cModalOpen: this.state.modalOpen });
             }
             return child;
         });

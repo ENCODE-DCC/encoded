@@ -6,8 +6,11 @@ Feature: Cart
         Then I should see 25 elements with the css selector ".result-item__cart-control"
 
         When I press "/experiments/ENCSR611ZAL/"
+        And I wait for 3 seconds
         And I press "/experiments/ENCSR000INT/"
+        And I wait for 3 seconds
         And I press "/experiments/ENCSR000DZQ/"
+        And I wait for 3 seconds
         Then I should see 3 elements with the css selector ".cart-toggle--in-cart"
         And I should see an element with the css selector ".cart__nav-button"
 
@@ -25,23 +28,29 @@ Feature: Cart
         And I wait for the content to load
         Then I should see 7 elements with the css selector ".result-item"
         And I should see "5 files selected"
-        When I press "default-data-toggle"
-        Then I should see "4 files selected"
+        When I press "cart-facet-term-Experiment"
+        Then I should see "3 files selected"
+
+    Scenario: Exercise file facets
         When I click the link to "#processeddata"
-        Then I should see 4 elements with the css selector ".cart-list-item"
+        Then I should see 3 elements with the css selector ".cart-list-item"
+        When I press "default-data-toggle"
+        Then I should see "3 files selected"
+        And I should see 3 elements with the css selector ".cart-list-item"
         When I click the link to "#rawdata"
         Then I should see 0 elements with the css selector ".cart-list-item"
 
     Scenario: Cart page interactions
         When I click the link to "#processeddata"
-        And I click the element with the css selector ".cart-dataset-selector"
-        And I click the element with the css selector ".cart-dataset-option.cart-dataset-option--experiments"
-        And I wait for the content to load
+        And I press "More filters"
         And I press "output_type-label"
         And I press "cart-facet-term-IDR ranked peaks"
+        And I press "close-modal"
         Then I should see "1 file selected"
         And I should see 1 elements with the css selector ".cart-list-item"
-        When I press "cart-facet-term-IDR ranked peaks"
+        When I press "More filters"
+        And I press "cart-facet-clear-output_type"
+        And I press "close-modal"
         Then I should see "3 files selected"
         And I should see 3 elements with the css selector ".cart-list-item"
         When I press "Download processed data files"
@@ -49,13 +58,15 @@ Feature: Cart
         When I press "Close"
         Then I should not see an element with the css selector ".modal"
         When I click the link to "#datasets"
+        And I wait for 5 seconds
         And I press "/experiments/ENCSR000INT/"
         And I wait for the content to load
-        Then I should see 2 elements with the css selector ".result-item"
-        And I should see "3 files selected"
+        Then I should see 6 elements with the css selector ".result-item"
+        And I should see "4 files selected"
 
     Scenario: Download menu
-        When I press "cart-download"
+        When I press "cart-facet-term-Experiment"
+        And I press "cart-download"
         Then I should see 3 elements with the css selector ".menu-item"
         When I press "raw"
         Then I should see "Download raw data files"
