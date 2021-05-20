@@ -569,10 +569,13 @@ const DatasetComponent = (props, reactContext) => {
     let organism;
     let lifeSpec;
     let assays = [];
+    let examineLociGene = [];
     let targets;
     let lifeStages = [];
     let ages = [];
     let ageUnits;
+    let crisprReadout = [];
+    let perturbationType = [];
 
     let treatmentTerm = [];
     let treatments = [];
@@ -591,6 +594,7 @@ const DatasetComponent = (props, reactContext) => {
     const treatmentConcentration = result['@type'].indexOf('TreatmentConcentrationSeries') >= 0;
     const showTreatment = treatmentTime || treatmentConcentration;
     const organismSeries = result['@type'].indexOf('OrganismDevelopmentSeries') >= 0;
+    const fccSeries = result['@type'].indexOf('FunctionalCharacterizationSeries') >= 0;
 
     // Determine whether the dataset is a series or not
     const seriesDataset = result['@type'].indexOf('Series') >= 0;
@@ -604,6 +608,17 @@ const DatasetComponent = (props, reactContext) => {
             result.related_datasets.forEach((dataset) => {
                 if (dataset.assay_term_name) {
                     assays.push(dataset.assay_term_name);
+                }
+                if (dataset.crispr_screen_readout) {
+                    crisprReadout.push(dataset.crispr_screen_readout);
+                }
+                if (dataset.examined_loci && dataset.examined_loci.length > 0) {
+                    dataset.examined_loci.forEach((loci) => {
+                        examineLociGene.push(loci.gene.symbol);
+                    });
+                }
+                if (dataset.perturbation_type) {
+                    perturbationType.push(dataset.perturbation_type);
                 }
                 if (dataset.replicates && dataset.replicates.length > 0) {
                     dataset.replicates.forEach((replicate) => {
@@ -665,6 +680,9 @@ const DatasetComponent = (props, reactContext) => {
             postSynchTime = _.uniq(postSynchTime).sort();
             organisms = _.uniq(organisms);
             phases = _.uniq(phases);
+            examineLociGene = _.uniq(examineLociGene);
+            crisprReadout = _.uniq(crisprReadout);
+            perturbationType = _.uniq(perturbationType);
         }
         lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
 
@@ -696,9 +714,24 @@ const DatasetComponent = (props, reactContext) => {
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
-                        {datasetTypes[result['@type'][0]]}
+                        {fccSeries ? '' : <span>{`${datasetTypes[result['@type'][0]]}`}</span>}
                         {seriesDataset ?
                             <span>
+                                {(fccSeries && perturbationType.length > 0) ?
+                                    <span>
+                                        {`${perturbationType.join(', ')}`}
+                                    </span>
+                                : null}
+                                {(fccSeries && assays.length > 0) ?
+                                    <span>
+                                        {` ${assays.join(', ')} series`}
+                                    </span>
+                                : null}
+                                {(fccSeries && crisprReadout.length > 0) ?
+                                    <span>
+                                        {` (${crisprReadout.join(', ')})`}
+                                    </span>
+                                : null}
                                 {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
                                 {organism || lifeSpec.length > 0 ?
                                     <span>
@@ -706,6 +739,11 @@ const DatasetComponent = (props, reactContext) => {
                                         {organism ? <i>{organism}</i> : null}
                                         {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
                                         )
+                                    </span>
+                                : null}
+                                {(fccSeries && examineLociGene.length > 0) ?
+                                    <span>
+                                        {` targeting ${examineLociGene.join(', ')}`}
                                     </span>
                                 : null}
                             </span>
