@@ -35,7 +35,7 @@ Group.propTypes = {
     input: PropTypes.string.isRequired,
     results: PropTypes.array.isRequired,
     handleClickAway: PropTypes.func.isRequired,
-    component: PropTypes.element.isRequired,
+    component: PropTypes.func.isRequired,
 };
 
 
