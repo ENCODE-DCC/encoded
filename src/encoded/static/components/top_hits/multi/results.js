@@ -1,10 +1,6 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-    Title,
-    Item,
-} from '../links';
-import {
     Items,
 } from '../results';
 
@@ -23,7 +19,7 @@ Section.propTypes = {
 };
 
 
-const Results = ({ input, results, handleClickAway }) => {
+const Results = ({ results, handleClickAway }) => {
     useEffect(
         () => {
             document.addEventListener('click', handleClickAway, true);
@@ -51,7 +47,6 @@ const Results = ({ input, results, handleClickAway }) => {
 
 
 Results.propTypes = {
-    input: PropTypes.string.isRequired,
     results: PropTypes.array.isRequired,
     handleClickAway: PropTypes.func.isRequired,
 };

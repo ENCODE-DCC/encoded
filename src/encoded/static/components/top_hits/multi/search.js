@@ -1,12 +1,8 @@
 import { cloneElement, useState } from 'react';
 import PropTypes from 'prop-types';
 import debounce from '../debounce';
-import {
-    NavBarForm,
-} from './form';
-import {
-    queries
-} from './constants';
+import NavBarForm from './form';
+import QUERIES from './constants';
 
 
 const Search = ({ children }) => {
@@ -16,18 +12,18 @@ const Search = ({ children }) => {
     const debounceTime = 200;
 
     const makeSearchAndSetResults = (searchTerm) => {
-        const results = queries.map(
+        const queries = QUERIES.map(
             ([name, Query]) => {
                 const query = new Query(searchTerm);
                 return query.getResults().then(
-                    (result) => ({[name]: result})
+                    (result) => ({ [name]: result })
                 );
             }
         );
-        Promise.all(results).then(
-            (results) => Object.assign({}, ...results)
+        Promise.all(queries).then(
+            (queryResults) => Object.assign({}, ...queryResults)
         ).then(
-            (results) => setResults(results)
+            (queryResults) => setResults(queryResults)
         );
     };
 
@@ -81,10 +77,13 @@ Search.propTypes = {
 };
 
 
-export const NavBarMultiSearch = () => (
+const NavBarMultiSearch = () => (
     <li className="navbar__item navbar__item--search">
         <Search>
             <NavBarForm />
         </Search>
     </li>
 );
+
+
+export default NavBarMultiSearch;

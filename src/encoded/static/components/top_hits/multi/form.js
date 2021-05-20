@@ -1,31 +1,27 @@
-import _ from 'underscore';
 import PropTypes from 'prop-types';
 import Group from './group';
 import {
-    Input,
     InputWithIcon,
 } from '../input';
-import {
-    queries
-} from './constants';
+import QUERIES from './constants';
 
 
-const shouldRenderResults = (name, results) => {
-    return results[name] && results[name].length > 0;
-};
+const shouldRenderResults = (name, results) => (
+    results[name] && results[name].length > 0
+);
 
 
-const makeGroupsForResults = (props) => (
-    queries.map(
+const makeGroupsForResults = (input, results, handleClickAway) => (
+    QUERIES.map(
         ([name, , Component, title]) => (
-            shouldRenderResults(name, props.results) &&
+            shouldRenderResults(name, results) &&
             <Group
                 title={title}
                 key={name}
-                input={props.input}
-                results={props.results[name]}
+                input={input}
+                results={results[name]}
                 component={Component}
-                handleClickAway={props.handleClickAway}
+                handleClickAway={handleClickAway}
             />
         )
     ).filter(
@@ -34,11 +30,11 @@ const makeGroupsForResults = (props) => (
 );
 
 
-const Form = (props) => {
-    const groups = makeGroupsForResults(props);
+const Form = ({ children, input, results, handleClickAway }) => {
+    const groups = makeGroupsForResults(input, results, handleClickAway);
     return (
         <form className="multisearch__multiform" action="/search/">
-            {props.children}
+            {children}
             {
                 groups.length > 0 &&
                 <div className="multisearch__results-container">
@@ -58,7 +54,7 @@ Form.propTypes = {
 };
 
 
-export const NavBarForm = (props) => (
+const NavBarForm = (props) => (
     <Form {...props}>
         <InputWithIcon
             input={props.input}
@@ -79,3 +75,6 @@ NavBarForm.defaultProps = {
     input: null,
     handleInputChange: null,
 };
+
+
+export default NavBarForm;

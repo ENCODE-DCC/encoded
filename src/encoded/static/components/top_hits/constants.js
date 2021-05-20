@@ -101,7 +101,7 @@ export const COLLECTIONS = [
             '&replicates.library.biosample.organism.scientific_name=Mus+musculus'
         ),
         '@type': ['DataCollection'],
-    }
+    },
 
 ];
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 
-const Title = ({title}) => (
+const Title = ({ title }) => (
     <span className="group-title">
         {title}
     </span>

@@ -74,7 +74,7 @@ export const fetchAndParseTopHits = (url) => (
 * >>> const topHitsQuery = new Query('a549');
 * >>> const results = topHitsQuery.getResults();
 */
-export class Query {
+class Query {
     constructor(searchTerm) {
         this.searchTerm = searchTerm;
     }
@@ -103,7 +103,7 @@ export const makeCollectionUrl = (searchUrl, searchTerm) => `${searchUrl}&search
 export const addTotalToCollection = (total, collection) => (
     {
         total,
-        ...collection
+        ...collection,
     }
 );
 
@@ -118,7 +118,7 @@ export const fetchTotalResultsFromCollection = (collection, searchTerm) => (
             },
         }
     ).then(
-        (response) => (response.ok ? response.json() : {total: 0})
+        (response) => (response.ok ? response.json() : { total: 0 })
     ).then(
         (result) => addTotalToCollection(result.total, collection)
     )
@@ -127,7 +127,7 @@ export const fetchTotalResultsFromCollection = (collection, searchTerm) => (
 
 export const filterCollectionsWithNoResults = (collections) => (
     collections.filter(
-        ({total}) => total > 0
+        ({ total }) => total > 0
     )
 );
 
@@ -138,7 +138,7 @@ export const formatCollections = (collections) => {
             {
                 key: COLLECTIONS_KEY,
                 hits: collections,
-            }
+            },
         ];
     }
     return collections;
@@ -169,4 +169,4 @@ export class CollectionsQuery {
 }
 
 
-export default Query
+export default Query;
