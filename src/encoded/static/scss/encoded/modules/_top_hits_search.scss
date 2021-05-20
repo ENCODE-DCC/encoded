@@ -156,7 +156,6 @@
     }
 }
 
-
 .multisearch {
     width: 100%;
 
@@ -233,8 +232,8 @@
             overflow: hidden;
         }
 
-        .group-title:before,
-        .group-title:after {
+        .group-title::before,
+        .group-title::after {
             background-color: #000;
             content: "";
             display: inline-block;
@@ -244,12 +243,12 @@
             width: 50%;
         }
 
-        .group-title:before {
+        .group-title::before {
             right: 0.5em;
             margin-left: -50%;
         }
 
-        .group-title:after {
+        .group-title::after {
             left: 0.5em;
             margin-right: -50%;
         }
