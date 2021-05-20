@@ -145,7 +145,7 @@ def audit_experiment_mixed_expression_measurement_methods(value, system, exclude
         methods_detail = ', '.join(methods)
         detail = f'This experiment uses multiple expression measurement methods, {methods_detail}.'
         yield AuditFailure(
-            'mixed expression_measurement_method', detail, level='NOT_COMPLIANT'
+            'mixed expression_measurement_method', detail, level='WARNING'
         )
 
 
