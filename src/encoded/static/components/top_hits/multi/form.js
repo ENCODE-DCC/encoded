@@ -12,7 +12,7 @@ import QUERIES from './constants';
 * @param {object} results - Results state.
 * @return {bool} Should render results.
 */
-const shouldRenderResults = (name, results) => (
+export const shouldRenderResults = (name, results) => (
     results[name] && results[name].length > 0
 );
 
@@ -24,7 +24,7 @@ const shouldRenderResults = (name, results) => (
 * @param {func} handleClickAway - Callback to pass to Group component.
 * @return {array[Group]} List of Groups with results for rendering.
 */
-const makeGroupsForResults = (input, results, handleClickAway) => (
+export const makeGroupsForResults = (input, results, handleClickAway) => (
     QUERIES.map(
         ([name, , Component, title]) => (
             shouldRenderResults(name, results) &&
