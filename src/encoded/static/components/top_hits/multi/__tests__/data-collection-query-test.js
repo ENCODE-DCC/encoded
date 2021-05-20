@@ -5,7 +5,6 @@ import {
     fetchTotalResultsFromCollection,
     filterCollectionsWithNoResults,
     formatCollections,
-    getHitsFromCollections,
 } from '../../query';
 
 
@@ -45,7 +44,7 @@ const collectionsWithTotals = [
 
 
 const rawResults = {
-    total: 44
+    total: 44,
 };
 
 
@@ -143,8 +142,8 @@ describe('CollectionsQuery', () => {
                     {
                         key: 'DataCollection',
                         hits: collectionsWithTotals,
-                    }
-                ]
+                    },
+                ],
             );
         });
     });

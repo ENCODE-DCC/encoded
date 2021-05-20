@@ -13,13 +13,13 @@ Enzyme.configure({ adapter: new Adapter() });
 describe('Forms', () => {
     test('shouldRenderResults', () => {
         expect(
-            shouldRenderResults('abc', {'abc': [1, 2, 3]})
+            shouldRenderResults('abc', { abc: [1, 2, 3] })
         ).toBeTruthy();
         expect(
-            shouldRenderResults('abc', {'abc': []})
+            shouldRenderResults('abc', { abc: [] })
         ).toBeFalsy();
         expect(
-            shouldRenderResults('xzy', {'abc': [3, 3]})
+            shouldRenderResults('xzy', { abc: [3, 3] })
         ).toBeFalsy();
     });
     test('makeGroupForResults', () => {
@@ -27,8 +27,8 @@ describe('Forms', () => {
             makeGroupsForResults(
                 'a549',
                 {
-                    'dataCollections': [],
-                    'topHits': [{}]
+                    dataCollections: [],
+                    topHits: [{}],
                 },
                 () => {}
             )
