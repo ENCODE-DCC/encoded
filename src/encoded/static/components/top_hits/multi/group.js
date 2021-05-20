@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 
 
+/**
+* Components for rendering groups of results in search-as-you-type dropdown.
+* A Group has a title and renders a specific Results component.
+*/
+
+
 const Title = ({ title }) => (
     <span className="group-title">
         {title}

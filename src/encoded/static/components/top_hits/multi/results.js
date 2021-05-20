@@ -19,6 +19,11 @@ Section.propTypes = {
 };
 
 
+/**
+* Results are mapped to sections. We add an event listener
+* to detect when the user clicks away from the dropdown list
+* so we can close it.
+*/
 const Results = ({ results, handleClickAway }) => {
     useEffect(
         () => {
