@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 */
 
 
-const Title = ({ title }) => (
+export const Title = ({ title }) => (
     <span className="group-title">
         {title}
     </span>
