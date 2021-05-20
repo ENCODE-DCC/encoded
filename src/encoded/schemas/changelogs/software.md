@@ -3,6 +3,7 @@
 ### Minor changes since schema version 9
 
 * Added *DAC*, *DCC*, and *uniform processing pipelines* to *used_by* enum
+* Added *framework* to *software_type* enum and added *AWG* to *used_by* enum
 
 ### Schema version 9
 

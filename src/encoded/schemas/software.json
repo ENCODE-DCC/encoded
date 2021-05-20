@@ -35,6 +35,7 @@
                     "database",
                     "file format conversion",
                     "filtering",
+                    "framework",
                     "genome segmentation",
                     "other",
                     "peak caller",
@@ -169,6 +170,7 @@
                 "title": "Used by",
                 "type": "string",
                 "enum": [
+                    "AWG",
                     "community",
                     "DAC",
                     "DCC",
