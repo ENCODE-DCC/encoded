@@ -130,6 +130,7 @@ export const addTotalToCollection = (total, collection) => (
 /**
 * Queries a data collection URL and returns the collection item with its total results.
 * @param {object} collection - The collection item (defined by title, searchUrl, @id, @type fields).
+* @param {string} searchTerm - The user search term.
 * @return {object} Collection item with total results.
 */
 export const fetchTotalResultsFromCollection = (collection, searchTerm) => (
