@@ -266,7 +266,7 @@ AccountCreatedModal.propTypes = {
 
 
 const getRecentlyViewed = () => {
-    console.log('getting recently viewed');
+    console.log('getRecenltyViewed');
     return JSON.parse(
         window.localStorage.getItem('recentlyViewed')
     );
@@ -274,7 +274,7 @@ const getRecentlyViewed = () => {
 
 
 const setRecentlyViewed = (atId) => {
-    console.log('setting recently viewed');
+    console.log('setRecentlyViewed');
     let data = getRecentlyViewed() || [];
     data = data.filter(
         (value) => value !== atId
@@ -426,8 +426,6 @@ class App extends React.Component {
 
     /* eslint new-cap: ["error", { "properties": false }] */
     componentDidMount() {
-        console.log('MOUNTED!!!!');
-        maybeRecordRecentlyViewed(this.state['context']);
         // Login / logout actions must be deferred until Auth0 is ready.
         const sessionCookie = extractSessionCookie();
         const session = parseSessionCookie(sessionCookie);
@@ -538,7 +536,6 @@ class App extends React.Component {
 
     /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps, prevState) {
-        console.log('component did UPDATE!');
         if (!this.state.session || (this.state.session_cookie !== prevState.session_cookie)) {
             const updateState = {};
             updateState.session = parseSessionCookie(this.state.session_cookie);
@@ -1244,6 +1241,10 @@ class App extends React.Component {
                 context = context.default_page;
             }
             if (context) {
+                if (typeof window !== "undefined") {
+                    console.log('RECORDING VIEWED');
+                    maybeRecordRecentlyViewed(context);
+                }
                 const ContentView = globals.contentViews.lookup(context, currentAction);
                 content = <ContentView context={context} />;
             }
