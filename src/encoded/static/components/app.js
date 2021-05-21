@@ -265,9 +265,6 @@ AccountCreatedModal.propTypes = {
 };
 
 
-const recentlyViewed = {};
-
-
 const getRecentlyViewed = () => {
     console.log('getting recently viewed');
     return JSON.parse(
@@ -288,15 +285,6 @@ const setRecentlyViewed = (atId) => {
         'recentlyViewed',
         JSON.stringify(data)
     );
-};
-
-
-const addToRecentlyViewed = (atId) => {
-    setRecentlyViewed(atId);
-    if (!recentlyViewed[atId]) {
-        recentlyViewed[atId] = 0;
-    }
-    recentlyViewed[atId] += 1;
 };
 
 
@@ -338,11 +326,8 @@ const itemTypesToRecord = [
 
 const maybeRecordRecentlyViewed = (context) => {
     const concreteType = context['@type'][0];
-    console.log(concreteType);
     if (itemTypesToRecord.includes(concreteType)) {
-        console.log('RECOGNIZED ITEM TO INCLUDE!');
-        addToRecentlyViewed(context['@id']);
-        console.log(getRecentlyViewed());
+        setRecentlyViewed(context['@id']);
     }
 };
 
