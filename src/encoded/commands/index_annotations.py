@@ -59,7 +59,7 @@ def run(app):
     # bulk index of annotations
     annotations = json_from_path(registry.settings.get('annotations_path'), {})
 
-    base_timeout = 30
+    base_timeout = 45 
     additional_timeout = 0
     annotation_indexing_success = False
 
