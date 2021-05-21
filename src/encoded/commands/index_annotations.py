@@ -61,7 +61,7 @@ def run(app):
     try:
         es.bulk(index=index, body=annotations, refresh=True, request_timeout=30)
     except:
-        print("Unable index the annotations")
+        log.error("Unable to index the annotations", exc_info=True)
 
 
 def main():
