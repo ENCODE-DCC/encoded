@@ -217,3 +217,36 @@ export class CollectionsQuery {
 
 
 export default Query;
+
+
+const getRecentlyViewed = () => {
+    console.log('getting recently viewed');
+    return JSON.parse(
+        window.localStorage.getItem('recentlyViewed') || []
+    );
+};
+
+
+export class RecentlyViewedQuery {
+    constructor(searchTerm) {
+        this.searchTerm = searchTerm;
+    }
+
+    getResults() {
+        const recentlyViewed = [
+            {
+                key: 'RecentlyViewed',
+                hits: getRecentlyViewed().reverse().map(
+                    (item) => (
+                        {
+                            '@id': item,
+                            '@type': ['RecentlyViewed'],
+                            title: item,
+                        }
+                    )
+                )
+            }
+        ];
+        return new Promise((resolve) => resolve(recentlyViewed));
+    }
+}

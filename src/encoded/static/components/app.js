@@ -264,6 +264,89 @@ AccountCreatedModal.propTypes = {
     closeModal: PropTypes.func.isRequired,
 };
 
+
+const recentlyViewed = {};
+
+
+const getRecentlyViewed = () => {
+    console.log('getting recently viewed');
+    return JSON.parse(
+        window.localStorage.getItem('recentlyViewed')
+    );
+};
+
+
+const setRecentlyViewed = (atId) => {
+    console.log('setting recently viewed');
+    let data = getRecentlyViewed() || [];
+    data = data.filter(
+        (value) => value !== atId
+    );
+    data.push(atId);
+    data = data.slice(-5);
+    window.localStorage.setItem(
+        'recentlyViewed',
+        JSON.stringify(data)
+    );
+};
+
+
+const addToRecentlyViewed = (atId) => {
+    setRecentlyViewed(atId);
+    if (!recentlyViewed[atId]) {
+        recentlyViewed[atId] = 0;
+    }
+    recentlyViewed[atId] += 1;
+};
+
+
+const itemTypesToRecord = [
+    'AntibodyLot',
+    'Award',
+    'Biosample',
+    'BiosampleType',
+    'Annotation',
+    'Experiment',
+    'Document',
+    'HumanDonor',
+    'FlyDonor',
+    'WormDonor',
+    'MouseDonor',
+    'GeneticModification',
+    'Page',
+    'Pipeline',
+    'Publication',
+    'Software',
+    'Gene',
+    'Target',
+    'File',
+    'Lab',
+    'GeneSilencingSeries',
+    'ReferenceEpigenome',
+    'OrganismDevelopmentSeries',
+    'TreatmentTimeSeries',
+    'ReplicationTimingSeries',
+    'MatchedSet',
+    'TreatmentConcentrationSeries',
+    'AggregateSeries',
+    'FunctionalCharacterizationExperiment',
+    'TransgenicEnhancerExperiment',
+    'Reference',
+    'PublicationData',
+];
+
+
+const maybeRecordRecentlyViewed = (context) => {
+    const concreteType = context['@type'][0];
+    console.log(concreteType);
+    if (itemTypesToRecord.includes(concreteType)) {
+        console.log('RECOGNIZED ITEM TO INCLUDE!');
+        addToRecentlyViewed(context['@id']);
+        console.log(getRecentlyViewed());
+    }
+};
+
+
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -358,6 +441,8 @@ class App extends React.Component {
 
     /* eslint new-cap: ["error", { "properties": false }] */
     componentDidMount() {
+        console.log('MOUNTED!!!!');
+        maybeRecordRecentlyViewed(this.state['context']);
         // Login / logout actions must be deferred until Auth0 is ready.
         const sessionCookie = extractSessionCookie();
         const session = parseSessionCookie(sessionCookie);
@@ -468,6 +553,7 @@ class App extends React.Component {
 
     /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps, prevState) {
+        console.log('component did UPDATE!');
         if (!this.state.session || (this.state.session_cookie !== prevState.session_cookie)) {
             const updateState = {};
             updateState.session = parseSessionCookie(this.state.session_cookie);
@@ -499,7 +585,6 @@ class App extends React.Component {
             return;
         }
         const browserEnd = 1 * new Date();
-
         ga('set', 'location', window.location.href);
         ga('send', 'pageview');
         recordServerStats(xhr.server_stats, 'contextRequest');

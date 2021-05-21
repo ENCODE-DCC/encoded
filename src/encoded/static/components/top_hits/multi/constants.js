@@ -1,5 +1,6 @@
 import TopHitsQuery, {
     CollectionsQuery,
+    RecentlyViewedQuery,
 } from '../query';
 import TopHitsResults from '../results';
 import CollectionsResults from './results';
@@ -16,6 +17,7 @@ import CollectionsResults from './results';
 * ]
 */
 const QUERIES = [
+    ['recentlyViewed', RecentlyViewedQuery, CollectionsResults, 'Recently viewed'],
     ['dataCollections', CollectionsQuery, CollectionsResults, 'Data collections'],
     ['topHits', TopHitsQuery, TopHitsResults, 'Top results by type'],
 ];
