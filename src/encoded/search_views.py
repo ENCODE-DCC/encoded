@@ -52,6 +52,7 @@ def includeme(config):
     config.add_route('search', '/search{slash:/?}')
     config.add_route('series_search', '/series-search{slash:/?}')
     config.add_route('encyclopedia', '/encyclopedia{slash:/?}')
+    config.add_route('encode_software', '/encode-software{slash:/?}')
     config.add_route('searchv2_raw', '/searchv2_raw{slash:/?}')
     config.add_route('searchv2_quick', '/searchv2_quick{slash:/?}')
     config.add_route('report', '/report{slash:/?}')
@@ -161,6 +162,39 @@ def encyclopedia(context, request):
             ContextResponseField(),
             BasicSearchWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            ClearFiltersResponseField(),
+            ColumnsResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='encode_software', request_method='GET', permission='search')
+def encode_software(context, request):
+    # Note the order of rendering matters for some fields, e.g. AllResponseField and
+    # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title="Software"
+            ),
+            TypeResponseField(
+                at_type=["EncodeSoftware"]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            BasicSearchWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
             NotificationResponseField(),
