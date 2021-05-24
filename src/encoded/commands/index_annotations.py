@@ -61,12 +61,10 @@ def run(app):
 
     base_timeout = 45
     additional_timeout = 0
-    annotation_indexing_success = False
-
-    while not annotation_indexing_success:
+    while True:
         try:
             es.bulk(index=index, body=annotations, refresh=True, request_timeout=base_timeout+additional_timeout)
-            annotation_indexing_success = True
+            break
         except:
             log.error("Unable to index the annotations.", exc_info=True)
             additional_timeout += 10
