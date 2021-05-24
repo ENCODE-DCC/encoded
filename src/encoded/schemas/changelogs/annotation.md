@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 33
+* Added *calf*, *child*, *mixed stage*, and *newborn* to *relevant_life_stage* enums list
+
 ### Schemma version 33
 * Updated the *internal_tag* *Regulome_DB* to *Regulome_DB_1_0*
 * Also added *Regulome_DB_2_0* and *Regulome_DB_2_1* to the *internal_tag* enum list
