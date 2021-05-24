@@ -61,7 +61,9 @@ def run(app):
 
     base_timeout = 45
     additional_timeout = 0
-    while True:
+    retries = 5
+
+    for _ in range(retries):
         try:
             es.bulk(index=index, body=annotations, refresh=True, request_timeout=base_timeout+additional_timeout)
             break
