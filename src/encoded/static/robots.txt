@@ -5,6 +5,7 @@ Disallow: /cgi-bin/
 Disallow: /search/
 Disallow: /report/
 Disallow: /matrix/
+Disallow: /series-search/
 Disallow: /summary/
 Disallow: /batch_hub/
 Disallow: /batch_download/
@@ -16,6 +17,7 @@ Disallow: /cgi-bin
 Disallow: /search
 Disallow: /report
 Disallow: /matrix
+Disallow: /series-search
 Disallow: /summary
 Disallow: /batch_hub
 Disallow: /batch_download
