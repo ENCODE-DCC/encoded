@@ -162,10 +162,7 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3, context) => {
     const removeSpecialCharacters = (name) => (!name ? name : name.replace(/\s/g, ''));
     const headerQuery = new QueryString(context.search_base);
 
-    headerQuery.addKeyValue('replicates.library.biosample.donor.organism.scientific_name', chIPSeqData.organismName);
-    headerQuery.addKeyValue('replicates.library.biosample.donor.organism.scientific_name', chIPSeqData.assayTitle);
-
-    if (isAssayTitleHistone) {
+    if (isAssayTitleHistone && !headerQuery.getKeyValues('assay_title').includes('Mint-ChIP-seq')) {
         headerQuery.addKeyValue('assay_title', 'Mint-ChIP-seq');
     }
 
@@ -178,7 +175,7 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3, context) => {
         },
         ...chIPSeqData.headerRow.map((x) => ({
             id: removeSpecialCharacters(`${x}`),
-            content: <a href={`${headerQuery.format()}`} title={x}>{x}</a>,
+            content: <a href={`${headerQuery.format()}&biosample_ontology.term_name=${x}`} title={x}>{x}</a>,
             className: 'div-table-matrix__row__header-item',
             style: {},
         })),
@@ -191,17 +188,15 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3, context) => {
             let content;
             const yQuery = new QueryString(context.search_base);
 
-            yQuery.addKeyValue('assay_title', chIPSeqData.assayTitle);
             yQuery.addKeyValue('target.label', row[0].content);
-            yQuery.addKeyValue('replicates.library.biosample.donor.organism.scientific_name', chIPSeqData.organismName);
             yQuery.addKeyValue('biosample_ontology.classification', selectedTabLevel3);
+
+            if (isAssayTitleHistone && !yQuery.getKeyValues('assay_title').includes('Mint-ChIP-seq')) {
+                yQuery.addKeyValue('assay_title', 'Mint-ChIP-seq');
+            }
 
             if (yIndex === 0) {
                 const borderLeft = '1px solid #fff'; // make left-most side border white
-
-                if (isAssayTitleHistone) {
-                    yQuery.addKeyValue('assay_title', 'Mint-ChIP-seq');
-                }
 
                 content = {
                     id: removeSpecialCharacters(`${y}`),
@@ -218,10 +213,6 @@ const convertTargetDataToTable = (chIPSeqData, selectedTabLevel3, context) => {
                 const borderRight = yIndex === rowLength - 1 ? '1px solid #f0f0f0' : ''; // add border color to right-most rows
 
                 yQuery.addKeyValue('biosample_ontology.term_name', chIPSeqData.headerRow[yIndex - 1]);
-
-                if (isAssayTitleHistone) {
-                    yQuery.addKeyValue('assay_title', 'Mint-ChIP-seq');
-                }
 
                 backgroundColor = y.content === 0 ? '#fff' : primaryBoxColor; // determined if box is colored or not
 
