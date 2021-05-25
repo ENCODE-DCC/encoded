@@ -1879,6 +1879,15 @@ export const SeriesComponent = (props, reactContext) => {
         combinedTreatmentAmounts = treatmentAmounts.join(', ');
     }
 
+    // As of code-time, there is a chance disease term namess across biosamples could be different. So
+    // the code takes this into account
+    const diseases = [
+        ...new Set(context.related_datasets.reduce((accumulatedDiseases, currentRelatedDataset) => {
+            const diseasesTermNames = currentRelatedDataset.replicates.map((replicate) => replicate.library.biosample.disease_term_name);
+            return accumulatedDiseases.concat(...diseasesTermNames);
+        }, [])),
+    ].filter((disease) => disease);
+
     return (
         <div className={itemClass}>
             <header>
@@ -1938,6 +1947,12 @@ export const SeriesComponent = (props, reactContext) => {
                                     </dd>
                                 </div>
                             : null}
+
+
+                            <div data-test="diseasetermname">
+                                <dt>Disease{diseases && diseases.length !== 1 ? 's' : ''}</dt>
+                                <dd>{diseases && diseases.length > 0 ? diseases.join(', ') : 'Not reported'}</dd>
+                            </div>
 
                             {context.treatment_term_name && context.treatment_term_name.length > 0 ?
                                 <div data-test="treatmenttermname">
