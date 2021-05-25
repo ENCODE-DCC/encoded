@@ -71,6 +71,8 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'biosample_summary', dataset: true },
         { field: 'assembly' },
         { field: 'assay_term_name' },
+        { field: 'annotation_subtype' },
+        { field: 'annotation_type' },
         { field: 'file_format_type' },
         { field: 'title' },
         { field: 'genome_annotation' },
