@@ -241,7 +241,8 @@
         "reagents": [
             {
                 "source": "thermo-fisher",
-                "identifier": "thermo-fisher:L3000008"
+                "identifier": "thermo-fisher:L3000008",
+                "promoter_details": "ORI"
             }
         ],
         "lab": "/labs/kevin-white/",

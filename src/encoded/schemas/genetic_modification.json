@@ -1101,6 +1101,21 @@
                         "description": "An external link with additional information about the reagent.",
                         "type": "string",
                         "format": "uri"
+                    },
+                    "promoter_details": {
+                        "title": "Promoter details",
+                        "description": "The promoter or sequence with promoter-like activity used in the plasmid.",
+                        "type": "string",
+                        "enum": [
+                            "human HBB promoter",
+                            "human MYC promoter",
+                            "human PGK1 promoter",
+                            "minimal synthetic promoter",
+                            "mouse Hsp68 promoter",
+                            "mouse Shh promoter",
+                            "ORI",
+                            "synthetic core promoter"
+                        ]
                     }
                 }
             }

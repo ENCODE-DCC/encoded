@@ -325,6 +325,9 @@
         "crispr_screen_readout": {
             "title": "CRISPR screen readout"
         },
+        "replicates.library.biosample.applied_modifications.reagents.promoter_details": {
+            "title": "Promoter details"
+        },
         "target.investigated_as": {
             "title": "Target category"
         },

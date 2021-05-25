@@ -6,6 +6,7 @@
 * The *identifier* regular expression in the *reagents* property was updated to include identifiers from the source GenBank:
   * GenBank: '^genbank:[A-Z]{1,2}\\d{5,6}\\.\\d{1}$', e.g., genbank:MK484105.1
 * *mAID* was added to the *introduced_tags* enum.
+* Added *promoter_details* to the *reagents* property.
 
 ### Schema version 10
 
