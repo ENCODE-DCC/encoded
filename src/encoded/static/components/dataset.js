@@ -1676,10 +1676,11 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
 };
 
 function computeExaminedLoci(experiment) {
+    let examinedLoci = [];
     if (experiment.examined_loci && experiment.examined_loci.length > 0) {
-        const examined_loci = experiment.examined_loci.map((locus) => locus.gene.symbol);
+        examinedLoci = experiment.examined_loci.map((locus) => locus.gene.symbol);
     }
-    return examined_loci.join(', ');
+    return examinedLoci.join(', ');
 }
 
 const functionalCharacterizationSeriesTableColumns = {
