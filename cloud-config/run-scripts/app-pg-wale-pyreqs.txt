@@ -8,7 +8,7 @@ debtcollector==1.3.0
 envdir>=1.0.1
 envfile==1.0
 funcsigs==0.4
-futures==3.0.5
+futures==3.1.1
 gevent>=1.1.1
 greenlet==0.4.14
 iso8601==0.1.11
@@ -27,7 +27,7 @@ python-dateutil==2.4.2
 python-keystoneclient==3.0.0.0
 python-swiftclient==3.0.0
 pytz==2015.7
-requests==2.21.0
+requests==2.25.1
 six==1.10.0
 stevedore==1.12.0
 wrapt==1.10.6

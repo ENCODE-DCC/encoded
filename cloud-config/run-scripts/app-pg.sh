@@ -159,7 +159,8 @@ if [ ! -f "$WALE_BIN/pip" ]; then
     touch "$encd_failed_flag"
     exit 1
 fi
-sudo -H -u postgres "$WALE_BIN/pip" install pip==20.2.4 setuptools --upgrade
+sudo -H -u postgres "$WALE_BIN/pip" install pip setuptools --upgrade
+sudo -H -u postgres "$WALE_BIN/pip" install wheel
 sudo -H -u postgres "$WALE_BIN/pip" install -r "$WALE_REQS_DST"
 sudo -u postgres git clone --branch v1.1.1 https://github.com/wal-e/wal-e.git "$WALE_DIR/wal-e"
 sudo -H -u postgres "$WALE_BIN/pip" install -e "$WALE_DIR/wal-e"
