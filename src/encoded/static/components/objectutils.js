@@ -618,7 +618,13 @@ export const internalTagsMap = {
     PGP: {
         badgeFilename: 'tag-PGP.png',
     },
-    RegulomeDB: {
+    RegulomeDB_1_0: {
+        badgeFilename: 'tag-RegulomeDB.png',
+    },
+    RegulomeDB_2_0: {
+        badgeFilename: 'tag-RegulomeDB.png',
+    },
+    RegulomeDB_2_1: {
         badgeFilename: 'tag-RegulomeDB.png',
     },
     SESCC: {
