@@ -865,7 +865,7 @@ def experiment_34(root, experiment):
     properties = item.properties.copy()
     properties.update({
         'schema_version': '34',
-        'internal_tags': 'RegulomeDB'
+        'internal_tags': ['RegulomeDB']
     })
     return properties
 

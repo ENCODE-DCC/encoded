@@ -198,5 +198,5 @@ def annotation_32(award, lab):
         'award': award['@id'],
         'lab': lab['@id'],
         'schema_version': '32',
-        'internal_tags': 'RegulomeDB'
+        'internal_tags': ['RegulomeDB']
     }
