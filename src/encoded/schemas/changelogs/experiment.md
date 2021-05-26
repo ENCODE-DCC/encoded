@@ -1,8 +1,8 @@
 ## Changelog for experiment.json
 
 ### Schema version 35
-* Updated the *internal_tag* *Regulome_DB* to *Regulome_DB_1.0*
-* Also added *Regulome_DB_2.0* and *Regulome_DB_2.1* to the *internal_tag* enum list
+* Updated the *internal_tag* *Regulome_DB* to *Regulome_DB_1_0*
+* Also added *Regulome_DB_2_0* and *Regulome_DB_2_1* to the *internal_tag* enum list
 
 ### Minor changes since schema version 34
 * Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
