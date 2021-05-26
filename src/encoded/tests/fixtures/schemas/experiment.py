@@ -858,3 +858,14 @@ def base_single_cell_experiment_submitted(testapp, lab, award, heart):
         'date_submitted': '2015-07-23',
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def experiment_34(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '34',
+        'internal_tag': 'RegulomeDB'
+    })
+    return properties
+

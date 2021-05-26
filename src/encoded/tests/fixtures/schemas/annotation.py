@@ -191,3 +191,12 @@ def annotation_31(award, lab, analysis_released_2):
         'annotation_type': 'candidate regulatory elements',
         'analysis_objects': [analysis_released_2['uuid']]
     }
+
+@pytest.fixture
+def annotation_32(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '32',
+        'internal_tag': 'RegulomeDB'
+    }
