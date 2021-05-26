@@ -58,10 +58,19 @@ def run(app):
 
     # bulk index of annotations
     annotations = json_from_path(registry.settings.get('annotations_path'), {})
-    try:
-        es.bulk(index=index, body=annotations, refresh=True, request_timeout=30)
-    except:
-        print("Unable index the annotations")
+
+    base_timeout = 45
+    additional_timeout = 0
+    retries = 5
+
+    for _ in range(retries):
+        try:
+            es.bulk(index=index, body=annotations, refresh=True, request_timeout=base_timeout+additional_timeout)
+            break
+        except:
+            log.error("Unable to index the annotations.", exc_info=True)
+            additional_timeout += 10
+
 
 
 def main():
