@@ -1,5 +1,41 @@
 Changes
 =======
+117.0 (released) snovault 1.0.57
+--------------------------------
+1.	ENCD-5945-index-annotations-logging (#3920)
+2.	ENCD-5954-fix-matrix-chip-seq-urls (#3923)
+3.	ENCD-5951-annotation-labels (#3924)
+4.	ENCD-5957-wale-broken (#3925)
+5.	ENCD-5947-series-search-ban-robots (#3921)
+6.	ENCD-5903-audit-mixed-expression-measurement-methods (#3914)
+7.	ENCD-5757-multisearch-within-collections (#3917)
+8.	ENCD-5941-update-robots-txt (#3919)
+9.	ENCD-5938-control-crispr-screens-incorrectly-calculated-as-proliferation (#3918)
+10.	ENCD-5930-add-enum-to-software-type (#3909)
+11.	ENCD-5920-change-machine-size (#3915)
+12.	ENCD-5935-fix-file-audit-error (#3916)
+13.	ENCD-5912-FCC-series-search-update (#3908)
+14.	ENCD-5614-cart-dataset-filters (#3911)
+15.	ENCD-5923-fix-chromatin-genome-browser-bug (#3910)
+16.	ENCD-5917-add-guide-locations-output-type (#3913)
+17.	ENCD-5689-updates-to-chip-matrix (#3906)
+18.	ENCD-5914-rna-get-beta (#3901)
+19.	ENCD-5909-single-cell-series-UI (#3897)
+20.	ENCD-5924-deafult analysis (#3900)
+21.	ENCD-5861-add-annotation-types-subtypes-to-glossary (#3912)
+22.	ENCD-5911-update-crispr-screen-methods-in-fcc-faceting (#3907)
+23.	ENCD-4945-status-color-key (#3903)
+24.	ENCD-5919-elements-ref-embedding-to-fce (#3905)
+25.	ENCD-5898-separate-ami-demo-prod (#3879)
+26.	ENCD-5814-add-donor-to-metadata-tsv (#3899)
+27.	ENCD-5854-series-dl (#3883)
+28.	ENCD-5915-update-software-schema (#3904)
+29.	ENCD-5871-exclude-deleted-inconsistent-analysis (#3887)
+30.	ENCD-5897-add-disease-term-in-biosample-page (#3891)
+31.	ENCD-5916-encyclopedia-v6 (#3898)
+32.	ENCD-5873-remove-single-cell-classification (#3890)
+33.	ENCD-5805-collections-tag-link (#3885)
+
 116.0 (released) snovault 1.0.57
 --------------------------------
 1. update snovault 1.0.57 (#3882)
