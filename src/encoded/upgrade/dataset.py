@@ -715,3 +715,11 @@ def dataset_29_30(value, system):
         return
     value['analyses'] = value['analysis_objects']
     value.pop('analysis_objects')
+
+@upgrade_step('experiment', '34', '35')
+@upgrade_step('annotation', '32', '33')
+def dataset_30_31(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5932
+    if value['internal_tags'] == "RegulomeDB":
+            value['internal_tags']= "RegulomeDB_1_0"
+            pop.value('internal_tags')
