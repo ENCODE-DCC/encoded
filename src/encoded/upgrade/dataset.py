@@ -720,6 +720,6 @@ def dataset_29_30(value, system):
 @upgrade_step('annotation', '32', '33')
 def dataset_30_31(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5932
-    if value['internal_tags'] == "RegulomeDB":
-            value['internal_tags']= "RegulomeDB_1_0"
-            value.pop('internal_tags')
+    if  'RegulomeDB' in value['internal_tags']:
+            value['internal_tags'].remove('RegulomeDB')
+            value['internal_tags'].append('RegulomeDB')
