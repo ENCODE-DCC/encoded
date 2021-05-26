@@ -722,4 +722,4 @@ def dataset_30_31(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5932
     if value['internal_tags'] == "RegulomeDB":
             value['internal_tags']= "RegulomeDB_1_0"
-            pop.value('internal_tags')
+            value.pop('internal_tags')
