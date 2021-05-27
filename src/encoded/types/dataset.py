@@ -961,6 +961,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
         'related_datasets.replicates.library.treatments',
         'related_datasets.possible_controls',
         'related_datasets.possible_controls.lab',
+        'related_datasets.target',
         'files.platform',
         'files.lab',
         'files.analysis_step_version.analysis_step',
