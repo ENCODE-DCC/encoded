@@ -4,12 +4,14 @@
 * Updated the *internal_tag* *Regulome_DB* to *Regulome_DB_1_0*
 * Also added *Regulome_DB_2_0* and *Regulome_DB_2_1* to the *internal_tag* enum list
 
-### Minor changes since schema version 31
+### Minor changes since schema version 32
 * Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
 
-### Schema version 31
-
+### Schema version 32
 * Changed the *analysis_objects* property to be *analyses*
+
+### Schema version 31
+* Changed *blacklist* to *exclusion list* in enum for *annotation_type*
 
 ### Minor changes since schema version 30
 * Added *curated SNVs*, *dsQTLs*, *eQTLs*, *footprints* and *PWMs* enum to *annotation_type* property.
@@ -20,11 +22,7 @@
 * Added *fine-mapped variants* enum to *annotation_type* property.
 * Added a new property, *annotation_subtype*, to specify the elements in a *candidate Cis-Regulatory Elements* annotation object
 
-### Schema version 31
-* Changed *blacklist* to *exclusion list* in enum for *annotation_type*
-
 ### Minor changes since schema version 30
-
 * Added *LRGASP* to the *internal_tags* enum
 
 ### Schema version 30
