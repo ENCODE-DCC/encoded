@@ -222,7 +222,7 @@ def test_bigInteract_trackDb(testapp, index_workbook, expected):
     "longLabel STARR-seq of Homo sapiens WTC-11 cell line genetically modified (knockout) using CRISPR - ENCSR928SVL",
     "shortLabel STARR-seq of WTC-11 ENCSR928SVL",
     "visibility dense",
-    "subGroup1 view Views aPKS=Peaks bSIG=Signal_of_unique_reads cSPV=Signal_p-value dCNS=Control_normalized_signal",
+    "subGroup1 view Views aPKS=Peaks bSIG=Signal_of_unique_reads cSPV=Signal_p-value dCNS=Control_normalized_signal eEQS=Element_quantifications",
     "subGroup2 BS Biosample WTC4511=WTC-11",
     "subGroup3 EXP Experiment ENCSR928SVL=ENCSR928SVL",
     "subGroup4 REP Replicates rep01=Replicate_1",
