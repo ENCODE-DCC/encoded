@@ -1,5 +1,5 @@
 {
-    "STARR": {
+    "MPRA": {
         "rule": "'{assay_term_name}' == 'MPRA'",
         "assay_composite": {
             "longLabel":  "Collection of ENCODE MPRA experiments",
