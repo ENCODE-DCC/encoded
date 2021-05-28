@@ -7,3 +7,4 @@
 * Added *doi* property
 * Added *analyses* property
 * Added *assay_slims* calculated property
+* Added *RushAD* to the *internal_tags* enum

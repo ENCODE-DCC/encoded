@@ -6,6 +6,7 @@
 
 ### Minor changes since schema version 34
 * Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
+* Added *RushAD* to the *internal_tags* enum
 
 ### Schema version 34
 * Changed the *analysis_objects* property to be *analyses*

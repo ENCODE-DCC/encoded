@@ -7,6 +7,7 @@
 * Added *analyses* property
 * *related_datasets* now includes SingleCellUnit.json
 * Added *assay_slims* calculated property
+* Added *RushAD* to the *internal_tags* enum
 
 ### Schema version 3
 

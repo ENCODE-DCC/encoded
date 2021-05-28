@@ -5,6 +5,7 @@
 * Added *LRGASP* and *ENCYCLOPEDIAv6* to the *internal_tags* enums list
 * Added *doi* property
 * Added *analyses* property
+* Added *RushAD* to the *internal_tags* enum
 
 ### Schema version 17
 

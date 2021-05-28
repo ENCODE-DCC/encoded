@@ -1,5 +1,8 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Minor changes since schema version 8
+* Added *RushAD* to the *internal_tags* enum
+
 ### Schema version 8
 * The *HCR-FlowFish* enum in *expression_measurement_method* has been adjusted to *HCR-FlowFISH*
 
