@@ -61,7 +61,7 @@ Feature: Cart
         And I wait for 5 seconds
         And I press "/experiments/ENCSR000INT/"
         And I wait for the content to load
-        Then I should see 6 elements with the css selector ".result-item"
+        Then I should see 7 elements with the css selector ".result-item"
         And I should see "4 files selected"
 
     Scenario: Download menu
