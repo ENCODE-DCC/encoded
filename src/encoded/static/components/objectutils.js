@@ -628,7 +628,7 @@ export const internalTagsMap = {
         badgeFilename: 'tag-RegulomeDB_2_1.svg',
     },
     RushAD: {
-        badgeFilename: 'tag-RushAD.svg'
+        badgeFilename: 'tag-RushAD.svg',
     },
     SESCC: {
         badgeFilename: 'tag-SESCC.svg',
@@ -636,7 +636,7 @@ export const internalTagsMap = {
     },
     YaleImmuneCells: {
         badgeFilename: 'tag-YaleImmuneCells.svg',
-    }
+    },
 };
 
 /**
