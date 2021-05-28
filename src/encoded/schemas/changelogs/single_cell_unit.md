@@ -3,7 +3,7 @@
 ### Minor changes since schema version 2
 
 * Added *ENCYCLOPEDIAv6* to the *internal_tags* enums list
-* Added *RushAD* to the *internal_tags* enum
+* Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 
 ### Schema version 2
 

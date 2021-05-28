@@ -4,4 +4,4 @@
 * Added *analyses* property
 * Added *assay_slims* calculated property
 * Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
-* Added *RushAD* to the *internal_tags* enum
+* Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
