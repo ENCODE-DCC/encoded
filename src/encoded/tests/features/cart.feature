@@ -17,17 +17,17 @@ Feature: Cart
         When I press "Data"
         And I click the link with text that contains "High-throughput assays"
         And I wait for the content to load
-        Then I should see 4 elements with the css selector ".result-item__cart-control"
+        Then I should see 5 elements with the css selector ".result-item__cart-control"
 
         When I press "Add all items to cart"
-        Then I should see 4 elements with the css selector ".cart-toggle--in-cart"
+        Then I should see 5 elements with the css selector ".cart-toggle--in-cart"
 
     Scenario: Cart page load
         When I press "cart-control"
         And I click the link to "/cart-view/"
         And I wait for the content to load
-        Then I should see 7 elements with the css selector ".result-item"
-        And I should see "5 files selected"
+        Then I should see 8 elements with the css selector ".result-item"
+        And I should see "6 files selected"
         When I press "cart-facet-term-Experiment"
         Then I should see "3 files selected"
 
