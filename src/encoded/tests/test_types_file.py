@@ -376,3 +376,108 @@ def test_file_embedded_annotation_properties(testapp, file_ccre,
     res = testapp.get(file_ccre['@id'] + '@@index-data')
     assert res.json['object']['annotation_subtype'] == 'CTCF-only'
     assert res.json['object']['biochemical_inputs'] == ['cDHS', 'rDHS']
+
+
+def test_file_show_azure_uri():
+    from encoded.types.file import show_azure_uri
+    for status in File.public_s3_statuses:
+        assert show_azure_uri(
+            's3://encode-public/2020/09/26/71e9637f-bbcb-4e4b-9d92-d3acdda4bb7b/ENCFF841DAP.bigWig',
+            status,
+        )
+        assert not show_azure_uri(
+            None,
+            status,
+        )
+    for status in File.private_s3_statuses:
+        assert not show_azure_uri(
+            's3://encode-public/2020/09/26/71e9637f-bbcb-4e4b-9d92-d3acdda4bb7b/ENCFF841DAP.bigWig',
+            status,
+        )
+        assert not show_azure_uri(
+            None,
+            status,
+        )
+
+
+def test_get_key_from_s3_uri():
+    from encoded.types.file import get_key_from_s3_uri
+    s3_uri = 's3://encode-public/2020/09/26/71e9637f-bbcb-4e4b-9d92-d3acdda4bb7b/ENCFF841DAP.bigWig'
+    assert (
+        get_key_from_s3_uri(s3_uri) == '2020/09/26/71e9637f-bbcb-4e4b-9d92-d3acdda4bb7b/ENCFF841DAP.bigWig'
+    )
+
+
+def test_convert_s3_uri_to_azure_uri():
+    from encoded.types.file import convert_s3_uri_to_azure_uri
+    s3_uri = 's3://encode-public/2020/09/26/71e9637f-bbcb-4e4b-9d92-d3acdda4bb7b/ENCFF841DAP.bigWig'
+    azure_uri = convert_s3_uri_to_azure_uri(s3_uri)
+    assert azure_uri == (
+        'https://datasetencode.blob.core.windows.net/dataset/'
+        '2020/09/26/71e9637f-bbcb-4e4b-9d92-d3acdda4bb7b/ENCFF841DAP.bigWig'
+        '?sv=2019-10-10&si=prod&sr=c&sig=9qSQZo4ggrCNpybBExU8SypuUZV33igI11xw0P7rB3c%3D'
+    )
+
+
+@pytest.mark.parametrize(
+    'status',
+    [
+        status
+        for status in File.public_s3_statuses
+    ]
+)
+def test_file_public_file_has_azure_uri(testapp, file_with_external_sheet, status):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': status
+        }
+    )
+    r = testapp.get(
+        file_with_external_sheet['@id']
+    )
+    assert 'azure_uri' in r.json
+    assert r.json['azure_uri'] == (
+        'https://datasetencode.blob.core.windows.net/dataset/'
+        'xyz.bed'
+        '?sv=2019-10-10&si=prod&sr=c&sig=9qSQZo4ggrCNpybBExU8SypuUZV33igI11xw0P7rB3c%3D'
+    )
+
+
+@pytest.mark.parametrize(
+    'status',
+    [
+        status
+        for status in File.private_s3_statuses
+        if status != 'replaced'
+    ]
+)
+def test_file_private_file_does_not_have_azure_uri(testapp, file_with_external_sheet, status):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': status
+        }
+    )
+    r = testapp.get(
+        file_with_external_sheet['@id']
+    )
+    assert 'azure_uri' not in r.json
+
+
+def test_file_without_external_sheet_does_not_have_azure_uri(testapp, file):
+    testapp.patch_json(file['@id'], {'status': 'released'})
+    r = testapp.get(file['@id'])
+    assert 'azure_uri' not in r.json
+
+
+def test_file_restricted_file_does_not_have_azure_uri(testapp, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released',
+            'restricted': True,
+        }
+    )
+    r = testapp.get(file_with_external_sheet['@id'])
+    assert 'azure_uri' not in r.json

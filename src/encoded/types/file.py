@@ -55,6 +55,21 @@ def show_cloud_metadata(status=None, md5sum=None, file_size=None, restricted=Non
     return True
 
 
+def show_azure_uri(s3_uri, status):
+    if s3_uri and status in File.public_s3_statuses:
+        return True
+    return False
+
+
+def get_key_from_s3_uri(s3_uri):
+    return s3_uri.split('/', 3)[3]
+
+
+def convert_s3_uri_to_azure_uri(s3_uri):
+    key = get_key_from_s3_uri(s3_uri)
+    return f'{AZURE_URI_PREFIX}/{key}{AZURE_PUBLIC_TOKEN}'
+
+
 def property_closure(request, propname, root_uuid):
     # Must avoid cycles
     conn = request.registry[CONNECTION]
@@ -90,6 +105,10 @@ EMBEDDED_DATASET_FIELDS = [
     'target',
     'targets',
 ]
+
+
+AZURE_URI_PREFIX = 'https://datasetencode.blob.core.windows.net/dataset'
+AZURE_PUBLIC_TOKEN = '?sv=2019-10-10&si=prod&sr=c&sig=9qSQZo4ggrCNpybBExU8SypuUZV33igI11xw0P7rB3c%3D'
 
 
 def file_is_md5sum_constrained(properties):
@@ -532,7 +551,8 @@ class File(Item):
             "comment": "Do not submit. Value is calculated from file metadata.",
             "type": "string",
             "notSubmittable": True,
-        }
+        },
+        define=True,
     )
     def s3_uri(self):
         try:
@@ -540,6 +560,19 @@ class File(Item):
         except HTTPNotFound:
             return None
         return 's3://{bucket}/{key}'.format(**external)
+
+    @calculated_property(
+        schema={
+            "title": "Azure URI",
+            "description": "The Azure URI of public file object.",
+            "comment": "Do not submit. Value is calculated from file metadata.",
+            "type": "string",
+            "notSubmittable": True,
+        }
+    )
+    def azure_uri(self, s3_uri=None, status=None):
+        if show_azure_uri(s3_uri, status):
+            return convert_s3_uri_to_azure_uri(s3_uri)
 
     @calculated_property(
         condition='dataset',
