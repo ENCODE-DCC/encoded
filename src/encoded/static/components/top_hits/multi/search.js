@@ -13,7 +13,11 @@ import QUERIES from './constants';
 * dropdown using the associated custom results component.
 */
 const Search = ({ children }) => {
+    // User input.
     const [input, setInput] = useState('');
+    // Reference to latest input for use in callback.
+    const inputRef = useRef();
+    inputRef.current = input;
     // All results are stored by endpoint key in same object.
     const [results, setResults] = useState({});
     // Store the debounce timer so we can reset it
@@ -21,6 +25,11 @@ const Search = ({ children }) => {
     const [debounceTimer, setDebounceTimer] = useState(null);
     // Wait this long after last user input making queries.
     const debounceTime = 200;
+
+    // Comparse searchTerm from query with latest user input.
+    const queryResultsAreFromLatestSearchTerm = (searchTerm) => (
+        searchTerm === inputRef.current
+    );
 
     // Iterate over all the Query objects and get the results from each.
     // Wait for all results to return, collapse into single object, then
@@ -37,7 +46,11 @@ const Search = ({ children }) => {
         Promise.all(queries).then(
             (queryResults) => Object.assign({}, ...queryResults)
         ).then(
-            (queryResults) => setResults(queryResults)
+            (queryResults) => {
+                if queryResultsAreFromLatestSearchTerm(searchTerm) {
+                    setResults(queryResults);
+                }
+            }
         );
     };
 

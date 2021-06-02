@@ -33,6 +33,11 @@ const Search = ({ children }) => {
     // the top hits API.
     const debounceTime = 200;
 
+    // Comparse searchTerm from query with latest user input.
+    const queryResultsAreFromLatestSearchTerm = (searchTerm) => (
+        searchTerm === inputRef.current
+    );
+
     // Pass user input (searchTerm) to top hits API
     // and store the returned results. Avoid setting
     // results if they are from a stale request.
@@ -40,7 +45,7 @@ const Search = ({ children }) => {
         const topHitsQuery = new Query(searchTerm);
         topHitsQuery.getResults().then(
             (topHits) => {
-                if (searchTerm === inputRef.current) {
+                if queryResultsAreFromLatestSearchTerm(searchTerm) {
                     setResults(topHits);
                 }
             }
