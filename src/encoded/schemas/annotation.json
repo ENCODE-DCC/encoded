@@ -73,7 +73,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "32"
+            "default": "33"
         },
         "annotation_type": {
             "title": "Annotation type",
