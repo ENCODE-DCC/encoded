@@ -1675,6 +1675,56 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
     },
 };
 
+function computeExaminedLoci(experiment) {
+    let examinedLoci = [];
+    if (experiment.examined_loci && experiment.examined_loci.length > 0) {
+        examinedLoci = experiment.examined_loci.map((locus) => locus.gene.symbol);
+    }
+    return examinedLoci.join(', ');
+}
+
+const functionalCharacterizationSeriesTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    assay_term_name: {
+        title: 'Assay',
+    },
+
+    examined_loci: {
+        title: 'Examined loci',
+        getValue: (experiment) => computeExaminedLoci(experiment),
+    },
+
+    description: {
+        title: 'Description',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
+
+    },
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
 
 /**
  * Collect released analyses from all the related datasets in the given Series object.
@@ -1748,7 +1798,7 @@ const seriesComponents = {
     TreatmentTimeSeries: { title: 'treatment time series', table: treatmentTimeSeriesTableColumns },
     AggregateSeries: { title: 'aggregate series', table: basicTableColumns },
     SingleCellRnaSeries: { title: 'single cell rna series', table: basicTableColumns },
-    FunctionalCharacterizationSeries: { title: 'functional characterization series', table: basicTableColumns },
+    FunctionalCharacterizationSeries: { title: 'functional characterization series', table: functionalCharacterizationSeriesTableColumns },
     GeneSilencingSeries: { title: 'gene silencing series', table: geneSilencingSeriesTableColumns },
     DifferentiationSeries: { title: 'differentiation series', table: basicTableColumns },
     PulseChaseTimeSeries: { title: 'pulse chase time series', table: basicTableColumns },
