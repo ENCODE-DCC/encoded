@@ -682,10 +682,9 @@ export class Field extends UpdateChildMixin(React.Component) {
             input = <select className="form-control" {...inputProps} disabled={isDisabled}>{options}</select>;
         } else if (schema.linkTo) {
             // Restrict ObjectPicker to finding the specified type
-            // FIXME this should handle an array of types too
             input = (<ObjectPicker
                 {...inputProps}
-                searchBase={`?mode=picker&type=${schema.linkTo}`}
+                searchBase={`?mode=picker&type=${Array.isArray(schema.linkTo) ? schema.linkTo.join('&type=') : schema.linkTo}`}
             />);
         } else if (schema.type === 'boolean') {
             input = <input type="checkbox" {...inputProps} checked={!!value} />;
