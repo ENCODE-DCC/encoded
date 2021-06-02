@@ -148,11 +148,6 @@ for filename in 'AWS_ACCESS_KEY_ID' 'AWS_SECRET_ACCESS_KEY' 'AWS_REGION'; do
 done
 copy_with_permission "$PG_CONF_DEST" "$WALE_ENV" 'WALE_S3_PREFIX'
 
-## Install python3.6 to run wal-e with
-# python3.6 is on the ami now
-# sudo add-apt-repository -y ppa:deadsnakes/ppa
-# sudo apt-get update
-# sudo apt-get install -y python3.6 python3.6-dev python3.6-venv
 ## Install wal-e
 sudo -u root mkdir -p "$WALE_DIR"
 sudo -u root chown postgres:postgres "$WALE_DIR"
