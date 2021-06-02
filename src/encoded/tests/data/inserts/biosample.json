@@ -1326,6 +1326,10 @@
         "biosample_ontology": "cell_line_EFO_0009747",
         "description": "WTC11 cell line",
         "donor": "ENCDO000HUM",
+        "internal_tags": [
+            "RushAD",
+            "YaleImmuneCells"
+        ],
         "lab": "bing-ren",
         "organism": "human",
         "genetic_modifications": [
