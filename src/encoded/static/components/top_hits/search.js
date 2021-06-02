@@ -1,4 +1,4 @@
-import { cloneElement, useState } from 'react';
+import { cloneElement, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import debounce from './debounce';
 import {
@@ -19,7 +19,12 @@ import Query from './query';
 * page besides the dropdown will hide the results.
 */
 const Search = ({ children }) => {
+    // User input.
     const [input, setInput] = useState('');
+    // Reference to latest input for use in callback.
+    const inputRef = useRef();
+    inputRef.current = input;
+    // Search results that get rendered.
     const [results, setResults] = useState([]);
     // Store the debounce timer so we can reset it
     // after every keystroke.
@@ -29,11 +34,16 @@ const Search = ({ children }) => {
     const debounceTime = 200;
 
     // Pass user input (searchTerm) to top hits API
-    // and store the returned results.
+    // and store the returned results. Avoid setting
+    // results if they are from a stale request.
     const makeSearchAndSetResults = (searchTerm) => {
         const topHitsQuery = new Query(searchTerm);
         topHitsQuery.getResults().then(
-            (topHits) => setResults(topHits)
+            (topHits) => {
+                if (searchTerm === inputRef.current) {
+                    setResults(topHits);
+                }
+            }
         );
     };
 
