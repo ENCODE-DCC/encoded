@@ -723,3 +723,10 @@ def dataset_30_31(value, system):
     if  'RegulomeDB' in value['internal_tags']:
             value['internal_tags'].remove('RegulomeDB')
             value['internal_tags'].append('RegulomeDB_1_0')
+
+
+@upgrade_step('experiment', '35', '36')
+def experiment_35_36(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5964
+    if value.get('assay_term_name') == 'Capture Hi-C':
+        value['assay_term_name'] = 'capture Hi-C'

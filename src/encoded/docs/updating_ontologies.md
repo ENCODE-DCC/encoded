@@ -42,8 +42,8 @@ How to update the ontology versions
 ```
 6.  Update the following information
     
-    Site release version: 115
-    ontology.json file: ontology-2021-04-05.json
+    Site release version: 118
+    ontology.json file: ontology-2021-06-02.json
     [UBERON release date]: 2021-02-12
     [OBI release date]: 2021-04-06
     [EFO release date]: 2021-05-17

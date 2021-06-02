@@ -78,4 +78,6 @@ assay_terms = {
       'perturbation followed by scRNA-seq': 'NTR:0000643',
       'perturbation followed by snATAC-seq': 'NTR:0000644',
       'Ribo-seq': 'OBI:0002038',
+      'LC/MS label-free quantitative proteomics': 'NTR:0000649',
+      'LC-MS/MS isobaric label quantitative proteomics': 'NTR:0000650'
 }

@@ -247,19 +247,6 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000626": {
-        "assay": ['3D chromatin structure'],
-        "category": [],
-        "developmental": [],
-        "name": "Capture Hi-C",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0000642": {
         "assay": ['Transcription'],
         "category": [],
@@ -312,14 +299,27 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000644": {
-        "assay": ['Single cell'],
+    "NTR:0000649": {
+        "assay": ['Proteomics'],
         "category": [],
         "developmental": [],
-        "name": "perturbation followed by snATAC-seq",
+        "name": "LC/MS label-free quantitative proteomics",
         "objectives": [],
         "organs": [],
-        "preferred_name": "perturbation followed by snATAC-seq",
+        "preferred_name": "LC/MS label-free quantitative proteomics",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000650": {
+        "assay": ['Proteomics'],
+        "category": [],
+        "developmental": [],
+        "name": "LC-MS/MS isobaric label quantitative proteomics",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "LC-MS/MS isobaric label quantitative proteomics",
         "slims": [],
         "synonyms": [],
         "systems": [],

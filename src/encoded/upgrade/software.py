@@ -69,3 +69,11 @@ def software_8_9(value, system):
                 value['notes'] = f'{value.get("notes")}. The purpose for this software is now snATAC-seq, upgraded from scATAC-seq.'
             else:
                 value['notes'] = 'The purpose for this software is now snATAC-seq, upgraded from scATAC-seq.'
+
+
+@upgrade_step('software', '9', '10')
+def software_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5964
+    for i, p in enumerate(value.get('purpose', [])):
+        if p == 'Capture Hi-C':
+            value['purpose'][i] = 'capture Hi-C'

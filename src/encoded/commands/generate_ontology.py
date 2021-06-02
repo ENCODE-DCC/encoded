@@ -216,7 +216,9 @@ preferred_name = {
     "OBI:0002631": "scRNA-seq",
     "OBI:0002112": "small RNA-seq",
     "OBI:0002762": "snATAC-seq",
-    "OBI:0002764": "scATAC-seq"
+    "OBI:0002764": "scATAC-seq",
+    "OBI:0002038": "Ribo-seq",
+    "OBI:0002984": "capture Hi-C"
 }
 
 category_slims = {

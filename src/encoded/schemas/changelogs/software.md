@@ -1,5 +1,9 @@
 ## Changelog for software.json
 
+### Schema version 10
+
+* Added *LC/MS label-free quantitative proteomics* and *LC-MS/MS isobaric label quantitative proteomics* to *purpose* enum. *purpose* enum *Capture Hi-C* was changed to *capture Hi-C*
+
 ### Minor changes since schema version 9
 
 * Added *DAC*, *DCC*, and *uniform processing pipelines* to *used_by* enum

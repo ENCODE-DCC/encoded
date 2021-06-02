@@ -1,5 +1,9 @@
 ## Changelog for award.json
 
+### Schema version 11
+
+* Added *LC/MS label-free quantitative proteomics* and *LC-MS/MS isobaric label quantitative proteomics* to *milestones.assay_term_name* enum. *milestones.assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
+
 ### Minor changes since schema version 10
 
 * The order of *rfa* enums was adjusted to reflect the priority when we consider selecting default analysis for a dataset

@@ -83,3 +83,14 @@ def test_pipeline_upgrade_12_13(upgrader, pipeline_8):
         sorted(['single-nucleus ATAC-seq', 'ATAC-seq'])
     )
     assert 'This pipeline is now compatible with snATAC-seq, upgraded from scATAC-seq.' in value['notes']
+
+
+def test_pipeline_upgrade_13_14(upgrader, pipeline_8):
+    pipeline_8['schema_version'] = '13'
+    pipeline_8['assay_term_names'] = ['Capture Hi-C', 'HiC']
+    value = upgrader.upgrade('pipeline', pipeline_8, target_version='14')
+    assert value['schema_version'] == '14'
+    TestCase().assertListEqual(
+        sorted(value['assay_term_names']),
+        sorted(['capture Hi-C', 'HiC'])
+    )

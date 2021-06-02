@@ -115,3 +115,11 @@ def pipeline_12_13(value, system):
                 value['notes'] = f'{value.get("notes")}. This pipeline is now compatible with snATAC-seq, upgraded from scATAC-seq.'
             else:
                 value['notes'] = 'This pipeline is now compatible with snATAC-seq, upgraded from scATAC-seq.'
+
+
+@upgrade_step('pipeline', '13', '14')
+def pipeline_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5964
+    for i, a in enumerate(value.get('assay_term_names', [])):
+        if a == 'Capture Hi-C':
+            value['assay_term_names'][i] = 'capture Hi-C'

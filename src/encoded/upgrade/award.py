@@ -68,3 +68,12 @@ def award_9_10(value, system):
         assay_term_name = milestone.get('assay_term_name', '')
         if assay_term_name == 'single-cell ATAC-seq':
             milestone['assay_term_name'] = 'single-nucleus ATAC-seq'
+
+
+@upgrade_step('award', '10', '11')
+def award_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5964
+    for milestone in value.get('milestones', []):
+        assay_term_name = milestone.get('assay_term_name', '')
+        if assay_term_name == 'Capture Hi-C':
+            milestone['assay_term_name'] = 'capture Hi-C'
