@@ -1151,7 +1151,7 @@
         "status": "released",
         "date_released": "2015-08-31",
         "biosample_ontology": "tissue_UBERON_0001891",
-        "assay_term_name": "Capture Hi-C"
+        "assay_term_name": "capture Hi-C"
     },
     {
         "_test": "single-cell (nucleus) RNA-seq test",

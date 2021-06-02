@@ -65,10 +65,11 @@ seq_assays = [
     'ATAC-seq',
     'CUT&RUN',
     'CUT&Tag',
-    'Capture Hi-C',
+    'capture Hi-C',
     'GRO-cap',
     'GRO-seq',
-    'long read single-cell RNA-seq'
+    'long read single-cell RNA-seq',
+    'Ribo-seq'
 ]
 
 
