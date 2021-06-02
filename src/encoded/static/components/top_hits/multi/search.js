@@ -1,4 +1,4 @@
-import { cloneElement, useState } from 'react';
+import { cloneElement, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import debounce from '../debounce';
 import NavBarForm from './form';
@@ -30,6 +30,7 @@ const Search = ({ children }) => {
     const queryResultsAreFromLatestSearchTerm = (searchTerm) => (
         searchTerm === inputRef.current
     );
+
 
     // Iterate over all the Query objects and get the results from each.
     // Wait for all results to return, collapse into single object, then
