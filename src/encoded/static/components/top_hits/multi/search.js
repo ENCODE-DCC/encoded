@@ -47,7 +47,7 @@ const Search = ({ children }) => {
             (queryResults) => Object.assign({}, ...queryResults)
         ).then(
             (queryResults) => {
-                if queryResultsAreFromLatestSearchTerm(searchTerm) {
+                if (queryResultsAreFromLatestSearchTerm(searchTerm)) {
                     setResults(queryResults);
                 }
             }

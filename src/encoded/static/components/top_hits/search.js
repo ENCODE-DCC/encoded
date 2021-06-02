@@ -45,7 +45,7 @@ const Search = ({ children }) => {
         const topHitsQuery = new Query(searchTerm);
         topHitsQuery.getResults().then(
             (topHits) => {
-                if queryResultsAreFromLatestSearchTerm(searchTerm) {
+                if (queryResultsAreFromLatestSearchTerm(searchTerm)) {
                     setResults(topHits);
                 }
             }
