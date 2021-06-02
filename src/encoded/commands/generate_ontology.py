@@ -264,7 +264,7 @@ class Inspector(object):
             try:
                 self.rdfGraph.parse(uri, format="n3")
             except:
-                raise exceptions.Error("Could not parse the file! Is it a valid RDF/OWL ontology?")
+                raise exceptions.Error("Could not parse the file! Is `%s` a valid RDF/OWL ontology?" % uri)
         finally:
             self.baseURI = self.get_OntologyURI() or uri
             self.allclasses = self.__getAllClasses(includeDomainRange=True, includeImplicit=True, removeBlankNodes=False, excludeRDF_OWL=False)

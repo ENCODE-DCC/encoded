@@ -25,28 +25,28 @@ How to update the ontology versions
 	* DOID: doid.owl [DOID download]
 
 2. Run generate-ontology, an example is: 
-
-	$ generate-ontology --uberon-url=http://svn.code.sf.net/p/obo/svn/uberon/releases/YYYY-MM-DD/composite-metazoan.owl --efo-url=http://www.ebi.ac.uk/efo/efo_inferred.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl --clo-url=http://purl.obolibrary.org/obo/clo.owl --doid-url=http://purl.obolibrary.org/obo/doid.owl
-
+```
+	$ generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/vYYYY-MM-DD/composite-metazoan.owl --efo-url=http://www.ebi.ac.uk/efo/efo_inferred.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl --clo-url=http://purl.obolibrary.org/obo/clo.owl --doid-url=http://purl.obolibrary.org/obo/doid.owl
+```
 3. Rename the ```ontology.json``` to one with the date that it was generated:
-
+```
 	$ cp ontology.json ontology-YYYY-MM-DD.json
-
+```
 4. Load new ontology file into the encoded-build/ontology directory on S3
-
+```
 	$ aws s3 cp ontology-YYYY-MM-DD.json s3://encoded-build/ontology/
-
+```
 5.  Update the ontology version in the [Makefile]:
-
+```
 	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-YYYY-MM-DD.json
-
+```
 6.  Update the following information
     
     Site release version: 115
     ontology.json file: ontology-2021-04-05.json
-    [UBERON release date]: 2020-09-16
-    [OBI release date]: 2020-12-16
-    [EFO release date]: 2021-03-15
+    [UBERON release date]: 2021-02-12
+    [OBI release date]: 2021-04-06
+    [EFO release date]: 2021-05-17
     [CLO release date]: 2019-02-10
     [DOID release date]: 2021-02-24
 
@@ -56,13 +56,13 @@ How to update the ontology versions
 [Ontology for Biomedical Investigations (OBI)]: http://obi-ontology.org/
 [Cell Line Ontology (CLO)]: http://www.clo-ontology.org
 [Human Disease Ontology (DOID)]: http://www.disease-ontology.org
-[Uberon download]: http://uberon.github.io/downloads.html
+[Uberon download]: https://github.com/obophenotype/uberon/releases
 [EFO src tree]: https://github.com/EBISPOT/efo/
 [OBI download]: http://www.ontobee.org/ontology/OBI
 [CLO download]: http://www.ontobee.org/ontology/CLO
 [DOID download]: http://www.ontobee.org/ontology/DOID
 [Makefile]: ../../../Makefile
-[UBERON release date]: http://svn.code.sf.net/p/obo/svn/uberon/releases/
+[UBERON release date]: https://github.com/obophenotype/uberon/releases
 [OBI release date]: http://www.ontobee.org/ontology/OBI 
 [EFO release date]: https://github.com/EBISPOT/efo/blob/master/ExFactor%20Ontology%20release%20notes.txt
 [CLO release date]: http://www.ontobee.org/ontology/CLO
