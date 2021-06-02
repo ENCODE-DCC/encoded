@@ -52,7 +52,8 @@
             ]
         },
         "wildtype_biosample": {
-            "title": "Wild type biosample to be used as reference for the biosample being characterized",
+            "title": "Wild type biosample",
+            "description": "Wild type biosample to be used as reference for the biosample being characterized",
             "comment": "See biosample.json for available identifiers.",
             "type": "string",
             "linkTo": "Biosample"
