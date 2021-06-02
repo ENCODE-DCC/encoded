@@ -118,7 +118,8 @@
                 ],
                 "value_scale": "linear",
                 "value_units": "UMI",
-                "normalized": false
+                "normalized": false,
+                "scaled": false
             }
         ]
     },
@@ -4401,6 +4402,7 @@
         "aliases": [
             "anna-greka:donorAB_merged_sc_citeseq_matrix"
         ],
+        "default_embedding": "X_spatial",
         "status": "released",
         "uuid": "c9174f45-9558-4f60-99a7-f87f1dc489b8",
         "submitted_file_name": "donorAB_merged_sc_citeseq_matrix.mtx/",
@@ -4450,6 +4452,7 @@
                 "value_scale": "log, natural",
                 "value_units": "UMI",
                 "normalized": true,
+                "scaled": true,
                 "normalization_method": "LogNormalize",
                 "filtering_cutoffs": [
                     {
