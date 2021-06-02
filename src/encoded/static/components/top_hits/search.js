@@ -38,17 +38,20 @@ const Search = ({ children }) => {
         searchTerm === inputRef.current
     );
 
+    // Only set results from the latest query.
+    const maybeSetResults = (topHits, searchTerm) => {
+        if (queryResultsAreFromLatestSearchTerm(searchTerm)) {
+            setResults(topHits);
+        }
+    };
+
     // Pass user input (searchTerm) to top hits API
     // and store the returned results. Avoid setting
     // results if they are from a stale request.
     const makeSearchAndSetResults = (searchTerm) => {
         const topHitsQuery = new Query(searchTerm);
         topHitsQuery.getResults().then(
-            (topHits) => {
-                if (queryResultsAreFromLatestSearchTerm(searchTerm)) {
-                    setResults(topHits);
-                }
-            }
+            (topHits) => maybeSetResults(topHits, searchTerm)
         );
     };
 

@@ -31,6 +31,12 @@ const Search = ({ children }) => {
         searchTerm === inputRef.current
     );
 
+    // Only set results from the latest query.
+    const maybeSetResults = (queryResults, searchTerm) => {
+        if (queryResultsAreFromLatestSearchTerm(searchTerm)) {
+            setResults(queryResults);
+        }
+    };
 
     // Iterate over all the Query objects and get the results from each.
     // Wait for all results to return, collapse into single object, then
@@ -47,11 +53,7 @@ const Search = ({ children }) => {
         Promise.all(queries).then(
             (queryResults) => Object.assign({}, ...queryResults)
         ).then(
-            (queryResults) => {
-                if (queryResultsAreFromLatestSearchTerm(searchTerm)) {
-                    setResults(queryResults);
-                }
-            }
+            (queryResults) => maybeSetResults(queryResults, searchTerm)
         );
     };
 
