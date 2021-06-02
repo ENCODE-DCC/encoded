@@ -1928,6 +1928,43 @@ def file_27(testapp, lab, award, experiment):
 
 
 @pytest.fixture
+def file_28_fastq_nanopore(testapp, lab, award, experiment, base_replicate, platform4):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'fastq',
+        'md5sum': '15dd66b6f21515393507f4ebfa55e77c',
+        'replicate': base_replicate['@id'],
+        'output_type': 'reads',
+        'file_size': 800,
+        'platform': platform4['uuid'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_28_bam_mapped_props(testapp, lab, award, experiment, file_28_fastq_nanopore):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bam',
+        'md5sum': 'eeb1325f54a0ec4911c4a3df0ed32f20',
+        'output_type': 'alignments',
+        'assembly': 'hg19',
+        'file_size': 888328,
+        'derived_from': [file_28_fastq_nanopore['uuid']],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'mapped_run_type': 'single-ended',
+        'mapped_read_length': 101,
+        'status': 'in progress',  # avoid s3 upload codepath
+        'schema_version': '28'
+    }
+    return item
+
+
+@pytest.fixture
 def file_nanopore_signal(testapp, experiment, award, lab, replicate_url, platform4):
     item = {
         'dataset': experiment['@id'],

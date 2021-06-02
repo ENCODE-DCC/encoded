@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 29
+* Recent update removed mapped_run_type and mapped_read_length from bam files deriving from fastqs sequenced with Pacific Biosciences or Nanopore platforms
+
 ### Minor changes since schema version 28
 * Added *element enrichments* to the enum list for *file_format_type*
 * Added *curated binding sites*, *curated SNVs*, *dsQTLs*, *eQTLs* and *PWMs* to the enum list for *output_type*.
