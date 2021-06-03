@@ -174,7 +174,8 @@
             "type": "string",
             "enum": [
                 "X_umap",
-                "X_tsne"
+                "X_tsne",
+                "X_spatial"
             ]
         },
         "experimental_variable_disease": {
@@ -269,6 +270,11 @@
                     "normalized": {
                         "title": "Normalized",
                         "description": "A flag to indicate whether the expression values have been normalized.",
+                        "type": "boolean"
+                    },
+                    "scaled": {
+                        "title": "Scaled",
+                        "description": "A flag to indicate whether the expression values have been scaled.",
                         "type": "boolean"
                     },
                     "normalization_method": {
