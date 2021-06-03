@@ -2194,6 +2194,139 @@ def test_audit_experiment_pooled_biosample_characterization(
     )
 
 
+def test_audit_experiment_tagging_biosample_characterization_parent(
+        testapp,
+        construct_genetic_modification,
+        interference_genetic_modification,
+        biosample_characterization,
+        base_experiment,
+        base_target,
+        replicate_1_1,
+        replicate_2_1,
+        library_1,
+        library_2,
+        biosample_1,
+        biosample_2,
+        base_biosample,
+        donor_1,
+        k562,
+        award_encode4,
+        wrangler,
+        treatment_5
+):
+    testapp.patch_json(biosample_1['@id'],
+                       {'genetic_modifications': [interference_genetic_modification['@id']],
+                        'biosample_ontology': k562['uuid'],
+                        'donor': donor_1['@id'],
+                        'part_of': base_biosample['@id']})
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [interference_genetic_modification['@id']],
+                        'biosample_ontology': k562['uuid'],
+                        'donor': donor_1['@id'],
+                        'part_of': base_biosample['@id']})
+    testapp.patch_json(base_biosample['@id'],
+                       {'genetic_modifications': [interference_genetic_modification['@id']]})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'],
+                       {'assay_term_name': 'ChIP-seq',
+                        'award': award_encode4['@id'],
+                        'target': base_target['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing biosample characterization'
+               for error in collect_audit_errors(res, ['WARNING']))
+    testapp.patch_json(biosample_1['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']]})
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']]})
+    testapp.patch_json(base_biosample['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing biosample characterization'
+               for error in collect_audit_errors(res, ['ERROR']))
+    # Same ontology and modifications on the parent part_of biosample
+    testapp.patch_json(base_biosample['@id'],
+                       {'biosample_ontology': k562['uuid']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing biosample characterization'
+               for error in collect_audit_errors(res))
+    # Parent with characterization that hasn't been reviewed as compliant
+    testapp.patch_json(biosample_characterization['@id'],
+                       {'characterizes': base_biosample['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing biosample characterization'
+               for error in collect_audit_errors(res))
+    assert any(
+        error['category'] == 'missing compliant biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
+    # Has compliant characterization
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {
+            'review': {
+                'lab': base_experiment['lab'],
+                'reviewed_by': wrangler['@id'],
+                'status': 'compliant'
+            }
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing compliant biosample characterization'
+        for error in collect_audit_errors(res)
+    )
+    # Has not compliant characterization
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {
+            'review': {
+                'lab': base_experiment['lab'],
+                'reviewed_by': wrangler['@id'],
+                'status': 'not compliant'
+            }
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'not compliant biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
+    # The parent is checked the same way when it is originated_from instead of part_of
+    testapp.patch_json(biosample_1['@id'],
+                       {'originated_from': base_biosample['@id']})
+    testapp.patch_json(biosample_2['@id'],
+                       {'originated_from': base_biosample['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'not compliant biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
+    # If treatments or modifications differ between child and parent, parent won't be queried
+    testapp.patch_json(biosample_1['@id'],
+                       {'treatments': [treatment_5['@id']]})
+    testapp.patch_json(biosample_2['@id'],
+                       {'treatments': [treatment_5['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'missing biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
+    assert all(
+        error['category'] != 'not compliant biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
+    testapp.patch_json(base_biosample['@id'],
+                       {'treatments': [treatment_5['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'not compliant biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
+
+
 def test_audit_experiment_missing_unfiltered_bams(testapp,
                                                   base_experiment,
                                                   replicate_1_1,

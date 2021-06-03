@@ -1718,6 +1718,7 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
     missing_characterizations = []
     characterization_status = {}
     needs_characterization_flags = []
+    ontology = ''
     # First check and collect necessary biosample characterizations
     for rep in value.get('replicates', []):
         if rep['status'] in excluded_types:
@@ -1730,6 +1731,7 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
         ):
             continue
         biosample = rep['library']['biosample']
+        ontology = biosample['biosample_ontology']['@id']
         needs_characterization_flag = False
         modifications = biosample.get('applied_modifications')
         if not modifications:
@@ -1746,6 +1748,63 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
             status = characterization.get('review', {}).get('status')
             sample_characterization_status.setdefault(status, [])
             sample_characterization_status[status].append(biosample['@id'])
+        # Check immediate parent of biosample for characterizations, via part_of or originated_from
+        # The parent biosample must match the child in ontology, treatments, and applied modifications
+        if not sample_characterization_status:
+            child_mods = sorted(mods)
+            child_treatments = sorted(biosample.get('treatments', []))
+            relationship = ''
+            if (
+                biosample.get('part_of')
+                and biosample.get('part_of').get('characterizations')
+            ):
+                part_ontology = biosample.get('part_of').get('biosample_ontology')
+                part_mods = sorted(biosample.get('part_of').get('applied_modifications', []))
+                part_treatments = sorted(biosample.get('part_of').get('treatments', []))
+                if (
+                    part_ontology == ontology
+                    and part_mods == child_mods
+                    and part_treatments == child_treatments
+                ):
+                    relationship = 'part_of'
+            elif (
+                biosample.get('originated_from')
+                and biosample.get('originated_from').get('characterizations')
+            ):
+                orig_ontology = biosample.get('originated_from').get('biosample_ontology')
+                orig_mods = sorted(biosample.get('originated_from').get('applied_modifications', []))
+                orig_treatments = sorted(biosample.get('originated_from').get('treatments', []))
+                if (
+                    orig_ontology == ontology
+                    and orig_mods == child_mods
+                    and orig_treatments == child_treatments
+                ):
+                    relationship = 'originated_from'
+            if relationship != '':
+                parent_characterization_status = {
+                    c.get('review', {}).get('status')
+                    for c in biosample.get(relationship).get('characterizations')
+                }
+                if 'not compliant' in parent_characterization_status:
+                    sample_characterization_status['not compliant'] = [
+                        biosample['@id']
+                    ]
+                elif None in parent_characterization_status:
+                    sample_characterization_status[None] = [
+                        biosample['@id']
+                    ]
+                elif 'requires secondary opinion' in parent_characterization_status:
+                    sample_characterization_status['requires secondary opinion'] = [
+                        biosample['@id']
+                    ]
+                elif 'exempt from standards' in parent_characterization_status:
+                    sample_characterization_status['exempt from standards'] = [
+                        biosample['@id']
+                    ]
+                elif 'compliant' in parent_characterization_status:
+                    sample_characterization_status['compliant'] = [
+                        biosample['@id']
+                    ]
         # Need to have all parents characterized if relying on pool parents
         if (
             not sample_characterization_status
@@ -3730,6 +3789,7 @@ function_dispatcher_with_files = {
         'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
         'replicates.library.biosample.characterizations',
+        'replicates.library.biosample.part_of.characterizations',
         'replicates.library.biosample.pooled_from.characterizations',
         'replicates.library.biosample.donor',
         'replicates.antibody',
