@@ -1609,6 +1609,22 @@
         "submitted_file_name": "K562_RAD21_2.1.interactions.hic"
     },
     {
+        "accession": "ENCFF037PAR",
+        "assembly": "GRCh38",
+        "award": "/awards/U54HG006996/",
+        "dataset": "ENCSR727WCB",
+        "date_created": "2017-03-09T16:46:18.670068+00:00",
+        "file_format": "pairs",
+        "file_size": 91118483365,
+        "lab": "/labs/michael-snyder/",
+        "md5sum": "11031413b61578d55b5c1a039d55cceb",
+        "output_type": "pairs",
+        "schema_version": "6",
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "submitted_file_name": "K562_RAD21_2.1.interactions.pairs.gz"
+    },
+    {
 
         "_test": "original file for an annotation analysis set 1",
         "accession": "ENCFF762DWI",
