@@ -1151,7 +1151,8 @@
                         "vcf",
                         "wig",
                         "idx",
-                        "txt"
+                        "txt",
+                        "pairs"
                     ]
                 },
                 {
@@ -1562,6 +1563,7 @@
                         "normalized signal of all reads",
                         "open chromatin regions",
                         "optimal IDR thresholded peaks",
+                        "pairs",
                         "paternal haplotype mapping",
                         "paternal variant calls",
                         "peaks",
@@ -2058,6 +2060,7 @@
         "transcriptome alignments": "alignment",
         "spike-in alignments": "alignment",
         "maternal haplotype mapping": "alignment",
+        "pairs": "alignment",
         "paternal haplotype mapping": "alignment",
         "phased mapping": "alignment",
         "preprocessed alignments": "alignment",
@@ -2270,6 +2273,7 @@
         "wig": ".wig.gz",
         "sam": ".sam.gz",
         "txt": ".txt.gz",
+        "pairs": ".pairs.gz",
         "starch": ".starch"
     },
      "boost_values": {
