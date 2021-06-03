@@ -12,7 +12,7 @@ import {
 Enzyme.configure({ adapter: new Adapter() });
 
 
-const rawResults = {
+const rawResults1 = {
     _shards: {
         total: 535,
         successful: 535,
@@ -152,18 +152,92 @@ const rawResults = {
 };
 
 
+const rawResults2 = {
+    _shards: {
+        total: 535,
+        successful: 535,
+        skipped: 0,
+        failed: 0,
+    },
+    aggregations: {
+        types: {
+            doc_count: 13,
+            types: {
+                doc_count_error_upper_bound: 0,
+                sum_other_doc_count: 0,
+                buckets: [
+                    {
+                        key: 'File',
+                        doc_count: 1,
+                        max_score: {
+                            value: 4.548310279846191,
+                        },
+                        top_hits: {
+                            hits: {
+                                total: 1,
+                                max_score: 4.5483103,
+                                hits: [
+                                    {
+                                        _index: 'file',
+                                        _type: 'file',
+                                        _id: 'fe9fe0cb-b859-461c-8d0f-4fa5f8e9377f',
+                                        _score: 4.5483103,
+                                        _source: {
+                                            embedded: {
+                                                '@type': [
+                                                    'File',
+                                                    'Item',
+                                                ],
+                                                accession: 'ENCFF000ABC',
+                                                '@id': '/files/ENCFF000ABC/',
+                                                status: 'released',
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+    },
+    num_reduce_phases: 2,
+    timed_out: false,
+    took: 58,
+};
+
+
+// Search for H taks 1000ms to return, search for HBB takes 500ms.
+const getDelayedResultsForUrl = async (url) => {
+    if (url.includes('?searchTerm=H&')) {
+        return new Promise(
+            (resolve) => setTimeout(() => resolve(rawResults1), 1000)
+        );
+    }
+    if (url.includes('?searchTerm=HBB&')) {
+        return new Promise(
+            (resolve) => setTimeout(() => resolve(rawResults2), 500)
+        );
+    }
+    return new Promise(
+        (resolve) => setTimeout(() => resolve({}), 0)
+    );;
+};
+
+
 describe('Search', () => {
     beforeEach(() => {
         jest.useFakeTimers();
         global.fetch = jest.fn(
-            () => (
+            (url) => (
                 Promise.resolve(
                     {
                         ok: true,
                         headers: {
                             get: () => null,
                         },
-                        json: () => rawResults,
+                        json: () => getDelayedResultsForUrl(url)
                     }
                 )
             )
@@ -179,26 +253,116 @@ describe('Search', () => {
         expect(search.find('NavBarForm')).toHaveLength(1);
         expect(search.find('i')).toHaveLength(1);
     });
-    test('Ignore stale requests', async () => {
+    test('Search component updates asynchronously on input', async () => {
         const search = mount(
             <NavBarSearch />
         );
+        // User types in H.
         search.find('input').simulate(
             'change',
             {
                 target: {
-                    value: 'A54',
+                    value: 'H',
                 },
             }
         );
-        expect(search.find('Input').prop('input')).toEqual('A54');
+        // H shows in input box.
+        expect(search.find('Input').prop('input')).toEqual('H');
+        // No results yet.
         expect(search.find('Results')).toHaveLength(0);
+        // Wait debounce time.
+        await act(async () => {
+            jest.advanceTimersByTime(200);
+        });
+        search.update();
+        // Wait half of search request time.
+        await act(async () => {
+            jest.advanceTimersByTime(500);
+        });
+        search.update();
+        // No results yet.
+        expect(search.find('Results')).toHaveLength(0);
+        // Wait rest of response time for H results.
+        await act(async () => {
+            jest.advanceTimersByTime(500);
+        });
+        search.update();
+        // Results should show with Experiment and Page sections.
+        expect(search.find('Results')).toHaveLength(1);
+        expect(search.find('Section')).toHaveLength(2);
+        expect(search.find('Item')).toHaveLength(5);
+        expect(search.find('i')).toHaveLength(1);
+    });
+    test('Ignore stale requests', async () => {
+        // If response for H takes longer than response for HBB
+        // we want to avoid rendering H results when they return.
+        // This test failed before race condition fix.
+        const search = mount(
+            <NavBarSearch />
+        );
+        // User types in H.
+        search.find('input').simulate(
+            'change',
+            {
+                target: {
+                    value: 'H',
+                },
+            }
+        );
+        // H shows in input box.
+        expect(search.find('Input').prop('input')).toEqual('H');
+        // No results yet.
+        expect(search.find('Results')).toHaveLength(0);
+        // Wait debounce time.
+        await act(async () => {
+            jest.advanceTimersByTime(200);
+        });
+        search.update();
+        // No results yet.
+        expect(search.find('Results')).toHaveLength(0);
+        // User types in HBB.
+        search.find('input').simulate(
+            'change',
+            {
+                target: {
+                    value: 'HBB',
+                },
+            }
+        );
+        // Wait debounce time.
+        await act(async () => {
+            jest.advanceTimersByTime(200);
+        });
+        search.update();
+        // No results yet.
+        expect(search.find('Results')).toHaveLength(0);
+        // Wait HBB response time.
+        await act(async () => {
+            jest.advanceTimersByTime(500);
+        });
+        search.update();
+        // Check for HBB results: one section, one item.
+        expect(search.find('Results')).toHaveLength(1);
+        expect(search.find('Section')).toHaveLength(1);
+        expect(search.find('Item')).toHaveLength(1);
+        // Wait rest of H response time.
+        await act(async () => {
+            jest.advanceTimersByTime(1000);
+        });
+        search.update();
+        // HBB results should still show.
+        expect(search.find('Results')).toHaveLength(1);
+        expect(search.find('Section')).toHaveLength(1);
+        expect(search.find('Item')).toHaveLength(1);
+         // Advance all timers and double check.
         await act(async () => {
             jest.runAllTimers();
         });
         search.update();
+        // HBB results should still show.
         expect(search.find('Results')).toHaveLength(1);
-        expect(search.find('i')).toHaveLength(1);
+        expect(search.find('Section')).toHaveLength(1);
+        expect(search.find('Item')).toHaveLength(1);
     });
     test('PageSearch renders', () => {
         const search = mount(
