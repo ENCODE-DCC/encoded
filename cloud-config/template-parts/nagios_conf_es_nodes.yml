@@ -1,0 +1,4 @@
+- cloud-init-per once nagios-files-s3 aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/nagios-plugins /home/ubuntu/nagios-plugins
+- cloud-init-per once nagios-mv-conf mv /home/ubuntu/nagios-plugins/nagios_config_es_nodes/nrpe_local.cfg /etc/nagios/nrpe.d/nrpe_local.cfg
+- cloud-init-per once nagios-plugins-permission chmod -R 0755 /home/ubuntu/nagios-plugins
+- cloud-init-per once nagios-plugins mv /home/ubuntu/nagios-plugins/* /usr/lib/nagios/plugins/

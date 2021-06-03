@@ -3,11 +3,6 @@
 - cloud-init-per once conf-encd-cfg-s3 sudo -u ubuntu aws s3 cp --region=us-west-2 s3://encoded-conf-prod/encd-pems/config /home/ubuntu/.ssh/config
 - cloud-init-per once conf-encd-cfg-chmod sudo -u ubuntu chmod 0600 /home/ubuntu/.ssh/config
 
-- cloud-init-per once nagios-files-s3 aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/nagios-plugins /home/ubuntu/nagios-plugins
-- cloud-init-per once nagios-mv-conf mv /home/ubuntu/nagios-plugins/nrpe_local.cfg /etc/nagios/nrpe.d/nrpe_local.cfg
-- cloud-init-per once nagios-plugins-permission chmod -R 0755 /home/ubuntu/nagios-plugins
-- cloud-init-per once nagios-plugins mv /home/ubuntu/nagios-plugins/* /usr/lib/nagios/plugins/
-
 - cloud-init-per once encd-git-repo sudo -u ubuntu git clone %(GIT_REPO)s /home/ubuntu/encoded
 - cloud-init-per once encd-git-branch sudo -u ubuntu git -C /home/ubuntu/encoded checkout -b %(GIT_BRANCH)s %(GIT_REMOTE)s/%(GIT_BRANCH)s
 - cloud-init-per once encd-redis sudo -u ubuntu %(SCRIPTS_DIR)s/ami-redis.sh
