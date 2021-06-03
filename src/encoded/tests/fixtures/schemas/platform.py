@@ -76,3 +76,13 @@ def platform4(testapp):
         'uuid': '6c275b37-018d-4bf8-85f6-6e3b830524a9',
     }
     return testapp.post_json('/platform', item).json['@graph'][0]
+
+
+@pytest.fixture
+def platform5(testapp):
+    item = {
+        'term_id': 'NTR:0000651',
+        'term_name': 'Ultima Genomics',
+        'uuid': '25acccbd-cb36-463b-ac96-adbac11227e6',
+    }
+    return testapp.post_json('/platform', item).json['@graph'][0]

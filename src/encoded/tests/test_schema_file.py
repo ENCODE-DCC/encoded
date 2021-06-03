@@ -265,3 +265,9 @@ def test_R2C2_subreads_bam_replicate(testapp, file_subreads, platform4):
     testapp.post_json('/file', item, status=201)
     item.pop('replicate', None)
     testapp.post_json('/file', item, status=422)
+
+
+def test_no_readlength_dependency(testapp, file_no_readlength, platform5):
+    testapp.post_json('/file', file_no_readlength, status=422)
+    file_no_readlength.update({'platform': platform5['@id']})
+    testapp.post_json('/file', file_no_readlength, status=201)
