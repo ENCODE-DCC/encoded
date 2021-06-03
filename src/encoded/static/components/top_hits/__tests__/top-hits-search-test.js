@@ -222,7 +222,7 @@ const getDelayedResultsForUrl = async (url) => {
     }
     return new Promise(
         (resolve) => setTimeout(() => resolve({}), 0)
-    );;
+    );
 };
 
 
@@ -237,7 +237,7 @@ describe('Search', () => {
                         headers: {
                             get: () => null,
                         },
-                        json: () => getDelayedResultsForUrl(url)
+                        json: () => getDelayedResultsForUrl(url),
                     }
                 )
             )
@@ -354,7 +354,7 @@ describe('Search', () => {
         expect(search.find('Results')).toHaveLength(1);
         expect(search.find('Section')).toHaveLength(1);
         expect(search.find('Item')).toHaveLength(1);
-         // Advance all timers and double check.
+        // Advance all timers and double check.
         await act(async () => {
             jest.runAllTimers();
         });
