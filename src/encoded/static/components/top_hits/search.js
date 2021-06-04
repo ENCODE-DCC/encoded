@@ -33,7 +33,7 @@ const Search = ({ children }) => {
     // the top hits API.
     const debounceTime = 200;
 
-    // Comparse searchTerm from query with latest user input.
+    // Compare searchTerm from query with latest user input.
     const queryResultsAreFromLatestSearchTerm = (searchTerm) => (
         searchTerm === inputRef.current
     );

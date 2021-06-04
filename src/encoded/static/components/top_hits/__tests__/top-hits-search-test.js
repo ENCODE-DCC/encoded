@@ -208,7 +208,7 @@ const rawResults2 = {
 };
 
 
-// Search for H taks 1000ms to return, search for HBB takes 500ms.
+// Search for H takes 1000ms to return, search for HBB takes 500ms.
 const getDelayedResultsForUrl = async (url) => {
     if (url.includes('?searchTerm=H&')) {
         return new Promise(
