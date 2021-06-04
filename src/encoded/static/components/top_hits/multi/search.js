@@ -16,7 +16,6 @@ const Search = ({ children }) => {
     // User input.
     const [input, setInput] = useState('');
     // Reference to latest input for use in callback.
-    // Reference to latest input for use in callback.
     const inputRef = useRef();
     // Update reference with latest input value.
     useEffect(() => {
