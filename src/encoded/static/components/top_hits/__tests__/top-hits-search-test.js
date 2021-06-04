@@ -7,7 +7,6 @@ import {
     PageSearch,
 } from '../search';
 
-
 // Temporary use of adapter until Enzyme is compatible with React 17.
 Enzyme.configure({ adapter: new Adapter() });
 
