@@ -2,7 +2,7 @@
 
 ### Schema version 14
 
-* Added *LC/MS label-free quantitative proteomics* and *LC-MS/MS isobaric label quantitative proteomics* to *assay_term_names* enum. *assay_term_names* enum *Capture Hi-C* was changed to *capture Hi-C*
+* Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_names* enum. *assay_term_names* enum *Capture Hi-C* was changed to *capture Hi-C*
 
 ### Schema version 13
 

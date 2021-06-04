@@ -1,7 +1,7 @@
 ## Changelog for experiment.json
 
 ### Schema version 36
-* Added *LC/MS label-free quantitative proteomics* and *LC-MS/MS isobaric label quantitative proteomics* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
+* Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
 
 ### Schema version 35
 * Updated the *internal_tag* *Regulome_DB* to *Regulome_DB_1_0*

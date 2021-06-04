@@ -2,7 +2,7 @@
 
 ### Schema version 10
 
-* Added *LC/MS label-free quantitative proteomics* and *LC-MS/MS isobaric label quantitative proteomics* to *purpose* enum. *purpose* enum *Capture Hi-C* was changed to *capture Hi-C*
+* Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *purpose* enum. *purpose* enum *Capture Hi-C* was changed to *capture Hi-C*
 
 ### Minor changes since schema version 9
 
