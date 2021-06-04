@@ -1,4 +1,4 @@
-import { cloneElement, useState, useRef } from 'react';
+import { cloneElement, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import debounce from './debounce';
 import {
@@ -23,7 +23,10 @@ const Search = ({ children }) => {
     const [input, setInput] = useState('');
     // Reference to latest input for use in callback.
     const inputRef = useRef();
-    inputRef.current = input;
+    // Update reference with latest input value.
+    useEffect(() => {
+        inputRef.current = input;
+    }, [input]);
     // Search results that get rendered.
     const [results, setResults] = useState([]);
     // Store the debounce timer so we can reset it
