@@ -1971,6 +1971,8 @@ export const SeriesComponent = (props, reactContext) => {
         }, [])),
     ].filter((disease) => disease);
 
+    const experimentType = context['@type'][0];
+
     return (
         <div className={itemClass}>
             <header>
@@ -2126,6 +2128,7 @@ export const SeriesComponent = (props, reactContext) => {
             : null}
 
             {/* Display list of released and unreleased files */}
+            {/* Set hideGraph to false to show "Association Graph" for all series */}
             <FileGallery
                 context={context}
                 files={files}
@@ -2134,7 +2137,7 @@ export const SeriesComponent = (props, reactContext) => {
                 showReplicateNumber={false}
                 hideControls={!METADATA_SERIES_TYPES.includes(context['@type'][0])}
                 collapseNone
-                hideGraph
+                hideGraph={experimentType !== 'FunctionalCharacterizationSeries'}
                 showDetailedTracks
                 hideAnalysisSelector
                 defaultOnly
