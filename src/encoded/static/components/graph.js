@@ -491,7 +491,8 @@ export class Graph extends React.Component {
             // Turn temporary SVG into a data url and attach to a new Image object. This begins
             // "loading" the image.
             const serializer = new XMLSerializer();
-            const svgXml = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${serializer.serializeToString(downloadSvg)}`;
+            // https://stackoverflow.com/a/26603875/178550
+            const svgXml = unescape(encodeURIComponent(`<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${serializer.serializeToString(downloadSvg)}`));
             const img = new Image();
             img.onload = () => {
                 // Make a new memory-based canvas and draw the temporary SVG into it.
