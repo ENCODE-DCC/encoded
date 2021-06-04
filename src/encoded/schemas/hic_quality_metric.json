@@ -113,8 +113,14 @@
             "type": "integer",
             "minimum": 0
         },
-        "pct_unique_reads": {
-            "title": "Percentage of unique reads",
+        "pct_sequenced_unique_reads": {
+            "title": "Percentage of sequenced unique reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_alignable_unique_reads": {
+            "title": "Percentage of alignable unique reads",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
@@ -192,8 +198,8 @@
             "minimum": 0,
             "maximum": 100.0
         },
-        "pct_3_prime_bias_short_range": {
-            "title": "Percentage of 3' bias short range",
+        "pct_5_prime_bias_long_range": {
+            "title": "Percentage of 5' bias long range",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
