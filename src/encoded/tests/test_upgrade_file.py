@@ -200,3 +200,10 @@ def test_file_upgrade_27_to_28(upgrader, file_27):
     value = upgrader.upgrade('file', file_27, current_version='27', target_version='28')
     assert value['schema_version'] == '28'
     assert value['output_type'] == 'exclusion list regions'
+
+
+def test_file_upgrade_28_to_29(root, testapp, upgrader, registry, file_28_bam_mapped_props):
+    value = upgrader.upgrade('file', file_28_bam_mapped_props, registry=registry, current_version='28', target_version='29')
+    assert value['schema_version'] == '29'
+    assert 'mapped_run_type' not in value
+    assert 'mapped_read_length' not in value
