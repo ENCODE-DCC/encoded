@@ -10,7 +10,7 @@
         "sortOrder": [ "Biosample", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Peaks", "Signal of unique reads" , "Signal p-value", "Control normalized signal" ],
+            "group_order": [ "Peaks", "Signal of unique reads" , "Signal p-value", "Control normalized signal" , "Element quantifications" ],
             "groups": {
                 "Peaks": {
                     "tag": "aPKS",
@@ -46,6 +46,12 @@
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "control normalized signal" ]
+                },
+                "Element quantifications": {
+                    "tag": "eEQS",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "output_type": [ "element quantifications" ]
                 }
             }
         },

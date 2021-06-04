@@ -222,7 +222,7 @@ def test_bigInteract_trackDb(testapp, index_workbook, expected):
     "longLabel STARR-seq of Homo sapiens WTC-11 cell line genetically modified (knockout) using CRISPR - ENCSR928SVL",
     "shortLabel STARR-seq of WTC-11 ENCSR928SVL",
     "visibility dense",
-    "subGroup1 view Views aPKS=Peaks bSIG=Signal_of_unique_reads cSPV=Signal_p-value dCNS=Control_normalized_signal",
+    "subGroup1 view Views aPKS=Peaks bSIG=Signal_of_unique_reads cSPV=Signal_p-value dCNS=Control_normalized_signal eEQS=Element_quantifications",
     "subGroup2 BS Biosample WTC4511=WTC-11",
     "subGroup3 EXP Experiment ENCSR928SVL=ENCSR928SVL",
     "subGroup4 REP Replicates rep01=Replicate_1",
@@ -275,4 +275,36 @@ def test_STARR_bigBed_trackDb(testapp, index_workbook, expected):
 ])
 def test_PCS_bigWig_trackDb(testapp, index_workbook, expected):
     res = testapp.get("/functional-characterization-experiments/ENCSR127PCE/@@hub/hg19/trackDb.txt")
+    assert expected in res.text
+
+
+@pytest.mark.parametrize('expected', [
+    "track ENCSR222MPR",
+    "compositeTrack on",
+    "type bed 3",
+    "longLabel MPRA of Homo sapiens WTC-11 cell line genetically modified (knockout) using CRISPR - ENCSR222MPR",
+    "shortLabel MPRA of K562 ENCSR222MPR",
+    "visibility dense",
+    "subGroup1 view Views aEQS=Element_quantifications",
+    "subGroup2 BS Biosample K562=K562",
+    "subGroup3 EXP Experiment ENCSR222MPR=ENCSR222MPR",
+    "subGroup4 REP Replicates rep01=Replicate_1",
+    "sortOrder BS=+ REP=+ view=+",
+    "dimensions dimA=REP",
+    "dimensionAchecked rep01",
+    "    track ENCSR222MPR_aEQS_view",
+    "    parent ENCSR222MPR on",
+    "    view aEQS",
+    "    type bigBed",
+    "    visibility dense",
+    "        track ENCFF527MEQ",
+    "        parent ENCSR222MPR_aEQS_view on",
+    "        bigDataUrl /files/ENCFF527MEQ/@@download/ENCFF527MEQ.bigBed?proxy=true",
+    "        longLabel MPRA of K562 element quantifications rep1 ENCSR222MPR - ENCFF527MEQ",
+    "        shortLabel rep1 element quantifications",
+    "        type bigBed",
+    "        subGroups BS=K562 EXP=ENCSR222MPR REP=rep01 view=aEQS",
+])
+def test_MPRA_bigBed_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/functional-characterization-experiments/ENCSR222MPR/@@hub/hg19/trackDb.txt")
     assert expected in res.text
