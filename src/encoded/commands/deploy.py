@@ -585,6 +585,7 @@ def _get_cloud_config_yaml(main_args):
 
     def _build_config_template(template_name):
         template_path = "{}/{}-template.yml".format(main_args.conf_dir, template_name)
+        print(f"Using config template: {template_name}")
         built_config_template = _read_file_as_utf8(template_path)
         replace_vars = set(re.findall(r'\%\((.*)\)s', built_config_template))
         # Replace template part vars in template.  Run vars are in template-parts.
