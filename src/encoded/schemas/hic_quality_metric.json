@@ -93,7 +93,7 @@
             "maximum": 100.0
         },
         "avg_insert_size": {
-            "title": "Number of ",
+            "title": "Average of the insert size",
             "type": "number",
             "minimum": 0
         },
@@ -137,7 +137,7 @@
             "maximum": 100.0
         },
         "library_complexity_estimate": {
-            "title": "Number of duplicates",
+            "title": "Library complexity estimate",
             "type": "integer",
             "minimum": 0
         },
@@ -192,21 +192,20 @@
             "minimum": 0,
             "maximum": 100.0
         },
-
-        "pct_3_prime_bias_long_range_min": {
-            "title": "Minimum of the 3' bias long rage percentage",
+        "pct_3_prime_bias_short_range": {
+            "title": "Percentage of 3' bias short range",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
         },
-        "pct_3_prime_bias_long_range_max": {
-            "title": "Maximum of the 3' bias long rage percentage",
+        "pct_3_prime_bias_long_range": {
+            "title": "Percentage of 3' bias long range",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
         },
         "lior_convergence": {
-            "title": "L-I-O-R convergence",
+            "title": "L-I-O-R (Left Inner Outer Right) convergence",
             "type": "integer",
             "minimum": 0
         },
