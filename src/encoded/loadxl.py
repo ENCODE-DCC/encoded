@@ -92,6 +92,7 @@ ORDER = [
     'chipseq_filter_quality_metric',
     'dnase_alignment_quality_metric',
     'dnase_footprinting_quality_metric',
+    'hic_quality_metric',
     'micro_rna_quantification_quality_metric',
     'micro_rna_mapping_quality_metric',
     'long_read_rna_mapping_quality_metric',
