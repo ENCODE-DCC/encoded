@@ -13,6 +13,7 @@
 * Added *repeat elements annotation* to the enum list for *output_type*.
 * Added *R2C2 subreads* to the enum list for *output_type*
 * Added *guide locations* to the enum list for *output_type*
+* Added *pairs* to the enum list for *output_type* and *file_format*
 
 ### Schema version 28
 * *output_type* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
