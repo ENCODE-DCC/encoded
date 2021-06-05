@@ -8,7 +8,7 @@ Feature: Batch Hubs
     Scenario: Batch Visualize
         When I press "visualize-control"
         Then I should see "Open visualization browser"
-        And I should see 6 elements with the css selector ".browser-selector__assembly-option"
+        And I should see 7 elements with the css selector ".browser-selector__assembly-option"
         And I should see 10 elements with the css selector ".browser-selector__browser"
 
         When I press "Close"
