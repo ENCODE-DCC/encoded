@@ -689,6 +689,19 @@ const ReferenceComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.examined_regions && context.examined_regions.length > 0 ?
+                                <div data-test="examinedregions">
+                                    <dt>Examined regions</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.examined_regions.map((region, l) => (
+                                                <li key={l} className="multi-comma">{`${region.assembly} ${region.chromosome}:${region.start}-${region.end}`}</li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.crispr_screen_readout ?
                                 <div data-test="crisprscreenreadout">
                                     <dt>CRISPR screen readout</dt>

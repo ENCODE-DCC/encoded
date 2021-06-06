@@ -8,6 +8,7 @@
 * Added *doi* property
 * Added *analyses* property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *examined_regions* property so that chromosomal regions may be specified as regions of interest
 
 ### Schema version 19
 

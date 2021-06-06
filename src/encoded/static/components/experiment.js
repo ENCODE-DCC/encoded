@@ -432,6 +432,24 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         }
     }
 
+    // Create examined_loci gene array from contributing elements_references objects.
+    // Only applies to FunctionalCharacterizationExperiment
+    let examinedLocusLinks = [];
+    if (context.elements_references.examined_loci && context.elements_references.examined_loci.length > 0) {
+        examinedLocusLinks = context.elements_references.examined_loci.map((locus) => (
+            <a href="https://www.encodeproject.org" key={locus['@id']}>{locus.symbol}</a>
+        ));
+    }
+
+    // Create examined_region array from contributing elements_references objects.
+    // Only applies to FunctionalCharacterizationExperiment
+    let examinedRegionLinks = [];
+    if (context.elements_references.examined_regions && context.elements_references.examined_regions.length > 0) {
+        examinedRegionLinks = context.elements_references.examined_regions.map((region) => (
+            <span key={region}>{region.assembly} {region.chromosome}:{region.start}-{region.end}</span>
+        ));
+    }
+
     // Create platforms array from file platforms; ignore duplicate platforms.
     const platforms = {};
     if (context.files && context.files.length > 0) {
@@ -670,7 +688,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
                             {context.examined_loci && context.examined_loci.length > 0 ?
                                 <div data-test="examined-loci">
-                                    <dt>Examined Loci</dt>
+                                    <dt>Examined loci</dt>
                                     <dd>
                                         {/* A user can have a loci repeat. Therefore, uuid alone is not sufficient as an identifier */}
                                         {context.examined_loci.map((loci, i) => (
@@ -684,6 +702,33 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                                 </span>
                                             : null
                                         ))}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.elements_references && context.elements_references.length > 0 ?
+                                <div data-test="elements-references">
+                                    <dt>Elements references</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.elements_references.map((reference, i) => (
+                                                <li key={`${reference.uuid}-${i}`}>
+                                                    <a className="stacked-link" href={reference['@id']}>{reference.accession} </a>
+                                                    {(reference.examined_loci && reference.examined_loci.length > 0) || (reference.examined_regions && reference.examined_regions.length > 0) ?
+                                                        <>
+                                                            (
+                                                            {(examinedLocusLinks.concat(examinedRegionLinks)).map((combined, j) => (
+                                                                <React.Fragment key={j}>
+                                                                    {j > 0 ? ', ' : ''}
+                                                                    {combined}
+                                                                </React.Fragment>
+                                                            ))}
+                                                            )
+                                                        </>
+                                                    : null }
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </dd>
                                 </div>
                             : null}
@@ -741,23 +786,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                                 <li key={control['@id']} className="multi-comma">
                                                     <a href={control['@id']}>
                                                         {control.accession}
-                                                    </a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </dd>
-                                </div>
-                            : null}
-
-                            {context.elements_references && context.elements_references.length > 0 ?
-                                <div data-test="elements-references">
-                                    <dt>Elements references</dt>
-                                    <dd>
-                                        <ul>
-                                            {context.elements_references.map((reference) => (
-                                                <li key={reference['@id']} className="multi-comma">
-                                                    <a href={reference['@id']}>
-                                                        {reference.accession}
                                                     </a>
                                                 </li>
                                             ))}
