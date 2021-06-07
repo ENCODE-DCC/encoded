@@ -10,6 +10,7 @@ output:
   all: '| tee -a /var/log/cloud-init-output.log'
 runcmd:
 %(runcmd_all)s
+%(nagios_conf_es_nodes)s
 %(runcmd_es)s
 %(runcmd_es_nodes)s
 users:
