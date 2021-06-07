@@ -3716,6 +3716,82 @@ FileGalleryRendererComponent.contextTypes = {
 const FileGalleryRenderer = auditDecor(FileGalleryRendererComponent);
 
 
+/**
+ * Display the title portion for a file details table section.
+ */
+const TitleMainContent = ({
+    title,
+    assembly,
+    targetLabel,
+    totalFiles,
+    canDownload,
+    isDownloadable,
+    showFileInfo,
+    setDownloadModalVisibility,
+}) => {
+    // If requested to show file info, combine the assembly and target label into an array for
+    // display.
+    const fileInfo = [];
+    if (showFileInfo) {
+        if (assembly) {
+            fileInfo.push(assembly);
+        }
+        if (targetLabel) {
+            fileInfo.push(targetLabel);
+        }
+    }
+
+    return (
+        <h4 className="title-main-content">
+            <div className="title-main-content__identifier">
+                <div className={`title-main-content__analysis-title${fileInfo.length > 0 ? ' title-main-content__analysis-title--file-info' : ''}`}>
+                    {title}
+                </div>
+                {fileInfo.length > 0
+                    ? (
+                        <div className="title-main-content__file-info">
+                            {fileInfo.join(', ')}
+                        </div>
+                    )
+                    : null
+                }
+            </div>
+            <span className="collapsing-title-file-count">({`${totalFiles} File${totalFiles !== 1 ? 's' : ''}`})</span>  &nbsp;&nbsp;
+            {isDownloadable ?
+                <span className="collapsing-title__file-download" onClick={() => (canDownload ? setDownloadModalVisibility(true) : null)} role="button" tabIndex={0} onKeyDown={() => {}}>
+                    <i className={`icon icon-download ${canDownload ? '' : 'collapsing-title__file-download--no-download-shade'}`}>
+                        <span className="sr-only">Download</span>
+                    </i>
+                </span>
+            : null}
+        </h4>
+    );
+};
+
+TitleMainContent.propTypes = {
+    /** Complete title for the title bar */
+    title: PropTypes.string.isRequired,
+    /** Assembly to display below title when requested */
+    assembly: PropTypes.string.isRequired,
+    /** Target to display below title when requested */
+    targetLabel: PropTypes.string,
+    /** Total number of files in the section */
+    totalFiles: PropTypes.number.isRequired,
+    /** True if download button can show modal */
+    canDownload: PropTypes.bool.isRequired,
+    /** True if files within section can be downloaded */
+    isDownloadable: PropTypes.bool.isRequired,
+    /** True if extra file information displayed below title */
+    showFileInfo: PropTypes.bool.isRequired,
+    /** Called to set the visibility of the download modal */
+    setDownloadModalVisibility: PropTypes.func.isRequired,
+};
+
+TitleMainContent.defaultProps = {
+    targetLabel: '',
+};
+
+
 const CollapsingTitleComponent = ({
     title,
     handleCollapse,
@@ -3772,6 +3848,16 @@ const CollapsingTitleComponent = ({
     // Filter to audits relevant to the current analysis.
     const filteredAudit = analysis ? filterAuditByPath(audit, analysis['@id']) : {};
 
+    // Find a representative target from the files.
+    const targets = files.map((file) => file.target);
+    let representativeTarget = targets[0];
+    if (representativeTarget) {
+        // Clear representative target if not all files have the same target label.
+        representativeTarget = targets.every((target) => target.label === representativeTarget.label)
+            ? representativeTarget
+            : null;
+    }
+
     React.useEffect(() => {
         if (collapsed) {
             auditCloseDetail();
@@ -3789,16 +3875,16 @@ const CollapsingTitleComponent = ({
                     :
                     null}
                 <button type="button" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
-                <h4>
-                    {title} <span className="collapsing-title-file-count">({`${totalFiles} File${totalFiles !== 1 ? 's' : ''}`})</span>  &nbsp;&nbsp;
-                    {isDownloadable ?
-                        <span className="collapsing-title__file-download" onClick={() => (canDownload ? setDownloadModalVisibility(true) : null)} role="button" tabIndex={0} onKeyDown={() => {}}>
-                            <i className={`icon icon-download ${canDownload ? '' : 'collapsing-title__file-download--no-download-shade'}`}>
-                                <span className="sr-only">Download</span>
-                            </i>
-                        </span>
-                    : null}
-                </h4>
+                <TitleMainContent
+                    title={title}
+                    assembly={analysis && analysis.assembly}
+                    targetLabel={representativeTarget && representativeTarget.label}
+                    totalFiles={totalFiles}
+                    canDownload={canDownload}
+                    isDownloadable={isDownloadable}
+                    showFileInfo={context['@type'].includes('Series')}
+                    setDownloadModalVisibility={setDownloadModalVisibility}
+                />
                 {analysisObjectKey && analysis ? <Status item={analysis} css="collapsing-title__status" badgeSize="small" /> : null}
                 {auditIndicators(filteredAudit, title, { session: reactContext.session, sessionProperties: reactContext.session_properties })}
             </div>
