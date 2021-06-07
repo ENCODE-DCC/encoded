@@ -869,3 +869,12 @@ def experiment_34(root, experiment):
     })
     return properties
 
+@pytest.fixture
+def experiment_35(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '35',
+        'assay_term_name': 'Capture Hi-C'
+    })
+    return properties

@@ -1,5 +1,9 @@
 ## Changelog for pipeline.json
 
+### Schema version 14
+
+* Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_names* enum. *assay_term_names* enum *Capture Hi-C* was changed to *capture Hi-C*
+
 ### Schema version 13
 
 * Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *assay_term_names* enum; *single-cell ATAC-seq* was removed from the *assay_term_names* enum and remapped to *single-nucleus ATAC-seq*

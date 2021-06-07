@@ -11,7 +11,7 @@ Feature: Experiments
         When I click the link to "/search/?type=Experiment&control_type!=*&assay_slims=DNA+binding"
         And I wait for 10 seconds
         Then I should see an element with the css selector "div.search-results"
-        And I should see "Showing 19 of 19 results"
+        And I should see "Showing 20 of 20 results"
 
         When I go back
         And I wait for the content to load

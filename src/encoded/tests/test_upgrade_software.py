@@ -55,3 +55,14 @@ def test_software_upgrade_8_9(upgrader, software_1):
         sorted(['single-nucleus ATAC-seq', 'ATAC-seq'])
     )
     assert 'The purpose for this software is now snATAC-seq, upgraded from scATAC-seq.' in value['notes']
+
+
+def test_software_upgrade_9_10(upgrader, software_1):
+    software_1['schema_version'] = '9'
+    software_1['purpose'] = ['Capture Hi-C', 'HiC']
+    value = upgrader.upgrade('software', software_1, target_version='10')
+    assert value['schema_version'] == '10'
+    TestCase().assertListEqual(
+        sorted(value['purpose']),
+        sorted(['capture Hi-C', 'HiC'])
+    )

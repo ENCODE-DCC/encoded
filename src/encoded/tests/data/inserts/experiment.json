@@ -1151,7 +1151,7 @@
         "status": "released",
         "date_released": "2015-08-31",
         "biosample_ontology": "tissue_UBERON_0001891",
-        "assay_term_name": "Capture Hi-C"
+        "assay_term_name": "capture Hi-C"
     },
     {
         "_test": "single-cell (nucleus) RNA-seq test",
@@ -1276,5 +1276,38 @@
         "date_released": "2020-09-11",
         "accession": "ENCSR600BRU",
         "uuid": "91b503d2-cacf-4258-bbc5-44290a0c2ce8"
+    },
+    {
+        "_test": "Ribo-seq example",
+        "uuid": "c0d0817f-4a56-4262-ba88-185eb28b7f65",
+        "accession": "ENCSR603RSE",
+        "assay_term_name": "Ribo-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0002168",
+        "lab": "roderic-guigo",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra"
+    },
+    {
+        "_test": "lable-free proteomics",
+        "uuid": "a3f211e6-0ce4-4fc0-bfc3-1be047e58089",
+        "accession": "ENCSR306LFP",
+        "assay_term_name": "LC/MS label-free quantitative proteomics",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0002168",
+        "lab": "roderic-guigo",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra"
+    },
+    {
+        "_test": "isobaric label proteomics",
+        "uuid": "bdd91d75-a421-4418-a2a2-fb339a5a6400",
+        "accession": "ENCSR913ILP",
+        "assay_term_name": "LC-MS/MS isobaric label quantitative proteomics",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0002168",
+        "lab": "roderic-guigo",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra"
     }
 ]
