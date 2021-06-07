@@ -627,9 +627,15 @@ export const internalTagsMap = {
     RegulomeDB_2_1: {
         badgeFilename: 'tag-RegulomeDB_2_1.svg',
     },
+    RushAD: {
+        badgeFilename: 'tag-RushAD.svg',
+    },
     SESCC: {
         badgeFilename: 'tag-SESCC.svg',
         collectionPath: '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
+    },
+    YaleImmuneCells: {
+        badgeFilename: 'tag-YaleImmuneCells.svg',
     },
 };
 
