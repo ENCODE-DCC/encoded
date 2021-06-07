@@ -564,3 +564,13 @@ class ChiaPetChrInteractionsQualityMetric(QualityMetric, CalculatedAssayTermID):
 class ChiaPetPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'chia_pet_peak_enrichment_quality_metric'
     schema = load_schema('encoded:schemas/chia_pet_peak_enrichment_quality_metric.json')
+
+
+@collection(
+    name='hic-quality-metrics',
+    properties={
+        'title': "HiC Quality Metrics",
+    })
+class HicQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'hic_quality_metric'
+    schema = load_schema('encoded:schemas/hic_quality_metric.json')

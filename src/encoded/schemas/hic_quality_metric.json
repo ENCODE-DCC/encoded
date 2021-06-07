@@ -1,0 +1,354 @@
+{
+    "title": "HiC quality metric",
+    "description": "HiC quality metrics",
+    "id": "/profiles/hic_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run","quality_metric_of", "award", "lab"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "sequenced_read_pairs": {
+            "title": "Number of sequenced read pairs",
+            "type": "integer",
+            "minimum": 0
+        },
+        "normal_paired": {
+            "title": "Number of normal paired",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_normal_paired": {
+            "title": "Percentage of normal paired",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "chimeric_paired": {
+            "title": "Number of chimeric paired",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_chimeric_paired": {
+            "title": "Percentage of chimeric paired",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "chimeric_ambiguous": {
+            "title": "Number of chimeric ambiguous",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_chimeric_ambiguous": {
+            "title": "Percentage of chimeric ambiguous",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "unmapped_reads": {
+            "title": "Number of unmapped reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_unmapped_reads": {
+            "title": "Percentage of unmapped reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "ligation_motif_present": {
+            "title": "Number of reads with ligation motif present",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_ligation_motif_present": {
+            "title": "Percentage of reads with ligation motif present",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "single_alignment": {
+            "title": "Number of single alignments",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_single_alignment": {
+            "title": "Percentage of single alignments",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "avg_insert_size": {
+            "title": "Average of the insert size",
+            "type": "number",
+            "minimum": 0
+        },
+        "alignable_normal_and_chimeric_paired": {
+            "title": "Number of alignable paired reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_alignable_normal_and_chimeric_paired": {
+            "title": "Percentage of alignable paired reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "unique_reads": {
+            "title": "Number of unique reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_unique_reads": {
+            "title": "Percentage of sequenced unique reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_alignable_unique_reads": {
+            "title": "Percentage of alignable unique reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "duplicates": {
+            "title": "Number of duplicates",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_duplicates": {
+            "title": "Percentage of sequenced duplicates",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_alignable_duplicates": {
+            "title": "Percentage of alignable duplicates",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "library_complexity_estimate": {
+            "title": "Library complexity estimate",
+            "type": "integer",
+            "minimum": 0
+        },
+        "intra_fragment_reads": {
+            "title": "Number of intra fragment reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_intra_fragment_reads": {
+            "title": "Percentage of sequenced intra fragment reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_intra_fragment_reads": {
+            "title": "Percentage of unique intra fragment reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "below_mapq_threshold": {
+            "title": "Number of reads below mapq threshold",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_below_mapq_threshold": {
+            "title": "Percentage of sequenced reads below mapq threshold",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_below_mapq_threshold": {
+            "title": "Percentage of unique reads below mapq threshold",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "hic_contacts": {
+            "title": "Number of hic contacts",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_hic_contacts": {
+            "title": "Percentage of sequenced reads in hic contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_hic_contacts": {
+            "title": "Percentage of unique reads in hic contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_5_prime_bias_long_range": {
+            "title": "Percentage of 5' bias long range",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_3_prime_bias_long_range": {
+            "title": "Percentage of 3' bias long range",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "lior_convergence": {
+            "title": "L-I-O-R (Left Inner Outer Right) convergence",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_left_pair_type": {
+            "title": "Left pair type percentage",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_right_pair_type": {
+            "title": "Right pair type percentage",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_inner_pair_type": {
+            "title": "Inner pair type percentage",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_outer_pair_type": {
+            "title": "Outer pair type percentage",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "inter_chromosomal": {
+            "title": "Number of inter chromosomal contacts",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_inter_chromosomal": {
+            "title": "Percentage of sequenced reads in inter chromosomal contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_inter_chromosomal": {
+            "title": "Percentage of unique reads in inter chromosomal contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "intra_chromosomal": {
+            "title": "Number of intra chromosomal contacts",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_intra_chromosomal": {
+            "title": "Percentage of sequenced reads in intra chromosomal contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_intra_chromosomal": {
+            "title": "Percentage of unique reads in intra chromosomal contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "short_range_less_than_500bp": {
+            "title": "Number of short range (<500bp) contacts",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_short_range_less_than_500bp": {
+            "title": "Percentage of sequenced reads in short range (<500bp) contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_short_range_less_than_500bp": {
+            "title": "Percentage of unique reads in short range (<500bp) contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "short_range_500bp_to_5kb": {
+            "title": "Number of short range (500bp-5kb) contacts",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_short_range_500bp_to_5kb": {
+            "title": "Percentage of sequenced reads in short range (500bp-5kb) contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_short_range_500bp_to_5kb": {
+            "title": "Percentage of unique reads in short range (500bp-5kb) contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "short_range_5kb_to_20kb": {
+            "title": "Number of short range (5kb-20kb) contacts",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_short_range_5kb_to_20kb": {
+            "title": "Percentage of sequenced reads in short range (5kb-20kb) contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_short_range_5kb_to_20kb": {
+            "title": "Percentage of unique reads in short range (5kb-20kb) contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "long_range_greater_than_20kb": {
+            "title": "Number of long range (>20kb) contacts",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_sequenced_long_range_greater_than_20kb": {
+            "title": "Percentage of sequenced reads in long range (>20kb) contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_long_range_greater_than_20kb": {
+            "title": "Percentage of unique reads in long range (>20kb) contacts",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/hic_quality_metric.md"
+}

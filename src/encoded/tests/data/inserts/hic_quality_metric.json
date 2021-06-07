@@ -1,0 +1,17 @@
+[
+    {
+        "sequenced_read_pairs": 12344441321,
+        "normal_paired": 987987846,
+        "pct_normal_paired": 95.3,
+        "chimeric_paired": 3545,
+        "pct_chimeric_paired": 1.2,
+        "chimeric_ambiguous": 45,
+        "assay_term_name": "HiC",
+        "quality_metric_of": ["ENCFF355OWW"],
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "0f1951c2-f301-40e9-ad6c-1ad066e4ad71",
+        "status": "in progress",
+        "lab": "bradley-bernstein",
+        "award": "U54HG006991"
+    }
+]
