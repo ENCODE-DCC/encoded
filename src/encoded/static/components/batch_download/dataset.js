@@ -112,11 +112,15 @@ export default class DatasetBatchDownloadController extends BatchDownloadControl
             },
         ];
         if (this._dataset['@type'][0] !== 'Annotation') {
+            if (this._dataset.default_analysis) {
+                this._downloadOptions.push(
+                    {
+                        ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['default-analysis']],
+                        query: this._defaultAnalysisQueryString,
+                    },
+                );
+            }
             this._downloadOptions.push(
-                {
-                    ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['default-analysis']],
-                    query: this._defaultAnalysisQueryString,
-                },
                 {
                     ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['processed-files']],
                     query: this._processedQueryString,
