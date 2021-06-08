@@ -28,6 +28,7 @@ from .shared_calculated_properties import (
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
     CalculatedSeriesTarget,
+    CalculatedSeriesElementsReferences,
     CalculatedObjectiveSlims,
     CalculatedTypeSlims,
     CalculatedVisualize
@@ -1265,13 +1266,17 @@ class SingleCellRnaSeries(Series):
         'title': "Functional characterization series",
         'description': 'A series that group functional characterization experiments which should be analyzed and interpreted together.',
     })
-class FunctionalCharacterizationSeries(Series):
+class FunctionalCharacterizationSeries(Series, CalculatedSeriesElementsReferences):
     item_type = 'functional_characterization_series'
     schema = load_schema('encoded:schemas/functional_characterization_series.json')
     embedded = Series.embedded + [
         'related_datasets.examined_loci',
         'related_datasets.examined_loci.gene',
+        'related_datasets.elements_references',
+        'related_datasets.elements_references.examined_loci',
+        'elements_references',
     ]
+
 
 @collection(
     name='gene-silencing-series',
