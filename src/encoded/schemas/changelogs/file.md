@@ -14,6 +14,7 @@
 * Added *R2C2 subreads* to the enum list for *output_type*
 * Added *guide locations* to the enum list for *output_type*
 * Added *pairs* to the enum list for *output_type* and *file_format*
+* Added *ENC001.1*, *ENC002.1*, *ENC003.1*, *ENC004.1* to the enum list for *assembly*
 
 ### Schema version 28
 * *output_type* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 

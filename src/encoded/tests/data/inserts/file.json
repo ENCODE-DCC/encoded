@@ -4374,6 +4374,21 @@
         "uuid": "387e47cd-7d3f-4a93-9994-0d359568606a"
     },
     {
+        "accession": "ENCFF112ENT",
+        "assembly": "ENC001.1",
+        "award": "U54HG007010",
+        "dataset": "ENCSR000AHF",
+        "file_format": "bigWig",
+        "file_size": 3241248,
+        "lab": "/labs/gregory-crawford/",
+        "md5sum": "1a3d236f0a9ea5d5e25f39ca24d4d72f",
+        "replicate": "23d52556-2287-47e2-add1-777d7df6b56d",
+        "output_type": "signal of unique reads",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "187e47cd-7d3f-4a93-9994-0d359568616a"
+    },
+    {
         "accession": "ENCFF033HOM",
         "assembly": "GRCh38",
         "genome_annotation": "V33",
