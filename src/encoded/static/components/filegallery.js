@@ -3784,7 +3784,7 @@ const CollapsingTitleComponent = ({
     let batchDownloadController;
     const query = convertFiltersToQuery(filters, fileQueryKey);
     if (analysis) {
-        batchDownloadController = new AnalysisBatchDownloadController(context, analysis['@id'], query);
+        batchDownloadController = new AnalysisBatchDownloadController(context, analysis['@id'], query, fileQueryKey);
     } else if (outputCategory === 'reference') {
         batchDownloadController = new ReferenceBatchDownloadController(context, query, outputType, outputCategory, fileQueryKey);
     } else {
