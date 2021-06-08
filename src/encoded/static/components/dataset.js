@@ -19,6 +19,26 @@ import { FileGallery } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
 
+/**
+ * All Series types allowed to have a download button. Keep in sync with the same variable in
+ * reports/constants.py.
+ */
+const METADATA_SERIES_TYPES = [
+    'AggregateSeries',
+    'DifferentiationSeries',
+    'DiseaseSeries',
+    'FunctionalCharacterizationSeries',
+    'GeneSilencingSeries',
+    'MatchedSet',
+    'MultiomicsSeries',
+    'OrganismDevelopmentSeries',
+    'ReferenceEpigenome',
+    'SingleCellRnaSeries',
+    'TreatmentConcentrationSeries',
+    'TreatmentTimeSeries',
+];
+
+
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
     const organismName = (annotation.organism && annotation.organism.scientific_name) ? <i>{annotation.organism.scientific_name}</i> : null;
@@ -2099,6 +2119,7 @@ export const SeriesComponent = (props, reactContext) => {
                 analyses={analyses}
                 fileQueryKey="related_datasets.files"
                 showReplicateNumber={false}
+                hideControls={!METADATA_SERIES_TYPES.includes(context['@type'][0])}
                 collapseNone
                 hideGraph
                 showDetailedTracks
