@@ -108,7 +108,7 @@ export default class DatasetBatchDownloadController extends BatchDownloadControl
         this._downloadOptions = [
             {
                 ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['default-files']],
-                query: this._processedQueryString,
+                query: this._defaultFileQueryString,
             },
         ];
         if (this._dataset['@type'][0] !== 'Annotation') {
