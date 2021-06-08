@@ -795,7 +795,12 @@
                             "not": {
                                 "properties": {
                                     "output_type": {
-                                        "enum": ["subreads", "spike-ins"]
+                                        "enum": [
+                                            "subreads",
+                                            "spike-ins",
+                                            "diploid personal genome alignments",
+                                            "haplotype-specific alignments"
+                                        ]
                                     }
                                 }
                             }
@@ -832,6 +837,42 @@
                             },
                             "not": {
                                 "required": ["assembly"]
+                            }
+                        },
+                        {
+                            "required": ["assembly"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "diploid personal genome alignments",
+                                        "haplotype-specific alignments"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "properties": {
+                                    "assembly": {
+                                        "enum": [
+                                            "GRCh38",
+                                            "GRCh38-minimal",
+                                            "hg19",
+                                            "GRCm39",
+                                            "mm10",
+                                            "mm10-minimal",
+                                            "mm9",
+                                            "dm6",
+                                            "dm3",
+                                            "ce11",
+                                            "ce10",
+                                            "J02459.1"
+                                        ]
+                                    }
+                                }
                             }
                         },
                         {
@@ -1512,7 +1553,10 @@
                 {
                     "enum": [
                         "alignments",
-                        "bias model",                        
+                        "allele-specific chromatin interactions",
+                        "allele-specific variants",
+                        "bias model",
+                        "bidirectional peaks",
                         "candidate Cis-Regulatory Elements",
                         "candidate enhancers",
                         "candidate promoters",
@@ -1531,6 +1575,7 @@
                         "DHS regions reference",
                         "differential expression quantifications",
                         "differential splicing quantifications",
+                        "diploid personal genome alignments",
                         "dsQTLs",
                         "element barcode mapping",
                         "elements reference",
@@ -1562,6 +1607,7 @@
                         "gRNAs",
                         "guide locations",
                         "guide quantifications",
+                        "haplotype-specific alignments",
                         "hotspots",
                         "hotspots1 reference",
                         "hotspots2 reference",
@@ -1595,6 +1641,7 @@
                         "nested topologically associated domains",
                         "non-targeting gRNAs",
                         "normalized signal of all reads",
+                        "novel peptides",
                         "open chromatin regions",
                         "optimal IDR thresholded peaks",
                         "pairs",
@@ -1602,6 +1649,7 @@
                         "paternal variant calls",
                         "peaks",
                         "peaks and background as input for IDR",
+                        "peptide quantifications",
                         "personalized genome assembly",
                         "perturbation signal",
                         "phased mapping",
@@ -1613,6 +1661,7 @@
                         "predicted enhancers",
                         "preprocessed alignments",
                         "promoters reference",
+                        "protein expression quantifications",
                         "pseudoreplicated peaks",
                         "pseudoreplicated IDR thresholded peaks",
                         "PWMs",
@@ -1661,6 +1710,7 @@
                         "transcriptome reference",
                         "TSS reference",
                         "unfiltered alignments",
+                        "unidirectional peaks",
                         "UV enriched segment quantifications",
                         "variant calls"
                     ]
@@ -2091,6 +2141,8 @@
         "R2C2 subreads": "raw data",
 
         "alignments": "alignment",
+        "diploid personal genome alignments": "alignment",
+        "haplotype-specific alignments": "alignment",
         "unfiltered alignments": "alignment",
         "gene alignments": "alignment",
         "redacted alignments": "alignment",
@@ -2163,6 +2215,8 @@
         "guide quantifications": "quantification",
         "sparse transcript count matrix": "quantification",
         "sparse gRNA count matrix": "quantification",
+        "peptide quantifications": "quantification",
+        "protein expression quantifications": "quantification",
 
         "hotspots": "annotation",
         "footprints": "annotation",
@@ -2228,6 +2282,11 @@
         "read annotations": "annotation",
         "fine-mapped variants": "annotation",
         "repeat elements annotation": "annotation",
+        "allele-specific chromatin interactions": "annotation",
+        "allele-specific variants": "annotation",
+        "bidirectional peaks": "annotation",
+        "novel peptides": "annotation",
+        "unidirectional peaks": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
