@@ -17,9 +17,10 @@ const ELEMENT_WARNING_LENGTH_MIN = 500;
  * selections object.
  * @param {object} datasetTerms Selected dataset terms
  * @param {object} fileTerms Selected file terms
+ * @param {boolean} visualizable True if only downloading visualizable files
  * @returns {object} QueryString containing dataset and file selections
  */
-const buildQueryFromTerms = (datasetTerms, fileTerms) => {
+const buildQueryFromTerms = (datasetTerms, fileTerms, visualizable) => {
     const query = new QueryString();
 
     // Add the selected dataset terms to the query.
@@ -39,6 +40,11 @@ const buildQueryFromTerms = (datasetTerms, fileTerms) => {
             });
         }
     });
+
+    // Add visualizable option.
+    if (visualizable) {
+        query.addKeyValue('option', 'visualizable');
+    }
 
     return query;
 };
@@ -79,6 +85,7 @@ const CartBatchDownloadComponent = (
         savedCartObj,
         sharedCart,
         cartInProgress,
+        visualizable,
     }
 ) => {
     const selectedDatasetType = selectedDatasetTerms.type && selectedDatasetTerms.type.length === 1
@@ -90,7 +97,7 @@ const CartBatchDownloadComponent = (
     // Build the cart batch-download controller from the user selections.
     const cart = cartType === 'ACTIVE' ? savedCartObj : sharedCart;
     const selectedAssembly = selectedFileTerms.assembly[0];
-    const cartQuery = buildQueryFromTerms(selectedDatasetTerms, selectedFileTerms);
+    const cartQuery = buildQueryFromTerms(selectedDatasetTerms, selectedFileTerms, visualizable);
     const cartController = new CartBatchDownloadController(cart['@id'], selectedDatasetType, selectedAssembly, cartQuery);
 
     // Display a warning message in the modal if we have more than a threshold number of datasets
@@ -133,6 +140,8 @@ CartBatchDownloadComponent.propTypes = {
     sharedCart: PropTypes.object,
     /** True if cart operation in progress */
     cartInProgress: PropTypes.bool,
+    /** True to download only visualizable files */
+    visualizable: PropTypes.bool,
 };
 
 CartBatchDownloadComponent.defaultProps = {
@@ -141,6 +150,7 @@ CartBatchDownloadComponent.defaultProps = {
     savedCartObj: null,
     sharedCart: null,
     cartInProgress: false,
+    visualizable: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({

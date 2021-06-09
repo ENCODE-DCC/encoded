@@ -409,6 +409,7 @@ const CartTools = ({
     savedCartObj,
     cartType,
     sharedCart,
+    visualizable,
 }) => {
     // Make a list of all the dataset types currently in the cart.
     const usedDatasetTypes = elements.reduce((types, elementAtId) => {
@@ -425,6 +426,7 @@ const CartTools = ({
                     selectedDatasetTerms={selectedDatasetTerms}
                     savedCartObj={savedCartObj}
                     sharedCart={sharedCart}
+                    visualizable={visualizable}
                 />
             : null}
             <CartDatasetReport
@@ -450,6 +452,8 @@ CartTools.propTypes = {
     cartType: PropTypes.string.isRequired,
     /** Elements in the shared cart, if that's being displayed */
     sharedCart: PropTypes.object,
+    /** True if only visualizable files should be downloaded */
+    visualizable: PropTypes.bool,
 };
 
 CartTools.defaultProps = {
@@ -458,6 +462,7 @@ CartTools.defaultProps = {
     selectedDatasetTerms: null,
     savedCartObj: null,
     sharedCart: null,
+    visualizable: false,
 };
 
 
