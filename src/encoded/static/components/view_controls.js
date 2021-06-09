@@ -181,7 +181,7 @@ const convertFiltersToQuery = (filters) => {
     filters.forEach((filter) => {
         const negativeFilter = filter.field.slice(-1) === '!';
         const field = negativeFilter ? filter.field.slice(0, -1) : filter.field;
-        query.addKeyValue(field, filter.term);
+        query.addKeyValue(field, filter.term, negativeFilter);
     });
     return query;
 };
