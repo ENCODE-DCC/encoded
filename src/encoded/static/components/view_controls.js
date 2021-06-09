@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import { svgIcon } from '../libs/svg-icons';
 import { getIsCartSearch } from './cart';
