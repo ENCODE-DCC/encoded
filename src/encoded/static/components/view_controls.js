@@ -170,6 +170,26 @@ const BATCH_DOWNLOAD_PROHIBITED_PATHS = [
 
 
 /**
+ * Convert the filters from the file-gallery facets to QueryString form.
+ * @param {object} filters Filters from file gallery facets
+ * @param {string} fileQueryKey Query-string key to specify file facet query-string parameters
+ * @param {boolean} inclusionOn True if "Include deprecated" checked
+ * @returns {object} QueryString containing equivalent selections
+ */
+const convertFiltersToQuery = (filters) => {
+    const query = new QueryString();
+    Object.keys(filters).forEach((term) => {
+        filters[term].forEach((value) => {
+            if (value !== 'All assemblies') {
+                query.addKeyValue(`files.${term}`, value);
+            }
+        });
+    });
+    return query;
+};
+
+
+/**
  * Display batch download button if the search results qualify for one.
  */
 export const BatchDownloadControls = ({ results, additionalFilters, modalText, canDownload }) => {
@@ -198,8 +218,7 @@ export const BatchDownloadControls = ({ results, additionalFilters, modalText, c
     // Prepare the batch download controller. Because of earlier tests, at this point we know we
     // have exactly one allowed "type={something}" in the filters.
     const viewedType = filters.find((filter) => filter.field === 'type').term;
-    const resultsQueryString = url.parse(results['@id']);
-    const query = new QueryString(resultsQueryString.query);
+    const query = convertFiltersToQuery(filters);
     const controller = new SearchBatchDownloadController(viewedType, query);
     return <BatchDownloadActuator controller={controller} modalContent={modalText} disabled={!canDownload} />;
 };
