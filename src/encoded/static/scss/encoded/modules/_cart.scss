@@ -1205,62 +1205,8 @@ $file-type-colors: (
 }
 
 // Control to batch download cart files.
-.cart-download {
-    margin-bottom: 5px;
-
-    @media screen and (min-width: $screen-md-min) {
-        margin-right: 5px;
-        margin-bottom: 0;
-    }
-
-    button {
-        @extend .btn;
-        @extend .btn-info;
-        @extend .btn-sm;
-
-        font-size: inherit; // Override .btn
-    }
-
-    @at-root #{&}__option-title {
-        margin: 5px 0;
-        font-size: 1rem;
-        font-weight: bold;
-        pointer-events: none;
-    }
-
-    @at-root #{&}__option-description {
-        margin: 5px 0;
-        font-size: 0.9rem;
-        font-weight: normal;
-        pointer-events: none;
-    }
-
-    .dropdown-button__composite {
-        .dropdown-button__composite-execute {
-            flex-grow: 1;
-            flex-basis: auto;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .dropdown-button__composite-trigger {
-            flex-grow: 0;
-            flex-basis: 30px;
-        }
-    }
-
-    .dropdown-button__content {
-        button {
-            font-family: $site-font;
-            color: #000;
-            line-height: 1.2;
-
-            &:hover {
-                color: #fff;
-                background-color: #4f689e;
-            }
-        }
-    }
+.btn-cart-download {
+    margin-right: 5px;
 }
 
 // Button to lock/unlock cart

@@ -264,7 +264,7 @@ Immediate.defaultProps = {
  * Implements the selected form of the dropdown button, where items in the dropdown menu select the
  * action taken when the button is clicked.
  */
-export const Selected = ({ labels, execute, id, triggerVoice, css, inline, disabled, children }) => {
+export const Selected = ({ labels, execute, executeRef, id, triggerVoice, css, inline, disabled, children }) => {
     const [state, actions] = useDropdownButton();
 
     // Extract the id attributes of each of the child components.
@@ -298,6 +298,7 @@ export const Selected = ({ labels, execute, id, triggerVoice, css, inline, disab
                     onClick={handleExecute}
                     onKeyUp={actions.handleKey}
                     disabled={disabled}
+                    ref={executeRef}
                 >
                     {labels[selection]}
                 </button>
@@ -337,6 +338,8 @@ Selected.propTypes = {
     labels: PropTypes.object.isRequired,
     /** Called when user clicks execution part of button */
     execute: PropTypes.func.isRequired,
+    /** Returns ref for the execute button */
+    executeRef: PropTypes.object.isRequired,
     /** id of this control that's unique on the page */
     id: PropTypes.string.isRequired,
     /** Text for screen readers to say when focusing on dropdown trigger */
