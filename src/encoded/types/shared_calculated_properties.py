@@ -175,19 +175,6 @@ class CalculatedSeriesTarget:
         return request.select_distinct_values('target', *related_datasets)
 
 
-class CalculatedSeriesElementsReferences:
-    @calculated_property(condition='related_datasets', schema={
-        "title": "Elements references",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "Dataset"
-        }
-    })
-    def elements_references(self, request, related_datasets):
-        return request.select_distinct_values('elements_references', *related_datasets)
-
-
 class CalculatedAssayTermID:
     @calculated_property(condition='assay_term_name', schema={
         "title": "Assay term ID",

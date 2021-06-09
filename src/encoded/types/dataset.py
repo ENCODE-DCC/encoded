@@ -28,7 +28,6 @@ from .shared_calculated_properties import (
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
     CalculatedSeriesTarget,
-    CalculatedSeriesElementsReferences,
     CalculatedObjectiveSlims,
     CalculatedTypeSlims,
     CalculatedVisualize
@@ -1266,7 +1265,7 @@ class SingleCellRnaSeries(Series):
         'title': "Functional characterization series",
         'description': 'A series that group functional characterization experiments which should be analyzed and interpreted together.',
     })
-class FunctionalCharacterizationSeries(Series, CalculatedSeriesElementsReferences):
+class FunctionalCharacterizationSeries(Series):
     item_type = 'functional_characterization_series'
     schema = load_schema('encoded:schemas/functional_characterization_series.json')
     embedded = Series.embedded + [
@@ -1275,7 +1274,19 @@ class FunctionalCharacterizationSeries(Series, CalculatedSeriesElementsReference
         'related_datasets.elements_references',
         'related_datasets.elements_references.examined_loci',
         'elements_references',
+        'elements_references.examined_loci',
     ]
+
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Elements references",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Dataset"
+        }
+    })
+    def elements_references(self, request, related_datasets):
+        return request.select_distinct_values('elements_references', *related_datasets)
 
 
 @collection(
