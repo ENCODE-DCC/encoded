@@ -338,6 +338,44 @@ DatasetConstructionPlatform.propTypes = {
 
 
 /**
+ * Display the combined examined_loci and examined_regions of the given reference dataset.
+ */
+const ElementsReferences = ({ reference }) => {
+    // Render all examined_loci as links, and all examined_regions as text, and combine them
+    // together for final rendering.
+    const examinedLoci = (reference.examined_loci && reference.examined_loci.length > 0)
+        ? reference.examined_loci.map((locus) => <a key={locus['@id']} href={locus['@id']}>{locus.symbol}</a>)
+        : [];
+    const examinedRegions = (reference.examined_regions && reference.examined_regions.length > 0)
+        ? reference.examined_regions.map((region, i) => <span key={i}>{region.assembly} {region.chromosome}:{region.start}-{region.end}</span>)
+        : [];
+    const examinedAreas = examinedLoci.concat(examinedRegions);
+
+    // Use the combined components to render to the page.
+    if (examinedAreas.length > 0) {
+        return (
+            <>
+                &nbsp;(
+                {examinedAreas.map((examinedArea, i) => (
+                    <React.Fragment key={i}>
+                        {i > 0 ? ', ' : null}
+                        {examinedArea}
+                    </React.Fragment>
+                ))}
+                )
+            </>
+        );
+    }
+    return null;
+};
+
+ElementsReferences.propTypes = {
+    /** Reference dataset */
+    reference: PropTypes.object.isRequired,
+};
+
+
+/**
  * Renders Experiment, FunctionalCharacterizationExperiment, and TransgenicEnhancerExperiment objects.
  */
 const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
@@ -430,24 +468,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 return null;
             }));
         }
-    }
-
-    // Create examined_loci gene array from contributing elements_references objects.
-    // Only applies to FunctionalCharacterizationExperiment
-    let examinedLocusLinks = [];
-    if (context.elements_references.examined_loci && context.elements_references.examined_loci.length > 0) {
-        examinedLocusLinks = context.elements_references.examined_loci.map((locus) => (
-            <a href="https://www.encodeproject.org" key={locus['@id']}>{locus.symbol}</a>
-        ));
-    }
-
-    // Create examined_region array from contributing elements_references objects.
-    // Only applies to FunctionalCharacterizationExperiment
-    let examinedRegionLinks = [];
-    if (context.elements_references.examined_regions && context.elements_references.examined_regions.length > 0) {
-        examinedRegionLinks = context.elements_references.examined_regions.map((region) => (
-            <span key={region}>{region.assembly} {region.chromosome}:{region.start}-{region.end}</span>
-        ));
     }
 
     // Create platforms array from file platforms; ignore duplicate platforms.
@@ -706,33 +726,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {context.elements_references && context.elements_references.length > 0 ?
-                                <div data-test="elements-references">
-                                    <dt>Elements references</dt>
-                                    <dd>
-                                        <ul>
-                                            {context.elements_references.map((reference, i) => (
-                                                <li key={`${reference.uuid}-${i}`}>
-                                                    <a className="stacked-link" href={reference['@id']}>{reference.accession} </a>
-                                                    {(reference.examined_loci && reference.examined_loci.length > 0) || (reference.examined_regions && reference.examined_regions.length > 0) ?
-                                                        <>
-                                                            (
-                                                            {(examinedLocusLinks.concat(examinedRegionLinks)).map((combined, j) => (
-                                                                <React.Fragment key={j}>
-                                                                    {j > 0 ? ', ' : ''}
-                                                                    {combined}
-                                                                </React.Fragment>
-                                                            ))}
-                                                            )
-                                                        </>
-                                                    : null }
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </dd>
-                                </div>
-                            : null}
-
                             {context.crispr_screen_readout ?
                                 <div data-test="crisprscreenreadout">
                                     <dt>CRISPR screen readout</dt>
@@ -787,6 +780,22 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                                     <a href={control['@id']}>
                                                         {control.accession}
                                                     </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.elements_references && context.elements_references.length > 0 ?
+                                <div data-test="elements-references">
+                                    <dt>Elements references</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.elements_references.map((reference) => (
+                                                <li key={reference.uuid}>
+                                                    <a className="stacked-link" href={reference['@id']}>{reference.accession}</a>
+                                                    <ElementsReferences reference={reference} />
                                                 </li>
                                             ))}
                                         </ul>
