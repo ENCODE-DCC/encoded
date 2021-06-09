@@ -1282,7 +1282,7 @@ class FunctionalCharacterizationSeries(Series):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "Dataset"
+            "linkTo": ["Annotation", "Reference"]
         }
     })
     def elements_references(self, request, related_datasets):
