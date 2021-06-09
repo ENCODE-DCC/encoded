@@ -302,7 +302,6 @@ class Dataset(Item):
             # We want highest version, date, etc. so reverse sort order. Access value from top item.
             return sorted(analysis_ranking.items(), reverse=True)[0][1]
 
-
 def convert_date_string(date_string):
     if ":" == date_string[-3]:
         date_string = date_string[:-3]+date_string[-2:]

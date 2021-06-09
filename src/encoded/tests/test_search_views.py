@@ -730,6 +730,41 @@ def test_search_views_entex_matrix_response(index_workbook, testapp):
     ) > 0
 
 
+def test_search_views_brain_matrix_response(index_workbook, testapp):
+    r = testapp.get(
+        '/brain-matrix/'
+        '?type=Experiment&status=released&internal_tags=RushAD'
+    )
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Rush Alzheimer’s Disease Study'
+    assert r.json['@type'] == ['BrainMatrix']
+    assert r.json['@id'] == (
+        '/brain-matrix/'
+        '?type=Experiment&status=released&internal_tags=RushAD'
+    )
+    assert r.json['@context'] == '/terms/'
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'Rush Alzheimer’s Disease Study'
+    assert r.json['total'] >= 1
+    assert 'filters' in r.json
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == ["assay_title", [ "target.label", "no_target" ], "replicates.library.biosample.donor.age", "replicates.library.biosample.donor.sex", "replicates.library.biosample.biosample_ontology.term_name", "replicates.library.biosample.disease_term_name"]
+    assert r.json['matrix']['x']['label'] == 'Assay'
+    assert r.json['matrix']['y']['group_by'] == [
+        'replicates.library.biosample.donor.accession',
+    ]
+    assert r.json['matrix']['y']['label'] == 'Donor'
+    assert 'buckets' in r.json['matrix']['y']['replicates.library.biosample.donor.accession']
+    assert 'key' in r.json['matrix']['y']['replicates.library.biosample.donor.accession']['buckets'][0]
+    assert 'assay_title' in r.json['matrix']['y']['replicates.library.biosample.donor.accession']['buckets'][0]
+    assert 'search_base' in r.json
+    assert r.json['search_base'] == '/search/?type=Experiment&status=released&internal_tags=RushAD'
+    assert len(
+        r.json['matrix']['y']['replicates.library.biosample.donor.accession']['buckets']
+    ) > 0
+
 def test_search_views_cart_search_view_filters(index_workbook, testapp):
     r = testapp.get(
         '/cart-search/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'

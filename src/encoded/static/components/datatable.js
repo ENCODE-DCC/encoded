@@ -116,7 +116,7 @@ const DataTable = ({ tableData }) => {
                     const rowKey = tableData.rowKeys ? tableData.rowKeys[rowNumber] : rowNumber;
                     colNumber = 0;
                     return (
-                        <tr key={rowKey} className={row.css || tableData.rowCss || null} style={row.style || null}>
+                        <tr key={rowKey} className={row.css || tableData.rowCss || null} style={row.style || null} title={row?.title}>
                             {cells.map((cell, colIndex) => {
                                 // Extract the cell's content from itself, its object, or its
                                 // function. JS says `typeof null` is "object."

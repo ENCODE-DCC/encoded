@@ -30,6 +30,7 @@ require('./report');
 require('./rnaget');
 require('./matrix_audit');
 require('./matrix_entex');
+require('./matrix_brain');
 require('./matrix_mouse_development');
 require('./matrix_experiment');
 require('./matrix_reference_epigenome');

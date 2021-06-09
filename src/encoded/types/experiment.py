@@ -369,6 +369,27 @@ class Experiment(Dataset,
         },
     }
 
+    brain_matrix = {
+        'y': {
+            'group_by': [
+                'replicates.library.biosample.donor.accession',
+
+            ],
+            'label': 'Donor',
+        },
+        'x': {
+            'group_by': [
+                ('assay_title'),
+                ('target.label', 'no_target'),
+                'replicates.library.biosample.donor.age',
+                'replicates.library.biosample.donor.sex',
+                'replicates.library.biosample.biosample_ontology.term_name',
+                'replicates.library.biosample.disease_term_name',
+            ],
+            'label': 'Assay',
+        }
+    }
+
     mouse_development = {
         'y': {
             'group_by': ['biosample_ontology.term_name', 'life_stage_age'],
