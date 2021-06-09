@@ -178,12 +178,10 @@ const BATCH_DOWNLOAD_PROHIBITED_PATHS = [
  */
 const convertFiltersToQuery = (filters) => {
     const query = new QueryString();
-    Object.keys(filters).forEach((term) => {
-        filters[term].forEach((value) => {
-            if (value !== 'All assemblies') {
-                query.addKeyValue(`files.${term}`, value);
-            }
-        });
+    filters.forEach((filter) => {
+        const negativeFilter = filter.field.slice(-1) === '!';
+        const field = negativeFilter ? filter.field.slice(0, -1) : filter.field;
+        query.addKeyValue(field, filter.term);
     });
     return query;
 };
