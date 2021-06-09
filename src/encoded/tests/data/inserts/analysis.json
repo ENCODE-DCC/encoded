@@ -20,14 +20,6 @@
         "status": "released"
     },
     {
-        "uuid": "c334db96-ef24-461e-93c4-ba5f1f0f8d9b",
-        "quality_standard": "a05a6a79-024c-47b9-b507-1fa5e323044c",
-        "accession": "ENCAN820ARO",
-        "files": ["ENCFF003MRN", "ENCFF005MRN"],
-        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
-        "pipeline_version": "10.20.30"
-    },
-    {
         "uuid": "02c08844-fbda-436d-a359-c6ff32835404",
         "accession": "ENCAN914ASY",
         "files": ["ENCFF004MRN", "ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"],
@@ -35,6 +27,15 @@
         "pipeline_version": "1.1.2-prerelease+meta",
         "lab": "cfb789b8-46f3-4d59-a2b3-adc39e7df93a",
         "award": "8bafd685-aa17-43fe-95aa-37bc1c90074a"
+    },
+    {
+        "uuid": "c334db96-ef24-461e-93c4-ba5f1f0f8d9b",
+        "quality_standard": "a05a6a79-024c-47b9-b507-1fa5e323044c",
+        "accession": "ENCAN820ARO",
+        "files": ["ENCFF003MRN", "ENCFF005MRN"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "supersedes": ["ENCAN914ASY"],
+        "pipeline_version": "10.20.30"
     },
     {
         "uuid": "860f157c-e4da-a330-1f14-e5b89bf40423",

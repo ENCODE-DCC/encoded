@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc';
 import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { collapseIcon } from '../libs/svg-icons';
-import { auditDecor, auditsDisplayed, filterAuditByPath } from './audit';
+import { auditDecor, auditsDisplayed } from './audit';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
@@ -18,6 +18,7 @@ import {
     useMount,
     requestSearch,
     requestUri,
+    requestObjects,
 } from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
@@ -341,6 +342,7 @@ export class FileTable extends React.Component {
         const {
             context,
             analyses,
+            analysisAudits,
             items,
             graphedFiles,
             filePanelHeader,
@@ -485,6 +487,7 @@ export class FileTable extends React.Component {
                                         handleCollapse={() => this.handleCollapse(key)}
                                         context={context}
                                         analyses={analyses}
+                                        analysisAudits={analysisAudits}
                                         analysisObjectKey={key}
                                         filters={filters}
                                         totalFiles={files && files[key] ? files[key].length : 0}
@@ -498,7 +501,6 @@ export class FileTable extends React.Component {
                                         }
                                         inclusionOn={options.inclusionOn}
                                         files={files[key]}
-                                        audit={context.audit}
                                     />
                                 }
                                 rowClasses={this.rowClasses}
@@ -561,6 +563,8 @@ FileTable.propTypes = {
     context: PropTypes.object.isRequired,
     /** Analysis objects from context or collected separately */
     analyses: PropTypes.array,
+    /** Map of analysis @ids to the audits they contain */
+    analysisAudits: PropTypes.object.isRequired,
     /** Array of files to appear in the table */
     items: PropTypes.array.isRequired,
     /** Specifies which files are in the graph */
@@ -1363,6 +1367,10 @@ export const FileGallery = ({
     const [schemas, setSchemas] = React.useState(null);
     // Holds file search results from a request.
     const [data, setData] = React.useState([]);
+    // Holds analysis audit objects loaded by server request, keyed by analysis @id.
+    const [analysisAudits, setAnalysisAudits] = React.useState({});
+
+    const usedAnalyses = analyses || context.analyses;
 
     useMount(() => {
         // Retrieve schemas for file graph.
@@ -1384,11 +1392,29 @@ export const FileGallery = ({
         }
     }, [fileQuery, files]);
 
+    useMount(() => {
+        // Request the audits for all given analyses.
+        if (usedAnalyses && usedAnalyses.length > 0) {
+            const analysisPaths = usedAnalyses.map((analysis) => analysis['@id']);
+            requestObjects(analysisPaths, '/search/?type=Analysis&field=audit')
+                .then((analysisAuditResults) => {
+                    // Convert array of analyses with `audit` objects to an object keyed by analysis
+                    // path with the value being its `audit` object. Analyses without audits have an
+                    // empty object value.
+                    const analysisAuditCollection = analysisAuditResults.reduce((collection, analysis) => (
+                        { ...collection, [analysis['@id']]: analysis.audit }
+                    ), {});
+                    setAnalysisAudits(analysisAuditCollection);
+                });
+        }
+    }, []);
+
     return (
         <FileGalleryRenderer
             context={context}
             data={data}
-            analyses={analyses || context.analyses}
+            analyses={usedAnalyses}
+            analysisAudits={analysisAudits}
             fileQueryKey={fileQueryKey}
             schemas={schemas}
             session={reactContext && reactContext.session}
@@ -3439,6 +3465,7 @@ class FileGalleryRendererComponent extends React.Component {
         const {
             context,
             analyses,
+            analysisAudits,
             fileQueryKey,
             schemas,
             hideGraph,
@@ -3508,6 +3535,7 @@ class FileGalleryRendererComponent extends React.Component {
                 context={context}
                 items={includedFiles}
                 analyses={analyses}
+                analysisAudits={analysisAudits}
                 selectedFilterValue={this.state.selectedFilterValue}
                 filters={this.state.fileFilters}
                 filterOptions={this.state.availableAssembliesAnnotations}
@@ -3661,8 +3689,10 @@ FileGalleryRendererComponent.propTypes = {
     context: PropTypes.object.isRequired,
     /** File data retrieved from search request */
     data: PropTypes.array,
-    /** Analyses independently gathered or from context */
+    /** analyses independently gathered or from context */
     analyses: PropTypes.array,
+    /** Map of analysis @ids to the audits they contain */
+    analysisAudits: PropTypes.object.isRequired,
     /** Query key to specify qualifying files to download */
     fileQueryKey: PropTypes.string.isRequired,
     /** Schemas for the entire system; used for QC property titles */
@@ -3722,6 +3752,7 @@ const CollapsingTitleComponent = ({
     collapsed,
     context,
     analyses,
+    analysisAudits,
     filters,
     analysisObjectKey,
     outputCategory,
@@ -3733,7 +3764,6 @@ const CollapsingTitleComponent = ({
     auditIndicators,
     auditDetail,
     auditCloseDetail,
-    audit,
 }, reactContext) => {
     const [downloadModalVisibility, setDownloadModalVisibility] = useState(false);
     const analysis = analyses
@@ -3769,8 +3799,8 @@ const CollapsingTitleComponent = ({
 
     const canDownload = downloadEnabled(files);
 
-    // Filter to audits relevant to the current analysis.
-    const filteredAudit = analysis ? filterAuditByPath(audit, analysis['@id']) : {};
+    // Get the audit object relevant to the current analysis
+    const analysisAudit = analysis && analysisAudits ? analysisAudits[analysis['@id']] : null;
 
     React.useEffect(() => {
         if (collapsed) {
@@ -3800,12 +3830,12 @@ const CollapsingTitleComponent = ({
                     : null}
                 </h4>
                 {analysisObjectKey && analysis ? <Status item={analysis} css="collapsing-title__status" badgeSize="small" /> : null}
-                {auditIndicators(filteredAudit, title, { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+                {auditIndicators(analysisAudit, title, { session: reactContext.session, sessionProperties: reactContext.session_properties })}
             </div>
-            {auditsDisplayed(filteredAudit, reactContext.session)
+            {auditsDisplayed(analysisAudit, reactContext.session)
                 ? (
                     <div className="collapsing-title__audit-details">
-                        {auditDetail(filteredAudit, title, { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+                        {auditDetail(analysisAudit, title, { session: reactContext.session, sessionProperties: reactContext.session_properties })}
                     </div>
                 )
                 : null
@@ -3817,6 +3847,7 @@ const CollapsingTitleComponent = ({
 CollapsingTitleComponent.propTypes = {
     context: PropTypes.object.isRequired, // context
     analyses: PropTypes.array,
+    analysisAudits: PropTypes.object, // Map of analysis @ids to the audits they contain
     title: PropTypes.string.isRequired, // Title to display in the title bar
     handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
     collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
@@ -3828,8 +3859,6 @@ CollapsingTitleComponent.propTypes = {
     isDownloadable: PropTypes.bool, // whether or not the section can have it's files downloaded
     inclusionOn: PropTypes.bool.isRequired, // inclusion box checked or not
     files: PropTypes.array, // associated files
-    /** Audit data from experiment */
-    audit: PropTypes.object,
     /** Audit HOC decorator function to show button that triggers the audit details */
     auditIndicators: PropTypes.func.isRequired,
     /** Audit HOD decorator to close the audit detail */
@@ -3840,6 +3869,7 @@ CollapsingTitleComponent.propTypes = {
 
 CollapsingTitleComponent.defaultProps = {
     analyses: null,
+    analysisAudits: null,
     collapsed: false,
     filters: [],
     analysisObjectKey: '',
@@ -3848,7 +3878,6 @@ CollapsingTitleComponent.defaultProps = {
     totalFiles: 0,
     isDownloadable: true,
     files: [],
-    audit: {},
 };
 
 CollapsingTitleComponent.contextTypes = {
