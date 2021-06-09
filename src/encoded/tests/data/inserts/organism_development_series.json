@@ -44,8 +44,7 @@
 			"/experiments/ENCSR123AAB",
 			"/experiments/ENCSR123AAC",
 			"/experiments/ENCSR123AAD",
-			"/experiments/ENCSR123AAE",
-			"/experiments/ENCSR123MRN"
+			"/experiments/ENCSR123AAE"
         ],
         "internal_tags": [
             "MouseDevSeries"
