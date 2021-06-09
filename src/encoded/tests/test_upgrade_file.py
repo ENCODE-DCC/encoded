@@ -200,3 +200,9 @@ def test_file_upgrade_27_to_28(upgrader, file_27):
     value = upgrader.upgrade('file', file_27, current_version='27', target_version='28')
     assert value['schema_version'] == '28'
     assert value['output_type'] == 'exclusion list regions'
+
+
+def test_file_upgrade_28_to_29(upgrader, file_28):
+    value = upgrader.upgrade('file', file_28, current_version='28', target_version='29')
+    assert value['schema_version'] == '29'
+    assert 'read_length' not in value

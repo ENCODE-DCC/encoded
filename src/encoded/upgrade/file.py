@@ -751,3 +751,13 @@ def file_27_28(value, system):
     for old_term, new_term in term_pairs:
         if output_type == old_term:
             value['output_type'] = new_term
+
+
+@upgrade_step('file', '28', '29')
+def file_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5975
+    platform = value.get('platform', None)
+
+    if platform == "25acccbd-cb36-463b-ac96-adbac11227e6":
+            value.pop('read_length', None)
+    return

@@ -2104,3 +2104,31 @@ def file_cDHS(testapp, lab, award, annotation_dhs):
         'md5sum': '078eb6dc4e96d2d5a922f246b4088cf6',
     }
     return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_28(file_base):
+    item = file_base.copy()
+    item.update({
+        'platform': '25acccbd-cb36-463b-ac96-adbac11227e6',
+        'schema_version': '28'
+    })
+    return item
+
+
+@pytest.fixture
+def file_no_readlength(testapp, experiment, award, lab, replicate_url, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate_url['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'output_type': 'reads',
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress',
+        'run_type': 'single-ended'
+    }
+    return item
