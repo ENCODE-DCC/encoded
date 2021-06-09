@@ -979,6 +979,20 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
     embedded_with_frame = [
         Path('references', exclude=['datasets', 'publication_data']),
         Path('related_datasets.references', exclude=['datasets', 'publication_data']),
+        Path(
+            'related_datasets.files.analyses',
+            include=[
+                '@id',
+                '@type',
+                'uuid',
+                'status',
+                'pipeline_award_rfas',
+                'pipeline_version',
+                'title',
+            ],
+        ),
+
+        Path('related_datasets.files.analyses', include=['datasets', 'publication_data']),
     ]
 
     @calculated_property(schema={
