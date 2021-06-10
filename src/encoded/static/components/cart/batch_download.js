@@ -65,11 +65,12 @@ CartBatchDownloadButton.propTypes = {
     /** True if button disabled */
     disabled: PropTypes.bool,
     /** Called when the user clicks the button; provided by `BatchDownloadActuator` */
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
 };
 
 CartBatchDownloadButton.defaultProps = {
     disabled: false,
+    onClick: null, // Actually required; provided by BatchDownloadActuator
 };
 
 
