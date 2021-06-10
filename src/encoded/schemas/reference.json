@@ -119,6 +119,50 @@
                 "linkTo": "Gene"
             }
         },
+        "examined_regions": {
+            "title": "Examined regions",
+            "description": "The chromosomal region(s) under investigation specified using 1-based, closed coordinates for a specific version of the reference genome assembly.",
+            "type": "array",
+            "uniqueItems": true,
+            "additionalProperties": false,
+            "items": {
+                "title": "Region",
+                "description": "Chromosomal location specified using 1-based, closed coordinates for a specific version of the reference genome assembly.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["assembly", "chromosome", "start", "end"],
+                "properties": {
+                    "assembly": {
+                        "title": "Mapping assembly",
+                        "description": "The genome assembly to which coordinates relate. e.g. GRCh38.",
+                        "type": "string",
+                        "enum": [
+                            "GRCh38",
+                            "hg19",
+                            "mm10"
+                        ]
+                    },
+                    "chromosome": {
+                        "title": "Chromosome",
+                        "description": "The number (or letter) designation for the chromosome, e.g. chr1 or chrX",
+                        "type": "string",
+                        "pattern": "^(chr[0-9A-Za-z]+)$"
+                    },
+                    "start": {
+                        "title": "Start",
+                        "description": "The starting coordinate.",
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "end": {
+                        "title": "End",
+                        "description": "The ending coordinate.",
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                }
+            }
+        },
         "related_pipelines": {
             "title": "Related pipelines",
             "description": "The pipelines this reference file set is used for",

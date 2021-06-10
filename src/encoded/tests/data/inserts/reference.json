@@ -127,6 +127,43 @@
         "status": "in progress"
     },
     {
+        "_test": "fcc examined_regions reference dataset",
+        "accession": "ENCSR580REG",
+        "award": "/awards/U54HG007010/",
+        "examined_regions": [
+            {"assembly": "GRCh38",
+            "chromosome": "chr18",
+            "start": 50282343,
+            "end": 50302710
+            },
+            {"assembly": "hg19",
+            "chromosome": "chr18",
+            "start": 10808713,
+            "end": 22814692}
+        ],
+        "lab": "/labs/greg-cooper/",
+        "reference_type": "functional elements",
+        "status": "in progress"
+    },
+    {
+        "_test": "fcc examined loci and regions reference",
+        "accession": "ENCSR580BOT",
+        "award": "/awards/U54HG007010/",
+        "examined_regions": [
+            {"assembly": "GRCh38",
+            "chromosome": "chr18",
+            "start": 50282343,
+            "end": 50302710
+            }
+        ],
+        "examined_loci": [
+            "/genes/677792/"
+        ],
+        "lab": "/labs/greg-cooper/",
+        "reference_type": "functional elements",
+        "status": "in progress"
+    },
+    {
         "_test": "sequence barcodes",
         "award": "/awards/U54HG006998/",
         "lab": "/labs/ali-mortazavi/",
