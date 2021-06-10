@@ -404,22 +404,13 @@ CartAccessories.defaultProps = {
  */
 const CartTools = ({
     elements,
-    analyses,
     selectedFileTerms,
     selectedDatasetTerms,
-    selectedDatasetType,
-    facetFields,
     savedCartObj,
-    fileCounts,
     cartType,
     sharedCart,
     visualizable,
-    preferredDefault,
 }) => {
-    // Disable the download button and show `disabledMessage` if the selected dataset matches "All
-    // datasets."
-    const disabledMessage = selectedDatasetType ? '' : 'Select single dataset type to download';
-
     // Make a list of all the dataset types currently in the cart.
     const usedDatasetTypes = elements.reduce((types, elementAtId) => {
         const type = atIdToType(elementAtId);
@@ -430,19 +421,12 @@ const CartTools = ({
         <div className="cart-tools">
             {elements.length > 0 ?
                 <CartBatchDownload
-                    elements={elements}
-                    analyses={analyses}
+                    cartType={cartType}
                     selectedFileTerms={selectedFileTerms}
                     selectedDatasetTerms={selectedDatasetTerms}
-                    selectedType={selectedDatasetType}
-                    facetFields={facetFields}
-                    cartType={cartType}
                     savedCartObj={savedCartObj}
                     sharedCart={sharedCart}
-                    fileCounts={fileCounts}
                     visualizable={visualizable}
-                    preferredDefault={preferredDefault}
-                    disabledMessage={disabledMessage}
                 />
             : null}
             <CartDatasetReport
@@ -458,40 +442,27 @@ const CartTools = ({
 CartTools.propTypes = {
     /** Cart elements */
     elements: PropTypes.array,
-    /** All compiled analyses for the cart */
-    analyses: PropTypes.array,
     /** Selected file facet terms */
     selectedFileTerms: PropTypes.object,
     /** Selected dataset facet terms */
     selectedDatasetTerms: PropTypes.object,
-    /** Selected dataset type */
-    selectedDatasetType: PropTypes.string.isRequired,
-    /** Currently used facet field definitions */
-    facetFields: PropTypes.array.isRequired,
     /** Cart as it exists in the database; use JSON payload method if none */
     savedCartObj: PropTypes.object,
     /** Type of cart: ACTIVE, OBJECT */
     cartType: PropTypes.string.isRequired,
     /** Elements in the shared cart, if that's being displayed */
     sharedCart: PropTypes.object,
-    /** Number of files batch download will download for each download type */
-    fileCounts: PropTypes.object,
     /** True if only visualizable files should be downloaded */
     visualizable: PropTypes.bool,
-    /** True to download only preferred_default files */
-    preferredDefault: PropTypes.bool,
 };
 
 CartTools.defaultProps = {
     elements: [],
-    analyses: [],
     selectedFileTerms: null,
     selectedDatasetTerms: null,
     savedCartObj: null,
     sharedCart: null,
-    fileCounts: {},
     visualizable: false,
-    preferredDefault: false,
 };
 
 
@@ -1233,7 +1204,6 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                             savedCartObj={savedCartObj}
                             selectedFileTerms={selectedFileTerms}
                             selectedDatasetTerms={selectedDatasetTerms}
-                            selectedDatasetType={selectedDatasetType}
                             facetFields={displayedFileFacetFields.concat(displayedDatasetFacetFields)}
                             viewableDatasets={viewableDatasets}
                             cartType={cartType}

@@ -2,14 +2,10 @@
  * Display the batch download modal on the cart page, and with the user confirming the modal,
  * initiate the batch download.
  */
-import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'underscore';
-import * as encoding from '../../libs/query_encoding';
-import * as DropdownButton from '../../libs/ui/button';
-import { cartOperationInProgress } from './actions';
-import { BatchDownloadModal } from '../view_controls';
+import QueryString from '../../libs/query_string';
+import { BatchDownloadActuator, CartBatchDownloadController, DefaultBatchDownloadContent } from '../batch_download';
 
 
 /** Maximum number of elements in cart that generates warning in download dialog */
@@ -17,132 +13,63 @@ const ELEMENT_WARNING_LENGTH_MIN = 500;
 
 
 /**
- * Called when the user confirms they want to initiate the batch download. For carts, the
- * download uses a POST request with the @id of every experiment in the POST payload. If the
- * user has logged in, we additionally set a "cart" query string parameter with the @id of the
- * user's cart object, which is used in the metadata.tsv line of the resulting files.txt.
+ * Build a QueryString object containing the selections given in the dataset and file facet
+ * selections object.
+ * @param {object} datasetTerms Selected dataset terms
+ * @param {object} fileTerms Selected file terms
+ * @param {boolean} visualizable True if only downloading visualizable files
+ * @returns {object} QueryString containing dataset and file selections
  */
-const batchDownload = (
-    cartType,
-    elements,
-    analyses,
-    selectedFileTerms,
-    selectedDatasetTerms,
-    facetFields,
-    savedCartObj,
-    sharedCart,
-    setInProgress,
-    {
-        raw = false,
-        all = false,
-        visualizable = false,
-        preferredDefault = false,
-    },
-    fetch
-) => {
-    let contentDisposition;
-    let cartId;
-    if (cartType === 'OBJECT') {
-        cartId = sharedCart['@id'];
-    } else {
-        cartId = savedCartObj && savedCartObj['@id'];
+const buildQueryFromTerms = (datasetTerms, fileTerms, visualizable) => {
+    const query = new QueryString();
+
+    // Add the selected dataset terms to the query.
+    Object.keys(datasetTerms).forEach((term) => {
+        if (datasetTerms[term].length > 0) {
+            datasetTerms[term].forEach((value) => {
+                query.addKeyValue(term, value);
+            });
+        }
+    });
+
+    // Add the selected file terms to the query.
+    Object.keys(fileTerms).forEach((term) => {
+        if (fileTerms[term].length > 0) {
+            fileTerms[term].forEach((value) => {
+                query.addKeyValue(`files.${term}`, value);
+            });
+        }
+    });
+
+    // Add visualizable option.
+    if (visualizable) {
+        query.addKeyValue('option', 'visualizable');
     }
 
-    // Form query string from currently selected dataset and file facets.
-    const combinedTerms = { ...selectedFileTerms, ...selectedDatasetTerms };
-    const formatSelections = (raw || all)
-        ? []
-        : (
-            _.compact(Object.keys(combinedTerms).map((field) => {
-                if (field !== 'type') {
-                    let subQueryString = '';
-                    let mappedQuery = '';
-                    if (combinedTerms[field].length > 0) {
-                        const matchingFacetField = facetFields.find((facetField) => facetField.field === field);
-                        if (matchingFacetField && matchingFacetField.fieldMapper) {
-                            // Transform terms to a query for those terms that require that.
-                            mappedQuery = matchingFacetField.fieldMapper(combinedTerms[field], analyses);
-                        } else {
-                            // Build the query string from the selected dataset and file terms without
-                            // transformation specific to each term.
-                            subQueryString = combinedTerms[field].map((term) => (
-                                `${field in selectedDatasetTerms ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
-                            )).join('&');
-                        }
-                    }
-                    return `${subQueryString}${mappedQuery ? `&${mappedQuery}` : ''}`;
-                }
-
-                // Don't do anything for the type facet; it gets included separately.
-                return null;
-            }))
-        );
-
-    // Initiate a batch download as a POST, passing it all dataset @ids in the payload.
-    setInProgress(true);
-    const visualizableOption = `${visualizable ? '&option=visualizable' : ''}`;
-    const rawOption = `${raw ? '&option=raw' : ''}`;
-    const preferredDefaultQuery = preferredDefault && !raw && !all ? '&files.preferred_default=true' : '';
-    const query = `${formatSelections.length > 0 ? `&${formatSelections.join('&')}` : ''}`;
-    const selectedType = selectedDatasetTerms.type[0];
-    fetch(`/batch_download/?type=${selectedType}${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${query}${visualizableOption}${rawOption}${preferredDefaultQuery}`, {
-        method: 'POST',
-        headers: {
-            Accept: 'text/plain',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            elements,
-        }),
-    }).then((response) => {
-        if (response.ok) {
-            contentDisposition = response.headers.get('content-disposition');
-            return response.blob();
-        }
-        throw new Error(response);
-    }).then((blob) => {
-        setInProgress(false);
-
-        // Extract filename from batch_download response content disposition tag.
-        const matchResults = contentDisposition.match(/filename="(.*?)"/);
-        const filename = matchResults ? matchResults[1] : 'files.txt';
-        const nav = window.navigator;
-
-        // IE11 workaround (also activates on Edge-Trident but not Edge-Chromium)
-        if (nav && nav.msSaveOrOpenBlob) {
-            nav.msSaveOrOpenBlob(blob, filename);
-        } else {
-            // Make a temporary link in the DOM with the URL from the response blob and then
-            // click the link to automatically download the file. Many references to the technique
-            // including https://blog.jayway.com/2017/07/13/open-pdf-downloaded-api-javascript/
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    }).catch((err) => {
-        setInProgress(false);
-        console.warn('batchDownload error %s:%s', err.name, err.message);
-    });
+    return query;
 };
 
 
 /**
- * Converts a download type to human-readable text to be used for relevant messages.
- * @param {string} downloadType Currently selected batch download type.
- *
- * @return {string} Human-readable form of `downloadType`.
+ *  Custom batch download actuator that lets us use existing CSS styles on the button.
  */
-const getDownloadTypeText = (downloadType) => {
-    if (downloadType === 'processed') {
-        return 'processed data files';
-    }
-    if (downloadType === 'raw') {
-        return 'raw data files';
-    }
-    return 'files';
+const CartBatchDownloadButton = ({ title, disabled, onClick }) => (
+    <button type="button" className="btn btn-info btn-sm btn-cart-download" disabled={disabled} onClick={onClick}>
+        {title}
+    </button>
+);
+
+CartBatchDownloadButton.propTypes = {
+    /** Label for the button */
+    title: PropTypes.string.isRequired,
+    /** True if button disabled */
+    disabled: PropTypes.bool,
+    /** Called when the user clicks the button; provided by `BatchDownloadActuator` */
+    onClick: PropTypes.func.isRequired,
+};
+
+CartBatchDownloadButton.defaultProps = {
+    disabled: false,
 };
 
 
@@ -153,180 +80,89 @@ const getDownloadTypeText = (downloadType) => {
 const CartBatchDownloadComponent = (
     {
         cartType,
-        elements,
-        analyses,
         selectedFileTerms,
         selectedDatasetTerms,
-        facetFields,
         savedCartObj,
         sharedCart,
-        fileCounts,
-        setInProgress,
         cartInProgress,
         visualizable,
-        preferredDefault,
-        disabledMessage,
-        fetch,
     }
 ) => {
-    // Tracks whether the batch-download modal is visible or not.
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
-    // Keeps track of the currently selected download option.
-    const [chosenFileCount, setChosenFileCount] = React.useState(fileCounts.processed);
-    // Keeps track of the currently selected download option.
-    const [downloadType, setDownloadType] = React.useState('processed');
+    const selectedDatasetType = selectedDatasetTerms.type && selectedDatasetTerms.type.length === 1
+        ? selectedDatasetTerms.type[0]
+        : '';
+    const disabled = !selectedDatasetType || cartInProgress;
+    const actuatorTitle = selectedDatasetType ? 'Download' : 'Select single dataset type to download';
 
-    const openModal = () => { setIsModalOpen(true); };
-    const closeModal = () => { setIsModalOpen(false); };
+    // Build the cart batch-download controller from the user selections.
+    const cart = cartType === 'ACTIVE' ? savedCartObj : sharedCart;
+    const selectedAssembly = selectedFileTerms.assembly[0];
+    const cartQuery = buildQueryFromTerms(selectedDatasetTerms, selectedFileTerms, visualizable);
+    const cartController = new CartBatchDownloadController(cart['@id'], selectedDatasetType, selectedAssembly, cartQuery);
 
-    // Called when the user clicks the Download button in the batch-download modal.
-    const handleDownloadClick = () => {
-        const options = {};
-        if (downloadType === 'processed') {
-            options.visualizable = visualizable;
-        } else if (downloadType === 'raw') {
-            options.raw = true;
-        } else if (downloadType === 'all') {
-            options.all = true;
-        }
-        options.preferredDefault = preferredDefault;
-        batchDownload(cartType, elements, analyses, selectedFileTerms, selectedDatasetTerms, facetFields, savedCartObj, sharedCart, setInProgress, options, fetch);
-    };
-
-    // Called when the user clicks the button to make the batch-download modal appear.
-    const handleExecute = (selection) => {
-        setDownloadType(selection);
-        if (selection === 'processed') {
-            setChosenFileCount(fileCounts.processed);
-        } else if (selection === 'raw') {
-            setChosenFileCount(fileCounts.raw);
-        } else if (selection === 'all') {
-            setChosenFileCount(fileCounts.all);
-        }
-        openModal();
-    };
+    // Display a warning message in the modal if we have more than a threshold number of datasets
+    // in the cart.
+    const modalContent = (
+        <>
+            <DefaultBatchDownloadContent />
+            {cart.elements.length >= ELEMENT_WARNING_LENGTH_MIN
+                ? (
+                    <p className="cart__batch-download-warning">
+                        The &ldquo;files.txt&rdquo; file can take a very long time to generate
+                        with {cart.elements.length} experiments in your cart. Cart operations will be
+                        unavailable until this file completes downloading.
+                    </p>
+                ) : null}
+        </>
+    );
 
     return (
-        <>
-            <DropdownButton.Selected
-                labels={{
-                    processed: disabledMessage || `Download ${preferredDefault ? 'default' : 'processed'} data files`,
-                    raw: disabledMessage || 'Download raw data files',
-                    all: disabledMessage || 'Download all files',
-                }}
-                execute={handleExecute}
-                id="cart-download"
-                triggerVoice="Cart download options"
-                css="cart-download"
-                disabled={!!disabledMessage}
-            >
-                <button type="button" id="processed" className="menu-item">
-                    <div className="cart-download__option-title">{preferredDefault ? 'Default' : 'Processed'} data files</div>
-                    <div className="cart-download__option-description">
-                        Downloads files using the selected filters.
-                    </div>
-                </button>
-                <button type="button" id="raw" className="menu-item">
-                    <div className="cart-download__option-title">Raw data files only</div>
-                    <div className="cart-download__option-description">
-                        Downloads all files that don&rsquo;t have assemblies and without using any selected filters.
-                    </div>
-                </button>
-                <button type="button" id="all" className="menu-item">
-                    <div className="cart-download__option-title">All files</div>
-                    <div className="cart-download__option-description">
-                        Downloads all files without using any selected filters.
-                    </div>
-                </button>
-            </DropdownButton.Selected>
-            {isModalOpen ?
-                <BatchDownloadModal
-                    disabled={chosenFileCount === 0 || cartInProgress}
-                    downloadClickHandler={handleDownloadClick}
-                    closeModalHandler={closeModal}
-                    additionalContent={
-                        <>
-                            {elements.length >= ELEMENT_WARNING_LENGTH_MIN ?
-                                <p className="cart__batch-download-warning">
-                                    The &ldquo;files.txt&rdquo; file can take a very long time to generate
-                                    with {elements.length} experiments in your cart. Cart operations will be
-                                    unavailable until this file completes downloading.
-                                </p>
-                            : null}
-                            {chosenFileCount === 0 ?
-                                <p className="cart__batch-download-warning">
-                                    Unable to download as no {getDownloadTypeText(downloadType)} are available.
-                                </p>
-                            : null}
-                        </>
-                    }
-                />
-            : null}
-        </>
+        <BatchDownloadActuator
+            controller={cartController}
+            modalContent={modalContent}
+            actuator={
+                <CartBatchDownloadButton title={actuatorTitle} disabled={disabled} />
+            }
+        />
     );
 };
 
 CartBatchDownloadComponent.propTypes = {
     /** Type of cart: ACTIVE, OBJECT */
     cartType: PropTypes.string.isRequired,
-    /** Cart elements */
-    elements: PropTypes.array,
-    /** All compiled analyses in the cart */
-    analyses: PropTypes.array.isRequired,
     /** Selected file facet terms */
     selectedFileTerms: PropTypes.object,
     /** Selected dataset facet terms */
     selectedDatasetTerms: PropTypes.object,
-    /** Used facet field definitions */
-    facetFields: PropTypes.array.isRequired,
     /** Cart as it exists in the database; use JSON payload method if none */
     savedCartObj: PropTypes.object,
     /** Shared cart object */
     sharedCart: PropTypes.object,
-    /** Number of files batch download will download for each download type */
-    fileCounts: PropTypes.object,
-    /** Redux cart action to set the in-progress state of the cart */
-    setInProgress: PropTypes.func.isRequired,
     /** True if cart operation in progress */
     cartInProgress: PropTypes.bool,
     /** True to download only visualizable files */
     visualizable: PropTypes.bool,
-    /** True to download preferred_default files */
-    preferredDefault: PropTypes.bool,
-    /** Message to display in browser tooltip when disabled */
-    disabledMessage: PropTypes.string,
-    /** System fetch function */
-    fetch: PropTypes.func.isRequired,
 };
 
 CartBatchDownloadComponent.defaultProps = {
-    elements: [],
     selectedFileTerms: null,
     selectedDatasetTerms: null,
     savedCartObj: null,
     sharedCart: null,
-    fileCounts: {},
     cartInProgress: false,
     visualizable: false,
-    preferredDefault: false,
-    disabledMessage: '',
 };
 
 const mapStateToProps = (state, ownProps) => ({
     cartInProgress: state.inProgress,
     elements: ownProps.elements,
     analyses: ownProps.analyses,
-    selectedTerms: ownProps.selectedTerms,
     savedCartObj: ownProps.savedCartObj,
     fileCounts: ownProps.fileCounts,
     fetch: ownProps.fetch,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    setInProgress: (enable) => dispatch(cartOperationInProgress(enable)),
-});
-
-const CartBatchDownloadInternal = connect(mapStateToProps, mapDispatchToProps)(CartBatchDownloadComponent);
+const CartBatchDownloadInternal = connect(mapStateToProps)(CartBatchDownloadComponent);
 
 
 /**

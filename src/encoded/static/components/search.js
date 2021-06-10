@@ -1215,29 +1215,18 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
     const canDownload = context.total <= MAX_DOWNLOADABLE_RESULT;
-    const modalText = canDownload ?
-        <>
-            <p>
-                Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file has the URL or command line to download the metadata file.
-            </p>
-            <p>
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
-            </p>
-            <p>
-                The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:
-            </p>
-            <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
-        </> :
-        <>
-            <p>
-                This search is too large (&gt;{MAX_DOWNLOADABLE_RESULT} datasets) to automatically generate a manifest or metadata file.  We are currently working on methods to download from large searches.
-            </p>
-            <p>
-                You can directly access the files in AWS: <a href="https://registry.opendata.aws/encode-project/" target="_blank" rel="noopener noreferrer">https://registry.opendata.aws/encode-project/</a>
-            </p>
-        </>;
+    const modalText = canDownload
+        ? null
+        : (
+            <>
+                <p>
+                    This search is too large (&gt;{MAX_DOWNLOADABLE_RESULT} datasets) to automatically generate a manifest or metadata file.
+                </p>
+                <p>
+                    You can directly access the files in AWS: <a href="https://registry.opendata.aws/encode-project/" target="_blank" rel="noopener noreferrer">https://registry.opendata.aws/encode-project/</a>
+                </p>
+            </>
+        );
 
     let resultsToggle = null;
     if (showResultsToggle) {
@@ -1274,7 +1263,9 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
             <div className="results-table-control__main">
                 <ViewControls results={context} additionalFilters={additionalFilters} />
                 {resultsToggle}
-                {showDownloadButton ? <BatchDownloadControls results={context} additionalFilters={additionalFilters} modalText={modalText} canDownload={canDownload} /> : ''}
+                {showDownloadButton
+                    ? <BatchDownloadControls results={context} additionalFilters={additionalFilters} modalText={modalText} canDownload={canDownload} />
+                    : null}
                 {!hideBrowserSelector ?
                     <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} additionalFilters={additionalFilters} />
                 : null}

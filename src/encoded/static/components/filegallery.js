@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import QueryString from '../libs/query_string';
 import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor, auditsDisplayed } from './audit';
+import {
+    AnalysisBatchDownloadController,
+    BatchDownloadActuator,
+    DatasetBatchDownloadController,
+    RawSequencingBatchDownloadController,
+    ReferenceBatchDownloadController,
+} from './batch_download';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
@@ -25,8 +33,6 @@ import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
-import { BatchDownloadModal } from './view_controls';
-import { encodedURIComponent } from '../libs/query_encoding';
 
 // Minimum number of files in a coalescing group.
 const MINIMUM_COALESCE_COUNT = 5;
@@ -260,13 +266,6 @@ const filterDownloadableFilesByStatus = (context, files) => {
 };
 
 
-/**
- * True if there is at least one file that can be downloaded. False others
- *
- * @param {array} files Files to check to see if they can be downloaded
- */
-const downloadEnabled = (files) => (files || []).some((file) => !(file.restricted || file.no_file_available));
-
 export class FileTable extends React.Component {
     static rowClasses() {
         return '';
@@ -346,6 +345,7 @@ export class FileTable extends React.Component {
             items,
             graphedFiles,
             filePanelHeader,
+            fileQueryKey,
             showFileCount,
             setInfoNodeId,
             setInfoNodeVisible,
@@ -447,6 +447,7 @@ export class FileTable extends React.Component {
                             outputCategory="raw data"
                             outputType="reads"
                             filters={filters}
+                            fileQueryKey={fileQueryKey}
                             inclusionOn={options.inclusionOn}
                             isDownloadable={!options.hideDownload}
                             meta={{
@@ -465,6 +466,7 @@ export class FileTable extends React.Component {
                             context={context}
                             outputCategory="raw data"
                             filters={filters}
+                            fileQueryKey={fileQueryKey}
                             inclusionOn={options.inclusionOn}
                             isDownloadable={!options.hideDownload}
                             meta={{
@@ -485,6 +487,7 @@ export class FileTable extends React.Component {
                                         title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)} processed data`}
                                         collapsed={this.state.collapsed[key]}
                                         handleCollapse={() => this.handleCollapse(key)}
+                                        fileQueryKey={fileQueryKey}
                                         context={context}
                                         analyses={analyses}
                                         analysisAudits={analysisAudits}
@@ -527,6 +530,7 @@ export class FileTable extends React.Component {
                                     collapsed={this.state.collapsed.ref}
                                     handleCollapse={this.handleCollapseRef}
                                     context={context}
+                                    fileQueryKey={fileQueryKey}
                                     outputCategory="reference"
                                     filters={filters}
                                     totalFiles={files && files.ref ? files.ref.length : 0}
@@ -565,6 +569,8 @@ FileTable.propTypes = {
     analyses: PropTypes.array,
     /** Map of analysis @ids to the audits they contain */
     analysisAudits: PropTypes.object.isRequired,
+    /** file query string prefix */
+    fileQueryKey: PropTypes.string.isRequired,
     /** Array of files to appear in the table */
     items: PropTypes.array.isRequired,
     /** Specifies which files are in the graph */
@@ -837,6 +843,7 @@ class RawSequencingTable extends React.Component {
             showReplicateNumber,
             context,
             filters,
+            fileQueryKey,
             outputCategory,
             outputType,
             inclusionOn,
@@ -964,6 +971,7 @@ class RawSequencingTable extends React.Component {
                                     title="Raw sequencing data"
                                     collapsed={this.state.collapsed}
                                     handleCollapse={this.handleCollapse}
+                                    fileQueryKey={fileQueryKey}
                                     context={context}
                                     outputCategory={outputCategory}
                                     outputType={outputType}
@@ -1110,6 +1118,7 @@ class RawSequencingTable extends React.Component {
 RawSequencingTable.propTypes = {
     context: PropTypes.object.isRequired,
     files: PropTypes.array, // Raw files to display
+    fileQueryKey: PropTypes.string.isRequired, // File query parameter prefix
     indexFiles: PropTypes.array, // Index reads files that refer to actual files in `files`
     meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
     showReplicateNumber: PropTypes.bool,
@@ -1148,7 +1157,7 @@ class RawFileTable extends React.Component {
     }
 
     render() {
-        const { files, meta, showReplicateNumber, context, filters, outputCategory, inclusionOn, isDownloadable } = this.props;
+        const { files, meta, showReplicateNumber, context, filters, fileQueryKey, outputCategory, inclusionOn, isDownloadable } = this.props;
         const { loggedIn, adminUser } = meta;
 
         if (files && files.length > 0) {
@@ -1185,6 +1194,7 @@ class RawFileTable extends React.Component {
                                     context={context}
                                     outputCategory={outputCategory}
                                     filters={filters}
+                                    fileQueryKey={fileQueryKey}
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
                                     isDownloadable={isDownloadable && filterDownloadableFilesByStatus(context, files).length > 0}
@@ -1310,6 +1320,7 @@ RawFileTable.propTypes = {
     outputCategory: PropTypes.string, // output category object
     context: PropTypes.object.isRequired, // context object from server
     filters: PropTypes.object, // user-selected filters
+    fileQueryKey: PropTypes.string.isRequired, // File query string prefix
     inclusionOn: PropTypes.bool.isRequired, // whether or not inclusion on is checked
     isDownloadable: PropTypes.bool.isRequired, // True to include download button in table header
 };
@@ -1596,6 +1607,29 @@ VisualizationControls.defaultProps = {
 
 // Displays the file filtering controls for the file association graph and file tables.
 
+/**
+ * Convert the filters from the file-gallery facets to QueryString form.
+ * @param {object} filters Filters from file gallery facets
+ * @param {string} fileQueryKey Query-string key to specify file facet query-string parameters
+ * @param {boolean} inclusionOn True if "Include deprecated" checked
+ * @returns {object} QueryString containing equivalent selections
+ */
+const convertFiltersToQuery = (filters, fileQueryKey, inclusionOn) => {
+    const query = new QueryString();
+    Object.keys(filters).forEach((term) => {
+        filters[term].forEach((value) => {
+            if (value !== 'All assemblies') {
+                query.addKeyValue(`${fileQueryKey}.${term}`, value);
+            }
+        });
+    });
+    if (inclusionOn) {
+        query.addKeyValue(`${fileQueryKey}.status`, 'released').addKeyValue(`${fileQueryKey}.status`, 'in progress');
+    }
+    return query;
+};
+
+
 class FilterControls extends React.Component {
     constructor(props, reactContext) {
         super(props);
@@ -1604,54 +1638,26 @@ class FilterControls extends React.Component {
 
         // Bind this to non-React methods.
         this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
-        this.setDownloadModalVisibility = this.setDownloadModalVisibility.bind(this);
-        this.handleDownloadClick = this.handleDownloadClick.bind(this);
-
-        this.state = { isBatchDownloadOpen: false };
     }
 
     handleAssemblyAnnotationChange(e) {
         this.props.handleAssemblyAnnotationChange(e.target.value);
     }
 
-    handleDownloadClick() {
-        const { context, filters, inclusionOn, fileQueryKey, defaultOnly } = this.props;
-        const { accession } = context;
-        const type = context && context['@type'] ? context['@type'][0] : 'Experiment';
-        let assemblies = '';
-
-        if (filters.assembly && filters.assembly.length > 0 && filters.assembly[0] !== 'All assemblies') {
-            const analysis = filters.assembly[0].split(' ');
-            const assembly = analysis[0] ? `&${fileQueryKey}.assembly=${encodedURIComponent(analysis[0])}` : '';
-            const genomeAnnotation = analysis[1] ? `&${fileQueryKey}.genome_annotation=${encodedURIComponent(analysis[1])}` : '';
-            assemblies = `${[assembly, genomeAnnotation].filter((a) => a !== '').join('')}`;
-        }
-        const fileTypes = filters.file_type && filters.file_type.length > 0 ?
-            filters.file_type.map((fileType) => `&${fileQueryKey}.file_type=${encodedURIComponent(fileType)}`).join('') :
-            '';
-        const biologicalReplicates = filters.biological_replicates && filters.biological_replicates.length > 0 ?
-            filters.biological_replicates.map((replicate) => `&${fileQueryKey}.biological_replicates=${encodedURIComponent(replicate)}`).join('') :
-            '';
-        const outputTypes = filters.output_type && filters.output_type.length > 0 ?
-            filters.output_type.map((outputType) => `&${fileQueryKey}.output_type=${encodedURIComponent(outputType)}`).join('') :
-            '';
-        const fileStatus = inclusionOn ?
-            '' :
-            `&${fileQueryKey}.status=released&${fileQueryKey}.status=${encodedURIComponent('in progress')}`;
-        const preferredDefault = defaultOnly
-            ? `&${fileQueryKey}.preferred_default=true`
-            : '';
-
-        this.navigate(`/batch_download/?type=${type}&accession=${accession}${assemblies}${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}${preferredDefault}`);
-        this.setDownloadModalVisibility(false);
-    }
-
-    setDownloadModalVisibility(isOpen) {
-        this.setState({ isBatchDownloadOpen: isOpen });
-    }
-
     render() {
-        const { files, filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler, inclusionOn } = this.props;
+        const {
+            context,
+            files,
+            filters,
+            fileQueryKey,
+            filterOptions,
+            selectedFilterValue,
+            browsers,
+            currentBrowser,
+            browserChangeHandler,
+            visualizeHandler,
+            inclusionOn,
+        } = this.props;
         const contextFiles = (files).filter((file) => (inclusionOn ? file : inclusionStatuses.indexOf(file.status) === -1));
 
         const visualizerControls = (filterOptions.length > 0 || browsers.length > 0) ?
@@ -1673,24 +1679,22 @@ class FilterControls extends React.Component {
             )
         : null;
 
-        const downloadBtn = contextFiles.length > 0 ?
-            <div className="file-gallery-controls__download">
-                <button className="btn btn-info" type="button" onClick={() => this.setDownloadModalVisibility(true)}>Download All</button>
-                {
-                    this.state.isBatchDownloadOpen ?
-                        <BatchDownloadModal
-                            closeModalHandler={() => this.setDownloadModalVisibility(false)}
-                            downloadClickHandler={this.handleDownloadClick}
-                        /> :
-                        null
-                }
-            </div> :
-                null;
+        // Create the batch-download controller for dataset downloads, including the selected file
+        // facet terms.
+        const query = convertFiltersToQuery(filters, fileQueryKey, inclusionOn);
+        const batchDownloadController = new DatasetBatchDownloadController(context, query, fileQueryKey);
 
         return (
             <div className="file-gallery-controls">
                 {visualizerControls}
-                {downloadBtn}
+                <BatchDownloadActuator
+                    controller={batchDownloadController}
+                    actuator={
+                        <button className="btn btn-info file-gallery-controls__download" type="button">
+                            Download
+                        </button>
+                    }
+                />
             </div>
         );
     }
@@ -1721,8 +1725,6 @@ FilterControls.propTypes = {
     visualizeHandler: PropTypes.func.isRequired,
     /** include-deprecated check box checked status */
     inclusionOn: PropTypes.bool,
-    /** True to only download files with preferred_default set */
-    defaultOnly: PropTypes.bool,
 };
 
 FilterControls.defaultProps = {
@@ -1731,7 +1733,6 @@ FilterControls.defaultProps = {
     currentBrowser: '',
     filters: [],
     inclusionOn: false,
-    defaultOnly: false,
 };
 
 FilterControls.contextTypes = {
@@ -3539,6 +3540,7 @@ class FileGalleryRendererComponent extends React.Component {
                 selectedFilterValue={this.state.selectedFilterValue}
                 filters={this.state.fileFilters}
                 filterOptions={this.state.availableAssembliesAnnotations}
+                fileQueryKey={fileQueryKey}
                 graphedFiles={allGraphedFiles}
                 handleFilterChange={this.handleFilterChange}
                 browserOptions={{
@@ -3757,49 +3759,18 @@ const CollapsingTitleComponent = ({
     analysisObjectKey,
     outputCategory,
     outputType,
+    fileQueryKey,
     totalFiles,
     isDownloadable,
-    inclusionOn,
-    files,
     auditIndicators,
     auditDetail,
     auditCloseDetail,
 }, reactContext) => {
-    const [downloadModalVisibility, setDownloadModalVisibility] = useState(false);
     const analysis = analyses
         ? analyses.find((analysisObject) => analysisObject.accession === analysisObjectKey)
         : null;
 
-    const handleDownloadClick = () => {
-        const { accession } = context;
-        const type = context && context['@type'] ? context['@type'][0] : 'Experiment';
-
-        const fileTypes = filters.file_type && filters.file_type.length > 0
-            ? filters.file_type.map((fileType) => `&files.file_type=${encodedURIComponent(fileType)}`).join('')
-            : '';
-        const biologicalReplicates = filters.biological_replicates && filters.biological_replicates.length > 0
-            ? filters.biological_replicates.map((replicate) => `&files.biological_replicates=${encodedURIComponent(replicate)}`).join('')
-            : '';
-        const outputTypes = filters.output_type && filters.output_type.length > 0
-            ? filters.output_type.map((o) => `&files.output_type=${encodedURIComponent(o)}`).join('')
-            : '';
-        const fileStatus = inclusionOn
-            ? ''
-            : '&files.status=released';
-        const outputCategoryQueryString = outputCategory ? `&files.output_category=${outputCategory}` : '';
-        const outputTypeQueryString = outputType ? `&files.output_type=${outputType}` : '';
-
-        if (outputCategoryQueryString) {
-            reactContext.navigate(`/batch_download/?type=${type}&accession=${accession}${outputCategoryQueryString}${outputTypeQueryString}${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
-        } else {
-            reactContext.navigate(`/batch_download/?type=Analysis&@id=${analysis ? analysis['@id'] : ''}&${fileTypes}${outputTypes}${biologicalReplicates}${fileStatus}`);
-        }
-        setDownloadModalVisibility(false);
-    };
-
-    const canDownload = downloadEnabled(files);
-
-    // Get the audit object relevant to the current analysis
+    // Filter to audits relevant to the current analysis.
     const analysisAudit = analysis && analysisAudits ? analysisAudits[analysis['@id']] : null;
 
     React.useEffect(() => {
@@ -3808,25 +3779,36 @@ const CollapsingTitleComponent = ({
         }
     }, [collapsed]);
 
+    // Prepare the batch download controller. Because of earlier tests, at this point we know we
+    // have exactly one allowed "type={something}" in the filters.
+    let batchDownloadController;
+    const query = convertFiltersToQuery(filters, fileQueryKey);
+    if (analysis) {
+        batchDownloadController = new AnalysisBatchDownloadController(context, analysis['@id'], query, fileQueryKey);
+    } else if (outputCategory === 'reference') {
+        batchDownloadController = new ReferenceBatchDownloadController(context, query, outputType, outputCategory, fileQueryKey);
+    } else {
+        batchDownloadController = new RawSequencingBatchDownloadController(context, query, outputType, outputCategory, fileQueryKey);
+    }
+
     return (
         <>
             <div className="collapsing-title">
-                {downloadModalVisibility
-                    ? <BatchDownloadModal
-                        closeModalHandler={() => setDownloadModalVisibility(false)}
-                        downloadClickHandler={handleDownloadClick}
-                    />
-                    :
-                    null}
                 <button type="button" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
                 <h4>
                     {title} <span className="collapsing-title-file-count">({`${totalFiles} File${totalFiles !== 1 ? 's' : ''}`})</span>  &nbsp;&nbsp;
                     {isDownloadable ?
-                        <span className="collapsing-title__file-download" onClick={() => (canDownload ? setDownloadModalVisibility(true) : null)} role="button" tabIndex={0} onKeyDown={() => {}}>
-                            <i className={`icon icon-download ${canDownload ? '' : 'collapsing-title__file-download--no-download-shade'}`}>
-                                <span className="sr-only">Download</span>
-                            </i>
-                        </span>
+                        <BatchDownloadActuator
+                            controller={batchDownloadController}
+                            containerCss="collapsing-title__file-download-container"
+                            actuator={
+                                <button type="button" className="collapsing-title__file-download">
+                                    <i className="icon icon-download">
+                                        <span className="sr-only">Download</span>
+                                    </i>
+                                </button>
+                            }
+                        />
                     : null}
                 </h4>
                 {analysisObjectKey && analysis ? <Status item={analysis} css="collapsing-title__status" badgeSize="small" /> : null}
@@ -3855,10 +3837,9 @@ CollapsingTitleComponent.propTypes = {
     analysisObjectKey: PropTypes.string, // Accession of analysis this title applies to
     outputCategory: PropTypes.string, // output category object
     outputType: PropTypes.string, // output type to display in title
+    fileQueryKey: PropTypes.string.isRequired, // File query-string parameter prefix
     totalFiles: PropTypes.number, // total file count
     isDownloadable: PropTypes.bool, // whether or not the section can have it's files downloaded
-    inclusionOn: PropTypes.bool.isRequired, // inclusion box checked or not
-    files: PropTypes.array, // associated files
     /** Audit HOC decorator function to show button that triggers the audit details */
     auditIndicators: PropTypes.func.isRequired,
     /** Audit HOD decorator to close the audit detail */
@@ -3877,7 +3858,6 @@ CollapsingTitleComponent.defaultProps = {
     outputType: null,
     totalFiles: 0,
     isDownloadable: true,
-    files: [],
 };
 
 CollapsingTitleComponent.contextTypes = {

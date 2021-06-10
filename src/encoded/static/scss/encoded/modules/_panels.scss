@@ -538,10 +538,8 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
     }
 
     @at-root #{&}__download {
-        button {
-            height: $file-gallery-controls-height;
-            vertical-align: top;
-        }
+        height: $file-gallery-controls-height;
+        vertical-align: top;
 
         @media screen and (min-width: $screen-sm-min) {
             margin-left: 5px;
@@ -680,9 +678,16 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
         box-shadow: 0 0 3px #00f inset;
     }
 
+    &__file-download-container {
+        display: inline-block;
+    }
+
     &__file-download {
-        cursor: pointer;
+        padding: 0;
+        border: none;
+        background-color: transparent;
         color: #428bca;
+        font-size: 1.3rem;
 
         &--no-download-shade {
             opacity: 0.3;

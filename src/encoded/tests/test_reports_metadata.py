@@ -2313,4 +2313,4 @@ def test_metadata_series_metadata_report_generate_rows(index_workbook, dummy_req
     pdmr._build_params()
     results = list(pdmr._generate_rows())
     # One header, two TSV.
-    assert len(results) == 4
+    assert len(results) == 3

@@ -1,0 +1,44 @@
+// For the options in the batch download submit button dropdown menu
+.batch-download-option {
+    .batch-download-option__title {
+        margin: 5px 0;
+        font-size: 1rem;
+        font-weight: 700;
+        pointer-events: none;
+    }
+
+    .batch-download-option__description {
+        margin: 5px 0;
+        font-size: 0.9rem;
+        font-weight: 400;
+        pointer-events: none;
+    }
+}
+
+.batch-download-modal-footer {
+    align-items: center;
+
+    .batch-download-modal-footer__note {
+        margin-right: 10px;
+    }
+
+    .batch-download-modal-footer__close {
+        margin-right: 5px;
+    }
+
+    .dropdown-button__content {
+        button {
+            font-family: Mada, sans-serif;
+            line-height: 1.2;
+        }
+    }
+}
+
+// For the button in the batch download modal to initiate the download.
+.batch-download-submit {
+    button {
+        @extend .btn;
+        @extend .btn-info;
+        @extend .btn-sm;
+    }
+}

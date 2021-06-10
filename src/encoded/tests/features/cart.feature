@@ -53,7 +53,7 @@ Feature: Cart
         And I press "close-modal"
         Then I should see "3 files selected"
         And I should see 3 elements with the css selector ".cart-list-item"
-        When I press "Download processed data files"
+        When I press "Download"
         Then I should see an element with the css selector ".modal"
         When I press "Close"
         Then I should not see an element with the css selector ".modal"
@@ -63,13 +63,6 @@ Feature: Cart
         And I wait for the content to load
         Then I should see 7 elements with the css selector ".result-item"
         And I should see "4 files selected"
-
-    Scenario: Download menu
-        When I press "cart-facet-term-Experiment"
-        And I press "cart-download"
-        Then I should see 3 elements with the css selector ".menu-item"
-        When I press "raw"
-        Then I should see "Download raw data files"
 
     Scenario: Clearing the cart 
         When I press "clear-cart-actuator"
