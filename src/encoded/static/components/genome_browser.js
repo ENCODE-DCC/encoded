@@ -569,8 +569,6 @@ const TrackLabel = ({ file, label, long }) => {
             ]).join(', ');
     }
 
-    console.log(cartShortLabel);
-
     return (
         <>
             {(label === 'cart') ?
@@ -877,6 +875,7 @@ class GenomeBrowser extends React.Component {
             // Here we do some approximate math to try to figure out how many lines the labels extend to assuming that ~30 characters fit on one line
             // Labels on the experiment pages are short enough to fit on one line (they contain less information) so we can bypass these calculations for those pages
             if (label === 'cart') {
+                labelLength = file.title ? file.title.length : 0;
                 labelLength += file.target ? file.target.label.length + 2 : 0;
                 labelLength += file.assay_term_name ? file.assay_term_name.length + 2 : 0;
                 labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length + 2 : 0;
