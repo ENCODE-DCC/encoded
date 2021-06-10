@@ -2053,6 +2053,24 @@ export const SeriesComponent = (props, reactContext) => {
                                     </dd>
                                 </div>
                             : null}
+
+                            {context.elements_references && context.elements_references.length > 0 ?
+                                <div data-test="elements-references">
+                                    <dt>Elements references</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.elements_references.map((reference) => (
+                                                <li key={reference['@id']} className="multi-comma">
+                                                    <a href={reference['@id']}>
+                                                        {reference.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
                         </dl>
                     </div>
 
