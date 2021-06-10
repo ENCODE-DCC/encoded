@@ -271,3 +271,13 @@ def test_no_readlength_dependency(testapp, file_no_readlength, platform5):
     testapp.post_json('/file', file_no_readlength, status=422)
     file_no_readlength.update({'platform': platform5['@id']})
     testapp.post_json('/file', file_no_readlength, status=201)
+
+
+def test_ENTEx_assembly_bam(testapp, file_good_bam):
+    item = file_good_bam.copy()
+    item.update({'output_type': 'diploid personal genome alignments'})
+    testapp.post_json('/file', item, status=422)
+    item.update({'output_type': 'haplotype-specific alignments'})
+    testapp.post_json('/file', item, status=422)
+    item.update({'assembly': 'ENC003.1'})
+    testapp.post_json('/file', item, status=201)

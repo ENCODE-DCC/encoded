@@ -2,6 +2,7 @@
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.
+* Added several entries to the enum list for *output_type*: *allele-specific chromatin interactions, allele-specific variants, bidirectional peaks, diploid personal genome alignments, haplotype-specific alignments, novel peptides, peptide quantifications, protein expression quantifications, unidirectional peaks*
 
 ### Minor changes since schema version 28
 * Added *element enrichments* to the enum list for *file_format_type*
