@@ -559,14 +559,17 @@ const TrackLabel = ({ file, label, long }) => {
     // For Valis in carts, build the short string.
     let cartShortLabel;
     if (label === 'cart') {
-        cartShortLabel = _.compact([
-            file.target && file.target.label,
-            file.assay_term_name,
-            file.biosample_ontology && file.biosample_ontology.term_name,
-            file.annotation_type,
-            file.annotation_subtype,
-        ]).join(', ');
+        cartShortLabel = file.title ? file.title :
+            _.compact([
+                file.target && file.target.label,
+                file.assay_term_name,
+                file.biosample_ontology && file.biosample_ontology.term_name,
+                file.annotation_type,
+                file.annotation_subtype,
+            ]).join(', ');
     }
+
+    console.log(cartShortLabel);
 
     return (
         <>
