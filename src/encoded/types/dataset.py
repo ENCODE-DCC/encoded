@@ -991,8 +991,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                 'title',
             ],
         ),
-
-        Path('related_datasets.files.analyses', include=['datasets', 'publication_data']),
     ]
 
     @calculated_property(schema={
