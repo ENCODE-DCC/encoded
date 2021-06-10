@@ -831,6 +831,7 @@ class GenomeBrowser extends React.Component {
         const domain = `${window.location.protocol}//${window.location.hostname}`;
         files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag).filter((file) => file.assembly === this.props.assembly);
         newFiles = [...this.state.pinnedFiles, ...files];
+        newFiles = _.uniq(newFiles, (file) => file.href);
         let tracks = [];
         if (files.length > 0) {
             tracks = this.filesToTracks(newFiles, this.props.label, domain);
