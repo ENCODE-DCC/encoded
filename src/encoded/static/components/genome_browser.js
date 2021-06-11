@@ -559,7 +559,7 @@ const TrackLabel = ({ file, label, long }) => {
     // For Valis in carts, build the short string.
     let cartShortLabel;
     if (label === 'cart') {
-        cartShortLabel = file.title ? file.title :
+        cartShortLabel = (file.title === 'representative DNase hypersensitivity sites' || file.title === 'cCRE, all') ? file.title :
             _.compact([
                 file.target && file.target.label,
                 file.assay_term_name,
