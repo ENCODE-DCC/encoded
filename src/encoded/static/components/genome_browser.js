@@ -151,6 +151,11 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                     title: 'GENCODE V33',
                 },
                 {
+                    title: 'dbSNP (153)',
+                    file_format: 'variant',
+                    path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38-dbSNP153.vvariants-dir',
+                },
+                {
                     file_format: 'bigBed',
                     href: '/files/ENCFF088UEJ/@@download/ENCFF088UEJ.bigBed',
                     dataset: '/annotations/ENCSR169HLH/',
@@ -559,14 +564,13 @@ const TrackLabel = ({ file, label, long }) => {
     // For Valis in carts, build the short string.
     let cartShortLabel;
     if (label === 'cart') {
-        cartShortLabel = (file.title === 'representative DNase hypersensitivity sites' || file.title === 'cCRE, all') ? file.title :
-            _.compact([
-                file.target && file.target.label,
-                file.assay_term_name,
-                file.biosample_ontology && file.biosample_ontology.term_name,
-                file.annotation_type,
-                file.annotation_subtype,
-            ]).join(', ');
+        cartShortLabel = _.compact([
+            file.target && file.target.label,
+            file.assay_term_name,
+            file.biosample_ontology && file.biosample_ontology.term_name,
+            file.annotation_type,
+            file.annotation_subtype,
+        ]).join(', ');
     }
 
     return (
@@ -919,6 +923,16 @@ class GenomeBrowser extends React.Component {
                 trackObj.path = file.href;
                 trackObj.heightPx = 115;
                 trackObj.expandable = false;
+                trackObj.displayLabels = true;
+                return trackObj;
+            }
+            if (file.title === 'representative DNase hypersensitivity sites' || file.title === 'cCRE, all') {
+                const trackObj = {};
+                trackObj.name = <ul className="gb-info"><li>{file.title}</li></ul>;
+                trackObj.type = 'annotation';
+                trackObj.path = file.href;
+                trackObj.heightPx = file.title === 'representative DNase hypersensitivity sites' ? 45 : 35;
+                trackObj.expandable = true;
                 trackObj.displayLabels = true;
                 return trackObj;
             }
