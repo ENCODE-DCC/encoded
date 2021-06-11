@@ -10,8 +10,8 @@ Ontologies used
 |:--|:--|:--|:--|
 | [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON releases] | 2021-02-12 | [UBERON release] |
 | [Cell Ontology (CL)] | `cl.ow` from [CL] | 2021-04-22 | [CL release] |
-| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-04-20 (3.29.1) | [EFO releases] |
-| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-04-07 | [MONDO release date] |
+| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-05-17 (3.30.0) | [EFO releases] |
+| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-06-01 | [MONDO release date] |
 | [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2021-01-04 (2.5) | [HANCESTRO releases] |
 
 **Current ontology.json:** `ontology-2021-06-11.json`
@@ -25,9 +25,11 @@ How to update the ontology versions
 	`$ bin/generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/vYYYY-MM-DD/composite-vertebrate.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl --hancestro-url=http://purl.obolibrary.org/obo/hancestro/hancestro.owl --cl-url=http://purl.obolibrary.org/obo/cl.owl`
 
 2. Rename the `ontology.json` to one with the date that it was generated
+
 	`$ cp ontology.json ontology-YYYY-MM-DD.json`
 
 3. Load new ontology file into the latticed-build/ontology directory on S3
+
 	`$ aws s3 cp ontology-YYYY-MM-DD.json s3://latticed-build/ontology/`
 
 4.  Update the ontology.json file in [buildout.cfg]
