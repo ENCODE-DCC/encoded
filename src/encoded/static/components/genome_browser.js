@@ -126,6 +126,18 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 file_format: 'variant',
                 path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38-dbSNP153.vvariants-dir',
             },
+            {
+                file_format: 'bigBed',
+                href: '/files/ENCFF088UEJ/@@download/ENCFF088UEJ.bigBed',
+                dataset: '/annotations/ENCSR169HLH/',
+                title: 'representative DNase hypersensitivity sites',
+            },
+            {
+                file_format: 'bigBed',
+                href: '/files/ENCFF389ZVZ/@@download/ENCFF389ZVZ.bigBed',
+                dataset: '/annotations/ENCSR439EAZ/',
+                title: 'cCRE, all',
+            },
         ];
         if (annotation === 'V33') {
             pinnedFiles = [
@@ -137,6 +149,23 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                     file_format: 'vgenes-dir',
                     href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/gencode.v33.GRCh38.p13.annotation.vgenes-dir',
                     title: 'GENCODE V33',
+                },
+                {
+                    title: 'dbSNP (153)',
+                    file_format: 'variant',
+                    path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38-dbSNP153.vvariants-dir',
+                },
+                {
+                    file_format: 'bigBed',
+                    href: '/files/ENCFF088UEJ/@@download/ENCFF088UEJ.bigBed',
+                    dataset: '/annotations/ENCSR169HLH/',
+                    title: 'representative DNase hypersensitivity sites',
+                },
+                {
+                    file_format: 'bigBed',
+                    href: '/files/ENCFF389ZVZ/@@download/ENCFF389ZVZ.bigBed',
+                    dataset: '/annotations/ENCSR439EAZ/',
+                    title: 'cCRE, all',
                 },
             ];
         }
@@ -183,6 +212,18 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 file_format: 'vgenes-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vgenes-dir',
                 title: 'GENCODE M21',
+            },
+            {
+                file_format: 'bigBed',
+                href: '/files/ENCFF278QAH/@@download/ENCFF278QAH.bigBed',
+                dataset: '/annotations/ENCSR672RVL/',
+                title: 'representative DNase hypersensitivity sites',
+            },
+            {
+                file_format: 'bigBed',
+                href: '/files/ENCFF228JRO/@@download/ENCFF228JRO.bigBed',
+                dataset: '/annotations/ENCSR394RWS/',
+                title: 'cCRE, all',
             },
         ];
         contig = 'chr12';
@@ -551,7 +592,7 @@ const TrackLabel = ({ file, label, long }) => {
                 <ul className="gb-info">
                     <li>
                         <a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a>
-                        {(biologicalReplicates !== '') ? <span>{` (rep ${biologicalReplicates})`}</span> : null}
+                        {(biologicalReplicates && biologicalReplicates !== '') ? <span>{` (rep ${biologicalReplicates})`}</span> : null}
                     </li>
                     {long ?
                         <>
@@ -795,6 +836,7 @@ class GenomeBrowser extends React.Component {
         const domain = `${window.location.protocol}//${window.location.hostname}`;
         files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag).filter((file) => file.assembly === this.props.assembly);
         newFiles = [...this.state.pinnedFiles, ...files];
+        newFiles = _.uniq(newFiles, (file) => file.href);
         let tracks = [];
         if (files.length > 0) {
             tracks = this.filesToTracks(newFiles, this.props.label, domain);
@@ -829,10 +871,10 @@ class GenomeBrowser extends React.Component {
                     colorBlock: [...prevState.colorBlock, 'chromatin'],
                 }));
             }
-            let labelLength = 0;
             const defaultHeight = 29;
-            const extraLineHeight = 12;
+            const extraLineHeight = 14;
             const maxCharPerLine = 26;
+            let labelLength = file.title ? Math.floor(file.title.length / maxCharPerLine) : 0;
             // Some labels on the cart which have a target, assay name, and biosample are too long for one line (some actually extend to three lines)
             // Here we do some approximate math to try to figure out how many lines the labels extend to assuming that ~30 characters fit on one line
             // Labels on the experiment pages are short enough to fit on one line (they contain less information) so we can bypass these calculations for those pages
@@ -881,6 +923,16 @@ class GenomeBrowser extends React.Component {
                 trackObj.heightPx = 115;
                 trackObj.expandable = false;
                 trackObj.displayLabels = true;
+                return trackObj;
+            }
+            if (file.title === 'representative DNase hypersensitivity sites' || file.title === 'cCRE, all') {
+                const trackObj = {};
+                trackObj.name = <ul className="gb-info"><li>{file.title}</li></ul>;
+                trackObj.type = 'annotation';
+                trackObj.path = file.href;
+                trackObj.heightPx = file.title === 'representative DNase hypersensitivity sites' ? 50 : 30;
+                trackObj.expandable = false;
+                trackObj.displayLabels = false;
                 return trackObj;
             }
             if (file.file_format === 'variant') {
