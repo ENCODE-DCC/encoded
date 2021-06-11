@@ -22,19 +22,19 @@ How to update the ontology versions
 1. Run generate-ontology  
 *note: first look up the latest [UBERON release] and [EFO release] and include the versions each url*
 
-	`$ bin/generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/vYYYY-MM-DD/composite-vertebrate.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl --hancestro-url=http://purl.obolibrary.org/obo/hancestro/hancestro.owl --cl-url=http://purl.obolibrary.org/obo/cl.owl`
+	`$ bin/generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/*vYYYY-MM-DD*/composite-vertebrate.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/*vX.XX.X*/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl --hancestro-url=http://purl.obolibrary.org/obo/hancestro/hancestro.owl --cl-url=http://purl.obolibrary.org/obo/cl.owl`
 
 2. Rename the `ontology.json` to one with the date that it was generated
 
-	`$ cp ontology.json ontology-YYYY-MM-DD.json`
+	`$ cp ontology.json ontology-*YYYY-MM-DD*.json`
 
 3. Load new ontology file into the latticed-build/ontology directory on S3
 
-	`$ aws s3 cp ontology-YYYY-MM-DD.json s3://latticed-build/ontology/`
+	`$ aws s3 cp ontology-*YYYY-MM-DD*.json s3://latticed-build/ontology/`
 
 4.  Update the ontology.json file in [buildout.cfg]
 
-	`curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-YYYY-MM-DD.json`
+	`curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-*YYYY-MM-DD*.json`
 
 5.  Update the **Version in use** and **Current ontology.json:** above
 
