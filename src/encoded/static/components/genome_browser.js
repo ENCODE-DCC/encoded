@@ -930,9 +930,9 @@ class GenomeBrowser extends React.Component {
                 trackObj.name = <ul className="gb-info"><li>{file.title}</li></ul>;
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
-                trackObj.heightPx = file.title === 'representative DNase hypersensitivity sites' ? 45 : 35;
-                trackObj.expandable = true;
-                trackObj.displayLabels = true;
+                trackObj.heightPx = file.title === 'representative DNase hypersensitivity sites' ? 50 : 30;
+                trackObj.expandable = false;
+                trackObj.displayLabels = false;
                 return trackObj;
             }
             if (file.file_format === 'variant') {
