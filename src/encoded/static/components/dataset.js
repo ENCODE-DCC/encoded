@@ -1971,6 +1971,35 @@ export const SeriesComponent = (props, reactContext) => {
         }, [])),
     ].filter((disease) => disease);
 
+    const ElementsReferences = ({ reference }) => {
+        // Render all examined_loci as links, and all examined_regions as text, and combine them
+        // together for final rendering.
+        const examinedLoci = (reference.examined_loci && reference.examined_loci.length > 0)
+            ? reference.examined_loci.map((locus) => <a key={locus['@id']} href={locus['@id']}>{locus.symbol}</a>)
+            : [];
+        const examinedRegions = (reference.examined_regions && reference.examined_regions.length > 0)
+            ? reference.examined_regions.map((region, i) => <span key={i}>{region.assembly} {region.chromosome}:{region.start}-{region.end}</span>)
+            : [];
+        const examinedAreas = examinedLoci.concat(examinedRegions);
+
+        // Use the combined components to render to the page.
+        if (examinedAreas.length > 0) {
+            return (
+                <>
+                    &nbsp;(
+                    {examinedAreas.map((examinedArea, i) => (
+                        <React.Fragment key={i}>
+                            {i > 0 ? ', ' : null}
+                            {examinedArea}
+                        </React.Fragment>
+                    ))}
+                    )
+                </>
+            );
+        }
+        return null;
+    };
+
     return (
         <div className={itemClass}>
             <header>
@@ -2060,10 +2089,9 @@ export const SeriesComponent = (props, reactContext) => {
                                     <dd>
                                         <ul>
                                             {context.elements_references.map((reference) => (
-                                                <li key={reference['@id']} className="multi-comma">
-                                                    <a href={reference['@id']}>
-                                                        {reference.accession}
-                                                    </a>
+                                                <li key={reference.uuid}>
+                                                    <a className="stacked-link" href={reference['@id']}>{reference.accession}</a>
+                                                    <ElementsReferences reference={reference} />
                                                 </li>
                                             ))}
                                         </ul>
