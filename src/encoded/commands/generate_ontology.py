@@ -307,17 +307,20 @@ def main():
     parser.add_argument('--efo-url', help="EFO version URL")
     parser.add_argument('--mondo-url', help="MONDO version URL")
     parser.add_argument('--hancestro-url', help="HANCESTRO version URL")
+    parser.add_argument('--cl-url', help="CL version URL")
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
     mondo_url = args.mondo_url
     hancestro_url = args.hancestro_url
+    cl_url = args.cl_url
     url_whitelist = {
         uberon_url: ['UBERON', 'CL'],
         efo_url: ['EFO'],
         mondo_url: ['MONDO'],
-        hancestro_url: ['HANCESTRO']
+        hancestro_url: ['HANCESTRO'],
+        cl_url: ['CL']
         }
 
     terms = {}
