@@ -7,7 +7,11 @@ import * as globals from './globals';
 import { requestFiles, AlternateAccession, CopyButton } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BatchDownloadControls } from './view_controls';
+import {
+    BatchDownloadActuator,
+    DatasetBatchDownloadController,
+} from './batch_download';
+import QueryString from '../libs/query_string';
 
 
 // Maximum number of files before the user can't download them.
@@ -802,6 +806,11 @@ export const FileTablePaged = ({ context, fileIds, files, title }) => {
 
         // Determine whether too many files exist to download.
         const canDownload = fileCount <= MAX_DOWNLOADABLE_FILES;
+        let batchDownloadController;
+        if (context) {
+            const query = new QueryString();
+            batchDownloadController = new DatasetBatchDownloadController(context, query);
+        }
 
         return (
             <SortTablePanel
@@ -810,7 +819,16 @@ export const FileTablePaged = ({ context, fileIds, files, title }) => {
                         title={headerTitle}
                         currentPage={currentPageNum}
                         totalPageCount={totalPages}
-                        control={context ? <BatchDownloadControls queryString={`type=${context['@type'][0]}&@id=${context['@id']}`} modalText={!canDownload ? <AltModalMessage /> : null} canDownload={canDownload} /> : null}
+                        control={
+                            batchDownloadController
+                                ? (
+                                    <BatchDownloadActuator
+                                        controller={batchDownloadController}
+                                        modalContent={!canDownload ? <AltModalMessage /> : null}
+                                        disabled={!canDownload}
+                                    />
+                                )
+                                : null}
                         updateCurrentPage={updateCurrentPage}
                     />
                 }
