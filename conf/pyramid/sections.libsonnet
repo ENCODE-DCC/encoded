@@ -116,7 +116,7 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
     queue_worker_processes=24,
     queue_worker_chunk_size=1024,
     queue_worker_batch_size=5000,
-    queue_worker_get_size=2000000,
+    queue_worker_get_size=2500000,
   ): {
     'composite:indexer': section_data,
     local section_data = {
