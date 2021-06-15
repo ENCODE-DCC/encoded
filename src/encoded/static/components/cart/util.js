@@ -141,5 +141,9 @@ export const getObjectFieldValue = (object, field) => {
     if (parts.length === 1) {
         return object[field];
     }
-    return parts.reduce((partObject, part) => partObject && partObject[part], object);
+    const value = parts.reduce((partObject, part) => partObject && partObject[part], object);
+    if (Array.isArray(value)) {
+        return value.length > 0 ? value : undefined;
+    }
+    return value;
 };

@@ -42,15 +42,22 @@ const analysisSorter = (facetTerms, analyses) => (
 
 
 /**
- * Field mapping transform for analyses. Generate a query string corresponding to all the selected
- * analyses with the given titles. More than one title can be selected, and more than one analysis
- * can correspond to a title, so all these get combined into one query string.
- * @param {array} analysisTitles Selected analysis titles from the facet.
- *
- * @return {string} Combined query string selecting file.analyses titles.
+ * Field mapping transform for file analyses.
+ * @return {string} Query string key selecting file.analyses titles.
  */
 const analysisFieldMap = () => (
     'analyses.title'
+);
+
+
+/**
+ * Field mapping transform for dataset targets. Annotations have arrays of targets while otherx
+ * datasets have a single target at most.
+ * @param {array} datasetType Dataset type being downloaded
+ * @return {string} Query string key selecting dataset targets.
+ */
+const targetFieldMap = (datasetType) => (
+    datasetType === 'Annotation' ? 'targets.label' : 'target.label'
 );
 
 
@@ -161,8 +168,10 @@ export const displayedDatasetFacetFields = [
         title: 'Biosample',
     },
     {
-        field: 'target.label',
+        field: 'targetList',
         title: 'Target',
+        fieldMapper: targetFieldMap,
+        calculated: true,
     },
     {
         field: 'annotation_type',
@@ -1055,6 +1064,25 @@ CartFacets.defaultProps = {
 
 
 /**
+ * This merges a facet term into a facet object. If the term already exists in the facet, its term
+ * count gets incremented. Otherwise, the term gets added to the facet terms with an initial count.
+ * @param {object} facet Facet to merge term into
+ * @param {string} term Facet term to merge
+ */
+const mergeTermIntoFacet = (facet, term) => {
+    const matchingTerm = facet.terms.find((matchingFacetTerm) => matchingFacetTerm.term === term);
+    if (matchingTerm) {
+        // Facet term has been counted before, so add to its count. Mark the term as
+        // visualizable if any file contributing to this term is visualizable.
+        matchingTerm.count += 1;
+    } else {
+        // Facet term has not been counted before, so initialize a new facet term entry.
+        facet.terms.push({ term, count: 1 });
+    }
+};
+
+
+/**
  * Update the `facets` array by incrementing the count of the term within it selected by the
  * `field` within the given `dataset`.
  * @param {array} facets Facet array to update - mutated!
@@ -1066,16 +1094,21 @@ const addDatasetTermToFacet = (facets, field, dataset) => {
     if (facetTerm !== undefined) {
         const matchingFacet = facets.find((facet) => facet.field === field);
         if (matchingFacet) {
-            // The facet has been seen in this loop before, so add to or initialize
-            // the relevant term within this facet.
-            const matchingTerm = matchingFacet.terms.find((matchingFacetTerm) => matchingFacetTerm.term === facetTerm);
-            if (matchingTerm) {
-                // Facet term has been counted before, so add to its count. Mark the term as
-                // visualizable if any file contributing to this term is visualizable.
-                matchingTerm.count += 1;
+            // The facet has been seen in this loop before, so add to or initialize the relevant
+            // term within this facet.
+            if (Array.isArray(facetTerm)) {
+                facetTerm.forEach((singleTerm) => {
+                    mergeTermIntoFacet(matchingFacet, singleTerm);
+                });
             } else {
-                // Facet term has not been counted before, so initialize a new facet term entry.
-                matchingFacet.terms.push({ term: facetTerm, count: 1 });
+                mergeTermIntoFacet(matchingFacet, facetTerm);
+            }
+        } else if (Array.isArray(facetTerm)) {
+            if (facetTerm.length > 0) {
+                // The facet has not been seen in this loop before, so initialize it as
+                // well as the value of the relevant terms within the facet.
+                const multipleTerms = facetTerm.map((singleTerm) => ({ term: singleTerm, count: 1 }));
+                facets.push({ field, terms: multipleTerms });
             }
         } else {
             // The facet has not been seen in this loop before, so initialize it as
@@ -1147,10 +1180,14 @@ export const assembleDatasetFacets = (selectedTerms, datasets, usedFacetFields) 
             let match = selectedFacetKeys.every((selectedFacetKey) => {
                 // `selectedFacetKey` is one facet field, e.g. "assay_title".
                 // `propValue` is the dataset's value for that field.
+                // For targetList, propValue is an array of all targets in the given dataset.
                 const propValue = getObjectFieldValue(dataset, selectedFacetKey);
 
                 // Determine if the dataset's `selectedFacetKey` prop has been selected by at
                 // least one facet term.
+                if (Array.isArray(propValue)) {
+                    return propValue.some((value) => selectedTerms[selectedFacetKey].indexOf(value) !== -1);
+                }
                 return selectedTerms[selectedFacetKey].indexOf(propValue) !== -1;
             });
 
