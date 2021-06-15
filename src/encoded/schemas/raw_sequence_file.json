@@ -171,6 +171,33 @@
                 "i5 index",
                 "i7 index"
             ]
+        },
+        "flowcell_details": {
+            "title": "Flowcell details",
+            "description": "For each sequence file, the machine id, flowcell, and lane information for the sequencing run.",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Flowcell details",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "machine": {
+                        "title": "Machine Name",
+                        "description": "The lab specific name of the machine used.",
+                        "type": "string"
+                    },
+                    "flowcell": {
+                        "title": "Flowcell ID",
+                        "type": "string"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "string"
+                    }
+                }
+            }
         }
     },
     "facets": {

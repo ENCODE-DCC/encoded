@@ -44,6 +44,39 @@ def audit_read_counts(value, system):
         return
 
 
+def audit_flowcell(value, system):
+    '''
+    All sequence files belonging to a SequencingRun
+    should have the same flowcell_details.
+    '''
+    if value['status'] in ['deleted']:
+        return
+
+    #compile all flowcell_details present in any attached files
+    flow_lib = []
+    for f in value.get('files'):
+        if f.get('validated') != True or not f.get('flowcell_details'):
+            return
+        for flow in f.get('flowcell_details'):
+            if flow not in flow_lib:
+                flow_lib.append(flow)
+
+    #check each file for each flowcell_detail in the set
+    audit_flag = False
+    for f in value.get('files'):
+        if f.get('flowcell_details'):
+            for flow in flow_lib:
+                if flow not in f.get('flowcell_details'):
+                    audit_flag = True
+    if audit_flag == True:
+        detail = ('SequencingRun {} has files of variable flowcell_details.'.format(
+            audit_link(path_to_text(value['@id']), value['@id'])
+            )
+        )
+        yield AuditFailure('variable flowcell details', detail, level='ERROR')
+        return
+
+
 def audit_required_files(value, system):
     '''
     All sequence files belonging to a SequencingRun
@@ -117,6 +150,7 @@ def audit_duplicated_read_types(value, system):
 
 
 function_dispatcher = {
+    'audit_flowcell': audit_flowcell,
     'audit_read_counts': audit_read_counts,
     'audit_required_files': audit_required_files,
     'no_platform': no_platform,
