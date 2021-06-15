@@ -30,7 +30,7 @@ PART_OF = "http://purl.obolibrary.org/obo/BFO_0000050"
 DEVELOPS_FROM = "http://purl.obolibrary.org/obo/RO_0002202"
 HUMAN_TAXON = "http://purl.obolibrary.org/obo/NCBITaxon_9606"
 HAS_PART = "http://purl.obolibrary.org/obo/BFO_0000051"
-DERIVES_FROM = "http://www.obofoundry.org/ro/ro.owl#derives_from"
+DERIVES_FROM = "http://purl.obolibrary.org/obo/RO_0001000"
 ACHIEVES_PLANNED_OBJECTIVE = "http://purl.obolibrary.org/obo/OBI_0000417"
 DEFAULT_LANGUAGE = "en"
 
