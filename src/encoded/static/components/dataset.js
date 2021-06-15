@@ -1247,8 +1247,8 @@ const basicTableColumns = {
         getValue: (experiment) => (experiment.target ? experiment.target.label : null),
     },
 
-    description: {
-        title: 'Description',
+    biosample_summary: {
+        title: 'Biosample summary',
     },
 
     lab: {
@@ -1286,8 +1286,8 @@ const geneSilencingSeriesTableColumns = {
         getValue: (experiment) => (experiment.target ? experiment.target.label : '(control)'),
     },
 
-    description: {
-        title: 'Description',
+    biosample_summary: {
+        title: 'Biosample summary',
     },
 
     lab: {
@@ -1343,8 +1343,8 @@ const treatmentTimeSeriesTableColumns = {
         },
     },
 
-    description: {
-        title: 'Description',
+    biosample_summary: {
+        title: 'Biosample summary',
     },
 
     lab: {
@@ -1400,8 +1400,8 @@ const treatmentSeriesTableColumns = {
         getValue: (experiment) => computeConcentration(experiment),
     },
 
-    description: {
-        title: 'Description',
+    biosample_summary: {
+        title: 'Biosample summary',
     },
 
     lab: {
@@ -1457,8 +1457,8 @@ const replicationTimingSeriesTableColumns = {
         },
     },
 
-    description: {
-        title: 'Description',
+    biosample_summary: {
+        title: 'Biosample summary',
     },
 
     lab: {
@@ -1580,8 +1580,8 @@ const organismDevelopmentSeriesTableColumns = {
         objSorter: (a, b) => sortStage(a, b),
     },
 
-    description: {
-        title: 'Description',
+    biosample_summary: {
+        title: 'Biosample summary',
     },
 
     lab: {
@@ -1687,8 +1687,8 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
         objSorter: (a, b) => sortPostSynch(a, b),
     },
 
-    description: {
-        title: 'Description',
+    biosample_summary: {
+        title: 'Biosample summary',
     },
 
     lab: {
@@ -1739,8 +1739,8 @@ const functionalCharacterizationSeriesTableColumns = {
         getValue: (experiment) => computeExaminedLoci(experiment),
     },
 
-    description: {
-        title: 'Description',
+    biosample_summary: {
+        title: 'Biosample summary',
     },
 
     lab: {
