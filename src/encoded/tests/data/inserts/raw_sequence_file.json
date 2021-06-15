@@ -22,7 +22,14 @@
         "read_length": 91,
         "md5sum": "11aaa0a073e01af2839c972711467c04",
         "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
-        "crc32c": "C76ABAA9"
+        "crc32c": "C76ABAA9",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ]
     },
     {
         "accession": "LATDF301DMX",
@@ -47,7 +54,14 @@
         "read_length": 28,
         "md5sum": "11aaa0a073e01af2839c972711467c04",
         "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
-        "crc32c": "C76ABAA9"
+        "crc32c": "C76ABAA9",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ]
     },
     {
         "accession": "LATDF202DMX",
@@ -72,7 +86,14 @@
         "read_length": 91,
         "md5sum": "11aaa0a073e01af2839c972711467c04",
         "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
-        "crc32c": "C76ABAA9"
+        "crc32c": "C76ABAA9",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ]
     },
     {
         "accession": "LATDF201DMX",
@@ -97,7 +118,14 @@
         "read_length": 28,
         "md5sum": "11aaa0a073e01af2839c972711467c04",
         "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
-        "crc32c": "C76ABAA9"
+        "crc32c": "C76ABAA9",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ]
     },
     {
         "accession": "LATDF102DMX",
@@ -122,7 +150,14 @@
         "read_length": 91,
         "md5sum": "11aaa0a073e01af2839c972711467c04",
         "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
-        "crc32c": "C76ABAA9"
+        "crc32c": "C76ABAA9",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ]
     },
     {
         "accession": "LATDF101DMX",
@@ -147,7 +182,14 @@
         "read_length": 28,
         "md5sum": "11aaa0a073e01af2839c972711467c04",
         "sha256": "ec41d2acdd3b285fdcd85695af76215f1ce93dcef33b4d9486e24c0dc4fbdc26",
-        "crc32c": "C76ABAA9"
+        "crc32c": "C76ABAA9",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ]
     },
     {
         "aliases": [
