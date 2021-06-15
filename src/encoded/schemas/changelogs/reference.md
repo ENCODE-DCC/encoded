@@ -1,5 +1,9 @@
 ## Changelog for reference.json
 
+### Schema version 20
+* Update the *internal_tags* and *RegulomeDB* to *RegulomeDB_1_0*
+* Added *RegulomeDB_2_0* and *RegulomeDB_2_1* to the *internal_tags* enum list.
+
 ### Minor changes since schema version 19
 
 * *related_pipelines* property was added to link relevant pipelines to their corresponding reference fileset 

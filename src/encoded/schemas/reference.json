@@ -63,7 +63,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "19"
+            "default": "20"
         },
         "reference_type": {
             "title": "Reference type",

@@ -19,3 +19,12 @@ def upgrade_18_19_reference(testapp, lab, award, gene):
         'reference_type': 'functional elements'
     }
     return testapp.post_json('/reference', item).json['@graph'][0]
+
+@pytest.fixture
+def reference_19(testapp, lab, award, internal_tags):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'internal_tags': 'RegulomeDB'
+    }
+    return testapp.post_json('/reference', item).json['@graph'][0]

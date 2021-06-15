@@ -6,8 +6,8 @@
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
 
 ### Schema version 33
-* Updated the *internal_tag* *Regulome_DB* to *Regulome_DB_1_0*
-* Also added *Regulome_DB_2_0* and *Regulome_DB_2_1* to the *internal_tag* enum list
+* Update the *internal_tags* and *RegulomeDB* to *RegulomeDB_1_0*
+* Added *RegulomeDB_2_0* and *RegulomeDB_2_1* to the *internal_tags* enum list.
 
 ### Minor changes since schema version 32
 * Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
