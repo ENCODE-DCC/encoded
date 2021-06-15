@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody } from '../../libs/ui/modal';
-import { encodedURIComponent } from '../../libs/query_encoding';
 import { svgIcon } from '../../libs/svg-icons';
 import { tintColor, isLight } from '../datacolors';
 import { keyCode } from '../globals';
@@ -50,8 +49,8 @@ const analysisSorter = (facetTerms, analyses) => (
  *
  * @return {string} Combined query string selecting file.analyses titles.
  */
-const analysisFieldMap = (analysisTitles) => (
-    analysisTitles.map((title) => `files.analyses.title=${encodedURIComponent(title)}`).join('&')
+const analysisFieldMap = () => (
+    'analyses.title'
 );
 
 

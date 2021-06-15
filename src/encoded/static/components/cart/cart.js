@@ -406,6 +406,7 @@ const CartTools = ({
     elements,
     selectedFileTerms,
     selectedDatasetTerms,
+    facetFields,
     savedCartObj,
     cartType,
     sharedCart,
@@ -424,6 +425,7 @@ const CartTools = ({
                     cartType={cartType}
                     selectedFileTerms={selectedFileTerms}
                     selectedDatasetTerms={selectedDatasetTerms}
+                    facetFields={facetFields}
                     savedCartObj={savedCartObj}
                     sharedCart={sharedCart}
                     visualizable={visualizable}
@@ -446,6 +448,8 @@ CartTools.propTypes = {
     selectedFileTerms: PropTypes.object,
     /** Selected dataset facet terms */
     selectedDatasetTerms: PropTypes.object,
+    /** Currently used facet field definitions */
+    facetFields: PropTypes.array.isRequired,
     /** Cart as it exists in the database; use JSON payload method if none */
     savedCartObj: PropTypes.object,
     /** Type of cart: ACTIVE, OBJECT */
