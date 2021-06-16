@@ -22,7 +22,7 @@ RNA_GET_COLUMNS = {
     'biosample_term_name': {'title': 'Biosample'},
     'libraryPrepProtocol': {'title': 'Experiment'},
     'expressionID': {'title': 'File'},
-    'annotation': {'title': 'Annotation'},
+    'annotation': {'title': 'Assembly'},
     'biosample_classification': {'title': 'Biosample classification'},
     'biosample_sex': {'title': 'Sex'},
     'biosample_organ': {'title': 'Organ'},
