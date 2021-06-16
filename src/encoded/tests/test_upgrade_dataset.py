@@ -506,6 +506,7 @@ def test_upgrade_dataset_30_to_31(upgrader, experiment_34, annotation_32, refere
     assert reference_19['schema_version'] == '19'
     value = upgrader.upgrade('reference', reference_19, current_version='19', target_version='20')
     assert value['schema_version'] == '20'
+    assert 'RegulomeDB' not in value
     assert value['internal_tags'] == ['RegulomeDB_1_0']
 
 def test_upgrade_dataset_31_to_32(upgrader, experiment_35):
