@@ -2644,9 +2644,11 @@ def audit_library_RNA_size_range(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('assay_term_name') in ['transcription profiling by array assay',
-                                        'long read RNA-seq',
-                                        ]:
+    if value.get('assay_term_name') in [
+        'transcription profiling by array assay',
+        'long read RNA-seq',
+        'long read single-cell RNA-seq',
+    ]:
         return
 
     if value.get('assay_term_name') in ['BruChase-seq', 'Bru-seq', 'BruUV-seq']:
