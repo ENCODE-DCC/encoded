@@ -344,9 +344,6 @@
     },
     {
         "_test": "organism development series 3 rep 1",
-        "aliases": [
-            "robert-waterston:MT13544_880_1_rep1"
-        ],
         "library": "ENCLB595GWE",
         "experiment": "/experiments/ENCSR787DGZ/",
         "technical_replicate_number": 1,
@@ -953,5 +950,23 @@
         "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
         "library": "ENCLB849CRI",
         "uuid": "0f45174f-3ded-4ab4-a826-872241b0bf11"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR555DLG",
+        "library": "ENCLB152YGP",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "76b13fc9-e052-4a16-81f2-ec33b7967072"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR556DLG",
+        "library": "ENCLB153YGP",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "a721ce33-53b4-46f9-a3ec-066783b84b00"
     }
 ]
