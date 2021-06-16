@@ -3,7 +3,6 @@ import requests
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
 RNA_GET_FACETS = [
     'assayType',
-    'annotation',
     'biosample_classification',
     'biosample_term_name',
     'biosample_sex',
