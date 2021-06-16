@@ -1309,5 +1309,33 @@
         "lab": "roderic-guigo",
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra"
+    },
+    {
+        "_test": "DiseaseSeries split tables",
+        "accession": "ENCSR555DLG",
+        "assay_term_name": "DNase-seq",
+        "award": "UM1HG009442",
+        "biosample_ontology": "tissue_UBERON_0012314",
+        "date_released": "2021-06-16",
+        "internal_status": "release ready",
+        "internal_tags": ["RushAD"],
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "2d4c37cf-099f-49a6-86fd-bbb39e36a9fc"
+    },
+    {
+        "_test": "DiseaseSeries split tables",
+        "accession": "ENCSR556DLG",
+        "assay_term_name": "DNase-seq",
+        "award": "UM1HG009442",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_released": "2021-06-16",
+        "internal_status": "release ready",
+        "internal_tags": ["RushAD"],
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "dfe321c3-31a0-4562-b678-3084a1139fe2"
     }
 ]
