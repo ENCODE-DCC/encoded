@@ -196,12 +196,6 @@
                 }
             }
         },
-        "value_scale": {
-            "title": "Value scale",
-            "description": "The factor by which the expression values have been scaled; linear if not scaled.",
-            "type": "string",
-            "default": "linear"
-        },
         "value_units": {
             "title": "Value units",
             "description": "The units for the expression values.",
@@ -218,18 +212,6 @@
                 "expected count",
                 "fragment ends"
             ]
-        },
-        "normalized": {
-            "title": "Normalized",
-            "description": "A flag to indicate whether the expression values have been normalized.",
-            "type": "boolean",
-            "default": false
-        },
-        "scaled": {
-            "title": "Scaled",
-            "description": "A flag to indicate whether the expression values have been scaled.",
-            "type": "boolean",
-            "default": false
         },
         "observation_count": {
             "title": "Observation count",

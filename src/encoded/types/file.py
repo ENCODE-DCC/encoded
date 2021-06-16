@@ -416,6 +416,36 @@ class RawMatrixFile(AnalysisFile):
         return assays
 
 
+    @calculated_property(schema={
+        "title": "Value scale",
+        "description": "The factor by which the expression values have been scaled; linear if not scaled.",
+        "comment": "Do not submit. Value is filled in by the system as it is expected to be consistent for all instances of this class.",
+        "type": "string"
+        })
+    def value_scale(self):
+        return "linear"
+
+
+    @calculated_property(schema={
+        "title": "Normalized",
+        "description": "A flag to indicate whether the expression values have been normalized.",
+        "comment": "Do not submit. Value is filled in by the system as it is expected to be consistent for all instances of this class.",
+        "type": "boolean"
+        })
+    def normalized(self):
+        return False
+
+
+    @calculated_property(schema={
+        "title": "Scaled",
+        "description": "A flag to indicate whether the expression values have been scaled.",
+        "comment": "Do not submit. Value is filled in by the system as it is expected to be consistent for all instances of this class.",
+        "type": "boolean"
+        })
+    def scaled(self):
+        return False
+
+
 @collection(
     name='processed-matrix-files',
     unique_key='accession',
