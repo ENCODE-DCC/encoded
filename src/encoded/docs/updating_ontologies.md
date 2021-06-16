@@ -26,27 +26,27 @@ How to update the ontology versions
 
 2. Run generate-ontology, an example is: 
 ```
-	$ generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/vYYYY-MM-DD/composite-metazoan.owl --efo-url=http://www.ebi.ac.uk/efo/efo_inferred.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl --clo-url=http://purl.obolibrary.org/obo/clo.owl --doid-url=http://purl.obolibrary.org/obo/doid.owl
+$ generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/vYYYY-MM-DD/composite-metazoan.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/v#.##.#/efo.owl --obi-url=http://purl.obolibrary.org/obo/obi.owl --clo-url=http://purl.obolibrary.org/obo/clo.owl --doid-url=http://purl.obolibrary.org/obo/doid.owl
 ```
 3. Rename the ```ontology.json``` to one with the date that it was generated:
 ```
-	$ cp ontology.json ontology-YYYY-MM-DD.json
+$ cp ontology.json ontology-YYYY-MM-DD.json
 ```
 4. Load new ontology file into the encoded-build/ontology directory on S3
 ```
-	$ aws s3 cp ontology-YYYY-MM-DD.json s3://encoded-build/ontology/
+$ aws s3 cp ontology-YYYY-MM-DD.json s3://encoded-build/ontology/
 ```
 5.  Update the ontology version in the [Makefile]:
 ```
-	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-YYYY-MM-DD.json
+curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-YYYY-MM-DD.json
 ```
 6.  Update the following information
     
     Site release version: 118
-    ontology.json file: ontology-2021-06-02.json
+    ontology.json file: ontology-2021-06-15.json
     [UBERON release date]: 2021-02-12
     [OBI release date]: 2021-04-06
-    [EFO release date]: 2021-05-17
+    [EFO release date]: 2021-06-15
     [CLO release date]: 2019-02-10
     [DOID release date]: 2021-02-24
 
