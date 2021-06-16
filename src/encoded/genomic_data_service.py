@@ -19,7 +19,7 @@ RNA_GET_COLUMNS = {
     'tpm': {'title': 'Counts (TPM)'},
     'fpkm': {'title': 'Counts (FPKM)'},
     'assayType': {'title': 'Assay (RNA SubType)'},
-    'biosample_term_name': {'title': 'Biosample'},
+    'biosample_term_name': {'title': 'Biosample term name'},
     'libraryPrepProtocol': {'title': 'Experiment'},
     'expressionID': {'title': 'File'},
     'annotation': {'title': 'Assembly'},
@@ -29,6 +29,19 @@ RNA_GET_COLUMNS = {
     'biosample_system': {'title': 'System'},
     'biosample_summary': {'title': 'Summary'}
 }
+
+
+def get_filtered_and_sorted_facets(facets):
+    return sorted(
+        (
+            facet
+            for facet in facets
+            if facet in RNA_GET_FACETS
+        ),
+        key=lambda facet: RNA_GET_FACETS.index(facet)
+    )
+
+
 
 class GenomicDataService():
     # default search value is a temporary feature for the current alpha UI client
@@ -110,8 +123,7 @@ class GenomicDataService():
         self.expressions = results['expressions']
         self.total = results['total']
         self.facets = []
-
-        for facet in results['facets']:
+        for facet in get_filtered_and_sorted_facets(results['facets'].keys()):
             facet_data = {
                 'field': facet,
                 'title': self.columns[facet]['title'],
