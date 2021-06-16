@@ -494,7 +494,7 @@ def test_upgrade_dataset_29_to_30(upgrader, experiment_33, annotation_31, fcc_ex
     assert 'analysis_objects' not in value
     assert 'analyses' in value
 
-def test_upgrade_dataset_30_to_31(upgrader, experiment_34, annotation_32):
+def test_upgrade_dataset_30_to_31(upgrader, experiment_34, annotation_32, reference_19):
     assert experiment_34['schema_version'] == '34'
     value = upgrader.upgrade('experiment', experiment_34, current_version='34', target_version='35')
     assert value['schema_version'] == '35'
@@ -503,7 +503,11 @@ def test_upgrade_dataset_30_to_31(upgrader, experiment_34, annotation_32):
     value = upgrader.upgrade('annotation', annotation_32, current_version='32', target_version='33')
     assert value['schema_version'] == '33'
     assert value['internal_tags'] == ['RegulomeDB_1_0']
-
+    assert reference_19['schema_version'] == '19'
+    value = upgrader.upgrade('reference', reference_19, current_version='19', target_version='20')
+    assert value['schema_version'] == '20'
+    assert 'RegulomeDB' not in value
+    assert value['internal_tags'] == ['RegulomeDB_1_0']
 
 def test_upgrade_dataset_31_to_32(upgrader, experiment_35):
     assert experiment_35['schema_version'] == '35'

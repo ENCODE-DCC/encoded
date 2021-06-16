@@ -718,6 +718,7 @@ def dataset_29_30(value, system):
 
 @upgrade_step('experiment', '34', '35')
 @upgrade_step('annotation', '32', '33')
+@upgrade_step('reference', '19', '20')
 def dataset_30_31(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5932
     if  'RegulomeDB' in value['internal_tags']:
