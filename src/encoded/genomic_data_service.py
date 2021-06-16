@@ -1,7 +1,15 @@
 import requests
 
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
-RNA_GET_FACETS = ['assayType', 'annotation', 'biosample_term_name', 'biosample_classification', 'biosample_sex', 'biosample_organ',  'biosample_system']
+RNA_GET_FACETS = [
+    'assayType',
+    'annotation',
+    'biosample_classification',
+    'biosample_term_name',
+    'biosample_sex',
+    'biosample_organ',
+    'biosample_system'
+]
 RNA_GET_EXPRESSIONS = '/expressions/bytes'
 RNA_GET_AUTOCOMPLETE = '/autocomplete'
 
@@ -16,7 +24,7 @@ RNA_GET_COLUMNS = {
     'libraryPrepProtocol': {'title': 'Experiment'},
     'expressionID': {'title': 'File'},
     'annotation': {'title': 'Annotation'},
-    'biosample_classification': {'title': 'Classification'},
+    'biosample_classification': {'title': 'Biosample classification'},
     'biosample_sex': {'title': 'Sex'},
     'biosample_organ': {'title': 'Organ'},
     'biosample_system': {'title': 'System'},
