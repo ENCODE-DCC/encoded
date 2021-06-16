@@ -1,10 +1,10 @@
 [
     {
         "aliases": [
-            "anna-greka:donorA1_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorA1_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "6ef4d912-1166-4ccf-b836-8bb5e369ecaf",
+        "uuid": "01037d11-79b3-428a-b734-71bf87e682ef",
         "submitted_file_name": "donorA1_raw_feature_bc_matrix/",
         "file_format": "mex",
         "file_size": 100000,
@@ -41,31 +41,15 @@
         "genome_annotation": "GENCODE 25",
         "validated": true,
         "cellranger_assay_chemistry": "SC3Pv2",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF633JNH",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorA1_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorA1_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "63c1cd1a-48eb-4c9b-b037-0b384609708c",
+        "uuid": "03f48740-db8c-4cfe-a734-21b8d6f11eb9",
         "submitted_file_name": "donorA1_raw_feature_bc_matrix.rds",
         "file_format": "rds",
         "file_size": 100000,
@@ -103,32 +87,15 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "30c7622f6007434c37f4c6d30e42d465",
         "validated": true,
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false,
-                "scaled": false
-            }
-        ]
+        "accession": "LATDF671HHT",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorA2_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorA2_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "5668e31f-01cb-43a5-bc3c-00bb663d1878",
+        "uuid": "b8231d1d-abdb-4848-a567-269e89c243ab",
         "submitted_file_name": "donorA2_raw_feature_bc_matrix.tsv",
         "file_format": "tsv",
         "file_size": 100000,
@@ -164,31 +131,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "99b7747497ca250ae236c828b446bde3",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF791NFV",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorA2_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorA2_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "5b86a967-77f6-4164-815d-0857ded882d4",
+        "uuid": "073f5a24-265b-4ec1-8f7e-3361b93559b8",
         "submitted_file_name": "donorA2_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -225,32 +176,16 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "9211c130bcfa065071ed1536577aeb66",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ],
-        "intronic_reads_counted": true
+        "intronic_reads_counted": true,
+        "accession": "LATDF662SKJ",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorB1_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorB1_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "a340d8bc-762b-4147-8882-4bb602ba6c6a",
+        "uuid": "b5c2bdb7-7673-4b6b-bf03-d8f850485acc",
         "submitted_file_name": "donorB1_raw_feature_bc_matrix/",
         "file_format": "mtx",
         "file_size": 100000,
@@ -286,32 +221,16 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "e4c3013fd79898426fd021f168f7126c",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ],
-        "intronic_reads_counted": false
+        "intronic_reads_counted": false,
+        "accession": "LATDF652KER",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorB1_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorB1_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "29b5b02c-854a-4f45-a19d-41b8ada2ff70",
+        "uuid": "05a0d43d-92c8-4521-845b-56c5d167324c",
         "submitted_file_name": "donorB1_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -348,31 +267,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "7265bd6e16c29e0a034266e9472f83a6",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF070ENJ",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorB2_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorB2_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "f817c3e8-44e3-4f87-a83e-4cec9ea6f36e",
+        "uuid": "8c98a6a1-1c4a-456c-bb9a-8dd37ab34dc7",
         "submitted_file_name": "donorB2_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -408,31 +311,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "7307c6d5d09aa4cb31a3617e9052e00e",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF690UKP",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorB2_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorB2_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "19e88d59-9c49-44ba-bce1-1aa25329f9b6",
+        "uuid": "eeafa55b-5e1f-4429-84d0-c4af2a5317f0",
         "submitted_file_name": "donorB2_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -469,31 +356,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "1c24591c682193508194b782331bc4b1",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF393CSE",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA1_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorA1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "35377ad4-e49e-45e0-8161-dde762e89410",
+        "uuid": "ebfe709c-fd2b-4e76-9054-72469f3ef8b4",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -525,27 +396,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "6ebe5d60e64c75703f9f184506d4cba6",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 239104
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF516XXW",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA1_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorA1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "e485bd06-b3a3-4d53-9ccb-d7cf5dca0893",
+        "uuid": "63cfde18-c535-423d-a52f-a5518560ad66",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -577,27 +436,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "6ac72519c2b397ac1c63a45a1991b717",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 129394
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF343TMR",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA1_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorA1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "12e3a600-39ac-405f-8ad3-a752407f0bbe",
+        "uuid": "804e3d5c-7e42-4460-93c3-8320cac5c275",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -629,27 +476,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "5d95e57866378889cdb3fe3f7ece7d91",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 600
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF961KKC",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA2_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorA2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "09de0dec-39f1-4ab7-bfe1-1e85c144a23b",
+        "uuid": "21d92fdc-b9d6-43b0-a567-1ea3c1b43508",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -680,27 +515,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "300b1718edfd3209c692ae44e5480c1a",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 265435
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF834ROK",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA2_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorA2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "4988556b-6c27-4456-b316-d8734d3c8d3a",
+        "uuid": "d2c09e7f-6f06-4f1e-8e19-cec75781d0f8",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -732,27 +555,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "2991358e34d1fc9a4d0123ad8c5e7b3f",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 121134
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF448OYQ",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA2_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorA2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "aa3ebbec-bf3e-4c72-8321-9e612ea74a91",
+        "uuid": "3583aabe-b434-43aa-8ed5-2b373c60bd9f",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -783,27 +594,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "a5edf082c71bf697b12034b785344be9",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 654
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF785XLS",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB1_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorB1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "ee32db1c-932d-4931-9240-dba7a85cb6b6",
+        "uuid": "cc08a801-3b77-45e1-ba84-5fd6d5ed8082",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -834,27 +633,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "33c5bc7bae5e9e726a59f21abafaa3f1",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 254644
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF943OZL",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB1_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorB1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "92e9859b-402f-4dce-ab49-5f5fec8b82c1",
+        "uuid": "b0b15a9e-1f05-4538-9a57-911dc0bc2734",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -886,27 +673,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "8d2c603855b454477cce0b4a49bca68e",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 103241
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF789PDJ",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB1_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorB1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "bbcbd9d1-f9b0-4757-84b9-5617181581a8",
+        "uuid": "00f76bee-b5d3-4745-92fb-36e1ae6d864a",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -937,27 +712,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "6ff1ed6b1aed8e606bdae1095a34e240",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 544
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF981IGN",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB2_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorB2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "bee1457d-dceb-481f-b3fe-827c97021b54",
+        "uuid": "78626985-31d4-4073-a583-20bfee5ae506",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -988,27 +751,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "6aa4a2f7c22b209ebaa189201e50eeba",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 267755
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF698BYT",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB2_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorB2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "e5c4c026-7520-4106-b78c-de10e1749f72",
+        "uuid": "4c46ef02-f1ca-4d75-98e4-c50db1311b6c",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1040,27 +791,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "527175445d30ebfdf549fa3d3c2899db",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 103400
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF160CUF",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB2_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorB2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "f0347a86-a428-4b81-b489-b9911ae3be54",
+        "uuid": "4cbfd58d-8de4-49a5-b229-79c22e694c60",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1091,27 +830,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "de69cd4312f07478d21c36198e13b7cb",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 590
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF632ONR",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC1_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorC1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "63cc3027-d329-4746-b245-c67e709200fd",
+        "uuid": "9db772bd-9cc2-4a2b-9260-71c28d2c69ec",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1142,27 +869,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "323684613c851a8279e3612d003a0e81",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 266211
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF918QEO",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC1_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorC1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "7620f84d-9946-4e44-9e24-3486bd771083",
+        "uuid": "86d43926-ece6-434c-b64f-62798f3eafe4",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1194,27 +909,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "4ac30d04e8f1f2bd1e7f594603f68fd3",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 102311
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF539AMK",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC1_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorC1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "faddd31b-e1b1-4857-ae92-3dfe64826a11",
+        "uuid": "7106c7f2-31e7-434d-bda5-a36907b35ceb",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1245,27 +948,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "478c983e2c88818e089d2509b56970c9",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 511
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF144WKH",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC2_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorC2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "e129ec02-49ed-42b3-aaf9-393e7c30202a",
+        "uuid": "6e7b991f-da30-463d-8c0f-3036e3b27b01",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1296,27 +987,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "32b6f43792a5d7058f24fc909a4d0e4b",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF364GXO",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC2_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorC2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "67fd3665-cd65-4d04-aa17-eb0b0c90d336",
+        "uuid": "8470d8fe-11b4-4cf8-88eb-62149b0ed41d",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1348,27 +1027,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "69f6e698ed84a669460fb541c1fcdcfd",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF967VFS",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC2_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorC2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "3bb7f59b-67c0-4d12-8b2a-ddfed688d770",
+        "uuid": "1987a0b1-0ccc-4fd3-9662-0aca4b8e58d5",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1399,27 +1066,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "418afe4cc7f6577acea329736c8e3a45",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 600
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF765BIJ",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD1_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorD1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "e564638f-4b32-478d-9b72-080beb1a83dd",
+        "uuid": "19834cc8-afd8-4666-8ed5-c324a55179cd",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1450,27 +1105,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "f587b29a7531369ba45fbf01533e3788",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF257GTX",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD1_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorD1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "21f0d1ce-9763-459a-bf58-6ca0458524f6",
+        "uuid": "7569117f-5154-48d3-9033-574e797391ca",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1502,27 +1145,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "0a18cf5fd2e5f84d748e1d22dac0852b",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF399IOD",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD1_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorD1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "d93da0b0-f426-47b2-b11e-322cbaa74c7a",
+        "uuid": "938d243d-36a3-4754-965e-3d239ec4194c",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1553,27 +1184,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "8d10f823023a57a1013401ebee09e3e0",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 600
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF114BAW",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD2_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorD2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "97a3c63e-00bc-4c47-8e23-48c967313c9e",
+        "uuid": "5b3e2df2-2d11-46ed-acdc-6bad2832d434",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1604,27 +1223,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "53b15901f2f49f50c7d536cccf98d359",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF614MKY",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD2_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorD2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "5b03312f-783e-48ee-a342-fc77096434e9",
+        "uuid": "2ccd1216-2930-42d9-b04b-720b024ccb04",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1656,27 +1263,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "438b7e0bfd7ef14e975a2ccbe7a2ecc7",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF471NNM",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD2_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorD2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "84ddb908-59cc-4af8-a1df-e0f6b6ca77c8",
+        "uuid": "aa0861ce-1dcc-49c2-a5c3-61f3a006adf5",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1707,27 +1302,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "ceae622351e08bca8a11013640b05a4f",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 600
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF187AXP",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE1_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorE1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "795f22f1-d772-4110-8137-52f6d311fd79",
+        "uuid": "f9e71031-171d-4150-bb0b-ea2a95a0561c",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1758,27 +1341,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "108943fd756ee170a8d8956da80da870",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF366ZID",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE1_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorE1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "3748c8d0-de00-4b64-a85c-fba128acd87d",
+        "uuid": "a7be73ef-d802-4922-b12a-c75ed48c5716",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1810,27 +1381,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "fa3f6b455dadef4efd03335a341b9f41",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF031MZI",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE1_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorE1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "7e7cf72e-1d75-47e9-99be-47eb4778e372",
+        "uuid": "eb51763b-4e79-492e-bcf9-2a00baf4bea5",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1861,27 +1420,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "c7b6a486158edc42c1080b688afe2a47",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 600
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF105YEX",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE2_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorE2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "cd04924c-c4ca-4ee2-93a6-74c36a6376b8",
+        "uuid": "2a7ae0cd-7781-4bb5-84b4-76f8636475be",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1912,27 +1459,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "27239be2723f4ca3e3b4935698faf63a",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF686VCF",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE2_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorE2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "91638f70-ad49-42d5-a502-d92a556c447b",
+        "uuid": "87d2b6a8-bd09-4b1a-b85e-9674c1bf1441",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -1964,27 +1499,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "b461a1df2f8479ec0a491b8de9e8ea58",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF070KSJ",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE2_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorE2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "8c25b599-dfff-4219-a24d-4aa860bc0a36",
+        "uuid": "f07516a7-541e-45d5-8f60-01c272c2f23e",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2015,27 +1538,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "1691e994fac00f56c365bf37d6caab85",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 600
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF376VXJ",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF1_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorF1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "171bf956-2f3e-422a-a831-3c165cfa1a4b",
+        "uuid": "353c8df3-09bd-4182-9c0d-138eca6ee21c",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2066,27 +1577,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "1490c316e1615d0564486f1e4ad6ab3b",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF346NEK",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF1_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorF1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "854fdf73-c531-4602-9e8f-df3edda3a02c",
+        "uuid": "3e38f4fc-e9b1-475c-9513-f457d34dd8f9",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2118,27 +1617,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "7d412ebea9b803c26b3a48597854bbfe",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF596JXT",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF1_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorF1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "3f01af1a-5082-4557-a0bf-3f72c1ee03ba",
+        "uuid": "95e8dcfa-da4d-454d-9f9f-f3d65d065354",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2169,27 +1656,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "4f175e02e359f2a1eb683879191f15eb",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 600
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF464KAD",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF2_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorF2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "feb5f062-ab3b-4fc8-b97a-4b9211a3e08e",
+        "uuid": "605b9621-2cc2-4ce6-8205-c40bf7e78379",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2220,27 +1695,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "25dcbbd255177cc82b809216909a821a",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF285GHF",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF2_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorF2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "d8d78050-39a2-47f2-b872-35a3c2be87ec",
+        "uuid": "12e0042a-2cc4-4d5e-91ed-483e90a1dc0a",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2272,27 +1735,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "a01fe5c058eaf74f619948a6cd66c6ac",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF550GEX",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF2_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorF2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "e1e4a3df-4fda-4601-b41c-552a2bb15284",
+        "uuid": "0f53fbc1-2b67-4353-9343-9bfbe8eaea28",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2323,27 +1774,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "f65b01abad5b21a92c6ff5c83e18ad41",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 600
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF277WDX",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG1_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorG1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "f2f51ac7-3282-4035-8445-77695609a2d8",
+        "uuid": "5867ee92-5dc0-4902-bf0d-e93272a3bee8",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2374,27 +1813,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "a7f02c33c7cd3f9461006e4c1e4b9fc7",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF911PFC",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG1_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorG1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "04ad895b-95e5-44ea-b0b7-57bbc5bb2391",
+        "uuid": "b5313a4c-92d5-4f53-ab84-8201709d23be",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2426,27 +1853,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "8d5465e30bc2c7c9427af64828b90083",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF967MXZ",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG1_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorG1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "9e4d5236-15dd-43e6-a0bd-c2aaf1503f9c",
+        "uuid": "6689e93f-473b-4a64-a79b-95b89106da98",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2477,27 +1892,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "be7a22b3db14382eef69507e0ec7c9da",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 612
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF808JAV",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG2_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorG2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "86b297bf-561c-43d3-aa70-8208272181aa",
+        "uuid": "aaa4a2eb-a2ee-4836-931e-bbb3a2d75e03",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2528,27 +1931,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "04b52cff73d40e2bed5c3b38037f069b",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 294882
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF213RYS",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG2_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorG2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "ab18e031-b5c4-4d6b-a432-68f3f5aa4bb1",
+        "uuid": "c95c6d47-3011-4ec9-82a3-4019f67af787",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2580,27 +1971,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "468dabd840c01a9327cb83388c170927",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 119204
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF062EAM",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG2_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorG2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "577e83de-be37-4d99-98ac-61992051246a",
+        "uuid": "7d28498a-1a36-4faa-ba01-91fb0e079b3b",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2631,27 +2010,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "f2c2bd6ecc8e015cda0837e040fddc57",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 620
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF053ZTA",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH1_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorH1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "6358704e-8b12-4467-b2db-065ebad7f40f",
+        "uuid": "2d79e376-5ba1-44e8-8d6f-d6f4b13651b5",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2682,27 +2049,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "5efae53c8b966af196df7f914cd75cda",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 293848
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF536YDD",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH1_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorH1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "96913af6-1979-4c0b-9cc3-cfdf77946ef8",
+        "uuid": "8b1cacca-9218-49b8-acce-2151373815b4",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2734,27 +2089,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "2079a27a62107426c1c58962108e907e",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 119393
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF484DMD",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH1_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorH1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "7924162c-bd22-4bd6-816b-e98880f6c3f7",
+        "uuid": "61d01c6a-b000-4185-86bd-216c4a3ccd48",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2785,27 +2128,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "4fce4de132386bc0ff8f62f4b8485b49",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 593
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF851YTF",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH2_raw_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorH2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "9e385fc4-c48c-430f-a2cd-d86e8bc216bd",
+        "uuid": "63e3fd38-d170-4231-9e79-590b1e6f6178",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2836,27 +2167,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "b6d6168361bafb250824f8fcfbe835dd",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 200831
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF250FTX",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH2_filtered_peak_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorH2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "uuid": "dfeb6a2d-bf5c-4b7d-acab-f97e87a92a46",
+        "uuid": "9d7e7876-f1cd-4701-894c-682aaaf665e9",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2888,27 +2207,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "42963bbbfa5fef9b7499488c9a67c9e0",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 102011
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF977MIS",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH2_filtered_tf_bc_matrix_deprecated"
+            "anna-greka:snATAC_donorH2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "uuid": "09af3bba-700b-4a2d-8442-d1eb398093cc",
+        "uuid": "9abef18d-9b89-4c3e-ae8c-fbeb34739a64",
         "no_file_available": false,
         "file_format": "hdf5",
         "file_size": 150000,
@@ -2939,27 +2246,15 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "699e92af12999925056ef9e411d5c20e",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 548
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF522SEY",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorC1a_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorC1a_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "137b653f-0f4a-4a8c-9a5b-8a34387c1a2e",
+        "uuid": "cbf25200-8b6d-404e-9fe9-14a6d050de97",
         "submitted_file_name": "donorC1a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2987,27 +2282,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "5bb99d4f45a03fec10d05236dee52d69",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF604IGE",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorC1a_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorC1a_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "483b5896-f67e-4689-8eec-e7c239d8c3f5",
+        "uuid": "2879edc5-d99a-450d-aeb4-825e770671fb",
         "submitted_file_name": "donorC1a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3036,27 +2319,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "29356483c34695c24b60eec707076ab5",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF525ENS",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorC1b_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorC1b_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "42a2cdbc-24f4-4930-a7be-b53021ce0ea8",
+        "uuid": "efda3e22-9054-4645-9503-191d4edab96c",
         "submitted_file_name": "donorC1b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3084,27 +2355,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "5eb05afff324450fb1e4de66b498fa8a",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF992JZW",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorC1b_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorC1b_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "621195f7-7dab-49fb-9426-85f965f567fb",
+        "uuid": "26124a80-b9aa-48bc-a360-6433f013a353",
         "submitted_file_name": "donorC1b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3133,27 +2392,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "a943c3ecc8723adbaf16dbb30fa26e41",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF282BWU",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorC2a_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorC2a_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "583b93d0-ddde-4927-b65d-6e219d5f4ec9",
+        "uuid": "1ec10ce8-6229-4528-879f-7fe91018658e",
         "submitted_file_name": "donorC2a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3181,27 +2428,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "25db035202452bb1e699fb04918e51d2",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF901SJX",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorC2a_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorC2a_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "f6258fad-4cf1-4829-ad63-bf796c70a089",
+        "uuid": "6dac65aa-b4c8-4266-84e9-53886b4e6e54",
         "submitted_file_name": "donorC2a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3230,27 +2465,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "6a769a24ef4b24d056314af1ca876470",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF967GMF",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorC2b_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorC2b_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "f1c5eff4-ae0f-4fec-9050-4265d41fab65",
+        "uuid": "6795f9bc-8bc4-4755-9601-9500d626f23d",
         "submitted_file_name": "donorC2b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3278,27 +2501,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "78b54e57c25174f01f44ac77c7e15cdd",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF920DYH",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorC2b_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorC2b_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "4d29239d-5b37-4f72-a13a-37760db2dd4c",
+        "uuid": "3b2a93ac-dcec-4177-9dcd-849958192c82",
         "submitted_file_name": "donorC2b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3327,27 +2538,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "5ced08c46582127943ad2d32224ede49",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF007OFP",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorD1a_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorD1a_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "12659f9f-884c-45c0-bf00-6536ad31e289",
+        "uuid": "338213e8-1dba-4f42-9413-c8ea528f5524",
         "submitted_file_name": "donorD1a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3375,27 +2574,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "7db2ca9aa535412215a16a12263813f1",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF808FWA",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorD1a_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorD1a_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "705bf2bf-dd50-4d21-af14-930b2063ed09",
+        "uuid": "beb33aea-2ee4-4de8-8c84-0592c6bc6f1d",
         "submitted_file_name": "donorD1a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3424,27 +2611,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "47b8d232b7ca4bff32e68c7a4ab167a3",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF055RIO",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorD1b_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorD1b_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "e5a3aa14-c7ac-4ad3-b905-b034322277d5",
+        "uuid": "6cb0722c-9e3e-4d2e-8e75-1660f003eeb6",
         "submitted_file_name": "donorD1b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3472,27 +2647,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "e4725769cbde08eb02e3cbe5b298b71f",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF746HEM",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorD1b_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorD1b_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "d448900a-d4ce-4d5c-9ba5-b9ca12b02674",
+        "uuid": "2c4d5857-0048-4128-8a0b-1778df411df8",
         "submitted_file_name": "donorD1b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3521,27 +2684,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "b82ac0119137f8472a2922b7b46eaa14",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF110PJU",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorD2a_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorD2a_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "7aa35b79-f1c9-4562-8e65-84bd00619ce5",
+        "uuid": "7c0d1086-2b7d-499b-9c9a-ee49dfb824e2",
         "submitted_file_name": "donorD2a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3569,27 +2720,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "990d20f4aa2794aa959763cdf2661cb9",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF461BQE",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorD2a_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorD2a_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "51ab68dc-d061-49b4-89bf-f3193781cb01",
+        "uuid": "7188ea15-08c7-4558-b916-43c29d35690b",
         "submitted_file_name": "donorD2a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3618,27 +2757,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "fe0f36ac13763d3272a959d3a5157d5c",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF628AJZ",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorD2b_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorD2b_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "e297abd2-5d99-4e0f-a89d-43ee4683881e",
+        "uuid": "cd0b4969-e3a8-4a32-9e2e-a5af63dcd861",
         "submitted_file_name": "donorD2b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3666,27 +2793,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "6391d53c935a8defaccfbcca8ce40631",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF111WVZ",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorD2b_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorD2b_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "93ccc741-19b6-4731-b9b8-e58efa82e97c",
+        "uuid": "f8ea5df2-0ab6-4cb7-bf53-b79f7e593b5a",
         "submitted_file_name": "donorD2b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3715,27 +2830,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "96a9e855f208144357f0d62f00c64148",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF787GHB",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorCD1_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorCD1_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "86299715-1de5-45d8-a7d7-5e2c2040a5bd",
+        "uuid": "e25e28b8-29e5-4585-b6db-5eed4f47be3f",
         "submitted_file_name": "donorCD1_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3766,27 +2869,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "23b31847f5537ef302dd7486c7736d0b",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF871IAR",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorCD1_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorCD1_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "592b07a8-fd47-46cd-94b3-f8d58c1d4bc9",
+        "uuid": "5b81af3e-e774-4691-ae5a-4c9bfc61583c",
         "submitted_file_name": "donorCD1_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3819,27 +2910,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "9c37badf95a2c2d63ae4ce700582e142",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF403CSB",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorCD2_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorCD2_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "607e0255-f94f-471c-9791-7ef6e5f39587",
+        "uuid": "e5c5a806-4f9c-48a7-99d0-662dc573d364",
         "submitted_file_name": "donorCD2_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3870,27 +2949,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "4494f30178e1bdc09a5446954e0ab9e0",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF869QTM",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorCD2_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorCD2_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "d45b8a67-826a-446b-8601-5ec43ca8c2cb",
+        "uuid": "915aeb28-7eb1-47e3-87d1-f3c4b3cbae9f",
         "submitted_file_name": "donorCD2_filtered_feature_bc_matrix.h5",
         "s3_uri": "s3://submissions-czi012eye/chen_2020/19D013_NeuNT_outs/filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3923,27 +2990,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "cd4a6f4051a67879c87089a32e606573",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33000
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF865WJB",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorE_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorE_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "7898e294-d0ae-416f-acda-b55d9c545b61",
+        "uuid": "ef62efdc-c414-4c25-b665-15638b624ef4",
         "submitted_file_name": "donorE_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3976,31 +3031,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "152cebddcc8ddec8a4ef313cc735ba10",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF874DNW",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorE_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorE_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "269e21a2-a716-4f3b-a43c-e83b713a36c1",
+        "uuid": "e383dc24-0385-4032-ae5a-5a201063b391",
         "submitted_file_name": "donorE_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -4034,31 +3073,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "2d5af333d24dc26d73078f61bd590719",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF565BEM",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorF_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorF_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "e9ca3672-33f6-4c8c-ad2b-0c1290ddbb08",
+        "uuid": "db15aa15-bdfe-43a3-b86d-c4411211f14e",
         "submitted_file_name": "donorF_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -4091,31 +3114,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "6d7ac66b1cec9b904d7b7b3a722502ba",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF872YPF",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorF_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorF_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "11158457-33f4-448c-b39b-fddecab48fe5",
+        "uuid": "56435245-aa76-402e-a8fe-91e4640efc30",
         "submitted_file_name": "donorF_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -4149,31 +3156,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "48fa889dd89f1188103c462d26582a6f",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF977TNE",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorG_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorG_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "435fda57-bad6-4af2-98eb-0a995336ee3c",
+        "uuid": "b0762ad6-8586-420a-bd84-b4f4752f7f2b",
         "submitted_file_name": "donorG_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -4206,31 +3197,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "dbc5d9dc9287d556c3e9ae0fa572fbcb",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF790IAB",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorG_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorG_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "6cfb273d-a72c-4d8a-adc4-e8449ffa118a",
+        "uuid": "12e6ae0e-69db-447b-83d6-8e89dd63f6d2",
         "submitted_file_name": "donorG_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -4264,31 +3239,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "2ec1e229b8cb74bd328e9b5b880632ad",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF005WOR",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorH_raw_feature_bc_matrix_deprecated"
+            "anna-greka:donorH_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "068acabe-032f-4335-8f4c-e750768536bf",
+        "uuid": "7f562427-2ebc-4a82-b886-6404fac5322a",
         "submitted_file_name": "donorH_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -4321,31 +3280,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "0cc71f0abe3ca88354420c48f412f511",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF122GEK",
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "anna-greka:donorH_filtered_feature_bc_matrix_deprecated"
+            "anna-greka:donorH_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "uuid": "07413a49-5c41-445f-a8c6-1f3bafd5db95",
+        "uuid": "08588121-ca21-4c26-9da4-57652bb11726",
         "submitted_file_name": "donorH_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -4379,409 +3322,15 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "md5sum": "399aa3bc4f1009addf1067cd8892ecfd",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "accession": "LATDF906JPG",
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "anna-greka:donorAB_merged_sc_citeseq_matrix_deprecated"
+            "jimmie-ye:filtered_tf_matrix_1a"
         ],
-        "default_embedding": "X_spatial",
-        "status": "released",
-        "uuid": "c9174f45-9558-4f60-99a7-f87f1dc489b8",
-        "submitted_file_name": "donorAB_merged_sc_citeseq_matrix.mtx/",
-        "file_format": "mtx",
-        "file_size": 100000,
-        "lab": "anna-greka",
-        "output_types": [
-            "gene quantifications",
-            "antibody capture quantifications"
-        ],
-        "feature_keys": [
-            "gene symbol",
-            "antibody target"
-        ],
-        "observation_count": 20192,
-        "dataset": "anna-greka:large_test_dataset",
-        "derivation_process": [
-            "merging",
-            "cell filtering",
-            "gene filtering"
-        ],
-        "software": [
-            "seurat 3.0"
-        ],
-        "derived_from": [
-            "anna-greka:donorA1_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorA2_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorB1_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorB2_filtered_feature_bc_matrix_deprecated"
-        ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
-        "md5sum": "48912b433c9105e6b4f32c79f6b09f6b",
-        "layers": [
-            {
-                "label": "X",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "log, natural",
-                "value_units": "UMI",
-                "normalized": true,
-                "scaled": true,
-                "normalization_method": "LogNormalize",
-                "filtering_cutoffs": [
-                    {
-                        "cutoff_value": 25000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "maximum",
-                        "cutoff_proportion": "fibroblasts"
-                    },
-                    {
-                        "cutoff_value": 1000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "minimum"
-                    },
-                    {
-                        "cutoff_value": 15,
-                        "cutoff_units": "percent mitochondrial/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 3,
-                        "cutoff_units": "cells/gene",
-                        "cutoff_type": "minimum"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:donorCD_merged_sc_matrix_deprecated"
-        ],
-        "status": "released",
-        "uuid": "89ea961f-45ef-4079-afad-ee2e9bade386",
-        "submitted_file_name": "donorCD_merged_sc_matrix.mtx/",
-        "file_format": "mtx",
-        "file_size": 150000,
-        "lab": "anna-greka",
-        "output_types": [
-            "gene quantifications"
-        ],
-        "feature_keys": [
-            "gene symbol"
-        ],
-        "observation_count": 82379,
-        "dataset": "anna-greka:large_test_dataset",
-        "derivation_process": [
-            "merging"
-        ],
-        "software": [
-            "seurat 3.0"
-        ],
-        "derived_from": [
-            "anna-greka:donorC1a_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorC1b_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorC2a_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorC2b_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorD1a_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorD1b_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorD2a_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorD2b_filtered_feature_bc_matrix_deprecated"
-        ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
-        "md5sum": "2dd4370d08bdf8666b859c888b1f7006",
-        "layers": [
-            {
-                "label": "X",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    }
-                ],
-                "value_scale": "log, natural",
-                "value_units": "UMI",
-                "normalized": true,
-                "normalization_method": "LogNormalize",
-                "filtering_cutoffs": [
-                    {
-                        "cutoff_value": 25000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 800,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "minimum"
-                    },
-                    {
-                        "cutoff_value": 15,
-                        "cutoff_units": "percent mitochondrial/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 3,
-                        "cutoff_units": "cells/gene",
-                        "cutoff_type": "minimum"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:donorCD_pooled_merged_sc_matrix_deprecated"
-        ],
-        "status": "released",
-        "uuid": "a1343e3d-1ab0-440b-b0de-61b353566d87",
-        "submitted_file_name": "donorCD_pooled_merged_sc_matrix.mtx/",
-        "description": "Anna Greka's very special data",
-        "file_format": "mtx",
-        "file_size": 100000,
-        "lab": "anna-greka",
-        "output_types": [
-            "gene quantifications"
-        ],
-        "feature_keys": [
-            "gene symbol"
-        ],
-        "observation_count": 18293,
-        "dataset": "anna-greka:large_test_dataset",
-        "derivation_process": [
-            "merging"
-        ],
-        "software": [
-            "seurat 3.0"
-        ],
-        "derived_from": [
-            "anna-greka:donorCD1_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorCD2_filtered_feature_bc_matrix_deprecated"
-        ],
-        "s3_uri": "s3://submissions-czi012eye/chen_2020/19D015_macular_outs/filtered_feature_bc_matrix.h5",
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
-        "md5sum": "98b5746b0f69e8be8c888e3c1d74b150",
-        "layers": [
-            {
-                "label": "X",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    }
-                ],
-                "value_scale": "log, natural",
-                "value_units": "UMI",
-                "normalized": true,
-                "normalization_method": "LogNormalize",
-                "filtering_cutoffs": [
-                    {
-                        "cutoff_value": 25000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 1000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "minimum"
-                    },
-                    {
-                        "cutoff_value": 10,
-                        "cutoff_units": "percent mitochondrial/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 3,
-                        "cutoff_units": "cells/gene",
-                        "cutoff_type": "minimum"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:donorEF_merged_sc_citeseq_matrix_deprecated"
-        ],
-        "status": "released",
-        "uuid": "14d82127-6d99-4c53-bf95-ff25dcb3d14a",
-        "submitted_file_name": "donorEF_merged_sc_citeseq_matrix.mtx/",
-        "file_format": "mtx",
-        "file_size": 100000,
-        "lab": "anna-greka",
-        "output_types": [
-            "gene quantifications",
-            "antibody capture quantifications"
-        ],
-        "feature_keys": [
-            "gene symbol",
-            "antibody target"
-        ],
-        "observation_count": 18722,
-        "dataset": "anna-greka:large_test_dataset",
-        "derivation_process": [
-            "merging"
-        ],
-        "software": [
-            "seurat 3.0"
-        ],
-        "derived_from": [
-            "anna-greka:donorE_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorF_filtered_feature_bc_matrix_deprecated"
-        ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
-        "md5sum": "ee656a7331492beca246fcb1b503fd33",
-        "layers": [
-            {
-                "label": "X",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "log, natural",
-                "value_units": "UMI",
-                "normalized": true,
-                "normalization_method": "LogNormalize",
-                "filtering_cutoffs": [
-                    {
-                        "cutoff_value": 25000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 1500,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "minimum"
-                    },
-                    {
-                        "cutoff_value": 20,
-                        "cutoff_units": "percent mitochondrial/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 3,
-                        "cutoff_units": "cells/gene",
-                        "cutoff_type": "minimum"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:donorGH_merged_sc_citeseq_matrix_deprecated"
-        ],
-        "status": "released",
-        "uuid": "e7caa3e4-fc3b-47be-8b8f-dcaa5db245e3",
-        "submitted_file_name": "donorGH_merged_sc_citeseq_matrix.mtx/",
-        "file_format": "mtx",
-        "file_size": 200000,
-        "lab": "anna-greka",
-        "output_types": [
-            "gene quantifications",
-            "antibody capture quantifications"
-        ],
-        "feature_keys": [
-            "gene symbol",
-            "antibody target"
-        ],
-        "observation_count": 29292,
-        "dataset": "anna-greka:large_test_dataset",
-        "derivation_process": [
-            "merging"
-        ],
-        "software": [
-            "seurat 3.0"
-        ],
-        "derived_from": [
-            "anna-greka:donorG_filtered_feature_bc_matrix_deprecated",
-            "anna-greka:donorH_filtered_feature_bc_matrix_deprecated"
-        ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
-        "md5sum": "24aaa927d40e8680ea107684c39fb442",
-        "layers": [
-            {
-                "label": "X",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 329950
-                    },
-                    {
-                        "feature_type": "antibody capture",
-                        "feature_count": 50
-                    }
-                ],
-                "value_scale": "log1p, natural",
-                "value_units": "UMI",
-                "normalized": true,
-                "normalization_method": "LogNormalize",
-                "filtering_cutoffs": [
-                    {
-                        "cutoff_value": 25000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 1000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "minimum"
-                    },
-                    {
-                        "cutoff_value": 15,
-                        "cutoff_units": "percent mitochondrial/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 3,
-                        "cutoff_units": "cells/gene",
-                        "cutoff_type": "minimum"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "aliases": [
-            "jimmie-ye:filtered_tf_matrix_1a_deprecated"
-        ],
-        "accession": "LATDF400ABA",
-        "uuid": "aa861f79-0d95-45e5-8433-30d90bef5723",
+        "accession": "LATDF937GJN",
+        "uuid": "2040b7ed-5ad9-4de2-968e-fa8e6a908761",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4813,27 +3362,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "1dad2d4dffe26a4b09a0fddc6fc52bd0",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "transcription factor",
-                        "feature_count": 540
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_tf_matrix_1b_deprecated"
+            "jimmie-ye:filtered_tf_matrix_1b"
         ],
-        "accession": "LATDF401ABA",
-        "uuid": "a5f415ca-d81a-429f-8e5f-2acb78c7501b",
+        "accession": "LATDF580WMI",
+        "uuid": "e1932055-e775-4b56-8cc4-a6b1c069cee0",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4865,27 +3401,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "9417f1615b2b78a5c11e15093f562e69",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "transcription factor",
-                        "feature_count": 540
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_tf_matrix_1c_deprecated"
+            "jimmie-ye:filtered_tf_matrix_1c"
         ],
-        "accession": "LATDF402ABA",
-        "uuid": "0d03d2fd-d58b-4cf1-9da4-40cd6e6ee8a7",
+        "accession": "LATDF083YKV",
+        "uuid": "265ef860-698c-4368-ba15-cffd5238c158",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4917,27 +3440,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "5b04114fa2a5cc26c717c5ece363534f",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "transcription factor",
-                        "feature_count": 540
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_tf_matrix_2a_deprecated"
+            "jimmie-ye:filtered_tf_matrix_2a"
         ],
-        "accession": "LATDF403ABA",
-        "uuid": "806b21f1-39a2-4596-8698-56f601199fb7",
+        "accession": "LATDF888FZR",
+        "uuid": "8bbe5a65-57ae-43bc-bc95-2b3e7b618a7e",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4969,27 +3479,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "de9f4501f7d812f43bd5121e83928641",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "transcription factor",
-                        "feature_count": 540
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_tf_matrix_2b_deprecated"
+            "jimmie-ye:filtered_tf_matrix_2b"
         ],
-        "accession": "LATDF404ABA",
-        "uuid": "4b53cda1-908a-4558-a167-56984e8da25e",
+        "accession": "LATDF484GQN",
+        "uuid": "631c4d53-d44f-4fad-bf39-f4a3a0c49a62",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5021,27 +3518,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "e44dc98c2ad7ce7b3e9c0701e0b817a9",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "transcription factor",
-                        "feature_count": 540
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_tf_matrix_2c_deprecated"
+            "jimmie-ye:filtered_tf_matrix_2c"
         ],
-        "accession": "LATDF405ABA",
-        "uuid": "834d44f0-56bc-4329-971f-f303d8ef5881",
+        "accession": "LATDF482WSX",
+        "uuid": "6673ef75-e243-43e5-b872-9f6249013a7c",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5073,27 +3557,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "f9f7c568df684ed4aef14410d82b49d4",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "transcription factor",
-                        "feature_count": 610
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_tf_matrix_3a_deprecated"
+            "jimmie-ye:filtered_tf_matrix_3a"
         ],
-        "accession": "LATDF406ABA",
-        "uuid": "3d224856-34f6-41ea-8e6c-fa1ac17c7157",
+        "accession": "LATDF130WCY",
+        "uuid": "49af2a2a-4770-4878-84ca-91b6b68952cf",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5125,27 +3596,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "b39448f475500107355f229ecccb027b",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "transcription factor",
-                        "feature_count": 540
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_tf_matrix_3b_deprecated"
+            "jimmie-ye:filtered_tf_matrix_3b"
         ],
-        "accession": "LATDF407ABA",
-        "uuid": "1cd5cfa7-5aba-493f-b4a0-b6cac1abf52d",
+        "accession": "LATDF754RHQ",
+        "uuid": "43a7e68b-44c3-4201-ae1c-b3283aad9f92",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5177,27 +3635,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "11aa5183f93bf123c387ef7e0e0dd444",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "transcription factor",
-                        "feature_count": 521
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_tf_matrix_3c_deprecated"
+            "jimmie-ye:filtered_tf_matrix_3c"
         ],
-        "accession": "LATDF408ABA",
-        "uuid": "febbed57-50a6-4115-bfcd-9ae2143f7d43",
+        "accession": "LATDF766HPX",
+        "uuid": "009e4a9c-1153-4594-945d-8785472f9a5c",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5229,27 +3674,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "2fdbca0bb312f02efdc84fef82b914a6",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "transcription factor",
-                        "feature_count": 542
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_peak_matrix_1a_deprecated"
+            "jimmie-ye:filtered_peak_matrix_1a"
         ],
-        "accession": "LATDF300ABA",
-        "uuid": "85d4d147-e5bd-44fb-9e17-2b03b7bca925",
+        "accession": "LATDF664NIB",
+        "uuid": "76740870-efb1-4302-b45b-842fff8f3d09",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5282,27 +3714,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "0da463fc022a076ec9cc6c635da0934f",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 99231
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_peak_matrix_1b_deprecated"
+            "jimmie-ye:filtered_peak_matrix_1b"
         ],
-        "accession": "LATDF301ABA",
-        "uuid": "e1dcf8d2-eed1-448e-9065-8cf888838e9e",
+        "accession": "LATDF772KEB",
+        "uuid": "1767e954-29ac-4a92-9a76-7924cba20c7f",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5335,27 +3754,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "a0e14d238f06919dca69dd275c10b38e",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 99231
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_peak_matrix_1c_deprecated"
+            "jimmie-ye:filtered_peak_matrix_1c"
         ],
-        "accession": "LATDF302ABA",
-        "uuid": "ad18750c-608d-4682-b635-0186da1cd842",
+        "accession": "LATDF433LCI",
+        "uuid": "2edd39f7-59cb-4e59-bb63-924cd38e6b90",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5388,27 +3794,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "b691aa0778c3213e7b318efa558fe069",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 99231
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_peak_matrix_2a_deprecated"
+            "jimmie-ye:filtered_peak_matrix_2a"
         ],
-        "accession": "LATDF303ABA",
-        "uuid": "b5f32dfb-f615-460e-8ad0-f021f1c805e6",
+        "accession": "LATDF591JSD",
+        "uuid": "ee3db7e0-27f9-48e8-a762-c965cde290b1",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5441,27 +3834,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "c829aceaff13ad01453c4b39ca1f856f",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100122
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_peak_matrix_2b_deprecated"
+            "jimmie-ye:filtered_peak_matrix_2b"
         ],
-        "accession": "LATDF304ABA",
-        "uuid": "81ade3a8-4ccd-4130-a647-3b9b27a1fa5f",
+        "accession": "LATDF311GHR",
+        "uuid": "00293348-8047-4504-9ca8-980c7a218435",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5494,27 +3874,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "f65eb489476d069394924142c4d97060",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 110332
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_peak_matrix_2c_deprecated"
+            "jimmie-ye:filtered_peak_matrix_2c"
         ],
-        "accession": "LATDF305ABA",
-        "uuid": "010b2039-43b3-45b0-b259-26b0529c5e90",
+        "accession": "LATDF376KKN",
+        "uuid": "aa14bdc8-6a9e-4e67-94cd-18469a7b8ec1",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5547,27 +3914,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "149527139b80175dc1cce36950f547f2",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 100211
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_peak_matrix_3a_deprecated"
+            "jimmie-ye:filtered_peak_matrix_3a"
         ],
-        "accession": "LATDF306ABA",
-        "uuid": "fcf0bbf6-f7cb-4bbd-9507-06156a9a3856",
+        "accession": "LATDF406QXO",
+        "uuid": "1e98085f-4b2e-46c6-8273-ee0d92f7f505",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5600,27 +3954,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "4c792fc634bff7ff6c3687cca73dade3",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 120042
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_peak_matrix_3b_deprecated"
+            "jimmie-ye:filtered_peak_matrix_3b"
         ],
-        "accession": "LATDF307ABA",
-        "uuid": "67ef279a-3445-47a2-8db4-e9ae2c5beec8",
+        "accession": "LATDF556XQY",
+        "uuid": "931a1d1c-ccb9-49f0-bf3f-04aaf591769d",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5653,27 +3994,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "1dd3e3d0a78ebdae3be61867d2faea2b",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 150399
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:filtered_peak_matrix_3c_deprecated"
+            "jimmie-ye:filtered_peak_matrix_3c"
         ],
-        "accession": "LATDF308ABA",
-        "uuid": "b365d44d-e124-4362-89cb-35a8e0d7c6eb",
+        "accession": "LATDF585HMG",
+        "uuid": "e5031922-05c0-497c-a852-3afb2292833e",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5706,27 +4034,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "f685e401feec1d36b8e0960a9218c616",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 142921
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "jimmie-ye:raw_peak_matrix_1a_deprecated"
+            "jimmie-ye:raw_peak_matrix_1a"
         ],
-        "accession": "LATDF200ABA",
-        "uuid": "5c0c595a-990c-4d0f-9584-978bc9429da2",
+        "accession": "LATDF418YGP",
+        "uuid": "e7c90149-b46f-4d3f-b2c5-d28a5c307023",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5759,27 +4074,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "e7effaa434b25ec6a54aa29b11cca271",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 221022
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "jimmie-ye:raw_peak_matrix_1b_deprecated"
+            "jimmie-ye:raw_peak_matrix_1b"
         ],
-        "accession": "LATDF201ABA",
-        "uuid": "d2092404-2c54-41d8-86a6-4975ea98e187",
+        "accession": "LATDF703LSG",
+        "uuid": "3d8ddae2-bb5b-4676-bd0f-486e15005954",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5812,27 +4114,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "9b4db05bd5478ab9db71d3bed8e18ef7",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 201829
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "jimmie-ye:raw_peak_matrix_1c_deprecated"
+            "jimmie-ye:raw_peak_matrix_1c"
         ],
-        "accession": "LATDF202ABA",
-        "uuid": "016fb3ac-a626-45fe-b27b-657a4ac58768",
+        "accession": "LATDF914RJE",
+        "uuid": "a223b710-b692-45c8-a9f8-b14c9cea9191",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5865,27 +4154,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "424b260516ccdbf78a7d37ef78575c82",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 200120
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "jimmie-ye:raw_peak_matrix_2a_deprecated"
+            "jimmie-ye:raw_peak_matrix_2a"
         ],
-        "accession": "LATDF203ABA",
-        "uuid": "b1a923ed-195c-450e-8f8d-a91869f5933c",
+        "accession": "LATDF416ZFO",
+        "uuid": "1981374b-608d-4be8-b8fa-f1189b9f5d92",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5918,27 +4194,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "6937b150fd7a8c025fadf5cb565465b7",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 210231
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "jimmie-ye:raw_peak_matrix_2b_deprecated"
+            "jimmie-ye:raw_peak_matrix_2b"
         ],
-        "accession": "LATDF204ABA",
-        "uuid": "4d412e77-cb21-43b4-be35-c6579a7c0f3e",
+        "accession": "LATDF926CDU",
+        "uuid": "eceaa0c5-f459-48b6-8815-3691e47fd241",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -5971,27 +4234,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "d850a65365f474f954f1801320f02aec",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 200231
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "jimmie-ye:raw_peak_matrix_2c_deprecated"
+            "jimmie-ye:raw_peak_matrix_2c"
         ],
-        "accession": "LATDF205ABA",
-        "uuid": "2e5bd897-f518-42f0-961b-ec613f020764",
+        "accession": "LATDF646HDD",
+        "uuid": "cd725009-9a22-4be6-a25f-a61f4089ca42",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -6024,27 +4274,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "e0ea7a30c2b95c4a03181a8f51a35809",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 211231
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "jimmie-ye:raw_peak_matrix_3a_deprecated"
+            "jimmie-ye:raw_peak_matrix_3a"
         ],
-        "accession": "LATDF206ABA",
-        "uuid": "fb557d3a-deca-49fd-9d0d-cb77ed5785ce",
+        "accession": "LATDF161CXL",
+        "uuid": "eea9fee3-83ab-4243-a1e7-2d90735dcccd",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -6077,27 +4314,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "8a9fcb515f6bdd738b1e064c46134ebb",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 220231
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "jimmie-ye:raw_peak_matrix_3b_deprecated"
+            "jimmie-ye:raw_peak_matrix_3b"
         ],
-        "accession": "LATDF207ABA",
-        "uuid": "b80409f6-f580-43d6-93b2-8b5f6a07bd53",
+        "accession": "LATDF317ORF",
+        "uuid": "17bb7890-a486-482d-aa89-413ad25144a6",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -6130,27 +4354,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "5c0cee32250d2309b049eb1168da1f10",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 200312
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "jimmie-ye:raw_peak_matrix_3c_deprecated"
+            "jimmie-ye:raw_peak_matrix_3c"
         ],
-        "accession": "LATDF208ABA",
-        "uuid": "5888757c-9564-4a96-9db1-17ee8e502c81",
+        "accession": "LATDF602ZFM",
+        "uuid": "a54bcccf-9936-44df-9119-de4407112efc",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -6183,27 +4394,14 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "c5b4cf72236a68bf9c548bf1fdf73212",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "peak",
-                        "feature_count": 268231
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "fragment ends",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": true
     },
     {
         "aliases": [
-            "peter-sims:postnatal_1a_matrix_deprecated"
+            "peter-sims:postnatal_1a_matrix"
         ],
-        "accession": "LATDF100AAA",
-        "uuid": "77e45170-df3e-11ea-87d0-0242ac130003",
+        "accession": "LATDF981GJP",
+        "uuid": "8f8a4e54-82ad-451a-8b44-404d12b306aa",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6233,27 +4431,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "2e5f4a5643dff7e46e1fa164722b082d",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:postnatal_1b_matrix_deprecated"
+            "peter-sims:postnatal_1b_matrix"
         ],
-        "accession": "LATDF101AAA",
-        "uuid": "425a21cd-ad72-49fb-9c9a-cd80d93ea5b4",
+        "accession": "LATDF873IFG",
+        "uuid": "87e204a6-bb4d-4643-81ab-dd0dfeddf85e",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6283,27 +4468,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "98bbebbf557750e83bf42ed0974e22bd",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:postnatal_1c_matrix_deprecated"
+            "peter-sims:postnatal_1c_matrix"
         ],
-        "accession": "LATDF102AAA",
-        "uuid": "2f280832-e0ce-11ea-87d0-0242ac130003",
+        "accession": "LATDF413TOQ",
+        "uuid": "81e7945f-34dd-4621-96c4-5f7385957dde",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6333,27 +4505,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "ea84ff21512a32c379b7cbf77618b728",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_2a_matrix_deprecated"
+            "peter-sims:prenatal_2a_matrix"
         ],
-        "accession": "LATDF103AAA",
-        "uuid": "28fc5d7c-e0cf-11ea-87d0-0242ac130003",
+        "accession": "LATDF738PTC",
+        "uuid": "9c9f2155-fbe4-457c-ad59-fe8bf33e8720",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6383,27 +4542,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "b02bc4994123ab4b4644aad304118b4c",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_2b_matrix_deprecated"
+            "peter-sims:prenatal_2b_matrix"
         ],
-        "accession": "LATDF104AAA",
-        "uuid": "98527040-e1d1-4c89-a354-47a0f0fe738f",
+        "accession": "LATDF325HWV",
+        "uuid": "f65f3927-35ae-41ab-8dde-f6fc7db7f7ab",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6433,27 +4579,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "9718d87b95adae875d0a2cfc2c64922d",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_2c_matrix_deprecated"
+            "peter-sims:prenatal_2c_matrix"
         ],
-        "accession": "LATDF105AAA",
-        "uuid": "b9996519-e6f0-497e-a4ed-c19ea0ca5a1e",
+        "accession": "LATDF104ONP",
+        "uuid": "866290c6-1b90-4564-9ee1-1e1fa1d0c090",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6483,27 +4616,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "dc92ebeafce2cb4c9730341e6efc65be",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_3a_matrix_deprecated"
+            "peter-sims:prenatal_3a_matrix"
         ],
-        "accession": "LATDF106AAA",
-        "uuid": "f29c27f1-1b93-4650-bf83-5ba8fb898318",
+        "accession": "LATDF873KXM",
+        "uuid": "dcdab72d-22e2-467a-8ef5-93047ca0ec19",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6533,27 +4653,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "cba03d18a91877d5677becaf15f195fa",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_3b_matrix_deprecated"
+            "peter-sims:prenatal_3b_matrix"
         ],
-        "accession": "LATDF107AAA",
-        "uuid": "3b7039d8-e0cf-11ea-87d0-0242ac130003",
+        "accession": "LATDF047IAF",
+        "uuid": "7ff69e7a-eaf8-44b9-bf68-63b51f3b71d9",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6583,27 +4690,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "cfedc56fd843f516f0b69c06c3d52777",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_3c_matrix_deprecated"
+            "peter-sims:prenatal_3c_matrix"
         ],
-        "accession": "LATDF108AAA",
-        "uuid": "32c7e05a-62fa-42ae-a524-0f4d02dc9b47",
+        "accession": "LATDF917HOL",
+        "uuid": "0c4b86e7-ab7e-4b2f-b0c9-7f107af847b5",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6633,27 +4727,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "c4e2fe787e7dc34adfd5135984cf9cef",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:postnatal_1a_filtered_matrix_deprecated"
+            "peter-sims:postnatal_1a_filtered_matrix"
         ],
-        "accession": "LATDF109AAA",
-        "uuid": "e40c90d2-af36-40d0-a947-e872fa5a0e7d",
+        "accession": "LATDF265ZMU",
+        "uuid": "cd49e62b-6b07-40e7-a661-9d87c05746f4",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6684,27 +4765,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "0b62d1ec99c15838826a0bac54ce732d",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:postnatal_1b_filtered_matrix_deprecated"
+            "peter-sims:postnatal_1b_filtered_matrix"
         ],
-        "accession": "LATDF110AAA",
-        "uuid": "059785ef-9e3c-4014-80d3-16248064fdcc",
+        "accession": "LATDF225JRV",
+        "uuid": "6eff74d2-8a24-45ce-8737-68570d4fecc6",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6735,27 +4803,14 @@
             "cellranger count 4.0"
         ],
         "md5sum": "b3c8e02b7f150a1567d840841ae2ea52",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:postnatal_1c_filtered_matrix_deprecated"
+            "peter-sims:postnatal_1c_filtered_matrix"
         ],
-        "accession": "LATDF111AAA",
-        "uuid": "be473115-9e5d-4094-9f22-9a8125d3aa68",
+        "accession": "LATDF726VSH",
+        "uuid": "a01f5d06-0402-4278-9a0c-a49e37583e05",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6786,29 +4841,16 @@
             "cellranger count 4.0"
         ],
         "md5sum": "632a9adf153040d5eb2bdfd96c53c5bd",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_2a_filtered_matrix_deprecated",
-            "benjamin-humphreys:healthy_1_RNA_matrix_filtered_deprecated"
+            "peter-sims:prenatal_2a_filtered_matrix",
+            "benjamin-humphreys:healthy_1_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont1/outs/filtered_feature_bc_matrix.h5",
-        "accession": "LATDF112AAA",
-        "uuid": "8ae541d4-541b-4a3d-99a4-98e97e3206f3",
+        "accession": "LATDF358PVS",
+        "uuid": "49453b99-cf44-400a-b590-7eefa4412feb",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6839,29 +4881,16 @@
             "cellranger count 4.0"
         ],
         "md5sum": "7043cc8ac76c761cacbb3ad6868c2fda",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_2b_filtered_matrix_deprecated",
-            "benjamin-humphreys:healthy_2_RNA_matrix_filtered_deprecated"
+            "peter-sims:prenatal_2b_filtered_matrix",
+            "benjamin-humphreys:healthy_2_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont2/outs/filtered_feature_bc_matrix.h5",
-        "accession": "LATDF113AAA",
-        "uuid": "a4f7cbb1-9fec-471c-8daf-e475978fe0d3",
+        "accession": "LATDF254SLH",
+        "uuid": "3f0bb6c2-174a-41bc-919a-547d4d6ba5cb",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6892,29 +4921,16 @@
             "cellranger count 4.0"
         ],
         "md5sum": "44a9817316acdba0872cb2f8c9bb60a0",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_2c_filtered_matrix_deprecated",
-            "benjamin-humphreys:healthy_3_RNA_matrix_filtered_deprecated"
+            "peter-sims:prenatal_2c_filtered_matrix",
+            "benjamin-humphreys:healthy_3_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont3/outs/filtered_feature_bc_matrix.h5",
-        "accession": "LATDF114AAA",
-        "uuid": "08c6b1da-11b5-4cc9-a1d5-86105d162fd1",
+        "accession": "LATDF174EGU",
+        "uuid": "c4627be4-adb5-4570-9437-e8a14bb82cfa",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6945,29 +4961,16 @@
             "cellranger count 4.0"
         ],
         "md5sum": "e788b4b1a5ed6dc74e341fbd6d34b378",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_3a_filtered_matrix_deprecated",
-            "benjamin-humphreys:healthy_4_RNA_matrix_filtered_deprecated"
+            "peter-sims:prenatal_3a_filtered_matrix",
+            "benjamin-humphreys:healthy_4_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont4/outs/filtered_feature_bc_matrix.h5",
-        "accession": "LATDF115AAA",
-        "uuid": "117d7566-4586-4675-b359-73ee0351ac3b",
+        "accession": "LATDF836MNR",
+        "uuid": "84cec172-6c83-424d-9f0e-8bb8b234c770",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6998,29 +5001,16 @@
             "cellranger count 4.0"
         ],
         "md5sum": "34e36c93b861aeb18ca667b0234345c0",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_3b_filtered_matrix_deprecated",
-            "benjamin-humphreys:healthy_5_RNA_matrix_filtered_deprecated"
+            "peter-sims:prenatal_3b_filtered_matrix",
+            "benjamin-humphreys:healthy_5_RNA_matrix_filtered"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont5/outs/filtered_feature_bc_matrix.h5",
-        "accession": "LATDF116AAA",
-        "uuid": "e363e2cf-2ab5-4e2c-91b4-4ac4a65e69e8",
+        "accession": "LATDF360SWN",
+        "uuid": "9b87596c-9b83-4afa-9cde-b111ea7783ce",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -7051,28 +5041,15 @@
             "cellranger count 4.0"
         ],
         "md5sum": "e84139020ca36418fc7c835ff98e56c4",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:prenatal_3c_filtered_matrix_deprecated"
+            "peter-sims:prenatal_3c_filtered_matrix"
         ],
         "s3_uri": "s3://submissions-czi009kid/muto_humphreys_2020/Cont5/outs/filtered_feature_bc_matrix.h5",
-        "accession": "LATDF117AAA",
-        "uuid": "97c7a401-f6a8-4315-9d81-e12d84b79a80",
+        "accession": "LATDF386QZO",
+        "uuid": "359f2af6-8daf-41c5-b53f-450b1f165567",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -7103,205 +5080,13 @@
             "cellranger count 4.0"
         ],
         "md5sum": "86e38ceabcc13bffa0e6093e17c30bfc",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 33029
-                    }
-                ],
-                "value_scale": "linear",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
+        "empty_drops_included": false
     },
     {
         "aliases": [
-            "peter-sims:postnatal_merged_matrix_deprecated"
+            "peter-sims:unconsented_matrix"
         ],
-        "accession": "LATDF118AAA",
-        "uuid": "1b5f2d6d-8dd0-4463-abd9-722bb2bd11a7",
-        "no_file_available": false,
-        "status": "released",
-        "file_format": "mtx",
-        "file_size": 50000,
-        "lab": "peter-sims",
-        "submitted_file_name": "prenatal_merged_matrix.mtx",
-        "output_types": [
-            "gene quantifications"
-        ],
-        "feature_keys": [
-            "gene symbol"
-        ],
-        "observation_count": 18292,
-        "dataset": "peter-sims:scRNAseq_test_dataset",
-        "derived_from": [
-            "peter-sims:postnatal_1a_filtered_matrix_deprecated",
-            "peter-sims:postnatal_1b_filtered_matrix_deprecated",
-            "peter-sims:postnatal_1c_filtered_matrix_deprecated"
-        ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
-        "derivation_process": [
-            "merging"
-        ],
-        "software": [
-            "cellranger aggr 4.0"
-        ],
-        "md5sum": "b80320ebaa285af7a6880dbbd6795134",
-        "layers": [
-            {
-                "label": "X",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 20919
-                    }
-                ],
-                "value_scale": "log1p, base 10",
-                "value_units": "UMI",
-                "normalized": true,
-                "normalization_method": "cellranger aggr read depth normalization",
-                "filtering_cutoffs": [
-                    {
-                        "cutoff_value": 20000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 1000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "minimum"
-                    },
-                    {
-                        "cutoff_value": 10,
-                        "cutoff_units": "percent mitochondrial/cell",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 3,
-                        "cutoff_units": "cells/gene",
-                        "cutoff_type": "minimum"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "aliases": [
-            "peter-sims:prenatal_merged_matrix_deprecated"
-        ],
-        "accession": "LATDF119AAA",
-        "author_cell_type_column": "celltype",
-        "cell_annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
-        "author_cluster_column": "seurat_clusters",
-        "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
-        "s3_uri": "s3://submissions-lattice/testing/muto_rna.rds",
-        "no_file_available": false,
-        "description": "A super cool dataset for all to see",
-        "status": "released",
-        "file_format": "rds",
-        "file_size": 50000,
-        "lab": "peter-sims",
-        "submitted_file_name": "prenatal_merged_matrix.mtx",
-        "output_types": [
-            "gene quantifications"
-        ],
-        "feature_keys": [
-            "gene symbol"
-        ],
-        "observation_count": 19985,
-        "dataset": "peter-sims:scRNAseq_test_dataset",
-        "derived_from": [
-            "peter-sims:prenatal_2a_filtered_matrix_deprecated",
-            "peter-sims:prenatal_2b_filtered_matrix_deprecated",
-            "peter-sims:prenatal_2c_filtered_matrix_deprecated",
-            "peter-sims:prenatal_3a_filtered_matrix_deprecated",
-            "peter-sims:prenatal_3b_filtered_matrix_deprecated"
-        ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
-        "derivation_process": [
-            "merging",
-            "ambient RNA correction"
-        ],
-        "software": [
-            "cellranger aggr 4.0"
-        ],
-        "experimental_variable_disease": "MONDO_0005147",
-        "md5sum": "2e883306013203954eb1b69ae063eef1",
-        "cell_label_location": "suffix",
-        "cell_label_mappings": [
-            {
-                "raw_matrix": "LATDF112AAA",
-                "label": "-1"
-            },
-            {
-                "raw_matrix": "LATDF113AAA",
-                "label": "-2"
-            },
-            {
-                "raw_matrix": "LATDF114AAA",
-                "label": "-3"
-            },
-            {
-                "raw_matrix": "LATDF115AAA",
-                "label": "-4"
-            },
-            {
-                "raw_matrix": "LATDF116AAA",
-                "label": "-5"
-            }
-        ],
-        "default_visualization": "author_celltype",
-        "default_embedding": "X_umap",
-        "layers": [
-            {
-                "assay": "SCT",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 22357
-                    }
-                ],
-                "value_scale": "log1p, natural",
-                "value_units": "UMI",
-                "normalized": true,
-                "normalization_method": "scTransform",
-                "filtering_cutoffs": [
-                    {
-                        "cutoff_value": 20000,
-                        "cutoff_units": "genes/cell",
-                        "cutoff_type": "maximum",
-                        "cutoff_proportion": "epithelial cells 1"
-                    },
-                    {
-                        "cutoff_value": 1000,
-                        "cutoff_units": "per batch distribution percent umi/cell",
-                        "cutoff_type": "minimum"
-                    },
-                    {
-                        "cutoff_value": 10,
-                        "cutoff_units": "percent fragments in peaks/nuclei",
-                        "cutoff_type": "maximum"
-                    },
-                    {
-                        "cutoff_value": 3,
-                        "cutoff_units": "cells/gene",
-                        "cutoff_type": "minimum"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "aliases": [
-            "peter-sims:unconsented_matrix_deprecated"
-        ],
-        "uuid": "4f72ed00-38c1-468d-a29a-000a2eb14c70",
+        "uuid": "e33a457b-13c6-4931-8bc0-4c20c8f0992c",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -7328,52 +5113,7 @@
             "cellranger aggr 4.0"
         ],
         "md5sum": "2d6c0e193103965fcbc1a4f938439f41",
-        "layers": [
-            {
-                "label": "raw",
-                "feature_counts": [
-                    {
-                        "feature_type": "gene",
-                        "feature_count": 23213
-                    }
-                ],
-                "value_scale": "log1p, base 10",
-                "value_units": "UMI",
-                "normalized": false
-            }
-        ]
-    },
-    {
-        "derived_from": [
-            "LATDF200ABA",
-            "LATDF201ABA",
-            "LATDF202ABA",
-            "LATDF203ABA",
-            "LATDF204ABA",
-            "LATDF205ABA",
-            "LATDF206ABA",
-            "LATDF207ABA",
-            "LATDF208ABA"
-        ],
-        "dataset": "LATDS600ABA",
-        "derivation_process": [
-            "alignment",
-            "quantification"
-        ],
-        "file_format": "rds",
-        "output_types": [
-            "gene quantifications"
-        ],
-        "uuid": "7ca0c1d6-4b5a-4e93-b6f2-b1ae1ee172dc",
-        "accession": "LATDF333ORG",
-        "description": "There's organoid data in this one!",
-        "layers": [
-            {
-                "label": "X",
-                "normalized": true,
-                "value_units": "UMI",
-                "value_scale": "log, base 10"
-            }
-        ]
+        "accession": "LATDF962TJK",
+        "empty_drops_included": false
     }
 ]

@@ -1,0 +1,384 @@
+{
+    "title": "Raw matrix file",
+    "description": "Schema for submitting metadata for a raw matrix file.",
+    "id": "/profiles/raw_matrix_file.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["dataset", "file_format", "output_types", "derived_from", "derivation_process", "empty_drops_included"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/dataset"},
+        {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/lab"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/accessioned_status"},
+        {"$ref": "file.json#/properties"},
+        {"$ref": "data_file.json#/properties"},
+        {"$ref": "analysis_file.json#/properties"}
+    ],
+    "dependencies": {
+        "external_accession": {
+            "not": {
+                "required": ["accession"]
+            }
+        },
+        "revoke_detail": {
+            "properties": {
+                "status": {
+                    "enum": ["revoked"]
+                }
+            }
+        },
+        "content_error_detail":{
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        },
+        "genome_annotation": {
+            "required": ["assembly"],
+            "oneOf": [
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["hg19"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE 19"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["GRCh38"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["mm10"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE M23", "GENCODE M18",  "GENCODE M9"]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "3"
+        }, 
+        "description": {
+            "description": "The text describing the matrix, will be displayed as the title at cellxgene."
+        },
+        "derived_from": {
+            "items": {
+                "title": "Derived from",
+                "description": "A file participating as input into software to produce this output file.",
+                "type": "string",
+                "linkTo": [
+                    "RawSequenceFile",
+                    "Library"
+                ]
+            }
+        },
+        "derivation_process": {
+            "items": {
+                "type":  "string",
+                "enum": [
+                    "alignment",
+                    "quantification",
+                    "peak calling",
+                    "peak annotation",
+                    "gene filtering",
+                    "cell filtering",
+                    "merging",
+                    "cell calling",
+                    "ambient RNA correction",
+                    "doublet removal"
+                 ]
+            }
+        },
+        "file_format": {
+            "enum": [
+                "mtx",
+                "csv",
+                "loom",
+                "tsv",
+                "txt",
+                "hdf5",
+                "rds",
+                "mex"
+            ]
+        },
+        "output_types": {
+            "items": {
+                "type": "string",
+                "enum": [
+                    "gene quantifications",
+                    "transcript quantifications",
+                    "peak quantifications",
+                    "transcription factor quantifications",
+                    "antibody capture quantifications"
+                ]
+            }
+        },
+        "empty_drops_included": {
+            "title": "Empty drops included",
+            "description": "True if non-biological observationns are expected to be in the data.",
+            "type": "boolean"
+        },
+        "intronic_reads_counted": {
+            "title": "Intronic reads counted",
+            "description": "True if reads mapped to intronic regions were used for gene quantifications.",
+            "type": "boolean"
+        },
+        "feature_keys": {
+            "title": "Feature keys",
+            "description": "The category of identifiers used as the key for the features of the matrix.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Feature key",
+                "type": "string",
+                "enum": [
+                    "Ensembl gene ID",
+                    "gene symbol",
+                    "antibody target",
+                    "genomic coordinates",
+                    "motif ID"
+                ]
+            }
+        },
+        "feature_counts": {
+            "title": "Feature counts",
+            "description": "For each category of feature type, the number of entries found in the matrix considered as features (eg: genes, antibody capture, or peaks)",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Feature count",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "feature_type": {
+                        "title": "Feature type",
+                        "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+                        "type": "string",
+                        "enum": [
+                            "gene",
+                            "peak",
+                            "transcription factor",
+                            "antibody capture"
+                        ]
+                    },
+                    "feature_count": {
+                        "title": "Feature count",
+                        "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "value_scale": {
+            "title": "Value scale",
+            "description": "The factor by which the expression values have been scaled; linear if not scaled.",
+            "type": "string",
+            "default": "linear"
+        },
+        "value_units": {
+            "title": "Value units",
+            "description": "The units for the expression values.",
+            "type": "string",
+            "enum": [
+                "UQ",
+                "SF",
+                "RPM",
+                "RPKM",
+                "FPKM",
+                "TPM",
+                "TMM",
+                "UMI",
+                "expected count",
+                "fragment ends"
+            ]
+        },
+        "normalized": {
+            "title": "Normalized",
+            "description": "A flag to indicate whether the expression values have been normalized.",
+            "type": "boolean",
+            "default": false
+        },
+        "scaled": {
+            "title": "Scaled",
+            "description": "A flag to indicate whether the expression values have been scaled.",
+            "type": "boolean",
+            "default": false
+        },
+        "filtering_cutoffs": {
+            "title": "Filtering cutoffs",
+            "description": "The list of cutoffs that were used for filtering in generating the matrix.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Filtering cutoff",
+                "type": "object",
+                "required": ["cutoff_value", "cutoff_units", "cutoff_type"],
+                "additionalProperties": false,
+                "properties": {
+                    "cutoff_proportion": {
+                        "title": "Cutoff proportion",
+                        "description": "The specific subset of the matrix that the cutoff has been applied to.",
+                        "type": "string",
+                        "default": "all"
+                    },
+                    "cutoff_value": {
+                        "title": "Cutoff value",
+                        "description": "",
+                        "type": "number"
+                    },
+                    "cutoff_units": {
+                        "title": "Cutoff units",
+                        "type": "string",
+                        "enum": [
+                            "genes/cell",
+                            "genes/nuclei",
+                            "umi/cell",
+                            "umi/nuclei",
+                            "umi/bead",
+                            "cells/gene",
+                            "nuclei/gene",
+                            "percent mitochondrial/cell",
+                            "percent mitochondrial/nuclei",
+                            "percent ribosomal protein large subunits",
+                            "percent ribosomal protein small subunits",
+                            "fragments in peaks/nuclei",
+                            "percent fragments in peaks/nuclei",
+                            "TSS enrichment score/nuclei",
+                            "blacklist ratio/nuclei",
+                            "doublet score/nuclei",
+                            "nucleosome signal/nuclei",
+                            "per batch distribution percent genes/cell",
+                            "per batch distribution percent genes/nuclei",
+                            "per batch distribution percent umi/cell",
+                            "per batch distribution percent umi/nuclei",
+                            "per batch distribution percent cells/gene",
+                            "per batch distribution percent nuclei/gene",
+                            "per batch distribution percent, percent mitochondrial/cell",
+                            "per batch distribution percent, percent mitochondrial/nuclei",
+                            "per batch distribution percent fragments in peaks/nuclei",
+                            "per batch distribution percent, percent in peaks/nuclei"
+                        ]
+                    },
+                    "cutoff_type": {
+                        "title": "Cutoff type",
+                        "type": "string",
+                        "enum": [
+                            "minimum",
+                            "maximum"
+                        ]
+                    }
+                }
+            }
+        },
+        "observation_count": {
+            "title": "Observation count",
+            "description": "The number of entries found in the matrix considered as observations (eg: cell barcodes)",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+            "type": "integer"
+        }
+    },
+    "facets": {
+        "assays": {
+            "title": "Assays"
+        },
+        "assembly": {
+            "title": "Genome assembly"
+        },
+        "genome_annotation": {
+            "title": "Genome annotation"
+        },
+        "empty_drops_included": {
+            "title": "Empty drops included"
+        },
+        "output_types": {
+            "title": "Output type"
+        },
+        "file_format": {
+            "title": "File format"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.name": {
+            "title": "Award"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "columns": {
+        "title": {
+            "title": "Title"
+        },
+        "accession": {
+            "title": "Accession"
+        },
+        "dataset": {
+            "title": "Dataset"
+        },
+        "assembly": {
+            "title": "Genome assembly"
+        },
+        "file_format": {
+            "title": "File Format"
+        },
+        "file_size": {
+            "title": "File size"
+        },
+        "empty_drops_included": {
+            "title": "Empty drops included"
+        },
+        "href": {
+            "title": "Download URL"
+        },
+        "derived_from": {
+            "title": "Derived from"
+        },
+        "genome_annotation": {
+            "title": "Genome annotation"
+        },
+        "output_types": {
+            "title": "Output types"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.name": {
+            "title": "Award"
+        },
+        "software": {
+            "title": "Software"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/raw_matrix_file.md"
+}

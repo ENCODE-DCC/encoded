@@ -1,0 +1,531 @@
+{
+    "title": "Processed matrix file",
+    "description": "Schema for submitting metadata for a processed matrix file.",
+    "id": "/profiles/processed_matrix_file.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["dataset", "file_format", "output_types", "derived_from", "derivation_process"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/dataset"},
+        {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/lab"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/accessioned_status"},
+        {"$ref": "file.json#/properties"},
+        {"$ref": "data_file.json#/properties"},
+        {"$ref": "analysis_file.json#/properties"}
+    ],
+    "dependencies": {
+        "external_accession": {
+            "not": {
+                "required": ["accession"]
+            }
+        },
+        "revoke_detail": {
+            "properties": {
+                "status": {
+                    "enum": ["revoked"]
+                }
+            }
+        },
+        "content_error_detail":{
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        },
+        "genome_annotation": {
+            "required": ["assembly"],
+            "oneOf": [
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["hg19"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE 19"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["GRCh38"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["mm10"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE M23", "GENCODE M18",  "GENCODE M9"]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "3"
+        }, 
+        "description": {
+            "description": "The text describing the matrix, will be displayed as the title at cellxgene."
+        },
+        "derived_from": {
+            "items": {
+                "title": "Derived from",
+                "description": "A file participating as input into software to produce this output file.",
+                "type": "string",
+                "linkTo": [
+                    "RawSequenceFile",
+                    "MatrixFile",
+                    "RawMatrixFile",
+                    "Library"
+                ]
+            }
+        },
+        "derivation_process": {
+            "items": {
+                "type":  "string",
+                "enum": [
+                    "alignment",
+                    "quantification",
+                    "peak calling",
+                    "peak annotation",
+                    "gene filtering",
+                    "cell filtering",
+                    "merging",
+                    "cell calling",
+                    "ambient RNA correction",
+                    "doublet removal",
+                    "batch correction",
+                    "depth normalization"
+                 ]
+            }
+        },
+        "file_format": {
+            "enum": [
+                "mtx",
+                "csv",
+                "loom",
+                "tsv",
+                "txt",
+                "hdf5",
+                "rds",
+                "mex"
+            ]
+        },
+        "output_types": {
+            "items": {
+                "type": "string",
+                "enum": [
+                    "gene quantifications",
+                    "transcript quantifications",
+                    "peak quantifications",
+                    "transcription factor quantifications",
+                    "antibody capture quantifications"
+                ]
+            }
+        },
+        "intronic_reads_counted": {
+            "title": "Intronic reads counted",
+            "description": "True if reads mapped to intronic regions were used for gene quantifications.",
+            "type": "boolean"
+        },
+        "feature_keys": {
+            "title": "Feature keys",
+            "description": "The category of identifiers used as the key for the features of the matrix.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Feature key",
+                "type": "string",
+                "enum": [
+                    "Ensembl gene ID",
+                    "gene symbol",
+                    "antibody target",
+                    "genomic coordinates",
+                    "motif ID"
+                ]
+            }
+        },
+        "default_visualization": {
+            "title": "Default field",
+            "description": "The name of the field that should be set as default for color coordinated display on cellxgene, which should correspond to a column in 'obs'.",
+            "type": "string"
+        },
+        "default_embedding": {
+            "title": "Default embedding",
+            "description": "The name of the cell embedding that will be used as default for display on cellxgene, which should correspond to a key in ‘obsm’..",
+            "type": "string",
+            "enum": [
+                "X_umap",
+                "X_tsne",
+                "X_spatial"
+            ]
+        },
+        "experimental_variable_disease": {
+            "title": "Experimental variable disease",
+            "description": "The primary disease variable used in the analysis of data within this matrix, distinguishing the disease group from the control, or normal, group.",
+            "type": "string",
+            "linkTo": "OntologyTerm"
+        },
+        "layers": {
+            "title": "Layers",
+            "description": "",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Layer",
+                "description": "",
+                "type": "object",
+                "required": ["normalized", "value_scale", "value_units"],
+                "properties": {
+                    "label": {
+                        "title": "Label",
+                        "description": "For AnnData h5ad final matrix files, the name used to describe the layer. Required for a layer that is not raw counts and is not the visualization layer.",
+                        "type": "string"
+                    },
+                    "assay": {
+                        "title": "Assay",
+                        "description": "For R objects, the assay that this layer is associated with.",
+                        "type": "string"
+                    },
+                    "feature_counts": {
+                        "title": "Feature counts",
+                        "description": "For each category of feature type, the number of entries found in the matrix considered as features (eg: genes, antibody capture, or peaks)",
+                        "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+                        "type": "array",
+                        "uniqueItems": true,
+                        "items": {
+                            "title": "Feature count",
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "feature_type": {
+                                    "title": "Feature type",
+                                    "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+                                    "type": "string",
+                                    "enum": [
+                                        "gene",
+                                        "peak",
+                                        "transcription factor",
+                                        "antibody capture"
+                                    ]
+                                },
+                                "feature_count": {
+                                    "title": "Feature count",
+                                    "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+                                    "description": "",
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "value_scale": {
+                        "title": "Value scale",
+                        "description": "The factor by which the expression values have been scaled; linear if not scaled.",
+                        "type": "string",
+                        "enum": [
+                            "linear",
+                            "log, natural",
+                            "log, base 10",
+                            "log, base 2",
+                            "log1p, natural",
+                            "log1p, base 10",
+                            "log1p, base 2"
+                        ]
+                    },
+                    "value_units": {
+                        "title": "Value units",
+                        "description": "The units for the expression values.",
+                        "type": "string",
+                        "enum": [
+                            "UQ",
+                            "SF",
+                            "RPM",
+                            "RPKM",
+                            "FPKM",
+                            "TPM",
+                            "TMM",
+                            "UMI",
+                            "expected count",
+                            "fragment ends"
+                        ]
+                    },
+                    "normalized": {
+                        "title": "Normalized",
+                        "description": "A flag to indicate whether the expression values have been normalized.",
+                        "type": "boolean"
+                    },
+                    "scaled": {
+                        "title": "Scaled",
+                        "description": "A flag to indicate whether the expression values have been scaled.",
+                        "type": "boolean"
+                    },
+                    "normalization_method": {
+                        "title": "Normalization method",
+                        "description": "The transformation method used to make expression values comparable across libraries.",
+                        "type": "string",
+                        "enum": [
+                            "LogNormalize",
+                            "scTransform",
+                            "cellranger aggr read depth normalization",
+                            "TF-IDF"
+                        ]
+                    },
+                    "filtering_cutoffs": {
+                        "title": "Filtering cutoffs",
+                        "description": "The list of cutoffs that were used for filtering in generating the matrix.",
+                        "type": "array",
+                        "uniqueItems": true,
+                        "items": {
+                            "title": "Filtering cutoff",
+                            "type": "object",
+                            "required": ["cutoff_value", "cutoff_units", "cutoff_type"],
+                            "additionalProperties": false,
+                            "properties": {
+                                "cutoff_proportion": {
+                                    "title": "Cutoff proportion",
+                                    "description": "The specific subset of the matrix that the cutoff has been applied to.",
+                                    "type": "string",
+                                    "default": "all"
+                                },
+                                "cutoff_value": {
+                                    "title": "Cutoff value",
+                                    "description": "",
+                                    "type": "number"
+                                },
+                                "cutoff_units": {
+                                    "title": "Cutoff units",
+                                    "type": "string",
+                                    "enum": [
+                                        "genes/cell",
+                                        "genes/nuclei",
+                                        "umi/cell",
+                                        "umi/nuclei",
+                                        "umi/bead",
+                                        "cells/gene",
+                                        "nuclei/gene",
+                                        "percent mitochondrial/cell",
+                                        "percent mitochondrial/nuclei",
+                                        "percent ribosomal protein large subunits",
+                                        "percent ribosomal protein small subunits",
+                                        "fragments in peaks/nuclei",
+                                        "percent fragments in peaks/nuclei",
+                                        "TSS enrichment score/nuclei",
+                                        "blacklist ratio/nuclei",
+                                        "doublet score/nuclei",
+                                        "nucleosome signal/nuclei",
+                                        "per batch distribution percent genes/cell",
+                                        "per batch distribution percent genes/nuclei",
+                                        "per batch distribution percent umi/cell",
+                                        "per batch distribution percent umi/nuclei",
+                                        "per batch distribution percent cells/gene",
+                                        "per batch distribution percent nuclei/gene",
+                                        "per batch distribution percent, percent mitochondrial/cell",
+                                        "per batch distribution percent, percent mitochondrial/nuclei",
+                                        "per batch distribution percent fragments in peaks/nuclei",
+                                        "per batch distribution percent, percent in peaks/nuclei"
+                                    ]
+                                },
+                                "cutoff_type": {
+                                    "title": "Cutoff type",
+                                    "type": "string",
+                                    "enum": [
+                                        "minimum",
+                                        "maximum"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "cell_label_location": {
+            "title": "Cell label location",
+            "description": "Indicator distinguishing if the label is concatenated as a prefix or suffix to the cell barcode.",
+            "type": "string",
+            "enum": [
+                "prefix",
+                "suffix"
+            ]
+        },
+        "cell_label_mappings": {
+            "title": "Cell label mappings",
+            "description": "Information on what label was added to cell identifiers in this final matrix that is specific for the associated raw matrix",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Cell label mapping",
+                "type": "object",
+                "required": ["label", "raw_matrix"],
+                "additionalProperties": false,
+                "properties": {
+                    "label": {
+                        "title": "Label",
+                        "description": "The string that is concatenated as a prefix or suffix to the cell barcode to make the unique cell identifier, including the connector string but not the '-1' if present",
+                        "type": "string"
+                    },
+                    "raw_matrix": {
+                        "title": "Raw matrix",
+                        "description": "The accession of the raw matrix that is connected with the subset of cells in this matrix file associated to the corresponding mapping_string.",
+                        "type": "string",
+                        "linkTo": "MatrixFile"
+                    }
+                }
+            }
+        },
+        "observation_count": {
+            "title": "Observation count",
+            "description": "The number of entries found in the matrix considered as observations (eg: cell barcodes)",
+            "comment":  "Do not submit. This will be filled in during checkfiles validation.",
+            "type": "integer"
+        },
+        "author_cell_type_column": {
+            "title": "Author cell type column",
+            "description": "The name of the metadata field that holds the researcher's most specific cell type annotation",
+            "type": "string"
+        },
+        "author_cluster_column": {
+            "title": "Author cluster column",
+            "description": "The name of the metadata field that holds the researcher's cluster information",
+            "type": "string"
+        },
+        "cell_annotation_method": {
+            "title": "Cell annotation method",
+            "description": "The method or software used to annotate the cell population.",
+            "type": "string"
+        },
+        "author_donor_column": {
+            "title": "Author donor column",
+            "description": "The name of the metadata field that holds the researcher's demultiplexed donor assignment of the cell",
+            "type": "string"
+        },
+        "donor_mappings": {
+            "title": "Donor mappings",
+            "description": "Information on what researcher donor identifier in this final matrix that is specified for the associate donor object",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Donor mapping",
+                "type": "object",
+                "required": ["label", "donor"],
+                "additionalProperties": false,
+                "properties": {
+                    "label": {
+                        "title": "Label",
+                        "description": "The donor identifier found in the author_donor_column that is associated with the corresponding donor object",
+                        "type": "string"
+                    },
+                    "donor": {
+                        "title": "Donor",
+                        "description": "The donor object that is associated with the corresponding donor mapping label",
+                        "type": "string",
+                        "linkTo": "Donor"
+                    }
+                }
+            }
+        }
+    },
+    "facets": {
+        "assays": {
+            "title": "Assays"
+        },
+        "assembly": {
+            "title": "Genome assembly"
+        },
+        "genome_annotation": {
+            "title": "Genome annotation"
+        },
+        "output_types": {
+            "title": "Output type"
+        },
+        "file_format": {
+            "title": "File format"
+        },
+        "layers.value_scale": {
+            "title": "Scale"
+        },
+        "layers.normalized": {
+            "title": "Normalized"
+        },
+        "cell_annotations.cell_ontology.term_name": {
+            "title": "Annotated cell types",
+            "type": "typeahead"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.name": {
+            "title": "Award"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "columns": {
+        "title": {
+            "title": "Title"
+        },
+        "accession": {
+            "title": "Accession"
+        },
+        "dataset": {
+            "title": "Dataset"
+        },
+        "assembly": {
+            "title": "Genome assembly"
+        },
+        "file_format": {
+            "title": "File Format"
+        },
+        "file_size": {
+            "title": "File size"
+        },
+        "href": {
+            "title": "Download URL"
+        },
+        "derived_from": {
+            "title": "Derived from"
+        },
+        "genome_annotation": {
+            "title": "Genome annotation"
+        },
+        "output_types": {
+            "title": "Output types"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.name": {
+            "title": "Award"
+        },
+        "software": {
+            "title": "Software"
+        },
+        "cell_annotation_method": {
+            "title": "Cell annotation method"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/processed_matrix_file.md"
+}
