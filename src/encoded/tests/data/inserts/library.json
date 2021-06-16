@@ -1230,5 +1230,35 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "UM1HG009442",
         "strand_specificity": "unstranded"
+    },
+    {
+        "accession": "ENCLB152YGP",
+        "adapters": [
+            {
+                "type": "read1 3' adapter",
+                "sequence": "AGATCGGAAGAGCACACGTCTGAACTCCAGTCA"
+            },
+            {
+                "type": "read2 3' adapter",
+                "sequence": "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
+            }
+        ],
+        "award": "UM1HG009442",
+        "biosample": "ENCBS371IWM",
+        "lab": "john-stamatoyannopoulos",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "16272d87-9f7c-46d9-bbc0-2c0ce51ec0a3"
+    },
+    {
+        "accession": "ENCLB153YGP",
+        "award": "UM1HG009442",
+        "biosample": "ENCBS372IWM",
+        "lab": "john-stamatoyannopoulos",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "5aa9dd9d-15b7-46bb-bbf8-d9b16b7f9eb2"
     }
 ]

@@ -12,5 +12,20 @@
         ],
         "uuid": "1ca86d6c-5081-4f15-9279-e8b19687d641",
         "date_released": "2020-01-11"
+    },
+    {
+        "_test": "disease series for split experiment table",
+        "accession": "ENCSR200DIS",
+        "award": "UM1HG009442",
+        "description": "Disease series for testing a split experiment table.",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "related_datasets": [
+            "/experiments/ENCSR555DLG/",
+            "/experiments/ENCSR556DLG/"
+        ],
+        "uuid": "cbdb4c2c-6347-479a-b5a3-5192ae1d68ed",
+        "date_released": "2020-01-11"
     }
 ]
