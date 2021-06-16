@@ -24,5 +24,5 @@ item = base_reference.copy()
 item.update({
         'internal_tags': ['RegulomeDB'],
         'schema_version': '19'
-})
-return item
+    })
+    return item
