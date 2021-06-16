@@ -335,7 +335,7 @@ class MatrixFile(AnalysisFile):
     @calculated_property(schema={
         "title": "Assays",
         "description": "The list of assays used to generate data contained in this matrix.",
-        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "comment": "Do not submit. Values in the list are inherited from linked Library objects.",
         "type": "array",
         "items": {
             "type": 'string'
@@ -401,7 +401,7 @@ class RawMatrixFile(AnalysisFile):
     @calculated_property(schema={
         "title": "Assays",
         "description": "The list of assays used to generate data contained in this matrix.",
-        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "comment": "Do not submit. Values in the list are inherited from linked Library objects.",
         "type": "array",
         "items": {
             "type": 'string'
@@ -452,7 +452,7 @@ class ProcessedMatrixFile(AnalysisFile):
     @calculated_property(schema={
         "title": "Assays",
         "description": "The list of assays used to generate data contained in this matrix.",
-        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "comment": "Do not submit. Values in the list are inherited from linked Library objects.",
         "type": "array",
         "items": {
             "type": 'string'
