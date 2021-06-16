@@ -313,7 +313,6 @@ class MatrixFile(AnalysisFile):
     rev = {
         'cell_annotations': ('CellAnnotation', 'matrix_files'),
         'quality_metrics': ('Metrics', 'quality_metric_of')
-    
     }
 
 
@@ -336,7 +335,154 @@ class MatrixFile(AnalysisFile):
     @calculated_property(schema={
         "title": "Assays",
         "description": "The list of assays used to generate data contained in this matrix.",
+        "comment": "Do not submit. Values in the list are inherited from linked Library objects.",
+        "type": "array",
+        "items": {
+            "type": 'string'
+        },
+        "notSubmittable": True,
+    })
+    def assays(self, request, libraries=None):
+        assays = set()
+        for l in libraries:
+            l_obj = request.embed(l, '@@object')
+            assays.add(l_obj['assay'])
+        return assays
+
+
+    @calculated_property(schema={
+        "title": "Cell annotations",
+        "description": "The cell annotations applied to this matrix.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "CellAnnotation.matrix_files",
+        },
+        "notSubmittable": True,
+    })
+    def cell_annotations(self, request, cell_annotations=None):
+        if cell_annotations:
+            return paths_filtered_by_status(request, cell_annotations)
+
+
+@collection(
+    name='raw-matrix-files',
+    unique_key='accession',
+    properties={
+        'title': "Raw Matrix Files",
+        'description': "",
+    })
+class RawMatrixFile(AnalysisFile):
+    item_type = 'raw_matrix_file'
+    schema = load_schema('encoded:schemas/raw_matrix_file.json')
+    embedded = AnalysisFile.embedded + []
+    rev = {
+        'quality_metrics': ('Metrics', 'quality_metric_of')
+    }
+
+
+    @calculated_property(schema={
+        "title": "Quality metrics",
+        "description": "The list of QC metric objects associated with this file.",
         "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Metrics.quality_metric_of",
+        },
+        "notSubmittable": True,
+    })
+    def quality_metrics(self, request, quality_metrics=None):
+        if quality_metrics:
+            return paths_filtered_by_status(request, quality_metrics)
+
+
+    @calculated_property(schema={
+        "title": "Assays",
+        "description": "The list of assays used to generate data contained in this matrix.",
+        "comment": "Do not submit. Values in the list are inherited from linked Library objects.",
+        "type": "array",
+        "items": {
+            "type": 'string'
+        },
+        "notSubmittable": True,
+    })
+    def assays(self, request, libraries=None):
+        assays = set()
+        for l in libraries:
+            l_obj = request.embed(l, '@@object')
+            assays.add(l_obj['assay'])
+        return assays
+
+
+    @calculated_property(schema={
+        "title": "Value scale",
+        "description": "The factor by which the expression values have been scaled; linear if not scaled.",
+        "comment": "Do not submit. Value is filled in by the system as it is expected to be consistent for all instances of this class.",
+        "type": "string"
+        })
+    def value_scale(self):
+        return "linear"
+
+
+    @calculated_property(schema={
+        "title": "Normalized",
+        "description": "A flag to indicate whether the expression values have been normalized.",
+        "comment": "Do not submit. Value is filled in by the system as it is expected to be consistent for all instances of this class.",
+        "type": "boolean"
+        })
+    def normalized(self):
+        return False
+
+
+    @calculated_property(schema={
+        "title": "Scaled",
+        "description": "A flag to indicate whether the expression values have been scaled.",
+        "comment": "Do not submit. Value is filled in by the system as it is expected to be consistent for all instances of this class.",
+        "type": "boolean"
+        })
+    def scaled(self):
+        return False
+
+
+@collection(
+    name='processed-matrix-files',
+    unique_key='accession',
+    properties={
+        'title': "Processed Matrix Files",
+        'description': "",
+    })
+class ProcessedMatrixFile(AnalysisFile):
+    item_type = 'processed_matrix_file'
+    schema = load_schema('encoded:schemas/processed_matrix_file.json')
+    embedded = AnalysisFile.embedded + ['cell_annotations', 'cell_annotations.cell_ontology', 'experimental_variable_disease']
+    rev = {
+        'cell_annotations': ('CellAnnotation', 'matrix_files'),
+        'quality_metrics': ('Metrics', 'quality_metric_of')
+    }
+
+
+    @calculated_property(schema={
+        "title": "Quality metrics",
+        "description": "The list of QC metric objects associated with this file.",
+        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Metrics.quality_metric_of",
+        },
+        "notSubmittable": True,
+    })
+    def quality_metrics(self, request, quality_metrics=None):
+        if quality_metrics:
+            return paths_filtered_by_status(request, quality_metrics)
+
+
+    @calculated_property(schema={
+        "title": "Assays",
+        "description": "The list of assays used to generate data contained in this matrix.",
+        "comment": "Do not submit. Values in the list are inherited from linked Library objects.",
         "type": "array",
         "items": {
             "type": 'string'

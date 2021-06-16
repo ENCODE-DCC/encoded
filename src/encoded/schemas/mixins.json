@@ -380,7 +380,11 @@
             "description": "The expression matrix file from which the gene expression metrics was generated.",
             "type": "string",
             "uniqueItems": true,
-            "linkTo": "MatrixFile"
+            "linkTo": [
+                "MatrixFile",
+                "RawMatrixFile",
+                "ProcessedMatrixFile"
+            ]
         }
     },
     "viewing_groups": {

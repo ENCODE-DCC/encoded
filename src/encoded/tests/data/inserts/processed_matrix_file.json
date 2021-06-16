@@ -1,0 +1,597 @@
+[
+    {
+        "derived_from": [
+            "LATDF200ABA",
+            "LATDF201ABA",
+            "LATDF202ABA",
+            "LATDF203ABA",
+            "LATDF204ABA",
+            "LATDF205ABA",
+            "LATDF206ABA",
+            "LATDF207ABA",
+            "LATDF208ABA"
+        ],
+        "dataset": "LATDS600ABA",
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "file_format": "rds",
+        "output_types": [
+            "gene quantifications"
+        ],
+        "uuid": "e7e83b90-a02d-497c-937f-83c475477949",
+        "accession": "LATDF417SAQ",
+        "description": "There's organoid data in this one!",
+        "layers": [
+            {
+                "label": "X",
+                "normalized": true,
+                "value_units": "UMI",
+                "value_scale": "log, base 10"
+            }
+        ]
+    },
+    {
+        "aliases": [
+            "peter-sims:postnatal_merged_matrix"
+        ],
+        "accession": "LATDF111KDU",
+        "uuid": "4682ce37-968c-44cf-af4d-9211d0cd93db",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "mtx",
+        "file_size": 50000,
+        "lab": "peter-sims",
+        "submitted_file_name": "prenatal_merged_matrix.mtx",
+        "output_types": [
+            "gene quantifications"
+        ],
+        "feature_keys": [
+            "gene symbol"
+        ],
+        "observation_count": 18292,
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "derived_from": [
+            "peter-sims:postnatal_1a_filtered_matrix",
+            "peter-sims:postnatal_1b_filtered_matrix",
+            "peter-sims:postnatal_1c_filtered_matrix"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "derivation_process": [
+            "merging"
+        ],
+        "software": [
+            "cellranger aggr 4.0"
+        ],
+        "md5sum": "b80320ebaa285af7a6880dbbd6795134",
+        "layers": [
+            {
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 20919
+                    }
+                ],
+                "value_scale": "log1p, base 10",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "cellranger aggr read depth normalization",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 20000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 10,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "aliases": [
+            "peter-sims:prenatal_merged_matrix"
+        ],
+        "accession": "LATDF421ZPI",
+        "author_cell_type_column": "celltype",
+        "cell_annotation_method": "Seurat FindMarkers v3.0.2, manual curation",
+        "author_cluster_column": "seurat_clusters",
+        "uuid": "2d78464c-204a-4bcc-abfa-816688c4a975",
+        "s3_uri": "s3://submissions-lattice/testing/muto_rna.rds",
+        "no_file_available": false,
+        "description": "A super cool dataset for all to see",
+        "status": "released",
+        "file_format": "rds",
+        "file_size": 50000,
+        "lab": "peter-sims",
+        "submitted_file_name": "prenatal_merged_matrix.mtx",
+        "output_types": [
+            "gene quantifications"
+        ],
+        "feature_keys": [
+            "gene symbol"
+        ],
+        "observation_count": 19985,
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "derived_from": [
+            "peter-sims:prenatal_2a_filtered_matrix",
+            "peter-sims:prenatal_2b_filtered_matrix",
+            "peter-sims:prenatal_2c_filtered_matrix",
+            "peter-sims:prenatal_3a_filtered_matrix",
+            "peter-sims:prenatal_3b_filtered_matrix"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "derivation_process": [
+            "merging",
+            "ambient RNA correction"
+        ],
+        "software": [
+            "cellranger aggr 4.0"
+        ],
+        "experimental_variable_disease": "MONDO_0005147",
+        "md5sum": "2e883306013203954eb1b69ae063eef1",
+        "cell_label_location": "suffix",
+        "cell_label_mappings": [
+            {
+                "raw_matrix": "LATDF112AAA",
+                "label": "-1"
+            },
+            {
+                "raw_matrix": "LATDF113AAA",
+                "label": "-2"
+            },
+            {
+                "raw_matrix": "LATDF114AAA",
+                "label": "-3"
+            },
+            {
+                "raw_matrix": "LATDF115AAA",
+                "label": "-4"
+            },
+            {
+                "raw_matrix": "LATDF116AAA",
+                "label": "-5"
+            }
+        ],
+        "default_visualization": "author_celltype",
+        "default_embedding": "X_umap",
+        "layers": [
+            {
+                "assay": "SCT",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 22357
+                    }
+                ],
+                "value_scale": "log1p, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "scTransform",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 20000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum",
+                        "cutoff_proportion": "epithelial cells 1"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "per batch distribution percent umi/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 10,
+                        "cutoff_units": "percent fragments in peaks/nuclei",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:donorAB_merged_sc_citeseq_matrix"
+        ],
+        "default_embedding": "X_spatial",
+        "status": "released",
+        "uuid": "81525748-42a0-4c5b-8273-200d7126ed41",
+        "submitted_file_name": "donorAB_merged_sc_citeseq_matrix.mtx/",
+        "file_format": "mtx",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "gene quantifications",
+            "antibody capture quantifications"
+        ],
+        "feature_keys": [
+            "gene symbol",
+            "antibody target"
+        ],
+        "observation_count": 20192,
+        "dataset": "anna-greka:large_test_dataset",
+        "derivation_process": [
+            "merging",
+            "cell filtering",
+            "gene filtering"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorA1_filtered_feature_bc_matrix",
+            "anna-greka:donorA2_filtered_feature_bc_matrix",
+            "anna-greka:donorB1_filtered_feature_bc_matrix",
+            "anna-greka:donorB2_filtered_feature_bc_matrix"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "48912b433c9105e6b4f32c79f6b09f6b",
+        "layers": [
+            {
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "log, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "scaled": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum",
+                        "cutoff_proportion": "fibroblasts"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 15,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
+            }
+        ],
+        "accession": "LATDF982KCF"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorCD_merged_sc_matrix"
+        ],
+        "status": "released",
+        "uuid": "fd011329-b41e-455b-81e0-54ce67b6f176",
+        "submitted_file_name": "donorCD_merged_sc_matrix.mtx/",
+        "file_format": "mtx",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "output_types": [
+            "gene quantifications"
+        ],
+        "feature_keys": [
+            "gene symbol"
+        ],
+        "observation_count": 82379,
+        "dataset": "anna-greka:large_test_dataset",
+        "derivation_process": [
+            "merging"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorC1a_filtered_feature_bc_matrix",
+            "anna-greka:donorC1b_filtered_feature_bc_matrix",
+            "anna-greka:donorC2a_filtered_feature_bc_matrix",
+            "anna-greka:donorC2b_filtered_feature_bc_matrix",
+            "anna-greka:donorD1a_filtered_feature_bc_matrix",
+            "anna-greka:donorD1b_filtered_feature_bc_matrix",
+            "anna-greka:donorD2a_filtered_feature_bc_matrix",
+            "anna-greka:donorD2b_filtered_feature_bc_matrix"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "2dd4370d08bdf8666b859c888b1f7006",
+        "layers": [
+            {
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    }
+                ],
+                "value_scale": "log, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 800,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 15,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
+            }
+        ],
+        "accession": "LATDF611FOP"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorCD_pooled_merged_sc_matrix"
+        ],
+        "status": "released",
+        "uuid": "c7f576c1-6bcc-41fa-ae79-0d2d4082a814",
+        "submitted_file_name": "donorCD_pooled_merged_sc_matrix.mtx/",
+        "description": "Anna Greka's very special data",
+        "file_format": "mtx",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "gene quantifications"
+        ],
+        "feature_keys": [
+            "gene symbol"
+        ],
+        "observation_count": 18293,
+        "dataset": "anna-greka:large_test_dataset",
+        "derivation_process": [
+            "merging"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorCD1_filtered_feature_bc_matrix",
+            "anna-greka:donorCD2_filtered_feature_bc_matrix"
+        ],
+        "s3_uri": "s3://submissions-czi012eye/chen_2020/19D015_macular_outs/filtered_feature_bc_matrix.h5",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "98b5746b0f69e8be8c888e3c1d74b150",
+        "layers": [
+            {
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    }
+                ],
+                "value_scale": "log, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 10,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
+            }
+        ],
+        "accession": "LATDF757YHL"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorEF_merged_sc_citeseq_matrix"
+        ],
+        "status": "released",
+        "uuid": "9b9eed35-70b9-4248-89c5-17193e005cd6",
+        "submitted_file_name": "donorEF_merged_sc_citeseq_matrix.mtx/",
+        "file_format": "mtx",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "gene quantifications",
+            "antibody capture quantifications"
+        ],
+        "feature_keys": [
+            "gene symbol",
+            "antibody target"
+        ],
+        "observation_count": 18722,
+        "dataset": "anna-greka:large_test_dataset",
+        "derivation_process": [
+            "merging"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorE_filtered_feature_bc_matrix",
+            "anna-greka:donorF_filtered_feature_bc_matrix"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "ee656a7331492beca246fcb1b503fd33",
+        "layers": [
+            {
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "log, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 1500,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 20,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
+            }
+        ],
+        "accession": "LATDF071TSQ"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorGH_merged_sc_citeseq_matrix"
+        ],
+        "status": "released",
+        "uuid": "428560c1-f0b1-4076-9c3d-76dd2df8fff8",
+        "submitted_file_name": "donorGH_merged_sc_citeseq_matrix.mtx/",
+        "file_format": "mtx",
+        "file_size": 200000,
+        "lab": "anna-greka",
+        "output_types": [
+            "gene quantifications",
+            "antibody capture quantifications"
+        ],
+        "feature_keys": [
+            "gene symbol",
+            "antibody target"
+        ],
+        "observation_count": 29292,
+        "dataset": "anna-greka:large_test_dataset",
+        "derivation_process": [
+            "merging"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorG_filtered_feature_bc_matrix",
+            "anna-greka:donorH_filtered_feature_bc_matrix"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "24aaa927d40e8680ea107684c39fb442",
+        "layers": [
+            {
+                "label": "X",
+                "feature_counts": [
+                    {
+                        "feature_type": "gene",
+                        "feature_count": 329950
+                    },
+                    {
+                        "feature_type": "antibody capture",
+                        "feature_count": 50
+                    }
+                ],
+                "value_scale": "log1p, natural",
+                "value_units": "UMI",
+                "normalized": true,
+                "normalization_method": "LogNormalize",
+                "filtering_cutoffs": [
+                    {
+                        "cutoff_value": 25000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 1000,
+                        "cutoff_units": "genes/cell",
+                        "cutoff_type": "minimum"
+                    },
+                    {
+                        "cutoff_value": 15,
+                        "cutoff_units": "percent mitochondrial/cell",
+                        "cutoff_type": "maximum"
+                    },
+                    {
+                        "cutoff_value": 3,
+                        "cutoff_units": "cells/gene",
+                        "cutoff_type": "minimum"
+                    }
+                ]
+            }
+        ],
+        "accession": "LATDF522RJH"
+    }
+]
