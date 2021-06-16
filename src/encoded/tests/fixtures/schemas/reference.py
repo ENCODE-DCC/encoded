@@ -25,6 +25,6 @@ def reference_19(testapp, lab, award):
     item = {
         'award': award['@id'],
         'lab': lab['@id'],
-        'internal_tags': 'RegulomeDB'
+        'internal_tags': ['RegulomeDB']
     }
     return testapp.post_json('/reference', item).json['@graph'][0]
