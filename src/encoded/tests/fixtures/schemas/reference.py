@@ -20,8 +20,10 @@ def upgrade_18_19_reference(testapp, lab, award, gene):
     }
     return testapp.post_json('/reference', item).json['@graph'][0]
 
-item = base_reference.copy()
-item.update({
+@pytest.fixture
+def reference_19(base_reference):
+    item = base_reference.copy()
+    item.update({
         'internal_tags': ['RegulomeDB'],
         'schema_version': '19'
     })
