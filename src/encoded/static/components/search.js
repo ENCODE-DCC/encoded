@@ -565,141 +565,187 @@ globals.listingViews.register(Annotation, 'Annotation');
 
 const DatasetComponent = (props, reactContext) => {
     const result = props.context;
-    let biosampleTerm;
-    let organism;
-    let lifeSpec;
-    let assays = [];
-    let examineLociGene = [];
     let targets;
-    let lifeStages = [];
+
+    let synchronization;
+
+    const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+
+    return (
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <a href={result['@id']} className="result-item__link">
+                        <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
+                    </a>
+                    <div className="result-item__data-row">
+                        {result.dataset_type ?
+                            <div><span className="result-item__property-title">Dataset type: </span>{result.dataset_type}</div>
+                        : null}
+                        {synchronization ?
+                            <div><span className="result-item__property-title">Synchronization: </span>{synchronization}</div>
+                        : null}
+                        {targets && targets.length > 0 ? <div><span className="result-item__property-title">Targets: </span>{targets.join(', ')}</div> : null}
+                        <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
+                        <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
+                    </div>
+                </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">{haveFileSet ? 'FileSet' : 'Dataset'}</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                </div>
+                <PickerActions context={result} />
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+        </li>
+    );
+};
+
+DatasetComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Dataset search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+DatasetComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
+};
+
+const Dataset = auditDecor(DatasetComponent);
+
+globals.listingViews.register(Dataset, 'Dataset');
+
+
+const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reactContext) => {
+    let assays = [];
+    let organism;
+    let crisprReadout = [];
+    let examineLociGene = [];
+    let perturbationType = [];
+    let fullStages = [];
     let ages = [];
     let ageUnits;
-    let crisprReadout = [];
-    let perturbationType = [];
-
+    let postSynchTime = [];
+    let synchronization;
+    let postSynchronizationTimeUnits;
+    let lifeStages = [];
+    let organisms = [];
+    let phases = [];
     let treatmentTerm = [];
     let treatments = [];
     let treatmentUnit;
+    let targets;
+    let diseases = [];
 
-    let organisms = [];
-    let fullStages = [];
-    let phases = [];
-    let synchronization;
-    let postSynchronizationTimeUnits;
-    let postSynchTime = [];
-
-    const haveSeries = result['@type'].indexOf('Series') >= 0;
-    const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
     const treatmentTime = result['@type'].indexOf('TreatmentTimeSeries') >= 0;
     const treatmentConcentration = result['@type'].indexOf('TreatmentConcentrationSeries') >= 0;
-    const showTreatment = treatmentTime || treatmentConcentration;
-    const organismSeries = result['@type'].indexOf('OrganismDevelopmentSeries') >= 0;
     const fccSeries = result['@type'].indexOf('FunctionalCharacterizationSeries') >= 0;
+    const organismSeries = result['@type'].indexOf('OrganismDevelopmentSeries') >= 0;
 
-    // Determine whether the dataset is a series or not
-    const seriesDataset = result['@type'].indexOf('Series') >= 0;
+    const biosampleTerm = result.biosample_ontology ? result.biosample_ontology[0].term_name : '';
 
-    // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
-    if (seriesDataset) {
-        biosampleTerm = (result.biosample_ontology && Array.isArray(result.biosample_ontology) && result.biosample_ontology.length === 1 && result.biosample_ontology[0].term_name) ? result.biosample_ontology[0].term_name : ((result.biosample_ontology && result.biosample_ontology.term_name) ? result.biosample_ontology.term_name : '');
-
-        // Dig through the biosample life stages and ages
-        if (result.related_datasets && result.related_datasets.length > 0) {
-            result.related_datasets.forEach((dataset) => {
-                if (dataset.assay_term_name) {
-                    assays.push(dataset.assay_term_name);
-                }
-                if (dataset.crispr_screen_readout) {
-                    crisprReadout.push(dataset.crispr_screen_readout);
-                }
-                if (dataset.examined_loci && dataset.examined_loci.length > 0) {
-                    dataset.examined_loci.forEach((loci) => {
-                        examineLociGene.push(loci.gene.symbol);
-                    });
-                }
-                if (dataset.perturbation_type) {
-                    perturbationType.push(dataset.perturbation_type);
-                }
-                if (dataset.replicates && dataset.replicates.length > 0) {
-                    dataset.replicates.forEach((replicate) => {
-                        if (replicate.library && replicate.library.biosample) {
-                            const { biosample } = replicate.library;
-                            const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
-                            if (biosample.life_stage !== 'unknown' && biosample.life_stage && biosample.age_display) {
-                                const fullStage = `${biosample.life_stage[0].toUpperCase()}${biosample.age_display.split(' ')[0]}`;
-                                fullStages.push(fullStage);
-                                ages.push(biosample.age_display.split(' ')[0]);
-                                ageUnits = biosample.age_display.split(' ')[1];
-                            }
-
-                            if (biosample.post_synchronization_time) {
-                                postSynchTime.push(biosample.post_synchronization_time);
-                            }
-                            if (biosample.synchronization) {
-                                ({ synchronization } = biosample);
-                            }
-                            if (biosample.post_synchronization_time_units) {
-                                postSynchronizationTimeUnits = biosample.post_synchronization_time_units;
-                            }
-                            if (lifeStage) {
-                                lifeStages.push(lifeStage);
-                            }
-                            if (biosample.treatments && treatmentConcentration) {
-                                treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
-                                treatments = [...treatments, ...biosample.treatments.reduce((output, t) => {
-                                    if (t.amount) {
-                                        output.push(t.amount);
-                                    }
-                                    return output;
-                                }, [])];
-                                treatmentUnit = biosample.treatments[0].amount_units;
-                            }
-                            if (biosample.treatments && treatmentTime) {
-                                treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
-                                treatments = [...treatments, ...biosample.treatments.reduce((output, t) => {
-                                    if (t.duration) {
-                                        output.push(t.duration);
-                                    }
-                                    return output;
-                                }, [])];
-                                treatmentUnit = `${biosample.treatments[0].duration_units}s`;
-                            }
-                            if (biosample.organism && biosample.organism.scientific_name) {
-                                organisms.push(biosample.organism.scientific_name);
-                            }
-                            if (biosample.phase) {
-                                phases.push(biosample.phase);
-                            }
+    // Dig through the biosample life stages and ages
+    if (result.related_datasets && result.related_datasets.length > 0) {
+        result.related_datasets.forEach((dataset) => {
+            if (dataset.assay_term_name) {
+                assays.push(dataset.assay_term_name);
+            }
+            if (dataset.crispr_screen_readout) {
+                crisprReadout.push(dataset.crispr_screen_readout);
+            }
+            if (dataset.examined_loci && dataset.examined_loci.length > 0) {
+                dataset.examined_loci.forEach((loci) => {
+                    examineLociGene.push(loci.gene.symbol);
+                });
+            }
+            if (dataset.perturbation_type) {
+                perturbationType.push(dataset.perturbation_type);
+            }
+            if (dataset.replicates && dataset.replicates.length > 0) {
+                dataset.replicates.forEach((replicate) => {
+                    if (replicate.library && replicate.library.biosample) {
+                        const { biosample } = replicate.library;
+                        const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
+                        if (biosample.life_stage !== 'unknown' && biosample.life_stage && biosample.age_display) {
+                            const fullStage = `${biosample.life_stage[0].toUpperCase()}${biosample.age_display.split(' ')[0]}`;
+                            fullStages.push(fullStage);
+                            ages.push(biosample.age_display.split(' ')[0]);
+                            ageUnits = biosample.age_display.split(' ')[1];
                         }
-                    });
-                }
-            });
-            lifeStages = _.uniq(lifeStages);
-            fullStages = _.uniq(fullStages);
-            ages = _.uniq(ages).sort();
-            postSynchTime = _.uniq(postSynchTime).sort();
-            organisms = _.uniq(organisms);
-            phases = _.uniq(phases);
-            examineLociGene = _.uniq(examineLociGene);
-            crisprReadout = _.uniq(crisprReadout);
-            perturbationType = _.uniq(perturbationType);
-        }
-        lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
 
-        // Get list of assay labels
-        if (result.assay_term_name) {
-            assays = _.uniq(result.assay_term_name);
-        }
-        if (assays.length > 0) {
-            assays = _.uniq(assays);
-        }
+                        if (biosample.disease_term_name && biosample.disease_term_name.length > 0) {
+                            diseases.push(...biosample.disease_term_name);
+                        }
+                        if (biosample.post_synchronization_time) {
+                            postSynchTime.push(biosample.post_synchronization_time);
+                        }
+                        if (biosample.synchronization) {
+                            ({ synchronization } = biosample);
+                        }
+                        if (biosample.post_synchronization_time_units) {
+                            postSynchronizationTimeUnits = biosample.post_synchronization_time_units;
+                        }
+                        if (lifeStage) {
+                            lifeStages.push(lifeStage);
+                        }
+                        if (biosample.treatments && treatmentConcentration) {
+                            treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
+                            treatments = [...treatments, ...biosample.treatments.reduce((output, t) => {
+                                if (t.amount) {
+                                    output.push(t.amount);
+                                }
+                                return output;
+                            }, [])];
+                            treatmentUnit = biosample.treatments[0].amount_units;
+                        }
+                        if (biosample.treatments && treatmentTime) {
+                            treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
+                            treatments = [...treatments, ...biosample.treatments.reduce((output, t) => {
+                                if (t.duration) {
+                                    output.push(t.duration);
+                                }
+                                return output;
+                            }, [])];
+                            treatmentUnit = `${biosample.treatments[0].duration_units}s`;
+                        }
+                        if (biosample.organism && biosample.organism.scientific_name) {
+                            organisms.push(biosample.organism.scientific_name);
+                        }
+                        if (biosample.phase) {
+                            phases.push(biosample.phase);
+                        }
+                    }
+                });
+            }
+        });
+        lifeStages = _.uniq(lifeStages);
+        fullStages = _.uniq(fullStages);
+        ages = _.uniq(ages).sort();
+        postSynchTime = _.uniq(postSynchTime).sort();
+        organisms = _.uniq(organisms);
+        phases = _.uniq(phases);
+        examineLociGene = _.uniq(examineLociGene);
+        crisprReadout = _.uniq(crisprReadout);
+        perturbationType = _.uniq(perturbationType);
+        diseases = _.uniq(diseases);
+    }
+    const lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
 
-        // Get list of target labels
-        if (result.target) {
-            targets = _.uniq(result.target.map((target) => target.label));
-        }
+    // Get list of assay labels
+    if (result.assay_term_name) {
+        assays = _.uniq(result.assay_term_name);
+    }
+    if (assays.length > 0) {
+        assays = _.uniq(assays);
     }
 
+    // Get list of target labels
+    if (result.target) {
+        targets = _.uniq(result.target.map((target) => target.label));
+    }
     const sortedTreatments = _.uniq(treatments).sort((a, b) => (a - b));
     treatmentTerm = _.uniq(treatmentTerm);
     let uniqueTreatments;
@@ -714,42 +760,42 @@ const DatasetComponent = (props, reactContext) => {
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
-                        {fccSeries ? '' : <span>{`${datasetTypes[result['@type'][0]]}`}</span>}
-                        {seriesDataset ?
-                            <span>
-                                {(fccSeries && perturbationType.length > 0) ?
-                                    <span>
-                                        {`${perturbationType.join(', ')}`}
-                                    </span>
-                                : null}
-                                {(fccSeries && assays.length > 0) ?
-                                    <span>
-                                        {` ${assays.join(', ')} series`}
-                                    </span>
-                                : null}
-                                {(fccSeries && crisprReadout.length > 0) ?
-                                    <span>
-                                        {` (${crisprReadout.join(', ')})`}
-                                    </span>
-                                : null}
-                                {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
-                                {organism || lifeSpec.length > 0 ?
-                                    <span>
-                                        {' ('}
-                                        {organism ? <i>{organism}</i> : null}
-                                        {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
-                                        )
-                                    </span>
-                                : null}
-                                {(fccSeries && examineLociGene.length > 0) ?
-                                    <span>
-                                        {` targeting ${examineLociGene.join(', ')}`}
-                                    </span>
-                                : null}
-                            </span>
-                        :
-                            <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
+                        {fccSeries
+                            ? (
+                                <>
+                                    {perturbationType.length > 0 ?
+                                        <span>
+                                            {`${perturbationType.join(', ')}`}
+                                        </span>
+                                    : null}
+                                    {assays.length > 0 ?
+                                        <span>
+                                            {` ${assays.join(', ')} series`}
+                                        </span>
+                                    : null}
+                                    {crisprReadout.length > 0 ?
+                                        <span>
+                                            {` (${crisprReadout.join(', ')})`}
+                                        </span>
+                                    : null}
+                                </>
+                            )
+                            : <span>{`${datasetTypes[result['@type'][0]]}`}</span>
                         }
+                        {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+                        {organism || lifeSpec.length > 0 ?
+                            <span>
+                                {' ('}
+                                {organism ? <i>{organism}</i> : null}
+                                {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
+                                )
+                            </span>
+                        : null}
+                        {(fccSeries && examineLociGene.length > 0) ?
+                            <span>
+                                {` targeting ${examineLociGene.join(', ')}`}
+                            </span>
+                        : null}
                     </a>
                     <div className="result-item__data-row">
                         {result.dataset_type ?
@@ -776,7 +822,7 @@ const DatasetComponent = (props, reactContext) => {
                         {postSynchTime.length > 0 ?
                             <div><span className="result-item__property-title">Post-synchronization time: </span>{postSynchTime.join(', ')} {postSynchronizationTimeUnits}s</div>
                         : null}
-                        { (uniqueTreatments && showTreatment) ?
+                        { (uniqueTreatments && (treatmentTime || treatmentConcentration)) ?
                             <div><span className="result-item__property-title">Treatment{treatments.length !== 1 ? 's' : ''}: </span>
                                 <span>
                                     {uniqueTreatments}
@@ -784,37 +830,38 @@ const DatasetComponent = (props, reactContext) => {
                             </div>
                         : null}
                         {targets && targets.length > 0 ? <div><span className="result-item__property-title">Targets: </span>{targets.join(', ')}</div> : null}
+                        {diseases.length > 0 ? <div><span className="result-item__property-title">Diseases: </span>{diseases.join(', ')}</div> : null}
                         <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
                         <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
                     </div>
                 </div>
                 <div className="result-item__meta">
-                    <div className="result-item__meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</div>
+                    <div className="result-item__meta-title">Series</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                    {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+            {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
 
-DatasetComponent.propTypes = {
+SeriesComponent.propTypes = {
     context: PropTypes.object.isRequired, // Dataset search results
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
-DatasetComponent.contextTypes = {
+SeriesComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
     session_properties: PropTypes.object,
 };
 
-const Dataset = auditDecor(DatasetComponent);
+const Series = auditDecor(SeriesComponent);
 
-globals.listingViews.register(Dataset, 'Dataset');
+globals.listingViews.register(Series, 'Series');
 
 
 const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
