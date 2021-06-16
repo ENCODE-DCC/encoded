@@ -4,7 +4,7 @@
     "id": "/profiles/raw_matrix_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "output_types", "derived_from", "derivation_process", "empty_drops_included"],
+    "required": ["dataset", "file_format", "output_types", "derived_from", "derivation_process", "background_barcodes_included"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -138,9 +138,9 @@
                 ]
             }
         },
-        "empty_drops_included": {
-            "title": "Empty drops included",
-            "description": "True if non-biological observationns are expected to be in the data.",
+        "background_barcodes_included": {
+            "title": "Background barcodes included",
+            "description": "True if non-biological observations are expected to be in the data.",
             "type": "boolean"
         },
         "intronic_reads_counted": {
@@ -230,8 +230,8 @@
         "genome_annotation": {
             "title": "Genome annotation"
         },
-        "empty_drops_included": {
-            "title": "Empty drops included"
+        "background_barcodes_included": {
+            "title": "Background barcodes included"
         },
         "output_types": {
             "title": "Output type"

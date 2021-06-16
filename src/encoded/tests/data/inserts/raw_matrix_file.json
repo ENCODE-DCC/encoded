@@ -42,7 +42,7 @@
         "validated": true,
         "cellranger_assay_chemistry": "SC3Pv2",
         "accession": "LATDF633JNH",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -88,7 +88,7 @@
         "md5sum": "30c7622f6007434c37f4c6d30e42d465",
         "validated": true,
         "accession": "LATDF671HHT",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -132,7 +132,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "99b7747497ca250ae236c828b446bde3",
         "accession": "LATDF791NFV",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -178,7 +178,7 @@
         "md5sum": "9211c130bcfa065071ed1536577aeb66",
         "intronic_reads_counted": true,
         "accession": "LATDF662SKJ",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -223,7 +223,7 @@
         "md5sum": "e4c3013fd79898426fd021f168f7126c",
         "intronic_reads_counted": false,
         "accession": "LATDF652KER",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -268,7 +268,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "7265bd6e16c29e0a034266e9472f83a6",
         "accession": "LATDF070ENJ",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -312,7 +312,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "7307c6d5d09aa4cb31a3617e9052e00e",
         "accession": "LATDF690UKP",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -357,7 +357,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "1c24591c682193508194b782331bc4b1",
         "accession": "LATDF393CSE",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -397,7 +397,7 @@
         ],
         "md5sum": "6ebe5d60e64c75703f9f184506d4cba6",
         "accession": "LATDF516XXW",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -437,7 +437,7 @@
         ],
         "md5sum": "6ac72519c2b397ac1c63a45a1991b717",
         "accession": "LATDF343TMR",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -477,7 +477,7 @@
         ],
         "md5sum": "5d95e57866378889cdb3fe3f7ece7d91",
         "accession": "LATDF961KKC",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -516,7 +516,7 @@
         ],
         "md5sum": "300b1718edfd3209c692ae44e5480c1a",
         "accession": "LATDF834ROK",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -556,7 +556,7 @@
         ],
         "md5sum": "2991358e34d1fc9a4d0123ad8c5e7b3f",
         "accession": "LATDF448OYQ",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -595,7 +595,7 @@
         ],
         "md5sum": "a5edf082c71bf697b12034b785344be9",
         "accession": "LATDF785XLS",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -634,7 +634,7 @@
         ],
         "md5sum": "33c5bc7bae5e9e726a59f21abafaa3f1",
         "accession": "LATDF943OZL",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -674,7 +674,7 @@
         ],
         "md5sum": "8d2c603855b454477cce0b4a49bca68e",
         "accession": "LATDF789PDJ",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -713,7 +713,7 @@
         ],
         "md5sum": "6ff1ed6b1aed8e606bdae1095a34e240",
         "accession": "LATDF981IGN",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -752,7 +752,7 @@
         ],
         "md5sum": "6aa4a2f7c22b209ebaa189201e50eeba",
         "accession": "LATDF698BYT",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -792,7 +792,7 @@
         ],
         "md5sum": "527175445d30ebfdf549fa3d3c2899db",
         "accession": "LATDF160CUF",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -831,7 +831,7 @@
         ],
         "md5sum": "de69cd4312f07478d21c36198e13b7cb",
         "accession": "LATDF632ONR",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -870,7 +870,7 @@
         ],
         "md5sum": "323684613c851a8279e3612d003a0e81",
         "accession": "LATDF918QEO",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -910,7 +910,7 @@
         ],
         "md5sum": "4ac30d04e8f1f2bd1e7f594603f68fd3",
         "accession": "LATDF539AMK",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -949,7 +949,7 @@
         ],
         "md5sum": "478c983e2c88818e089d2509b56970c9",
         "accession": "LATDF144WKH",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -988,7 +988,7 @@
         ],
         "md5sum": "32b6f43792a5d7058f24fc909a4d0e4b",
         "accession": "LATDF364GXO",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -1028,7 +1028,7 @@
         ],
         "md5sum": "69f6e698ed84a669460fb541c1fcdcfd",
         "accession": "LATDF967VFS",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1067,7 +1067,7 @@
         ],
         "md5sum": "418afe4cc7f6577acea329736c8e3a45",
         "accession": "LATDF765BIJ",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1106,7 +1106,7 @@
         ],
         "md5sum": "f587b29a7531369ba45fbf01533e3788",
         "accession": "LATDF257GTX",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -1146,7 +1146,7 @@
         ],
         "md5sum": "0a18cf5fd2e5f84d748e1d22dac0852b",
         "accession": "LATDF399IOD",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1185,7 +1185,7 @@
         ],
         "md5sum": "8d10f823023a57a1013401ebee09e3e0",
         "accession": "LATDF114BAW",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1224,7 +1224,7 @@
         ],
         "md5sum": "53b15901f2f49f50c7d536cccf98d359",
         "accession": "LATDF614MKY",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -1264,7 +1264,7 @@
         ],
         "md5sum": "438b7e0bfd7ef14e975a2ccbe7a2ecc7",
         "accession": "LATDF471NNM",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1303,7 +1303,7 @@
         ],
         "md5sum": "ceae622351e08bca8a11013640b05a4f",
         "accession": "LATDF187AXP",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1342,7 +1342,7 @@
         ],
         "md5sum": "108943fd756ee170a8d8956da80da870",
         "accession": "LATDF366ZID",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -1382,7 +1382,7 @@
         ],
         "md5sum": "fa3f6b455dadef4efd03335a341b9f41",
         "accession": "LATDF031MZI",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1421,7 +1421,7 @@
         ],
         "md5sum": "c7b6a486158edc42c1080b688afe2a47",
         "accession": "LATDF105YEX",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1460,7 +1460,7 @@
         ],
         "md5sum": "27239be2723f4ca3e3b4935698faf63a",
         "accession": "LATDF686VCF",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -1500,7 +1500,7 @@
         ],
         "md5sum": "b461a1df2f8479ec0a491b8de9e8ea58",
         "accession": "LATDF070KSJ",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1539,7 +1539,7 @@
         ],
         "md5sum": "1691e994fac00f56c365bf37d6caab85",
         "accession": "LATDF376VXJ",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1578,7 +1578,7 @@
         ],
         "md5sum": "1490c316e1615d0564486f1e4ad6ab3b",
         "accession": "LATDF346NEK",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -1618,7 +1618,7 @@
         ],
         "md5sum": "7d412ebea9b803c26b3a48597854bbfe",
         "accession": "LATDF596JXT",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1657,7 +1657,7 @@
         ],
         "md5sum": "4f175e02e359f2a1eb683879191f15eb",
         "accession": "LATDF464KAD",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1696,7 +1696,7 @@
         ],
         "md5sum": "25dcbbd255177cc82b809216909a821a",
         "accession": "LATDF285GHF",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -1736,7 +1736,7 @@
         ],
         "md5sum": "a01fe5c058eaf74f619948a6cd66c6ac",
         "accession": "LATDF550GEX",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1775,7 +1775,7 @@
         ],
         "md5sum": "f65b01abad5b21a92c6ff5c83e18ad41",
         "accession": "LATDF277WDX",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1814,7 +1814,7 @@
         ],
         "md5sum": "a7f02c33c7cd3f9461006e4c1e4b9fc7",
         "accession": "LATDF911PFC",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -1854,7 +1854,7 @@
         ],
         "md5sum": "8d5465e30bc2c7c9427af64828b90083",
         "accession": "LATDF967MXZ",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1893,7 +1893,7 @@
         ],
         "md5sum": "be7a22b3db14382eef69507e0ec7c9da",
         "accession": "LATDF808JAV",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -1932,7 +1932,7 @@
         ],
         "md5sum": "04b52cff73d40e2bed5c3b38037f069b",
         "accession": "LATDF213RYS",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -1972,7 +1972,7 @@
         ],
         "md5sum": "468dabd840c01a9327cb83388c170927",
         "accession": "LATDF062EAM",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2011,7 +2011,7 @@
         ],
         "md5sum": "f2c2bd6ecc8e015cda0837e040fddc57",
         "accession": "LATDF053ZTA",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2050,7 +2050,7 @@
         ],
         "md5sum": "5efae53c8b966af196df7f914cd75cda",
         "accession": "LATDF536YDD",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2090,7 +2090,7 @@
         ],
         "md5sum": "2079a27a62107426c1c58962108e907e",
         "accession": "LATDF484DMD",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2129,7 +2129,7 @@
         ],
         "md5sum": "4fce4de132386bc0ff8f62f4b8485b49",
         "accession": "LATDF851YTF",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2168,7 +2168,7 @@
         ],
         "md5sum": "b6d6168361bafb250824f8fcfbe835dd",
         "accession": "LATDF250FTX",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2208,7 +2208,7 @@
         ],
         "md5sum": "42963bbbfa5fef9b7499488c9a67c9e0",
         "accession": "LATDF977MIS",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2247,7 +2247,7 @@
         ],
         "md5sum": "699e92af12999925056ef9e411d5c20e",
         "accession": "LATDF522SEY",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2283,7 +2283,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "5bb99d4f45a03fec10d05236dee52d69",
         "accession": "LATDF604IGE",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2320,7 +2320,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "29356483c34695c24b60eec707076ab5",
         "accession": "LATDF525ENS",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2356,7 +2356,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "5eb05afff324450fb1e4de66b498fa8a",
         "accession": "LATDF992JZW",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2393,7 +2393,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "a943c3ecc8723adbaf16dbb30fa26e41",
         "accession": "LATDF282BWU",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2429,7 +2429,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "25db035202452bb1e699fb04918e51d2",
         "accession": "LATDF901SJX",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2466,7 +2466,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "6a769a24ef4b24d056314af1ca876470",
         "accession": "LATDF967GMF",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2502,7 +2502,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "78b54e57c25174f01f44ac77c7e15cdd",
         "accession": "LATDF920DYH",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2539,7 +2539,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "5ced08c46582127943ad2d32224ede49",
         "accession": "LATDF007OFP",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2575,7 +2575,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "7db2ca9aa535412215a16a12263813f1",
         "accession": "LATDF808FWA",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2612,7 +2612,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "47b8d232b7ca4bff32e68c7a4ab167a3",
         "accession": "LATDF055RIO",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2648,7 +2648,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "e4725769cbde08eb02e3cbe5b298b71f",
         "accession": "LATDF746HEM",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2685,7 +2685,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "b82ac0119137f8472a2922b7b46eaa14",
         "accession": "LATDF110PJU",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2721,7 +2721,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "990d20f4aa2794aa959763cdf2661cb9",
         "accession": "LATDF461BQE",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2758,7 +2758,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "fe0f36ac13763d3272a959d3a5157d5c",
         "accession": "LATDF628AJZ",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2794,7 +2794,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "6391d53c935a8defaccfbcca8ce40631",
         "accession": "LATDF111WVZ",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2831,7 +2831,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "96a9e855f208144357f0d62f00c64148",
         "accession": "LATDF787GHB",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2870,7 +2870,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "23b31847f5537ef302dd7486c7736d0b",
         "accession": "LATDF871IAR",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2911,7 +2911,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "9c37badf95a2c2d63ae4ce700582e142",
         "accession": "LATDF403CSB",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -2950,7 +2950,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "4494f30178e1bdc09a5446954e0ab9e0",
         "accession": "LATDF869QTM",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -2991,7 +2991,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "cd4a6f4051a67879c87089a32e606573",
         "accession": "LATDF865WJB",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3032,7 +3032,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "152cebddcc8ddec8a4ef313cc735ba10",
         "accession": "LATDF874DNW",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -3074,7 +3074,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "2d5af333d24dc26d73078f61bd590719",
         "accession": "LATDF565BEM",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3115,7 +3115,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "6d7ac66b1cec9b904d7b7b3a722502ba",
         "accession": "LATDF872YPF",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -3157,7 +3157,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "48fa889dd89f1188103c462d26582a6f",
         "accession": "LATDF977TNE",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3198,7 +3198,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "dbc5d9dc9287d556c3e9ae0fa572fbcb",
         "accession": "LATDF790IAB",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -3240,7 +3240,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "2ec1e229b8cb74bd328e9b5b880632ad",
         "accession": "LATDF005WOR",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3281,7 +3281,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "0cc71f0abe3ca88354420c48f412f511",
         "accession": "LATDF122GEK",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -3323,7 +3323,7 @@
         "genome_annotation": "GENCODE 32",
         "md5sum": "399aa3bc4f1009addf1067cd8892ecfd",
         "accession": "LATDF906JPG",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3362,7 +3362,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "1dad2d4dffe26a4b09a0fddc6fc52bd0",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3401,7 +3401,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "9417f1615b2b78a5c11e15093f562e69",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3440,7 +3440,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "5b04114fa2a5cc26c717c5ece363534f",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3479,7 +3479,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "de9f4501f7d812f43bd5121e83928641",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3518,7 +3518,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "e44dc98c2ad7ce7b3e9c0701e0b817a9",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3557,7 +3557,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "f9f7c568df684ed4aef14410d82b49d4",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3596,7 +3596,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "b39448f475500107355f229ecccb027b",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3635,7 +3635,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "11aa5183f93bf123c387ef7e0e0dd444",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3674,7 +3674,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "2fdbca0bb312f02efdc84fef82b914a6",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3714,7 +3714,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "0da463fc022a076ec9cc6c635da0934f",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3754,7 +3754,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "a0e14d238f06919dca69dd275c10b38e",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3794,7 +3794,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "b691aa0778c3213e7b318efa558fe069",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3834,7 +3834,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "c829aceaff13ad01453c4b39ca1f856f",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3874,7 +3874,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "f65eb489476d069394924142c4d97060",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3914,7 +3914,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "149527139b80175dc1cce36950f547f2",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3954,7 +3954,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "4c792fc634bff7ff6c3687cca73dade3",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -3994,7 +3994,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "1dd3e3d0a78ebdae3be61867d2faea2b",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4034,7 +4034,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "f685e401feec1d36b8e0960a9218c616",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4074,7 +4074,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "e7effaa434b25ec6a54aa29b11cca271",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -4114,7 +4114,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "9b4db05bd5478ab9db71d3bed8e18ef7",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -4154,7 +4154,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "424b260516ccdbf78a7d37ef78575c82",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -4194,7 +4194,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "6937b150fd7a8c025fadf5cb565465b7",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -4234,7 +4234,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "d850a65365f474f954f1801320f02aec",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -4274,7 +4274,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "e0ea7a30c2b95c4a03181a8f51a35809",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -4314,7 +4314,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "8a9fcb515f6bdd738b1e064c46134ebb",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -4354,7 +4354,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "5c0cee32250d2309b049eb1168da1f10",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -4394,7 +4394,7 @@
             "cellranger-atac count 1.2"
         ],
         "md5sum": "c5b4cf72236a68bf9c548bf1fdf73212",
-        "empty_drops_included": true
+        "background_barcodes_included": true
     },
     {
         "aliases": [
@@ -4431,7 +4431,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "2e5f4a5643dff7e46e1fa164722b082d",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4468,7 +4468,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "98bbebbf557750e83bf42ed0974e22bd",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4505,7 +4505,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "ea84ff21512a32c379b7cbf77618b728",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4542,7 +4542,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "b02bc4994123ab4b4644aad304118b4c",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4579,7 +4579,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "9718d87b95adae875d0a2cfc2c64922d",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4616,7 +4616,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "dc92ebeafce2cb4c9730341e6efc65be",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4653,7 +4653,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "cba03d18a91877d5677becaf15f195fa",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4690,7 +4690,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "cfedc56fd843f516f0b69c06c3d52777",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4727,7 +4727,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "c4e2fe787e7dc34adfd5135984cf9cef",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4765,7 +4765,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "0b62d1ec99c15838826a0bac54ce732d",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4803,7 +4803,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "b3c8e02b7f150a1567d840841ae2ea52",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4841,7 +4841,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "632a9adf153040d5eb2bdfd96c53c5bd",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4881,7 +4881,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "7043cc8ac76c761cacbb3ad6868c2fda",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4921,7 +4921,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "44a9817316acdba0872cb2f8c9bb60a0",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -4961,7 +4961,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "e788b4b1a5ed6dc74e341fbd6d34b378",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -5001,7 +5001,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "34e36c93b861aeb18ca667b0234345c0",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -5041,7 +5041,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "e84139020ca36418fc7c835ff98e56c4",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -5080,7 +5080,7 @@
             "cellranger count 4.0"
         ],
         "md5sum": "86e38ceabcc13bffa0e6093e17c30bfc",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     },
     {
         "aliases": [
@@ -5114,6 +5114,6 @@
         ],
         "md5sum": "2d6c0e193103965fcbc1a4f938439f41",
         "accession": "LATDF962TJK",
-        "empty_drops_included": false
+        "background_barcodes_included": false
     }
 ]
