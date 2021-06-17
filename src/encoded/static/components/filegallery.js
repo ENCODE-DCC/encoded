@@ -155,6 +155,33 @@ const sortAnalysisByVersion = (analysesGroup) => {
 };
 
 /**
+ * True is context is series type
+ * 
+ * @param context Context
+ */
+const isSeriesType = (context) => context['@type'].includes('Series');
+
+/**
+ *  Get series files if context type is series or returns undefined
+ * 
+ * @param context Context
+ */
+const getSeriesFiles = (context) => {
+    const isSeries = isSeriesType(context);
+
+    if (!isSeries) {
+        return undefined;
+    }
+
+    // extract analysis files and remove duplicates
+    const analysesFilesIds = getAnalysesFilesFromContext(context);
+
+    // context.files has the embedded-information for the series analysis files
+    return (context.files || []).filter((file) => analysesFilesIds.includes(file['@id']));
+};
+
+
+/**
  * Compile the usable experiment analysis objects into a form for rendering a dropdown of pipeline
  * labs. Export for Jest test.
  * @param {array} analyses Analyses to compile, from one or more datasets
@@ -294,6 +321,7 @@ export class FileTable extends React.Component {
                 // Keeps track of which tables are collapsed
                 ref: false,
                 Other: !props.options.collapseNone,
+                series: true,
                 ...analysisObjects,
             },
         };
@@ -376,8 +404,8 @@ export class FileTable extends React.Component {
         const nonAnalysisObjectPrefix = 'Other';
 
         let datasetFiles = _((items && items.length > 0) ? items : []).uniq((file) => file['@id']);
-        const isSeriesType = context['@type'].includes('Series');
-        const seriesAnalysesFilesIds = isSeriesType ? getAnalysesFilesFromContext(context) : [];
+        const isSeries = isSeriesType(context);
+        const seriesAnalysesFilesIds = isSeries ? getAnalysesFilesFromContext(context) : [];
 
         if (datasetFiles.length > 0) {
             const unfilteredCount = datasetFiles.length;
@@ -497,15 +525,25 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
-                        {analysesSeries.map((key) => {
-                            const seriefiles = files.series && files.series.length > 0 ? files.series.filter((s) => s.analyses[0] === key) : [];
-                            const analysis = context.analyses.find((a) => a['@id'] === key) || {};
+                        {[...analysisObjectKeys, ...analysesSeries, ...otherKeys].map((key) => {
+                            let titleSuffix = '';
+                            let tableData = [];
+
+                            // This is the special case for series
+                            if (analysesSeries.includes(key)) {
+                                const analysis = context.analyses.find((a) => a['@id'] === key) || {};
+                                titleSuffix = `${analysis.title} (${analysis.accession})`;
+                                tableData = (files.series || []).filter((t) => t.analyses[0] === key) || [];
+                            } else {
+                                titleSuffix = `${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)}`;
+                                tableData = files && files[key] ? files[key] : [];
+                            }
 
                             return (<SortTable
                                 key={key}
                                 title={
                                     <CollapsingTitle
-                                        title={`${analysis.title} (${analysis.accession}) processed data`}
+                                        title={`${titleSuffix} processed data`}
                                         collapsed={this.state.collapsed[key]}
                                         handleCollapse={() => this.handleCollapse(key)}
                                         fileQueryKey={fileQueryKey}
@@ -514,22 +552,22 @@ export class FileTable extends React.Component {
                                         analysisAudits={analysisAudits}
                                         analysisObjectKey={key}
                                         filters={filters}
-                                        totalFiles={seriefiles.length}
+                                        totalFiles={tableData.length}
                                         isDownloadable={
                                             !options.hideDownload
                                             && key !== nonAnalysisObjectPrefix
                                             && context.analyses
                                             && analyses
                                             && ['released', 'archived'].includes((analyses.find((a) => a.accession === key) || {}).status)
-                                            && filterDownloadableFilesByStatus(context, files[key]).length > 0
+                                            && filterDownloadableFilesByStatus(context, tableData).length > 0
                                         }
                                         inclusionOn={options.inclusionOn}
-                                        files={files[key]}
+                                        files={tableData}
                                     />
                                 }
                                 rowClasses={this.rowClasses}
                                 collapsed={this.state.collapsed[key]}
-                                list={seriefiles}
+                                list={tableData}
                                 columns={FileTable.procTableColumns}
                                 sortColumn="default"
                                 meta={{
@@ -545,50 +583,6 @@ export class FileTable extends React.Component {
                                 }}
                             />);
                         })}
-                        {[...analysisObjectKeys, ...otherKeys].map((key) => (
-                            <SortTable
-                                key={key}
-                                title={
-                                    <CollapsingTitle
-                                        title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)} processed data`}
-                                        collapsed={this.state.collapsed[key]}
-                                        handleCollapse={() => this.handleCollapse(key)}
-                                        fileQueryKey={fileQueryKey}
-                                        context={context}
-                                        analyses={analyses}
-                                        analysisAudits={analysisAudits}
-                                        analysisObjectKey={key}
-                                        filters={filters}
-                                        totalFiles={files && files[key] ? files[key].length : 0}
-                                        isDownloadable={
-                                            !options.hideDownload
-                                            && key !== nonAnalysisObjectPrefix
-                                            && context.analyses
-                                            && analyses
-                                            && ['released', 'archived'].includes(analyses.find((a) => a.accession === key).status)
-                                            && filterDownloadableFilesByStatus(context, files[key]).length > 0
-                                        }
-                                        inclusionOn={options.inclusionOn}
-                                        files={files[key]}
-                                    />
-                                }
-                                rowClasses={this.rowClasses}
-                                collapsed={this.state.collapsed[key]}
-                                list={files[key]}
-                                columns={FileTable.procTableColumns}
-                                sortColumn="default"
-                                meta={{
-                                    replicationType: context.replication_type,
-                                    hoverDL: this.hoverDL,
-                                    restrictedTip: this.state.restrictedTip,
-                                    fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
-                                    graphedFiles,
-                                    browserOptions,
-                                    loggedIn,
-                                    isAuthorized,
-                                    adminUser,
-                                }}
-                            />))}
                         <SortTable
                             title={
                                 <CollapsingTitle
@@ -2003,7 +1997,7 @@ const fileCssClassGen = (file, active, highlight, colorizeNode, addClasses) => {
 
 
 // Assembly a graph of files, the QC objects that belong to them, and the steps that connect them.
-export function assembleGraph(files, highlightedFiles, dataset, options, loggedIn = false, nonSeriesFiles = [], isSeriesType = false) {
+export function assembleGraph(files, highlightedFiles, dataset, options, loggedIn = false, nonSeriesFiles = [], isSeries = false) {
     // Calculate a step ID from a file's derived_from array.
     function rDerivedFileIds(file) {
         if (file.derived_from && file.derived_from.length > 0) {
@@ -2304,7 +2298,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
             if (allMissingFiles.indexOf(fileId) === -1) {
                 const fileNodeId = `file:${fileId}`;
                 const outputTypeFile = (nonSeriesFiles || []).find((f) => f['@id'] === fileId);
-                const outputTypeLabel = isSeriesType && outputTypeFile ? `(${outputTypeFile.output_type})` : '';
+                const outputTypeLabel = isSeries && outputTypeFile ? `(${outputTypeFile.output_type})` : '';
                 const fileNodeLabel = `${globals.atIdToAccession(fileId)} ${outputTypeLabel}`;
                 const fileCssClass = `pipeline-node-file contributing${infoNode && infoNode.id === fileNodeId ? ' active' : ''} ${highlightToggle ? ' highlight' : ''}`;
 
@@ -2501,10 +2495,11 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
 
 
 const FileGraph = (props) => {
-    const { files, highlightedFiles, dataset, infoNode, selectedAssembly, selectedAnnotation, colorize, handleNodeClick, schemas, loggedIn, nonSeriesFiles, isSeriesType } = props;
+    const { files, highlightedFiles, dataset, infoNode, selectedAssembly, selectedAnnotation, colorize, handleNodeClick, schemas, loggedIn, nonSeriesFiles } = props;
 
     // Build node graph of the files and analysis steps with this experiment
     let graph;
+    const isSeries = isSeriesType(dataset);
     if (files.length > 0) {
         try {
             graph = assembleGraph(
@@ -2519,7 +2514,7 @@ const FileGraph = (props) => {
                 },
                 loggedIn,
                 nonSeriesFiles,
-                isSeriesType
+                isSeries
             );
         } catch (e) {
             console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
@@ -2551,8 +2546,7 @@ FileGraph.propTypes = {
     handleNodeClick: PropTypes.func.isRequired, // Parent function to call when a graph node is clicked
     colorize: PropTypes.bool, // True to enable node colorization based on status
     loggedIn: PropTypes.bool, // True if current user has logged in
-    nonSeriesFiles: PropTypes.array, // Series  files
-    isSeriesType: PropTypes.bool, // True is object type is series
+    nonSeriesFiles: PropTypes.array, // Files that are not part of series collection
 };
 
 FileGraph.defaultProps = {
@@ -2563,7 +2557,6 @@ FileGraph.defaultProps = {
     colorize: false,
     loggedIn: false,
     nonSeriesFiles: [],
-    isSeriesType: false,
 };
 
 
@@ -2959,17 +2952,7 @@ class FileGalleryRendererComponent extends React.Component {
 
         this.experimentType = props.context['@type'][0];
 
-        const isSeriesType = props.context['@type'].includes('Series');
-        let seriesFiles = [];
-
-        if (isSeriesType) {
-            // extract analysis files and remove duplicates
-            const analysesFilesIds = getAnalysesFilesFromContext(props.context);
-
-            // context.files has the embedded-information for the series analysis files
-            seriesFiles = (props.context.files || []).filter((file) => analysesFilesIds.includes(file['@id']));
-        }
-
+        const seriesFiles = getSeriesFiles(props.context) || [];
         const datasetFiles = [...props.data, ...seriesFiles];
 
         // Initialize React state variables.
@@ -3002,8 +2985,6 @@ class FileGalleryRendererComponent extends React.Component {
             compiledAnalyses: compileAnalyses(props.analyses, datasetFiles, 'choose analysis'),
             /** Index of currently/last selected `compiledAnalyses`. */
             selectedAnalysesIndex: 0,
-            /** True if object is of type Series */
-            isSeriesType,
             /** Series Files */
             seriesFiles,
         };
@@ -3368,7 +3349,8 @@ class FileGalleryRendererComponent extends React.Component {
         const { currentTab } = this.state;
         const loggedIn = !!(session && session['auth.userid']);
         const relatedFileAtIds = context.related_files && context.related_files.length > 0 ? context.related_files : [];
-        const datasetFiles = [...data, ...this.state.seriesFiles];
+        const seriesFiles = getSeriesFiles(context) || [];
+        const datasetFiles = [...data, ...seriesFiles];
 
         // The number of related_files has changed (or we have related_files for the first time).
         // Request them and add them to the files from the original file request.
@@ -3576,13 +3558,15 @@ class FileGalleryRendererComponent extends React.Component {
         if (Object.keys(this.state.fileFilters).length > 1) {
             highlightedFiles = this.filterForInclusion(this.state.files);
         }
+        const isSeries = isSeriesType(context);
+        const seriesFiles = getSeriesFiles(context) || [];
 
         // series object get file-data different from other objects
-        let graphIncludedFiles = this.filterForInclusion(this.state.isSeriesType ? this.state.seriesFiles : this.state.graphFiles);
+        let graphIncludedFiles = this.filterForInclusion(isSeries ? seriesFiles : this.state.graphFiles);
 
         // This is only relevant if the Association Graph is going to draw a series object when Association Graph enabled.
         // It needs non-series files
-        const nonSeriesFiles = this.state.isSeriesType ? this.filterForInclusion(this.state.graphFiles) : [];
+        const nonSeriesFiles = isSeries ? this.filterForInclusion(this.state.graphFiles) : [];
 
         const includedFiles = this.filterForInclusion(this.state.files);
         const facetFiles = this.filterForInclusion(this.state.allFiles);
@@ -3757,7 +3741,6 @@ class FileGalleryRendererComponent extends React.Component {
                                         auditIndicators={this.props.auditIndicators}
                                         auditDetail={this.props.auditDetail}
                                         nonSeriesFiles={nonSeriesFiles}
-                                        isSeriesType={this.state.isSeriesType}
                                     />
                                 </TabPanelPane>
                             )
