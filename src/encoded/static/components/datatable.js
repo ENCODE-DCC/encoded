@@ -183,11 +183,11 @@ DataTable.propTypes = {
  *
  * @param {tableData} Data for the table. It should be an array of arrays of object. For example-
  * [
- *  [{className: id: 'an-id', 'a-class', style: 'a-style', content: <span>text</span>}],
- *  [{className: id: 'an-id2', 'a-class-2', style: 'a-style-2', content: <span>text 2</span>}],
+ *  [{className: id: 'an-id a-class', style: 'a-style', content: <span>text</span>}],
+ *  [{className: id: 'an-id2 a-class-2', style: 'a-style-2', content: <span>text 2</span>}],
  * ]
  *
- * For entires, id is the key for react. className is the class or classes associated with entry. The style should be an object (key/value pair)
+ * For entries, id is the key for react. className is the class or classes associated with entry. The style should be an object (key/value pair)
  * of styles. The content should be be markup to display in the table
  *
  * @returns Div-based table

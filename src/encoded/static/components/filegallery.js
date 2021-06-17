@@ -376,7 +376,8 @@ export class FileTable extends React.Component {
         const nonAnalysisObjectPrefix = 'Other';
 
         let datasetFiles = _((items && items.length > 0) ? items : []).uniq((file) => file['@id']);
-        const seriesAnalysesFilesIds = getAnalysesFilesFromContext(context);
+        const isSeriesType = context['@type'].includes('Series');
+        const seriesAnalysesFilesIds = isSeriesType ? getAnalysesFilesFromContext(context) : [];
 
         if (datasetFiles.length > 0) {
             const unfilteredCount = datasetFiles.length;
@@ -498,11 +499,13 @@ export class FileTable extends React.Component {
                         />
                         {analysesSeries.map((key) => {
                             const seriefiles = files.series && files.series.length > 0 ? files.series.filter((s) => s.analyses[0] === key) : [];
+                            const analysis = context.analyses.find((a) => a['@id'] === key) || {};
+
                             return (<SortTable
                                 key={key}
                                 title={
                                     <CollapsingTitle
-                                        title={`${key.replace('/analyses/', '').replace('/', '')} processed data`}
+                                        title={`${analysis.title} (${analysis.accession}) processed data`}
                                         collapsed={this.state.collapsed[key]}
                                         handleCollapse={() => this.handleCollapse(key)}
                                         fileQueryKey={fileQueryKey}
@@ -2000,7 +2003,7 @@ const fileCssClassGen = (file, active, highlight, colorizeNode, addClasses) => {
 
 
 // Assembly a graph of files, the QC objects that belong to them, and the steps that connect them.
-export function assembleGraph(files, highlightedFiles, dataset, options, loggedIn = false) {
+export function assembleGraph(files, highlightedFiles, dataset, options, loggedIn = false, nonSeriesFiles = [], isSeriesType = false) {
     // Calculate a step ID from a file's derived_from array.
     function rDerivedFileIds(file) {
         if (file.derived_from && file.derived_from.length > 0) {
@@ -2300,10 +2303,12 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         if (!file) {
             if (allMissingFiles.indexOf(fileId) === -1) {
                 const fileNodeId = `file:${fileId}`;
-                const fileNodeLabel = `${globals.atIdToAccession(fileId)}`;
+                const outputTypeFile = (nonSeriesFiles || []).find((f) => f['@id'] === fileId);
+                const outputTypeLabel = isSeriesType && outputTypeFile ? `(${outputTypeFile.output_type})` : '';
+                const fileNodeLabel = `${globals.atIdToAccession(fileId)} ${outputTypeLabel}`;
                 const fileCssClass = `pipeline-node-file contributing${infoNode && infoNode.id === fileNodeId ? ' active' : ''} ${highlightToggle ? ' highlight' : ''}`;
 
-                jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+                jsonGraph.addNode(fileNodeId, `${fileNodeLabel}`, {
                     cssClass: fileCssClass,
                     type: 'File',
                     shape: 'rect',
@@ -2496,7 +2501,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
 
 
 const FileGraph = (props) => {
-    const { files, highlightedFiles, dataset, infoNode, selectedAssembly, selectedAnnotation, colorize, handleNodeClick, schemas, loggedIn } = props;
+    const { files, highlightedFiles, dataset, infoNode, selectedAssembly, selectedAnnotation, colorize, handleNodeClick, schemas, loggedIn, nonSeriesFiles, isSeriesType } = props;
 
     // Build node graph of the files and analysis steps with this experiment
     let graph;
@@ -2512,7 +2517,9 @@ const FileGraph = (props) => {
                     selectedAnnotation,
                     colorize,
                 },
-                loggedIn
+                loggedIn,
+                nonSeriesFiles,
+                isSeriesType
             );
         } catch (e) {
             console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
@@ -2544,6 +2551,8 @@ FileGraph.propTypes = {
     handleNodeClick: PropTypes.func.isRequired, // Parent function to call when a graph node is clicked
     colorize: PropTypes.bool, // True to enable node colorization based on status
     loggedIn: PropTypes.bool, // True if current user has logged in
+    nonSeriesFiles: PropTypes.array, // Series  files
+    isSeriesType: PropTypes.bool, // True is object type is series
 };
 
 FileGraph.defaultProps = {
@@ -2553,6 +2562,8 @@ FileGraph.defaultProps = {
     schemas: null,
     colorize: false,
     loggedIn: false,
+    nonSeriesFiles: [],
+    isSeriesType: false,
 };
 
 
@@ -3569,6 +3580,10 @@ class FileGalleryRendererComponent extends React.Component {
         // series object get file-data different from other objects
         let graphIncludedFiles = this.filterForInclusion(this.state.isSeriesType ? this.state.seriesFiles : this.state.graphFiles);
 
+        // This is only relevant if the Association Graph is going to draw a series object when Association Graph enabled.
+        // It needs non-series files
+        const nonSeriesFiles = this.state.isSeriesType ? this.filterForInclusion(this.state.graphFiles) : [];
+
         const includedFiles = this.filterForInclusion(this.state.files);
         const facetFiles = this.filterForInclusion(this.state.allFiles);
 
@@ -3741,7 +3756,7 @@ class FileGalleryRendererComponent extends React.Component {
                                         loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
                                         auditIndicators={this.props.auditIndicators}
                                         auditDetail={this.props.auditDetail}
-                                        series={this.state.seriesFiles}
+                                        nonSeriesFiles={nonSeriesFiles}
                                         isSeriesType={this.state.isSeriesType}
                                     />
                                 </TabPanelPane>
