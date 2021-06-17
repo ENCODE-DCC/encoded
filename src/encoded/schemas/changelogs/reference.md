@@ -13,6 +13,7 @@
 * Added *analyses* property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *examined_regions* property so that chromosomal regions may be specified as regions of interest
+* Added *assay_term_name* property to capture the assays used in the design of references that are *reference_type*: *functional elements*
 
 ### Schema version 19
 

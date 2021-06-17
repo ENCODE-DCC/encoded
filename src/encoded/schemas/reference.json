@@ -59,6 +59,15 @@
                     "enum": ["functional elements"]
                 }
             }
+        },
+        "assay_term_name": {
+            "comment": "The assay(s) used to design the elements specified in the reference.",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["functional elements"]
+                }
+            }
         }
     },
     "properties": {
@@ -173,6 +182,21 @@
                 "description": "A particular pipeline this reference file set is used for",
                 "type": "string",
                 "linkTo": "Pipeline"
+            }
+        },
+        "assay_term_name": {
+            "title": "Assay name(s)",
+            "description": "The assays that were used to design the elements specified in the reference.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Assay name",
+                "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+                "type": "string",
+                "enum": [
+                    "ATAC-seq",
+                    "DNase-seq"
+                ]
             }
         }
     },
