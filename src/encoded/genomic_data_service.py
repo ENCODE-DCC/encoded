@@ -5,9 +5,9 @@ RNA_GET_FACETS = [
     'assayType',
     'biosample_classification',
     'biosample_term_name',
-    'biosample_sex',
     'biosample_organ',
     'biosample_system',
+    'biosample_sex',
 ]
 RNA_GET_EXPRESSIONS = '/expressions/bytes'
 RNA_GET_AUTOCOMPLETE = '/autocomplete'
