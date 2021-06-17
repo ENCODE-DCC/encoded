@@ -156,14 +156,14 @@ const sortAnalysisByVersion = (analysesGroup) => {
 
 /**
  * True is context is series type
- * 
+ *
  * @param context Context
  */
 const isSeriesType = (context) => context['@type'].includes('Series');
 
 /**
  *  Get series files if context type is series or returns undefined
- * 
+ *
  * @param context Context
  */
 const getSeriesFiles = (context) => {
@@ -2985,8 +2985,6 @@ class FileGalleryRendererComponent extends React.Component {
             compiledAnalyses: compileAnalyses(props.analyses, datasetFiles, 'choose analysis'),
             /** Index of currently/last selected `compiledAnalyses`. */
             selectedAnalysesIndex: 0,
-            /** Series Files */
-            seriesFiles,
         };
 
         /** Store characteristics of currently selected analyses menu item */
