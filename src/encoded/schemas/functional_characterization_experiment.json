@@ -314,6 +314,9 @@
             "type": "typeahead",
             "open_on_load": true
         },
+        "elements_references.assay_term_name": {
+            "title": "Element design assay"
+        },
         "examined_loci.gene.symbol": {
             "title": "Examined loci",
             "type": "typeahead",

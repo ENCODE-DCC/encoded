@@ -685,13 +685,6 @@ const ReferenceComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {context.perturbation_type ?
-                                <div data-test="perturbationtype">
-                                    <dt>Perturbation type</dt>
-                                    <dd>{context.perturbation_type}</dd>
-                                </div>
-                            : null}
-
                             {context.examined_loci && context.examined_loci.length > 0 ?
                                 <div data-test="examinedloci">
                                     <dt>Examined loci</dt>
@@ -722,11 +715,11 @@ const ReferenceComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {context.crispr_screen_readout ?
-                                <div data-test="crisprscreenreadout">
-                                    <dt>CRISPR screen readout</dt>
-                                    <dd>{context.crispr_screen_readout}</dd>
-                                </div>
+                            {context.assay_term_name && context.assay_term_name.length > 0 ?
+                            <div data-test="assaytermname">
+                                <dt>Functional elements design assays</dt>
+                                <dd>{context.assay_term_name.join(', ')}</dd>
+                            </div>
                             : null}
 
                             {context.related_pipelines && context.related_pipelines.length > 0 ?

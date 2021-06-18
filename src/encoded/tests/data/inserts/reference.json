@@ -78,7 +78,7 @@
         "award": "U54HG007005",
         "reference_type": "functional elements",
         "description": "Elements DNA sequences",
-        "assay_term_name": ["ATAC-seq"],
+        "assay_term_name": ["ATAC-seq", "DNase-seq"],
         "lab": "thomas-gingeras",
         "status": "archived",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
