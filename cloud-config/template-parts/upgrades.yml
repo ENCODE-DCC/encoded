@@ -7,5 +7,4 @@
     Unattended-Upgrade::Allowed-Origins {
         "${distro_id} ${distro_codename}-security";
     };
-    Unattended-Upgrade::Mail "encode-devops@lists.stanford.edu";
     Unattended-Upgrade::Automatic-Reboot "false";
