@@ -158,7 +158,12 @@
         }, {"gene": "/genes/2995/",
             "expression_range_minimum": 2,
             "expression_range_maximum": 70,
-            "expression_measurement_method": "PrimeFlow"}]
+            "expression_measurement_method": "PrimeFlow"
+        }, {"gene": "/genes/6482/",
+            "expression_measurement_method": "fluorescence activated cell sorting"
+        }, {"gene": "/genes/15077/",
+            "expression_measurement_method": "CRISPRi-FlowFISH"
+        }]
     },
     {
         "accession": "ENCSR928SVL",
