@@ -933,6 +933,7 @@ const RNAGet = ({ context }, reactContext) => {
                 <div className="title-facets">
                     <h1>RNA Get (beta)</h1>
                     <RNASeqMatrixSearch query={query} />
+                    <p><a href="https://ga4gh-rnaseq.github.io/schema/preview/release/1.1.0/docs/index.html">API</a> available at <a href="https://rnaget.encodeproject.org/">https://rnaget.encodeproject.org/</a></p>
                     <FacetList context={context} facets={context.facets} filters={context.filters} docTypeTitleSuffix="report" />
                 </div>
                 <div className="search-results__report-list">
