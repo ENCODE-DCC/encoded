@@ -1,6 +1,7 @@
 ## Changelog for analysis_step.json
 
 ### Minor changes since schema version 15
+* Added *merging* to the enum list for *analysis_step_types*
 * Added *curated binding sites*, *curated SNVs*, *dsQTLs*, *eQTLs* and *PWMs* to the enum list for *input_file_types* and *output_file_types*
 * Added *sparse transcript count matrix* and *read annotations* to the enum list for *input_file_types* and *output_file_types*
 * Added *sparse gRNA count matrix*, *element barcode mapping*, and *fine-mapped variants* to the enum list for *input_file_types* and *output_file_types*

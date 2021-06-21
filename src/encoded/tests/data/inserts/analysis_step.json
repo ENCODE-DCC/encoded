@@ -635,5 +635,22 @@
         ],
         "status": "released",
         "uuid": "ecbe2ae9-92b4-4e61-95f5-7cf31434c89a"
+    },
+    {
+        "analysis_step_types": [
+            "merging"
+        ],
+        "date_created": "2021-01-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "alignments"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "long range chromatin interactions"
+        ],
+        "status": "released",
+        "step_label": "hic-merge-step",
+        "title": "HiC merge step",
+        "uuid": "c9c96dd8-681a-43fd-b5ad-3369f5a537cb"
     }
 ]
