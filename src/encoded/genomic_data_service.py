@@ -73,7 +73,7 @@ class GenomicDataService():
         self.genes   = params.get('genes') or get_random_gene()
         self.units   = params.get('units', 'tpm')
         self.page    = params.get('page', 1)
-        self.sort    = params.get('sort')
+        self.sort    = params.get('sort', f'-{self.units}')
         self.columns = RNA_GET_COLUMNS.copy()
         self.columns.pop('tpm' if self.units == 'fpkm' else 'fpkm')
         self.autocomplete_query = params.get('q', '')
