@@ -944,7 +944,7 @@ const RNAGet = ({ context }, reactContext) => {
                     {viewableTotal < context.total ?
                         <div className="report-max-warning">Not all items viewable. Download TSV for all items.</div>
                     : null}
-                    <TableItemCount count={`Showing results ${(currentPage - 1) * pageLimit + 1} to ${Math.min(context.total, (currentPage - 1) * pageLimit + pageLimit)} of ${context.total}`} />
+                    <TableItemCount count={`Showing results ${(currentPage - 1) * pageLimit + 1} to ${Math.min(context.total, (currentPage - 1) * pageLimit + pageLimit)} of ${context.total} for ${context.selected_genes}`} />
                     <div className="report__table">
                         <table className="table table-striped" ref={tableRef}>
                             <RNAGetHeader context={context} visibleFields={visibleFields} allColumns={allColumns} tableRef={tableRef} />
