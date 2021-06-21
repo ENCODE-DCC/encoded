@@ -155,7 +155,7 @@ const sortAnalysisByVersion = (analysesGroup) => {
 };
 
 /**
- * True is context is series type
+ * True if context is series type
  *
  * @param context Context
  */
