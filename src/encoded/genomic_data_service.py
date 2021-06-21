@@ -1,4 +1,6 @@
+import random
 import requests
+
 
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
 RNA_GET_FACETS = [
@@ -31,6 +33,16 @@ RNA_GET_COLUMNS = {
 }
 
 
+GENES = [
+    'REM1',
+    'APOE',
+    'POMC',
+    'BRCA1',
+    'EP300',
+    'IL6, TP53, AKT1'
+]
+
+
 def get_filtered_and_sorted_facets(facets):
     return sorted(
         (
@@ -42,13 +54,15 @@ def get_filtered_and_sorted_facets(facets):
     )
 
 
+def get_random_gene():
+    return random.choice(GENES)
+
 
 class GenomicDataService():
     # default search value is a temporary feature for the current alpha UI client
-    def __init__(self, registry, request, default_search='ENSG00000088320.3'):
+    def __init__(self, registry, request):
         self.path = registry.settings.get(REGISTRY_DATA_SERVICE)
         self.request = request
-        self.default_search = default_search
 
         self.parse_params()
 
@@ -56,7 +70,7 @@ class GenomicDataService():
     def parse_params(self):
         params = self.request.params
 
-        self.genes   = params.get('genes')
+        self.genes   = params.get('genes') or get_random_gene()
         self.units   = params.get('units', 'tpm')
         self.page    = params.get('page', 1)
         self.sort    = params.get('sort')
@@ -93,11 +107,12 @@ class GenomicDataService():
 
     def rna_get_request_query_string(self, format_='json'):
         params = [f'format={format_}']
-
-        search = self.default_search
-        if self.genes:
-            search = ','.join([gene.strip() for gene in self.genes.split(',')])
-
+        search = ','.join(
+            [
+                gene.strip()
+                for gene in self.genes.split(',')
+            ]
+        )
         params.append(f'featureIDList={search}')
 
         if self.units:
@@ -186,7 +201,8 @@ class GenomicDataService():
             'columns': self.columns,
             'filters': self.filters,
             'facets': self.facets,
-            '@graph': self.expressions
+            '@graph': self.expressions,
+            'selected_genes': self.genes,
         }
 
         if self.sort:
