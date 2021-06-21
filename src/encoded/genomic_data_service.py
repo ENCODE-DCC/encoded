@@ -10,6 +10,7 @@ RNA_GET_FACETS = [
     'biosample_organ',
     'biosample_system',
     'biosample_sex',
+    'annotation',
 ]
 RNA_GET_EXPRESSIONS = '/expressions/bytes'
 RNA_GET_AUTOCOMPLETE = '/autocomplete'
@@ -30,6 +31,33 @@ RNA_GET_COLUMNS = {
     'biosample_organ': {'title': 'Organ'},
     'biosample_system': {'title': 'System'},
     'biosample_summary': {'title': 'Summary'}
+}
+
+
+FACET_TERM_MAP = {
+    'GRCh38': 'Homo sapiens',
+    'mm10': 'Mus musculus',
+}
+
+
+REVERSE_FACET_TERM_MAP = {
+    'Homo sapiens': 'GRCh38',
+    'Mus musculus': 'mm10',
+}
+
+
+FACET_TITLE_MAP = {
+    'Assembly': 'Organism',
+}
+
+
+FACET_FIELD_MAP = {
+    'annotation': 'organism',
+}
+
+
+REVERSE_FACET_FIELD_MAP = {
+    'organism': 'annotation'
 }
 
 
@@ -56,6 +84,13 @@ def get_filtered_and_sorted_facets(facets):
 
 def get_random_gene():
     return random.choice(GENES)
+
+
+# Aliasing e.g. `annotation=GRCh38` as `organism=Homo+sapiens`.
+def map_encoded_param_to_data_service_param(key, value):
+    key = REVERSE_FACET_FIELD_MAP.get(key, key)
+    value = REVERSE_FACET_TERM_MAP.get(value, value)
+    return f'{key}={value}'
 
 
 class GenomicDataService():
@@ -85,8 +120,10 @@ class GenomicDataService():
 
         self.filter_params = {}
         for facet in RNA_GET_FACETS:
-            if params.get(facet):
-                self.filter_params[facet] = params.get(facet)
+            normalized_facet = FACET_FIELD_MAP.get(facet, facet)
+            param_value = params.get(normalized_facet)
+            if param_value:
+                self.filter_params[normalized_facet] = param_value
 
         self.filters = [{'field': 'type', 'term': 'Rna Get', 'remove': '/rnaget'}]
 
@@ -124,8 +161,13 @@ class GenomicDataService():
         if self.page:
             params.append(f'page={self.page}')
 
-        for filter_ in self.filter_params:
-            params.append(f'{filter_}={self.filter_params.get(filter_)}')
+        for key, value in self.filter_params.items():
+            params.append(
+                map_encoded_param_to_data_service_param(
+                    key,
+                    value
+                )
+            )
 
         return '&'.join(params)
 
@@ -139,10 +181,17 @@ class GenomicDataService():
         self.total = results['total']
         self.facets = []
         for facet in get_filtered_and_sorted_facets(results['facets'].keys()):
+            title = self.columns[facet]['title']
             facet_data = {
-                'field': facet,
-                'title': self.columns[facet]['title'],
-                'terms': [{'key': term[0], 'doc_count': term[1]} for term in results['facets'][facet]],
+                'field': FACET_FIELD_MAP.get(facet, facet),
+                'title': FACET_TITLE_MAP.get(title, title),
+                'terms': [
+                    {
+                        'key': FACET_TERM_MAP.get(term[0], term[0]),
+                        'doc_count': term[1],
+                    }
+                    for term in results['facets'][facet]
+                ],
                 'type': 'terms'
             }
             facet_data['total'] = sum([term['doc_count'] for term in facet_data['terms']])
