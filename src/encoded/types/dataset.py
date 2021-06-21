@@ -341,7 +341,8 @@ class TransgenicEnhancerExperiment(
         'documents.lab',
     ]
     set_status_up = [
-        'documents'
+        'documents',
+        'biosamples',
     ]
     set_status_down = []
     rev = Dataset.rev.copy()

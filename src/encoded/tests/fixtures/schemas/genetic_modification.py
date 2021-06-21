@@ -649,3 +649,17 @@ def genetic_modification_9(lab, award, human_donor_1):
         'purpose': 'expression',
         'method': 'transient transfection'
     }
+
+
+@pytest.fixture
+def transgene_insertion(testapp, lab, award, ctcf):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'transgene insertion',
+        'purpose': 'in vivo enhancer characterization',
+        'nucleic_acid_delivery_method': ['mouse pronuclear microinjection'],
+        'modified_site_by_gene_id': ctcf['@id'],
+        'introduced_sequence': 'ATCGTA'
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]

@@ -742,3 +742,15 @@ def test_set_status_experiment_analysis(testapp, root, experiment, file, base_an
     for encode_item in [experiment, base_analysis, file]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'archived'
+
+
+def test_set_status_transgenic_enhancer_experiment(testapp, transgenic_enhancer_experiment, mouse_whole_organism_biosample, transgene_insertion):
+    testapp.patch_json(mouse_whole_organism_biosample['@id'], {'status': 'in progress'})
+    testapp.patch_json(transgene_insertion['@id'], {'status': 'in progress'})
+    testapp.patch_json(transgenic_enhancer_experiment['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    res = testapp.get(transgenic_enhancer_experiment['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(mouse_whole_organism_biosample['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(transgene_insertion['@id'])
+    assert res.json['status'] == 'released'
