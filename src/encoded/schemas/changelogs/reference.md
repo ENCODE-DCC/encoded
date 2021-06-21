@@ -1,5 +1,8 @@
 ## Changelog for reference.json
 
+### Minor changes since schema version 20
+* Added *elements_selection_method* property to capture the selection of elements specified in references that are *reference_type*: *functional elements*
+
 ### Schema version 20
 * Updated the *internal_tags* enum from *RegulomeDB* to *RegulomeDB_1_0*
 * Added *RegulomeDB_2_0* and *RegulomeDB_2_1* to the *internal_tags* enum list.
@@ -13,7 +16,6 @@
 * Added *analyses* property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *examined_regions* property so that chromosomal regions may be specified as regions of interest
-* Added *assay_term_name* property to capture the assays used in the design of references that are *reference_type*: *functional elements*
 
 ### Schema version 19
 

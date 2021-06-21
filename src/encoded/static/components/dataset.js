@@ -715,10 +715,10 @@ const ReferenceComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {context.assay_term_name && context.assay_term_name.length > 0 ?
-                            <div data-test="assaytermname">
-                                <dt>Functional elements design assays</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
+                            {context.elements_selection_method && context.elements_selection_method.length > 0 ?
+                            <div data-test="elementsselectionmethod">
+                                <dt>Elements selection method</dt>
+                                <dd>{context.elements_selection_method.join(', ')}</dd>
                             </div>
                             : null}
 

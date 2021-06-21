@@ -184,18 +184,19 @@
                 "linkTo": "Pipeline"
             }
         },
-        "assay_term_name": {
-            "title": "Assay name(s)",
-            "description": "The assays that were used to design the elements specified in the reference.",
+        "elements_selection_method": {
+            "title": "Elements selection method(s)",
+            "description": "The methods or criteria used to select the elements specified in the reference.",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "title": "Assay name",
-                "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+                "title": "Elements selection method",
+                "description": "The method or criteria used to select the elements specified in the reference.",
                 "type": "string",
                 "enum": [
                     "ATAC-seq",
-                    "DNase-seq"
+                    "DNase-seq",
+                    "SNPs"
                 ]
             }
         }
