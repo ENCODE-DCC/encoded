@@ -1064,6 +1064,77 @@ CartFacets.defaultProps = {
 
 
 /**
+ * Displays a message about facets being disabled when the user has selected "File view."
+ */
+export const CartFacetsStandin = ({ files, facetProgress }) => (
+    <div className="cart__display-facets">
+        {files.length > 0 ? <FacetCount count={files.length} element="file" facetLoadProgress={facetProgress} /> : null}
+        <div className={`${files.length === 0 ? 'cart-facet-standin-message' : null}`}>
+            Dataset and file filtering disabled while file view selected.
+        </div>
+    </div>
+);
+
+CartFacetsStandin.propTypes = {
+    /** Currently selected files */
+    files: PropTypes.array.isRequired,
+    /** Current progress of loading the datasets/files for the facets */
+    facetProgress: PropTypes.number,
+};
+
+CartFacetsStandin.defaultProps = {
+    facetProgress: null,
+};
+
+
+/**
+ * Displays only an assembly facet when the user has selected "File view."
+ */
+export const CartFacetsFileView = ({ fileProps, files, facetProgress }) => {
+    const fileFacetContent = fileProps.facets.find((facet) => facet.field === 'assembly');
+    const displayedFacetField = displayedFileFacetFields.find((facetField) => facetField.field === 'assembly');
+    if (fileFacetContent) {
+        return (
+            <div className="cart__display-facets">
+                <FacetCount count={files.length} element="file" facetLoadProgress={facetProgress} />
+                <div className="cart-facet-list">
+                    <Facet
+                        facet={fileFacetContent}
+                        displayedFacetField={displayedFacetField}
+                        selectedFacetTerms={fileProps.selectedTerms.assembly}
+                        facetTermClickHandler={fileProps.termClickHandler}
+                        expanded
+                    />
+                </div>
+            </div>
+        );
+    }
+
+    return <CartFacetsStandin files={files} facetProgress={facetProgress} />;
+};
+
+CartFacetsFileView.propTypes = {
+    /** Properties specific to the file facets */
+    fileProps: PropTypes.exact({
+        /** Currently displayed file facets */
+        facets: PropTypes.array,
+        /** Currently selected facet terms */
+        selectedTerms: PropTypes.object,
+        /** Function to call when the user clicks a facet term on or off */
+        termClickHandler: PropTypes.func,
+    }).isRequired,
+    /** Currently selected files */
+    files: PropTypes.array.isRequired,
+    /** Current progress of loading the datasets/files for the facets */
+    facetProgress: PropTypes.number,
+};
+
+CartFacetsFileView.defaultProps = {
+    facetProgress: null,
+};
+
+
+/**
  * This merges a facet term into a facet object. If the term already exists in the facet, its term
  * count gets incremented. Otherwise, the term gets added to the facet terms with an initial count.
  * @param {object} facet Facet to merge term into
@@ -1072,8 +1143,7 @@ CartFacets.defaultProps = {
 const mergeTermIntoFacet = (facet, term) => {
     const matchingTerm = facet.terms.find((matchingFacetTerm) => matchingFacetTerm.term === term);
     if (matchingTerm) {
-        // Facet term has been counted before, so add to its count. Mark the term as
-        // visualizable if any file contributing to this term is visualizable.
+        // Facet term has been counted before, so add to its count.
         matchingTerm.count += 1;
     } else {
         // Facet term has not been counted before, so initialize a new facet term entry.

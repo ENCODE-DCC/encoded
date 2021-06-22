@@ -328,6 +328,7 @@
     @media screen and (min-width: $screen-md-min) {
         display: flex;
         flex: 0 1 auto;
+        align-items: center;
     }
 }
 
@@ -386,6 +387,11 @@
             border: none;
         }
     }
+}
+
+// Adjusts message if no file count header exists in the facet.
+.cart-facet-standin-message {
+    padding: 10px;
 }
 
 // Defines check boxes and radio button on the cart facets.
@@ -927,9 +933,25 @@ $file-type-colors: (
 
 // Contains list of cart-related objects, sort of like search results.
 .cart-list {
-    // Contains one item in the cart list.
     @at-root #{&}-item {
+        position: relative;
+
+        &.cart-list-item--no-dl {
+            .cart-list-link__file-type {
+                background-color: #606060;
+                color: white;
+            }
+
+            .cart-file-view-checkbox {
+                color: white;
+            }
+        }
+    }
+
+    // Contains one item in the cart list.
+    @at-root #{&}-link {
         display: flex;
+        flex: 1 0 auto;
         position: relative;
         border-bottom: 1px solid #ccc;
         color: #000;
@@ -976,7 +998,7 @@ $file-type-colors: (
                 flex-basis: 10%;
             }
 
-            .cart-list-item--no-dl & {
+            .cart-list-link--no-dl & {
                 background-color: #606060;
                 color: white;
             }
@@ -1019,8 +1041,8 @@ $file-type-colors: (
 
         @at-root #{&}__no-dl {
             position: absolute;
+            top: 3px;
             right: 0;
-            bottom: 3px;
             left: 0;
             font-size: 0.75rem;
             color: white;
@@ -1120,10 +1142,6 @@ $file-type-colors: (
             @media screen and (min-width: $screen-md-min) {
                 flex-basis: 25%;
             }
-
-            @media screen and (min-width: $screen-lg-min) {
-                flex-basis: 15%;
-            }
         }
 
         @at-root #{&}__assay {
@@ -1133,10 +1151,6 @@ $file-type-colors: (
             @media screen and (min-width: $screen-md-min) {
                 flex-basis: 25%;
             }
-
-            @media screen and (min-width: $screen-lg-min) {
-                flex-basis: 30%;
-            }
         }
 
         @at-root #{&}__biosample {
@@ -1145,10 +1159,6 @@ $file-type-colors: (
 
             @media screen and (min-width: $screen-md-min) {
                 flex-basis: 25%;
-            }
-
-            @media screen and (min-width: $screen-lg-min) {
-                flex-basis: 30%;
             }
         }
 
@@ -1164,6 +1174,63 @@ $file-type-colors: (
         text-align: center;
         font-size: 0.9rem;
     }
+}
+
+$file-view-checkbox-size: 14px;
+
+// Used on the checkbox for each file to include or remove from the file view.
+.cart-file-view-checkbox {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 0.9rem;
+    z-index: 1;
+
+    input {
+        width: $file-view-checkbox-size;
+        height: $file-view-checkbox-size;
+
+        + label {
+            padding-left: 15px;
+
+            &::before {
+                top: 4px;
+                width: $file-view-checkbox-size;
+                height: $file-view-checkbox-size;
+            }
+
+            svg {
+                top: 6px;
+                width: $file-view-checkbox-size - 4;
+                height: $file-view-checkbox-size - 4;
+            }
+        }
+    }
+}
+
+// Used for the checkbox to select whether to view only file view files.
+.file-view-toggle {
+    margin: 3px 0 0 0;
+
+    input {
+        + label {
+            padding: 0 0 0 23px;
+            line-height: 1.6;
+
+            &::before {
+                top: 3px;
+            }
+
+            svg {
+                top: 5px;
+            }
+        }
+    }
+}
+
+.file-view-controls {
+    display: flex;
+    align-items: center;
 }
 
 .cart-pager-area {
@@ -1349,7 +1416,13 @@ $file-type-colors: (
     display: flex;
     padding: 5px;
     justify-content: space-between;
+    align-items: center;
     border-bottom: 1px solid #ccc;
+
+    .cart-checkbox {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
 }
 
 // Control to clear all selections within a facet.

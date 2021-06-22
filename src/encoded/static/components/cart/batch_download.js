@@ -103,10 +103,16 @@ const CartBatchDownloadComponent = (
         sharedCart,
         cartInProgress,
         visualizable,
+        isFileViewOnly,
     }
 ) => {
-    const disabled = !selectedDatasetType || cartInProgress;
-    const actuatorTitle = selectedDatasetType ? 'Download' : 'Select single dataset type to download';
+    const disabled = !selectedDatasetType || cartInProgress || isFileViewOnly;
+    let actuatorTitle;
+    if (isFileViewOnly) {
+        actuatorTitle = 'Turn off file view to download';
+    } else {
+        actuatorTitle = selectedDatasetType ? 'Download' : 'Select single dataset type to download';
+    }
 
     // Build the cart batch-download controller from the user selections.
     const cart = cartType === 'ACTIVE' ? savedCartObj : sharedCart;
@@ -160,6 +166,8 @@ CartBatchDownloadComponent.propTypes = {
     cartInProgress: PropTypes.bool,
     /** True to download only visualizable files */
     visualizable: PropTypes.bool,
+    /** True if file view selected */
+    isFileViewOnly: PropTypes.bool,
 };
 
 CartBatchDownloadComponent.defaultProps = {
@@ -169,6 +177,7 @@ CartBatchDownloadComponent.defaultProps = {
     sharedCart: null,
     cartInProgress: false,
     visualizable: false,
+    isFileViewOnly: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({

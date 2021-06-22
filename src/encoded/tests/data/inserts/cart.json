@@ -8,6 +8,12 @@
             "/experiments/ENCSR002CON/",
             "/experiments/ENCSR706IDL/"
         ],
+        "file_views": [
+            {
+                "title": "View",
+                "files": []
+            }
+        ],
         "identifier": "ali-mortazavi-first-cart",
         "submitted_by": "netus.lorem@risus.lobortis",
         "status": "current",

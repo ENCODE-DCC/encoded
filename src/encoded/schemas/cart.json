@@ -16,7 +16,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "name": {
             "title": "Name",
@@ -47,6 +47,33 @@
                 "description": "Reference to one element in the cart",
                 "type":  "string",
                 "linkTo": "Dataset"
+            }
+        },
+        "file_views": {
+            "title": "Cart file views",
+            "description": "Views of subsets of files within a cart",
+            "type": "array",
+            "items": {
+                "title": "Single cart file view",
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "title": "File view title",
+                        "description": "Title of one file view",
+                        "type": "string"
+                    },
+                    "files": {
+                        "title": "File view contents",
+                        "description": "Files within a file view",
+                        "type": "array",
+                        "items": {
+                            "title": "File within a view",
+                            "description": "Reference to a file within a view",
+                            "type": "string",
+                            "linkTo": "File"
+                        }
+                    }
+                }
             }
         }
     },

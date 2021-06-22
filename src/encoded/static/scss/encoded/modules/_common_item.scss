@@ -72,6 +72,7 @@ $checkbox-padding: 3px;
         left: $checkbox-padding;
         opacity: 0;
         z-index: 1;
+        cursor: pointer;
 
         &:checked {
             border: none;
@@ -108,7 +109,7 @@ $checkbox-padding: 3px;
                 top: 0;
                 width: $checkbox-dimensions;
                 height: $checkbox-dimensions;
-                background-color: transparent;
+                background-color: white;
                 border: 1px solid #c0c0c0;
                 border-radius: 3px;
             }
@@ -131,6 +132,14 @@ $checkbox-padding: 3px;
 
             &:hover {
                 cursor: pointer;
+            }
+        }
+    }
+
+    &.checkbox--disabled {
+        input {
+            + label {
+                color: #808080;
             }
         }
     }

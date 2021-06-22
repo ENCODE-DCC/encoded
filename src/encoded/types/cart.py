@@ -65,7 +65,8 @@ def _create_cart(request, user, name=None, identifier=None, status=None):
         'status': status or 'current',
         'name': cart_name,
         'locked': False,
-        'elements': []
+        'elements': [],
+        'file_views': [],
     }
     if identifier:
         initial_cart['identifier'] = identifier

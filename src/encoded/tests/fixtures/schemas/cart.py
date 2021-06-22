@@ -65,3 +65,20 @@ def other_cart_submitter_testapp(app, remc_member):
         'REMOTE_USER': remc_member['uuid'],
     }
     return TestApp(app, environ)
+
+
+@pytest.fixture
+def cart_0_0():
+    return{
+        'name': 'Test Cart',
+        'elements': []
+    }
+
+
+@pytest.fixture
+def cart_1(cart_0_0):
+    item = cart_0_0.copy()
+    item.update({
+        'schema_version': '1',
+    })
+    return item
