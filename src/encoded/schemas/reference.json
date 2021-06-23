@@ -195,8 +195,13 @@
                 "type": "string",
                 "enum": [
                     "ATAC-seq",
+                    "candidate cis-regulatory elements",
                     "DNase-seq",
-                    "SNPs"
+                    "essential genes",
+                    "GRO-cap",
+                    "point mutations",
+                    "single nucleotide polymorphisms",
+                    "transcription factors"
                 ]
             }
         }
@@ -213,6 +218,9 @@
         },
         "organism.scientific_name": {
             "title": "Organism"
+        },
+        "elements_selection_method": {
+            "title": "Elements selection method"
         },
         "files.file_type": {
             "title": "Available file types"
