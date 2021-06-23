@@ -17,6 +17,7 @@ import {
     filterForVisualizableFiles,
     filterForDefaultFiles,
     filterForDatasetFiles,
+    filterForReleasedAnalyses,
 } from '../objectutils';
 import { ResultTableList } from '../search';
 import { compileDatasetAnalyses, sortDatasetAnalyses } from './analysis';
@@ -990,6 +991,15 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
     const { fileFacets, selectedFiles } = React.useMemo(() => {
         let files = defaultOnly ? filterForDefaultFiles(selectedDatasetFiles) : selectedDatasetFiles;
         files = visualizableOnly ? filterForVisualizableFiles(files) : files;
+
+        // While "Show default data only" selected, futher restrict displayed files to those in
+        // released analyses.
+        if (defaultOnly) {
+            const analysisFilteredFiles = filterForReleasedAnalyses(files, analyses);
+            if (analysisFilteredFiles.length > 0) {
+                files = analysisFilteredFiles;
+            }
+        }
         return assembleFileFacets(selectedFileTerms, files, analyses, usedFileFacetFields);
     }, [selectedFileTerms, selectedDatasets, visualizableOnly, defaultOnly, selectedDatasetFiles, analyses, usedFileFacetFields]);
 

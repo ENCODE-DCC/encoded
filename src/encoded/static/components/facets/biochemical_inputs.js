@@ -165,7 +165,7 @@ const BiochemicalInputsFacet = ({ results, facet, queryString }, reactContext) =
                 {(facetObj && Object.keys(facetObj).length === (facetTerms.length + 1)) ?
                     <>
                         {facetTerms.map((term) => (
-                            <a href={facetObj[term].link} className={facetObj[term].selected ? 'selected' : ''}>
+                            <a key={term} href={facetObj[term].link} className={facetObj[term].selected ? 'selected' : ''}>
                                 {term}
                             </a>
                         ))}

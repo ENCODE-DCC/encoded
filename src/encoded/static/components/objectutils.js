@@ -949,6 +949,25 @@ export const filterForDatasetFiles = (fileList, datasets) => {
 
 
 /**
+ * Filter an array of files to ones included in the released analyses in `compiledAnalyses`. If
+ * none of the given compiled analyses have the "released" status, filter to the unreleased
+ * analyses files.
+ * @param {array} fileList Files to filter
+ * @param {array} compiledAnalyses Compiled analysis objects
+ * @returns {array} Filtered `fileList`
+ */
+export const filterForReleasedAnalyses = (fileList, compiledAnalyses) => {
+    if (fileList.length > 0 && compiledAnalyses.length > 0) {
+        const releasedAnalyses = compiledAnalyses.filter((analysis) => analysis.status === 'released');
+        const consideredAnalyses = releasedAnalyses.length > 0 ? releasedAnalyses : compiledAnalyses;
+        const consideredAnalysisFiles = consideredAnalyses.reduce((files, analysis) => files.concat(analysis.files), []);
+        return fileList.filter((file) => consideredAnalysisFiles.includes(file['@id']));
+    }
+    return [];
+};
+
+
+/**
  * Displays an item count intended for the tops of table, normally reflecting a search result count.
  */
 export const TableItemCount = ({ count }) => (
