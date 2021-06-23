@@ -60,8 +60,8 @@
                 }
             }
         },
-        "assay_term_name": {
-            "comment": "The assay(s) used to design the elements specified in the reference.",
+        "elements_selection_method": {
+            "comment": "The methods or criteria used to select the elements specified in the reference.",
             "required": ["reference_type"],
             "properties": {
                 "reference_type": {
