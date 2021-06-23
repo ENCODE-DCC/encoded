@@ -119,6 +119,15 @@ const filterAssembly = (analysesGroup) => {
 };
 
 /**
+ * Get the analyses' files from context
+ *
+ * #param {object} context
+ *
+ * The result can be either a list of file ids of a list of files, depending on the file object
+*/
+const getAnalysesFilesFromContext = (context) => [...new Set([].concat(...(context.analyses || []).map((analysis) => analysis.files)))];
+
+/**
  * Sort analyses by version
  *
  * @param {array} analysesGroup
@@ -144,6 +153,33 @@ const sortAnalysisByVersion = (analysesGroup) => {
 
     return sortedAnalysesAwarded;
 };
+
+/**
+ * True if context is series type
+ *
+ * @param context Context
+ */
+const isSeriesType = (context) => context['@type'].includes('Series');
+
+/**
+ *  Get series files if context type is series or returns undefined
+ *
+ * @param context Context
+ */
+const getSeriesFiles = (context) => {
+    const isSeries = isSeriesType(context);
+
+    if (!isSeries) {
+        return undefined;
+    }
+
+    // extract analysis files and remove duplicates
+    const analysesFilesIds = getAnalysesFilesFromContext(context);
+
+    // context.files has the embedded-information for the series analysis files
+    return (context.files || []).filter((file) => analysesFilesIds.includes(file['@id']));
+};
+
 
 /**
  * Compile the usable experiment analysis objects into a form for rendering a dropdown of pipeline
@@ -285,6 +321,7 @@ export class FileTable extends React.Component {
                 // Keeps track of which tables are collapsed
                 ref: false,
                 Other: !props.options.collapseNone,
+                series: true,
                 ...analysisObjects,
             },
         };
@@ -367,6 +404,9 @@ export class FileTable extends React.Component {
         const nonAnalysisObjectPrefix = 'Other';
 
         let datasetFiles = _((items && items.length > 0) ? items : []).uniq((file) => file['@id']);
+        const isSeries = isSeriesType(context);
+        const seriesAnalysesFilesIds = isSeries ? getAnalysesFilesFromContext(context) : [];
+
         if (datasetFiles.length > 0) {
             const unfilteredCount = datasetFiles.length;
 
@@ -400,6 +440,9 @@ export class FileTable extends React.Component {
 
             // Extract any of the four kinds of file arrays, or files belonging to an analysis.
             const files = _(datasetFiles).groupBy((file) => {
+                if (seriesAnalysesFilesIds.includes(file['@id'])) {
+                    return 'series';
+                }
                 if (file.output_category === 'raw data') {
                     if (file.output_type === 'reads') {
                         return 'raw';
@@ -418,6 +461,9 @@ export class FileTable extends React.Component {
 
                 return analysisObjectsAccession || nonAnalysisObjectPrefix;
             });
+
+            // Get unique analyses for series object
+            const analysesSeries = files.series ? [...new Set(files.series.map((a) => (a.analyses && a.analyses.length > 0 ? a.analyses[0] : '')).filter((a) => a !== ''))] : [];
 
             // showReplicateNumber matches with show-functionality. It has to
             // be NOT (!)-ed to match with hide-functionality
@@ -479,12 +525,25 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
-                        {[...analysisObjectKeys, ...otherKeys].map((key) => (
-                            <SortTable
+                        {[...analysisObjectKeys, ...analysesSeries, ...otherKeys].map((key) => {
+                            let titleSuffix = '';
+                            let tableData = [];
+
+                            // This is the special case for series
+                            if (analysesSeries.includes(key)) {
+                                const analysis = context.analyses.find((a) => a['@id'] === key) || {};
+                                titleSuffix = `${analysis.title} (${analysis.accession})`;
+                                tableData = (files.series || []).filter((t) => t.analyses[0] === key) || [];
+                            } else {
+                                titleSuffix = `${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)}`;
+                                tableData = files && files[key] ? files[key] : [];
+                            }
+
+                            return (<SortTable
                                 key={key}
                                 title={
                                     <CollapsingTitle
-                                        title={`${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)} processed data`}
+                                        title={`${titleSuffix} processed data`}
                                         collapsed={this.state.collapsed[key]}
                                         handleCollapse={() => this.handleCollapse(key)}
                                         fileQueryKey={fileQueryKey}
@@ -493,22 +552,22 @@ export class FileTable extends React.Component {
                                         analysisAudits={analysisAudits}
                                         analysisObjectKey={key}
                                         filters={filters}
-                                        totalFiles={files && files[key] ? files[key].length : 0}
+                                        totalFiles={tableData.length}
                                         isDownloadable={
                                             !options.hideDownload
                                             && key !== nonAnalysisObjectPrefix
                                             && context.analyses
                                             && analyses
-                                            && ['released', 'archived'].includes(analyses.find((a) => a.accession === key).status)
-                                            && filterDownloadableFilesByStatus(context, files[key]).length > 0
+                                            && ['released', 'archived'].includes((analyses.find((a) => a.accession === key) || {}).status)
+                                            && filterDownloadableFilesByStatus(context, tableData).length > 0
                                         }
                                         inclusionOn={options.inclusionOn}
-                                        files={files[key]}
+                                        files={tableData}
                                     />
                                 }
                                 rowClasses={this.rowClasses}
                                 collapsed={this.state.collapsed[key]}
-                                list={files[key]}
+                                list={tableData}
                                 columns={FileTable.procTableColumns}
                                 sortColumn="default"
                                 meta={{
@@ -522,7 +581,8 @@ export class FileTable extends React.Component {
                                     isAuthorized,
                                     adminUser,
                                 }}
-                            />))}
+                            />);
+                        })}
                         <SortTable
                             title={
                                 <CollapsingTitle
@@ -1937,7 +1997,7 @@ const fileCssClassGen = (file, active, highlight, colorizeNode, addClasses) => {
 
 
 // Assembly a graph of files, the QC objects that belong to them, and the steps that connect them.
-export function assembleGraph(files, highlightedFiles, dataset, options, loggedIn = false) {
+export function assembleGraph(files, highlightedFiles, dataset, options, loggedIn = false, nonSeriesFiles = [], isSeries = false) {
     // Calculate a step ID from a file's derived_from array.
     function rDerivedFileIds(file) {
         if (file.derived_from && file.derived_from.length > 0) {
@@ -2237,10 +2297,12 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         if (!file) {
             if (allMissingFiles.indexOf(fileId) === -1) {
                 const fileNodeId = `file:${fileId}`;
-                const fileNodeLabel = `${globals.atIdToAccession(fileId)}`;
+                const outputTypeFile = (nonSeriesFiles || []).find((f) => f['@id'] === fileId);
+                const outputTypeLabel = isSeries && outputTypeFile ? `(${outputTypeFile.output_type})` : '';
+                const fileNodeLabel = `${globals.atIdToAccession(fileId)} ${outputTypeLabel}`;
                 const fileCssClass = `pipeline-node-file contributing${infoNode && infoNode.id === fileNodeId ? ' active' : ''} ${highlightToggle ? ' highlight' : ''}`;
 
-                jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+                jsonGraph.addNode(fileNodeId, `${fileNodeLabel}`, {
                     cssClass: fileCssClass,
                     type: 'File',
                     shape: 'rect',
@@ -2433,10 +2495,11 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
 
 
 const FileGraph = (props) => {
-    const { files, highlightedFiles, dataset, infoNode, selectedAssembly, selectedAnnotation, colorize, handleNodeClick, schemas, loggedIn } = props;
+    const { files, highlightedFiles, dataset, infoNode, selectedAssembly, selectedAnnotation, colorize, handleNodeClick, schemas, loggedIn, nonSeriesFiles } = props;
 
     // Build node graph of the files and analysis steps with this experiment
     let graph;
+    const isSeries = isSeriesType(dataset);
     if (files.length > 0) {
         try {
             graph = assembleGraph(
@@ -2449,7 +2512,9 @@ const FileGraph = (props) => {
                     selectedAnnotation,
                     colorize,
                 },
-                loggedIn
+                loggedIn,
+                nonSeriesFiles,
+                isSeries
             );
         } catch (e) {
             console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
@@ -2481,6 +2546,7 @@ FileGraph.propTypes = {
     handleNodeClick: PropTypes.func.isRequired, // Parent function to call when a graph node is clicked
     colorize: PropTypes.bool, // True to enable node colorization based on status
     loggedIn: PropTypes.bool, // True if current user has logged in
+    nonSeriesFiles: PropTypes.array, // Files that are not part of series collection
 };
 
 FileGraph.defaultProps = {
@@ -2490,6 +2556,7 @@ FileGraph.defaultProps = {
     schemas: null,
     colorize: false,
     loggedIn: false,
+    nonSeriesFiles: [],
 };
 
 
@@ -2882,9 +2949,11 @@ class FileGalleryRendererComponent extends React.Component {
 
         const loggedIn = !!(context.session && context.session['auth.userid']);
         const adminUser = loggedIn && !!(context.session_properties && context.session_properties.admin);
-        const datasetFiles = props.data;
 
         this.experimentType = props.context['@type'][0];
+
+        const seriesFiles = getSeriesFiles(props.context) || [];
+        const datasetFiles = [...props.data, ...seriesFiles];
 
         // Initialize React state variables.
         this.state = {
@@ -3278,7 +3347,8 @@ class FileGalleryRendererComponent extends React.Component {
         const { currentTab } = this.state;
         const loggedIn = !!(session && session['auth.userid']);
         const relatedFileAtIds = context.related_files && context.related_files.length > 0 ? context.related_files : [];
-        const datasetFiles = data;
+        const seriesFiles = getSeriesFiles(context) || [];
+        const datasetFiles = [...data, ...seriesFiles];
 
         // The number of related_files has changed (or we have related_files for the first time).
         // Request them and add them to the files from the original file request.
@@ -3486,7 +3556,16 @@ class FileGalleryRendererComponent extends React.Component {
         if (Object.keys(this.state.fileFilters).length > 1) {
             highlightedFiles = this.filterForInclusion(this.state.files);
         }
-        let graphIncludedFiles = this.filterForInclusion(this.state.graphFiles);
+        const isSeries = isSeriesType(context);
+        const seriesFiles = getSeriesFiles(context) || [];
+
+        // series object get file-data different from other objects
+        let graphIncludedFiles = this.filterForInclusion(isSeries ? seriesFiles : this.state.graphFiles);
+
+        // This is only relevant if the Association Graph is going to draw a series object when Association Graph enabled.
+        // It needs non-series files
+        const nonSeriesFiles = isSeries ? this.filterForInclusion(this.state.graphFiles) : [];
+
         const includedFiles = this.filterForInclusion(this.state.files);
         const facetFiles = this.filterForInclusion(this.state.allFiles);
 
@@ -3659,6 +3738,7 @@ class FileGalleryRendererComponent extends React.Component {
                                         loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
                                         auditIndicators={this.props.auditIndicators}
                                         auditDetail={this.props.auditDetail}
+                                        nonSeriesFiles={nonSeriesFiles}
                                     />
                                 </TabPanelPane>
                             )
