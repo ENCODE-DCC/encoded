@@ -733,6 +733,28 @@
                     }
                 }
             }
+        },
+        "MOI": {
+            "comment": "Multiplicity of infection only applies to a viral nucleic_acid_delivery_method, transduction.",
+            "properties": {
+                "nucleic_acid_delivery_method": {
+                    "items": {
+                        "enum": [
+                            "transduction"
+                        ]
+                    }
+
+                }
+            }
+        },
+        "guide_type": {
+            "comment": "Design of the guide types should be described in a GeneticModification that describes delivery of the guides to the sample.",
+            "required": ["introduced_elements"],
+            "properties": {
+                "introduced_elements": {
+                    "enum": ["gRNAs and CRISPR machinery"]
+                }
+            }
         }
     },
     "properties": {
@@ -892,6 +914,15 @@
                 "random"
             ]
         },
+        "guide_type": {
+            "title": "CRISPR guide strategy",
+            "description": "The single or paired guide strategy used in CRISPR modification.",
+            "type": "string",
+            "enum": [
+                "sgRNA",
+                "pgRNA"
+            ]
+        },
         "introduced_tags": {
             "title": "Introduced protein tags",
             "description": "Protein tags introduced in the modification.",
@@ -984,6 +1015,15 @@
                 "site-specific recombination",
                 "TALEN",
                 "homologous recombination"
+            ]
+        },
+        "MOI": {
+            "title": "Multiplicity of infection",
+            "description": "The ratio or frequency of viral particles introduced to cells.",
+            "type": "string",
+            "enum":[
+                "high",
+                "low"
             ]
         },
         "nucleic_acid_delivery_method": {

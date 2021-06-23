@@ -7,6 +7,7 @@
   * GenBank: '^genbank:[A-Z]{1,2}\\d{5,6}\\.\\d{1}$', e.g., genbank:MK484105.1
 * *mAID* was added to the *introduced_tags* enum.
 * Added *promoter_details* to the *reagents* property.
+* Added *MOI* (multiplicity of infection) and *guide_type* properties.
 
 ### Schema version 10
 

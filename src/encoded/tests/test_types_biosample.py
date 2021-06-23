@@ -179,7 +179,9 @@ def test_biosample_summary_construct_3(
     human,
     human_donor_1,
     biosample_1,
-    liver
+    liver,
+    guides_transduction_GM,
+    activation_genetic_modification
 ):
     testapp.patch_json(human_donor_1['@id'], {
         'age': '1',
@@ -195,6 +197,21 @@ def test_biosample_summary_construct_3(
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
         'Homo sapiens female child (1 month) liver tissue')
+    testapp.patch_json(biosample_1['@id'], {
+        'genetic_modifications': [guides_transduction_GM['@id']]})
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['summary'] == (
+        'Homo sapiens female child (1 month) liver tissue genetically modified (insertion) using '
+        'transduction (high MOI)')
+    testapp.patch_json(guides_transduction_GM['@id'], {
+        'guide_type': 'sgRNA'})
+    testapp.patch_json(biosample_1['@id'], {
+        'genetic_modifications': [guides_transduction_GM['@id'],
+                                  activation_genetic_modification['@id']]})
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['summary'] == (
+        'Homo sapiens female child (1 month) liver tissue genetically modified (activation) using '
+        'CRISPR (sgRNA), genetically modified (insertion) using transduction (high MOI)')
 
 
 def test_simple_summary(testapp,

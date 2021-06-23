@@ -43,6 +43,11 @@ def biosample_summary_information(request, biosampleObject):
     genetic_modifications = biosampleObject.get('applied_modifications')
     if genetic_modifications:
         modifications_list = []
+        guides = ''
+        for gm in genetic_modifications:
+            gm_object = request.embed(gm, '@@object')
+            if 'guide_type' in gm_object:
+                guides = gm_object['guide_type']
         for gm in genetic_modifications:
             gm_object = request.embed(gm, '@@object')
             modification_dict = {'category': gm_object.get('category')}
@@ -56,9 +61,18 @@ def biosample_summary_information(request, biosampleObject):
                         tag_dict['promoter'] = request.embed(tag.get('promoter_used'), '@@object').get['label']
                     modification_dict['tags'].append(tag_dict)
             if 'method' in gm_object:
-                modifications_list.append((gm_object['method'], modification_dict))
+                if (gm_object['method'] == 'CRISPR' and guides != ''):
+                    entry = f'CRISPR ({guides})'
+                    modifications_list.append((entry, modification_dict))
+                else:
+                    modifications_list.append((gm_object['method'], modification_dict))
             elif 'nucleic_acid_delivery_method' in gm_object:
-                    for item in gm_object['nucleic_acid_delivery_method']:
+                for item in gm_object['nucleic_acid_delivery_method']:
+                    if (item == 'transduction' and 'MOI' in gm_object):
+                        moi = gm_object['MOI']
+                        entry = f'transduction ({moi} MOI)'
+                        modifications_list.append((entry, modification_dict))
+                    else:
                         modifications_list.append((item, modification_dict))
 
     preservation_method = None

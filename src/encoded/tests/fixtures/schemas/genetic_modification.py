@@ -663,3 +663,17 @@ def transgene_insertion(testapp, lab, award, ctcf):
         'introduced_sequence': 'ATCGTA'
     }
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def guides_transduction_GM(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'expression',
+        'nucleic_acid_delivery_method': ['transduction'],
+        'introduced_elements': 'gRNAs and CRISPR machinery',
+        'MOI': 'high'
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]

@@ -318,6 +318,8 @@
             "identifier": "genbank:AB000001.1"
             }
         ],
+        "guide_type": "sgRNA",
+        "MOI": "low",
         "status": "released",
         "submitted_by": "/users/dignissim.euismod@amet.habitant/"
     },

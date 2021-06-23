@@ -330,6 +330,9 @@
         "perturbation_type": {
             "title": "Perturbation type"
         },
+        "replicates.library.biosample.applied_modifications.guide_type": {
+            "title": "Guide type"
+        },
         "crispr_screen_readout": {
             "title": "CRISPR screen readout"
         },

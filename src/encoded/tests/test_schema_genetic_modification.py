@@ -287,3 +287,24 @@ def test_CRISPR_introduction_step_one(testapp, CRISPR_introduction):
     testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
     CRISPR_introduction.update({'introduced_elements': 'gRNAs and CRISPR machinery'})
     testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
+
+
+def test_CRISPR_guide_type(testapp, CRISPR_introduction):
+    CRISPR_introduction.update({
+        'introduced_elements': 'gRNAs and CRISPR machinery',
+        'guide_type': 'sgRNA'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
+    CRISPR_introduction.update({
+        'introduced_elements': 'genomic DNA regions'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
+    CRISPR_introduction.pop('introduced_elements')
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
+
+
+def test_transduction_MOI(testapp, CRISPR_introduction):
+    CRISPR_introduction.update({
+        'introduced_elements': 'gRNAs and CRISPR machinery',
+        'MOI': 'high'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
+    CRISPR_introduction.update({'nucleic_acid_delivery_method': ['transduction']})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
