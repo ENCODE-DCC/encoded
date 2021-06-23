@@ -1272,7 +1272,23 @@ class FunctionalCharacterizationSeries(Series):
     embedded = Series.embedded + [
         'related_datasets.examined_loci',
         'related_datasets.examined_loci.gene',
+        'related_datasets.elements_references',
+        'related_datasets.elements_references.examined_loci',
+        'elements_references',
+        'elements_references.examined_loci',
     ]
+
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Elements references",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": ["Annotation", "Reference"]
+        }
+    })
+    def elements_references(self, request, related_datasets):
+        return request.select_distinct_values('elements_references', *related_datasets)
+
 
 @collection(
     name='gene-silencing-series',
