@@ -127,6 +127,17 @@ def mouse_biosample(biosample_data, mouse):
     })
     return item
 
+
+@pytest.fixture
+def mouse_whole_organism_biosample(testapp, mouse_biosample, whole_organism, transgene_insertion):
+    item = mouse_biosample.copy()
+    item.update({
+        'biosample_ontology': whole_organism['uuid'],
+        'genetic_modifications': [transgene_insertion['@id']]
+    })
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
 @pytest.fixture
 def biosample_0(submitter, lab, award, source, organism):
     return {

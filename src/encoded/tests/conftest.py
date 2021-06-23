@@ -109,6 +109,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.source',
     'encoded.tests.fixtures.schemas.star_quality_metric',
     'encoded.tests.fixtures.schemas.target',
+    'encoded.tests.fixtures.schemas.transgenic_enhancer_experiment',
     'encoded.tests.fixtures.schemas.treatment_time_series',
     'encoded.tests.fixtures.schemas.treatment_concentration_series',
     'encoded.tests.fixtures.schemas.treatment',
