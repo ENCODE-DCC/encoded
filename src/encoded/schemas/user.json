@@ -77,23 +77,20 @@
         },
         "job_title": {
             "title": "Job title",
-            "description": "The general roles of the user.",
-            "type": "array",
-            "items": {
-                "type": "string",
-                "enum": [
-                    "principal investigator",
-                    "co investigator",
-                    "experimental scientist",
-                    "computational scientist",
-                    "clinician",
-                    "pathologist",
-                    "technician",
-                    "data wrangler",
-                    "software developer",
-                    "other"
-                ]
-            }
+            "description": "The general role of the user.",
+            "type": "string",
+            "enum": [
+                "principal investigator",
+                "co investigator",
+                "experimental scientist",
+                "computational scientist",
+                "clinician",
+                "pathologist",
+                "technician",
+                "data wrangler",
+                "software developer",
+                "other"
+            ]
         }
     },
     "facets": {

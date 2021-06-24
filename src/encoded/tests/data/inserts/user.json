@@ -3,7 +3,7 @@
         "email": "abbeclarke@broadinstitute.org",
         "first_name": "Abbe",
         "last_name": "Clark",
-        "job_title": ["computational scientist"],
+        "job_title": "computational scientist",
         "lab": "Anna Greka, Broad",
         "submits_for": [
             "anna-greka"
@@ -19,7 +19,7 @@
         "email": "agreka@bwh.harvard.ude",
         "first_name": "Anna",
         "last_name": "Greka",
-        "job_title": ["principal investigator"],
+        "job_title": "principal investigator",
         "lab": "Anna Greka, Broad",
         "submits_for": [
             "anna-greka"
@@ -34,7 +34,7 @@
     {
         "email": "jpa29@stanford.edu",
         "first_name": "Joanna",
-        "job_title": ["data wrangler"],
+        "job_title": "data wrangler",
         "lab": "j-michael-cherry",
         "last_name": "Argasinska",
         "groups": [
@@ -46,7 +46,7 @@
     {
         "email": "jimmie.ye@ucsf.ude",
         "first_name": "Jimmie",
-        "job_title": ["principal investigator"],
+        "job_title": "principal investigator",
         "lab": "Jimmie Ye, UCSF",
         "last_name": "Ye",
         "submits_for": [
@@ -62,7 +62,7 @@
         "email": "r.gate@ucsf.ude",
         "first_name": "Rachel",
         "last_name": "Gate",
-        "job_title": ["principal investigator"],
+        "job_title": "principal investigator",
         "lab": "Jimmie Ye, UCSF",
         "submits_for": [
             "jimmie-ye"
@@ -77,7 +77,7 @@
         "email": "pas2182@columbia.ude",
         "first_name": "Peter",
         "last_name": "Sims",
-        "job_title": ["principal investigator"],
+        "job_title": "principal investigator",
         "lab": "Peter Sims, Columbia",
         "submits_for": [
             "peter-sims"
@@ -92,7 +92,7 @@
         "email": "cd3403@columbia.ude",
         "first_name": "David",
         "last_name": "Chen",
-        "job_title": ["principal investigator"],
+        "job_title": "principal investigator",
         "lab": "Peter Sims, Columbia",
         "submits_for": [
             "peter-sims"
@@ -113,7 +113,7 @@
             "admin",
             "verified"
         ],
-        "job_title": ["data wrangler"],
+        "job_title": "data wrangler",
         "lab": "/labs/j-michael-cherry/",
         "last_name": "Hilton",
         "schema_version": "8",
@@ -134,7 +134,7 @@
             "admin",
             "verified"
         ],
-        "job_title": ["data wrangler"],
+        "job_title": "data wrangler",
         "lab": "/labs/j-michael-cherry/",
         "last_name": "Chien",
         "schema_version": "8",
@@ -155,7 +155,7 @@
             "admin",
             "verified"
         ],
-        "job_title": ["software developer"],
+        "job_title": "software developer",
         "lab": "/labs/j-michael-cherry/",
         "last_name": "H",
         "schema_version": "8",
@@ -176,7 +176,7 @@
             "admin",
             "verified"
         ],
-        "job_title": ["data wrangler"],
+        "job_title": "data wrangler",
         "lab": "/labs/j-michael-cherry/",
         "last_name": "Zamanian",
         "schema_version": "8",
@@ -192,7 +192,7 @@
     {
         "email": "massa.porta@varius.mauris",
         "first_name": "J. Michael",
-        "job_title": ["principal investigator"],
+        "job_title": "principal investigator",
         "lab": "/labs/j-michael-cherry/",
         "last_name": "Cherry",
         "groups": [
@@ -206,7 +206,7 @@
     {
         "email": "metus.donec@nisl.montes",
         "first_name": "Gregory",
-        "job_title": ["data wrangler"],
+        "job_title": "data wrangler",
         "lab": "/labs/peter-sims/",
         "last_name": "Crawford",
         "submits_for": [
