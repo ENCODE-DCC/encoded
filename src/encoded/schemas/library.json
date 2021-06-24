@@ -222,6 +222,10 @@
         "protocol.title": {
             "title": "Library protocol"
         },
+        "read_count": {
+            "type": "exists",
+            "title": "Has sequence reads"
+        },
         "donors.organism.scientific_name": {
             "title": "Donor organism"
         },
@@ -284,6 +288,9 @@
         },
         "protocol.title": {
             "title": "Library protocol"
+        },
+        "read_count": {
+            "title": "Read count"
         },
         "donors.organism.scientific_name": {
             "title": "Donor organism"
