@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 29
 * Added *polyA sites* to the enum list for *output_type*.
+* Added properties *filter_type* and *filter_value*
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.
