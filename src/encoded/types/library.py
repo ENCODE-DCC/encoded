@@ -31,7 +31,8 @@ class Library(Item,
     schema = load_schema('encoded:schemas/library.json')
     name_key = 'accession'
     rev = {
-        'sequencing_runs': ('SequencingRun','derived_from')
+        'sequencing_runs': ('SequencingRun','derived_from'),
+        'matrix_files': ('RawMatrixFile', 'libraries')
     }
     embedded = [
         'award',
@@ -46,6 +47,21 @@ class Library(Item,
         'biosample_ontologies',
         'derived_from'
     ]
+
+
+    @calculated_property(schema={
+        "title": "Matrix files",
+        "description": "The matrix files that derive from this library.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "RawMatrixFile.libraries",
+        },
+        "notSubmittable": True,
+    })
+    def matrix_files(self, request, matrix_files):
+        return paths_filtered_by_status(request, matrix_files)
 
 
     @calculated_property(schema={
