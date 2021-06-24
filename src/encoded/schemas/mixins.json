@@ -381,7 +381,6 @@
             "type": "string",
             "uniqueItems": true,
             "linkTo": [
-                "MatrixFile",
                 "RawMatrixFile",
                 "ProcessedMatrixFile"
             ]

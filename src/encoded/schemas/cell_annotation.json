@@ -65,7 +65,7 @@
             "uniqueItems": true,
             "items": {
                 "type": "string",
-                "linkTo": "MatrixFile"
+                "linkTo": "ProcessedMatrixFile"
             }
         }
     },

@@ -93,7 +93,6 @@
                 "type": "string",
                 "linkTo": [
                     "RawSequenceFile",
-                    "MatrixFile",
                     "RawMatrixFile",
                     "Library"
                 ]
@@ -387,7 +386,7 @@
                         "title": "Raw matrix",
                         "description": "The accession of the raw matrix that is connected with the subset of cells in this matrix file associated to the corresponding mapping_string.",
                         "type": "string",
-                        "linkTo": "MatrixFile"
+                        "linkTo": "RawMatrixFile"
                     }
                 }
             }
