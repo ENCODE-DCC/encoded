@@ -2327,6 +2327,59 @@ def test_audit_experiment_tagging_biosample_characterization_parent(
     )
 
 
+@pytest.mark.parametrize(
+    'relationship',
+    [
+        'part_of',
+        'originated_from'
+    ])
+def test_biosample_characterization_parent_relationship(
+        testapp,
+        relationship,
+        construct_genetic_modification,
+        interference_genetic_modification,
+        biosample_characterization,
+        base_experiment,
+        base_target,
+        replicate_1_1,
+        replicate_2_1,
+        library_1,
+        library_2,
+        biosample_1,
+        biosample_2,
+        base_biosample,
+        donor_1,
+        k562,
+        award_encode4,
+        wrangler,
+        treatment_5
+):
+
+    testapp.patch_json(biosample_1['@id'],
+                       {'genetic_modifications': [interference_genetic_modification['@id']],
+                        'biosample_ontology': k562['uuid'],
+                        'donor': donor_1['@id'],
+                        'relationship': base_biosample['@id']})
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [interference_genetic_modification['@id']],
+                        'biosample_ontology': k562['uuid'],
+                        'donor': donor_1['@id'],
+                        'relationship': base_biosample['@id']})
+    testapp.patch_json(base_biosample['@id'],
+                       {'genetic_modifications': [interference_genetic_modification['@id']]})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'],
+                       {'assay_term_name': 'ChIP-seq',
+                        'award': award_encode4['@id'],
+                        'target': base_target['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing biosample characterization'
+               for error in collect_audit_errors(res, ['WARNING']))
+
+
 def test_audit_experiment_missing_unfiltered_bams(testapp,
                                                   base_experiment,
                                                   replicate_1_1,
