@@ -81,6 +81,8 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'dataset' },
         { field: 'biological_replicates' },
         { field: 'analyses', dataset: true },
+        { field: 'target', dataset: true },
+        { field: 'targets', dataset: true },
         { field: 'preferred_default' },
         { field: 'annotation_subtype', dataset: true },
         { field: 'biochemical_inputs', dataset: true },
@@ -407,6 +409,7 @@ const CartTools = ({
     elements,
     selectedFileTerms,
     selectedDatasetTerms,
+    selectedDatasetType,
     facetFields,
     savedCartObj,
     cartType,
@@ -426,6 +429,7 @@ const CartTools = ({
                     cartType={cartType}
                     selectedFileTerms={selectedFileTerms}
                     selectedDatasetTerms={selectedDatasetTerms}
+                    selectedDatasetType={selectedDatasetType}
                     facetFields={facetFields}
                     savedCartObj={savedCartObj}
                     sharedCart={sharedCart}
@@ -449,6 +453,8 @@ CartTools.propTypes = {
     selectedFileTerms: PropTypes.object,
     /** Selected dataset facet terms */
     selectedDatasetTerms: PropTypes.object,
+    /** Currently selected dataset type */
+    selectedDatasetType: PropTypes.string.isRequired,
     /** Currently used facet field definitions */
     facetFields: PropTypes.array.isRequired,
     /** Cart as it exists in the database; use JSON payload method if none */
@@ -730,6 +736,25 @@ const processFilesAnalyses = (files, analyses) => {
 
 
 /**
+ * After retrieving the dataset objects, they get passed to this function to extract the Annotation
+ * `targets` property or other datasets' `target` property, and then mutate each dataset to contain
+ * the calculated `targetList` array property so it can generate a facet.
+ * @param {array} datasets Datasets to process for `targetList` property; each dataset mutated
+ */
+const processDatasetTargetList = (datasets) => {
+    datasets.forEach((dataset) => {
+        let targetList = [];
+        if (dataset['@type'][0] === 'Annotation' && dataset.targets.length > 0) {
+            targetList = dataset.targets.map((target) => target.label);
+        } else if (dataset.target) {
+            targetList = [dataset.target.label];
+        }
+        dataset.targetList = targetList;
+    });
+};
+
+
+/**
  * Use the following order when sorting files by status for evaluating pseudo-default files.
  */
 const pseudoDefaultFileStatusOrder = ['released', 'archived', 'in progress'];
@@ -882,8 +907,9 @@ const retrieveDatasetsFiles = (datasetsIds, facetProgressHandler, fetch, session
     ), Promise.resolve({ datasetFiles: [], datasets: [], datasetAnalyses: [] })).then(({ datasetFiles, datasets, datasetAnalyses }) => {
         facetProgressHandler(-1);
 
-        // Mutate the files to refer to their relevant analyses.
+        // Mutate the files or datasets for their calculated properties.
         processFilesAnalyses(datasetFiles, datasetAnalyses);
+        processDatasetTargetList(datasets);
         return { datasetFiles, datasets, datasetAnalyses: sortDatasetAnalyses(datasetAnalyses) };
     });
 };
@@ -1215,6 +1241,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                         <CartTools
                             elements={cartDatasets}
                             analyses={analyses}
+                            selectedDatasetType={selectedDatasetType}
                             savedCartObj={savedCartObj}
                             selectedFileTerms={selectedFileTerms}
                             selectedDatasetTerms={selectedDatasetTerms}

@@ -17,11 +17,12 @@ const ELEMENT_WARNING_LENGTH_MIN = 500;
  * selections object.
  * @param {object} datasetTerms Selected dataset terms
  * @param {object} fileTerms Selected file terms
+ * @param {string} datasetType Dataset type whose files are being downloaded
  * @param {boolean} visualizable True if only downloading visualizable files
  * @param {array} facetFields Facet field configurations for dataset and file facets
  * @returns {object} QueryString containing dataset and file selections
  */
-const buildQueryFromTerms = (datasetTerms, fileTerms, visualizable, facetFields) => {
+const buildQueryFromTerms = (datasetTerms, fileTerms, datasetType, visualizable, facetFields) => {
     const query = new QueryString();
 
     // Add the selected dataset terms to the query.
@@ -31,7 +32,7 @@ const buildQueryFromTerms = (datasetTerms, fileTerms, visualizable, facetFields)
             const matchingFacetField = facetFields.find((facetField) => facetField.field === term);
             if (matchingFacetField && matchingFacetField.fieldMapper) {
                 // Transform terms to a query for those terms that require that.
-                mappedTerm = matchingFacetField.fieldMapper();
+                mappedTerm = matchingFacetField.fieldMapper(datasetType);
             }
             datasetTerms[term].forEach((value) => {
                 query.addKeyValue(mappedTerm, value);
@@ -46,7 +47,7 @@ const buildQueryFromTerms = (datasetTerms, fileTerms, visualizable, facetFields)
             const matchingFacetField = facetFields.find((facetField) => facetField.field === term);
             if (matchingFacetField && matchingFacetField.fieldMapper) {
                 // Transform terms to a query for those terms that require that.
-                mappedTerm = matchingFacetField.fieldMapper();
+                mappedTerm = matchingFacetField.fieldMapper(datasetType);
             }
             fileTerms[term].forEach((value) => {
                 query.addKeyValue(`files.${mappedTerm}`, value);
@@ -96,6 +97,7 @@ const CartBatchDownloadComponent = (
         cartType,
         selectedFileTerms,
         selectedDatasetTerms,
+        selectedDatasetType,
         facetFields,
         savedCartObj,
         sharedCart,
@@ -103,16 +105,13 @@ const CartBatchDownloadComponent = (
         visualizable,
     }
 ) => {
-    const selectedDatasetType = selectedDatasetTerms.type && selectedDatasetTerms.type.length === 1
-        ? selectedDatasetTerms.type[0]
-        : '';
     const disabled = !selectedDatasetType || cartInProgress;
     const actuatorTitle = selectedDatasetType ? 'Download' : 'Select single dataset type to download';
 
     // Build the cart batch-download controller from the user selections.
     const cart = cartType === 'ACTIVE' ? savedCartObj : sharedCart;
     const selectedAssembly = selectedFileTerms.assembly[0];
-    const cartQuery = buildQueryFromTerms(selectedDatasetTerms, selectedFileTerms, visualizable, facetFields);
+    const cartQuery = buildQueryFromTerms(selectedDatasetTerms, selectedFileTerms, selectedDatasetType, visualizable, facetFields);
     const cartController = new CartBatchDownloadController(cart['@id'], selectedDatasetType, selectedAssembly, cartQuery);
 
     // Display a warning message in the modal if we have more than a threshold number of datasets
@@ -147,6 +146,8 @@ CartBatchDownloadComponent.propTypes = {
     cartType: PropTypes.string.isRequired,
     /** Selected file facet terms */
     selectedFileTerms: PropTypes.object,
+    /** Currently selected dataset type */
+    selectedDatasetType: PropTypes.string.isRequired,
     /** Used facet field definitions */
     facetFields: PropTypes.array.isRequired,
     /** Selected dataset facet terms */
