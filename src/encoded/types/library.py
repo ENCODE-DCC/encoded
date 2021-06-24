@@ -5,6 +5,7 @@ from snovault import (
 )
 from .base import (
     Item,
+    paths_filtered_by_status,
 )
 from .shared_calculated_properties import (
     CalculatedAward,
@@ -29,7 +30,9 @@ class Library(Item,
     item_type = 'library'
     schema = load_schema('encoded:schemas/library.json')
     name_key = 'accession'
-    rev = {}
+    rev = {
+        'sequencing_runs': ('SequencingRun','derived_from')
+    }
     embedded = [
         'award',
         'award.coordinating_pi',
@@ -43,6 +46,37 @@ class Library(Item,
         'biosample_ontologies',
         'derived_from'
     ]
+
+
+    @calculated_property(schema={
+        "title": "Sequencing runs",
+        "description": "The sequencing runs that derive from this library.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "SequencingRun.derived_from",
+        },
+        "notSubmittable": True,
+    })
+    def sequencing_runs(self, request, sequencing_runs):
+        return paths_filtered_by_status(request, sequencing_runs)
+
+
+    @calculated_property(schema={
+        "title": "Read count",
+        "description": "The number of reads sequenced from this library.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "integer",
+        "notSubmittable": True,
+    })
+    def read_count(self, request, sequencing_runs):
+        count = 0
+        for sr in sequencing_runs:
+            props = request.embed(sr, '@@object')
+            count += props.get('read_count',0)
+        if count > 0:
+            return count
 
 
     @calculated_property(condition='protocol', schema={
