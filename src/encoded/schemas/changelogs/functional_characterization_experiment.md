@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 8
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *fluorescence activated cell sorting* and *CRISPRi-FlowFISH* enum to *expression_measurement_method* property of *examined_loci*.
 
 ### Schema version 8
 * The *HCR-FlowFish* enum in *expression_measurement_method* has been adjusted to *HCR-FlowFISH*

@@ -275,7 +275,9 @@
                         "type": "string",
                         "enum": [
                             "antibody Sort-seq",
+                            "CRISPRi-FlowFISH",
                             "endogenous protein Sort-seq",
+                            "fluorescence activated cell sorting",
                             "HCR-FlowFISH",
                             "magnetic separation Sort-seq",
                             "PrimeFlow",
@@ -318,6 +320,9 @@
             "title": "Examined loci",
             "type": "typeahead",
             "open_on_load": true
+        },
+        "examined_loci.expression_measurement_method": {
+            "title": "Expression measurement method"
         },
         "perturbation_type": {
             "title": "Perturbation type"
