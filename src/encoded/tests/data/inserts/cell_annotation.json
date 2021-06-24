@@ -12,7 +12,7 @@
             "ENSG00000213553"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "proximal_tubule",
         "aliases": [
@@ -29,7 +29,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "proximal_tubule_VCAM1+",
         "cell_state": "proliferating"
@@ -44,7 +44,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "parietal_epithelial_cells"
     },
@@ -58,7 +58,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "thick_ascending_limb_of_loop_of_Henle"
     },
@@ -75,7 +75,7 @@
             "ENSG00000213553"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "distal_convoluted_tubule_1"
     },
@@ -89,7 +89,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "distal_convoluted_tubule_2"
     },
@@ -103,7 +103,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "connecting_tubule"
     },
@@ -117,7 +117,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "principle_cells"
     },
@@ -131,7 +131,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "type_A_intercalated_cells"
     },
@@ -145,7 +145,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "type_B_intercalated_cells"
     },
@@ -159,7 +159,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "podocyte"
     },
@@ -173,7 +173,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "endothelial_cells"
     },
@@ -187,7 +187,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "mesangial_cells"
     },
@@ -201,7 +201,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "fibroblasts"
     },
@@ -215,7 +215,7 @@
             "ENSG00000272031"
         ],
         "matrix_files": [
-            "LATDF119AAA"
+            "peter-sims:prenatal_merged_matrix"
         ],
         "notes": "leukocytes"
     }
