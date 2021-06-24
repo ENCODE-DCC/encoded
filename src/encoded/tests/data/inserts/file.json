@@ -4451,7 +4451,9 @@
         "file_size": 38941,
         "assembly": "GRCh38",
         "md5sum": "b6c3f84b88598514b2fa6d299d8650a1",
-        "replicate": "df1f66d6-70ef-11e9-a923-1681be663d3e"
+        "replicate": "df1f66d6-70ef-11e9-a923-1681be663d3e",
+        "filter_type": "bin_size",
+        "filter_value": 0.5
     },
     {
         "_test": "CRISPR element quantifications bed",
