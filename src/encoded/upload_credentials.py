@@ -20,6 +20,7 @@ EXTERNAL_BUCKET_STATEMENTS = [
         'Effect': 'Allow',
     },
 ]
+_FEDERATION_TOKEN_DURATION_SECONDS = 36 * 60 * 60
 
 
 def _compile_statements_from_list(buckets_list):
@@ -122,7 +123,8 @@ class UploadCredentials(object):
         try:
             token = conn.get_federation_token(
                 Name=self._name,
-                Policy=json.dumps(policy)
+                Policy=json.dumps(policy),
+                DurationSeconds=_FEDERATION_TOKEN_DURATION_SECONDS,
             )
             return token
         except botocore.exceptions.ClientError as ecp:
