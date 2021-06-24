@@ -2,13 +2,13 @@ import pytest
 
 
 @pytest.fixture
-def matrix_file_base(testapp, dataset_base, raw_sequence_file_base):
+def processed_matrix_file_base(testapp, dataset_base, raw_matrix_file_base):
     item = {
         'dataset': dataset_base['@id'],
         'file_format': 'hdf5',
-        'derivation_process': ['quantification'],
+        'derivation_process': ['doublet removal','batch correction','depth normalization'],
         'output_types': ['gene quantifications'],
-        'derived_from': [raw_sequence_file_base['uuid']],
+        'derived_from': [raw_matrix_file_base['uuid']],
         'layers': [
             {
                 'normalized': False,
@@ -18,4 +18,4 @@ def matrix_file_base(testapp, dataset_base, raw_sequence_file_base):
             }
         ]
     }
-    return testapp.post_json('/matrix_file', item).json['@graph'][0]
+    return testapp.post_json('/processed_matrix_file', item).json['@graph'][0]

@@ -38,7 +38,6 @@ ORDER = [
     'sequencing_run',
     'raw_sequence_file',
     'sequence_alignment_file',
-    'matrix_file',
     'raw_matrix_file',
     'processed_matrix_file',
     'rna_metrics',

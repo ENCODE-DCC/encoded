@@ -1,15 +1,15 @@
 [
     {
         "derived_from": [
-            "LATDF200ABA",
-            "LATDF201ABA",
-            "LATDF202ABA",
-            "LATDF203ABA",
-            "LATDF204ABA",
-            "LATDF205ABA",
-            "LATDF206ABA",
-            "LATDF207ABA",
-            "LATDF208ABA"
+            "jimmie-ye:raw_peak_matrix_1a",
+            "jimmie-ye:raw_peak_matrix_1b",
+            "jimmie-ye:raw_peak_matrix_1c",
+            "jimmie-ye:raw_peak_matrix_2a",
+            "jimmie-ye:raw_peak_matrix_2b",
+            "jimmie-ye:raw_peak_matrix_2c",
+            "jimmie-ye:raw_peak_matrix_3a",
+            "jimmie-ye:raw_peak_matrix_3b",
+            "jimmie-ye:raw_peak_matrix_3c"
         ],
         "dataset": "LATDS600ABA",
         "derivation_process": [
@@ -150,23 +150,23 @@
         "cell_label_location": "suffix",
         "cell_label_mappings": [
             {
-                "raw_matrix": "LATDF112AAA",
+                "raw_matrix": "peter-sims:prenatal_2a_filtered_matrix",
                 "label": "-1"
             },
             {
-                "raw_matrix": "LATDF113AAA",
+                "raw_matrix": "peter-sims:prenatal_2b_filtered_matrix",
                 "label": "-2"
             },
             {
-                "raw_matrix": "LATDF114AAA",
+                "raw_matrix": "peter-sims:prenatal_2c_filtered_matrix",
                 "label": "-3"
             },
             {
-                "raw_matrix": "LATDF115AAA",
+                "raw_matrix": "peter-sims:prenatal_3a_filtered_matrix",
                 "label": "-4"
             },
             {
-                "raw_matrix": "LATDF116AAA",
+                "raw_matrix": "peter-sims:prenatal_3b_filtered_matrix",
                 "label": "-5"
             }
         ],
