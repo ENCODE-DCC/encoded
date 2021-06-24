@@ -256,7 +256,7 @@ class SequenceAlignmentFile(AnalysisFile):
 class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
-    embedded = DataFile.embedded + ['derived_from', 'derived_from.flowcell_details']
+    embedded = DataFile.embedded + ['derived_from']
     audit_inherit = DataFile.audit_inherit + ['derived_from']
 
     @calculated_property(define=True,
