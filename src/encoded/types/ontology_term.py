@@ -155,6 +155,21 @@ disease_slims = {
     'MONDO:0007179': 'autoimmune disease'
 }
 
+development_slims = {
+    'HsapDv:0000002':'embryonic',
+    'HsapDv:0000037':'fetal',
+    'HsapDv:0000082':'newborn',
+    'HsapDv:0000083':'infant',
+    'HsapDv:0000081':'child',
+    'HsapDv:0000086':'adolescent',
+    'HsapDv:0000087':'adult',
+    'MmusDv:0000002':'embryonic',
+    'MmusDv:0000031':'fetal',
+    'MmusDv:0000036':'newborn',
+    'MmusDv:0000112':'premature',
+    'MmusDv:0000110':'adult'
+}
+
 
 @collection(
     name='ontology-terms',
@@ -251,6 +266,19 @@ class OntologyTerm(SharedItem):
     })
     def disease_slims(self, registry, term_id):
         return self._get_ontology_slims(registry, term_id, disease_slims)
+
+
+    @calculated_property(condition='term_id', schema={
+        "title": "Development slims",
+        "description": "The development stages that this term is an ontological descendent of.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def development_slims(self, registry, term_id):
+        return self._get_ontology_slims(registry, term_id, development_slims)
 
 
     @calculated_property(condition='term_id', schema={
