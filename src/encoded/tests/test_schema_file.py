@@ -293,10 +293,10 @@ def test_sequence_barcodes_format(testapp, file_sequence_barcodes):
 
 def test_filter_type_filter_value(testapp, file_good_bam):
     item = file_good_bam.copy()
-    item.update({'filter_type': 'bin_size'})
+    item.update({'filter_type': 'bin size (kb)'})
     testapp.post_json('/file', item, status=422)
     item.pop('filter_type', None)
     item.update({'filter_value': 3})
     testapp.post_json('/file', item, status=422)
-    item.update({'filter_type': 'bin_size'})
+    item.update({'filter_type': 'bin size (bp)'})
     testapp.post_json('/file', item, status=201)

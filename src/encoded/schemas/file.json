@@ -2017,9 +2017,11 @@
             "comment": "The filter_type property requires specification of filter_value property.",
             "type": "string",
             "enum": [
-                "bin_size",
-                "false_discovery_rate_percentage",
-                "mapping_quality"
+                "bin size (bp)",
+                "bin size (kb)",
+                "bin size (mb)",
+                "false discovery rate percentage",
+                "mapping quality"
             ]
         },
         "filter_value": {
