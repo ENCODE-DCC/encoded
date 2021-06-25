@@ -62,6 +62,23 @@ class SequencingRun(Item):
 
 
     @calculated_property(schema={
+        "title": "Read count",
+        "description": "The number of reads belonging to this sequencing run.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "integer",
+        "notSubmittable": True,
+    })
+    def read_count(self, request, registry, files):
+        count = set()
+        for file_id in files:
+            file_obj = request.embed(file_id, '@@object?skip_calculated=true')
+            read_count = file_obj.get('read_count')
+            count.add(read_count)
+        if len(count) == 1:
+            return count.pop()
+
+
+    @calculated_property(schema={
         "title": "Read 1 file",
         "description": "The Read 1 DataFile belonging to this sequencing run.",
         "comment": "Do not submit. This is a calculated property",
