@@ -281,3 +281,11 @@ def test_ENTEx_assembly_bam(testapp, file_good_bam):
     testapp.post_json('/file', item, status=422)
     item.update({'assembly': 'ENC003.1'})
     testapp.post_json('/file', item, status=201)
+
+
+def test_sequence_barcodes_format(testapp, file_sequence_barcodes):
+    testapp.post_json('/file', file_sequence_barcodes, status=201)
+    file_sequence_barcodes.update({
+        'file_format': 'txt',
+        'md5sum': '77dae3da7245c7891729906a29428835'})
+    testapp.post_json('/file', file_sequence_barcodes, status=201)

@@ -1041,7 +1041,8 @@
                                         "restriction enzyme site locations",
                                         "sequence adapters",
                                         "bias model",
-                                        "chromosomes reference"
+                                        "chromosomes reference",
+                                        "sequence barcodes"
                                     ]
                                 }
                             }
@@ -1657,6 +1658,7 @@
                         "plus strand methylation state at CpG",
                         "plus strand signal of all reads",
                         "plus strand signal of unique reads",
+                        "polyA sites",
                         "positive control regions",
                         "predicted enhancers",
                         "preprocessed alignments",
@@ -2287,6 +2289,7 @@
         "bidirectional peaks": "annotation",
         "novel peptides": "annotation",
         "unidirectional peaks": "annotation",
+        "polyA sites": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
