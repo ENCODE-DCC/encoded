@@ -11,10 +11,10 @@ Ontologies used
 | [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON releases] | 2021-02-12 | [UBERON release] |
 | [Cell Ontology (CL)] | `cl.ow` from [CL] | 2021-06-21 | [CL release] |
 | [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-06-15 (3.31.0) | [EFO releases] |
-| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-06-01 | [MONDO release date] |
-| [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2021-01-04 (2.5) | [HANCESTRO releases] |
-| [Human Developmental Stage Ontology (HsapDv)] | `hsapdv.owl` from [HsaDv] |  |  |
-| [Mouse Developmental Stage Ontology (MmusDv)] | `mmusdv.owl` from [MmusDv] |  |  |
+| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-06-01 | [MONDO release] |
+| [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2021-01-04 (2.5) | [OLS HANCESTRO] |
+| [Human Developmental Stage Ontology (HsapDv)] | `hsapdv.owl` from [HsapDv] | 2020-03-10 | [OLS HsapDv] (confirm versionIRI in .owl) |
+| [Mouse Developmental Stage Ontology (MmusDv)] | `mmusdv.owl` from [MmusDv] | 2020-03-10 | [OLS MmusDv] (confirm versionIRI in .owl) |
 
 **Current ontology.json:** `ontology-2021-06-25.json`
 
@@ -52,12 +52,15 @@ How to update the ontology versions
 [EFO release]: https://github.com/EBISPOT/efo/releases
 [Mondo Disease Ontology (MONDO)]: http://obofoundry.org/ontology/mondo.html
 [MONDO]: http://obofoundry.org/ontology/mondo.html
-[MONDO release date]: https://github.com/monarch-initiative/mondo/releases
+[MONDO release]: https://github.com/monarch-initiative/mondo/releases
 [Human Ancestry Ontology (HANCESTRO)]: https://github.com/EBISPOT/ancestro
 [OLS]: https://www.ebi.ac.uk/ols/ontologies/hancestro
+[OLS HANCESTRO]: https://www.ebi.ac.uk/ols/ontologies/hancestro
 [HANCESTRO releases]: https://github.com/EBISPOT/ancestro/releases
 [Human Developmental Stage Ontology (HsapDv)]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
-[HsaDv]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
+[HsapDv]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
+[OLS HsapDv]: https://www.ebi.ac.uk/ols/ontologies/hsapdv
 [Mouse Developmental Stage Ontology (MmusDv)]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv
 [MmusDv]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv
+[OLS MmusDv]: https://www.ebi.ac.uk/ols/ontologies/mmusdv
 [buildout.cfg]: ../../../buildout.cfg
