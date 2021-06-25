@@ -300,27 +300,30 @@ def main():
 
     import argparse
     parser = argparse.ArgumentParser(
-        description="Get Uberon, EFO, and MONDO ontologies and generate the JSON file", epilog=EPILOG,
+        description="Get all of the ontologies and generate the JSON file", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--uberon-url', help="Uberon version URL")
-    parser.add_argument('--efo-url', help="EFO version URL")
-    parser.add_argument('--mondo-url', help="MONDO version URL")
-    parser.add_argument('--hancestro-url', help="HANCESTRO version URL")
-    parser.add_argument('--cl-url', help="CL version URL")
+    parser.add_argument('--uberon-version', help="Uberon version URL")
+    parser.add_argument('--efo-version', help="EFO version URL")
     args = parser.parse_args()
 
-    uberon_url = args.uberon_url
-    efo_url = args.efo_url
-    mondo_url = args.mondo_url
-    hancestro_url = args.hancestro_url
-    cl_url = args.cl_url
+    uberon_url = 'https://github.com/obophenotype/uberon/releases/download/v{}/composite-vertebrate.owl'.format(args.uberon_version)
+    efo_url = 'https://github.com/EBISPOT/efo/releases/download/v{}/efo-base.owl'.format(args.efo_version)
+
+    mondo_url = 'http://purl.obolibrary.org/obo/mondo.owl'
+    hancestro_url = 'http://purl.obolibrary.org/obo/hancestro.owl'
+    cl_url = 'http://purl.obolibrary.org/obo/cl.owl'
+    hsapdv_url = 'http://purl.obolibrary.org/obo/hsapdv.owl'
+    mmusdv_url = 'http://purl.obolibrary.org/obo/mmusdv.owl'
+
     url_whitelist = {
         uberon_url: ['UBERON', 'CL'],
         efo_url: ['EFO'],
         mondo_url: ['MONDO'],
         hancestro_url: ['HANCESTRO'],
-        cl_url: ['CL']
+        cl_url: ['CL'],
+        hsapdv_url: ['HsapDv'],
+        mmusdv_url: ['MmusDv']
         }
 
     terms = {}
