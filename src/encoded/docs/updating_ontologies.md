@@ -22,7 +22,7 @@ How to update the ontology versions
 ---------------- 
 
 1. Run generate-ontology  
-*note: first look up the latest [UBERON release] and [EFO release] and include the versions each url*
+*note: first look up the latest [UBERON releases] and [EFO releases] and include the versions each url*
 
 	`$ bin/generate-ontology --uberon-version YYYY-MM-DD --efo-version X.XX.X`
 
@@ -48,7 +48,6 @@ How to update the ontology versions
 [CL releases]: https://github.com/obophenotype/cell-ontology/releases
 [Experimental Factor Ontology (EFO)]: http://www.ebi.ac.uk/efo
 [EFO releases]: https://github.com/EBISPOT/efo/releases
-[EFO release]: https://github.com/EBISPOT/efo/releases
 [Mondo Disease Ontology (MONDO)]: http://obofoundry.org/ontology/mondo.html
 [MONDO]: http://obofoundry.org/ontology/mondo.html
 [MONDO release]: https://github.com/monarch-initiative/mondo/releases
