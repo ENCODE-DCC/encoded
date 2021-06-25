@@ -4,6 +4,7 @@ REGISTRY_DATA_SERVICE = 'genomic_data_service'
 RNA_GET_FACETS = ['assayType', 'annotation', 'biosample_term_name', 'biosample_classification', 'biosample_sex', 'biosample_organ',  'biosample_system']
 RNA_GET_EXPRESSIONS = '/expressions/bytes'
 RNA_GET_AUTOCOMPLETE = '/autocomplete'
+REGION_SEARCH = '/region-search'
 
 # react component orders columns by "the position" in the hash map
 RNA_GET_COLUMNS = {
@@ -178,3 +179,20 @@ class GenomicDataService():
             }
 
         return response
+
+
+    def region_search(self, assembly, chromosome, start, end):
+        params = {
+            'assembly': assembly,
+            'chr': chromosome.replace('chr', ''),
+            'start': start,
+            'end': end
+        }
+
+        query_params = '&'.join([f'{k}={params[k]}' for k in params.keys()])
+
+        url = f'{self.path}{REGION_SEARCH}?{query_params}'
+
+        results = requests.get(url, timeout=3).json()
+
+        return results
