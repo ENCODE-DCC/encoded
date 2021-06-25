@@ -47,10 +47,10 @@ const Donor = (props) => {
                             </div>
                         : null}
 
-                        {context.life_stage ?
+                        {context.development_ontology ?
                             <div data-test="life-stage">
                                 <dt>Life stage</dt>
-                                <dd className="sentence-case">{context.life_stage}</dd>
+                                <dd className="sentence-case">{context.development_ontology.development_slims}</dd>
                             </div>
                         : null}
 
@@ -151,7 +151,6 @@ const donorTableColumns = {
         },
     },
     health_status: { title: 'Health status' },
-    life_stage: { title: 'Life stage' },
     sex: { title: 'Sex' },
     status: {
         title: 'Status',
@@ -330,7 +329,7 @@ const DonorListingComponent = (props, reactContext) => {
     // https://stackoverflow.com/questions/32906887/remove-all-falsy-values-from-an-array#answer-32906951
     const details = [
         result.sex ? (result.sex !== 'unknown' ? result.sex : 'unknown sex') : null,
-        result.life_stage ? (result.life_stage !== 'unknown' ? result.life_stage : 'unknown life stage') : null,
+        result.development_ontology.term_name ? (result.development_ontology.term_name !== 'unknown' ? result.development_ontology.term_name : 'unknown life stage') : null,
         formatMeasurement(result.age, result.age_units),
     ].filter(Boolean);
 
