@@ -4,7 +4,7 @@
     "id": "/profiles/mouse_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["life_stage", "age", "sex", "strain_term_name"],
+    "required": ["age", "sex", "strain_term_name"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -61,15 +61,6 @@
         "schema_version": {
             "default": "1"
         },
-        "life_stage": {
-            "comment": "Based on the Mouse Development Stages ontology, newborn is birth to 4 d, premature is 4 d to 6 w, adult is 6 w and over.",
-            "enum": [
-                "newborn",
-                "premature",
-                "adult",
-                "unknown"
-            ]
-        },
         "mating_status": {
             "title": "mating status",
             "description": "The mating status of the animal.",
@@ -83,7 +74,7 @@
         }
     },
     "facets": {
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "sex": {
@@ -106,7 +97,7 @@
         "age_display": {
             "title": "Age"
         },
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "sex": {

@@ -4,7 +4,7 @@
     "id": "/profiles/human_prenatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["life_stage", "gestational_age", "sex"],
+    "required": ["gestational_age", "sex"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -50,13 +50,6 @@
                 }
             }
         },
-        "carnegie_stage": {
-            "properties": {
-                "life_stage": {
-                    "enum": ["embryonic"]
-                }
-            }
-        },
         "carnegie_stage_basis": ["carnegie_stage"],
         "twin_type": ["twin"],
         "weight": ["weight_unit"],
@@ -73,9 +66,6 @@
         "schema_version": {
             "default": "1"
         },
-        "life_stage": {
-            "comment": "Based on the Human Developmental Stages ontology, embryonic is up to 2 mo/8 w LMP, fetal is 2 mo/8 w LMP to birth."
-        },
         "carnegie_stage": {
             "title": "Carnegie stage",
             "description": "Embryo stage number as defined by Carnegie stages.",
@@ -90,7 +80,7 @@
         }
     },
     "facets": {
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "carnegie_stage": {
@@ -116,7 +106,7 @@
         "age_display": {
             "title": "Age"
         },
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "carnegie_stage": {

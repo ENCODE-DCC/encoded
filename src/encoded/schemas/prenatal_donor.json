@@ -41,12 +41,6 @@
                 "mm"
             ]
         },
-        "life_stage": {
-            "enum": [
-                "embryonic",
-                "fetal"
-            ]
-        },
         "foot_length": {
             "title": "Foot length",
             "description": "The length of the foot of the embryo or fetus.",

@@ -18,6 +18,12 @@
         "diseases": {
             "description": "Known diseases carried by the donor."
         },
+        "development_ontology": {
+            "title": "Development ontology",
+            "description": "A link to the most accurate ontology term for the developmental stage of the donor.",
+            "type": "string",
+            "linkTo": "OntologyTerm"
+        },
         "life_stage": {
             "title": "Life stage",
             "description": "Life stage of donor at collection of tissue biosample.",

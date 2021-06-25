@@ -4,7 +4,7 @@
     "id": "/profiles/mouse_prenatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["life_stage", "gestational_age", "sex", "strain_term_name"],
+    "required": ["gestational_age", "sex", "strain_term_name"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -51,30 +51,6 @@
                 }
             }
         },
-        "theiler_stage": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "life_stage": {
-                            "enum": ["embryonic"]
-                        },
-                        "theiler_stage": {
-                            "maximum": 22
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "life_stage": {
-                            "enum": ["fetal"]
-                        },
-                        "theiler_stage": {
-                            "minimum": 23
-                        }
-                    }
-                }
-            ]
-        },
         "theiler_stage_basis": ["theiler_stage"],
         "weight": ["weight_unit"],
         "weight_unit": ["weight"],
@@ -92,9 +68,6 @@
         "schema_version": {
             "default": "1"
         },
-        "life_stage": {
-            "comment": "Based on the Mouse Development Stages ontology, embryonic is up to 15 d post-conception, fetal is 15 d post-conception to birth."
-        },
         "theiler_stage": {
             "title": "Theiler stage",
             "description": "Embryo stage number as defined by Theiler stages.",
@@ -109,7 +82,7 @@
         }
     },
     "facets": {
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "carnegie_stage": {
@@ -135,7 +108,7 @@
         "age_display": {
             "title": "Age"
         },
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "carnegie_stage": {
