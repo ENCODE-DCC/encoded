@@ -454,6 +454,119 @@ class Biosample(Item):
             return 'Term ID unknown'
 
     @calculated_property(schema={
+        "title": "Perturbed",
+        "description": "A flag to indicate whether the biosample has been perturbed with a treatment or genetic modification.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def perturbed(
+        self,
+        request,
+        applied_modifications,
+        treatments=None,
+    ):
+        return bool(treatments) or any(
+            (
+                request.embed(m, '@@object').get('perturbation', False)
+                for m in applied_modifications
+            )
+        )
+
+    @calculated_property(schema={
+        "title": "Simple Summary",
+        "type": "string",
+    })
+    def simple_summary( self, request,
+                        organism=None,
+                        donor=None,
+                        age=None,
+                        age_units=None,
+                        life_stage=None,
+                        sex=None,
+                        biosample_ontology=None,
+                        starting_amount=None,
+                        starting_amount_units=None,
+                        depleted_in_term_name=None,
+                        disease_term_name=None,
+                        phase=None,
+                        subcellular_fraction_term_name=None,
+                        treatments=None,
+                        genetic_modifications=None,
+                        model_organism_donor_modifications=None):
+
+        sentence_parts = [
+            'organism_name',
+            'genotype_strain',
+            'sex_stage_age',
+            'term_phrase',
+            'modifications_list',
+            'disease_term_name',
+            'treatments_phrase',
+            'depleted_in',
+            'phase',
+            'fractionated'
+        ]
+        (organismObject,
+         donorObject,
+         biosample_term_name,
+         biosample_type,
+         treatment_objects_list,
+         part_of_object,
+         originated_from_object,
+         modifications_list) = summary_objects(request, organism, donor, treatments, None, None, genetic_modifications, model_organism_donor_modifications, biosample_ontology)
+
+        biosample_dictionary = generate_summary_dictionary(
+            request,
+            None,  #organismObject,
+            donorObject,
+            age,
+            age_units,
+            life_stage,
+            sex,
+            None, #biosample_term_name,
+            None, #biosample_type,
+            starting_amount,
+            starting_amount_units,
+            depleted_in_term_name,
+            disease_term_name,
+            phase,
+            subcellular_fraction_term_name,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None, 
+            None,
+            treatment_objects_list,
+            None,
+            part_of_object,
+            originated_from_object,
+            modifications_list)
+        # just filter this by specific dict keys
+        reduced = [
+            'sex_stage_age',
+            'treatments_phrase',
+            'genotype_strain',
+            'strain_background',
+            'modifications_list',
+            'disease_term_name',
+            'treatments_phrase',
+            'depleted_in',
+            'phase',
+            'fractionated',
+            'synchronization',
+        ]
+        reduced_dictionary = {k: v for k, v in biosample_dictionary.items() if k in reduced}
+        return " ".join([ str((x,y)) for (x,y) in reduced_dictionary.items() if y ])
+        # return construct_biosample_summary([biosample_dictionary],
+        #                                  sentence_parts)
+
+    @calculated_property(schema={
         "title": "Summary",
         "type": "string",
     })
@@ -509,64 +622,14 @@ class Biosample(Item):
             'phase',
             'fractionated'
         ]
-        organismObject = None
-        donorObject = None
-        if organism is not None:
-            organismObject = request.embed(organism, '@@object')
-        if donor is not None:
-            donorObject = request.embed(donor, '@@object')
-
-        treatment_objects_list = None
-        if treatments is not None and len(treatments) > 0:
-            treatment_objects_list = []
-            for t in treatments:
-                treatment_objects_list.append(request.embed(t, '@@object'))
-
-        part_of_object = None
-        if part_of is not None:
-            part_of_object = request.embed(part_of, '@@object')
-
-        originated_from_object = None
-        if originated_from is not None:
-            originated_from_object = request.embed(originated_from, '@@object')
-
-        modifications_list = None
-
-        applied_modifications = get_applied_modifications(
-            genetic_modifications, model_organism_donor_modifications)
-
-        if applied_modifications:
-            modifications_list = []
-            for gm in applied_modifications:
-                gm_object = request.embed(gm, '@@object')
-                modification_dict = {'category': gm_object.get('category')}
-                if gm_object.get('modified_site_by_target_id'):
-                    modification_dict['target'] = request.embed(
-                        gm_object.get('modified_site_by_target_id'),
-                                      '@@object').get('label')
-                if gm_object.get('introduced_tags'):
-                    modification_dict['tags'] = []
-                    for tag in gm_object.get('introduced_tags'):
-                        tag_dict = {'location': tag['location'], 'name': tag['name']}
-                        if tag.get('promoter_used'):
-                            tag_dict['promoter'] = request.embed(
-                                tag.get('promoter_used'),
-                                        '@@object').get('label')
-                        modification_dict['tags'].append(tag_dict)
-
-                if 'method' in gm_object:
-                    modifications_list.append((gm_object['method'], modification_dict))
-                elif 'nucleic_acid_delivery_method' in gm_object:
-                    for item in gm_object['nucleic_acid_delivery_method']:
-                        modifications_list.append((item, modification_dict))
-
-        if biosample_ontology:
-            biosample_type_object = request.embed(biosample_ontology, '@@object')
-            biosample_term_name = biosample_type_object['term_name']
-            biosample_type = biosample_type_object['classification']
-        else:
-            biosample_term_name = None
-            biosample_type = None
+        (organismObject,
+         donorObject,
+         biosample_term_name,
+         biosample_type,
+         treatment_objects_list,
+         part_of_object,
+         originated_from_object,
+         modifications_list) = summary_objects(request, organism, donor, treatments, part_of, originated_from, genetic_modifications, model_organism_donor_modifications, biosample_ontology)
 
         biosample_dictionary = generate_summary_dictionary(
             request,
@@ -604,26 +667,78 @@ class Biosample(Item):
         return construct_biosample_summary([biosample_dictionary],
                                            sentence_parts)
 
-    @calculated_property(schema={
-        "title": "Perturbed",
-        "description": "A flag to indicate whether the biosample has been perturbed with a treatment or genetic modification.",
-        "type": "boolean",
-        "notSubmittable": True,
-    })
-    def perturbed(
-        self,
-        request,
-        applied_modifications,
-        treatments=None,
-    ):
-        return bool(treatments) or any(
-            (
-                request.embed(m, '@@object').get('perturbation', False)
-                for m in applied_modifications
-            )
-        )
 
+def summary_objects(request, 
+                    organism,
+                    donor,
+                    treatments,
+                    part_of,
+                    originated_from,
+                    genetic_modifications,
+                    model_organism_donor_modifications,
+                    biosample_ontology):
 
+    organismObject = None
+    donorObject = None
+    if organism is not None:
+        organismObject = request.embed(organism, '@@object')
+    if donor is not None:
+        donorObject = request.embed(donor, '@@object')
+
+    treatment_objects_list = None
+    if treatments is not None and len(treatments) > 0:
+        treatment_objects_list = []
+        for t in treatments:
+            treatment_objects_list.append(request.embed(t, '@@object'))
+
+    part_of_object = None
+    if part_of is not None:
+        part_of_object = request.embed(part_of, '@@object')
+
+    originated_from_object = None
+    if originated_from is not None:
+        originated_from_object = request.embed(originated_from, '@@object')
+
+    modifications_list = None
+
+    applied_modifications = get_applied_modifications(
+        genetic_modifications, model_organism_donor_modifications)
+
+    if applied_modifications:
+        modifications_list = []
+        for gm in applied_modifications:
+            gm_object = request.embed(gm, '@@object')
+            modification_dict = {'category': gm_object.get('category')}
+            if gm_object.get('modified_site_by_target_id'):
+                modification_dict['target'] = request.embed(
+                    gm_object.get('modified_site_by_target_id'),
+                                    '@@object').get('label')
+            if gm_object.get('introduced_tags'):
+                modification_dict['tags'] = []
+                for tag in gm_object.get('introduced_tags'):
+                    tag_dict = {'location': tag['location'], 'name': tag['name']}
+                    if tag.get('promoter_used'):
+                        tag_dict['promoter'] = request.embed(
+                            tag.get('promoter_used'),
+                                    '@@object').get('label')
+                    modification_dict['tags'].append(tag_dict)
+
+            if 'method' in gm_object:
+                modifications_list.append((gm_object['method'], modification_dict))
+            elif 'nucleic_acid_delivery_method' in gm_object:
+                for item in gm_object['nucleic_acid_delivery_method']:
+                    modifications_list.append((item, modification_dict))
+
+    if biosample_ontology:
+        biosample_type_object = request.embed(biosample_ontology, '@@object')
+        biosample_term_name = biosample_type_object['term_name']
+        biosample_type = biosample_type_object['classification']
+    else:
+        biosample_term_name = None
+        biosample_type = None
+    return organismObject, donorObject, biosample_term_name, biosample_type, treatment_objects_list, part_of_object, originated_from_object, modifications_list
+
+ 
 def generate_summary_dictionary(
         request,
         organismObject=None,
