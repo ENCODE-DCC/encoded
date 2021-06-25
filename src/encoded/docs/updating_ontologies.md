@@ -12,7 +12,7 @@ Ontologies used
 | [Cell Ontology (CL)] | `cl.ow` from [CL] | 2021-06-21 | [CL release] |
 | [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-06-15 (3.31.0) | [EFO releases] |
 | [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-06-01 | [MONDO release] |
-| [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2021-01-04 (2.5) | [OLS HANCESTRO] |
+| [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [HANCESTRO] | 2021-01-04 (2.5) | [HANCESTRO releases] |
 | [Human Developmental Stage Ontology (HsapDv)] | `hsapdv.owl` from [HsapDv] | 2020-03-10 | [OLS HsapDv] (confirm versionIRI in .owl) |
 | [Mouse Developmental Stage Ontology (MmusDv)] | `mmusdv.owl` from [MmusDv] | 2020-03-10 | [OLS MmusDv] (confirm versionIRI in .owl) |
 
@@ -54,8 +54,7 @@ How to update the ontology versions
 [MONDO]: http://obofoundry.org/ontology/mondo.html
 [MONDO release]: https://github.com/monarch-initiative/mondo/releases
 [Human Ancestry Ontology (HANCESTRO)]: https://github.com/EBISPOT/ancestro
-[OLS]: https://www.ebi.ac.uk/ols/ontologies/hancestro
-[OLS HANCESTRO]: https://www.ebi.ac.uk/ols/ontologies/hancestro
+[HANCESTRO]: https://github.com/EBISPOT/ancestro
 [HANCESTRO releases]: https://github.com/EBISPOT/ancestro/releases
 [Human Developmental Stage Ontology (HsapDv)]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
 [HsapDv]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
