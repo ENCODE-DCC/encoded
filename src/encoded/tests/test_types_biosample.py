@@ -197,6 +197,91 @@ def test_biosample_summary_construct_3(
         'Homo sapiens female child (1 month) liver tissue')
 
 
+def test_simple_summary(testapp,
+                           donor_1,
+                           biosample_1, treatment_5, liver):
+    testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10', 'sex': 'male', 'life_stage': 'child'})
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
+                                            "biosample_ontology": liver['uuid'],
+                                            'disease_term_id': ['DOID:0080600'],
+                                            "preservation_method": "cryopreservation",
+                                            "post_nucleic_acid_delivery_time": 3,
+                                            "post_nucleic_acid_delivery_time_units": "week",
+                                            'pulse_chase_time': 2,
+                                            'pulse_chase_time_units': 'hour',
+                                            'treatments': [treatment_5['@id']]})
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['simple_summary'] == (
+        'male child (10 days) with COVID-19 treated with ethanol')
+
+
+def test_simple_summary_construct_strain(testapp,
+                                     fly,
+                                     fly_donor_strain,
+                                     biosample_1,
+                                     construct_genetic_modification,
+                                     liver):
+
+    testapp.patch_json(biosample_1['@id'], {
+        'donor': fly_donor_strain['@id'],
+        'biosample_ontology': liver['uuid'],
+        'genetic_modifications': [construct_genetic_modification['@id']],
+        'model_organism_age': '10',
+        'model_organism_age_units': 'day',
+        'model_organism_sex': 'female',
+        'organism': fly['@id']})
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['simple_summary'] == (
+        'female (10 days) VK00033 stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter')
+
+
+def test_simple_summary_construct_2(
+    testapp,
+    human,
+    human_donor_1,
+    biosample_1,
+    liver
+):
+    testapp.patch_json(human_donor_1['@id'], {
+        'age': '31',
+        'age_units': 'year',
+        'life_stage': 'adult',
+        'sex': 'female'
+        })
+    testapp.patch_json(biosample_1['@id'], {
+        'donor': human_donor_1['@id'],
+        'biosample_ontology': liver['uuid'],
+        'organism': human['@id'],
+        'disease_term_id': ['DOID:0080600', 'DOID:9351']
+        })
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['simple_summary'] == (
+        'female adult (31 years) with COVID-19, diabetes mellitus')
+
+
+def test_simple_summary_construct_3(
+    testapp,
+    human,
+    human_donor_1,
+    biosample_1,
+    liver
+):
+    testapp.patch_json(human_donor_1['@id'], {
+        'age': '1',
+        'age_units': 'month',
+        'life_stage': 'child',
+        'sex': 'female'
+        })
+    testapp.patch_json(biosample_1['@id'], {
+        'donor': human_donor_1['@id'],
+        'biosample_ontology': liver['uuid'],
+        'organism': human['@id']
+        })
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['simple_summary'] == (
+        'female child (1 month)')
+
+
 def test_perturbed_gm(
     testapp,
     biosample_1,
