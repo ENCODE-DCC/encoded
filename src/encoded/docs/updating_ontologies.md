@@ -22,7 +22,7 @@ How to update the ontology versions
 ---------------- 
 
 1. Run generate-ontology  
-*note: first look up the latest [UBERON releases] and [EFO releases] and include the versions each url*
+*note: first look up the latest [UBERON releases] and [EFO releases]*
 
 	`$ bin/generate-ontology --uberon-version YYYY-MM-DD --efo-version X.XX.X`
 
