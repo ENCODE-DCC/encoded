@@ -8,8 +8,8 @@ Ontologies used
 
 | Ontology |  File used | Version in use | Version reference |
 |:--|:--|:--|:--|
-| [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON releases] | 2021-02-12 | [UBERON release] |
-| [Cell Ontology (CL)] | `cl.ow` from [CL] | 2021-06-21 | [CL release] |
+| [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON releases] | 2021-02-12 | [UBERON releases] |
+| [Cell Ontology (CL)] | `cl.ow` from [CL] | 2021-06-21 | [CL releases] |
 | [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-06-15 (3.31.0) | [EFO releases] |
 | [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-06-01 | [MONDO release] |
 | [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [HANCESTRO] | 2021-01-04 (2.5) | [HANCESTRO releases] |
@@ -42,11 +42,10 @@ How to update the ontology versions
 
 
 [Uber-anatomy ontology (UBERON)]: http://uberon.org/
-[UBERON download]: https://github.com/obophenotype/uberon/releases/
-[UBERON release]: https://github.com/obophenotype/uberon/releases/
+[UBERON releases]: https://github.com/obophenotype/uberon/releases/
 [Cell Ontology (CL)]: https://github.com/obophenotype/cell-ontology
-[CL download]: http://obofoundry.org/ontology/cl.html
-[CL release]: https://github.com/obophenotype/cell-ontology/releases
+[CL]: http://obofoundry.org/ontology/cl.html
+[CL releases]: https://github.com/obophenotype/cell-ontology/releases
 [Experimental Factor Ontology (EFO)]: http://www.ebi.ac.uk/efo
 [EFO releases]: https://github.com/EBISPOT/efo/releases
 [EFO release]: https://github.com/EBISPOT/efo/releases
