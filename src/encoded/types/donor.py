@@ -24,7 +24,8 @@ class Donor(Item, CalculatedTreatmentSummary):
     base_types = ['Donor'] + Item.base_types
     embedded = [
         'diseases',
-        'organism'
+        'organism',
+        'development_ontology'
     ]
     name_key = 'accession'
 
