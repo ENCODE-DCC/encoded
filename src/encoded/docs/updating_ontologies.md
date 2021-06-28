@@ -8,21 +8,23 @@ Ontologies used
 
 | Ontology |  File used | Version in use | Version reference |
 |:--|:--|:--|:--|
-| [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON releases] | 2021-02-12 | [UBERON release] |
-| [Cell Ontology (CL)] | `cl.ow` from [CL] | 2021-04-22 | [CL release] |
-| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-05-17 (3.30.0) | [EFO releases] |
-| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-06-01 | [MONDO release date] |
-| [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2021-01-04 (2.5) | [HANCESTRO releases] |
+| [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON releases] | 2021-02-12 | [UBERON releases] |
+| [Cell Ontology (CL)] | `cl.ow` from [CL] | 2021-06-21 | [CL releases] |
+| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-06-15 (3.31.0) | [EFO releases] |
+| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-06-01 | [MONDO release] |
+| [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [HANCESTRO] | 2021-01-04 (2.5) | [HANCESTRO releases] |
+| [Human Developmental Stage Ontology (HsapDv)] | `hsapdv.owl` from [HsapDv] | 2020-03-10 | [OLS HsapDv] (confirm versionIRI in .owl) |
+| [Mouse Developmental Stage Ontology (MmusDv)] | `mmusdv.owl` from [MmusDv] | 2020-03-10 | [OLS MmusDv] (confirm versionIRI in .owl) |
 
-**Current ontology.json:** `ontology-2021-06-11.json`
+**Current ontology.json:** `ontology-2021-06-25.json`
 
 How to update the ontology versions
 ---------------- 
 
 1. Run generate-ontology  
-*note: first look up the latest [UBERON release] and [EFO release] and include the versions each url*
+*note: first look up the latest [UBERON releases] and [EFO releases]*
 
-	`$ bin/generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/vYYYY-MM-DD/composite-vertebrate.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl --hancestro-url=http://purl.obolibrary.org/obo/hancestro/hancestro.owl --cl-url=http://purl.obolibrary.org/obo/cl.owl`
+	`$ bin/generate-ontology --uberon-version YYYY-MM-DD --efo-version X.XX.X`
 
 2. Rename the `ontology.json` to one with the date that it was generated
 
@@ -40,18 +42,22 @@ How to update the ontology versions
 
 
 [Uber-anatomy ontology (UBERON)]: http://uberon.org/
-[UBERON download]: https://github.com/obophenotype/uberon/releases/
-[UBERON release]: https://github.com/obophenotype/uberon/releases/
+[UBERON releases]: https://github.com/obophenotype/uberon/releases/
 [Cell Ontology (CL)]: https://github.com/obophenotype/cell-ontology
-[CL download]: http://obofoundry.org/ontology/cl.html
-[CL release]: https://github.com/obophenotype/cell-ontology/releases
+[CL]: http://obofoundry.org/ontology/cl.html
+[CL releases]: https://github.com/obophenotype/cell-ontology/releases
 [Experimental Factor Ontology (EFO)]: http://www.ebi.ac.uk/efo
 [EFO releases]: https://github.com/EBISPOT/efo/releases
-[EFO release]: https://github.com/EBISPOT/efo/releases
 [Mondo Disease Ontology (MONDO)]: http://obofoundry.org/ontology/mondo.html
 [MONDO]: http://obofoundry.org/ontology/mondo.html
-[MONDO release date]: https://github.com/monarch-initiative/mondo/releases
+[MONDO release]: https://github.com/monarch-initiative/mondo/releases
 [Human Ancestry Ontology (HANCESTRO)]: https://github.com/EBISPOT/ancestro
-[OLS]: https://www.ebi.ac.uk/ols/ontologies/hancestro
+[HANCESTRO]: https://github.com/EBISPOT/ancestro
 [HANCESTRO releases]: https://github.com/EBISPOT/ancestro/releases
+[Human Developmental Stage Ontology (HsapDv)]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
+[HsapDv]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
+[OLS HsapDv]: https://www.ebi.ac.uk/ols/ontologies/hsapdv
+[Mouse Developmental Stage Ontology (MmusDv)]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv
+[MmusDv]: https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv
+[OLS MmusDv]: https://www.ebi.ac.uk/ols/ontologies/mmusdv
 [buildout.cfg]: ../../../buildout.cfg

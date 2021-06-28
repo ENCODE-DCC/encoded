@@ -35,7 +35,7 @@
             "permission": "import_items",
             "comment": "For detailed description of ontologies used by Lattice visit https://www.lattice-data.org/data-organization/. In cases where a new ontology term is needed, NTR (new term request) identifier would be created by Lattice.",
             "type": "string",
-            "pattern": "(^(UBERON|EFO|CL|MONDO|HANCESTRO|NTR):[0-9]{2,8}$)|^(NCIT:C17998)$"
+            "pattern": "(^(UBERON|EFO|CL|MONDO|HANCESTRO|HsapDv|MmusDv|NTR):[0-9]{2,8}$)|^(NCIT:C17998)$"
         },
         "term_name": {
             "title": "Term name",
@@ -60,6 +60,9 @@
         "cell_slims": {
             "title": "Cell",
             "type": "typeahead"
+        },
+        "development_slims": {
+            "title": "Life stage"
         },
         "disease_slims": {
             "title": "Diease",
@@ -87,6 +90,9 @@
         },
         "cell_slims": {
             "title": "Cell"
+        },
+        "development_slims": {
+            "title": "Life stage"
         },
         "disease_slims": {
             "title": "Diease"

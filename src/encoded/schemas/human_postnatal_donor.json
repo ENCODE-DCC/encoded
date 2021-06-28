@@ -4,7 +4,7 @@
     "id": "/profiles/human_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["life_stage", "age", "sex"],
+    "required": ["age", "sex"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -74,17 +74,6 @@
     "properties": {
         "schema_version": {
             "default": "3"
-        },
-        "life_stage": {
-            "comment": "Based on the Human Developmental Stages ontology, newborn is birth to 1 mo, infant is 1 mo to 2 yr, child is 2 to 13 yr, adolescent is 13 to 19 yr, adult is 19 yr and over.",
-            "enum": [
-                "newborn",
-                "infant",
-                "child",
-                "adolescent",
-                "adult",
-                "unknown"
-            ]
         },
         "times_pregnant": {
             "title": "Times pregnant",
@@ -213,7 +202,7 @@
         }
     },
     "facets": {
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "sex": {
@@ -236,7 +225,7 @@
         "age_display": {
             "title": "Age"
         },
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "sex": {

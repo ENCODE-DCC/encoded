@@ -211,8 +211,9 @@ DonorTable.columns = {
         title: 'Species',
         display: donor => (donor.organism && donor.organism.scientific_name ? <i>{donor.organism.scientific_name}</i> : null),
     },
-    life_stage: {
+    development_ontology: {
         title: 'Life Stage',
+        getValue: item => item.development_ontology && item.development_ontology.development_slims,
     },
     age_display: {
         title: 'Age',

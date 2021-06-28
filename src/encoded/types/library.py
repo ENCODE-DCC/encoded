@@ -42,6 +42,7 @@ class Library(Item,
         'donors',
         'donors.ethnicity',
         'donors.diseases',
+        'donors.development_ontology',
         'donors.organism',
         'biosample_ontologies',
         'derived_from'

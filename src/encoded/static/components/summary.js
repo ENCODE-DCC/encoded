@@ -181,7 +181,7 @@ SummaryStatusChart.contextTypes = {
 const SummaryHorizontalFacets = ({ context, facetList }, reactContext) => {
     let horizFacets;
     if (facetList === 'all') {
-        horizFacets = context.facets.filter(f => ['donors.organism.scientific_name', 'donors.sex', 'donors.life_stage', 'donors.ethnicity.term_name'].includes(f.field));
+        horizFacets = context.facets.filter(f => ['donors.organism.scientific_name', 'donors.sex', 'donors.development_ontology.development_slims', 'donors.ethnicity.term_name'].includes(f.field));
     } else {
         horizFacets = context.facets.filter(f => [].includes(f.field));
     }

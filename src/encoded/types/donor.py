@@ -24,7 +24,8 @@ class Donor(Item, CalculatedTreatmentSummary):
     base_types = ['Donor'] + Item.base_types
     embedded = [
         'diseases',
-        'organism'
+        'organism',
+        'development_ontology'
     ]
     name_key = 'accession'
 
@@ -42,17 +43,17 @@ class Donor(Item, CalculatedTreatmentSummary):
                         "description": "The age and age units of the donor.",
                         "comment": "Do not submit. This is a calculated property",
                         "type": "string"})
-    def age_display(self, request, age=None, age_units=None, gestational_age=None, gestational_age_units=None):
+    def age_display(self, request, age=None, age_units=None, conceptional_age=None, conceptional_age_units=None):
         if age != None and age_units !=None:
             if age == 'unknown':
                 return 'unknown'
             else:
                 return u'{}'.format(pluralize(age, age_units))
-        elif gestational_age != None and gestational_age_units !=None:
-            if gestational_age == 'unknown':
+        elif conceptional_age != None and conceptional_age_units !=None:
+            if conceptional_age == 'unknown':
                 return 'unknown'
             else:
-                return u'{} (gestational)'.format(pluralize(gestational_age, gestational_age_units))
+                return u'{} (post-conception)'.format(pluralize(conceptional_age, conceptional_age_units))
         else:
             return None
 

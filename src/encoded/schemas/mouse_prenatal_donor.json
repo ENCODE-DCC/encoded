@@ -4,7 +4,7 @@
     "id": "/profiles/mouse_prenatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["life_stage", "gestational_age", "sex", "strain_term_name"],
+    "required": ["sex", "strain_term_name"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -27,53 +27,29 @@
         {"$ref": "prenatal_donor.json#/properties"}
     ],
     "dependencies": {
-        "gestational_age":  {
+        "conceptional_age":  {
             "oneOf": [
                 {
                     "properties": {
-                        "gestational_age": {
+                        "conceptional_age": {
                             "enum": ["unknown"]
                         }
                     }
                 },
                 {
-                    "required": ["gestational_age_units"]
+                    "required": ["conceptional_age_units"]
                 }
             ]
         },
-        "gestational_age_units":  {
-            "required": ["gestational_age"],
+        "conceptional_age_units":  {
+            "required": ["conceptional_age"],
             "not": {
                 "properties": {
-                    "gestational_age": {
+                    "conceptional_age": {
                         "enum": ["unknown"]
                     }
                 }
             }
-        },
-        "theiler_stage": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "life_stage": {
-                            "enum": ["embryonic"]
-                        },
-                        "theiler_stage": {
-                            "maximum": 22
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "life_stage": {
-                            "enum": ["fetal"]
-                        },
-                        "theiler_stage": {
-                            "minimum": 23
-                        }
-                    }
-                }
-            ]
         },
         "theiler_stage_basis": ["theiler_stage"],
         "weight": ["weight_unit"],
@@ -92,8 +68,10 @@
         "schema_version": {
             "default": "1"
         },
-        "life_stage": {
-            "comment": "Based on the Mouse Development Stages ontology, embryonic is up to 15 d post-conception, fetal is 15 d post-conception to birth."
+        "conceptional_age_units": {
+            "enum": [
+                "day"
+            ]
         },
         "theiler_stage": {
             "title": "Theiler stage",
@@ -109,7 +87,7 @@
         }
     },
     "facets": {
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "carnegie_stage": {
@@ -135,7 +113,7 @@
         "age_display": {
             "title": "Age"
         },
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "carnegie_stage": {

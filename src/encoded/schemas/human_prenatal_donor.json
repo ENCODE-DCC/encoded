@@ -4,7 +4,7 @@
     "id": "/profiles/human_prenatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["life_stage", "gestational_age", "sex"],
+    "required": ["sex"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -26,34 +26,27 @@
         {"$ref": "prenatal_donor.json#/properties"}
     ],
     "dependencies": {
-        "gestational_age":  {
+        "conceptional_age":  {
             "oneOf": [
                 {
                     "properties": {
-                        "gestational_age": {
+                        "conceptional_age": {
                             "enum": ["unknown"]
                         }
                     }
                 },
                 {
-                    "required": ["gestational_age_units"]
+                    "required": ["conceptional_age_units"]
                 }
             ]
         },
-        "gestational_age_units":  {
-            "required": ["gestational_age"],
+        "conceptional_age_units":  {
+            "required": ["conceptional_age"],
             "not": {
                 "properties": {
-                    "gestational_age": {
+                    "conceptional_age": {
                         "enum": ["unknown"]
                     }
-                }
-            }
-        },
-        "carnegie_stage": {
-            "properties": {
-                "life_stage": {
-                    "enum": ["embryonic"]
                 }
             }
         },
@@ -73,8 +66,12 @@
         "schema_version": {
             "default": "1"
         },
-        "life_stage": {
-            "comment": "Based on the Human Developmental Stages ontology, embryonic is up to 2 mo/8 w LMP, fetal is 2 mo/8 w LMP to birth."
+        "conceptional_age_units": {
+            "enum": [
+                "day",
+                "week",
+                "month"
+            ]
         },
         "carnegie_stage": {
             "title": "Carnegie stage",
@@ -90,7 +87,7 @@
         }
     },
     "facets": {
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "carnegie_stage": {
@@ -116,7 +113,7 @@
         "age_display": {
             "title": "Age"
         },
-        "life_stage": {
+        "development_ontology.development_slims": {
             "title": "Life stage"
         },
         "carnegie_stage": {

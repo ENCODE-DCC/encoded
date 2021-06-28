@@ -229,7 +229,7 @@
         "donors.organism.scientific_name": {
             "title": "Donor organism"
         },
-        "donors.life_stage": {
+        "donors.development_ontology.development_slims": {
             "title": "Donor life stage"
         },
         "donors.sex": {
@@ -298,7 +298,7 @@
         "donors.age_display": {
             "title": "Donor age"
         },
-        "donors.life_stage": {
+        "donors.development_ontology.development_slims": {
             "title": "Donor life stage"
         },
         "donors.sex": {

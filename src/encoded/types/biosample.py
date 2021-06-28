@@ -30,6 +30,7 @@ class Biosample(Item, CalculatedDonors, CalculatedTreatmentSummary):
         'donors',
         'donors.organism',
         'donors.ethnicity',
+        'donors.development_ontology',
         'treatments'
     ]
 
