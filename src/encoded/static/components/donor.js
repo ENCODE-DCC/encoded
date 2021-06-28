@@ -54,10 +54,10 @@ const Donor = (props) => {
                             </div>
                         : null}
 
-                        {context.age ?
+                        {context.age_display ?
                             <div data-test="age">
                                 <dt>Age</dt>
-                                <dd className="sentence-case">{formatMeasurement(context.age, context.age_units)}</dd>
+                                <dd className="sentence-case">{context.age_display}</dd>
                             </div>
                         : null}
 
