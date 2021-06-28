@@ -81,6 +81,12 @@
         "biosample_ontology.classification": {
             "title": "Biosample classification"
         },
+        "biosample_ontology.term_name" : {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
+        },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
         },
@@ -116,6 +122,15 @@
         },
         "related_datasets.replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment"
+        },
+        "related_datasets.replicates.library.biosample.subcellular_fraction_term_name": {
+            "title": "Cellular component"
+        },
+        "related_datasets.replicates.library.construction_platform.term_name": {
+            "title": "Library construction platform"
+        },
+        "related_datasets.replicates.library.construction_method": {
+            "title": "Library construction method"
         },
         "lab.title": {
             "title": "Lab"
@@ -211,6 +226,15 @@
         "related_datasets.replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units",
             "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.subcellular_fraction_term_name": {
+            "title": "Cellular component"
+        },
+        "related_datasets.replicates.library.construction_platform.term_name": {
+            "title": "Library construction platform"
+        },
+        "related_datasets.replicates.library.construction_method": {
+            "title": "Library construction method"
         }
     },
     "boost_values": {

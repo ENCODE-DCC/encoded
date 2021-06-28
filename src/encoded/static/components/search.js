@@ -295,6 +295,9 @@ globals.listingViews.register(Biosample, 'Biosample');
 const ExperimentComponent = (props, reactContext) => {
     const { context: result, cartControls, mode } = props;
     let synchronizations;
+    let constructionPlatforms;
+    let constructionMethods;
+    let cellularComponents;
 
     // Determine if search result is allowed in carts.
     const isResultAllowedInCart = cartGetAllowedTypes().includes(result['@type'][0]);
@@ -351,6 +354,21 @@ const ExperimentComponent = (props, reactContext) => {
             const { biosample } = replicate.library;
             return `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`;
         }));
+    }
+
+    // Collect library construction platforms / methods / cellular components
+    if (result.replicates && result.replicates.length > 0) {
+        constructionPlatforms = _.uniq(result.replicates.filter((replicate) => (
+            replicate.library && replicate.library.construction_platform && replicate.library.construction_platform.term_name
+        )).map((replicate) => replicate.library.construction_platform.term_name));
+
+        constructionMethods = _.uniq(result.replicates.filter((replicate) => (
+            replicate.library && replicate.library.construction_method
+        )).map((replicate) => replicate.library.construction_method));
+
+        cellularComponents = _.uniq(result.replicates.filter((replicate) => (
+            replicate.library && replicate.library.biosample && replicate.library.biosample.subcellular_fraction_term_name
+        )).map((replicate) => replicate.library.biosample.subcellular_fraction_term_name));
     }
 
     const uniqueTreatments = getUniqueTreatments(treatments);
@@ -448,6 +466,15 @@ const ExperimentComponent = (props, reactContext) => {
                                 ))}
                                 {screenLink ?
                                     <div><span className="result-item__property-title">candidate Cis-Regulatory Elements (cCREs): </span><a href={`https://screen.encodeproject.org/search?q=${screenSearch}&assembly=${screenAssembly}`}>SCREEN</a></div>
+                                : null}
+                                {cellularComponents && cellularComponents.length > 0 ?
+                                    <div><span className="result-item__property-title">Cellular component{cellularComponents.length > 1 ? 's' : ''}: </span>{cellularComponents.join(', ')}</div>
+                                : null}
+                                {constructionPlatforms && constructionPlatforms.length > 0 ?
+                                    <div><span className="result-item__property-title">Library construction platform{constructionPlatforms.length > 1 ? 's' : ''}: </span>{constructionPlatforms.join(', ')}</div>
+                                : null}
+                                {constructionMethods && constructionMethods.length > 0 ?
+                                    <div><span className="result-item__property-title">Library construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
                                 : null}
                             </>
                         : null}
@@ -640,6 +667,9 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
     let treatmentUnit;
     let targets;
     let diseases = [];
+    let constructionMethods = [];
+    let constructionPlatforms = [];
+    let cellularComponents = [];
 
     const treatmentTime = result['@type'].indexOf('TreatmentTimeSeries') >= 0;
     const treatmentConcentration = result['@type'].indexOf('TreatmentConcentrationSeries') >= 0;
@@ -734,6 +764,17 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                             phases.push(biosample.phase);
                         }
                     }
+                    if (replicate.library) {
+                        if (replicate.library.construction_platform) {
+                            constructionPlatforms.push(replicate.library.construction_platform.term_name);
+                        }
+                        if (replicate.library.construction_method) {
+                            constructionMethods.push(replicate.library.construction_method);
+                        }
+                        if (replicate.library.subcellular_fraction_term_name) {
+                            cellularComponents.push(replicate.library.subcellular_fraction_term_name);
+                        }
+                    }
                 });
             }
         });
@@ -748,6 +789,9 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
         crisprReadout = _.uniq(crisprReadout);
         perturbationType = _.uniq(perturbationType);
         diseases = _.uniq(diseases);
+        constructionPlatforms = _.uniq(constructionPlatforms);
+        constructionMethods = _.uniq(constructionMethods);
+        cellularComponents = _.uniq(cellularComponents);
     }
     const lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
 
@@ -856,6 +900,15 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         {diseases.length > 0 ? <div><span className="result-item__property-title">Diseases: </span>{diseases.join(', ')}</div> : null}
                         <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
                         <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
+                        {cellularComponents.length > 0 ?
+                            <div><span className="result-item__property-title">Cellular component{cellularComponents.length > 1 ? 's' : ''}: </span>{cellularComponents.join(', ')}</div>
+                        : null}
+                        {constructionPlatforms.length > 0 ?
+                            <div><span className="result-item__property-title">Construction platform{constructionPlatforms.length > 1 ? 's' : ''}: </span>{constructionPlatforms.join(', ')}</div>
+                        : null}
+                        {constructionMethods.length > 0 ?
+                            <div><span className="result-item__property-title">Construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
+                        : null}
                     </div>
                 </div>
                 <div className="result-item__meta">

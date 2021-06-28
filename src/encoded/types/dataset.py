@@ -1259,6 +1259,10 @@ class SingleCellRnaSeries(Series):
         'award',
         'submitted_by',
         'related_datasets.lab',
+        'related_datasets.biosample_ontology',
+        'related_datasets.replicates.library',
+        'related_datasets.replicates.library.biosample',
+        'related_datasets.replicates.library.construction_platform'
     ]
 
 

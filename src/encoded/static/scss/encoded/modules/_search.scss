@@ -454,3 +454,9 @@ $form-bg: #f3f3f3;
 .result-experiment-series-search {
     margin-bottom: 2px;
 }
+
+.single-cell-page {
+    .clear-filters-control {
+        display: none;
+    }
+}
