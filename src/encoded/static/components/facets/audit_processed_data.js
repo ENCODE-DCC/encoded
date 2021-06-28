@@ -26,7 +26,7 @@ const AuditProcessedData = ({ results, queryString }, reactContext) => {
     };
 
     // Make sure a single type=FunctionalCharacterization experiment exists, or display no facet.
-    const fccTypeFilters = results.filters.filter((filter) => filter.field === 'type' && filter.term === 'FunctionalCharacterizationExperiment');
+    const fccTypeFilters = results.filters.filter((filter) => filter.field === 'type' && filter.term === 'FunctionalCharacterizationExperiment' && results.title !== 'Single cell');
     if (fccTypeFilters.length === 1) {
         // Determine the state of the switch from the query string, and save it so that
         // `handleSwitch` doesn't have to do this same calculation later.

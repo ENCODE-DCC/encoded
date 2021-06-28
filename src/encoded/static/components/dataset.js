@@ -2036,7 +2036,12 @@ export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, opt
     // the code takes this into account
     const diseases = [
         ...new Set(context.related_datasets.reduce((accumulatedDiseases, currentRelatedDataset) => {
-            const diseasesTermNames = currentRelatedDataset.replicates.map((replicate) => replicate.library.biosample.disease_term_name);
+            const diseasesTermNames = currentRelatedDataset.replicates.map((replicate) => {
+                if (typeof replicate !== 'string') {
+                    return replicate.library.biosample.disease_term_name;
+                }
+                return null;
+            });
             return accumulatedDiseases.concat(...diseasesTermNames);
         }, [])),
     ].filter((disease) => disease);

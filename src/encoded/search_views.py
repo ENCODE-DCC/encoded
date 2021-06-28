@@ -51,6 +51,7 @@ from snovault.elasticsearch.searches.responses import FieldedResponse
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
     config.add_route('series_search', '/series-search{slash:/?}')
+    config.add_route('single_cell', '/single-cell{slash:/?}')
     config.add_route('encyclopedia', '/encyclopedia{slash:/?}')
     config.add_route('encode_software', '/encode-software{slash:/?}')
     config.add_route('searchv2_raw', '/searchv2_raw{slash:/?}')
@@ -130,6 +131,38 @@ def series_search(context, request):
             BasicSearchWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 reserved_keys=RESERVED_KEYS,
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            ClearFiltersResponseField(),
+            ColumnsResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='single_cell', request_method='GET', permission='search')
+def single_cell(context, request):
+    # Note the order of rendering matters for some fields, e.g. AllResponseField and
+    # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title="Single cell"
+            ),
+            TypeResponseField(
+                at_type=["SingleCell"]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            BasicSearchWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES
             ),
             AllResponseField(),
             NotificationResponseField(),

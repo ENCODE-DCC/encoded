@@ -315,6 +315,15 @@
         },
         "replication_type": {
             "title": "Replication type"
+        },
+        "replicates.library.biosample.subcellular_fraction_term_name": {
+            "title": "Cellular component"
+        },
+        "replicates.library.construction_platform.term_name": {
+            "title": "Library construction platform"
+        },
+        "replicates.library.construction_method": {
+            "title": "Library construction method"
         }
     },
     "columns": {
@@ -413,6 +422,15 @@
         },
         "replicates.library.mixed_biosamples": {
             "title": "Mixed biosamples"
+        },
+        "replicates.library.biosample.subcellular_fraction_term_name": {
+            "title": "Cellular component"
+        },
+        "replicates.library.construction_platform.term_name": {
+            "title": "Library construction platform"
+        },
+        "replicates.library.construction_method": {
+            "title": "Library construction method"
         }
     },
     "boost_values": {
