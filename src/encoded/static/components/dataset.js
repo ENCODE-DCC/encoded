@@ -10,7 +10,15 @@ import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
 import Status from './status';
 import pubReferenceList from './reference';
-import { donorDiversity, publicDataset, AlternateAccession, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
+import {
+    computeExaminedLoci,
+    donorDiversity,
+    publicDataset,
+    AlternateAccession,
+    ItemAccessories,
+    InternalTags,
+    TopAccessories,
+} from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
@@ -18,7 +26,6 @@ import { DocumentsPanelReq } from './doc';
 import { FileGallery } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
-import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
 /**
  * All Series types allowed to have a download button. Keep in sync with the same variable in
@@ -1737,22 +1744,6 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
     },
 };
 
-function computeExaminedLoci(experiment) {
-    const examinedLoci = [];
-    if (experiment.examined_loci && experiment.examined_loci.length > 0) {
-        experiment.examined_loci.forEach((locus) => {
-            if (locus.expression_percentile || locus.expression_percentile === 0) {
-                examinedLoci.push(`${locus.gene.symbol} (${getNumberWithOrdinal(locus.expression_percentile)} percentile)`);
-            } else if ((locus.expression_range_minimum && locus.expression_range_maximum) || (locus.expression_range_maximum === 0 || locus.expression_range_minimum === 0)) {
-                examinedLoci.push(`${locus.gene.symbol} (${locus.expression_range_minimum}-${locus.expression_range_maximum}%)`);
-            } else {
-                examinedLoci.push(`${locus.gene.symbol}`);
-            }
-        });
-    }
-    return examinedLoci.join(', ');
-}
-
 const functionalCharacterizationSeriesTableColumns = {
     accession: {
         title: 'Accession',
@@ -2125,6 +2116,7 @@ export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, opt
                 showDetailedTracks
                 hideAnalysisSelector
                 defaultOnly
+                relatedDatasets={experimentList}
             />
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />

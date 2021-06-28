@@ -1270,6 +1270,7 @@ class FunctionalCharacterizationSeries(Series):
     item_type = 'functional_characterization_series'
     schema = load_schema('encoded:schemas/functional_characterization_series.json')
     embedded = Series.embedded + [
+        'related_datasets.analyses',
         'related_datasets.examined_loci',
         'related_datasets.examined_loci.gene',
         'related_datasets.elements_references',
