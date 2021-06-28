@@ -4,7 +4,7 @@
     "id": "/profiles/mouse_prenatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["gestational_age", "sex", "strain_term_name"],
+    "required": ["sex", "strain_term_name"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -27,25 +27,25 @@
         {"$ref": "prenatal_donor.json#/properties"}
     ],
     "dependencies": {
-        "gestational_age":  {
+        "conceptional_age":  {
             "oneOf": [
                 {
                     "properties": {
-                        "gestational_age": {
+                        "conceptional_age": {
                             "enum": ["unknown"]
                         }
                     }
                 },
                 {
-                    "required": ["gestational_age_units"]
+                    "required": ["conceptional_age_units"]
                 }
             ]
         },
-        "gestational_age_units":  {
-            "required": ["gestational_age"],
+        "conceptional_age_units":  {
+            "required": ["conceptional_age"],
             "not": {
                 "properties": {
-                    "gestational_age": {
+                    "conceptional_age": {
                         "enum": ["unknown"]
                     }
                 }
@@ -67,6 +67,11 @@
     "properties": {
         "schema_version": {
             "default": "1"
+        },
+        "conceptional_age_units": {
+            "enum": [
+                "day"
+            ]
         },
         "theiler_stage": {
             "title": "Theiler stage",

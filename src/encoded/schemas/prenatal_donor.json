@@ -28,6 +28,17 @@
                 "month"
             ]
         },
+        "conceptional_age": {
+            "title": "Conceptional age",
+            "description": "The post-conception age of the donor when biological material was sampled.",
+            "type": "string",
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d))$"
+        },
+        "conceptional_age_units": {
+            "title": "Conceptional age units",
+            "description": "Units of post-conception age of the donor when biological material was sampled.",
+            "type": "string"
+        },
         "crown_rump_length": {
             "title": "Crown-rump length",
             "description": "The length of the embryo or fetus from the top of its head to bottom of torso.",
