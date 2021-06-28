@@ -76,7 +76,7 @@ const inclusionStatuses = [
  *  Stop after getting any result and return the result.
  *
  *  For example, if -
- *      analyis = [{'a': 1, 'b': 2}, {'a': 3, 'c': '5'}, {'c': 1, 'a': 2}]
+ *      analysis = [{'a': 1, 'b': 2}, {'a': 3, 'c': '5'}, {'c': 1, 'a': 2}]
  *      filters = ['c', 'b']
  *      key = 'c'
  *
@@ -596,7 +596,6 @@ export class FileTable extends React.Component {
                                     totalFiles={files && files.ref ? files.ref.length : 0}
                                     inclusionOn={options.inclusionOn}
                                     isDownloadable={!options.hideDownload && filterDownloadableFilesByStatus(context, files.ref).length > 0}
-                                    files={files.ref}
                                 />
                             }
                             collapsed={this.state.collapsed.ref}
@@ -1039,7 +1038,6 @@ class RawSequencingTable extends React.Component {
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
                                     isDownloadable={isDownloadable && filterDownloadableFilesByStatus(context, files).length > 0}
-                                    files={files}
                                 />
                             </th>
                         </tr>
@@ -1258,7 +1256,6 @@ class RawFileTable extends React.Component {
                                     totalFiles={files.length}
                                     inclusionOn={inclusionOn}
                                     isDownloadable={isDownloadable && filterDownloadableFilesByStatus(context, files).length > 0}
-                                    files={files}
                                 />
                             </th>
                         </tr>
@@ -3828,6 +3825,226 @@ FileGalleryRendererComponent.contextTypes = {
 const FileGalleryRenderer = auditDecor(FileGalleryRendererComponent);
 
 
+/**
+ * Maps each Series-object subtype to a function that generates a subtitle in the file details
+ * table section title bars.
+ */
+const subtitleComposers = {
+    DiseaseSeries: (relatedDataset) => {
+        const diseaseInfo = [relatedDataset.assay_term_name];
+
+        // Extract the target.
+        const target = relatedDataset.target ? relatedDataset.target.label : null;
+        if (target) {
+            diseaseInfo.push(target);
+        }
+
+        // Extract all the diseases.
+        const diseases = relatedDataset.replicates
+            ? relatedDataset.replicates.reduce((allReplicatesDiseases, replicate) => {
+                const replicateDiseases = replicate.library && replicate.library.biosample && replicate.library.biosample.disease_term_name
+                    ? replicate.library.biosample.disease_term_name
+                    : [];
+                return allReplicatesDiseases.concat(replicateDiseases);
+            }, [])
+            : [];
+        if (diseases.length > 0) {
+            diseaseInfo.push(...diseases);
+        }
+        return diseaseInfo.join(', ');
+    },
+
+    FunctionalCharacterizationSeries: (relatedDataset) => {
+        const fcsInfo = [relatedDataset.assay_term_name];
+
+        // Extract examined loci.
+        if (relatedDataset.examined_loci && relatedDataset.examined_loci.length > 0) {
+            const examinedLociSymbols = relatedDataset.examined_loci.map((examinedLoci) => examinedLoci.symbol);
+            fcsInfo.push(...examinedLociSymbols);
+        }
+
+        // Extract target expression range.
+        if (relatedDataset.target_expression_range_minimum !== undefined && relatedDataset.target_expression_range_maximum !== undefined) {
+            fcsInfo.push(`${relatedDataset.target_expression_range_minimum}% \u2013 ${relatedDataset.target_expression_range_maximum}`);
+        }
+
+        // Extract perturbation type.
+        if (relatedDataset.perturbation_type) {
+            fcsInfo.push(relatedDataset.perturbation_type);
+        }
+
+        // Extract readout method.
+        if (relatedDataset.crispr_screen_readout) {
+            fcsInfo.push(relatedDataset.crispr_screen_readout);
+        }
+        return fcsInfo.join(', ');
+    },
+
+    GeneSilencingSeries: (relatedDataset) => (
+        relatedDataset.target ? relatedDataset.target.label : '(control)'
+    ),
+
+    OrganismDevelopmentSeries: (relatedDataset) => {
+        let lifeStageAge = [];
+        const biosamples = (relatedDataset.replicates && relatedDataset.replicates.length > 0)
+            ? relatedDataset.replicates.map((replicate) => replicate.library && replicate.library.biosample)
+            : [];
+        if (biosamples.length > 0) {
+            biosamples.forEach((biosample) => {
+                if (biosample.age_units === 'year') {
+                    lifeStageAge.push(biosample.age_display);
+                } else if (biosample.life_stage && biosample.age_display) {
+                    lifeStageAge.push(`${biosample.life_stage} ${biosample.age_display}`);
+                } else if (biosample.life_stage) {
+                    lifeStageAge.push(biosample.life_stage);
+                } else if (biosample.age_display) {
+                    lifeStageAge.push(biosample.age_display);
+                }
+            });
+        }
+        lifeStageAge = [...new Set(lifeStageAge)];
+        return lifeStageAge.length > 0 ? lifeStageAge.join(', ') : 'unknown';
+    },
+
+    PulseChaseTimeSeries: (relatedDataset) => {
+        const pulseChaseInfo = [relatedDataset.assay_term_name];
+        const treatments = relatedDataset.replicates
+            ? relatedDataset.replicates.reduce((allTreatments, replicate) => (
+                allTreatments.concat(replicate.library && replicate.library.biosample && replicate.library.biosample.treatments)
+            ), [])
+            : [];
+        if (treatments.length > 0) {
+            const durations = treatments.map((treatment) => `${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`);
+            pulseChaseInfo.push(durations);
+        }
+        return pulseChaseInfo.length > 0 ? pulseChaseInfo.join(', ') : '';
+    },
+
+    ReferenceEpigenome: (relatedDataset) => {
+        const referenceEpigenomeInfo = [relatedDataset.assay_term_name];
+        if (relatedDataset.target) {
+            referenceEpigenomeInfo.push(relatedDataset.target.label);
+        }
+        return referenceEpigenomeInfo.join(', ');
+    },
+
+    ReplicationTimingSeries: (relatedDataset) => {
+        let phases = [];
+        if (relatedDataset.replicates && relatedDataset.replicates.length > 0) {
+            const biosamples = relatedDataset.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+            phases = _.chain(biosamples.map((biosample) => biosample.phase)).compact().uniq().value();
+        }
+        return phases.join(', ');
+    },
+
+    TreatmentConcentrationSeries: (relatedDataset) => {
+        let concentration = [];
+        if (relatedDataset.replicates && relatedDataset.replicates.length > 0) {
+            const biosamples = relatedDataset.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+            if (biosamples.length > 0 && biosamples[0].treatments && biosamples[0].treatments.length > 0 && biosamples[0].treatments[0].amount) {
+                const treatment = biosamples[0].treatments[0];
+                concentration = `${treatment.treatment_term_name} ${treatment.amount} ${treatment.amount_units}`;
+            }
+        }
+        return concentration;
+    },
+
+    TreatmentTimeSeries: (relatedDataset) => {
+        let durations = [];
+        if (relatedDataset.replicates && relatedDataset.replicates.length > 0) {
+            const biosamples = relatedDataset.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+            durations.push(biosamples.map((biosample) => {
+                if (biosample.treatments && biosample.treatments.length > 0) {
+                    const treatment = biosamples[0].treatments[0];
+                    durations = `${treatment.treatment_term_name} ${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`;
+                }
+                return null;
+            }));
+        }
+        return durations;
+    },
+};
+
+
+/**
+ * Display the title portion for a file details table section.
+ */
+const TitleMainContent = ({
+    context,
+    analysis,
+    title,
+    totalFiles,
+    isDownloadable,
+    batchDownloadController,
+}) => {
+    // Based on the @type of the dataset, get a composer function appropriate for it to generate
+    // a subtitle, passing it the related datasets if it exists. Any dataset objects without a
+    // composer function get rendered normally.
+    let subtitle;
+    const type = context['@type'][0];
+    if (context.related_datasets && context.related_datasets.length > 0 && analysis) {
+        const relatedDataset = context.related_datasets.find((dataset) => analysis.datasets.includes(dataset['@id']));
+        if (relatedDataset) {
+            const composer = subtitleComposers[type];
+            if (composer) {
+                subtitle = composer(relatedDataset);
+            }
+        }
+    }
+
+    return (
+        <h4 className="title-main-content">
+            <div className="title-main-content__identifier">
+                <div className={`title-main-content__analysis-title${subtitle ? ' title-main-content__analysis-title--file-info' : ''}`}>
+                    {title}
+                </div>
+                {subtitle
+                    ? (
+                        <div className="title-main-content__file-info">
+                            {subtitle}
+                        </div>
+                    )
+                    : null
+                }
+            </div>
+            <span className="collapsing-title-file-count">({`${totalFiles} File${totalFiles !== 1 ? 's' : ''}`})</span>  &nbsp;&nbsp;
+            {isDownloadable ?
+                <BatchDownloadActuator
+                    controller={batchDownloadController}
+                    containerCss="collapsing-title__file-download-container"
+                    actuator={
+                        <button type="button" className="collapsing-title__file-download">
+                            <i className="icon icon-download">
+                                <span className="sr-only">Download</span>
+                            </i>
+                        </button>
+                    }
+                />
+            : null}
+        </h4>
+    );
+};
+
+TitleMainContent.propTypes = {
+    /** Dataset object being displayed */
+    context: PropTypes.object.isRequired,
+    /** Analysis represented by the current section of the file details table */
+    analysis: PropTypes.object,
+    /** Complete title for the title bar */
+    title: PropTypes.string.isRequired,
+    /** Total number of files in the section */
+    totalFiles: PropTypes.number.isRequired,
+    /** True if files within section can be downloaded */
+    isDownloadable: PropTypes.bool.isRequired,
+    /** Batch download controller object */
+    batchDownloadController: PropTypes.object.isRequired,
+};
+
+TitleMainContent.defaultProps = {
+    analysis: null,
+};
+
+
 const CollapsingTitleComponent = ({
     title,
     handleCollapse,
@@ -3875,22 +4092,14 @@ const CollapsingTitleComponent = ({
         <>
             <div className="collapsing-title">
                 <button type="button" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
-                <h4>
-                    {title} <span className="collapsing-title-file-count">({`${totalFiles} File${totalFiles !== 1 ? 's' : ''}`})</span>  &nbsp;&nbsp;
-                    {isDownloadable ?
-                        <BatchDownloadActuator
-                            controller={batchDownloadController}
-                            containerCss="collapsing-title__file-download-container"
-                            actuator={
-                                <button type="button" className="collapsing-title__file-download">
-                                    <i className="icon icon-download">
-                                        <span className="sr-only">Download</span>
-                                    </i>
-                                </button>
-                            }
-                        />
-                    : null}
-                </h4>
+                <TitleMainContent
+                    context={context}
+                    analysis={analysis}
+                    title={title}
+                    totalFiles={totalFiles}
+                    isDownloadable={isDownloadable}
+                    batchDownloadController={batchDownloadController}
+                />
                 {analysisObjectKey && analysis ? <Status item={analysis} css="collapsing-title__status" badgeSize="small" /> : null}
                 {auditIndicators(analysisAudit, title, { session: reactContext.session, sessionProperties: reactContext.session_properties })}
             </div>

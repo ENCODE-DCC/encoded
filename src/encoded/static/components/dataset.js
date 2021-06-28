@@ -2189,6 +2189,7 @@ export const SeriesComponent = (props, reactContext) => {
                 showDetailedTracks
                 hideAnalysisSelector
                 defaultOnly
+                relatedDatasets={experimentList}
             />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />

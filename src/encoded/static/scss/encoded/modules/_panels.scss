@@ -663,6 +663,8 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
     background-color: transparent;
 
     h4 {
+        display: flex;
+        align-items: center;
         margin: 0 10px 0 0;
         padding-left: 10px;
         text-align: left;
@@ -765,6 +767,25 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
 .collapsing-title-file-count {
     font-size: 0.9rem;
     color: #606060;
+}
+
+.title-main-content {
+    .title-main-content__identifier {
+        .title-main-content__analysis-title {
+            margin-right: 10px;
+            font-size: 1.3rem;
+            font-weight: 600;
+
+            &.title-main-content__analysis-title--file-info {
+                font-size: 1.1rem;
+            }
+        }
+
+        .title-main-content__file-info {
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+    }
 }
 
 .subpanel {
