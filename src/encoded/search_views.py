@@ -47,8 +47,23 @@ from snovault.elasticsearch.searches.parsers import ParamsParser
 from snovault.elasticsearch.searches.responses import FieldedGeneratorResponse
 from snovault.elasticsearch.searches.responses import FieldedResponse
 
+from snovault.elasticsearch import PyramidJSONSerializer
+from snovault.elasticsearch import TimedUrllib3HttpConnection
+from elasticsearch import Elasticsearch
+from snovault.json_renderer import json_renderer
+
+
+rna_client = Elasticsearch(
+    'localhost:9202',
+    serializer=PyramidJSONSerializer(json_renderer),
+    connection_class=TimedUrllib3HttpConnection,
+    retry_on_timeout=True,
+)
+
 
 def includeme(config):
+    config.add_route('rnaget-search', '/rnaget-search{slash:/?}')
+    config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
     config.add_route('search', '/search{slash:/?}')
     config.add_route('series_search', '/series-search{slash:/?}')
     config.add_route('encyclopedia', '/encyclopedia{slash:/?}')
@@ -75,6 +90,103 @@ def includeme(config):
     config.add_route('rnaget', '/rnaget{slash:/?}')
     config.add_route('rnaget-autocomplete', '/rnaget-autocomplete{slash:/?}')
     config.scan(__name__)
+
+
+@view_config(route_name='rnaget-matrix', request_method='GET', permission='search')
+def rnaget_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=MATRIX_TITLE
+            ),
+            TypeResponseField(
+                at_type=[MATRIX_TITLE]
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            BasicMatrixWithFacetsResponseField(
+                client=rna_client,
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='rnaget-search', request_method='GET', permission='search')
+def rnaget_search(context, request):
+    # Note the order of rendering matters for some fields, e.g. AllResponseField and
+    # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=SEARCH_TITLE
+            ),
+            TypeResponseField(
+                at_type=[SEARCH_TITLE]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            BasicSearchWithFacetsResponseField(
+                client=rna_client,
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            ClearFiltersResponseField(),
+            ColumnsResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='rnaget-report', request_method='GET', permission='search')
+def rnaget_report(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=REPORT_TITLE
+            ),
+            TypeResponseField(
+                at_type=[REPORT_TITLE]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            BasicReportWithFacetsResponseField(
+                client=rna_client,
+                default_item_types=DEFAULT_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            ColumnsResponseField(),
+            NonSortableResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
 
 
 @view_config(route_name='search', request_method='GET', permission='search')
@@ -272,6 +384,26 @@ def cart_search_generator(request):
             CartSearchResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 cart=CartWithElements(request),
+                reserved_keys=RESERVED_KEYS,
+            )
+        ]
+    )
+    return fgr.render()
+
+
+def expression_search_generator(request):
+    '''
+    For internal use (no view). Like search_quick but returns raw generator
+    of search hits in @graph field.
+    '''
+    fgr = FieldedGeneratorResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            BasicSearchResponseField(
+                client=rna_client,
+                default_item_types=DEFAULT_ITEM_TYPES,
                 reserved_keys=RESERVED_KEYS,
             )
         ]

@@ -13,6 +13,7 @@ from urllib.parse import (
 )
 from encoded.search_views import search_generator
 from encoded.search_views import cart_search_generator
+from encoded.search_views import expression_search_generator
 from .vis_defines import is_file_visualizable
 import csv
 import io
@@ -34,6 +35,7 @@ def get_file_uuids(result_dict):
             file_uuids.append(file['uuid'])
     return list(set(file_uuids))
 
+
 def get_biosample_accessions(file_json, experiment_json):
     for f in experiment_json['files']:
         if file_json['uuid'] == f['uuid']:
@@ -45,6 +47,7 @@ def get_biosample_accessions(file_json, experiment_json):
         accession = replicate['library']['biosample']['accession']
         accessions.append(accession)
     return ', '.join(list(set(accessions)))
+
 
 def get_peak_metadata_links(request):
     if request.matchdict.get('search_params'):
@@ -157,10 +160,24 @@ def is_cart_search(request):
     return bool(request.params.getall('cart'))
 
 
+def is_expression_search(request):
+    return 'Expression' in request.params.getall('type')
+
+
 def get_report_search_generator(request):
     if is_cart_search(request):
         return cart_search_generator
+    elif is_expression_search(request):
+        return expression_search_generator
     return search_generator
+
+
+def get_endpoint(request):
+   if is_cart_search(request):
+       return '/cart-report/'
+   elif is_expression_search(request):
+       return '/rnaget-report/'
+   return '/report/'
 
 
 @view_config(route_name='report_download', request_method='GET')
@@ -179,7 +196,7 @@ def report_download(context, request):
     columns = list_visible_columns_for_schemas(request, schemas)
     snake_type = _convert_camel_to_snake(type_str).replace("'", '')
 
-    endpoint = '/cart-report/' if is_cart_search(request) else '/report/'
+    endpoint = get_endpoint(request)
     report_search_generator = get_report_search_generator(request)
     results = report_search_generator(request)
 
