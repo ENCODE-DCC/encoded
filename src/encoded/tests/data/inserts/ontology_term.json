@@ -229,5 +229,77 @@
         "term_name": "right lobe of liver",
         "term_id": "UBERON:0001114",
         "status": "released"
+    },
+    {
+        "uuid": "7ca3b814-fc91-41bc-a6f5-6326c210b726",
+        "term_name": "54-year-old human stage",
+        "term_id": "HsapDv:0000148",
+        "status": "released"
+    },
+    {
+        "uuid": "d72824b3-c289-450e-8910-ecea4c017298",
+        "term_name": "human adult stage",
+        "term_id": "HsapDv:0000087",
+        "status": "released"
+    },
+    {
+        "uuid": "b94a4c6b-125a-47c3-9c75-dfc688cda0b6",
+        "term_name": "30-year-old human stage",
+        "term_id": "HsapDv:0000124",
+        "status": "released"
+    },
+    {
+        "uuid": "13d5b05c-445e-4600-92a6-0f4284601216",
+        "term_name": "16-year-old human stage",
+        "term_id": "HsapDv:0000110",
+        "status": "released"
+    },
+    {
+        "uuid": "7374f41a-4751-4514-974a-dfd86c01f58f",
+        "term_name": "4 month-old stage",
+        "term_id": "MmusDv:0000064",
+        "status": "released"
+    },
+    {
+        "uuid": "5e0b8935-55f2-48be-bf18-96df107d84f4",
+        "term_name": "19 month-old stage",
+        "term_id": "MmusDv:0000090",
+        "status": "released"
+    },
+    {
+        "uuid": "cee746c8-894f-4186-a727-4c2a6b05987b",
+        "term_name": "Theiler stage 22",
+        "term_id": "MmusDv:0000029",
+        "status": "released"
+    },
+    {
+        "uuid": "6abad271-8087-448f-a331-f75829ae4fcf",
+        "term_name": "Theiler stage 21",
+        "term_id": "MmusDv:0000028",
+        "status": "released"
+    },
+    {
+        "uuid": "d5d24d27-3879-48bf-8866-21727f1a0e86",
+        "term_name": "Carnegie stage 19",
+        "term_id": "HsapDv:0000026",
+        "status": "released"
+    },
+    {
+        "uuid": "eca26cc4-9ed8-4575-bc6e-e26fdb2fc08c",
+        "term_name": "15th week post-fertilization human stage",
+        "term_id": "HsapDv:0000052",
+        "status": "released"
+    },
+    {
+        "uuid": "b08331cf-b0c0-4361-88b2-4972a88ff42a",
+        "term_name": "fifth LMP month human stage",
+        "term_id": "HsapDv:0000199",
+        "status": "released"
+    },
+    {
+        "uuid": "886c4a80-95cc-44e5-a67e-28128c129bdb",
+        "term_name": "12th week post-fertilization human stage",
+        "term_id": "HsapDv:0000049",
+        "status": "released"
     }
 ]
