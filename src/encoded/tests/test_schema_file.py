@@ -289,3 +289,14 @@ def test_sequence_barcodes_format(testapp, file_sequence_barcodes):
         'file_format': 'txt',
         'md5sum': '77dae3da7245c7891729906a29428835'})
     testapp.post_json('/file', file_sequence_barcodes, status=201)
+
+
+def test_filter_type_filter_value(testapp, file_good_bam):
+    item = file_good_bam.copy()
+    item.update({'filter_type': 'bin size (kb)'})
+    testapp.post_json('/file', item, status=422)
+    item.pop('filter_type', None)
+    item.update({'filter_value': 3})
+    testapp.post_json('/file', item, status=422)
+    item.update({'filter_type': 'bin size (bp)'})
+    testapp.post_json('/file', item, status=201)

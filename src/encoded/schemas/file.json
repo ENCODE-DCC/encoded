@@ -1141,6 +1141,14 @@
                     "enum": ["restriction enzyme site locations"]
                 }
             }
+        },
+        "filter_type": {
+            "comment": "Filter type and value must be specified together.",
+            "required": ["filter_value"]
+        },
+        "filter_value": {
+            "comment": "Filter type and value must be specified together.",
+            "required": ["filter_type"]
         }
     },
     "properties": {
@@ -2002,6 +2010,25 @@
                 "GRCh38",
                 "mm10"
                 ]
+        },
+        "filter_type": {
+            "title": "Filter type",
+            "description": "Type of threshold used for filtering data, for example MAPQ (mapping quality) for alignments, or FDR percentage for peak calls.",
+            "comment": "The filter_type property requires specification of filter_value property.",
+            "type": "string",
+            "enum": [
+                "bin size (bp)",
+                "bin size (kb)",
+                "bin size (mb)",
+                "false discovery rate percentage",
+                "mapping quality"
+            ]
+        },
+        "filter_value": {
+            "title": "Filter value",
+            "description": "Numerical value representing the threshold used to filter the processed data.",
+            "comment": "The filter_value property requires specification of filter_type property.",
+            "type": "number"
         }
     },
     "columns": {
