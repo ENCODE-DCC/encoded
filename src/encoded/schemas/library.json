@@ -222,6 +222,10 @@
         "protocol.title": {
             "title": "Library protocol"
         },
+        "observation_count": {
+            "type": "exists",
+            "title": "Has raw count matrix"
+        },
         "read_count": {
             "type": "exists",
             "title": "Has sequence reads"
@@ -288,6 +292,9 @@
         },
         "protocol.title": {
             "title": "Library protocol"
+        },
+        "observation_count": {
+            "title": "Observation count"
         },
         "read_count": {
             "title": "Read count"
