@@ -92,36 +92,6 @@ def includeme(config):
     config.scan(__name__)
 
 
-@view_config(route_name='rnaget-matrix', request_method='GET', permission='search')
-def rnaget_matrix(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title=MATRIX_TITLE
-            ),
-            TypeResponseField(
-                at_type=[MATRIX_TITLE]
-            ),
-            IDResponseField(),
-            SearchBaseResponseField(),
-            ContextResponseField(),
-            BasicMatrixWithFacetsResponseField(
-                client=rna_client,
-                default_item_types=DEFAULT_ITEM_TYPES,
-                reserved_keys=RESERVED_KEYS,
-            ),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return fr.render()
-
-
 @view_config(route_name='rnaget-search', request_method='GET', permission='search')
 def rnaget_search(context, request):
     # Note the order of rendering matters for some fields, e.g. AllResponseField and
