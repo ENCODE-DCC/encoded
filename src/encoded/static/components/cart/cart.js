@@ -202,46 +202,52 @@ const CartFiles = ({ files, currentPage, defaultOnly, loading }) => {
                         </div>
                     )
                     : null}
-                {currentPageFiles.map((file) => (
-                    <a key={file['@id']} href={file['@id']} className={`cart-list-item${defaultOnly && file.pseudo_default ? ' cart-list-item--no-dl' : ''}`}>
-                        <div className={`cart-list-item__file-type cart-list-item__file-type--${file.file_format}`}>
-                            <div className="cart-list-item__format">{file.file_format}</div>
-                            {defaultOnly && file.pseudo_default ? <div className="cart-list-item__no-dl">Not downloadable</div> : null}
-                        </div>
-                        <div className="cart-list-item__props">
-                            <div className="cart-list-item__details">
-                                <div className="cart-list-details__output-type">
-                                    {file.output_type}
+                {currentPageFiles.map((file) => {
+                    let targets = file.target && file.target.label;
+                    if (!targets) {
+                        targets = file.targets && file.targets.map((target) => target.label).join(', ');
+                    }
+                    return (
+                        <a key={file['@id']} href={file['@id']} className={`cart-list-item${defaultOnly && file.pseudo_default ? ' cart-list-item--no-dl' : ''}`}>
+                            <div className={`cart-list-item__file-type cart-list-item__file-type--${file.file_format}`}>
+                                <div className="cart-list-item__format">{file.file_format}</div>
+                                {defaultOnly && file.pseudo_default ? <div className="cart-list-item__no-dl">Not downloadable</div> : null}
+                            </div>
+                            <div className="cart-list-item__props">
+                                <div className="cart-list-item__details">
+                                    <div className="cart-list-details__output-type">
+                                        {file.output_type}
+                                    </div>
+                                    <div className="cart-list-details__type">
+                                        <div className="cart-list-details__label">Type</div>
+                                        <div className="cart-list-details__value">{file.file_type}</div>
+                                    </div>
+                                    <div className="cart-list-details__target">
+                                        <div className="cart-list-details__label">Target</div>
+                                        <div className="cart-list-details__value">{targets || 'None'}</div>
+                                    </div>
+                                    <div className="cart-list-details__assay">
+                                        <div className="cart-list-details__label">Assay</div>
+                                        <div className="cart-list-details__value">{file.assay_term_name}</div>
+                                    </div>
+                                    <div className="cart-list-details__biosample">
+                                        <div className="cart-list-details__label">Biosample</div>
+                                        <div className="cart-list-details__value">{file.biosample_ontology && file.biosample_ontology.term_name}</div>
+                                    </div>
                                 </div>
-                                <div className="cart-list-details__type">
-                                    <div className="cart-list-details__label">Type</div>
-                                    <div className="cart-list-details__value">{file.file_type}</div>
-                                </div>
-                                <div className="cart-list-details__target">
-                                    <div className="cart-list-details__label">Target</div>
-                                    <div className="cart-list-details__value">{(file.target && file.target.label) || 'None'}</div>
-                                </div>
-                                <div className="cart-list-details__assay">
-                                    <div className="cart-list-details__label">Assay</div>
-                                    <div className="cart-list-details__value">{file.assay_term_name}</div>
-                                </div>
-                                <div className="cart-list-details__biosample">
-                                    <div className="cart-list-details__label">Biosample</div>
-                                    <div className="cart-list-details__value">{file.biosample_ontology && file.biosample_ontology.term_name}</div>
+                                <div className="cart-list-item__identifier">
+                                    <div className="cart-list-item__status">
+                                        <Status item={file.status} badgeSize="small" />
+                                    </div>
+                                    <div className="cart-list-item__title">
+                                        {file.title}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="cart-list-item__identifier">
-                                <div className="cart-list-item__status">
-                                    <Status item={file.status} badgeSize="small" />
-                                </div>
-                                <div className="cart-list-item__title">
-                                    {file.title}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="cart-list-item__hover" />
-                    </a>
-                ))}
+                            <div className="cart-list-item__hover" />
+                        </a>
+                    );
+                })}
             </div>
         );
     }
@@ -595,6 +601,14 @@ const addToAccumulatingFiles = (files, currentResults) => {
                                 file[fileProp] = facetField.getValue(file);
                             }
                         });
+
+                        // Special case: mutate the files to copy the target/targets of the parent
+                        // dataset.
+                        if (dataset.target) {
+                            file.target = dataset.target;
+                        } else if (dataset.targets && dataset.targets.length > 0) {
+                            file.targets = dataset.targets;
+                        }
                     }
                 });
             }

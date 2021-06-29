@@ -554,6 +554,21 @@ GenomeLegend.propTypes = {
 
 
 /**
+ * Retrieve the target from the given file. Some files have a `targets` array, in which case return
+ *  the first target from this array.
+ * @param {object} file File included in browser
+ * @returns {object} `target` or first `targets` object from file.
+ */
+const getFileTarget = (file) => {
+    let fileTarget = file.targets && file.targets[0];
+    if (!fileTarget) {
+        fileTarget = file.target;
+    }
+    return fileTarget;
+};
+
+
+/**
  * Display a label for a file’s track.
  */
 const TrackLabel = ({ file, label, long }) => {
@@ -563,9 +578,10 @@ const TrackLabel = ({ file, label, long }) => {
 
     // For Valis in carts, build the short string.
     let cartShortLabel;
+    const fileTarget = getFileTarget(file);
     if (label === 'cart') {
         cartShortLabel = _.compact([
-            file.target && file.target.label,
+            fileTarget && fileTarget.label,
             file.assay_term_name,
             file.biosample_ontology && file.biosample_ontology.term_name,
             file.annotation_type,
@@ -879,7 +895,8 @@ class GenomeBrowser extends React.Component {
             // Here we do some approximate math to try to figure out how many lines the labels extend to assuming that ~30 characters fit on one line
             // Labels on the experiment pages are short enough to fit on one line (they contain less information) so we can bypass these calculations for those pages
             if (label === 'cart') {
-                labelLength += file.target && file.target.label ? file.target.label.length + 2 : 0;
+                const fileTarget = getFileTarget(file);
+                labelLength += fileTarget && fileTarget.label ? fileTarget.label.length + 2 : 0;
                 labelLength += file.assay_term_name ? file.assay_term_name.length + 2 : 0;
                 labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length + 2 : 0;
                 labelLength += file.annotation_type ? file.annotation_type.length : 0;
