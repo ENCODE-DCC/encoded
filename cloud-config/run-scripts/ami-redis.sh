@@ -17,7 +17,7 @@ sudo sed -i -e "s/port 6379/port $ENCD_REDIS_PORT/" /etc/redis/redis.conf
 # Allow remote connections
 sudo sed -i -e 's/bind 127\.0\.0\.1/bind 0\.0\.0\.0/' /etc/redis/redis.conf
 # Add config for LRU cache
-echo "maxmemory 16gb" | sudo tee -a /etc/redis/redis.conf > /dev/null
+echo "maxmemory 12gb" | sudo tee -a /etc/redis/redis.conf > /dev/null
 echo "maxmemory-policy allkeys-lru" | sudo tee -a /etc/redis/redis.conf > /dev/null
 # Turn off persistence
 sudo sed -i -e 's/^save/#\ save/' /etc/redis/redis.conf
