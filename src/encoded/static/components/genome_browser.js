@@ -617,7 +617,7 @@ const TrackLabel = ({ file, label, long }) => {
                             {file.biosample_ontology && file.biosample_ontology.term_name ? <li>{file.biosample_ontology.term_name}</li> : null}
                             {file.target ? <li>{file.target.label}</li> : null}
                             {file.assay_term_name ? <li>{file.assay_term_name}</li> : null}
-                            {file.simple_summary ? <li>{file.simple_summary}</li> : null}
+                            {file.biosample_simple_summary ? <li>{file.biosample_simple_summary}</li> : null}
                             <li>{file.output_type}</li>
                             {file.annotation_subtype ? <li>{(file.annotation_subtype)}</li> : null}
                             {file.biochemical_inputs ? <li>{(file.biochemical_inputs).join(', ')}</li> : null}

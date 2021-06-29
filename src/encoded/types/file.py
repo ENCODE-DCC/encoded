@@ -102,6 +102,7 @@ EMBEDDED_DATASET_FIELDS = [
     'annotation_subtype',
     'biochemical_inputs',
     'biosample_ontology',
+    'simple_biosample_summary',
     'target',
     'targets',
     'encyclopedia_version'
@@ -699,6 +700,21 @@ class File(Item):
         path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
         path.expand(request, properties)
         return properties.get('dataset', {}).get('biosample_ontology')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Simple biosample summary",
+            "type": "string",
+            "notSubmittable": True
+        }
+    )
+    def biosample_simple_summary(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('simple_summary')
 
     @calculated_property(
         condition='dataset',
