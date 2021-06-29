@@ -1202,6 +1202,19 @@ $file-type-colors: (
             content: "";
         }
     }
+
+    @at-root #{&}__subheader {
+        padding: 5px;
+        font-size: 1rem;
+        font-weight: 600;
+        background-color: #d8e0e8;
+
+        @media screen and (min-width: $screen-xs-min) {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
 }
 
 // Control to batch download cart files.

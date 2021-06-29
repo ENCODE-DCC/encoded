@@ -33,7 +33,9 @@ const METADATA_SERIES_TYPES = [
     'MatchedSet',
     'MultiomicsSeries',
     'OrganismDevelopmentSeries',
+    'PulseChaseTimeSeries',
     'ReferenceEpigenome',
+    'ReplicationTimingSeries',
     'SingleCellRnaSeries',
     'TreatmentConcentrationSeries',
     'TreatmentTimeSeries',
@@ -1855,38 +1857,32 @@ const collectSeriesAnalysesAndFiles = (context) => {
 };
 
 
-// Map series @id to title and table columns
-const seriesComponents = {
-    MatchedSet: { title: 'matched set series', table: basicTableColumns },
-    OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
-    OrganismDevelopmentSeriesWormFly: { title: 'organism development series', table: organismDevelopmentSeriesWormFlyTableColumns },
-    ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
-    ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
-    TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
-    TreatmentTimeSeries: { title: 'treatment time series', table: treatmentTimeSeriesTableColumns },
-    AggregateSeries: { title: 'aggregate series', table: basicTableColumns },
-    SingleCellRnaSeries: { title: 'single cell rna series', table: basicTableColumns },
-    FunctionalCharacterizationSeries: { title: 'functional characterization series', table: functionalCharacterizationSeriesTableColumns },
-    GeneSilencingSeries: { title: 'gene silencing series', table: geneSilencingSeriesTableColumns },
-    DifferentiationSeries: { title: 'differentiation series', table: basicTableColumns },
-    PulseChaseTimeSeries: { title: 'pulse chase time series', table: basicTableColumns },
-    DiseaseSeries: { title: 'disease series', table: basicTableColumns },
-    MultiomicsSeries: { title: 'multiomics series', table: basicTableColumns },
+/**
+ * Build an object for the standard series breadcrumbs.
+ * @param {object} context Series object that displays breadcrumbs
+ * @param {string} seriesTitle Title of the series object
+ * @returns Object suitable for <Breadcrumbs> component
+ */
+const composeSeriesBreadcrumbs = (context, seriesTitle) => {
+    const datasetType = context['@type'][1];
+    const seriesType = context['@type'][0];
+    return [
+        { id: 'Datasets' },
+        { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+        { id: seriesTitle, uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
+    ];
 };
 
-export const SeriesComponent = (props, reactContext) => {
-    const { context, auditIndicators, auditDetail } = props;
+
+/**
+ * Displays the common elements of all Series-derived pages. This must get called from wrappers
+ * specific to each type of Series-derived object.
+ */
+export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, options, auditIndicators, auditDetail }, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
-    let experiments = {};
-    context.files.forEach((file) => {
-        const experiment = file.replicate && file.replicate.experiment;
-        if (experiment) {
-            experiments[experiment['@id']] = experiment;
-        }
-    });
-    experiments = _.values(experiments);
+    const seriesType = context['@type'][0];
 
     // Collect all the default files from all the related datasets of the given Series object,
     // filtered by the files in the released analyses of the related datasets, if any.
@@ -1895,57 +1891,11 @@ export const SeriesComponent = (props, reactContext) => {
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
-    // Set up the breadcrumbs
-    const datasetType = context['@type'][1];
-    let seriesType = context['@type'][0];
-    let crumbs;
-    const functionalGenomicsSeries = ['OrganismDevelopmentSeries', 'TreatmentTimeSeries', 'TreatmentConcentrationSeries', 'ReplicationTimingSeries', 'GeneSilencingSeries'];
-    if (functionalGenomicsSeries.indexOf(seriesType) > -1) {
-        crumbs = [
-            { id: 'Datasets' },
-            { id: breakSetName(seriesType), uri: `/series-search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
-        ];
-    } else {
-        crumbs = [
-            { id: 'Datasets' },
-            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
-            { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
-        ];
-    }
-
-    if (seriesType === 'OrganismDevelopmentSeries' && context.organism && context.organism.length > 0 && ((context.organism[0].scientific_name === 'Caenorhabditis elegans') || (context.organism[0].scientific_name === 'Drosophila melanogaster'))) {
-        seriesType = 'OrganismDevelopmentSeriesWormFly';
-    }
-
-    let treatmentDuration = [];
-    let combinedTreatmentDuration;
-    let treatmentAmounts = [];
-    let combinedTreatmentAmounts;
-    context.related_datasets.forEach((d) => {
-        let biosamples;
-        if (seriesType !== 'SingleCellRnaSeries' && d.replicates && d.replicates.length > 0) {
-            biosamples = d.replicates.map((replicate) => replicate.library && replicate.library.biosample);
-        }
-        if (biosamples && biosamples.length > 0) {
-            biosamples.forEach((biosample) => biosample.treatments.forEach((treatment) => {
-                if (treatment.duration) {
-                    treatmentDuration.push(`${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`);
-                }
-                if (treatment.amount) {
-                    treatmentAmounts.push(`${treatment.amount} ${treatment.amount_units} ${treatment.treatment_term_name}`);
-                } else if (treatment.treatment_term_name) {
-                    treatmentAmounts.push(treatment.treatment_term_name);
-                }
-            }));
-        }
-    });
+    // Set up the breadcrumbs, either specific to a series type or the default ones.
+    const displayedBreadCrumbs = breadcrumbs || composeSeriesBreadcrumbs(context, title);
 
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
-
-    // Make the series title
-    const seriesComponent = seriesComponents[seriesType];
-    const seriesTitle = seriesComponent ? seriesComponent.title : 'series';
 
     // Calculate the biosample summary
     let speciesRender = null;
@@ -1965,39 +1915,18 @@ export const SeriesComponent = (props, reactContext) => {
     const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? [...new Set(context.biosample_ontology.map((b) => b.term_name))] : [];
 
     // Calculate the donor diversity.
-    const diversity = seriesType !== 'SingleCellRnaSeries' ? donorDiversity(context) : null;
+    const diversity = options.suppressDonorDiversity ? null : donorDiversity(context);
 
-    // Filter out any files we shouldn't see.
+    // Filter out any datasets we shouldn't see.
     const experimentList = context.related_datasets.filter((dataset) => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
 
-    // If we display a table of related experiments, have to render the control to add all of
-    // them to the current cart.
-    let addAllToCartControl;
-    if (experimentList.length > 0) {
-        const experimentIds = experimentList.map((experiment) => experiment['@id']);
-        addAllToCartControl = (
-            <div className="experiment-table__header">
-                <h4 className="experiment-table__title">{`Experiments in ${seriesTitle} ${context.accession}`}</h4>
-                <CartAddAllElements elements={experimentIds} />
-            </div>
-        );
-    }
-
-    let targets;
     // Get list of target labels
+    let targets;
     if (context.target) {
         targets = [...new Set(context.target.map((target) => target.label))];
     }
-    if (treatmentDuration.length > 0) {
-        treatmentDuration = [...new Set(treatmentDuration)];
-        combinedTreatmentDuration = treatmentDuration.join(', ');
-    }
-    if (treatmentAmounts.length > 0) {
-        treatmentAmounts = [...new Set(treatmentAmounts)];
-        combinedTreatmentAmounts = treatmentAmounts.join(', ');
-    }
 
-    // As of code-time, there is a chance disease term namess across biosamples could be different. So
+    // As of code-time, there is a chance disease term names across biosamples could be different. So
     // the code takes this into account
     const diseases = [
         ...new Set(context.related_datasets.reduce((accumulatedDiseases, currentRelatedDataset) => {
@@ -2009,8 +1938,8 @@ export const SeriesComponent = (props, reactContext) => {
     return (
         <div className={itemClass}>
             <header>
-                <TopAccessories context={context} crumbs={crumbs} />
-                <h1>Summary for {seriesTitle} {context.accession}</h1>
+                <TopAccessories context={context} crumbs={displayedBreadCrumbs} />
+                <h1>Summary for {title.toLowerCase()} {context.accession}</h1>
                 <DoiRef context={context} />
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} hasCartControls={seriesType === 'FunctionalCharacterizationSeries'} />
@@ -2066,7 +1995,6 @@ export const SeriesComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-
                             <div data-test="diseasetermname">
                                 <dt>Disease{diseases && diseases.length !== 1 ? 's' : ''}</dt>
                                 <dd>{diseases && diseases.length > 0 ? diseases.join(', ') : 'Not reported'}</dd>
@@ -2076,15 +2004,10 @@ export const SeriesComponent = (props, reactContext) => {
                                 <div data-test="treatmenttermname">
                                     <dt>Treatment{context.treatment_term_name.length > 0 ? 's' : ''}</dt>
                                     <dd>
-                                        {seriesType === 'TreatmentConcentrationSeries' && treatmentDuration ?
-                                            <>{context.treatment_term_name} for {combinedTreatmentDuration}</>
-                                        : null}
-                                        {seriesType === 'TreatmentTimeSeries' && treatmentAmounts ?
-                                            <>{combinedTreatmentAmounts}</>
-                                        : null}
-                                        {(treatmentDuration.length === 0 || seriesType !== 'TreatmentConcentrationSeries') && (treatmentAmounts.length === 0 || seriesType !== 'TreatmentTimeSeries') ?
-                                            <>{context.treatment_term_name.join(', ')}</>
-                                        : null}
+                                        {options.Treatments
+                                            ? <>{options.Treatments}</>
+                                            : <>{context.treatment_term_name.join(', ')}</>
+                                        }
                                     </dd>
                                 </div>
                             : null}
@@ -2167,14 +2090,25 @@ export const SeriesComponent = (props, reactContext) => {
                 </PanelBody>
             </Panel>
 
-            {addAllToCartControl ?
-                <SortTablePanel header={addAllToCartControl}>
-                    <SortTable
-                        list={experimentList}
-                        columns={seriesComponent.table}
-                        meta={{ adminUser }}
-                    />
-                </SortTablePanel>
+            {experimentList.length > 0 ?
+                <>
+                    {options.ExperimentTable || (
+                        <SortTablePanel
+                            header={
+                                <div className="experiment-table__header">
+                                    <h4 className="experiment-table__title">{`Experiments in ${title} ${context.accession}`}</h4>
+                                    <CartAddAllElements elements={experimentList.map((experiment) => experiment['@id'])} />
+                                </div>
+                            }
+                        >
+                            <SortTable
+                                list={experimentList}
+                                columns={tableColumns}
+                                meta={{ adminUser }}
+                            />
+                        </SortTablePanel>
+                    )}
+                </>
             : null}
 
             {/* Display list of released and unreleased files */}
@@ -2193,7 +2127,7 @@ export const SeriesComponent = (props, reactContext) => {
                 defaultOnly
             />
 
-            <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
+            <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
             <DocumentsPanelReq documents={datasetDocuments} />
         </div>
@@ -2201,16 +2135,526 @@ export const SeriesComponent = (props, reactContext) => {
 };
 
 SeriesComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Series object to display
-    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+    /** Series object to display */
+    context: PropTypes.object.isRequired,
+    /** Series-dependent title */
+    title: PropTypes.string.isRequired,
+    /** Series-dependent experiment table columns */
+    tableColumns: PropTypes.object,
+    /** Breadcrumbs to display if not default */
+    breadcrumbs: PropTypes.array,
+    /** Series-dependent options */
+    options: PropTypes.exact({
+        /** React component to display specialized treatments */
+        Treatments: PropTypes.node,
+        /** React component to display the experiment table, overriding the default */
+        ExperimentTable: PropTypes.node,
+        /** True to suppress the calculation and display of donor diversity */
+        suppressDonorDiversity: PropTypes.bool,
+    }),
+    /** Audit decorator function */
+    auditIndicators: PropTypes.func.isRequired,
+    /** Audit decorator function */
+    auditDetail: PropTypes.func.isRequired,
+};
+
+SeriesComponent.defaultProps = {
+    tableColumns: null,
+    breadcrumbs: null,
+    options: {},
 };
 
 SeriesComponent.contextTypes = {
     session: PropTypes.object,
     session_properties: PropTypes.object,
+    profilesTitles: PropTypes.object,
 };
 
 const Series = auditDecor(SeriesComponent);
 
-globals.contentViews.register(Series, 'Series');
+
+/**
+ * Wrapper component for those Series objects that have the standard Series display.
+ */
+const StandardSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={basicTableColumns}
+        />
+    );
+};
+
+StandardSeries.propTypes = {
+    /** Series-derived object */
+    context: PropTypes.object.isRequired,
+};
+
+StandardSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(StandardSeries, 'AggregateSeries');
+globals.contentViews.register(StandardSeries, 'DifferentiationSeries');
+globals.contentViews.register(StandardSeries, 'MatchedSet');
+globals.contentViews.register(StandardSeries, 'MultiomicsSeries');
+globals.contentViews.register(StandardSeries, 'PulseChaseTimeSeries');
+globals.contentViews.register(StandardSeries, 'ReferenceEpigenome');
+
+
+/**
+ * Composes the breadcrumbs for the various function genomics series objects.
+ * @param {object} context Series-derived object
+ * @param {*} seriesTitle Title of this series-derived object
+ * @returns {object} For the <Breadcrumbs> component
+ */
+const composeFunctionalGenomicsSeriesBreadcrumbs = (context, seriesTitle) => {
+    const seriesType = context['@type'][0];
+    return [
+        { id: 'Datasets' },
+        { id: seriesTitle, uri: `/series-search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
+    ];
+};
+
+
+/**
+ * Wrapper component for the different functional genomics series objects.
+ */
+const FunctionalGenomicsSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={geneSilencingSeriesTableColumns}
+            breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
+        />
+    );
+};
+
+FunctionalGenomicsSeries.propTypes = {
+    /** Functional genomics series-derived object */
+    context: PropTypes.object.isRequired,
+};
+
+FunctionalGenomicsSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(FunctionalGenomicsSeries, 'GeneSilencingSeries');
+globals.contentViews.register(FunctionalGenomicsSeries, 'ReplicationTimingSeries');
+globals.contentViews.register(FunctionalGenomicsSeries, 'TreatmentConcentrationSeries');
+globals.contentViews.register(FunctionalGenomicsSeries, 'TreatmentTimeSeries');
+
+
+/**
+ * Displays a table of related experiments on DiseaseSeries pages. It can appear with one or two
+ * sections; one containing experiments without disease and the other containing experiments with
+ * one or more diseases.
+ */
+const DiseaseExperimentTable = ({ datasetsByDisease, title, accession, adminUser }) => {
+    // Combine all datasets with biosamples that have disease terms into one array.
+    const diseaseTerms = Object.keys(datasetsByDisease).filter((term) => term !== 'None');
+    const diseaseDatasets = diseaseTerms.reduce((allDiseaseDatasets, term) => (
+        allDiseaseDatasets.concat(datasetsByDisease[term])
+    ), []);
+
+    // Get the datasets without disease biosamples, if any.
+    const noDiseaseDatasets = datasetsByDisease.None || [];
+
+    // For the disease dataset table, determine the disease name to use, or "Disease" if more than
+    // one.
+    const diseaseTerm = diseaseTerms.length === 1 ? diseaseTerms[0] : 'Disease';
+
+    if (diseaseDatasets.length + noDiseaseDatasets.length > 0) {
+        return (
+            <SortTablePanel
+                header={
+                    <div className="experiment-table__header">
+                        <h4 className="experiment-table__title">{`Experiments in ${title.toLowerCase()} ${accession}`}</h4>
+                    </div>
+                }
+            >
+                {diseaseDatasets.length > 0 ?
+                    <>
+                        <div className="experiment-table__subheader">
+                            {`${diseaseTerm.uppercaseFirstChar()} samples in series`}
+                            <CartAddAllElements elements={diseaseDatasets.map((experiment) => experiment['@id'])} />
+                        </div>
+                        <SortTable
+                            list={diseaseDatasets}
+                            columns={basicTableColumns}
+                            meta={{ adminUser }}
+                        />
+                    </>
+                : null}
+                {noDiseaseDatasets.length > 0 ?
+                    <>
+                        <div className="experiment-table__subheader">
+                            Non-diseased experiments in series
+                            <CartAddAllElements elements={noDiseaseDatasets.map((experiment) => experiment['@id'])} />
+                        </div>
+                        <SortTable
+                            list={noDiseaseDatasets}
+                            columns={basicTableColumns}
+                            meta={{ adminUser }}
+                        />
+                    </>
+                : null}
+            </SortTablePanel>
+        );
+    }
+    return null;
+};
+
+DiseaseExperimentTable.propTypes = {
+    /** Arrays of datasets with corresponding diseases as keys */
+    datasetsByDisease: PropTypes.object.isRequired,
+    /** Title of series */
+    title: PropTypes.string.isRequired,
+    /** Accession of series object */
+    accession: PropTypes.string.isRequired,
+    /** True if logged-in user has admin privileges */
+    adminUser: PropTypes.bool.isRequired,
+};
+
+
+/**
+ * Collects the biosamples contained in all replicate libraries within the given dataset.
+ * @param {object} dataset Dataset from which to extract all biosamples.
+ * @returns {array} Array of all biosamples in all replicates of `dataset`.
+ */
+const collectRelatedDatasetBiosamples = (dataset) => (
+    dataset.replicates.reduce((biosamples, replicate) => (
+        replicate.library && replicate.library.biosample ? biosamples.concat(replicate.library.biosample) : biosamples
+    ), [])
+);
+
+
+/**
+ * Groups the given datasets by the `disease_term_name` in their biosamples. Any datasets with no
+ * such biosamples get listed under the key "None." Any datasets with biosamples with a mix of
+ * different `disease_term_name` values -- including those biosamples with more than one value --
+ * get listed under the key "Disease." An example:
+ * {
+ *     'Alzheimer's disease': [datasets where all biosamples specify Alzheimer's]
+ *     'Disease': [datasets with a mix of biosample diseases]
+ *     'None': [datasets with no disease biosamples]
+ * }
+ * @param {array} datasets Datasets to group by biosample `disease_term_name`.
+ * @returns {object} Arrays of datasets keyed by common disease terms.
+ */
+const groupDatasetsByDisease = (datasets) => (
+    _(datasets).groupBy((dataset) => {
+        const relatedDatasetBiosamples = collectRelatedDatasetBiosamples(dataset);
+        if (relatedDatasetBiosamples.length > 0) {
+            // Look for the first biosample in the dataset that contains a filled
+            // `disease_term_name` property.
+            const firstDiseaseBiosample = relatedDatasetBiosamples.find((biosample) => biosample.disease_term_name && biosample.disease_term_name.length > 0);
+            if (firstDiseaseBiosample) {
+                // See if all biosamples in the dataset have a single `disease_term_name` value
+                // matching the first one we found, guaranteeing all biosamples in the dataset
+                // specify the same disease.
+                const firstDiseaseTerm = firstDiseaseBiosample.disease_term_name[0] || 'None';
+                const isHomogeneous = relatedDatasetBiosamples.every((biosample) => (
+                    biosample.disease_term_name.length === 1 && biosample.disease_term_name[0] === firstDiseaseTerm
+                ));
+                return isHomogeneous ? firstDiseaseTerm : 'Disease';
+            }
+        }
+
+        // No biosamples in the related dataset, so use disease "None."
+        return 'None';
+    })
+);
+
+
+/**
+ * Wrapper component for DiseaseSeries pages.
+ */
+const DiseaseSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
+
+    // Group the datasets that include at least one biosample with `disease_term_name` by disease.
+    const datasetsByDisease = groupDatasetsByDisease(context.related_datasets);
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            breadcrumbs={composeSeriesBreadcrumbs(context, seriesTitle)}
+            options={{
+                ExperimentTable: (
+                    <DiseaseExperimentTable
+                        datasetsByDisease={datasetsByDisease}
+                        title={seriesTitle}
+                        accession={context.accession}
+                        adminUser={adminUser}
+                    />
+                ),
+            }}
+        />
+    );
+};
+
+DiseaseSeries.propTypes = {
+    /** Disease series object */
+    context: PropTypes.object.isRequired,
+};
+
+DiseaseSeries.contextTypes = {
+    session_properties: PropTypes.object,
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(DiseaseSeries, 'DiseaseSeries');
+
+
+/**
+ * Wrapper component for functional characterization series pages.
+ */
+const FunctionalCharacterizationSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={functionalCharacterizationSeriesTableColumns}
+            breadcrumbs={composeSeriesBreadcrumbs(context, seriesTitle)}
+        />
+    );
+};
+
+FunctionalCharacterizationSeries.propTypes = {
+    /** Functional characterization series object */
+    context: PropTypes.object.isRequired,
+};
+
+FunctionalCharacterizationSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(FunctionalCharacterizationSeries, 'FunctionalCharacterizationSeries');
+
+
+/**
+ * Wrapper component for organism development series pages.
+ */
+const OrganismDevelopmentSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    // Determine which table columns to display based on the organism type associated with this
+    // series object.
+    let isFlyOrWorm = false;
+    const hasOrganism = context.organism && context.organism.length > 0;
+    if (hasOrganism) {
+        const organism = context.organism[0].scientific_name;
+        isFlyOrWorm = organism === 'Caenorhabditis elegans' || organism === 'Drosophila melanogaster';
+    }
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={isFlyOrWorm ? organismDevelopmentSeriesWormFlyTableColumns : organismDevelopmentSeriesTableColumns}
+            breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
+        />
+    );
+};
+
+OrganismDevelopmentSeries.propTypes = {
+    /** Organism development series object */
+    context: PropTypes.object.isRequired,
+};
+
+OrganismDevelopmentSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(OrganismDevelopmentSeries, 'OrganismDevelopmentSeries');
+
+
+/**
+ * Wrapper component for replication timing series pages.
+ */
+const ReplicationTimingSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={replicationTimingSeriesTableColumns}
+            breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
+        />
+    );
+};
+
+ReplicationTimingSeries.propTypes = {
+    /** Replication timing series object */
+    context: PropTypes.object.isRequired,
+};
+
+ReplicationTimingSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(ReplicationTimingSeries, 'ReplicationTimingSeries');
+
+
+/**
+ * Wrapper component for single-cell RNA series pages.
+ */
+const SingleCellRnaSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={basicTableColumns}
+            breadcrumbs={composeSeriesBreadcrumbs(context, seriesTitle)}
+            options={{
+                suppressDonorDiversity: true,
+            }}
+        />
+    );
+};
+
+SingleCellRnaSeries.propTypes = {
+    /** Single-cell RNA series object */
+    context: PropTypes.object.isRequired,
+};
+
+SingleCellRnaSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(SingleCellRnaSeries, 'SingleCellRnaSeries');
+
+
+/**
+ * Wrapper component for treatment concentration series pages.
+ */
+const TreatmentConcentrationSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    // Build an array of treatment duration display strings from the biosample treatments of the
+    // related datasets.
+    const treatmentDurations = context.related_datasets.reduce((accTreatmentDurations, relatedDataset) => {
+        // Collect any biosamples found in all related datasets.
+        const biosamples = relatedDataset.replicates.reduce((accBiosamples, replicate) => {
+            const biosample = replicate.library && replicate.library.biosample;
+            return biosample ? accBiosamples.concat(biosample) : accBiosamples;
+        }, []);
+
+        // Collect durations in the biosample treatments and compose them into displayable strings.
+        const collectedDurations = biosamples.reduce((accCollectedDurations, biosample) => {
+            const durations = biosample.treatments.reduce((accDurations, treatment) => (
+                treatment.duration
+                    ? accDurations.concat(`${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`)
+                    : accDurations
+            ), []);
+            return accCollectedDurations.concat(durations);
+        }, []);
+
+        return [...new Set(accTreatmentDurations.concat(collectedDurations))];
+    }, []);
+
+    const options = {};
+    if (treatmentDurations.length > 0) {
+        options.Treatments = <>{context.treatment_term_name} for {treatmentDurations.join(', ')}</>;
+    }
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={treatmentSeriesTableColumns}
+            breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
+            options={options}
+        />
+    );
+};
+
+TreatmentConcentrationSeries.propTypes = {
+    /** Treatment concentration series object */
+    context: PropTypes.object.isRequired,
+};
+
+TreatmentConcentrationSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(TreatmentConcentrationSeries, 'TreatmentConcentrationSeries');
+
+
+/**
+ * Wrapper component for treatment time series pages.
+ */
+const TreatmentTimeSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    // Build an array of treatment duration display strings from the biosample treatments of the
+    // related datasets.
+    const treatmentAmounts = context.related_datasets.reduce((accTreatmentAmounts, relatedDataset) => {
+        // Collect any biosamples found in all related datasets.
+        const biosamples = relatedDataset.replicates.reduce((accBiosamples, replicate) => {
+            const biosample = replicate.library && replicate.library.biosample;
+            return biosample ? accBiosamples.concat(biosample) : accBiosamples;
+        }, []);
+
+        // Collect durations in the biosample treatments and compose them into displayable strings.
+        const collectedAmounts = biosamples.reduce((accCollectedDurations, biosample) => {
+            const amounts = biosample.treatments.reduce((accAmounts, treatment) => (
+                treatment.amount
+                    ? accAmounts.concat(`${treatment.amount} ${treatment.amount_units} ${treatment.treatment_term_name}`)
+                    : accAmounts
+            ), []);
+            return accCollectedDurations.concat(amounts);
+        }, []);
+
+        return [...new Set(accTreatmentAmounts.concat(collectedAmounts))];
+    }, []);
+
+    const options = {};
+    if (treatmentAmounts.length > 0) {
+        options.Treatments = <>{treatmentAmounts.join(', ')}</>;
+    }
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={treatmentTimeSeriesTableColumns}
+            breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
+            options={options}
+        />
+    );
+};
+
+TreatmentTimeSeries.propTypes = {
+    /** Treatment time series object */
+    context: PropTypes.object.isRequired,
+};
+
+TreatmentTimeSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(TreatmentTimeSeries, 'TreatmentTimeSeries');

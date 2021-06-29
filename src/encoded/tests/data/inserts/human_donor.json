@@ -257,5 +257,21 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "5475b837-6ee9-47b9-ae70-dc292f4b936e"
+    },
+    {
+        "_test": "For disease series",
+        "accession": "ENCDO921RVK",
+        "age": "90 or above",
+        "age_units": "year",
+        "award": "UM1HG009442",
+        "ethnicity": ["Caucasian"],
+        "lab": "john-stamatoyannopoulos",
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "male",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "submitter_comment": "NINCDS PROB AD",
+        "uuid": "ff42aea0-99e3-4b98-94fe-4b403218c9fa"
     }
 ]
