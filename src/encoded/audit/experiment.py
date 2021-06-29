@@ -1749,7 +1749,7 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
             sample_characterization_status.setdefault(status, [])
             sample_characterization_status[status].append(biosample['@id'])
         # Check immediate parent of biosample for characterizations, via part_of or originated_from
-        # The parent biosample must match the child in ontology, treatments, and applied modifications
+        # The parent biosample must match the child ontology, treatments, and applied modifications
         if not sample_characterization_status:
             child_mods = sorted(mods)
             child_treatments = sorted(biosample.get('treatments', []))
@@ -3789,6 +3789,7 @@ function_dispatcher_with_files = {
         'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
         'replicates.library.biosample.characterizations',
+        'replicates.library.biosample.originated_from.characterizations',
         'replicates.library.biosample.part_of.characterizations',
         'replicates.library.biosample.pooled_from.characterizations',
         'replicates.library.biosample.donor',
