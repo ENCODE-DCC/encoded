@@ -489,8 +489,24 @@ class Biosample(Item):
                         depleted_in_term_name=None,
                         disease_term_name=None,
                         phase=None,
+                        synchronization=None,
                         subcellular_fraction_term_name=None,
+                        post_synchronization_time=None,
+                        post_synchronization_time_units=None,
+                        post_treatment_time=None,
+                        post_treatment_time_units=None,
+                        post_nucleic_acid_delivery_time=None,
+                        post_nucleic_acid_delivery_time_units=None,
+                        post_differentiation_time=None,
+                        post_differentiation_time_units=None,
+                        pulse_chase_time=None,
+                        pulse_chase_time_units=None,
                         treatments=None,
+                        part_of=None,
+                        originated_from=None,
+                        transfection_method=None,
+                        transfection_type=None,
+                        preservation_method=None,
                         genetic_modifications=None,
                         model_organism_donor_modifications=None):
 
@@ -517,54 +533,58 @@ class Biosample(Item):
 
         biosample_dictionary = generate_summary_dictionary(
             request,
-            None,  #organismObject,
+            organismObject,
             donorObject,
             age,
             age_units,
             life_stage,
             sex,
-            None, #biosample_term_name,
-            None, #biosample_type,
+            biosample_term_name,
+            biosample_type,
             starting_amount,
             starting_amount_units,
             depleted_in_term_name,
             disease_term_name,
             phase,
             subcellular_fraction_term_name,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None, 
-            None,
+            synchronization,
+            post_synchronization_time,
+            post_synchronization_time_units,
+            post_treatment_time,
+            post_treatment_time_units,
+            post_nucleic_acid_delivery_time,
+            post_nucleic_acid_delivery_time_units,
+            post_differentiation_time,
+            post_differentiation_time_units,
+            pulse_chase_time,
+            pulse_chase_time_units,
             treatment_objects_list,
-            None,
+            preservation_method,
             part_of_object,
             originated_from_object,
             modifications_list)
         # just filter this by specific dict keys
         reduced = [
             'sex_stage_age',
+            'disease_term_name',
             'treatments_phrase',
             'genotype_strain',
             'strain_background',
             'modifications_list',
-            'disease_term_name',
             'treatments_phrase',
             'depleted_in',
             'phase',
             'fractionated',
             'synchronization',
         ]
-        reduced_dictionary = {k: v for k, v in biosample_dictionary.items() if k in reduced}
-        return " ".join([ str((x,y)) for (x,y) in reduced_dictionary.items() if y ])
-        # return construct_biosample_summary([biosample_dictionary],
-        #                                  sentence_parts)
+        props_list = []
+        for prop in reduced:
+            # I don't know why I can't compose this in the correct order with no duplicates but I am annoyed.
+            if biosample_dictionary.get(prop, None) and biosample_dictionary[prop] not in props_list:
+                props_list.append(biosample_dictionary[prop])
+        
+        return " ".join(props_list).strip()
+        # return " ".join([ str(biosample_dictionary[x]) for x in reduced if biosample_dictionary.get(x) ])
 
     @calculated_property(schema={
         "title": "Summary",
