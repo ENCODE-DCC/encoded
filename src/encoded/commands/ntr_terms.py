@@ -248,7 +248,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0000642": {
-        "assay": ['Transcription'],
+        "assay": ['Single cell'],
         "category": [],
         "developmental": [],
         "name": "long read single-cell RNA-seq",

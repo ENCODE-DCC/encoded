@@ -11,7 +11,7 @@ install: download-ontology javascript
 javascript-and-download-files: download-annotations download-ontology javascript
 
 download-ontology:
-	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-2021-06-15.json
+	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-2021-06-22.json
 
 download-annotations:
 	curl -o annotations.json https://s3-us-west-1.amazonaws.com/encoded-build/annotations/annotations_2020_10_21.json
