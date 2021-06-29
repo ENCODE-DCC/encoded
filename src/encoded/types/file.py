@@ -276,7 +276,7 @@ class RawSequenceFile(DataFile):
     })
     def raw_matrix_files(self, request, raw_matrix_files=None):
         if raw_matrix_files:
-            return raw_matrix_files
+            return paths_filtered_by_status(request, raw_matrix_files)
 
 
     @calculated_property(define=True,
