@@ -1754,13 +1754,15 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
             child_mods = sorted(mods)
             child_treatments = sorted(biosample.get('treatments', []))
             relationship = ''
+            part_of_biosample = biosample.get('part_of', [])
+            originated_from_biosample = biosample.get('originated_from', [])
             if (
-                biosample.get('part_of')
-                and biosample.get('part_of').get('characterizations')
+                part_of_biosample
+                and part_of_biosample.get('characterizations')
             ):
-                part_ontology = biosample.get('part_of').get('biosample_ontology')
-                part_mods = sorted(biosample.get('part_of').get('applied_modifications', []))
-                part_treatments = sorted(biosample.get('part_of').get('treatments', []))
+                part_ontology = part_of_biosample.get('biosample_ontology')
+                part_mods = sorted(part_of_biosample.get('applied_modifications', []))
+                part_treatments = sorted(part_of_biosample.get('treatments', []))
                 if (
                     part_ontology == ontology
                     and part_mods == child_mods
@@ -1768,12 +1770,12 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                 ):
                     relationship = 'part_of'
             elif (
-                biosample.get('originated_from')
-                and biosample.get('originated_from').get('characterizations')
+                originated_from_biosample
+                and originated_from_biosample.get('characterizations')
             ):
-                orig_ontology = biosample.get('originated_from').get('biosample_ontology')
-                orig_mods = sorted(biosample.get('originated_from').get('applied_modifications', []))
-                orig_treatments = sorted(biosample.get('originated_from').get('treatments', []))
+                orig_ontology = originated_from_biosample.get('biosample_ontology')
+                orig_mods = sorted(originated_from_biosample.get('applied_modifications', []))
+                orig_treatments = sorted(originated_from_biosample.get('treatments', []))
                 if (
                     orig_ontology == ontology
                     and orig_mods == child_mods
