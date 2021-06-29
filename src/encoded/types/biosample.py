@@ -570,7 +570,7 @@ class Biosample(Item):
             # I don't know why I can't compose this in the correct order with no duplicates but I am annoyed.
             if biosample_dictionary.get(prop, None) and biosample_dictionary[prop] not in props_list:
                 props_list.append(biosample_dictionary[prop])
-        
+
         return " ".join(props_list).strip()
 
     @calculated_property(schema={

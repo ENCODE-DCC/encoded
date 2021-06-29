@@ -13,6 +13,7 @@ from .shared_calculated_properties import (
     CalculatedAssayTermID,
     CalculatedVisualize,
     CalculatedBiosampleSummary,
+    CalculatedSimpleSummary,
     CalculatedReplicates,
     CalculatedAssaySlims,
     CalculatedAssayTitle,

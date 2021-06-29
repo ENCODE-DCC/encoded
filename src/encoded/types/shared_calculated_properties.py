@@ -313,6 +313,34 @@ class CalculatedBiosampleSummary:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
 
+class CalculatedSimpleSummary:
+    @calculated_property(schema={
+        "title": "Simple Biosample summary",
+        "type": "string",
+    })
+    def simple_biosample_summary(self,
+                                 request,
+                                 replicates=None):
+        sub_summaries = set()
+        biosample_accessions = set()
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object')
+                    if libraryObject['status'] == 'deleted':
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] == 'deleted':
+                            continue
+                        if biosampleObject['accession'] not in biosample_accessions:
+                            biosample_accessions.add(biosampleObject['accession'])
+                            sub_summaries.add(biosampleObject['simple_summary'])
+            return " ".join(list(sub_summaries))
+
 class CalculatedReplicates:
     @calculated_property(schema={
         "title": "Replicates",
