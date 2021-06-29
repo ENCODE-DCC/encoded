@@ -715,7 +715,7 @@ class RNASeqMatrixSearch extends TextFilter {
         this.lastGene = this.lastGene.bind(this);
 
         this.state = {
-            unitsOption: props.query.getKeyValuesIfPresent('units').join(','),
+            unitsOption: props.query.getKeyValuesIfPresent('units').join(',') || 'tpm',
             genes: props.query.getKeyValuesIfPresent('genes').join(','),
             showAutoSuggest: false,
         };
