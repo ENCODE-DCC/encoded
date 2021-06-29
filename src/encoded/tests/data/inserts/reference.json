@@ -78,6 +78,7 @@
         "award": "U54HG007005",
         "reference_type": "functional elements",
         "description": "Elements DNA sequences",
+        "elements_selection_method": ["ATAC-seq", "DNase-seq"],
         "lab": "thomas-gingeras",
         "status": "archived",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -124,7 +125,8 @@
             "/files/ENCFF026HBG/",
             "/files/ENCFF027HBG/"
         ],
-        "status": "in progress"
+        "status": "in progress",
+        "elements_selection_method": ["essential genes"]
     },
     {
         "_test": "fcc examined_regions reference dataset",

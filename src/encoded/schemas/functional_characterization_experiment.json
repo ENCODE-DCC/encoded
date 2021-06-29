@@ -316,6 +316,9 @@
             "type": "typeahead",
             "open_on_load": true
         },
+        "elements_references.elements_selection_method": {
+            "title": "Elements selection method"
+        },
         "examined_loci.gene.symbol": {
             "title": "Examined loci",
             "type": "typeahead",

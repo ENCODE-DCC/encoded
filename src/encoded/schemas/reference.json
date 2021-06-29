@@ -59,6 +59,15 @@
                     "enum": ["functional elements"]
                 }
             }
+        },
+        "elements_selection_method": {
+            "comment": "The methods or criteria used to select the elements specified in the reference.",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["functional elements"]
+                }
+            }
         }
     },
     "properties": {
@@ -174,6 +183,27 @@
                 "type": "string",
                 "linkTo": "Pipeline"
             }
+        },
+        "elements_selection_method": {
+            "title": "Elements selection method(s)",
+            "description": "The methods or criteria used to select the elements specified in the reference.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Elements selection method",
+                "description": "The method or criteria used to select the elements specified in the reference.",
+                "type": "string",
+                "enum": [
+                    "ATAC-seq",
+                    "candidate cis-regulatory elements",
+                    "DNase-seq",
+                    "essential genes",
+                    "GRO-cap",
+                    "point mutations",
+                    "single nucleotide polymorphisms",
+                    "transcription factors"
+                ]
+            }
         }
     },
     "facets": {
@@ -188,6 +218,9 @@
         },
         "organism.scientific_name": {
             "title": "Organism"
+        },
+        "elements_selection_method": {
+            "title": "Elements selection method"
         },
         "files.file_type": {
             "title": "Available file types"

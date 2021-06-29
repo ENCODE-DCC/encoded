@@ -28,3 +28,11 @@ def reference_19(base_reference):
         'schema_version': '19'
     })
     return item
+
+
+@pytest.fixture
+def reference(lab, award):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id']
+    }
