@@ -37,7 +37,7 @@ import CartLockTrigger from './lock';
 import CartMergeShared from './merge_shared';
 import Status from '../status';
 import CartRemoveElements from './remove_multiple';
-import { allowedDatasetTypes, getObjectFieldValue } from './util';
+import { allowedDatasetTypes } from './util';
 
 
 /**
@@ -610,22 +610,6 @@ const addToAccumulatingFiles = (files, currentResults) => {
 
 
 /**
- * Filter visualizable files to ones included in the selected facet terms.
- * @param {array} visualizableFiles Files in cart datasets that are visualizable
- * @param {object} selectedTerms Selected facet terms
- *
- * @return {array} `visualizableFiles` filtered by facet term selections
- */
-const getSelectedVisualizableFiles = (visualizableFiles, selectedTerms) => (
-    visualizableFiles.filter((file) => (
-        Object.keys(selectedTerms).every((term) => (
-            selectedTerms[term].length > 0 ? selectedTerms[term].includes(getObjectFieldValue(file, term)) : true
-        ))
-    ))
-);
-
-
-/**
  * Content of the tabs with counters.
  */
 const CounterTab = ({ title, count, icon, voice }) => (
@@ -1014,7 +998,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
 
     // Build the file facets based on the currently selected facet terms.
     const selectedDatasetFiles = React.useMemo(() => filterForDatasetFiles(allFiles, selectedDatasets), [allFiles, selectedDatasets]);
-    const { fileFacets, selectedFiles } = React.useMemo(() => {
+    const { fileFacets, selectedFiles, selectedVisualizableFiles } = React.useMemo(() => {
         let files = defaultOnly ? filterForDefaultFiles(selectedDatasetFiles) : selectedDatasetFiles;
         files = visualizableOnly ? filterForVisualizableFiles(files) : files;
 
@@ -1026,15 +1010,13 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                 files = analysisFilteredFiles;
             }
         }
-        return assembleFileFacets(selectedFileTerms, files, analyses, usedFileFacetFields);
+        const { fileFacets: facets, selectedFiles: allSelectedFiles } = assembleFileFacets(selectedFileTerms, files, analyses, usedFileFacetFields);
+        const visualizableSelectedFiles = filterForVisualizableFiles(allSelectedFiles);
+        return { fileFacets: facets, selectedFiles: allSelectedFiles, selectedVisualizableFiles: visualizableSelectedFiles };
     }, [selectedFileTerms, selectedDatasets, visualizableOnly, defaultOnly, selectedDatasetFiles, analyses, usedFileFacetFields]);
 
     // Construct the file lists for the genome browser and raw file tabs.
     const rawdataFiles = React.useMemo(() => selectedDatasetFiles.filter((files) => !files.assembly), [selectedDatasetFiles]);
-    const selectedVisualizableFiles = React.useMemo(() => {
-        const files = defaultOnly ? filterForDefaultFiles(selectedDatasetFiles) : selectedDatasetFiles;
-        return getSelectedVisualizableFiles(filterForVisualizableFiles(files), selectedFileTerms);
-    }, [selectedDatasetFiles, selectedFileTerms]);
 
     // Called when the user selects a new page of items to view using the pager.
     const updateDisplayedPage = (newDisplayedPage) => {
