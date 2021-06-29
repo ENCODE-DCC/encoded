@@ -510,18 +510,6 @@ class Biosample(Item):
                         genetic_modifications=None,
                         model_organism_donor_modifications=None):
 
-        sentence_parts = [
-            'organism_name',
-            'genotype_strain',
-            'sex_stage_age',
-            'term_phrase',
-            'modifications_list',
-            'disease_term_name',
-            'treatments_phrase',
-            'depleted_in',
-            'phase',
-            'fractionated'
-        ]
         (organismObject,
          donorObject,
          biosample_term_name,
@@ -584,7 +572,6 @@ class Biosample(Item):
                 props_list.append(biosample_dictionary[prop])
         
         return " ".join(props_list).strip()
-        # return " ".join([ str(biosample_dictionary[x]) for x in reduced if biosample_dictionary.get(x) ])
 
     @calculated_property(schema={
         "title": "Summary",
