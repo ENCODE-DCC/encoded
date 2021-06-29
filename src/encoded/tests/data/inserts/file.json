@@ -4657,5 +4657,21 @@
         "output_type": "bidirectional peaks",
         "file_size": 82013,
         "md5sum": "60115a0b9f1fe5b2d20e8d2bcf48ab85"
+    },
+    {
+        "_test": "PAS-seq polyA sites file",
+        "award": "/awards/U54HG007004/",
+        "assembly": "hg19",
+        "lab": "thomas-gingeras",
+        "dataset": "ENCSR000AEM",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "94b90422-ade3-4010-a0a0-8fe0bedbcf5a",
+        "accession": "ENCFF001PAS",
+        "file_format": "bed",
+        "file_format_type": "bed6+",
+        "output_type": "polyA sites",
+        "file_size": 82013,
+        "md5sum": "4f099ce07a770d35c90485da8cf8f019"
     }
 ]

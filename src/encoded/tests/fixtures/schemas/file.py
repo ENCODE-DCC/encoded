@@ -2132,3 +2132,18 @@ def file_no_readlength(testapp, experiment, award, lab, replicate_url, platform1
         'run_type': 'single-ended'
     }
     return item
+
+
+@pytest.fixture
+def file_sequence_barcodes(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'tsv',
+        'output_type': 'sequence barcodes',
+        'file_size': 2222,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'md5sum': '514ddb776705756a52f8b46cec90f3d7',
+    }
+    return item
