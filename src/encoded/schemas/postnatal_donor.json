@@ -16,8 +16,7 @@
             "title": "Age",
             "description": "The age or age range of the donor when biological material was sampled.",
             "comment": "We allow a generic '90 or above' for privacy purposes.",
-            "type": "string",
-            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+            "type": "string"
         },
         "age_units": {
             "title": "Age units",

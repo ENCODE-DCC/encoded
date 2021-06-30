@@ -67,7 +67,10 @@ For issues see [Snovault OSX App Installation][] first.
     ```
     ./circle-tests.sh
     ```
-
+    To run a specific test function or all functions in a specific file
+    ```
+    bin/test -k <name>
+    ```
 
 [Snovault OSX System Installation]: https://github.com/ENCODE-DCC/snovault/blob/master/README.md#system-installation-osx-catlina-10152
 [Snovault OSX App Installation]: https://github.com/ENCODE-DCC/snovault/blob/master/README.md#application-installation

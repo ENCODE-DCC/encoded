@@ -75,6 +75,9 @@
         "schema_version": {
             "default": "3"
         },
+        "age": {
+            "pattern": "^((unknown)|(([1-8]?\\d)(\\-([1-8]?\\d))?)|(>89))$"
+        },
         "times_pregnant": {
             "title": "Times pregnant",
             "description": "Number of pregnancies of the donor.",
