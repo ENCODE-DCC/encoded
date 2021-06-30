@@ -710,11 +710,11 @@ class File(Item):
             "notSubmittable": True
         }
     )
-    def biosample_simple_summary(self, request, dataset):
+    def simple_biosample_summary(self, request, dataset):
         properties = {'dataset': dataset}
         path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
         path.expand(request, properties)
-        return properties.get('dataset', {}).get('simple_summary')
+        return properties.get('dataset', {}).get('simple_biosample_summary')
 
     @calculated_property(
         condition='dataset',
