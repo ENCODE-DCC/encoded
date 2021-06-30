@@ -213,35 +213,13 @@ const Encyclopedia = (props, context) => {
         }
 
         // Clear current selections
-        query.deleteKeyValue('annotation_type');
         query.deleteKeyValue('annotation_subtype');
-        query.deleteKeyValue('biosample_ontology');
 
-        // All file options are selected
-        if (newFiles.length === fileOptions.length) {
-            query.addKeyValue('annotation_type', 'representative DNase hypersensitivity sites');
-            query.addKeyValue('annotation_type', 'candidate Cis-Regulatory Elements');
-            query.addKeyValue('biosample_ontology', '*', true);
-        // Only rDHS is selected
-        } else if (newFiles.length === 1 && newFiles[0] === 'rDHS') {
-            query.addKeyValue('annotation_type', 'representative DNase hypersensitivity sites');
-        // rDHS and other annotation subtypes are selected
-        // This is the option that does not currently work *****
-        } else if (newFiles.indexOf('rDHS') > -1) {
-            query.addKeyValue('annotation_type', 'representative DNase hypersensitivity sites');
-            query.addKeyValue('annotation_type', 'candidate Cis-Regulatory Elements');
-            query.addKeyValue('biosample_ontology', '*', true);
-            newFiles.forEach((type) => {
-                if (type !== 'rDHS') {
-                    query.addKeyValue('annotation_subtype', type);
-                }
-            });
-        // Only non-rDHS annotation subtypes are selected
-        } else {
-            newFiles.forEach((type) => {
-                query.addKeyValue('annotation_subtype', type);
-            });
-        }
+        // Add selected annotation subtypes
+        newFiles.forEach((type) => {
+            query.addKeyValue('annotation_subtype', type);
+        });
+
         const newHref = query.format();
         setSelectedFiles(newFiles);
         setdownloadHref(newHref);
