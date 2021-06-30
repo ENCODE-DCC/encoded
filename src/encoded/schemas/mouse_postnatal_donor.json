@@ -61,6 +61,9 @@
         "schema_version": {
             "default": "1"
         },
+        "age": {
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+        },
         "mating_status": {
             "title": "mating status",
             "description": "The mating status of the animal.",
