@@ -22,9 +22,10 @@ organismTerms.forEach((organismName) => {
 });
 
 // Not all annotation facets are displayed, these are the ones we want to keep
+// We also display two special facets (multi-select with one selection required) for annotation type and assembly
 const keepFacets = [
-    'assembly', // we actually will not display the assembly facet, but we need it in order to determine which assemblies correspond to results
-    'biochemical_inputs', // likely to remove and add back when toggle is working correctly
+    'assembly', // We will not display the default assembly facet, but we want to keep the facet data in order to generate the special assembly facet
+    'biochemical_inputs',
     'biosample_ontology.term_name',
     'biosample_ontology.organ_slims',
     'targets.label',
@@ -36,30 +37,18 @@ const keepFacets = [
 const annotationTypes = [
     'candidate Cis-Regulatory Elements',
     'chromatin state',
-    // 'imputation', // These will be added in later
 ];
 
-// Find element or parent of element with matching tag
-function findUpTag(el, tag) {
+// Find element or parent of element with matching tag or class name
+const findElementOrParent = (el, name, key) => {
     while (el.parentNode) {
         el = el.parentNode;
-        if (el.tagName === tag) {
+        if (el[key] === name) {
             return el;
         }
     }
     return null;
-}
-
-// Find element or parent of element with matching class name
-function findUpClassName(el, tag) {
-    while (el.parentNode) {
-        el = el.parentNode;
-        if (el.className === tag) {
-            return el;
-        }
-    }
-    return null;
-}
+};
 
 // Default assembly for each organism
 const defaultAssemblyByOrganism = {
@@ -77,16 +66,14 @@ const filterFacet = (response) => {
 
 // The encyclopedia page displays a table of results corresponding to a selected annotation type
 const Encyclopedia = (props, context) => {
-    // Set defaults
     const defaultOrganism = 'Homo sapiens';
     const defaultAnnotation = 'candidate Cis-Regulatory Elements';
     const defaultAssembly = 'GRCh38';
     const defaultFileDownload = 'all';
-    const encyclopediaVersion = 'ENCODE v5'; // 'ENCODE v6';
+    const encyclopediaVersion = 'ENCODE v5';
     const searchBase = url.parse(context.location_href).search || '';
     const fileOptions = ['CTCF-only', 'proximal enhancer-like', 'DNase-H3K4me3', 'distal enhancer-like', 'promoter-like', 'rDHS', 'all']; // Download options for cell-type agnostic cCREs
 
-    // Set variables based on defaults
     const [selectedOrganism, setSelectedOrganism] = React.useState(defaultOrganism);
     const [annotationType, setAnnotationType] = React.useState([defaultAnnotation]);
     const [selectedAssembly, setAssembly] = React.useState(defaultAssembly);
@@ -97,7 +84,7 @@ const Encyclopedia = (props, context) => {
     const [facetData, setFacetData] = React.useState([]);
     const [vizFiles, setVizFiles] = React.useState([]);
 
-    // Links are used to generate batch download objects
+    // Links used to generate batch download objects
     const [downloadHref, setdownloadHref] = React.useState(`type=Annotation&annotation_subtype=${defaultFileDownload}&status=released&encyclopedia_version=${encyclopediaVersion}&assembly=${defaultAssembly}`);
     const [downloadController, setDownloadController] = React.useState(null);
     const [browserHref, setBrowserHref] = React.useState('');
@@ -187,7 +174,7 @@ const Encyclopedia = (props, context) => {
             const filteredFiles = newFiles.filter(((file) => {
                 let hideFile = false;
                 hideFile = file.annotation_type === 'candidate Cis-Regulatory Elements' && file.annotation_subtype && file.annotation_subtype !== 'all';
-                return (!hideFile);
+                return !hideFile;
             }));
             setVizFiles(filteredFiles);
         } else {
@@ -219,14 +206,17 @@ const Encyclopedia = (props, context) => {
         } else {
             newFiles = selectedFiles.filter((file) => file !== input);
         }
+
         // Do not allow the user to de-select all checkboxes
         if (newFiles.length === 0) {
             return;
         }
+
         // Clear current selections
         query.deleteKeyValue('annotation_type');
         query.deleteKeyValue('annotation_subtype');
         query.deleteKeyValue('biosample_ontology');
+
         // All file options are selected
         if (newFiles.length === fileOptions.length) {
             query.addKeyValue('annotation_type', 'representative DNase hypersensitivity sites');
@@ -282,15 +272,15 @@ const Encyclopedia = (props, context) => {
         setAnnotationType(newAnnotationType);
     };
 
-    // Facet filters are redirected to update the urls that populate the browser
+    // Update browser url from facet filters
     const handleFacetClick = (e) => {
         // If clicked filter belongs to the annotation facet, clear filters, or boolean switch, we do not want to prevent default
-        const isButton = findUpTag(e.target, 'BUTTON');
+        const isButton = findElementOrParent(e.target, 'BUTTON', 'tagName');
         const isClearFilters = e.target.innerText === 'Reset filters';
-        const isBooleanSwitch = findUpClassName(e.target, 'boolean-switch');
+        const isBooleanSwitch = findElementOrParent(e.target, 'boolean-switch', 'className');
         if (!isButton && !isClearFilters && !isBooleanSwitch) {
             e.preventDefault();
-            let clickedLink = findUpTag(e.target, 'A');
+            let clickedLink = findElementOrParent(e.target, 'A', 'tagName');
             if (!clickedLink && e.target.href) {
                 clickedLink = e.target;
             }

@@ -16,6 +16,7 @@ export const annotationTypeMap = {
 };
 
 const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
+const MAX_CHAR_PER_LINE = 26;
 
 // used to determine if GV_COORDINATES_KEY should be used
 const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
@@ -856,7 +857,7 @@ class GenomeBrowser extends React.Component {
         newFiles = _.uniq(newFiles, (file) => file.href);
         let tracks = [];
         if (files.length > 0) {
-            const maxCharPerLine = this.props.maxCharPerLine || 26;
+            const maxCharPerLine = this.props.maxCharPerLine || MAX_CHAR_PER_LINE;
             tracks = this.filesToTracks(newFiles, this.props.label, domain, maxCharPerLine);
         }
         let { contig, x0, x1 } = this.state;
