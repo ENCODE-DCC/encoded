@@ -217,7 +217,7 @@ const Encyclopedia = (props, context) => {
 
         // Add selected annotation subtypes
         newFiles.forEach((type) => {
-            query.addKeyValue('annotation_subtype', type);
+            query.addKeyValue('annotation_subtype', type.replace('rDHS', 'DHS'));
         });
 
         const newHref = query.format();
