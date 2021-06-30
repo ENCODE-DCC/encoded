@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import getNumberWithOrdinal from '../libs/ordinal_suffix';
 import * as encoding from '../libs/query_encoding';
 import { svgIcon } from '../libs/svg-icons';
 import { CartToggle, cartGetAllowedTypes } from './cart';
@@ -1079,3 +1080,29 @@ Checkbox.propTypes = {
 Checkbox.defaultProps = {
     css: '',
 };
+
+
+/**
+ * Examines the `examined_loci` property, if any, of the given dataset and formats it into
+ * displayable text.
+ * @param {object} experiment Dataset containing examined_loci to display
+ * @param {boolean} includeMethod True to include expression method following the expression data
+ * @returns {string} Formatted examined_loci display
+ */
+export function computeExaminedLoci(experiment, includeMethod) {
+    const examinedLoci = [];
+    if (experiment.examined_loci && experiment.examined_loci.length > 0) {
+        experiment.examined_loci.forEach((locus) => {
+            let locusData;
+            if (locus.expression_percentile || locus.expression_percentile === 0) {
+                locusData = `${locus.gene.symbol} (${getNumberWithOrdinal(locus.expression_percentile)} percentile)`;
+            } else if ((locus.expression_range_minimum && locus.expression_range_maximum) || (locus.expression_range_maximum === 0 || locus.expression_range_minimum === 0)) {
+                locusData = `${locus.gene.symbol} (${locus.expression_range_minimum}-${locus.expression_range_maximum}%)`;
+            } else {
+                locusData = `${locus.gene.symbol}`;
+            }
+            examinedLoci.push(`${locusData}${includeMethod && locus.expression_measurement_method ? ` ${locus.expression_measurement_method}` : ''}`);
+        });
+    }
+    return examinedLoci.join(', ');
+}
