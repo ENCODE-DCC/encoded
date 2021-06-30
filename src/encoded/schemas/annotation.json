@@ -67,7 +67,10 @@
         },
         "annotation_subtype": {
             "properties": {
-                "annotation_type": {"enum": ["candidate Cis-Regulatory Elements"]}
+                "annotation_type": {"enum": [
+                    "candidate Cis-Regulatory Elements",
+                    "representative DNase hypersensitivity sites"
+                ]}
             }
         }
     },
@@ -110,15 +113,17 @@
         },
         "annotation_subtype": {
             "title": "Annotation subtype",
-            "description": "The category of elements in a cell-type agnostic candidate Cis-Regulatory Elements annotation.",
+            "description": "The category of elements in a cell-type agnostic candidate Cis-Regulatory Elements or representative DNase hypersensitivity sites annotation.",
             "type": "string",
+            "permission": "import_items",
             "enum": [
                 "all",
                 "promoter-like",
                 "proximal enhancer-like",
                 "distal enhancer-like",
                 "DNase-H3K4me3",
-                "CTCF-only"
+                "CTCF-only",
+                "DHS"
             ]
         },
         "encyclopedia_version": {

@@ -4,6 +4,7 @@
 * Added *calf*, *child*, *mixed stage*, and *newborn* to *relevant_life_stage* enums list
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
+* Added *DHS* to the *annotation_subtype* enum, and restricted submission of the property to admin only
 
 ### Schema version 33
 * Updated the *internal_tags* enum from *RegulomeDB* to *RegulomeDB_1_0*
