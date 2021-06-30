@@ -200,3 +200,12 @@ def annotation_32(award, lab):
         'schema_version': '32',
         'internal_tags': ['RegulomeDB']
     }
+
+
+@pytest.fixture
+def annotation_ccre_2(testapp, award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'annotation_type': 'candidate Cis-Regulatory Elements',
+    }
