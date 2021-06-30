@@ -1,7 +1,17 @@
+import random
 import requests
 
+
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
-RNA_GET_FACETS = ['assayType', 'annotation', 'biosample_term_name', 'biosample_classification', 'biosample_sex', 'biosample_organ',  'biosample_system']
+RNA_GET_FACETS = [
+    'assayType',
+    'biosample_classification',
+    'biosample_term_name',
+    'biosample_organ',
+    'biosample_system',
+    'biosample_sex',
+    'annotation',
+]
 RNA_GET_EXPRESSIONS = '/expressions/bytes'
 RNA_GET_AUTOCOMPLETE = '/autocomplete'
 
@@ -12,23 +22,82 @@ RNA_GET_COLUMNS = {
     'tpm': {'title': 'Counts (TPM)'},
     'fpkm': {'title': 'Counts (FPKM)'},
     'assayType': {'title': 'Assay (RNA SubType)'},
+    'biosample_term_name': {'title': 'Biosample term name'},
     'libraryPrepProtocol': {'title': 'Experiment'},
     'expressionID': {'title': 'File'},
-    'annotation': {'title': 'Annotation'},
-    'biosample_term_name': {'title': 'Biosample'},
-    'biosample_classification': {'title': 'Classification'},
+    'annotation': {'title': 'Assembly'},
+    'biosample_classification': {'title': 'Biosample classification'},
     'biosample_sex': {'title': 'Sex'},
     'biosample_organ': {'title': 'Organ'},
     'biosample_system': {'title': 'System'},
     'biosample_summary': {'title': 'Summary'}
 }
 
+
+FACET_TERM_MAP = {
+    'GRCh38': 'Homo sapiens',
+    'mm10': 'Mus musculus',
+}
+
+
+REVERSE_FACET_TERM_MAP = {
+    'Homo sapiens': 'GRCh38',
+    'Mus musculus': 'mm10',
+}
+
+
+FACET_TITLE_MAP = {
+    'Assembly': 'Organism',
+}
+
+
+FACET_FIELD_MAP = {
+    'annotation': 'organism',
+}
+
+
+REVERSE_FACET_FIELD_MAP = {
+    'organism': 'annotation'
+}
+
+
+GENES = [
+    'REM1',
+    'APOE',
+    'POMC',
+    'BRCA1',
+    'EP300',
+    'IL6, TP53, AKT1'
+]
+
+
+def get_filtered_and_sorted_facets(facets):
+    return sorted(
+        (
+            facet
+            for facet in facets
+            if facet in RNA_GET_FACETS
+        ),
+        key=lambda facet: RNA_GET_FACETS.index(facet)
+    )
+
+
+def get_random_gene():
+    return random.choice(GENES)
+
+
+# Aliasing e.g. `annotation=GRCh38` as `organism=Homo+sapiens`.
+def map_encoded_param_to_data_service_param(key, value):
+    key = REVERSE_FACET_FIELD_MAP.get(key, key)
+    value = REVERSE_FACET_TERM_MAP.get(value, value)
+    return f'{key}={value}'
+
+
 class GenomicDataService():
     # default search value is a temporary feature for the current alpha UI client
-    def __init__(self, registry, request, default_search='ENSG00000088320.3'):
+    def __init__(self, registry, request):
         self.path = registry.settings.get(REGISTRY_DATA_SERVICE)
         self.request = request
-        self.default_search = default_search
 
         self.parse_params()
 
@@ -36,10 +105,10 @@ class GenomicDataService():
     def parse_params(self):
         params = self.request.params
 
-        self.genes   = params.get('genes')
+        self.genes   = params.get('genes') or get_random_gene()
         self.units   = params.get('units', 'tpm')
         self.page    = params.get('page', 1)
-        self.sort    = params.get('sort')
+        self.sort    = params.get('sort', f'-{self.units}')
         self.columns = RNA_GET_COLUMNS.copy()
         self.columns.pop('tpm' if self.units == 'fpkm' else 'fpkm')
         self.autocomplete_query = params.get('q', '')
@@ -51,8 +120,10 @@ class GenomicDataService():
 
         self.filter_params = {}
         for facet in RNA_GET_FACETS:
-            if params.get(facet):
-                self.filter_params[facet] = params.get(facet)
+            normalized_facet = FACET_FIELD_MAP.get(facet, facet)
+            param_value = params.get(normalized_facet)
+            if param_value:
+                self.filter_params[normalized_facet] = param_value
 
         self.filters = [{'field': 'type', 'term': 'Rna Get', 'remove': '/rnaget'}]
 
@@ -73,11 +144,12 @@ class GenomicDataService():
 
     def rna_get_request_query_string(self, format_='json'):
         params = [f'format={format_}']
-
-        search = self.default_search
-        if self.genes:
-            search = ','.join([gene.strip() for gene in self.genes.split(',')])
-
+        search = ','.join(
+            [
+                gene.strip()
+                for gene in self.genes.split(',')
+            ]
+        )
         params.append(f'featureIDList={search}')
 
         if self.units:
@@ -89,8 +161,13 @@ class GenomicDataService():
         if self.page:
             params.append(f'page={self.page}')
 
-        for filter_ in self.filter_params:
-            params.append(f'{filter_}={self.filter_params.get(filter_)}')
+        for key, value in self.filter_params.items():
+            params.append(
+                map_encoded_param_to_data_service_param(
+                    key,
+                    value
+                )
+            )
 
         return '&'.join(params)
 
@@ -103,12 +180,18 @@ class GenomicDataService():
         self.expressions = results['expressions']
         self.total = results['total']
         self.facets = []
-
-        for facet in results['facets']:
+        for facet in get_filtered_and_sorted_facets(results['facets'].keys()):
+            title = self.columns[facet]['title']
             facet_data = {
-                'field': facet,
-                'title': self.columns[facet]['title'],
-                'terms': [{'key': term[0], 'doc_count': term[1]} for term in results['facets'][facet]],
+                'field': FACET_FIELD_MAP.get(facet, facet),
+                'title': FACET_TITLE_MAP.get(title, title),
+                'terms': [
+                    {
+                        'key': FACET_TERM_MAP.get(term[0], term[0]),
+                        'doc_count': term[1],
+                    }
+                    for term in results['facets'][facet]
+                ],
                 'type': 'terms'
             }
             facet_data['total'] = sum([term['doc_count'] for term in facet_data['terms']])
@@ -167,7 +250,8 @@ class GenomicDataService():
             'columns': self.columns,
             'filters': self.filters,
             'facets': self.facets,
-            '@graph': self.expressions
+            '@graph': self.expressions,
+            'selected_genes': self.genes,
         }
 
         if self.sort:
