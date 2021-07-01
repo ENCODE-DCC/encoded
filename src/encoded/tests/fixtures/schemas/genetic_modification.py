@@ -674,7 +674,8 @@ def guides_transduction_GM(testapp, lab, award):
         'purpose': 'expression',
         'nucleic_acid_delivery_method': ['transduction'],
         'introduced_elements': 'gRNAs and CRISPR machinery',
-        'MOI': 'high'
+        'MOI': 'high',
+        'guide_type': 'sgRNA'
     }
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 
