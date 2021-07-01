@@ -40,7 +40,7 @@ const annotationTypes = [
 ];
 
 // Find element or parent of element with matching tag or class name
-const findElementOrParent = (el, name, key) => {
+const findElement = (el, name, key) => {
     while (el.parentNode) {
         el = el.parentNode;
         if (el[key] === name) {
@@ -253,12 +253,12 @@ const Encyclopedia = (props, context) => {
     // Update browser url from facet filters
     const handleFacetClick = (e) => {
         // If clicked filter belongs to the annotation facet, clear filters, or boolean switch, we do not want to prevent default
-        const isButton = findElementOrParent(e.target, 'BUTTON', 'tagName');
+        const isButton = findElement(e.target, 'BUTTON', 'tagName');
         const isClearFilters = e.target.innerText === 'Reset filters';
-        const isBooleanSwitch = findElementOrParent(e.target, 'boolean-switch', 'className');
+        const isBooleanSwitch = findElement(e.target, 'boolean-switch', 'className');
         if (!isButton && !isClearFilters && !isBooleanSwitch) {
             e.preventDefault();
-            let clickedLink = findElementOrParent(e.target, 'A', 'tagName');
+            let clickedLink = findElement(e.target, 'A', 'tagName');
             if (!clickedLink && e.target.href) {
                 clickedLink = e.target;
             }
