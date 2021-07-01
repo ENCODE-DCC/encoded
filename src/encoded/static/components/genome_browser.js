@@ -35,7 +35,7 @@ const colorChromatinState = {
     'Active enhancer 2': '#ffc44d',
     'Weak enhancer': '#ffff00',
     'ZNF genes & repeats': '#66cdaa',
-    Heterochromatin: '#8a91d0',
+    'Heterochromatin': '#8a91d0',
     'Bivalent/Poised TSS': '#cd5c5c',
     'Bivalent enhancer': '#bdb86b',
     'Repressed PolyComb': '#808080, #8937df',
@@ -323,6 +323,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF425LKJ',
         biological_replicates: [1],
+        simple_biosample_summary: "male (34 years)",
     },
     {
         file_format: 'bigWig',
@@ -343,6 +344,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF638QHN',
         biological_replicates: [2],
+        simple_biosample_summary: "mild cognative impairment",
     },
     {
         file_format: 'bigWig',
@@ -363,6 +365,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF541XFO',
         biological_replicates: [1],
+        simple_biosample_summary: "mild cognative impairment",
     },
     {
         file_format: 'bigBed bedRNAElements',
@@ -383,6 +386,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF517WSY',
         biological_replicates: [1],
+        simple_biosample_summary: "mild cognative impairment",
     },
     {
         file_format: 'bigBed',
@@ -403,6 +407,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF026DAN',
         biological_replicates: [2],
+        simple_biosample_summary: "mild cognative impairment",
     },
     {
         file_format: 'bigBed',
@@ -423,6 +428,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF847CBY',
         biological_replicates: [1, 2],
+        simple_biosample_summary: "mild cognative impairment",
     },
 ];
 
@@ -601,6 +607,7 @@ const TrackLabel = ({ file, label, long }) => {
                             <li><a href={file.dataset} className="gb-accession">{datasetName}<span className="sr-only">{`Details for dataset ${datasetName}`}</span></a></li>
                             <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
                             <li>{file.output_type}</li>
+                            {file.simple_biosample_summary ? <li>{file.simple_biosample_summary}</li> : null}
                             {biologicalReplicates ? <li>{`rep ${biologicalReplicates}`}</li> : null}
                             {file.biochemical_inputs ? <li>{(file.biochemical_inputs).join(', ')}</li> : null}
                         </>

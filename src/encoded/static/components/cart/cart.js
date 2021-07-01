@@ -80,6 +80,7 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'href' },
         { field: 'dataset' },
         { field: 'biological_replicates' },
+        { field: 'simple_biosample_summary'},
         { field: 'analyses', dataset: true },
         { field: 'target', dataset: true },
         { field: 'targets', dataset: true },
