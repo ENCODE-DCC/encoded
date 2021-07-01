@@ -273,9 +273,7 @@ const AnnotationComponent = (props, reactContext) => {
 
             <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as an elements reference`} />
 
-            {context.documents && context.documents.length > 0 ?
-                    <DocumentsPanel documentSpecs={[{ documents: context.documents }]} />
-                : null}
+            <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
         </div>
     );
 };
