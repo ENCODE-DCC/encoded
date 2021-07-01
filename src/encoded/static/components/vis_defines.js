@@ -25,7 +25,7 @@ const MAX_HIC_FILES_SELECTED = 8;
  * If you modify ASSEMBLY_DETAILS in vis_defines.py, this object might need corresponding
  * modifications.
  */
-const ASSEMBLY_DETAILS = {
+export const ASSEMBLY_DETAILS = {
     GRCh38: {
         species: 'Homo sapiens',
         ucsc_assembly: 'hg38',

@@ -9,7 +9,7 @@
             "required": ["dataset", "file_format", "output_type", "award", "lab", "md5sum"]
         },
         {
-            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]   
+            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]
         }
     ],
     "identifyingProperties": ["uuid", "accession", "aliases"],
@@ -70,7 +70,12 @@
             "length": "long"
         },
         "biosample_ontology.term_name": {
-            "title": "Biosample term name",
+            "title": "Biosample",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ",
             "type": "typeahead",
             "length": "long"
         },
@@ -83,6 +88,12 @@
             "title": "Targets of assay",
             "type": "typeahead",
             "length": "long"
+        },
+        "biochemical_inputs": {
+            "title": "Biochemical inputs"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version"
         }
     },
     "dependencies": {
@@ -99,7 +110,7 @@
                 {
                     "allOf": [
                         {
-                            "required": ["md5sum"],       
+                            "required": ["md5sum"],
                             "properties": {
                                 "no_file_available": {
                                     "enum": [false]
@@ -2068,9 +2079,12 @@
         "biosample_ontology.term_name": {
             "title": "Biosample name"
         },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ"
+        },
         "target.label": {
             "title": "Target label"
-        },    
+        },
         "href": {
             "title": "Download URL"
         },
@@ -2149,11 +2163,17 @@
         "status": {
             "title": "Status"
         },
+        "annotation_type": {
+            "title": "Annotation type"
+        },
         "annotation_subtype": {
             "title": "Annotation subtype"
         },
         "biochemical_inputs": {
             "title": "Biochemical inputs"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version"
         }
     },
     "output_type_output_category": {
