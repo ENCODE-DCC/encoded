@@ -173,6 +173,9 @@
                         },
                         "introduced_elements": {
                             "enum": ["gRNAs and CRISPR machinery"]
+                        },
+                        "guide_type": {
+                            "enum": ["sgRNA", "pgRNA"]
                         }
                     },
                     "not": {
@@ -293,6 +296,9 @@
                                 },
                                 "introduced_elements": {
                                     "enum": ["gRNAs and CRISPR machinery"]
+                                },
+                                "guide_type": {
+                                    "enum": ["sgRNA", "pgRNA"]
                                 }
                             }
                         }
@@ -547,6 +553,9 @@
                                 "introduced_elements": {
                                     "enum": ["gRNAs and CRISPR machinery"]
                                 },
+                                "guide_type": {
+                                    "enum": ["sgRNA", "pgRNA"]
+                                },
                                 "not":{
                                     "required": ["modified_site_nonspecific"]
                                 }
@@ -577,6 +586,37 @@
                             "properties": {
                                 "introduced_elements": {
                                     "enum": ["sheared genomic DNA", "genomic DNA regions"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "introduced_elements": {
+                                    "enum": [
+                                        "sheared genomic DNA",
+                                        "genomic DNA regions",
+                                        "synthesized DNA"
+                                    ]
+                                },
+                                "not": {
+                                    "properties": {
+                                        "introduced_elements": {
+                                            "enum": ["characterization"]
+                                        }
+                                    }
+                                }
+
+                            }
+                        },
+                        {
+                            "required": ["guide_type"],
+                            "properties": {
+                                "introduced_elements": {
+                                    "enum": ["gRNAs and CRISPR machinery"]
                                 }
                             }
                         }
@@ -759,7 +799,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "10"
+            "default": "11"
         },
         "accession": {
             "accessionType": "GM"
@@ -1019,7 +1059,7 @@
         },
         "MOI": {
             "title": "Multiplicity of infection",
-            "description": "The ratio or frequency of viral particles introduced to cells.",
+            "description": "A proxy for whether this modification was intended to result in single (low MOI) or multiple (high MOI) transduction events per cell.",
             "type": "string",
             "enum":[
                 "high",

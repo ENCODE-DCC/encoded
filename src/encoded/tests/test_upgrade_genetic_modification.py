@@ -100,3 +100,11 @@ def test_genetic_modification_upgrade_9_10(upgrader, genetic_modification_9, hum
     assert 'method' not in value
     assert value['introduced_elements_donor'] == human_donor_1['@id']
     assert 'donor' not in value
+
+
+def test_genetic_modification_upgrade_10_11(upgrader, genetic_modification_10):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_10,
+                             current_version='10', target_version='11')
+    assert value['schema_version'] == '11'
+    assert value.get('guide_type') == 'sgRNA'
+    assert value['notes'] == 'guide_type on this GM was defaulted to sgRNA in an upgrade.'

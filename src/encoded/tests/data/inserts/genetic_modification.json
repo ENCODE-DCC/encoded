@@ -346,6 +346,7 @@
         "award": "/awards/U41HG007355/",
         "category": "insertion",
         "introduced_elements": "gRNAs and CRISPR machinery",
+        "guide_type": "pgRNA",
         "lab": "/labs/bing-ren/",
         "nucleic_acid_delivery_method": ["transduction"],
         "method": "TALEN",

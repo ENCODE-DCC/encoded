@@ -1,5 +1,9 @@
 ## Changelog for genetic_modification.json
 
+### Schema version 11
+* Added *MOI* (multiplicity of infection) and *guide_type* properties.
+* *guide_type* is a required property when *introduced_elements* specifies *gRNAs and CRISPR machinery*
+
 ### Minor changes since schema version 10
 
 * A combination of method *CRISPR* with the category of *mutagenesis* and purpose *characterization* may be submitted to describe a genetic modification.
@@ -7,7 +11,6 @@
   * GenBank: '^genbank:[A-Z]{1,2}\\d{5,6}\\.\\d{1}$', e.g., genbank:MK484105.1
 * *mAID* was added to the *introduced_tags* enum.
 * Added *promoter_details* to the *reagents* property.
-* Added *MOI* (multiplicity of infection) and *guide_type* properties.
 
 ### Schema version 10
 

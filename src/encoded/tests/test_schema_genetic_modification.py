@@ -285,25 +285,26 @@ def test_homologous_recombination(testapp, HR_knockout):
 
 def test_CRISPR_introduction_step_one(testapp, CRISPR_introduction):
     testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
-    CRISPR_introduction.update({'introduced_elements': 'gRNAs and CRISPR machinery'})
+    CRISPR_introduction.update({'introduced_elements': 'gRNAs and CRISPR machinery',
+                                'guide_type': 'sgRNA'})
     testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
 
 
 def test_CRISPR_guide_type(testapp, CRISPR_introduction):
     CRISPR_introduction.update({
-        'introduced_elements': 'gRNAs and CRISPR machinery',
-        'guide_type': 'sgRNA'})
+        'introduced_elements': 'gRNAs and CRISPR machinery'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
+    CRISPR_introduction.update({'guide_type': 'sgRNA'})
     testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
     CRISPR_introduction.update({
-        'introduced_elements': 'genomic DNA regions'})
-    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
-    CRISPR_introduction.pop('introduced_elements')
+        'introduced_elements': 'synthesized DNA'})
     testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
 
 
 def test_transduction_MOI(testapp, CRISPR_introduction):
     CRISPR_introduction.update({
         'introduced_elements': 'gRNAs and CRISPR machinery',
+        'guide_type': 'sgRNA',
         'MOI': 'high'})
     testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
     CRISPR_introduction.update({'nucleic_acid_delivery_method': ['transduction']})

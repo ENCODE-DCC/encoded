@@ -677,3 +677,15 @@ def guides_transduction_GM(testapp, lab, award):
         'MOI': 'high'
     }
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def genetic_modification_10(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'expression',
+        'nucleic_acid_delivery_method': ['transduction'],
+        'introduced_elements': 'gRNAs and CRISPR machinery',
+    }

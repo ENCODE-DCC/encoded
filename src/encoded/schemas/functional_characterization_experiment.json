@@ -339,6 +339,9 @@
         "replicates.library.biosample.applied_modifications.reagents.promoter_details": {
             "title": "Promoter details"
         },
+        "replicates.library.biosample.applied_modifications.MOI": {
+            "title": "Multiplicity of infection"
+        },
         "target.investigated_as": {
             "title": "Target category"
         },

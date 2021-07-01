@@ -294,3 +294,12 @@ def genetic_modification_9_10(value, system):
     if 'donor' in value:
         value['introduced_elements_donor'] = value['donor']
         value.pop('donor')
+
+
+@upgrade_step('genetic_modification', '10', '11')
+def genetic_modification_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5968
+    notes = value.get('notes', '')
+    if value.get('introduced_elements', '') == 'gRNAs and CRISPR machinery':
+        value['guide_type'] = 'sgRNA'
+        value['notes'] = (notes + ' guide_type on this GM was defaulted to sgRNA in an upgrade.').strip()
