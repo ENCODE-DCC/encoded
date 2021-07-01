@@ -158,7 +158,8 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "organism": "human",
         "uuid": "3ebe4d21-4834-4572-ba8d-e4269fa7575f",
-        "date_released": "2020-05-20"
+        "date_released": "2020-05-20",
+        "documents": ["2d306180-915d-43b8-a87e-a94c4fa86d7e", "dcf15d5e-40aa-43bc-b81c-32c70c9afb01"]
     },
     {
         "_test": "Encyclopedia version 5",

@@ -22,7 +22,7 @@ import {
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
-import { DocumentsPanelReq } from './doc';
+import { DocumentsPanelReq, DocumentsPanel } from './doc';
 import { FileGallery } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
@@ -273,7 +273,9 @@ const AnnotationComponent = (props, reactContext) => {
 
             <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as an elements reference`} />
 
-            <DocumentsPanelReq documents={datasetDocuments} />
+            {context.documents && context.documents.length > 0 ?
+                    <DocumentsPanel documentSpecs={[{ documents: context.documents }]} />
+                : null}
         </div>
     );
 };
