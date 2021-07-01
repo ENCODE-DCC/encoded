@@ -35,7 +35,7 @@ const colorChromatinState = {
     'Active enhancer 2': '#ffc44d',
     'Weak enhancer': '#ffff00',
     'ZNF genes & repeats': '#66cdaa',
-    'Heterochromatin': '#8a91d0',
+    Heterochromatin: '#8a91d0',
     'Bivalent/Poised TSS': '#cd5c5c',
     'Bivalent enhancer': '#bdb86b',
     'Repressed PolyComb': '#808080, #8937df',
@@ -323,7 +323,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF425LKJ',
         biological_replicates: [1],
-        simple_biosample_summary: "male (34 years)",
+        simple_biosample_summary: 'male (34 years)',
     },
     {
         file_format: 'bigWig',
@@ -344,7 +344,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF638QHN',
         biological_replicates: [2],
-        simple_biosample_summary: "mild cognative impairment",
+        simple_biosample_summary: 'mild cognitive impairment',
     },
     {
         file_format: 'bigWig',
@@ -365,7 +365,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF541XFO',
         biological_replicates: [1],
-        simple_biosample_summary: "mild cognative impairment",
+        simple_biosample_summary: 'mild cognitive impairment',
     },
     {
         file_format: 'bigBed bedRNAElements',
@@ -386,7 +386,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF517WSY',
         biological_replicates: [1],
-        simple_biosample_summary: "mild cognative impairment",
+        simple_biosample_summary: 'mild cognitive impairment',
     },
     {
         file_format: 'bigBed',
@@ -407,7 +407,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF026DAN',
         biological_replicates: [2],
-        simple_biosample_summary: "mild cognative impairment",
+        simple_biosample_summary: 'mild cognitive impairment',
     },
     {
         file_format: 'bigBed',
@@ -428,7 +428,7 @@ const dummyFiles = [
         status: 'released',
         title: 'ENCFF847CBY',
         biological_replicates: [1, 2],
-        simple_biosample_summary: "mild cognative impairment",
+        simple_biosample_summary: 'mild cognitive impairment',
     },
 ];
 
