@@ -72,7 +72,7 @@ class Library(Item,
         count = 0
         for m in matrices:
             mx_obj = request.embed(m, '@@object?skip_calculated=true')
-            if mx_obj.get('observation_count'):
+            if mx_obj.get('observation_count') and mx_obj.get('background_barcodes_included') != True:
                 count += mx_obj['observation_count']
 
         if count > 0:
