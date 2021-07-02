@@ -226,10 +226,6 @@
             "type": "exists",
             "title": "Has raw count matrix"
         },
-        "read_count": {
-            "type": "exists",
-            "title": "Has sequence reads"
-        },
         "donors.organism.scientific_name": {
             "title": "Donor organism"
         },
