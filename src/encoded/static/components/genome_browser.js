@@ -918,7 +918,7 @@ class GenomeBrowser extends React.Component {
                 extLabelLength += file.simple_biosample_summary ? file.simple_biosample_summary.length : 0;
                 extLabelLength += file.biological_replicates ? file.biological_replicates.length : 0;
                 extLabelLength += file.biochemical_inputs ? file.biochemical_inputs.length : 0;
- 
+
                 labelLength = Math.floor(labelLength / maxCharPerLine);
                 extLabelLength = Math.floor(extLabelLength / maxCharPerLine);
             }
