@@ -215,10 +215,6 @@
         "datasets": {
             "type": "exists",
             "title": "Associated dataset"
-        },
-        "publication_data": {
-            "type": "exists",
-            "title": "Publication file data"
         }
     },
     "columns": {
