@@ -1,6 +1,7 @@
 ## Changelog for functional_characterization_experiment.json
 
 ### Minor changes since schema version 8
+* Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *fluorescence activated cell sorting* and *CRISPRi-FlowFISH* enum to *expression_measurement_method* property of *examined_loci*.
 

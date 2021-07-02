@@ -899,8 +899,10 @@ class GenomeBrowser extends React.Component {
                 }));
             }
             const defaultHeight = 30;
+            const defaultExtHeight = 130;
             const extraLineHeight = 14;
             let labelLength = file.title ? Math.floor(file.title.length / maxCharPerLine) : 0;
+            let extLabelLength = labelLength;
             // Some labels on the cart which have a target, assay name, and biosample are too long for one line (some actually extend to three lines)
             // Here we do some approximate math to try to figure out how many lines the labels extend to assuming that ~30 characters fit on one line
             // Labels on the experiment pages are short enough to fit on one line (they contain less information) so we can bypass these calculations for those pages
@@ -911,7 +913,15 @@ class GenomeBrowser extends React.Component {
                 labelLength += file.assay_term_name ? file.assay_term_name.length + 2 : 0;
                 labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length + 2 : 0;
                 labelLength += file.annotation_subtype ? file.annotation_subtype.length : 0;
+
+                extLabelLength = labelLength;
+                extLabelLength += file.output_type ? file.output_type.length : 0;
+                extLabelLength += file.simple_biosample_summary ? file.simple_biosample_summary.length : 0;
+                extLabelLength += file.biological_replicates ? file.biological_replicates.length : 0;
+                extLabelLength += file.biochemical_inputs ? file.biochemical_inputs.length : 0;
+ 
                 labelLength = Math.floor(labelLength / maxCharPerLine);
+                extLabelLength = Math.floor(extLabelLength / maxCharPerLine);
             }
             if (file.name) {
                 const trackObj = {};
@@ -919,7 +929,8 @@ class GenomeBrowser extends React.Component {
                 trackObj.type = 'signal';
                 trackObj.path = file.href;
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
-                trackObj.expandedHeightPx = 140;
+                trackObj.expandedHeightPx = extLabelLength > 0 ? (defaultExtHeight + (extraLineHeight * extLabelLength)) : defaultExtHeight;
+                //trackObj.expandedHeightPx = 140;
                 return trackObj;
             }
             if (file.file_format === 'bigWig') {
@@ -929,7 +940,8 @@ class GenomeBrowser extends React.Component {
                 trackObj.type = 'signal';
                 trackObj.path = domain + file.href;
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
-                trackObj.expandedHeightPx = 135;
+                trackObj.expandedHeightPx = extLabelLength > 0 ? (defaultExtHeight + (extraLineHeight * extLabelLength)) : defaultExtHeight;
+                //trackObj.expandedHeightPx = 135;
                 return trackObj;
             }
             if (file.file_format === 'vdna-dir') {

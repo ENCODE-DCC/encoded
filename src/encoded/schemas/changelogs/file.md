@@ -1,6 +1,7 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 29
+* Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
 * Added *polyA sites* to the enum list for *output_type*.
 * Added properties *filter_type* and *filter_value*
 
