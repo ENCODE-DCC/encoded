@@ -929,7 +929,6 @@ class GenomeBrowser extends React.Component {
                 trackObj.path = file.href;
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
                 trackObj.expandedHeightPx = extLabelLength > 0 ? (defaultExtHeight + (extraLineHeight * extLabelLength)) : defaultExtHeight;
-                //trackObj.expandedHeightPx = 140;
                 return trackObj;
             }
             if (file.file_format === 'bigWig') {
@@ -940,7 +939,6 @@ class GenomeBrowser extends React.Component {
                 trackObj.path = domain + file.href;
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
                 trackObj.expandedHeightPx = extLabelLength > 0 ? (defaultExtHeight + (extraLineHeight * extLabelLength)) : defaultExtHeight;
-                //trackObj.expandedHeightPx = 135;
                 return trackObj;
             }
             if (file.file_format === 'vdna-dir') {
@@ -983,6 +981,7 @@ class GenomeBrowser extends React.Component {
                 return trackObj;
             }
             const trackObj = {};
+            // bigBeds
             trackObj.name = <TrackLabel file={file} label={label} />;
             trackObj.longname = <TrackLabel file={file} label={label} long />;
             trackObj.type = 'annotation';
@@ -990,7 +989,7 @@ class GenomeBrowser extends React.Component {
             trackObj.expandable = true;
             trackObj.displayLabels = false;
             trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
-            trackObj.expandedHeightPx = 135;
+            trackObj.expandedHeightPx = extLabelLength > 0 ? (defaultExtHeight + (extraLineHeight * extLabelLength)) : defaultExtHeight;
             trackObj.fileFormatType = file.file_format_type;
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
