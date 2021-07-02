@@ -256,8 +256,28 @@ class SequenceAlignmentFile(AnalysisFile):
 class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
+    rev = {
+        'raw_matrix_files': ('RawMatrixFile', 'derived_from')
+    }
     embedded = DataFile.embedded + ['derived_from']
     audit_inherit = DataFile.audit_inherit + ['derived_from']
+
+
+    @calculated_property(schema={
+        "title": "Raw matrix files",
+        "description": "The list raw matrix files that derive from this file.",
+        "comment": "Do not submit.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "RawMatrixFile.derived_from",
+        },
+        "notSubmittable": True,
+    })
+    def raw_matrix_files(self, request, raw_matrix_files=None):
+        if raw_matrix_files:
+            return paths_filtered_by_status(request, raw_matrix_files)
+
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",

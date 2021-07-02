@@ -326,18 +326,41 @@ SummaryData.defaultProps = {
 class SummaryBody extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            cellCount: 0
+        }
         const searchQuery = url.parse(this.props.context['@id']).search;
         const terms = queryString.parse(searchQuery);
+    }
+
+    componentDidMount() {
+        const query_url = this.props.context.search_base.replace('/search/?', '')
+        this.getCellCount(query_url);
+    }
+
+    getCellCount(searchBase) {
+        requestSearch(searchBase + '&observation_count=*&limit=all').then((results) => {
+            if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
+                var cell_count = 0
+                results['@graph'].forEach(y => cell_count += y['observation_count']);
+                this.setState({
+                    cellCount: cell_count
+                })
+            }
+        })
     }
 
     render() {
         const searchQuery = url.parse(this.props.context['@id']).search;
         const context = this.props.context;
-        const vertFacetNames = ['assay', 'protocol.title', 'read_count', 'biosample_classification', 'biosample_ontologies.system_slims', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title'];
+        const vertFacetNames = ['assay', 'protocol.title', 'observation_count', 'biosample_classification', 'biosample_ontologies.system_slims', 'biosample_ontologies.organ_slims', 'biosample_ontologies.term_name', 'award.project', 'award.coordinating_pi.title'];
         const vertFacets = []
         context.facets.forEach(x => {
             if (vertFacetNames.includes(x.field)) vertFacets.push(x);
             })
+
+        const cell_count = this.state.cellCount.toLocaleString();
+
         return (
             <div className="search-results">
                 <div className="search-results__facets">
@@ -345,6 +368,7 @@ class SummaryBody extends React.Component {
                 </div>
                 <div className="search-results__report-list">
                     <h4>{this.props.context.total} {this.props.context.total > 1 ? 'libraries' : 'library'}</h4>
+                    <h4>{cell_count} cells/nuclei</h4>
                     <div className="view-controls-container">
                         <ViewControls results={this.props.context} alternativeNames={['Tabular report']} />
                     </div>

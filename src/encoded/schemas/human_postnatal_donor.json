@@ -76,7 +76,8 @@
             "default": "3"
         },
         "age": {
-            "pattern": "^((unknown)|(([1-8]?\\d)(\\-([1-8]?\\d))?)|(>89))$"
+            "comment": "For privacy purposes, any age 90 years or above is listed as '>89'.",
+            "pattern": "^((unknown)|((1?[1-8]?\\d)(\\-([1-8]?\\d))?)|(>89))$"
         },
         "times_pregnant": {
             "title": "Times pregnant",

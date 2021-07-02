@@ -268,8 +268,8 @@
         "file_size": {
             "title": "File size"
         },
-        "empty_drops_included": {
-            "title": "Empty drops included"
+        "background_barcodes_included": {
+            "title": "Background barcodes included"
         },
         "href": {
             "title": "Download URL"

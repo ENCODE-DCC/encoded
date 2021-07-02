@@ -15,7 +15,6 @@ class LibraryComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const aliasList = context.aliases.join(', ');
 
         function libraryList(values, field) {
             if (values && values.length > 0) {
@@ -121,7 +120,7 @@ class LibraryComponent extends React.Component {
                                 {context.aliases ?
                                     <div data-test="aliases">
                                         <dt>Aliases</dt>
-                                        <dd>{aliasList}</dd>
+                                        <dd>{context.aliases.join(', ')}</dd>
                                     </div>
                                 : null}
 

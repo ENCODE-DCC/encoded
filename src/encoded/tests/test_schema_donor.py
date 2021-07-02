@@ -12,3 +12,4 @@ def test_age_humanpostnatal(testapp, human_postnatal_donor_base):
     testapp.patch_json(human_postnatal_donor_base['@id'], {'age': '102', 'age_units': 'year'}, status=422)
     testapp.patch_json(human_postnatal_donor_base['@id'], {'age': '6-', 'age_units': 'year'}, status=422)
     testapp.patch_json(human_postnatal_donor_base['@id'], {'age': '-6', 'age_units': 'year'}, status=422)
+    testapp.patch_json(human_postnatal_donor_base['@id'], {'age': '157', 'age_units': 'month'}, status=200)

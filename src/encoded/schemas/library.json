@@ -222,9 +222,9 @@
         "protocol.title": {
             "title": "Library protocol"
         },
-        "read_count": {
+        "observation_count": {
             "type": "exists",
-            "title": "Has sequence reads"
+            "title": "Has raw count matrix"
         },
         "donors.organism.scientific_name": {
             "title": "Donor organism"
@@ -288,6 +288,9 @@
         },
         "protocol.title": {
             "title": "Library protocol"
+        },
+        "observation_count": {
+            "title": "Observation count"
         },
         "read_count": {
             "title": "Read count"

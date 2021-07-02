@@ -31,7 +31,8 @@ class Library(Item,
     schema = load_schema('encoded:schemas/library.json')
     name_key = 'accession'
     rev = {
-        'sequencing_runs': ('SequencingRun','derived_from')
+        'sequencing_runs': ('SequencingRun','derived_from'),
+        'direct_raw_mx': ('RawMatrixFile', 'derived_from')
     }
     embedded = [
         'award',
@@ -47,6 +48,35 @@ class Library(Item,
         'biosample_ontologies',
         'derived_from'
     ]
+
+
+    @calculated_property(schema={
+        "title": "Observation count",
+        "description": "The number of cells and nuclei from this library that have raw counts submitted.",
+        "comment": "Do not submit.",
+        "type": "integer",
+        "notSubmittable": True,
+    })
+    def observation_count(self, request, sequencing_runs, direct_raw_mx=None):
+        matrices = set()
+
+        if direct_raw_mx:
+            matrices.update(paths_filtered_by_status(request, direct_raw_mx))
+        for sr in sequencing_runs:
+            sr_obj = request.embed(sr, '@@object')
+            if sr_obj.get('files'):
+                for f in sr_obj['files']:
+                    f_obj = request.embed(f, '@@object')
+                    if f_obj.get('raw_matrix_files'):
+                        matrices.update(f_obj['raw_matrix_files'])
+        count = 0
+        for m in matrices:
+            mx_obj = request.embed(m, '@@object?skip_calculated=true')
+            if mx_obj.get('observation_count') and mx_obj.get('background_barcodes_included') != True:
+                count += mx_obj['observation_count']
+
+        if count > 0:
+            return count
 
 
     @calculated_property(schema={

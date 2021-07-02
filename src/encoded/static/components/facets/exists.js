@@ -38,4 +38,4 @@ ExistsFacet.defaultProps = {
     queryString: '',
 };
 
-FacetRegistry.Facet.register('read_count', ExistsFacet);
+FacetRegistry.Facet.register('observation_count', ExistsFacet);
