@@ -161,7 +161,7 @@ def is_cart_search(request):
 
 
 def is_expression_search(request):
-    return 'Expression' in request.params.getall('type')
+    return 'RNAExpression' in request.params.getall('type')
 
 
 def get_report_search_generator(request):

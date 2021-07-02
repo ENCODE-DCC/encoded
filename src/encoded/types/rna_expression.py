@@ -6,11 +6,11 @@ from .base import Item
 
 
 @collection(
-    name='expressions',
+    name='rna-expressions',
     acl=[
         DENY_ALL,
     ]
 )
-class Expression(Item):
-    item_type = 'expression'
-    schema = load_schema('encoded:schemas/expression.json')
+class RNAExpression(Item):
+    item_type = 'rna-expression'
+    schema = load_schema('encoded:schemas/rna_expression.json')
