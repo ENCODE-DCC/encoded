@@ -502,39 +502,45 @@ globals.listingViews.register(Experiment, 'SingleCellUnit');
 globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 
-const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicators, auditDetail }, reactContext) => (
-    <li className={resultItemClass(result)}>
-        <div className="result-item">
-            <div className="result-item__data">
-                <a href={result['@id']} className="result-item__link">
-                    {datasetTypes[result['@type'][0]]}
-                    {result.description ? <span>{`: ${result.description}`}</span> : null}
-                </a>
-                <div className="result-item__data-row">
-                    <div><strong>Lab: </strong>{result.lab.title}</div>
-                    <div><strong>Project: </strong>{result.award.project}</div>
+const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicators, auditDetail }, reactContext) => {
+    const targets = result.targets ? result.targets.map((target) => target.label) : [];
+    return (
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <a href={result['@id']} className="result-item__link">
+                        {datasetTypes[result['@type'][0]]}
+                        {result.description ? <span>{`: ${result.description}`}</span> : null}
+                    </a>
+                    <div className="result-item__data-row">
+                        <div><strong>Lab: </strong>{result.lab.title}</div>
+                        <div><strong>Project: </strong>{result.award.project}</div>
+                        {targets.length > 0 ?
+                            <div><strong>Target{targets.length > 1 ? 's' : ''}: </strong>{targets.join(', ')}</div>
+                        : null}
+                    </div>
                 </div>
-            </div>
-            <div className="result-item__meta">
-                <div className="result-item__meta-title">Annotation</div>
-                <div className="result-item__meta-id">{` ${result.accession}`}</div>
-                {mode !== 'cart-view' ?
-                    <>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
-                    </>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Annotation</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    {mode !== 'cart-view' ?
+                        <>
+                            <Status item={result.status} badgeSize="small" css="result-table__status" />
+                            {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                        </>
+                    : null}
+                </div>
+                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
+                    <div className="result-item__cart-control">
+                        <CartToggle element={result} />
+                    </div>
                 : null}
+                <PickerActions context={result} />
             </div>
-            {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
-                <div className="result-item__cart-control">
-                    <CartToggle element={result} />
-                </div>
-            : null}
-            <PickerActions context={result} />
-        </div>
-        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-    </li>
-);
+            {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+        </li>
+    );
+};
 
 AnnotationComponent.propTypes = {
     /** Dataset search results */
