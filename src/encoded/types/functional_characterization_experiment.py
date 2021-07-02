@@ -38,6 +38,7 @@ class FunctionalCharacterizationExperiment(
     CalculatedAssayTermID,
     CalculatedVisualize,
     CalculatedBiosampleSummary,
+    CalculatedSimpleSummary,
     CalculatedReplicates,
     CalculatedAssaySlims,
     CalculatedAssayTitle,
