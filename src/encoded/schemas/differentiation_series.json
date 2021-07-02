@@ -184,6 +184,14 @@
         "related_datasets.replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units",
             "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.post_differentiation_time": {
+            "title": "Post-differentiation time",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.post_differentiation_time_units": {
+            "title": "Post-differentiation time units",
+            "type": "string"
         }
     },
     "boost_values": {

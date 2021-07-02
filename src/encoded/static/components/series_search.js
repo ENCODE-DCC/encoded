@@ -28,6 +28,10 @@ const seriesList = {
         title: 'Gene silencing',
         schema: 'gene_silencing_series',
     },
+    DifferentiationSeries: {
+        title: 'Differentiation',
+        schema: 'differentiation_series',
+    },
 };
 
 // Fetch data from href

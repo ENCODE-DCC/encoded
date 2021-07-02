@@ -630,6 +630,8 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
     let postSynchTime = [];
     let synchronization;
     let postSynchronizationTimeUnits;
+    let postDiffTime = [];
+    let postDiffTimeUnits;
     let lifeStages = [];
     let organisms = [];
     let phases = [];
@@ -643,8 +645,14 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
     const treatmentConcentration = result['@type'].indexOf('TreatmentConcentrationSeries') >= 0;
     const fccSeries = result['@type'].indexOf('FunctionalCharacterizationSeries') >= 0;
     const organismSeries = result['@type'].indexOf('OrganismDevelopmentSeries') >= 0;
+    const differentiationSeries = result['@type'].indexOf('DifferentiationSeries') >= 0;
 
     const biosampleTerm = result.biosample_ontology ? result.biosample_ontology[0].term_name : '';
+
+    let biosamples;
+    if (differentiationSeries && result.biosample_ontology && Object.keys(result.biosample_ontology).length > 1) {
+        biosamples = result.biosample_ontology.map((biosample) => biosample.term_name);
+    }
 
     // Dig through the biosample life stages and ages
     if (result.related_datasets && result.related_datasets.length > 0) {
@@ -687,8 +695,17 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         if (biosample.post_synchronization_time_units) {
                             postSynchronizationTimeUnits = biosample.post_synchronization_time_units;
                         }
+                        if (biosample.post_differentiation_time) {
+                            postDiffTime.push(biosample.post_differentiation_time);
+                        }
+                        if (biosample.post_differentiation_time_units) {
+                            postDiffTimeUnits = biosample.post_differentiation_time_units;
+                        }
                         if (lifeStage) {
                             lifeStages.push(lifeStage);
+                        }
+                        if (biosample.treatments && differentiationSeries) {
+                            treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
                         }
                         if (biosample.treatments && treatmentConcentration) {
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
@@ -724,6 +741,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
         fullStages = _.uniq(fullStages);
         ages = _.uniq(ages).sort();
         postSynchTime = _.uniq(postSynchTime).sort();
+        postDiffTime = _.uniq(postDiffTime).sort();
         organisms = _.uniq(organisms);
         phases = _.uniq(phases);
         examineLociGene = _.uniq(examineLociGene);
@@ -803,6 +821,9 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         {assays && assays.length > 0 ?
                             <div><span className="result-item__property-title">Assays: </span>{assays.join(', ')}</div>
                         : null}
+                        {biosamples && biosamples.length > 0 && differentiationSeries ?
+                            <div><span className="result-item__property-title">Biosamples: </span>{biosamples.join(', ')}</div>
+                        : null}
                         {phases && phases.length > 0 ?
                             <div><span className="result-item__property-title">Cell cycle phases: </span>{phases.join(', ')}</div>
                         : null}
@@ -821,7 +842,10 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         {postSynchTime.length > 0 ?
                             <div><span className="result-item__property-title">Post-synchronization time: </span>{postSynchTime.join(', ')} {postSynchronizationTimeUnits}s</div>
                         : null}
-                        { (uniqueTreatments && (treatmentTime || treatmentConcentration)) ?
+                        {postDiffTime.length > 0 ?
+                            <div><span className="result-item__property-title">Post-differentiation time: </span>{postDiffTime.join(', ')} {postDiffTimeUnits}s</div>
+                        : null}
+                        { (uniqueTreatments && (treatmentTime || treatmentConcentration || differentiationSeries)) ?
                             <div><span className="result-item__property-title">Treatment{treatments.length !== 1 ? 's' : ''}: </span>
                                 <span>
                                     {uniqueTreatments}
