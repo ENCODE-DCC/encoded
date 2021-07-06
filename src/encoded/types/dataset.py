@@ -18,6 +18,7 @@ from .shared_calculated_properties import (
     CalculatedAssayTitle,
     CalculatedAssaySlims,
     CalculatedBiosampleSummary,
+    CalculatedSimpleSummary,
     CalculatedReplicates,
     CalculatedReplicationType,
     CalculatedCategorySlims,
@@ -447,6 +448,7 @@ class TransgenicEnhancerExperiment(
 class SingleCellUnit(
     Dataset,
     CalculatedBiosampleSummary,
+    CalculatedSimpleSummary,
     CalculatedReplicates,
     CalculatedAssaySynonyms,
     CalculatedAssayTermID,

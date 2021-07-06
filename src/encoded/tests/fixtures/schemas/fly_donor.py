@@ -12,6 +12,17 @@ def fly_donor_2(testapp, award, lab, fly):
 
 
 @pytest.fixture
+def fly_donor_strain(testapp, award, lab, fly):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'organism': fly['@id'],
+        'strain_background': 'VK00033'
+    }
+    return testapp.post_json('/fly_donor', item).json['@graph'][0]
+
+
+@pytest.fixture
 def fly_donor(lab, award, fly, testapp):
     item = {
         'lab': lab['uuid'],
