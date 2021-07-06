@@ -659,6 +659,7 @@ class Annotation(FileSet, CalculatedVisualize):
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + [
         'biosample_ontology',
+        'documents',
         'software_used',
         'software_used.software',
         'organism',
