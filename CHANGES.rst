@@ -1,5 +1,37 @@
 Changes
 =======
+119.0 (released)
+--------------------------------
+1. ENCD-5974 biosample summary summary (#4004)
+2. ENCD-5990-embed-docs (#3986)
+3. ENCD-6037-annotation-target (#4006)
+4. ENCD-5618 encyclopedia page (#3998)
+5. ENCD-5955-analysis-titles (#4002)
+6. ENCD-6031-add-DHS-to-annotation-subtype (#3999)
+7. ENCD-6028-visualizable-filter (#3997)
+8. ENCD-5926-adjust-biosample-characterizations-audit-to-check-parents (#3958)
+9. ENCD-5995-update-rnaget-ui (#3980)
+10. ENCD-6032-adding-link-to-official-rnaget-api-docs (#3978)
+11. ENCD-6022-add-filter-type-and-filter-value-properties (#3990)
+12. ENCD-5971-split-experiments-in-disease-series (#3989)
+13. ENCD-6013-bump-queue-worker get size (#3968)
+14. ENCD-5994-long-read-scrna-assay-slim (#3976)
+15. ENCD-5993 Exclude long read single-cell RNA-seq from audit (#3973)
+16. ENCD-5969-reference-elements-sel-method (#3985)
+17. ENCD-6021-allow-txt-for-sequence-barcodes-add-polyA-sites-output (#3991)
+18. ENCD-6023-expression-readout-fcc-series-table (#3993)
+19. ENCD-6025-cart-valis-targets (#3992)
+20. ENCD-6019-increase-sts-token-expiration (#3977)
+21. ENCD-6006-add-facs-expression-measurement-method (#3982)
+22. ENCD-5720-target-cart-facet (#3971)
+23. ENCD-5970-fcc-series-elements-references (#3974)
+24. ENCD-5996-add-enum-analysis-step-type (#3979)
+25. ENCD-5986-set-status-transgenic-enhancer-expt (#3981)
+26. ENCD-5967-use-biosample-summary-series-tables (#3970)
+27. ENCD-5965-enable-association-graph-in-series (#3949)
+28. ENCD-5918-cart-analyses (#3966)
+29. ENCD-6020 disable email sending (#3975)
+
 118.0 (released) snovault 1.0.58
 --------------------------------
 1. ENCD-6012-regulome-validation-error (#3969)
