@@ -230,9 +230,6 @@
         "file.biosample_ontology.classification": {
             "title": "Biosample classification"
         },
-        "file.biosample_ontology.organs": {
-            "title": "Biosample organ"
-        },
         "dataset.replicates.library.biosample.sex": {
             "title": "Biosample sex"
         }
