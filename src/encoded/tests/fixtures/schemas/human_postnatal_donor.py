@@ -2,10 +2,10 @@ import pytest
 
 
 @pytest.fixture
-def human_postnatal_donor_base(testapp, european_ontology):
+def human_postnatal_donor_base(testapp, adult_ontology, european_ontology):
     item = {
         'sex': 'male',
-        'life_stage': 'adult',
+        'development_ontology': adult_ontology['@id'],
         'age': 'unknown',
         'ethnicity': european_ontology['@id']
     }
