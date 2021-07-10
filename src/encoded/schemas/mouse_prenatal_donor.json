@@ -4,7 +4,7 @@
     "id": "/profiles/mouse_prenatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["sex", "strain_term_name"],
+    "required": ["conceptional_age", "sex", "strain_term_name", "development_ontology"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
