@@ -1370,5 +1370,35 @@
         "source": "john-stamatoyannopoulos",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "1313fc4e-b989-4fae-a65c-b16f309a2b79"
+    },
+    {
+        "_test": "For perturbed element experiment",
+        "accession": "ENCBS092WBT",
+        "award": "U54HG006996",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "genetic_modifications": [
+            "b0cec60b-c928-44c1-8f2d-d1f77f2b26a5"
+        ],
+        "donor": "ENCDO000HUM",
+        "lab": "kevin-white",
+        "organism": "human",
+        "source": "kevin-white",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "2eabf9c5-c6d5-4bcd-bd9f-85e95a3bd1b8"
+    },
+    {
+        "_test": "For perturbed element experiment 2",
+        "accession": "ENCBS811ACL",
+        "award": "U54HG006996",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "genetic_modifications": [
+            "b0cec60b-c928-44c1-8f2d-d1f77f2b26a5"
+        ],
+        "donor": "ENCDO000HUM",
+        "lab": "kevin-white",
+        "organism": "human",
+        "source": "kevin-white",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "04a2b1ac-2daa-4002-809a-7388400f17ab"
     }
 ]

@@ -1,0 +1,357 @@
+{
+    "title": "Perturbed element experiment",
+    "description": "Schema for submitting metadata for a perturbed element experiment.",
+    "comment": "A perturbed element experiment is a special case of dataset. It includes assay metadata.",
+    "id": "/profiles/perturbed_element_experiment.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
+    "identifyingProperties": ["uuid", "accession" , "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "dataset.json#/properties" },
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/biosample_ontology" },
+        { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/submitter_comment" }
+    ],
+    "dependencies": {
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["date_released"],
+                    "properties": {
+                        "status": {
+                            "enum": ["released", "revoked"]
+                        }
+                    }
+                },
+                {
+                    "required": ["date_submitted"],
+                    "properties": {
+                        "status": {
+                            "enum": ["submitted"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["released", "revoked", "submitted"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+
+            "default": "1"
+        },
+        "assay_term_name": {
+            "title": "Assay name",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+            "type": "string",
+            "enum": [
+                "perturbation followed by RT-qPCR"
+            ]
+        },
+        "date_submitted": {
+            "title": "Date submitted" ,
+            "description": "The date that the experiment received all required replicates and files",
+            "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.",
+            "type": "string",
+            "format": "date",
+            "permission": "import_items"
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External resources",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+                "type":  "string",
+                "pattern": "^(GEO:(GSM|GSE)\\d+)$"
+            }
+        },
+        "documents": {
+            "description": "Protocols or other documents that describe the assay or the results (not data files)."
+        },
+        "elements_references": {
+            "title": "Elements references",
+            "description": "Datasets that contain reference files listing the elements being characterized in this functional characterization experiment.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Reference",
+                "description": "Dataset that contain reference file or annotation listing the elements being characterized in this functional characterization experiment.",
+                "comment": "See reference.json or annotation.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": ["Reference", "Annotation"]
+            }
+        },
+        "biosamples": {
+            "title": "Biosamples",
+            "description": "The biosamples used in the transgenic enhancer experiment.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Biosample",
+                "description": "The unique test organism used in the transgenic enhancer experiment.",
+                "comment": "See biosample.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "Biosample"
+            }
+        },
+        "element_location": {
+            "title": "Element location",
+            "description": "The genomic coordinates specifying the location of the tested element.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "assembly",
+                "chromosome",
+                "start",
+                "end"
+            ],
+            "properties": {
+                "assembly": {
+                    "title": "Mapping assembly",
+                    "description": "The genome assembly to which coordinates relate. e.g. GRCh38.",
+                    "type": "string",
+                    "enum": [
+                        "ce11",
+                        "ce10",
+                        "dm6",
+                        "dm3",
+                        "GRCh38",
+                        "hg19",
+                        "mm10",
+                        "mm9"
+                    ]
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the chromosome, e.g. chr1 or chrX",
+                    "type": "string",
+                    "pattern": "^(chr[0-9A-Za-z]+)$"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate.",
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "gene": {
+            "title": "Gene",
+            "description": "The name of the gene whose expression is under investigation for the perturbed element experiment.",
+            "comment": "See gene.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Gene"
+        },
+        "genotyping_primer_pairs": {
+            "title": "Genotyping primer pairs",
+            "description": "The pair(s) of primers used to confirm deletion of the perturbed element.",
+            "type": "array",
+            "uniqueItems": true,
+            "additionalProperties": false,
+            "items": {
+                "title": "Genotyping primer pair",
+                "description": "The pair of primers used to confirm deletion of the perturbed element.",
+                "type": "object",
+                "required": ["forward_genotyping_primer", "reverse_genotyping_primer"],
+                "properties": {
+                    "forward_genotyping_primer": {
+                        "title": "Forward genotyping primer",
+                        "description": "The sequence of the forward genotyping primer.",
+                        "type": "string",
+                        "pattern": "^[ATCG]+$"
+
+                    },
+                    "reverse_genotyping_primer": {
+                        "title": "Reverse genotyping primer",
+                        "description": "The sequence of the reverse genotyping primer.",
+                        "type": "string",
+                        "pattern": "^[ATCG]+$"
+                    }
+                }
+            }
+        },
+        "gene_expression_primer_pairs": {
+            "title": "Gene expression primer pairs",
+            "description": "The pair(s) of primers used to measure expression of the gene under investigation.",
+            "type": "array",
+            "uniqueItems": true,
+            "additionalProperties": false,
+            "items": {
+                "title": "Gene expression primer pair",
+                "description": "The pair of primers used to measure expression of the gene under investigation.",
+                "type": "object",
+                "required": ["forward_gene_expression_primer", "reverse_gene_expression_primer"],
+                "properties": {
+                    "forward_gene_expression_primer": {
+                        "title": "Forward gene expression primer",
+                        "description": "The sequence of the forward gene expression primer.",
+                        "type": "string",
+                        "pattern": "^[ATCG]+$"
+
+                    },
+                    "reverse_gene_expression_primer": {
+                        "title": "Reverse genotyping primer",
+                        "description": "The sequence of the reverse gene expression primer.",
+                        "type": "string",
+                        "pattern": "^[ATCG]+$"
+                    }
+                }
+            }
+        },
+        "supersedes": {
+            "title": "Supersedes",
+            "description": "The transgenic enhancer experiment(s) that this transgenic enhancer experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "comment": "See transgenic_enhancer_experiment.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "TransgenicEnhancerExperiment"
+            }
+        }
+    },
+    "facets": {
+        "assay_slims": {
+            "title": "Assay type"
+        },
+        "assay_title": {
+            "title": "Assay title"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "gene.symbol": {
+            "title": "Gene"
+        },
+        "biosamples.organism.scientific_name": {
+            "title": "Organism"
+        },
+        "biosample_ontology.classification": {
+            "title": "Biosample classification"
+        },
+        "biosample_ontology.term_name" : {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        },
+        "date_released": {
+            "title": "Date released"
+        },
+        "date_submitted": {
+            "title": "Date submitted"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "internal_status": {
+            "title": "Internal status"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "assay_title": {
+            "title": "Assay title"
+        },
+        "gene.symbol": {
+            "title": "Gene"
+        },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name"
+        },
+        "description": {
+            "title": "Description"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "biosamples.biosample.accession": {
+            "title": "Biosample accession"
+        }
+    },
+    "boost_values": {
+        "@type": 1.0,
+        "accession": 1.0,
+        "alternate_accessions": 1.0,
+        "assay_term_name": 1.0,
+        "assay_term_id": 1.0,
+        "dbxrefs": 1.0,
+        "aliases": 1.0,
+        "award.title": 1.0,
+        "biosample_ontology.term_id": 1.0,
+        "biosample_ontology.term_name": 1.0,
+        "biosample_ontology.classification": 1.0,
+        "category_slims": 1.0,
+        "objective_slims": 1.0,
+        "type_slims": 1.0,
+        "assay_synonyms": 1.0,
+        "biosample_ontology.synonyms": 1.0,
+        "award.project": 1.0,
+        "award.name": 1.0,
+        "submitted_by.email": 1.0,
+        "submitted_by.first_name": 1.0,
+        "submitted_by.last_name": 1.0,
+        "lab.institute_name": 1.0,
+        "lab.institute_label": 1.0,
+        "lab.title": 1.0,
+        "references.title": 1.0,
+        "notes": 1.0,
+        "internal_tags": 1.0,
+        "doi": 1.0,
+        "biosample_summary": 12.0
+    },
+    "changelog": "/profiles/changelogs/perturbed_element_experiment.md"
+}

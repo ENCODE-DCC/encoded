@@ -48,6 +48,7 @@
                 "immunoprecipitation",
                 "immunoprecipitation followed by mass spectrometry",
                 "PCR",
+                "RT-qPCR",
                 "Sanger sequencing"
             ]
         },

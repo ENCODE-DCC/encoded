@@ -42,6 +42,7 @@ ORDER = [
     'single_cell_unit',
     'functional_characterization_experiment',
     'transgenic_enhancer_experiment',
+    'perturbed_element_experiment',
     'replicate',
     'annotation',
     'project',
@@ -630,6 +631,9 @@ PHASE1_PIPELINES = {
     'transgenic_enhancer_experiment': [
         remove_keys('related_files', 'supersedes'),
     ],
+    'perturbed_element_experiment': [
+        remove_keys('related_files', 'supersedes'),
+    ],
     'mouse_donor': [
         remove_keys('parent_strains', 'genetic_modifications'),
     ],
@@ -745,6 +749,9 @@ PHASE2_PIPELINES = {
     ],
     'transgenic_enhancer_experiment': [
         skip_rows_missing_all_keys('related_files', 'supersedes'),
+    ],
+    'perturbed_element_experiment': [
+        remove_keys('related_files', 'supersedes'),
     ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),

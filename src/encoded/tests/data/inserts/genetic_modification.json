@@ -399,5 +399,20 @@
         "method": "CRISPR",
         "award": "/awards/U41HG007355/",
         "uuid": "10aca140-fb2a-4c27-ac35-a65205e0accf"
+    },
+    {
+        "accession": "ENCGM236CGD",
+        "status": "in progress",
+        "award": "/awards/U41HG007355/",
+        "lab": "/labs/kevin-white/",
+        "uuid": "b0cec60b-c928-44c1-8f2d-d1f77f2b26a5",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "category": "deletion",
+        "purpose": "characterization",
+        "method": "CRISPR",
+        "guide_rna_sequences": [
+            "GCCTGATAACTGTCTTGAGC",
+            "ACGTGAATCTACCCTATGTT"
+        ]
     }
 ]

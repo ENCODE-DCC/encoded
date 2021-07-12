@@ -1,0 +1,37 @@
+[
+    {
+        "_test": "perturbed element experiment",
+        "accession": "ENCSR712PEE",
+        "assay_term_name": "perturbation followed by RT-qPCR",
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "biosamples": [
+            "ENCBS092WBT",
+            "ENCBS811ACL"
+        ],
+        "element_location": {
+            "assembly": "GRCh38",
+            "chromosome": "chr5",
+            "start": 57366782,
+            "end": 57367231
+        },
+        "gene": "/genes/6925/",
+        "genotyping_primer_pairs": [
+            {
+                "forward_genotyping_primer": "GCCCTGGAATATGGGTCCAC",
+                "reverse_genotyping_primer": "GAAGTTTCCACTGCCCACCA"
+            }
+        ],
+        "gene_expression_primer_pairs": [
+            {
+                "forward_gene_expression_primer": "TTCACTTGTCCTGTTCACTCG",
+                "reverse_gene_expression_primer": "CACATCCCTGACCCATTATCC"
+            }
+        ],
+        "description": "K562 validation of TCF4 enhancer",
+        "lab": "kevin-white",
+        "status": "in progress",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "6bb35f79-28cf-4cd1-84eb-f8ce91f8c98b"
+    }
+]

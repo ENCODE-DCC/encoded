@@ -221,7 +221,7 @@ class CalculatedVisualize:
             return None
 
 
-class CalculatedBiosampleSummary:
+class CalculatedBiosampleSummaryFromReplicates:
     @calculated_property(schema={
         "title": "Biosample summary",
         "type": "string",
@@ -311,6 +311,82 @@ class CalculatedBiosampleSummary:
 
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
+
+
+class CalculatedBiosampleSummaryFromBiosamples:
+        @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+        })
+        def biosample_summary(self, request, biosamples=None):
+            drop_age_sex_flag = False
+            add_classification_flag = False
+            dictionaries_of_phrases = []
+            biosample_accessions = set()
+            if biosamples is not None:
+                for bs in biosamples:
+                    biosampleObject = request.embed(bs, '@@object')
+                    if biosampleObject['status'] == 'deleted':
+                        continue
+                    if biosampleObject['accession'] not in biosample_accessions:
+                        biosample_accessions.add(biosampleObject['accession'])
+                        biosample_info = biosample_summary_information(request, biosampleObject)
+                        biosample_summary_dictionary = biosample_info[0]
+                        biosample_drop_age_sex_flag = biosample_info[1]
+                        biosample_add_classification_flag = biosample_info[2]
+                        dictionaries_of_phrases.append(biosample_summary_dictionary)
+                        if biosample_drop_age_sex_flag is True:
+                            drop_age_sex_flag = True
+                        if biosample_add_classification_flag is True:
+                            add_classification_flag = True
+
+            if drop_age_sex_flag is True:
+                sentence_parts = [
+                    'strain_background',
+                    'experiment_term_phrase',
+                    'phase',
+                    'fractionated',
+                    'synchronization',
+                    'modifications_list',
+                    'originated_from',
+                    'treatments_phrase',
+                    'depleted_in',
+                    'disease_term_name',
+                    'pulse_chase_time'
+                ]
+            elif add_classification_flag is True:
+                sentence_parts = [
+                    'strain_background',
+                    'experiment_term_phrase',
+                    'sample_type',
+                    'phase',
+                    'fractionated',
+                    'sex_stage_age',
+                    'synchronization',
+                    'modifications_list',
+                    'originated_from',
+                    'treatments_phrase',
+                    'depleted_in',
+                    'disease_term_name',
+                    'pulse_chase_time'
+                ]
+            else:
+                sentence_parts = [
+                    'strain_background',
+                    'experiment_term_phrase',
+                    'phase',
+                    'fractionated',
+                    'sex_stage_age',
+                    'synchronization',
+                    'modifications_list',
+                    'originated_from',
+                    'treatments_phrase',
+                    'depleted_in',
+                    'disease_term_name',
+                    'pulse_chase_time'
+                ]
+            if len(dictionaries_of_phrases) > 0:
+                return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
 
 class CalculatedSimpleSummary:

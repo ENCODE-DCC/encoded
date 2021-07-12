@@ -4,6 +4,7 @@
 
 * *review* has been added to the schema to allow other lab to review the characterization.
 * *antibody* is added to the schema to indicate the antibody used in the characterization.
+* Added *RT-qPCR* to the *characterization_method* property enum list
 
 ### Schema version 11
 

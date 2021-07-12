@@ -17,7 +17,8 @@ from .shared_calculated_properties import (
     CalculatedAssayTermID,
     CalculatedAssayTitle,
     CalculatedAssaySlims,
-    CalculatedBiosampleSummary,
+    CalculatedBiosampleSummaryFromReplicates,
+    CalculatedBiosampleSummaryFromBiosamples,
     CalculatedSimpleSummary,
     CalculatedReplicates,
     CalculatedReplicationType,
@@ -318,6 +319,7 @@ def convert_date_string(date_string):
     })
 class TransgenicEnhancerExperiment(
     Dataset,
+    CalculatedBiosampleSummaryFromBiosamples,
     CalculatedAssaySynonyms,
     CalculatedAssayTermID,
     CalculatedAssayTitle,
@@ -356,86 +358,69 @@ class TransgenicEnhancerExperiment(
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "InVivoExperiment.supersedes",
+            "linkFrom": "TransgenicEnhancerExperiment.supersedes",
         },
         "notSubmittable": True,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
 
-    @calculated_property(schema={
-        "title": "Biosample summary",
-        "type": "string",
-    })
-    def biosample_summary(self, request, biosamples=None):
-        drop_age_sex_flag = False
-        add_classification_flag = False
-        dictionaries_of_phrases = []
-        biosample_accessions = set()
-        if biosamples is not None:
-            for bs in biosamples:
-                biosampleObject = request.embed(bs, '@@object')
-                if biosampleObject['status'] == 'deleted':
-                    continue
-                if biosampleObject['accession'] not in biosample_accessions:
-                    biosample_accessions.add(biosampleObject['accession'])
-                    biosample_info = biosample_summary_information(request, biosampleObject)
-                    biosample_summary_dictionary = biosample_info[0]
-                    biosample_drop_age_sex_flag = biosample_info[1]
-                    biosample_add_classification_flag = biosample_info[2]
-                    dictionaries_of_phrases.append(biosample_summary_dictionary)
-                    if biosample_drop_age_sex_flag is True:
-                        drop_age_sex_flag = True
-                    if biosample_add_classification_flag is True:
-                        add_classification_flag = True
 
-        if drop_age_sex_flag is True:
-            sentence_parts = [
-                'strain_background',
-                'experiment_term_phrase',
-                'phase',
-                'fractionated',
-                'synchronization',
-                'modifications_list',
-                'originated_from',
-                'treatments_phrase',
-                'depleted_in',
-                'disease_term_name',
-                'pulse_chase_time'
-            ]
-        elif add_classification_flag is True:
-            sentence_parts = [
-                'strain_background',
-                'experiment_term_phrase',
-                'sample_type',
-                'phase',
-                'fractionated',
-                'sex_stage_age',
-                'synchronization',
-                'modifications_list',
-                'originated_from',
-                'treatments_phrase',
-                'depleted_in',
-                'disease_term_name',
-                'pulse_chase_time'
-            ]
-        else:
-            sentence_parts = [
-                'strain_background',
-                'experiment_term_phrase',
-                'phase',
-                'fractionated',
-                'sex_stage_age',
-                'synchronization',
-                'modifications_list',
-                'originated_from',
-                'treatments_phrase',
-                'depleted_in',
-                'disease_term_name',
-                'pulse_chase_time'
-            ]
-        if len(dictionaries_of_phrases) > 0:
-            return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
+@collection(
+    name='perturbed-element-experiments',
+    unique_key='accession',
+    properties={
+        'title': 'Perturbed element experiments',
+        'description': 'Listing of Perturbed Element Experiments',
+    })
+class PerturbedElementExperiment(
+    Dataset,
+    CalculatedBiosampleSummaryFromBiosamples,
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedAssayTitle,
+    CalculatedAssaySlims,
+    CalculatedCategorySlims,
+    CalculatedTypeSlims,
+    CalculatedObjectiveSlims):
+    item_type = 'perturbed_element_experiment'
+    schema = load_schema('encoded:schemas/perturbed_element_experiment.json')
+    embedded = Dataset.embedded + [
+        'biosample_ontology',
+        'biosamples',
+        'biosamples.donor.organism',
+        'biosamples.biosample_ontology',
+        'biosamples.organism',
+        'biosamples.characterizations',
+        'gene'
+    ]
+    audit_inherit = [
+        'submitted_by',
+        'lab',
+        'award',
+        'documents.lab',
+    ]
+    set_status_up = [
+        'documents',
+        'biosamples',
+    ]
+    set_status_down = []
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('PerturbedElementExperiment', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "PerturbedElementExperiment.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 
 @collection(
@@ -447,7 +432,7 @@ class TransgenicEnhancerExperiment(
     })
 class SingleCellUnit(
     Dataset,
-    CalculatedBiosampleSummary,
+    CalculatedBiosampleSummaryFromReplicates,
     CalculatedSimpleSummary,
     CalculatedReplicates,
     CalculatedAssaySynonyms,
