@@ -43,17 +43,13 @@ class Donor(Item, CalculatedTreatmentSummary):
                         "description": "The age and age units of the donor.",
                         "comment": "Do not submit. This is a calculated property",
                         "type": "string"})
-    def age_display(self, request, age=None, age_units=None, conceptional_age=None, conceptional_age_units=None):
-        if age != None and age_units !=None:
-            if age == 'unknown':
-                return 'unknown'
-            else:
-                return u'{}'.format(pluralize(age, age_units))
-        elif conceptional_age != None and conceptional_age_units !=None:
-            if conceptional_age == 'unknown':
-                return 'unknown'
-            else:
-                return u'{} (post-conception)'.format(pluralize(conceptional_age, conceptional_age_units))
+    def age_display(self, request, development_ontology, age=None, age_units=None, conceptional_age=None, conceptional_age_units=None):
+        if age == 'unknown' or conceptional_age == 'unknown':
+            return 'unknown'
+        elif age != None:
+            return u'{}'.format(pluralize(age, age_units))
+        elif conceptional_age != None:
+            return u'{} (post-conception)'.format(pluralize(conceptional_age, conceptional_age_units))
         else:
             return None
 
