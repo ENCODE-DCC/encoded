@@ -57,6 +57,7 @@ rna_client = Elasticsearch(
     'localhost:9202',
     serializer=PyramidJSONSerializer(json_renderer),
     connection_class=TimedUrllib3HttpConnection,
+    timeout=35,
     retry_on_timeout=True,
 )
 
@@ -111,7 +112,9 @@ def rnaget_search(context, request):
             ContextResponseField(),
             BasicSearchWithFacetsResponseField(
                 client=rna_client,
-                default_item_types=DEFAULT_ITEM_TYPES,
+                default_item_types=[
+                    'RNAExpression'
+                ],
                 reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
@@ -143,7 +146,9 @@ def rnaget_report(context, request):
             ContextResponseField(),
             BasicReportWithFacetsResponseField(
                 client=rna_client,
-                default_item_types=DEFAULT_ITEM_TYPES,
+                default_item_types=[
+                    'RNAExpression'
+                ],
                 reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
