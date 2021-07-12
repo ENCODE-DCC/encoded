@@ -109,6 +109,19 @@
                                         },
                                         "age": {
                                             "type": "string"
+                                        },
+                                        "donor": {
+                                            "type": "object",
+                                            "properties": {
+                                                "organism": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "scientific_name": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -189,6 +202,9 @@
         "dataset.replicates.library.biosample.sex": {
             "title": "Biosample sex"
         },
+        "dataset.replicates.library.biosample.donor.organism.scientific_name": {
+            "title": "Organism"
+        },
         "dataset.biosample_summary": {
             "title": "Biosample summary"
         },
@@ -230,6 +246,10 @@
         "file.biosample_ontology.classification": {
             "title": "Biosample classification"
         },
+        "dataset.replicates.library.biosample.donor.organism.scientific_name": {
+            "title": "Organism",
+            "open_on_load": true,
+        }
         "dataset.replicates.library.biosample.sex": {
             "title": "Biosample sex"
         }
