@@ -16,10 +16,10 @@ Feature: Biosamples
         And I wait for the content to load
         When I click the link to "/search/?type=Biosample&organism.scientific_name=Homo+sapiens"
         Then I should see an element with the css selector "div.search-results"
-        And I should see "Showing 25 of 44 results"
+        And I should see "Showing 25 of 46 results"
 
         When I go back
         And I wait for the content to load
         When I click the link to "/search/?type=Biosample&status=in+progress"
         Then I should see an element with the css selector "div.search-results"
-        And I should see "Showing 25 of 38 results"
+        And I should see "Showing 25 of 40 results"
