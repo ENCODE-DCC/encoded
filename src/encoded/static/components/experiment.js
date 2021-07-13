@@ -376,7 +376,7 @@ ElementsReferences.propTypes = {
 
 
 /**
- * Renders Experiment, FunctionalCharacterizationExperiment, and TransgenicEnhancerExperiment objects.
+ * Renders Experiment, FunctionalCharacterizationExperiment, SingleCellUnit, TransgenicEnhancerExperiment, and ElementPerturbationExperiment objects.
  */
 const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
     let condensedReplicates = [];
@@ -389,6 +389,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
     const isSingleCell = experimentType === 'SingleCellUnit';
     const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
+    const isPerturbedExperiment = experimentType === 'ElementPerturbationExperiment';
     let displayType;
     let displayTypeBreadcrumbs;
     if (isFunctionalExperiment) {
@@ -400,6 +401,9 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     } else if (isSingleCell) {
         displayTypeBreadcrumbs = 'Single Cell Units';
         displayType = 'Single Cell Unit';
+    } else if (isPerturbedExperiment) {
+        displayTypeBreadcrumbs = 'Element Perturbation Experiments';
+        displayType = 'Element Perturbation Experiment';
     } else {
         displayTypeBreadcrumbs = 'Experiments';
         displayType = 'Experiment';
@@ -436,12 +440,12 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
     // Make array of all replicate biosamples, not including biosample-less replicates. Also
     // collect up library documents, this only apply to Experiment and FunctionalCharacterizationExperiment.
-    // collect biosample characterizations for TransgenicEnhancerExperiment only.
+    // collect biosample characterizations for TransgenicEnhancerExperiment and ElementPerturbationExperiment.
     const libraryDocs = [];
     let biosamples = [];
     let biosampleCharacterizations = [];
-    const appliedModifications = [];
-    if (isEnhancerExperiment) {
+    const appliedModifications = new Set();
+    if (isEnhancerExperiment || isPerturbedExperiment) {
         if (context.biosamples) {
             biosamples = (context.biosamples.length > 0) ? context.biosamples : [];
         }
@@ -451,11 +455,11 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                     biosampleCharacterizations = biosampleCharacterizations.concat(biosample.characterizations.map((bc) => bc['@id']));
                 }
                 if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
-                    appliedModifications.push(...biosample.applied_modifications);
+                    appliedModifications.add(...biosample.applied_modifications);
                 }
             });
         }
-    } else if (!isEnhancerExperiment) {
+    } else if (!(isEnhancerExperiment || isPerturbedExperiment)) {
         if (replicates.length > 0) {
             biosamples = _.compact(replicates.map((replicate) => {
                 if (replicate.library) {
@@ -554,7 +558,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     let nameTip = '';
     const names = organismNames.map((organismName, i) => {
         nameTip += (nameTip.length > 0 ? ' + ' : '') + organismName;
-        if (isEnhancerExperiment) {
+        if (isEnhancerExperiment || isPerturbedExperiment) {
             nameQuery += `${nameQuery.length > 0 ? '&' : ''}biosamples.donor.organism.scientific_name=${organismName}`;
         } else {
             nameQuery += `${nameQuery.length > 0 ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
@@ -655,7 +659,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {isEnhancerExperiment && biosamples.length > 0 ?
+                            {(isEnhancerExperiment || isPerturbedExperiment) && biosamples.length > 0 ?
                                 <div data-test="biosamples">
                                     <dt>Biosample</dt>
                                     <dd>
@@ -748,7 +752,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                             : null}
 
                             {/* Display library properties for Experiment, FunctionalCharacterizationExperiment, and SingleCellUnit only. */}
-                            {!isEnhancerExperiment ?
+                            {!(isEnhancerExperiment || isPerturbedExperiment) ?
                                 <>
                                     <LibraryProperties replicates={replicates} />
                                     <DatasetConstructionPlatform context={context} />
@@ -841,6 +845,64 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
+                            {context.genes && context.genes.length > 0 ?
+                                <div data-test="gene-symbol">
+                                    <dt>Investigated genes</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.genes.map((gene) => (
+                                                <li key={gene['@id']} className="multi-comma">
+                                                    <a href={gene['@id']}>
+                                                        {gene.symbol}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.genotyping_primer_pairs && context.genotyping_primer_pairs.length > 0 ?
+                                <div data-test="genotyping-primer-pairs">
+                                    <dt>Genotyping primer pairs</dt>
+                                    <dd>
+                                        <ul className="multi-value">
+                                            {context.genotyping_primer_pairs.map((pair, i) => (
+                                                <li key={i}>Forward: {pair.forward_genotyping_primer}, Reverse: {pair.reverse_genotyping_primer}</li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.gene_expression_primer_pairs && context.gene_expression_primer_pairs.length > 0 ?
+                                <div data-test="gene-expression-primer-pairs">
+                                    <dt>Gene expression primer pairs</dt>
+                                    <dd>
+                                        <ul className="multi-value">
+                                            {context.gene_expression_primer_pairs.map((pair, i) => (
+                                                <li key={i}><a href={pair.gene['@id']}>{pair.gene.symbol}</a>- Forward: {pair.forward_gene_expression_primer}, Reverse: {pair.reverse_gene_expression_primer}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.relative_gene_expression_values && context.relative_gene_expression_values.length > 0 ?
+                                <div data-test="relative-gene-expression-values">
+                                    <dt>Relative gene expression values</dt>
+                                    <dd>
+                                        <ul className="multi-value">
+                                            {context.relative_gene_expression_values.map((value, i) => (
+                                                <li key={i}><a href={value.gene['@id']}>{value.gene.symbol}</a>: {value.relative_gene_expression_value}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.tissue_with_enhancer_activity && context.tissue_with_enhancer_activity.length > 0 ?
                                 <div data-test="tissue-with-enhancer-activity">
                                     <dt>Tissues with enhancer activity</dt>
@@ -927,7 +989,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {!isEnhancerExperiment ?
+                            {!(isEnhancerExperiment || isPerturbedExperiment) ?
                                 <LibrarySubmitterComments replicates={replicates} />
                             : null}
 
@@ -969,8 +1031,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             : null}
 
 
-            {/* Display the file widget with the facet, graph, and tables for Experiment and FunctionalCharacterizationExperiment only. */}
-            {!isEnhancerExperiment ?
+            {/* Display the file widget with the facet, graph, and tables for Experiment, FunctionalCharacterizationExperiment, and SingleCellUnit only. */}
+            {!(isEnhancerExperiment || isPerturbedExperiment) ?
                 <FileGallery context={context} />
             : null}
 
@@ -1028,6 +1090,7 @@ globals.contentViews.register(Experiment, 'Experiment');
 globals.contentViews.register(Experiment, 'FunctionalCharacterizationExperiment');
 globals.contentViews.register(Experiment, 'SingleCellUnit');
 globals.contentViews.register(Experiment, 'TransgenicEnhancerExperiment');
+globals.contentViews.register(Experiment, 'ElementPerturbationExperiment');
 
 
 const replicateTableColumns = {

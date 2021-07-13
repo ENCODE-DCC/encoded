@@ -168,12 +168,20 @@
                 }
             }
         },
-        "gene": {
+        "genes": {
             "title": "Gene",
-            "description": "The name of the gene whose expression is under investigation for the perturbed element experiment.",
-            "comment": "See gene.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Gene"
+            "description": "The genes whose expression is under investigation in the perturbed element experiment.",
+            "type": "array",
+            "additionalProperties": false,
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Gene",
+                "description": "The gene whose expression is under investigation in the perturbed element experiment.",
+                "comment": "See gene.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Gene"
+            }
         },
         "genotyping_primer_pairs": {
             "title": "Genotyping primer pairs",
@@ -213,8 +221,14 @@
                 "title": "Gene expression primer pair",
                 "description": "The pair of primers used to measure expression of the gene under investigation.",
                 "type": "object",
-                "required": ["forward_gene_expression_primer", "reverse_gene_expression_primer"],
+                "required": ["forward_gene_expression_primer", "reverse_gene_expression_primer", "gene"],
                 "properties": {
+                    "gene": {
+                        "title": "Gene",
+                        "description": "The target gene of the primer pair.",
+                        "type": "string",
+                        "linkTo": "Gene"
+                    },
                     "forward_gene_expression_primer": {
                         "title": "Forward gene expression primer",
                         "description": "The sequence of the forward gene expression primer.",
@@ -227,6 +241,33 @@
                         "description": "The sequence of the reverse gene expression primer.",
                         "type": "string",
                         "pattern": "^[ATCG]+$"
+                    }
+                }
+            }
+        },
+        "relative_gene_expression_values": {
+            "title": "Relative gene expression values",
+            "description": "The average relative gene expression values of the perturbed biological replicates compared to the control.",
+            "type": "array",
+            "uniqueItems": true,
+            "additionalProperties": false,
+            "items": {
+                "title": "Relative gene expression value",
+                "description": "The average relative gene expression value of the perturbed biological replicates compared to the control.",
+                "type": "object",
+                "required": ["gene", "relative_gene_expression_value"],
+                "properties": {
+                    "gene": {
+                        "title": "Gene",
+                        "description": "The gene under investigation.",
+                        "type": "string",
+                        "linkTo": "Gene"
+                    },
+                    "relative_gene_expression_value": {
+                        "title": "Relative expression value",
+                        "description": "The average relative gene expression value of the perturbed biological replicates compared to the control.",
+                        "type": "number",
+                        "minimum": 0
                     }
                 }
             }
@@ -254,8 +295,10 @@
         "status": {
             "title": "Status"
         },
-        "gene.symbol": {
-            "title": "Gene"
+        "genes.symbol": {
+            "title": "Gene",
+            "type": "typeahead",
+            "open_on_load": true
         },
         "biosamples.organism.scientific_name": {
             "title": "Organism"
@@ -297,7 +340,7 @@
         "assay_title": {
             "title": "Assay title"
         },
-        "gene.symbol": {
+        "genes.symbol": {
             "title": "Gene"
         },
         "biosample_summary": {
@@ -351,7 +394,8 @@
         "notes": 1.0,
         "internal_tags": 1.0,
         "doi": 1.0,
-        "biosample_summary": 12.0
+        "biosample_summary": 12.0,
+        "genes.symbol": 1.0
     },
     "changelog": "/profiles/changelogs/element_perturbation_experiment.md"
 }

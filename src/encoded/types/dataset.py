@@ -392,7 +392,9 @@ class ElementPerturbationExperiment(
         'biosamples.biosample_ontology',
         'biosamples.organism',
         'biosamples.characterizations',
-        'gene'
+        'gene_expression_primer_pairs.gene',
+        'relative_gene_expression_values.gene',
+        'genes'
     ]
     audit_inherit = [
         'submitted_by',

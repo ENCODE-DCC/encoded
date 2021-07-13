@@ -292,7 +292,7 @@ globals.listingViews.register(Biosample, 'Biosample');
 
 
 /**
- * Renders both Experiment, FunctionalCharacterizationExperiment, SingleCellUnit, and TransgenicEnhancerExperiment search results.
+ * Renders both Experiment, FunctionalCharacterizationExperiment, SingleCellUnit, TransgenicEnhancerExperiment, and ElementPerturbation search results.
  */
 const ExperimentComponent = (props, reactContext) => {
     const { context: result, cartControls, mode } = props;
@@ -301,11 +301,12 @@ const ExperimentComponent = (props, reactContext) => {
     // Determine if search result is allowed in carts.
     const isResultAllowedInCart = cartGetAllowedTypes().includes(result['@type'][0]);
 
-    // Determine whether object is Experiment, FunctionalCharacterizationExperiment, or TransgenicEnhancerExperiment.
+    // Determine whether object is Experiment, FunctionalCharacterizationExperiment, SingleCellUnit, TransgenicEnhancerExperiment or ElementPerturbationExperiment.
     const experimentType = result['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
     const isSingleCellUnit = experimentType === 'SingleCellUnit';
     const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
+    const isPerturbationExperiment = experimentType === 'ElementPerturbationExperiment';
     let displayType;
     if (isFunctionalExperiment) {
         displayType = 'Functional Characterization Experiment';
@@ -313,6 +314,8 @@ const ExperimentComponent = (props, reactContext) => {
         displayType = 'Single Cell Unit';
     } else if (isEnhancerExperiment) {
         displayType = 'Transgenic Enhancer Experiment';
+    } else if (isPerturbationExperiment) {
+        displayType = 'Element Perturbation Experiment';
     } else {
         displayType = 'Experiment';
     }
@@ -322,7 +325,7 @@ const ExperimentComponent = (props, reactContext) => {
     let biosamples = [];
     const treatments = [];
 
-    if (isEnhancerExperiment) {
+    if (isEnhancerExperiment || isPerturbationExperiment) {
         if (result.biosamples && result.biosamples.length > 0) {
             ({ biosamples } = result);
         }
@@ -340,7 +343,7 @@ const ExperimentComponent = (props, reactContext) => {
     const organismNames = biosamples.length > 0 ? BiosampleOrganismNames(biosamples) : [];
 
     // Collect synchronizations
-    if (isEnhancerExperiment) {
+    if (isEnhancerExperiment || isPerturbationExperiment) {
         if (biosamples && biosamples.length > 0) {
             synchronizations = _.uniq(biosamples.filter((biosample) => biosample && biosample.synchronization).map((biosample) => (
                 `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`
@@ -502,6 +505,7 @@ globals.listingViews.register(Experiment, 'Experiment');
 globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
 globals.listingViews.register(Experiment, 'SingleCellUnit');
 globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
+globals.listingViews.register(Experiment, 'ElementPerturbationExperiment');
 
 
 const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicators, auditDetail }, reactContext) => {

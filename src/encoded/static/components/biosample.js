@@ -515,6 +515,12 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
                 Component={ExperimentTable}
             />
 
+            <RelatedItems
+                title="Element perturbation experiments using this biosample"
+                url={`/search/?type=ElementPerturbationExperiment&biosamples.uuid=${context.uuid}`}
+                Component={ExperimentTable}
+            />
+
             {biosampleChildren && biosampleChildren.length > 0 ?
                 <BiosampleTable
                     items={biosampleChildren}

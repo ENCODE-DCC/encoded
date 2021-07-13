@@ -15,7 +15,7 @@
             "start": 57366782,
             "end": 57367231
         },
-        "gene": "/genes/6925/",
+        "genes": ["/genes/6925/", "/genes/1879/"],
         "genotyping_primer_pairs": [
             {
                 "forward_genotyping_primer": "GCCCTGGAATATGGGTCCAC",
@@ -25,7 +25,23 @@
         "gene_expression_primer_pairs": [
             {
                 "forward_gene_expression_primer": "TTCACTTGTCCTGTTCACTCG",
-                "reverse_gene_expression_primer": "CACATCCCTGACCCATTATCC"
+                "reverse_gene_expression_primer": "CACATCCCTGACCCATTATCC",
+                "gene": "/genes/6925/"
+            },
+            {
+                "forward_gene_expression_primer": "AACATACAAGTCGATTGAAG",
+                "reverse_gene_expression_primer": "ATGGGTAGGGGGCTTCAATT",
+                "gene": "/genes/1879/"
+            }
+        ],
+        "relative_gene_expression_values": [
+            {
+                "gene": "/genes/6925/",
+                "relative_gene_expression_value": 0.29
+            },
+            {
+                "gene": "/genes/1879/",
+                "relative_gene_expression_value": 0.87
             }
         ],
         "description": "K562 validation of TCF4 enhancer",
