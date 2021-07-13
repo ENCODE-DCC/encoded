@@ -248,7 +248,7 @@
         },
         "dataset.replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
-            "open_on_load": true,
+            "open_on_load": true
         }
         "dataset.replicates.library.biosample.sex": {
             "title": "Biosample sex"
