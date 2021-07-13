@@ -37,6 +37,13 @@ export default class SearchBatchDownloadController extends BatchDownloadControll
                 description: 'Downloads processed files matching the selected filters.',
                 query: '',
             },
+            {
+                id: 'selected-files',
+                label: 'Download selected files',
+                title: 'Selected files',
+                description: 'Downloads all files matching the selected filters.',
+                query: '',
+            },
         ];
         this._downloadOptionsTemplateIndex = buildDownloadOptionsIndex(this._downloadOptionsTemplate);
     }
@@ -81,6 +88,11 @@ export default class SearchBatchDownloadController extends BatchDownloadControll
         this._processedQueryString = query.format();
     }
 
+    formatSelectionsQuery() {
+        const query = this.buildBasicQuery();
+        this._selectionsQueryString = query.format();
+    }
+
     /**
      * Build all the query strings based on the query object, overriding the base class's version
      * of this method.
@@ -89,6 +101,7 @@ export default class SearchBatchDownloadController extends BatchDownloadControll
         this.formatDefaultFileQuery();
         this.formatDefaultAnalysisQuery();
         this.formatProcessedQuery();
+        this.formatSelectionsQuery();
     }
 
     /**
@@ -111,6 +124,10 @@ export default class SearchBatchDownloadController extends BatchDownloadControll
             {
                 ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['processed-files']],
                 query: this._processedQueryString,
+            },
+            {
+                ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['selected-files']],
+                query: this._selectionsQueryString,
             },
         ];
 
