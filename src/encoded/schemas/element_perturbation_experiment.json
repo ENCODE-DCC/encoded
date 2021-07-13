@@ -1,8 +1,8 @@
 {
-    "title": "Perturbed element experiment",
-    "description": "Schema for submitting metadata for a perturbed element experiment.",
-    "comment": "A perturbed element experiment is a special case of dataset. It includes assay metadata.",
-    "id": "/profiles/perturbed_element_experiment.json",
+    "title": "Element perturbation experiment",
+    "description": "Schema for submitting metadata for a element perturbation experiment.",
+    "comment": "An element perturbation experiment is a special case of dataset. It includes assay metadata.",
+    "id": "/profiles/element_perturbation_experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
@@ -233,14 +233,14 @@
         },
         "supersedes": {
             "title": "Supersedes",
-            "description": "The transgenic enhancer experiment(s) that this transgenic enhancer experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "description": "The element perturbation experiment(s) that this element perturbation experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                "comment": "See transgenic_enhancer_experiment.json for a list of available identifiers.",
+                "comment": "See element_perturbation_experiment.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "TransgenicEnhancerExperiment"
+                "linkTo": "ElementPerturbationExperiment"
             }
         }
     },
@@ -353,5 +353,5 @@
         "doi": 1.0,
         "biosample_summary": 12.0
     },
-    "changelog": "/profiles/changelogs/perturbed_element_experiment.md"
+    "changelog": "/profiles/changelogs/element_perturbation_experiment.md"
 }

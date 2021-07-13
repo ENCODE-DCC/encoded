@@ -367,13 +367,13 @@ class TransgenicEnhancerExperiment(
 
 
 @collection(
-    name='perturbed-element-experiments',
+    name='element-perturbation-experiments',
     unique_key='accession',
     properties={
-        'title': 'Perturbed element experiments',
-        'description': 'Listing of Perturbed Element Experiments',
+        'title': 'Element perturbation experiments',
+        'description': 'Listing of Element Perturbation Experiments',
     })
-class PerturbedElementExperiment(
+class ElementPerturbationExperiment(
     Dataset,
     CalculatedBiosampleSummaryFromBiosamples,
     CalculatedAssaySynonyms,
@@ -383,8 +383,8 @@ class PerturbedElementExperiment(
     CalculatedCategorySlims,
     CalculatedTypeSlims,
     CalculatedObjectiveSlims):
-    item_type = 'perturbed_element_experiment'
-    schema = load_schema('encoded:schemas/perturbed_element_experiment.json')
+    item_type = 'element_perturbation_experiment'
+    schema = load_schema('encoded:schemas/element_perturbation_experiment.json')
     embedded = Dataset.embedded + [
         'biosample_ontology',
         'biosamples',
@@ -407,7 +407,7 @@ class PerturbedElementExperiment(
     set_status_down = []
     rev = Dataset.rev.copy()
     rev.update({
-        'superseded_by': ('PerturbedElementExperiment', 'supersedes')
+        'superseded_by': ('ElementPerturbationExperiment', 'supersedes')
     })
 
     @calculated_property(schema={
@@ -415,7 +415,7 @@ class PerturbedElementExperiment(
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "PerturbedElementExperiment.supersedes",
+            "linkFrom": "ElementPerturbationExperiment.supersedes",
         },
         "notSubmittable": True,
     })

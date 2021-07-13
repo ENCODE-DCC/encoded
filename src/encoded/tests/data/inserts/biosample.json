@@ -1372,7 +1372,7 @@
         "uuid": "1313fc4e-b989-4fae-a65c-b16f309a2b79"
     },
     {
-        "_test": "For perturbed element experiment",
+        "_test": "For element perturbation experiment",
         "accession": "ENCBS092WBT",
         "award": "U54HG006996",
         "biosample_ontology": "cell_line_EFO_0002067",
@@ -1387,7 +1387,7 @@
         "uuid": "2eabf9c5-c6d5-4bcd-bd9f-85e95a3bd1b8"
     },
     {
-        "_test": "For perturbed element experiment 2",
+        "_test": "For element perturbation experiment 2",
         "accession": "ENCBS811ACL",
         "award": "U54HG006996",
         "biosample_ontology": "cell_line_EFO_0002067",
