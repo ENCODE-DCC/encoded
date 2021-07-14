@@ -5,7 +5,6 @@
             "anna-greka:adult_mouse_donorE"
         ],
         "uuid": "2a45dbaf-bdd0-48bb-9b40-03284a254c6b",
-        "life_stage": "adult",
         "mating_status": "mated",
         "status": "released",
         "sex": "female",
@@ -30,7 +29,6 @@
             "anna-greka:adult_mouse_donorF"
         ],
         "uuid": "104f035e-98c7-434f-8638-8cdd7de59c3a",
-        "life_stage": "adult",
         "mating_status": "sterile",
         "status": "released",
         "sex": "male",

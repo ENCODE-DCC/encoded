@@ -12,22 +12,6 @@
         {"$ref": "donor.json#/properties"}
     ],
     "properties": {
-        "gestational_age": {
-            "title": "Gestational age",
-            "description": "The gestational age of the donor when biological material was sampled.",
-            "type": "string",
-            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d))$"
-        },
-        "gestational_age_units": {
-            "title": "Gestational age units",
-            "description": "Units of gestational age of the donor when biological material was sampled.",
-            "type": "string",
-            "enum": [
-                "day",
-                "week",
-                "month"
-            ]
-        },
         "conceptional_age": {
             "title": "Conceptional age",
             "description": "The post-conception age of the donor when biological material was sampled.",

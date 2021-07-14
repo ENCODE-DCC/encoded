@@ -4,7 +4,7 @@
     "id": "/profiles/human_prenatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["sex"],
+    "required": ["conceptional_age", "sex", "development_ontology"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [

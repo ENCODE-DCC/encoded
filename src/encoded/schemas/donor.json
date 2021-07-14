@@ -24,11 +24,6 @@
             "type": "string",
             "linkTo": "OntologyTerm"
         },
-        "life_stage": {
-            "title": "Life stage",
-            "description": "Life stage of donor at collection of tissue biosample.",
-            "type": "string"
-        },
         "sex": {
             "title": "Sex",
             "description": "Biological sex of the donor.",
