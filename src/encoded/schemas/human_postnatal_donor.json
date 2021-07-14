@@ -36,7 +36,26 @@
                     }
                 },
                 {
-                    "required": ["age_units"]
+                    "required": ["age_units"],
+                    "properties": {
+                        "age_units": {
+                            "enum": ["year"]
+                        },
+                        "age": {
+                            "pattern": "^(((\\d+)(\\-(\\d+))?)|(>89))$"
+                        }
+                    }
+                },
+                {
+                    "required": ["age_units"],
+                    "properties": {
+                        "age_units": {
+                            "enum": ["day", "week", "month"]
+                        },
+                        "age": {
+                            "pattern":  "^((\\d+)(\\-(\\d+))?)$"
+                        }
+                    }
                 }
             ]
         },
@@ -77,7 +96,7 @@
         },
         "age": {
             "comment": "For privacy purposes, any age 90 years or above is listed as '>89'.",
-            "pattern": "^((unknown)|((1?[1-8]?\\d)(\\-([1-8]?\\d))?)|(>89))$"
+            "pattern": "^((unknown)|((\\d+)(\\-(\\d+))?)|(>89))$"
         },
         "times_pregnant": {
             "title": "Times pregnant",

@@ -16,10 +16,45 @@ def ordinalize(number):
     return number + suffix
 
 
+def audit_donor_age(value, system):
+    if value.get('age'):
+        age = value['age']
+    else:
+        age = value['conceptional_age']
+
+    if value['status'] in ['deleted'] or age in ['unknown', '>89']:
+        return
+
+    if '-' in age:
+        range_min = float(age.split('-')[0])
+        range_max = float(age.split('-')[1])
+        if range_min >= range_max:
+            detail = ('Donor {} has inconsistent age range {}.'.format(
+                audit_link(value['accession'], value['@id']),
+                age
+                )
+            )
+            yield AuditFailure('inconsistent age range', detail, level='ERROR')
+            return
+    else:
+        range_min = float(age)
+
+    years = 0
+    if value.get('age_units') == 'month':
+        years = range_min/7
+    elif value.get('age_units') == 'year':
+        years = range_min
+
+    if years >= 90:
+        detail = ('Donor {} has age {}, HIPAA requires no age 90 yr or older be reported, should be ">89".'.format(
+            audit_link(value['accession'], value['@id']),
+            value['age_display']
+            )
+        )
+        yield AuditFailure('age in violation of HIPAA', detail, level='ERROR')
+        return
+
 def audit_donor_dev_stage(value, system):
-    '''
-    A biosample should have a donor.
-    '''
     if value['status'] in ['deleted']:
         return
 
@@ -38,7 +73,17 @@ def audit_donor_dev_stage(value, system):
             yield AuditFailure('inconsistent age, development', detail, level='ERROR')
             return
     elif value.get('age_units') == 'year':
-        if dev != value['age'] + post_term_end:
+        if value['age'] == '>89':
+            if dev != '80 year-old and over human stage':
+                detail = ('Donor {} of age {} expected "80 year-old and over human stage" development_ontology, not {}.'.format(
+                    audit_link(value['accession'], value['@id']),
+                    value.get('age_display'),
+                    dev
+                    )
+                )
+                yield AuditFailure('inconsistent age, development', detail, level='ERROR')
+                return
+        elif dev != value['age'] + post_term_end:
             detail = ('Donor {} of age {} expected matching age-specific development_ontology, not {}.'.format(
                 audit_link(value['accession'], value['@id']),
                 value.get('age_display'),
@@ -85,6 +130,7 @@ def audit_donor_dev_stage(value, system):
 
 
 function_dispatcher = {
+    'audit_donor_age': audit_donor_age,
     'audit_donor_dev_stage': audit_donor_dev_stage
 }
 
