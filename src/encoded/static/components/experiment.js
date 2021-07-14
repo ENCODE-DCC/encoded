@@ -444,7 +444,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const libraryDocs = [];
     let biosamples = [];
     let biosampleCharacterizations = [];
-    const appliedModifications = new Set();
+    const appliedModifications = [];
     if (isEnhancerExperiment || isPerturbedExperiment) {
         if (context.biosamples) {
             biosamples = (context.biosamples.length > 0) ? context.biosamples : [];
@@ -455,7 +455,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                     biosampleCharacterizations = biosampleCharacterizations.concat(biosample.characterizations.map((bc) => bc['@id']));
                 }
                 if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
-                    appliedModifications.add(...biosample.applied_modifications);
+                    appliedModifications.push(...biosample.applied_modifications);
                 }
             });
         }
@@ -826,7 +826,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dt>Genetic modification</dt>
                                     <dd>
                                         <ul>
-                                            {appliedModifications.map((am) => (
+                                            {[...new Set(appliedModifications)].map((am) => (
                                                 <li key={am}>
                                                     <a href={am}>
                                                         {am.split('/', 3)[2]}
@@ -881,7 +881,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dd>
                                         <ul className="multi-value">
                                             {context.gene_expression_primer_pairs.map((pair, i) => (
-                                                <li key={i}><a href={pair.gene['@id']}>{pair.gene.symbol}</a>- Forward: {pair.forward_gene_expression_primer}, Reverse: {pair.reverse_gene_expression_primer}
+                                                <li key={i}><a href={pair.gene['@id']}>{pair.gene.symbol}</a> Forward: {pair.forward_gene_expression_primer}, Reverse: {pair.reverse_gene_expression_primer}
                                                 </li>
                                             ))}
                                         </ul>
