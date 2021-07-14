@@ -186,8 +186,9 @@ class HumanPostnatalDonor(HumanDonor):
         },
         "notSubmittable": True,
     })
-    def children(self, request, children):
-        return paths_filtered_by_status(request, children)
+    def children(self, request, children=None):
+        if children:
+            return paths_filtered_by_status(request, children)
 
 
 def pluralize(value, value_units):

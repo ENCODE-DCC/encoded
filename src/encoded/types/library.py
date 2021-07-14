@@ -90,8 +90,9 @@ class Library(Item,
         },
         "notSubmittable": True,
     })
-    def sequencing_runs(self, request, sequencing_runs):
-        return paths_filtered_by_status(request, sequencing_runs)
+    def sequencing_runs(self, request, sequencing_runs=None):
+        if sequencing_runs:
+            return paths_filtered_by_status(request, sequencing_runs)
 
 
     @calculated_property(schema={

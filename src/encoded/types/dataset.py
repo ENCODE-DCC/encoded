@@ -71,8 +71,9 @@ class Dataset(Item):
         },
         "notSubmittable": True,
     })
-    def superseded_by(self, request, superseded_by):
-        return paths_filtered_by_status(request, superseded_by)
+    def superseded_by(self, request, superseded_by=None):
+        if superseded_by:
+            return paths_filtered_by_status(request, superseded_by)
 
 
     @calculated_property(schema={
@@ -86,8 +87,9 @@ class Dataset(Item):
         },
         "notSubmittable": True,
     })
-    def libraries(self, request, libraries):
-        return paths_filtered_by_status(request, libraries)
+    def libraries(self, request, libraries=None):
+        if libraries:
+            return paths_filtered_by_status(request, libraries)
 
 
     @calculated_property(schema={
@@ -101,8 +103,9 @@ class Dataset(Item):
         },
         "notSubmittable": True,
     })
-    def original_files(self, request, original_files):
-        return paths_filtered_by_status(request, original_files)
+    def original_files(self, request, original_files=None):
+        if original_files:
+            return paths_filtered_by_status(request, original_files)
 
 
     @calculated_property(schema={
@@ -115,33 +118,36 @@ class Dataset(Item):
             "linkTo": "DataFile",
         },
     })
-    def contributing_files(self, request, original_files, status):
-        derived_from = set()
-        for f in original_files:
-            f_obj = request.embed(f, '@@object?skip_calculated=true')
-            f_df = f_obj.get('derived_from')
-            if isinstance(f_df, str):
-                derived_from.add(f_df)
+    def contributing_files(self, request, status, original_files=None):
+        if original_files:
+            derived_from = set()
+            for f in original_files:
+                f_obj = request.embed(f, '@@object?skip_calculated=true')
+                f_df = f_obj.get('derived_from')
+                if isinstance(f_df, str):
+                    derived_from.add(f_df)
+                else:
+                    derived_from.update(f_df)
+
+            outside_ids = list(derived_from.difference(original_files))
+            outside_files = []
+            for i in outside_ids:
+                outsideObject = request.embed(i, '@@object')
+                if 'File' in outsideObject.get('@type'):
+                    outside_files.append(i)
+
+            if status in ('released'):
+                contributing = paths_filtered_by_status(
+                    request, outside_files,
+                    include=('released',),
+                )
             else:
-                derived_from.update(f_df)
-
-        outside_ids = list(derived_from.difference(original_files))
-        outside_files = []
-        for i in outside_ids:
-            outsideObject = request.embed(i, '@@object')
-            if 'File' in outsideObject.get('@type'):
-                outside_files.append(i)
-
-        if status in ('released'):
-            return paths_filtered_by_status(
-                request, outside_files,
-                include=('released',),
-            )
-        else:
-            return paths_filtered_by_status(
-                request, outside_files,
-                exclude=('revoked', 'deleted', 'replaced'),
-            )
+                contributing = paths_filtered_by_status(
+                    request, outside_files,
+                    exclude=('revoked', 'deleted', 'replaced'),
+                )
+            if contributing:
+                return contributing
 
 
     @calculated_property(schema={
@@ -154,17 +160,18 @@ class Dataset(Item):
             "linkTo": "DataFile",
         },
     })
-    def files(self, request, original_files, status):
-        if status in ('released', 'archived'):
-            return paths_filtered_by_status(
-                request, original_files,
-                include=('released', 'archived'),
-            )
-        else:
-            return paths_filtered_by_status(
-                request, original_files,
-                exclude=('revoked', 'deleted', 'replaced'),
-            )
+    def files(self, request, status, original_files=None):
+        if original_files:
+            if status in ('released', 'archived'):
+                return paths_filtered_by_status(
+                    request, original_files,
+                    include=('released', 'archived'),
+                )
+            else:
+                return paths_filtered_by_status(
+                    request, original_files,
+                    exclude=('revoked', 'deleted', 'replaced'),
+                )
 
     @calculated_property(schema={
         "title": "Revoked files",
@@ -176,11 +183,14 @@ class Dataset(Item):
             "linkTo": "DataFile",
         },
     })
-    def revoked_files(self, request, original_files):
-        return [
-            path for path in original_files
-            if item_is_revoked(request, path)
-        ]
+    def revoked_files(self, request, original_files=None):
+        if original_files:
+            revoked = [
+                path for path in original_files
+                if item_is_revoked(request, path)
+            ]
+            if revoked:
+                return revoked
 
 
     @calculated_property(define=True, schema={
@@ -192,8 +202,9 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def reference_assembly(self, request, original_files):
-        return calculate_reference(request, original_files, "assembly")
+    def reference_assembly(self, request, original_files=None):
+        if original_files:
+            return calculate_reference(request, original_files, "assembly")
 
 
     @calculated_property(define=True, schema={
@@ -205,5 +216,6 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def reference_annotation(self, request, original_files):
-        return calculate_reference(request, original_files, "genome_annotation")
+    def reference_annotation(self, request, original_files=None):
+        if original_files:
+            return calculate_reference(request, original_files, "genome_annotation")
