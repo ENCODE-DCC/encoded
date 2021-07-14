@@ -49,6 +49,7 @@
         "description": "Healthy kidney donorA",
         "ethnicity": "HANCESTRO_0022",
         "sex": "female",
+        "menopausal_status": "premenopausal",
         "risk_score_tyrer_cuzick_lifetime": 21,
         "age": "45-50",
         "age_units": "year",
@@ -88,6 +89,7 @@
         "age_units": "year",
         "development_ontology": "HsapDv_0000124",
         "sex": "female",
+        "menopausal_status": "premenopausal",
         "ethnicity": "HANCESTRO_0008",
         "diseases": [
             "MONDO_0005147"
@@ -127,6 +129,7 @@
         "age_units": "year",
         "development_ontology": "HsapDv_0000148",
         "sex": "female",
+        "menopausal_status": "perimenopausal",
         "ethnicity": "HANCESTRO_0008",
         "uuid": "f9b6ee3f-22f0-4544-9b69-d396b0425371",
         "cause_of_death": "kidney failure",
