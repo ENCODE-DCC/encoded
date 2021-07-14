@@ -22,7 +22,7 @@ import {
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
-import { DocumentsPanelReq, DocumentsPanel } from './doc';
+import { DocumentsPanelReq } from './doc';
 import { FileGallery } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
@@ -88,7 +88,7 @@ const AnnotationComponent = (props, reactContext) => {
     const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references=${context['@id']}`;
 
     // Build up array of documents attached to this dataset
-    const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
+    const datasetDocuments = (context.documents && context.documents.length > 0) ? [...new Set(context.documents.map((documents) => documents['@id']))] : [];
 
     // Make a biosample summary string
     const biosampleSummary = annotationBiosampleSummary(context);
@@ -273,7 +273,7 @@ const AnnotationComponent = (props, reactContext) => {
 
             <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as an elements reference`} />
 
-            <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+            <DocumentsPanelReq documents={datasetDocuments} />
         </div>
     );
 };
