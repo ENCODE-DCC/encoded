@@ -484,7 +484,7 @@ export class FileTable extends React.Component {
 
             return (
                 <div>
-                    {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
+                    {showFileCount ? <div className="table-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={options.noDefaultClasses}>
                         <RawSequencingTable
                             files={files.raw}
@@ -1426,6 +1426,7 @@ export const FileGallery = ({
     files,
     analyses,
     fileQueryKey,
+    supplementalShortLabels,
     hideGraph,
     hideControls,
     collapseNone,
@@ -1491,6 +1492,7 @@ export const FileGallery = ({
             session={reactContext && reactContext.session}
             hideGraph={hideGraph}
             hideControls={hideControls}
+            supplementalShortLabels={supplementalShortLabels}
             collapseNone={collapseNone}
             showReplicateNumber={showReplicateNumber}
             showDetailedTracks={showDetailedTracks}
@@ -1522,6 +1524,7 @@ FileGallery.propTypes = {
     fileQuery: testFileGalleryProps, // Query string for file search; default if not given
     files: testFileGalleryProps, // Dataset property name from which to retrieve files
     analyses: PropTypes.array, // Array of analyses, if not using context.analyses
+    supplementalShortLabels: PropTypes.object, // Object of short labels for datasets
     fileQueryKey: PropTypes.string, // Query key to specify qualifying files to download
     hideGraph: PropTypes.bool, // T to only render file-table pane
     hideControls: PropTypes.bool, // True to hide visualize/download controls in table header
@@ -1537,6 +1540,7 @@ FileGallery.defaultProps = {
     files: null,
     analyses: null,
     fileQueryKey: 'files',
+    supplementalShortLabels: {},
     hideGraph: false,
     hideControls: false,
     collapseNone: false,
@@ -3538,6 +3542,7 @@ class FileGalleryRendererComponent extends React.Component {
             analyses,
             analysisAudits,
             fileQueryKey,
+            supplementalShortLabels,
             schemas,
             hideGraph,
             hideControls,
@@ -3716,6 +3721,7 @@ class FileGalleryRendererComponent extends React.Component {
                             <GenomeBrowser
                                 files={includedFiles}
                                 label={showDetailedTracks ? 'cart' : 'file gallery'}
+                                supplementalShortLabels={supplementalShortLabels}
                                 expanded={this.state.facetsOpen}
                                 assembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : ''}
                                 annotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : ''}
@@ -3777,6 +3783,8 @@ FileGalleryRendererComponent.propTypes = {
     analysisAudits: PropTypes.object.isRequired,
     /** Query key to specify qualifying files to download */
     fileQueryKey: PropTypes.string.isRequired,
+    /** Maps dataset @ids to a supplemental label for browser tracks */
+    supplementalShortLabels: PropTypes.object,
     /** Schemas for the entire system; used for QC property titles */
     schemas: PropTypes.object,
     /** True to hide graph display */
@@ -3806,6 +3814,7 @@ FileGalleryRendererComponent.propTypes = {
 FileGalleryRendererComponent.defaultProps = {
     data: [],
     analyses: null,
+    supplementalShortLabels: {},
     schemas: null,
     hideGraph: false,
     hideControls: false,

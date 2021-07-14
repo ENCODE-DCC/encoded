@@ -1109,3 +1109,20 @@ export function computeExaminedLoci(experiment, includeMethod) {
     }
     return examinedLoci.join(', ');
 }
+
+
+/**
+ * Collects the biosamples contained in all replicate libraries within the given dataset;
+ * deduplicated by accession.
+ * @param {object} dataset Dataset from which to extract all biosamples.
+ * @returns {array} Array of all biosamples in all replicates of `dataset`.
+ */
+export const collectDatasetBiosamples = (dataset) => {
+    if (dataset.replicates && dataset.replicates.length > 0) {
+        const biosamples = dataset.replicates.reduce((accBiosamples, replicate) => (
+            replicate.library && replicate.library.biosample ? accBiosamples.concat(replicate.library.biosample) : accBiosamples
+        ), []);
+        return _(biosamples).uniq((biosample) => biosample.accession);
+    }
+    return [];
+};
