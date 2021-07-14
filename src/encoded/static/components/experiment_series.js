@@ -10,7 +10,7 @@ import { FetchedItems } from './fetched';
 import { DatasetFiles } from './filegallery';
 import * as globals from './globals';
 import { requestObjects, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
-import { PickerActions, resultItemClass } from './search';
+import { PickerActions, resultItemClass, TargetsDataLine } from './search';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { DoiRef } from './typeutils';
 
@@ -499,7 +499,7 @@ class ExperimentSeriesComponent extends React.Component {
         this.state = {
             /** Dataset objects with audit keyed by dataset @id which are
              * retrieved through a series of requests. For each dataset objects
-             * there are two key prpoperies, selectedAnalysis and selectedFiles.
+             * there are two key properties, selectedAnalysis and selectedFiles.
              * selectedAnalysis is one analysis objects selected based on lab,
              * award, etc. selectedFiles is a filtered list of experiment files
              * belonging to the selectedAnalysis.
@@ -893,7 +893,6 @@ const searchableDatasetStatusQuery = searchableDatasetStatuses.reduce((query, st
 
 const ListingComponent = (props, reactContext) => {
     const result = props.context;
-    let targets = [];
     let lifeStages = [];
     let ages = [];
 
@@ -923,11 +922,6 @@ const ListingComponent = (props, reactContext) => {
     ages = _.uniq(ages);
     const lifeSpec = [lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null].filter(Boolean);
 
-    // Get list of target labels.
-    if (result.target) {
-        targets = _.uniq(result.target.map((target) => target.label));
-    }
-
     const contributors = _.uniq(result.contributors.map((lab) => lab.title));
     const contributingAwards = _.uniq(result.contributing_awards.map((award) => award.project));
 
@@ -955,7 +949,7 @@ const ListingComponent = (props, reactContext) => {
                     </a>
                     <div className="result-item__data-row">
                         {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
-                        {targets.length > 0 ? <div><strong>Target: </strong>{targets.join(', ')}</div> : null}
+                        <TargetsDataLine result={result} targetPropertyName="target" />
                         <div><strong>Lab: </strong>{contributors.join(', ')}</div>
                         <div><strong>Project: </strong>{contributingAwards.join(', ')}</div>
                     </div>

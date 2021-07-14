@@ -157,6 +157,40 @@ PickerActions.contextTypes = {
 };
 
 
+/**
+ * Displays the search result data line for target objects when the parent object's targets
+ * comprise an array. The parent object's schema must include the target array's @id in its
+ * `columns` property.
+ */
+export const TargetsDataLine = ({ result, targetPropertyName }) => {
+    if (result[targetPropertyName] && result[targetPropertyName].length > 0) {
+        return (
+            <>
+                <span className="result-item__property-title">Target{result[targetPropertyName].length > 1 ? 's' : ''}: </span>
+                {result[targetPropertyName].map((target, i) => (
+                    <React.Fragment key={target['@id']}>
+                        {i > 0 ? ', ' : null}
+                        <a href={target['@id']} aria-label={`Target ${target.label}`}>{target.label}</a>
+                    </React.Fragment>
+                ))}
+            </>
+        );
+    }
+    return null;
+};
+
+TargetsDataLine.propTypes = {
+    /** Search result object */
+    result: PropTypes.object.isRequired,
+    /** Name of the property that contains the array of target objects */
+    targetPropertyName: PropTypes.string,
+};
+
+TargetsDataLine.defaultProps = {
+    targetPropertyName: 'targets',
+};
+
+
 const ItemComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => {
     const title = globals.listingTitles.lookup(result)({ context: result });
     const itemType = result['@type'][0];
@@ -408,11 +442,10 @@ const ExperimentComponent = (props, reactContext) => {
                     <div className="result-item__data-row">
                         {result.target && result.target.label ?
                             <div><span className="result-item__property-title">Target: </span>
+                                <a href={result.target['@id']} aria-label={`Target ${result.target.label}`}>{result.target.label}</a>
                                 {motifsLink ?
-                                    <a href={`https://factorbook.org/experiment/${motifsSearch}`}>{result.target.label} (Factorbook)</a>
-                                :
-                                    <span>{result.target.label}</span>
-                                }
+                                    <span> (<a href={`https://factorbook.org/experiment/${motifsSearch}`}>Factorbook</a>)</span>
+                                : null}
                             </div>
                         : null}
 
@@ -502,45 +535,40 @@ globals.listingViews.register(Experiment, 'SingleCellUnit');
 globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 
-const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicators, auditDetail }, reactContext) => {
-    const targets = result.targets ? result.targets.map((target) => target.label) : [];
-    return (
-        <li className={resultItemClass(result)}>
-            <div className="result-item">
-                <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">
-                        {datasetTypes[result['@type'][0]]}
-                        {result.description ? <span>{`: ${result.description}`}</span> : null}
-                    </a>
-                    <div className="result-item__data-row">
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div>
-                        {targets.length > 0 ?
-                            <div><strong>Target{targets.length > 1 ? 's' : ''}: </strong>{targets.join(', ')}</div>
-                        : null}
-                    </div>
+const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicators, auditDetail }, reactContext) => (
+    <li className={resultItemClass(result)}>
+        <div className="result-item">
+            <div className="result-item__data">
+                <a href={result['@id']} className="result-item__link">
+                    {datasetTypes[result['@type'][0]]}
+                    {result.description ? <span>{`: ${result.description}`}</span> : null}
+                </a>
+                <div className="result-item__data-row">
+                    <div><strong>Lab: </strong>{result.lab.title}</div>
+                    <div><strong>Project: </strong>{result.award.project}</div>
+                    <TargetsDataLine result={result} />
                 </div>
-                <div className="result-item__meta">
-                    <div className="result-item__meta-title">Annotation</div>
-                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
-                    {mode !== 'cart-view' ?
-                        <>
-                            <Status item={result.status} badgeSize="small" css="result-table__status" />
-                            {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
-                        </>
-                    : null}
-                </div>
-                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
-                    <div className="result-item__cart-control">
-                        <CartToggle element={result} />
-                    </div>
-                : null}
-                <PickerActions context={result} />
             </div>
-            {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
-    );
-};
+            <div className="result-item__meta">
+                <div className="result-item__meta-title">Annotation</div>
+                <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                {mode !== 'cart-view' ?
+                    <>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                    </>
+                : null}
+            </div>
+            {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
+                <div className="result-item__cart-control">
+                    <CartToggle element={result} />
+                </div>
+            : null}
+            <PickerActions context={result} />
+        </div>
+        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+    </li>
+);
 
 AnnotationComponent.propTypes = {
     /** Dataset search results */
@@ -638,7 +666,6 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
     let treatmentTerm = [];
     let treatments = [];
     let treatmentUnit;
-    let targets;
     let diseases = [];
 
     const treatmentTime = result['@type'].indexOf('TreatmentTimeSeries') >= 0;
@@ -759,10 +786,6 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
         assays = _.uniq(assays);
     }
 
-    // Get list of target labels
-    if (result.target) {
-        targets = _.uniq(result.target.map((target) => target.label));
-    }
     const sortedTreatments = _.uniq(treatments).sort((a, b) => (a - b));
     treatmentTerm = _.uniq(treatmentTerm);
     let uniqueTreatments;
@@ -852,7 +875,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                                 </span>
                             </div>
                         : null}
-                        {targets && targets.length > 0 ? <div><span className="result-item__property-title">Targets: </span>{targets.join(', ')}</div> : null}
+                        <TargetsDataLine result={result} targetPropertyName="target" />
                         {diseases.length > 0 ? <div><span className="result-item__property-title">Diseases: </span>{diseases.join(', ')}</div> : null}
                         <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
                         <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
