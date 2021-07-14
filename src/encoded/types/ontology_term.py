@@ -20,7 +20,7 @@ system_slims = {
     'UBERON:0001434': 'skeletal system', #subclass of UBERON:0002204
     'UBERON:0002204': 'musculoskeletal system',
     'UBERON:0001032': 'sensory system', #subclass of UBERON:0004456
-    'UBERON:0004456': 'sense organ system',
+    'UBERON:0004456': 'entire sense organ system',
     'UBERON:0001007': 'digestive system',
     'UBERON:0000949': 'endocrine system',
     'UBERON:0002330': 'exocrine system',
@@ -85,7 +85,7 @@ organ_slims = {
     'UBERON:0001103': 'diaphragm',
     'UBERON:0001690': 'ear',
     'UBERON:0000922': 'embryo',
-    'UBERON:0002110': 'gallbladder',
+    'UBERON:0002110': 'gall bladder',
     'UBERON:0000948': 'heart',
     'UBERON:0002113': 'kidney',
     'UBERON:0001737': 'larynx',
@@ -110,7 +110,7 @@ organ_slims = {
     'UBERON:0002384': 'connective tissue',
     'UBERON:0005057': 'immune organ',
     'UBERON:0007844': 'cartilage element',
-    'UBERON:0016887': 'extraembryonic component',
+    'UBERON:0016887': 'entire extraembryonic component',
     'UBERON:0000483': 'epithelium'
 }
 
@@ -127,9 +127,9 @@ cell_slims = {
     'CL:0000115': 'endothelial cell', #subclass of CL:0000066
     'CL:0000066': 'epithelial cell',
     'CL:0000057': 'fibroblast', #subclass of CL:0002320
-    'CL:0000669': 'pericyte', #subclass of CL:0002320
+    'CL:0000669': 'pericyte cell', #subclass of CL:0002320
     'CL:0002320': 'connective tissue cell',
-    'CL:0002321': 'embryonic cell',
+    'CL:0002321': 'embryonic cell (metazoa)',
     'CL:0002494': 'cardiocyte',
     'CL:0000148': 'melanocyte',
     'CL:0000056': 'myoblast',
@@ -141,12 +141,12 @@ cell_slims = {
 }
 
 disease_slims = {
-    'MONDO:0005015': 'diabetes', #subclass of MONDO:0004335,MONDO:0005066
+    'MONDO:0005015': 'diabetes mellitus (disease)', #subclass of MONDO:0004335,MONDO:0005066
     'MONDO:0004335': 'digestive system disease',
     'MONDO:0005066': 'metabolic disease',
-    'MONDO:0002280': 'anemia',
-    'MONDO:0005578': 'arthritis',
-    'MONDO:0005113': 'bacterial infection',
+    'MONDO:0002280': 'anemia (disease)',
+    'MONDO:0005578': 'arthritic joint disease',
+    'MONDO:0005113': 'bacterial infectious disease',
     'MONDO:0004992': 'cancer',
     'MONDO:0005044': 'hypertensive disorder',
     'MONDO:0005240': 'kidney disease',
@@ -156,18 +156,18 @@ disease_slims = {
 }
 
 development_slims = {
-    'HsapDv:0000002':'embryonic',
-    'HsapDv:0000037':'fetal',
-    'HsapDv:0000082':'newborn',
-    'HsapDv:0000083':'infant',
-    'HsapDv:0000081':'child',
-    'HsapDv:0000086':'adolescent',
-    'HsapDv:0000087':'adult',
-    'MmusDv:0000002':'embryonic',
-    'MmusDv:0000031':'fetal',
-    'MmusDv:0000036':'newborn',
-    'MmusDv:0000112':'premature',
-    'MmusDv:0000110':'adult'
+    "HsapDv:0000002": "embryonic human stage",
+    "HsapDv:0000037": "fetal stage",
+    "HsapDv:0000082": "newborn human stage",
+    "HsapDv:0000083": "infant stage",
+    "HsapDv:0000081": "child stage",
+    "HsapDv:0000086": "adolescent stage",
+    "HsapDv:0000087": "human adult stage",
+    "MmusDv:0000002": "embryonic mouse stage",
+    "MmusDv:0000031": "fetal stage",
+    "MmusDv:0000036": "Theiler stage 27",
+    "MmusDv:0000112": "premature stage",
+    "MmusDv:0000110": "mature stage"
 }
 
 
