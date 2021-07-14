@@ -272,6 +272,28 @@
                 }
             }
         },
+        "control_type": {
+            "type": "string",
+            "title": "Control type",
+            "description": "The specific type of control if the experiment is a control.",
+            "enum": [
+                "control"
+            ]
+        },
+        "possible_controls": {
+            "title": "Controls",
+            "description": "Dataset that can serve as scientific controls for this element perturbation experiment.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Control",
+                "description": "A dataset can serve as a scientific control for this element perturbation experiment.",
+                "comment": "See dataset.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "Dataset"
+            }
+        },
         "supersedes": {
             "title": "Supersedes",
             "description": "The element perturbation experiment(s) that this element perturbation experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
