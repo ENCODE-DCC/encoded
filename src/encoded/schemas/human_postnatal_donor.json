@@ -76,6 +76,13 @@
                 }
             }
         },
+        "menopausal_status": {
+            "properties": {
+                "sex": {
+                    "enum": ["female"]
+                }
+            }
+        },
         "times_pregnant": {
             "properties": {
                 "sex": {
@@ -102,6 +109,16 @@
             "title": "Times pregnant",
             "description": "Number of pregnancies of the donor.",
             "type": "integer"
+        },
+        "menopausal_status": {
+            "title": "Menopausal status",
+            "description": "Indicator of the state of a female's cessation of menstruation.",
+            "type": "string",
+            "enum": [
+                "premenopausal",
+                "perimenopausal",
+                "postmenopausal"
+            ]
         },
         "living_at_sample_collection": {
             "title": "Living at sample collection",
