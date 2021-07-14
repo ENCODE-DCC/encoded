@@ -213,7 +213,8 @@ class OntologyTerm(SharedItem):
         for slimTerm in slimTerms:
             if slimTerm in ancestor_list:
                 slims.append(slimTerms[slimTerm])
-        return slims
+        if slims:
+            return slims
 
 
     @calculated_property(condition='term_id', schema={
