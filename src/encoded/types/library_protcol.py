@@ -34,8 +34,8 @@ class LibraryProtocol(Item):
                                     }
                                 })
     def required_files(self, request, sequence_file_standards=None):
-        req_fs = []
         if sequence_file_standards:
+            req_fs = []
             for f in sequence_file_standards:
                 if f.get('required') == True:
                     req_fs.append(f.get('read_type'))

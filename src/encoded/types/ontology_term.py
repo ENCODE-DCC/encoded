@@ -206,15 +206,14 @@ class OntologyTerm(SharedItem):
 
     @staticmethod
     def _get_ontology_slims(registry, term_id, slimTerms):
-        if term_id not in registry['ontology']:
-            return []
-        ancestor_list = registry['ontology'][term_id]['ancestors']
-        slims = []
-        for slimTerm in slimTerms:
-            if slimTerm in ancestor_list:
-                slims.append(slimTerms[slimTerm])
-        if slims:
-            return slims
+        if term_id in registry['ontology']:
+            ancestor_list = registry['ontology'][term_id]['ancestors']
+            slims = []
+            for slimTerm in slimTerms:
+                if slimTerm in ancestor_list:
+                    slims.append(slimTerms[slimTerm])
+            if slims:
+                return slims
 
 
     @calculated_property(condition='term_id', schema={
@@ -292,11 +291,12 @@ class OntologyTerm(SharedItem):
         },
     })
     def synonyms(self, registry, term_id):
-        if term_id not in registry['ontology']:
-            return []
-        return list(set(
-            slim for slim in registry['ontology'][term_id]['synonyms']
-        ))
+        if term_id in registry['ontology']:
+            syns = list(set(
+                slim for slim in registry['ontology'][term_id]['synonyms']
+            ))
+            if syns:
+                return syns
 
 
     @calculated_property(condition='term_id', schema={

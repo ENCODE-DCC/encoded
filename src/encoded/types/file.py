@@ -305,8 +305,9 @@ class RawSequenceFile(DataFile):
                                     "type": "string"
                                  }
                                 })
-    def sequence_elements(self, request, derived_from=None, read_type=None):
-        return inherit_protocol_prop(request, derived_from[0], 'sequence_elements', read_type)
+    def sequence_elements(self, request, derived_from, read_type=None):
+        if read_type:
+            return inherit_protocol_prop(request, derived_from[0], 'sequence_elements', read_type)
 
 
     @calculated_property(define=True,
@@ -315,8 +316,9 @@ class RawSequenceFile(DataFile):
                                  "comment": "Do not submit. This is a calculated property",
                                  "type": "string"
                                 })
-    def demultiplexed_type(self, request, derived_from=None, read_type=None):
-        return inherit_protocol_prop(request, derived_from[0], 'demultiplexed_type', read_type)
+    def demultiplexed_type(self, request, derived_from, read_type=None):
+        if read_type:
+            return inherit_protocol_prop(request, derived_from[0], 'demultiplexed_type', read_type)
 
 
 @collection(
