@@ -1500,7 +1500,7 @@ function computeDifferentiation(experiment) {
 }
 
 
-const differentiationTableColumnsOneType = {
+const differentiationTableColumnsWithTime = {
     accession: {
         title: 'Accession',
         display: (experiment, meta) => (
@@ -1558,7 +1558,7 @@ const differentiationTableColumnsOneType = {
 };
 
 
-const differentiationTableColumnsMoreThanOneType = {
+const differentiationTableColumnsWithoutTime = {
     accession: {
         title: 'Accession',
         display: (experiment, meta) => (
@@ -2627,7 +2627,7 @@ const DifferentiationSeries = ({ context }, reactContext) => {
     const seriesType = context['@type'][0];
     const seriesTitle = reactContext.profilesTitles[seriesType] || '';
     const findDifferentiations = context.related_datasets.map((dataset) => (computeDifferentiation(dataset) ? 1 : 0)).reduce((a, b) => a + b, 0);
-    const differentiationTableColumns = findDifferentiations > 0 ? differentiationTableColumnsOneType : differentiationTableColumnsMoreThanOneType;
+    const differentiationTableColumns = findDifferentiations > 0 ? differentiationTableColumnsWithTime : differentiationTableColumnsWithoutTime;
 
     const options = {};
     if (context.treatment_term_name) {
