@@ -118,7 +118,7 @@ def audit_donor_dev_stage(value, system):
             return
     elif value.get('conceptional_age_units') == 'week' and int(value.get('conceptional_age')) < 9 or \
         value.get('conceptional_age_units') == 'day' and int(value.get('conceptional_age')) < 57:
-        if 'embryonic' not in value['development_ontology']['development_slims']:
+        if 'embryonic human stage' not in value['development_ontology']['development_slims']:
             detail = ('Donor {} of age 56 days (8 wk) or less should be embryonic, not {}.'.format(
                 audit_link(value['accession'], value['@id']),
                 value['development_ontology']['development_slims']
