@@ -1535,6 +1535,10 @@ const differentiationTableColumnsOneType = {
         },
     },
 
+    biosample_summary: {
+        title: 'Biosample summary',
+    },
+
     lab: {
         title: 'Lab',
         getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
@@ -2622,33 +2626,12 @@ globals.contentViews.register(ReplicationTimingSeries, 'ReplicationTimingSeries'
 const DifferentiationSeries = ({ context }, reactContext) => {
     const seriesType = context['@type'][0];
     const seriesTitle = reactContext.profilesTitles[seriesType] || '';
-    const differentiationTableColumns = context.biosample_ontology.length === 1 ? differentiationTableColumnsOneType : differentiationTableColumnsMoreThanOneType;
-
-    // Build an array of treatments from the biosample treatments of the
-    // related datasets.
-    const treatmentDurations = context.related_datasets.reduce((accTreatmentDurations, relatedDataset) => {
-        // Collect any biosamples found in all related datasets.
-        const biosamples = relatedDataset.replicates.reduce((accBiosamples, replicate) => {
-            const biosample = replicate.library && replicate.library.biosample;
-            return biosample ? accBiosamples.concat(biosample) : accBiosamples;
-        }, []);
-
-        // Collect durations in the biosample treatments and compose them into displayable strings.
-        const collectedDurations = biosamples.reduce((accCollectedDurations, biosample) => {
-            const durations = biosample.treatments.reduce((accDurations, treatment) => (
-                treatment.duration
-                    ? accDurations.concat(`${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`)
-                    : accDurations
-            ), []);
-            return accCollectedDurations.concat(durations);
-        }, []);
-
-        return [...new Set(accTreatmentDurations.concat(collectedDurations))];
-    }, []);
+    const findDifferentiations = context.related_datasets.map((dataset) => (computeDifferentiation(dataset) ? 1 : 0)).reduce((a, b) => a + b, 0);
+    const differentiationTableColumns = findDifferentiations > 0 ? differentiationTableColumnsOneType : differentiationTableColumnsMoreThanOneType;
 
     const options = {};
-    if (treatmentDurations.length > 0) {
-        options.Treatments = <>{context.treatment_term_name} for {treatmentDurations.join(', ')}</>;
+    if (context.treatment_term_name) {
+        options.Treatments = <>{context.treatment_term_name.join(', ')}</>;
     }
 
     return (
