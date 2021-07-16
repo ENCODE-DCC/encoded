@@ -1039,6 +1039,63 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
     def control_type(self, request, related_datasets):
         return request.select_distinct_values('control_type', *related_datasets)
 
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self, request, related_datasets):
+        all_summaries = set()
+        all_ontologies = set()
+        biosample_accessions = set()
+        all_strains = set()
+        for dataset in related_datasets:
+            datasetObject = request.embed(dataset, '@@object')
+            if datasetObject['status'] not in ('deleted', 'replaced'):
+                if 'biosample_summary' in datasetObject:
+                    all_summaries.add(datasetObject['biosample_summary'])
+                    all_ontologies.add(datasetObject['biosample_ontology'])
+            replicates = datasetObject.get('replicates')
+            if replicates:
+                for rep in replicates:
+                    replicateObject = request.embed(rep, '@@object')
+                    if replicateObject['status'] == 'deleted':
+                        continue
+                    if 'library' in replicateObject:
+                        libraryObject = request.embed(replicateObject['library'], '@@object')
+                        if libraryObject['status'] == 'deleted':
+                            continue
+                        if 'biosample' in libraryObject:
+                            biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                            if biosampleObject['status'] == 'deleted':
+                                continue
+                            if biosampleObject['accession'] not in biosample_accessions:
+                                biosample_accessions.add(biosampleObject['accession'])
+                                if biosampleObject['organism'] in ['/organisms/mouse/', '/organisms/dmelanogaster/', '/organisms/celegans/' ]:
+                                    if 'donor' in biosampleObject:
+                                        donorObject = request.embed(biosampleObject['donor'], '@@object')
+                                        if donorObject['status'] != 'deleted':
+                                            if 'strain_name' in donorObject:
+                                                all_strains.add(donorObject['strain_name'])
+        if (len(all_summaries) == 1 and len(all_ontologies) == 1) or (len(all_ontologies) > 1 and len(all_summaries) > 1):
+            return ', '.join(list(map(str, all_summaries)))
+        elif len(all_summaries) > 1 and len(all_ontologies) == 1:
+            biosample_ontology = ', '.join(str(s) for s in all_ontologies)
+            biosample_type_object = request.embed(biosample_ontology, '@@object')
+            biosample_term_name = biosample_type_object['term_name']
+            biosample_type = biosample_type_object['classification']
+            if len(all_strains) == 1:
+                strain_name = ', '.join(str(s) for s in all_strains)
+                return f"{strain_name} {biosample_term_name} {biosample_type}"
+            else:
+                return f"{biosample_term_name} {biosample_type}"
+        elif len(all_ontologies) > 1:
+            all_biosample_terms = []
+            for ontology in all_ontologies:
+                biosample_ontology = str(ontology)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                all_biosample_terms.append(biosample_type_object['term_name'])
+            return ', '.join(all_biosample_terms)
+
 
 @collection(
     name='matched-sets',

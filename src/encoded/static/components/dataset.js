@@ -2018,7 +2018,6 @@ export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, opt
             </span>
         );
     }
-    const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? [...new Set(context.biosample_ontology.map((b) => [b.term_name, b.classification].join(' ')))] : [];
 
     // Calculate the donor diversity.
     const diversity = options.suppressDonorDiversity ? null : donorDiversity(context);
@@ -2091,11 +2090,11 @@ export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, opt
                                 </div>
                             : null}
 
-                            {terms.length > 0 || speciesRender ?
+                            {context.biosample_summary || speciesRender ?
                                 <div data-test="biosamplesummary">
                                     <dt>Biosample summary</dt>
                                     <dd>
-                                        {terms.length > 0 ? <span>{terms.join(', ')} </span> : null}
+                                        {context.biosample_summary ? <span>{context.biosample_summary} </span> : null}
                                         {speciesRender ? <span>({speciesRender})</span> : null}
                                     </dd>
                                 </div>
