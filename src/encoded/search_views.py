@@ -13,6 +13,7 @@ from encoded.searches.fields import CartMatrixWithFacetsResponseField
 from encoded.searches.fields import CartFiltersResponseField
 from encoded.searches.fields import ClearFiltersResponseFieldWithCarts
 from encoded.searches.fields import TypeOnlyClearFiltersResponseFieldWithCarts
+from encoded.searches.interfaces import RNA_EXPRESSION
 
 from snovault.elasticsearch.searches.interfaces import AUDIT_TITLE
 from snovault.elasticsearch.searches.interfaces import MATRIX_TITLE
@@ -297,7 +298,7 @@ def rna_expression_search_generator(request):
             BasicSearchResponseField(
                 client=rna_client,
                 default_item_types=[
-                    'RNAExpression'
+                    RNA_EXPRESSION
                 ],
                 reserved_keys=RESERVED_KEYS,
             )
@@ -814,14 +815,14 @@ def rnaget_search(context, request):
             CachedFacetsResponseField(
                 client=rna_client,
                 default_item_types=[
-                    'RNAExpression'
+                    RNA_EXPRESSION
                 ],
                 reserved_keys=RESERVED_KEYS,
             ),
             BasicSearchWithoutFacetsResponseField(
                 client=rna_client,
                 default_item_types=[
-                    'RNAExpression'
+                    RNA_EXPRESSION
                 ],
                 reserved_keys=RESERVED_KEYS,
             ),
@@ -855,14 +856,14 @@ def rnaget_report(context, request):
             CachedFacetsResponseField(
                 client=rna_client,
                 default_item_types=[
-                    'RNAExpression'
+                    RNA_EXPRESSION
                 ],
                 reserved_keys=RESERVED_KEYS,
             ),
             BasicReportWithoutFacetsResponseField(
                 client=rna_client,
                 default_item_types=[
-                    'RNAExpression'
+                    RNA_EXPRESSION
                 ],
                 reserved_keys=RESERVED_KEYS,
             ),

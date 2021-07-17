@@ -14,6 +14,7 @@ from urllib.parse import (
 from encoded.search_views import search_generator
 from encoded.search_views import cart_search_generator
 from encoded.search_views import rna_expression_search_generator
+from encoded.searches.interfaces import RNA_EXPRESSION
 from .vis_defines import is_file_visualizable
 import csv
 import io
@@ -161,7 +162,7 @@ def is_cart_search(request):
 
 
 def is_rna_expression_search(request):
-    return 'RNAExpression' in request.params.getall('type')
+    return RNA_EXPRESSION in request.params.getall('type')
 
 
 def get_report_search_generator(request):
