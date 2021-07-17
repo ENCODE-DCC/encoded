@@ -284,7 +284,7 @@ def cart_search_generator(request):
     return fgr.render()
 
 
-def expression_search_generator(request):
+def rna_expression_search_generator(request):
     '''
     For internal use (no view). Like search_quick but returns raw generator
     of search hits in @graph field.

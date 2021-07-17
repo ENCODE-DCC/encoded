@@ -13,7 +13,7 @@ from urllib.parse import (
 )
 from encoded.search_views import search_generator
 from encoded.search_views import cart_search_generator
-from encoded.search_views import expression_search_generator
+from encoded.search_views import rna_expression_search_generator
 from .vis_defines import is_file_visualizable
 import csv
 import io
@@ -160,22 +160,22 @@ def is_cart_search(request):
     return bool(request.params.getall('cart'))
 
 
-def is_expression_search(request):
+def is_rna_expression_search(request):
     return 'RNAExpression' in request.params.getall('type')
 
 
 def get_report_search_generator(request):
     if is_cart_search(request):
         return cart_search_generator
-    elif is_expression_search(request):
-        return expression_search_generator
+    elif is_rna_expression_search(request):
+        return rna_expression_search_generator
     return search_generator
 
 
 def get_endpoint(request):
    if is_cart_search(request):
        return '/cart-report/'
-   elif is_expression_search(request):
+   elif is_rna_expression_search(request):
        return '/rnaget-report/'
    return '/report/'
 
