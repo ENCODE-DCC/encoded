@@ -296,7 +296,9 @@ def expression_search_generator(request):
         response_fields=[
             BasicSearchResponseField(
                 client=rna_client,
-                default_item_types=DEFAULT_ITEM_TYPES,
+                default_item_types=[
+                    'RNAExpression'
+                ],
                 reserved_keys=RESERVED_KEYS,
             )
         ]
