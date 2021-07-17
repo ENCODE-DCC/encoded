@@ -7,8 +7,11 @@ from snovault.elasticsearch import TimedUrllib3HttpConnection
 from snovault.json_renderer import json_renderer
 
 
+RNA_ELASTICSEARCH_HOST = 'localhost:9202'
+
+
 rna_client = Elasticsearch(
-    'localhost:9202',
+    RNA_ELASTICSEARCH_HOST,
     serializer=PyramidJSONSerializer(json_renderer),
     connection_class=TimedUrllib3HttpConnection,
     timeout=200,
