@@ -229,22 +229,29 @@
             "title": "Assay title",
             "open_on_load": true
         },
+        "file.biosample_ontology.classification": {
+            "title": "Biosample classification",
+            "open_on_load": true
+        },
+        "file.biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "open_on_load": true,
+            "type": "typeahead",
+            "length": "long"
+        },
         "gene.symbol": {
             "title": "Gene symbol",
             "open_on_load": true,
-            "type": "typeahead"
-        },
-         "file.biosample_ontology.term_name": {
-            "title": "Biosample term name",
-            "open_on_load": true,
-            "type": "typeahead"
+            "type": "typeahead",
+            "length": "long"
         },
         "file.assembly": {
             "title": "Assembly",
             "open_on_load": true
         },
-        "file.biosample_ontology.classification": {
-            "title": "Biosample classification"
+        "file.genome_annotation": {
+            "title": "Genome annotation",
+            "open_on_load": true
         },
         "dataset.replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
