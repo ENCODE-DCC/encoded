@@ -1,6 +1,20 @@
 import random
 import requests
 
+from elasticsearch import Elasticsearch
+from snovault.elasticsearch import PyramidJSONSerializer
+from snovault.elasticsearch import TimedUrllib3HttpConnection
+from snovault.json_renderer import json_renderer
+
+
+rna_client = Elasticsearch(
+    'localhost:9202',
+    serializer=PyramidJSONSerializer(json_renderer),
+    connection_class=TimedUrllib3HttpConnection,
+    timeout=200,
+    retry_on_timeout=True,
+)
+
 
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
 RNA_GET_FACETS = [

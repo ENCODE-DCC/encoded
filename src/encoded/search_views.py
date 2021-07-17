@@ -1,8 +1,8 @@
 from pyramid.view import view_config
 
-from encoded.genomic_data_service import GenomicDataService
-
 from encoded.cart_view import CartWithElements
+from encoded.genomic_data_service import GenomicDataService
+from encoded.genomic_data_service import rna_client
 from encoded.searches.defaults import DEFAULT_ITEM_TYPES
 from encoded.searches.defaults import RESERVED_KEYS
 from encoded.searches.defaults import TOP_HITS_ITEM_TYPES
@@ -26,7 +26,10 @@ from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponse
 from snovault.elasticsearch.searches.fields import MissingMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
+from snovault.elasticsearch.searches.fields import BasicSearchWithoutFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicReportWithFacetsResponseField
+from snovault.elasticsearch.searches.fields import BasicReportWithoutFacetsResponseField
+from snovault.elasticsearch.searches.fields import CachedFacetsResponseField
 from snovault.elasticsearch.searches.fields import ClearFiltersResponseField
 from snovault.elasticsearch.searches.fields import ColumnsResponseField
 from snovault.elasticsearch.searches.fields import ContextResponseField
@@ -47,24 +50,8 @@ from snovault.elasticsearch.searches.parsers import ParamsParser
 from snovault.elasticsearch.searches.responses import FieldedGeneratorResponse
 from snovault.elasticsearch.searches.responses import FieldedResponse
 
-from snovault.elasticsearch import PyramidJSONSerializer
-from snovault.elasticsearch import TimedUrllib3HttpConnection
-from elasticsearch import Elasticsearch
-from snovault.json_renderer import json_renderer
-
-
-rna_client = Elasticsearch(
-    'localhost:9202',
-    serializer=PyramidJSONSerializer(json_renderer),
-    connection_class=TimedUrllib3HttpConnection,
-    timeout=35,
-    retry_on_timeout=True,
-)
-
 
 def includeme(config):
-    config.add_route('rnaget-search', '/rnaget-search{slash:/?}')
-    config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
     config.add_route('search', '/search{slash:/?}')
     config.add_route('series_search', '/series-search{slash:/?}')
     config.add_route('encyclopedia', '/encyclopedia{slash:/?}')
@@ -90,78 +77,9 @@ def includeme(config):
     config.add_route('top-hits', '/top-hits{slash:/?}')
     config.add_route('rnaget', '/rnaget{slash:/?}')
     config.add_route('rnaget-autocomplete', '/rnaget-autocomplete{slash:/?}')
+    config.add_route('rnaget-search', '/rnaget-search{slash:/?}')
+    config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
     config.scan(__name__)
-
-
-@view_config(route_name='rnaget-search', request_method='GET', permission='search')
-def rnaget_search(context, request):
-    # Note the order of rendering matters for some fields, e.g. AllResponseField and
-    # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title=SEARCH_TITLE
-            ),
-            TypeResponseField(
-                at_type=[SEARCH_TITLE]
-            ),
-            IDResponseField(),
-            ContextResponseField(),
-            BasicSearchWithFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    'RNAExpression'
-                ],
-                reserved_keys=RESERVED_KEYS,
-            ),
-            AllResponseField(),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            ClearFiltersResponseField(),
-            ColumnsResponseField(),
-            SortResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return fr.render()
-
-
-@view_config(route_name='rnaget-report', request_method='GET', permission='search')
-def rnaget_report(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title=REPORT_TITLE
-            ),
-            TypeResponseField(
-                at_type=[REPORT_TITLE]
-            ),
-            IDResponseField(),
-            ContextResponseField(),
-            BasicReportWithFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    'RNAExpression'
-                ],
-                reserved_keys=RESERVED_KEYS,
-            ),
-            AllResponseField(),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            ColumnsResponseField(),
-            NonSortableResponseField(),
-            SortResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return fr.render()
 
 
 @view_config(route_name='search', request_method='GET', permission='search')
@@ -873,3 +791,87 @@ def rnaget_autocomplete(context, request):
     data_service = GenomicDataService(context.registry, request)
     return data_service.rna_get_autocomplete()
 
+
+@view_config(route_name='rnaget-search', request_method='GET', permission='search')
+def rnaget_search(context, request):
+    # Note the order of rendering matters for some fields, e.g. AllResponseField and
+    # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=SEARCH_TITLE
+            ),
+            TypeResponseField(
+                at_type=[SEARCH_TITLE]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            CachedFacetsResponseField(
+                client=rna_client,
+                default_item_types=[
+                    'RNAExpression'
+                ],
+                reserved_keys=RESERVED_KEYS,
+            ),
+            BasicSearchWithoutFacetsResponseField(
+                client=rna_client,
+                default_item_types=[
+                    'RNAExpression'
+                ],
+                reserved_keys=RESERVED_KEYS,
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            ClearFiltersResponseField(),
+            ColumnsResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='rnaget-report', request_method='GET', permission='search')
+def rnaget_report(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=REPORT_TITLE
+            ),
+            TypeResponseField(
+                at_type=[REPORT_TITLE]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            CachedFacetsResponseField(
+                client=rna_client,
+                default_item_types=[
+                    'RNAExpression'
+                ],
+                reserved_keys=RESERVED_KEYS,
+            ),
+            BasicReportWithoutFacetsResponseField(
+                client=rna_client,
+                default_item_types=[
+                    'RNAExpression'
+                ],
+                reserved_keys=RESERVED_KEYS,
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            ColumnsResponseField(),
+            NonSortableResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
