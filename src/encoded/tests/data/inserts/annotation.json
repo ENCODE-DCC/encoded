@@ -181,7 +181,6 @@
         "accession": "ENCSR119PRO",
         "award": "U54HG007004",
         "annotation_type": "proteomics analysis",
-        "annotation_subtype": "all",
         "description": "ENTEx proteomics analysis ENC001",
         "encyclopedia_version": "ENCODE v5",
         "lab": "j-michael-cherry",
