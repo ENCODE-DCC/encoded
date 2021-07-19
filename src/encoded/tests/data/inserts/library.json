@@ -13,7 +13,7 @@
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
         "nucleic_acid_term_name": "DNA",
-        "nucleic_acid_starting_quantity": "1",
+        "nucleic_acid_starting_quantity": 1,
         "nucleic_acid_starting_quantity_units": "cell-equivalent",
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",

@@ -129,3 +129,9 @@ def test_library_upgrade_16_to_17(upgrader, library_schema_16):
     assert value['schema_version'] == '17'
     assert value['strand_specificity'] == 'unstranded'
     assert value['notes'] == 'The strand_specificity of this library was defaulted to unstranded in an upgrade.'
+
+
+def test_library_upgrade_17_to_18(upgrader, library_schema_17):
+    value = upgrader.upgrade('library', library_schema_17, target_version='18')
+    assert value['schema_version'] == '18'
+    assert value['nucleic_acid_starting_quantity'] == 9.2
