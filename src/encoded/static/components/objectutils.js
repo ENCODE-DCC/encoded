@@ -1054,9 +1054,9 @@ CopyButton.defaultProps = {
  * Display a custom-styled, accessible checkbox. Loosely based on:
  * https://webdesign.tutsplus.com/tutorials/how-to-make-custom-accessible-checkboxes-and-radio-buttons--cms-32074
  */
-export const Checkbox = ({ label, id, checked, css, clickHandler }) => (
-    <div className={`checkbox${css ? ` ${css}` : ''}`}>
-        <input id={id} name={id} type="checkbox" checked={checked} onChange={clickHandler} />
+export const Checkbox = ({ label, id, checked, disabled, css, clickHandler }) => (
+    <div className={`checkbox${disabled ? ' checkbox--disabled' : ''}${css ? ` ${css}` : ''}`}>
+        <input id={id} name={id} type="checkbox" checked={checked} disabled={disabled} onChange={clickHandler} />
         <label htmlFor={id}>
             {label}
             {svgIcon('checkbox')}
@@ -1071,6 +1071,8 @@ Checkbox.propTypes = {
     id: PropTypes.string.isRequired,
     /** True if checkbox is checked */
     checked: PropTypes.bool.isRequired,
+    /** True if checkbox is disabled */
+    disabled: PropTypes.bool,
     /** CSS to apply to checkbox wrapper */
     css: PropTypes.string,
     /** Called when the user clicks the checkbox */
@@ -1078,6 +1080,7 @@ Checkbox.propTypes = {
 };
 
 Checkbox.defaultProps = {
+    disabled: false,
     css: '',
 };
 

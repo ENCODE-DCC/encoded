@@ -21,6 +21,11 @@ export const SET_NAME = 'SET_NAME';
 export const SET_IDENTIFIER = 'SET_IDENTIFIER';
 export const SET_LOCKED = 'SET_LOCKED';
 export const SET_STATUS = 'SET_STATUS';
+export const ADD_FILE_VIEW = 'ADD_FILE_VIEW';
+export const REMOVE_FILE_VIEW = 'REMOVE_FILE_VIEW';
+export const ADD_TO_FILE_VIEW = 'ADD_TO_FILE_VIEW';
+export const REMOVE_FROM_FILE_VIEW = 'REMOVE_FROM_FILE_VIEW';
+export const REPLACE_FILE_VIEWS = 'REPLACE_FILE_VIEWS';
 export const NO_ACTION = 'NO_ACTION';
 
 
@@ -147,7 +152,6 @@ export const removeMultipleFromCartAndSave = (elementAtIds, fetch) => (
     }
 );
 
-
 /**
  * Redux action creator to replace all items in the cart with another set of items.
  * @param {array} elementAtIds `@ids` of elements to set the cart to
@@ -245,6 +249,124 @@ export const setCartStatus = (status) => (
 
 
 /**
+ * Redux action creator to add a new file view.
+ * @param {string} title Name of the new file view
+ * @returns {object} Redux action object
+ */
+export const addFileView = (title) => (
+    { type: ADD_FILE_VIEW, title }
+);
+
+
+/**
+ * Redux action creator to remove an existing file view.
+ * @param {string} title Name of the file view to remove
+ * @returns {object} Redux action object
+ */
+export const removeFileView = (title) => (
+    { type: REMOVE_FILE_VIEW, title }
+);
+
+
+/**
+ * Redux action creator to add files to the file view specified by the given title.
+ * @param {string} title Name of file view to add to
+ * @param {array} files File @ids to add to view files
+ * @returns {object} Redux action object
+ */
+export const addToFileView = (title, files) => (
+    { type: ADD_TO_FILE_VIEW, title, files }
+);
+
+
+/**
+ * Redux action creator to remove files from the file view specified by the given title.
+ * @param {string} title Name of file view to remove from
+ * @param {array} files File @ids to add to view files
+ * @returns {object} Redux action object
+ */
+export const removeFromFileView = (title, files) => (
+    { type: REMOVE_FROM_FILE_VIEW, title, files }
+);
+
+
+/**
+ * Redux action creator to replace all file views in the current cart with the given file views.
+ * @param {array} fileViews Array of file views to replace the current cart file views with
+ * @returns {object} Redux action object
+ */
+export const replaceFileViews = (fileViews) => (
+    { type: REPLACE_FILE_VIEWS, fileViews }
+);
+
+
+/**
+ * Redux thunk action creator to add a new empty file view and save the updated cart to the
+ * database.
+ * @param {string} title Name of the new file view
+ * @param {function} fetch fetch function from <App> context
+ * @returns {object} Promise from saving the cart object
+ */
+export const addFileViewAndSave = (title, fetch) => (
+    (dispatch, getState) => {
+        dispatch(addFileView(title));
+        const { fileViews, savedCartObj } = getState();
+        cartSetOperationInProgress(true, dispatch);
+        return cartUpdate(savedCartObj['@id'], { file_views: fileViews }, {}, fetch).then((updatedSavedCartObj) => {
+            cartSetOperationInProgress(false, dispatch);
+            dispatch(cacheSavedCart(updatedSavedCartObj));
+        });
+    }
+);
+
+
+/**
+ * Redux thunk action creator to add files to the file view specified by the given name and save
+ * the updated cart to the database.
+ * @param {string} title Name of file view to add to
+ * @param {array} files File @ids to add to view files
+ * @param {function} fetch fetch function from <App> context
+ * @returns {object} Promise from saving the cart object
+ */
+export const addToFileViewAndSave = (title, files, fetch) => (
+    (dispatch, getState) => {
+        const { fileViews: existingFileViews, savedCartObj } = getState();
+        if (!existingFileViews || existingFileViews.length === 0) {
+            dispatch(addFileView(title));
+        }
+        dispatch(addToFileView(title, files));
+        const { fileViews: updatedFileViews } = getState();
+        cartSetOperationInProgress(true, dispatch);
+        return cartUpdate(savedCartObj['@id'], { file_views: updatedFileViews }, {}, fetch).then((updatedSavedCartObj) => {
+            cartSetOperationInProgress(false, dispatch);
+            dispatch(cacheSavedCart(updatedSavedCartObj));
+        });
+    }
+);
+
+
+/**
+ * Redux thunk action creator to remove files from the file view specified by the given name, and
+ * save the updated cart to the database.
+ * @param {string} title Name of file view to remove from
+ * @param {array} files File @ids to remove from file views
+ * @param {function} fetch fetch function from <App> context
+ * @returns {object} Promise from saving the cart object
+ */
+export const removeFromFileViewAndSave = (title, files, fetch) => (
+    (dispatch, getState) => {
+        dispatch(removeFromFileView(title, files));
+        const { fileViews: updatedFileViews, savedCartObj } = getState();
+        cartSetOperationInProgress(true, dispatch);
+        return cartUpdate(savedCartObj['@id'], { file_views: updatedFileViews }, {}, fetch).then((updatedSavedCartObj) => {
+            cartSetOperationInProgress(false, dispatch);
+            dispatch(cacheSavedCart(updatedSavedCartObj));
+        });
+    }
+);
+
+
+/**
  * Redux thunk action creator to set the name and/or identifier of a cart both in the Redux store
  * and the cart's database object.
  * @param {string} {name} Name to assign to cart (optional)
@@ -322,7 +444,6 @@ export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, f
 export const setCartLockAndSave = (locked, cart, user, fetch) => (
     (dispatch) => {
         cartSetOperationInProgress(true, dispatch);
-        cartUpdate(cart['@id'], { locked }, {}, fetch);
         return cartUpdate(cart['@id'], { locked }, {}, fetch).then((updatedSavedCartObj) => {
             cartSetOperationInProgress(false, dispatch);
 

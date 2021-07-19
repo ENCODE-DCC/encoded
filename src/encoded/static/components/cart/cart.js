@@ -5,6 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
+import url from 'url';
 import { svgIcon } from '../../libs/svg-icons';
 import * as DropdownButton from '../../libs/ui/button';
 import * as Pager from '../../libs/ui/pager';
@@ -12,12 +13,14 @@ import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../li
 import GenomeBrowser, { annotationTypeMap } from '../genome_browser';
 import { itemClass, atIdToType } from '../globals';
 import {
+    Checkbox,
     ItemAccessories,
     computeAssemblyAnnotationValue,
     filterForVisualizableFiles,
     filterForDefaultFiles,
     filterForDatasetFiles,
     filterForReleasedAnalyses,
+    isFileVisualizable,
 } from '../objectutils';
 import { ResultTableList } from '../search';
 import { compileDatasetAnalyses, sortDatasetAnalyses } from './analysis';
@@ -26,18 +29,24 @@ import CartClearButton from './clear';
 import {
     assembleFileFacets,
     assembleDatasetFacets,
+    CartFacets,
+    CartFacetsFileView,
+    CartFacetsStandin,
     datasetFieldFileFacets,
     displayedDatasetFacetFields,
     displayedFileFacetFields,
-    CartFacets,
     resetDatasetFacets,
     resetFileFacets,
 } from './facet';
+import { CartFileViewToggle, CartFileViewAddAll } from './file_view';
 import CartLockTrigger from './lock';
 import CartMergeShared from './merge_shared';
 import Status from '../status';
 import CartRemoveElements from './remove_multiple';
 import { allowedDatasetTypes } from './util';
+
+
+const DEFAULT_FILE_VIEW_NAME = 'View';
 
 
 /**
@@ -189,7 +198,15 @@ CartBrowser.propTypes = {
 /**
  * Display the list of files selected by the current cart facet selections.
  */
-const CartFiles = ({ files, currentPage, defaultOnly, loading }) => {
+const CartFiles = ({
+    files,
+    selectedFilesInFileView,
+    isFileViewOnly,
+    currentPage,
+    defaultOnly,
+    cartType,
+    loading,
+}) => {
     if (files.length > 0) {
         const pageStartIndex = currentPage * PAGE_FILE_COUNT;
         const currentPageFiles = files.slice(pageStartIndex, pageStartIndex + PAGE_ELEMENT_COUNT);
@@ -209,44 +226,56 @@ const CartFiles = ({ files, currentPage, defaultOnly, loading }) => {
                         targets = file.targets && file.targets.map((target) => target.label).join(', ');
                     }
                     return (
-                        <a key={file['@id']} href={file['@id']} className={`cart-list-item${defaultOnly && file.pseudo_default ? ' cart-list-item--no-dl' : ''}`}>
-                            <div className={`cart-list-item__file-type cart-list-item__file-type--${file.file_format}`}>
-                                <div className="cart-list-item__format">{file.file_format}</div>
-                                {defaultOnly && file.pseudo_default ? <div className="cart-list-item__no-dl">Not downloadable</div> : null}
-                            </div>
-                            <div className="cart-list-item__props">
-                                <div className="cart-list-item__details">
-                                    <div className="cart-list-details__output-type">
-                                        {file.output_type}
+                        <div key={file['@id']} className={`cart-list-item${defaultOnly && file.pseudo_default && !isFileViewOnly ? ' cart-list-item--no-dl' : ''}`}>
+                            {selectedFilesInFileView && isFileVisualizable(file) ?
+                                <CartFileViewToggle
+                                    file={file}
+                                    fileViewName={DEFAULT_FILE_VIEW_NAME}
+                                    selected={selectedFilesInFileView.includes(file['@id'])}
+                                    disabled={cartType !== 'ACTIVE'}
+                                />
+                            : null}
+                            <a href={file['@id']} className="cart-list-link">
+                                <div className={`cart-list-link__file-type cart-list-item__file-type--${file.file_format}`}>
+                                    <div className="cart-list-link__format">{file.file_format}</div>
+                                    {defaultOnly && file.pseudo_default && !isFileViewOnly ?
+                                        <div className="cart-list-link__no-dl">Not downloadable</div>
+                                    : null}
+                                </div>
+                                <div className="cart-list-link__props">
+                                    <div className="cart-list-link__details">
+                                        <div className="cart-list-details__output-type">
+                                            {file.output_type}
+                                        </div>
+                                        <div className="cart-list-details__type">
+                                            <div className="cart-list-details__label">Type</div>
+                                            <div className="cart-list-details__value">{file.file_type}</div>
+                                        </div>
+                                        <div className="cart-list-details__target">
+                                            <div className="cart-list-details__label">Target</div>
+                                            <div className="cart-list-details__value">{targets || 'None'}</div>
+                                        </div>
+                                        <div className="cart-list-details__assay">
+                                            <div className="cart-list-details__label">Assay</div>
+                                            <div className="cart-list-details__value">{file.assay_term_name}</div>
+                                        </div>
+                                        <div className="cart-list-details__biosample">
+                                            <div className="cart-list-details__label">Biosample</div>
+                                            <div className="cart-list-details__value">{file.biosample_ontology && file.biosample_ontology.term_name}</div>
+                                        </div>
                                     </div>
-                                    <div className="cart-list-details__type">
-                                        <div className="cart-list-details__label">Type</div>
-                                        <div className="cart-list-details__value">{file.file_type}</div>
-                                    </div>
-                                    <div className="cart-list-details__target">
-                                        <div className="cart-list-details__label">Target</div>
-                                        <div className="cart-list-details__value">{targets || 'None'}</div>
-                                    </div>
-                                    <div className="cart-list-details__assay">
-                                        <div className="cart-list-details__label">Assay</div>
-                                        <div className="cart-list-details__value">{file.assay_term_name}</div>
-                                    </div>
-                                    <div className="cart-list-details__biosample">
-                                        <div className="cart-list-details__label">Biosample</div>
-                                        <div className="cart-list-details__value">{file.biosample_ontology && file.biosample_ontology.term_name}</div>
+                                    <div className="cart-list-link__identifier">
+                                        <div className="cart-list-link__status">
+                                            <Status item={file.status} badgeSize="small" />
+                                        </div>
+                                        <div className="cart-list-link__title">
+                                            {file.title}
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="cart-list-item__identifier">
-                                    <div className="cart-list-item__status">
-                                        <Status item={file.status} badgeSize="small" />
-                                    </div>
-                                    <div className="cart-list-item__title">
-                                        {file.title}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="cart-list-item__hover" />
-                        </a>
+                                <div className="cart-list-link__hover" />
+                            </a>
+                        </div>
                     );
                 })}
             </div>
@@ -265,15 +294,23 @@ const CartFiles = ({ files, currentPage, defaultOnly, loading }) => {
 CartFiles.propTypes = {
     /** Array of files from datasets in the cart */
     files: PropTypes.array.isRequired,
+    /** Array of selected files in the file view; null to not display selection controls */
+    selectedFilesInFileView: PropTypes.array,
+    /** True if the user has selected to view only file view files */
+    isFileViewOnly: PropTypes.bool,
     /** Page of results to display */
     currentPage: PropTypes.number.isRequired,
     /** True if only displaying default files */
     defaultOnly: PropTypes.bool,
+    /** Type of cart displayed */
+    cartType: PropTypes.string.isRequired,
     /** True if page currently loading */
     loading: PropTypes.bool.isRequired,
 };
 
 CartFiles.defaultProps = {
+    selectedFilesInFileView: null,
+    isFileViewOnly: false,
     defaultOnly: false,
 };
 
@@ -422,12 +459,21 @@ const CartTools = ({
     cartType,
     sharedCart,
     visualizable,
+    isFileViewOnly,
+    updateFileViewOnly,
 }) => {
     // Make a list of all the dataset types currently in the cart.
     const usedDatasetTypes = elements.reduce((types, elementAtId) => {
         const type = atIdToType(elementAtId);
         return types.includes(type) ? types : types.concat(type);
     }, []);
+
+    /**
+     * Called when the user clicks the "File view" button.
+     */
+    const handleFileViewClick = () => {
+        updateFileViewOnly();
+    };
 
     return (
         <div className="cart-tools">
@@ -441,6 +487,7 @@ const CartTools = ({
                     savedCartObj={savedCartObj}
                     sharedCart={sharedCart}
                     visualizable={visualizable}
+                    isFileViewOnly={isFileViewOnly}
                 />
             : null}
             <CartDatasetReport
@@ -448,6 +495,13 @@ const CartTools = ({
                 sharedCartObj={sharedCart}
                 cartType={cartType}
                 usedDatasetTypes={usedDatasetTypes}
+            />
+            <Checkbox
+                label="File view"
+                id="file-view-toggle"
+                checked={isFileViewOnly}
+                css="cart-checkbox file-view-toggle"
+                clickHandler={handleFileViewClick}
             />
         </div>
     );
@@ -472,6 +526,10 @@ CartTools.propTypes = {
     sharedCart: PropTypes.object,
     /** True if only visualizable files should be downloaded */
     visualizable: PropTypes.bool,
+    /** True if user has "File view" checked */
+    isFileViewOnly: PropTypes.bool.isRequired,
+    /** Called when the user clicks the checkbox */
+    updateFileViewOnly: PropTypes.func.isRequired,
 };
 
 CartTools.defaultProps = {
@@ -508,22 +566,77 @@ CartPager.propTypes = {
 
 
 /**
+ * Show the file-view controls, which currently only includes a button to add all selected
+ * visualizable files to the current cart's file view.
+ */
+const FileViewControl = ({ files, fileViewName, addAllToFileViewEnabled, disabled }) => (
+    <div className="file-view-controls">
+        {addAllToFileViewEnabled
+            ? (
+                <CartFileViewAddAll
+                    files={files}
+                    fileViewName={fileViewName}
+                    disabled={disabled || files.length === 0}
+                />
+            ) : null}
+    </div>
+);
+
+FileViewControl.propTypes = {
+    /** File objects to add to file view */
+    files: PropTypes.array,
+    /** Name of the current file view */
+    fileViewName: PropTypes.string,
+    /** True to enable the "Add all to file view" button */
+    addAllToFileViewEnabled: PropTypes.bool,
+    /** True if control should appear disabled */
+    disabled: PropTypes.bool,
+};
+
+FileViewControl.defaultProps = {
+    files: [],
+    fileViewName: '',
+    addAllToFileViewEnabled: false,
+    disabled: false,
+};
+
+
+/**
  * Displays controls at the top of search results within the tab content areas.
  */
-const CartSearchResultsControls = ({ currentTab, elements, currentPage, totalPageCount, updateCurrentPage, cartType, loading }) => {
-    if (currentTab === 'datasets' || totalPageCount > 1) {
-        return (
-            <div className="cart-search-results-controls">
-                {currentTab === 'datasets' && cartType === 'ACTIVE'
-                    ? <CartRemoveElements elements={elements.map((element) => element['@id'])} loading={loading} />
-                    : <div />}
-                {totalPageCount > 1
-                    ? <CartPager currentPage={currentPage} totalPageCount={totalPageCount} updateCurrentPage={updateCurrentPage} />
-                    : null}
-            </div>
-        );
-    }
-    return null;
+const CartSearchResultsControls = ({
+    currentTab,
+    elements,
+    currentPage,
+    totalPageCount,
+    updateCurrentPage,
+    fileViewOptions,
+    cartType,
+    loading,
+}) => {
+    const {
+        filesToAddToFileView,
+        fileViewName,
+        addAllToFileViewEnabled,
+    } = fileViewOptions;
+    return (
+        <div className="cart-search-results-controls">
+            {currentTab === 'datasets' && cartType === 'ACTIVE'
+                ? <CartRemoveElements elements={elements.map((element) => element['@id'])} loading={loading} />
+                : (currentTab === 'processeddata' ?
+                    <FileViewControl
+                        files={filesToAddToFileView}
+                        fileViewName={fileViewName}
+                        addAllToFileViewEnabled={addAllToFileViewEnabled}
+                        disabled={cartType !== 'ACTIVE'}
+                    />
+                : <div />)
+            }
+            {totalPageCount > 1
+                ? <CartPager currentPage={currentPage} totalPageCount={totalPageCount} updateCurrentPage={updateCurrentPage} />
+                : null}
+        </div>
+    );
 };
 
 CartSearchResultsControls.propTypes = {
@@ -537,12 +650,24 @@ CartSearchResultsControls.propTypes = {
     totalPageCount: PropTypes.number.isRequired,
     /** Called when user clicks pager controls */
     updateCurrentPage: PropTypes.func.isRequired,
+    /** Options when displaying file view controls */
+    fileViewOptions: PropTypes.exact({
+        /** Files to add to file view, including those that can't */
+        filesToAddToFileView: PropTypes.array,
+        /** File view name */
+        fileViewName: PropTypes.string,
+        /** True to enable the "Add all to file view" button */
+        addAllToFileViewEnabled: PropTypes.bool,
+    }),
     /** Current cart type, e.g. ACTIVE, SHARED... */
     cartType: PropTypes.string.isRequired,
     /** True if cart still loading on page */
     loading: PropTypes.bool.isRequired,
 };
 
+CartSearchResultsControls.defaultProps = {
+    fileViewOptions: {},
+};
 
 /**
  * Add the datasets search results to the given array of datasets.
@@ -915,6 +1040,20 @@ const retrieveDatasetsFiles = (datasetsIds, facetProgressHandler, fetch, session
 
 
 /**
+ * Filter an array of files to ones included in the current file view.
+ * @param {array} fileList Files to filter
+ * @param {array} fileViewPaths @ids of files in file view
+ * @returns {array} Filtered `fileList`
+ */
+export const filterForFileView = (fileList, fileViewPaths) => {
+    if (fileList.length > 0 && fileViewPaths.length > 0) {
+        return fileList.filter((file) => fileViewPaths.includes(file['@id']));
+    }
+    return [];
+};
+
+
+/**
  * Reducer function for setting the pager page numbers for each of the cart tabs.
  * @param {object} state Contains pager page numbers; do not mutate
  * @param {object} action Contains page number and tab to update
@@ -965,13 +1104,15 @@ const calcTotalPageCount = (itemCount, maxCount) => Math.floor(itemCount / maxCo
  * only the file object properties requested in `requestedFacetFields`. When visualizing a subset
  * of these files, complete file objects get retrieved.
  */
-const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) => {
+const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, locationHref }) => {
     // Keeps track of currently selected dataset facet terms keyed by facet fields.
     const [selectedDatasetTerms, setSelectedDatasetTerms] = React.useState({});
     // Keeps track of currently selected file facet terms keyed by facet fields.
     const [selectedFileTerms, setSelectedFileTerms] = React.useState({});
     // Array of datasets the user has access to view; subset of `cartDatasets`.
     const [viewableDatasets, setViewableDatasets] = React.useState([]);
+    // True if the user has selected viewing only file view files
+    const [isFileViewOnly, setIsFileViewOnly] = React.useState(false);
     // Compiled analyses applicable to the current datasets.
     const [analyses, setAnalyses] = React.useState([]);
     // Currently displayed page number for each tab panes; for pagers.
@@ -1000,24 +1141,51 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
     }
 
     // Filter out conditional facets.
-    const usedFileFacetFields = React.useMemo(() => (
-        defaultOnly
-            ? displayedFileFacetFields.filter((facetField) => facetField.preferred)
-            : displayedFileFacetFields
-    ), [defaultOnly]);
+    const usedFileFacetFields = React.useMemo(() => {
+        // Only the assembly facet is active when "File view" checked.
+        if (isFileViewOnly) {
+            return [displayedFileFacetFields.find((facetField) => facetField.field === 'assembly')];
+        }
+
+        // Get a subset of available facets when "Show default data only" checked.
+        if (defaultOnly) {
+            return displayedFileFacetFields.filter((facetField) => facetField.preferred);
+        }
+
+        // Otherwise, all facets available.
+        return displayedFileFacetFields;
+    }, [defaultOnly, isFileViewOnly]);
+
+    // Get the files selected in the current file view.
+    const selectedView = savedCartObj && savedCartObj.file_views
+        ? savedCartObj.file_views.find((view) => view.title === DEFAULT_FILE_VIEW_NAME)
+        : [];
+    const selectedFilesInFileView = selectedView && selectedView.files ? selectedView.files : [];
 
     // Build the dataset facets based on the currently selected facet terms.
-    const { datasetFacets, selectedDatasets } = React.useMemo(() => (
-        assembleDatasetFacets(selectedDatasetTerms, viewableDatasets, displayedDatasetFacetFields)
-    ), [selectedDatasetTerms, viewableDatasets]);
+    const { datasetFacets, selectedDatasets } = React.useMemo(() => {
+        if (!isFileViewOnly) {
+            return assembleDatasetFacets(selectedDatasetTerms, viewableDatasets, displayedDatasetFacetFields);
+        }
+        return { datasetFacets: null, selectedDatasets: viewableDatasets };
+    }, [selectedDatasetTerms, viewableDatasets, isFileViewOnly]);
 
     // Build the file facets based on the currently selected facet terms.
     const selectedDatasetFiles = React.useMemo(() => filterForDatasetFiles(allFiles, selectedDatasets), [allFiles, selectedDatasets]);
     const { fileFacets, selectedFiles, selectedVisualizableFiles } = React.useMemo(() => {
+        // If "File view" selected, filter out files not in the selected view. Build a single
+        // assembly facet, ignoring all others.
+        if (isFileViewOnly) {
+            const files = filterForFileView(allFiles.filter((file) => file.assembly), selectedFilesInFileView);
+            const { fileFacets: facets, selectedFiles: allSelectedFiles } = assembleFileFacets(selectedFileTerms, files, [], usedFileFacetFields);
+            const visualizableSelectedFiles = filterForVisualizableFiles(allSelectedFiles);
+            return { fileFacets: facets, selectedFiles: files, selectedVisualizableFiles: visualizableSelectedFiles };
+        }
+
         let files = defaultOnly ? filterForDefaultFiles(selectedDatasetFiles) : selectedDatasetFiles;
         files = visualizableOnly ? filterForVisualizableFiles(files) : files;
 
-        // While "Show default data only" selected, futher restrict displayed files to those in
+        // While "Show default data only" selected, further restrict displayed files to those in
         // released analyses.
         if (defaultOnly) {
             const analysisFilteredFiles = filterForReleasedAnalyses(files, analyses);
@@ -1025,10 +1193,22 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                 files = analysisFilteredFiles;
             }
         }
+
         const { fileFacets: facets, selectedFiles: allSelectedFiles } = assembleFileFacets(selectedFileTerms, files, analyses, usedFileFacetFields);
         const visualizableSelectedFiles = filterForVisualizableFiles(allSelectedFiles);
         return { fileFacets: facets, selectedFiles: allSelectedFiles, selectedVisualizableFiles: visualizableSelectedFiles };
-    }, [selectedFileTerms, selectedDatasets, visualizableOnly, defaultOnly, selectedDatasetFiles, analyses, usedFileFacetFields]);
+    }, [
+        selectedFileTerms,
+        selectedDatasets,
+        selectedFilesInFileView.length,
+        isFileViewOnly,
+        visualizableOnly,
+        defaultOnly,
+        selectedDatasetFiles,
+        analyses,
+        allFiles,
+        usedFileFacetFields,
+    ]);
 
     // Construct the file lists for the genome browser and raw file tabs.
     const rawdataFiles = React.useMemo(() => selectedDatasetFiles.filter((files) => !files.assembly), [selectedDatasetFiles]);
@@ -1158,6 +1338,27 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
         setSelectedFileTerms(newSelectedFileTerms);
     };
 
+    // Handle a click on the "File view" checkbox.
+    const handleFileViewOnlyClick = () => {
+        setIsFileViewOnly((prevFileViewOnly) => !prevFileViewOnly);
+    };
+
+    // Turn off "Set file view" checkbox if no files are in the current file view.
+    React.useEffect(() => {
+        if (selectedFilesInFileView.length === 0) {
+            setIsFileViewOnly(false);
+        }
+    }, [selectedFilesInFileView.length]);
+
+    // Enable the "Set file view" checkbox if the hashtag in the URL matches the current file view.
+    React.useEffect(() => {
+        const parsedUrl = url.parse(locationHref);
+        if (parsedUrl.hash === `#${DEFAULT_FILE_VIEW_NAME}`) {
+            setIsFileViewOnly(true);
+            setDisplayedTab('processeddata');
+        }
+    }, [locationHref]);
+
     // Use the file information to build the facets and its initial selections. Resetting the
     // facets to their initial states should only happen with a change to files.
     React.useEffect(() => {
@@ -1249,6 +1450,8 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                             fileCounts={{ processed: selectedFiles.length, raw: rawdataFiles.length, all: allFiles.length }}
                             visualizable={visualizableOnly}
                             preferredDefault={defaultOnly}
+                            isFileViewOnly={isFileViewOnly}
+                            updateFileViewOnly={handleFileViewOnlyClick}
                         />
                         {selectedFileTerms.assembly && selectedFileTerms.assembly[0] ? <div className="cart-assembly-indicator">{selectedFileTerms.assembly[0]}</div> : null}
                     </PanelHeading>
@@ -1256,30 +1459,47 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                 <PanelBody>
                     {cartDatasets.length > 0 ?
                         <div className="cart__display">
-                            <CartFacets
-                                datasetProps={{
-                                    facets: datasetFacets,
-                                    selectedTerms: selectedDatasetTerms,
-                                    termClickHandler: handleDatasetTermClick,
-                                    clearFacetSelections: clearDatasetFacetSelections,
-                                }}
-                                fileProps={{
-                                    facets: fileFacets,
-                                    selectedTerms: selectedFileTerms,
-                                    termClickHandler: handleFileTermClick,
-                                    clearFacetSelections: clearFileFacetSelections,
-                                    usedFacetFields: usedFileFacetFields,
-                                }}
-                                options={{
-                                    visualizableOnly,
-                                    visualizableOnlyChangeHandler: handleVisualizableOnlyChange,
-                                    preferredOnly: defaultOnly,
-                                    preferredOnlyChangeHandler: handlePreferredOnlyChange,
-                                }}
-                                datasets={selectedDatasets}
-                                files={selectedFiles}
-                                facetProgress={facetProgress}
-                            />
+                            {!isFileViewOnly
+                                ?
+                                    <CartFacets
+                                        datasetProps={{
+                                            facets: datasetFacets,
+                                            selectedTerms: selectedDatasetTerms,
+                                            termClickHandler: handleDatasetTermClick,
+                                            clearFacetSelections: clearDatasetFacetSelections,
+                                        }}
+                                        fileProps={{
+                                            facets: fileFacets,
+                                            selectedTerms: selectedFileTerms,
+                                            termClickHandler: handleFileTermClick,
+                                            clearFacetSelections: clearFileFacetSelections,
+                                            usedFacetFields: usedFileFacetFields,
+                                        }}
+                                        options={{
+                                            visualizableOnly,
+                                            visualizableOnlyChangeHandler: handleVisualizableOnlyChange,
+                                            preferredOnly: defaultOnly,
+                                            preferredOnlyChangeHandler: handlePreferredOnlyChange,
+                                        }}
+                                        datasets={selectedDatasets}
+                                        files={selectedFiles}
+                                        facetProgress={facetProgress}
+                                    />
+                                : (
+                                    displayedTab === 'browser'
+                                        ?
+                                            <CartFacetsFileView
+                                                files={selectedVisualizableFiles}
+                                                facetProgress={facetProgress}
+                                                fileProps={{
+                                                    facets: fileFacets,
+                                                    selectedTerms: selectedFileTerms,
+                                                    termClickHandler: handleFileTermClick,
+                                                }}
+                                            />
+                                        : <CartFacetsStandin files={displayedTab === 'processeddata' ? selectedFiles : []} facetProgress={facetProgress} />
+                                )
+                            }
                             <TabPanel
                                 tabPanelCss="cart__display-content"
                                 tabs={{ datasets: 'All datasets', browser: 'Genome browser', processeddata: 'Processed data', rawdata: 'Raw data' }}
@@ -1289,6 +1509,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                     processeddata: <CounterTab title="Processed data" count={selectedFiles.length} icon="file" voice="processed data files" />,
                                     rawdata: <CounterTab title="Raw data" count={rawdataFiles.length} icon="file" voice="raw data files" />,
                                 }}
+                                selectedTab={displayedTab}
                                 handleTabClick={handleTabClick}
                             >
                                 <TabPanelPane key="datasets">
@@ -1329,10 +1550,23 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         currentPage={pageNumbers.processeddata}
                                         totalPageCount={totalPageCount.processeddata}
                                         updateCurrentPage={updateDisplayedPage}
+                                        fileViewOptions={{
+                                            filesToAddToFileView: filterForVisualizableFiles(selectedFiles),
+                                            fileViewName: DEFAULT_FILE_VIEW_NAME,
+                                            addAllToFileViewEnabled: true,
+                                        }}
                                         cartType={cartType}
                                         loading={facetProgress !== -1}
                                     />
-                                    <CartFiles files={selectedFiles} currentPage={pageNumbers.processeddata} defaultOnly={defaultOnly} loading={facetProgress !== -1} />
+                                    <CartFiles
+                                        files={selectedFiles}
+                                        isFileViewOnly={isFileViewOnly}
+                                        selectedFilesInFileView={selectedFilesInFileView}
+                                        currentPage={pageNumbers.processeddata}
+                                        defaultOnly={defaultOnly}
+                                        cartType={cartType}
+                                        loading={facetProgress !== -1}
+                                    />
                                 </TabPanelPane>
                                 <TabPanelPane key="rawdata">
                                     <CartSearchResultsControls
@@ -1344,7 +1578,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) =>
                                         cartType={cartType}
                                         loading={facetProgress !== -1}
                                     />
-                                    <CartFiles files={rawdataFiles} currentPage={pageNumbers.rawdata} loading={facetProgress !== -1} />
+                                    <CartFiles files={rawdataFiles} currentPage={pageNumbers.rawdata} cartType={cartType} loading={facetProgress !== -1} />
                                 </TabPanelPane>
                             </TabPanel>
                         </div>
@@ -1368,6 +1602,8 @@ CartComponent.propTypes = {
     fetch: PropTypes.func.isRequired,
     /** System session information */
     session: PropTypes.object,
+    /** URL in the URL bar including hash */
+    locationHref: PropTypes.string.isRequired,
 };
 
 CartComponent.defaultProps = {
@@ -1396,7 +1632,7 @@ const CartInternal = connect(mapStateToProps)(CartComponent);
  * Wrapper to receive React <App> context and pass it to CartInternal as regular props.
  */
 const Cart = (props, reactContext) => (
-    <CartInternal context={props.context} fetch={reactContext.fetch} session={reactContext.session} />
+    <CartInternal context={props.context} fetch={reactContext.fetch} session={reactContext.session} locationHref={reactContext.location_href} />
 );
 
 Cart.propTypes = {
@@ -1407,6 +1643,7 @@ Cart.propTypes = {
 Cart.contextTypes = {
     session: PropTypes.object,
     fetch: PropTypes.func,
+    location_href: PropTypes.string,
 };
 
 export default Cart;

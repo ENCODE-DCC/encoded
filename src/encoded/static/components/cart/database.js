@@ -91,7 +91,11 @@ export default cartSave;
  * @return {Promise} Resolves to newly created cart object, or reject with error code.
  */
 export const cartCreate = ({ name, identifier, status }, fetch) => {
-    const body = { name, locked: false };
+    const body = {
+        name,
+        locked: false,
+        file_views: [],
+    };
     if (identifier) {
         body.identifier = identifier;
     }

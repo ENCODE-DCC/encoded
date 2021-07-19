@@ -20,6 +20,11 @@ import {
     ADD_MULTIPLE_TO_CART,
     REMOVE_FROM_CART,
     REMOVE_MULTIPLE_FROM_CART,
+    ADD_FILE_VIEW,
+    REMOVE_FILE_VIEW,
+    ADD_TO_FILE_VIEW,
+    REMOVE_FROM_FILE_VIEW,
+    REPLACE_FILE_VIEWS,
     REPLACE_CART,
     CACHE_SAVED_CART,
     CART_OPERATION_IN_PROGRESS,
@@ -38,6 +43,7 @@ import cartCacheSaved from './cache_saved';
 import CartBatchDownload from './batch_download';
 import Cart from './cart';
 import CartClear from './clear';
+import CartFileViewToggleComponent from './file_view';
 import cartSetOperationInProgress from './in_progress';
 import CartMergeShared from './merge_shared';
 import cartRemoveElements from './remove_elements';
@@ -109,6 +115,71 @@ const cartModule = (state, action = { type: NO_ACTION }) => {
             return { ...state, current: action.current };
         case SET_STATUS:
             return { ...state, status: action.status };
+        case ADD_FILE_VIEW: {
+            let stateFileViews = state.fileViews;
+            if (!stateFileViews) {
+                // No existing `file_views` property, so create a new object.
+                stateFileViews = [];
+            }
+            const matchingFileView = stateFileViews.find((view) => view.title === action.title);
+            if (!matchingFileView) {
+                return { ...state, fileViews: stateFileViews.concat({ title: action.title, files: [] }) };
+            }
+            return state;
+        }
+        case REMOVE_FILE_VIEW:
+            return { ...state, views: state.fileViews.filter((view) => view.title !== action.title) };
+        case ADD_TO_FILE_VIEW: {
+            // Only add the file when we find a view with a matching title, and that view doesn't
+            // already have the new file.
+            const viewIndex = state.fileViews.findIndex((view) => view.title === action.title);
+            if (viewIndex !== -1) {
+                const view = state.fileViews[viewIndex];
+                const filesNotAlreadyInView = action.files.filter((newFile) => !view.files.includes(newFile));
+                if (filesNotAlreadyInView.length > 0) {
+                    // At least one file doesn't exist in matching view; add them and make an
+                    // updated view entry.
+                    const updatedView = {
+                        title: view.title,
+                        files: view.files.concat(filesNotAlreadyInView),
+                    };
+
+                    // Update view state with copies of existing files array before the updated
+                    // view, the updated view, and then the existing files array after the updated
+                    // view -- no mutation of existing arrays nor objects.
+                    const viewsWithUpdatedView = state.fileViews.slice(0, viewIndex).concat(updatedView, state.fileViews.slice(viewIndex + 1));
+                    return { ...state, fileViews: viewsWithUpdatedView };
+                }
+            }
+            return state;
+        }
+        case REMOVE_FROM_FILE_VIEW: {
+            // Find the matching view and the matching files within that view so we can remove it.
+            const indexOfViewWithMatchingTitle = state.fileViews.findIndex((view) => view.title === action.title);
+            if (indexOfViewWithMatchingTitle !== -1) {
+                // Filter the files of the matching view to only include those not in the given
+                // files.
+                const viewWithMatchingTitle = state.fileViews[indexOfViewWithMatchingTitle];
+                const filesWithGivenFilesRemoved = viewWithMatchingTitle.files.filter((file) => !action.files.includes(file));
+
+                // Build a new view object with the filtered array of files.
+                const updatedView = {
+                    title: viewWithMatchingTitle.title,
+                    files: filesWithGivenFilesRemoved,
+                };
+
+                // Update view state with copies of existing files array before the updated
+                // view, the updated view, and then the existing files array after the updated
+                // view -- no mutation of existing arrays nor objects.
+                const viewsWithUpdatedView = state.fileViews
+                    .slice(0, indexOfViewWithMatchingTitle)
+                    .concat(updatedView, state.fileViews.slice(indexOfViewWithMatchingTitle + 1));
+                return { ...state, fileViews: viewsWithUpdatedView };
+            }
+            return state;
+        }
+        case REPLACE_FILE_VIEWS:
+            return { ...state, fileViews: action.fileViews };
         default:
             return state;
         }
@@ -154,6 +225,8 @@ const initializeCart = () => {
         identifier: 'untitled',
         /** Initial unlocked cart */
         locked: false,
+        /** Currently configured file views */
+        fileViews: [],
         /** @id of current cart */
         current: '',
         /** Cache of saved cart */
@@ -182,6 +255,7 @@ export {
     cartCacheSaved,
     CartClear,
     cartCreateAutosave,
+    CartFileViewToggleComponent,
     cartGetSettings,
     cartSetSettingsCurrent,
     CartMergeShared,
