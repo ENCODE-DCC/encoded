@@ -1083,7 +1083,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                                         treatmentObject = request.embed(treatment, '@@object')
                                         all_treatments.add(treatmentObject['treatment_term_name'])
         if all_summaries and all_ontologies:
-            if (len(all_summaries) == len(all_ontologies)):
+            if len(all_summaries) == len(all_ontologies):
                 return ', '.join(list(map(str, all_summaries)))
             elif len(all_summaries) > 1 and len(all_ontologies) == 1:
                 biosample_ontology = ', '.join(str(s) for s in all_ontologies)

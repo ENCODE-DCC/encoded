@@ -2003,7 +2003,7 @@ export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, opt
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
-    // Calculate the biosample summary
+    // Calculate the species for biosample summary
     let speciesRender = null;
     if (context.organism && context.organism.length > 0) {
         const speciesList = [...new Set(context.organism.map((organism) => organism.scientific_name))];
