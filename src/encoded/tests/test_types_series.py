@@ -38,3 +38,74 @@ def test_assay_pulse_chase_time_series(testapp, base_pulse_chase_time_series):
 def test_assay_type_single_cell_rna_series(testapp, single_cell_series):
     res = testapp.get(single_cell_series['@id'] + '@@index-data')
     assert sorted(res.json['object']['assay_slims']) == ['Single cell']
+
+
+def test_biosample_summary_from_related_datasets(testapp,
+    treated_differentiation_series,
+    experiment_1,
+    experiment_2,
+    donor_1,
+    donor_2,
+    biosample_1,
+    biosample_2,
+    library_1,
+    library_2,
+    treatment_12,
+    treatment_with_duration_amount_units,
+    replicate_1_1,
+    replicate_2_1,
+    heart,
+    liver
+):
+    testapp.patch_json(
+        biosample_1['@id'],
+        {
+            'donor': donor_1['@id'],
+            'treatments': [treatment_12['@id']],
+            'biosample_ontology': heart['uuid']
+        }
+    )
+    testapp.patch_json(
+        biosample_2['@id'],
+        {
+            'donor': donor_2['@id'],
+            'biosample_ontology': liver['uuid'],
+            'treatments': [treatment_with_duration_amount_units['@id']]
+        }
+    )
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(
+        replicate_1_1['@id'],
+        {'library': library_1['@id'], 'experiment': experiment_1['@id']}
+    )
+    testapp.patch_json(experiment_1['@id'], {'biosample_ontology': heart['uuid']})
+    testapp.patch_json(
+        replicate_2_1['@id'],
+        {'library': library_2['@id'], 'experiment': experiment_2['@id']}
+    )
+    testapp.patch_json(experiment_2['@id'], {'biosample_ontology': liver['uuid']})
+    res = testapp.get(treated_differentiation_series['@id']+'@@index-data')
+    assert res.json['object']['biosample_summary'] == 'heart tissue treated with estradiol'
+
+    testapp.patch_json(
+        treated_differentiation_series['@id'],
+        {'related_datasets': [experiment_1['@id'], experiment_2['@id']]}
+    )
+    res = testapp.get(treated_differentiation_series['@id']+'@@index-data')
+    biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data')
+    assert 'heart tissue treated with estradiol' in biosample_summary
+    assert 'liver tissue treated with 100 mg ethanol for 9 days' in biosample_summary
+
+    testapp.patch_json(
+        biosample_2['@id'],
+        {
+            'biosample_ontology': heart['uuid'],
+        }
+    )
+    testapp.patch_json(experiment_2['@id'], {'biosample_ontology': heart['uuid']})
+    res = testapp.get(treated_differentiation_series['@id']+'@@index-data')
+    biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data')
+    assert 'heart tissue treated with' in biosample_summary
+    assert 'estradiol' in biosample_summary
+    assert 'ethanol' in biosample_summary

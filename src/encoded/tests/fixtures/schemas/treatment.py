@@ -139,3 +139,13 @@ def treatment_11(treatment_0_0, lab):
         'lab': lab['@id']
     })
     return item
+
+
+@pytest.fixture
+def treatment_12(testapp):
+    item = {
+        'treatment_term_name': 'estradiol',
+        'treatment_type': 'chemical',
+        'treatment_term_id': 'CHEBI:23965'
+    }
+    return testapp.post_json('/treatment', item).json['@graph'][0]
