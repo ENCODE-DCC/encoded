@@ -1054,34 +1054,34 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
             if datasetObject['status'] not in ('deleted', 'replaced'):
                 if 'biosample_summary' in datasetObject:
                     all_summaries.add(datasetObject['biosample_summary'])
-            all_ontologies.add(datasetObject['biosample_ontology'])
-            replicates = datasetObject.get('replicates')
-            if replicates:
-                for rep in replicates:
-                    replicateObject = request.embed(rep, '@@object')
-                    if replicateObject['status'] == 'deleted':
-                        continue
-                    if 'library' in replicateObject:
-                        libraryObject = request.embed(replicateObject['library'], '@@object')
-                        if libraryObject['status'] == 'deleted':
+                all_ontologies.add(datasetObject['biosample_ontology'])
+                replicates = datasetObject.get('replicates')
+                if replicates:
+                    for rep in replicates:
+                        replicateObject = request.embed(rep, '@@object')
+                        if replicateObject['status'] == 'deleted':
                             continue
-                        if 'biosample' in libraryObject:
-                            biosampleObject = request.embed(libraryObject['biosample'], '@@object')
-                            if biosampleObject['status'] == 'deleted':
+                        if 'library' in replicateObject:
+                            libraryObject = request.embed(replicateObject['library'], '@@object')
+                            if libraryObject['status'] == 'deleted':
                                 continue
-                            if biosampleObject['accession'] not in biosample_accessions:
-                                biosample_accessions.add(biosampleObject['accession'])
-                                if biosampleObject['organism'] in ['/organisms/mouse/', '/organisms/dmelanogaster/', '/organisms/celegans/' ]:
-                                    if 'donor' in biosampleObject:
-                                        donorObject = request.embed(biosampleObject['donor'], '@@object')
-                                        if donorObject['status'] != 'deleted':
-                                            if 'strain_name' in donorObject:
-                                                all_strains.add(donorObject['strain_name'])
-                                treatments = biosampleObject.get('treatments')
-                                if treatments:
-                                    for treatment in treatments:
-                                        treatmentObject = request.embed(treatment, '@@object')
-                                        all_treatments.add(treatmentObject['treatment_term_name'])
+                            if 'biosample' in libraryObject:
+                                biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                                if biosampleObject['status'] == 'deleted':
+                                    continue
+                                if biosampleObject['accession'] not in biosample_accessions:
+                                    biosample_accessions.add(biosampleObject['accession'])
+                                    if biosampleObject['organism'] in ['/organisms/mouse/', '/organisms/dmelanogaster/', '/organisms/celegans/' ]:
+                                        if 'donor' in biosampleObject:
+                                            donorObject = request.embed(biosampleObject['donor'], '@@object')
+                                            if donorObject['status'] != 'deleted':
+                                                if 'strain_name' in donorObject:
+                                                    all_strains.add(donorObject['strain_name'])
+                                    treatments = biosampleObject.get('treatments')
+                                    if treatments:
+                                        for treatment in treatments:
+                                            treatmentObject = request.embed(treatment, '@@object')
+                                            all_treatments.add(treatmentObject['treatment_term_name'])
         if all_summaries and all_ontologies:
             if len(all_summaries) == len(all_ontologies):
                 return ', '.join(list(map(str, all_summaries)))
@@ -1110,14 +1110,14 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                     biosample_type_object = request.embed(biosample_ontology, '@@object')
                     biosample_name = biosample_type_object['term_name']
                     biosample_classification = biosample_type_object['classification']
-                    if len(all_strains) == 1:
-                        strain_name = ', '.join(str(s) for s in all_strains)
-                        term = f"{strain_name} {biosample_name} {biosample_classification}"
-                        all_biosample_terms.append(term)
-                    else:
-                        term = f"{biosample_name} {biosample_classification}"
-                        all_biosample_terms.append(term)
-                return ', '.join(all_biosample_terms)
+                    term = f"{biosample_name} {biosample_classification}"
+                    all_biosample_terms.append(term)
+                if len(all_strains) == 1:
+                    strain_name = ', '.join(str(s) for s in all_strains)
+                    all_terms = ', '.join(all_biosample_terms)
+                    return f"{strain_name} {all_terms}"
+                else:
+                    return ', '.join(all_biosample_terms)
         if all_ontologies and not all_summaries:
             all_biosample_terms = []
             for ontology in all_ontologies:
