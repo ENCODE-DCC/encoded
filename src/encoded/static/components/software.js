@@ -215,6 +215,12 @@ const currentRegion = (assembly, region) => {
 
 // The software search page includes the following five tabs
 const softwareTabData = {
+    All: {
+        title: 'All',
+        link: '/encode-software/?type=Software',
+        key: 'All',
+        description: 'All software used or developed by the ENCODE Consortium',
+    },
     Portal: {
         title: 'Portal',
         link: '/encode-software/?type=Software&used_by=DCC',
@@ -238,12 +244,6 @@ const softwareTabData = {
         link: '/encode-software/?type=Software&used_by=AWG',
         key: 'AWG',
         description: 'Software tools implemented and developed by the consortium for computational analysis',
-    },
-    All: {
-        title: 'All',
-        link: '/encode-software/?type=Software',
-        key: 'All',
-        description: 'All software used or developed by the ENCODE Consortium',
     },
 };
 

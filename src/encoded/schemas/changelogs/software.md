@@ -1,4 +1,7 @@
 ## Changelog for software.json
+### Schema version 11
+
+* Added several items to software_type enum; deprecated purpose field but did not remove.
 
 ### Schema version 10
 
