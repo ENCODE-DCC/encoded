@@ -13,4 +13,4 @@ from .base import Item
 )
 class RNAExpression(Item):
     item_type = 'rna-expression'
-    schema = load_schema('encoded:schemas/external/rna_expression.json')
+    schema = load_schema('encoded:schemas/rna_expression.json')
