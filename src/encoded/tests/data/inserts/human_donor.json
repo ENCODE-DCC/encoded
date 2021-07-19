@@ -42,6 +42,9 @@
             "encode:PanIsletD_Crawford_protocol"
         ],
         "health_status": "unknown",
+        "internal_tags": [
+            "RushAD"
+        ],
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
         "organism": "human",
