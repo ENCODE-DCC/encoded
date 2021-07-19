@@ -1048,12 +1048,13 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
         all_ontologies = set()
         biosample_accessions = set()
         all_strains = set()
+        all_treatments = set()
         for dataset in related_datasets:
             datasetObject = request.embed(dataset, '@@object')
             if datasetObject['status'] not in ('deleted', 'replaced'):
                 if 'biosample_summary' in datasetObject:
                     all_summaries.add(datasetObject['biosample_summary'])
-                    all_ontologies.add(datasetObject['biosample_ontology'])
+            all_ontologies.add(datasetObject['biosample_ontology'])
             replicates = datasetObject.get('replicates')
             if replicates:
                 for rep in replicates:
@@ -1076,24 +1077,56 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                                         if donorObject['status'] != 'deleted':
                                             if 'strain_name' in donorObject:
                                                 all_strains.add(donorObject['strain_name'])
-        if (len(all_summaries) == 1 and len(all_ontologies) == 1) or (len(all_ontologies) > 1 and len(all_summaries) > 1):
-            return ', '.join(list(map(str, all_summaries)))
-        elif len(all_summaries) > 1 and len(all_ontologies) == 1:
-            biosample_ontology = ', '.join(str(s) for s in all_ontologies)
-            biosample_type_object = request.embed(biosample_ontology, '@@object')
-            biosample_term_name = biosample_type_object['term_name']
-            biosample_type = biosample_type_object['classification']
-            if len(all_strains) == 1:
-                strain_name = ', '.join(str(s) for s in all_strains)
-                return f"{strain_name} {biosample_term_name} {biosample_type}"
-            else:
-                return f"{biosample_term_name} {biosample_type}"
-        elif len(all_ontologies) > 1:
+                                treatments = biosampleObject.get('treatments')
+                                if treatments:
+                                    for treatment in treatments:
+                                        treatmentObject = request.embed(treatment, '@@object')
+                                        all_treatments.add(treatmentObject['treatment_term_name'])
+        if all_summaries and all_ontologies:
+            if (len(all_summaries) == len(all_ontologies)):
+                return ', '.join(list(map(str, all_summaries)))
+            elif len(all_summaries) > 1 and len(all_ontologies) == 1:
+                biosample_ontology = ', '.join(str(s) for s in all_ontologies)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                if len(all_strains) == 1:
+                    strain_name = ', '.join(str(s) for s in all_strains)
+                    if all_treatments:
+                        treatment_names = ', '.join(str(s) for s in all_treatments)
+                        return f"{strain_name} {biosample_name} {biosample_classification} treated with {treatment_names}"
+                    else:
+                        return f"{strain_name} {biosample_name} {biosample_classification}"
+                else:
+                    if all_treatments:
+                        treatment_names = ', '.join(str(s) for s in all_treatments)
+                        return f"{biosample_name} {biosample_classification} treated with {treatment_names}"
+                    else:
+                        return f"{biosample_name} {biosample_classification}"
+            elif len(all_ontologies) > 1:
+                all_biosample_terms = []
+                for ontology in all_ontologies:
+                    biosample_ontology = str(ontology)
+                    biosample_type_object = request.embed(biosample_ontology, '@@object')
+                    biosample_name = biosample_type_object['term_name']
+                    biosample_classification = biosample_type_object['classification']
+                    if len(all_strains) == 1:
+                        strain_name = ', '.join(str(s) for s in all_strains)
+                        term = f"{strain_name} {biosample_name} {biosample_classification}"
+                        all_biosample_terms.append(term)
+                    else:
+                        term = f"{biosample_name} {biosample_classification}"
+                        all_biosample_terms.append(term)
+                return ', '.join(all_biosample_terms)
+        if all_ontologies and not all_summaries:
             all_biosample_terms = []
             for ontology in all_ontologies:
                 biosample_ontology = str(ontology)
                 biosample_type_object = request.embed(biosample_ontology, '@@object')
-                all_biosample_terms.append(biosample_type_object['term_name'])
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                term = f"{biosample_name} {biosample_classification}"
+                all_biosample_terms.append(term)
             return ', '.join(all_biosample_terms)
 
 
