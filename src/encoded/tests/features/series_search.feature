@@ -15,7 +15,7 @@ Feature: Series search
     Scenario: Series search
         Then the title should contain the text "Series search"
         Then I should see "Functional genomics series"
-        Then I should see 5 elements with the css selector ".tab-button"
+        Then I should see 6 elements with the css selector ".tab-button"
 
     Scenario: Series search buttons and links
         When I click the link with text that contains "Treatment concentration"

@@ -1481,6 +1481,120 @@ const replicationTimingSeriesTableColumns = {
     },
 };
 
+
+function computeDifferentiation(experiment) {
+    let biosamples;
+    let postDifferentiationTime;
+
+    if (experiment.replicates && experiment.replicates.length > 0) {
+        biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+    }
+    if (biosamples && biosamples.length > 0) {
+        biosamples.forEach((biosample) => {
+            if (biosample.post_differentiation_time) {
+                postDifferentiationTime = `${biosample.post_differentiation_time} ${biosample.post_differentiation_time_units}${biosample.post_differentiation_time > 1 ? 's' : ''}`;
+            }
+        });
+    }
+    return postDifferentiationTime;
+}
+
+
+const differentiationTableColumnsWithTime = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    post_differentiation_time: {
+        title: 'Post-differentiation time',
+        display: (experiment) => {
+            const postDifferentiationTime = computeDifferentiation(experiment);
+            return (
+                <span>
+                    {postDifferentiationTime ?
+                        <span>{postDifferentiationTime}</span>
+                    : ''}
+                </span>
+            );
+        },
+        objSorter: (a, b) => {
+            const aTime = computeDifferentiation(a).split(' ')[0];
+            const bTime = computeDifferentiation(b).split(' ')[0];
+            if (aTime < bTime) { return -1; }
+            if (aTime > bTime) { return 1; }
+            return 0;
+        },
+    },
+
+    biosample_summary: {
+        title: 'Biosample summary',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
+
+    },
+
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+
+const differentiationTableColumnsWithoutTime = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    biosample_summary: {
+        title: 'Biosample summary',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
+
+    },
+
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+
 // Compute approximate number of days of mouse age to compare ages of different units ("weeks" or "years")
 // In the future there are likely to be additions to the data which will require updates to this function
 // For instance, ages measured by months will likely be added
@@ -1613,6 +1727,7 @@ const organismDevelopmentSeriesTableColumns = {
                 <span>{lifeStageAge && lifeStageAge.length > 0 ? <span>{lifeStageAge.join(', ')}</span> : 'unknown'}</span>
             );
         },
+
         objSorter: (a, b) => sortStage(a, b),
     },
 
@@ -2191,7 +2306,6 @@ StandardSeries.contextTypes = {
 };
 
 globals.contentViews.register(StandardSeries, 'AggregateSeries');
-globals.contentViews.register(StandardSeries, 'DifferentiationSeries');
 globals.contentViews.register(StandardSeries, 'MatchedSet');
 globals.contentViews.register(StandardSeries, 'MultiomicsSeries');
 globals.contentViews.register(StandardSeries, 'PulseChaseTimeSeries');
@@ -2504,6 +2618,43 @@ ReplicationTimingSeries.contextTypes = {
 };
 
 globals.contentViews.register(ReplicationTimingSeries, 'ReplicationTimingSeries');
+
+
+/**
+ * Wrapper component for differentiation series pages.
+ */
+const DifferentiationSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+    const findDifferentiations = context.related_datasets.map((dataset) => (computeDifferentiation(dataset) ? 1 : 0)).reduce((a, b) => a + b, 0);
+    const differentiationTableColumns = findDifferentiations > 0 ? differentiationTableColumnsWithTime : differentiationTableColumnsWithoutTime;
+
+    const options = {};
+    if (context.treatment_term_name) {
+        options.Treatments = <>{context.treatment_term_name.join(', ')}</>;
+    }
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={differentiationTableColumns}
+            options={options}
+            breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
+        />
+    );
+};
+
+DifferentiationSeries.propTypes = {
+    /** Replication timing series object */
+    context: PropTypes.object.isRequired,
+};
+
+DifferentiationSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(DifferentiationSeries, 'DifferentiationSeries');
 
 
 /**
