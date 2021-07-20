@@ -90,7 +90,7 @@ const portal = {
                 { id: 'datastandards', title: 'Assays and standards', url: '/data-standards/' },
                 { id: 'glossary', title: 'Glossary', url: '/glossary/' },
                 { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
-                { id: 'softwaretools', title: 'Software tools', url: '/encode-software/?type=Software&used_by=DCC' },
+                { id: 'softwaretools', title: 'Software tools', url: '/encode-software/?type=Software' },
                 { id: 'pipelines', title: 'Pipelines', url: '/pipelines/' },
                 { id: 'sep-mm-2' },
                 { id: 'dataorg', title: 'Data organization', url: '/help/data-organization/' },
