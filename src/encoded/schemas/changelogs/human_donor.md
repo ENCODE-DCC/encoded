@@ -1,5 +1,8 @@
 ## Changelog for human_donor.json
 
+### Minor update since Schema version 12
+* *RushAD* added to *internal_tags* enum.
+
 ### Schema version 12
 
 * *ethnicity* property was changed to be an array using the HANCESTRO ontology as a guide for the following enum:
