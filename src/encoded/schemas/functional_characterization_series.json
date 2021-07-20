@@ -105,6 +105,12 @@
         "related_datasets.perturbation_type": {
             "title": "Perturbation type"
         },
+        "related_datasets.replicates.library.biosample.applied_modifications.guide_type": {
+            "title": "Guide type"
+        },
+        "related_datasets.replicates.library.biosample.applied_modifications.MOI": {
+            "title": "Multiplicity of infection"
+        },
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage"
         },

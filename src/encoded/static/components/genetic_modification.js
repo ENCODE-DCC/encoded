@@ -198,6 +198,13 @@ const ModificationMethod = (props) => {
                     </div>
                 : null}
 
+                {geneticModification.MOI ?
+                    <div data-test="moi">
+                        <dt>Multiplicity of infection</dt>
+                        <dd>{geneticModification.MOI}</dd>
+                    </div>
+                : null}
+
                 {treatments.length > 0 ?
                     <div data-test="treatments">
                         <dt>Treatments</dt>
@@ -583,6 +590,13 @@ class GeneticModificationComponent extends React.Component {
                                     <div data-test="introduced-elements">
                                         <dt>Introduced elements</dt>
                                         <dd>{context.introduced_elements}</dd>
+                                    </div>
+                                : null}
+
+                                {context.guide_type ?
+                                    <div data-test="guide-type">
+                                        <dt>Guide type</dt>
+                                        <dd>{context.guide_type}</dd>
                                     </div>
                                 : null}
 

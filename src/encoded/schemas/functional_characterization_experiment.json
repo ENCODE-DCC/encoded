@@ -330,11 +330,17 @@
         "perturbation_type": {
             "title": "Perturbation type"
         },
+        "replicates.library.biosample.applied_modifications.guide_type": {
+            "title": "Guide type"
+        },
         "crispr_screen_readout": {
             "title": "CRISPR screen readout"
         },
         "replicates.library.biosample.applied_modifications.reagents.promoter_details": {
             "title": "Promoter details"
+        },
+        "replicates.library.biosample.applied_modifications.MOI": {
+            "title": "Multiplicity of infection"
         },
         "target.investigated_as": {
             "title": "Target category"
