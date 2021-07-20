@@ -175,5 +175,19 @@
         "organism": "human",
         "uuid": "2dbe4d21-4834-4572-ba8d-e4269fa7575f",
         "date_released": "2020-05-20"
+    },
+    {
+        "_test": "proteomics data",
+        "accession": "ENCSR119PRO",
+        "award": "U54HG007004",
+        "annotation_type": "proteomics analysis",
+        "description": "ENTEx proteomics analysis ENC001",
+        "encyclopedia_version": "ENCODE v5",
+        "lab": "j-michael-cherry",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "1dbe4d21-4834-4172-ba8d-e4269fa7515f",
+        "date_released": "2021-05-20"
     }
 ]
