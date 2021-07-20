@@ -313,3 +313,17 @@ def library_16_17(value, system):
     if 'strand_specificity' not in value:
         value['strand_specificity'] = 'unstranded'
         value['notes'] = (notes + ' The strand_specificity of this library was defaulted to unstranded in an upgrade.').strip()
+
+
+@upgrade_step('library', '17', '18')
+def library_17_18(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6008
+    notes = value.get('notes', '')
+    if 'nucleic_acid_starting_quantity' in value:
+        quantity = value.get('nucleic_acid_starting_quantity')
+        try:
+            converted_quantity = float(quantity)
+            value['nucleic_acid_starting_quantity'] = converted_quantity
+        except ValueError:
+            value['nucleic_acid_starting_quantity'] = 0
+            value['notes'] = (notes + ' The nucleic_acid_starting_quantity of this library could not be upgraded: '+ quantity).strip()

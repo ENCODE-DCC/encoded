@@ -223,7 +223,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "17"
+            "default": "18"
         },
         "accession": {
             "accessionType": "LB"
@@ -363,8 +363,8 @@
         "nucleic_acid_starting_quantity": {
             "title": "Nucleic acid starting quantity",
             "description": "The starting amount of nucleic acid before selection and purification.",
-            "type": "string",
-            "pattern": "[0-9]+"
+            "type": "number",
+            "minimum": 0
         },
         "nucleic_acid_starting_quantity_units": {
             "title": "Nucleic acid starting quantity units",

@@ -1,5 +1,8 @@
 ## Changelog for library.json
 
+### Schema version 18
+* The *nucleic_acid_starting_quantity* property must now be formatted as a number.
+
 ### Schema version 17
 * The *strand_specificity* property is now required for all RNA library objects; unstranded libraries may use the new enum *unstranded*.
 

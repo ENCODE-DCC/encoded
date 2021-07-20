@@ -71,7 +71,7 @@ def library_url(testapp, lab, award, biosample):
 def library_starting_quantity(library):
     item = library.copy()
     item.update({
-        'nucleic_acid_starting_quantity': '10',
+        'nucleic_acid_starting_quantity': 10,
         'nucleic_acid_starting_quantity_units': 'ng',
     })
     return item
@@ -81,7 +81,7 @@ def library_starting_quantity(library):
 def library_starting_quantity_no_units(library):
     item = library.copy()
     item.update({
-        'nucleic_acid_starting_quantity': '10',
+        'nucleic_acid_starting_quantity': 10,
     })
     return item
 
@@ -323,4 +323,14 @@ def library_schema_16(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid']
+    }
+
+
+@pytest.fixture
+def library_schema_17(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'nucleic_acid_starting_quantity': '9.2',
+        'nucleic_acid_starting_quantity_units': 'ng'
     }
