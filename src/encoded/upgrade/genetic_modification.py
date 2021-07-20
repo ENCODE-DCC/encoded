@@ -301,5 +301,6 @@ def genetic_modification_10_11(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5968
     notes = value.get('notes', '')
     if value.get('introduced_elements', '') == 'gRNAs and CRISPR machinery':
-        value['guide_type'] = 'sgRNA'
-        value['notes'] = (notes + ' guide_type on this GM was defaulted to sgRNA in an upgrade.').strip()
+        if 'guide_type' not in value:
+            value['guide_type'] = 'sgRNA'
+            value['notes'] = (notes + ' guide_type on this GM was defaulted to sgRNA in an upgrade.').strip()
