@@ -2029,10 +2029,12 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         // allFiles gets all files from search regardless of filtering.
         allFiles[file['@id']] = file;
 
+        const isMixed = Array.from(new Set(files.map((f) => f.assembly).filter((f) => !!f))).length > 1;
+
         // matchingFiles gets just the files matching the given filtering assembly/annotation.
         // Note that if all assemblies and annotations are selected, this function isn't called
         // because no graph gets displayed in that case.
-        if (allowNoAssembly || ((file.assembly === selectedAssembly) && ((!file.genome_annotation && !selectedAnnotation) || (file.genome_annotation === selectedAnnotation)))) {
+        if (allowNoAssembly || (((file.assembly === selectedAssembly) || isMixed) && ((!file.genome_annotation && !selectedAnnotation) || (file.genome_annotation === selectedAnnotation)))) {
             // Note whether any files have an analysis step
             const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
             if (!fileAnalysisStep || (file.derived_from && file.derived_from.length > 0)) {
