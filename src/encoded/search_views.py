@@ -13,6 +13,7 @@ from encoded.searches.fields import CartMatrixWithFacetsResponseField
 from encoded.searches.fields import CartFiltersResponseField
 from encoded.searches.fields import ClearFiltersResponseFieldWithCarts
 from encoded.searches.fields import TypeOnlyClearFiltersResponseFieldWithCarts
+from encoded.searches.interfaces import RNA_CLIENT
 from encoded.searches.interfaces import RNA_EXPRESSION
 
 from snovault.elasticsearch.searches.interfaces import AUDIT_TITLE
@@ -290,6 +291,7 @@ def rna_expression_search_generator(request):
     For internal use (no view). Like search_quick but returns raw generator
     of search hits in @graph field.
     '''
+    rna_client = request.registry[RNA_CLIENT]
     fgr = FieldedGeneratorResponse(
         _meta={
             'params_parser': ParamsParser(request)
@@ -799,6 +801,7 @@ def rnaget_autocomplete(context, request):
 def rnaget_search(context, request):
     # Note the order of rendering matters for some fields, e.g. AllResponseField and
     # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
+    rna_client = request.registry[RNA_CLIENT]
     fr = FieldedResponse(
         _meta={
             'params_parser': ParamsParser(request)
@@ -840,6 +843,7 @@ def rnaget_search(context, request):
 
 @view_config(route_name='rnaget-report', request_method='GET', permission='search')
 def rnaget_report(context, request):
+    rna_client = request.registry[RNA_CLIENT]
     fr = FieldedResponse(
         _meta={
             'params_parser': ParamsParser(request)
