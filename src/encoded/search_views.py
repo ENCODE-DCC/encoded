@@ -2,7 +2,6 @@ from pyramid.view import view_config
 
 from encoded.cart_view import CartWithElements
 from encoded.genomic_data_service import GenomicDataService
-from encoded.genomic_data_service import rna_client
 from encoded.searches.defaults import DEFAULT_ITEM_TYPES
 from encoded.searches.defaults import RESERVED_KEYS
 from encoded.searches.defaults import TOP_HITS_ITEM_TYPES
