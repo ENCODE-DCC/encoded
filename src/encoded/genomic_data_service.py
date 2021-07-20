@@ -9,7 +9,7 @@ from snovault.json_renderer import json_renderer
 
 
 def includeme(config):
-    rna_host = config.registry.settings(
+    rna_host = config.registry.settings.get(
         'rna_expression_elasticsearch_server'
     )
     config.registry[RNA_CLIENT] =  Elasticsearch(
