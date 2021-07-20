@@ -2883,6 +2883,7 @@ const TabPanelFacets = ({
     // Create objects for non-Assembly facets
     const fileType = createFacetObject('file_type', fileList, filters);
     const outputType = createFacetObject('output_type', fileList, filters);
+    const genomeAssembly = createFacetObject('genome_annotation', fileList, filters);
     let replicate;
     if (experimentType !== 'Annotation') {
         replicate = createFacetObject('biological_replicates', fileList, filters);
