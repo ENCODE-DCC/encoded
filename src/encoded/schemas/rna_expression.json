@@ -249,10 +249,6 @@
             "title": "Assembly",
             "open_on_load": true
         },
-        "file.genome_annotation": {
-            "title": "Genome annotation",
-            "open_on_load": true
-        },
         "dataset.replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
             "open_on_load": true
