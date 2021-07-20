@@ -36,21 +36,21 @@
                     "file format conversion",
                     "filtering",
                     "framework",
+                    "genetics",
                     "genome segmentation",
+                    "integrated analysis",
+                    "machine learning",
                     "other",
                     "peak caller",
+                    "proteomics",
                     "quality metric",
                     "quantification",
+                    "statistics",
                     "transcript identification",
                     "transcriptome assembly",
-                    "variant annotation",
                     "utility",
-                    "proteomics",
-                    "statistics",
-                    "visualization",
-                    "machine learning",
-                    "integrated analysis",
-                    "genetics"
+                    "variant annotation",
+                    "visualization"
                 ]
             }
         },

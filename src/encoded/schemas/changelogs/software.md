@@ -1,7 +1,7 @@
 ## Changelog for software.json
-### Schema version 11
+### Minor changes since chema version 10
 
-* Added several items to software_type enum; deprecated purpose field but did not remove.
+* Added utility, proteomics, statistics, visualization, machine learning, integrated analysis, genetics to software_type.  Deprecated but did not remove purpose.
 
 ### Schema version 10
 
