@@ -1078,10 +1078,10 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                                         if 'donor' in biosampleObject:
                                             donorObject = request.embed(biosampleObject['donor'], '@@object')
                                             if donorObject['status'] != 'deleted':
-                                                if 'strain_background' in donorObject:
-                                                    all_strains.add(donorObject['strain_background'])
-                                                elif 'strain_name' and not 'strain_background' in donorObject:
+                                                if 'strain_name' in donorObject:
                                                     all_strains.add(donorObject['strain_name'])
+                                                elif 'strain_background' and not 'strain_name' in donorObject:
+                                                    all_strains.add(donorObject['strain_background'])
                                     treatments = biosampleObject.get('treatments')
                                     if treatments:
                                         for treatment in treatments:
@@ -1126,10 +1126,16 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                     else:
                         return f"{biosample_display}"
             elif len(all_summaries) > 1 and len(all_ontologies) > 1:
-                if treatment_names:
-                    return f"{all_terms} treated with {treatment_names}"
+                if strain_name:
+                    if treatment_names:
+                        return f"{strain_name} {all_terms} treated with {treatment_names}"
+                    else:
+                        return f"{strain_name} {all_terms}"
                 else:
-                    return all_terms
+                    if treatment_names:
+                        return f"{all_terms} treated with {treatment_names}"
+                    else:
+                        return all_terms
             elif len(all_ontologies) > 1:
                 if strain_name:
                     return f"{strain_name} {all_terms}"
