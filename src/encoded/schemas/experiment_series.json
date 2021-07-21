@@ -141,6 +141,9 @@
         "status": {
             "title": "Status"
         },
+        "target.@id": {
+            "title": "Targets"
+        },
         "target.genes.symbol": {
             "title": "Target gene symbol"
         },
