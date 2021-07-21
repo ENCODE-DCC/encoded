@@ -53,6 +53,7 @@ require('./biosample_type');
 require('./experiment_series');
 require('./glossary');
 require('./series_search');
+require('./single_cell');
 require('./top_hits');
 
 
