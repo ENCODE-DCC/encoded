@@ -1078,10 +1078,12 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                                         if 'donor' in biosampleObject:
                                             donorObject = request.embed(biosampleObject['donor'], '@@object')
                                             if donorObject['status'] != 'deleted':
-                                                if 'strain_name' in donorObject:
-                                                    all_strains.add(donorObject['strain_name'])
-                                                elif 'strain_background' and not 'strain_name' in donorObject:
-                                                    all_strains.add(donorObject['strain_background'])
+                                                strain_name = donorObject.get('strain_name')
+                                                strain_background = donorObject.get('strain_background')
+                                                if strain_name and strain_name.lower() != 'unknown':
+                                                    all_strains.add(strain_name)
+                                                elif strain_background and strain_background.lower() != 'unknown':
+                                                    all_strains.add(strain_background)
                                     treatments = biosampleObject.get('treatments')
                                     if treatments:
                                         for treatment in treatments:
