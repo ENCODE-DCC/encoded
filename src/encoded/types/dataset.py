@@ -1078,7 +1078,9 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                                         if 'donor' in biosampleObject:
                                             donorObject = request.embed(biosampleObject['donor'], '@@object')
                                             if donorObject['status'] != 'deleted':
-                                                if 'strain_name' in donorObject:
+                                                if 'strain_background' in donorObject:
+                                                    all_strains.add(donorObject['strain_background'])
+                                                elif 'strain_name' and not 'strain_background' in donorObject:
                                                     all_strains.add(donorObject['strain_name'])
                                     treatments = biosampleObject.get('treatments')
                                     if treatments:
@@ -1091,7 +1093,10 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                 biosample_type_object = request.embed(biosample_ontology, '@@object')
                 biosample_name = biosample_type_object['term_name']
                 biosample_classification = biosample_type_object['classification']
-                term = f"{biosample_name} {biosample_classification}"
+                if biosample_classification == 'whole organisms':
+                    term = biosample_classification
+                else:
+                    term = f"{biosample_name} {biosample_classification}"
                 all_biosample_terms.append(term)
             all_terms = ', '.join(all_biosample_terms)
         if len(all_strains) == 1:
@@ -1099,23 +1104,32 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
         if all_treatments:
             treatment_names = ', '.join(str(s) for s in all_treatments)
         if all_summaries and all_ontologies:
-            if len(all_summaries) == len(all_ontologies):
+            if len(all_summaries) == 1 and len(all_ontologies) == 1:
                 return ', '.join(list(map(str, all_summaries)))
             elif len(all_summaries) > 1 and len(all_ontologies) == 1:
                 biosample_ontology = ', '.join(str(s) for s in all_ontologies)
                 biosample_type_object = request.embed(biosample_ontology, '@@object')
                 biosample_name = biosample_type_object['term_name']
                 biosample_classification = biosample_type_object['classification']
+                if biosample_classification == 'whole organisms':
+                    biosample_display = 'whole organisms'
+                else:
+                    biosample_display = f"{biosample_name} {biosample_classification}"
                 if strain_name:
                     if treatment_names:
-                        return f"{strain_name} {biosample_name} {biosample_classification} treated with {treatment_names}"
+                        return f"{strain_name} {biosample_display} treated with {treatment_names}"
                     else:
-                        return f"{strain_name} {biosample_name} {biosample_classification}"
+                        return f"{strain_name} {biosample_display}"
                 else:
                     if treatment_names:
-                        return f"{biosample_name} {biosample_classification} treated with {treatment_names}"
+                        return f"{biosample_display} treated with {treatment_names}"
                     else:
-                        return f"{biosample_name} {biosample_classification}"
+                        return f"{biosample_display}"
+            elif len(all_summaries) > 1 and len(all_ontologies) > 1:
+                if treatment_names:
+                    return f"{all_terms} treated with {treatment_names}"
+                else:
+                    return all_terms
             elif len(all_ontologies) > 1:
                 if strain_name:
                     return f"{strain_name} {all_terms}"

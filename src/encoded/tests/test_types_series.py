@@ -93,9 +93,8 @@ def test_biosample_summary_from_related_datasets(testapp,
         {'related_datasets': [experiment_1['@id'], experiment_2['@id']]}
     )
     res = testapp.get(treated_differentiation_series['@id']+'@@index-data')
-    biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data')
-    assert 'heart tissue treated with estradiol' in biosample_summary
-    assert 'liver tissue treated with 100 mg ethanol for 9 days' in biosample_summary
+    biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data').json['object']['biosample_summary']
+    assert 'heart tissue' and 'liver tissue' and 'treated with' and 'ethanol' and 'estradiol' in biosample_summary
 
     testapp.patch_json(
         biosample_2['@id'],
@@ -105,7 +104,5 @@ def test_biosample_summary_from_related_datasets(testapp,
     )
     testapp.patch_json(experiment_2['@id'], {'biosample_ontology': heart['uuid']})
     res = testapp.get(treated_differentiation_series['@id']+'@@index-data')
-    biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data')
-    assert 'heart tissue treated with' in biosample_summary
-    assert 'estradiol' in biosample_summary
-    assert 'ethanol' in biosample_summary
+    biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data').json['object']['biosample_summary']
+    assert 'heart tissue treated with' and 'ethanol' and 'estradiol' in biosample_summary
