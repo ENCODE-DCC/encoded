@@ -36,14 +36,21 @@
                     "file format conversion",
                     "filtering",
                     "framework",
+                    "genetics",
                     "genome segmentation",
+                    "integrated analysis",
+                    "machine learning",
                     "other",
                     "peak caller",
+                    "proteomics",
                     "quality metric",
                     "quantification",
+                    "statistics",
                     "transcript identification",
                     "transcriptome assembly",
-                    "variant annotation"
+                    "utility",
+                    "variant annotation",
+                    "visualization"
                 ]
             }
         },
@@ -74,9 +81,10 @@
         },
         "purpose": {
             "title": "Purpose",
-            "description": "The purpose that the software was used for in the project.",
+            "description": "The purpose that the software was used for in the project. DEPRECATED.",
             "type": "array",
             "uniqueItems": true,
+            "permission": "import_items",
             "items": {
                 "title": "Purpose",
                 "type": "string",
@@ -198,10 +206,6 @@
             "title": "Software type",
             "open_on_load": true
         },
-        "purpose": {
-            "title": "Purpose",
-            "open_on_load": true
-        },
         "used_by": {
             "title": "Used by"
         },
@@ -239,16 +243,12 @@
         },
         "software_type": {
             "title": "Software type"
-        },
-        "purpose": {
-            "title": "Purpose"
         }
     },
     "boost_values": {
         "title": 1.0,
         "@type": 1.0,
         "name": 1.0,
-        "purpose": 1.0,
         "used_by": 1.0,
         "software_type": 1.0,
         "references.title": 1.0,

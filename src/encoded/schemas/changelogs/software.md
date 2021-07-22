@@ -1,4 +1,7 @@
 ## Changelog for software.json
+### Minor changes since chema version 10
+
+* Added *utility*, *proteomics*, *statistics*, *visualization*, *machine learning*, *integrated analysis*, *genetics* to software_type.  Deprecated but did not remove *purpose*.
 
 ### Schema version 10
 
