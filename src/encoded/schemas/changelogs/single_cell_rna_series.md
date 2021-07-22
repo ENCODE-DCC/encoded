@@ -8,6 +8,7 @@
 * *related_datasets* now includes SingleCellUnit.json
 * Added *assay_slims* calculated property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *biosample_summary* calculated property
 
 ### Schema version 3
 

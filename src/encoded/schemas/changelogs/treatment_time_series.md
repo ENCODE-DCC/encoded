@@ -7,6 +7,7 @@
 * Added *analyses* property
 * Added *assay_slims* calculated property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *biosample_summary* calculated property
 
 ### Schema version 18
 

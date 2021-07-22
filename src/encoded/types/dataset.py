@@ -1039,6 +1039,113 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
     def control_type(self, request, related_datasets):
         return request.select_distinct_values('control_type', *related_datasets)
 
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self, request, related_datasets):
+        all_summaries = set()
+        all_ontologies = set()
+        biosample_accessions = set()
+        all_strains = set()
+        all_treatments = set()
+        all_biosample_terms = []
+        strain_name = ''
+        treatment_names = ''
+        for dataset in related_datasets:
+            datasetObject = request.embed(dataset, '@@object')
+            if datasetObject['status'] not in ('deleted', 'replaced'):
+                if 'biosample_summary' in datasetObject:
+                    all_summaries.add(datasetObject['biosample_summary'])
+                all_ontologies.add(datasetObject['biosample_ontology'])
+                replicates = datasetObject.get('replicates')
+                if replicates:
+                    for rep in replicates:
+                        replicateObject = request.embed(rep, '@@object')
+                        if replicateObject['status'] == 'deleted':
+                            continue
+                        if 'library' in replicateObject:
+                            libraryObject = request.embed(replicateObject['library'], '@@object')
+                            if libraryObject['status'] == 'deleted':
+                                continue
+                            if 'biosample' in libraryObject:
+                                biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                                if biosampleObject['status'] == 'deleted':
+                                    continue
+                                if biosampleObject['accession'] not in biosample_accessions:
+                                    biosample_accessions.add(biosampleObject['accession'])
+                                    if biosampleObject['organism'] in ['/organisms/mouse/', '/organisms/dmelanogaster/', '/organisms/celegans/' ]:
+                                        if 'donor' in biosampleObject:
+                                            donorObject = request.embed(biosampleObject['donor'], '@@object')
+                                            if donorObject['status'] != 'deleted':
+                                                strain_name = donorObject.get('strain_name')
+                                                strain_background = donorObject.get('strain_background')
+                                                if strain_name and strain_name.lower() != 'unknown':
+                                                    all_strains.add(strain_name)
+                                                elif strain_background and strain_background.lower() != 'unknown':
+                                                    all_strains.add(strain_background)
+                                    treatments = biosampleObject.get('treatments')
+                                    if treatments:
+                                        for treatment in treatments:
+                                            treatmentObject = request.embed(treatment, '@@object')
+                                            all_treatments.add(treatmentObject['treatment_term_name'])
+        if all_ontologies:
+            for ontology in all_ontologies:
+                biosample_ontology = str(ontology)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                if biosample_classification == 'whole organisms':
+                    term = biosample_classification
+                else:
+                    term = f"{biosample_name} {biosample_classification}"
+                all_biosample_terms.append(term)
+            all_terms = ', '.join(all_biosample_terms)
+        if len(all_strains) == 1:
+            strain_name = ', '.join(str(s) for s in all_strains)
+        if all_treatments:
+            treatment_names = ', '.join(str(s) for s in all_treatments)
+        if all_summaries and all_ontologies:
+            if len(all_summaries) == 1 and len(all_ontologies) == 1:
+                return ', '.join(list(map(str, all_summaries)))
+            elif len(all_summaries) > 1 and len(all_ontologies) == 1:
+                biosample_ontology = ', '.join(str(s) for s in all_ontologies)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                if biosample_classification == 'whole organisms':
+                    biosample_display = 'whole organisms'
+                else:
+                    biosample_display = f"{biosample_name} {biosample_classification}"
+                if strain_name:
+                    if treatment_names:
+                        return f"{strain_name} {biosample_display} treated with {treatment_names}"
+                    else:
+                        return f"{strain_name} {biosample_display}"
+                else:
+                    if treatment_names:
+                        return f"{biosample_display} treated with {treatment_names}"
+                    else:
+                        return f"{biosample_display}"
+            elif len(all_summaries) > 1 and len(all_ontologies) > 1:
+                if strain_name:
+                    if treatment_names:
+                        return f"{strain_name} {all_terms} treated with {treatment_names}"
+                    else:
+                        return f"{strain_name} {all_terms}"
+                else:
+                    if treatment_names:
+                        return f"{all_terms} treated with {treatment_names}"
+                    else:
+                        return all_terms
+            elif len(all_ontologies) > 1:
+                if strain_name:
+                    return f"{strain_name} {all_terms}"
+                else:
+                    return all_terms
+        if all_ontologies and not all_summaries:
+            return all_terms
+
 
 @collection(
     name='matched-sets',
