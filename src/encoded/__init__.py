@@ -269,6 +269,8 @@ def main(global_config, **local_config):
     config.include('.audit')
     config.include('.searches.configs')
 
+    config.include('.genomic_data_service')
+
     app = config.make_wsgi_app()
 
     workbook_filename = settings.get('load_workbook', '')

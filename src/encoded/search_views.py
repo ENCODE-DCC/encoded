@@ -1,8 +1,7 @@
 from pyramid.view import view_config
 
-from encoded.genomic_data_service import GenomicDataService
-
 from encoded.cart_view import CartWithElements
+from encoded.genomic_data_service import GenomicDataService
 from encoded.searches.defaults import DEFAULT_ITEM_TYPES
 from encoded.searches.defaults import RESERVED_KEYS
 from encoded.searches.defaults import TOP_HITS_ITEM_TYPES
@@ -13,6 +12,8 @@ from encoded.searches.fields import CartMatrixWithFacetsResponseField
 from encoded.searches.fields import CartFiltersResponseField
 from encoded.searches.fields import ClearFiltersResponseFieldWithCarts
 from encoded.searches.fields import TypeOnlyClearFiltersResponseFieldWithCarts
+from encoded.searches.interfaces import RNA_CLIENT
+from encoded.searches.interfaces import RNA_EXPRESSION
 
 from snovault.elasticsearch.searches.interfaces import AUDIT_TITLE
 from snovault.elasticsearch.searches.interfaces import MATRIX_TITLE
@@ -26,7 +27,10 @@ from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponse
 from snovault.elasticsearch.searches.fields import MissingMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
+from snovault.elasticsearch.searches.fields import BasicSearchWithoutFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicReportWithFacetsResponseField
+from snovault.elasticsearch.searches.fields import BasicReportWithoutFacetsResponseField
+from snovault.elasticsearch.searches.fields import CachedFacetsResponseField
 from snovault.elasticsearch.searches.fields import ClearFiltersResponseField
 from snovault.elasticsearch.searches.fields import ColumnsResponseField
 from snovault.elasticsearch.searches.fields import ContextResponseField
@@ -75,6 +79,8 @@ def includeme(config):
     config.add_route('top-hits', '/top-hits{slash:/?}')
     config.add_route('rnaget', '/rnaget{slash:/?}')
     config.add_route('rnaget-autocomplete', '/rnaget-autocomplete{slash:/?}')
+    config.add_route('rnaget-search', '/rnaget-search{slash:/?}')
+    config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
     config.scan(__name__)
 
 
@@ -305,6 +311,29 @@ def cart_search_generator(request):
             CartSearchResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 cart=CartWithElements(request),
+                reserved_keys=RESERVED_KEYS,
+            )
+        ]
+    )
+    return fgr.render()
+
+
+def rna_expression_search_generator(request):
+    '''
+    For internal use (no view). Like search_quick but returns raw generator
+    of search hits in @graph field.
+    '''
+    rna_client = request.registry[RNA_CLIENT]
+    fgr = FieldedGeneratorResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            BasicSearchResponseField(
+                client=rna_client,
+                default_item_types=[
+                    RNA_EXPRESSION
+                ],
                 reserved_keys=RESERVED_KEYS,
             )
         ]
@@ -799,3 +828,89 @@ def rnaget_autocomplete(context, request):
     data_service = GenomicDataService(context.registry, request)
     return data_service.rna_get_autocomplete()
 
+
+@view_config(route_name='rnaget-search', request_method='GET', permission='search')
+def rnaget_search(context, request):
+    # Note the order of rendering matters for some fields, e.g. AllResponseField and
+    # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
+    rna_client = request.registry[RNA_CLIENT]
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=SEARCH_TITLE
+            ),
+            TypeResponseField(
+                at_type=[SEARCH_TITLE]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            CachedFacetsResponseField(
+                client=rna_client,
+                default_item_types=[
+                    RNA_EXPRESSION
+                ],
+                reserved_keys=RESERVED_KEYS,
+            ),
+            BasicSearchWithoutFacetsResponseField(
+                client=rna_client,
+                default_item_types=[
+                    RNA_EXPRESSION
+                ],
+                reserved_keys=RESERVED_KEYS,
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            ClearFiltersResponseField(),
+            ColumnsResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='rnaget-report', request_method='GET', permission='search')
+def rnaget_report(context, request):
+    rna_client = request.registry[RNA_CLIENT]
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=REPORT_TITLE
+            ),
+            TypeResponseField(
+                at_type=[REPORT_TITLE]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            CachedFacetsResponseField(
+                client=rna_client,
+                default_item_types=[
+                    RNA_EXPRESSION
+                ],
+                reserved_keys=RESERVED_KEYS,
+            ),
+            BasicReportWithoutFacetsResponseField(
+                client=rna_client,
+                default_item_types=[
+                    RNA_EXPRESSION
+                ],
+                reserved_keys=RESERVED_KEYS,
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            ColumnsResponseField(),
+            NonSortableResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
