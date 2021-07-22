@@ -8,6 +8,8 @@ from collections import OrderedDict
 import requests
 from urllib.parse import urlencode
 
+from encoded.genomic_data_service import GenomicDataService
+
 import logging
 import re
 
@@ -253,6 +255,9 @@ def region_search(context, request):
     """
     Search files by region.
     """
+
+    data_service = GenomicDataService(context.registry, request)
+
     types = request.registry[TYPES]
     result = {
         '@id': '/region-search/' + ('?' + request.query_string.split('&referrer')[0] if request.query_string else ''),
@@ -314,25 +319,17 @@ def region_search(context, request):
             chr=chromosome, start=start, end=end
         )
 
-    # Search for peaks for the coordinates we got
     try:
-        # including inner hits is very slow
-        # figure out how to distinguish browser requests from .embed method requests
-        if 'peak_metadata' in request.query_string:
-            peak_query = get_peak_query(start, end, with_inner_hits=True, within_peaks=region_inside_peak_status)
-        else:
-            peak_query = get_peak_query(start, end, within_peaks=region_inside_peak_status)
-        peak_results = snp_es.search(body=peak_query,
-                                     index=chromosome.lower(),
-                                     doc_type=_GENOME_TO_ALIAS[assembly],
-                                     size=99999)
+        peak_results = data_service.region_search(_GENOME_TO_ALIAS[assembly], chromosome.lower(), start, end)
     except Exception:
         result['notification'] = 'Error during search'
         return result
+
     file_uuids = []
-    for hit in peak_results['hits']['hits']:
-        if hit['_id'] not in file_uuids:
-            file_uuids.append(hit['_id'])
+    for hit in peak_results['regions']:
+        region_uuid = hit['file_url'].split('/')[-1]
+        if region_uuid not in file_uuids:
+            file_uuids.append(region_uuid)
     file_uuids = list(set(file_uuids))
     result['notification'] = 'No results found'
 
@@ -363,7 +360,7 @@ def region_search(context, request):
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
-        result['peaks'] = list(peak_results['hits']['hits'])
+        result['peaks'] = list(peak_results['regions'])
         result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:
             result['notification'] = 'Success'
