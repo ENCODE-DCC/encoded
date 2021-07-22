@@ -10,7 +10,22 @@ import PropTypes from 'prop-types';
  */
 const DEFAULT_SWITCH_HEIGHT = 22;
 const DEFAULT_SWITCH_WIDTH = DEFAULT_SWITCH_HEIGHT * 1.6;
-const BooleanSwitch = ({ id, state, title, triggerHandler, options: { width, height, cssTitle, cssFrame, cssActuator } }) => {
+const BooleanToggle = ({
+    id,
+    state,
+    title,
+    voice,
+    triggerHandler,
+    disabled,
+    options: {
+        width,
+        height,
+        cssSwitch,
+        cssTitle,
+        cssFrame,
+        cssActuator,
+    },
+}) => {
     // True if checkbox input has focus.
     const [focused, setFocused] = React.useState(false);
 
@@ -47,31 +62,42 @@ const BooleanSwitch = ({ id, state, title, triggerHandler, options: { width, hei
     };
 
     return (
-        <label htmlFor={id} className={`boolean-switch${focused ? ' boolean-switch--focused' : ''}`}>
-            <div className={`boolean-switch__title${cssTitle ? ` ${cssTitle}` : ''}`}>{title}</div>
-            <div style={switchStyles} className={`boolean-switch__frame${cssFrame ? ` ${cssFrame}` : ''}`}>
-                <div style={actuatorStyles} className={`boolean-switch__actuator${cssActuator ? ` ${cssActuator}` : ''}`} />
+        <label htmlFor={id} aria-label={voice} className={`boolean-toggle${focused ? ' boolean-toggle--focused' : ''}${disabled ? ' boolean-toggle--disabled' : ''}${cssSwitch ? ` ${cssSwitch}` : ''}`}>
+            <div className={`boolean-toggle__title${cssTitle ? ` ${cssTitle}` : ''}`}>{title}</div>
+            <div style={switchStyles} className={`boolean-toggle__frame${cssFrame ? ` ${cssFrame}` : ''}`}>
+                <div style={actuatorStyles} className={`boolean-toggle__actuator${cssActuator ? ` ${cssActuator}` : ''}`} />
             </div>
-            <input id={id} type="checkbox" checked={state} onChange={triggerHandler} onFocus={handleFocus} onBlur={handleBlur} />
+            <input id={id} type="checkbox" checked={state} disabled={disabled} onChange={triggerHandler} onFocus={handleFocus} onBlur={handleBlur} />
         </label>
     );
 };
 
-BooleanSwitch.propTypes = {
+BooleanToggle.propTypes = {
     /** Unique HTML ID for <input> */
     id: PropTypes.string.isRequired,
     /** Current state to display in the switch */
     state: PropTypes.bool.isRequired,
-    /** Title of the button for screen readers */
-    title: PropTypes.string.isRequired,
+    /** Title of the button */
+    title: PropTypes.oneOfType([
+        /** Text title */
+        PropTypes.string,
+        /** React component to render as the title; include a11y elements */
+        PropTypes.element,
+    ]).isRequired,
+    /** Text for screen readers to speak */
+    voice: PropTypes.string,
     /** Called when the user clicks anywhere in the switch */
     triggerHandler: PropTypes.func.isRequired,
+    /** True to disable toggle */
+    disabled: PropTypes.bool,
     /** Other styling options */
     options: PropTypes.exact({
         /** Width of switch in pixels; 36px by default */
         width: PropTypes.number,
         /** Height of switch in pixels; 22px by default */
         height: PropTypes.number,
+        /** Css class to add to the outer switch element */
+        cssSwitch: PropTypes.string,
         /** CSS class to add to the switch title */
         cssTitle: PropTypes.string,
         /** CSS class to add to the switch frame */
@@ -81,8 +107,10 @@ BooleanSwitch.propTypes = {
     }),
 };
 
-BooleanSwitch.defaultProps = {
+BooleanToggle.defaultProps = {
+    voice: '',
+    disabled: false,
     options: {},
 };
 
-export default BooleanSwitch;
+export default BooleanToggle;

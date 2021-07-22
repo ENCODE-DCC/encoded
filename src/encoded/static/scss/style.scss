@@ -218,7 +218,7 @@ $link-hover-color:                          darken($link-color, 15%);
 @import "encoded/layout";
 @import "encoded/modules/common_item",
     "encoded/modules/batch_download",
-    "encoded/modules/boolean_switch",
+    "encoded/modules/boolean_toggle",
     "encoded/modules/breadcrumbs",
     "encoded/modules/pager",
     "encoded/modules/forms",

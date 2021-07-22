@@ -1,9 +1,8 @@
-.boolean-switch {
+.boolean-toggle {
     display: flex;
     position: relative;
     margin-bottom: 4px;
     padding: 2px;
-    justify-content: space-between;
     cursor: pointer;
     border-radius: 3px;
     border: 2px solid transparent;
@@ -21,7 +20,8 @@
     @at-root #{&}__title {
         display: flex;
         align-items: center;
-        flex-grow: 1;
+        flex-grow: 0;
+        white-space: nowrap;
     }
 
     // The actuator slides inside the frame.
@@ -29,17 +29,27 @@
         position: relative;
         border: none;
         box-shadow: 0 1px 1px inset rgba(0, 0, 0, 0.2);
+        transition: background-color 0.2s ease;
     }
 
     @at-root #{&}__actuator {
         position: absolute;
         top: 2px;
         background-color: #fff;
+        transition: left 0.2s ease, border-radius 0.2s ease, width 0.2s ease;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     }
 
     // Focus border because opacity:0 on <input> also hides this.
     @at-root #{&}--focused {
         border: 2px solid #000;
+    }
+
+    &.boolean-toggle--disabled {
+        pointer-events: none;
+
+        .boolean-toggle__title {
+            color: #808080;
+        }
     }
 }

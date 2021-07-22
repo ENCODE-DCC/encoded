@@ -138,6 +138,7 @@ export const displayedFileFacetFields = [
     {
         field: 'file_format',
         title: 'File format',
+        preferred: true,
     },
     {
         field: 'lab.title',
@@ -261,12 +262,15 @@ const SelectionItem = ({ selection, term, selectionType, clickHandler }) => (
         type="button"
         key={selection}
         onClick={() => clickHandler(term, selection)}
-        className="btn btn-xs facet-selections-button"
+        className="btn btn-xs btn-success facet-selections-button"
         aria-label={`Remove ${selection} from filters`}
     >
-        <div className="facet-selections-button__icon">{svgIcon(selectionType)}</div>
         <div className="facet-selections-button__label">
-            {selection}
+            <div className="facet-selections-button__icon">{svgIcon(selectionType)}</div>
+            <div className="facet-selections-button__text">{selection}</div>
+        </div>
+        <div className="facet-selections-button__close">
+            {svgIcon('multiplication')}
         </div>
     </button>
 );
