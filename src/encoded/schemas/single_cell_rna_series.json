@@ -175,6 +175,10 @@
             "title": "Status",
             "type": "string"
         },
+        "target.@id": {
+            "title": "Targets",
+            "type": "string"
+        },
         "target.label": {
             "title": "Target",
             "type": "string"

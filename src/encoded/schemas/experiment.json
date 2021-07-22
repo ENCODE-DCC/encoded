@@ -336,6 +336,9 @@
         "assay_title": {
             "title": "Assay title"
         },
+        "target.@id": {
+            "title": "Target"
+        },
         "target.label": {
             "title": "Target of assay"
         },
