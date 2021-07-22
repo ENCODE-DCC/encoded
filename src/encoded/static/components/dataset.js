@@ -8,9 +8,9 @@ import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
-import Status from './status';
 import pubReferenceList from './reference';
 import {
+    collectDatasetBiosamples,
     computeExaminedLoci,
     donorDiversity,
     publicDataset,
@@ -25,6 +25,7 @@ import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
+import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
 
 /**
@@ -1206,25 +1207,31 @@ FilePanelHeader.propTypes = {
 };
 
 
-function displayPossibleControls(item, adminUser) {
-    if (item.possible_controls && item.possible_controls.length > 0) {
-        return (
-            <span>
-                {item.possible_controls.map((control, i) => (
-                    <span key={control.uuid}>
-                        {i > 0 ? <span>, </span> : null}
-                        {adminUser || publicDataset(control) ?
-                            <a href={control['@id']}>{control.accession}</a>
-                        :
-                            <span>{control.accession}</span>
-                        }
-                    </span>
-                ))}
-            </span>
-        );
-    }
-    return null;
-}
+/**
+ * Series experiment table target column definition.
+ */
+const seriesTableTargetColumn = {
+    title: 'Target',
+    getValue: (experiment) => {
+        if (experiment.target) {
+            return (
+                <a href={experiment.target['@id']} aria-label={`Target ${experiment.target.label}`}>
+                    {experiment.target.label}
+                </a>
+            );
+        }
+        if (experiment.control_type === 'control') {
+            return '(control)';
+        }
+        return null;
+    },
+    hide: (experiments) => {
+        const uniqueTargets = experiments.reduce((accTargets, experiment) => (
+            experiment.target ? accTargets.add(experiment.target['@id']) : accTargets.add('none')
+        ), new Set());
+        return uniqueTargets.size <= 1;
+    },
+};
 
 
 const basicTableColumns = {
@@ -1245,9 +1252,217 @@ const basicTableColumns = {
         title: 'Assay',
     },
 
-    target: {
-        title: 'Target',
-        getValue: (experiment) => (experiment.target ? experiment.target.label : null),
+    target: seriesTableTargetColumn,
+
+    biosample_summary: {
+        title: 'Biosample summary',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
+
+    },
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+
+/**
+ * Generate each of the unique diseases from the biosamples within the given experiment.
+ * @param {object} experiment The experiment to generate the disease list from.
+ * @returns {string} A comma-separated list of diseases.
+ */
+const computeDiseases = (experiment) => {
+    const biosamples = collectDatasetBiosamples(experiment);
+    const diseases = biosamples.reduce((accDiseases, biosample) => {
+        if (biosample.disease_term_name) {
+            return new Set([...accDiseases, ...biosample.disease_term_name]);
+        }
+        return accDiseases;
+    }, new Set());
+    return [...diseases].sort().join(', ');
+};
+
+
+const diseaseSeriesColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    assay_term_name: {
+        title: 'Assay',
+    },
+
+    target: seriesTableTargetColumn,
+
+    diseaseName: {
+        title: 'Disease',
+        getValue: (experiment) => computeDiseases(experiment),
+        hide: (experiments) => {
+            // Collect all diseases from all experiment biosamples, de-duplicated.
+            const experimentDiseases = experiments.reduce((accExperimentDiseases, experiment) => {
+                // Collect all diseases from all the collected biosamples within an experiment,
+                // de-duplicated.
+                const biosamples = collectDatasetBiosamples(experiment);
+                const biosampleDiseases = biosamples.reduce((accBiosampleDiseases, biosample) => {
+                    if (biosample.disease_term_name) {
+                        return new Set([...accBiosampleDiseases, ...biosample.disease_term_name]);
+                    }
+                    return accBiosampleDiseases;
+                }, new Set());
+                return new Set([...accExperimentDiseases, ...biosampleDiseases]);
+            }, new Set());
+
+            // Hide the diseases column if only one disease exists across all experiments in the
+            // table.
+            return experimentDiseases.size <= 1;
+        },
+    },
+
+    biosample_summary: {
+        title: 'Biosample summary',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
+
+    },
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+
+/**
+ * Collect all donor objects from all the given biosamples. Any duplicate donors get removed.
+ * @param {array} biosamples List of biosamples from which to extract donors.
+ * @returns {array} List of all distinct donors.
+ */
+const collectDonorsFromBiosamples = (biosamples) => (
+    _(biosamples.reduce((donors, biosample) => (
+        biosample.donor ? donors.concat(biosample.donor) : donors
+    ), [])).uniq((donor) => donor.accession)
+);
+
+
+const referenceEpigenomeColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    assay_term_name: {
+        title: 'Assay',
+    },
+
+    target: seriesTableTargetColumn,
+
+    donors: {
+        title: 'Donors',
+        display: (experiment, meta) => {
+            const biosamples = collectDatasetBiosamples(experiment);
+            if (biosamples.length > 0) {
+                // Collect all biosample donors and dedupe them by accession.
+                const allDonors = collectDonorsFromBiosamples(biosamples);
+                if (allDonors.length > 0) {
+                    return (
+                        <>
+                            {allDonors.map((donor, i) => {
+                                const viewableStatuses = getObjectStatuses(donor, meta.accessLevel);
+                                const isViewable = viewableStatuses.includes(donor.status);
+                                return (
+                                    <React.Fragment key={donor['@id']}>
+                                        {i > 0 ? <>, </> : null}
+                                        {isViewable
+                                            ? <a href={donor['@id']} aria-label={`${donor.organism.name} donor ${donor.accession}`}>{donor.accession}</a>
+                                            : <>{donor.accession}</>
+                                        }
+                                    </React.Fragment>
+                                );
+                            })}
+                        </>
+                    );
+                }
+            }
+            return null;
+        },
+
+        hide: (experiments) => {
+            // Make an array of comma-separated donor accessions, each array entry representing the
+            // donors within the experiment's biosamples and de-duped, so frequently the donor array
+            // has fewer entries than the number of experiments they came from.
+            const donorLists = experiments.reduce((accDonorLists, experiment) => {
+                const biosamples = collectDatasetBiosamples(experiment);
+                if (biosamples.length > 0) {
+                    // Collect all biosample donor accessions into a set.
+                    const donors = biosamples.reduce((accDonor, biosample) => (
+                        biosample.donor ? accDonor.add(biosample.donor.accession) : accDonor
+                    ), new Set());
+
+                    // Sort the donor accessions in the set and put them all into one comma-
+                    // separated string.
+                    if (donors.size > 0) {
+                        return accDonorLists.add([...donors].sort().join());
+                    }
+                }
+
+                // No biosamples.
+                return accDonorLists;
+            }, new Set());
+
+            // If more than one donor list exists after sorting and de-duping them, then we know we
+            // have different donors for different experiments in the table, and we should
+            // therefore display the donor column.
+            return donorLists.size <= 1;
+        },
+
+        objSorter: (experimentA, experimentB) => {
+            const biosamplesA = collectDatasetBiosamples(experimentA);
+            const biosamplesB = collectDatasetBiosamples(experimentB);
+
+            // Sort using the donor accessions combined into sorted comma-separated strings.
+            const donorsA = collectDonorsFromBiosamples(biosamplesA).map((donor) => donor.accession).sort().join();
+            const donorsB = collectDonorsFromBiosamples(biosamplesB).map((donor) => donor.accession).sort().join();
+            if (donorsA < donorsB) {
+                return -1;
+            }
+            if (donorsA > donorsB) {
+                return 1;
+            }
+            return 0;
+        },
     },
 
     biosample_summary: {
@@ -1284,10 +1499,7 @@ const geneSilencingSeriesTableColumns = {
         ),
     },
 
-    target: {
-        title: 'Target',
-        getValue: (experiment) => (experiment.target ? experiment.target.label : '(control)'),
-    },
+    target: seriesTableTargetColumn,
 
     biosample_summary: {
         title: 'Biosample summary',
@@ -1309,7 +1521,28 @@ const geneSilencingSeriesTableColumns = {
     },
 };
 
-const treatmentTimeSeriesTableColumns = {
+
+/**
+ * Generate a comma-separated string of treatment durations from the given experiment's biosamples.
+ * @param {object} experiment - The experiment to generate the treatment durations from.
+ * @returns {string} - A comma-separated string of treatment durations.
+ */
+const computeDurations = (experiment) => {
+    let durations = [];
+    if (experiment.replicates && experiment.replicates.length > 0) {
+        const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+        durations = biosamples.reduce((accDurations, biosample) => {
+            if (biosample.treatments && biosample.treatments.length > 0) {
+                return accDurations.add(`${biosample.treatments[0].duration} ${biosample.treatments[0].duration_units}${biosample.treatments[0].duration > 1 ? 's' : ''}`);
+            }
+            return accDurations;
+        }, new Set());
+    }
+    return [...durations].join(', ');
+};
+
+
+const timeSeriesTableColumns = {
     accession: {
         title: 'Accession',
         display: (experiment, meta) => (
@@ -1323,27 +1556,11 @@ const treatmentTimeSeriesTableColumns = {
         ),
     },
 
-    possible_controls: {
-        title: 'Possible controls',
-        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
-        sorter: false,
-    },
+    target: seriesTableTargetColumn,
 
     duration: {
         title: 'Duration',
-        getValue: (experiment) => {
-            let durations = [];
-            if (experiment.replicates && experiment.replicates.length > 0) {
-                const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
-                durations.push(biosamples.map((biosample) => {
-                    if (biosample.treatments && biosample.treatments.length > 0) {
-                        durations = `${biosample.treatments[0].duration} ${biosample.treatments[0].duration_units}${biosample.treatments[0].duration > 1 ? 's' : ''}`;
-                    }
-                    return null;
-                }));
-            }
-            return durations;
-        },
+        getValue: (experiment) => computeDurations(experiment),
     },
 
     biosample_summary: {
@@ -1392,11 +1609,7 @@ const treatmentSeriesTableColumns = {
         ),
     },
 
-    possible_controls: {
-        title: 'Possible controls',
-        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
-        sorter: false,
-    },
+    target: seriesTableTargetColumn,
 
     concentration: {
         title: 'Concentration',
@@ -1446,6 +1659,8 @@ const replicationTimingSeriesTableColumns = {
             </span>
         ),
     },
+
+    target: seriesTableTargetColumn,
 
     phase: {
         title: 'Cell cycle phase',
@@ -1514,6 +1729,8 @@ const differentiationTableColumnsWithTime = {
         ),
     },
 
+    target: seriesTableTargetColumn,
+
     post_differentiation_time: {
         title: 'Post-differentiation time',
         display: (experiment) => {
@@ -1533,6 +1750,11 @@ const differentiationTableColumnsWithTime = {
             if (aTime > bTime) { return 1; }
             return 0;
         },
+    },
+
+    biosample: {
+        title: 'Biosample',
+        getValue: (experiment) => experiment.biosample_ontology.term_name,
     },
 
     biosample_summary: {
@@ -1570,6 +1792,13 @@ const differentiationTableColumnsWithoutTime = {
                 }
             </span>
         ),
+    },
+
+    target: seriesTableTargetColumn,
+
+    biosample: {
+        title: 'Biosample',
+        getValue: (experiment) => experiment.biosample_ontology.term_name,
     },
 
     biosample_summary: {
@@ -1662,6 +1891,38 @@ ElementsReferences.propTypes = {
     reference: PropTypes.object.isRequired,
 };
 
+
+/**
+ * Calculate a displayable life stage/age string from the biosamples in the given experiment.
+ * @param {object} experiment The experiment to get the life stage/age from.
+ * @returns {string} The life stage/age string.
+ */
+const computeLifeStageAge = (experiment) => {
+    let biosamples = [];
+    let lifeStageAge = [];
+
+    // Collect all biosamples in all experiment replicates.
+    if (experiment.replicates && experiment.replicates.length > 0) {
+        biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+    }
+    if (biosamples.length > 0) {
+        biosamples.forEach((biosample) => {
+            if (biosample.age_units === 'year') {
+                lifeStageAge.push(biosample.age_display);
+            } else if (biosample.life_stage && biosample.age_display) {
+                lifeStageAge.push(`${biosample.life_stage} ${biosample.age_display}`);
+            } else if (biosample.life_stage) {
+                lifeStageAge.push(biosample.life_stage);
+            } else if (biosample.age_display) {
+                lifeStageAge.push(biosample.age_display);
+            }
+        });
+    }
+    lifeStageAge = [...new Set(lifeStageAge)];
+    return lifeStageAge.length > 0 ? lifeStageAge.join(', ') : 'unknown';
+};
+
+
 const organismDevelopmentSeriesTableColumns = {
     accession: {
         title: 'Accession',
@@ -1676,11 +1937,7 @@ const organismDevelopmentSeriesTableColumns = {
         ),
     },
 
-    possible_controls: {
-        title: 'Possible controls',
-        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
-        sorter: false,
-    },
+    target: seriesTableTargetColumn,
 
     life_stage_age: {
         title: (experiments) => {
@@ -1701,31 +1958,9 @@ const organismDevelopmentSeriesTableColumns = {
             }
             return 'Stage';
         },
-
         display: (experiment) => {
-            let biosamples;
-            let lifeStageAge = [];
-
-            if (experiment.replicates && experiment.replicates.length > 0) {
-                biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
-            }
-            if (biosamples && biosamples.length > 0) {
-                biosamples.forEach((biosample) => {
-                    if (biosample.age_units === 'year') {
-                        lifeStageAge.push(biosample.age_display);
-                    } else if (biosample.life_stage && biosample.age_display) {
-                        lifeStageAge.push(`${biosample.life_stage} ${biosample.age_display}`);
-                    } else if (biosample.life_stage) {
-                        lifeStageAge.push(biosample.life_stage);
-                    } else if (biosample.age_display) {
-                        lifeStageAge.push(biosample.age_display);
-                    }
-                });
-            }
-            lifeStageAge = [...new Set(lifeStageAge)];
-            return (
-                <span>{lifeStageAge && lifeStageAge.length > 0 ? <span>{lifeStageAge.join(', ')}</span> : 'unknown'}</span>
-            );
+            const lifeStageAge = computeLifeStageAge(experiment);
+            return lifeStageAge ? <span>{lifeStageAge}</span> : 'unknown';
         },
 
         objSorter: (a, b) => sortStage(a, b),
@@ -1780,6 +2015,18 @@ function sortPostSynch(a, b) {
     return 0;
 }
 
+/**
+ * Extract the first synchronization value from all the biosamples in the given dataset.
+ * @param {object} dataset Dataset from which to extract a synchronization.
+ * @returns {string} First synchronization value found in the dataset, or '' if none.
+ */
+const computeSynch = (dataset) => {
+    const biosamples = collectDatasetBiosamples(dataset);
+    const synchronizationBiosample = biosamples.find((biosample) => biosample.synchronization);
+    return synchronizationBiosample ? synchronizationBiosample.synchronization : '';
+};
+
+
 const organismDevelopmentSeriesWormFlyTableColumns = {
     accession: {
         title: 'Accession',
@@ -1794,27 +2041,13 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
         ),
     },
 
-    possible_controls: {
-        title: 'Possible controls',
-        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
-        sorter: false,
-    },
+    target: seriesTableTargetColumn,
 
     synch: {
         title: 'Synchronization',
         display: (experiment) => {
-            let biosamples;
-            let synchronizationBiosample;
-
-            if (experiment.replicates && experiment.replicates.length > 0) {
-                biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
-            }
-            if (biosamples && biosamples.length > 0) {
-                synchronizationBiosample = biosamples.find((biosample) => biosample.synchronization);
-            }
-            return (
-                <span>{`${synchronizationBiosample.synchronization}`}</span>
-            );
+            const synch = computeSynch(experiment);
+            return <span>{synch}</span>;
         },
         objSorter: (a, b) => sortMouseAge(a.life_stage_age, b.life_stage_age),
     },
@@ -1872,6 +2105,8 @@ const functionalCharacterizationSeriesTableColumns = {
             </span>
         ),
     },
+
+    target: seriesTableTargetColumn,
 
     assay_term_name: {
         title: 'Assay',
@@ -1981,14 +2216,37 @@ const composeSeriesBreadcrumbs = (context, seriesTitle) => {
 
 
 /**
+ * Build the mapping for supplementary short labels.
+ * @param {array} experimentList Experiments from which to extract relevant label.
+ * @param {function} getSupplementalShortLabel Function to extract the label from an experiment.
+ */
+const generateSupplementalShortLabels = (experimentList, getSupplementalShortLabel) => (
+    experimentList.reduce((accLabels, experiment) => {
+        const supplementalShortLabel = getSupplementalShortLabel(experiment);
+        return { ...accLabels, [experiment['@id']]: supplementalShortLabel };
+    }, {})
+);
+
+
+/**
  * Displays the common elements of all Series-derived pages. This must get called from wrappers
  * specific to each type of Series-derived object.
  */
-export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, options, auditIndicators, auditDetail }, reactContext) => {
+export const SeriesComponent = ({
+    context,
+    title,
+    tableColumns,
+    sortColumn,
+    breadcrumbs,
+    options,
+    auditIndicators,
+    auditDetail,
+}, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
     const seriesType = context['@type'][0];
+    const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
 
     // Collect all the default files from all the related datasets of the given Series object,
     // filtered by the files in the released analyses of the related datasets, if any.
@@ -2031,6 +2289,10 @@ export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, opt
     if (context.target) {
         targets = [...new Set(context.target.map((target) => target.label))];
     }
+
+    const supplementalShortLabels = options.getSupplementalShortLabel
+        ? generateSupplementalShortLabels(experimentList, options.getSupplementalShortLabel)
+        : null;
 
     // As of code-time, there is a chance disease term names across biosamples could be different. So
     // the code takes this into account
@@ -2211,11 +2473,17 @@ export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, opt
                                     <CartAddAllElements elements={experimentList.map((experiment) => experiment['@id'])} />
                                 </div>
                             }
+                            subheader={
+                                <div className="table-counts">
+                                    {experimentList.length} experiment{experimentList.length === 1 ? '' : 's'}
+                                </div>
+                            }
                         >
                             <SortTable
                                 list={experimentList}
                                 columns={tableColumns}
-                                meta={{ adminUser }}
+                                meta={{ adminUser, accessLevel }}
+                                sortColumn={sortColumn}
                             />
                         </SortTablePanel>
                     )}
@@ -2224,20 +2492,23 @@ export const SeriesComponent = ({ context, title, tableColumns, breadcrumbs, opt
 
             {/* Display list of released and unreleased files */}
             {/* Set hideGraph to false to show "Association Graph" for all series */}
-            <FileGallery
-                context={context}
-                files={files}
-                analyses={analyses}
-                fileQueryKey="related_datasets.files"
-                showReplicateNumber={false}
-                hideControls={!METADATA_SERIES_TYPES.includes(context['@type'][0])}
-                collapseNone
-                hideGraph={seriesType !== 'FunctionalCharacterizationSeries'}
-                showDetailedTracks
-                hideAnalysisSelector
-                defaultOnly
-                relatedDatasets={experimentList}
-            />
+            {files.length > 0 ?
+                <FileGallery
+                    context={context}
+                    files={files}
+                    analyses={analyses}
+                    fileQueryKey="related_datasets.files"
+                    supplementalShortLabels={supplementalShortLabels}
+                    showReplicateNumber={false}
+                    hideControls={!METADATA_SERIES_TYPES.includes(context['@type'][0])}
+                    collapseNone
+                    hideGraph={seriesType !== 'FunctionalCharacterizationSeries'}
+                    showDetailedTracks
+                    hideAnalysisSelector
+                    defaultOnly
+                    relatedDatasets={experimentList}
+                />
+            : null}
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -2253,6 +2524,8 @@ SeriesComponent.propTypes = {
     title: PropTypes.string.isRequired,
     /** Series-dependent experiment table columns */
     tableColumns: PropTypes.object,
+    /** ID of column to sort by; undefined/null for default */
+    sortColumn: PropTypes.string,
     /** Breadcrumbs to display if not default */
     breadcrumbs: PropTypes.array,
     /** Series-dependent options */
@@ -2263,6 +2536,8 @@ SeriesComponent.propTypes = {
         ExperimentTable: PropTypes.node,
         /** True to suppress the calculation and display of donor diversity */
         suppressDonorDiversity: PropTypes.bool,
+        /** Retrieves short label from an experiment */
+        getSupplementalShortLabel: PropTypes.func,
     }),
     /** Audit decorator function */
     auditIndicators: PropTypes.func.isRequired,
@@ -2272,6 +2547,7 @@ SeriesComponent.propTypes = {
 
 SeriesComponent.defaultProps = {
     tableColumns: null,
+    sortColumn: null,
     breadcrumbs: null,
     options: {},
 };
@@ -2313,8 +2589,6 @@ StandardSeries.contextTypes = {
 globals.contentViews.register(StandardSeries, 'AggregateSeries');
 globals.contentViews.register(StandardSeries, 'MatchedSet');
 globals.contentViews.register(StandardSeries, 'MultiomicsSeries');
-globals.contentViews.register(StandardSeries, 'PulseChaseTimeSeries');
-globals.contentViews.register(StandardSeries, 'ReferenceEpigenome');
 
 
 /**
@@ -2360,8 +2634,6 @@ FunctionalGenomicsSeries.contextTypes = {
 
 globals.contentViews.register(FunctionalGenomicsSeries, 'GeneSilencingSeries');
 globals.contentViews.register(FunctionalGenomicsSeries, 'ReplicationTimingSeries');
-globals.contentViews.register(FunctionalGenomicsSeries, 'TreatmentConcentrationSeries');
-globals.contentViews.register(FunctionalGenomicsSeries, 'TreatmentTimeSeries');
 
 
 /**
@@ -2383,12 +2655,18 @@ const DiseaseExperimentTable = ({ datasetsByDisease, title, accession, adminUser
     // one.
     const diseaseTerm = diseaseTerms.length === 1 ? diseaseTerms[0] : 'Disease';
 
-    if (diseaseDatasets.length + noDiseaseDatasets.length > 0) {
+    const totalDatasetsLength = diseaseDatasets.length + noDiseaseDatasets.length;
+    if (totalDatasetsLength > 0) {
         return (
             <SortTablePanel
                 header={
                     <div className="experiment-table__header">
                         <h4 className="experiment-table__title">{`Experiments in ${title.toLowerCase()} ${accession}`}</h4>
+                    </div>
+                }
+                subheader={
+                    <div className="table-counts">
+                        {totalDatasetsLength} experiment{totalDatasetsLength === 1 ? '' : 's'}
                     </div>
                 }
             >
@@ -2400,7 +2678,7 @@ const DiseaseExperimentTable = ({ datasetsByDisease, title, accession, adminUser
                         </div>
                         <SortTable
                             list={diseaseDatasets}
-                            columns={basicTableColumns}
+                            columns={diseaseSeriesColumns}
                             meta={{ adminUser }}
                         />
                     </>
@@ -2437,18 +2715,6 @@ DiseaseExperimentTable.propTypes = {
 
 
 /**
- * Collects the biosamples contained in all replicate libraries within the given dataset.
- * @param {object} dataset Dataset from which to extract all biosamples.
- * @returns {array} Array of all biosamples in all replicates of `dataset`.
- */
-const collectRelatedDatasetBiosamples = (dataset) => (
-    dataset.replicates.reduce((biosamples, replicate) => (
-        replicate.library && replicate.library.biosample ? biosamples.concat(replicate.library.biosample) : biosamples
-    ), [])
-);
-
-
-/**
  * Groups the given datasets by the `disease_term_name` in their biosamples. Any datasets with no
  * such biosamples get listed under the key "None." Any datasets with biosamples with a mix of
  * different `disease_term_name` values -- including those biosamples with more than one value --
@@ -2463,7 +2729,7 @@ const collectRelatedDatasetBiosamples = (dataset) => (
  */
 const groupDatasetsByDisease = (datasets) => (
     _(datasets).groupBy((dataset) => {
-        const relatedDatasetBiosamples = collectRelatedDatasetBiosamples(dataset);
+        const relatedDatasetBiosamples = collectDatasetBiosamples(dataset);
         if (relatedDatasetBiosamples.length > 0) {
             // Look for the first biosample in the dataset that contains a filled
             // `disease_term_name` property.
@@ -2511,6 +2777,7 @@ const DiseaseSeries = ({ context }, reactContext) => {
                         adminUser={adminUser}
                     />
                 ),
+                getSupplementalShortLabel: (dataset) => computeDiseases(dataset),
             }}
         />
     );
@@ -2541,7 +2808,11 @@ const FunctionalCharacterizationSeries = ({ context }, reactContext) => {
             context={context}
             title={seriesTitle}
             tableColumns={functionalCharacterizationSeriesTableColumns}
+            sortColumn="examined_loci"
             breadcrumbs={composeSeriesBreadcrumbs(context, seriesTitle)}
+            options={{
+                getSupplementalShortLabel: (dataset) => computeExaminedLoci(dataset),
+            }}
         />
     );
 };
@@ -2579,6 +2850,10 @@ const OrganismDevelopmentSeries = ({ context }, reactContext) => {
             context={context}
             title={seriesTitle}
             tableColumns={isFlyOrWorm ? organismDevelopmentSeriesWormFlyTableColumns : organismDevelopmentSeriesTableColumns}
+            sortColumn={isFlyOrWorm ? 'synch' : 'life_stage_age'}
+            options={{
+                getSupplementalShortLabel: (dataset) => (isFlyOrWorm ? computeSynch(dataset) : computeLifeStageAge(dataset)),
+            }}
             breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
         />
     );
@@ -2597,6 +2872,56 @@ globals.contentViews.register(OrganismDevelopmentSeries, 'OrganismDevelopmentSer
 
 
 /**
+ * Extracts all donors from all biosamples in the given dataset, and produce a comma-separated
+ * string of donor accessions.
+ * @param {object} dataset Dataset object from which to extract donors
+ * @returns {string} Comma-separated string of donor accessions
+ */
+const computeDonorsAccessions = (dataset) => {
+    const biosamples = collectDatasetBiosamples(dataset);
+    if (biosamples.length > 0) {
+        const allDonors = collectDonorsFromBiosamples(biosamples);
+        if (allDonors.length > 0) {
+            return allDonors.map((donor) => donor.accession).join(', ');
+        }
+    }
+    return '';
+};
+
+
+/**
+ * Wrapper component for reference epigenome pages.
+ */
+const ReferenceEpigenomeSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={referenceEpigenomeColumns}
+            sortColumn="donors"
+            options={{
+                getSupplementalShortLabel: (dataset) => computeDonorsAccessions(dataset),
+            }}
+        />
+    );
+};
+
+ReferenceEpigenomeSeries.propTypes = {
+    /** Series-derived object */
+    context: PropTypes.object.isRequired,
+};
+
+ReferenceEpigenomeSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(ReferenceEpigenomeSeries, 'ReferenceEpigenome');
+
+
+/**
  * Wrapper component for replication timing series pages.
  */
 const ReplicationTimingSeries = ({ context }, reactContext) => {
@@ -2608,6 +2933,10 @@ const ReplicationTimingSeries = ({ context }, reactContext) => {
             context={context}
             title={seriesTitle}
             tableColumns={replicationTimingSeriesTableColumns}
+            sortColumn="phase"
+            options={{
+                getSupplementalShortLabel: (dataset) => computePhase(dataset),
+            }}
             breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
         />
     );
@@ -2634,7 +2963,9 @@ const DifferentiationSeries = ({ context }, reactContext) => {
     const findDifferentiations = context.related_datasets.map((dataset) => (computeDifferentiation(dataset) ? 1 : 0)).reduce((a, b) => a + b, 0);
     const differentiationTableColumns = findDifferentiations > 0 ? differentiationTableColumnsWithTime : differentiationTableColumnsWithoutTime;
 
-    const options = {};
+    const options = {
+        getSupplementalShortLabel: (dataset) => dataset.biosample_ontology.term_name,
+    };
     if (context.treatment_term_name) {
         options.Treatments = <>{context.treatment_term_name.join(', ')}</>;
     }
@@ -2723,7 +3054,9 @@ const TreatmentConcentrationSeries = ({ context }, reactContext) => {
         return [...new Set(accTreatmentDurations.concat(collectedDurations))];
     }, []);
 
-    const options = {};
+    const options = {
+        getSupplementalShortLabel: (dataset) => computeConcentration(dataset),
+    };
     if (treatmentDurations.length > 0) {
         options.Treatments = <>{context.treatment_term_name} for {treatmentDurations.join(', ')}</>;
     }
@@ -2733,6 +3066,7 @@ const TreatmentConcentrationSeries = ({ context }, reactContext) => {
             context={context}
             title={seriesTitle}
             tableColumns={treatmentSeriesTableColumns}
+            sortColumn="concentration"
             breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
             options={options}
         />
@@ -2752,35 +3086,43 @@ globals.contentViews.register(TreatmentConcentrationSeries, 'TreatmentConcentrat
 
 
 /**
+ * Collect all the treatments from all the biosamples in the given datasets.
+ * @param {array} datasets The datasets to collect treatments from.
+ * @returns {array} The collected treatments, de-duplicated.
+ */
+const collectTreatmentAmounts = (datasets) => {
+    const treatmentAmounts = datasets.reduce((accTreatmentAmounts, relatedDataset) => {
+        // Collect any biosamples found in all related datasets.
+        const biosamples = collectDatasetBiosamples(relatedDataset);
+
+        // Collect durations in the biosample treatments and compose them into displayable strings.
+        const collectedAmounts = biosamples.reduce((accCollectedDurations, biosample) => {
+            const amounts = biosample.treatments.reduce((accAmounts, treatment) => (
+                treatment.amount
+                    ? accAmounts.add(`${treatment.amount} ${treatment.amount_units} ${treatment.treatment_term_name}`)
+                    : accAmounts
+            ), new Set());
+            return new Set([...accCollectedDurations, ...amounts]);
+        }, new Set());
+        return new Set([...accTreatmentAmounts, ...collectedAmounts]);
+    }, new Set());
+    return [...treatmentAmounts].sort();
+};
+
+
+/**
  * Wrapper component for treatment time series pages.
  */
 const TreatmentTimeSeries = ({ context }, reactContext) => {
     const seriesType = context['@type'][0];
     const seriesTitle = reactContext.profilesTitles[seriesType] || '';
 
-    // Build an array of treatment duration display strings from the biosample treatments of the
-    // related datasets.
-    const treatmentAmounts = context.related_datasets.reduce((accTreatmentAmounts, relatedDataset) => {
-        // Collect any biosamples found in all related datasets.
-        const biosamples = relatedDataset.replicates.reduce((accBiosamples, replicate) => {
-            const biosample = replicate.library && replicate.library.biosample;
-            return biosample ? accBiosamples.concat(biosample) : accBiosamples;
-        }, []);
-
-        // Collect durations in the biosample treatments and compose them into displayable strings.
-        const collectedAmounts = biosamples.reduce((accCollectedDurations, biosample) => {
-            const amounts = biosample.treatments.reduce((accAmounts, treatment) => (
-                treatment.amount
-                    ? accAmounts.concat(`${treatment.amount} ${treatment.amount_units} ${treatment.treatment_term_name}`)
-                    : accAmounts
-            ), []);
-            return accCollectedDurations.concat(amounts);
-        }, []);
-
-        return [...new Set(accTreatmentAmounts.concat(collectedAmounts))];
-    }, []);
-
-    const options = {};
+    // Build an array of treatment display strings from the biosample treatments of the
+    // related datasets to display in the summary panel.
+    const treatmentAmounts = collectTreatmentAmounts(context.related_datasets);
+    const options = {
+        getSupplementalShortLabel: (dataset) => computeDurations(dataset),
+    };
     if (treatmentAmounts.length > 0) {
         options.Treatments = <>{treatmentAmounts.join(', ')}</>;
     }
@@ -2789,7 +3131,8 @@ const TreatmentTimeSeries = ({ context }, reactContext) => {
         <Series
             context={context}
             title={seriesTitle}
-            tableColumns={treatmentTimeSeriesTableColumns}
+            tableColumns={timeSeriesTableColumns}
+            sortColumn="duration"
             breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
             options={options}
         />
@@ -2806,3 +3149,40 @@ TreatmentTimeSeries.contextTypes = {
 };
 
 globals.contentViews.register(TreatmentTimeSeries, 'TreatmentTimeSeries');
+
+
+/**
+ * Wrapper component for treatment time series pages.
+ */
+const PulseChaseTimeSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    // Build an array of treatment display strings from the biosample treatments of the
+    // related datasets to display in the summary panel.
+    const treatmentAmounts = collectTreatmentAmounts(context.related_datasets);
+    const options = {};
+    if (treatmentAmounts.length > 0) {
+        options.Treatments = <>{treatmentAmounts.join(', ')}</>;
+    }
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={timeSeriesTableColumns}
+            options={options}
+        />
+    );
+};
+
+PulseChaseTimeSeries.propTypes = {
+    /** Treatment time series object */
+    context: PropTypes.object.isRequired,
+};
+
+PulseChaseTimeSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(PulseChaseTimeSeries, 'PulseChaseTimeSeries');

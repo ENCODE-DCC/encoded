@@ -617,7 +617,7 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
     top: 0;
 }
 
-.file-gallery-counts {
+.table-counts {
     padding: 2px 10px;
     text-align: center;
     font-size: 0.9rem;
@@ -827,7 +827,7 @@ $file-gallery-controls-height: 34px; // Height of controls inside file-gallery-c
 
 .table-paged {
     @at-root #{&}__count {
-        @extend .file-gallery-counts;
+        @extend .table-counts;
 
         border-top: 1px solid #a0a0a0;
     }

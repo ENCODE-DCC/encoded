@@ -580,7 +580,7 @@ const getFileTarget = (file) => {
 /**
  * Display a label for a file’s track.
  */
-const TrackLabel = ({ file, label, long }) => {
+const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
     const biologicalReplicates = file.biological_replicates && file.biological_replicates.join(', ');
     const splitDataset = file.dataset.split('/');
     const datasetName = splitDataset[splitDataset.length - 2];
@@ -594,6 +594,7 @@ const TrackLabel = ({ file, label, long }) => {
             file.assay_term_name,
             file.biosample_ontology && file.biosample_ontology.term_name,
             file.annotation_subtype,
+            supplementalShortLabel,
         ]).join(', ');
     }
 
@@ -618,6 +619,7 @@ const TrackLabel = ({ file, label, long }) => {
                     <li>
                         <a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a>
                         {(biologicalReplicates && biologicalReplicates !== '') ? <span>{` (rep ${biologicalReplicates})`}</span> : null}
+                        {supplementalShortLabel ? <span>{` ${supplementalShortLabel}`}</span> : null}
                     </li>
                     {long ?
                         <>
@@ -641,11 +643,14 @@ TrackLabel.propTypes = {
     file: PropTypes.object.isRequired,
     /** Determines what label to display */
     label: PropTypes.string.isRequired,
+    /** Additional non-file-based label to display when track collapsed */
+    supplementalShortLabel: PropTypes.string,
     /** True to generate a long version of the label */
     long: PropTypes.bool,
 };
 
 TrackLabel.defaultProps = {
+    supplementalShortLabel: null,
     long: false,
 };
 
@@ -898,6 +903,7 @@ class GenomeBrowser extends React.Component {
                     colorBlock: [...prevState.colorBlock, 'chromatin'],
                 }));
             }
+            const supplementalShortLabel = this.props.supplementalShortLabels && this.props.supplementalShortLabels[file.dataset];
             const defaultHeight = 30;
             const defaultExtHeight = 130;
             const extraLineHeight = 14;
@@ -913,6 +919,7 @@ class GenomeBrowser extends React.Component {
                 labelLength += file.assay_term_name ? file.assay_term_name.length + 2 : 0;
                 labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length + 2 : 0;
                 labelLength += file.annotation_subtype ? file.annotation_subtype.length : 0;
+                labelLength += supplementalShortLabel ? supplementalShortLabel.length : 0;
 
                 extLabelLength += file.output_type ? file.output_type.length : 0;
                 extLabelLength += file.simple_biosample_summary ? file.simple_biosample_summary.length : 0;
@@ -933,7 +940,7 @@ class GenomeBrowser extends React.Component {
             }
             if (file.file_format === 'bigWig') {
                 const trackObj = {};
-                trackObj.name = <TrackLabel label={label} file={file} />;
+                trackObj.name = <TrackLabel label={label} supplementalShortLabel={supplementalShortLabel} file={file} />;
                 trackObj.longname = <TrackLabel label={label} file={file} long />;
                 trackObj.type = 'signal';
                 trackObj.path = domain + file.href;
@@ -982,7 +989,7 @@ class GenomeBrowser extends React.Component {
             }
             const trackObj = {};
             // bigBeds
-            trackObj.name = <TrackLabel file={file} label={label} />;
+            trackObj.name = <TrackLabel file={file} label={label} supplementalShortLabel={this.props.supplementalShortLabels && this.props.supplementalShortLabels[file.dataset]} />;
             trackObj.longname = <TrackLabel file={file} label={label} long />;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
@@ -1105,6 +1112,8 @@ GenomeBrowser.propTypes = {
     sortParam: PropTypes.array,
     displaySort: PropTypes.bool,
     maxCharPerLine: PropTypes.number,
+    /** File's dataset @id map to supplemental label for that dataset */
+    supplementalShortLabels: PropTypes.object,
 };
 
 GenomeBrowser.defaultProps = {
@@ -1112,6 +1121,7 @@ GenomeBrowser.defaultProps = {
     sortParam: ['Replicates', 'Output type'], // Array of parameters for sorting file object
     displaySort: false, // Determines if sort buttons should be displayed
     maxCharPerLine: null,
+    supplementalShortLabels: {},
 };
 
 GenomeBrowser.contextTypes = {
