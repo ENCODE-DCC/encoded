@@ -760,6 +760,11 @@ FileTable.procTableColumns = {
         title: 'Genome annotation',
         hide: (list) => _(list).all((item) => !item.genome_annotation),
     },
+    genome_assembly: {
+        title: 'Genome assembly',
+        hide: (list) => !list?.some((item) => ['ENC001.1'].includes(item.assembly)),
+        getValue: (item) => item.assembly,
+    },
     date_created: {
         title: 'Date added',
         getValue: (item) => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
@@ -2883,7 +2888,8 @@ const TabPanelFacets = ({
     // Create objects for non-Assembly facets
     const fileType = createFacetObject('file_type', fileList, filters);
     const outputType = createFacetObject('output_type', fileList, filters);
-    const genomeAssembly = createFacetObject('genome_annotation', fileList, filters);
+    const genomeAssembly = createFacetObject('assembly', fileList, filters);
+    const isMixed = filters?.assembly ? filters?.assembly[0]?.includes('mixed') : false;
     let replicate;
     if (experimentType !== 'Annotation') {
         replicate = createFacetObject('biological_replicates', fileList, filters);
@@ -2912,6 +2918,9 @@ const TabPanelFacets = ({
                     <span> Clear all filters</span>
                 </button>
             : null }
+            {isMixed ?
+                <FileFacet facetTitle="Genome Assembly" facetObject={genomeAssembly} filterFiles={filterFiles} facetKey="genome_assembly" selectedFilters={filters} currentTab={currentTab} />
+                : null}
             <FileFacet facetTitle="File format" facetObject={fileType} filterFiles={filterFiles} facetKey="file_type" selectedFilters={filters} currentTab={currentTab} />
             <FileFacet facetTitle="Output type" facetObject={outputType} filterFiles={filterFiles} facetKey="output_type" selectedFilters={filters} currentTab={currentTab} />
             {replicate ?
