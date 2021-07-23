@@ -703,23 +703,28 @@ class GenomeBrowser extends React.Component {
     /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps, prevState) {
         if (!(this.state.disableBrowserForIE) && this.GV) {
-            if (this.state.contig !== prevState.contig) {
+            const contigUpdate = this.state.contig !== prevState.contig;
+            const assemblyUpdate = this.props.assembly !== prevProps.assembly || this.props.annotation !== prevProps.annotation;
+            const filesUpdate = !(_.isEqual(this.props.files, prevProps.files));
+            const sizeUpdate = this.props.expanded !== prevProps.expanded;
+
+            if (contigUpdate) {
                 if (this.state.visualizer) {
                     this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
                 }
             }
 
-            if (this.props.assembly !== prevProps.assembly || this.props.annotation !== prevProps.annotation) {
+            if (assemblyUpdate) {
                 // Determine pinned files based on genome, filter and sort files, compute and draw tracks
                 this.setGenomeAndTracks();
             }
 
             // If the parent container changed size, we need to update the browser width
-            if (this.props.expanded !== prevProps.expanded) {
+            if (sizeUpdate) {
                 setTimeout(this.drawTracksResized, 1000);
             }
 
-            if (!(_.isEqual(this.props.files, prevProps.files))) {
+            if (filesUpdate) {
                 const primarySortIndex = this.props.sortParam.indexOf(this.state.primarySort);
                 const primarySortToggle = this.state.sortToggle[primarySortIndex];
                 this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
@@ -862,32 +867,34 @@ class GenomeBrowser extends React.Component {
     // Call sortFiles() to sort file object by an arbitrary number of sort parameters
     // Re-draw the tracks on the genome browser
     sortAndRefresh(primarySort, sortDirection, sortIdx, toggleFlag) {
-        let files = [];
-        let newFiles = [];
-        const domain = `${window.location.protocol}//${window.location.hostname}`;
-        files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag).filter((file) => file.assembly === this.props.assembly);
-        newFiles = [...this.state.pinnedFiles, ...files];
-        newFiles = _.uniq(newFiles, (file) => file.href);
-        let tracks = [];
-        if (files.length > 0) {
-            const maxCharPerLine = this.props.maxCharPerLine || MAX_CHAR_PER_LINE;
-            tracks = this.filesToTracks(newFiles, this.props.label, domain, maxCharPerLine);
-        }
-        let { contig, x0, x1 } = this.state;
-        if (this.chartdisplay) {
-            const coordinates = readGenomeBrowserLabelCoordinates();
-
-            ({ x0, x1, contig } = coordinates);
-        }
-        this.setState({
-            trackList: tracks,
-            contig,
-            x0,
-            x1,
-        }, () => {
-            if (this.chartdisplay && tracks.length > 0) {
-                this.drawTracks(this.chartdisplay);
+        _.defer(() => {
+            let files = [];
+            let newFiles = [];
+            const domain = `${window.location.protocol}//${window.location.hostname}`;
+            files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag).filter((file) => file.assembly === this.props.assembly);
+            newFiles = [...this.state.pinnedFiles, ...files];
+            newFiles = _.uniq(newFiles, (file) => file.href);
+            let tracks = [];
+            if (files.length > 0) {
+                const maxCharPerLine = this.props.maxCharPerLine || MAX_CHAR_PER_LINE;
+                tracks = this.filesToTracks(newFiles, this.props.label, domain, maxCharPerLine);
             }
+            let { contig, x0, x1 } = this.state;
+            if (this.chartdisplay) {
+                const coordinates = readGenomeBrowserLabelCoordinates();
+
+                ({ x0, x1, contig } = coordinates);
+            }
+            this.setState({
+                trackList: tracks,
+                contig,
+                x0,
+                x1,
+            }, () => {
+                if (this.chartdisplay && tracks.length > 0) {
+                    this.drawTracks(this.chartdisplay);
+                }
+            });
         });
     }
 
