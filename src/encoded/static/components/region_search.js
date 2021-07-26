@@ -1,12 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import { Panel, PanelBody } from '../libs/ui/panel';
-import { FacetList, Listing } from './search';
-import { FetchedData, Param } from './fetched';
+import { Panel, PanelBody, TabPanel } from '../libs/ui/panel';
+import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
-import { BrowserSelector } from './vis_defines';
-
+import getSeriesData from './series_search.js';
+import { FacetList, Listing } from './search';
+import { ASSEMBLY_DETAILS, BrowserSelector } from './vis_defines';
+import {
+    SearchBatchDownloadController,
+    BatchDownloadActuator,
+} from './batch_download';
+import { svgIcon } from '../libs/svg-icons';
+import QueryString from '../libs/query_string';
+import { FetchedData, Param } from './fetched';
 
 const regionGenomes = [
     { value: 'GRCh37', display: 'hg19' },
@@ -14,7 +21,6 @@ const regionGenomes = [
     { value: 'GRCm37', display: 'mm9' },
     { value: 'GRCm38', display: 'mm10' },
 ];
-
 
 const AutocompleteBox = (props) => {
     const terms = props.auto['@graph']; // List of matching terms from server
@@ -195,15 +201,15 @@ class AdvSearch extends React.Component {
     }
 
     render() {
-        const { context } = this.props;
+        const context = this.props;
         const id = url.parse(this.context.location_href, true);
         const region = id.query.region || '';
 
         if (this.state.genome === '') {
             let assembly = regionGenomes[0].value;
-            if (context.assembly) {
+            if (this.props.assembly) {
                 assembly = regionGenomes.find((el) => (
-                    context.assembly === el.value || context.assembly === el.display
+                    this.props.assembly === el.value || this.props.assembly === el.display
                 )).value;
             }
             this.setState({ genome: assembly });
@@ -256,20 +262,60 @@ AdvSearch.contextTypes = {
     location_href: PropTypes.string,
 };
 
+// Default assembly for each organism
+const defaultAssemblyByOrganism = {
+    'Homo sapiens': 'GRCh38',
+    'Mus musculus': 'mm10',
+};
 
-// Maximum number of selected items that can be visualized.
-const VISUALIZE_LIMIT = 100;
+// The encyclopedia page displays a table of results corresponding to a selected annotation type
+const Encyclopedia = (props, context) => {
+    const defaultAssembly = 'GRCh38';
+    const defaultFileDownload = 'all';
+    const defaultVisualization = 'List View';
+    const visualizationOptions = ['List View', 'Genome Browser'];
+    const encyclopediaVersion = 'ENCODE v5';
+    const searchBase = url.parse(context.location_href).search || '';
 
+    const [selectedVisualization, setSelectedVisualization] = React.useState(defaultVisualization);
+    const [selectedAssembly, setAssembly] = React.useState(defaultAssembly);
+    const [assemblyList, setAssemblyList] = React.useState([defaultAssembly]);
 
-class RegionSearch extends React.Component {
-    constructor() {
-        super();
+    var browser_files = [];
 
-        // Bind this to non-React methods.
-        this.onFilter = this.onFilter.bind(this);
-    }
+    const results = props.context['@graph'];
+    results.forEach((res) => {
+	res['files'].forEach((file) => {
+	    if (file['preferred_default'] && (file['file_format'] == 'bigBed' || file['file_format'] == 'bigWig')) {
+		browser_files.push(file);
+	    }
+	});
+    });
 
-    onFilter(e) {
+    // Data which populates the browser
+    const [vizFiles, setVizFiles] = React.useState(browser_files);
+
+    // vizFilesError is true when there are no results for selected filters
+    const [vizFilesError, setVizFilesError] = React.useState(false);
+    // Number of files available is displayed
+    const [totalFiles, setTotalFiles] = React.useState(browser_files.length);
+
+    // Update assembly, organism, browser files, and download link when user clicks on tab
+    const handleTabClick = (tab) => {
+        setVizFiles([]);
+        setAssembly(defaultAssemblyByOrganism[tab]);
+    };
+
+    const { columns, notification, filters, facets, total } = props.context;
+//    const results = props.context['@graph'];
+    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
+    
+
+    // Maximum number of selected items that can be visualized.
+    const VISUALIZE_LIMIT = 100;
+    const visualizeDisabledTitle = total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+
+    const onFilter = (e) => {
         if (this.props.onChange) {
             const search = e.currentTarget.getAttribute('href');
             this.props.onChange(search);
@@ -278,30 +324,25 @@ class RegionSearch extends React.Component {
         }
     }
 
-    render() {
-        const { context } = this.props;
-        const results = context['@graph'];
-        const { columns, notification, filters, facets, total } = context;
-        const searchBase = url.parse(this.context.location_href).search || '';
-        const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-        const visualizeDisabledTitle = total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+    const visualizationTabs = {};
+    visualizationOptions.forEach((visualizationName) => {
+	visualizationTabs[visualizationName] = <div id={visualizationName} className={`organism-button ${visualizationName.replace(' ', '-')}`}><span>{visualizationName}</span></div>;
+    });
 
-        return (
-            <div>
-                <h1>Region search</h1>
-                <AdvSearch {...this.props} />
-                {notification === 'Success' ?
-                    <Panel>
-                        <PanelBody>
+
+    const listView = (
+	<Panel>
+            <PanelBody>
                             <div className="search-results">
-                                <div className="search-results__facets">
+	                        <div className="search-results__facets">
                                     <FacetList
-                                        {...this.props}
+                                        context={props.context}
                                         facets={facets}
                                         filters={filters}
-                                        onFilter={this.onFilter}
+                                        onFilter={onFilter}
                                     />
                                 </div>
+
                                 <div className="search-results__result-list">
                                     <h4>
                                         Showing {results.length} of {total}
@@ -312,7 +353,7 @@ class RegionSearch extends React.Component {
                                                     rel="nofollow"
                                                     className="btn btn-info btn-sm"
                                                     href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                                    onClick={this.onFilter}
+                                                    onClick={onFilter}
                                                 >
                                                     View All
                                                 </a>
@@ -322,44 +363,91 @@ class RegionSearch extends React.Component {
                                                         <a
                                                             className="btn btn-info btn-sm"
                                                             href={trimmedSearchBase || '/region-search/'}
-                                                            onClick={this.onFilter}
+                                                            onClick={onFilter}
                                                         >
                                                             View 25
                                                         </a>
                                                 : null}
                                             </span>
                                         }
-
-                                        <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
                                     </div>
-
-                                    <hr />
+                                    <br />
                                     <ul className="nav result-table" id="result-table">
                                         {results.map((result) => Listing({ context: result, columns, key: result['@id'] }))}
                                     </ul>
                                 </div>
                             </div>
-                        </PanelBody>
+                       </PanelBody>
                     </Panel>
-                : null}
+    );
+
+    const genomeBrowserView = (
+	    <div className="outer-tab-container">
+                <div className="tab-body">
+                    <Panel>
+	                <PanelBody>
+	                    <div className="search-results">
+	                        <div className="search-results__facets">
+                                    <FacetList
+                                        context={props.context}
+                                        facets={facets}
+                                        filters={filters}
+                                        onFilter={onFilter}
+                                    />
+                                </div>
+
+                                <div className="search-results__result-list" style={{display: "block"}}>
+                                    <GenomeBrowser
+                                        files={vizFiles}
+                                        label="cart"
+//                                        expanded
+                                        assembly={selectedAssembly}
+                                        annotation="V33"
+  //                                      displaySort
+                                        maxCharPerLine={30}
+                                    />
+                                </div>
+	                    </div>
+                        </PanelBody>
+	            </Panel>
+                </div>
+          </div>
+    );
+
+    return (
+        <div className="layout">
+            <div className="layout__block layout__block--100">
+                <div className="block series-search">
+                    <div className="encyclopedia-info-wrapper">
+                        <div className="badge-container">
+                            <h1>Region Search</h1>
+                            <span className="encyclopedia-badge">{encyclopediaVersion}</span>
+                        </div>
+                    </div>
+
+                    <AdvSearch  {...props.context}/>
+
+                    <div className="outer-tab-container">
+                        <TabPanel
+                            tabs={visualizationTabs}
+                            selectedTab={selectedVisualization}
+                            handleTabClick={(tab) => setSelectedVisualization(tab)}
+                            tabCss="tab-button"
+                            tabPanelCss="tab-container encyclopedia-tabs"
+                        >
+                            { selectedVisualization == 'List View' ? listView  :  genomeBrowserView }
+	                </TabPanel>
+          </div> 
             </div>
-        );
-    }
-}
-
-RegionSearch.propTypes = {
-    context: PropTypes.object.isRequired,
-    onChange: PropTypes.func,
+            </div>
+	    </div>
+    );
 };
 
-RegionSearch.defaultProps = {
-    onChange: null,
-};
-
-RegionSearch.contextTypes = {
+Encyclopedia.contextTypes = {
     location_href: PropTypes.string,
+    navigate: PropTypes.func,
+    fetch: PropTypes.func,
 };
 
-export default AutocompleteBox;
-
-globals.contentViews.register(RegionSearch, 'region-search');
+globals.contentViews.register(Encyclopedia, 'region-search');
