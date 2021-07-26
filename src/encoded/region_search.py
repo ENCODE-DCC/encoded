@@ -354,9 +354,16 @@ def region_search(context, request):
         used_filters['files.uuid'] = file_uuids
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
+
+        ######################### DO NOT MERGE THIS
+        from elasticsearch import Elasticsearch
+        es = Elasticsearch(hosts=['34.208.231.246'], port=9201) ### IP FROM ENCODE DEMO
+        ###########################################
+
         es_results = es.search(
             body=query, index='experiment', doc_type='experiment', size=size, request_timeout=60
         )
+
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
