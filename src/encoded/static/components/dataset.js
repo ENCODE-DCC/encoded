@@ -1744,8 +1744,8 @@ const differentiationTableColumnsWithTime = {
             );
         },
         objSorter: (a, b) => {
-            const aTime = computeDifferentiation(a) ? computeDifferentiation(a).split(' ')[0] : 0;
-            const bTime = computeDifferentiation(b) ? computeDifferentiation(b).split(' ')[0] : 0;
+            const aTime = computeDifferentiation(a)?.split(' ')[0] || 0;
+            const bTime = computeDifferentiation(b)?.split(' ')[0] || 0;
             if (aTime < bTime) { return -1; }
             if (aTime > bTime) { return 1; }
             return 0;
