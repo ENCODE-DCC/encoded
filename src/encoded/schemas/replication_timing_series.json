@@ -95,7 +95,7 @@
             "title": "Biosample classification"
         },
         "biosample_ontology.term_name": {
-            "title": "Biosample term name"
+            "title": "Biosample"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"

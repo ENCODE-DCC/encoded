@@ -75,7 +75,7 @@
             "title": "Cell"
         },
         "biosample_ontology.term_name": {
-            "title": "Biosample term name"
+            "title": "Biosample"
         },
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage"

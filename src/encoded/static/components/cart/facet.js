@@ -161,7 +161,7 @@ export const displayedDatasetFacetFields = [
     },
     {
         field: 'assay_title',
-        title: 'Assay title',
+        title: 'Assay',
     },
     {
         field: 'biosample_ontology.term_name',
