@@ -2984,7 +2984,7 @@ class FileGalleryRendererComponent extends React.Component {
             /** Filters for files */
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
-            currentTab: 'tables',
+            currentTab: 'browser',
             /** Sorted compiled dataset analysis objects filtered by available assemblies */
             compiledAnalyses: compileAnalyses(props.analyses, datasetFiles, 'choose analysis'),
             /** Index of currently/last selected `compiledAnalyses`. */
@@ -3035,17 +3035,16 @@ class FileGalleryRendererComponent extends React.Component {
         if (!this.props.altFilterDefault) {
             this.setState({ selectedFilterValue: '0' });
         }
+
         // Determine how many visualizable files there are
-        // const tempFiles = filterForVisualizableFiles(this.state.files);
+        const vizFiles = filterForVisualizableFiles(this.props.context.files);
         // If the graph is hidden and there are no visualizable files, set default tab to be table and set default assembly to be 'All assemblies'
-        // if (this.props.hideGraph && tempFiles.length < 1) {
-        if (this.props.hideGraph) {
+        if (this.props.hideGraph && vizFiles.length < 1) {
             this.setState({ currentTab: 'tables' }, () => {
                 this.filterFiles('All assemblies', 'assembly');
             });
         // If the graph is not hidden and there are no visualizable files, set default tab to be graph and set default assembly to be the most recent assembly
-        } else {
-        // } else if (tempFiles.length < 1) {
+        } else if (vizFiles.length < 1) {
             // Display graph as default if there are no visualizable files
             let assemblyList = [];
             this.setState({ currentTab: 'graph' }, () => {
@@ -3056,14 +3055,13 @@ class FileGalleryRendererComponent extends React.Component {
                 this.filterFiles(newAssembly, 'assembly');
             });
         // If there are visualizable files, set default tab to be browser and set default assembly to be the most recent assembly
+        } else {
+            // Determine available assemblies
+            const assemblyList = this.setAssemblyList(this.state.files);
+            // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+            const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+            this.filterFiles(newAssembly, 'assembly');
         }
-        //  else {
-        //     // Determine available assemblies
-        //     const assemblyList = this.setAssemblyList(this.state.files);
-        //     // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-        //     const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-        //     this.filterFiles(newAssembly, 'assembly');
-        // }
     }
 
 
