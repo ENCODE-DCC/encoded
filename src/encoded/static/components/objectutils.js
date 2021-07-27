@@ -8,7 +8,6 @@ import { svgIcon } from '../libs/svg-icons';
 import { CartToggle, cartGetAllowedTypes } from './cart';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
-import { BrowserFeat } from './browserfeat';
 import Tooltip from '../libs/ui/tooltip';
 
 // Display information on page as JSON formatted data
@@ -534,13 +533,6 @@ export class ImageWithFallback extends React.Component {
     }
 
     onError() {
-        // IE11 has an issue where it frequently throws a "Permission denied" exception, when the image
-        // exist. This workaround makes IE11 show either the image if it exist or the browser's
-        // inbuilt no-image display
-        if (BrowserFeat.getBrowserCaps('uaTrident')) {
-            return;
-        }
-
         const imageUrl = '/static/img/brokenImage.png';
         const imageAlt = 'Not found';
 

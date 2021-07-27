@@ -55,12 +55,6 @@ module.exports.BrowserFeat = {
                 document.body.removeChild(scrollDiv);
                 return hiddenscroll;
             })();
-
-            // UA checks; should be retired as soon as possible
-            this.feat.uaEdge = (() => navigator.userAgent.indexOf('Edge') > 0)();
-
-            // UA checks; should be retired as soon as possible
-            this.feat.uaTrident = (() => navigator.userAgent.indexOf('Trident') > 0)();
         }
         return feat ? this.feat[feat] : this.feat;
     },

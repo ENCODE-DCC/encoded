@@ -85,27 +85,6 @@ export function truncateString(str, len) {
 // duplicate @id objects removed.
 export const uniqueObjectsArray = (objects) => _(objects).uniq((object) => object['@id']);
 
-export function bindEvent(el, eventName, eventHandler) {
-    if (el.addEventListener) {
-        // Modern browsers
-        el.addEventListener(eventName, eventHandler, false);
-    } else if (el.attachEvent) {
-        // IE8 specific
-        el.attachEvent(`on${eventName}`, eventHandler);
-    }
-}
-
-export function unbindEvent(el, eventName, eventHandler) {
-    if (el.removeEventListener) {
-        // Modern browsers
-        el.removeEventListener(eventName, eventHandler, false);
-    } else if (el.detachEvent) {
-        // IE8 specific
-        el.detachEvent(`on${eventName}`, eventHandler);
-    }
-}
-
-
 /**
  * Remove spaces from id so it can be accepted as an id by HTML
  *

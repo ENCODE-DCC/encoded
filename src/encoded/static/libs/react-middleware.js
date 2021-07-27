@@ -1,7 +1,6 @@
 /* global __dirname */
-const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const transformResponse = require('subprocess-middleware').transformResponse;
+const { transformResponse } = require('subprocess-middleware');
 const fs = require('fs');
 const path = require('path');
 
@@ -13,12 +12,12 @@ const inline = fs.readFileSync(path.join(__dirname, '/../build/inline.js')).toSt
 
 function render(Component, body, res) {
     // Search for the hashed CSS file name in the buildFiles list
-    const cssFile = buildFiles.find(file => !!file.match(/^\.\/css\/style(\.[0-9a-z]+){0,1}\.css$/));
+    const cssFile = buildFiles.find((file) => !!file.match(/^\.\/css\/style(\.[0-9a-z]+){0,1}\.css$/));
     const context = JSON.parse(body);
     const props = {
-        context: context,
+        context,
         href: res.getHeader('X-Request-URL') || context['@id'],
-        inline: inline,
+        inline,
         styles: `/static/build/${cssFile}`,
     };
     let markup;
@@ -34,7 +33,7 @@ function render(Component, body, res) {
             detail: err.stack,
             log: console._stdout.toString(),
             warn: console._stderr.toString(),
-            context: context,
+            context,
         };
         // To debug in browser, pause on caught exceptions:
         //   app.setProps({context: app.props.context.context})
@@ -46,6 +45,4 @@ function render(Component, body, res) {
 }
 
 
-module.exports.build = function (Component) {
-    return transformResponse(render.bind(null, Component));
-};
+module.exports.build = (Component) => transformResponse(render.bind(null, Component));

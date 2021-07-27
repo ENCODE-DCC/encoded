@@ -421,7 +421,7 @@ class MatrixPresentation extends React.Component {
                 };
 
                 resize(); // important for adjusting the graph to fix screen size onload
-                globals.bindEvent(window, 'resize', resize);
+                window.addEventListener('resize', resize);
 
                 const update = (root) => {
                     // Compute the new tree layout.

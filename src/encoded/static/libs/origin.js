@@ -1,6 +1,4 @@
-/*jshint scripturl:true */
-'use strict';
-var url = require('url');
+const url = require('url');
 
 function same(from, to) {
     if (typeof to === 'undefined') {

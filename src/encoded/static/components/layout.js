@@ -307,11 +307,11 @@ class LayoutToolbar extends React.Component {
 
     componentDidMount() {
         this.origTop = offset(this.domNode).top;
-        globals.bindEvent(window, 'scroll', this.scrollspy);
+        window.addEventListener('scroll', this.scrollspy);
     }
 
     componentWillUnmount() {
-        globals.unbindEvent(window, 'scroll', this.scrollspy);
+        window.removeEventListener('scroll', this.scrollspy);
     }
 
     scrollspy() {

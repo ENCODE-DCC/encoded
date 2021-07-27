@@ -22,18 +22,6 @@ export default class RichTextBlockView extends React.Component {
         if (this.context.editable) {
             $script('ckeditor/ckeditor.js', this.setupEditor);
         }
-        // Polyfill for 'closest' for IE
-        const elementPrototype = window.Element.prototype;
-        if (!elementPrototype.closest) {
-            elementPrototype.closest = function closest(s) {
-                let el = this;
-                do {
-                    if (el.matches(s)) return el;
-                    el = el.parentElement || el.parentNode;
-                } while (el !== null && el.nodeType === 1);
-                return null;
-            };
-        }
         this.handleClickableFAQ();
     }
 

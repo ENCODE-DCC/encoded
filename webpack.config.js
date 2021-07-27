@@ -4,7 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
 
 const env = process.env.NODE_ENV;
 
@@ -14,8 +14,8 @@ const PATHS = {
     serverbuild: path.resolve(__dirname, 'src/encoded/static/build-server'),
     fonts: path.resolve(__dirname, 'src/encoded/static/font'),
     images: path.resolve(__dirname, 'src/encoded/static/img'),
-    ckeditor_source: path.resolve(__dirname, "node_modules/ckeditor4"),
-    ckeditor_dest: path.resolve(__dirname, "src/encoded/static/build/ckeditor"),
+    ckeditor_source: path.resolve(__dirname, 'node_modules/ckeditor4'),
+    ckeditor_dest: path.resolve(__dirname, 'src/encoded/static/build/ckeditor'),
 };
 
 const plugins = [];
@@ -137,7 +137,8 @@ module.exports = [
                     // Write hash stats to stats.json so we can extract the CSS hashed file name.
                     require('fs').writeFileSync(
                         path.join(PATHS.build, 'stats.json'),
-                        JSON.stringify(stats.toJson({ hash: true }, 'none')));
+                        JSON.stringify(stats.toJson({ hash: true }, 'none'))
+                    );
                 });
             }
         ),

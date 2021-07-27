@@ -113,7 +113,7 @@ If you look in [browser.js](../src/encoded/static/browser.js) you find near the 
 
 …and in [server.js](../src/encoded/static/server.js) you find near the middle:
 
-    var app = require('./libs/react-middleware').build(require('./components'));
+    const app = require('./libs/react-middleware').build(require('./components'));
 
 These import from './components' — a directory; not a file. When the Javascript module system imports or requires (same thing; different version of Javascript) a directory, the file called “index.js” in that directory gets loaded. Our [index.js](../src/encoded/static/components/index.js) imports many files in the “components” directory, then exports the `<App>` component so that [browser.js](../src/encoded/static/browser.js) and [server.js](../src/encoded/static/server.js) can call it. This causes that list of files to all get executed, which causes their View Registry `register` functions to get called at that stage. That means if you make a new object-rendering module that registers itself with the View Registry, that file has to be added to this list. Files that don’t register their components in the View Registry don’t need inclusion in this list.
 
