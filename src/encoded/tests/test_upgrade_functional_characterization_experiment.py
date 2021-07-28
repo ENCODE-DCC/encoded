@@ -24,3 +24,11 @@ def test_functional_characterization_experiment_upgrade_7_to_8(upgrader, functio
     value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_7, current_version='7', target_version='8')
     assert value['schema_version'] == '8'
     assert value['examined_loci'][0]['expression_measurement_method'] == 'HCR-FlowFISH'
+
+
+def test_functional_characterization_experiment_upgrade_8_to_9(upgrader, fcc_experiment_elements_mapping, pooled_clone_sequencing):
+    value = upgrader.upgrade('functional_characterization_experiment', fcc_experiment_elements_mapping, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert isinstance(value['elements_mappings'], list)
+    assert 'elements_mapping' not in value
+    assert value['elements_mappings'] == [pooled_clone_sequencing['uuid']]

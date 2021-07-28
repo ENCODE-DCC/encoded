@@ -33,3 +33,10 @@ def functional_characterization_experiment_7_8(value, system):
             if 'expression_measurement_method' in locus:
                 if locus['expression_measurement_method'] == 'HCR-FlowFish':
                     locus['expression_measurement_method'] = 'HCR-FlowFISH'
+
+
+@upgrade_step('functional_characterization_experiment', '8', '9')
+def functional_characterization_experiment_8_9(value, system):
+    if 'elements_mapping' in value:
+        value['elements_mappings'] = [value['elements_mapping']]
+        value.pop('elements_mapping')

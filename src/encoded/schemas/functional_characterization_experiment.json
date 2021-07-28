@@ -105,7 +105,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "assay_term_name": {
             "title": "Assay name",
@@ -192,12 +192,19 @@
             "type": "string",
             "linkTo": "FunctionalCharacterizationExperiment"
         },
-        "elements_mapping": {
-            "title": "Elements mapping",
-            "description": "A functional characterization experiment that contains mapping of elements being characterized to barcodes.",
-            "comment": "See FunctionalCharacterizationExperiment.json for a list of available identifiers.",
-            "type": "string",
-            "linkTo": "FunctionalCharacterizationExperiment"
+        "elements_mappings": {
+            "title": "Elements mappings",
+            "description": "Functional characterization experiment(s) that contains mapping of elements being characterized to barcodes.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Elements mapping",
+                "type": "string",
+                "description": "Functional characterization experiment that contains mapping of elements being characterized to barcodes.",
+                "comment": "See FunctionalCharacterizationExperiment.json for a list of available identifiers.",
+                "linkTo": "FunctionalCharacterizationExperiment"
+            }
         },
         "supersedes": {
             "title": "Supersedes" ,

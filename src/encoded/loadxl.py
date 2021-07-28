@@ -622,7 +622,7 @@ PHASE1_PIPELINES = {
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
     ],
     'functional_characterization_experiment': [
-        remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analyses'),
+        remove_keys('possible_controls', 'supersedes', 'elements_mappings', 'elements_references', 'analyses'),
     ],
     'single_cell_unit': [
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
@@ -738,7 +738,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses'),
     ],
     'functional_characterization_experiment': [
-        skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references', 'analyses'),
+        skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mappings', 'elements_references', 'analyses'),
     ],
     'single_cell_unit': [
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
