@@ -2229,6 +2229,85 @@ const generateSupplementalShortLabels = (experimentList, getSupplementalShortLab
 
 
 /**
+ * Displays a standard table of related experiments on Series pages. It can appear with one or two
+ * sections; one containing related datasets and the other containing control experiments from the
+ * related datasets.
+ */
+const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sortColumn, adminUser, accessLevel }) => {
+    if (experiments.length > 0) {
+        // Get all the control experiments from the given experiments' `possible_controls`. Then
+        // filter those out of the given experiments.
+        const controls = _.uniq(experiments.reduce((accControls, experiment) => accControls.concat(experiment.possible_controls), []), (control) => control['@id']);
+        const experimentsWithoutControls = experiments.filter((experiment) => !controls.find((control) => control['@id'] === experiment['@id']));
+
+        return (
+            <SortTablePanel
+                header={
+                    <div className="experiment-table__header">
+                        <h4 className="experiment-table__title">{`Experiments in ${title.toLowerCase()} ${context.accession}`}</h4>
+                    </div>
+                }
+            >
+                <>
+                    <div className="experiment-table__subheader">
+                        Experiments
+                        <CartAddAllElements elements={experiments.map((experiment) => experiment['@id'])} />
+                    </div>
+                    <div className="table-counts">
+                        {experimentsWithoutControls.length} experiment{experimentsWithoutControls.length === 1 ? '' : 's'}
+                    </div>
+                    <SortTable
+                        list={experimentsWithoutControls}
+                        columns={tableColumns}
+                        meta={{ adminUser, accessLevel }}
+                        sortColumn={sortColumn}
+                    />
+                </>
+                {controls.length > 0 ?
+                    <>
+                        <div className="experiment-table__subheader">
+                            Control experiments
+                            <CartAddAllElements elements={controls.map((experiment) => experiment['@id'])} />
+                        </div>
+                        <div className="table-counts">
+                            {controls.length} control experiment{controls.length === 1 ? '' : 's'}
+                        </div>
+                        <SortTable
+                            list={controls}
+                            columns={basicTableColumns}
+                            meta={{ adminUser, accessLevel }}
+                        />
+                    </>
+                : null}
+            </SortTablePanel>
+        );
+    }
+    return null;
+};
+
+SeriesExperimentTable.propTypes = {
+    /** Series context object */
+    context: PropTypes.object.isRequired,
+    /** Experiments to display */
+    experiments: PropTypes.array.isRequired,
+    /** Title of series */
+    title: PropTypes.string.isRequired,
+    /** Columns for experiment portion of table */
+    tableColumns: PropTypes.object.isRequired,
+    /** ID of column to sort by; undefined/null for default */
+    sortColumn: PropTypes.string,
+    /** True if the user is an admin user */
+    adminUser: PropTypes.bool.isRequired,
+    /** User's access level */
+    accessLevel: PropTypes.string.isRequired,
+};
+
+SeriesExperimentTable.defaultProps = {
+    sortColumn: null,
+};
+
+
+/**
  * Displays the common elements of all Series-derived pages. This must get called from wrappers
  * specific to each type of Series-derived object.
  */
@@ -2461,33 +2540,17 @@ export const SeriesComponent = ({
                     </div>
                 </PanelBody>
             </Panel>
-
-            {experimentList.length > 0 ?
-                <>
-                    {options.ExperimentTable || (
-                        <SortTablePanel
-                            header={
-                                <div className="experiment-table__header">
-                                    <h4 className="experiment-table__title">{`Experiments in ${title} ${context.accession}`}</h4>
-                                    <CartAddAllElements elements={experimentList.map((experiment) => experiment['@id'])} />
-                                </div>
-                            }
-                            subheader={
-                                <div className="table-counts">
-                                    {experimentList.length} experiment{experimentList.length === 1 ? '' : 's'}
-                                </div>
-                            }
-                        >
-                            <SortTable
-                                list={experimentList}
-                                columns={tableColumns}
-                                meta={{ adminUser, accessLevel }}
-                                sortColumn={sortColumn}
-                            />
-                        </SortTablePanel>
-                    )}
-                </>
-            : null}
+            {options.ExperimentTable || (
+                <SeriesExperimentTable
+                    context={context}
+                    experiments={experimentList}
+                    title={title}
+                    tableColumns={tableColumns}
+                    sortColumn={sortColumn}
+                    adminUser={adminUser}
+                    accessLevel={accessLevel}
+                />
+            )}
 
             {/* Display list of released and unreleased files */}
             {/* Set hideGraph to false to show "Association Graph" for all series */}
