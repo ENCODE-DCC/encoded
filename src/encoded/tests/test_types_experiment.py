@@ -223,6 +223,44 @@ def test_experiment_biosample_summary_4(testapp,
         'skin epidermis tissue male child (10 days) with basal cell carcinoma and without disease'
 
 
+def test_experiment_biosample_summary_5(testapp,
+                                        base_experiment,
+                                        mouse_donor_1_1,
+                                        mouse_donor_2_1,
+                                        base_mouse_biosample,
+                                        base_mouse_biosample_2,
+                                        library_1,
+                                        library_2,
+                                        treatment_5,
+                                        replicate_1_1,
+                                        replicate_2_1,
+                                        heart):
+    testapp.patch_json(mouse_donor_1_1['@id'], {'strain_name': 'B6NCrl', 'strain_background': 'C57BL/6'})
+    testapp.patch_json(mouse_donor_2_1['@id'], {'strain_name': 'B6NCrl', 'strain_background': 'C57BL/6'})
+    testapp.patch_json(base_mouse_biosample['@id'], {'donor': mouse_donor_1_1['@id'],
+                                            'biosample_ontology': heart['uuid'],
+                                            'model_organism_sex': 'mixed',
+                                            'model_organism_age': '11.5',
+                                            'model_organism_age_units': 'day',
+                                            'treatments': [treatment_5['@id']]})
+
+    testapp.patch_json(base_mouse_biosample_2['@id'], {'donor': mouse_donor_2_1['@id'],
+                                            'biosample_ontology': heart['uuid'],
+                                            'model_organism_sex': 'mixed',
+                                            'model_organism_age': '11.5',
+                                            'model_organism_age_units': 'day'})
+
+    testapp.patch_json(library_1['@id'], {'biosample': base_mouse_biosample['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': base_mouse_biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'],
+                                                               replicate_2_1['@id']]})
+    res = testapp.get(base_experiment['@id']+'@@index-data')
+    assert res.json['object']['biosample_summary'] == \
+        'strain B6NCrl heart tissue (11.5 days) not treated and treated with ethanol'
+
+
 def test_experiment_protein_tags(testapp, base_experiment, donor_1, donor_2, biosample_1, biosample_2, construct_genetic_modification, construct_genetic_modification_N, library_1, library_2, replicate_1_1, replicate_2_1):
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'], 'genetic_modifications': [construct_genetic_modification['@id']]})
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'], 'genetic_modifications': [construct_genetic_modification_N['@id']]})
