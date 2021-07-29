@@ -1,5 +1,28 @@
 Changes
 =======
+120.0 (released) snovault 1.0.59
+--------------------------------
+1. ENCD-6065 fix post diff table crash (#4027)
+2. update-snovault-1.0.59 (#4026)
+3. ENCD-6036 reset chr range in cart (#4025)
+4. ENCD-6039-software-cleanup (#4018)
+5. ENCD-6052-add-rnaget-search-and-report-views (#4022)
+6. ENCD-6038-biosample-summary-series-header (#4017)
+7. ENCD-6056-cart-upgrade-error (#4024)
+8. ENCD-6024-make-search-results-targets-into-links (#4015)
+9. ENCD-5876-series-updates (#4023)
+10. ENCD-5851 single cell landing page (#4021)
+11. ENCD-6008-convert-nuc-acid-start-quant-to-number (#4014)
+12. ENCD-6047-ENTEx-annotation (#4019)
+13. ENCD-5968-add-MOI-guide-type-to-GM (#3987)
+14. ENCD-6045-add-david-hafler-to-alias-prefix (#4013)
+15. ENCD-6046-add-RUSH-AD-internal_tags-donor (#4016)
+16. ENCD-6042-search-dl-options (#4012)
+17. ENCD-5724 differentiation series (#4009)
+18. ENCD-5982-file-cart-views (#4011)
+19. ENCD-6043-slim-perturb-snATAC-seq (#4010)
+20. ENCD-6040-document-embedding-in-annotations (#4007)
+
 119.0 (released)
 --------------------------------
 1. ENCD-5974 biosample summary summary (#4004)
