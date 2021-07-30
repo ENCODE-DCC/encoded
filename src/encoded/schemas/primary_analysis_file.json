@@ -1,8 +1,8 @@
 {
-    "title": "Analysis file",
+    "title": "Primary analysis file",
     "description": "Schema for submitting metadata for a data file that is produced from other data files.",
     "comment": "This object type is abstract. These properties are inherited by other object types",
-    "id": "/profiles/analysis_file.json",
+    "id": "/profiles/primary_analysis_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "mixinProperties": [],

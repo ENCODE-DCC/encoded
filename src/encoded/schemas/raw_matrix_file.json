@@ -23,7 +23,7 @@
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "file.json#/properties"},
         {"$ref": "data_file.json#/properties"},
-        {"$ref": "analysis_file.json#/properties"}
+        {"$ref": "primary_analysis_file.json#/properties"}
     ],
     "dependencies": {
         "external_accession": {

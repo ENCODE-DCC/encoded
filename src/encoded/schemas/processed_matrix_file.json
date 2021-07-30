@@ -22,8 +22,7 @@
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "file.json#/properties"},
-        {"$ref": "data_file.json#/properties"},
-        {"$ref": "analysis_file.json#/properties"}
+        {"$ref": "data_file.json#/properties"}
     ],
     "dependencies": {
         "external_accession": {
@@ -81,7 +80,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         }, 
         "description": {
             "description": "The text describing the matrix, will be displayed as the title at cellxgene."
@@ -139,6 +138,13 @@
                     "transcription factor quantifications",
                     "antibody capture quantifications"
                 ]
+            }
+        },
+        "dbxrefs": {
+            "items": {
+                "title": "External identifier",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with Lattice objects.",
+                "type":  "string"
             }
         },
         "intronic_reads_counted": {
@@ -447,11 +453,11 @@
         "assays": {
             "title": "Assays"
         },
-        "assembly": {
-            "title": "Genome assembly"
+        "assemblies": {
+            "title": "Genome assemblies"
         },
-        "genome_annotation": {
-            "title": "Genome annotation"
+        "genome_annotations": {
+            "title": "Genome annotations"
         },
         "output_types": {
             "title": "Output type"
@@ -489,8 +495,11 @@
         "dataset": {
             "title": "Dataset"
         },
-        "assembly": {
-            "title": "Genome assembly"
+        "assemblies": {
+            "title": "Genome assemblies"
+        },
+        "genome_annotations": {
+            "title": "Genome annotations"
         },
         "file_format": {
             "title": "File Format"
@@ -503,9 +512,6 @@
         },
         "derived_from": {
             "title": "Derived from"
-        },
-        "genome_annotation": {
-            "title": "Genome annotation"
         },
         "output_types": {
             "title": "Output types"

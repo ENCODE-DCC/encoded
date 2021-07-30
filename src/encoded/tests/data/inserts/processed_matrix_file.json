@@ -57,8 +57,6 @@
             "peter-sims:postnatal_1b_filtered_matrix",
             "peter-sims:postnatal_1c_filtered_matrix"
         ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
         "derivation_process": [
             "merging"
         ],
@@ -136,8 +134,6 @@
             "peter-sims:prenatal_3a_filtered_matrix",
             "peter-sims:prenatal_3b_filtered_matrix"
         ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
         "derivation_process": [
             "merging",
             "ambient RNA correction"
@@ -246,8 +242,6 @@
             "anna-greka:donorB1_filtered_feature_bc_matrix",
             "anna-greka:donorB2_filtered_feature_bc_matrix"
         ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
         "md5sum": "48912b433c9105e6b4f32c79f6b09f6b",
         "layers": [
             {
@@ -328,8 +322,6 @@
             "anna-greka:donorD2a_filtered_feature_bc_matrix",
             "anna-greka:donorD2b_filtered_feature_bc_matrix"
         ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
         "md5sum": "2dd4370d08bdf8666b859c888b1f7006",
         "layers": [
             {
@@ -400,8 +392,6 @@
             "anna-greka:donorCD2_filtered_feature_bc_matrix"
         ],
         "s3_uri": "s3://submissions-czi012eye/chen_2020/19D015_macular_outs/filtered_feature_bc_matrix.h5",
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
         "md5sum": "98b5746b0f69e8be8c888e3c1d74b150",
         "layers": [
             {
@@ -472,8 +462,6 @@
             "anna-greka:donorE_filtered_feature_bc_matrix",
             "anna-greka:donorF_filtered_feature_bc_matrix"
         ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
         "md5sum": "ee656a7331492beca246fcb1b503fd33",
         "layers": [
             {
@@ -548,8 +536,6 @@
             "anna-greka:donorG_filtered_feature_bc_matrix",
             "anna-greka:donorH_filtered_feature_bc_matrix"
         ],
-        "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
         "md5sum": "24aaa927d40e8680ea107684c39fb442",
         "layers": [
             {
