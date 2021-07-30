@@ -1,4 +1,5 @@
 from pyramid.response import Response
+from pyramid.view import view_config
 
 from encoded.reports.csv import CSVGenerator
 from encoded.search_views import rna_expression_search_generator
