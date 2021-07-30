@@ -208,7 +208,6 @@ class AnalysisFile(DataFile):
     item_type = 'analysis_file'
     base_types = ['AnalysisFile'] + DataFile.base_types
     rev = {}
-    schema = load_schema('encoded:schemas/analysis_file.json')
     embedded = DataFile.embedded + []
 
 
@@ -466,3 +465,45 @@ class ProcessedMatrixFile(AnalysisFile):
     def cell_annotations(self, request, cell_annotations=None):
         if cell_annotations:
             return paths_filtered_by_status(request, cell_annotations)
+
+
+    @calculated_property(schema={
+        "title": "Genome annotations",
+        "description": "The genome annotations used as references during the generation of the data in this file.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": 'string'
+        },
+        "notSubmittable": True,
+    })
+    def genome_annotations(self, request, derived_from):
+        refs = set()
+        for f in derived_from:
+            obj = request.embed(f, '@@object')
+            if obj.get('genome_annotation'):
+                refs.add(obj.get('genome_annotation'))
+            elif obj.get('genome_annotations'):
+                refs.update(obj.get('genome_annotations'))
+        return sorted(refs)
+
+
+    @calculated_property(schema={
+        "title": "Assemblies",
+        "description": "The genome assemblies used as references during the generation of the data in this file.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": 'string'
+        },
+        "notSubmittable": True,
+    })
+    def assemblies(self, request, derived_from):
+        refs = set()
+        for f in derived_from:
+            obj = request.embed(f, '@@object')
+            if obj.get('assembly'):
+                refs.add(obj.get('assembly'))
+            elif obj.get('assemblies'):
+                refs.update(obj.get('assemblies'))
+        return sorted(refs)

@@ -54,6 +54,7 @@
             "type": "string",
             "enum": [
                 "Illumina NextSeq 500",
+                "Illumina NextSeq 550",
                 "Illumina NovaSeq 6000",
                 "Illumina HiSeq 4000",
                 "Illumina HiSeq 2500",
