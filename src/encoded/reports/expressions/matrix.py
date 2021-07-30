@@ -149,5 +149,5 @@ def rnaget_expression_matrix(context, request):
     search_request = get_rna_expression_search_request(request)
     expression_array = rna_expression_search_generator(search_request)
     em = ExpressionMatrix()
-    em.from_array(expression_array)
+    em.from_array(expression_array['@graph'])
     return em.as_response()
