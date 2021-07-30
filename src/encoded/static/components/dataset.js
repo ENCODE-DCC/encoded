@@ -911,7 +911,7 @@ const ProjectComponent = (props, reactContext) => {
                             {context.biosample_ontology && context.biosample_ontology.length > 0 ?
                                 <div data-test="biosampletermname">
                                     <dt>Biosample term name</dt>
-                                    <dd>{[...new Set(context.biosample_ontology.map((b) => b.term_name))]}</dd>
+                                    <dd>{[...new Set(context.biosample_ontology.map((b) => b.term_name))].join(', ')}</dd>
                                 </div>
                             : null}
 
