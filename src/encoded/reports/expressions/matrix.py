@@ -101,7 +101,9 @@ class ExpressionMatrix:
         # tuples by position, then building up column and row values
         # based on resulting tuples in a way that maintains order.
         sorted_column_keys = list(sorted(self.columns))
-        sorted_row_keys = list(sorted(self.rows))
+        sorted_row_keys = list(
+            sorted(self.rows, key=lambda row: row[1])
+        )
         yield BASE_COLUMNS + join_tuples(sorted_column_keys)
         for row_key in sorted_row_keys:
             row = join_tuples(row_key)
