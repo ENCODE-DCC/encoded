@@ -147,7 +147,7 @@ def get_rna_expression_search_request(request):
 @view_config(route_name='rnaget-expression-matrix', request_method='GET', permission='search')
 def rnaget_expression_matrix(context, request):
     search_request = get_rna_expression_search_request(request)
-    expression_arrayy = rna_expression_search_generator(search_request)
+    expression_array = rna_expression_search_generator(search_request)
     em = ExpressionMatrix()
     em.from_array(expression_array)
     return em.as_response()
