@@ -66,14 +66,6 @@ const BIOSAMPLES = [
 const MATRIX_VISUALIZE_LIMIT = 500;
 
 /**
- * Convert  a text to title case
- *
- * @param {string} title Title
- * @returns Title in title case
- */
-const titleize = (title) => title?.toLowerCase().replace(/(^|\s)\S/g, (firstLetter) => firstLetter.toUpperCase());
-
-/**
  * Maps a biosample to a sector color
  *
  * @param {string} biosampleName
@@ -97,6 +89,8 @@ const getSectorColor = (biosampleName) => {
 
 const NO_DISEASE_LABEL = 'No disease';
 
+const NO_DISEASE_CSS_CLASS = 'matrix__row-data--no-disease';
+
 const DISEASE_GROUPS = [
     [NO_DISEASE_LABEL],
     ['Cognitive impairment', 'mild cognitive impairment'],
@@ -113,7 +107,7 @@ const DISEASES = ['Cognitive impairment', 'mild cognitive impairment', 'Alzheime
  */
 const getDiseaseColorCode = (availableDiseases) => {
     if (!availableDiseases || availableDiseases.length === 0) {
-        return 'matrix__row-data--no-disease'; //  No disease
+        return NO_DISEASE_CSS_CLASS; //  No disease
     }
 
     if (availableDiseases.length > 1) {
@@ -134,7 +128,7 @@ const getDiseaseColorCode = (availableDiseases) => {
         return 'matrix__row-data--cognitive-impairment';
     }
 
-    return 'matrix__row-data--no-disease'; //  No disease
+    return NO_DISEASE_CSS_CLASS; //  No disease
 };
 
 /**
@@ -183,14 +177,14 @@ const getHeaderMarkup = (context) => {
     const { x } = context.matrix;
 
     // get header data
-    let headers = x?.assay_title?.buckets?.filter((header) => !excludedAssays.includes(header.key))?.map((bucket) => {
-        const assayWithTargetLabel = (bucket['target.label']?.buckets).map((targetBucket) => ({
+    let headers = x.assay_title?.buckets?.filter((header) => !excludedAssays.includes(header.key))?.map((bucket) => {
+        const assayWithTargetLabel = bucket['target.label']?.buckets?.map((targetBucket) => ({
             key: targetBucket.key,
             docCount: bucket.doc_count,
             assay: bucket.key,
         }));
 
-        return assayWithTargetLabel.some((target) => target.key === 'no_target')
+        return assayWithTargetLabel?.some((target) => target.key === 'no_target')
             ? {
                 key: bucket.key,
                 docCount: bucket.doc_count,
@@ -282,7 +276,7 @@ const getDataTableData = (context) => {
             }
         });
 
-        assayTitles?.forEach((assayTitleBucket) => {
+        assayTitles.forEach((assayTitleBucket) => {
             const assay = assayTitleBucket['target.label'] || assayTitleBucket.key;
             xKey = xKeys.indexOf(assay) + 1;
 
@@ -389,7 +383,7 @@ const convertContextToDataTable = (context, diseaseList, diseaseGroupIndex = 0) 
         const disease = Object.keys(diseaseInfo)[0];
         const rowData = diseaseInfo[disease] || [];
         const rowLength = rowData[0]?.rowContent?.length || 1;
-        const diseaseColor = rowData[0]?.diseaseColor;
+        const diseaseColor = rowData[0]?.diseaseColor || NO_DISEASE_CSS_CLASS;
         const replicateUrlPart = disease === NO_DISEASE_LABEL
             ? DISEASES.map((d) => `&replicates.library.biosample.disease_term_name!=${d.trim()}`).join('')
             : disease.split('and').map((d) => `&replicates.library.biosample.disease_term_name=${d.trim()}`).join('');
@@ -403,7 +397,7 @@ const convertContextToDataTable = (context, diseaseList, diseaseGroupIndex = 0) 
                     content: (
                         <div className="disease-text">
                             <div>
-                                <a href={url}>{titleize(NO_DISEASE_LABEL === disease ? 'No cognitive impairment' : disease)}</a>
+                                <a href={url}>{globals.titleize(NO_DISEASE_LABEL === disease ? 'No cognitive impairment' : disease)}</a>
                             </div>
                         </div>
                     ),
@@ -597,7 +591,7 @@ const MatrixPresentation = ({ context }) => {
             matrixConfigs.push({
                 rows,
                 rowKeys,
-                key: `rowItemKey${diseaseGroupIndex}`, // hacky but suffices as a key to applease React
+                key: `rowItemKey${diseaseGroupIndex}`, // hacky but suffices as a key to appease React
             });
         }
     });

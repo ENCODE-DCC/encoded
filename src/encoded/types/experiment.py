@@ -373,7 +373,6 @@ class Experiment(Dataset,
         'y': {
             'group_by': [
                 'replicates.library.biosample.donor.accession',
-
             ],
             'label': 'Donor',
         },
