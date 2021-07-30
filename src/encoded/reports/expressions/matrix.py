@@ -129,7 +129,7 @@ class ExpressionMatrix:
 
 RNA_EXPRESSION_DEFAULT_PARAMS = [
     ('field', 'expression.gene_id'),
-    ('field', 'files.@id'),
+    ('field', 'file.@id'),
     ('field', 'gene.symbol'),
     ('field', 'expression.tpm'),
     ('limit', 'all'),
