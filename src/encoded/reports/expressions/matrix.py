@@ -11,10 +11,12 @@ def includeme(config):
     config.scan(__name__)
 
 
-def extract_value(expression, key):
+def extract_value(expression, key, default=''):
     value = expression
     for field in key:
         value = value.get(field, {})
+    if isinstance(value, dict):
+        value = default
     return value
 
 
