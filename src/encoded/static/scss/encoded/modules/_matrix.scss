@@ -1908,13 +1908,9 @@ $rnaseq-term-name-colors:
         overflow: auto;
     }
 
-    .male-symbol {
-        transform: rotate(45deg);
+    .gender-symbol {
         display: inline-block;
-    }
-
-    .female-symbol {
-        display: inline-block;
+        font-family: 'Menlo, Courier, sans-serif';
     }
 
     &--first {

@@ -429,7 +429,7 @@ const convertContextToDataTable = (context, diseaseList, diseaseGroupIndex = 0) 
                     const key = accession?.key;
                     rowKey = key;
                     const ageText = age ? <span title="age"> {age} years</span> : null;
-                    const genderText = genderSymbol ? <div className={`${genderType}-symbol`} title={genderType}> {genderSymbol}</div> : null;
+                    const genderText = genderSymbol ? <div className="gender-symbol" title={genderType}> {genderSymbol}</div> : null;
 
                     row[0].content = (
                         <>
