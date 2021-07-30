@@ -229,6 +229,7 @@ def main(global_config, **local_config):
     config.include('.batch_download')
     config.include('.reports.batch_download')
     config.include('.reports.metadata')
+    config.include('.reports.expressions.matrix')
     config.include('.visualization')
     config.include('.glossary')
 

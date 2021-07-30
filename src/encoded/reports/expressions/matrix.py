@@ -1,4 +1,13 @@
+from pyramid.response import Response
+
 from encoded.reports.csv import CSVGenerator
+from encoded.search_views import rna_expression_search_generator
+from snovault.elasticsearch.searches.parsers import QueryString
+
+
+def includeme(config):
+    config.add_route('rnaget-expression-matrix', '/rnaget-expression-matrix{slash:/?}')
+    config.scan(__name__)
 
 
 def extract_value(expression, key):
@@ -53,6 +62,8 @@ class ExpressionMatrix:
     )
 
     FILL_VALUE = 0.0
+    CONTENT_TYPE = 'text/tsv'
+    CONTENT_DISPOSITION = 'attachment; filename="expression.tsv"'
 
     def __init__(self):
         self.columns = set()
@@ -103,7 +114,39 @@ class ExpressionMatrix:
                 )
             yield row
 
-
     def as_tsv(self):
         for row in self.as_matrix():
             yield self.csv.writerow(row)
+
+    def as_response(self):
+        return Response(
+            content_type=self.CONTENT_TYPE,
+            content_disposition=self.CONTENT_DISPOSITION,
+            app_iter=self.as_tsv(),
+        )
+
+
+RNA_EXPRESSION_DEFAULT_PARAMS = [
+    ('field', 'expression.gene_id'),
+    ('field', 'files.@id'),
+    ('field', 'gene.symbol'),
+    ('field', 'expression.tpm'),
+    ('limit', 'all'),
+]
+
+
+def get_rna_expression_search_request(request):
+    qs = QueryString(request)
+    qs.drop('field')
+    qs.drop('limit')
+    qs.extend(RNA_EXPRESSION_DEFAULT_PARAMS)
+    return qs.get_request_with_new_query_string()
+
+
+@view_config(route_name='rnaget-expression-matrix', request_method='GET', permission='search')
+def rnaget_expression_matrix(context, request):
+    search_request = get_rna_expression_search_request(request)
+    expression_arrayy = rna_expression_search_generator(search_request)
+    em = ExpressionMatrix()
+    em.from_array(expression_array)
+    return em.as_response()
