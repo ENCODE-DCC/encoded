@@ -3,6 +3,7 @@ from pyramid.view import view_config
 from encoded.cart_view import CartWithElements
 from encoded.genomic_data_service import GenomicDataService
 from encoded.searches.defaults import DEFAULT_ITEM_TYPES
+from encoded.searches.defaults import DEFAULT_RNA_EXPRESSION_SORT
 from encoded.searches.defaults import RESERVED_KEYS
 from encoded.searches.defaults import TOP_HITS_ITEM_TYPES
 from encoded.searches.fields import CartSearchResponseField
@@ -859,6 +860,7 @@ def rnaget_search(context, request):
                 default_item_types=[
                     RNA_EXPRESSION
                 ],
+                default_sort=DEFAULT_RNA_EXPRESSION_SORT,
                 reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
@@ -901,6 +903,7 @@ def rnaget_report(context, request):
                 default_item_types=[
                     RNA_EXPRESSION
                 ],
+                default_sort=DEFAULT_RNA_EXPRESSION_SORT,
                 reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
