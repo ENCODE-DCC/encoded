@@ -82,6 +82,7 @@ def includeme(config):
     config.add_route('rnaget-autocomplete', '/rnaget-autocomplete{slash:/?}')
     config.add_route('rnaget-search', '/rnaget-search{slash:/?}')
     config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
+    config.add_route('rnaget-quick', '/rnaget-quick{slash:/?}')
     config.scan(__name__)
 
 
@@ -914,6 +915,25 @@ def rnaget_report(context, request):
             NonSortableResponseField(),
             SortResponseField(),
             DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='rnaget-quick', request_method='GET', permission='search')
+def rnaget_quick(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            BasicSearchResponseField(
+                client=rna_client,
+                default_item_types=[
+                    RNA_EXPRESSION
+                ],
+                reserved_keys=RESERVED_KEYS,
+            )
         ]
     )
     return fr.render()
