@@ -82,6 +82,6 @@ TOP_HITS_ITEM_TYPES = [
 ]
 
 DEFAULT_RNA_EXPRESSION_SORT = [
-    '-expression.TPM',
+    '-expression.tpm',
     'gene.symbol',
 ]
