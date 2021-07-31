@@ -112,27 +112,32 @@ TabPanelPane.defaultProps = {
 };
 
 
-class TabPanel extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            currentTab: props.selectedTab || '',
-        };
-
-        this.handleClick = this.handleClick.bind(this);
-        this.getCurrentTab = this.getCurrentTab.bind(this);
-    }
+const TabPanel = ({
+    tabs,
+    tabDisplay,
+    selectedTab,
+    tabPanelCss,
+    tabCss,
+    navCss,
+    moreComponents,
+    moreComponentsClasses,
+    tabFlange,
+    decoration,
+    decorationClasses,
+    handleTabClick,
+    children,
+}) => {
+    const [currentTab, setCurrentTab] = React.useState(selectedTab || '');
 
     // Handle a click on a tab
-    handleClick(tab) {
-        if (this.props.handleTabClick) {
-            this.props.handleTabClick(tab); // must keep parent aware of selectedTab.
+    const handleClick = (tab) => {
+        if (handleTabClick) {
+            handleTabClick(tab); // must keep parent aware of selectedTab.
         }
-        if (tab !== this.state.currentTab) {
-            this.setState({ currentTab: tab });
+        if (tab !== currentTab) {
+            setCurrentTab(tab);
         }
-    }
+    };
 
     /**
      * Get the currently selected tab from `selectedTab`, or the component state `currentTab`, or
@@ -140,76 +145,83 @@ class TabPanel extends React.Component {
      *
      * @return {string} Key of selected tab
      */
-    getCurrentTab() {
-        const { selectedTab } = this.props;
+    const getCurrentTab = () => {
         if (selectedTab === null || selectedTab) {
             return selectedTab;
         }
-        if (this.state.currentTab) {
-            return this.state.currentTab;
+        if (currentTab) {
+            return currentTab;
         }
-        return Object.keys(this.props.tabs)[0];
+        return Object.keys(tabs)[0];
+    };
+
+    let childrenCopy = [];
+    let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
+
+    React.useEffect(() => {
+        // If the selected tab is not in the tabs object, set it to the first tab.
+        if (selectedTab && !tabs[selectedTab]) {
+            setCurrentTab(Object.keys(tabs)[0]);
+        }
+    }, [selectedTab, tabs, currentTab]);
+
+    // We expect to find <TabPanelPane> child elements inside <TabPanel>. For any we find, get
+    // the React `key` value and copy it to an `id` value that we add to each child component.
+    // That lets each child get an HTML ID matching `key` without having to pass both a key and
+    // id with the same value. We also set the `active` property in the TabPanelPane component
+    // here too so that each pane knows whether it's the active one or not. ### React14
+    if (children) {
+        childrenCopy = React.Children.map(children, (child, i) => {
+            if (child !== null && child.type === TabPanelPane) {
+                firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
+
+                // Replace the existing child <TabPanelPane> component
+                const active = getCurrentTab() === child.key;
+                return React.cloneElement(child, { id: child.key, active });
+            }
+            return child;
+        });
     }
 
-    render() {
-        const { tabs, tabDisplay, tabPanelCss, tabCss, navCss, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
-        let children = [];
-        let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
-
-        // We expect to find <TabPanelPane> child elements inside <TabPanel>. For any we find, get
-        // the React `key` value and copy it to an `id` value that we add to each child component.
-        // That lets each child get an HTML ID matching `key` without having to pass both a key and
-        // id with the same value. We also set the `active` property in the TabPanelPane component
-        // here too so that each pane knows whether it's the active one or not. ### React14
-        if (this.props.children) {
-            children = React.Children.map(this.props.children, (child, i) => {
-                if (child !== null && child.type === TabPanelPane) {
-                    firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
-
-                    // Replace the existing child <TabPanelPane> component
-                    const active = this.getCurrentTab() === child.key;
-                    return React.cloneElement(child, { id: child.key, active });
-                }
-                return child;
-            });
-        }
-
-        return (
-            <div className={tabPanelCss}>
-                <div className={`tab-nav tab-nav-${this.getCurrentTab() ? this.getCurrentTab().replace(/\s/g, '') : ''}`}>
-                    <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
-                        {Object.keys(tabs).map((tab) => (
-                            <li key={tab} role="presentation" aria-controls={tab} className={`${tab.replace(/\s/g, '')}-tab ${tabCss} ${this.getCurrentTab() === tab ? 'active' : ''}`}>
-                                <TabItem tab={tab} handleClick={this.handleClick}>
-                                    {tabDisplay[tab] || tabs[tab]}
-                                </TabItem>
-                            </li>
-                        ))}
-                        {moreComponents ? <div className={moreComponentsClasses}>{moreComponents}</div> : null}
-                    </ul>
-                    {decoration ? <div className={decorationClasses}>{decoration}</div> : null}
-                    {tabFlange ? <div className="tab-flange" /> : null}
-                    <div className="tab-border" />
-                </div>
-                <div className="tab-content">
-                    {children}
-                </div>
+    return (
+        <div className={tabPanelCss}>
+            <div className={`tab-nav tab-nav-${getCurrentTab() ? getCurrentTab().replace(/\s/g, '') : ''}`}>
+                <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
+                    {Object.keys(tabs).map((tab) => (
+                        <React.Fragment key={tab}>
+                            {tabs[tab] ?
+                                <li role="presentation" aria-controls={tab} className={`${tab.replace(/\s/g, '')}-tab ${tabCss} ${getCurrentTab() === tab ? 'active' : ''}`}>
+                                    <TabItem tab={tab} handleClick={handleClick}>
+                                        {tabDisplay[tab] || tabs[tab]}
+                                    </TabItem>
+                                </li>
+                            : null}
+                        </React.Fragment>
+                    ))}
+                    {moreComponents ? <div className={moreComponentsClasses}>{moreComponents}</div> : null}
+                </ul>
+                {decoration ? <div className={decorationClasses}>{decoration}</div> : null}
+                {tabFlange ? <div className="tab-flange" /> : null}
+                <div className="tab-border" />
             </div>
-        );
-    }
-}
+            <div className="tab-content">
+                {childrenCopy}
+            </div>
+        </div>
+    );
+};
 
 TabPanel.propTypes = {
     /** Object with tab=>pane specifications */
     tabs: PropTypes.object.isRequired,
     /** Object with optional tab-rendering components */
     tabDisplay: PropTypes.object,
+    /** key of tab to select (must provide handleTabClick) too; null for no selection */
+    selectedTab: PropTypes.string,
     /** CSS class for the entire tab panel <div> */
     tabPanelCss: PropTypes.string,
     /** CSS class for each tab */
     tabCss: PropTypes.string,
-    /** key of tab to select (must provide handleTabClick) too; null for no selection */
-    selectedTab: PropTypes.string,
     /** Classes to add to navigation <ul> */
     navCss: PropTypes.string,
     /** Other components to render in the tab bar */

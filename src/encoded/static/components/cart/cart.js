@@ -13,7 +13,6 @@ import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../li
 import GenomeBrowser, { annotationTypeMap } from '../genome_browser';
 import { itemClass, atIdToType } from '../globals';
 import {
-    Checkbox,
     ItemAccessories,
     computeAssemblyAnnotationValue,
     filterForVisualizableFiles,
@@ -38,7 +37,7 @@ import {
     resetDatasetFacets,
     resetFileFacets,
 } from './facet';
-import { CartFileViewToggle, CartFileViewAddAll } from './file_view';
+import { CartFileViewToggle, CartFileViewOnlyToggle, FileViewControl } from './file_view';
 import CartLockTrigger from './lock';
 import CartMergeShared from './merge_shared';
 import Status from '../status';
@@ -460,20 +459,12 @@ const CartTools = ({
     sharedCart,
     visualizable,
     isFileViewOnly,
-    updateFileViewOnly,
 }) => {
     // Make a list of all the dataset types currently in the cart.
     const usedDatasetTypes = elements.reduce((types, elementAtId) => {
         const type = atIdToType(elementAtId);
         return types.includes(type) ? types : types.concat(type);
     }, []);
-
-    /**
-     * Called when the user clicks the "File view" button.
-     */
-    const handleFileViewClick = () => {
-        updateFileViewOnly();
-    };
 
     return (
         <div className="cart-tools">
@@ -495,13 +486,6 @@ const CartTools = ({
                 sharedCartObj={sharedCart}
                 cartType={cartType}
                 usedDatasetTypes={usedDatasetTypes}
-            />
-            <Checkbox
-                label="File view"
-                id="file-view-toggle"
-                checked={isFileViewOnly}
-                css="cart-checkbox file-view-toggle"
-                clickHandler={handleFileViewClick}
             />
         </div>
     );
@@ -528,8 +512,6 @@ CartTools.propTypes = {
     visualizable: PropTypes.bool,
     /** True if user has "File view" checked */
     isFileViewOnly: PropTypes.bool.isRequired,
-    /** Called when the user clicks the checkbox */
-    updateFileViewOnly: PropTypes.func.isRequired,
 };
 
 CartTools.defaultProps = {
@@ -566,42 +548,6 @@ CartPager.propTypes = {
 
 
 /**
- * Show the file-view controls, which currently only includes a button to add all selected
- * visualizable files to the current cart's file view.
- */
-const FileViewControl = ({ files, fileViewName, addAllToFileViewEnabled, disabled }) => (
-    <div className="file-view-controls">
-        {addAllToFileViewEnabled
-            ? (
-                <CartFileViewAddAll
-                    files={files}
-                    fileViewName={fileViewName}
-                    disabled={disabled || files.length === 0}
-                />
-            ) : null}
-    </div>
-);
-
-FileViewControl.propTypes = {
-    /** File objects to add to file view */
-    files: PropTypes.array,
-    /** Name of the current file view */
-    fileViewName: PropTypes.string,
-    /** True to enable the "Add all to file view" button */
-    addAllToFileViewEnabled: PropTypes.bool,
-    /** True if control should appear disabled */
-    disabled: PropTypes.bool,
-};
-
-FileViewControl.defaultProps = {
-    files: [],
-    fileViewName: '',
-    addAllToFileViewEnabled: false,
-    disabled: false,
-};
-
-
-/**
  * Displays controls at the top of search results within the tab content areas.
  */
 const CartSearchResultsControls = ({
@@ -617,7 +563,8 @@ const CartSearchResultsControls = ({
     const {
         filesToAddToFileView,
         fileViewName,
-        addAllToFileViewEnabled,
+        fileViewControlsEnabled,
+        isFileViewOnly,
     } = fileViewOptions;
     return (
         <div className="cart-search-results-controls">
@@ -627,7 +574,8 @@ const CartSearchResultsControls = ({
                     <FileViewControl
                         files={filesToAddToFileView}
                         fileViewName={fileViewName}
-                        addAllToFileViewEnabled={addAllToFileViewEnabled}
+                        fileViewControlsEnabled={fileViewControlsEnabled}
+                        isFileViewOnly={isFileViewOnly}
                         disabled={cartType !== 'ACTIVE'}
                     />
                 : <div />)
@@ -656,8 +604,10 @@ CartSearchResultsControls.propTypes = {
         filesToAddToFileView: PropTypes.array,
         /** File view name */
         fileViewName: PropTypes.string,
-        /** True to enable the "Add all to file view" button */
-        addAllToFileViewEnabled: PropTypes.bool,
+        /** True to enable the file view buttons */
+        fileViewControlsEnabled: PropTypes.bool,
+        /** True if "File view" switch selected */
+        isFileViewOnly: PropTypes.bool,
     }),
     /** Current cart type, e.g. ACTIVE, SHARED... */
     cartType: PropTypes.string.isRequired,
@@ -1350,6 +1300,13 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
         }
     }, [selectedFilesInFileView.length]);
 
+    React.useEffect(() => {
+        // Reset the currently selected tab if the user selects `isFileViewOnly`.
+        if (isFileViewOnly && displayedTab !== 'browser' && displayedTab !== 'processeddata') {
+            setDisplayedTab('processeddata');
+        }
+    }, [isFileViewOnly]);
+
     // Enable the "Set file view" checkbox if the hashtag in the URL matches the current file view.
     React.useEffect(() => {
         const parsedUrl = url.parse(locationHref);
@@ -1451,9 +1408,12 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                             visualizable={visualizableOnly}
                             preferredDefault={defaultOnly}
                             isFileViewOnly={isFileViewOnly}
-                            updateFileViewOnly={handleFileViewOnlyClick}
                         />
-                        {selectedFileTerms.assembly && selectedFileTerms.assembly[0] ? <div className="cart-assembly-indicator">{selectedFileTerms.assembly[0]}</div> : null}
+                        <CartFileViewOnlyToggle
+                            isFileViewOnly={isFileViewOnly}
+                            updateFileViewOnly={handleFileViewOnlyClick}
+                            selectedFilesInFileView={selectedFilesInFileView}
+                        />
                     </PanelHeading>
                 : null}
                 <PanelBody>
@@ -1502,33 +1462,50 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                             }
                             <TabPanel
                                 tabPanelCss="cart__display-content"
-                                tabs={{ datasets: 'All datasets', browser: 'Genome browser', processeddata: 'Processed data', rawdata: 'Raw data' }}
-                                tabDisplay={{
-                                    datasets: <CounterTab title={`Selected ${selectedDatasetType ? datasetTabTitles[selectedDatasetType] : 'datasets'}`} count={selectedDatasets.length} icon="dataset" voice="selected datasets" />,
-                                    browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
-                                    processeddata: <CounterTab title="Processed data" count={selectedFiles.length} icon="file" voice="processed data files" />,
-                                    rawdata: <CounterTab title="Raw data" count={rawdataFiles.length} icon="file" voice="raw data files" />,
-                                }}
+                                tabs={!isFileViewOnly
+                                    ? {
+                                        datasets: 'All datasets',
+                                        browser: 'Genome browser',
+                                        processeddata: 'Processed data',
+                                        rawdata: 'Raw data',
+                                    } : {
+                                        browser: 'Genome browser',
+                                        processeddata: 'Processed data',
+                                    }
+                                }
+                                tabDisplay={!isFileViewOnly
+                                    ? {
+                                        datasets: <CounterTab title={`Selected ${selectedDatasetType ? datasetTabTitles[selectedDatasetType] : 'datasets'}`} count={selectedDatasets.length} icon="dataset" voice="selected datasets" />,
+                                        browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
+                                        processeddata: <CounterTab title="Processed data" count={selectedFiles.length} icon="file" voice="processed data files" />,
+                                        rawdata: <CounterTab title="Raw data" count={rawdataFiles.length} icon="file" voice="raw data files" />,
+                                    } : {
+                                        browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
+                                        processeddata: <CounterTab title="Processed data" count={selectedFiles.length} icon="file" voice="processed data files" />,
+                                    }
+                                }
                                 selectedTab={displayedTab}
                                 handleTabClick={handleTabClick}
                             >
-                                <TabPanelPane key="datasets">
-                                    <CartSearchResultsControls
-                                        currentTab={displayedTab}
-                                        elements={selectedDatasets}
-                                        currentPage={pageNumbers.datasets}
-                                        totalPageCount={totalPageCount.datasets}
-                                        updateCurrentPage={updateDisplayedPage}
-                                        cartType={cartType}
-                                        loading={facetProgress !== -1}
-                                    />
-                                    <CartSearchResults
-                                        elements={selectedDatasets}
-                                        currentPage={pageNumbers.datasets}
-                                        cartControls={cartType !== 'OBJECT'}
-                                        loading={facetProgress !== -1}
-                                    />
-                                </TabPanelPane>
+                                {!isFileViewOnly ?
+                                    <TabPanelPane key="datasets">
+                                        <CartSearchResultsControls
+                                            currentTab={displayedTab}
+                                            elements={selectedDatasets}
+                                            currentPage={pageNumbers.datasets}
+                                            totalPageCount={totalPageCount.datasets}
+                                            updateCurrentPage={updateDisplayedPage}
+                                            cartType={cartType}
+                                            loading={facetProgress !== -1}
+                                        />
+                                        <CartSearchResults
+                                            elements={selectedDatasets}
+                                            currentPage={pageNumbers.datasets}
+                                            cartControls={cartType !== 'OBJECT'}
+                                            loading={facetProgress !== -1}
+                                        />
+                                    </TabPanelPane>
+                                : null}
                                 <TabPanelPane key="browser">
                                     <CartSearchResultsControls
                                         currentTab={displayedTab}
@@ -1553,7 +1530,8 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                         fileViewOptions={{
                                             filesToAddToFileView: filterForVisualizableFiles(selectedFiles),
                                             fileViewName: DEFAULT_FILE_VIEW_NAME,
-                                            addAllToFileViewEnabled: true,
+                                            fileViewControlsEnabled: true,
+                                            isFileViewOnly,
                                         }}
                                         cartType={cartType}
                                         loading={facetProgress !== -1}
@@ -1568,18 +1546,20 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                         loading={facetProgress !== -1}
                                     />
                                 </TabPanelPane>
-                                <TabPanelPane key="rawdata">
-                                    <CartSearchResultsControls
-                                        currentTab={displayedTab}
-                                        elements={selectedDatasets}
-                                        currentPage={pageNumbers.rawdata}
-                                        totalPageCount={totalPageCount.rawdata}
-                                        updateCurrentPage={updateDisplayedPage}
-                                        cartType={cartType}
-                                        loading={facetProgress !== -1}
-                                    />
-                                    <CartFiles files={rawdataFiles} currentPage={pageNumbers.rawdata} cartType={cartType} loading={facetProgress !== -1} />
-                                </TabPanelPane>
+                                {!isFileViewOnly ?
+                                    <TabPanelPane key="rawdata">
+                                        <CartSearchResultsControls
+                                            currentTab={displayedTab}
+                                            elements={selectedDatasets}
+                                            currentPage={pageNumbers.rawdata}
+                                            totalPageCount={totalPageCount.rawdata}
+                                            updateCurrentPage={updateDisplayedPage}
+                                            cartType={cartType}
+                                            loading={facetProgress !== -1}
+                                        />
+                                        <CartFiles files={rawdataFiles} currentPage={pageNumbers.rawdata} cartType={cartType} loading={facetProgress !== -1} />
+                                    </TabPanelPane>
+                                : null}
                             </TabPanel>
                         </div>
                     :

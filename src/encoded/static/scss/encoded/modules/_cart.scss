@@ -192,16 +192,6 @@
         border-bottom: 1px solid #ddd;
     }
 
-    // Header of cart panel.
-    @at-root #{&}__header {
-        display: block;
-
-        @media screen and (min-width: $screen-md-min) {
-            display: flex;
-            justify-content: space-between;
-        }
-    }
-
     @at-root #{&}__facet-disabled-overlay {
         position: absolute;
         top: 0;
@@ -248,6 +238,20 @@
                 stroke-width: 20px;
                 stroke: #000;
             }
+        }
+    }
+}
+
+.panel-heading {
+    &.cart__header {
+        display: block;
+        padding-top: 5px;
+        padding-bottom: 5px;
+
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     }
 }
@@ -329,19 +333,6 @@
         display: flex;
         flex: 0 1 auto;
         align-items: center;
-    }
-}
-
-.cart-assembly-indicator {
-    display: none;
-
-    @media screen and (min-width: $screen-md-min) {
-        display: flex;
-        padding: 0 10px;
-        align-items: center;
-        border: 1px solid #a0a0a0;
-        color: #606060;
-        font-weight: bold;
     }
 }
 
@@ -1208,29 +1199,38 @@ $file-view-checkbox-size: 14px;
     }
 }
 
-// Used for the checkbox to select whether to view only file view files.
 .file-view-toggle {
-    margin: 3px 0 0 0;
+    margin: 0;
 
-    input {
-        + label {
-            padding: 0 0 0 23px;
-            line-height: 1.6;
+    .file-view-toggle__title {
+        align-items: center;
+        margin-right: 5px;
 
-            &::before {
-                top: 3px;
-            }
-
-            svg {
-                top: 5px;
-            }
+        .cart-tab__count {
+            margin-right: 5px;
         }
     }
 }
 
 .file-view-controls {
-    display: flex;
-    align-items: center;
+    justify-content: stretch;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        justify-content: start;
+    }
+
+    .file-view-controls__control {
+        margin-right: 2px;
+        margin-bottom: 5px;
+        margin-left: 2px;
+        width: 100%;
+
+        @media screen and (min-width: $screen-md-min) {
+            width: auto;
+            margin-bottom: 0;
+        }
+    }
 }
 
 .cart-pager-area {
@@ -1413,11 +1413,14 @@ $file-view-checkbox-size: 14px;
 
 // Controls at the top of search results, below the tabs.
 .cart-search-results-controls {
-    display: flex;
     padding: 5px;
-    justify-content: space-between;
-    align-items: center;
     border-bottom: 1px solid #ccc;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
     .cart-checkbox {
         margin-top: 0;
@@ -1514,27 +1517,35 @@ $file-view-checkbox-size: 14px;
         padding: 0 5px;
         flex-grow: 1;
         align-items: center;
-        justify-content: left;
+        justify-content: space-between;
         overflow: hidden;
         font-weight: normal;
-        background-color: #fff;
 
-        .facet-selections-button__icon {
-            width: 14px;
-            margin-right: 5px;
-            padding: 0;
+        .facet-selections-button__label {
+            display: flex;
+            overflow: hidden;
+            line-height: 1rem;
+            font-size: 0.8rem;
 
-            svg {
+            .facet-selections-button__icon {
                 width: 14px;
-                fill: #000;
+                margin-right: 5px;
+                padding: 0;
+
+                svg {
+                    width: 14px;
+                    fill: #fff;
+                }
+            }
+
+            .facet-selections-button__text {
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
 
-        .facet-selections-button__label {
-            overflow: hidden;
-            line-height: 1rem;
-            text-overflow: ellipsis;
-            font-size: 0.8rem;
+        .facet-selections-button__close {
+            width: 8px;
         }
     }
 }
