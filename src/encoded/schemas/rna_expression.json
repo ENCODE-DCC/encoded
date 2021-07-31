@@ -234,7 +234,7 @@
             "open_on_load": true
         },
         "file.biosample_ontology.term_name": {
-            "title": "Biosample term name",
+            "title": "Biosample",
             "open_on_load": true,
             "type": "typeahead",
             "length": "long"
