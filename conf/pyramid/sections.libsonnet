@@ -43,7 +43,7 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
       'auth0.siteName': 'ENCODE DCC Submission',
       download_proxy: 'https://download.encodeproject.org/',
       'elasticsearch.server': elasticsearch_server,
-      rna_expression_elasticsearch_server: 'vpc-rna-expression-dro56qntagtgmls6suff2m7nza.us-west-2.es.amazonaws.com:9200',
+      rna_expression_elasticsearch_server: 'vpc-rna-expression-dro56qntagtgmls6suff2m7nza.us-west-2.es.amazonaws.com:80',
       'embed_cache.capacity': if development then 5000 else 25000,
       // Direct file transfer from external AWS S3 to internal S3 bucket
       external_aws_s3_transfer_allow: external_aws_s3_transfer_allow,
