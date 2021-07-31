@@ -401,6 +401,12 @@
         "purpose": "tagging",
         "method": "CRISPR",
         "award": "/awards/U41HG007355/",
-        "uuid": "10aca140-fb2a-4c27-ac35-a65205e0accf"
+        "uuid": "10aca140-fb2a-4c27-ac35-a65205e0accf",
+        "reagents": [
+            {
+            "source": "genbank",
+            "identifier": "thermo-fisher:01010101"
+            }
+        ],
     }
 ]
