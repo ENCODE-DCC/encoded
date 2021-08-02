@@ -86,7 +86,7 @@ const AnnotationComponent = (props, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
-    const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references=${context['@id']}`;
+    const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references.accession=${context.accession}`;
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? [...new Set(context.documents.map((documents) => documents['@id']))] : [];
@@ -622,7 +622,7 @@ const ReferenceComponent = (props, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
-    const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references=${context['@id']}`;
+    const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references.accession=${context.accession}`;
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
