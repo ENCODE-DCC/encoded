@@ -372,51 +372,38 @@ export class Graph extends React.Component {
 
     componentDidMount() {
         if (this.props.graph) {
-            if (BrowserFeat.getBrowserCaps('svg')) {
-                // Delay loading dagre for Jest testing compatibility;
-                // Both D3 and Jest have their own conflicting JSDOM instances
-                require.ensure(['dagre-d3', 'd3'], (require) => {
-                    if (this.graphdisplay) {
-                        this.d3 = require('d3');
-                        this.dagreD3 = require('dagre-d3');
+            // Delay loading dagre for Jest testing compatibility;
+            // Both D3 and Jest have their own conflicting JSDOM instances
+            require.ensure(['dagre-d3', 'd3'], (require) => {
+                if (this.graphdisplay) {
+                    this.d3 = require('d3');
+                    this.dagreD3 = require('dagre-d3');
 
-                        const el = this.graphdisplay;
+                    const el = this.graphdisplay;
 
-                        // Add SVG element to the graph component, and assign it classes, sizes, and a group
-                        const svg = this.d3.select(el).insert('svg', '#graph-node-info')
-                            .attr('id', 'pipeline-graph')
-                            .attr('class', 'pipeline-graph')
-                            .attr('preserveAspectRatio', 'none')
-                            .attr('version', '1.1');
-                        this.cv.savedSvg = svg;
+                    // Add SVG element to the graph component, and assign it classes, sizes, and a group
+                    const svg = this.d3.select(el).insert('svg', '#graph-node-info')
+                        .attr('id', 'pipeline-graph')
+                        .attr('class', 'pipeline-graph')
+                        .attr('preserveAspectRatio', 'none')
+                        .attr('version', '1.1');
+                    this.cv.savedSvg = svg;
 
-                        // Draw the graph into the panel; get the graph's view box and save it for
-                        // comparisons later
-                        const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el, !IS_DOWNLOAD_GRAPH);
-                        this.cv.viewBoxWidth = viewBoxWidth;
-                        this.cv.viewBoxHeight = viewBoxHeight;
+                    // Draw the graph into the panel; get the graph's view box and save it for
+                    // comparisons later
+                    const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el, !IS_DOWNLOAD_GRAPH);
+                    this.cv.viewBoxWidth = viewBoxWidth;
+                    this.cv.viewBoxHeight = viewBoxHeight;
 
-                        // Based on the size of the graph and view box, set the initial zoom level to
-                        // something that fits well.
-                        const initialZoomLevel = this.setInitialZoomLevel(el, svg);
-                        this.setState({ zoomLevel: initialZoomLevel });
+                    // Based on the size of the graph and view box, set the initial zoom level to
+                    // something that fits well.
+                    const initialZoomLevel = this.setInitialZoomLevel(el, svg);
+                    this.setState({ zoomLevel: initialZoomLevel });
 
-                        // Bind node/subnode click handlers to parent component handlers
-                        this.bindClickHandlers(this.d3, el);
-                    }
-                });
-            } else {
-                // Output text indicating that graphs aren't supported.
-                let el = this.graphdisplay;
-                const para = document.createElement('p');
-                para.className = 'browser-error';
-                para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
-                el.appendChild(para);
-
-                // Disable the download button
-                el = this.dlButton;
-                el.setAttribute('disabled', 'disabled');
-            }
+                    // Bind node/subnode click handlers to parent component handlers
+                    this.bindClickHandlers(this.d3, el);
+                }
+            });
         }
     }
 
