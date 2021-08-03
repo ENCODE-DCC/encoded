@@ -1275,6 +1275,48 @@ const basicTableColumns = {
 };
 
 
+const controlTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    control_type: {
+        title: 'Control type',
+        display: (experiment) => <>{experiment.control_type || <i>None</i>}</>,
+    },
+
+    target: seriesTableTargetColumn,
+
+    biosample_summary: {
+        title: 'Biosample summary',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
+
+    },
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+
 /**
  * Generate each of the unique diseases from the biosamples within the given experiment.
  * @param {object} experiment The experiment to generate the disease list from.
@@ -2251,7 +2293,7 @@ const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sort
                 <>
                     <div className="experiment-table__subheader">
                         Experiments
-                        <CartAddAllElements elements={experiments.map((experiment) => experiment['@id'])} />
+                        <CartAddAllElements elements={experimentsWithoutControls.map((experiment) => experiment['@id'])} />
                     </div>
                     <div className="table-counts">
                         {experimentsWithoutControls.length} experiment{experimentsWithoutControls.length === 1 ? '' : 's'}
@@ -2274,7 +2316,7 @@ const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sort
                         </div>
                         <SortTable
                             list={controls}
-                            columns={basicTableColumns}
+                            columns={controlTableColumns}
                             meta={{ adminUser, accessLevel }}
                         />
                     </>
