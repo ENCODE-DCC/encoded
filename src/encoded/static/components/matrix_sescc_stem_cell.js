@@ -4,7 +4,6 @@ import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { DataTable } from './datatable';
-import { BrowserFeat } from './browserfeat';
 import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';

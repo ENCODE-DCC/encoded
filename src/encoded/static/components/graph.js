@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { svgIcon } from '../libs/svg-icons';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
-import { BrowserFeat } from './browserfeat';
 import { requestFiles } from './objectutils';
 import Status, { sessionToAccessLevel, getObjectStatuses } from './status';
 
