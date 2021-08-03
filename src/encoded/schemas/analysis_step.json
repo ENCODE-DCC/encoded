@@ -60,6 +60,7 @@
                      "fastq demultiplexing",
                      "file format conversion",
                      "filtering",
+                     "genome compartment identification",
                      "genome indexing",
                      "genome segmentation",
                      "genotyping",
