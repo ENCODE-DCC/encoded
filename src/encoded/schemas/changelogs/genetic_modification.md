@@ -1,5 +1,9 @@
 ## Changelog for genetic_modification.json
 
+### Minor changes since schema version 11
+
+* Updated *identifier* regular expression in the *reagents* property to include the following pattern: 'thermo-fisher:\\d{8})', e.g. thermo-fisher:12345678
+
 ### Schema version 11
 * Added *MOI* (multiplicity of infection) and *guide_type* properties.
 * *guide_type* is a required property when *introduced_elements* specifies *gRNAs and CRISPR machinery*
