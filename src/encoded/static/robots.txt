@@ -13,6 +13,11 @@ Disallow: /metadata/
 Disallow: /entex-matrix/
 Disallow: /chip-seq-matrix/
 Disallow: /reference-epigenome-matrix/
+Disallow: /rnaget/
+Disallow: /single-cell/
+Disallow: /encode-software/
+Disallow: /region-search/
+Disallow: /brain-matrix/
 Disallow: /cgi-bin
 Disallow: /search
 Disallow: /report
@@ -25,6 +30,13 @@ Disallow: /metadata
 Disallow: /entex-matrix
 Disallow: /chip-seq-matrix
 Disallow: /reference-epigenome-matrix
+Disallow: /rnaget
+Disallow: /single-cell
+Disallow: /encode-software
+Disallow: /region-search
+Disallow: /brain-matrix
+Disallow: /encyclopedia/*
+Allow: /encyclopedia/
 Allow: /search/?type=Experiment$
 Allow: /search/?type=Experiment&status=released$
 Allow: /search/?type=Experiment&control_type!=*&status=released&perturbed=false$
