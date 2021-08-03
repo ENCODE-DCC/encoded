@@ -174,3 +174,16 @@ def functional_characterization_experiment_7(testapp, lab, award, ctcf, heart):
          }]
     }
     return item
+
+
+@pytest.fixture
+def fcc_experiment_elements_mapping(lab, award, heart, pooled_clone_sequencing):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'MPRA',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'elements_mapping': pooled_clone_sequencing['uuid']
+    }
+    return item

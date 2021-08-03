@@ -1,5 +1,8 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Schema version 9
+* *elements_mapping* property was replaced by an array *elements_mappings*
+
 ### Minor changes since schema version 8
 * Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum

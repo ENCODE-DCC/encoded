@@ -803,10 +803,20 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {context.elements_mapping ?
-                                <div data-test="elements-mapping">
-                                    <dt>Elements mapping</dt>
-                                    <dd><a href={context.elements_mapping}>{globals.atIdToAccession(context.elements_mapping)}</a></dd>
+                            {context.elements_mappings && context.elements_mappings.length > 0 ?
+                                <div data-test="elements-mappings">
+                                    <dt>Elements mappings</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.elements_mappings.map((mapping) => (
+                                                <li key={mapping}>
+                                                    <a href={mapping}>
+                                                        {globals.atIdToAccession(mapping)}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
                                 </div>
                             : null}
 
