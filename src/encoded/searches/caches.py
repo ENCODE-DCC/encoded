@@ -10,6 +10,7 @@ def includeme(config):
     config.registry[REDIS_CLIENT] = StrictRedis(
         host=settings.get('local_storage_host'),
         port=settings.get('local_storage_port'),
+        socket_timeout=3,
         db=4,
     )
 
