@@ -1291,7 +1291,7 @@ const controlTableColumns = {
 
     control_type: {
         title: 'Control type',
-        display: (experiment) => <>{experiment.control_type || <i>None</i>}</>,
+        display: (experiment) => <>{experiment.control_type}</>,
     },
 
     target: seriesTableTargetColumn,
