@@ -7,7 +7,7 @@ from snovault.elasticsearch.searches.responses import FieldedInMemoryResponse
 from snovault.elasticsearch.searches.responses import FieldedResponse
 
 
-_redis_lru_cache = None
+_redis_lru_cache = RedisLRUCache(None)
 
 
 def includeme(config):
@@ -21,8 +21,9 @@ def includeme(config):
         socket_timeout=3,
         db=4,
     )
-    config.registry[REDIS_LRU_CACHE] = RedisLRUCache(client)
-    _redis_lru_cache = config.registry[REDIS_LRU_CACHE]
+    # Bind client asynchronously.
+    _redis_lru_cache.client = client
+    config.registry[REDIS_LRU_CACHE] = _redis_lru_cache
 
 
 class RedisLRUCache():
