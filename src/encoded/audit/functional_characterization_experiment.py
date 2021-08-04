@@ -149,6 +149,18 @@ def audit_experiment_mixed_expression_measurement_methods(value, system, exclude
         )
 
 
+def audit_CRISPR_screen_not_in_series(value, system, excluded_types):
+    '''CRISPR screen experiments are expected to belong to a series'''
+    if value['status'] in excluded_types:
+        return
+    if value['assay_term_name'] != 'CRISPR screen':
+        return
+    related_series = value.get('related_series', [])
+    if related_series == []:
+        detail = f'CRISPR screen {audit_link(path_to_text(value["@id"]),value["@id"])} is not part of a series.'
+        yield AuditFailure('missing related_series', detail, level='INTERNAL_ACTION')
+
+
 function_dispatcher_without_files = {
     'audit_biosample': audit_experiment_biosample,
     'audit_documents': audit_experiment_documents,
@@ -159,7 +171,8 @@ function_dispatcher_without_files = {
     'audit_replicates_no_libraries': audit_experiment_replicates_with_no_libraries,
     'audit_technical_replicates_same_library': audit_experiment_technical_replicates_same_library,
     'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
-    'audit_experiment_mixed_expression_measurement_methods': audit_experiment_mixed_expression_measurement_methods
+    'audit_experiment_mixed_expression_measurement_methods': audit_experiment_mixed_expression_measurement_methods,
+    'audit_CRISPR_screen_not_in_series': audit_CRISPR_screen_not_in_series,
 }
 function_dispatcher_with_files = {
     'audit_no_processed_data': audit_experiment_no_processed_data,
