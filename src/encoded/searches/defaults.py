@@ -80,3 +80,8 @@ TOP_HITS_ITEM_TYPES = [
     'Reference',
     'PublicationData',
 ]
+
+DEFAULT_RNA_EXPRESSION_SORT = [
+    '-expression.tpm',
+    'gene.symbol',
+]

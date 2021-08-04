@@ -3,6 +3,7 @@ from pyramid.view import view_config
 from encoded.cart_view import CartWithElements
 from encoded.genomic_data_service import GenomicDataService
 from encoded.searches.defaults import DEFAULT_ITEM_TYPES
+from encoded.searches.defaults import DEFAULT_RNA_EXPRESSION_SORT
 from encoded.searches.defaults import RESERVED_KEYS
 from encoded.searches.defaults import TOP_HITS_ITEM_TYPES
 from encoded.searches.fields import CartSearchResponseField
@@ -81,6 +82,7 @@ def includeme(config):
     config.add_route('rnaget-autocomplete', '/rnaget-autocomplete{slash:/?}')
     config.add_route('rnaget-search', '/rnaget-search{slash:/?}')
     config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
+    config.add_route('rnaget-quick', '/rnaget-quick{slash:/?}')
     config.scan(__name__)
 
 
@@ -859,6 +861,7 @@ def rnaget_search(context, request):
                 default_item_types=[
                     RNA_EXPRESSION
                 ],
+                default_sort=DEFAULT_RNA_EXPRESSION_SORT,
                 reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
@@ -901,6 +904,7 @@ def rnaget_report(context, request):
                 default_item_types=[
                     RNA_EXPRESSION
                 ],
+                default_sort=DEFAULT_RNA_EXPRESSION_SORT,
                 reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
@@ -911,6 +915,25 @@ def rnaget_report(context, request):
             NonSortableResponseField(),
             SortResponseField(),
             DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='rnaget-quick', request_method='GET', permission='search')
+def rnaget_quick(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            BasicSearchResponseField(
+                client=rna_client,
+                default_item_types=[
+                    RNA_EXPRESSION
+                ],
+                reserved_keys=RESERVED_KEYS,
+            )
         ]
     )
     return fr.render()
