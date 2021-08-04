@@ -1,7 +1,17 @@
 import json
 
 from redis import StrictRedis
+from encoded.searches.interfaces import REDIS_CLIENT
 from snovault.elasticsearch.searches.parsers import ParamsParser
+
+
+def includeme(config):
+    settings = config.registry.settings
+    config.registry[REDIS_CLIENT] = StrictRedis(
+        host=settings.get('local_storage_host'),
+        port=settings.get('local_storage_port'),
+        db=4,
+    )
 
 
 class RedisLRUCache():

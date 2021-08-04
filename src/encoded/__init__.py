@@ -268,6 +268,7 @@ def main(global_config, **local_config):
     config.include('.upgrade')
     config.include('.audit')
     config.include('.searches.configs')
+    config.include('.searches.caches')
 
     config.include('.genomic_data_service')
 
