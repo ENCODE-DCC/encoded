@@ -2984,7 +2984,7 @@ class FileGalleryRendererComponent extends React.Component {
             /** Filters for files */
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
-            currentTab: 'browser',
+            currentTab: 'tables',
             /** Sorted compiled dataset analysis objects filtered by available assemblies */
             compiledAnalyses: compileAnalyses(props.analyses, datasetFiles, 'choose analysis'),
             /** Index of currently/last selected `compiledAnalyses`. */
@@ -3056,11 +3056,13 @@ class FileGalleryRendererComponent extends React.Component {
             });
         // If there are visualizable files, set default tab to be browser and set default assembly to be the most recent assembly
         } else {
-            // Determine available assemblies
-            const assemblyList = this.setAssemblyList(this.state.files);
-            // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-            const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-            this.filterFiles(newAssembly, 'assembly');
+            this.setState({ currentTab: 'browser' }, () => {
+                // Determine available assemblies
+                const assemblyList = this.setAssemblyList(this.state.files);
+                // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+                const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+                this.filterFiles(newAssembly, 'assembly');
+            });
         }
     }
 
