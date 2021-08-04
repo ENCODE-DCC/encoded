@@ -209,8 +209,7 @@ export const compileAnalyses = (analyses, files, dataFormat = null, allowMixed =
         // `UNIFORM_PIPELINE_LAB` is only valid if alone.
         const qualifyingAnalyses = analyses.filter((analysis) => (
             analysis.assembly
-            && ((allowMixed && analysis.assembly === 'mixed') || analysis.assembly !== 'mixed')
-            && ((!allowMixed && analysis.genome_annotation !== 'mixed') || allowMixed)
+            && (allowMixed || (analysis.assembly !== 'mixed' && analysis.genome_annotation !== 'mixed'))
         ));
 
         if (qualifyingAnalyses.length > 0) {
