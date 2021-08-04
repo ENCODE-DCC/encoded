@@ -1,18 +1,28 @@
 import json
 
 from redis import StrictRedis
-from encoded.searches.interfaces import REDIS_CLIENT
+from encoded.searches.interfaces import REDIS_LRU_CACHE
 from snovault.elasticsearch.searches.parsers import ParamsParser
+from snovault.elasticsearch.searches.responses import FieldedInMemoryResponse
+from snovault.elasticsearch.searches.responses import FieldedResponse
+
+
+_redis_lru_cache = None
 
 
 def includeme(config):
+    # Handle to grab outside of the request cycle
+    # for configuring decorator.
+    global _redis_lru_cache
     settings = config.registry.settings
-    config.registry[REDIS_CLIENT] = StrictRedis(
+    client = StrictRedis(
         host=settings.get('local_storage_host'),
         port=settings.get('local_storage_port'),
         socket_timeout=3,
         db=4,
     )
+    config.registry[REDIS_LRU_CACHE] = RedisLRUCache(client)
+    _redis_lru_cache = config.registry[REDIS_LRU_CACHE]
 
 
 class RedisLRUCache():
@@ -44,3 +54,15 @@ def should_cache_search_results(context, request):
 def make_key_from_request(prefix, context, request):
     pr = ParamsParser(request)
     return f'{prefix}.{str(tuple(sorted(pr._params())))}'
+
+
+def cached_fielded_response_factory(context, request):
+    # If we're caching we want to render results in memory,
+    # else we return default FieldedResponse.
+    if should_cache_search_results(context, request):
+        return FieldedInMemoryResponse
+    return FieldedResponse
+
+
+def get_redis_lru_cache():
+    return _redis_lru_cache
