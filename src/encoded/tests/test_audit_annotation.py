@@ -59,3 +59,18 @@ def test_audit_annotation_derived_from_revoked(
     res = testapp.get(annotation_dataset['@id'] + '@@index-data')
     assert any(error['category'] == 'derived from revoked file'
                for error in collect_audit_errors(res))
+
+
+def test_audit_annotation_original_files(
+    testapp, file, annotation_dataset
+):
+    # https://encodedcc.atlassian.net/browse/ENCD-4448
+    res = testapp.get(annotation_dataset['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing original_files'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(file['@id'], {
+        'dataset': annotation_dataset['@id']
+    })
+    res = testapp.get(annotation_dataset['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing original_files'
+               for error in collect_audit_errors(res))

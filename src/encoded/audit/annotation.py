@@ -39,3 +39,17 @@ def audit_annotation_derived_from_revoked(value, system):
                         f'that was derived from a revoked file {audit_link(path_to_text(f), f)}.'
                     )
                     raise AuditFailure('derived from revoked file', detail, level='WARNING')
+
+
+@audit_checker('Annotation', frame='object')
+def audit_annotation_missing_original_files(value, system):
+    '''
+    Annotations should have original_files present
+    '''
+    if value['status'] in ['replaced', 'revoked', 'deleted']:
+        return
+
+    original_files = value.get('original_files', [])
+    if original_files == []:
+        detail = f'Annotation {audit_link(path_to_text(value["@id"]), value["@id"])} has no original_files submitted.'
+        raise AuditFailure('missing original_files', detail, level='INTERNAL_ACTION')
