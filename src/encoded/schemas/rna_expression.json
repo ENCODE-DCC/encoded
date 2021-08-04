@@ -226,22 +226,22 @@
     },
     "facets": {
         "file.assay_title": {
-            "title": "Assay title",
+            "title": "Assay title"
         },
         "file.biosample_ontology.classification": {
-            "title": "Biosample classification",
+            "title": "Biosample classification"
         },
         "file.biosample_ontology.term_name": {
-            "title": "Biosample",
+            "title": "Biosample"
         },
         "gene.symbol": {
-            "title": "Gene symbol",
+            "title": "Gene symbol"
         },
         "file.assembly": {
-            "title": "Assembly",
+            "title": "Assembly"
         },
         "dataset.replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism",
+            "title": "Organism"
         },
         "dataset.replicates.library.biosample.sex": {
             "title": "Biosample sex"
