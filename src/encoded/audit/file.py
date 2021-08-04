@@ -37,6 +37,25 @@ def audit_file_processed_step_run(value, system):
                                    detail, level='WARNING')
 
 
+def audit_file_raw_step_run(value, system):
+    if value['status'] in ['replaced',
+                           'deleted',
+                           'revoked',
+                           'uploading',
+                           'content error',
+                           'upload failed']:
+        return
+    if value['output_category'] not in ['raw data']:
+        return
+    if 'derived_from' not in value or \
+            'derived_from' in value and len(value['derived_from']) == 0:
+        return
+    else:
+        if 'step_run' not in value:
+            detail = f'Missing analysis_step_run information in file {audit_link(path_to_text(value["@id"]), value["@id"])}.'
+            yield AuditFailure('missing analysis_step_run', detail, level='WARNING')
+
+
 def audit_file_processed_derived_from(value, system):
     if value['output_category'] in ['raw data',
                                     'reference']:
@@ -613,6 +632,7 @@ def audit_file_index_of(value, system):
 function_dispatcher = {
     'audit_step_run': audit_file_processed_step_run,
     'audit_derived_from': audit_file_processed_derived_from,
+    'audit_file_raw_step_run': audit_file_raw_step_run,
     'audit_assembly': audit_file_assembly,
     'audit_replicate_match': audit_file_replicate_match,
     'audit_paired_with': audit_paired_with,

@@ -1,6 +1,18 @@
 import pytest
 
 
+def collect_audit_errors(result, error_types=None):
+    errors = result.json['audit']
+    errors_list = []
+    if error_types:
+        for error_type in error_types:
+            errors_list.extend(errors[error_type])
+    else:
+        for error_type in errors:
+            errors_list.extend(errors[error_type])
+    return errors_list
+
+
 def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {
                        'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file4['uuid']})
@@ -317,6 +329,21 @@ def test_audit_file_step_run(testapp, bam_file, analysis_step_run_bam):
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'missing analysis_step_run'
                for error in errors_list)
+
+
+def test_audit_raw_file_step_run(testapp, file_fastq_2, file_subreads_posted, analysis_step_run_bam):
+    # https://encodedcc.atlassian.net/browse/ENCD-5927
+    res = testapp.get(file_fastq_2['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing analysis_step_run'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(file_fastq_2['@id'], {'derived_from': [file_subreads_posted['@id']]})
+    res = testapp.get(file_fastq_2['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing analysis_step_run'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(file_fastq_2['@id'], {'step_run': analysis_step_run_bam['@id']})
+    res = testapp.get(file_fastq_2['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing analysis_step_run'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_file_derived_from_empty(testapp, file7):

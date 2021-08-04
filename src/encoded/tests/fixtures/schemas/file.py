@@ -2147,3 +2147,20 @@ def file_sequence_barcodes(testapp, lab, award, experiment):
         'md5sum': '514ddb776705756a52f8b46cec90f3d7',
     }
     return item
+
+
+@pytest.fixture
+def file_subreads_posted(testapp, experiment, award, lab, replicate_url, platform3):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate_url['@id'],
+        'lab': lab['@id'],
+        'file_size': 5768,
+        'platform': platform3['@id'],
+        'award': award['@id'],
+        'file_format': 'bam',
+        'md5sum': '4dc593c21fa5ef4088b384c0f3c49aac',
+        'output_type': 'subreads',
+        'status': 'in progress'
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
