@@ -3,8 +3,8 @@ from pyramid.view import view_config
 
 from encoded.cart_view import CartWithElements
 from encoded.genomic_data_service import GenomicDataService
+from encoded.searches.caches import cached_fielded_response_factory
 from encoded.searches.caches import get_redis_lru_cache
-from encoded.searches.caches import fielded_response_factory
 from encoded.searches.caches import make_key_from_request
 from encoded.searches.caches import should_cache_search_results
 from encoded.searches.defaults import DEFAULT_ITEM_TYPES
