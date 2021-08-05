@@ -1,16 +1,9 @@
-'use strict';
-var SUBS = {'&': '\\u0026', '<': '\\u003C', '>': '\\u003E'};
-var unsafe_re = /[\<\>\&]/g;
 
+const SUBS = { '&': '\\u0026', '<': '\\u003C', '>': '\\u003E' };
+// eslint-disable-next-line no-useless-escape
+const unsafeRe = /[\<\>\&]/g;
 
-var sub = function (match) {
-    return SUBS[match];
-};
-
-
-var jsonScriptEscape = function (json_string) {
-    return json_string.replace(unsafe_re, sub);
-};
-
+const sub = (match) => SUBS[match];
+const jsonScriptEscape = (jsonString) => jsonString.replace(unsafeRe, sub);
 
 module.exports = jsonScriptEscape;

@@ -128,8 +128,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     background-repeat: repeat;
 }
 
-/* remove external-link icon if there is no text in link <a></a>
-Note does not work in =<IE8, oh well */
+// remove external-link icon if there is no text in link <a></a>
 a[href^="http"]:empty::after {
     content: none;
 }

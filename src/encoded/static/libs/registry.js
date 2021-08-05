@@ -51,5 +51,6 @@ export default class Registry {
     }
 
     fallback() {
+        //
     }
 }

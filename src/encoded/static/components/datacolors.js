@@ -6,10 +6,10 @@ import _ from 'underscore';
 //
 // Creating a new mapping of data keys to colors, passing in an array of data keys. The order of
 // keys in the given array determines their color assignment.
-// var biosampleTypeColors = new DataColors(biosampleTypes);
+// const biosampleTypeColors = new DataColors(biosampleTypes);
 //
 // With an array of data keys, return a corresponding array of colors, each one lightened by 50%:
-// var colorList = biosampleTypeColors.colorList(data, {lighten: 50});
+// const colorList = biosampleTypeColors.colorList(data, {lighten: 50});
 
 
 // List of colors. Those wishing to modify the colors used by this module need to modify this list.

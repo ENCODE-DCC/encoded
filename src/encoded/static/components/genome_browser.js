@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { BrowserFeat } from './browserfeat';
 import { filterForVisualizableFiles } from './objectutils';
 import Tooltip from '../libs/ui/tooltip';
 import GeneSearch from './gene_search';
@@ -667,7 +666,6 @@ class GenomeBrowser extends React.Component {
             x0: 0,
             x1: 59e6,
             pinnedFiles: [],
-            disableBrowserForIE: false,
             sortToggle: this.props.sortParam.map(() => true), // Indicates ascending or descending order for each sort parameter; true is descending and false is ascending
             primarySort: this.props.sortParam[0] || 'Replicates', // Indicates the final (primary) sort applied to the list of files
             colorBlock: [], // Legend entries
@@ -686,23 +684,18 @@ class GenomeBrowser extends React.Component {
     }
 
     componentDidMount() {
-        // Check if browser is IE 11 and disable browser if so
-        if (BrowserFeat.getBrowserCaps('uaTrident')) {
-            this.setState({ disableBrowserForIE: true });
-        } else {
-            // Load GenomeVisualizer library
-            // We have to wait for the component to mount because the library relies on window variable
-            require.ensure(['genome-visualizer'], (require) => {
-                this.GV = require('genome-visualizer');
-                // Determine pinned files based on genome, filter and sort files, compute and draw tracks
-                this.setGenomeAndTracks();
-            });
-        }
+        // Load GenomeVisualizer library
+        // We have to wait for the component to mount because the library relies on window variable
+        require.ensure(['genome-visualizer'], (require) => {
+            this.GV = require('genome-visualizer');
+            // Determine pinned files based on genome, filter and sort files, compute and draw tracks
+            this.setGenomeAndTracks();
+        });
     }
 
     /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps, prevState) {
-        if (!(this.state.disableBrowserForIE) && this.GV) {
+        if (this.GV) {
             const contigUpdate = this.state.contig !== prevState.contig;
             const assemblyUpdate = this.props.assembly !== prevProps.assembly || this.props.annotation !== prevProps.annotation;
             const filesUpdate = !(_.isEqual(this.props.files, prevProps.files));
@@ -1065,7 +1058,7 @@ class GenomeBrowser extends React.Component {
     render() {
         return (
             <>
-                {(this.state.trackList.length > 0 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
+                {(this.state.trackList.length > 0 && this.state.genome !== null) ?
                  <>
                      <div className="gene-search">
                          <i className="icon icon-search" />
@@ -1097,13 +1090,7 @@ class GenomeBrowser extends React.Component {
                      </div>
                  </>
                  :
-                 <>
-                     {(this.state.disableBrowserForIE) ?
-                      <div className="browser-error valis-browser">The genome browser does not support Internet Explorer. Please upgrade your browser to Edge to visualize files on ENCODE.</div>
-                      :
-                      <div className="browser-error valis-browser">There are no visualizable results.</div>
-                     }
-                 </>
+                    <div className="browser-error valis-browser">There are no visualizable results.</div>
                 }
             </>
         );
