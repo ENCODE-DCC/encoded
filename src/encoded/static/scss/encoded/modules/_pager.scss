@@ -22,7 +22,9 @@ $pager-dimension: 24px;
 
 // Pager's direction buttons.
 .pager__dir {
-    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0;
     min-height: $pager-dimension;
     width: $pager-dimension;
@@ -36,7 +38,7 @@ $pager-dimension: 24px;
     }
 
     &:disabled {
-        color: #a0a0a0;
+        fill: #a0a0a0;
         background-color: #fff;
         cursor: default;
     }
