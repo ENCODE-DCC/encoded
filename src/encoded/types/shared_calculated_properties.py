@@ -287,7 +287,7 @@ class CalculatedBiosampleSummary:
                                         add_classification_flag = True
 
         sentence_parts = [
-            'strain_background',
+            'genotype_strain',
             'experiment_term_phrase',
             'phase',
             'fractionated',

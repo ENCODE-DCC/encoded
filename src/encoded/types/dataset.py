@@ -383,57 +383,36 @@ class TransgenicEnhancerExperiment(
                     biosample_summary_dictionary = biosample_info[0]
                     biosample_drop_age_sex_flag = biosample_info[1]
                     biosample_add_classification_flag = biosample_info[2]
+                    biosample_drop_originated_from_flag = biosample_info[3]
                     dictionaries_of_phrases.append(biosample_summary_dictionary)
                     if biosample_drop_age_sex_flag is True:
                         drop_age_sex_flag = True
                     if biosample_add_classification_flag is True:
                         add_classification_flag = True
 
-        if drop_age_sex_flag is True:
-            sentence_parts = [
-                'strain_background',
-                'experiment_term_phrase',
-                'phase',
-                'fractionated',
-                'synchronization',
-                'modifications_list',
-                'originated_from',
-                'treatments_phrase',
-                'depleted_in',
-                'disease_term_name',
-                'pulse_chase_time'
-            ]
-        elif add_classification_flag is True:
-            sentence_parts = [
-                'strain_background',
-                'experiment_term_phrase',
-                'sample_type',
-                'phase',
-                'fractionated',
-                'sex_stage_age',
-                'synchronization',
-                'modifications_list',
-                'originated_from',
-                'treatments_phrase',
-                'depleted_in',
-                'disease_term_name',
-                'pulse_chase_time'
-            ]
-        else:
-            sentence_parts = [
-                'strain_background',
-                'experiment_term_phrase',
-                'phase',
-                'fractionated',
-                'sex_stage_age',
-                'synchronization',
-                'modifications_list',
-                'originated_from',
-                'treatments_phrase',
-                'depleted_in',
-                'disease_term_name',
-                'pulse_chase_time'
-            ]
+        sentence_parts = [
+            'genotype_strain',
+            'experiment_term_phrase',
+            'phase',
+            'fractionated',
+            'sex_stage_age',
+            'post_nucleic_acid_delivery_time',
+            'post_differentiation_time',
+            'synchronization',
+            'modifications_list',
+            'originated_from',
+            'treatments_phrase',
+            'depleted_in',
+            'disease_term_name',
+            'pulse_chase_time'
+        ]
+        if drop_age_sex_flag:
+            sentence_parts.remove('sex_stage_age')
+        if add_classification_flag:
+            sentence_parts.insert(2, 'sample_type')
+        if biosample_drop_originated_from_flag:
+            sentence_parts.remove('originated_from')
+
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 

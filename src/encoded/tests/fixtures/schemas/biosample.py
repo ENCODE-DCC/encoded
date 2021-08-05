@@ -38,6 +38,18 @@ def base_mouse_biosample(testapp, lab, award, source, mouse, liver):
 
 
 @pytest.fixture
+def base_mouse_biosample_2(testapp, lab, award, source, mouse, liver):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': liver['uuid'],
+        'lab': lab['uuid'],
+        'organism': mouse['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def biosample_1(testapp, lab, award, source, organism, heart):
     item = {
         'award': award['uuid'],
