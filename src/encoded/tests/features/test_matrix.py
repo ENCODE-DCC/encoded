@@ -10,6 +10,7 @@ pytestmark = [
 
 scenarios(
     'matrix_entex.feature',
+    'matrix_brain.feature',
     'matrix_experiment.feature',
     'matrix_reference_epigenome.feature',
     'matrix_chip_seq.feature',

@@ -59,6 +59,7 @@ const portal = {
                 { id: 'collections', title: 'Collections' },
                 { id: 'encore', title: 'RNA-protein interactions (ENCORE)', url: '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE', tag: 'collection' },
                 { id: 'entex', title: 'Epigenomes from four individuals (ENTEx)', url: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx', tag: 'collection' },
+                { id: 'brain', title: 'Rush Alzheimer’s Disease Study', url: '/brain-matrix/?type=Experiment&status=released&internal_tags=RushAD', tag: 'collection' },
                 { id: 'sescc', title: 'Stem Cell Development Matrix (SESCC)', url: '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC', tag: 'collection' },
                 { id: 'reference-epigenomes-human', title: 'Human reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', tag: 'collection' },
                 { id: 'reference-epigenomes-mouse', title: 'Mouse reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus', tag: 'collection' },

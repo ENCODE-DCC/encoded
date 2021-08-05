@@ -69,6 +69,12 @@ export const COLLECTIONS = [
         '@type': ['DataCollection'],
     },
     {
+        title: 'Rush Alzheimer’s Disease Study',
+        searchUrl: '/search/?type=Experiment&status=released&internal_tags=RushAD&limit=0&format=json',
+        '@id': '/brain-matrix/?type=Experiment&status=released&internal_tags=RushAD',
+        '@type': ['DataCollection'],
+    },
+    {
         title: 'Stem Cell Development Matrix (SESCC)',
         searchUrl: '/search/?type=Experiment&internal_tags=SESCC&limit=0&format=json',
         '@id': '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',

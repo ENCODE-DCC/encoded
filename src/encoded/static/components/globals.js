@@ -416,3 +416,12 @@ export const isMediaQueryBreakpointActive = (min) => {
     // Browser doesn't support matchMedia, so default to mobile.
     return false;
 };
+
+
+/**
+ * Convert  a text to title case
+ *
+ * @param {string} title Title
+ * @returns Title in title case
+ */
+export const titleize = (title) => title?.toLowerCase().replace(/(^|\s)\S/g, (firstLetter) => firstLetter.toUpperCase());

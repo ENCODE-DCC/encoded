@@ -1877,3 +1877,259 @@ $rnaseq-term-name-colors:
         }
     }
 }
+
+/* Styles specific to Rush Alzheimer’s Disease Study  */
+.matrix__content--brain {
+    .matrix {
+        tr {
+            td {
+                &:first-child {
+                    padding-right: 10px !important;
+                }
+
+                &:last-child {
+                    border-right: 1px solid $border-color;
+                }
+            }
+        }
+    }
+
+    table {
+        border: 1px solid #000;
+    }
+
+    .text-header {
+        border-top: 2px solid #000;
+        border-bottom: 2px solid #000;
+    }
+
+    .matrix__presentation {
+        flex: 0 1 95%;
+        overflow: auto;
+    }
+
+    .gender-symbol {
+        display: inline-block;
+        font-family: 'Menlo, Courier, sans-serif';
+    }
+
+    &--first {
+        > th {
+            border-top: 1px solid $border-color;
+        }
+
+        > td {
+            border-top: 1px solid $border-color;
+        }
+    }
+
+    .matrix__brain-corner {
+        vertical-align: middle;
+    }
+
+    .matrix__col-category-header {
+        > th {
+            width: $donor-cell-width;
+            padding: 0;
+
+            > a {
+                width: $donor-cell-width;
+                line-height: $donor-cell-width;
+                font-weight: bold;
+
+                // Column subcategory links
+                &.sub {
+                    font-weight: normal;
+                }
+
+                &:hover {
+                    background-color: transparent;
+                }
+            }
+
+            // Base of labels for assays with targets in header
+            &.category-base {
+                border-top: 3px solid $divider-color;
+            }
+
+            &:hover {
+                background-color: #e0e0e0;
+            }
+        }
+    }
+
+    .cirlce-base {
+        flex: none;
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        border: 1px solid #000;
+        margin: 1px;
+        cursor: pointer;
+    }
+
+    .matrix-brain-disease-identifier {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 2px;
+
+        &--alzheimers-disease {
+            @extend .cirlce-base;
+
+            background-color: #ff0028;
+        }
+
+        &--mild-cognitive-impairment {
+            @extend .cirlce-base;
+
+            background-color: #f00;
+        }
+
+        &--cognitive-impairment {
+            @extend .cirlce-base;
+
+            background-color: lime;
+        }
+
+        &--no-disease {
+            @extend .cirlce-base;
+
+            background-color: #fff;
+        }
+
+        &--legend-text {
+            font-size: 0.9rem;
+            vertical-align: top;
+            font-weight: 600;
+        }
+    }
+
+    .matrix__row-data--alzheimers-disease {
+        background-color: #e9f4e9;
+    }
+
+    .matrix__row-data-mild-cognitive-impairment {
+        background-color: #dec9ed;
+    }
+
+    .matrix__row-data--cognitive-impairment {
+        background-color: #fbedde;
+    }
+
+    .matrix__row-data--multiple-diseases {
+        background-color: #dbd5c4;
+    }
+
+    .matrix__row-data--no-disease {
+        background-color: #fff;
+    }
+
+    /**
+     * Styles specific to the Brain matrix.
+    */
+    $brain-cell-width: 30px;
+    $brain-cell-height: 30px;
+    $border-color: #e0e0e0;
+    $brain-legend-short-string-width: 33px;
+
+    // Displays donor-quadrant in the matrix itself.
+    .brain-cell {
+        display: flex;
+        flex-wrap: wrap;
+        width: $brain-cell-width;
+        height: $brain-cell-height;
+
+        .brain-quadrant {
+            flex: 0 0 50%;
+            height: 50%;
+        }
+    }
+
+    $brain-styles:
+        head-of-caudate-nucleus #f00 #000 top-left,
+        middle-frontal-area-46 #0f0 #fff top-right,
+        posterior-cingulate-gyrus #00f #000 bottom-left,
+        none #fff #fff bottom-right;
+
+    .brain-quadrant {
+        @each $biosample, $color, $textcolor, $curve in $brain-styles {
+            &--#{$biosample} {
+                border-#{$curve}-radius: $brain-cell-height / 2;
+                background-color: $color;
+
+                &.blank {
+                    background-color: #f0f0f0;
+                }
+            }
+        }
+    }
+
+    .brain-matrix-circle {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 1px solid #000 !important;
+    }
+
+    .brain-legend {
+        &--title {
+            margin-bottom: 0;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .brain-legend__row {
+            display: flex;
+            margin-bottom: 3px;
+
+            &--circle {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: 1px solid #000 !important;
+            }
+
+            &__item {
+                flex: auto;
+                text-align: left;
+            }
+
+            &--text {
+                font-size: 1.1rem;
+                padding-left: 5px;
+                padding-top: 4px;
+                margin-top: 2px;
+            }
+
+            &--disease {
+                border: 1px solid #000;
+                height: 25px;
+                width: 25px;
+            }
+        }
+    }
+
+    .brain-set {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        flex: 0 1 100%;
+
+        &__item {
+            flex: unset;
+            margin-right: 10px;
+        }
+    }
+
+    .disease-text {
+        font-size: 1.2rem;
+        padding: 10px;
+    }
+
+    .hide-item {
+        display: none;
+    }
+}

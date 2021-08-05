@@ -66,6 +66,7 @@ def includeme(config):
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('reference-epigenome-matrix', '/reference-epigenome-matrix{slash:/?}')
     config.add_route('entex-matrix', '/entex-matrix{slash:/?}')
+    config.add_route('brain-matrix', '/brain-matrix{slash:/?}')
     config.add_route('sescc-stem-cell-matrix', '/sescc-stem-cell-matrix{slash:/?}')
     config.add_route('chip-seq-matrix', '/chip-seq-matrix{slash:/?}')
     config.add_route('mouse-development-matrix', '/mouse-development-matrix{slash:/?}')
@@ -529,6 +530,35 @@ def entex_matrix(context, request):
             MissingMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 matrix_definition_name='entex',
+                reserved_keys=RESERVED_KEYS,
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+@view_config(route_name='brain-matrix', request_method='GET', permission='search')
+def brain_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Rush Alzheimer’s Disease Study'
+            ),
+            TypeResponseField(
+                at_type=['BrainMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            MissingMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='brain_matrix',
                 reserved_keys=RESERVED_KEYS,
             ),
             NotificationResponseField(),
