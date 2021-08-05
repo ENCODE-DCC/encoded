@@ -475,6 +475,12 @@
         "examined_loci": {
             "title": "Examined loci"
         },
+        "perturbation_type": {
+            "title": "Perturbation type"
+        },
+        "crispr_screen_readout": {
+            "title": "CRISPR screen readout"
+        },
         "biosample_summary": {
             "title": "Biosample summary"
         },

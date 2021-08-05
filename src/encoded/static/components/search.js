@@ -454,6 +454,11 @@ const ExperimentComponent = (props, reactContext) => {
                         :
                             <span>{result.assay_term_name}</span>
                         }
+                        {(isFunctionalExperiment && result.crispr_screen_readout) ?
+                            <span>
+                                {` (${result.crispr_screen_readout})`}
+                            </span>
+                        : null}
                         {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
                         {(isFunctionalExperiment && examinedLoci.length > 0) ?
                             <span>
