@@ -28,7 +28,6 @@ import {
     requestSearch,
     requestUri,
     requestObjects,
-    isVisualizableAssembly,
 } from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
@@ -2891,12 +2890,10 @@ const TabPanelFacets = ({
     // Create object for Assembly facet from list of all files
     // We do not count how many results there are for a given assembly because we will not display the bars
     fileList.forEach((file) => {
-        if (currentTab !== 'browser' || isVisualizableAssembly(file.assembly)) {
-            if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
-                assembly[`${file.assembly} ${file.genome_annotation}`] = computeAssemblyAnnotationValue(file.assembly, file.genome_annotation);
-            } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
-                assembly[file.assembly] = computeAssemblyAnnotationValue(file.assembly);
-            }
+        if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
+            assembly[`${file.assembly} ${file.genome_annotation}`] = computeAssemblyAnnotationValue(file.assembly, file.genome_annotation);
+        } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
+            assembly[file.assembly] = computeAssemblyAnnotationValue(file.assembly);
         }
     });
 

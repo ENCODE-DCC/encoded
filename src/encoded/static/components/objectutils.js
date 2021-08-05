@@ -910,18 +910,7 @@ export const isFileVisualizable = (file) => {
         && ['released', 'in progress', 'archived'].indexOf(file.status) > -1;
 };
 
-
-// Not all files can be visualized on the Valis genome browser
-// Some of these files should be visualizable later, after updates to browser
-export function filterForVisualizableFiles(fileList) {
-    if (!fileList || fileList.length === 0) {
-        return [];
-    }
-
-    return fileList.filter((file) => isFileVisualizable(file));
-}
-
-export function isVisualizableAssembly(assembly) {
+function isVisualizableAssembly(assembly) {
     const visualizableAssemblies = [
         'GRCh38',
         'hg19',
@@ -939,6 +928,26 @@ export function isVisualizableAssembly(assembly) {
     ];
 
     return visualizableAssemblies.includes(assembly);
+}
+
+function filterForVisualizableAssembly(fileList) {
+    if (fileList?.length === 0) {
+        return [];
+    }
+
+    return fileList.filter((file) => isVisualizableAssembly(file.assembly));
+}
+
+// Not all files can be visualized on the Valis genome browser
+// Some of these files should be visualizable later, after updates to browser
+export function filterForVisualizableFiles(fileList) {
+    if (!fileList || fileList.length === 0) {
+        return [];
+    }
+
+    const files = fileList.filter((file) => isFileVisualizable(file));
+
+    return filterForVisualizableAssembly(files);
 }
 
 /**
