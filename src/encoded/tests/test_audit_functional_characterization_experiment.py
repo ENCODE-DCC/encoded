@@ -391,3 +391,22 @@ def test_audit_experiment_mixed_expression_measurement_methods(
         error['category'] == 'mixed expression_measurement_method'
         for error in collect_audit_errors(res)
     )
+
+
+def test_audit_CRISPR_not_in_series(
+    testapp,
+    functional_characterization_experiment_disruption_screen,
+    base_functional_characterization_series
+):
+    # https://encodedcc.atlassian.net/browse/ENCD-6048
+    res = testapp.get(
+        functional_characterization_experiment_disruption_screen['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing related_series'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(base_functional_characterization_series['@id'], {
+        'related_datasets': [
+            functional_characterization_experiment_disruption_screen['@id']]})
+    res = testapp.get(
+        functional_characterization_experiment_disruption_screen['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing related_series'
+               for error in collect_audit_errors(res))

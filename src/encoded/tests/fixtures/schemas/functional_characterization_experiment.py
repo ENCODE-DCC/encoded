@@ -187,3 +187,15 @@ def fcc_experiment_elements_mapping(lab, award, heart, pooled_clone_sequencing):
         'elements_mapping': pooled_clone_sequencing['uuid']
     }
     return item
+
+
+@pytest.fixture
+def fcc_posted_CRISPR_screen(testapp, lab, award, liver):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': liver['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
