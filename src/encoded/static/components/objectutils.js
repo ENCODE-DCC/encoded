@@ -931,7 +931,7 @@ function isVisualizableAssembly(assembly) {
 }
 
 function filterForVisualizableAssembly(fileList) {
-    if (fileList?.length === 0) {
+    if (!fileList || fileList.length === 0) {
         return [];
     }
 
