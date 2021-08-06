@@ -187,9 +187,9 @@ class SearchBox extends React.Component {
         const region = id.query.region || '';
 
         if (this.state.genome === '') {
-            let assembly = this.props.assembly || queryAssembly || defaultAssembly;
+            const assembly = this.props.assembly || id.query.genome || defaultAssembly;
 
-            if (regionGenomes.indexOf(assembly) != -1) {
+            if (regionGenomes.indexOf(assembly) !== -1) {
                 this.setState({ genome: assembly });
             } else {
                 this.setState({ genome: defaultAssembly });
@@ -319,6 +319,13 @@ const RegionSearch = (props, context) => {
         window.location = `/region-search/?region=${encodeURIComponent(query)}&genome=${assembly}`;
     };
 
+    const handlePagination = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        window.location = e.currentTarget.getAttribute('href');
+    };
+
     const resultsList = (
         <Panel>
             <PanelBody>
@@ -340,7 +347,7 @@ const RegionSearch = (props, context) => {
                                 rel="nofollow"
                                 className="btn btn-info btn-sm"
                                 href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                onClick={onFilter}
+                                onClick={handlePagination}
                             >
                                 View All
                             </a>
@@ -350,7 +357,7 @@ const RegionSearch = (props, context) => {
                                     <a
                                         className="btn btn-info btn-sm"
                                         href={trimmedSearchBase || '/region-search/'}
-                                        onClick={onFilter}
+                                        onClick={handlePagination}
                                     >
                                         View 25
                                     </a>
