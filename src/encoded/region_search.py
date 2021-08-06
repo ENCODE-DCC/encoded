@@ -70,6 +70,7 @@ GBROWSER_EMBEDDED_FIELDS = [
     'output_type',
     'path',
     'simple_biosample_summary',
+    'status',
     'target.label',
     'targets',
     'title'
