@@ -7,11 +7,6 @@ import * as globals from './globals';
 import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
 
-const regionGenomes = [
-    { value: 'GRCh38', display: 'GRCh38' },
-    { value: 'GRCm38', display: 'mm10' },
-];
-
 const AutocompleteBoxMenu = (props) => {
     const handleClick = () => {
         const { term, name } = props;
@@ -184,18 +179,21 @@ class SearchBox extends React.Component {
     }
 
     render() {
+        const regionGenomes = ['GRCh38', 'mm10'];
+        const defaultAssembly = regionGenomes[0];
+
         const context = this.props;
         const id = url.parse(this.context.location_href, true);
         const region = id.query.region || '';
 
         if (this.state.genome === '') {
-            let assembly = regionGenomes[0].value;
-            if (this.props.assembly) {
-                assembly = regionGenomes.find((el) => (
-                    this.props.assembly === el.value || this.props.assembly === el.display
-                )).value;
+            let assembly = this.props.assembly || queryAssembly || defaultAssembly;
+
+            if (regionGenomes.indexOf(assembly) != -1) {
+                this.setState({ genome: assembly });
+            } else {
+                this.setState({ genome: defaultAssembly });
             }
-            this.setState({ genome: assembly });
         }
 
         return (
@@ -213,8 +211,8 @@ class SearchBox extends React.Component {
                                 </FetchedData>
                             : null}
                             <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
-                                {regionGenomes.map((genomeId) => (
-                                    <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
+                                {regionGenomes.map((genome) => (
+                                    <option key={genome} value={genome}>{genome}</option>
                                 ))}
                             </select>
                         </div>
