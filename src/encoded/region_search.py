@@ -45,7 +45,8 @@ _GENOME_TO_ALIAS = {
     'GRCh37': 'hg19',
     'GRCh38': 'GRCh38',
     'GRCm37': 'mm9',
-    'GRCm38': 'mm10'
+    'GRCm38': 'mm10',
+    'mm10': 'mm10'
 }
 
 FORMATS_GBROWSER = [
