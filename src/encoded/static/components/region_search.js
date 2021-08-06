@@ -4,23 +4,45 @@ import url from 'url';
 import { Panel, PanelBody, TabPanel } from '../libs/ui/panel';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
-import getSeriesData from './series_search.js';
 import { FacetList, Listing } from './search';
-import { ASSEMBLY_DETAILS, BrowserSelector } from './vis_defines';
-import {
-    SearchBatchDownloadController,
-    BatchDownloadActuator,
-} from './batch_download';
-import { svgIcon } from '../libs/svg-icons';
-import QueryString from '../libs/query_string';
 import { FetchedData, Param } from './fetched';
 
 const regionGenomes = [
-    { value: 'GRCh37', display: 'hg19' },
     { value: 'GRCh38', display: 'GRCh38' },
-    { value: 'GRCm37', display: 'mm9' },
     { value: 'GRCm38', display: 'mm10' },
 ];
+
+const AutocompleteBoxMenu = (props) => {
+    const handleClick = () => {
+        const { term, name } = props;
+        props.handleClick(term.text, term._source.payload.id, name);
+    };
+
+    const { preText, matchText, postText } = props;
+
+    /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
+    return (
+        <li tabIndex="0" onClick={handleClick}>
+            {preText}<b>{matchText}</b>{postText}
+        </li>
+    );
+    /* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
+};
+
+AutocompleteBoxMenu.defaultProps = {
+    preText: '',
+    postText: '',
+};
+
+AutocompleteBoxMenu.propTypes = {
+    handleClick: PropTypes.func.isRequired,
+    term: PropTypes.object.isRequired,
+    name: PropTypes.object.isRequired,
+    preText: PropTypes.string,
+    matchText: PropTypes.string.isRequired,
+    postText: PropTypes.string,
+};
+
 
 const AutocompleteBox = (props) => {
     const terms = props.auto['@graph']; // List of matching terms from server
@@ -82,53 +104,7 @@ AutocompleteBox.defaultProps = {
 };
 
 
-// Draw the autocomplete box drop-down menu.
-class AutocompleteBoxMenu extends React.Component {
-    constructor() {
-        super();
-
-        // Bind this to non-React methods.
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    // Handle clicks in the drop-down menu. It just calls the parent's handleClick function, giving
-    // it the parameters of the clicked item.
-    handleClick() {
-        const { term, name } = this.props;
-        this.props.handleClick(term.text, term._source.payload.id, name);
-    }
-
-    render() {
-        const { preText, matchText, postText } = this.props;
-
-        /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
-        return (
-            <li tabIndex="0" onClick={this.handleClick}>
-                {preText}<b>{matchText}</b>{postText}
-            </li>
-        );
-        /* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
-    }
-}
-
-AutocompleteBoxMenu.propTypes = {
-    handleClick: PropTypes.func.isRequired, // Parent function to handle a click in a drop-down menu item
-    term: PropTypes.object.isRequired, // Object for the term being searched
-    name: PropTypes.string,
-    preText: PropTypes.string, // Text before the matched term in the entered string
-    matchText: PropTypes.string, // Matching text in the entered string
-    postText: PropTypes.string, // Text after the matched term in the entered string
-};
-
-AutocompleteBoxMenu.defaultProps = {
-    name: '',
-    preText: '',
-    matchText: '',
-    postText: '',
-};
-
-
-class AdvSearch extends React.Component {
+class SearchBox extends React.Component {
     constructor() {
         super();
 
@@ -190,8 +166,15 @@ class AdvSearch extends React.Component {
         this.setState({ genome: event.target.value });
     }
 
-    handleOnFocus() {
+    handleOnFocus(e) {
         this.setState({ showAutoSuggest: false });
+
+        const query = e.currentTarget.getElementsByClassName('form-control')[0].value;
+        const assembly = this.state.genome;
+        this.props.handleSearch(query, assembly);
+
+        e.stopPropagation();
+        e.preventDefault();
     }
 
     tick() {
@@ -251,167 +234,192 @@ class AdvSearch extends React.Component {
     }
 }
 
-AdvSearch.propTypes = {
-    context: PropTypes.object.isRequired,
+SearchBox.defaultProps = {
+    assembly: 'GRCh38',
+    notification: '',
+    coordinates: '',
 };
 
-AdvSearch.contextTypes = {
+SearchBox.propTypes = {
+    assembly: PropTypes.string,
+    handleSearch: PropTypes.func.isRequired,
+    notification: PropTypes.string,
+    coordinates: PropTypes.string,
+};
+
+SearchBox.contextTypes = {
     autocompleteTermChosen: PropTypes.bool,
     autocompleteHidden: PropTypes.bool,
     onAutocompleteHiddenChange: PropTypes.func,
     location_href: PropTypes.string,
 };
 
-// Default assembly for each organism
-const defaultAssemblyByOrganism = {
-    'Homo sapiens': 'GRCh38',
-    'Mus musculus': 'mm10',
-};
-
-// The encyclopedia page displays a table of results corresponding to a selected annotation type
-const Encyclopedia = (props, context) => {
+const RegionSearch = (props, context) => {
     const defaultAssembly = 'GRCh38';
-    const defaultFileDownload = 'all';
-    const defaultVisualization = 'List View';
-    const visualizationOptions = ['List View', 'Genome Browser'];
     const encyclopediaVersion = 'ENCODE v5';
-    const searchBase = url.parse(context.location_href).search || '';
+    const visualizationOptions = ['Results List', 'Genome Browser'];
+    const defaultVisualization = 'Results List';
+    const supportedFileTypes = ['bigWig', 'bigBed'];
+
+    const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
+    const availableFileTypes = [...new Set(initialGBrowserFiles.map((file) => file.file_format))];
 
     const [selectedVisualization, setSelectedVisualization] = React.useState(defaultVisualization);
-    const [selectedAssembly, setAssembly] = React.useState(defaultAssembly);
-    const [assemblyList, setAssemblyList] = React.useState([defaultAssembly]);
+    const [selectedFileTypes, setSelectedFileTypes] = React.useState(availableFileTypes);
+    const [gBrowserFiles, setGBrowserFiles] = React.useState(initialGBrowserFiles);
+    const selectedAssembly = url.parse(context.location_href, true).query.genome || defaultAssembly;
 
-    var browser_files = [];
+    const searchBase = url.parse(context.location_href).search || '';
+    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
 
     const results = props.context['@graph'];
-    results.forEach((res) => {
-	res['files'].forEach((file) => {
-	    if (file['preferred_default'] && (file['file_format'] == 'bigBed' || file['file_format'] == 'bigWig')) {
-		browser_files.push(file);
-	    }
-	});
-    });
 
-    // Data which populates the browser
-    const [vizFiles, setVizFiles] = React.useState(browser_files);
+    const { columns, filters, facets, total } = props.context;
 
-    // vizFilesError is true when there are no results for selected filters
-    const [vizFilesError, setVizFilesError] = React.useState(false);
-    // Number of files available is displayed
-    const [totalFiles, setTotalFiles] = React.useState(browser_files.length);
+    const chooseFileType = (e) => {
+        const type = e.currentTarget.getAttribute('name');
 
-    // Update assembly, organism, browser files, and download link when user clicks on tab
-    const handleTabClick = (tab) => {
-        setVizFiles([]);
-        setAssembly(defaultAssemblyByOrganism[tab]);
+        if (supportedFileTypes.indexOf(type) === -1) {
+            return;
+        }
+
+        const newSelectedTypes = [...selectedFileTypes];
+        const index = newSelectedTypes.indexOf(type);
+
+        if (index === -1) {
+            newSelectedTypes.push(type);
+        } else {
+            newSelectedTypes.splice(index, 1);
+        }
+
+        setSelectedFileTypes(newSelectedTypes);
+
+        e.stopPropagation();
+        e.preventDefault();
     };
 
-    const { columns, notification, filters, facets, total } = props.context;
-//    const results = props.context['@graph'];
-    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-    
-
-    // Maximum number of selected items that can be visualized.
-    const VISUALIZE_LIMIT = 100;
-    const visualizeDisabledTitle = total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+    React.useEffect(() => {
+        const newGBrowserFiles = (props.context.gbrowser || []).filter((file) => selectedFileTypes.indexOf(file.file_format) > -1);
+        setGBrowserFiles(newGBrowserFiles);
+    }, [selectedFileTypes]);
 
     const onFilter = (e) => {
-        if (this.props.onChange) {
+        if (props.onChange) {
             const search = e.currentTarget.getAttribute('href');
-            this.props.onChange(search);
+            props.onChange(search);
             e.stopPropagation();
             e.preventDefault();
         }
-    }
+    };
 
     const visualizationTabs = {};
     visualizationOptions.forEach((visualizationName) => {
-	visualizationTabs[visualizationName] = <div id={visualizationName} className={`organism-button ${visualizationName.replace(' ', '-')}`}><span>{visualizationName}</span></div>;
+        visualizationTabs[visualizationName] = <div id={visualizationName} className={`organism-button ${visualizationName.replace(' ', '-')}`}><span>{visualizationName}</span></div>;
     });
 
+    const handleSearch = (query, assembly) => {
+        window.location = `/region-search/?region=${encodeURIComponent(query)}&genome=${assembly}`;
+    };
 
-    const listView = (
-	<Panel>
+    const resultsList = (
+        <Panel>
             <PanelBody>
-                            <div className="search-results">
-	                        <div className="search-results__facets">
-                                    <FacetList
-                                        context={props.context}
-                                        facets={facets}
-                                        filters={filters}
-                                        onFilter={onFilter}
-                                    />
-                                </div>
+                <div className="search-results">
+                    <div className="search-results__facets">
+                        <FacetList
+                            context={props.context}
+                            facets={facets}
+                            filters={filters}
+                            onFilter={onFilter}
+                        />
+                    </div>
 
-                                <div className="search-results__result-list">
-                                    <h4>
-                                        Showing {results.length} of {total}
-                                    </h4>
-                                    <div className="results-table-control__main">
-                                        {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                                <a
-                                                    rel="nofollow"
-                                                    className="btn btn-info btn-sm"
-                                                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                                    onClick={onFilter}
-                                                >
-                                                    View All
-                                                </a>
-                                        :
-                                            <span>
-                                                {results.length > 25 ?
-                                                        <a
-                                                            className="btn btn-info btn-sm"
-                                                            href={trimmedSearchBase || '/region-search/'}
-                                                            onClick={onFilter}
-                                                        >
-                                                            View 25
-                                                        </a>
-                                                : null}
-                                            </span>
-                                        }
-                                    </div>
-                                    <br />
-                                    <ul className="nav result-table" id="result-table">
-                                        {results.map((result) => Listing({ context: result, columns, key: result['@id'] }))}
-                                    </ul>
-                                </div>
-                            </div>
-                       </PanelBody>
-                    </Panel>
+                    <div className="search-results__result-list">
+                        <h4>Showing {results.length} of {total}</h4>
+                        <div className="results-table-control__main">
+                            {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                            <a
+                                rel="nofollow"
+                                className="btn btn-info btn-sm"
+                                href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                                onClick={onFilter}
+                            >
+                                View All
+                            </a>
+                            :
+                            <span>
+                                {results.length > 25 ?
+                                    <a
+                                        className="btn btn-info btn-sm"
+                                        href={trimmedSearchBase || '/region-search/'}
+                                        onClick={onFilter}
+                                    >
+                                        View 25
+                                    </a>
+                                 : null}
+                            </span>
+                            }
+                        </div>
+                        <br />
+                        <ul className="nav result-table" id="result-table">
+                            {results.map((result) => Listing({ context: result, columns, key: result['@id'] }))}
+                        </ul>
+                    </div>
+                </div>
+            </PanelBody>
+        </Panel>
     );
 
     const genomeBrowserView = (
-	    <div className="outer-tab-container">
-                <div className="tab-body">
-                    <Panel>
-	                <PanelBody>
-	                    <div className="search-results">
-	                        <div className="search-results__facets">
-                                    <FacetList
-                                        context={props.context}
-                                        facets={facets}
-                                        filters={filters}
-                                        onFilter={onFilter}
-                                    />
-                                </div>
+        <div className="outer-tab-container">
+            <div className="tab-body">
+                <Panel>
+                    <PanelBody>
+                        <div className="search-results">
+                            <div className="search-results__facets">
+                                <FacetList
+                                    context={props.context}
+                                    facets={facets}
+                                    filters={filters}
+                                    onFilter={onFilter}
+                                    additionalFacet={
+                                        <>
+                                            <div className="facet ">
+                                                <h5>File Type</h5>
+                                                {availableFileTypes.map((type) => (
+                                                    <button type="button" name={type} className="facet-term annotation-type" onClick={chooseFileType}>
+                                                        {(selectedFileTypes.indexOf(type) > -1) ?
+                                                            <span className="full-dot dot" />
+                                                        :
+                                                            <span className="empty-dot dot" />
+                                                        }
+                                                        <div className="facet-term__text">
+                                                            {type}
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </>
+                                    }
+                                />
+                            </div>
 
-                                <div className="search-results__result-list" style={{display: "block"}}>
-                                    <GenomeBrowser
-                                        files={vizFiles}
-                                        label="cart"
-//                                        expanded
-                                        assembly={selectedAssembly}
-                                        annotation="V33"
-  //                                      displaySort
-                                        maxCharPerLine={30}
-                                    />
-                                </div>
-	                    </div>
-                        </PanelBody>
-	            </Panel>
-                </div>
-          </div>
+                            <div className="search-results__result-list" style={{ display: 'block' }}>
+                                <GenomeBrowser
+                                    files={gBrowserFiles}
+                                    label="cart"
+                                    assembly={selectedAssembly}
+                                    expanded
+                                    annotation="V33"
+                                    displaySort
+                                    maxCharPerLine={30}
+                                />
+                            </div>
+                        </div>
+                    </PanelBody>
+                </Panel>
+            </div>
+        </div>
     );
 
     return (
@@ -425,8 +433,9 @@ const Encyclopedia = (props, context) => {
                         </div>
                     </div>
 
-                    <AdvSearch  {...props.context}/>
+                    <SearchBox {...props.context} handleSearch={handleSearch} />
 
+                    { results.length > 0 ?
                     <div className="outer-tab-container">
                         <TabPanel
                             tabs={visualizationTabs}
@@ -435,19 +444,28 @@ const Encyclopedia = (props, context) => {
                             tabCss="tab-button"
                             tabPanelCss="tab-container encyclopedia-tabs"
                         >
-                            { selectedVisualization == 'List View' ? listView  :  genomeBrowserView }
-	                </TabPanel>
-          </div> 
+                            { selectedVisualization === 'Results List' ? resultsList : genomeBrowserView }
+                        </TabPanel>
+                    </div> : null }
+                </div>
             </div>
-            </div>
-	    </div>
+        </div>
     );
 };
 
-Encyclopedia.contextTypes = {
+RegionSearch.defaultProps = {
+    onChange: () => {},
+};
+
+RegionSearch.propTypes = {
+    context: PropTypes.object.isRequired,
+    onChange: PropTypes.func,
+};
+
+RegionSearch.contextTypes = {
     location_href: PropTypes.string,
     navigate: PropTypes.func,
     fetch: PropTypes.func,
 };
 
-globals.contentViews.register(Encyclopedia, 'region-search');
+globals.contentViews.register(RegionSearch, 'region-search');
