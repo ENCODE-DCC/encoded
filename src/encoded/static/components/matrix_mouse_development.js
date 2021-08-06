@@ -100,7 +100,10 @@ const analyzeSubCategoryData = (subCategoryData, columnCategory, colMap, colCoun
     let subCategorySums = Array(colCount).fill(0);
     subCategoryData.forEach((rowData) => {
         // `rowData` has all the data for one row. Collect sums of all data for each column.
-        rowData[columnCategory].buckets.forEach((value) => {
+        const allowedRowDataBuckets = rowData[columnCategory].buckets.filter((bucket) => (
+            !excludedAssays.includes(bucket.key)
+        ));
+        allowedRowDataBuckets.forEach((value) => {
             if (stageFilter) {
                 stageFilter.forEach((singleFilter) => {
                     const filterString = singleFilter.replace('embryo', 'embryonic');
