@@ -7,6 +7,24 @@ from snovault.elasticsearch.searches.responses import FieldedInMemoryResponse
 from snovault.elasticsearch.searches.responses import FieldedResponse
 
 
+_redis_lru_cache = None
+
+
+def includeme(config):
+    # Handle to grab outside of the request cycle
+    # for configuring decorator.
+    global _redis_lru_cache
+    settings = config.registry.settings
+    client = StrictRedis(
+        host=settings.get('local_storage_host'),
+        port=settings.get('local_storage_port'),
+        socket_timeout=3,
+        db=4,
+    )
+    config.registry[REDIS_LRU_CACHE] = RedisLRUCache(client)
+    _redis_lru_cache = config.registry[REDIS_LRU_CACHE]
+
+
 class RedisLRUCache():
 
     def __init__(self, client):
@@ -18,9 +36,6 @@ class RedisLRUCache():
     def __getitem__(self, key):
         value = self.client[key]
         return json.loads(value)
-
-
-_redis_lru_cache = RedisLRUCache(None)
 
 
 def should_cache_search_results(context, request):
@@ -51,19 +66,3 @@ def cached_fielded_response_factory(context, request):
 
 def get_redis_lru_cache():
     return _redis_lru_cache
-
-
-def includeme(config):
-    # Handle to grab outside of the request cycle
-    # for configuring decorator.
-    global _redis_lru_cache
-    settings = config.registry.settings
-    client = StrictRedis(
-        host=settings.get('local_storage_host'),
-        port=settings.get('local_storage_port'),
-        socket_timeout=3,
-        db=4,
-    )
-    # Bind client asynchronously.
-    _redis_lru_cache.client = client
-    config.registry[REDIS_LRU_CACHE] = _redis_lru_cache

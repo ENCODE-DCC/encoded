@@ -226,6 +226,8 @@ def main(global_config, **local_config):
     config.include('.server_defaults')
     config.include('.types')
     config.include('.root')
+    # Must include before anything that uses, or imports from something that uses, cache.
+    config.include('.searches.caches')
     config.include('.batch_download')
     config.include('.reports.batch_download')
     config.include('.reports.metadata')
@@ -268,7 +270,6 @@ def main(global_config, **local_config):
     config.include('.upgrade')
     config.include('.audit')
     config.include('.searches.configs')
-    config.include('.searches.caches')
 
     config.include('.genomic_data_service')
 
