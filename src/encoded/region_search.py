@@ -19,27 +19,19 @@ log = logging.getLogger(__name__)
 
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
 
-_REGION_FIELDS = [
-    'embedded.files.uuid',
-    'embedded.files.accession',
-    'embedded.files.href',
-    'embedded.files.file_format',
-    'embedded.files.assembly',
-    'embedded.files.output_type',
-    'embedded.files.derived_from'
-]
-
 _FACETS = [
     ('assay_term_name', {'title': 'Assay'}),
     ('biosample_ontology.term_name', {'title': 'Biosample term'}),
     ('target.label', {'title': 'Target'}),
-    ('replicates.library.biosample.donor.organism.scientific_name', {
-        'title': 'Organism'
-    }),
     ('biosample_ontology.organ_slims', {'title': 'Organ'}),
     ('biosample_ontology.cell_slims', {'title': 'Cell'}),
-    ('assembly', {'title': 'Genome assembly'}),
-    ('files.file_type', {'title': 'Available data'})
+    ('assembly', {'title': 'Genome assembly'}) # necessary for aggregating data
+]
+
+_REMOVE_FACETS = [
+    'Genome assembly',
+    'assembly',
+    'files.uuid'
 ]
 
 _GENOME_TO_SPECIES = {
@@ -55,6 +47,33 @@ _GENOME_TO_ALIAS = {
     'GRCm37': 'mm9',
     'GRCm38': 'mm10'
 }
+
+FORMATS_GBROWSER = [
+    'bigBed',
+    'bigWig'
+]
+
+GBROWSER_EMBEDDED_FIELDS = [
+    'annotation_subtype',
+    'annotation_type',
+    'assay_term_name',
+    'assembly',
+    'biochemical_inputs',
+    'biological_replicates',
+    'biosample_ontology.term_name',
+    'dataset',
+    'dataset',
+    'file_format',
+    'file_format_type',
+    'file_type',
+    'href',
+    'output_type',
+    'path',
+    'simple_biosample_summary',
+    'target.label',
+    'targets',
+    'title'
+]
 
 
 def includeme(config):
@@ -333,7 +352,6 @@ def region_search(context, request):
     file_uuids = list(set(file_uuids))
     result['notification'] = 'No results found'
 
-
     # if more than one peak found return the experiments with those peak files
     uuid_count = len(file_uuids)
     if uuid_count > MAX_CLAUSES_FOR_ES:
@@ -355,16 +373,10 @@ def region_search(context, request):
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
 
-        ######################### DO NOT MERGE THIS
-        from elasticsearch import Elasticsearch
-        es = Elasticsearch(hosts=['34.208.231.246'], port=9201) ### IP FROM ENCODE DEMO
-        ###########################################
-
-        es_results = es.search(
-            body=query, index='experiment', doc_type='experiment', size=size, request_timeout=60
-        )
+        es_results = es.search(body=query, index='experiment', doc_type='experiment', size=size, request_timeout=60)
 
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
+        result['gbrowser'] = genome_browser_files(es, principals, result['@graph'])
         result['total'] = total = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
         result['peaks'] = list(peak_results['regions'])
@@ -384,7 +396,6 @@ def suggest(context, request):
     if 'q' in request.params:
         text = request.params.get('q', '')
         requested_genome = request.params.get('genome', '')
-        # print(requested_genome)
 
     result = {
         '@id': '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q', 'genome']),
@@ -418,6 +429,29 @@ def suggest(context, request):
         return result
 
 
+def genome_browser_files(es, principals, graph):
+    uuids = []
+
+    for experiment in graph:
+        for f in experiment['files']:
+            if 'preferred_default' in f and f['file_format'] in FORMATS_GBROWSER:
+                uuids.append(f['uuid'])
+
+    query = get_filtered_query('', [], set(), principals, ['File'])
+    del query['query']
+
+    query['_source'] = [f"embedded.{field}" for field in GBROWSER_EMBEDDED_FIELDS]
+    query['post_filter']['bool']['must'].append({
+        'terms': {
+            'uuid': list(set(uuids))
+        }
+    })
+
+    es_results = es.search(body=query, index='file', size=9999, request_timeout=60)
+
+    return [result['_source']['embedded'] for result in es_results['hits']['hits']]
+
+
 def format_facets(
         es_results,
         facets,
@@ -433,6 +467,9 @@ def format_facets(
     used_facets = set()
     exists_facets = set()
     for field, options in facets:
+        if options.get('title', field) in _REMOVE_FACETS:
+            continue
+
         used_facets.add(field)
         agg_name = field.replace('.', '-')
         if agg_name not in aggregations:
@@ -465,6 +502,10 @@ def format_facets(
         field_without_bang = field.rstrip('!')
         if field_without_bang not in used_facets and field_without_bang not in exists_facets:
             title = field_without_bang
+
+            if title in _REMOVE_FACETS:
+                continue
+
             for schema in schemas:
                 if field in schema['properties']:
                     title = schema['properties'][field].get('title', field)
