@@ -200,7 +200,7 @@ const getSeriesFiles = (context) => {
  *      files: Array of files selected with the pipeline lab and assembly
  * }
  */
-export const compileAnalyses = (analyses, files, dataFormat = null) => {
+export const compileAnalyses = (analyses, files, dataFormat = null, allowMixed = false) => {
     let compiledAnalyses = [];
     if (analyses && analyses.length > 0) {
         // Get all the analysis objects that qualify for inclusion in the Pipeline facet.
@@ -208,8 +208,8 @@ export const compileAnalyses = (analyses, files, dataFormat = null) => {
         // `UNIFORM_PIPELINE_LAB` is only valid if alone.
         const qualifyingAnalyses = analyses.filter((analysis) => (
             analysis.assembly
-            && analysis.assembly !== 'mixed'
-            && analysis.genome_annotation !== 'mixed'));
+            && (allowMixed || (analysis.assembly !== 'mixed' && analysis.genome_annotation !== 'mixed'))
+        ));
 
         if (qualifyingAnalyses.length > 0) {
             // Group all the qualifying analyses' files by pipeline lab. Each pipeline lab title is
@@ -482,6 +482,13 @@ export class FileTable extends React.Component {
                 return selectedAnalysis ? selectedAnalysis.title : '';
             };
 
+            const getMixAnalysisName = (accession) => {
+                const compileAnalysisMixed = compileAnalyses(analyses, datasetFiles, 'processed data', true);
+                const selectedAnalysis = compileAnalysisMixed.find((c) => c.accession === accession);
+
+                return selectedAnalysis?.title || '';
+            };
+
             return (
                 <div>
                     {showFileCount ? <div className="table-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
@@ -536,7 +543,13 @@ export class FileTable extends React.Component {
                                 titleSuffix = `${analysis.title} (${analysis.accession})`;
                                 tableData = (files.series || []).filter((t) => t.analyses[0] === key) || [];
                             } else {
-                                titleSuffix = `${key === nonAnalysisObjectPrefix ? 'Other' : getAnalysisName(key)}`;
+                                if (key === nonAnalysisObjectPrefix) {
+                                    titleSuffix = 'Other';
+                                } else if (compileAnalysis.some((c) => c.assembly !== 'mixed')) {
+                                    titleSuffix = getAnalysisName(key);
+                                } else {
+                                    titleSuffix = getMixAnalysisName(key);
+                                }
                                 tableData = files && files[key] ? files[key] : [];
                             }
 
@@ -760,6 +773,11 @@ FileTable.procTableColumns = {
     genome_annotation: {
         title: 'Genome annotation',
         hide: (list) => _(list).all((item) => !item.genome_annotation),
+    },
+    genome_assembly: {
+        title: 'Genome assembly',
+        hide: (list) => [...new Set(list.map((item) => item.assembly))].length === 0,
+        getValue: (item) => item.assembly,
     },
     date_created: {
         title: 'Date added',
