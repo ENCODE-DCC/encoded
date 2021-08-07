@@ -89,8 +89,8 @@ def audit_required_files(value, system):
     protocol = value['derived_from'][0].get('protocol')
     if protocol.get('required_files'):
         for f in protocol['required_files']:
-            file_prop_name = (f + '_file').replace('Read ', 'read_')
-            if not value.get(file_prop_name):
+            prop_name = f.replace(' ','_').replace('Read','read') + '_file'
+            if not value.get(prop_name):
                 not_found.append(f)
         if not_found:
             detail = ('SequencingRun {} is missing {}, required based on standards for {}.'.format(
