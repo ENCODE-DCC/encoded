@@ -2984,7 +2984,7 @@ class FileGalleryRendererComponent extends React.Component {
             /** Filters for files */
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
-            currentTab: 'tables',
+            currentTab: 'browser',
             /** Sorted compiled dataset analysis objects filtered by available assemblies */
             compiledAnalyses: compileAnalyses(props.analyses, datasetFiles, 'choose analysis'),
             /** Index of currently/last selected `compiledAnalyses`. */
@@ -3039,28 +3039,12 @@ class FileGalleryRendererComponent extends React.Component {
         // Determine how many visualizable files there are
         const vizFiles = filterForVisualizableFiles(this.props.context.files);
 
-        if (!this.props.hideGraph && vizFiles.length > 0) {
-            this.setState({ currentTab: 'browser' }, () => {
-                // Determine available assemblies
-                const assemblyList = this.setAssemblyList(this.state.files);
-                // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-                const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-                this.filterFiles(newAssembly, 'assembly');
-            });
+        if (vizFiles.length > 0) {
+            this.setState({ currentTab: 'browser' });
         } else if (this.props.context.files?.some((file) => file.analysis_step_version)) {
-            // Display graph as default if there are no visualizable files
-            let assemblyList = [];
-            this.setState({ currentTab: 'graph' }, () => {
-                // Determine available assemblies
-                assemblyList = this.setAssemblyList(this.state.files);
-                // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-                const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-                this.filterFiles(newAssembly, 'assembly');
-            });
+            this.setState({ currentTab: 'graph' });
         } else {
-            this.setState({ currentTab: 'tables' }, () => {
-                this.filterFiles('All assemblies', 'assembly');
-            });
+            this.setState({ currentTab: 'tables' });
         }
     }
 
