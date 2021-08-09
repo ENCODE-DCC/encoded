@@ -705,6 +705,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
     const differentiationSeries = result['@type'].indexOf('DifferentiationSeries') >= 0;
 
     const biosampleTerm = result.biosample_ontology ? result.biosample_ontology[0].term_name : '';
+    const biosampleclassifications = result.biosample_ontology ? result.biosample_ontology[0].classification : '';
 
     let biosamples;
     if (differentiationSeries && result.biosample_ontology && Object.keys(result.biosample_ontology).length > 1) {
@@ -867,6 +868,14 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                             : <span>{`${datasetTypes[result['@type'][0]]}`}</span>
                         }
                         {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+                        {fccSeries && biosampleclassifications !== 'cell line' && (organism || lifeSpec.length > 0) ?
+                            <span>
+                                {' ('}
+                                {organism ? <i>{organism}</i> : null}
+                                {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
+                                )
+                            </span>
+                        : null}
                         {!fccSeries && (organism || lifeSpec.length > 0) ?
                             <span>
                                 {' ('}
