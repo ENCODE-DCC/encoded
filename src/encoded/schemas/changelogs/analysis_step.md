@@ -11,6 +11,7 @@
 * Added *pairs* to the enum list for *input_file_types* and *output_file_types*
 * Added several entries to the enum lists for *input_file_types* and *output_file_types*: *allele-specific chromatin interactions, allele-specific variants, bidirectional peaks, diploid personal genome alignments, haplotype-specific alignments, novel peptides, peptide quantifications, protein expression quantifications, unidirectional peaks*
 * Added *polyA sites* to the enum list for *input_file_types* and *output_file_types*
+* Added *redacted alignments* and *redacted transcriptome alingments* to the enum list for *input_file_types* and *output_file_types*
 
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 

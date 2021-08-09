@@ -4675,5 +4675,22 @@
         "output_type": "polyA sites",
         "file_size": 82013,
         "md5sum": "4f099ce07a770d35c90485da8cf8f019"
+    },
+    {
+        "_test": "test redacted transcriptome alignments",
+        "accession": "ENCFF032ATC",
+        "assembly": "GRCh38",
+        "award": "/awards/U54HG006996/",
+        "dataset": "/experiments/ENCSR813BDU/",
+        "date_created": "2021-08-05T21:32:51.463118+00:00",
+        "file_format": "bam",
+        "file_size": 1,
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "f310dcda5400928744b1ca967c9e4ea5",
+        "no_file_available": false,
+        "output_type": "redacted transcriptome alignments",
+        "status": "released",
+        "uuid": "94b90422-ade3-4010-a0a0-8fe0bedbcf5b"
     }
 ]
