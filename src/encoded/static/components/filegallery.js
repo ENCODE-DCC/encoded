@@ -2984,7 +2984,7 @@ class FileGalleryRendererComponent extends React.Component {
             /** Filters for files */
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
-            currentTab: 'browser',
+            currentTab: 'tables',
             /** Sorted compiled dataset analysis objects filtered by available assemblies */
             compiledAnalyses: compileAnalyses(props.analyses, datasetFiles, 'choose analysis'),
             /** Index of currently/last selected `compiledAnalyses`. */
