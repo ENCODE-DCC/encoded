@@ -868,15 +868,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                             : <span>{`${datasetTypes[result['@type'][0]]}`}</span>
                         }
                         {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
-                        {fccSeries && biosampleclassifications !== 'cell line' && (organism || lifeSpec.length > 0) ?
-                            <span>
-                                {' ('}
-                                {organism ? <i>{organism}</i> : null}
-                                {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
-                                )
-                            </span>
-                        : null}
-                        {!fccSeries && (organism || lifeSpec.length > 0) ?
+                        {(!fccSeries && (organism || lifeSpec.length > 0)) || (fccSeries && biosampleclassifications !== 'cell line' && (organism || lifeSpec.length > 0)) ?
                             <span>
                                 {' ('}
                                 {organism ? <i>{organism}</i> : null}
