@@ -598,7 +598,8 @@
                 "alignments"
         ],
         "output_file_types": [
-                "sparse gene count matrix"
+                "sparse gene count matrix",
+                "sparse peak count matrix"
         ],
         "status": "released",
         "uuid": "205078ce-1325-47c0-af2a-1cfff129798b"
