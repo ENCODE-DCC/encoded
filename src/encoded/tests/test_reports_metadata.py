@@ -600,7 +600,7 @@ def test_metadata_metadata_report_init(dummy_request):
 
 def test_metadata_metadata_report_query_string_init_and_param_list(dummy_request):
     from encoded.reports.metadata import MetadataReport
-    from snovault.elasticsearch.searches.parsers import QueryString
+    from snosearch.parsers import QueryString
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment'
     )
