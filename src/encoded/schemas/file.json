@@ -1717,6 +1717,7 @@
                         "smoothed methylation state at CpG",
                         "sparse gene count matrix",
                         "sparse gRNA count matrix",
+                        "sparse peak count matrix",
                         "sparse transcript count matrix",
                         "splice junctions",
                         "subreads",
@@ -2268,6 +2269,7 @@
         "sparse gRNA count matrix": "quantification",
         "peptide quantifications": "quantification",
         "protein expression quantifications": "quantification",
+        "sparse peak count matrix": "quantification",
 
         "hotspots": "annotation",
         "footprints": "annotation",

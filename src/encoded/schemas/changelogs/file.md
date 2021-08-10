@@ -5,6 +5,7 @@
 * Added *polyA sites* to the enum list for *output_type*.
 * Added properties *filter_type* and *filter_value*
 * Added *redacted transcriptome alignments* to the enum list for *output_type*. Please note that *redacted transcriptome alignments* can be only posted by DCC.
+* Added *sparse peak count matrix* to the enum list for *output_type*
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.

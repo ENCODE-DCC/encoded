@@ -4692,5 +4692,22 @@
         "output_type": "redacted transcriptome alignments",
         "status": "released",
         "uuid": "94b90422-ade3-4010-a0a0-8fe0bedbcf5b"
+    },
+    {
+        "_test": "sparse peak count matrix for SPLiT-seq",
+        "status": "in progress",
+        "uuid": "bb94dfcc-186b-47eb-8089-5d6cc6c1536d",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "05fcff66116ff87c3acf0ffa31d1d164",
+        "accession": "ENCFF809SPM",
+        "file_format": "h5ad",
+        "award": "/awards/U54HG006998/",
+        "assembly": "GRCh38",
+        "dataset": "/experiments/ENCSR000SCR/",
+        "flowcell_details": [],
+        "alternate_accessions": [],
+        "file_size": 48901763,
+        "output_type": "sparse peak count matrix",
+        "lab": "/labs/barbara-wold/"
     }
 ]

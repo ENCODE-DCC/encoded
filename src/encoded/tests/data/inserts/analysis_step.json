@@ -598,7 +598,8 @@
                 "alignments"
         ],
         "output_file_types": [
-                "sparse gene count matrix"
+                "sparse gene count matrix",
+                "sparse peak count matrix"
         ],
         "status": "released",
         "uuid": "205078ce-1325-47c0-af2a-1cfff129798b"
@@ -652,5 +653,21 @@
         "step_label": "hic-merge-step",
         "title": "HiC merge step",
         "uuid": "c9c96dd8-681a-43fd-b5ad-3369f5a537cb"
+    },
+    {
+        "analysis_step_types": [
+            "genome compartment identification"
+        ],
+        "input_file_types": [
+            "chromatin interactions"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "genome compartments"
+        ],
+        "status": "released",
+        "step_label": "ultra-res-genome-compartment-calls-step",
+        "title": "Ultrares genome compartment calling step",
+        "uuid": "efe70b61-2d0e-40e1-ac2b-15332ea60e8e"
     }
 ]
