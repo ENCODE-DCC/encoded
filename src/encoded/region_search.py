@@ -309,17 +309,17 @@ def region_search(context, request):
     if region == '':
         region = '*'
 
-    assembly = request.params.get('genome', '*')
+    assembly = request.params.get('genome', '')
     result['assembly'] = _GENOME_TO_ALIAS.get(assembly,'GRCh38')
-    annotation = request.params.get('annotation', '*')
+    annotation = request.params.get('annotation', '')
     chromosome, start, end = ('', '', '')
 
-    if annotation != '*':
+    if annotation != '':
         if annotation.lower().startswith('ens'):
             chromosome, start, end = get_ensemblid_coordinates(annotation, assembly)
         else:
             chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
-    elif region != '*':
+    elif region != '':
         region = region.lower()
         if region.startswith('rs'):
             sanitized_region = sanitize_rsid(region)
@@ -331,7 +331,10 @@ def region_search(context, request):
             chromosome, start, end = sanitize_coordinates(region)
     else:
         chromosome, start, end = ('', '', '')
-    # Check if there are valid coordinates
+
+    if 'region' not in request.params and 'annotation' not in request.params:
+        result['notification'] = 'Try for example: chr8:79263597-79294735, or CTCF, or rs75982468, etc.'
+        return result
     if not chromosome or not start or not end:
         result['notification'] = 'No annotations found'
         return result
