@@ -22,8 +22,8 @@ Feature: Cart
         When I press "Add all items to cart"
         Then I should see 4 elements with the css selector ".cart-toggle--in-cart"
 
-        And I press "/functional-characterization-experiments/ENCSR127PCE/"
-        And I wait for 3 seconds
+        When I visit "/functional-characterization-experiments/ENCSR127PCE/"
+        And I wait for the content to load
         When I press "Add item to cart"
         Then I should see 5 elements with the css selector ".cart-toggle--in-cart"
 
