@@ -26,19 +26,17 @@ export const Simple = ({ total, current, updateCurrentPage }) => {
             <ul>
                 <li>
                     <button type="button" className="pager__dir" disabled={prevDisabled} aria-label={prevDisabled ? '' : `Previous page ${current} of ${total}`} onClick={handlePrev}>
-                        <i className="icon icon-chevron-left" />
+                        {svgIcon('chevronLeft')}
                     </button>
                 </li>
                 <li>
                     <div className="pager__index">
-                        <div>
-                            {current + 1} OF {total}
-                        </div>
+                        {current + 1} OF {total}
                     </div>
                 </li>
                 <li>
                     <button type="button" className="pager__dir" disabled={nextDisabled} aria-label={nextDisabled ? '' : `Next page ${current + 2} of ${total}`} onClick={handleNext}>
-                        <i className="icon icon-chevron-right" />
+                        {svgIcon('chevronRight')}
                     </button>
                 </li>
             </ul>

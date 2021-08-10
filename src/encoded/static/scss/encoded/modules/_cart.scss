@@ -1282,6 +1282,11 @@ $file-view-checkbox-size: 14px;
             align-items: center;
         }
     }
+
+    @at-root #{&}__subheader-controls {
+        display: flex;
+        column-gap: 5px;
+    }
 }
 
 // Control to batch download cart files.

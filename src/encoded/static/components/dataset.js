@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import * as Pager from '../libs/ui/pager';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import DropdownButton from '../libs/ui/button';
 import { CartToggle, CartAddAllElements } from './cart';
@@ -2271,6 +2272,84 @@ const generateSupplementalShortLabels = (experimentList, getSupplementalShortLab
 
 
 /**
+ * Defines the number of experiments/control experiments that appear at once in the series dataset
+ * table.
+ */
+const PAGE_DATASET_COUNT = 25;
+
+
+/**
+ * Display one of the two sections (experiments or control experiments) of the dataset table on the
+ * Series pages.
+ */
+const SeriesDatasetTableSection = ({ title, datasets, tableColumns, sortColumn, adminUser, accessLevel }) => {
+    /** The current page of datasets if more than the max number of displayable datasets exist */
+    const [currentDatasetPage, setCurrentDatasetPage] = React.useState(0);
+
+    /**
+     * Called when the user clicks the pager to go to a new page of datasets.
+     * @param {number} New current page number of datasets to display
+     */
+    const updateCurrentExperimentPage = (newPage) => {
+        setCurrentDatasetPage(newPage);
+    };
+
+    const totalDatasetPageCount = Math.floor(datasets.length / PAGE_DATASET_COUNT) + (datasets.length % PAGE_DATASET_COUNT !== 0 ? 1 : 0);
+    const pageStartIndex = currentDatasetPage * PAGE_DATASET_COUNT;
+    const visibleDatasets = datasets.slice(pageStartIndex, pageStartIndex + PAGE_DATASET_COUNT);
+
+    return (
+        <>
+            <div className="experiment-table__subheader">
+                <>{title}s</>
+                <div className="experiment-table__subheader-controls">
+                    <CartAddAllElements elements={datasets.map((dataset) => dataset['@id'])} />
+                    {totalDatasetPageCount > 1
+                        ? (
+                            <Pager.Simple
+                                total={totalDatasetPageCount}
+                                current={currentDatasetPage}
+                                updateCurrentPage={updateCurrentExperimentPage}
+                            />
+                        )
+                        : null
+                    }
+                </div>
+            </div>
+            <div className="table-counts">
+                {datasets.length} {title.toLowerCase()}{datasets.length === 1 ? '' : 's'}
+            </div>
+            <SortTable
+                list={visibleDatasets}
+                columns={tableColumns}
+                meta={{ adminUser, accessLevel }}
+                sortColumn={sortColumn}
+            />
+        </>
+    );
+};
+
+SeriesDatasetTableSection.propTypes = {
+    /** Title to display in the section table header; non-plural */
+    title: PropTypes.string.isRequired,
+    /** Datasets to display in the table */
+    datasets: PropTypes.array.isRequired,
+    /** Table columns to display in the table */
+    tableColumns: PropTypes.object.isRequired,
+    /** ID of column to sort by; undefined/null for default */
+    sortColumn: PropTypes.string,
+    /** True if the user is an admin user */
+    adminUser: PropTypes.bool.isRequired,
+    /** User's access level */
+    accessLevel: PropTypes.string.isRequired,
+};
+
+SeriesDatasetTableSection.defaultProps = {
+    sortColumn: null,
+};
+
+
+/**
  * Displays a standard table of related experiments on Series pages. It can appear with one or two
  * sections; one containing related datasets and the other containing control experiments from the
  * related datasets.
@@ -2290,36 +2369,22 @@ const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sort
                     </div>
                 }
             >
-                <>
-                    <div className="experiment-table__subheader">
-                        Experiments
-                        <CartAddAllElements elements={experimentsWithoutControls.map((experiment) => experiment['@id'])} />
-                    </div>
-                    <div className="table-counts">
-                        {experimentsWithoutControls.length} experiment{experimentsWithoutControls.length === 1 ? '' : 's'}
-                    </div>
-                    <SortTable
-                        list={experimentsWithoutControls}
-                        columns={tableColumns}
-                        meta={{ adminUser, accessLevel }}
-                        sortColumn={sortColumn}
-                    />
-                </>
+                <SeriesDatasetTableSection
+                    title="Experiment"
+                    datasets={experimentsWithoutControls}
+                    tableColumns={tableColumns}
+                    sortColumn={sortColumn}
+                    adminUser={adminUser}
+                    accessLevel={accessLevel}
+                />
                 {controls.length > 0 ?
-                    <>
-                        <div className="experiment-table__subheader">
-                            Control experiments
-                            <CartAddAllElements elements={controls.map((experiment) => experiment['@id'])} />
-                        </div>
-                        <div className="table-counts">
-                            {controls.length} control experiment{controls.length === 1 ? '' : 's'}
-                        </div>
-                        <SortTable
-                            list={controls}
-                            columns={controlTableColumns}
-                            meta={{ adminUser, accessLevel }}
-                        />
-                    </>
+                    <SeriesDatasetTableSection
+                        title="Control experiment"
+                        datasets={controls}
+                        tableColumns={controlTableColumns}
+                        adminUser={adminUser}
+                        accessLevel={accessLevel}
+                    />
                 : null}
             </SortTablePanel>
         );
