@@ -332,6 +332,7 @@ const ExperimentComponent = (props, reactContext) => {
     let constructionPlatforms;
     let constructionMethods;
     let cellularComponents;
+    let examinedLoci = [];
 
     // Determine if search result is allowed in carts.
     const isResultAllowedInCart = cartGetAllowedTypes().includes(result['@type'][0]);
@@ -405,6 +406,14 @@ const ExperimentComponent = (props, reactContext) => {
         )).map((replicate) => replicate.library.biosample.subcellular_fraction_term_name));
     }
 
+    // Collect examined loci
+    if (result.examined_loci && result.examined_loci.length > 0) {
+        result.examined_loci.forEach((loci) => {
+            examinedLoci.push(loci.gene.symbol);
+        });
+        examinedLoci = _.uniq(examinedLoci);
+    }
+
     const uniqueTreatments = getUniqueTreatments(treatments);
 
     // Get a map of related datasets, possibly filtering on their status and
@@ -435,12 +444,27 @@ const ExperimentComponent = (props, reactContext) => {
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
+                        {(isFunctionalExperiment && result.perturbation_type) ?
+                            <span>
+                                {`${result.perturbation_type} `}
+                            </span>
+                        : null}
                         {result.assay_title ?
                             <span>{result.assay_title}</span>
                         :
                             <span>{result.assay_term_name}</span>
                         }
+                        {(isFunctionalExperiment && result.crispr_screen_readout) ?
+                            <span>
+                                {` (${result.crispr_screen_readout})`}
+                            </span>
+                        : null}
                         {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
+                        {(isFunctionalExperiment && examinedLoci.length > 0) ?
+                            <span>
+                                {` targeting ${examinedLoci.join(', ')}`}
+                            </span>
+                        : null}
                     </a>
                     {result.biosample_summary ?
                         <div className="result-item__highlight-row">
