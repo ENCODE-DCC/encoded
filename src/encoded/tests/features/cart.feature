@@ -22,9 +22,12 @@ Feature: Cart
         When I press "Add all items to cart"
         Then I should see 4 elements with the css selector ".cart-toggle--in-cart"
 
-        When I visit "/functional-characterization-experiments/ENCSR127PCE/"
+        When I visit "/search/?type=FunctionalCharacterizationExperiment&accession=ENCSR127PCE"
         And I wait for the content to load
-        When I press "Add item to cart “Default Cart”"
+        Then I should see 1 elements with the css selector ".result-item__cart-control"
+
+        When I press "/functional-characterization-experiments/ENCSR127PCE/"
+        And I wait for 3 seconds
         Then I should see 5 elements with the css selector ".cart-toggle--in-cart"
 
 
