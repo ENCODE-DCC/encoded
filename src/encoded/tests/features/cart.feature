@@ -28,8 +28,7 @@ Feature: Cart
 
         When I press "/functional-characterization-experiments/ENCSR127PCE/"
         And I wait for 3 seconds
-        Then I should see 5 elements with the css selector ".cart-toggle--in-cart"
-
+        Then I should see 1 elements with the css selector ".cart-toggle--in-cart"
 
     Scenario: Cart page load
         When I press "cart-control"
