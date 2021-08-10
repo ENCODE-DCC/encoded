@@ -165,8 +165,9 @@ class SearchBox extends React.Component {
         this.setState({ showAutoSuggest: false });
 
         const query = e.currentTarget.getElementsByClassName('form-control')[0].value;
+        const annotation = e.currentTarget.elements.annotation[0].value;
         const assembly = this.state.genome;
-        this.props.handleSearch(query, assembly);
+        this.props.handleSearch(query, annotation, assembly);
 
         e.stopPropagation();
         e.preventDefault();
@@ -255,8 +256,8 @@ SearchBox.contextTypes = {
 const RegionSearch = (props, context) => {
     const defaultAssembly = 'GRCh38';
     const encyclopediaVersion = 'ENCODE v5';
-    const visualizationOptions = ['Results List', 'Genome Browser'];
-    const defaultVisualization = 'Results List';
+    const visualizationOptions = ['Datasets', 'Genome Browser'];
+    const defaultVisualization = 'Datasets';
     const supportedFileTypes = ['bigWig', 'bigBed'];
 
     const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
@@ -315,8 +316,8 @@ const RegionSearch = (props, context) => {
         visualizationTabs[visualizationName] = <div id={visualizationName} className={`organism-button ${visualizationName.replace(' ', '-')}`}><span>{visualizationName}</span></div>;
     });
 
-    const handleSearch = (query, assembly) => {
-        window.location = `/region-search/?region=${encodeURIComponent(query)}&genome=${assembly}`;
+    const handleSearch = (query, annotation, assembly) => {
+        window.location = `/region-search/?region=${encodeURIComponent(query)}&annotation=${annotation}&genome=${assembly}`;
     };
 
     const handlePagination = (e) => {
@@ -449,7 +450,7 @@ const RegionSearch = (props, context) => {
                             tabCss="tab-button"
                             tabPanelCss="tab-container encyclopedia-tabs"
                         >
-                            { selectedVisualization === 'Results List' ? resultsList : genomeBrowserView }
+                            { selectedVisualization === 'Datasets' ? resultsList : genomeBrowserView }
                         </TabPanel>
                     </div> : null }
                 </div>
