@@ -26,7 +26,7 @@ Feature: Cart
         When I press "cart-control"
         And I click the link to "/cart-view/"
         And I wait for the content to load
-        Then I should see 8 elements with the css selector ".result-item"
+        Then I should see 7 elements with the css selector ".result-item"
         And I should see "6 files selected"
         When I press "cart-facet-term-Experiment"
         Then I should see "3 files selected"
