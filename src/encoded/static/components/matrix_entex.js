@@ -64,25 +64,29 @@ const entexDonors = [
         accession: 'ENCDO845WKR',
         cssSuffix: 'male1',
         voice: 'Male 1',
-        legendText: '\u26421',
+        legendIcon: 'mars',
+        legendText: '1',
     },
     {
         accession: 'ENCDO793LXB',
         cssSuffix: 'female3',
         voice: 'Female 3',
-        legendText: '\u26403',
+        legendIcon: 'venus',
+        legendText: '3',
     },
     {
         accession: 'ENCDO451RUA',
         cssSuffix: 'male2',
         voice: 'Male 2',
-        legendText: '\u26422',
+        legendIcon: 'mars',
+        legendText: '2',
     },
     {
         accession: 'ENCDO271OUW',
         cssSuffix: 'female4',
         voice: 'Female 4',
-        legendText: '\u26404',
+        legendIcon: 'venus',
+        legendText: '4',
     },
 ];
 
@@ -100,7 +104,7 @@ const DonorLegendRow = ({ entexDonor }) => (
             ))}
         </div>
         <div className="donor-legend-row__label">
-            <div className={`donor-legend-row__short-string donor-legend-row__short-string--${entexDonor.cssSuffix}`}>{entexDonor.legendText}</div>
+            <div className={`donor-legend-row__short-string donor-legend-row__short-string--${entexDonor.cssSuffix}`}>{svgIcon(entexDonor.legendIcon)} {entexDonor.legendText}</div>
             <a href={`/human-donors/${entexDonor.accession}`} aria-label={`Go to donor page for ${entexDonor.voice} ${entexDonor.accession}`}>{entexDonor.accession}</a>
         </div>
     </div>

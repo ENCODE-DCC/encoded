@@ -336,7 +336,7 @@ const getDataTableData = (context) => {
         });
 
         const uniqueDiseases = Array.from(availableDiseases);
-        const genderSymbol = genderData === 'male' ? '♂' : '♀';
+        const genderSymbol = genderData === 'male' ? 'mars' : 'venus';
         const diseaseColor = uniqueDiseases.length > 0 ? getDiseaseColorCode(uniqueDiseases) : '';
 
         rowDataItems.diseaseColor = diseaseColor;
@@ -429,17 +429,17 @@ const convertContextToDataTable = (context, diseaseList, diseaseGroupIndex = 0) 
                     const key = accession?.key;
                     rowKey = key;
                     const ageText = age ? <span title="age"> {age} years</span> : null;
-                    const genderText = genderSymbol ? <div className="gender-symbol" title={genderType}> {genderSymbol}</div> : null;
+                    const genderText = genderSymbol ? <div className="gender-symbol" title={genderType}>{svgIcon(genderSymbol)}</div> : null;
 
                     row[0].content = (
-                        <>
+                        <div className="matrix-brain-row-header">
                             <span>
                                 <a href={`${context.search_base}&replicates.library.biosample.donor.accession=${key}`} title="Donor">{key}</a>
                             </span>
                             { ageText }
                             { genderText && ageText ? ',' : '' }
                             { genderText }
-                        </>
+                        </div>
                     );
                 } else if (Object.keys(content).length === 0) {
                     row[index].content = (
