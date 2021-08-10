@@ -5,8 +5,8 @@ import pytest
 def dummy_parent_and_dummy_request(dummy_request):
     from pyramid.testing import DummyResource
     from pyramid.security import Allow
-    from snovault.elasticsearch.searches.parsers import ParamsParser
-    from snovault.elasticsearch.searches.queries import AbstractQueryFactory
+    from snosearch.parsers import ParamsParser
+    from snosearch.queries import AbstractQueryFactory
     from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
     from elasticsearch import Elasticsearch
     dummy_request.registry[ELASTIC_SEARCH] = Elasticsearch()

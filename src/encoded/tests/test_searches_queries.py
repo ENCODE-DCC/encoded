@@ -3,7 +3,7 @@ import pytest
 
 @pytest.fixture
 def params_parser(dummy_request):
-    from snovault.elasticsearch.searches.parsers import ParamsParser
+    from snosearch.parsers import ParamsParser
     from snovault.elasticsearch import ELASTIC_SEARCH
     from elasticsearch import Elasticsearch
     dummy_request.environ['QUERY_STRING'] = (

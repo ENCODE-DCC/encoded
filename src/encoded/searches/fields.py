@@ -4,12 +4,12 @@ from encoded.searches.queries import CartSearchQueryFactory
 from encoded.searches.queries import CartSearchQueryFactoryWithFacets
 from encoded.searches.queries import CartMatrixQueryFactoryWithFacets
 from encoded.searches.queries import CartReportQueryFactoryWithFacets
-from snovault.elasticsearch.searches.fields import BasicSearchResponseField
-from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
-from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponseField
-from snovault.elasticsearch.searches.fields import ClearFiltersResponseField
-from snovault.elasticsearch.searches.fields import TypeOnlyClearFiltersResponseField
-from snovault.elasticsearch.searches.fields import FiltersResponseField
+from snosearch.fields import BasicSearchResponseField
+from snosearch.fields import BasicSearchWithFacetsResponseField
+from snosearch.fields import BasicMatrixWithFacetsResponseField
+from snosearch.fields import ClearFiltersResponseField
+from snosearch.fields import TypeOnlyClearFiltersResponseField
+from snosearch.fields import FiltersResponseField
 
 
 class CartSearchResponseField(BasicSearchResponseField):
