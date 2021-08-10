@@ -226,32 +226,22 @@
     },
     "facets": {
         "file.assay_title": {
-            "title": "Assay title",
-            "open_on_load": true
+            "title": "Assay title"
         },
         "file.biosample_ontology.classification": {
-            "title": "Biosample classification",
-            "open_on_load": true
+            "title": "Biosample classification"
         },
         "file.biosample_ontology.term_name": {
-            "title": "Biosample",
-            "open_on_load": true,
-            "type": "typeahead",
-            "length": "long"
+            "title": "Biosample"
         },
         "gene.symbol": {
-            "title": "Gene symbol",
-            "open_on_load": true,
-            "type": "typeahead",
-            "length": "long"
+            "title": "Gene symbol"
         },
         "file.assembly": {
-            "title": "Assembly",
-            "open_on_load": true
+            "title": "Assembly"
         },
         "dataset.replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism",
-            "open_on_load": true
+            "title": "Organism"
         },
         "dataset.replicates.library.biosample.sex": {
             "title": "Biosample sex"
