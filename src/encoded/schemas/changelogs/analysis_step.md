@@ -12,6 +12,7 @@
 * Added several entries to the enum lists for *input_file_types* and *output_file_types*: *allele-specific chromatin interactions, allele-specific variants, bidirectional peaks, diploid personal genome alignments, haplotype-specific alignments, novel peptides, peptide quantifications, protein expression quantifications, unidirectional peaks*
 * Added *polyA sites* to the enum list for *input_file_types* and *output_file_types*
 * Added *redacted alignments* and *redacted transcriptome alingments* to the enum list for *input_file_types* and *output_file_types*
+* Added *fragments* to the enum list for *input_file_types* and *output_file_types*
 * Added *genome compartment identification* to the enum list for *analysis_step_types*
 * Added *sparse peak count matrix* to the enum lists for *input_file_types* and *output_file_types*
 * Added *functional conservation quantifications* to the enum lists for *input_file_types* and *output_file_types*

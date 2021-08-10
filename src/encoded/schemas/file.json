@@ -1619,6 +1619,7 @@
                         "fold change over control",
                         "footprints",
                         "functional conservation quantifications",
+                        "fragments",
                         "gene alignments",
                         "gene quantifications",
                         "gene stabilities",
@@ -2270,6 +2271,7 @@
         "sparse gRNA count matrix": "quantification",
         "peptide quantifications": "quantification",
         "protein expression quantifications": "quantification",
+        "fragments": "quantification",
         "sparse peak count matrix": "quantification",
 
         "hotspots": "annotation",
