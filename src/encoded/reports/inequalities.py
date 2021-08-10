@@ -1,7 +1,7 @@
 import operator
 
 from encoded.reports.serializers import map_string_to_boolean_and_int
-from snovault.elasticsearch.searches.interfaces import COLON
+from snosearch.interfaces import COLON
 
 
 relation_to_operator = {

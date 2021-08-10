@@ -21,10 +21,10 @@ from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from pyramid.view import view_config
-from snovault.elasticsearch.searches.interfaces import EXISTS
-from snovault.elasticsearch.searches.interfaces import MUST
-from snovault.elasticsearch.searches.interfaces import RANGES
-from snovault.elasticsearch.searches.parsers import QueryString
+from snosearch.interfaces import EXISTS
+from snosearch.interfaces import MUST
+from snosearch.interfaces import RANGES
+from snosearch.parsers import QueryString
 from snovault.util import simple_path_ids
 
 

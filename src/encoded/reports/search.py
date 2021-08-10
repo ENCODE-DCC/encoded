@@ -1,5 +1,5 @@
 from encoded.search_views import search_generator
-from snovault.elasticsearch.searches.parsers import QueryString
+from snosearch.parsers import QueryString
 
 
 class BatchedSearchGenerator:
