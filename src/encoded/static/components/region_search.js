@@ -6,11 +6,12 @@ import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
+import { makeSearchUrl } from './gene_search/search';
 
 const AutocompleteBoxMenu = (props) => {
     const handleClick = () => {
         const { term, name } = props;
-        props.handleClick(term.text, term._source.payload.id, name);
+        props.handleClick(term.title, term.locations, name);
     };
 
     const { preText, matchText, postText } = props;
@@ -54,18 +55,18 @@ const AutocompleteBox = (props) => {
                     let postText;
 
                     // Boldface matching part of term
-                    const matchStart = term.text.toLowerCase().indexOf(userTerm);
+                    const matchStart = term.title.toLowerCase().indexOf(userTerm);
                     if (matchStart >= 0) {
                         matchEnd = matchStart + userTerm.length;
-                        preText = term.text.substring(0, matchStart);
-                        matchText = term.text.substring(matchStart, matchEnd);
-                        postText = term.text.substring(matchEnd);
+                        preText = term.title.substring(0, matchStart);
+                        matchText = term.title.substring(matchStart, matchEnd);
+                        postText = term.title.substring(matchEnd);
                     } else {
-                        preText = term.text;
+                        preText = term.title;
                     }
                     return (
                         <AutocompleteBoxMenu
-                            key={term.text}
+                            key={term.title}
                             handleClick={handleClick}
                             term={term}
                             name={props.name}
@@ -146,11 +147,14 @@ class SearchBox extends React.Component {
         this.newSearchTerm = e.target.value;
     }
 
-    handleAutocompleteClick(term, id, name) {
+    handleAutocompleteClick(term, locations, name) {
+        let coordinates = locations.filter(location => location.assembly == this.state.genome)[0];
+        const query = `${coordinates.chromosome}:${coordinates.start}-${coordinates.end}`;
+
         const newTerms = {};
         const inputNode = this.annotation;
         inputNode.value = term;
-        newTerms[name] = id;
+        newTerms[name] = query;
         this.setState({ terms: newTerms, showAutoSuggest: false });
         inputNode.focus();
         // Now let the timer update the terms state when it gets around to it.
@@ -185,7 +189,6 @@ class SearchBox extends React.Component {
 
         const context = this.props;
         const id = url.parse(this.context.location_href, true);
-        const region = id.query.region || '';
 
         if (this.state.genome === '') {
             const assembly = this.props.assembly || id.query.genome || defaultAssembly;
@@ -197,6 +200,8 @@ class SearchBox extends React.Component {
             }
         }
 
+        const suggest = `https://www.encodeproject.org${makeSearchUrl(this.state.searchTerm, this.state.genome)}`;
+
         return (
             <Panel>
                 <PanelBody>
@@ -204,10 +209,10 @@ class SearchBox extends React.Component {
                         <input type="hidden" name="annotation" value={this.state.terms.annotation} />
                         <label htmlFor="annotation">Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
                         <div className="adv-search-form__input">
-                            <input id="annotation" ref={(input) => { this.annotation = input; }} defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
+                            <input id="annotation" ref={(input) => { this.annotation = input; }} name="region" type="text" className="form-control" onChange={this.handleChange} />
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete>
-                                    <Param name="auto" url={`/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`} type="json" />
+                                    <Param name="auto" url={suggest} type="json" />
                                     <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
                                 </FetchedData>
                             : null}

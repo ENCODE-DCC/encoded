@@ -296,7 +296,6 @@ def region_search(context, request):
     region = request.params.get('region', '*')
     region_inside_peak_status = False
 
-
     # handling limit
     size = request.params.get('limit', 25)
     if size in ('all', ''):
@@ -314,12 +313,18 @@ def region_search(context, request):
     annotation = request.params.get('annotation', '')
     chromosome, start, end = ('', '', '')
 
+    expand_2kb = True
+    label = region
     if annotation != '':
         if annotation.lower().startswith('ens'):
+            label = annotation
             chromosome, start, end = get_ensemblid_coordinates(annotation, assembly)
+        elif annotation.startswith('chr'):
+            chromosome, start, end = sanitize_coordinates(annotation)
         else:
             chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
     elif region != '':
+        label = region
         region = region.lower()
         if region.startswith('rs'):
             sanitized_region = sanitize_rsid(region)
@@ -329,6 +334,7 @@ def region_search(context, request):
             chromosome, start, end = get_ensemblid_coordinates(region, assembly)
         elif region.startswith('chr'):
             chromosome, start, end = sanitize_coordinates(region)
+            expand_2kb = False
     else:
         chromosome, start, end = ('', '', '')
 
@@ -342,6 +348,11 @@ def region_search(context, request):
         result['coordinates'] = '{chr}:{start}-{end}'.format(
             chr=chromosome, start=start, end=end
         )
+
+    if expand_2kb:
+        start = int(start) - 2000
+        end = int(end) + 2000
+        result['coordinates'] = '{label}: ({coords}) +/- 2kb'.format(label=label, coords=result['coordinates'])
 
     try:
         peak_results = data_service.region_search(_GENOME_TO_ALIAS[assembly], chromosome.lower(), start, end)
@@ -388,8 +399,6 @@ def region_search(context, request):
         result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:
             result['notification'] = 'Success'
-            position_for_browser = format_position(result['coordinates'], 200)
-            result.update(search_result_actions(request, ['Experiment'], es_results, position=position_for_browser))
 
     return result
 
@@ -409,6 +418,7 @@ def suggest(context, request):
         '@graph': [],
     }
     es = request.registry[ELASTIC_SEARCH]
+
     query = {
         "suggest": {
             "default-suggest": {
