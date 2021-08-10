@@ -44,8 +44,8 @@ from snosearch.fields import ContextResponseField
 from snosearch.fields import DebugQueryResponseField
 from snosearch.fields import FiltersResponseField
 from snosearch.fields import IDResponseField
-from snovault.elasticsearch.searches.fields import NotificationResponseField
-from snosearch.fields import NonSortableResponseField
+from snosearch.fields import NotificationResponseField
+from snovault.elasticsearch.searches.fields import NonSortableResponseField
 from snosearch.fields import RawMatrixWithAggsResponseField
 from snosearch.fields import RawSearchWithAggsResponseField
 from snosearch.fields import RawTopHitsResponseField
