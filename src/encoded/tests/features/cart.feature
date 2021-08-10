@@ -24,8 +24,9 @@ Feature: Cart
 
         When I visit "/functional-characterization-experiments/ENCSR127PCE/"
         And I wait for the content to load
-        When I press "Add item to cart"
+        When I press "Add item to cart “Default Cart”"
         Then I should see 5 elements with the css selector ".cart-toggle--in-cart"
+
 
     Scenario: Cart page load
         When I press "cart-control"
