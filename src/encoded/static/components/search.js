@@ -729,6 +729,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
     const differentiationSeries = result['@type'].indexOf('DifferentiationSeries') >= 0;
 
     const biosampleTerm = result.biosample_ontology ? result.biosample_ontology[0].term_name : '';
+    const biosampleclassifications = result.biosample_ontology ? result.biosample_ontology[0].classification : '';
 
     let biosamples;
     if (differentiationSeries && result.biosample_ontology && Object.keys(result.biosample_ontology).length > 1) {
@@ -785,7 +786,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         if (lifeStage) {
                             lifeStages.push(lifeStage);
                         }
-                        if (biosample.treatments && differentiationSeries) {
+                        if (biosample.treatments && (differentiationSeries || fccSeries)) {
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
                         }
                         if (biosample.treatments && treatmentConcentration) {
@@ -891,7 +892,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                             : <span>{`${datasetTypes[result['@type'][0]]}`}</span>
                         }
                         {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
-                        {organism || lifeSpec.length > 0 ?
+                        {(!fccSeries && (organism || lifeSpec.length > 0)) || (fccSeries && biosampleclassifications !== 'cell line' && (organism || lifeSpec.length > 0)) ?
                             <span>
                                 {' ('}
                                 {organism ? <i>{organism}</i> : null}
@@ -936,7 +937,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         {postDiffTime.length > 0 ?
                             <div><span className="result-item__property-title">Post-differentiation time: </span>{postDiffTime.join(', ')} {postDiffTimeUnits}s</div>
                         : null}
-                        { (uniqueTreatments && (treatmentTime || treatmentConcentration || differentiationSeries)) ?
+                        { (uniqueTreatments && (treatmentTime || treatmentConcentration || differentiationSeries || fccSeries)) ?
                             <div><span className="result-item__property-title">Treatment{treatments.length !== 1 ? 's' : ''}: </span>
                                 <span>
                                     {uniqueTreatments}
