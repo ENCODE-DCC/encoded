@@ -4694,6 +4694,23 @@
         "uuid": "94b90422-ade3-4010-a0a0-8fe0bedbcf5b"
     },
     {
+        "_test": "test fragments",
+        "accession": "ENCFF123FRG",
+        "assembly": "GRCh38",
+        "award": "/awards/U54HG006996/",
+        "dataset": "/experiments/ENCSR606VJQ/",
+        "date_created": "2021-08-09T21:32:51.463118+00:00",
+        "file_format": "tar",
+        "file_size": 15674567,
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "f340dcda5601928714b1ca967c9e4ea2",
+        "no_file_available": false,
+        "output_type": "fragments",
+        "status": "released",
+        "uuid": "f4f5197d-dcd4-46eb-a992-f0b8832988d4"
+    },
+    {
         "_test": "sparse peak count matrix for SPLiT-seq",
         "status": "in progress",
         "uuid": "bb94dfcc-186b-47eb-8089-5d6cc6c1536d",

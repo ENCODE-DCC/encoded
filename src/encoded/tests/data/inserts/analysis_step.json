@@ -671,6 +671,23 @@
         "uuid": "efe70b61-2d0e-40e1-ac2b-15332ea60e8e"
     },
     {
+        "analysis_step_types": [
+            "quantification"
+        ],
+        "date_created": "2021-07-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "alignments"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "fragments"
+        ],
+        "status": "released",
+        "step_label": "sn-atac-quantification-step",
+        "title": "snATAC quantification step",
+        "uuid": "1a14cdf3-7948-482c-8737-e3bdaf0b4cb6"
+    },
+    {
         "step_label": "functional-conservation-bigbed-step",
         "major_version": 1,
         "title": "Functional conservation bigBed step",
