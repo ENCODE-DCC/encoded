@@ -3053,35 +3053,17 @@ class FileGalleryRendererComponent extends React.Component {
         if (!this.props.altFilterDefault) {
             this.setState({ selectedFilterValue: '0' });
         }
+
         // Determine how many visualizable files there are
-        // const tempFiles = filterForVisualizableFiles(this.state.files);
-        // If the graph is hidden and there are no visualizable files, set default tab to be table and set default assembly to be 'All assemblies'
-        // if (this.props.hideGraph && tempFiles.length < 1) {
-        if (this.props.hideGraph) {
-            this.setState({ currentTab: 'tables' }, () => {
-                this.filterFiles('All assemblies', 'assembly');
-            });
-        // If the graph is not hidden and there are no visualizable files, set default tab to be graph and set default assembly to be the most recent assembly
+        const vizFiles = filterForVisualizableFiles(this.props.context.files);
+
+        if (vizFiles.length > 0) {
+            this.setState({ currentTab: 'browser' });
+        } else if (this.props.context.files?.some((file) => file.analysis_step_version)) {
+            this.setState({ currentTab: 'graph' });
         } else {
-        // } else if (tempFiles.length < 1) {
-            // Display graph as default if there are no visualizable files
-            let assemblyList = [];
-            this.setState({ currentTab: 'graph' }, () => {
-                // Determine available assemblies
-                assemblyList = this.setAssemblyList(this.state.files);
-                // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-                const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-                this.filterFiles(newAssembly, 'assembly');
-            });
-        // If there are visualizable files, set default tab to be browser and set default assembly to be the most recent assembly
+            this.setState({ currentTab: 'tables' });
         }
-        //  else {
-        //     // Determine available assemblies
-        //     const assemblyList = this.setAssemblyList(this.state.files);
-        //     // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-        //     const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-        //     this.filterFiles(newAssembly, 'assembly');
-        // }
     }
 
 
