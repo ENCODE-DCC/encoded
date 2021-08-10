@@ -29,6 +29,7 @@ METADATA_ALLOWED_TYPES = [
     'UcscBrowserComposite',
     'PublicationData',
     'Analysis',
+    'SingleCellUnit',
 ] + METADATA_SERIES_TYPES
 
 

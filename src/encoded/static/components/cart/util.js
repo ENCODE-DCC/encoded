@@ -21,6 +21,7 @@ export const allowedDatasetTypes = {
     experiments: { title: 'Experiments', type: 'Experiment' },
     annotations: { title: 'Annotations', type: 'Annotation' },
     'functional-characterization-experiments': { title: 'Functional characterizations', type: 'FunctionalCharacterizationExperiment' },
+    'single-cell-units': { title: 'Single-cell units', type: 'SingleCellUnit' },
 };
 
 /**
