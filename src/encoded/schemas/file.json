@@ -1618,7 +1618,7 @@
                         "fine-mapped variants",
                         "fold change over control",
                         "footprints",
-                        "functional conservation scores",
+                        "functional conservation quantifications",
                         "gene alignments",
                         "gene quantifications",
                         "gene stabilities",
@@ -2342,7 +2342,7 @@
         "novel peptides": "annotation",
         "unidirectional peaks": "annotation",
         "polyA sites": "annotation",
-        "functional conservation scores": "annotation",
+        "functional conservation quantifications": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
