@@ -2276,6 +2276,66 @@ const differentialAccessibilitySeriesTableColumns = {
 
 
 /**
+ * Generate a comma-separated string of pulse-chase time durations from the given experiment's biosamples.
+ * @param {object} experiment - The experiment to generate the pulse-chase durations from.
+ * @returns {string} - A comma-separated string of pulse-chase durations.
+ */
+const computePulseDurations = (dataset) => {
+    const biosamples = collectDatasetBiosamples(dataset);
+    let pulseDurations = [];
+    if (biosamples.length > 0) {
+        biosamples.forEach((biosample) => {
+            if (biosample.pulse_chase_time) {
+                pulseDurations.push(`${biosample.pulse_chase_time} ${biosample.pulse_chase_time_units}${biosample.pulse_chase_time > 1 ? 's' : ''}`);
+            }
+        });
+    }
+    pulseDurations = _.uniq(pulseDurations);
+    return pulseDurations.join(', ');
+};
+
+const pulseChaseTimeSeriesTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    pulseDuration: {
+        title: 'Pulse-chase duration',
+        getValue: (experiment) => computePulseDurations(experiment),
+    },
+
+    biosample_summary: {
+        title: 'Biosample summary',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => experiment?.lab.title,
+    },
+
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+
+/**
  * Collect released analyses from all the related datasets in the given Series object.
  * @param {object} context Series object
  * @return {array} All released analyses from all related datasets; empty if none
@@ -3449,32 +3509,37 @@ globals.contentViews.register(TreatmentTimeSeries, 'TreatmentTimeSeries');
 
 
 /**
- * Wrapper component for treatment time series pages.
+ * Wrapper component for pulse-chase time series pages.
  */
 const PulseChaseTimeSeries = ({ context }, reactContext) => {
     const seriesType = context['@type'][0];
     const seriesTitle = reactContext.profilesTitles[seriesType] || '';
 
-    // Build an array of treatment display strings from the biosample treatments of the
+    // Build an array of pulse-chase display strings from the biosample pulse-chase durations of the
     // related datasets to display in the summary panel.
-    const treatmentAmounts = collectTreatmentAmounts(context.related_datasets);
-    const options = {};
-    if (treatmentAmounts.length > 0) {
-        options.Treatments = <>{treatmentAmounts.join(', ')}</>;
+    const durations = computePulseDurations(context.related_datasets);
+    const options = {
+        getSupplementalShortLabel: (dataset) => computePulseDurations(dataset),
+        suppressDonorDiversity: true,
+    };
+    if (durations.length > 0) {
+        options.Durations = <>{durations.join(', ')}</>;
     }
 
     return (
         <Series
             context={context}
             title={seriesTitle}
-            tableColumns={timeSeriesTableColumns}
+            tableColumns={pulseChaseTimeSeriesTableColumns}
+            sortColumn="pulseDuration"
+            breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
             options={options}
         />
     );
 };
 
 PulseChaseTimeSeries.propTypes = {
-    /** Treatment time series object */
+    /** Pulse-chase time series object */
     context: PropTypes.object.isRequired,
 };
 

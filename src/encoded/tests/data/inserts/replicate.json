@@ -980,5 +980,23 @@
         "submitted_by": "dignissim.euismod@amet.habitant",
         "technical_replicate_number": 1,
         "uuid": "a721ce33-53b4-46f9-a3ec-066783b84b00"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR200BRU",
+        "library": "ENCLB001BRU",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "a366f842-07aa-40dc-980f-bbfbf7712624"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR600BRU",
+        "library": "ENCLB002BRU",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "524e0cd3-5e5b-4871-9480-4dafd999dd59"
     }
 ]

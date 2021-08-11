@@ -1412,5 +1412,35 @@
         "source": "john-stamatoyannopoulos",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "1313fc4e-b989-4fae-a65c-b16f309a2b79"
+    },
+    {
+        "accession": "ENCBS001BRU",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "5a8c94ee-7ca6-4e50-bb6a-240fcd844f62",
+        "pulse_chase_time": 2,
+        "pulse_chase_time_units": "hour"
+    },
+    {
+        "accession": "ENCBS002BRU",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "525202d7-0242-4e92-8edd-ccb26a6cb887",
+        "pulse_chase_time": 6,
+        "pulse_chase_time_units": "hour"
     }
 ]

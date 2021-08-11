@@ -791,6 +791,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
     let constructionPlatforms = [];
     let cellularComponents = [];
     let expressedGenes = [];
+    let pulseDurations = [];
 
     const treatmentTime = result['@type'].indexOf('TreatmentTimeSeries') >= 0;
     const treatmentConcentration = result['@type'].indexOf('TreatmentConcentrationSeries') >= 0;
@@ -910,6 +911,10 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         if (biosample.phase) {
                             phases.push(biosample.phase);
                         }
+                        if (biosample.pulse_chase_time) {
+                            const duration = `${biosample.pulse_chase_time} ${biosample.pulse_chase_time_units}${biosample.pulse_chase_time > 1 ? 's' : ''}`;
+                            pulseDurations.push(duration);
+                        }
                     }
                     if (replicate.library) {
                         if (replicate.library.construction_platform) {
@@ -943,6 +948,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
         constructionPlatforms = _.uniq(constructionPlatforms);
         cellularComponents = _.uniq(cellularComponents);
         expressedGenes = _.uniq(expressedGenes);
+        pulseDurations = _.uniq(pulseDurations);
     }
     const lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
 
@@ -1065,6 +1071,9 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         : null}
                         {constructionMethods.length > 0 ?
                             <div><span className="result-item__property-title">Construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
+                        : null}
+                        {pulseDurations.length > 0 ?
+                            <div><span className="result-item__property-title">Pulse-chase time durations: </span>{pulseDurations.join(', ')}</div>
                         : null}
                         {elementsSelectionMethod && elementsSelectionMethod.length > 0 ?
                             <div><span className="result-item__property-title">Elements selection method: </span>{elementsSelectionMethod.join(', ')}</div>
