@@ -676,10 +676,10 @@
         "title": "Functional conservation bigBed step",
         "analysis_step_types": ["file format conversion"],
         "input_file_types": [
-                "functional conservation scores"
+                "functional conservation quantifications"
         ],
         "output_file_types": [
-                "functional conservation scores"
+                "functional conservation quantifications"
         ],
         "status": "released",
         "uuid": "eeb1849f-f77e-4ed6-b625-6137f2f76af5"

@@ -4711,7 +4711,7 @@
         "lab": "/labs/barbara-wold/"
     },
     {
-        "_test": "functional conservation scores for cross-species annotation",
+        "_test": "functional conservation quantifications for cross-species annotation",
         "status": "in progress",
         "submitted_file_name": "human_elements_with_conservation_scoring.bed.gz",
         "uuid": "87b9a18c-2e9c-4ba2-a8b4-e5a0897a32cc",
@@ -4725,7 +4725,7 @@
         "genome_annotation": "V19",
         "dataset": "/experiments/ENCSR000CFC/",
         "file_size": 370148294,
-        "output_type": "functional conservation scores",
+        "output_type": "functional conservation quantifications",
         "lab": "/labs/richard-myers/",
         "aliases": ["hongkai-ji:human_elements_scored_file"]
     }
