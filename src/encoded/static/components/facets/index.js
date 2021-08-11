@@ -8,6 +8,15 @@
  */
 import FacetRegistry, { SpecialFacetRegistry } from './registry';
 import { DefaultFacet, DefaultTitle, DefaultTerm, DefaultTermName, DefaultSelectedTermName } from './defaults';
+import {
+    FacetGroup,
+    filterTopLevelFacets,
+    generateFacetGroupIdentifier,
+    generateFacetGroupIdentifierList,
+    generateFacetGroupNameList,
+    getFacetGroupFieldsInFacets,
+} from './facet_groups';
+
 // Custom facet-renderer modules imported here. Keep them alphabetically sorted.
 import './audit';
 import './audit_processed_data';
@@ -46,7 +55,16 @@ SpecialFacetRegistry.SelectedTermName._setDefaultComponent(DefaultSelectedTermNa
  * All usage of the facet registry external to this directory should only use what gets exported
  * here.
  */
-export { FacetRegistry, SpecialFacetRegistry };
+export {
+    FacetRegistry,
+    SpecialFacetRegistry,
+    FacetGroup,
+    filterTopLevelFacets,
+    generateFacetGroupIdentifier,
+    generateFacetGroupIdentifierList,
+    generateFacetGroupNameList,
+    getFacetGroupFieldsInFacets,
+};
 
 
 /**

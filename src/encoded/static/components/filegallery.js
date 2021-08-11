@@ -18,13 +18,13 @@ import {
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
+import { useMount } from './hooks';
 import {
     computeExaminedLoci,
     requestFiles,
     DownloadableAccession,
     computeAssemblyAnnotationValue,
     filterForVisualizableFiles,
-    useMount,
     requestSearch,
     requestUri,
     requestObjects,

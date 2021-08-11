@@ -70,6 +70,69 @@
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_slims",
+                "assay_title",
+                "related_datasets.perturbation_type",
+                "related_datasets.crispr_screen_readout",
+                "related_datasets.replicates.library.biosample.applied_modifications.MOI",
+                "related_datasets.replicates.library.biosample.applied_modifications.guide_type",
+                "related_datasets.replicates.library.nucleic_acid_term_name"
+            ]
+        },
+        {
+            "title": "Elements",
+            "facet_fields": [
+                "related_datasets.examined_loci.gene.symbol",
+                "target.investigated_as"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "organism.scientific_name",
+                "biosample_ontology.term_name",
+                "biosample_ontology.classification",
+                "related_datasets.replicates.library.biosample.life_stage",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "treatment_term_name"
+            ]
+        },
+        {
+            "title": "Data Details",
+            "facet_fields": [
+                "control_type",
+                "assembly",
+                "related_datasets.files.file_type",
+                "related_datasets.files.run_type"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "award.project",
+                "award.rfa",
+                "lab.title",
+                "date_submitted"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "related_datasets.files.read_length",
+                "related_datasets.replicates.library.size_range",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "assay_term_name": {
             "title": "Assay name"
@@ -88,6 +151,12 @@
         },
         "target.investigated_as": {
             "title": "Target category"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
         },
         "biosample_ontology.classification": {
             "title": "Biosample classification"

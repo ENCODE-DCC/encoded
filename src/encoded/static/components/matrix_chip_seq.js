@@ -9,7 +9,8 @@ import { Panel, PanelBody, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { MatrixBadges, DisplayAsJson, useMount } from './objectutils';
+import { useMount } from './hooks';
+import { MatrixBadges, DisplayAsJson } from './objectutils';
 import { SearchFilter } from './matrix';
 import { TextFilter, FacetList, ClearFilters } from './search';
 import { DivTable } from './datatable';
@@ -605,7 +606,7 @@ const SelectOrganismModal = () => (
             <div>Organism to view in matrix:</div>
             <div className="selectors">
                 {tabLevel1.map((tab, index) => (
-                    <a key={index} className={`btn btn-info btn__selector--${tab.id.replace(/ /g, '-')}`} href={`/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=${tab.id}&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released`}>{tab.header}</a>
+                    <a key={index} className={`btn btn-info btn__selector--${tab.id.replace(/ /g, '-')}`} data-reload="true" href={`/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=${tab.id}&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released`}>{tab.header}</a>
                 ))}
             </div>
         </ModalBody>

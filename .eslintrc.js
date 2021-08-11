@@ -61,6 +61,7 @@ module.exports = {
         'react/jsx-wrap-multilines': 'off', // Causes too many code changes
         'react/no-array-index-key': 'off', // Sometimes we have no choice
         'react/no-danger': 'off', // We need to do this
+        'react/no-did-update-set-state': 'off',
         'react/react-in-jsx-scope': 'off', // Not needed with new transform
     },
 };

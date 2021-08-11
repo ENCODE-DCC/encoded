@@ -7,9 +7,19 @@
     line-height: 1.3;
 }
 
-.facet-wrapper {
-    padding: 10px;
+.facet-list-wrapper {
+    padding: 0;
     border: 1px #ccc solid;
+
+    &.facet-list-wrapper--facet-group {
+        padding: 0;
+        margin-bottom: 10px;
+    }
+
+    &:empty {
+        padding: 0;
+        border: none;
+    }
 }
 
 .box.facets {
@@ -85,8 +95,9 @@
 }
 
 .facets h5, .facets legend {
-    margin: 2px 0;
-    padding-bottom: 5px;
+    margin: 2px 0 0;
+    font-weight: 600;
+    text-align: left;
 }
 
 // Note: "will-change" under .term-list is to fix a Chrome slow-scrolling issue when scrollable
@@ -94,21 +105,24 @@
 // https://stackoverflow.com/questions/24741502/can-i-do-anything-about-repaints-on-scroll-warning-in-chrome-for-overflowscr/#answer-41026886
 
 .facet {
-    flex-wrap: wrap;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
     overflow: hidden;
     position: relative;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 10px 15px;
     word-break: break-word;
+    border-bottom: 0.5px solid #f0f0f0;
 
-    @at-root #{&}__content {
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .facet-terms {
         display: flex;
         position: relative;
 
         ul {
-            margin: 0 2px 0 0;
-            padding: 3px 0 3px 3px;
+            margin: 0;
+            padding: 3px 0;
             max-height: 95px;
             flex: 1 1 auto;
             overflow-y: scroll;
@@ -151,25 +165,22 @@
         }
     }
 
-    &:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-        margin-bottom: 0;
+    @at-root #{&}-expander {
+        display: flex;
+        width: 100%;
+        border: none;
+        background-color: transparent;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0;
+        line-height: 1;
     }
 
-    @at-root #{&}__expander {
-        @at-root #{&}--header {
-            display: flex;
-            flex-direction: row;
-            cursor: pointer;
-            justify-content: space-between;
-            padding: 10px 10px 0;
-            line-height: 1;
-        }
-    }
-
-    .hiddenscroll & .facet-chevron {
-        padding-right: 10px;
+    .facet-chevron {
+        flex: 0 0 16px;
+        width: 16px;
+        height: 10px;
     }
 
     .facet-open {
@@ -185,14 +196,19 @@
     }
 }
 
+.facet-content {
+    padding: 0;
+    overflow: hidden;
+}
+
 // Radio button facet styles.
 fieldset.facet {
-    padding: 0;
     border: none;
 
     legend {
+        padding: 10px 0 0;
         font-size: 1rem;
-        font-weight: bold;
+        font-weight: 600;
     }
 
     .facet__radio {
@@ -247,7 +263,7 @@ fieldset.facet {
     display: flex;
     position: relative;
     align-items: center;
-    margin: 4px 0;
+    margin: 1px 0;
     padding: 0;
     font-size: 0.9rem;
     line-height: 1;
@@ -293,7 +309,7 @@ fieldset.facet {
     @at-root #{&}__item {
         position: relative;
         display: flex;
-        padding: 2px 10px;
+        padding: 2px;
         border-radius: 3px;
         justify-content: space-between;
         align-items: center;
@@ -485,6 +501,13 @@ fieldset.facet {
     }
 }
 
+.typeahead-entry {
+    @extend .general-search-entry;
+
+    padding: 0;
+    margin: 5px 0 0;
+}
+
 .searcherror {
     font-style: italic;
     padding: 10px;
@@ -524,26 +547,45 @@ fieldset.facet {
 }
 
 .filter-container {
-    display: block;
-    margin: 10px auto;
-
-    .filter-hed {
-        display: inline-block;
-        padding: 0 5px;
-    }
-
-    .negation-filter {
-        color: #e50400;
-    }
+    display: flex;
+    margin: 2px 0 0;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 2px;
 
     .filter-link {
-        display: inline-block;
-        text-align: center;
+        display: flex;
         padding: 0 5px;
-        cursor: pointer;
+        flex-grow: 0;
+        align-items: center;
+        overflow: hidden;
+        font-size: 0.8rem;
+        font-weight: normal;
+        color: #000;
+        background-color: scale-color(#4183c4, $lightness: 70%);
+        border: none;
+        border-radius: 3px;
+
+        &.filter-link--negative {
+            background-color: scale-color(#e50400, $lightness: 70%);
+        }
 
         &:hover {
-            text-decoration: underline;
+            text-decoration: none;
+        }
+
+        .filter-link__title {
+            margin-right: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .filter-link__icon {
+            width: 7px;
+
+            .svg-icon {
+                fill: #000;
+            }
         }
     }
 }
@@ -711,8 +753,99 @@ div.meta-status {
 }
 
 // Style for biochemical inputs facet
-
 .biochemical-toggle-description {
     font-size: 0.9rem;
     padding-bottom: 5px;
+}
+
+// Facet groups including the title and subordinate facets.
+.facet-group {
+    border-bottom: 1px solid #ccc;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .facet-group__content {
+        padding: 0;
+        overflow: hidden;
+    }
+}
+
+$facet-group-title-transition-time: 200ms;
+
+.facet-group-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    gap: 5px;
+    border: none;
+    background-color: #eef7ee;
+    transition: background-color $facet-group-title-transition-time linear;
+
+    .facet-group-title__title-name {
+        flex: 1 0 auto;
+        text-align: left;
+    }
+
+    .facet-group-title__title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #000;
+        transition: color $facet-group-title-transition-time linear;
+    }
+
+    .facet-group-title__name {
+        color: #a0a0a0;
+        font-weight: bold;
+        font-size: 0.8rem;
+        line-height: 0.6;
+        transition: color $facet-group-title-transition-time linear;
+    }
+
+    .facet-group-title__selection-indicator {
+        flex: 0 0 8px;
+
+        .svg-icon {
+            fill: #000;
+            transition: fill $facet-group-title-transition-time linear;
+        }
+    }
+
+    .facet-group-title__expand-indicator {
+        flex: 0 0 16px;
+        width: 16px;
+        fill: #000;
+        transition: fill $facet-group-title-transition-time linear;
+    }
+
+    &.facet-group-title--open {
+        background-color: #4c994c;
+        transition: background-color $facet-group-title-transition-time linear;
+
+        .facet-group-title__title {
+            color: #fff;
+            transition: color $facet-group-title-transition-time linear;
+        }
+
+        .facet-group-title__name {
+            color: #e0e0e0;
+            transition: color $facet-group-title-transition-time linear;
+        }
+
+        .facet-group-title__selection-indicator {
+            .svg-icon {
+                fill: #fff;
+                transition: fill $facet-group-title-transition-time linear;
+            }
+        }
+
+        .facet-group-title__expand-indicator {
+            fill: #fff;
+            transition: fill $facet-group-title-transition-time linear;
+        }
+    }
 }
