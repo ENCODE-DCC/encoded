@@ -229,8 +229,8 @@ class SearchBox extends React.Component {
                             <input type="submit" value="Search" className="btn btn-info" />
                         </div>
                     </form>
-                    {context.coordinates ?
-                        <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                    {context.coordinates_msg ?
+                        <p>Searched coordinates: <strong>{context.coordinates_msg}</strong></p>
                     : null}
                 </PanelBody>
             </Panel>
@@ -241,14 +241,14 @@ class SearchBox extends React.Component {
 SearchBox.defaultProps = {
     assembly: 'GRCh38',
     notification: '',
-    coordinates: '',
+    coordinates_msg: '',
 };
 
 SearchBox.propTypes = {
     assembly: PropTypes.string,
     handleSearch: PropTypes.func.isRequired,
     notification: PropTypes.string,
-    coordinates: PropTypes.string,
+    coordinates_msg: PropTypes.string,
 };
 
 SearchBox.contextTypes = {
@@ -264,6 +264,7 @@ const RegionSearch = (props, context) => {
     const visualizationOptions = ['Datasets', 'Genome Browser'];
     const defaultVisualization = 'Datasets';
     const supportedFileTypes = ['bigWig', 'bigBed'];
+    const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
 
     const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
     const availableFileTypes = [...new Set(initialGBrowserFiles.map((file) => file.file_format))];
@@ -278,7 +279,17 @@ const RegionSearch = (props, context) => {
 
     const results = props.context['@graph'];
 
-    const { columns, filters, facets, total } = props.context;
+    const { columns, filters, facets, total, coordinates } = props.context;
+
+    if (typeof coordinates !== 'undefined' && typeof window !== 'undefined' && window.sessionStorage) {
+        const coordinatesObj = {
+            contig: coordinates.split(':')[0],
+            x0: coordinates.split(':')[1].split('-')[0],
+            x1: coordinates.split(':')[1].split('-')[1],
+        };
+
+        window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify(coordinatesObj));
+    }
 
     const chooseFileType = (e) => {
         const type = e.currentTarget.getAttribute('name');
