@@ -562,10 +562,24 @@
                     }
                 },
                 {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "tar"                                
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "fragments"
+                            ]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal", "R2C2 subreads", "guide locations"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal", "R2C2 subreads", "guide locations", "fragments"]
                             }
                         }
                     }
