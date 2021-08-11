@@ -1299,6 +1299,7 @@ $divider-color: #000; // Color of dividers between assays with targets
         margin: 5px 10px;
 
         @at-root #{&}__label {
+            display: flex;
             flex: 1 0 auto;
             margin-left: 5px;
             line-height: $donor-cell-height;
@@ -1321,9 +1322,10 @@ $divider-color: #000; // Color of dividers between assays with targets
         }
 
         @at-root #{&}__short-string {
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: $donor-legend-short-string-width;
-            text-align: center;
             line-height: $donor-cell-height;
             border-top-left-radius: 3px;
             border-bottom-left-radius: 3px;
@@ -1333,10 +1335,19 @@ $divider-color: #000; // Color of dividers between assays with targets
             font-family: Menlo, Courier, sans-serif;
             letter-spacing: 0.2rem;
 
+            .svg-icon {
+                width: 14px;
+                height: 14px;
+            }
+
             @each $donor, $color, $textcolor, $curve in $donor-styles {
                 @at-root #{&}--#{$donor} {
                     color: $textcolor;
                     background-color: $color;
+
+                    .svg-icon {
+                        fill: $textcolor;
+                    }
                 }
             }
         }
@@ -1909,8 +1920,12 @@ $rnaseq-term-name-colors:
     }
 
     .gender-symbol {
-        display: inline-block;
-        font-family: 'Menlo, Courier, sans-serif';
+        width: 14px;
+        height: 14px;
+
+        .svg-icon {
+            fill: #000;
+        }
     }
 
     &--first {
@@ -1967,6 +1982,14 @@ $rnaseq-term-name-colors:
         border: 1px solid #000;
         margin: 1px;
         cursor: pointer;
+    }
+
+    .matrix-brain-row-header {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 2px;
+        justify-content: center;
+        align-items: center;
     }
 
     .matrix-brain-disease-identifier {
