@@ -344,15 +344,19 @@ def region_search(context, request):
     if not chromosome or not start or not end:
         result['notification'] = 'No annotations found'
         return result
-    else:
-        result['coordinates'] = '{chr}:{start}-{end}'.format(
-            chr=chromosome, start=start, end=end
-        )
+
+    result['coordinates'] = '{chr}:{start}-{end}'.format(
+        chr=chromosome, start=start, end=end
+    )
+    result['coordinates_msg'] = result['coordinates']
 
     if expand_2kb:
         start = int(start) - 2000
         end = int(end) + 2000
-        result['coordinates'] = '{label}: ({coords}) +/- 2kb'.format(label=label, coords=result['coordinates'])
+        result['coordinates_msg'] = '{label}: ({coords}) +/- 2kb'.format(label=label, coords=result['coordinates'])
+        result['coordinates'] = '{chr}:{start}-{end}'.format(
+            chr=chromosome, start=start, end=end
+        )
 
     try:
         peak_results = data_service.region_search(_GENOME_TO_ALIAS[assembly], chromosome.lower(), start, end)
