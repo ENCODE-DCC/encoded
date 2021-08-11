@@ -149,5 +149,20 @@
             "stimuation"
         ],
         "biosample_ontology": "UBERON_0001114"
+    },
+    {
+        "aliases":[
+            "gonçalo-castelo-branco:knockout_organoid"
+        ],
+        "status": "in progress",
+        "accession": "LATBS102SHH",
+        "uuid": "29fec87d-7f25-44f0-9944-ae746e468a4d",
+        "derived_from": [
+            "abbas-rizvi:GM06990_culture1"
+        ],
+        "derivation_process": [
+            "stimuation"
+        ],
+        "biosample_ontology": "UBERON_0001114"
     }
 ]

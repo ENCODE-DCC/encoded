@@ -158,5 +158,17 @@
         "sex": "female",
         "ethnicity": "HANCESTRO_0008",
         "uuid": "08a2e6fe-0878-4790-8544-2ad7db0ed1dd"
+    },
+    {
+        "aliases": [
+            "andrew-mcmahon:GM06990_donor",
+            "lattice:GM06990_donor"
+        ],
+        "status": "released",
+        "age": "unknown",
+        "development_ontology": "HsapDv_0000087",
+        "sex": "female",
+        "ethnicity": "HANCESTRO_0005",
+        "uuid": "de97ad59-2fa3-49a2-b1cd-714b214360a6"
     }
 ]

@@ -124,5 +124,24 @@
         "post_differentiation_time_units": "day",
         "passage_number": "5",
         "is_immortalized": false
+    },
+    {
+        "aliases": [
+            "abbas-rizvi:GM06990_culture1"
+        ],
+        "status": "in progress",
+        "accession": "LATBS934IOU",
+        "uuid": "b0c576a2-773f-4f63-90ee-2d071ce54407",
+        "derived_from": [
+            "lattice:GM06990_donor"
+        ],
+        "derivation_process": [
+            "cell isolation"
+        ],
+        "biosample_ontology": "EFO_0002783",
+        "is_immortalized": true,
+        "genetic_modifications": [
+            "CDX2 knockout"
+        ]
     }
 ]

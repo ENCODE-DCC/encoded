@@ -99,6 +99,14 @@
             "title": "Fixed",
             "description": "If true, the sample underwent a fixation process at some point.",
             "type": "boolean"
+        },
+        "genetic_modifications": {
+            "title": "Genetic modifications",
+            "description": "Any genetic alteration of a biosample.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         }
     }
 }

@@ -96,7 +96,9 @@
         "waste_noncell_barcode_fragments": 110069493,
         "quality_metric_of": "jimmie-ye:filtered_peak_matrix_1a",
         "uuid": "40079d9e-bb73-4cac-a2fc-1f464a1dfa01",
-        "aliases": ["lattice:test_atacmetrics"]
+        "aliases": [
+            "lattice:test_atacmetrics"
+        ]
     },
     {
         "uuid": "b89de45d-5946-40e7-b35e-b4ba7c33342b",
@@ -129,7 +131,10 @@
         "total_usable_fragments": 55882,
         "frac_mapped_confidently": 0.8899750386,
         "number_fragments": 3184572,
-        "cells_detected": 934
+        "cells_detected": 934,
+        "aliases": [
+            "jun-li:test_atacmetrics"
+        ]
     },
     {
         "uuid": "c7c16cda-92d7-403f-8f2b-c9685b2eab83",
@@ -162,7 +167,10 @@
         "total_usable_fragments": 6755882,
         "frac_mapped_confidently": 0.8899750386,
         "number_fragments": 34785952,
-        "cells_detected": 1247
+        "cells_detected": 1247,
+        "aliases": [
+            "nir-yosef:test_atacmetrics"
+        ]
     },
     {
         "uuid": "d646bb7e-670c-4be4-b16b-fec194505164",
@@ -195,7 +203,10 @@
         "total_usable_fragments": 55882,
         "frac_mapped_confidently": 0.8899750386,
         "number_fragments": 35824765,
-        "cells_detected": 742
+        "cells_detected": 742,
+        "aliases": [
+            "shalev-itzkovitz:test_atacmetrics"
+        ]
     },
     {
         "uuid": "f9af6ba1-eccf-479e-bbdf-f54fec0d7be3",
@@ -228,7 +239,10 @@
         "total_usable_fragments": 755882,
         "frac_mapped_confidently": 0.8899750386,
         "number_fragments": 20375931,
-        "cells_detected": 2174
+        "cells_detected": 2174,
+        "aliases": [
+            "ronald-germain:test_atacmetrics"
+        ]
     },
     {
         "uuid": "24912317-477c-4975-8f32-8e90e1587be5",
@@ -261,7 +275,10 @@
         "total_usable_fragments": 755882,
         "frac_mapped_confidently": 0.8899750386,
         "number_fragments": 29247842,
-        "cells_detected": 1124
+        "cells_detected": 1124,
+        "aliases": [
+            "tom-taghon:test_atacmetrics"
+        ]
     },
     {
         "uuid": "0b75bce9-c381-48e5-966e-bff3c3862eb1",

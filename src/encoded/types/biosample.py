@@ -41,8 +41,8 @@ class Biosample(Item, CalculatedDonors, CalculatedTreatmentSummary):
         "type": "string",
         "notSubmittable": True,
     })
-    def summary(self, request, biosample_ontology, derived_from):
-        summ = ''
+    def summary(self, request, biosample_ontology, derived_from, genetic_modifications=None):
+        summ = []
         my_type = self.item_type.replace('_',' ')
         if my_type == 'organoid':
             dfrom = set()
@@ -50,11 +50,20 @@ class Biosample(Item, CalculatedDonors, CalculatedTreatmentSummary):
                 obj = request.embed(df, '@@object?skip_calculated=true')
                 ontology = obj.get('biosample_ontology')
                 ontology_obj = request.embed(ontology, '@@object?skip_calculated=true')
-                dfrom.add(ontology_obj.get('term_name'))
-            summ += ','.join(dfrom) + '-derived '
+                name = ontology_obj.get('term_name')
+                if obj.get('genetic_modifications'):
+                    gms = ','.join(obj.get('genetic_modifications'))
+                    name += ' ({})'.format(gms)
+                dfrom.add(name)
+            summ.append(','.join(dfrom) + '-derived')
         bo_obj = request.embed(biosample_ontology, '@@object?skip_calculated=true')
-        summ += bo_obj.get('term_name') + ' ' + my_type
-        return summ
+        summ.append(bo_obj.get('term_name'))
+        if genetic_modifications:
+            gms = ','.join(genetic_modifications)
+            summ.append('({})'.format(gms))
+        summ.append(my_type)
+
+        return ' '.join(summ)
 
 
 @abstract_collection(
