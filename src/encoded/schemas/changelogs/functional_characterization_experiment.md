@@ -1,5 +1,8 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Schema version 10
+* The pooled clone sequencing assay term name requires specification of the control_type
+
 ### Schema version 9
 * *elements_mapping* property was replaced by an array *elements_mappings*
 

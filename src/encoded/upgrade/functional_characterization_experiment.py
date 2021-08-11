@@ -40,3 +40,9 @@ def functional_characterization_experiment_8_9(value, system):
     if 'elements_mapping' in value:
         value['elements_mappings'] = [value['elements_mapping']]
         value.pop('elements_mapping')
+
+
+@upgrade_step('functional_characterization_experiment', '9', '10')
+def functional_characterization_experiment_9_10(value, system):
+    if value.get('assay_term_name', "") == "pooled clone sequencing" and "control_type" not in value:
+        value['control_type'] = "control"

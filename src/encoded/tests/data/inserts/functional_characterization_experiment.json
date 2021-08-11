@@ -25,6 +25,7 @@
     },
     {
         "_test": "pooled_cloned_sequencing",
+        "control_type": "control",
         "accession": "ENCSR212POL",
         "assay_term_name": "pooled clone sequencing",
         "award": "U54HG007004",
@@ -61,6 +62,7 @@
         "date_submitted": "2015-04-20",
         "biosample_ontology": "cell_line_EFO_0009747",
         "award": "U54HG007010",
+        "control_type": "control",
         "description": "pooled clone sequencing mapping description",
         "assay_term_name": "pooled clone sequencing",
         "lab": "/labs/gregory-crawford/",
@@ -76,6 +78,7 @@
         "date_submitted": "2015-04-20",
         "biosample_ontology": "cloning_host_NTR_0000545",
         "award": "U54HG007010",
+        "control_type": "control",
         "description": "pooled clone sequencing elements validation",
         "assay_term_name": "pooled clone sequencing",
         "lab": "/labs/gregory-crawford/",

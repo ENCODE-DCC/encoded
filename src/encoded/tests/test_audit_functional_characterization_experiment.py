@@ -202,9 +202,8 @@ def test_audit_experiment_replicated(
         {'status': 'submitted', 'date_submitted': '2015-03-03'}
     )
     res = testapp.get(pooled_clone_sequencing['@id'] + '@@index-data')
-    assert any(
-        error['category'] == 'unreplicated experiment' and
-        error['level_name'] == 'WARNING'
+    assert all(
+        error['category'] != 'unreplicated experiment'
         for error in collect_audit_errors(res)
     )
 

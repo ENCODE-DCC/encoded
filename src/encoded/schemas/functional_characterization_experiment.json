@@ -85,7 +85,7 @@
                     }
                 },
                 {
-                    "required": ["plasmids_library_type"],
+                    "required": ["plasmids_library_type", "control_type"],
                     "properties": {
                         "assay_term_name": {
                             "enum": ["pooled clone sequencing"]
@@ -105,7 +105,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "assay_term_name": {
             "title": "Assay name",

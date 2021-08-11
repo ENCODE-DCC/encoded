@@ -137,10 +137,23 @@ def pce_fcc_other_experiment(pce_fcc_experiment):
 
 
 @pytest.fixture
+def pooled_clone_sequencing_not_control(testapp, lab, award, liver):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'pooled clone sequencing',
+        'biosample_ontology': liver['uuid'],
+        'plasmids_library_type': 'elements cloning'
+    }
+    return item
+
+
+@pytest.fixture
 def pooled_clone_sequencing(testapp, lab, award, liver):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
+        'control_type': 'control',
         'assay_term_name': 'pooled clone sequencing',
         'biosample_ontology': liver['uuid'],
         'plasmids_library_type': 'elements cloning'

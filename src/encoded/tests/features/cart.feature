@@ -17,10 +17,18 @@ Feature: Cart
         When I press "Data"
         And I click the link with text that contains "High-throughput assays"
         And I wait for the content to load
-        Then I should see 5 elements with the css selector ".result-item__cart-control"
+        Then I should see 4 elements with the css selector ".result-item__cart-control"
 
         When I press "Add all items to cart"
-        Then I should see 5 elements with the css selector ".cart-toggle--in-cart"
+        Then I should see 4 elements with the css selector ".cart-toggle--in-cart"
+
+        When I visit "/search/?type=FunctionalCharacterizationExperiment&accession=ENCSR127PCE"
+        And I wait for the content to load
+        Then I should see 1 elements with the css selector ".result-item__cart-control"
+
+        When I press "/functional-characterization-experiments/ENCSR127PCE/"
+        And I wait for 3 seconds
+        Then I should see 1 elements with the css selector ".cart-toggle--in-cart"
 
     Scenario: Cart page load
         When I press "cart-control"

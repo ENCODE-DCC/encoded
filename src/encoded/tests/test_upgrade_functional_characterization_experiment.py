@@ -32,3 +32,9 @@ def test_functional_characterization_experiment_upgrade_8_to_9(upgrader, fcc_exp
     assert isinstance(value['elements_mappings'], list)
     assert 'elements_mapping' not in value
     assert value['elements_mappings'] == [pooled_clone_sequencing['uuid']]
+
+
+def test_functional_characterization_experiment_upgrade_9_to_10(upgrader, pooled_clone_sequencing_not_control):
+    value = upgrader.upgrade('functional_characterization_experiment', pooled_clone_sequencing_not_control, current_version='9', target_version='10')
+    assert value['schema_version'] == '10'
+    assert value['control_type'] == "control"
