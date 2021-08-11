@@ -5,7 +5,7 @@
 * Added *polyA sites* to the enum list for *output_type*.
 * Added properties *filter_type* and *filter_value*
 * Added *redacted transcriptome alignments* to the enum list for *output_type*. Please note that *redacted transcriptome alignments* can be only posted by DCC.
-* Added *fragments* to the enum list for *output_type*.
+* Added *fragments* to the enum list for *output_type*, the new output type is to be submitted as tar.gz only
 * Added *sparse peak count matrix* to the enum list for *output_type*
 * Added *functional conservation quantifications* to the enum list for *output_type*
 
