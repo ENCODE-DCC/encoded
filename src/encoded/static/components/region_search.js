@@ -148,7 +148,7 @@ class SearchBox extends React.Component {
     }
 
     handleAutocompleteClick(term, locations, name) {
-        let coordinates = locations.filter(location => location.assembly == this.state.genome)[0];
+        const coordinates = locations.filter((location) => location.assembly === this.state.genome)[0];
         const query = `${coordinates.chromosome}:${coordinates.start}-${coordinates.end}`;
 
         const newTerms = {};
