@@ -8,7 +8,8 @@ import pubReferenceList from './reference';
 import { PickerActions, resultItemClass, ResultTable } from './search';
 import Status from './status';
 import { auditDecor } from './audit';
-import { ItemAccessories, TopAccessories, useMount } from './objectutils';
+import { useMount } from './hooks';
+import { ItemAccessories, TopAccessories } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 
 

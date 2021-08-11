@@ -245,6 +245,16 @@
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Test",
+            "facet_fields": [
+                "life_stage",
+                "status",
+                "lab.title"
+            ]
+        }
+    ],
     "facets": {
         "life_stage": {
             "title": "Life stage"

@@ -42,6 +42,7 @@ from snosearch.fields import ClearFiltersResponseField
 from snosearch.fields import ColumnsResponseField
 from snosearch.fields import ContextResponseField
 from snosearch.fields import DebugQueryResponseField
+from snosearch.fields import FacetGroupsResponseField
 from snosearch.fields import FiltersResponseField
 from snosearch.fields import IDResponseField
 from snosearch.fields import NotificationResponseField
@@ -115,6 +116,7 @@ def search(context, request):
                 reserved_keys=RESERVED_KEYS,
             ),
             AllResponseField(),
+            FacetGroupsResponseField(),
             NotificationResponseField(),
             FiltersResponseField(),
             ClearFiltersResponseField(),

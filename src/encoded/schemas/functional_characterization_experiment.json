@@ -308,6 +308,55 @@
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_slims",
+                "assay_title",
+                "perturbed",
+                "crispr_screen_readout"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "biosample_ontology.term_name",
+                "biosample_ontology.classification",
+                "replicates.library.biosample.organism.scientific_name",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "replicates.library.biosample.life_stage"
+            ]
+        },
+        {
+            "title": "Data",
+            "facet_fields": [
+                "control_type",
+                "assembly",
+                "files.file_type"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "award.rfa",
+                "date_submitted",
+                "lab.title"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "replication_type",
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "assay_title": {
             "title": "Assay title",

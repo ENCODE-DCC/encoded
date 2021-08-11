@@ -7,6 +7,7 @@ import * as encoding from '../libs/query_encoding';
 import { svgIcon } from '../libs/svg-icons';
 import { CartToggle, cartGetAllowedTypes } from './cart';
 import * as globals from './globals';
+import { useMount } from './hooks';
 import { Breadcrumbs } from './navigation';
 import Tooltip from '../libs/ui/tooltip';
 
@@ -998,13 +999,6 @@ export const TableItemCount = ({ count }) => (
 TableItemCount.propTypes = {
     count: PropTypes.string.isRequired,
 };
-
-/**
- * Call react useEffect just once
- *
- * @param {function} fn
- */
-export const useMount = (fn) => React.useEffect(fn, []);
 
 
 /**

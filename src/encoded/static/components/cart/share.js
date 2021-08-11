@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import url from 'url';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
-import { CopyButton, useMount } from '../objectutils';
+import { useMount } from '../hooks';
+import { CopyButton } from '../objectutils';
 
 
 /**

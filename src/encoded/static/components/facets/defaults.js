@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
+import { motion } from 'framer-motion';
 import _ from 'underscore';
 import url from 'url';
 import QueryString from '../../libs/query_string';
 import { sanitizedString } from '../globals';
 import FacetRegistry from './registry';
+import { svgIcon } from '../../libs/svg-icons';
 
 
 /**
@@ -794,7 +796,7 @@ DefaultTermName.propTypes = {
  * the "Selected filters" links, and the term gets rendered inside an <a>.
  */
 export const DefaultSelectedTermName = ({ filter }) => (
-    <span>{filter.term}</span>
+    <>{filter.term}</>
 );
 
 DefaultSelectedTermName.propTypes = {
@@ -922,7 +924,6 @@ DefaultTerm.defaultProps = {
  */
 const Typeahead = ({ typeaheadTerm, facet, handleTypeAhead }) => (
     <div className="typeahead-entry" role="search">
-        <i className="icon icon-search" />
         <div className="searchform">
             <input
                 type="search"
@@ -956,10 +957,12 @@ const SelectedFilters = ({ facet, selectedTerms }) => {
         <>
             {(selectedTerms.length > 0) ?
                 <div className="filter-container">
-                    <div className="filter-hed">Selected filters:</div>
                     {selectedTerms.map((filter) => (
-                        <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}>
-                            <div className="filter-link"><i className="icon icon-times-circle" /> <SelectedTermNameComponent filter={filter} /></div>
+                        <a href={filter.remove} key={filter.term} className={`filter-link${filter.field.indexOf('!') !== -1 ? ' filter-link--negative' : ''}`}>
+                            <div className="filter-link__title">
+                                <SelectedTermNameComponent filter={filter} />
+                            </div>
+                            <div className="filter-link__icon">{svgIcon('multiplication')}</div>
                         </a>
                     ))}
                 </div>
@@ -1137,21 +1140,28 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
 
     return (
         <div className="facet">
-            <div
-                className="facet__expander--header"
-                tabIndex="0"
-                role="button"
+            <button
+                className="facet-expander"
+                type="button"
                 aria-label={facet.field}
                 aria-pressed={isExpanded}
                 onClick={(e) => handleExpanderClick(e, isExpanded, facet.field)}
                 onKeyDown={(e) => handleKeyDown(e, isExpanded, facet.field)}
             >
                 <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
-                {isExpandable ? <i className={`facet-chevron icon icon-chevron-${isExpanded ? 'up' : 'down'}`} /> : null}
-            </div>
-            <SelectedFilters facet={facet} selectedTerms={relevantFilters} />
+                {isExpandable ? <div className="facet-chevron">{svgIcon(isExpanded ? 'chevronUp' : 'chevronDown')}</div> : null}
+            </button>
             <div className={`${disabledCss(relevantFilters) ? 'facet-list-disabled' : ''}`}>
-                <div className={`facet-content facet-${(isExpanded || !isExpandable) ? 'open' : 'close'}`}>
+                <motion.div
+                    className="facet-content"
+                    initial={isExpanded}
+                    animate={isExpanded ? 'open' : 'close'}
+                    transition={{ duration: 0.2, ease: 'easeInOut' }}
+                    variants={{
+                        open: { height: 'auto' },
+                        close: { height: 0 },
+                    }}
+                >
                     {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
                     <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
                         <ul onScroll={handleScroll} ref={scrollingElement}>
@@ -1178,7 +1188,8 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                             }
                         </ul>
                     </div>
-                </div>
+                    <SelectedFilters facet={facet} selectedTerms={relevantFilters} />
+                </motion.div>
             </div>
         </div>
     );
