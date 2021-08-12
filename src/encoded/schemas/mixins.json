@@ -59,6 +59,12 @@
             ]
         }
     },
+    "spatial_information": {
+        "spatial_information": {
+            "title": "Spatial information",
+            "type": "string"
+        }
+    },
     "description": {
         "description": {
             "title": "Description",

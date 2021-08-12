@@ -22,7 +22,8 @@
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/references"},
-        {"$ref": "mixins.json#/preservation"}
+        {"$ref": "mixins.json#/preservation"},
+        {"$ref": "mixins.json#/spatial_information"}
     ],
     "dependencies": {
         "thickness": ["thickness_units"],
@@ -93,6 +94,21 @@
             "enum": [
                 "μm"
             ]
+        },
+        "orientation": {
+            "title": "Orientation",
+            "description": ".",
+            "type": "string",
+            "enum": [
+                "sagittal",
+                "coronal",
+                "lateral",
+                "transverse",
+                "longitudinal"
+            ]
+        },
+        "spatial_information": {
+            "description": "Information describing the specific anatomical site that the sample was collected from that is not captured in the UBERON term associated with the derived_from Tissue."
         }
     },
     "facets": {
