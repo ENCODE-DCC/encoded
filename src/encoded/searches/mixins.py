@@ -1,4 +1,4 @@
-from snovault.elasticsearch.searches.mixins import AggsToFacetsMixin
+from snosearch.mixins import AggsToFacetsMixin
 
 
 class CartAggsToFacetsMixin(AggsToFacetsMixin):

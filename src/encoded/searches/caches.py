@@ -2,9 +2,9 @@ import json
 
 from redis import StrictRedis
 from encoded.searches.interfaces import REDIS_LRU_CACHE
-from snovault.elasticsearch.searches.parsers import ParamsParser
-from snovault.elasticsearch.searches.responses import FieldedInMemoryResponse
-from snovault.elasticsearch.searches.responses import FieldedResponse
+from snosearch.parsers import ParamsParser
+from snosearch.responses import FieldedInMemoryResponse
+from snosearch.responses import FieldedResponse
 
 
 _redis_lru_cache = None

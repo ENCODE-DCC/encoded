@@ -1,6 +1,6 @@
 from functools import wraps
 from pyramid.exceptions import HTTPBadRequest
-from snovault.elasticsearch.searches.parsers import QueryString
+from snosearch.parsers import QueryString
 
 
 def allowed_types(types):

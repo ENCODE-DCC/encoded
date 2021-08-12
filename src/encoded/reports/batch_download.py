@@ -9,7 +9,7 @@ from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_SERIES_TYPES
 from encoded.reports.decorators import allowed_types
 from pyramid.view import view_config
-from snovault.elasticsearch.searches.parsers import QueryString
+from snosearch.parsers import QueryString
 
 
 def includeme(config):

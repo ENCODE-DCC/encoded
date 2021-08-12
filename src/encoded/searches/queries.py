@@ -1,8 +1,8 @@
-from snovault.elasticsearch.searches.interfaces import CART_KEY
-from snovault.elasticsearch.searches.queries import BasicSearchQueryFactory
-from snovault.elasticsearch.searches.queries import BasicSearchQueryFactoryWithFacets
-from snovault.elasticsearch.searches.queries import BasicMatrixQueryFactoryWithFacets
-from snovault.elasticsearch.searches.queries import BasicReportQueryFactoryWithFacets
+from snosearch.interfaces import CART_KEY
+from snosearch.queries import BasicSearchQueryFactory
+from snosearch.queries import BasicSearchQueryFactoryWithFacets
+from snosearch.queries import BasicMatrixQueryFactoryWithFacets
+from snosearch.queries import BasicReportQueryFactoryWithFacets
 
 
 class CartQueryMixin:

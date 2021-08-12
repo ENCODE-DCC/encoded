@@ -8,8 +8,8 @@ from urllib.parse import (
 from collections import OrderedDict
 
 from snovault import COLLECTIONS
-from snovault.elasticsearch.searches.decorators import assert_something_returned
-from snovault.elasticsearch.searches.parsers import QueryString
+from snosearch.decorators import assert_something_returned
+from snosearch.parsers import QueryString
 
 
 CART_USER_MAX = 30  # Maximum number of non-deleted carts allowed per non-admin user
