@@ -265,6 +265,7 @@ const RegionSearch = (props, context) => {
     const defaultVisualization = 'Datasets';
     const supportedFileTypes = ['bigWig', 'bigBed'];
     const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
+    const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
 
     const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
     const availableFileTypes = [...new Set(initialGBrowserFiles.map((file) => file.file_format))];
@@ -272,6 +273,7 @@ const RegionSearch = (props, context) => {
     const [selectedVisualization, setSelectedVisualization] = React.useState(defaultVisualization);
     const [selectedFileTypes, setSelectedFileTypes] = React.useState(availableFileTypes);
     const [gBrowserFiles, setGBrowserFiles] = React.useState(initialGBrowserFiles);
+
     const selectedAssembly = url.parse(context.location_href, true).query.genome || defaultAssembly;
 
     const searchBase = url.parse(context.location_href).search || '';
@@ -289,6 +291,7 @@ const RegionSearch = (props, context) => {
         };
 
         window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify(coordinatesObj));
+        window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, selectedAssembly === 'mm10' ? 'GRCm38' : selectedAssembly);
     }
 
     const chooseFileType = (e) => {
