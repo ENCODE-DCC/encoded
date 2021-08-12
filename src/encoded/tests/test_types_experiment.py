@@ -504,3 +504,32 @@ def test_experiment_default_analysis(
                for experiment_audit in experiment_audits.get(audit_type))
 
     assert res.json['object']['default_analysis'] == analysis_2['@id']
+
+def test_experiment_biosample_replicates_1_2(testapp, base_experiment, biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1):
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})
+    res = testapp.get(base_experiment['@id']+'@@index-data') 
+    assert res.json['object']['biological_replicates'] == '1, 2' 
+
+def test_experiment_biosample_replicates_2_1(testapp, base_experiment, biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_1_2):
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_1_2['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_1_2['@id']]})
+    res = testapp.get(base_experiment['@id']+'@@index-data') 
+    assert res.json['object']['biological_replicates'] == '1' 
+
+def test_experiment_biosample_replicates_1(testapp, base_experiment, biosample_1, library_1, replicate_1_1):
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id']]})
+    res = testapp.get(base_experiment['@id']+'@@index-data') 
+    assert res.json['object']['biological_replicates'] == '1' 
+
+def test_experiment_biosample_replicates_0(testapp, base_experiment):
+    res = testapp.get(base_experiment['@id']+'@@index-data') 
+    assert not 'biological_replicates' in res.json['object']

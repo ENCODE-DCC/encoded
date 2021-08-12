@@ -20,7 +20,8 @@ from .shared_calculated_properties import (
     CalculatedCategorySlims,
     CalculatedTypeSlims,
     CalculatedObjectiveSlims,
-    CalculatedReplicationType
+    CalculatedReplicationType,
+    CalculatedBiologicalReplicates
 )
 
 from .assay_data import assay_terms
@@ -45,7 +46,8 @@ class FunctionalCharacterizationExperiment(
     CalculatedCategorySlims,
     CalculatedTypeSlims,
     CalculatedObjectiveSlims,
-    CalculatedReplicationType):
+    CalculatedReplicationType,
+    CalculatedBiologicalReplicates):
     item_type = 'functional_characterization_experiment'
     schema = load_schema('encoded:schemas/functional_characterization_experiment.json')
     embedded = Dataset.embedded + [
