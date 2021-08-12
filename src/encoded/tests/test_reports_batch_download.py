@@ -425,7 +425,6 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
         testapp, query_string
     )
-    print (len(batch_download_results))
     assert len(batch_download_results) == len(metadata_results) == 71
 
     query_string = (
