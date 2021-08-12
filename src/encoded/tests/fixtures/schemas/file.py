@@ -2164,3 +2164,20 @@ def file_subreads_posted(testapp, experiment, award, lab, replicate_url, platfor
         'status': 'in progress'
     }
     return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def fragments_file_csv(testapp, experiment, award, lab):
+    item = {
+        "assembly": "GRCh38",
+        "award": award['@id'],
+        'dataset': experiment['@id'],
+        "date_created": "2021-08-11T21:32:51.463118+00:00",
+        "file_format": "csv",
+        "file_size": 1522674567,
+        'lab': lab['@id'],
+        "md5sum": "f140dcda5101928714b1ca967c6e4ea2",
+        "output_type": "fragments",
+        "status": "in progress"
+    }
+    return item

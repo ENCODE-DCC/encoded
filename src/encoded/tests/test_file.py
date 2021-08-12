@@ -195,3 +195,9 @@ def test_file_try_to_get_field_from_item_with_skip_calculated_first_take_one_or_
         )
     )
     assert value == '/targets/H3K27ac-human/'
+
+
+def test_file_post_fragments_tar(testapp, fragments_file_csv):
+    testapp.post_json('/file', fragments_file_csv, status=422)
+    fragments_file_csv['file_format'] = "tar"
+    testapp.post_json('/file', fragments_file_csv, status=201)

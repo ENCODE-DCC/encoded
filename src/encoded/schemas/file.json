@@ -562,10 +562,24 @@
                     }
                 },
                 {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "tar"                                
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "fragments"
+                            ]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal", "R2C2 subreads", "guide locations"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal", "R2C2 subreads", "guide locations", "fragments"]
                             }
                         }
                     }
@@ -1619,6 +1633,7 @@
                         "fold change over control",
                         "footprints",
                         "functional conservation quantifications",
+                        "fragments",
                         "gene alignments",
                         "gene quantifications",
                         "gene stabilities",
@@ -2270,6 +2285,7 @@
         "sparse gRNA count matrix": "quantification",
         "peptide quantifications": "quantification",
         "protein expression quantifications": "quantification",
+        "fragments": "quantification",
         "sparse peak count matrix": "quantification",
 
         "hotspots": "annotation",
