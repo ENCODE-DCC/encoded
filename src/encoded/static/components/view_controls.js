@@ -158,6 +158,7 @@ const BATCH_DOWNLOAD_DOC_TYPES = [
     'Experiment',
     'Annotation',
     'FunctionalCharacterizationExperiment',
+    'SingleCellUnit',
 ];
 
 /**

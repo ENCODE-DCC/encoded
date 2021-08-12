@@ -106,6 +106,7 @@ const datasetTabTitles = {
     Experiment: 'experiments',
     Annotation: 'annotations',
     FunctionalCharacterizationExperiment: 'FCEs',
+    SingleCellUnit: 'single-cell units',
 };
 
 
