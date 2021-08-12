@@ -133,25 +133,9 @@
         },
         "target": {
             "title": "Target",
-            "description": "The name of the gene (official gene symbol) whose expression or product is the intended antigen of the antibody.",
-            "type": "string"
-        },
-        "target_modifications": {
-            "target": "Target modifications",
-            "description": "List of modifications made to the corresponding gene product of the target",
-            "type": "array",
-            "items": {
-                "type": "string",
-                "enum": [
-                    "Methylation",
-                    "Monomethylation",
-                    "Dimethylation",
-                    "Trimethylation",
-                    "Acetylation",
-                    "Ubiquitination",
-                    "Phosphorylation"
-                ]
-            }
+            "description": "The object representing the protein, protein complex, etc. that is the intended target of the Antibody.",
+            "type": "string",
+            "linkTo": "Target"
         },
         "oligo_sequence": {
             "title": "Oligo sequence",
@@ -179,6 +163,47 @@
             "title": "Clone ID",
             "description": "The clone identifier assigned by the vendor.",
             "type": "string"
+        }
+    },
+    "facets": {
+        "host_organism": {
+            "title": "Organism"
+        },
+        "format": {
+            "title": "Format"
+        },
+        "target.label": {
+            "title": "Target",
+            "type": "typeahead"
+        }
+    },
+    "columns": {
+        "source": {
+            "title": "Source"
+        },
+        "product_id": {
+            "title": "Product ID"
+        },
+        "lot_id": {
+            "title": "Lot ID"
+        },
+        "format": {
+            "title": "Format"
+        },
+        "target.label": {
+            "title": "Target"
+        },
+        "clonality": {
+            "title": "Clonality"
+        },
+        "host_organism": {
+            "title": "Organism"
+        },
+        "dbxrefs": {
+            "title": "External resources"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "changelog": "/profiles/changelogs/antibody_lot.md"

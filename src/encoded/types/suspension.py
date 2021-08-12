@@ -38,5 +38,7 @@ class Suspension(Item,
         'enriched_cell_types',
         'donors.ethnicity',
         'donors.diseases',
-        'donors.development_ontology'
+        'donors.development_ontology',
+        'feature_antibodies',
+        'feature_antibodies.target'
     ]

@@ -1,0 +1,68 @@
+[
+	{
+		"aliases": [
+			"lattice:CD14"
+		],
+		"uuid": "e22628da-ccb6-48f1-98b5-83eca213f3ec",
+		"dbxrefs": [
+			"UniProtKB:P08571"
+		],
+		"organism": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+		"label": "CD14"
+	},
+	{
+		"aliases": [
+			"lattice:CD19"
+		],
+		"uuid": "261bb824-a4fa-4f3d-9d38-cf875db109ee",
+		"dbxrefs": [
+			"UniProtKB:P15391"
+		],
+		"organism": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+		"label": "CD19"
+	},
+	{
+		"aliases": [
+			"lattice:CD3E"
+		],
+		"uuid": "acece72c-e96d-4757-9c38-76775e3e66e0",
+		"dbxrefs": [
+			"UniProtKB:P07766"
+		],
+		"organism": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+		"label": "CD3E"
+	},
+	{
+		"aliases": [
+			"lattice:CD3G"
+		],
+		"uuid": "e100fc33-7f7d-40db-bbbc-0601d7d8fd91",
+		"dbxrefs": [
+			"UniProtKB:P09693"
+		],
+		"organism": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+		"label": "CD3G"
+	},
+	{
+		"aliases": [
+			"lattice:CD8A"
+		],
+		"uuid": "f28c7230-a08a-4c7d-9b43-d83df5ccc109",
+		"dbxrefs": [
+			"UniProtKB:P01732"
+		],
+		"organism": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+		"label": "CD8A"
+	},
+	{
+		"aliases": [
+			"lattice:HbA"
+		],
+		"uuid": "6e995f94-2238-4b15-8ec4-b977ddc64f60",
+		"dbxrefs": [
+			"ComplexPortal:CPX-2158"
+		],
+		"organism": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+		"label": "HbA"
+	}
+]
