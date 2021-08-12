@@ -447,7 +447,7 @@ const RegionSearch = (props, context) => {
                                     label="cart"
                                     assembly={selectedAssembly}
                                     expanded
-                                    annotation="V33"
+                                    annotation="V29"
                                     displaySort
                                     maxCharPerLine={30}
                                 />
