@@ -77,6 +77,9 @@ export const dbxrefPrefixMap = {
     Cellosaurus: {
         pattern: 'https://web.expasy.org/cellosaurus/{0}',
     },
+    ComplexPortal: {
+        pattern: 'https://www.ebi.ac.uk/complexportal/complex/{0}',
+    },
     dbGaP: {
         pattern: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id={0}',
     },

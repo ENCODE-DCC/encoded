@@ -11,6 +11,8 @@
 		"thickness_units": "μm",
 		"aliases": [
 			"anna-greka:liver-section1"
-		]
+		],
+		"orientation": "sagittal",
+		"spatial_information": "2 mm from Epcot"
 	}
 ]

@@ -59,6 +59,12 @@
             ]
         }
     },
+    "spatial_information": {
+        "spatial_information": {
+            "title": "Spatial information",
+            "type": "string"
+        }
+    },
     "description": {
         "description": {
             "title": "Description",
@@ -456,6 +462,8 @@
                 "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
                 "type":  "string",
                 "pattern": ["^(?:",
+                    "abbas-rizvi|",
+                    "andrew-mcmahon|",
                     "anindita-basu|",
                     "anna-greka|",
                     "aviv-regev|",
@@ -463,6 +471,7 @@
                     "cole-trapnell|",
                     "esti-yeger-lotem|",
                     "gary-bader|",
+                    "gonçalo-castelo-branco|",
                     "harikrishna-nakshatri|",
                     "ido-amit|",
                     "j-michael-cherry|",
@@ -471,6 +480,7 @@
                     "jimmie-ye|",
                     "jonathan-seidman|",
                     "joshua-sanes|",
+                    "jun-li|",
                     "kai-kessenbrock|",
                     "kerstin-meyer|",
                     "margaret-deangelis|",
@@ -478,17 +488,21 @@
                     "menna-clatworthy|",
                     "minnie-sarwal|",
                     "nicholas-navin|",
+                    "nir-yosef|",
                     "norbert-hübner|",
                     "peter-sims|",
                     "peter-smibert|",
                     "rahul-satija|",
+                    "ronald-germain|",
                     "rui-chen|",
                     "sarah-teichmann|",
+                    "shalev-itzkovitz|",
                     "sheng-zhong|",
                     "shyam-prabhakar|",
                     "sonya-macparland|",
                     "sten-linnarsson|",
                     "thomas-quertermous|",
+                    "tom-taghon|",
                     "woong-yang-park|",
                     "lattice",
                     "):[a-zA-Z\u00C0-\u024F\u1E00-\u1EFFæœ\\d_$.+!*,()'-]+$"

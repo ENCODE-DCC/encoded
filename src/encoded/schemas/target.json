@@ -1,0 +1,62 @@
+{
+    "title": "Target",
+    "description": "Schema for submitting a target gene.",
+    "id": "/profiles/target.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["label", "organism"],
+    "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/dbxrefs" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/standard_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "dbxrefs": {
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource (e.g. UniProtKB or ComplexPortal).",
+                "type":  "string",
+                "pattern": "^((UniProtKB:[0-9A-Z]+)|(ComplexPortal:CPX-[0-9]+))$"
+            }
+        },
+        "organism": {
+            "title": "Organism",
+            "description": "Organism bearing the target.",
+            "type": "string",
+            "linkTo": "Organism"
+        },
+        "label": {
+            "title": "Target label",
+            "description": "Common name for the target including post-translational modifications, if any.",
+            "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
+            "type": "string",
+            "pattern": "^(?!\\s)[\\S|\\s]*\\S$",
+            "format": "target_label"
+        }
+    },
+    "facets": {
+        "organism": {
+            "title": "Organism"
+        }
+    },
+    "columns": {
+        "label": {
+            "title": "Target label"
+        },
+        "organism": {
+            "title": "Organism"
+        },
+        "dbxrefs": {
+            "title": "External resources"
+        }
+    },
+    "changelog": "/profiles/changelogs/target.md"
+}

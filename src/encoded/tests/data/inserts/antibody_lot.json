@@ -14,7 +14,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "CD14",
+        "target": "lattice:CD14",
         "oligo_sequence": "CAATCAGACCTATGA",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0051-anti-human-cd14-antibody-17583",
         "target_organism": "human",
@@ -35,7 +35,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "CD3E",
+        "target": "lattice:CD3E",
         "oligo_sequence": "CTCATTGTAACTCCT",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0034-anti-human-cd3-antibody-16819",
         "target_organism": "human",
@@ -56,7 +56,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "CD19",
+        "target": "lattice:CD19",
         "oligo_sequence": "CTGGGCAATTACTCG",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0050-anti-human-cd19-antibody-16832",
         "target_organism": "human",
@@ -77,7 +77,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "ITGAM",
+        "target": "lattice:HbA",
         "oligo_sequence": "GACAAGTGATCTGCA",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0161-anti-human-cd11b-antibody-16826",
         "target_organism": "human",
@@ -98,7 +98,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "CD8A",
+        "target": "lattice:CD8A",
         "oligo_sequence": "GCGCAACTTGATGAT",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0046-anti-human-cd8-antibody-17318",
         "target_organism": "human",
@@ -119,7 +119,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "cd8a",
+        "target": "lattice:CD8A",
         "oligo_sequence": "TACCCGTAATAGCGT",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0002-anti-mouse-cd8a-antibody-18641",
         "target_organism": "mouse",
@@ -140,7 +140,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "cd14",
+        "target": "lattice:CD14",
         "oligo_sequence": "AACCAACAGTCACGT",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0424-anti-mouse-cd14-antibody-18868",
         "target_organism": "mouse",
@@ -161,7 +161,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "cd3g",
+        "target": "lattice:CD3G",
         "oligo_sequence": "GTATGTCCGCTCGAT",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0182-anti-mouse-cd3-antibody-18764",
         "target_organism": "mouse",
@@ -182,7 +182,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "cd19",
+        "target": "lattice:CD19",
         "oligo_sequence": "ATCAGCCATGTCAGT",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0093-anti-mouse-cd19-antibody-18761",
         "target_organism": "mouse",
@@ -206,7 +206,7 @@
         "purification_methods": [
             "chromatography"
         ],
-        "target": "itgam",
+        "target": "lattice:HbA",
         "oligo_sequence": "TGAAGGCTCATTTGT",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0014-anti-mouse-human-cd11b-antibody-18762",
         "target_organism": "mouse",

@@ -25,6 +25,7 @@
         {"$ref": "mixins.json#/references"},
         {"$ref": "mixins.json#/starting_quantity"},
         {"$ref": "mixins.json#/preservation"},
+        {"$ref": "mixins.json#/spatial_information"},
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {
@@ -188,9 +189,7 @@
             ]
         },
         "spatial_information": {
-            "title": "Spatial information",
-            "description": "Information describing the specific anatomical site that the sample was collected from.",
-            "type": "string"
+            "description": "Information describing the specific anatomical site that the sample was collected from that is not captured in the associated UBERON term."
         }
     },
     "facets": {

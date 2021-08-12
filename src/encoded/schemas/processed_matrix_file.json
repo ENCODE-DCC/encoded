@@ -425,7 +425,7 @@
         },
         "donor_mappings": {
             "title": "Donor mappings",
-            "description": "Information on what researcher donor identifier in this final matrix that is specified for the associate donor object",
+            "description": "Information on what researcher donor identifier in this final matrix that is specified for the associated donor object",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -444,6 +444,31 @@
                         "description": "The donor object that is associated with the corresponding donor mapping label",
                         "type": "string",
                         "linkTo": "Donor"
+                    }
+                }
+            }
+        },
+        "antibody_mappings": {
+            "title": "Antibody mappings",
+            "description": "Information on what researcher var index label in this final matrix that is specified for the associated antibody object",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Antibody mapping",
+                "type": "object",
+                "required": ["label", "antibody"],
+                "additionalProperties": false,
+                "properties": {
+                    "label": {
+                        "title": "Label",
+                        "description": "The identifier found in var index that is associated with the corresponding target object",
+                        "type": "string"
+                    },
+                    "antibody": {
+                        "title": "Antibody",
+                        "description": "The antibody object that is associated with the corresponding var index",
+                        "type": "string",
+                        "linkTo": "AntibodyLot"
                     }
                 }
             }
