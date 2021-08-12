@@ -189,5 +189,19 @@
         "organism": "human",
         "uuid": "1dbe4d21-4834-4172-ba8d-e4269fa7515f",
         "date_released": "2021-05-20"
+    },
+    {
+        "_test": "cross-species functional conservation annotation",
+        "accession": "ENCSR000CFC",
+        "aliases": ["hongkai-ji:mouse_elements_in_human_genome"],
+        "award": "U54HG007004",
+        "annotation_type": "cross-species functional conservation",
+        "description": "Human/mouse functionally conserved elements",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "92efc2dd-9bcb-4ace-aa70-371e47a35e87",
+        "date_released": "2019-05-20"
     }
 ]

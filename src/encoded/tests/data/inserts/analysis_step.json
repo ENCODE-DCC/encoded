@@ -669,5 +669,19 @@
         "step_label": "ultra-res-genome-compartment-calls-step",
         "title": "Ultrares genome compartment calling step",
         "uuid": "efe70b61-2d0e-40e1-ac2b-15332ea60e8e"
+    },
+    {
+        "step_label": "functional-conservation-bigbed-step",
+        "major_version": 1,
+        "title": "Functional conservation bigBed step",
+        "analysis_step_types": ["file format conversion"],
+        "input_file_types": [
+                "functional conservation quantifications"
+        ],
+        "output_file_types": [
+                "functional conservation quantifications"
+        ],
+        "status": "released",
+        "uuid": "eeb1849f-f77e-4ed6-b625-6137f2f76af5"
     }
 ]

@@ -7,6 +7,7 @@
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
 * Added *DHS* to the *annotation_subtype* enum, and restricted submission of the property to admin only
 * Added *proteomics analysis* enum to *annotation_type* property
+* Added *cross-species functional conservation* enum to *annotation_type* property
 
 ### Schema version 33
 * Updated the *internal_tags* enum from *RegulomeDB* to *RegulomeDB_1_0*
