@@ -260,7 +260,6 @@ SearchBox.contextTypes = {
 
 const RegionSearch = (props, context) => {
     const defaultAssembly = 'GRCh38';
-    const encyclopediaVersion = 'ENCODE v5';
     const visualizationOptions = ['Datasets', 'Genome Browser'];
     const defaultVisualization = 'Datasets';
     const supportedFileTypes = ['bigWig', 'bigBed'];
@@ -466,7 +465,6 @@ const RegionSearch = (props, context) => {
                     <div className="encyclopedia-info-wrapper">
                         <div className="badge-container">
                             <h1>Region Search</h1>
-                            <span className="encyclopedia-badge">{encyclopediaVersion}</span>
                         </div>
                     </div>
 
