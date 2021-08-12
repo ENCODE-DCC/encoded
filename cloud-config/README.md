@@ -57,5 +57,4 @@ Organization deployment configuration and build files
     $ deploy --dry-run
 
     Add options like --test, --release-candidate, or --candidate to see the differences in run vars.
-    The ROLE should change along with other variables like ENCD_INDEX_PRIMARY, ENCD_INDEX_VIS,
-    ENCD_INDEX_REGION.  The env vars are prefixed with ENCD_ as to not conflict with other env vars.
+    Txhe ROLE should change along with other variables like ENCD_INDEX_PRIMARY or ENCD_INDEX_VIS.  The env vars are prefixed with ENCD_ as to not conflict with other env vars.

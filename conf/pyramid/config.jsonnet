@@ -66,7 +66,6 @@ local sections = import 'sections.libsonnet';
           queue_worker_get_size=2000,
         ) +
         sections.VisIndexer() +
-        sections.RegionIndexer() +
         sections.ServerMain() +
         sections.Loggers(additional_loggers=['wsgi'],) +
         sections.Handlers() +
@@ -115,7 +114,6 @@ local sections = import 'sections.libsonnet';
   },
   local shared_non_development_ini_sections =
     sections.VisIndexer() +
-    sections.RegionIndexer() +
     sections.MemLimit() +
     sections.PipelineDebug() +
     sections.PipelineMain() +
