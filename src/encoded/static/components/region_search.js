@@ -283,16 +283,22 @@ const RegionSearch = (props, context) => {
 
     const { columns, filters, facets, total, coordinates } = props.context;
 
-    if (typeof coordinates !== 'undefined' && typeof window !== 'undefined' && window.sessionStorage) {
-        const coordinatesObj = {
-            contig: coordinates.split(':')[0],
-            x0: coordinates.split(':')[1].split('-')[0],
-            x1: coordinates.split(':')[1].split('-')[1],
-        };
+    const setGenomeBrowserStorageVariables = (coords) => {
+        if (typeof coords !== 'undefined' && typeof window !== 'undefined' && window.sessionStorage) {
+            const coordinatesObj = {
+                contig: coords.split(':')[0],
+                x0: coords.split(':')[1].split('-')[0],
+                x1: coords.split(':')[1].split('-')[1],
+            };
 
-        window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify(coordinatesObj));
-        window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, selectedAssembly === 'mm10' ? 'GRCm38' : selectedAssembly);
-    }
+            window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify(coordinatesObj));
+            window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, selectedAssembly === 'mm10' ? 'GRCm38' : selectedAssembly);
+        }
+    };
+
+    React.useEffect(() => {
+        setGenomeBrowserStorageVariables(coordinates);
+    });
 
     const chooseFileType = (e) => {
         const type = e.currentTarget.getAttribute('name');
@@ -316,6 +322,8 @@ const RegionSearch = (props, context) => {
         e.preventDefault();
     };
 
+    setGenomeBrowserStorageVariables(coordinates);
+
     React.useEffect(() => {
         const newGBrowserFiles = (props.context.gbrowser || []).filter((file) => selectedFileTypes.indexOf(file.file_format) > -1);
         setGBrowserFiles(newGBrowserFiles);
@@ -329,6 +337,10 @@ const RegionSearch = (props, context) => {
             e.preventDefault();
         }
     };
+
+    React.useEffect(() => {
+        setGenomeBrowserStorageVariables(props.context.coordinates);
+    }, [selectedVisualization]);
 
     const visualizationTabs = {};
     visualizationOptions.forEach((visualizationName) => {
