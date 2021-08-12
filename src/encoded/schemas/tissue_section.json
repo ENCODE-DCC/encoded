@@ -100,11 +100,11 @@
             "description": ".",
             "type": "string",
             "enum": [
-                "sagittal",
                 "coronal",
                 "lateral",
-                "transverse",
-                "longitudinal"
+                "longitudinal",
+                "sagittal",
+                "transverse"
             ]
         },
         "spatial_information": {
