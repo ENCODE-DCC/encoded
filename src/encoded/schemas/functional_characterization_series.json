@@ -57,7 +57,7 @@
             "default": "3"
         },
         "related_datasets": {
-            "title": "Additional datasets",
+            "title": "Additional EXPERIMENT datasets",
             "description": "List of datasets to be associated with the series.",
             "type": "array",
             "default": [],
