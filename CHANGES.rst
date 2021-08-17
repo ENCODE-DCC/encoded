@@ -1,5 +1,43 @@
 Changes
 =======
+121.0 (released) snovault 1.0.60
+--------------------------------
+1.	update-snovault-1.0.59 (#4026)
+2.	SNO-209-move-search-code-to-independent-package (#4059)
+3.	ENCD-6100 removing trailing slash for rnaget link (#4063)
+4.	ENCD-6071 fragments file addition (#4061)
+5.	ENCD-6090-singlecellunit-cart (#4056)
+6.	ENCD-6094-update-azure-link (#4062)
+7.	ENCD-6091-add-Hongkai-Ji-submission-properties (#4060)
+8.	ENCD-6092 Add embedding of originated_from.biosample_ontology to Experiment (#4058)
+9.	ENCD-6076-gender-symbols (#4057)
+10.	ENCD-6049 pooled clone sequencing dependency (#4055)
+11.	ENCD-6073-add-sparse-matrix-output-type-genome-compartment-id-analysis-step-type (#4054)
+12.	ENCD-6055-FCC-series-search-update (#4039)
+13.	ENCD-5981-change-filegallery-defaults (#4047)
+14.	ENCD-5921-sc-paging (#4051)
+15.	ENCD-6050-loci-fcc-search-list-view (#4049)
+16.	SNO-206-use-redis-cache-for-rnget-view (#4045)
+17.	ENCD-6084-mouse-matrix-crash (#4053)
+18.	ENCD-6069-add-redacted-transcriptome-alignments (#4042)
+19.	ENCD-4448-audit-annotations-without-original-files (#4048)
+20.	ENCD-5984-fix-mixed-analysis-title (#4040)
+21.	ENCD-5927-audit-raw-data-lacking-step-run (#4044)
+22.	ENCD-6041-remove-ie11-from-babel (#4028)
+23.	ENCD-6080-update-robots-txt (#4043)
+24.	ENCD-6066-show-series-experiment-tables-controls (#4031)
+25.	ENCD-6048-audit-CRISPR-not-in-series (#4046)
+26.	ENCD-6057-reconcile-biosample-summary (#4041)
+27.	ENCD-5889-brain-disease-matrix (#3996)
+28.	SNO-205-allow-customization-of-default-sort (#4038)
+29.	ENCD-6058-single-cell-nav (#4033)
+30.	ENCD-6059-update-reagent-regex-thermo (#4034)
+31.	ENCD-6064-make-elements-mapping-an-array (#4032)
+32.	ENCD-6063-add-fce-table-to-reference-page (#4037)
+33.	ENCD-5837-project-bio-term-name-bug (#4036)
+34.	ENCD-6053-file-view-update (#4029)
+35.	ENCD-5723-term-name-erasure (#4035)
+
 120.0 (released) snovault 1.0.59
 --------------------------------
 1. ENCD-6065 fix post diff table crash (#4027)
