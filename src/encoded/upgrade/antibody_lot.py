@@ -81,3 +81,12 @@ def antibody_lot_7_8(value, system):
 def antibody_lot_8_9(value, system):
     # http://redmine.encodedcc.org/issues/5041
     return
+
+
+@upgrade_step('antibody_lot', '9', '10')
+def antibody_lot_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6102
+    if 'lot_id' in value and value['lot_id'] == '':
+        value['lot_id'] = 'Placeholder'
+    if 'product_id' in value and value['product_id'] == '':
+        value['product_id'] = 'Placeholder'

@@ -32,3 +32,12 @@ def test_antibody_lot_unique_array(upgrader, antibody_lot_4):
     value = upgrader.upgrade('antibody_lot', antibody_lot_4, current_version='4', target_version='5')
     assert len(value['purifications']) == len(set(value['purifications']))
     assert len(value['lot_id_alias']) == len(set(value['lot_id_alias']))
+
+
+def test_antibody_lot_upgrade_9_10(upgrader, antibody_lot_base):
+    antibody_lot_base['lot_id'] = ''
+    antibody_lot_base['product_id'] = ''
+    value = upgrader.upgrade('antibody_lot', antibody_lot_base, current_version='9', target_version='10')
+    assert value['schema_version'] == '10'
+    assert value['lot_id'] == 'Placeholder'
+    assert value['product_id'] == 'Placeholder'

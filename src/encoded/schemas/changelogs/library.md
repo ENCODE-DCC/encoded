@@ -1,5 +1,8 @@
 ## Changelog for library.json
 
+### Schema version 19
+* Modified regex pattern for *lot_id* and *product_id* to disallow blank strings.
+
 ### Schema version 18
 * The *nucleic_acid_starting_quantity* property must now be formatted as a number.
 

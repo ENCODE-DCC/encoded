@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Schema version 26
+
+* Modified regex pattern for *lot_id* and *product_id* to disallow blank strings.
+
 ### Minor changes since schema version 25
 
 * Added *simple_summary* truncated version of biosample_summary as calculated property
