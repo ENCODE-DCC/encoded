@@ -74,9 +74,7 @@ def test_treatment_upgrade_11_12(upgrader, treatment_11):
 
 
 def test_treatment_upgrade_12_13(upgrader, treatment_12):
-    treatment_12['lot_id'] = ''
     treatment_12['product_id'] = ''
     value = upgrader.upgrade('treatment', treatment_12, current_version='12', target_version='13')
     assert value['schema_version'] == '13'
-    assert 'lot_id' not in value
     assert 'product_id' not in value
