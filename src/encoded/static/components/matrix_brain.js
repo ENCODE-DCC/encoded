@@ -380,13 +380,22 @@ const convertContextToDataTable = (context, diseaseList, diseaseGroupIndex = 0) 
     rowKeys.push(`header${diseaseGroupIndex}`);
 
     diseaseList?.forEach((diseaseInfo) => {
-        const disease = Object.keys(diseaseInfo)[0];
+        const disease = Object.keys(diseaseInfo)[0]?.trim();
         const rowData = diseaseInfo[disease] || [];
         const rowLength = rowData[0]?.rowContent?.length || 1;
         const diseaseColor = rowData[0]?.diseaseColor || NO_DISEASE_CSS_CLASS;
-        const replicateUrlPart = disease === NO_DISEASE_LABEL
-            ? DISEASES.map((d) => `&replicates.library.biosample.disease_term_name!=${d.trim()}`).join('')
-            : disease.split('and').map((d) => `&replicates.library.biosample.disease_term_name=${d.trim()}`).join('');
+        let replicateUrlPart;
+
+        if (disease === NO_DISEASE_LABEL) {
+            replicateUrlPart = DISEASES.map((d) => `&replicates.library.biosample.disease_term_name!=${d}`).join('');
+        } else if (disease.includes('and')) {
+            replicateUrlPart = '&advancedQuery=replicates.library.biosample.disease_term_name:"Cognitive impairment" AND "Alzheimer\'s disease"';
+        } else {
+            const includedUrlPart = `&replicates.library.biosample.disease_term_name=${disease}`;
+            const excludedUrlPart = DISEASES.filter((d) => d !== disease).map((d) => `&replicates.library.biosample.disease_term_name!=${d}`).join('');
+
+            replicateUrlPart = `${includedUrlPart}${excludedUrlPart}`;
+        }
         const url = `${context.search_base}${replicateUrlPart}`;
 
         rows.push(
