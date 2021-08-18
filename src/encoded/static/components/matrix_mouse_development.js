@@ -880,7 +880,7 @@ class MatrixPresentation extends React.Component {
         return (
             <>
                 <div className="matrix-header">
-                    <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} additionalFilters={additionalFilters} showDownloadButton={false} />
+                    <SearchControls context={context} additionalFilters={additionalFilters} hideBrowserSelector />
                     <div className="matrix-header__controls">
                         <div className="matrix-header__filter-controls">
                             <div className="mouse-dev-legend">
