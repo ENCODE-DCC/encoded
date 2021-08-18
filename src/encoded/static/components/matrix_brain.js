@@ -388,7 +388,7 @@ const convertContextToDataTable = (context, diseaseList, diseaseGroupIndex = 0) 
 
         if (disease === NO_DISEASE_LABEL) {
             replicateUrlPart = DISEASES.map((d) => `&replicates.library.biosample.disease_term_name!=${d}`).join('');
-        } else if (disease.includes('and')) {
+        } else if (disease?.includes('and')) {
             replicateUrlPart = '&advancedQuery=replicates.library.biosample.disease_term_name:"Cognitive impairment" AND "Alzheimer\'s disease"';
         } else {
             const includedUrlPart = `&replicates.library.biosample.disease_term_name=${disease}`;
