@@ -172,6 +172,7 @@ def sanitize_coordinates(term):
         return (chromosome, start, end)
     return ('', '', '')
 
+
 def sanitize_rsid(rsid):
     return 'rs' + ''.join([a for a in filter(str.isdigit, rsid)])
 
@@ -192,6 +193,7 @@ def get_annotation_coordinates(es, id, assembly):
                         annotation['end'])
         else:
             return (chromosome, start, end)
+
 
 def assembly_mapper(location, species, input_assembly, output_assembly):
     # All others
@@ -265,11 +267,67 @@ def get_ensemblid_coordinates(id, assembly):
         else:
             return ('', '', '')
 
+
+def get_suggested_coordinates(request, query, assembly):
+    coordinates, start, end = '', '' , ''
+
+    search_params = [
+        'type=Gene',
+        'field=locations',
+        'field=title',
+        f'searchTerm={query}',
+        f'locations.assembly={assembly}'
+    ].join('&')
+
+    suggestions = request.embed(f'/search/?{search_params}')
+
+    for suggestion in suggestions['@graph']:
+        if suggestion['title'].split(' ')[0].lower() == query.lower():
+            for coordinates in suggestion['locations']:
+                if coordinates['assembly'] == assembly:
+                    return (coordinates['chromosome'], coordinates['start'], coordinates['end'])
+
+    return (coordinates, start, end)
+
+
 def format_position(position, resolution):
     chromosome, start, end = re.split(':|-', position)
     start = int(start) - resolution
     end = int(end) + resolution
     return '{}:{}-{}'.format(chromosome, start, end)
+
+
+def resolve_coordinates(es, annotation, region, assembly, request):
+    chromosome, start, end = ('', '', '')
+    expand_2kb = True
+    label = region
+
+    if not annotation and not region:
+        return (chromosome, start, end, label, expand_2kb)
+
+    if annotation:
+        if annotation.lower().startswith('ens'):
+            label = annotation
+            chromosome, start, end = get_ensemblid_coordinates(annotation, assembly)
+        elif annotation.startswith('chr'):
+            chromosome, start, end = sanitize_coordinates(annotation)
+        else:
+            chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
+    elif region:
+        region = region.lower()
+        if region.startswith('rs'):
+            sanitized_region = sanitize_rsid(region)
+            chromosome, start, end = get_rsid_coordinates(sanitized_region, assembly)
+        elif region.startswith('ens'):
+            chromosome, start, end = get_ensemblid_coordinates(region, assembly)
+        elif region.startswith('chr'):
+            chromosome, start, end = sanitize_coordinates(region)
+            expand_2kb = False
+        else:
+            chromosome, start, end = get_suggested_coordinates(request, region, assembly)
+
+    return (chromosome, start, end, label, expand_2kb)
+
 
 @view_config(route_name='region-search', request_method='GET', permission='search')
 def region_search(context, request):
@@ -294,7 +352,8 @@ def region_search(context, request):
     es = request.registry[ELASTIC_SEARCH]
     snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')
-    region_inside_peak_status = False
+    annotation = request.params.get('annotation', '')
+    assembly = request.params.get('genome', '')
 
     # handling limit
     size = request.params.get('limit', 25)
@@ -305,38 +364,13 @@ def region_search(context, request):
             size = int(size)
         except ValueError:
             size = 25
+
     if region == '':
         region = '*'
 
-    assembly = request.params.get('genome', '')
     result['assembly'] = _GENOME_TO_ALIAS.get(assembly,'GRCh38')
-    annotation = request.params.get('annotation', '')
-    chromosome, start, end = ('', '', '')
 
-    expand_2kb = True
-    label = region
-    if annotation != '':
-        if annotation.lower().startswith('ens'):
-            label = annotation
-            chromosome, start, end = get_ensemblid_coordinates(annotation, assembly)
-        elif annotation.startswith('chr'):
-            chromosome, start, end = sanitize_coordinates(annotation)
-        else:
-            chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
-    elif region != '':
-        label = region
-        region = region.lower()
-        if region.startswith('rs'):
-            sanitized_region = sanitize_rsid(region)
-            chromosome, start, end = get_rsid_coordinates(sanitized_region, assembly)
-            region_inside_peak_status = True
-        elif region.startswith('ens'):
-            chromosome, start, end = get_ensemblid_coordinates(region, assembly)
-        elif region.startswith('chr'):
-            chromosome, start, end = sanitize_coordinates(region)
-            expand_2kb = False
-    else:
-        chromosome, start, end = ('', '', '')
+    chromosome, start, end, label, expand_2kb = resolve_coordinates(es, annotation, region, assembly, request)
 
     if 'region' not in request.params and 'annotation' not in request.params:
         result['notification'] = 'Try for example: chr8:79263597-79294735, or CTCF, or rs75982468, etc.'
