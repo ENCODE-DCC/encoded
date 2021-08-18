@@ -10,8 +10,8 @@ import { makeSearchUrl } from './gene_search/search';
 
 const AutocompleteBoxMenu = (props) => {
     const handleClick = () => {
-        const { term, name } = props;
-        props.handleClick(term.title, term.locations, name);
+        const { value, locations, name } = props;
+        props.handleClick(value, locations, name);
     };
 
     const { preText, matchText, postText } = props;
@@ -32,11 +32,12 @@ AutocompleteBoxMenu.defaultProps = {
 
 AutocompleteBoxMenu.propTypes = {
     handleClick: PropTypes.func.isRequired,
-    term: PropTypes.object.isRequired,
     name: PropTypes.object.isRequired,
+    locations: PropTypes.object.isRequired,
     preText: PropTypes.string,
     matchText: PropTypes.string.isRequired,
     postText: PropTypes.string,
+    value: PropTypes.string.isRequired,
 };
 
 
@@ -54,22 +55,26 @@ const AutocompleteBox = (props) => {
                     let matchText;
                     let postText;
 
+                    const title = term.title || term.text;
+                    const locations = term.locations || term._source.annotations;
+
                     // Boldface matching part of term
-                    const matchStart = term.title.toLowerCase().indexOf(userTerm);
+                    const matchStart = title.toLowerCase().indexOf(userTerm);
                     if (matchStart >= 0) {
                         matchEnd = matchStart + userTerm.length;
-                        preText = term.title.substring(0, matchStart);
-                        matchText = term.title.substring(matchStart, matchEnd);
-                        postText = term.title.substring(matchEnd);
+                        preText = title.substring(0, matchStart);
+                        matchText = title.substring(matchStart, matchEnd);
+                        postText = title.substring(matchEnd);
                     } else {
-                        preText = term.title;
+                        preText = title;
                     }
+
                     return (
                         <AutocompleteBoxMenu
-                            key={term.title}
+                            value={title}
                             handleClick={handleClick}
-                            term={term}
                             name={props.name}
+                            locations={locations}
                             preText={preText}
                             matchText={matchText}
                             postText={postText}
@@ -148,7 +153,7 @@ class SearchBox extends React.Component {
     }
 
     handleAutocompleteClick(term, locations, name) {
-        const coordinates = locations.filter((location) => location.assembly === this.state.genome)[0];
+        const coordinates = locations.filter((location) => (location.assembly || location.assembly_name) === this.state.genome)[0];
         const query = `${coordinates.chromosome}:${coordinates.start}-${coordinates.end}`;
 
         const newTerms = {};
@@ -185,6 +190,7 @@ class SearchBox extends React.Component {
 
     render() {
         const regionGenomes = ['GRCh38', 'mm10'];
+        const displayGenomes = ['Homo sapiens', 'Mus musculus'];
         const defaultAssembly = regionGenomes[0];
 
         const context = this.props;
@@ -200,7 +206,10 @@ class SearchBox extends React.Component {
             }
         }
 
-        const suggest = `https://www.encodeproject.org${makeSearchUrl(this.state.searchTerm, this.state.genome)}`;
+        let suggest = `https://www.encodeproject.org${makeSearchUrl(this.state.searchTerm, this.state.genome)}`;
+        if (this.state.searchTerm && this.state.searchTerm.toLowerCase().startsWith('hgnc')) {
+            suggest = `/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
+        }
 
         return (
             <Panel>
@@ -213,12 +222,12 @@ class SearchBox extends React.Component {
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete>
                                     <Param name="auto" url={suggest} type="json" />
-                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
+                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} oldSuggestEngine={this.state.oldSuggestEnginde} />
                                 </FetchedData>
                             : null}
                             <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
-                                {regionGenomes.map((genome) => (
-                                    <option key={genome} value={genome}>{genome}</option>
+                                {regionGenomes.map((genome, idx) => (
+                                    <option key={genome} value={genome}>{displayGenomes[idx]}</option>
                                 ))}
                             </select>
                         </div>
