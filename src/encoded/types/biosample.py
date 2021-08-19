@@ -465,10 +465,15 @@ class Biosample(Item):
         applied_modifications,
         treatments=None,
     ):
-        return bool(treatments) or any(
+        return any(
             (
                 request.embed(m, '@@object').get('perturbation', False)
                 for m in applied_modifications
+            )
+            or any(
+            (
+                request.embed(t, '@@object').get('purpose', None) == "perturbation"
+                for t in treatments
             )
         )
 
