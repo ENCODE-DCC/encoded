@@ -465,18 +465,16 @@ class Biosample(Item):
         applied_modifications,
         treatments=None,
     ):
-        return any(
-            (
+        return (any(
                 request.embed(m, '@@object').get('perturbation', False)
                 for m in applied_modifications
             )
             or any(
-            (
                 request.embed(t, '@@object').get('purpose', None) == "perturbation"
                 for t in treatments
             )
         )
-    )
+        
 
     @calculated_property(schema={
         "title": "Simple Summary",
