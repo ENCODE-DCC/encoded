@@ -9,7 +9,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
 import * as globals from './globals';
-import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT } from './matrix';
+import { RowCategoryExpander } from './matrix';
 import matrixAssaySortOrder from './matrix_reference_epigenome';
 import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';
@@ -822,8 +822,6 @@ class MatrixPresentation extends React.Component {
                 tableCss: 'matrix',
             };
         }
-
-        const visualizeDisabledTitle = context.total > MATRIX_VISUALIZE_LIMIT ? `Filter to ${MATRIX_VISUALIZE_LIMIT} to visualize` : '';
 
         const parsedUrl = url.parse(context['@id'], true);
         parsedUrl.query.format = 'json';
