@@ -463,7 +463,7 @@ class Biosample(Item):
         self,
         request,
         applied_modifications,
-        treatments=None,
+        treatments=[],
     ):
         return (any(
                 request.embed(m, '@@object').get('perturbation', False)
