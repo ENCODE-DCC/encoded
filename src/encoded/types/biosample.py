@@ -476,6 +476,7 @@ class Biosample(Item):
                 for t in treatments
             )
         )
+    )
 
     @calculated_property(schema={
         "title": "Simple Summary",
