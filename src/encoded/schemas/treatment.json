@@ -3,7 +3,7 @@
     "id": "/profiles/treatment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["treatment_term_name", "treatment_type", "purpose"],
+    "required": ["treatment_term_name", "treatment_type"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -28,7 +28,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "12"
         },
         "documents": {
             "description": "Documents that describe the treatment protocol."
