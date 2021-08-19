@@ -1363,6 +1363,9 @@
         "biosample_ontology": "tissue_UBERON_0000948",
         "dbxrefs": ["GEO:SAMN18513265"],
         "donor": "ENCDO921RVK",
+        "internal_tags": [
+            "ControlledCellGrowth"
+        ],
         "lab": "john-stamatoyannopoulos",
         "nih_institutional_certification": "NIC00037",
         "organism": "human",
