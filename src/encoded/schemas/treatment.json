@@ -3,7 +3,7 @@
     "id": "/profiles/treatment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["treatment_term_name", "treatment_type"],
+    "required": ["treatment_term_name", "treatment_type", "purpose"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -94,7 +94,9 @@
             "enum": [
                 "activation",
                 "deactivation",
-                "stimulation"
+                "stimulation",
+                "selection",
+                "perturbation"
             ]
         },
         "temperature": {
