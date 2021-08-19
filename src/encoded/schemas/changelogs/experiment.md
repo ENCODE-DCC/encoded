@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 36
 * Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
+* Added *ControlledCellGrowth* to the *internal_tags* enum
 
 ### Schema version 36
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*

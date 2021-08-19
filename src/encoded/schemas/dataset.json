@@ -115,6 +115,7 @@
                 "enum": [
                     "ccre_inputv1",
                     "ccre_inputv2",
+                    "ControlledCellGrowth",
                     "dbGaP",
                     "DREAM",
                     "ENCYCLOPEDIAv3",
