@@ -4,4 +4,4 @@
 * Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *biosample_summary* calculated property
-* Added *ControlledCellGrowth* to the *internal_tags* enum
+* Added *Deeply Profiled* to the *internal_tags* enum

@@ -5,7 +5,7 @@
 * Added *simple_summary* truncated version of biosample_summary as calculated property
 * Added *pulse_chase_time* and *pulse_chase_time_units* properties
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
-* Added *ControlledCellGrowth* to the *internal_tags* enum
+* Added *Deeply Profiled* to the *internal_tags* enum
 
 ### Schema version 25
 

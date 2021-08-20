@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 20
 * Added *elements_selection_method* property to capture the selection of elements specified in references that are *reference_type*: *functional elements*
-* Added *ControlledCellGrowth* to the *internal_tags* enum
+* Added *Deeply Profiled* to the *internal_tags* enum
 
 ### Schema version 20
 * Updated the *internal_tags* enum from *RegulomeDB* to *RegulomeDB_1_0*

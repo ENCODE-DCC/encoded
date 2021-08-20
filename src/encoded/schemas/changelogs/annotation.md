@@ -8,7 +8,7 @@
 * Added *DHS* to the *annotation_subtype* enum, and restricted submission of the property to admin only
 * Added *proteomics analysis* enum to *annotation_type* property
 * Added *cross-species functional conservation* enum to *annotation_type* property
-* Added *ControlledCellGrowth* to the *internal_tags* enum
+* Added *Deeply Profiled* to the *internal_tags* enum
 
 ### Schema version 33
 * Updated the *internal_tags* enum from *RegulomeDB* to *RegulomeDB_1_0*

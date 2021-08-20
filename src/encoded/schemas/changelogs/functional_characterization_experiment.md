@@ -1,7 +1,7 @@
 ## Changelog for functional_characterization_experiment.json
 
 ### Minor changes since schema version 10
-* Added *ControlledCellGrowth* to the *internal_tags* enum
+* Added *Deeply Profiled* to the *internal_tags* enum
 
 ### Schema version 10
 * The pooled clone sequencing assay term name requires specification of the control_type
