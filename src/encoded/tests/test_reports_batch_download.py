@@ -267,7 +267,7 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     assert len(batch_download_results) == len(metadata_results) == 1
 
     query_string = (
-        '?type=Experiment&files.no_file_available=*&target.label=H3K4me3&perturbed=true'
+        '?type=Experiment&files.no_file_available=*&target.label=H3K4me3&biosample_ontology.term_name=K562'
     )
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
         testapp, query_string
