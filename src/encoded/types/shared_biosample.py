@@ -60,6 +60,11 @@ def biosample_summary_information(request, biosampleObject):
                     if tag.get('promoter_used'):
                         tag_dict['promoter'] = request.embed(tag.get('promoter_used'), '@@object').get['label']
                     modification_dict['tags'].append(tag_dict)
+            if gm_object.get('introduced_gene'):
+                gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
+                modification_dict['gene'] = gene_object.get('symbol')
+                organism_object = request.embed(gene_object['organism'], '@@object?skip_calculated=true')
+                modification_dict['organism'] = organism_object.get('name')
             if 'method' in gm_object:
                 if (gm_object['method'] == 'CRISPR' and guides != ''):
                     entry = f'CRISPR ({guides})'

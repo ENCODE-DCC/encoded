@@ -582,7 +582,7 @@ class GeneticModificationComponent extends React.Component {
                                 {context.introduced_gene ?
                                     <div data-test="introduced-gene">
                                         <dt>Introduced gene</dt>
-                                        <dd><a href={context.introduced_gene}>{context.introduced_gene}</a></dd>
+                                        <dd><a href={context.introduced_gene['@id']}>{`${context.introduced_gene.organism.name} ${context.introduced_gene.symbol}`}</a></dd>
                                     </div>
                                 : null}
 

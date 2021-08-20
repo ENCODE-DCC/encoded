@@ -75,6 +75,7 @@ class Biosample(Item):
         'characterizations.documents',
         'organism',
         'applied_modifications',
+        'applied_modifications.introduced_gene',
         'applied_modifications.modified_site_by_target_id',
         'applied_modifications.modified_site_by_target_id.genes',
         'applied_modifications.treatments'
@@ -734,6 +735,12 @@ def summary_objects(request,
                             tag.get('promoter_used'),
                                     '@@object').get('label')
                     modification_dict['tags'].append(tag_dict)
+            if gm_object.get('introduced_gene'):
+                gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
+                modification_dict['gene'] = gene_object.get('symbol')
+                organism_object = request.embed(gene_object['organism'], '@@object?skip_calculated=true')
+                modification_dict['organism'] = organism_object.get('name')
+
 
             if 'method' in gm_object:
                 if (gm_object['method'] == 'CRISPR' and guides != ''):
@@ -1082,6 +1089,12 @@ def generate_modification_summary(method, modification):
 
         if modification.get('target'):
             modification_summary += ' targeting ' + modification.get('target')
+
+        if modification.get('gene'):
+            gene = modification.get('gene')
+            organism = modification.get('organism')
+            modification_summary += f' inserting {organism} {gene}'
+
     return modification_summary.strip()
 
 
