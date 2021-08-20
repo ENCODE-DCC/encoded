@@ -289,7 +289,8 @@ class GenomicDataService():
             'assembly': assembly,
             'chr': chromosome.replace('chr', ''),
             'start': start,
-            'end': end
+            'end': end,
+            'files_only': True
         }
 
         query_params = '&'.join([f'{k}={params[k]}' for k in params.keys()])

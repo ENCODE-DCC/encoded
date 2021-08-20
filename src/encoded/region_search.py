@@ -38,7 +38,8 @@ _GENOME_TO_SPECIES = {
     'GRCh37': 'homo_sapiens',
     'GRCh38': 'homo_sapiens',
     'GRCm37': 'mus_musculus',
-    'GRCm38': 'mus_musculus'
+    'GRCm38': 'mus_musculus',
+    'mm10'  : 'mus_musculus'
 }
 
 _GENOME_TO_ALIAS = {
@@ -46,7 +47,7 @@ _GENOME_TO_ALIAS = {
     'GRCh38': 'GRCh38',
     'GRCm37': 'mm9',
     'GRCm38': 'mm10',
-    'mm10': 'mm10'
+    'mm10'  : 'mm10'
 }
 
 FORMATS_GBROWSER = [
@@ -398,12 +399,7 @@ def region_search(context, request):
         result['notification'] = 'Error during search'
         return result
 
-    file_uuids = []
-    for hit in peak_results['regions']:
-        region_uuid = hit['file_url'].split('/')[-1]
-        if region_uuid not in file_uuids:
-            file_uuids.append(region_uuid)
-    file_uuids = list(set(file_uuids))
+    file_uuids = [f['uuid'] for f in peak_results['regions_per_file']]
     result['notification'] = 'No results found'
 
     # if more than one peak found return the experiments with those peak files
