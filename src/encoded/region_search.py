@@ -272,13 +272,13 @@ def get_ensemblid_coordinates(id, assembly):
 def get_suggested_coordinates(request, query, assembly):
     coordinates, start, end = '', '' , ''
 
-    search_params = [
+    search_params = '&'.join([
         'type=Gene',
         'field=locations',
         'field=title',
         f'searchTerm={query}',
         f'locations.assembly={assembly}'
-    ].join('&')
+    ])
 
     suggestions = request.embed(f'/search/?{search_params}')
 
@@ -352,7 +352,7 @@ def region_search(context, request):
     principals = request.effective_principals
     es = request.registry[ELASTIC_SEARCH]
     snp_es = request.registry['snp_search']
-    region = request.params.get('region', '*')
+    region = request.params.get('region', '')
     annotation = request.params.get('annotation', '')
     assembly = request.params.get('genome', '')
 
@@ -365,9 +365,6 @@ def region_search(context, request):
             size = int(size)
         except ValueError:
             size = 25
-
-    if region == '':
-        region = '*'
 
     result['assembly'] = _GENOME_TO_ALIAS.get(assembly,'GRCh38')
 
