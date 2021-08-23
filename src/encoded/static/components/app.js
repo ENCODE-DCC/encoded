@@ -77,7 +77,7 @@ const portal = {
                 { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
                 { id: 'sep-mm-1' },
                 { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'https://screen.wenglab.org/' },
-                { id: 'annotationmatrix', title: 'Annotation matrix', url: '/matrix/?type=Annotation&encyclopedia_version=current' },
+                { id: 'encyclopedia', title: 'Encyclopedia browser', url: '/encyclopedia/?type=File&annotation_type=candidate+Cis-Regulatory+Elements&assembly=GRCh38&file_format=bigBed&file_format=bigWig&encyclopedia_version=current' },
                 { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=current' },
                 { id: 'annotationmethods', title: 'Methods', url: 'https://screen.wenglab.org/index/about' },
             ],

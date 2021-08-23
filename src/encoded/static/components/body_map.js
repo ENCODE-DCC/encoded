@@ -55,7 +55,7 @@ export const HumanList = {
     skeleton: ['cls-65', 'cls-77', 'cls-78', 'cls-80', 'cls-81', 'bone element'],
     'skin of body': ['cls-5', 'cls-limb-skin'],
     'small intestine': ['cls-27', 'cls-28'],
-    'spinal chord': ['cls-66'],
+    'spinal cord': ['cls-66'],
     spleen: ['cls-7'],
     stomach: ['cls-stomach'],
     testis: ['cls-testis'],
@@ -135,7 +135,7 @@ export const MouseCellsList = {
 // Mapping for systems slims
 // Systems slims are mapped to organs in the "BodyList"
 export const HumanSystemsList = {
-    'central nervous system': ['brain', 'spinal chord'],
+    'central nervous system': ['brain', 'spinal cord'],
     'circulatory system': ['blood', 'blood vessel', 'arterial blood vessel', 'heart', 'pericardium', 'vein', 'lymphatic vessel'],
     'digestive system': ['esophagus', 'intestine', 'small intestine', 'large intestine', 'liver', 'gallbladder', 'mouth', 'spleen', 'stomach', 'tongue', 'colon'],
     'endocrine system': ['adrenal gland', 'liver', 'gallbladder', 'pancreas', 'thymus', 'thyroid gland'],
@@ -165,6 +165,42 @@ export const MouseSystemsList = {
     'respiratory system': ['lung'],
     'sensory system': ['eye'],
     'skeletal system': ['bone element', 'bone marrow', 'limb'],
+};
+
+const SelectedFilters = (props) => {
+    const selectedFilters = props.filters;
+    const organTerms = selectedFilters.filter((f) => f.field === organField);
+    const systemsTerms = selectedFilters.filter((f) => f.field === systemsField);
+    const freeSearchTerms = selectedFilters.filter((f) => f.field === 'searchTerm');
+    const selectedTerms = [...organTerms, ...systemsTerms, ...freeSearchTerms];
+    return (
+        <>
+            {(selectedTerms.length > 0) ?
+                <div className="filter-container">
+                    <div className="filter-hed">Selected filters:</div>
+                    {selectedTerms.map((filter) => {
+                        const isNegativeTerm = filter.field.indexOf('!') > -1;
+                        return (
+                            <a
+                                href={filter.remove}
+                                key={filter.term}
+                                className={`filter-link${isNegativeTerm ? ' filter-link--negative' : ''}`}
+                            >
+                                <div className="filter-link__title">
+                                    {filter.term}
+                                </div>
+                                <div className="filter-link__icon">{svgIcon('multiplication')}</div>
+                            </a>
+                        );
+                    })}
+                </div>
+            : null}
+        </>
+    );
+};
+
+SelectedFilters.propTypes = {
+    filters: PropTypes.array.isRequired,
 };
 
 // Unhighlight all highlighted organ / inset image / systems terms and all highlighted svg paths / shapes and all highlighted inset images
@@ -394,7 +430,10 @@ class BodyMap extends React.Component {
         getSeriesData(unfilteredHref, this.context.fetch).then((response) => {
             const { facets } = response;
             const organFacets = facets.filter((f) => f.field === organField)[0].terms.map((f) => f.key);
-            const systemFacets = facets.filter((f) => f.field === systemsField)[0].terms.map((f) => f.key);
+            let systemFacets = [];
+            if (facets.filter((f) => f.field === systemsField)[0]) {
+                systemFacets = facets.filter((f) => f.field === systemsField)[0].terms.map((f) => f.key);
+            }
             this.setState({
                 organFacets,
                 systemFacets,
@@ -856,53 +895,58 @@ BodyMap.contextTypes = {
 // Button to display the actual body map facet <BodyMapModal>
 export const ClickableThumbnail = (props) => {
     // "toggleThumbnail" toggles whether or not the pop-up is displayed
-    const { toggleThumbnail, organism } = props;
+    const { toggleThumbnail, organism, context } = props;
     let CellsList = {};
     if (props.organism === 'Homo sapiens') {
         CellsList = HumanCellsList;
     } else if (props.organism === 'Mus musculus') {
         CellsList = MouseCellsList;
     }
+
     return (
-        <button
-            type="button"
-            className="body-image-thumbnail"
-            onClick={() => toggleThumbnail()}
-        >
-            <div className="body-map-expander">Filter results by body diagram</div>
-            {svgIcon('expandArrows')}
-            {organism === 'Homo sapiens' ?
-                <HumanBodyDiagram
-                    BodyList={HumanList}
-                />
-            : null}
-            {organism === 'Mus musculus' ?
-                <MouseBodyDiagram
-                    BodyList={MouseList}
-                />
-            : null}
-            <div className="body-list body-list-narrow">
-                <ul className="body-list-inner">
-                    {Object.keys(CellsList).map((image) => (
-                        <div
-                            className={`body-inset ${image}`}
-                            id={image}
-                            key={image}
-                        >
-                            <img className="active-image" src={`/static/img/bodyMap/insetSVGs/${organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}.svg`} alt={image} />
-                            <img className="inactive-image" src={`/static/img/bodyMap/insetSVGs/${organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}_deselected.svg`} alt={image} />
-                            <div className="overlay" />
-                        </div>
-                    ))}
-                </ul>
-            </div>
-        </button>
+        <>
+            <button
+                type="button"
+                className="body-image-thumbnail"
+                onClick={() => toggleThumbnail()}
+            >
+                <div className="body-map-expander">Filter results by body diagram</div>
+                {svgIcon('expandArrows')}
+                {organism === 'Homo sapiens' ?
+                    <HumanBodyDiagram
+                        BodyList={HumanList}
+                    />
+                : null}
+                {organism === 'Mus musculus' ?
+                    <MouseBodyDiagram
+                        BodyList={MouseList}
+                    />
+                : null}
+                <div className="body-list body-list-narrow">
+                    <ul className="body-list-inner">
+                        {Object.keys(CellsList).map((image) => (
+                            <div
+                                className={`body-inset ${image}`}
+                                id={image}
+                                key={image}
+                            >
+                                <img className="active-image" src={`/static/img/bodyMap/insetSVGs/${organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}.svg`} alt={image} />
+                                <img className="inactive-image" src={`/static/img/bodyMap/insetSVGs/${organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}_deselected.svg`} alt={image} />
+                                <div className="overlay" />
+                            </div>
+                        ))}
+                    </ul>
+                </div>
+            </button>
+            <SelectedFilters filters={context.filters} />
+        </>
     );
 };
 
 ClickableThumbnail.propTypes = {
     toggleThumbnail: PropTypes.func.isRequired,
     organism: PropTypes.string.isRequired,
+    context: PropTypes.object.isRequired,
 };
 
 // Pop-up body map facet
@@ -979,6 +1023,7 @@ export const BodyMapThumbnailAndModal = (props) => {
                 toggleThumbnail={toggleThumbnail}
                 organism={props.organism}
                 CellsList={CellsList}
+                context={props.context}
             />
             {isThumbnailExpanded ?
                 <BodyMapModal

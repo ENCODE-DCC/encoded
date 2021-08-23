@@ -741,7 +741,7 @@ class File(Item):
         condition='dataset',
         define=True,
         schema={
-            "title": "Biochemical inputs",
+            "title": "Biochemical activity",
             "type": "array",
             "items": {
                 "type": "string"

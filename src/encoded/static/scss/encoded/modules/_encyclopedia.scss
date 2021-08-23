@@ -80,6 +80,22 @@
     margin-bottom: 5px;
 }
 
+.encyclopedia-href {
+    display: flex;
+    padding-bottom: 2px;
+
+    .href-name {
+        flex: 0 1 auto;
+    }
+
+    img {
+        flex: 0 1 20px;
+        max-width: 20px;
+        height: auto;
+        margin-right: 5px;
+    }
+}
+
 .encyclopedia-file-gallery {
     .file-gallery-facet-redirect {
         @media screen and (min-width: $screen-md-min) {

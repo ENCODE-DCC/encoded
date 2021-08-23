@@ -198,7 +198,7 @@ const AnnotationComponent = (props, reactContext) => {
 
                             {context.biochemical_inputs && context.biochemical_inputs.length > 0 ?
                                  <div data-test="biochemicalinputs">
-                                     <dt>Biochemical inputs</dt>
+                                     <dt>Biochemical activity</dt>
                                      <dd>{context.biochemical_inputs.join(', ')}</dd>
                                  </div>
                              : null}
