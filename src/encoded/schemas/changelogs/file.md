@@ -9,6 +9,7 @@
 * Added *sparse peak count matrix* to the enum list for *output_type*
 * Added *functional conservation quantifications* to the enum list for *output_type*
 * Added *cell barcode* and *element barcode* to the enum list for *sequence_element* of the *read_structure* property
+* Added *origin_batches* calculated property
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.
