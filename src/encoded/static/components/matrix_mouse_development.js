@@ -9,7 +9,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
 import * as globals from './globals';
-import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT } from './matrix';
+import { RowCategoryExpander } from './matrix';
 import matrixAssaySortOrder from './matrix_reference_epigenome';
 import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';
@@ -823,8 +823,6 @@ class MatrixPresentation extends React.Component {
             };
         }
 
-        const visualizeDisabledTitle = context.total > MATRIX_VISUALIZE_LIMIT ? `Filter to ${MATRIX_VISUALIZE_LIMIT} to visualize` : '';
-
         const parsedUrl = url.parse(context['@id'], true);
         parsedUrl.query.format = 'json';
         parsedUrl.search = '';
@@ -880,7 +878,7 @@ class MatrixPresentation extends React.Component {
         return (
             <>
                 <div className="matrix-header">
-                    <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} additionalFilters={additionalFilters} />
+                    <SearchControls context={context} additionalFilters={additionalFilters} hideBrowserSelector />
                     <div className="matrix-header__controls">
                         <div className="matrix-header__filter-controls">
                             <div className="mouse-dev-legend">
