@@ -1,6 +1,8 @@
 Updating annotations
 =========================
 
+DEPRECATED Now uses Gene objects
+
 This document describes how to update the annotations used for searching and validation in the encoded application, ```annotations.json```.
 
 Annotations used
