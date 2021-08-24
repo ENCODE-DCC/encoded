@@ -386,23 +386,30 @@ def test_undefined_sample_collection_age(
     assert res.json['object']['age_display'] == '90 or above years'
 
 
-def test_origin_batch(testapp, biosample_part_of, biosample_cell_line, biosample_22, biosample_additional_a549, biosample_part_of_add_a549):
+def test_origin_batch(testapp, biosample_part_of, biosample_cell_line, biosample_22, biosample_additional_a549):
+    # Origin batch directly from part of biosample
     res = testapp.get(biosample_part_of['@id'] + '@@index-data')
     assert res.json['object']['origin_batch'] == biosample_cell_line['accession']
+    # Different biosample type, defaults origin batch to the sample itself
     testapp.patch_json(
         biosample_part_of['@id'],
         {
             'part_of': biosample_22['uuid']
         }
     )
-    # Different biosample classification, defaults origin batch to the sample itself
     res = testapp.get(biosample_part_of['@id'] + '@@index-data')
     assert res.json['object']['origin_batch'] == biosample_part_of['accession']
     # Part of biosample with another part of specified
     testapp.patch_json(
+        biosample_cell_line['@id'],
+        {
+            'part_of': biosample_additional_a549['uuid']
+        }
+    )
+    testapp.patch_json(
         biosample_part_of['@id'],
         {
-            'part_of': biosample_part_of_add_a549['uuid']
+            'part_of': biosample_cell_line['uuid']
         }
     )
     res = testapp.get(biosample_part_of['@id'] + '@@index-data')

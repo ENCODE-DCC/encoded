@@ -457,6 +457,67 @@ class File(Item):
         return list(set(calculated_donors))
 
     @calculated_property(schema={
+        "title": "Origin batches",
+        "description": "The origin batch biosample(s) associated with this file.",
+        "comment": "Do not submit. This field is calculatd through the derived_from relationship back to the raw data.",
+        "type": "array",
+        "items": {
+            "title": "Origin batch",
+            "description": "Accession of the origin batch biosample",
+            "type": "string"
+        }
+    })
+    def origin_batches(self, request, dataset, root, replicate=None):
+        calculated_origin_batches = []
+        if replicate is not None:
+            properties = {'replicate': replicate}
+            path = Path(
+                'replicate.library.biosample',
+                include=[
+                    '@id',
+                    '@type',
+                    'library',
+                    'biosample',
+                    'origin_batch'
+                ]
+            )
+            path.expand(request, properties)
+            origin_batch = properties.get(
+                'replicate', {}
+            ).get(
+                'library', {}
+            ).get(
+                'biosample', {}
+            ).get(
+                'origin_batch'
+            )
+            if origin_batch:
+                calculated_origin_batches.append(origin_batch)
+        else:
+            derived_from_file_at_ids = (
+                request.resource_path(root[uuid])
+                for uuid in property_closure(request, 'derived_from', self.uuid)
+            )
+            properties = {
+                'files': list(derived_from_file_at_ids)
+            }
+            path = Path('files', include=['@id', '@type', 'dataset', 'replicate'])
+            path.expand(request, properties)
+            filtered_derived_from_file_at_ids = (
+                file_['@id']
+                for file_ in properties['files']
+                if 'replicate' in file_ and file_['dataset'] == dataset
+            )
+            properties = {
+                'files': list(filtered_derived_from_file_at_ids)
+            }
+            path = Path('files', include=['@id', '@type', 'origin_batches'])
+            path.expand(request, properties)
+            for file_ in properties['files']:
+                calculated_origin_batches.extend(file_.get('origin_batches', []))
+        return list(set(calculated_origin_batches))
+
+    @calculated_property(schema={
         "title": "Analysis Step Version",
         "description": "The step version of the pipeline from which this file is an output.",
         "comment": "Do not submit.  This field is calculated from step_run.",

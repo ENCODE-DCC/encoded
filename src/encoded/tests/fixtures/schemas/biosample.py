@@ -505,17 +505,3 @@ def biosample_additional_a549(testapp, lab, award, source, organism, human_donor
         'source': source['uuid']
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_part_of_add_a549(testapp, lab, award, source, organism, human_donor_1, a549, biosample_additional_a549):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': a549['uuid'],
-        'lab': lab['uuid'],
-        'donor': human_donor_1['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid'],
-        'part_of': biosample_additional_a549['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]

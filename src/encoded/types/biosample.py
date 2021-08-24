@@ -456,7 +456,7 @@ class Biosample(Item):
 
     @calculated_property(schema={
         "title": "Origin batch",
-        "description": "The origin batch this biosample was derived from.",
+        "description": "The origin batch biosample that the biosample was obtained from.",
         "type": "string",
         "notSubmittable": "True"
     })
@@ -1243,9 +1243,8 @@ def is_part_of(request, accession, ontology, part_of_object, part_of_biosample_o
         return part_of_object['accession']
     elif ontology != part_of_biosample_ontology:
         return accession
-    else:
-        if 'part_of' in part_of_object:
-            accession = part_of_object['accession']
-            part_of_object = request.embed(part_of_object['part_of'], '@@object')
-            part_of_biosample_ontology = request.embed(part_of_object['biosample_ontology'], '@@object')
-            return is_part_of(request, accession, ontology, part_of_object, part_of_biosample_ontology)
+    elif 'part_of' in part_of_object:
+        accession = part_of_object['accession']
+        part_of_object = request.embed(part_of_object['part_of'], '@@object')
+        part_of_biosample_ontology = request.embed(part_of_object['biosample_ontology'], '@@object')
+        return is_part_of(request, accession, ontology, part_of_object, part_of_biosample_ontology)

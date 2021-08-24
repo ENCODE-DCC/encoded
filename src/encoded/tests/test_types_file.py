@@ -481,3 +481,32 @@ def test_file_restricted_file_does_not_have_azure_uri(testapp, file_with_externa
     )
     r = testapp.get(file_with_external_sheet['@id'])
     assert 'azure_uri' not in r.json
+
+
+def test_file_origin_batches(testapp, file_bam_1_1, replicate_1_1, base_library, file_fastq_control_chip, biosample_human_1, a549):
+    # Origin batches directly from fastq
+    testapp.patch_json(
+        biosample_human_1['@id'],
+        {
+            'biosample_ontology': a549['uuid']
+        }
+    )
+    res = testapp.get(file_fastq_control_chip['@id'] + '@@index-data')
+    origin_batches = res.json['object']['origin_batches']
+    assert biosample_human_1['accession'] in origin_batches
+    # Origin batches from derived_from
+    testapp.patch_json(
+        base_library['@id'],
+        {
+            'biosample': biosample_human_1['uuid']
+        }
+    )
+    testapp.patch_json(
+        replicate_1_1['@id'],
+        {
+            'library': base_library['uuid']
+        }
+    )
+    res = testapp.get(file_bam_1_1['@id'] + '@@index-data')
+    origin_batches = res.json['object']['origin_batches']
+    assert biosample_human_1['accession'] in origin_batches
