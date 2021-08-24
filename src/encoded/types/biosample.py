@@ -56,6 +56,7 @@ class Biosample(Item):
         'originated_from',
         'originated_from.biosample_ontology',
         'part_of',
+        'part_of.biosample_ontology',
         'part_of.documents',
         'part_of.documents.award',
         'part_of.documents.lab',
@@ -452,6 +453,31 @@ class Biosample(Item):
             return term_lookup.get(subcellular_fraction_term_name)
         else:
             return 'Term ID unknown'
+
+    @calculated_property(schema={
+        "title": "Origin batch",
+        "description": "The origin batch this biosample was derived from.",
+        "type": "string",
+        "notSubmittable": "True"
+    })
+    def origin_batch(
+        self,
+        request,
+        accession=None,
+        biosample_ontology=None,
+        part_of=None,
+    ):
+        if biosample_ontology:
+            biosample_type = request.embed(biosample_ontology, '@@object').get('classification')
+            ontology = request.embed(biosample_ontology, '@@object')
+            if biosample_type in ['cell line', 'in vitro differentiated cells', 'primary cell']:
+                if part_of:
+                    part_of_object = request.embed(part_of, '@@object')
+                    if 'biosample_ontology' in part_of_object:
+                        part_of_biosample_ontology = request.embed(part_of_object['biosample_ontology'], '@@object')
+                        return is_part_of(request, accession, ontology, part_of_object, part_of_biosample_ontology)
+                else:
+                    return accession
 
     @calculated_property(schema={
         "title": "Perturbed",
@@ -1210,3 +1236,16 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     rep = dict((re.escape(k), v) for k, v in rep.items())
     pattern = re.compile("|".join(rep.keys()))
     return pattern.sub(lambda m: rep[re.escape(m.group(0))], sentence_to_return)
+
+
+def is_part_of(request, accession, ontology, part_of_object, part_of_biosample_ontology):
+    if ('part_of' not in part_of_object) and (ontology == part_of_biosample_ontology):
+        return part_of_object['accession']
+    elif ontology != part_of_biosample_ontology:
+        return accession
+    else:
+        if 'part_of' in part_of_object:
+            accession = part_of_object['accession']
+            part_of_object = request.embed(part_of_object['part_of'], '@@object')
+            part_of_biosample_ontology = request.embed(part_of_object['biosample_ontology'], '@@object')
+            return is_part_of(request, accession, ontology, part_of_object, part_of_biosample_ontology)

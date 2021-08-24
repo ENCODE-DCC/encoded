@@ -465,3 +465,57 @@ def biosample_with_disease(biosample_0):
         'disease_term_id': 'DOID:0080600'
     })
     return item
+
+
+@pytest.fixture
+def biosample_cell_line(testapp, lab, award, source, organism, human_donor_1, a549):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': a549['uuid'],
+        'lab': lab['uuid'],
+        'donor': human_donor_1['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_part_of(testapp, lab, award, source, organism, human_donor_1, a549, biosample_cell_line):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': a549['uuid'],
+        'lab': lab['uuid'],
+        'donor': human_donor_1['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid'],
+        'part_of': biosample_cell_line['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_additional_a549(testapp, lab, award, source, organism, human_donor_1, a549):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': a549['uuid'],
+        'lab': lab['uuid'],
+        'donor': human_donor_1['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_part_of_add_a549(testapp, lab, award, source, organism, human_donor_1, a549, biosample_additional_a549):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': a549['uuid'],
+        'lab': lab['uuid'],
+        'donor': human_donor_1['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid'],
+        'part_of': biosample_additional_a549['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
