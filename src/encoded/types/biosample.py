@@ -468,14 +468,12 @@ class Biosample(Item):
         part_of=None,
     ):
         if biosample_ontology:
-            biosample_type = request.embed(biosample_ontology, '@@object').get('classification')
             ontology = request.embed(biosample_ontology, '@@object')
-            if biosample_type in ['cell line', 'in vitro differentiated cells', 'primary cell']:
+            if ontology['classification'] in ['cell line', 'in vitro differentiated cells', 'primary cell']:
                 if part_of:
                     part_of_object = request.embed(part_of, '@@object')
                     if 'biosample_ontology' in part_of_object:
-                        part_of_biosample_ontology = request.embed(part_of_object['biosample_ontology'], '@@object')
-                        return is_part_of(request, accession, ontology, part_of_object, part_of_biosample_ontology)
+                        return is_part_of(request, accession, biosample_ontology, part_of_object)
                 else:
                     return accession
 
@@ -1238,13 +1236,12 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     return pattern.sub(lambda m: rep[re.escape(m.group(0))], sentence_to_return)
 
 
-def is_part_of(request, accession, ontology, part_of_object, part_of_biosample_ontology):
-    if ('part_of' not in part_of_object) and (ontology == part_of_biosample_ontology):
-        return part_of_object['accession']
-    elif ontology != part_of_biosample_ontology:
+def is_part_of(request, accession, biosample_ontology, part_of_object):
+    if biosample_ontology != part_of_object['biosample_ontology']:
         return accession
+    elif ('part_of' not in part_of_object) and (biosample_ontology == part_of_object['biosample_ontology']):
+        return part_of_object['accession']
     elif 'part_of' in part_of_object:
         accession = part_of_object['accession']
         part_of_object = request.embed(part_of_object['part_of'], '@@object')
-        part_of_biosample_ontology = request.embed(part_of_object['biosample_ontology'], '@@object')
-        return is_part_of(request, accession, ontology, part_of_object, part_of_biosample_ontology)
+        return is_part_of(request, accession, biosample_ontology, part_of_object)
