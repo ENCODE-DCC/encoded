@@ -996,7 +996,8 @@
                             "mAID",
                             "mAID-mClover",
                             "mAID-mClover-NeoR",
-                            "mAID-mClover-Hygro"
+                            "mAID-mClover-Hygro",
+                            "mEGFP"
                         ]
                     },
                     "location": {

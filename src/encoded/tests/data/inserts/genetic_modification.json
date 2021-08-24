@@ -408,5 +408,23 @@
             "identifier": "thermo-fisher:01010101"
             }
         ]
+    },
+    {
+        "accession": "ENCGM303MPQ",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "status": "released",
+        "introduced_tags": [
+            {
+                "name": "mEGFP",
+                "location": "C-terminal"
+            }
+        ],
+        "modified_site_by_target_id": "/targets/FTO-human/",
+        "lab": "/labs/robert-waterston/",
+        "category": "insertion",
+        "purpose": "tagging",
+        "method": "CRISPR",
+        "award": "/awards/U41HG007355/",
+        "uuid": "b79cb3ba-745e-5d9a-8903-4a02327a7e09"
     }
 ]
