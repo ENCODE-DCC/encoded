@@ -194,5 +194,35 @@
         "treatment_term_name": "Interleukin-2",
         "treatment_type": "protein",
         "uuid": "373bf377-6f76-4dd9-a956-b4c1ded4b2c0"
+    },
+    {
+        "aliases": [
+            "michael-snyder:selection-treatment"
+        ],
+        "amount": 350,
+        "amount_units": "μg/mL",
+        "duration": 8,
+        "duration_units": "hour",
+        "purpose": "selection",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "UniProtKB:P60568",
+        "treatment_term_name": "G418",
+        "treatment_type": "protein",
+        "uuid": "371bf378-6f76-5dd9-a956-b4c1ded4b1c0"
+    },
+    {
+        "aliases": [
+            "michael-snyder:perturbation-treatment"
+        ],
+        "amount": 520,
+        "amount_units": "μg/mL",
+        "duration": 148,
+        "duration_units": "hour",
+        "purpose": "perturbation",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "UniProtKB:P60568",
+        "treatment_term_name": "Puromycin",
+        "treatment_type": "protein",
+        "uuid": "313bf347-6f73-4dd9-a952-b4c1ded4b2c0"
     }
 ]
