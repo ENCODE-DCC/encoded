@@ -274,6 +274,7 @@ const RegionSearch = (props, context) => {
     const supportedFileTypes = ['bigWig', 'bigBed'];
     const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
     const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
+    const GV_COORDINATES_ANNOTATION = 'ENCODE-GV-annotation';
 
     const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
     const availableFileTypes = [...new Set(initialGBrowserFiles.map((file) => file.file_format))];
@@ -301,6 +302,7 @@ const RegionSearch = (props, context) => {
 
             window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify(coordinatesObj));
             window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, selectedAssembly === 'mm10' ? 'GRCm38' : selectedAssembly);
+            window.sessionStorage.setItem(GV_COORDINATES_ANNOTATION, 'V29');
         }
     };
 
