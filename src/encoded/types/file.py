@@ -459,7 +459,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Origin batches",
         "description": "The origin batch biosample(s) associated with this file.",
-        "comment": "Do not submit. This field is calculatd through the derived_from relationship back to the raw data.",
+        "comment": "Do not submit. This field is calculated through the derived_from relationship back to the raw data.",
         "type": "array",
         "items": {
             "title": "Origin batch",

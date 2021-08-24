@@ -468,10 +468,10 @@ class Biosample(Item):
         part_of=None,
     ):
         if biosample_ontology:
-            ontology = request.embed(biosample_ontology, '@@object')
-            if ontology['classification'] in ['cell line', 'in vitro differentiated cells', 'primary cell']:
+            biosample_classification = request.embed(biosample_ontology, '@@object?skip_calculated=true').get('classification')
+            if biosample_classification in ['cell line', 'in vitro differentiated cells', 'primary cell']:
                 if part_of:
-                    part_of_object = request.embed(part_of, '@@object')
+                    part_of_object = request.embed(part_of, '@@object?skip_calculated=true')
                     if 'biosample_ontology' in part_of_object:
                         return is_part_of(request, accession, biosample_ontology, part_of_object)
                 else:
@@ -1243,5 +1243,5 @@ def is_part_of(request, accession, biosample_ontology, part_of_object):
         return part_of_object['accession']
     elif 'part_of' in part_of_object:
         accession = part_of_object['accession']
-        part_of_object = request.embed(part_of_object['part_of'], '@@object')
+        part_of_object = request.embed(part_of_object['part_of'], '@@object?skip_calculated=true')
         return is_part_of(request, accession, biosample_ontology, part_of_object)
