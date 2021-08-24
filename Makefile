@@ -8,13 +8,10 @@ install: download-ontology javascript
 	pip install -e '.[dev]'
 	cp conf/pyramid/development.ini .
 
-javascript-and-download-files: download-annotations download-ontology javascript
+javascript-and-download-files: download-ontology javascript
 
 download-ontology:
 	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-2021-07-13.json
-
-download-annotations:
-	curl -o annotations.json https://s3-us-west-1.amazonaws.com/encoded-build/annotations/annotations_2020_10_21.json
 
 javascript:
 	npm ci

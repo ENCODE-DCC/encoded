@@ -39,7 +39,6 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
     local shared_config = {
       use: 'egg:encoded',
       accel_redirect_header: 'X-Accel-Redirect',
-      annotations_path: '%s/annotations.json' % repo_root_directory,
       'auth0.siteName': 'ENCODE DCC Submission',
       download_proxy: 'https://download.encodeproject.org/',
       'elasticsearch.server': elasticsearch_server,
