@@ -473,7 +473,8 @@ class Biosample(Item):
                 if part_of:
                     part_of_object = request.embed(part_of, '@@object')
                     if 'biosample_ontology' in part_of_object:
-                        return is_part_of(request, biosample_id, biosample_ontology, part_of_object)
+                        checked_biosamples = []
+                        return is_part_of(request, biosample_id, biosample_ontology, part_of_object, checked_biosamples)
                 else:
                     return biosample_id
 
@@ -1236,17 +1237,16 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     return pattern.sub(lambda m: rep[re.escape(m.group(0))], sentence_to_return)
 
 
-def is_part_of(request, biosample_id, biosample_ontology, part_of_object):
-    check_part_of = []
+def is_part_of(request, biosample_id, biosample_ontology, part_of_object, checked_biosamples):
     if biosample_ontology != part_of_object['biosample_ontology']:
         return biosample_id
     elif 'part_of' not in part_of_object:
         return part_of_object['@id']
     else:
         biosample_id = part_of_object['@id']
-        if biosample_id not in check_part_of:
-            check_part_of.append(biosample_id)
+        if biosample_id not in checked_biosamples:
+            checked_biosamples.append(biosample_id)
             part_of_object = request.embed(part_of_object['part_of'], '@@object')
-            return is_part_of(request, biosample_id, biosample_ontology, part_of_object)
+            return is_part_of(request, biosample_id, biosample_ontology, part_of_object, checked_biosamples)
         else:
             return part_of_object['@id']
