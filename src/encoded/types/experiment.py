@@ -24,7 +24,8 @@ from .shared_calculated_properties import (
     CalculatedCategorySlims,
     CalculatedTypeSlims,
     CalculatedObjectiveSlims,
-    CalculatedReplicationType
+    CalculatedReplicationType,
+    CalculatedBiologicalReplicates
 )
 
 from .assay_data import assay_terms
@@ -48,7 +49,8 @@ class Experiment(Dataset,
                  CalculatedCategorySlims,
                  CalculatedTypeSlims,
                  CalculatedObjectiveSlims,
-                 CalculatedReplicationType):
+                 CalculatedReplicationType,
+                 CalculatedBiologicalReplicates):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
