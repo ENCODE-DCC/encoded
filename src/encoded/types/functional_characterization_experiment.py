@@ -173,7 +173,7 @@ class FunctionalCharacterizationExperiment(
         perturbation_type = None
         if assay_term_name == 'CRISPR screen':
             if replicates is not None:
-                CRISPR_gms = []
+                CRISPR_gms = set()
                 for rep in replicates:
                     replicate_object = request.embed(rep, '@@object?skip_calculated=true')
                     if replicate_object['status'] in ('deleted', 'revoked'):
@@ -191,23 +191,10 @@ class FunctionalCharacterizationExperiment(
                                 for gm in genetic_modifications:
                                     gm_object = request.embed(gm, '@@object?skip_calculated=true')
                                     if gm_object.get('purpose') == 'characterization' and gm_object.get('method') == 'CRISPR':
-                                        category = gm_object['category']
-                                        if category in ('activation', 'deletion', 'disruption', 'inhibition', 'interference', 'knockout'):
-                                            CRISPR_gms.append(category)
+                                        CRISPR_gms.add(gm_object['category'])
                 # Return a specific perturbation_type if there is only one category type for CRISPR characterization genetic modifications for all replicate biosample genetic modifications
-                if len(set(CRISPR_gms)) == 1:
-                    if 'activation' in CRISPR_gms:
-                        perturbation_type = 'activation'
-                    elif 'deletion' in CRISPR_gms:
-                        perturbation_type = 'deletion'
-                    elif 'disruption' in CRISPR_gms:
-                        perturbation_type = 'disruption'
-                    elif 'inhibition' in CRISPR_gms:
-                        perturbation_type = 'inhibition'
-                    elif 'interference' in CRISPR_gms:
-                        perturbation_type = 'interference'
-                    elif 'knockout' in CRISPR_gms:
-                        perturbation_type = 'knockout'
+                if len(CRISPR_gms) == 1:
+                    perturbation_type = CRISPR_gms[0]
             return perturbation_type
 
     @calculated_property(schema={
