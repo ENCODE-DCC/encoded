@@ -82,6 +82,7 @@ class FunctionalCharacterizationExperiment(
         'possible_controls',
         'target.genes',
         'target.organism',
+        'organism',
     ]
     audit_inherit = [
         'original_files',
@@ -230,3 +231,28 @@ class FunctionalCharacterizationExperiment(
                 if len(set(methods)) == 1:
                     crispr_screen_readout = str(methods[0])
             return crispr_screen_readout
+
+
+    @calculated_property(schema={
+        "title": "Organism",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Organism"
+        },
+    })
+    def organism(self, request, replicates=None):
+        organisms = []
+        if replicates:
+            for replicate in replicates:
+                rep = request.embed(replicate, '@@object?skip_calculated=true')
+                if 'library' in rep:
+                    lib = request.embed(rep['library'], '@@object?skip_calculated=true')
+                    if 'biosample' in lib:
+                        bio = request.embed(lib['biosample'], '@@object?skip_calculated=true')
+                        if 'organism' in bio:
+                            organisms.append(bio['organism'])
+        if organisms:
+            return paths_filtered_by_status(request, list(set(organisms)))
+        else:
+            return organisms
