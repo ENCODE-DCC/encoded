@@ -75,27 +75,3 @@ def test_fcc_replication_count_2(testapp, functional_characterization_experiment
     testapp.patch_json(replicate_2_fce['@id'], {'library': library_2['@id']})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data') 
     assert res.json['object']['bio_replicate_count'] == 2 and res.json['object']['tech_replicate_count'] == 2
-
-
-def test_fcc_biosample_replicates_0(testapp, functional_characterization_experiment_disruption_screen):
-    res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data') 
-    assert 'biological_replicates' not in res.json['object']
-
-
-def test_fcc_biosample_replicates_1(testapp, functional_characterization_experiment_disruption_screen, biosample_1, library_1, replicate_1_fce, disruption_genetic_modification):
-    testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [disruption_genetic_modification['@id']]})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(replicate_1_fce['@id'], {'library': library_1['@id']})
-    res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data')
-    assert res.json['object']['biological_replicates'] == '1' 
-
-
-def test_fcc_biosample_replicates_1_2(testapp, functional_characterization_experiment_disruption_screen, biosample_1, biosample_2, library_1, library_2, replicate_1_fce, replicate_2_fce, disruption_genetic_modification):
-    testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [disruption_genetic_modification['@id']]})
-    testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [disruption_genetic_modification['@id']]})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(replicate_1_fce['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_fce['@id'], {'library': library_2['@id']})
-    res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data')
-    assert res.json['object']['biological_replicates'] == '1, 2' 

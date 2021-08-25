@@ -546,20 +546,3 @@ class CalculatedReplicationCounts:
                     continue
                 technical_replicate_numbers.append(replicateObject.get('technical_replicate_number'))
         return len(technical_replicate_numbers)
-
-
-class CalculatedBiologicalReplicates:
-    @calculated_property(condition='replicates', schema={
-        "title": "Formatted biological replicates",
-        "description": "The biological replicate numbers associated with this dataset as formatted text.",
-        "comment": "Do not submit. This field is calculated through the experiment replicates.",
-        "type": "string"
-    })
-    def biological_replicates(self, request, replicates):
-        replicate_numbers = set()
-        for rep in replicates:
-            replicate_object = request.embed(rep, '@@object')
-            if replicate_object['status'] == 'deleted':
-                continue
-            replicate_numbers.add(replicate_object['biological_replicate_number'])
-        return ', '.join([str(v) for v in sorted(replicate_numbers)]) if replicate_numbers else None
