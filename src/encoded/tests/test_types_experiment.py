@@ -505,6 +505,19 @@ def test_experiment_default_analysis(
 
     assert res.json['object']['default_analysis'] == analysis_2['@id']
 
+def test_experiment_replication_count_0(testapp, base_experiment):
+    res = testapp.get(base_experiment['@id'] + '@@index-data') 
+    assert res.json['object']['replication_count'] == 0
+
+def test_experiment_replication_count_2(testapp, base_experiment, biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1):
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data') 
+    assert res.json['object']['replication_count'] == 2
+
 def test_experiment_biosample_replicates_1_2(testapp, base_experiment, biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1):
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})

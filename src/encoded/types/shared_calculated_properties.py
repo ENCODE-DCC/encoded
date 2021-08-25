@@ -516,6 +516,16 @@ class CalculatedReplicationType:
         return 'anisogenic'
 
 
+class CalculatedReplicationCount:
+    @calculated_property(schema={
+        "title": "Replication count",
+        "description": "Calculated field that indicates the number of replicates in a dataset",
+        "type": "integer",
+    })
+    def replication_count(self, replicates=[]):
+        return len(replicates)
+
+
 class CalculatedBiologicalReplicates:
     @calculated_property(condition='replicates', schema={
         "title": "Formatted biological replicates",
