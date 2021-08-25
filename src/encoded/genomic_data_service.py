@@ -284,19 +284,24 @@ class GenomicDataService():
         return response
 
 
-    def region_search(self, assembly, chromosome, start, end):
+    def region_search(self, assembly, query=None, chrom=None, start=None, end=None, expand_kb=0):
         params = {
             'assembly': assembly,
-            'chr': chromosome.replace('chr', ''),
-            'start': start,
-            'end': end,
+            'query': query,
+            'expand': expand_kb,
             'files_only': True
         }
+
+        if chrom and start and end:
+            params.pop('query')
+            params['chr']   = chrom
+            params['start'] = start
+            params['end']   = end
 
         query_params = '&'.join([f'{k}={params[k]}' for k in params.keys()])
 
         url = f'{self.path}{REGION_SEARCH}?{query_params}'
 
-        results = requests.get(url, timeout=3).json()
+        results = requests.get(url, timeout=10).json()
 
         return results
