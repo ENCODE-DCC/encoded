@@ -194,7 +194,7 @@ class FunctionalCharacterizationExperiment(
                                         CRISPR_gms.add(gm_object['category'])
                 # Return a specific perturbation_type if there is only one category type for CRISPR characterization genetic modifications for all replicate biosample genetic modifications
                 if len(CRISPR_gms) == 1:
-                    perturbation_type = CRISPR_gms[0]
+                    perturbation_type = list(CRISPR_gms)[0]
             return perturbation_type
 
     @calculated_property(schema={
