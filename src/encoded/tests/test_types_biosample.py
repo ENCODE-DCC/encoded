@@ -389,7 +389,7 @@ def test_undefined_sample_collection_age(
 def test_origin_batch(testapp, biosample_part_of, biosample_cell_line, biosample_22, biosample_additional_a549):
     # Origin batch directly from part of biosample
     res = testapp.get(biosample_part_of['@id'] + '@@index-data')
-    assert res.json['object']['origin_batch'] == biosample_cell_line['accession']
+    assert res.json['object']['origin_batch'] == biosample_cell_line['@id']
     # Different biosample type, defaults origin batch to the sample itself
     testapp.patch_json(
         biosample_part_of['@id'],
@@ -398,7 +398,7 @@ def test_origin_batch(testapp, biosample_part_of, biosample_cell_line, biosample
         }
     )
     res = testapp.get(biosample_part_of['@id'] + '@@index-data')
-    assert res.json['object']['origin_batch'] == biosample_part_of['accession']
+    assert res.json['object']['origin_batch'] == biosample_part_of['@id']
     # Part of biosample with another part of specified
     testapp.patch_json(
         biosample_cell_line['@id'],
@@ -413,4 +413,4 @@ def test_origin_batch(testapp, biosample_part_of, biosample_cell_line, biosample
         }
     )
     res = testapp.get(biosample_part_of['@id'] + '@@index-data')
-    assert res.json['object']['origin_batch'] == biosample_additional_a549['accession']
+    assert res.json['object']['origin_batch'] == biosample_additional_a549['@id']

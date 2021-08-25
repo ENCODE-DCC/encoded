@@ -463,7 +463,7 @@ class File(Item):
         "type": "array",
         "items": {
             "title": "Origin batch",
-            "description": "Accession of the origin batch biosample",
+            "description": "@id of the origin batch biosample",
             "type": "string"
         }
     })

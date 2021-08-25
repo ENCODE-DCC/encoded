@@ -493,7 +493,7 @@ def test_file_origin_batches(testapp, file_bam_1_1, replicate_1_1, base_library,
     )
     res = testapp.get(file_fastq_control_chip['@id'] + '@@index-data')
     origin_batches = res.json['object']['origin_batches']
-    assert biosample_human_1['accession'] in origin_batches
+    assert biosample_human_1['@id'] in origin_batches
     # Origin batches from derived_from
     testapp.patch_json(
         base_library['@id'],
@@ -509,4 +509,4 @@ def test_file_origin_batches(testapp, file_bam_1_1, replicate_1_1, base_library,
     )
     res = testapp.get(file_bam_1_1['@id'] + '@@index-data')
     origin_batches = res.json['object']['origin_batches']
-    assert biosample_human_1['accession'] in origin_batches
+    assert biosample_human_1['@id'] in origin_batches
