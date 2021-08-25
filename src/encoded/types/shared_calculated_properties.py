@@ -522,8 +522,8 @@ class CalculatedReplicationCount:
         "description": "Calculated field that indicates the number of replicates in a dataset",
         "type": "integer",
     })
-    def replication_count(self, replicates=[]):
-        return len(replicates)
+    def replication_count(self, replicates=None):
+        return len(replicates) if replicates else 0
 
 
 class CalculatedBiologicalReplicates:
