@@ -36,8 +36,10 @@ def test_assay_pulse_chase_time_series(testapp, base_pulse_chase_time_series):
 
 
 def test_assay_type_single_cell_rna_series(testapp, single_cell_series):
-    res = testapp.get(single_cell_series['@id'] + '@@index-data')
-    assert sorted(res.json['object']['assay_slims']) == ['Single cell']
+    assay_slims = testapp.get(single_cell_series['@id'] + '@@index-data').json['object']['assay_slims']
+    assert len(assay_slims) == 2
+    assert 'Single cell' in assay_slims
+    assert 'Transcription' in assay_slims
 
 
 def test_biosample_summary_from_related_datasets(testapp,

@@ -143,19 +143,6 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000519": {
-        "assay": ['Functional characterization'],
-        "category": [],
-        "developmental": [],
-        "name": "pooled clone sequencing",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "pooled clone sequencing",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0000520": {
         "assay": ['Functional characterization'],
         "category": [],
@@ -203,32 +190,6 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000557": {
-        "assay": ['DNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "Cleavage Under Targets and Release Using Nuclease",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CUT&RUN",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000564": {
-        "assay": ['DNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "Cleavage Under Targets and Tagmentation",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CUT&Tag",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -989,6 +950,32 @@ ntr_biosamples = {
         "slims": [],
         "synonyms": [],
         "systems": [],
+        "types": []
+    },
+    "NTR:0000646": {
+        "category": [],
+        "cells": [],
+        "developmental": ["ectoderm"],
+        "name": "left cerebral cortex",
+        "objectives": [],
+        "organs": ["brain"],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": ["central nervous system"],
+        "types": []
+    },
+    "NTR:0000647": {
+        "category": [],
+        "cells": [],
+        "developmental": ["ectoderm"],
+        "name": "right cerebral cortex",
+        "objectives": [],
+        "organs": ["brain"],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": ["central nervous system"],
         "types": []
     }
 }
