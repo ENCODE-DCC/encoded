@@ -1075,5 +1075,21 @@
         "single_cell_isolation_method_version": 3,
         "uuid": "0757a1a6-9ac8-474d-95de-cec87f6a6456",
         "accession": "LATSU333CCC"
+    },
+    {
+        "aliases": [
+            "anindita-basu:pooled_suspension"
+        ],
+        "derived_from": [
+            "anindita-basu:suspension_A",
+            "anindita-basu:suspension_B"
+        ],
+        "derivation_process": [
+            "pooling"
+        ],
+        "suspension_type": "cell",
+        "status": "released",
+        "uuid": "6c3a5f2a-b6d0-49ee-9c37-5ad7860d71c8",
+        "accession": "LATSU234EIC"
     }
 ]

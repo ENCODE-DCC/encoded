@@ -91,7 +91,8 @@
                     "density gradient centrifugation",
                     "positive magnetic affinity cell sorting",
                     "negative magnetic affinity cell sorting",
-                    "leukapheresis"
+                    "leukapheresis",
+                    "pooling"
                 ]
             }
         },
