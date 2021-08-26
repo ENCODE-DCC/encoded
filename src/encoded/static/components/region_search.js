@@ -279,7 +279,12 @@ const RegionSearch = (props, context) => {
     const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
     const availableFileTypes = [...new Set(initialGBrowserFiles.map((file) => file.file_format))];
 
-    const [selectedVisualization, setSelectedVisualization] = React.useState(defaultVisualization);
+    let visualization = url.parse(context.location_href, true).query.view || defaultVisualization;
+    if (!visualizationOptions.includes(visualization)) {
+        visualization = defaultVisualization;
+    }
+
+    const [selectedVisualization, setSelectedVisualization] = React.useState(visualization);
     const [selectedFileTypes, setSelectedFileTypes] = React.useState(availableFileTypes);
     const [gBrowserFiles, setGBrowserFiles] = React.useState(initialGBrowserFiles);
 
@@ -339,12 +344,21 @@ const RegionSearch = (props, context) => {
         setGBrowserFiles(newGBrowserFiles);
     }, [selectedFileTypes]);
 
+    const redirectFacet = (e, search) => {
+        props.onChange(search);
+        e.stopPropagation();
+        e.preventDefault();
+    };
+
     const onFilter = (e) => {
         if (props.onChange) {
-            const search = e.currentTarget.getAttribute('href');
-            props.onChange(search);
-            e.stopPropagation();
-            e.preventDefault();
+            redirectFacet(e, e.currentTarget.getAttribute('href'));
+        }
+    };
+
+    const onFilterGBrowser = (e) => {
+        if (props.onChange) {
+            redirectFacet(e, `${e.currentTarget.getAttribute('href')}&view=Genome Browser`);
         }
     };
 
@@ -428,7 +442,7 @@ const RegionSearch = (props, context) => {
                                     context={props.context}
                                     facets={facets}
                                     filters={filters}
-                                    onFilter={onFilter}
+                                    onFilter={onFilterGBrowser}
                                     additionalFacet={
                                         <>
                                             <div className="facet ">

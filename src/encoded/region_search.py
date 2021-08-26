@@ -3,7 +3,6 @@ from encoded.vis_defines import vis_format_url
 from snovault import TYPES
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
-from .batch_download import get_peak_metadata_links
 from collections import OrderedDict
 import requests
 from urllib.parse import urlencode
@@ -295,8 +294,6 @@ def region_search(context, request):
     result['gbrowser'] = genome_browser_files(es, principals, result['@graph'])
     result['total'] = total = es_results['hits']['total']
     result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
-    result['peaks'] = list(peak_results['regions'])
-    result['download_elements'] = get_peak_metadata_links(request)
     if result['total'] > 0:
         result['notification'] = 'Success'
 
@@ -514,7 +511,7 @@ def set_filters(request, query, result, static_items=None, filter_exclusion=None
     default_filter_exclusion = [
         'type', 'limit', 'mode', 'annotation', 'format', 'frame', 'datastore',
         'field', 'region', 'genome', 'sort', 'from', 'referrer', 'filterresponse',
-        'remove', 'cart',
+        'remove', 'cart', 'view',
     ]
     query_filters = query['post_filter']['bool']
     used_filters = {}
