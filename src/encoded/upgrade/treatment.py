@@ -112,3 +112,26 @@ def treatment_12_13(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-6102
     if 'product_id' in value and value['product_id'] == '':
         value.pop('product_id')
+
+
+@upgrade_step('treatment', '12', '13')
+def treatment_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6124
+    if value.get('amount') < 0:
+        current_notes = ''
+        if 'notes' in value:
+            current_notes = value['notes']
+        value['notes'] = (
+            f'{current_notes} This treatment erroneously had a negative'
+            f' amount of {value["amount"]} and was upgraded to 0.'.strip()
+        )
+        value['amount'] = 0
+    if value.get('duration') < 0:
+        current_notes = ''
+        if 'notes' in value:
+            current_notes = value['notes']
+        value['notes'] = (
+            f'{current_notes} This treatment erroneously had a negative'
+            f' duration of {value["duration"]} and was upgraded to 0.'.strip()
+        )
+        value['duration'] = 0

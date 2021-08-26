@@ -78,3 +78,14 @@ def test_treatment_upgrade_12_13(upgrader, treatment_12):
     value = upgrader.upgrade('treatment', treatment_12, current_version='12', target_version='13')
     assert value['schema_version'] == '13'
     assert 'product_id' not in value
+
+
+def test_treatment_upgrade_13_14(upgrader, treatment_with_negative_duration_amount_units):
+    value = upgrader.upgrade('treatment', treatment_with_negative_duration_amount_units, current_version='13', target_version='14')
+    assert value['amount'] == 0
+    assert value['duration'] == 0
+    assert value['notes'] == (
+        'This treatment erroneously had a negative amount of -100 '
+        'and was upgraded to 0. This treatment erroneously had a '
+        'negative duration of -9 and was upgraded to 0.'
+    )
