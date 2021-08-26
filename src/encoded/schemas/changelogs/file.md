@@ -8,6 +8,7 @@
 * Added *fragments* to the enum list for *output_type*, the new output type is to be submitted as tar.gz only
 * Added *sparse peak count matrix* to the enum list for *output_type*
 * Added *functional conservation quantifications* to the enum list for *output_type*
+* Added *compartments* to the enum list for *output_type*
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.
