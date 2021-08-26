@@ -163,6 +163,10 @@
             "title": "Target",
             "type": "string"
         },
+        "related_datasets.@id": {
+            "title": "Additional datasets",
+            "type": "string"
+        },
         "related_datasets.replicates.antibody.accession": {
             "title": "Linked antibody",
             "type": "string"

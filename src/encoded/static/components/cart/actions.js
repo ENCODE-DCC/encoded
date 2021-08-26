@@ -93,6 +93,19 @@ export const addMultipleToCartAndSave = (elementAtIds, fetch) => (
 
 
 /**
+ * Manually set the cart state to show an operation is in progress or not. This mostly gets set
+ * automatically when other operations are performed. Use this to set it for other reasons.
+ * @param {boolean} operationInProgress True to set operation in progress
+ * @returns {object} Promise from initiating the operation; probably instantaneous
+ */
+export const cartManualSetOperationInProgress = (operationInProgress) => (
+    (dispatch) => {
+        cartSetOperationInProgress(operationInProgress, dispatch);
+    }
+);
+
+
+/**
  * Redux action creator to remove an element from the cart.
  * @param {string} elementAtId `@id` of element to remove from the cart
  * @param {string} title Title of current file view

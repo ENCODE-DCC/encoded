@@ -4,6 +4,7 @@
 
 import _ from 'underscore';
 import url from 'url';
+import { obligateSeriesTypes } from './constants';
 
 
 /**
@@ -27,6 +28,20 @@ export const allowedDatasetTypes = {
     annotations: { title: 'Annotations', type: 'Annotation' },
     'functional-characterization-experiments': { title: 'Functional characterizations', type: 'FunctionalCharacterizationExperiment' },
     'single-cell-units': { title: 'Single-cell units', type: 'SingleCellUnit' },
+    'aggregate-series': { title: 'Aggregate series', type: 'AggregateSeries' },
+    'differentiation-series': { title: 'Differentiation series', type: 'DifferentiationSeries' },
+    'disease-series': { title: 'Disease series', type: 'DiseaseSeries' },
+    'functional-characterization-series': { title: 'Functional characterization series', type: 'FunctionalCharacterizationSeries' },
+    'gene-silencing-series': { title: 'Gene silencing series', type: 'GeneSilencingSeries' },
+    'matched-set': { title: 'Matched set', type: 'MatchedSet' },
+    'multiomics-series': { title: 'Multiomics series', type: 'MultiomicsSeries' },
+    'organism-development-series': { title: 'Organism development series', type: 'OrganismDevelopmentSeries' },
+    'pulse-chase-time-series': { title: 'Pulse-chase time series', type: 'PulseChaseTimeSeries' },
+    'reference-epigenomes': { title: 'Reference epigenomes', type: 'ReferenceEpigenome' },
+    'replication-timing-series': { title: 'Replication timing series', type: 'ReplicationTimingSeries' },
+    'single-cell-rna-series': { title: 'Single-cell RNA series', type: 'SingleCellRnaSeries' },
+    'treatment-concentration-series': { title: 'Treatment concentration series', type: 'TreatmentConcentrationSeries' },
+    'treatment-time-series': { title: 'Treatment time series', type: 'TreatmentTimeSeries' },
 };
 
 /**
@@ -153,3 +168,38 @@ export const getObjectFieldValue = (object, field) => {
     }
     return value;
 };
+
+
+/**
+ * Test whether the given series object is an obligate series object or not. With obligate series,
+ * you can remove any of its related datasets independently of removing the related series.
+ * Alternatively, with grouping series (non-obligate), you cannot remove any related dataset
+ * without removing the related series object.
+ * @param {object} series Series object to test
+ * @returns {boolean} True if given series is an obligate series type
+ */
+export const isObligateSeries = (series) => (
+    obligateSeriesTypes.includes(series['@type'][0])
+);
+
+
+/**
+ * Get the related datasets from the series that currently exist in the cart.
+ * @param {object} series Series object from which to get related datasets in cart.
+ */
+export const getSeriesDatasets = (series, allDatasetsInCart) => (
+    series.related_datasets.map((relatedDataset) => (
+        allDatasetsInCart.find((cartDataset) => cartDataset['@id'] === relatedDataset['@id'])
+    )).filter((matchingCartDatasets) => !!matchingCartDatasets)
+);
+
+
+/**
+ * Calculate the total number of pages needed to display all items in any of the tab panes
+ * (datasets, files, etc.).
+ * @param {number} itemCount Total number of items being displayed on pages
+ * @param {number} maxCount Maximum number of items per page
+ *
+ * @return {number} Number of pages to contain all items
+ */
+export const calcTotalPageCount = (itemCount, maxCount) => Math.floor(itemCount / maxCount) + (itemCount % maxCount !== 0 ? 1 : 0);

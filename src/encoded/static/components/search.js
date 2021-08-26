@@ -207,7 +207,7 @@ const ItemComponent = ({ context: result, auditIndicators, auditDetail }, reactC
     const title = globals.listingTitles.lookup(result)({ context: result });
     const itemType = result['@type'][0];
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">{title}</a>
@@ -224,7 +224,7 @@ const ItemComponent = ({ context: result, auditIndicators, auditDetail }, reactC
                 <PickerActions context={result} />
             </div>
             {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
-        </li>
+        </div>
     );
 };
 
@@ -292,7 +292,7 @@ class BiosampleComponent extends React.Component {
         }
 
         return (
-            <li className={resultItemClass(result)}>
+            <div className={resultItemClass(result)}>
                 <div className="result-item">
                     <div className="result-item__data">
                         <a href={result['@id']} className="result-item__link">
@@ -322,7 +322,7 @@ class BiosampleComponent extends React.Component {
                     <PickerActions context={result} />
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties })}
-            </li>
+            </div>
         );
     }
 }
@@ -483,7 +483,7 @@ const ExperimentComponent = (props, reactContext) => {
     }
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
@@ -624,7 +624,7 @@ const ExperimentComponent = (props, reactContext) => {
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+        </div>
     );
 };
 
@@ -656,7 +656,7 @@ globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 
 const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicators, auditDetail }, reactContext) => (
-    <li className={resultItemClass(result)}>
+    <div className={resultItemClass(result)}>
         <div className="result-item">
             <div className="result-item__data">
                 <a href={result['@id']} className="result-item__link">
@@ -687,7 +687,7 @@ const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicat
             <PickerActions context={result} />
         </div>
         {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-    </li>
+    </div>
 );
 
 AnnotationComponent.propTypes = {
@@ -723,7 +723,7 @@ const DatasetComponent = ({ context: result, auditIndicators, auditDetail }, rea
     const isReference = result['@type'][0] === 'Reference';
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
@@ -747,7 +747,7 @@ const DatasetComponent = ({ context: result, auditIndicators, auditDetail }, rea
                 <PickerActions context={result} />
             </div>
             {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+        </div>
     );
 };
 
@@ -770,7 +770,7 @@ globals.listingViews.register(Dataset, 'Dataset');
 /**
  * Renders the search results of all Series dataset objects.
  */
-const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reactContext) => {
+const SeriesComponent = ({ context: result, cartControls, removeConfirmation, auditDetail, auditIndicators }, reactContext) => {
     let assays = [];
     let organism;
     let crisprReadout = [];
@@ -872,10 +872,10 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         if (lifeStage) {
                             lifeStages.push(lifeStage);
                         }
-                        if (biosample.treatments && (differentiationSeries || fccSeries)) {
+                        if (biosample.treatments?.length > 0 && (differentiationSeries || fccSeries)) {
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
                         }
-                        if (biosample.treatments && treatmentConcentration) {
+                        if (biosample.treatments?.length > 0 && treatmentConcentration) {
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
                             treatments = [...treatments, ...biosample.treatments.reduce((output, t) => {
                                 if (t.amount) {
@@ -885,7 +885,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                             }, [])];
                             treatmentUnit = biosample.treatments[0].amount_units;
                         }
-                        if (biosample.treatments && treatmentTime) {
+                        if (biosample.treatments?.length > 0 && treatmentTime) {
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
                             treatments = [...treatments, ...biosample.treatments.reduce((output, t) => {
                                 if (t.duration) {
@@ -951,7 +951,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
     }
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
@@ -1054,17 +1054,38 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
+                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
+                    <div className="result-item__cart-control">
+                        <CartToggle element={result} removeConfirmation={removeConfirmation} />
+                    </div>
+                : null}
                 <PickerActions context={result} />
             </div>
             {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+        </div>
     );
 };
 
 SeriesComponent.propTypes = {
     context: PropTypes.object.isRequired, // Dataset search results
+    /** True to display cart toggle button */
+    cartControls: PropTypes.bool,
+    /** Needed for series removals that require user confirmation */
+    removeConfirmation: PropTypes.shape({
+        /** Called by cart toggle when the user requests removing a series object from the cart */
+        requestRemove: PropTypes.func,
+        /** Called when the user confirms removing a series object from the cart */
+        requestRemoveConfirmation: PropTypes.func,
+        /** True if the user has confirmed they want to remove the series object from the cart */
+        isRemoveConfirmed: PropTypes.bool,
+    }),
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+SeriesComponent.defaultProps = {
+    cartControls: false,
+    removeConfirmation: {},
 };
 
 SeriesComponent.contextTypes = {
@@ -1078,7 +1099,7 @@ globals.listingViews.register(Series, 'Series');
 
 
 const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
-    <li className={resultItemClass(result)}>
+    <div className={resultItemClass(result)}>
         <div className="result-item">
             <div className="result-item__data">
                 <a href={result['@id']} className="result-item__link">
@@ -1098,7 +1119,7 @@ const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reac
             <PickerActions context={result} />
         </div>
         {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
-    </li>
+    </div>
 );
 
 TargetComponent.propTypes = {
@@ -1121,7 +1142,7 @@ const Image = (props) => {
     const result = props.context;
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">{result['@id']}</a>
@@ -1138,7 +1159,7 @@ const Image = (props) => {
                 </div>
                 <PickerActions context={result} />
             </div>
-        </li>
+        </div>
     );
 };
 
@@ -1902,7 +1923,11 @@ ResultTable.contextTypes = {
 export const ResultTableList = ({ results, columns, cartControls, mode }) => (
     <ul className="result-table" id="result-table">
         {results.length > 0 ?
-            results.map((result) => Listing({ context: result, columns, key: result['@id'], cartControls, mode }))
+            results.map((result) => (
+                <li key={result['@id']} className="result-item__wrapper">
+                    {Listing({ context: result, columns, cartControls, mode })}
+                </li>
+            ))
         : null}
     </ul>
 );

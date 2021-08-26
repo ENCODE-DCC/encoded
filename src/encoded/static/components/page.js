@@ -41,7 +41,7 @@ globals.contentViews.register(Page, 'Page');
 
 
 const Listing = ({ context: result }) => (
-    <li className={resultItemClass(result)}>
+    <div className={resultItemClass(result)}>
         <div className="result-item">
             <div className="result-item__data">
                 <a href={result['@id']} className="result-item__link">{result.title}</a> <span className="page-listing-date">{dayjs.utc(result.date_created).format('MMMM D, YYYY')}</span>
@@ -51,7 +51,7 @@ const Listing = ({ context: result }) => (
             </div>
             <PickerActions context={result} />
         </div>
-    </li>
+    </div>
 );
 
 Listing.propTypes = {

@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody } from '../../libs/ui/modal';
+import { keyCode } from '../../libs/constants';
 import { svgIcon } from '../../libs/svg-icons';
 import { tintColor, isLight } from '../datacolors';
-import { keyCode } from '../globals';
 import {
     isFileVisualizable,
     computeAssemblyAnnotationValue,

@@ -167,6 +167,10 @@ $form-bg: #f3f3f3;
             margin: 0 0 0 25px;
         }
     }
+
+    @at-root #{&}__controls {
+        margin-bottom: 2px;
+    }
 }
 
 .search-list {
@@ -422,6 +426,10 @@ $form-bg: #f3f3f3;
 
     > li {
         border-bottom: 1px solid #e8e8e8;
+
+        &:last-child {
+            border-bottom: none;
+        }
     }
 
     &::before {

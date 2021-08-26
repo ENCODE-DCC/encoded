@@ -162,7 +162,7 @@ SoftwareVersionTable.defaultProps = {
 
 
 const ListingComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
-    <li className={resultItemClass(result)}>
+    <div className={resultItemClass(result)}>
         <div className="result-item">
             <div className="result-item__data">
                 <a href={result['@id']} className="result-item__link">{result.title}</a>
@@ -185,7 +185,7 @@ const ListingComponent = ({ context: result, auditIndicators, auditDetail }, rea
             <PickerActions context={result} />
         </div>
         {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
-    </li>
+    </div>
 );
 
 ListingComponent.propTypes = {

@@ -181,7 +181,7 @@ globals.contentViews.register(Gene, 'Gene');
 const ListingComponent = (props, reactContext) => {
     const result = props.context;
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
@@ -202,7 +202,7 @@ const ListingComponent = (props, reactContext) => {
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+        </div>
     );
 };
 

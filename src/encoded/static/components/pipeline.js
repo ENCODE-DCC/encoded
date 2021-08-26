@@ -576,7 +576,7 @@ class ListingComponent extends React.Component {
         swTitle = _.uniq(swTitle);
 
         return (
-            <li className={resultItemClass(result)}>
+            <div className={resultItemClass(result)}>
                 <div className="result-item">
                     <div className="result-item__data">
                         <a href={result['@id']} className="result-item__link">{result.title}</a>
@@ -603,7 +603,7 @@ class ListingComponent extends React.Component {
                     <PickerActions context={result} />
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, forcedEditLink: true })}
-            </li>
+            </div>
         );
     }
 }

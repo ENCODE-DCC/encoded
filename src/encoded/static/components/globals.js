@@ -44,21 +44,6 @@ documentViews.preview = new Registry();
 documentViews.file = new Registry();
 documentViews.detail = new Registry();
 
-// UNICODE entity codes, needed in JSX string templates. Each property named after the equivalent
-// HTML entity. Add new entries to this object as needed.
-export const uc = {
-    ldquo: '\u201c', // Left double quote
-    rdquo: '\u201d', // Right double quote
-};
-
-// Used to compare keyboard event key codes.
-export const keyCode = {
-    RETURN: 13,
-    ESC: 27,
-    SPACE: 32,
-};
-
-
 // Report-page cell components
 export const reportCell = new Registry();
 
@@ -404,3 +389,12 @@ export const isMediaQueryBreakpointActive = (min) => {
  * @returns Title in title case
  */
 export const titleize = (title) => title?.toLowerCase().replace(/(^|\s)\S/g, (firstLetter) => firstLetter.toUpperCase());
+
+
+/**
+ * Determine whether an object has the matching @type.
+ * @param {object} item Object to check the @type of
+ * @param {string} type Type to check for
+ * @returns {boolean} True if the object has the matching @type
+ */
+export const hasType = (item, type) => item['@type'].includes(type);
