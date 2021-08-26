@@ -3,6 +3,7 @@
 ### Minor changes since schema version 20
 * Added *elements_selection_method* property to capture the selection of elements specified in references that are *reference_type*: *functional elements*
 * Added *Deeply Profiled* to the *internal_tags* enum
+* Added *crispr_screen_tiling* property to capture the CRISPR screen guide RNA design modalities that are *reference_type*: *functional elements*
 
 ### Schema version 20
 * Updated the *internal_tags* enum from *RegulomeDB* to *RegulomeDB_1_0*

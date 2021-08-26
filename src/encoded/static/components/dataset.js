@@ -734,6 +734,13 @@ const ReferenceComponent = (props, reactContext) => {
                             </div>
                             : null}
 
+                            {context.crispr_screen_tiling ?
+                                <div data-test="crisprscreentiling">
+                                    <dt>CRISPR screen tiling</dt>
+                                    <dd>{context.crispr_screen_tiling}</dd>
+                                </div>
+                            : null}
+
                             {context.related_pipelines && context.related_pipelines.length > 0 ?
                                 <div data-test="relatedpipelines">
                                     <dt>Related Pipelines</dt>
