@@ -1050,8 +1050,18 @@ def generate_summary_dictionary(
             gm_methods.add(gm_method)
             gm_summaries.add(generate_modification_summary(gm_method, gm_object))
         if experiment_flag is True:
-            dict_of_phrases['modifications_list'] = 'genetically modified using ' + \
-                ', '.join(map(str, list(gm_methods)))
+            genetically_modified_gms = []
+            other_gms = []
+            for gm in gm_summaries:
+                if gm.startswith('genetically modified'):
+                    genetically_modified_gms.append(gm.split('modified ', 1)[1])
+                else:
+                    other_gms.append(gm)
+            all_gms = genetically_modified_gms + other_gms
+            if len(genetically_modified_gms) >= 1:
+                dict_of_phrases['modifications_list'] = 'genetically modified ' + ', '.join(sorted(all_gms))
+            else:
+                dict_of_phrases['modifications_list'] = ', '.join(sorted(all_gms))
         else:
             dict_of_phrases['modifications_list'] = ', '.join(sorted(list(gm_summaries)))
 
