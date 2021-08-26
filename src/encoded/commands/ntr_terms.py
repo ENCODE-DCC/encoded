@@ -248,7 +248,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0000643": {
-        "assay": ['Single cell'],
+        "assay": ['Single cell', 'Functional characterization'],
         "category": [],
         "developmental": [],
         "name": "perturbation followed by scRNA-seq",
@@ -261,7 +261,7 @@ ntr_assays = {
         "types": []
     },
         "NTR:0000644": {
-        "assay": ['Single cell'],
+        "assay": ['Single cell', 'Functional characterization'],
         "category": [],
         "developmental": [],
         "name": "perturbation followed by snATAC-seq",
