@@ -206,10 +206,7 @@ export const compileAnalyses = (analyses, files, dataFormat = null, allowMixed =
         // Get all the analysis objects that qualify for inclusion in the Pipeline facet.
         // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
         // `UNIFORM_PIPELINE_LAB` is only valid if alone.
-        const qualifyingAnalyses = analyses.filter((analysis) => (
-            analysis.assembly
-            && (allowMixed || (analysis.assembly !== 'mixed' && analysis.genome_annotation !== 'mixed'))
-        ));
+        const qualifyingAnalyses = analyses.filter((analysis) => (allowMixed || (analysis.assembly && (analysis.assembly !== 'mixed' && analysis.genome_annotation !== 'mixed'))));
 
         if (qualifyingAnalyses.length > 0) {
             // Group all the qualifying analyses' files by pipeline lab. Each pipeline lab title is
