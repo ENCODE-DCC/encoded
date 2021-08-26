@@ -323,6 +323,7 @@ export class FileTable extends React.Component {
                 ref: false,
                 Other: !props.options.collapseNone,
                 series: true,
+                elementsReferences: false,
                 ...analysisObjects,
             },
         };
@@ -440,7 +441,7 @@ export class FileTable extends React.Component {
                 : null;
 
             // Extract any of the four kinds of file arrays, or files belonging to an analysis.
-            const files = _(datasetFiles).groupBy((file) => {
+            let files = _(datasetFiles).groupBy((file) => {
                 if (seriesAnalysesFilesIds.includes(file['@id'])) {
                     return 'series';
                 }
@@ -462,6 +463,10 @@ export class FileTable extends React.Component {
 
                 return analysisObjectsAccession || nonAnalysisObjectPrefix;
             });
+
+            if (context.elements_references) {
+                files.elementsReferences = context.elements_references;
+            }
 
             // Get unique analyses for series object
             const analysesSeries = files.series ? [...new Set(files.series.map((a) => (a.analyses && a.analyses.length > 0 ? a.analyses[0] : '')).filter((a) => a !== ''))] : [];
@@ -628,6 +633,50 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
+                        {
+                            files.elementsReferences
+                            ? (
+                                <SortTable
+                                    title={
+                                        <CollapsingTitle
+                                            title={`${files.elementsReferences.title} processed data`}
+                                            collapsed={this.state.collapsed.elementsReferences}
+                                            handleCollapse={() => this.handleCollapseProc()}
+                                            fileQueryKey={fileQueryKey}
+                                            context={context}
+                                            analyses={analyses}
+                                            analysisAudits={analysisAudits}
+                                            filters={filters}
+                                            totalFiles={files.elementsReferences.length}
+                                            isDownloadable={
+                                                !options.hideDownload
+                                                && filterDownloadableFilesByStatus(context, files.elementsReferences).length > 0
+                                            }
+                                            inclusionOn={options.inclusionOn}
+                                            files={files.elementsReferences}
+                                        />
+                                    }
+                                    rowClasses={this.rowClasses}
+                                    collapsed={this.state.collapsed.elementsReferences}
+                                    list={files.elementsReferences}
+                                    columns={FileTable.procTableColumns}
+                                    sortColumn="default"
+                                    meta={{
+                                        replicationType: context.replication_type,
+                                        hoverDL: this.hoverDL,
+                                        restrictedTip: this.state.restrictedTip,
+                                        fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
+                                        hideDefaultColumn: isSeries,
+                                        graphedFiles,
+                                        browserOptions,
+                                        loggedIn,
+                                        isAuthorized,
+                                        adminUser,
+                                    }}
+                                />
+                                )
+                            : null
+                        }
                     </SortTablePanel>
                 </div>
             );
