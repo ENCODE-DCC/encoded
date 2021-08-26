@@ -80,6 +80,7 @@
         "description": "Elements DNA sequences",
         "elements_selection_method": ["ATAC-seq", "DNase-seq"],
         "lab": "thomas-gingeras",
+        "crispr_screen_tiling": "peak tiling",
         "status": "archived",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "84c2c840-4146-4c93-90cf-67a11a4fc108",
