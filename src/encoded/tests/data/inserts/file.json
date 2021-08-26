@@ -4745,5 +4745,22 @@
         "output_type": "functional conservation quantifications",
         "lab": "/labs/richard-myers/",
         "aliases": ["hongkai-ji:human_elements_scored_file"]
+    },
+    {
+        "_test": "Hi-C compartments",
+        "status": "in progress",
+        "submitted_file_name": "hi-c_compartments.bed.gz",
+        "uuid": "9ddfc5b8-2e9c-4ba2-a8b4-e5a0897a32cc",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "9ddfc5b806a832272e691bd4e2bb622a",
+        "accession": "ENCFF333HIC",
+        "file_format": "bigWig",
+        "award": "/awards/U54HG006998/",
+        "assembly": "GRCh38",
+        "dataset": "/experiments/ENCSR000AJK/",
+        "file_size": 18000000,
+        "output_type": "compartments",
+        "lab": "/labs/richard-myers/",
+        "aliases": ["erez-aiden:hi-c_compartments"]
     }
 ]

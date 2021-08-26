@@ -1598,6 +1598,7 @@
                         "chromatin interactions",
                         "chromosomes reference",
                         "chromosome sizes",
+                        "compartments",
                         "consensus DNase hypersensitivity sites",
                         "curated binding sites",
                         "curated SNVs",
@@ -2359,6 +2360,7 @@
         "unidirectional peaks": "annotation",
         "polyA sites": "annotation",
         "functional conservation quantifications": "annotation",
+        "compartments": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
