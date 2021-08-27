@@ -102,7 +102,12 @@ def test_file_release_does_not_call_s3_acl_if_update_false(testapp, content, moc
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -128,7 +133,12 @@ def test_file_release_does_call_s3_acl_if_update_true(testapp, content, mocker, 
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -183,7 +193,12 @@ def test_file_release_in_progress_file(testapp, file, dummy_request, root):
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -208,7 +223,12 @@ def test_file_unrelease_released_file(testapp, file, dummy_request, root):
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -319,7 +339,12 @@ def test_set_status_submitter_denied(testapp, submitter_testapp, file, dummy_req
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -343,7 +368,12 @@ def test_set_status_submitter_denied(testapp, submitter_testapp, file, dummy_req
 def test_set_status_in_progress_experiment(testapp, root, experiment, replicate_url, file, award, lab, dummy_request):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -440,7 +470,12 @@ def test_set_status_changed_paths_experiment(testapp, experiment, dummy_request)
 def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -462,7 +497,12 @@ def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, f
 def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -485,7 +525,12 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, e
 def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_children(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -507,7 +552,12 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_chil
 def test_set_status_force_transition_block_children_default(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -529,7 +579,12 @@ def test_set_status_force_transition_block_children_default(testapp, experiment,
 def test_set_status_force_transition_block_children_specified(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -551,7 +606,12 @@ def test_set_status_force_transition_block_children_specified(testapp, experimen
 def test_set_status_released_to_released_triggers_up_list(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -580,7 +640,12 @@ def test_set_status_skip_acl_on_restricted_files(testapp, content, mocker, file,
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -608,7 +673,12 @@ def test_set_status_skip_acl_on_not_available_file(testapp, content, mocker, fil
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -682,7 +752,12 @@ def test_set_status_analysis_step_version(testapp, analysis_step_version, analys
 def test_set_status_analysis_files(testapp, base_analysis, file, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -714,7 +789,12 @@ def test_set_status_analysis_files(testapp, base_analysis, file, dummy_request, 
 def test_set_status_experiment_analysis(testapp, root, experiment, file, base_analysis, dummy_request):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
