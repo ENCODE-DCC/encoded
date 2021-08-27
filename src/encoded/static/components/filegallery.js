@@ -463,6 +463,13 @@ export class FileTable extends React.Component {
                 return analysisObjectsAccession || nonAnalysisObjectPrefix;
             });
 
+            const elementsReferences = context.elements_references;
+
+            if (elementsReferences) {
+                const elementsReferenceFiles = elementsReferences.map((elementsReference) => elementsReference.files).reduce((acc, val) => acc.concat(val), []);
+                files.ref?.concat(elementsReferenceFiles);
+            }
+
             // Get unique analyses for series object
             const analysesSeries = files.series ? [...new Set(files.series.map((a) => (a.analyses && a.analyses.length > 0 ? a.analyses[0] : '')).filter((a) => a !== ''))] : [];
 
