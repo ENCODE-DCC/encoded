@@ -135,3 +135,12 @@ def test_library_upgrade_17_to_18(upgrader, library_schema_17):
     value = upgrader.upgrade('library', library_schema_17, target_version='18')
     assert value['schema_version'] == '18'
     assert value['nucleic_acid_starting_quantity'] == 9.2
+
+
+def test_library_upgrade_18_to_19(upgrader, base_library):
+    base_library['lot_id'] = ''
+    base_library['product_id'] = ''
+    value = upgrader.upgrade('library', base_library, current_version='18', target_version='19')
+    assert value['schema_version'] == '19'
+    assert 'lot_id' not in value
+    assert 'product_id' not in value

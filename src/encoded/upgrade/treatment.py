@@ -105,3 +105,10 @@ def treatment_11_12(value, system):
     if value.get('treatment_type') == 'stimulation':
         value['treatment_type'] = 'chemical'
         value['purpose'] = 'stimulation'
+
+
+@upgrade_step('treatment', '12', '13')
+def treatment_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6102
+    if 'product_id' in value and value['product_id'] == '':
+        value.pop('product_id')

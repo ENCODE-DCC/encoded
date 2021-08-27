@@ -1,5 +1,8 @@
 ## Changelog for treatment.json
 
+### Schema version 13
+* Modified regex pattern for *product_id* to disallow blank strings.
+
 ### Schema version 12
 * Moved *stimulation* from *treatment_type* to *purpose*
 

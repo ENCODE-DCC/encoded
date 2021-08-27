@@ -17,6 +17,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/url" },
+        { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/notes" }
 
@@ -31,7 +32,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "accession": {
             "accessionType": "AB"
@@ -51,12 +52,6 @@
                 "format": "accession",
                 "pattern": "^(ENCAB\\d{3}[A-Z]{3})$|^(TSTAB\\d{6})$"
             }
-        },
-        "lot_id": {
-            "title": "Lot ID",
-            "description": "The lot identifier provided by the originating lab or vendor.",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "lot_id_alias": {
             "title": "Lot ID aliases",

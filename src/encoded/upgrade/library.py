@@ -327,3 +327,12 @@ def library_17_18(value, system):
         except ValueError:
             value['nucleic_acid_starting_quantity'] = 0
             value['notes'] = (notes + ' The nucleic_acid_starting_quantity of this library could not be upgraded: '+ quantity).strip()
+
+
+@upgrade_step('library', '18', '19')
+def library_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6102
+    if 'lot_id' in value and value['lot_id'] == '':
+        value.pop('lot_id')
+    if 'product_id' in value and value['product_id'] == '':
+        value.pop('product_id')

@@ -339,3 +339,12 @@ def test_upgrade_biosample_24_to_25(upgrader, biosample_with_disease):
     assert value['schema_version'] == '25'
     assert isinstance(value['disease_term_id'], list)
     assert value['disease_term_id'] == ['DOID:0080600']
+
+
+def test_upgrade_biosample_25_to_26(upgrader, biosample):
+    biosample['lot_id'] = ''
+    biosample['product_id'] = ''
+    value = upgrader.upgrade('biosample', biosample, current_version='25', target_version='26')
+    assert value['schema_version'] == '26'
+    assert 'lot_id' not in value
+    assert 'product_id' not in value
