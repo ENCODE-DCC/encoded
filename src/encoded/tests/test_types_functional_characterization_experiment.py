@@ -67,12 +67,14 @@ def test_fcc_crispr_assay_readout_method(testapp, functional_characterization_ex
 
 def test_fcc_replication_count_0(testapp, functional_characterization_experiment_disruption_screen):
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data') 
-    assert res.json['object']['replication_count'] == 0
+    assert res.json['object']['bio_replicate_count'] == 0 and res.json['object']['tech_replicate_count'] == 0
 
 
-def test_fcc_replication_count_2(testapp, functional_characterization_experiment_disruption_screen, biosample_1, biosample_2, library_1, library_2, replicate_1_fce, replicate_2_fce, disruption_genetic_modification):
+def test_fcc_replication_count_2(testapp, functional_characterization_experiment_disruption_screen, library_1, library_2, replicate_1_fce, replicate_2_fce):
+    testapp.patch_json(replicate_1_fce['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_fce['@id'], {'library': library_2['@id']})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data') 
-    assert res.json['object']['replication_count'] == 2
+    assert res.json['object']['bio_replicate_count'] == 2 and res.json['object']['tech_replicate_count'] == 1
 
 
 def test_fcc_biosample_replicates_0(testapp, functional_characterization_experiment_disruption_screen):
