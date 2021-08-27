@@ -114,7 +114,7 @@ def treatment_12_13(value, system):
         value.pop('product_id')
 
 
-@upgrade_step('treatment', '12', '13')
+@upgrade_step('treatment', '13', '14')
 def treatment_13_14(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-6124
     if value.get('amount') < 0:
