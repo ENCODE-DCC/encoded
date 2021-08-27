@@ -311,7 +311,7 @@ const RegionSearch = (props, context) => {
 
             window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify(coordinatesObj));
             window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, selectedAssembly === 'mm10' ? 'GRCm38' : selectedAssembly);
-            window.sessionStorage.setItem(GV_COORDINATES_ANNOTATION, 'V29');
+            window.sessionStorage.setItem(GV_COORDINATES_ANNOTATION, selectedAssembly === 'mm10' ? 'M21' : 'V29');
         }
     };
 
@@ -471,7 +471,7 @@ const RegionSearch = (props, context) => {
                                     label="cart"
                                     assembly={selectedAssembly}
                                     expanded
-                                    annotation="V29"
+                                    annotation={selectedAssembly === "mm10" ? "M21" : "V29"}
                                     displaySort
                                     maxCharPerLine={30}
                                 />
