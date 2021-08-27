@@ -218,6 +218,48 @@
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_slims",
+                "assay_title",
+                "related_datasets.perturbation_type",
+                "related_datasets.crispr_screen_readout",
+                "related_datasets.replicates.library.biosample.applied_modifications.MOI",
+                "related_datasets.replicates.library.biosample.applied_modifications.guide_type"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "biosamples.organism.scientific_name",
+                "biosample_ontology.term_name",
+                "biosample_ontology.classification",
+                "tissue_with_enhancer_activity"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "award.project",
+                "award.rfa",
+                "lab.title",
+                "date_submitted",
+                "date_released"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "assay_slims": {
             "title": "Assay type"
