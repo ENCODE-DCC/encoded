@@ -1127,3 +1127,25 @@ def test_audit_incorrect_index(testapp,
     assert any(error['category'] == 'inconsistent index file'
         and 'multiple non-Illumina fastq' in error['detail']
         for error in errors_list)
+
+
+def test_audit_index_reads_read_structure(testapp, fastq_index):
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'missing read structure']
+    assert errors_list
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'cell barcode',
+                'start': 1,
+                'end': 20
+            }]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert not any(
+        error['category'] == 'missing read structure' for error in errors
+    )

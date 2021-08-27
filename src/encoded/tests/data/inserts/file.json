@@ -2808,6 +2808,16 @@
                 "sequence_element": "UMI",
                 "start": 13,
                 "end": 18
+            },
+            {
+                "sequence_element": "cell barcode",
+                "start": 19,
+                "end": 25
+            },
+            {
+                "sequence_element": "element barcode",
+                "start": 26,
+                "end": 33
             }
         ]
     },

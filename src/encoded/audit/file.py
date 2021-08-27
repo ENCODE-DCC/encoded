@@ -629,6 +629,17 @@ def audit_file_index_of(value, system):
             )
             yield AuditFailure('inconsistent index file', detail, level='ERROR')
 
+
+def audit_index_reads_read_structure(value, system):
+    if value['output_type'] == 'index reads':
+        if 'read_structure' not in value or \
+            'read_structure' in value and len(value['read_structure']) == 0:
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'is missing read structure information.'
+            )
+            yield AuditFailure('missing read structure', detail, level='INTERNAL_ACTION')
+
 function_dispatcher = {
     'audit_step_run': audit_file_processed_step_run,
     'audit_derived_from': audit_file_processed_derived_from,
@@ -643,6 +654,7 @@ function_dispatcher = {
     'audit_read_structure': audit_read_structure,
     'audit_file_matching_md5sum': audit_file_matching_md5sum,
     'audit_file_index_of': audit_file_index_of,
+    'audit_index_reads_read_structure': audit_index_reads_read_structure,
 }
 
 

@@ -1996,6 +1996,8 @@
                         "enum": [
                             "adapter",
                             "barcode",
+                            "cell barcode",
+                            "element barcode",
                             "UMI"
                         ]
                     },
