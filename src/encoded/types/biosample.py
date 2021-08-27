@@ -723,9 +723,13 @@ def summary_objects(request,
             gm_object = request.embed(gm, '@@object')
             modification_dict = {'category': gm_object.get('category')}
             if gm_object.get('modified_site_by_target_id'):
-                modification_dict['target'] = request.embed(
-                    gm_object.get('modified_site_by_target_id'),
-                                    '@@object').get('label')
+                target = request.embed(gm_object.get('modified_site_by_target_id'),'@@object')
+                if 'genes' in target:
+                    genes = target['genes']
+                    if len(genes) == 1:
+                        gene_object = request.embed(''.join(str(gene) for gene in genes), '@@object?skip_calculated=true')
+                        modification_dict['target'] = gene_object.get('symbol')
+                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
             if gm_object.get('introduced_tags'):
                 modification_dict['tags'] = []
                 for tag in gm_object.get('introduced_tags'):
@@ -738,8 +742,7 @@ def summary_objects(request,
             if gm_object.get('introduced_gene'):
                 gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
                 modification_dict['gene'] = gene_object.get('symbol')
-                organism_object = request.embed(gene_object['organism'], '@@object?skip_calculated=true')
-                modification_dict['organism'] = organism_object.get('name')
+                modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
 
 
             if 'method' in gm_object:
@@ -1098,7 +1101,9 @@ def generate_modification_summary(method, modification):
             modification_summary = 'expressing RNAi'
 
         if modification.get('target'):
-            modification_summary += ' targeting ' + modification.get('target')
+            target = modification.get('target')
+            organism = modification.get('organism')
+            modification_summary += f' targeting {organism} {target}'
 
         if modification.get('gene'):
             gene = modification.get('gene')
