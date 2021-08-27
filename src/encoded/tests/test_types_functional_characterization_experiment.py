@@ -74,7 +74,7 @@ def test_fcc_replication_count_2(testapp, functional_characterization_experiment
     testapp.patch_json(replicate_1_fce['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_fce['@id'], {'library': library_2['@id']})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data') 
-    assert res.json['object']['bio_replicate_count'] == 2 and res.json['object']['tech_replicate_count'] == 1
+    assert res.json['object']['bio_replicate_count'] == 2 and res.json['object']['tech_replicate_count'] == 2
 
 
 def test_fcc_biosample_replicates_0(testapp, functional_characterization_experiment_disruption_screen):

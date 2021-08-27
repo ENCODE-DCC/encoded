@@ -517,24 +517,20 @@ class CalculatedReplicationType:
 
 
 class CalculatedReplicationCounts:
-    def _get_replicates(self, request, replicate_name, replicates=None):
-        replicate_numbers = set()
-        if replicates:
-            for rep in replicates:
-                replicateObject = request.embed(rep, '@@object')
-                if replicateObject['status'] == 'deleted':
-                    continue
-                replicate_numbers.add(replicateObject.get(replicate_name))
-        return replicate_numbers
-
     @calculated_property(schema={
         "title": "Biological replicate count",
         "description": "Calculated field that indicates the number of biological replicates in a dataset",
         "type": "integer",
     })
     def bio_replicate_count(self, request, replicates):
-        bio_replicates = self._get_replicates(request, 'biological_replicate_number', replicates)
-        return len(bio_replicates)
+        biological_replicate_numbers = set()
+        if replicates:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                biological_replicate_numbers.add(replicateObject.get('biological_replicate_number'))
+        return len(biological_replicate_numbers)
 
     @calculated_property(schema={
         "title": "Technical replicate count",
@@ -542,8 +538,14 @@ class CalculatedReplicationCounts:
         "type": "integer",
     })
     def tech_replicate_count(self, request, replicates):
-        tech_replicates = self._get_replicates(request, 'technical_replicate_number', replicates)
-        return len(tech_replicates)
+        technical_replicate_numbers = [] 
+        if replicates:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                technical_replicate_numbers.append(replicateObject.get('technical_replicate_number'))
+        return len(technical_replicate_numbers)
 
 
 class CalculatedBiologicalReplicates:
