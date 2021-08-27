@@ -6,6 +6,7 @@
 * Added *doi* property
 * Added *analyses* property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *Deeply Profiled* to the *internal_tags* enum
 
 ### Schema version 15
 

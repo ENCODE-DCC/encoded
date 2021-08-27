@@ -578,6 +578,9 @@ export const internalTagsMap = {
     dbGaP: {
         badgeFilename: 'tag-dbGaP.png',
     },
+    'Deeply Profiled': {
+        badgeFilename: 'tag-deeply-profiled.svg',
+    },
     DREAM: {
         badgeFilename: 'tag-DREAM.png',
     },

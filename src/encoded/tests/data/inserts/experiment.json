@@ -1333,7 +1333,7 @@
         "biosample_ontology": "tissue_UBERON_0000948",
         "date_released": "2021-06-16",
         "internal_status": "release ready",
-        "internal_tags": ["RushAD"],
+        "internal_tags": ["RushAD", "Deeply Profiled"],
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",

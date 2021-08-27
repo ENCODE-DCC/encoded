@@ -8,3 +8,4 @@
 * Added *analyses* property
 * Added *assay_slims* calculated property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *Deeply Profiled* to the *internal_tags* enum
