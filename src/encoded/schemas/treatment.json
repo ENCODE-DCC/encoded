@@ -28,7 +28,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "14"
         },
         "documents": {
             "description": "Documents that describe the treatment protocol."
@@ -50,7 +50,8 @@
         },
         "amount": {
             "title": "Amount",
-            "type": "number"
+            "type": "number",
+            "minimum": 0
         },
         "amount_units": {
             "title": "Amount units",
@@ -76,7 +77,8 @@
         },
         "duration": {
             "title": "Duration",
-            "type": "number"
+            "type": "number",
+            "minimum": 0
         },
         "duration_units": {
             "title": "Duration units",

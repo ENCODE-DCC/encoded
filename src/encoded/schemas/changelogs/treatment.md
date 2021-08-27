@@ -1,5 +1,8 @@
 ## Changelog for treatment.json
 
+### Schema version 14
+* Restricted *amount* and *duration* properties to have a minimum value of 0.
+
 ### Schema version 13
 * Modified regex pattern for *product_id* to disallow blank strings.
 

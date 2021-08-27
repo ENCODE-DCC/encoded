@@ -149,3 +149,16 @@ def treatment_12(testapp):
         'treatment_term_id': 'CHEBI:23965'
     }
     return testapp.post_json('/treatment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def treatment_with_negative_duration_amount_units(testapp, organism):
+    item = {
+        'treatment_term_name': 'ethanol',
+        'treatment_type': 'chemical',
+        'duration': -9,
+        'duration_units': 'day',
+        'amount': -100,
+        'amount_units': 'mg'
+    }
+    return item
