@@ -275,13 +275,19 @@ const RegionSearch = (props, context) => {
     const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
     const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
     const GV_COORDINATES_ANNOTATION = 'ENCODE-GV-annotation';
+    const GV_VIEW = 'ENCODE-GV-view';
 
     const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
     const availableFileTypes = [...new Set(initialGBrowserFiles.map((file) => file.file_format))];
 
-    let visualization = url.parse(context.location_href, true).query.view || defaultVisualization;
-    if (!visualizationOptions.includes(visualization)) {
-        visualization = defaultVisualization;
+    const { columns, filters, facets, total, coordinates } = props.context;
+
+    let visualization = defaultVisualization;
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+        const lastView = window.sessionStorage.getItem(GV_VIEW);
+        if (lastView && lastView.split(',')[0] === coordinates) {
+            visualization = lastView[1];
+        }
     }
 
     const [selectedVisualization, setSelectedVisualization] = React.useState(visualization);
@@ -294,8 +300,6 @@ const RegionSearch = (props, context) => {
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
 
     const results = props.context['@graph'];
-
-    const { columns, filters, facets, total, coordinates } = props.context;
 
     const setGenomeBrowserStorageVariables = (coords) => {
         if (typeof coords !== 'undefined' && typeof window !== 'undefined' && window.sessionStorage) {
@@ -344,26 +348,22 @@ const RegionSearch = (props, context) => {
         setGBrowserFiles(newGBrowserFiles);
     }, [selectedFileTypes]);
 
-    const redirectFacet = (e, search) => {
-        props.onChange(search);
-        e.stopPropagation();
-        e.preventDefault();
-    };
-
     const onFilter = (e) => {
         if (props.onChange) {
-            redirectFacet(e, e.currentTarget.getAttribute('href'));
-        }
-    };
-
-    const onFilterGBrowser = (e) => {
-        if (props.onChange) {
-            redirectFacet(e, `${e.currentTarget.getAttribute('href')}&view=Genome Browser`);
+            const search = e.currentTarget.getAttribute('href');
+            props.onChange(search);
+            e.stopPropagation();
+            e.preventDefault();
         }
     };
 
     React.useEffect(() => {
         setGenomeBrowserStorageVariables(props.context.coordinates);
+        if (selectedVisualization === 'Genome Browser') {
+            window.sessionStorage.setItem(GV_VIEW, [props.context.coordinates, 'Genome Browser']);
+        } else {
+            window.sessionStorage.removeItem(GV_VIEW);
+        }
     }, [selectedVisualization]);
 
     const visualizationTabs = {};
@@ -442,7 +442,7 @@ const RegionSearch = (props, context) => {
                                     context={props.context}
                                     facets={facets}
                                     filters={filters}
-                                    onFilter={onFilterGBrowser}
+                                    onFilter={onFilter}
                                     additionalFacet={
                                         <>
                                             <div className="facet ">

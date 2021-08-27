@@ -511,7 +511,7 @@ def set_filters(request, query, result, static_items=None, filter_exclusion=None
     default_filter_exclusion = [
         'type', 'limit', 'mode', 'annotation', 'format', 'frame', 'datastore',
         'field', 'region', 'genome', 'sort', 'from', 'referrer', 'filterresponse',
-        'remove', 'cart', 'view',
+        'remove', 'cart',
     ]
     query_filters = query['post_filter']['bool']
     used_filters = {}
