@@ -25,7 +25,7 @@ from .shared_calculated_properties import (
     CalculatedTypeSlims,
     CalculatedObjectiveSlims,
     CalculatedReplicationType,
-    CalculatedReplicationCount,
+    CalculatedReplicationCounts,
     CalculatedBiologicalReplicates
 )
 
@@ -51,7 +51,7 @@ class Experiment(Dataset,
                  CalculatedTypeSlims,
                  CalculatedObjectiveSlims,
                  CalculatedReplicationType,
-                 CalculatedReplicationCount,
+                 CalculatedReplicationCounts,
                  CalculatedBiologicalReplicates):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
