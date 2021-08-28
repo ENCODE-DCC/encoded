@@ -117,8 +117,8 @@ const newPageData = [
     },
 ];
 
-const Card = ({ item, index }) => (
-    <div className={`home-page-card carousel-seat ${index === 0 ? 'is-ref' : ''}`} style={{ order: `${index + 1}` }}>
+const Card = ({ item }) => (
+    <div className="home-page-card carousel-seat">
         <div className="home-page-card__header"><a href={item.header.url}>{item.header.text}</a></div>
         <div className="home-page-card__content">{item.content}</div>
         <div className="home-page-card__footer">{item.footer}</div>
@@ -127,7 +127,6 @@ const Card = ({ item, index }) => (
 
 Card.propTypes = {
     item: PropTypes.object.isRequired,
-    index: PropTypes.number.isRequired,
 };
 
 const MobileDisplayControl = (props) => (
