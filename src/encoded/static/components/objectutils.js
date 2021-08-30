@@ -856,7 +856,7 @@ export function computeAssemblyAnnotationValue(assembly, annotation) {
     // Second level of sorting: assemblies without '-minimal' are sorted before assemblies with '-minimal' at the end (represented by tenths place value which is 5 if there is no '-minimal')
     // Third level of sorting: Annotations within an assembly are ordered with most recent first, with more recent annotations having a higher annotation number (with the exception of "ENSEMBL V65") (represented by the annotation number divided by 10,000, or, the three decimal places after the tenths place)
     let assemblyNumber = /\d/.test(assembly) ? +assembly.match(/[0-9]+/g)[0] : 0;
-    if (assembly.indexOf('minimal') === -1) {
+    if (assembly?.indexOf('minimal') === -1) {
         // If there is no '-minimal', add 0.5 which will order this assembly ahead of any assembly with '-minimal' and the same numerical component
         assemblyNumber += 0.5;
     }
