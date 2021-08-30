@@ -467,6 +467,11 @@ export class FileTable extends React.Component {
 
             if (elementsReferences) {
                 const elementsReferenceFiles = elementsReferences.map((elementsReference) => elementsReference.files).reduce((acc, val) => acc.concat(val), []);
+
+                if (!files.ref) {
+                    files.ref = [];
+                }
+
                 files.ref?.concat(elementsReferenceFiles);
             }
 
