@@ -1107,14 +1107,14 @@ def generate_modification_summary(method, modification):
         if method == 'RNAi':
             modification_summary = 'expressing RNAi'
 
-        if modification.get('target'):
-            target = modification.get('target_gene')
-            modification_summary += f' targeting {target}'
-
         if modification.get('target_gene'):
             target = modification.get('target_gene')
             organism = modification.get('organism')
             modification_summary += f' targeting {organism} {target}'
+
+        if modification.get('target'):
+            target = modification.get('target')
+            modification_summary += f' targeting {target}'
 
         if modification.get('gene'):
             gene = modification.get('gene')
