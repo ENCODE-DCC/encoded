@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Minor changes since schema version 26
+
+* Added *expressed_genes* property to be used with *fluorescence activated cell sorting* in the *cell_isolation_method* to specify what gene and expression level the cells of the biosample are sorted on.
+
 ### Schema version 26
 
 * Modified regex pattern for *lot_id* and *product_id* to disallow blank strings.

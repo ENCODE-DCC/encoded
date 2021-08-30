@@ -71,6 +71,7 @@ const types = {
     disease_series: { title: 'Disease series' },
     multiomics_series: { title: 'Multiomics series' },
     collection_series: { title: 'Collection series' },
+    differential_accessibility_series: { title: 'Differential accessibility series' },
 };
 
 const datasetTypes = {
@@ -99,6 +100,7 @@ const datasetTypes = {
     DiseaseSeries: types.disease_series.title,
     MultiomicsSeries: types.multiomics_series.title,
     CollectionSeries: types.collection_series.title,
+    DifferentialAccessibilitySeries: types.differential_accessibility_series.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));
@@ -788,6 +790,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
     let constructionMethods = [];
     let constructionPlatforms = [];
     let cellularComponents = [];
+    let expressedGenes = [];
 
     const treatmentTime = result['@type'].indexOf('TreatmentTimeSeries') >= 0;
     const treatmentConcentration = result['@type'].indexOf('TreatmentConcentrationSeries') >= 0;
@@ -870,6 +873,11 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         if (lifeStage) {
                             lifeStages.push(lifeStage);
                         }
+                        if (biosample.expressed_genes && biosample.expressed_genes.length > 0) {
+                            biosample.expressed_genes.forEach((loci) => {
+                                expressedGenes.push(loci.gene.symbol);
+                            });
+                        }
                         if (biosample.treatments?.length > 0 && differentiationSeries) {
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
                         }
@@ -934,6 +942,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
         diseases = _.uniq(diseases);
         constructionPlatforms = _.uniq(constructionPlatforms);
         cellularComponents = _.uniq(cellularComponents);
+        expressedGenes = _.uniq(expressedGenes);
     }
     const lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
 
@@ -1075,6 +1084,9 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         : null}
                         {fccSeries && perturbationTreatments.length > 0 ?
                             <div><span className="result-item__property-title">Treatment{perturbationTreatments.length !== 1 ? 's' : ''}: </span>{perturbationTreatments.join(', ')}</div>
+                        : null}
+                        {expressedGenes.length > 0 ?
+                            <div><span className="result-item__property-title">Sorted gene expression: </span>{expressedGenes.join(', ')}</div>
                         : null}
                     </div>
                 </div>

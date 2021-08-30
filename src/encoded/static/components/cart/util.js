@@ -30,6 +30,7 @@ export const allowedDatasetTypes = {
     'single-cell-units': { title: 'Single-cell units', type: 'SingleCellUnit' },
     'aggregate-series': { title: 'Aggregate series', type: 'AggregateSeries' },
     'differentiation-series': { title: 'Differentiation series', type: 'DifferentiationSeries' },
+    'differential-accessibility-series': { title: 'Differential accessibility series', type: 'DifferentialAccessibilitySeries' },
     'disease-series': { title: 'Disease series', type: 'DiseaseSeries' },
     'functional-characterization-series': { title: 'Functional characterization series', type: 'FunctionalCharacterizationSeries' },
     'gene-silencing-series': { title: 'Gene silencing series', type: 'GeneSilencingSeries' },
