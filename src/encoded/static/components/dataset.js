@@ -35,6 +35,7 @@ import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged
  */
 const METADATA_SERIES_TYPES = [
     'AggregateSeries',
+    'DifferentialAccessibilitySeries',
     'DifferentiationSeries',
     'DiseaseSeries',
     'FunctionalCharacterizationSeries',
@@ -2187,6 +2188,82 @@ const functionalCharacterizationSeriesTableColumns = {
     },
 };
 
+
+/**
+ * Generate a comma-separated string of expressed_genes from the given experiment's biosamples.
+ */
+const computeExpressedGenes = ({ dataset }) => {
+    // Render all expressed_genes as links.
+    const biosamples = collectDatasetBiosamples(dataset);
+    if (biosamples.length > 0) {
+        const genes = (biosamples.expressed_genes && biosamples.expressed_genes.length > 0)
+            ? biosamples.expressed_genes.map((locus) => <a key={locus['@id']} href={locus['@id']}>{locus.symbol}</a>)
+            : [];
+
+        // Render to the page.
+        if (genes.length > 0) {
+            return (
+                <>
+                    &nbsp;(
+                    {genes.map((locus, i) => (
+                        <React.Fragment key={i}>
+                            {i > 0 ? ', ' : null}
+                            {genes}
+                        </React.Fragment>
+                    ))}
+                    )
+                </>
+            );
+        }
+    return null;
+};
+
+ElementsReferences.propTypes = {
+    reference: PropTypes.object.isRequired,
+};
+
+
+const differentialAccessibilitySeriesTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    expressed_genes: {
+        title: 'Expressed genes',
+        getValue: (experiment) => computeExpressedGenes(experiment),
+    },
+
+    biosample_summary: {
+        title: 'Biosample summary',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
+    },
+
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+
 /**
  * Collect released analyses from all the related datasets in the given Series object.
  * @param {object} context Series object
@@ -3382,3 +3459,35 @@ PulseChaseTimeSeries.contextTypes = {
 };
 
 globals.contentViews.register(PulseChaseTimeSeries, 'PulseChaseTimeSeries');
+
+
+/**
+ * Wrapper component for differential accessibility series pages.
+ */
+const DifferentialAccessibilitySeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={differentialAccessibilitySeriesTableColumns}
+            breadcrumbs={composeSeriesBreadcrumbs(context, seriesTitle)}
+            options={{
+                suppressDonorDiversity: true,
+            }}
+        />
+    );
+};
+
+DifferentialAccessibilitySeries.propTypes = {
+    /** Differential accessibility series object */
+    context: PropTypes.object.isRequired,
+};
+
+DifferentialAccessibilitySeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(DifferentialAccessibilitySeries, 'DifferentialAccessibilitySeries');

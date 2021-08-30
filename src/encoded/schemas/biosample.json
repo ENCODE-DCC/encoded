@@ -353,6 +353,19 @@
         "pulse_chase_time_units": {
             "required":["pulse_chase_time"],
             "comment": "Biosamples with a specified pulse_chase_time_units require pulse_chase_time to also be specified."
+        },
+        "expressed_genes": {
+            "comment": "Biosamples with an entry in expressed_genes must have the cell_isolation_method of fluorescence activated cell sorting.",
+            "required": ["cell_isolation_method"],
+            "properties": {
+                "cell_isolation_method": {
+                    "items": {
+                        "enum": [
+                            "fluorescence activated cell sorting"
+                        ]
+                    }
+                }
+            }
         }
     },
     "properties": {
@@ -669,7 +682,7 @@
         },
         "cell_isolation_method": {
             "title": "Cell isolation method",
-            "description": "The method by which the cell(s) in the sampe were isolated.",
+            "description": "The method by which the cell(s) in the sample were isolated.",
             "comment": "Indicate the method used to isolate cell(s) in the sample. For example Fluidigm C1 cell isolation should specify: microfluidic cell sorting.",
             "type": "string",
             "enum": [
@@ -920,6 +933,62 @@
                 "minute",
                 "hour"
             ]
+        },
+        "expressed_genes": {
+            "title": "Expressed genes",
+            "description": "Gene expression selected for in the biosample by sorting.",
+            "comment": "Use in conjunction with fluorescence activated cell sorting in cell_isolation_method to specify the gene cells are sorted on.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Locus",
+                "description": "The gene expression that fluorescence activated cell sorting of the biosample is based upon.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["gene"],
+                "properties": {
+                    "gene": {
+                        "title": "Gene",
+                        "description": "The gene under investigation.",
+                        "type": "string",
+                        "linkTo": "Gene"
+                    },
+                    "expression_percentile": {
+                        "title": "Gene expression percentile",
+                        "description": "Gene expression read-out expressed as a percentile.",
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                    },
+                    "expression_range_minimum": {
+                        "title": "Gene expression range minimum",
+                        "description": "Gene expression read-out range minimum percentage value.",
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                    },
+                    "expression_range_maximum": {
+                        "title": "Gene expression range maximum",
+                        "description": "Gene expression read-out range maximum percentage value.",
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                    }
+                },
+                "dependencies": {
+                    "expression_range_minimum": ["expression_range_maximum"],
+                    "expression_range_maximum": ["expression_range_minimum"],
+                    "expression_percentile": {
+                        "not": {
+                            "anyOf": [
+                                {"required": ["expression_range_minimum"]},
+                                {"required": ["expression_range_maximum"]}
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "facets": {

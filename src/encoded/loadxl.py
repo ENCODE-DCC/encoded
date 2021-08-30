@@ -64,6 +64,7 @@ ORDER = [
     'multiomics_series',
     'reference_epigenome',
     'disease_series',
+    'differential_accessibility_series',
     'software',
     'software_version',
     'analysis_step',
@@ -705,6 +706,9 @@ PHASE1_PIPELINES = {
     'matched_set': [
         remove_keys('related_datasets'),
     ],
+    'differential_accessibility_series': [
+        remove_keys('related_datasets', 'supersedes'),
+    ],
     'file': [
         remove_keys('derived_from', 'controlled_by', 'supersedes')
     ],
@@ -817,6 +821,9 @@ PHASE2_PIPELINES = {
     ],
     'matched_set': [
         skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'differential_accessibility_series': [
+        skip_rows_missing_all_keys('related_datasets', 'supersedes'),
     ],
     'publication': [
         skip_rows_missing_all_keys('datasets'),

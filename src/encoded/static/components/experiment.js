@@ -27,7 +27,6 @@ import {
 import Tooltip from '../libs/ui/tooltip';
 import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
-
 /**
  * List of displayable library properties, the title to display it with, and the value to use for
  * its data-test attribute.

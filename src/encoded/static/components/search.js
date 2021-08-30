@@ -58,6 +58,7 @@ const types = {
     single_cell_unit: { title: 'Single cell units' },
     disease_series: { title: 'Disease series' },
     multiomics_series: { title: 'Multiomics series' },
+    differential_accessibility_series: { title: 'Differential accessibility series' },
 };
 
 const datasetTypes = {
@@ -85,6 +86,7 @@ const datasetTypes = {
     SingleCellUnit: types.single_cell_unit.title,
     DiseaseSeries: types.disease_series.title,
     MultiomicsSeries: types.multiomics_series.title,
+    DifferentialAccessibilitySeries: types.differential_accessibility_series.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));
@@ -741,6 +743,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
     let constructionMethods = [];
     let constructionPlatforms = [];
     let cellularComponents = [];
+    let expressedGenes = [];
 
     const treatmentTime = result['@type'].indexOf('TreatmentTimeSeries') >= 0;
     const treatmentConcentration = result['@type'].indexOf('TreatmentConcentrationSeries') >= 0;
@@ -816,6 +819,11 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         if (biosample.post_differentiation_time_units) {
                             postDiffTimeUnits = biosample.post_differentiation_time_units;
                         }
+                        if (biosample.expressed_genes && biosample.expressed_genes.length > 0) {
+                            dataset.expressed_genes.forEach((loci) => {
+                                expressedGenes.push(loci.gene.symbol);
+                            });
+                        }
                         if (lifeStage) {
                             lifeStages.push(lifeStage);
                         }
@@ -877,6 +885,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
         constructionPlatforms = _.uniq(constructionPlatforms);
         constructionMethods = _.uniq(constructionMethods);
         cellularComponents = _.uniq(cellularComponents);
+        expressedGenes = _.uniq(expressedGenes);
     }
     const lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
 
@@ -992,6 +1001,9 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         : null}
                         {tilingModality.length > 0 ?
                             <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
+                        : null}
+                        {expressedGenes.length > 0 ?
+                            <div><span className="result-item__property-title">Sorted gene expression{expressedGenes.length > 1 ? 's' : ''}: </span>{expressedGenes.join(', ')}</div>
                         : null}
                     </div>
                 </div>

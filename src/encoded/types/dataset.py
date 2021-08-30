@@ -1510,3 +1510,39 @@ class MultiomicsSeries(Series):
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+
+@collection(
+    name='differential-accessibility-series',
+    unique_key='accession',
+    properties={
+        'title': "Differential accessibility series",
+        'description': 'Chromatin accessibility data investigating cells sorted based on expression of specific genes.',
+    })
+class DifferentialAccessibilitySeries(Series):
+    item_type = 'differential_accessibility_series'
+    schema = load_schema('encoded:schemas/differential_accessibility_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.replicates.library',
+        'related_datasets.replicates.library.biosample',
+        'related_datasets.replicates.library.biosample.expressed_genes',
+        'related_datasets.replicates.library.biosample.expressed_genes.gene',
+    ]
+
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('DifferentialAccessibilitySeries', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "DifferentialAccessibilitySeries.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
