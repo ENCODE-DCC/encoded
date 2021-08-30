@@ -384,7 +384,7 @@ export const RestrictedDownloadButton = (props) => {
                 <div>
                     {buttonEnabled ?
                         <span>
-                            <a href={file.href} download={file.href.substr(file.href.lastIndexOf('/') + 1)} data-bypass="true">
+                            <a href={file.href} download={file.href?.substr(file.href.lastIndexOf('/') + 1)} data-bypass="true">
                                 {downloadComponent}
                             </a>
                         </span>
