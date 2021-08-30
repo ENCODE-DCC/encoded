@@ -57,8 +57,10 @@ def biosample_summary_information(request, biosampleObject):
                     genes = target['genes']
                     if len(genes) == 1:
                         gene_object = request.embed(''.join(str(gene) for gene in genes), '@@object?skip_calculated=true')
-                        modification_dict['target'] = gene_object.get('symbol')
+                        modification_dict['target_gene'] = gene_object.get('symbol')
                         modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+                else:
+                    modification_dict['target'] = target['label']
             if gm_object.get('introduced_tags_array'):
                 modification_dict['tags'] = []
                 for tag in gm_object.get('introduced_tags_array'):
