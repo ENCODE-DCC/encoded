@@ -472,7 +472,7 @@ export class FileTable extends React.Component {
                     files.ref = [];
                 }
 
-                files.ref.concat(elementsReferenceFiles);
+                files.ref.push(...elementsReferenceFiles);
             }
 
             // Get unique analyses for series object
