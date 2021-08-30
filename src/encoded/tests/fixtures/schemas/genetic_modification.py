@@ -472,7 +472,7 @@ def construct_genetic_modification(
         lab,
         award,
         document,
-        target,
+        target_ATF5_genes,
         target_promoter):
     item = {
         'award': award['@id'],
@@ -482,7 +482,7 @@ def construct_genetic_modification(
         'purpose': 'tagging',
         'nucleic_acid_delivery_method': ['stable transfection'],
         'introduced_tags': [{'name':'eGFP', 'location': 'C-terminal', 'promoter_used': target_promoter['@id']}],
-        'modified_site_by_target_id': target['@id']
+        'modified_site_by_target_id': target_ATF5_genes['@id']
     }
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 

@@ -98,3 +98,16 @@ def gene_1(gene):
         ],
     })
     return item
+
+
+@pytest.fixture
+def atf5(testapp, human):
+    item = {
+        'uuid': '82397002-0f6b-4a7c-832b-40be5a27ad9b',
+        'dbxrefs': ['HGNC:790'],
+        'geneid': '22809',
+        'symbol': 'ATF5',
+        'ncbi_entrez_status': 'live',
+        'organism': human['uuid'],
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]

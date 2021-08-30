@@ -147,7 +147,7 @@ def test_biosample_summary_construct(testapp,
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
         'Drosophila melanogaster '
-        'female (10 days) liver tissue stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter')
+        'female (10 days) liver tissue stably expressing C-terminal eGFP-tagged ATF5 under daf-2 promoter')
 
 
 def test_biosample_summary_construct_2(
@@ -249,7 +249,7 @@ def test_simple_summary_construct_strain(testapp,
         'organism': fly['@id']})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['simple_summary'] == (
-        'female (10 days) VK00033 stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter')
+        'female (10 days) VK00033 stably expressing C-terminal eGFP-tagged ATF5 under daf-2 promoter')
 
 
 def test_simple_summary_construct_2(

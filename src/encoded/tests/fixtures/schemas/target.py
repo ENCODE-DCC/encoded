@@ -465,3 +465,13 @@ def target_13_no_genes(target_8_no_genes):
         'schema_version': '13'
     })
     return item
+
+
+@pytest.fixture
+def target_ATF5_genes(testapp, organism, atf5):
+    item = {
+        'label': 'ATF5',
+        'investigated_as': ['transcription factor'],
+        'genes': [atf5['uuid']]
+    }
+    return testapp.post_json('/target', item).json['@graph'][0]
