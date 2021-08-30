@@ -1249,4 +1249,4 @@ def is_part_of(request, biosample_id, biosample_ontology, part_of_object, checke
             part_of_object = request.embed(part_of_object['part_of'], '@@object')
             return is_part_of(request, biosample_id, biosample_ontology, part_of_object, checked_biosamples)
         else:
-            return part_of_object['@id']
+            return biosample_id
