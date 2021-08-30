@@ -63,16 +63,20 @@ const getWriteableCartObject = (cartAtId, fetch) => (
  * Save the in-memory cart to the database. The user object has the @id of the user's cart, but not
  * the cart object itself which must be provided in `savedCartObj`.
  * @param {array} elements Array of @ids contained in the in-memory cart to be saved
+ * @param {array} fileViews Array of file views to save; falsy to not save
  * @param {object} savedCartObj User's saved cart object
  * @param {func} fetch System-wide fetch operation
  * @return {object} Promise with new or updated cart object
  */
-const cartSave = (elements, savedCartObj, fetch) => {
+const cartSave = (elements, fileViews, savedCartObj, fetch) => {
     const cartAtId = savedCartObj && savedCartObj['@id'];
     if (cartAtId) {
         return getWriteableCartObject(cartAtId, fetch).then((writeableCart) => {
             // Copy the in-memory cart to the writeable cart object and then update it in the DB.
             writeableCart.elements = elements;
+            if (fileViews) {
+                writeableCart.file_views = fileViews;
+            }
             return updateCartObject(writeableCart, cartAtId, fetch);
         });
     }

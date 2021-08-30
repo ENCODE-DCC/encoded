@@ -4,8 +4,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { removeMultipleFromCartAndSave } from './actions';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
+import { removeMultipleFromCartAndSave } from './actions';
+import { DEFAULT_FILE_VIEW_NAME } from './util';
 
 
 /**
@@ -60,13 +61,19 @@ CartRemoveElementsModalComponent.mapStateToProps = (state, ownProps) => ({
 });
 
 CartRemoveElementsModalComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    removeMultipleItems: (elements) => dispatch(removeMultipleFromCartAndSave(elements, ownProps.fetch)),
+    removeMultipleItems: (elements) => dispatch(removeMultipleFromCartAndSave(elements, ownProps.fileViewTitle, ownProps.fetch)),
 });
 
 const CartRemoveElementsModalInternal = connect(CartRemoveElementsModalComponent.mapStateToProps, CartRemoveElementsModalComponent.mapDispatchToProps)(CartRemoveElementsModalComponent);
 
 export const CartRemoveElementsModal = ({ elements, closeClickHandler }, reactContext) => (
-    <CartRemoveElementsModalInternal elements={elements} closeClickHandler={closeClickHandler} loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])} fetch={reactContext.fetch} />
+    <CartRemoveElementsModalInternal
+        elements={elements}
+        closeClickHandler={closeClickHandler}
+        fileViewTitle={DEFAULT_FILE_VIEW_NAME}
+        loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
+        fetch={reactContext.fetch}
+    />
 );
 
 CartRemoveElementsModal.propTypes = {

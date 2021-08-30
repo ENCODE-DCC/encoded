@@ -12,6 +12,7 @@ export const ADD_TO_CART = 'ADD_TO_CART';
 export const ADD_MULTIPLE_TO_CART = 'ADD_MULTIPLE_TO_CART';
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const REMOVE_MULTIPLE_FROM_CART = 'REMOVE_MULTIPLE_FROM_CART';
+export const CLEAR_CART = 'CLEAR_CART';
 export const REPLACE_CART = 'REPLACE_CART';
 export const CACHE_SAVED_CART = 'CACHE_SAVED_CART';
 export const CART_OPERATION_IN_PROGRESS = 'CART_OPERATION_IN_PROGRESS';
@@ -51,7 +52,7 @@ export const addToCartAndSave = (elementAtId, fetch) => (
         dispatch(addToCart(elementAtId));
         const { elements, savedCartObj } = getState();
         cartSetOperationInProgress(true, dispatch);
-        return cartSave(elements, savedCartObj, fetch).then((updatedSavedCartObj) => {
+        return cartSave(elements, null, savedCartObj, fetch).then((updatedSavedCartObj) => {
             cartSetOperationInProgress(false, dispatch);
             cartCacheSaved(updatedSavedCartObj, dispatch);
             return updatedSavedCartObj;
@@ -82,7 +83,7 @@ export const addMultipleToCartAndSave = (elementAtIds, fetch) => (
         dispatch(addMultipleToCart(elementAtIds));
         const { elements, savedCartObj } = getState();
         cartSetOperationInProgress(true, dispatch);
-        return cartSave(elements, savedCartObj, fetch).then((updatedSavedCartObj) => {
+        return cartSave(elements, null, savedCartObj, fetch).then((updatedSavedCartObj) => {
             cartSetOperationInProgress(false, dispatch);
             cartCacheSaved(updatedSavedCartObj, dispatch);
             return updatedSavedCartObj;
@@ -94,26 +95,32 @@ export const addMultipleToCartAndSave = (elementAtIds, fetch) => (
 /**
  * Redux action creator to remove an element from the cart.
  * @param {string} elementAtId `@id` of element to remove from the cart
+ * @param {string} title Title of current file view
+ * @param {array} filePaths All files in the given element
  * @return {object} Redux action object
  */
-export const removeFromCart = (elementAtId) => (
-    { type: REMOVE_FROM_CART, elementAtId }
+export const removeFromCart = (elementAtId, title, filePaths) => (
+    { type: REMOVE_FROM_CART, elementAtId, title, filePaths }
 );
 
 
 /**
  * Redux thunk action creator to remove an element from the cart and save this change to the
  * logged-in user's cart object in the database.
- * @param {string} elementAtId `@id` of object being added to cart
+ * @param {string} element Element being removed from cart
+ * @param {string} title Title of current file view
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null not logged in
  */
-export const removeFromCartAndSave = (elementAtId, fetch) => (
+export const removeFromCartAndSave = (element, title, fetch) => (
     (dispatch, getState) => {
-        dispatch(removeFromCart(elementAtId));
-        const { elements, savedCartObj } = getState();
+        // Get the paths of all files, if any, within the given element.
+        const filePaths = element.files ? element.files.map((file) => file['@id']) : [];
+
+        dispatch(removeFromCart(element['@id'], title, filePaths));
+        const { elements, fileViews, savedCartObj } = getState();
         cartSetOperationInProgress(true, dispatch);
-        return cartSave(elements, savedCartObj, fetch).then((updatedSavedCartObj) => {
+        return cartSave(elements, fileViews, savedCartObj, fetch).then((updatedSavedCartObj) => {
             cartSetOperationInProgress(false, dispatch);
             cartCacheSaved(updatedSavedCartObj, dispatch);
             return updatedSavedCartObj;
@@ -125,32 +132,43 @@ export const removeFromCartAndSave = (elementAtId, fetch) => (
 /**
  * Redux action creator to remove multiple elements from the cart.
  * @param {array} elementAtIds `@ids` of elements to remove from the cart
+ * @param {string} title Title of current file view
+ * @param {array} filePaths All files in the given elements
  * @return {object} Redux action object
  */
-export const removeMultipleFromCart = (elementAtIds) => (
-    { type: REMOVE_MULTIPLE_FROM_CART, elementAtIds }
+export const removeMultipleFromCart = (elementAtIds, title, filePaths) => (
+    { type: REMOVE_MULTIPLE_FROM_CART, elementAtIds, title, filePaths }
 );
 
 
 /**
  * Redux thunk action creator to remove multiple elements from the cart and save this change to the
  * database.
- * @param {array} elementAtIds `@ids` of elements to remove from the cart
+ * @param {array} elements elements to remove from the cart
+ * @param {string} title Title of current file view
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null if not logged in
  */
-export const removeMultipleFromCartAndSave = (elementAtIds, fetch) => (
+export const removeMultipleFromCartAndSave = (elements, title, fetch) => (
     (dispatch, getState) => {
-        dispatch(removeMultipleFromCart(elementAtIds));
-        const { elements, savedCartObj } = getState();
+        // Convert the given element objects to their element paths, and extract an array of paths
+        // of all the files within all the elements.
+        const elementPaths = elements.map((element) => element['@id']);
+        const filePaths = elements.reduce((accFilePaths, element) => (
+            element.files ? accFilePaths.concat(element.files.map((file) => file['@id'])) : accFilePaths
+        ), []);
+
+        dispatch(removeMultipleFromCart(elementPaths, title, filePaths));
+        const { elements: updatedElementPaths, fileViews: updatedFileViews, savedCartObj } = getState();
         cartSetOperationInProgress(true, dispatch);
-        return cartSave(elements, savedCartObj, fetch).then((updatedSavedCartObj) => {
+        return cartSave(updatedElementPaths, updatedFileViews, savedCartObj, fetch).then((updatedSavedCartObj) => {
             cartSetOperationInProgress(false, dispatch);
             cartCacheSaved(updatedSavedCartObj, dispatch);
             return updatedSavedCartObj;
         });
     }
 );
+
 
 /**
  * Redux action creator to replace all items in the cart with another set of items.
@@ -359,6 +377,34 @@ export const removeFromFileViewAndSave = (title, files, fetch) => (
         const { fileViews: updatedFileViews, savedCartObj } = getState();
         cartSetOperationInProgress(true, dispatch);
         return cartUpdate(savedCartObj['@id'], { file_views: updatedFileViews }, {}, fetch).then((updatedSavedCartObj) => {
+            cartSetOperationInProgress(false, dispatch);
+            dispatch(cacheSavedCart(updatedSavedCartObj));
+        });
+    }
+);
+
+
+/**
+ * Redux action creator to clear all contents of the cart.
+ * @returns {object} Redux action object
+ */
+export const clearCart = () => (
+    { type: CLEAR_CART }
+);
+
+
+/**
+ * Redux thunk action creator to clear the cart of elements and file views, and to save the
+ * cleared cart.
+ * @param {function} fetch fetch function from <App> context
+ * @returns {object} Promise from saving the cart object
+ */
+export const clearCartAndSave = (fetch) => (
+    (dispatch, getState) => {
+        dispatch(clearCart());
+        const { elements, fileViews, savedCartObj } = getState();
+        cartSetOperationInProgress(true, dispatch);
+        return cartSave(elements, fileViews, savedCartObj, fetch).then((updatedSavedCartObj) => {
             cartSetOperationInProgress(false, dispatch);
             dispatch(cacheSavedCart(updatedSavedCartObj));
         });

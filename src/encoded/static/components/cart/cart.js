@@ -42,10 +42,7 @@ import CartLockTrigger from './lock';
 import CartMergeShared from './merge_shared';
 import Status from '../status';
 import CartRemoveElements from './remove_multiple';
-import { allowedDatasetTypes } from './util';
-
-
-const DEFAULT_FILE_VIEW_NAME = 'View';
+import { allowedDatasetTypes, DEFAULT_FILE_VIEW_NAME } from './util';
 
 
 /**
@@ -570,7 +567,7 @@ const CartSearchResultsControls = ({
     return (
         <div className="cart-search-results-controls">
             {currentTab === 'datasets' && cartType === 'ACTIVE'
-                ? <CartRemoveElements elements={elements.map((element) => element['@id'])} loading={loading} />
+                ? <CartRemoveElements elements={elements} loading={loading} />
                 : (currentTab === 'processeddata' ?
                     <FileViewControl
                         files={filesToAddToFileView}
