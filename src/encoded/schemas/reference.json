@@ -216,12 +216,13 @@
         },
         "crispr_screen_tiling": {
             "title": "CRISPR screen tiling",
-            "description": "CRISPR screen guide RNA design modalities. Peak tiling = all possible grna in a selection of peaks. Full tiling = all possible grna across an entire region, including regulatory elements and non regulatory elements. Sparse peaks = a small set of grna against a selection of peaks",
+            "description": "CRISPR screen guide RNA design modalities.",
+            "comment": "Peak tiling = all possible gRNA in a selection of peaks. Full tiling = all possible gRNA across an entire region, including regulatory elements and non regulatory elements. Sparse peaks = a small set of gRNA against a selection of peaks",
             "type": "string",
             "enum": [
+                "full tiling",
                 "peak tiling",
-                "sparse peak",
-                "full tiling"
+                "sparse peak"
             ]
         }
     },

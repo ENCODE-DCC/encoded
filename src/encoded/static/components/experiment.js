@@ -470,6 +470,19 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         }
     }
 
+    // Collect CRISPR screen tiling modality for FunctionalCharacterizationExperiment only.
+    let tilingModality = [];
+    if (isFunctionalExperiment) {
+        if (context.elements_references && context.elements_references.length > 0) {
+            context.elements_references.forEach((er) => {
+                if (er.crispr_screen_tiling) {
+                    tilingModality.push(er.crispr_screen_tiling);
+                }
+            });
+            tilingModality = _.uniq(tilingModality);
+        }
+    }
+
     // Create platforms array from file platforms; ignore duplicate platforms.
     const platforms = {};
     if (context.files && context.files.length > 0) {
@@ -703,6 +716,13 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div data-test="perturbationtype">
                                     <dt>Perturbation type</dt>
                                     <dd>{context.perturbation_type}</dd>
+                                </div>
+                            : null}
+
+                            {tilingModality.length > 0 ?
+                                <div data-test="crisprscreentiling">
+                                    <dt>Tiling modality</dt>
+                                    <dd>{tilingModality.join(', ')}</dd>
                                 </div>
                             : null}
 

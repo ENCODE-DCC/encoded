@@ -80,6 +80,9 @@
         "assembly": {
             "title": "Genome assembly"
         },
+        "elements_references.crispr_screen_tiling": {
+            "title": "CRISPR screen tiling"
+        },
         "organism.scientific_name": {
             "title": "Organism"
         },
@@ -175,6 +178,9 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "string"
+        },
+        "elements_references.crispr_screen_tiling": {
+            "title": "CRISPR screen tiling"
         },
         "lab.title": {
             "title": "Lab",

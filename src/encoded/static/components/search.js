@@ -391,6 +391,19 @@ const ExperimentComponent = (props, reactContext) => {
         }));
     }
 
+    // Collect crispr_screen_tiling for FunctionalCharacterizationExperiment
+    let tilingModality = [];
+    if (isFunctionalExperiment) {
+        if (result.elements_references && result.elements_references.length > 0) {
+            result.elements_references.forEach((er) => {
+                if (er.crispr_screen_tiling) {
+                    tilingModality.push(er.crispr_screen_tiling);
+                }
+            });
+            tilingModality = _.uniq(tilingModality);
+        }
+    }
+
     // Collect library construction platforms / methods / cellular components
     if (result.replicates && result.replicates.length > 0) {
         constructionPlatforms = _.uniq(result.replicates.filter((replicate) => (
@@ -533,6 +546,9 @@ const ExperimentComponent = (props, reactContext) => {
                                 {constructionMethods && constructionMethods.length > 0 ?
                                     <div><span className="result-item__property-title">Library construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
                                 : null}
+                                {tilingModality && tilingModality.length > 0 ?
+                                    <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
+                                : null}
                             </>
                         : null}
                     </div>
@@ -651,8 +667,6 @@ globals.listingViews.register(Annotation, 'Annotation');
 
 const DatasetComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => {
     const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
-    const fileSetType = result['@type'][0];
-    const isReference = fileSetType === 'Reference';
 
     return (
         <li className={resultItemClass(result)}>
@@ -665,11 +679,6 @@ const DatasetComponent = ({ context: result, auditIndicators, auditDetail }, rea
                     <div className="result-item__data-row">
                         <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
                         <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
-                        {(isReference && result.crispr_screen_tiling) ?
-                            <span>
-                                <div><span className="result-item__property-title">CRISPR screen tiling: </span>{result.crispr_screen_tiling}</div>
-                            </span>
-                        : null}
                     </div>
                 </div>
                 <div className="result-item__meta">
@@ -741,6 +750,19 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
     let biosamples;
     if (differentiationSeries && result.biosample_ontology && Object.keys(result.biosample_ontology).length > 1) {
         biosamples = result.biosample_ontology.map((biosample) => biosample.term_name);
+    }
+
+    // Collect crispr_screen_tiling for each dataset elements_references in FunctionalCharacterizationSeries
+    let tilingModality = [];
+    if (fccSeries) {
+        if (result.elements_references && result.elements_references.length > 0) {
+            result.elements_references.forEach((er) => {
+                if (er.crispr_screen_tiling) {
+                    tilingModality.push(er.crispr_screen_tiling);
+                }
+            });
+            tilingModality = _.uniq(tilingModality);
+        }
     }
 
     // Dig through the biosample life stages and ages
@@ -963,6 +985,9 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                         : null}
                         {constructionMethods.length > 0 ?
                             <div><span className="result-item__property-title">Construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
+                        : null}
+                        {tilingModality.length > 0 ?
+                            <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
                         : null}
                     </div>
                 </div>

@@ -734,13 +734,6 @@ const ReferenceComponent = (props, reactContext) => {
                             </div>
                             : null}
 
-                            {context.crispr_screen_tiling ?
-                                <div data-test="crisprscreentiling">
-                                    <dt>CRISPR screen tiling</dt>
-                                    <dd>{context.crispr_screen_tiling}</dd>
-                                </div>
-                            : null}
-
                             {context.related_pipelines && context.related_pipelines.length > 0 ?
                                 <div data-test="relatedpipelines">
                                     <dt>Related Pipelines</dt>
@@ -2473,6 +2466,19 @@ export const SeriesComponent = ({
     // Calculate the donor diversity.
     const diversity = options.suppressDonorDiversity ? null : donorDiversity(context);
 
+    // Collect CRISPR screen tiling modality for FunctionalCharacterizationExperiment only.
+    let tilingModality = [];
+    if (seriesType === 'FunctionalCharacterizationSeries') {
+        if (context.elements_references && context.elements_references.length > 0) {
+            context.elements_references.forEach((er) => {
+                if (er.crispr_screen_tiling) {
+                    tilingModality.push(er.crispr_screen_tiling);
+                }
+            });
+            tilingModality = _.uniq(tilingModality);
+        }
+    }
+
     // Filter out any datasets we shouldn't see.
     const experimentList = context.related_datasets.filter((dataset) => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
 
@@ -2590,6 +2596,13 @@ export const SeriesComponent = ({
                                             ))}
                                         </ul>
                                     </dd>
+                                </div>
+                            : null}
+
+                            {tilingModality.length > 0 ?
+                                <div data-test="crisprscreentiling">
+                                    <dt>Tiling modality</dt>
+                                    <dd>{tilingModality.join(', ')}</dd>
                                 </div>
                             : null}
 
