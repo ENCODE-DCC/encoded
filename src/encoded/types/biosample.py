@@ -1076,11 +1076,16 @@ def generate_summary_dictionary(
 def generate_modification_summary(method, modification):
 
     modification_summary = ''
-    if method in ['stable transfection', 'transient transfection'] and modification.get('target_gene'):
+    if (method in ['stable transfection', 'transient transfection'] and (modification.get('target_gene') or modification.get('target'))):
         modification_summary = 'stably'
         if method == 'transient transfection':
             modification_summary = 'transiently'
         modification_summary += ' expressing'
+
+        if modification.get('target_gene'):
+            target = modification.get('target_gene')
+        else:
+            target = modification.get('target')
 
         if modification.get('tags'):
             tags_list = []
@@ -1089,13 +1094,13 @@ def generate_modification_summary(method, modification):
                 addition = ''
                 if tag.get('location') in ['N-terminal', 'C-terminal', 'internal']:
                     addition += ' ' + tag.get('location') + ' ' + tag.get('name') + '-tagged'
-                addition += ' ' + modification.get('target_gene')
+                addition += ' ' + target
                 if tag.get('promoter'):
                     addition += ' under ' + tag.get('promoter') + ' promoter'
                 tags_list.append(addition)
             modification_summary += ' ' + ', '.join(map(str, list(set(tags_list)))).strip()
         else:
-            modification_summary += ' ' + modification.get('target_gene')
+            modification_summary += ' ' + target
     else:
         modification_summary = \
             'genetically modified (' + modification.get('category') + ') using ' + method
