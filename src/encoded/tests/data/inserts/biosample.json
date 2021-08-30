@@ -662,6 +662,13 @@
         "lab": "michael-snyder",
         "organism": "human",
         "product_id": "GM12878",
+        "cell_isolation_method": "fluorescence activated cell sorting",
+        "expressed_genes": [
+            {
+                "gene": "/genes/1879/",
+                "expression_percentile": 15
+            }
+        ],
         "source": "coriell",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",

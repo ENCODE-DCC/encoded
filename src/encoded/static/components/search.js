@@ -71,6 +71,7 @@ const types = {
     disease_series: { title: 'Disease series' },
     multiomics_series: { title: 'Multiomics series' },
     collection_series: { title: 'Collection series' },
+    differential_accessibility_series: { title: 'Differential accessibility series' },
 };
 
 const datasetTypes = {
@@ -99,6 +100,7 @@ const datasetTypes = {
     DiseaseSeries: types.disease_series.title,
     MultiomicsSeries: types.multiomics_series.title,
     CollectionSeries: types.collection_series.title,
+    DifferentialAccessibilitySeries: types.differential_accessibility_series.title,
 };
 
 const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));

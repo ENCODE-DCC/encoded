@@ -484,6 +484,20 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         }
     }
 
+    // Collect expressed genes from biosamples in the dataset
+    let expressedGenes = [];
+    biosamples.forEach((biosample) => {
+        console.log(biosample);
+        if (biosample.expressed_genes) {
+            biosample.expressed_genes.forEach((loci) => {
+                if (loci.gene) {
+                    expressedGenes.push(loci.gene);
+                }
+            });
+        }
+    });
+    expressedGenes = _.uniq(expressedGenes);
+
     // Create platforms array from file platforms; ignore duplicate platforms.
     const platforms = {};
     if (context.files && context.files.length > 0) {
@@ -732,6 +746,26 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                                     {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ? <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span> : null}
                                                 </span>
                                             : null
+                                        ))}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {expressedGenes ?
+                                <div data-test="expressed-genes">
+                                    <dt>Expressed genes</dt>
+                                    <dd>
+                                        {expressedGenes.map((loci, i) => (
+                                            <span key={`${loci.uuid}-${i}`}>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={loci['@id']}>{loci.symbol}</a>
+                                                {loci.expression_percentile || loci.expression_percentile === 0 ?
+                                                    <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span>
+                                                : null}
+                                                {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ?
+                                                    <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span>
+                                                : null}
+                                            </span>
                                         ))}
                                     </dd>
                                 </div>
