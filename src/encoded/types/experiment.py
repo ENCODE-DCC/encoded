@@ -134,7 +134,8 @@ class Experiment(Dataset,
     rev.update({
         'replicates': ('Replicate', 'experiment'),
         'related_series': ('Series', 'related_datasets'),
-        'superseded_by': ('Experiment', 'supersedes')
+        'superseded_by': ('Experiment', 'supersedes'),
+        'related_annotations': ('Annotation', 'experimental_input')
     })
 
     @calculated_property(schema={
@@ -160,6 +161,18 @@ class Experiment(Dataset,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Related annotations",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Annotation.experimental_input",
+        },
+        "notSubmittable": True,
+    })
+    def related_annotations(self, request, related_annotations):
+        return paths_filtered_by_status(request, related_annotations)
 
     @calculated_property(schema={
         "title": "Protein tags",

@@ -4755,5 +4755,20 @@
         "output_type": "functional conservation quantifications",
         "lab": "/labs/richard-myers/",
         "aliases": ["hongkai-ji:human_elements_scored_file"]
+    },
+    {
+        "_test": "regulatory elements prediction model annotation",
+        "status": "in progress",
+        "uuid": "f4d07aba-8a45-49c9-9656-5379e439c16c",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "8e5883dd35aaa5bce4721a4e5cc471dd",
+        "accession": "ENCFF318REM",
+        "file_format": "h5ad",
+        "award": "/awards/U54HG006998/",
+        "assembly": "GRCh38",
+        "dataset": "/experiments/ENCSR831GKM/",
+        "file_size": 370148294,
+        "output_type": "regulatory elements prediction model",
+        "lab": "/labs/richard-myers/"
     }
 ]

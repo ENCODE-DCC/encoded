@@ -700,5 +700,19 @@
         ],
         "status": "released",
         "uuid": "eeb1849f-f77e-4ed6-b625-6137f2f76af5"
+    },
+    {
+        "step_label": "regulatory-elements-prediction-model-step",
+        "major_version": 1,
+        "title": "Regulatory elements prediction model step",
+        "analysis_step_types": ["ranking", "signal generation"],
+        "input_file_types": [
+                "alignments"
+        ],
+        "output_file_types": [
+                "regulatory elements prediction model"
+        ],
+        "status": "released",
+        "uuid": "1351fd89-27f0-40ed-b6bb-2a0dca45793e"
     }
 ]

@@ -1714,6 +1714,7 @@
                         "repeat elements annotation",
                         "reference variants",
                         "regulatory elements",
+                        "regulatory elements prediction model",
                         "relative replication signal",
                         "replicated peaks",
                         "replication timing profile",
@@ -2361,6 +2362,7 @@
         "unidirectional peaks": "annotation",
         "polyA sites": "annotation",
         "functional conservation quantifications": "annotation",
+        "regulatory elements prediction model": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",

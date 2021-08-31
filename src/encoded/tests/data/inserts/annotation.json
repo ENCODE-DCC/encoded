@@ -16,7 +16,8 @@
         "relevant_life_stage": "embryonic",
         "software_used": ["d44db1ed-3af1-4e3b-ae7a-b0fb1085877f", "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f"],
         "uuid": "24cae57e-a5d7-4da0-a52a-88635fbc318c",
-        "date_released": "2015-02-27"
+        "date_released": "2015-02-27",
+        "experimental_input": ["ENCSR123AAA"]
     },
     {
         "_test": "domain annotation dataset",
@@ -203,5 +204,18 @@
         "organism": "human",
         "uuid": "92efc2dd-9bcb-4ace-aa70-371e47a35e87",
         "date_released": "2019-05-20"
+    },
+    {
+        "_test": "gkmSVM annotation",
+        "accession": "ENCSR831GKM",
+        "award": "U54HG007004",
+        "annotation_type": "gkmSVM-model",
+        "description": "gkmSVM-model for A549",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "85baa91b-0f64-4416-b627-9acbeec3ad2a",
+        "date_released": "2020-06-13"
     }
 ]
