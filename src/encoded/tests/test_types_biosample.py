@@ -317,13 +317,13 @@ def test_perturbed_gm(
 def test_perturbed_treatment(
     testapp,
     biosample_1,
-    treatment_5,
+    treatment_not_perturbed,
     treatment_perturbed
 ):
     testapp.patch_json(
         biosample_1['@id'],
         {
-            'treatments': [treatment_5['@id']],
+            'treatments': [treatment_not_perturbed['@id']],
         }
     )
     res = testapp.get(biosample_1['@id'] + '@@index-data')
@@ -331,7 +331,7 @@ def test_perturbed_treatment(
     testapp.patch_json(
         biosample_1['@id'],
         {
-            'treatments': [treatment_5['@id'], treatment_perturbed['@id']],
+            'treatments': [treatment_not_perturbed['@id'], treatment_perturbed['@id']],
         }
     )
     res = testapp.get(biosample_1['@id'] + '@@index-data')
