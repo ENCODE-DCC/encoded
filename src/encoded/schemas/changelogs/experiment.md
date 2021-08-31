@@ -1,6 +1,8 @@
 ## Changelog for experiment.json
 
 ### Minor changes since schema version 36
+* Added *bio_replicate_count* and *tech_replicate_count* for the respective counts of the embedded replicates as a calculated property
+* Added *biological_replicates* with a formatted text version of biological replicates as a calculated property
 * Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
 * Added *Deeply Profiled* to the *internal_tags* enum
 
