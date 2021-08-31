@@ -2987,7 +2987,7 @@ class FileGalleryRendererComponent extends React.Component {
         this.experimentType = props.context['@type'][0];
 
         const seriesFiles = getSeriesFiles(props.context) || [];
-        const elementsReferenceFiles = context.elements_references?.map((elementsReference) => elementsReference.files).reduce((acc, val) => acc.concat(val), []) || [];
+        const elementsReferenceFiles = props.context?.elements_references?.map((elementsReference) => elementsReference.files).reduce((acc, val) => acc.concat(val), []) || [];
 
         const datasetFiles = [...props.data, ...seriesFiles, ...elementsReferenceFiles];
 
