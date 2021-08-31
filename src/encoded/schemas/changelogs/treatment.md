@@ -1,17 +1,13 @@
 ## Changelog for treatment.json
 
+### Minor changes since schema 13
+* Added *perturbation* and *selection* to the *purpose* of treatment
+
 ### Schema version 13
 * Modified regex pattern for *product_id* to disallow blank strings.
 
-### Schema version 13
-* the *purpose* property is now required
-* added *selection* and *perturbation* to purpose
-### Minor changes since schema 12
-* Added *perturbation* and *selection* to the *purpose* of treatment
-
 ### Schema version 12
 * Moved *stimulation* from *treatment_type* to *purpose*
-
 
 ### Minor changes since schema version 11
 * *product_id* and *source* properties were added using imports from mixins.json.
