@@ -726,10 +726,12 @@ def summary_objects(request,
                 target = request.embed(gm_object.get('modified_site_by_target_id'),'@@object')
                 if 'genes' in target:
                     genes = target['genes']
-                    if len(genes) == 1:
-                        gene_object = request.embed(''.join(str(gene) for gene in genes), '@@object?skip_calculated=true')
+                    if len(genes) >= 1:
+                        gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
                         modification_dict['target_gene'] = gene_object.get('symbol')
                         modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+                    else:
+                        modification_dict['target'] = target['label']
                 else:
                     modification_dict['target'] = target['label']
             if gm_object.get('introduced_tags'):
