@@ -11,7 +11,7 @@ install: download-ontology javascript
 javascript-and-download-files: download-ontology javascript
 
 download-ontology:
-	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-2021-07-13.json
+	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-2021-08-26.json
 
 javascript:
 	npm ci
