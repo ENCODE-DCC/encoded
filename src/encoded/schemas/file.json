@@ -1067,7 +1067,8 @@
                                         "sequence adapters",
                                         "bias model",
                                         "chromosomes reference",
-                                        "sequence barcodes"
+                                        "sequence barcodes",
+                                        "regulatory elements prediction model"
                                     ]
                                 }
                             }
