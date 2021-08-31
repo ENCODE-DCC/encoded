@@ -141,11 +141,6 @@ def test_indexing_workbook(testapp, indexer_testapp):
     assert res.json['cycle_took']
     assert res.json['title'] == 'vis_indexer'
 
-    res = indexer_testapp.post_json('/index_region', {'record': True})
-    assert res.json['cycle_took']
-    assert res.json['title'] == 'region_indexer'
-    assert res.json['indexed'] > 0
-
     res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
 
@@ -164,19 +159,6 @@ def test_indexer_vis_state(dummy_request):
     result = state.finish_cycle(result, [])
     assert result['cycles'] == (cycles + 1)
     assert result['status'] == 'done'
-
-
-def test_indexer_region_state(dummy_request):
-    from encoded.region_indexer import RegionIndexerState
-    INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
-    es = dummy_request.registry['elasticsearch']
-    state = RegionIndexerState(es,INDEX)
-    result = state.get_initial_state()
-    assert result['title'] == 'region_indexer'
-    assert result['status'] == 'idle'
-    display = state.display()
-    assert 'files_added' in display
-    assert 'files_dropped' in display
 
 
 def test_listening(testapp, listening_conn):

@@ -95,8 +95,6 @@ setup(
         migrate-files-aws = encoded.commands.migrate_files_aws:main
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
-        generate-annotations = encoded.commands.generate_annotations:main
-        index-annotations = encoded.commands.index_annotations:main
         migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
         migrate-dataset-type = encoded.commands.migrate_dataset_type:main
         alembic = encoded.commands.alembic:main
@@ -107,7 +105,6 @@ setup(
         [paste.composite_factory]
         indexer = snovault.elasticsearch.es_index_listener:composite
         visindexer = snovault.elasticsearch.es_index_listener:composite
-        regionindexer = snovault.elasticsearch.es_index_listener:composite
 
         [paste.filter_app_factory]
         memlimit = encoded.memlimit:filter_app

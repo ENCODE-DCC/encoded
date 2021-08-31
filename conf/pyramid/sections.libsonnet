@@ -39,7 +39,6 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
     local shared_config = {
       use: 'egg:encoded',
       accel_redirect_header: 'X-Accel-Redirect',
-      annotations_path: '%s/annotations.json' % repo_root_directory,
       'auth0.siteName': 'ENCODE DCC Submission',
       download_proxy: 'https://download.encodeproject.org/',
       'elasticsearch.server': elasticsearch_server,
@@ -144,7 +143,7 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
       'set queue_worker_processes': queue_worker_processes,
       'set remote_indexing': remote_indexing,
       'set remote_indexing_threshold': 10001,
-      'set stage_for_followup': 'vis_indexer, region_indexer',
+      'set stage_for_followup': 'vis_indexer',
       'set timeout': 60,
     },
   },
@@ -160,21 +159,6 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
       'set timeout': 60,
       'set embed_cache.capacity': 5000,
       'set visindexer': true,
-      'set remote_indexing': remote_indexing,
-    },
-  },
-  RegionIndexer(
-    remote_indexing=false
-  ): {
-    'composite:regionindexer': section_data,
-    local section_data = {
-      use: 'egg:encoded#indexer',
-      app: 'app',
-      path: '/index_region',
-      timeout: 60,
-      'set timeout': 60,
-      'set embed_cache.capacity': 5000,
-      'set regionindexer': true,
       'set remote_indexing': remote_indexing,
     },
   },
@@ -205,7 +189,6 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
       '/': 'debug',
       '/_indexer': 'indexer',
       '/_visindexer': 'visindexer',
-      '/_regionindexer': 'regionindexer',
     },
   },
   ServerMain(): {

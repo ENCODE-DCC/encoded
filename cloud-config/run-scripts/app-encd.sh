@@ -98,15 +98,6 @@ if [ ! "$ENCD_BUILD_TYPE" == 'app' ]; then
     fi
 fi
 
-if [ ! "$ENCD_BUILD_TYPE" == 'app' ]; then
-    sudo -H -u encoded "$(which index-annotations)" "$ENCD_HOME/production.ini" --app-name app
-    if [ $? -gt 0 ]; then
-        echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: index-annotations return error status"
-        # Build has failed
-        touch "$encd_failed_flag"
-        exit 1
-    fi
-fi
 sudo -u root cp /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 
 # Create encoded apache conf

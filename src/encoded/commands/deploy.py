@@ -448,7 +448,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'HOME': home,
         'INDEX_PRIMARY': 'false',
         'INDEX_VIS': 'false',
-        'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
         'INSTALL_TAG': 'encd-install',
         'JVM_GIGS': 'notused',
         'PG_VERSION': main_args.postgres_version,
@@ -506,7 +505,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 data_insert.update({
                     'INDEX_PRIMARY': 'false',
                     'INDEX_VIS': 'false',
-                    'INDEX_REGION': 'false',
                 })
         elif build_type == 'app-pg':
             data_insert.update({
@@ -518,7 +516,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 data_insert.update({
                     'INDEX_PRIMARY': 'false',
                     'INDEX_VIS': 'false',
-                    'INDEX_REGION': 'false',
                 })
         elif build_type == 'app-es':
             # This needs a remote datbase like in rds
@@ -636,7 +633,6 @@ def _get_cloud_config_yaml(main_args):
         # See env vars with --dry-run 
             # 'INDEX_PRIMARY': 'false',
             # 'INDEX_VIS': 'false',
-            # 'INDEX_REGION': 'false',
         template_name = 'app-pg'
     elif not main_args.pg_ip == '':
         # Local es and remote pg
@@ -959,11 +955,6 @@ def _parse_args():
     )
     parser.add_argument('--use-prebuilt-config', default=None, help="Use prebuilt config file")
     parser.add_argument(
-        '--region-indexer',
-        default=None,
-        help="Set region indexer to 'yes' or 'no'.  None is 'yes' for everything but demos."
-    )
-    parser.add_argument(
         '-i',
         '--identity-file',
         default="{}/.ssh/id_rsa.pub".format(expanduser("~")),
@@ -1147,18 +1138,10 @@ def _parse_args():
         args.do_batchupgrade = True
     else:
         args.do_batchupgrade = False
-    # region_indexer is default True for everything but demos
-    if args.region_indexer is not None:
-        if args.region_indexer[0].lower() == 'y':
-            args.region_indexer = True
-        else:
-            args.region_indexer = False
-    elif args.role == 'demo':
+
+    if args.role == 'demo':
         if args.smalldb:
             args.role = 'smalldb'
-        args.region_indexer = False
-    else:
-        args.region_indexer = True
     # Add branch arg
     if not args.branch:
         args.branch = subprocess.check_output(

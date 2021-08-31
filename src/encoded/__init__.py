@@ -254,7 +254,6 @@ def main(global_config, **local_config):
             maxsize=50
         )
         config.include('.region_search')
-        config.include('.region_indexer')
     config.include(static_resources)
     config.include(changelogs)
     ontology_path = Path(__file__).resolve().parents[2] / "ontology.json"
