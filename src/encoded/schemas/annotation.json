@@ -260,15 +260,10 @@
         },
         "experimental_input": {
             "title": "Experimental input" ,
-            "description": "The experiment(s) that this annotation was derived from.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                    "comment": "See experiment.json for a list of available identifiers.",
-                    "type": "string",
-                    "linkTo": "Experiment"
-            }
+            "description": "The experiment that this annotation was derived from.",
+            "comment": "See Experiment.json for a list of available identifiers.",
+            "type": "string",
+            "linkTo": "Experiment"
         }
     },
     "facets": {

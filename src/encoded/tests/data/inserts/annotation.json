@@ -17,7 +17,7 @@
         "software_used": ["d44db1ed-3af1-4e3b-ae7a-b0fb1085877f", "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f"],
         "uuid": "24cae57e-a5d7-4da0-a52a-88635fbc318c",
         "date_released": "2015-02-27",
-        "experimental_input": ["ENCSR123AAA"]
+        "experimental_input": "ENCSR123AAA"
     },
     {
         "_test": "domain annotation dataset",
