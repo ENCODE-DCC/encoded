@@ -266,23 +266,11 @@ $card-margin: 5px;
     }
 }
 
-.carousel {
-    transform: translateX(100%);
-}
-
-.carousel.is-reversing {
-    transform: translateX(-100%);
-}
-
-.carousel.is-set {
-    transform: none;
+.is-set {
+    transform: none !important;
     transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.carousel-seat {
-    order: 2;
-}
-
-.carousel-seat.is-ref {
-    order: 1;
+.is-reversing {
+    transform: translateX(-100%);
 }

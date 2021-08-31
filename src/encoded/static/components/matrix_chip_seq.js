@@ -7,6 +7,7 @@ import Tooltip from '../libs/ui/tooltip';
 const newPageData = [
     {
         id: '1',
+        order: 0,
         header: {
             text: 'Encylopedia1',
             url: 'http://www.google.com',
@@ -17,6 +18,7 @@ const newPageData = [
     },
     {
         id: '2',
+        order: 1,
         header: {
             text: 'Encylopedia2',
             url: 'http://www.google.com',
@@ -27,6 +29,7 @@ const newPageData = [
     },
     {
         id: '3',
+        order: 2,
         header: {
             text: 'Encylopedia3',
             url: 'http://www.google.com',
@@ -37,6 +40,7 @@ const newPageData = [
     },
     {
         id: '4',
+        order: 3,
         header: {
             text: 'Encylopedia4',
             url: 'http://www.google.com',
@@ -47,6 +51,7 @@ const newPageData = [
     },
     {
         id: '5',
+        order: 4,
         header: {
             text: 'Single cell5',
             url: 'http://www.google.com',
@@ -57,6 +62,7 @@ const newPageData = [
     },
     {
         id: '6',
+        order: 5,
         header: {
             text: 'FCC6',
             url: 'http://www.google.com',
@@ -67,6 +73,7 @@ const newPageData = [
     },
     {
         id: '7',
+        order: 6,
         header: {
             text: 'Reference Epigenome7',
             url: 'http://www.google.com',
@@ -77,6 +84,7 @@ const newPageData = [
     },
     {
         id: '8',
+        order: 7,
         header: {
             text: 'Experiments8',
             url: 'http://www.google.com',
@@ -87,6 +95,7 @@ const newPageData = [
     },
     {
         id: '9',
+        order: 8,
         header: {
             text: 'Annotation9',
             url: 'http://www.google.com',
@@ -97,6 +106,7 @@ const newPageData = [
     },
     {
         id: '10',
+        order: 9,
         header: {
             text: 'Biosample10',
             url: 'http://www.google.com',
@@ -107,6 +117,7 @@ const newPageData = [
     },
     {
         id: '11',
+        order: 10,
         header: {
             text: 'Matrix11',
             url: 'http://www.google.com',
@@ -117,8 +128,8 @@ const newPageData = [
     },
 ];
 
-const Card = ({ item }) => (
-    <div className="home-page-card carousel-seat">
+const Card = ({ item, index }) => (
+    <div className="home-page-card" style={{ order: index }}>
         <div className="home-page-card__header"><a href={item.header.url}>{item.header.text}</a></div>
         <div className="home-page-card__content">{item.content}</div>
         <div className="home-page-card__footer">{item.footer}</div>
@@ -127,6 +138,7 @@ const Card = ({ item }) => (
 
 Card.propTypes = {
     item: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
 };
 
 const MobileDisplayControl = (props) => (
@@ -159,27 +171,63 @@ const Carousel = () => {
     const [expanded, setExpanded] = React.useState(true);
     const [cards, setCards] = React.useState([...newPageData]);
     const carousel = React.useRef(null);
+    const carouselDataLength = newPageData.length;
 
     const setLayout = () => {
         setExpanded(!expanded);
     };
 
     const shift = (direction) => {
-        const arr = [...cards];
+        let arr = [...cards];
 
-        if (direction === 1) {
-            const firstItem = arr.shift();
-            arr.push(firstItem);
+        arr = arr.map((card) => {
+            const c = card;
+            const carouselDataLengthMinus1 = carouselDataLength - 1;
+            c.order += direction;
 
-            setCards(arr);
-            return;
-        }
+            const isReversed = carousel.current.classList.contains('is-reversing');
 
-        const lastItem = arr.pop();
-        setCards([lastItem, ...arr]);
+            if (direction === 1 && isReversed) {
+                carousel.current.classList.remove('is-reversing');
+            } else if (direction === -1 && !isReversed) {
+                carousel.current.classList.add('is-reversing');
+            }
+
+            if (c.order > carouselDataLengthMinus1) {
+                c.order = 0;
+            } else if (c.order < 0) {
+                c.order = carouselDataLengthMinus1;
+            }
+
+            return c;
+        });
+
+        setCards(arr);
+
+        carousel.current.classList.remove('is-set');
+        setTimeout((() => carousel.current.classList.add('is-set')), 50);
+
+        //     carousel.removeClass('is-set');
+        // return setTimeout((function() {
+        //   return carousel.addClass('is-set');
+        // }), 50);
+
+
+        // const arr = [...cards];
+
+        // if (direction === 1) {
+        //     const firstItem = arr.shift();
+        //     arr.push(firstItem);
+
+        //     setCards(arr);
+        //     return;
+        // }
+
+        // const lastItem = arr.pop();
+        // setCards([lastItem, ...arr]);
     };
 
-    const openedCards = cards.map((item, index) => <Card key={item.id} item={item} index={index} />);
+    const openedCards = cards.map((item) => <Card key={item.id} item={item} index={item.order} />);
 
     return (
         <>
@@ -196,15 +244,15 @@ const Carousel = () => {
                 </div>
             </div>
             <div className="home-page-full-view">
-                <div className="home-page-full-view__arrow" onClick={() => shift(1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
+                <div className="home-page-full-view__arrow" onClick={() => shift(-1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
                     <i className="facet-chevron icon icon-chevron-left" />
                 </div>
                 <div className="home-page-full-view__region">
-                    <div ref={carousel} className="home-page-full-view__region__carousel carousel is-set">
+                    <div ref={carousel} className="home-page-full-view__region__carousel is-set">
                         { openedCards }
                     </div>
                 </div>
-                <div className="home-page-full-view__arrow" onClick={() => shift(-1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
+                <div className="home-page-full-view__arrow" onClick={() => shift(1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
                     <i className="facet-chevron icon icon-chevron-right" />
                 </div>
             </div>
