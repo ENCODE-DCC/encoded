@@ -465,14 +465,18 @@ class Biosample(Item):
         applied_modifications,
         treatments=[],
     ):
+        perturbation_treatment = False
+        for t in treatments:
+            treatment = request.embed(t, '@@object')
+            purpose = treatment.get('purpose', False)
+            if not purpose or purpose == "perturbation":
+                perturbation_treatment = True
+                break
         return (any(
                 request.embed(m, '@@object').get('perturbation', False)
                 for m in applied_modifications
             )
-            or any(
-                request.embed(t, '@@object').get('purpose', None) == "perturbation"
-                for t in treatments
-            )
+            or perturbation_treatment
         )
         
 
