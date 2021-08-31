@@ -463,6 +463,18 @@ export class FileTable extends React.Component {
                 return analysisObjectsAccession || nonAnalysisObjectPrefix;
             });
 
+            const elementsReferences = context.elements_references;
+
+            if (elementsReferences) {
+                const elementsReferenceFiles = elementsReferences.map((elementsReference) => elementsReference.files).reduce((acc, val) => acc.concat(val), []);
+
+                if (!files.ref) {
+                    files.ref = [];
+                }
+
+                files.ref.push(...elementsReferenceFiles);
+            }
+
             // Get unique analyses for series object
             const analysesSeries = files.series ? [...new Set(files.series.map((a) => (a.analyses && a.analyses.length > 0 ? a.analyses[0] : '')).filter((a) => a !== ''))] : [];
 
@@ -2975,7 +2987,9 @@ class FileGalleryRendererComponent extends React.Component {
         this.experimentType = props.context['@type'][0];
 
         const seriesFiles = getSeriesFiles(props.context) || [];
-        const datasetFiles = [...props.data, ...seriesFiles];
+        const elementsReferenceFiles = props.context.elements_references?.map((elementsReference) => elementsReference.files).reduce((acc, val) => acc.concat(val), []) || [];
+
+        const datasetFiles = [...props.data, ...seriesFiles, ...elementsReferenceFiles];
 
         // Initialize React state variables.
         this.state = {
