@@ -516,6 +516,38 @@ class CalculatedReplicationType:
         return 'anisogenic'
 
 
+class CalculatedReplicationCounts:
+    @calculated_property(schema={
+        "title": "Biological replicate count",
+        "description": "Calculated field that indicates the number of biological replicates in a dataset",
+        "type": "integer",
+    })
+    def bio_replicate_count(self, request, replicates):
+        biological_replicate_numbers = set()
+        if replicates:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                biological_replicate_numbers.add(replicateObject.get('biological_replicate_number'))
+        return len(biological_replicate_numbers)
+
+    @calculated_property(schema={
+        "title": "Technical replicate count",
+        "description": "Calculated field that indicates the number of technical replicates in a dataset",
+        "type": "integer",
+    })
+    def tech_replicate_count(self, request, replicates):
+        technical_replicate_numbers = [] 
+        if replicates:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                technical_replicate_numbers.append(replicateObject.get('technical_replicate_number'))
+        return len(technical_replicate_numbers)
+
+
 class CalculatedBiologicalReplicates:
     @calculated_property(condition='replicates', schema={
         "title": "Formatted biological replicates",

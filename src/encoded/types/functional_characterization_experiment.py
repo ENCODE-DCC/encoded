@@ -21,6 +21,7 @@ from .shared_calculated_properties import (
     CalculatedTypeSlims,
     CalculatedObjectiveSlims,
     CalculatedReplicationType,
+    CalculatedReplicationCounts,
     CalculatedBiologicalReplicates
 )
 
@@ -47,6 +48,7 @@ class FunctionalCharacterizationExperiment(
     CalculatedTypeSlims,
     CalculatedObjectiveSlims,
     CalculatedReplicationType,
+    CalculatedReplicationCounts,
     CalculatedBiologicalReplicates):
     item_type = 'functional_characterization_experiment'
     schema = load_schema('encoded:schemas/functional_characterization_experiment.json')
