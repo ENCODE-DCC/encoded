@@ -167,7 +167,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
             header: (
                 clearClassifications ?
                     <div className="matrix__clear-classifications">
-                        <a href={clearClassifications}><i className="icon icon-times-circle" /> Clear classifications</a>
+                        <a data-reload="true" href={clearClassifications}><i className="icon icon-times-circle" /> Clear classifications</a>
                     </div>
                 : null
             ),
@@ -277,7 +277,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                 rowContent: [
                     {
                         header: (
-                            <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}`}>
+                            <a data-reload="true" href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}`}>
                                 <div className="subcategory-row-text">{rowSubcategoryBucket.key}</div>
                             </a>
                         ),
@@ -311,7 +311,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                                 {clearClassifications ?
                                     <div style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</div>
                                 :
-                                    <a href={`${context['@id']}&${rowCategoryQuery}`} style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</a>
+                                    <a data-reload="true" href={`${context['@id']}&${rowCategoryQuery}`} style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</a>
                                 }
                             </div>
                         ),
