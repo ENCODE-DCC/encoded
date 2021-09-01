@@ -103,7 +103,7 @@
             ]
         },
         {
-            "title": "Data Details",
+            "title": "Analysis",
             "facet_fields": [
                 "control_type",
                 "assembly",
