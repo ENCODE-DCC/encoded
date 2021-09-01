@@ -56,6 +56,7 @@ class FunctionalCharacterizationExperiment(
         'biosample_ontology',
         'examined_loci',
         'examined_loci.gene',
+        'elements_references',
         'elements_references.examined_loci',
         'elements_references.examined_regions',
         'files.platform',

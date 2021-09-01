@@ -326,6 +326,9 @@
         "elements_references.elements_selection_method": {
             "title": "Elements selection method"
         },
+        "elements_references.crispr_screen_tiling": {
+            "title": "CRISPR screen tiling"
+        },
         "examined_loci.gene.symbol": {
             "title": "Examined loci",
             "type": "typeahead",
@@ -477,6 +480,9 @@
         },
         "perturbation_type": {
             "title": "Perturbation type"
+        },
+        "elements_references.crispr_screen_tiling": {
+            "title": "CRISPR screen tiling"
         },
         "crispr_screen_readout": {
             "title": "CRISPR screen readout"
