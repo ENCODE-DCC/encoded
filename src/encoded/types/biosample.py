@@ -11,7 +11,7 @@ from .base import (
 import re
 
 from snovault.validation import ValidationFailure
-
+from pyramid.traversal import resource_path
 
 @collection(
     name='biosamples',
@@ -56,6 +56,7 @@ class Biosample(Item):
         'originated_from',
         'originated_from.biosample_ontology',
         'part_of',
+        'part_of.biosample_ontology',
         'part_of.documents',
         'part_of.documents.award',
         'part_of.documents.lab',
@@ -452,6 +453,30 @@ class Biosample(Item):
             return term_lookup.get(subcellular_fraction_term_name)
         else:
             return 'Term ID unknown'
+
+    @calculated_property(schema={
+        "title": "Origin batch",
+        "description": "Biosample @id representing the origin batch the biosample was obtained from",
+        "type": "string",
+        "notSubmittable": "True"
+    })
+    def origin_batch(
+        self,
+        request,
+        biosample_ontology=None,
+        part_of=None,
+    ):
+        if biosample_ontology:
+            biosample_classification = request.embed(biosample_ontology, '@@object?skip_calculated=true').get('classification')
+            biosample_id = '{}/'.format(resource_path(self))
+            if biosample_classification in ['cell line', 'in vitro differentiated cells', 'primary cell']:
+                if part_of:
+                    part_of_object = request.embed(part_of, '@@object')
+                    if 'biosample_ontology' in part_of_object:
+                        checked_biosamples = []
+                        return is_part_of(request, biosample_id, biosample_ontology, part_of_object, checked_biosamples)
+                else:
+                    return biosample_id
 
     @calculated_property(schema={
         "title": "Perturbed",
@@ -1218,3 +1243,18 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     rep = dict((re.escape(k), v) for k, v in rep.items())
     pattern = re.compile("|".join(rep.keys()))
     return pattern.sub(lambda m: rep[re.escape(m.group(0))], sentence_to_return)
+
+
+def is_part_of(request, biosample_id, biosample_ontology, part_of_object, checked_biosamples):
+    if biosample_ontology != part_of_object['biosample_ontology']:
+        return biosample_id
+    elif 'part_of' not in part_of_object:
+        return part_of_object['@id']
+    else:
+        biosample_id = part_of_object['@id']
+        if biosample_id not in checked_biosamples:
+            checked_biosamples.append(biosample_id)
+            part_of_object = request.embed(part_of_object['part_of'], '@@object')
+            return is_part_of(request, biosample_id, biosample_ontology, part_of_object, checked_biosamples)
+        else:
+            return biosample_id

@@ -10,6 +10,7 @@
 * Added *pulse_chase_time* and *pulse_chase_time_units* properties
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *Deeply Profiled* to the *internal_tags* enum
+* Added *origin_batch* calculated property
 
 ### Schema version 25
 
