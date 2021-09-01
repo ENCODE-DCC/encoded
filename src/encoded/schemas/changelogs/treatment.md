@@ -1,5 +1,8 @@
 ## Changelog for treatment.json
 
+### Minor changes since schema 13
+* Added *perturbation* and *selection* to the *purpose* of treatment
+
 ### Schema version 13
 * Modified regex pattern for *product_id* to disallow blank strings.
 

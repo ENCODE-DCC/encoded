@@ -149,3 +149,23 @@ def treatment_12(testapp):
         'treatment_term_id': 'CHEBI:23965'
     }
     return testapp.post_json('/treatment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def treatment_not_perturbed(testapp, organism):
+    item = {
+        'treatment_term_name': 'ethanol',
+        'treatment_type': 'chemical',
+        'purpose': 'activation'
+    }
+    return testapp.post_json('/treatment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def treatment_perturbed(testapp, organism):
+    item = {
+        'treatment_term_name': 'ethanol',
+        'treatment_type': 'chemical',
+        'purpose': 'perturbation'
+    }
+    return testapp.post_json('/treatment', item).json['@graph'][0]

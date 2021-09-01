@@ -463,14 +463,22 @@ class Biosample(Item):
         self,
         request,
         applied_modifications,
-        treatments=None,
+        treatments=[],
     ):
-        return bool(treatments) or any(
-            (
+        perturbation_treatment = False
+        for t in treatments:
+            treatment = request.embed(t, '@@object')
+            purpose = treatment.get('purpose', False)
+            if not purpose or purpose == "perturbation":
+                perturbation_treatment = True
+                break
+        return (any(
                 request.embed(m, '@@object').get('perturbation', False)
                 for m in applied_modifications
             )
+            or perturbation_treatment
         )
+        
 
     @calculated_property(schema={
         "title": "Simple Summary",
