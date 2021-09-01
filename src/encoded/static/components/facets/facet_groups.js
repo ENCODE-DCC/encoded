@@ -93,6 +93,11 @@ const FacetGroupTitle = ({ group, isExpanded, hasSelections, isNameDisplayed, ex
             <div className="facet-group-title__title-name">
                 <div className="facet-group-title__title">
                     {group.title}
+                    {hasSelections && (
+                        <div className="facet-group-title__selection-indicator">
+                            {svgIcon('circle')}
+                        </div>
+                    )}
                 </div>
                 {isNameDisplayed && (
                     <div className="facet-group-title__name">
@@ -100,11 +105,6 @@ const FacetGroupTitle = ({ group, isExpanded, hasSelections, isNameDisplayed, ex
                     </div>
                 )}
             </div>
-            {hasSelections && (
-                <div className="facet-group-title__selection-indicator">
-                    {svgIcon('circle')}
-                </div>
-            )}
             <div className="facet-group-title__expand-indicator">
                 {svgIcon(isExpanded ? 'chevronUp' : 'chevronDown')}
             </div>

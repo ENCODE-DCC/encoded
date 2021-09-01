@@ -773,6 +773,8 @@ div.meta-status {
 }
 
 $facet-group-title-transition-time: 200ms;
+$facet-group-color: #4c994c;
+$facet-group-color-accent: scale-color($facet-group-color, $lightness: 90%);
 
 .facet-group-title {
     display: flex;
@@ -783,7 +785,7 @@ $facet-group-title-transition-time: 200ms;
     padding: 10px;
     gap: 5px;
     border: none;
-    background-color: #eef7ee;
+    background-color: $facet-group-color-accent;
     transition: background-color $facet-group-title-transition-time linear;
 
     .facet-group-title__title-name {
@@ -792,6 +794,7 @@ $facet-group-title-transition-time: 200ms;
     }
 
     .facet-group-title__title {
+        display: flex;
         font-size: 1.2rem;
         font-weight: 600;
         color: #000;
@@ -807,10 +810,12 @@ $facet-group-title-transition-time: 200ms;
     }
 
     .facet-group-title__selection-indicator {
+        margin-left: 5px;
         flex: 0 0 8px;
+        width: 8px;
 
         .svg-icon {
-            fill: #000;
+            fill: $facet-group-color;
             transition: fill $facet-group-title-transition-time linear;
         }
     }
@@ -823,7 +828,7 @@ $facet-group-title-transition-time: 200ms;
     }
 
     &.facet-group-title--open {
-        background-color: #4c994c;
+        background-color: $facet-group-color;
         transition: background-color $facet-group-title-transition-time linear;
 
         .facet-group-title__title {
@@ -838,7 +843,7 @@ $facet-group-title-transition-time: 200ms;
 
         .facet-group-title__selection-indicator {
             .svg-icon {
-                fill: #fff;
+                fill: $facet-group-color-accent;
                 transition: fill $facet-group-title-transition-time linear;
             }
         }
