@@ -862,7 +862,7 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
 
     return (
         <li className="facet-term">
-            <a href={href} onClick={mode === 'picker' ? onFilter : null} className={`facet-term__item${termCss}`}>
+            <a href={href} data-noscroll onClick={mode === 'picker' ? onFilter : null} className={`facet-term__item${termCss}`}>
                 <div className="facet-term__text">
                     <TermNameComponent
                         termName={term.key}
@@ -958,7 +958,7 @@ const SelectedFilters = ({ facet, selectedTerms }) => {
             {(selectedTerms.length > 0) ?
                 <div className="filter-container">
                     {selectedTerms.map((filter) => (
-                        <a href={filter.remove} key={filter.term} className={`filter-link${filter.field.indexOf('!') !== -1 ? ' filter-link--negative' : ''}`}>
+                        <a href={filter.remove} key={filter.term} data-noscroll className={`filter-link${filter.field.indexOf('!') !== -1 ? ' filter-link--negative' : ''}`}>
                             <div className="filter-link__title">
                                 <SelectedTermNameComponent filter={filter} />
                             </div>
