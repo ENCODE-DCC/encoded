@@ -245,9 +245,6 @@
         "award.project": {
             "title": "Project"
         },
-        "award.rfa": {
-            "title": "RFA"
-        },
         "date_released": {
             "title": "Date released"
         },
@@ -256,9 +253,6 @@
         },
         "lab.title": {
             "title": "Lab"
-        },
-        "internal_status": {
-            "title": "Internal status"
         }
     },
     "columns": {
