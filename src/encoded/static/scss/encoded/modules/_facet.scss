@@ -548,13 +548,13 @@ fieldset.facet {
 
 .filter-container {
     display: flex;
-    margin: 2px 0 0;
+    margin: 2px -1px 0;
     flex-wrap: wrap;
     justify-content: flex-start;
-    gap: 2px;
 
     .filter-link {
         display: flex;
+        margin: 1px;
         padding: 0 5px;
         flex-grow: 0;
         align-items: center;
