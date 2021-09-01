@@ -667,6 +667,7 @@ globals.listingViews.register(Annotation, 'Annotation');
 
 const DatasetComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => {
     const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+    const isReference = result['@type'][0] === 'Reference';
 
     return (
         <li className={resultItemClass(result)}>
@@ -679,6 +680,9 @@ const DatasetComponent = ({ context: result, auditIndicators, auditDetail }, rea
                     <div className="result-item__data-row">
                         <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
                         <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
+                        {(isReference && result.crispr_screen_tiling) ?
+                            <div><span className="result-item__property-title">CRISPR screen tiling: </span>{result.crispr_screen_tiling}</div>
+                         : null}
                     </div>
                 </div>
                 <div className="result-item__meta">
