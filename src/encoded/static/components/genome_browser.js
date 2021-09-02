@@ -108,9 +108,9 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
 
     if (gVState && gVAssembly === assembly && gVAnnotation === annotation) {
         const savedState = gVState ? JSON.parse(gVState) : {};
-        ({ contig } = savedState);
-        ({ x0, x1, pinnedFiles } = savedState);
-    } else if (assembly === 'GRCh38') {
+        ({ contig, x0, x1 } = savedState);
+    }
+    if (assembly === 'GRCh38') {
         pinnedFiles = [
             {
                 file_format: 'vdna-dir',
@@ -169,9 +169,11 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 },
             ];
         }
-        contig = 'chr1';
-        x0 = 11102837;
-        x1 = 11267747;
+        if (gVState == null) {
+            contig = 'chr1';
+            x0 = 11102837;
+            x1 = 11267747;
+        }
     } else if (assembly === 'hg19' || assembly === 'GRCh37') {
         pinnedFiles = [
             {
@@ -184,9 +186,11 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 title: 'GENCODE V29',
             },
         ];
-        contig = 'chr21';
-        x0 = 33031597;
-        x1 = 33041570;
+        if (gVState == null) {
+            contig = 'chr21';
+            x0 = 33031597;
+            x1 = 33041570;
+        }
     } else if (assembly === 'GRCm39') {
         pinnedFiles = [
             {
@@ -199,9 +203,11 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 title: 'GENCODE M26',
             },
         ];
-        contig = 'chr7';
-        x0 = 72938479;
-        x1 = 73220239;
+        if (gVState == null) {
+            contig = 'chr7';
+            x0 = 72938479;
+            x1 = 73220239;
+        }
     } else if (assembly === 'mm10' || assembly === 'mm10-minimal' || assembly === 'GRCm38') {
         pinnedFiles = [
             {
@@ -226,14 +232,18 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 title: 'cCRE, all',
             },
         ];
-        contig = 'chr12';
-        x0 = 56694976;
-        x1 = 56714605;
+        if (gVState == null) {
+            contig = 'chr12';
+            x0 = 56694976;
+            x1 = 56714605;
+        }
     } else if (assembly === 'mm9' || assembly === 'GRCm37') {
         pinnedFiles = [];
-        contig = 'chr12';
-        x0 = 57795963;
-        x1 = 57815592;
+        if (gVState == null) {
+            contig = 'chr12';
+            x0 = 57795963;
+            x1 = 57815592;
+        }
     } else if (assembly === 'dm6') {
         pinnedFiles = [
             {
@@ -246,9 +256,12 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 title: 'FlyBase Annotation 6.04',
             },
         ];
-        contig = 'chr2L';
-        x0 = 2420509;
-        x1 = 2467686;
+
+        if (gVState == null) {
+            contig = 'chr2L';
+            x0 = 2420509;
+            x1 = 2467686;
+        }
     } else if (assembly === 'dm3') {
         pinnedFiles = [
             {
@@ -261,9 +274,11 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 title: 'FlyBase Annotation 5.12',
             },
         ];
-        contig = 'chr2L';
-        x0 = 2428372;
-        x1 = 2459823;
+        if (gVState == null) {
+            contig = 'chr2L';
+            x0 = 2428372;
+            x1 = 2459823;
+        }
     } else if (assembly === 'ce11') {
         pinnedFiles = [
             {
@@ -276,9 +291,11 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 title: 'WormBase Annotation WS235',
             },
         ];
-        contig = 'chrII';
-        x0 = 232292;
-        x1 = 238909;
+        if (gVState == null) {
+            contig = 'chrII';
+            x0 = 232292;
+            x1 = 238909;
+        }
     } else if (assembly === 'ce10') {
         pinnedFiles = [
             {
@@ -291,9 +308,11 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
                 title: 'WormBase Annotation WS220',
             },
         ];
-        contig = 'chrII';
-        x0 = 232475;
-        x1 = 237997;
+        if (gVState == null) {
+            contig = 'chrII';
+            x0 = 232475;
+            x1 = 237997;
+        }
     }
     window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, assembly);
     window.sessionStorage.setItem(GV_COORDINATES_ANNOTATION, annotation);

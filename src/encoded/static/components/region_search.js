@@ -1,19 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import { Panel, PanelBody } from '../libs/ui/panel';
+import { Panel, PanelBody, TabPanel } from '../libs/ui/panel';
+import GenomeBrowser from './genome_browser';
+import * as globals from './globals';
 import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
-import * as globals from './globals';
-import { BrowserSelector } from './vis_defines';
+import { makeSearchUrl } from './gene_search/search';
 
+const AutocompleteBoxMenu = (props) => {
+    const handleClick = () => {
+        const { value, locations, name } = props;
+        props.handleClick(value, locations, name);
+    };
 
-const regionGenomes = [
-    { value: 'GRCh37', display: 'hg19' },
-    { value: 'GRCh38', display: 'GRCh38' },
-    { value: 'GRCm37', display: 'mm9' },
-    { value: 'GRCm38', display: 'mm10' },
-];
+    const { preText, matchText, postText } = props;
+
+    /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
+    return (
+        <li tabIndex="0" onClick={handleClick}>
+            {preText}<b>{matchText}</b>{postText}
+        </li>
+    );
+    /* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
+};
+
+AutocompleteBoxMenu.defaultProps = {
+    preText: '',
+    postText: '',
+};
+
+AutocompleteBoxMenu.propTypes = {
+    handleClick: PropTypes.func.isRequired,
+    name: PropTypes.object.isRequired,
+    locations: PropTypes.object.isRequired,
+    preText: PropTypes.string,
+    matchText: PropTypes.string.isRequired,
+    postText: PropTypes.string,
+    value: PropTypes.string.isRequired,
+};
 
 
 const AutocompleteBox = (props) => {
@@ -30,22 +55,26 @@ const AutocompleteBox = (props) => {
                     let matchText;
                     let postText;
 
+                    const title = term.title || term.text;
+                    const locations = term.locations || term._source.annotations;
+
                     // Boldface matching part of term
-                    const matchStart = term.text.toLowerCase().indexOf(userTerm);
+                    const matchStart = title.toLowerCase().indexOf(userTerm);
                     if (matchStart >= 0) {
                         matchEnd = matchStart + userTerm.length;
-                        preText = term.text.substring(0, matchStart);
-                        matchText = term.text.substring(matchStart, matchEnd);
-                        postText = term.text.substring(matchEnd);
+                        preText = title.substring(0, matchStart);
+                        matchText = title.substring(matchStart, matchEnd);
+                        postText = title.substring(matchEnd);
                     } else {
-                        preText = term.text;
+                        preText = title;
                     }
+
                     return (
                         <AutocompleteBoxMenu
-                            key={term.text}
+                            value={title}
                             handleClick={handleClick}
-                            term={term}
                             name={props.name}
+                            locations={locations}
                             preText={preText}
                             matchText={matchText}
                             postText={postText}
@@ -76,53 +105,7 @@ AutocompleteBox.defaultProps = {
 };
 
 
-// Draw the autocomplete box drop-down menu.
-class AutocompleteBoxMenu extends React.Component {
-    constructor() {
-        super();
-
-        // Bind this to non-React methods.
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    // Handle clicks in the drop-down menu. It just calls the parent's handleClick function, giving
-    // it the parameters of the clicked item.
-    handleClick() {
-        const { term, name } = this.props;
-        this.props.handleClick(term.text, term._source.payload.id, name);
-    }
-
-    render() {
-        const { preText, matchText, postText } = this.props;
-
-        /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
-        return (
-            <li tabIndex="0" onClick={this.handleClick}>
-                {preText}<b>{matchText}</b>{postText}
-            </li>
-        );
-        /* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
-    }
-}
-
-AutocompleteBoxMenu.propTypes = {
-    handleClick: PropTypes.func.isRequired, // Parent function to handle a click in a drop-down menu item
-    term: PropTypes.object.isRequired, // Object for the term being searched
-    name: PropTypes.string,
-    preText: PropTypes.string, // Text before the matched term in the entered string
-    matchText: PropTypes.string, // Matching text in the entered string
-    postText: PropTypes.string, // Text after the matched term in the entered string
-};
-
-AutocompleteBoxMenu.defaultProps = {
-    name: '',
-    preText: '',
-    matchText: '',
-    postText: '',
-};
-
-
-class AdvSearch extends React.Component {
+class SearchBox extends React.Component {
     constructor() {
         super();
 
@@ -169,11 +152,17 @@ class AdvSearch extends React.Component {
         this.newSearchTerm = e.target.value;
     }
 
-    handleAutocompleteClick(term, id, name) {
+    handleAutocompleteClick(term, locations, name) {
+        const coordinates = locations.filter((location) => (location.assembly || location.assembly_name) === this.state.genome)[0];
+        let query = `${coordinates.chromosome}:${coordinates.start}-${coordinates.end}`;
+        if (!query.startsWith('chr')) {
+            query = `chr${query}`;
+        }
+
         const newTerms = {};
         const inputNode = this.annotation;
         inputNode.value = term;
-        newTerms[name] = id;
+        newTerms[name] = query;
         this.setState({ terms: newTerms, showAutoSuggest: false });
         inputNode.focus();
         // Now let the timer update the terms state when it gets around to it.
@@ -184,8 +173,16 @@ class AdvSearch extends React.Component {
         this.setState({ genome: event.target.value });
     }
 
-    handleOnFocus() {
+    handleOnFocus(e) {
         this.setState({ showAutoSuggest: false });
+
+        const query = e.currentTarget.getElementsByClassName('form-control')[0].value;
+        const annotation = e.currentTarget.elements.annotation[0].value;
+        const assembly = this.state.genome;
+        this.props.handleSearch(query, annotation, assembly);
+
+        e.stopPropagation();
+        e.preventDefault();
     }
 
     tick() {
@@ -195,18 +192,26 @@ class AdvSearch extends React.Component {
     }
 
     render() {
-        const { context } = this.props;
+        const regionGenomes = ['GRCh38', 'mm10'];
+        const displayGenomes = ['Homo sapiens', 'Mus musculus'];
+        const defaultAssembly = regionGenomes[0];
+
+        const context = this.props;
         const id = url.parse(this.context.location_href, true);
-        const region = id.query.region || '';
 
         if (this.state.genome === '') {
-            let assembly = regionGenomes[0].value;
-            if (context.assembly) {
-                assembly = regionGenomes.find((el) => (
-                    context.assembly === el.value || context.assembly === el.display
-                )).value;
+            const assembly = this.props.assembly || id.query.genome || defaultAssembly;
+
+            if (regionGenomes.indexOf(assembly) !== -1) {
+                this.setState({ genome: assembly });
+            } else {
+                this.setState({ genome: defaultAssembly });
             }
-            this.setState({ genome: assembly });
+        }
+
+        let suggest = `https://www.encodeproject.org${makeSearchUrl(this.state.searchTerm, this.state.genome)}`;
+        if (this.state.searchTerm && this.state.searchTerm.toLowerCase().startsWith('hgnc')) {
+            suggest = `/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
         }
 
         return (
@@ -216,16 +221,16 @@ class AdvSearch extends React.Component {
                         <input type="hidden" name="annotation" value={this.state.terms.annotation} />
                         <label htmlFor="annotation">Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
                         <div className="adv-search-form__input">
-                            <input id="annotation" ref={(input) => { this.annotation = input; }} defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
+                            <input id="annotation" ref={(input) => { this.annotation = input; }} name="region" type="text" className="form-control" onChange={this.handleChange} />
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete>
-                                    <Param name="auto" url={`/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`} type="json" />
-                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
+                                    <Param name="auto" url={suggest} type="json" />
+                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} oldSuggestEngine={this.state.oldSuggestEnginde} />
                                 </FetchedData>
                             : null}
                             <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
-                                {regionGenomes.map((genomeId) => (
-                                    <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
+                                {regionGenomes.map((genome, idx) => (
+                                    <option key={genome} value={genome}>{displayGenomes[idx]}</option>
                                 ))}
                             </select>
                         </div>
@@ -236,8 +241,8 @@ class AdvSearch extends React.Component {
                             <input type="submit" value="Search" className="btn btn-info" />
                         </div>
                     </form>
-                    {context.coordinates ?
-                        <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                    {context.coordinates_msg ?
+                        <p>Searched coordinates: <strong>{context.coordinates_msg}</strong></p>
                     : null}
                 </PanelBody>
             </Panel>
@@ -245,121 +250,285 @@ class AdvSearch extends React.Component {
     }
 }
 
-AdvSearch.propTypes = {
-    context: PropTypes.object.isRequired,
+SearchBox.defaultProps = {
+    assembly: 'GRCh38',
+    notification: '',
+    coordinates_msg: '',
 };
 
-AdvSearch.contextTypes = {
+SearchBox.propTypes = {
+    assembly: PropTypes.string,
+    handleSearch: PropTypes.func.isRequired,
+    notification: PropTypes.string,
+    coordinates_msg: PropTypes.string,
+};
+
+SearchBox.contextTypes = {
     autocompleteTermChosen: PropTypes.bool,
     autocompleteHidden: PropTypes.bool,
     onAutocompleteHiddenChange: PropTypes.func,
     location_href: PropTypes.string,
 };
 
+const RegionSearch = (props, context) => {
+    const defaultAssembly = 'GRCh38';
+    const visualizationOptions = ['Datasets', 'Genome Browser'];
+    const defaultVisualization = 'Datasets';
+    const supportedFileTypes = ['bigWig', 'bigBed'];
+    const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
+    const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
+    const GV_COORDINATES_ANNOTATION = 'ENCODE-GV-annotation';
+    const GV_VIEW = 'ENCODE-GV-view';
 
-// Maximum number of selected items that can be visualized.
-const VISUALIZE_LIMIT = 100;
+    const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
+    const availableFileTypes = [...new Set(initialGBrowserFiles.map((file) => file.file_format))];
 
+    const { columns, filters, facets, total, coordinates } = props.context;
 
-class RegionSearch extends React.Component {
-    constructor() {
-        super();
-
-        // Bind this to non-React methods.
-        this.onFilter = this.onFilter.bind(this);
-    }
-
-    onFilter(e) {
-        if (this.props.onChange) {
-            const search = e.currentTarget.getAttribute('href');
-            this.props.onChange(search);
-            e.stopPropagation();
-            e.preventDefault();
+    let visualization = defaultVisualization;
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+        const lastView = window.sessionStorage.getItem(GV_VIEW);
+        if (lastView && lastView.split(',')[0] === coordinates) {
+            visualization = lastView[1];
         }
     }
 
-    render() {
-        const { context } = this.props;
-        const results = context['@graph'];
-        const { columns, notification, filters, facets, total } = context;
-        const searchBase = url.parse(this.context.location_href).search || '';
-        const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-        const visualizeDisabledTitle = total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+    const [selectedVisualization, setSelectedVisualization] = React.useState(visualization);
+    const [selectedFileTypes, setSelectedFileTypes] = React.useState(availableFileTypes);
+    const [gBrowserFiles, setGBrowserFiles] = React.useState(initialGBrowserFiles);
 
-        return (
-            <div>
-                <h1>Region search</h1>
-                <AdvSearch {...this.props} />
-                {notification === 'Success' ?
-                    <Panel>
-                        <PanelBody>
-                            <div className="search-results">
-                                <div className="search-results__facets">
-                                    <FacetList
-                                        {...this.props}
-                                        facets={facets}
-                                        filters={filters}
-                                        onFilter={this.onFilter}
-                                    />
-                                </div>
-                                <div className="search-results__result-list">
-                                    <h4>
-                                        Showing {results.length} of {total}
-                                    </h4>
-                                    <div className="results-table-control__main">
-                                        {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                                <a
-                                                    rel="nofollow"
-                                                    className="btn btn-info btn-sm"
-                                                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                                    onClick={this.onFilter}
-                                                >
-                                                    View All
-                                                </a>
-                                        :
-                                            <span>
-                                                {results.length > 25 ?
-                                                        <a
-                                                            className="btn btn-info btn-sm"
-                                                            href={trimmedSearchBase || '/region-search/'}
-                                                            onClick={this.onFilter}
-                                                        >
-                                                            View 25
-                                                        </a>
-                                                : null}
-                                            </span>
-                                        }
+    const selectedAssembly = url.parse(context.location_href, true).query.genome || defaultAssembly;
 
-                                        <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
-                                    </div>
+    const searchBase = url.parse(context.location_href).search || '';
+    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
 
-                                    <hr />
-                                    <ul className="nav result-table" id="result-table">
-                                        {results.map((result) => Listing({ context: result, columns, key: result['@id'] }))}
-                                    </ul>
-                                </div>
+    const results = props.context['@graph'];
+
+    const setGenomeBrowserStorageVariables = (coords) => {
+        if (typeof coords !== 'undefined' && typeof window !== 'undefined' && window.sessionStorage) {
+            const coordinatesObj = {
+                contig: coords.split(':')[0],
+                x0: coords.split(':')[1].split('-')[0],
+                x1: coords.split(':')[1].split('-')[1],
+            };
+
+            window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify(coordinatesObj));
+            window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, selectedAssembly === 'mm10' ? 'GRCm38' : selectedAssembly);
+            window.sessionStorage.setItem(GV_COORDINATES_ANNOTATION, selectedAssembly === 'mm10' ? 'M21' : 'V29');
+        }
+    };
+
+    React.useEffect(() => {
+        setGenomeBrowserStorageVariables(coordinates);
+    });
+
+    const chooseFileType = (e) => {
+        const type = e.currentTarget.getAttribute('name');
+
+        if (supportedFileTypes.indexOf(type) === -1) {
+            return;
+        }
+
+        const newSelectedTypes = [...selectedFileTypes];
+        const index = newSelectedTypes.indexOf(type);
+
+        if (index === -1) {
+            newSelectedTypes.push(type);
+        } else {
+            newSelectedTypes.splice(index, 1);
+        }
+
+        setSelectedFileTypes(newSelectedTypes);
+
+        e.stopPropagation();
+        e.preventDefault();
+    };
+
+    setGenomeBrowserStorageVariables(coordinates);
+
+    React.useEffect(() => {
+        const newGBrowserFiles = (props.context.gbrowser || []).filter((file) => selectedFileTypes.indexOf(file.file_format) > -1);
+        setGBrowserFiles(newGBrowserFiles);
+    }, [selectedFileTypes]);
+
+    const onFilter = (e) => {
+        if (props.onChange) {
+            const search = e.currentTarget.getAttribute('href');
+            props.onChange(search);
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    };
+
+    React.useEffect(() => {
+        setGenomeBrowserStorageVariables(props.context.coordinates);
+        if (selectedVisualization === 'Genome Browser') {
+            window.sessionStorage.setItem(GV_VIEW, [props.context.coordinates, 'Genome Browser']);
+        } else {
+            window.sessionStorage.removeItem(GV_VIEW);
+        }
+    }, [selectedVisualization]);
+
+    const visualizationTabs = {};
+    visualizationOptions.forEach((visualizationName) => {
+        visualizationTabs[visualizationName] = <div id={visualizationName} className={`organism-button ${visualizationName.replace(' ', '-')}`}><span>{visualizationName}</span></div>;
+    });
+
+    const handleSearch = (query, annotation, assembly) => {
+        window.location = `/region-search/?region=${encodeURIComponent(query)}&annotation=${annotation}&genome=${assembly}`;
+    };
+
+    const handlePagination = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        window.location = e.currentTarget.getAttribute('href');
+    };
+
+    const resultsList = (
+        <Panel>
+            <PanelBody>
+                <div className="search-results">
+                    <div className="search-results__facets">
+                        <FacetList
+                            context={props.context}
+                            facets={facets}
+                            filters={filters}
+                            onFilter={onFilter}
+                        />
+                    </div>
+
+                    <div className="search-results__result-list">
+                        <h4>Showing {results.length} of {total}</h4>
+                        <div className="results-table-control__main">
+                            {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                            <a
+                                rel="nofollow"
+                                className="btn btn-info btn-sm"
+                                href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                                onClick={handlePagination}
+                            >
+                                View All
+                            </a>
+                            :
+                            <span>
+                                {results.length > 25 ?
+                                    <a
+                                        className="btn btn-info btn-sm"
+                                        href={trimmedSearchBase || '/region-search/'}
+                                        onClick={handlePagination}
+                                    >
+                                        View 25
+                                    </a>
+                                 : null}
+                            </span>
+                            }
+                        </div>
+                        <br />
+                        <ul className="nav result-table" id="result-table">
+                            {results.map((result) => Listing({ context: result, columns, key: result['@id'] }))}
+                        </ul>
+                    </div>
+                </div>
+            </PanelBody>
+        </Panel>
+    );
+
+    const genomeBrowserView = (
+        <div className="outer-tab-container">
+            <div className="tab-body">
+                <Panel>
+                    <PanelBody>
+                        <div className="search-results">
+                            <div className="search-results__facets">
+                                <FacetList
+                                    context={props.context}
+                                    facets={facets}
+                                    filters={filters}
+                                    onFilter={onFilter}
+                                    additionalFacet={
+                                        <>
+                                            <div className="facet ">
+                                                <h5>File Type</h5>
+                                                {availableFileTypes.map((type) => (
+                                                    <button type="button" name={type} className="facet-term annotation-type" onClick={chooseFileType}>
+                                                        {(selectedFileTypes.indexOf(type) > -1) ?
+                                                            <span className="full-dot dot" />
+                                                        :
+                                                            <span className="empty-dot dot" />
+                                                        }
+                                                        <div className="facet-term__text">
+                                                            {type}
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </>
+                                    }
+                                />
                             </div>
-                        </PanelBody>
-                    </Panel>
-                : null}
+
+                            <div className="search-results__result-list" style={{ display: 'block' }}>
+                                <GenomeBrowser
+                                    files={gBrowserFiles}
+                                    label="cart"
+                                    assembly={selectedAssembly}
+                                    expanded
+                                    annotation={selectedAssembly === 'mm10' ? 'M21' : 'V29'}
+                                    displaySort
+                                    maxCharPerLine={30}
+                                />
+                            </div>
+                        </div>
+                    </PanelBody>
+                </Panel>
             </div>
-        );
-    }
-}
+        </div>
+    );
+
+    return (
+        <div className="layout">
+            <div className="layout__block layout__block--100">
+                <div className="block series-search">
+                    <div className="encyclopedia-info-wrapper">
+                        <div className="badge-container">
+                            <h1>Region Search</h1>
+                        </div>
+                    </div>
+
+                    <SearchBox {...props.context} handleSearch={handleSearch} />
+
+                    { results.length > 0 ?
+                    <div className="outer-tab-container">
+                        <TabPanel
+                            tabs={visualizationTabs}
+                            selectedTab={selectedVisualization}
+                            handleTabClick={(tab) => setSelectedVisualization(tab)}
+                            tabCss="tab-button"
+                            tabPanelCss="tab-container encyclopedia-tabs"
+                        >
+                            { selectedVisualization === 'Datasets' ? resultsList : genomeBrowserView }
+                        </TabPanel>
+                    </div> : null }
+                </div>
+            </div>
+        </div>
+    );
+};
+
+RegionSearch.defaultProps = {
+    onChange: () => {},
+};
 
 RegionSearch.propTypes = {
     context: PropTypes.object.isRequired,
     onChange: PropTypes.func,
 };
 
-RegionSearch.defaultProps = {
-    onChange: null,
-};
-
 RegionSearch.contextTypes = {
     location_href: PropTypes.string,
+    navigate: PropTypes.func,
+    fetch: PropTypes.func,
 };
-
-export default AutocompleteBox;
 
 globals.contentViews.register(RegionSearch, 'region-search');
