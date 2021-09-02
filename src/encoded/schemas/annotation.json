@@ -97,6 +97,7 @@
                 "footprints",
                 "functional characterization elements",
                 "gene expression",
+                "gkmSVM-model",
                 "imputation",
                 "in vivo enhancer evaluations",
                 "long-range chromatin interactions",
@@ -256,6 +257,13 @@
                     "type": "string",
                     "linkTo": "Annotation"
             }
+        },
+        "experimental_input": {
+            "title": "Experimental input" ,
+            "description": "The experiment that this annotation was derived from.",
+            "comment": "See Experiment.json for a list of available identifiers.",
+            "type": "string",
+            "linkTo": "Experiment"
         }
     },
     "facets": {

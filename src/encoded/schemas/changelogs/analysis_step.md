@@ -16,6 +16,7 @@
 * Added *genome compartment identification* to the enum list for *analysis_step_types*
 * Added *sparse peak count matrix* to the enum lists for *input_file_types* and *output_file_types*
 * Added *functional conservation quantifications* to the enum lists for *input_file_types* and *output_file_types*
+* Added *regulatory elements prediction model* to the enum lists for *input_file_types* and *output_file_types*
 
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 

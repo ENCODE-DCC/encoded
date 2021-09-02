@@ -9,6 +9,8 @@
 * Added *proteomics analysis* enum to *annotation_type* property
 * Added *cross-species functional conservation* enum to *annotation_type* property
 * Added *Deeply Profiled* to the *internal_tags* enum
+* Added *gkmSVM-model* enum to *annotation_type* property
+* Added *experimental_input* property
 
 ### Schema version 33
 * Updated the *internal_tags* enum from *RegulomeDB* to *RegulomeDB_1_0*
