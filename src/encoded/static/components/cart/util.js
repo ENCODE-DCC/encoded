@@ -11,6 +11,11 @@ import url from 'url';
  */
 export const CART_MAX_ELEMENTS = 8000;
 
+/**
+ * Default title of file view.
+ */
+export const DEFAULT_FILE_VIEW_NAME = 'View';
+
 
 /**
  * List of dataset types allowed in carts. Maps from collection names to corresponding data:

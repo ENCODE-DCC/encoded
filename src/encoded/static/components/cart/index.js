@@ -20,6 +20,7 @@ import {
     ADD_MULTIPLE_TO_CART,
     REMOVE_FROM_CART,
     REMOVE_MULTIPLE_FROM_CART,
+    CLEAR_CART,
     ADD_FILE_VIEW,
     REMOVE_FILE_VIEW,
     ADD_TO_FILE_VIEW,
@@ -67,6 +68,40 @@ import {
 
 
 /**
+ * Generates a new fileViews array with the given files removed. `fileViews` does not get mutated.
+ * @param {array} fileViews Array of fileViews
+ * @param {string} title Title of fileView to update
+ * @param {array} filePaths Array of file @ids to remove
+ * @returns {array} New fileViews array with updated fileView entry; null if no update possible
+ */
+const generateFileViewsMinusFiles = (fileViews, title, filePaths) => {
+    // Find file view with the given title.
+    const indexOfFileViewWithMatchingTitle = fileViews.findIndex((view) => view.title === title);
+    if (indexOfFileViewWithMatchingTitle !== -1) {
+        // Filter the files of the matching file view to only include those not in the given files.
+        const fileViewWithMatchingTitle = fileViews[indexOfFileViewWithMatchingTitle];
+        const filesWithGivenFilesRemoved = fileViewWithMatchingTitle.files.filter((file) => !filePaths.includes(file));
+
+        // Build a new view object with the filtered array of files.
+        const updatedView = {
+            title: fileViewWithMatchingTitle.title,
+            files: filesWithGivenFilesRemoved,
+        };
+
+        // Update view state with copies of existing files array before the updated
+        // view, the updated view, and then the existing files array after the updated
+        // view -- no mutation of existing arrays nor objects.
+        return (
+            fileViews
+                .slice(0, indexOfFileViewWithMatchingTitle)
+                .concat(updatedView, fileViews.slice(indexOfFileViewWithMatchingTitle + 1))
+        );
+    }
+    return null;
+};
+
+
+/**
  * Redux reducer function for the cart module. Redux requires this be a pure function -- the
  * incoming `state` must not be mutated for the resulting state object.
  * @param {object} state - Redux store state
@@ -86,17 +121,31 @@ const cartModule = (state, action = { type: NO_ACTION }) => {
         case REMOVE_FROM_CART: {
             const doomedIndex = state.elements.indexOf(action.elementAtId);
             if (doomedIndex !== -1) {
+                const viewsWithUpdatedView = generateFileViewsMinusFiles(state.fileViews, action.title, action.filePaths);
                 return {
                     ...state,
                     elements: state.elements
                         .slice(0, doomedIndex)
                         .concat(state.elements.slice(doomedIndex + 1)),
+                    fileViews: viewsWithUpdatedView || state.fileViews,
                 };
             }
             return state;
         }
-        case REMOVE_MULTIPLE_FROM_CART:
-            return { ...state, elements: _.difference(state.elements, action.elementAtIds) };
+        case REMOVE_MULTIPLE_FROM_CART: {
+            const viewsWithUpdatedView = generateFileViewsMinusFiles(state.fileViews, action.title, action.filePaths);
+            return {
+                ...state,
+                elements: _.difference(state.elements, action.elementAtIds),
+                fileViews: viewsWithUpdatedView || state.fileViews,
+            };
+        }
+        case CLEAR_CART:
+            return {
+                ...state,
+                elements: [],
+                fileViews: [],
+            };
         case REPLACE_CART:
             return { ...state, elements: action.elementAtIds };
         case CACHE_SAVED_CART:
@@ -154,26 +203,8 @@ const cartModule = (state, action = { type: NO_ACTION }) => {
             return state;
         }
         case REMOVE_FROM_FILE_VIEW: {
-            // Find the matching view and the matching files within that view so we can remove it.
-            const indexOfViewWithMatchingTitle = state.fileViews.findIndex((view) => view.title === action.title);
-            if (indexOfViewWithMatchingTitle !== -1) {
-                // Filter the files of the matching view to only include those not in the given
-                // files.
-                const viewWithMatchingTitle = state.fileViews[indexOfViewWithMatchingTitle];
-                const filesWithGivenFilesRemoved = viewWithMatchingTitle.files.filter((file) => !action.files.includes(file));
-
-                // Build a new view object with the filtered array of files.
-                const updatedView = {
-                    title: viewWithMatchingTitle.title,
-                    files: filesWithGivenFilesRemoved,
-                };
-
-                // Update view state with copies of existing files array before the updated
-                // view, the updated view, and then the existing files array after the updated
-                // view -- no mutation of existing arrays nor objects.
-                const viewsWithUpdatedView = state.fileViews
-                    .slice(0, indexOfViewWithMatchingTitle)
-                    .concat(updatedView, state.fileViews.slice(indexOfViewWithMatchingTitle + 1));
+            const viewsWithUpdatedView = generateFileViewsMinusFiles(state.fileViews, action.title, action.files);
+            if (viewsWithUpdatedView) {
                 return { ...state, fileViews: viewsWithUpdatedView };
             }
             return state;

@@ -7,7 +7,7 @@ import { svgIcon } from '../../libs/svg-icons';
 import { addToCartAndSave, removeFromCartAndSave, triggerAlert } from './actions';
 import CartLoggedOutWarning, { useLoggedOutWarning } from './loggedout_warning';
 import CartMaxElementsWarning from './max_elements_warning';
-import { CART_MAX_ELEMENTS } from './util';
+import { CART_MAX_ELEMENTS, DEFAULT_FILE_VIEW_NAME } from './util';
 import { truncateString, uc } from '../globals';
 
 
@@ -122,7 +122,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     onAddToCartClick: () => dispatch(addToCartAndSave(ownProps.element['@id'], ownProps.fetch)),
-    onRemoveFromCartClick: () => dispatch(removeFromCartAndSave(ownProps.element['@id'], ownProps.fetch)),
+    onRemoveFromCartClick: () => dispatch(removeFromCartAndSave(ownProps.element, ownProps.fileViewTitle, ownProps.fetch)),
     showMaxElementsWarning: () => dispatch(triggerAlert(<CartMaxElementsWarning />)),
 });
 
@@ -133,6 +133,7 @@ const CartToggle = (props, reactContext) => (
     <CartToggleInternal
         element={props.element}
         displayName={props.displayName}
+        fileViewTitle={DEFAULT_FILE_VIEW_NAME}
         css={props.css}
         loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
         fetch={reactContext.fetch}

@@ -5,8 +5,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { removeMultipleFromCartAndSave } from './actions';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
+import { clearCartAndSave } from './actions';
 
 
 /**
@@ -22,8 +22,8 @@ class CartClearModalComponent extends React.Component {
      * Called when a user clicks the modal button to confirm clearing the cart.
      */
     handleConfirmClearClick() {
-        const { elements, onClearCartClick, closeClickHandler } = this.props;
-        onClearCartClick(elements);
+        const { onClearCartClick, closeClickHandler } = this.props;
+        onClearCartClick();
         closeClickHandler();
     }
 
@@ -46,8 +46,6 @@ class CartClearModalComponent extends React.Component {
 }
 
 CartClearModalComponent.propTypes = {
-    /** Items in the current cart */
-    elements: PropTypes.array.isRequired,
     /** Name of current cart */
     cartName: PropTypes.string,
     /** True if cart operation in progress */
@@ -64,13 +62,12 @@ CartClearModalComponent.defaultProps = {
 };
 
 CartClearModalComponent.mapStateToProps = (state) => ({
-    elements: state.elements,
     cartName: state.savedCartObj && state.savedCartObj.name,
     inProgress: state.inProgress,
 });
 
 CartClearModalComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    onClearCartClick: (elements) => dispatch(removeMultipleFromCartAndSave(elements, ownProps.fetch)),
+    onClearCartClick: () => dispatch(clearCartAndSave(ownProps.fetch)),
 });
 
 const CartClearModalInternal = connect(CartClearModalComponent.mapStateToProps, CartClearModalComponent.mapDispatchToProps)(CartClearModalComponent);

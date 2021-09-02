@@ -68,13 +68,14 @@ describe('Cart actions', () => {
             state = {
                 elements: ['/experiment/ENCSR000AAA/', '/experiment/ENCSR001AAA/', '/experiment/ENCSR002AAA/'],
                 name: 'Untitled',
+                fileViews: [],
                 savedCartObj: {},
                 inProgress: false,
             };
         });
 
         test('REMOVE_FROM_CART works and does not mutate state', () => {
-            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR001AAA/' });
+            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR001AAA/', filePaths: [] });
             expect(newState.elements).toHaveLength(2);
             expect(newState.elements[0]).toEqual('/experiment/ENCSR000AAA/');
             expect(newState.elements[1]).toEqual('/experiment/ENCSR002AAA/');
@@ -82,7 +83,7 @@ describe('Cart actions', () => {
         });
 
         test('Failed REMOVE_FROM_CART does not modify contents', () => {
-            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR004AAA/' });
+            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR004AAA/', filePaths: [] });
             expect(_.isEqual(state.elements, newState.elements)).toEqual(true);
         });
 
