@@ -334,9 +334,6 @@
             "type": "typeahead",
             "open_on_load": true
         },
-        "examined_loci.expression_measurement_method": {
-            "title": "Expression measurement method"
-        },
         "perturbation_type": {
             "title": "Perturbation type"
         },
@@ -351,15 +348,6 @@
         },
         "replicates.library.biosample.applied_modifications.MOI": {
             "title": "Multiplicity of infection"
-        },
-        "target.investigated_as": {
-            "title": "Target category"
-        },
-        "target.label": {
-            "title": "Target of assay",
-            "type": "typeahead",
-            "length": "long",
-            "open_on_load": true
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
@@ -398,9 +386,6 @@
         "award.project": {
             "title": "Project"
         },
-        "award.rfa": {
-            "title": "RFA"
-        },
         "assembly": {
             "title": "Genome assembly"
         },
@@ -413,23 +398,8 @@
         "files.run_type": {
             "title": "Run type"
         },
-        "files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "replicates.library.size_range": {
-            "title": "Library fragment size (nt)"
-        },
         "replicates.library.nucleic_acid_term_name": {
             "title": "Library material"
-        },
-        "replicates.library.depleted_in_term_name": {
-            "title": "Library depleted in"
-        },
-        "replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment"
         },
         "date_released": {
             "title": "Date released"
@@ -440,9 +410,6 @@
         "lab.title": {
             "title": "Lab"
         },
-        "internal_status": {
-            "title": "Internal status"
-        },
         "replication_type": {
             "title": "Replication type"
         },
@@ -451,9 +418,6 @@
         },
         "replicates.library.construction_platform.term_name": {
             "title": "Library construction platform"
-        },
-        "replicates.library.construction_method": {
-            "title": "Library construction method"
         }
     },
     "columns": {
