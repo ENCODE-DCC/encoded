@@ -275,7 +275,7 @@ def test_experiment_protein_tags(testapp, base_experiment, donor_1, donor_2, bio
     assert {
         'name': 'eGFP',
         'location': 'C-terminal',
-        'target': '/targets/ATF4-human/'
+        'target': '/targets/ATF5-human/'
     } in protein_tags
     assert {
         'name': 'eGFP',

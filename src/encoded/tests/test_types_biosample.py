@@ -147,7 +147,7 @@ def test_biosample_summary_construct(testapp,
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
         'Drosophila melanogaster '
-        'female (10 days) liver tissue stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter')
+        'female (10 days) liver tissue stably expressing C-terminal eGFP-tagged ATF5 under daf-2 promoter')
 
 
 def test_biosample_summary_construct_2(
@@ -214,6 +214,27 @@ def test_biosample_summary_construct_3(
         'CRISPR (sgRNA), genetically modified (insertion) using transduction (high MOI)')
 
 
+def test_biosample_summary_construct_4(testapp,
+                                     fly,
+                                     fly_donor,
+                                     biosample_1,
+                                     construct_genetic_modification_N,
+                                     liver):
+    # Using GM with a target without genes
+    testapp.patch_json(biosample_1['@id'], {
+        'donor': fly_donor['@id'],
+        'biosample_ontology': liver['uuid'],
+        'genetic_modifications': [construct_genetic_modification_N['@id']],
+        'model_organism_age': '10',
+        'model_organism_age_units': 'day',
+        'model_organism_sex': 'female',
+        'organism': fly['@id']})
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['summary'] == (
+        'Drosophila melanogaster '
+        'female (10 days) liver tissue stably expressing N-terminal eGFP-tagged ATF4')
+
+
 def test_simple_summary(testapp,
                            donor_1,
                            biosample_1, treatment_5, liver):
@@ -249,7 +270,7 @@ def test_simple_summary_construct_strain(testapp,
         'organism': fly['@id']})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['simple_summary'] == (
-        'female (10 days) VK00033 stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter')
+        'female (10 days) VK00033 stably expressing C-terminal eGFP-tagged ATF5 under daf-2 promoter')
 
 
 def test_simple_summary_construct_2(

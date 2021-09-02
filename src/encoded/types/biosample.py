@@ -76,6 +76,7 @@ class Biosample(Item):
         'characterizations.documents',
         'organism',
         'applied_modifications',
+        'applied_modifications.introduced_gene',
         'applied_modifications.modified_site_by_target_id',
         'applied_modifications.modified_site_by_target_id.genes',
         'applied_modifications.treatments'
@@ -755,9 +756,17 @@ def summary_objects(request,
             gm_object = request.embed(gm, '@@object')
             modification_dict = {'category': gm_object.get('category')}
             if gm_object.get('modified_site_by_target_id'):
-                modification_dict['target'] = request.embed(
-                    gm_object.get('modified_site_by_target_id'),
-                                    '@@object').get('label')
+                target = request.embed(gm_object.get('modified_site_by_target_id'),'@@object')
+                if 'genes' in target:
+                    genes = target['genes']
+                    if len(genes) >= 1:
+                        gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
+                        modification_dict['target_gene'] = gene_object.get('symbol')
+                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+                    else:
+                        modification_dict['target'] = target['label']
+                else:
+                    modification_dict['target'] = target['label']
             if gm_object.get('introduced_tags'):
                 modification_dict['tags'] = []
                 for tag in gm_object.get('introduced_tags'):
@@ -767,6 +776,11 @@ def summary_objects(request,
                             tag.get('promoter_used'),
                                     '@@object').get('label')
                     modification_dict['tags'].append(tag_dict)
+            if gm_object.get('introduced_gene'):
+                gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
+                modification_dict['gene'] = gene_object.get('symbol')
+                modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+
 
             if 'method' in gm_object:
                 if (gm_object['method'] == 'CRISPR' and guides != ''):
@@ -1076,8 +1090,18 @@ def generate_summary_dictionary(
             gm_methods.add(gm_method)
             gm_summaries.add(generate_modification_summary(gm_method, gm_object))
         if experiment_flag is True:
-            dict_of_phrases['modifications_list'] = 'genetically modified using ' + \
-                ', '.join(map(str, list(gm_methods)))
+            genetically_modified_gms = []
+            other_gms = []
+            for gm in gm_summaries:
+                if gm.startswith('genetically modified'):
+                    genetically_modified_gms.append(gm.split('modified ', 1)[1])
+                else:
+                    other_gms.append(gm)
+            all_gms = genetically_modified_gms + other_gms
+            if len(genetically_modified_gms) >= 1:
+                dict_of_phrases['modifications_list'] = 'genetically modified ' + ', '.join(sorted(all_gms))
+            else:
+                dict_of_phrases['modifications_list'] = ', '.join(sorted(all_gms))
         else:
             dict_of_phrases['modifications_list'] = ', '.join(sorted(list(gm_summaries)))
 
@@ -1087,11 +1111,16 @@ def generate_summary_dictionary(
 def generate_modification_summary(method, modification):
 
     modification_summary = ''
-    if method in ['stable transfection', 'transient transfection'] and modification.get('target'):
+    if (method in ['stable transfection', 'transient transfection'] and (modification.get('target_gene') or modification.get('target'))):
         modification_summary = 'stably'
         if method == 'transient transfection':
             modification_summary = 'transiently'
         modification_summary += ' expressing'
+
+        if modification.get('target_gene'):
+            target = modification.get('target_gene')
+        else:
+            target = modification.get('target')
 
         if modification.get('tags'):
             tags_list = []
@@ -1100,21 +1129,33 @@ def generate_modification_summary(method, modification):
                 addition = ''
                 if tag.get('location') in ['N-terminal', 'C-terminal', 'internal']:
                     addition += ' ' + tag.get('location') + ' ' + tag.get('name') + '-tagged'
-                addition += ' ' + modification.get('target')
+                addition += ' ' + target
                 if tag.get('promoter'):
                     addition += ' under ' + tag.get('promoter') + ' promoter'
                 tags_list.append(addition)
             modification_summary += ' ' + ', '.join(map(str, list(set(tags_list)))).strip()
         else:
-            modification_summary += ' ' + modification.get('target')
+            modification_summary += ' ' + target
     else:
         modification_summary = \
             'genetically modified (' + modification.get('category') + ') using ' + method
         if method == 'RNAi':
             modification_summary = 'expressing RNAi'
 
+        if modification.get('target_gene'):
+            target = modification.get('target_gene')
+            organism = modification.get('organism')
+            modification_summary += f' targeting {organism} {target}'
+
         if modification.get('target'):
-            modification_summary += ' targeting ' + modification.get('target')
+            target = modification.get('target')
+            modification_summary += f' targeting {target}'
+
+        if modification.get('gene'):
+            gene = modification.get('gene')
+            organism = modification.get('organism')
+            modification_summary += f' inserting {organism} {gene}'
+
     return modification_summary.strip()
 
 

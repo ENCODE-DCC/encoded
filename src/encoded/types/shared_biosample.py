@@ -52,7 +52,17 @@ def biosample_summary_information(request, biosampleObject):
             gm_object = request.embed(gm, '@@object')
             modification_dict = {'category': gm_object.get('category')}
             if gm_object.get('modified_site_by_target_id'):
-                modification_dict['target'] = request.embed(gm_object.get('modified_site_by_target_id'), '@@object')['label']
+                target = request.embed(gm_object.get('modified_site_by_target_id'),'@@object')
+                if 'genes' in target:
+                    genes = target['genes']
+                    if len(genes) >= 1:
+                        gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
+                        modification_dict['target_gene'] = gene_object.get('symbol')
+                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+                    else:
+                        modification_dict['target'] = target['label']
+                else:
+                    modification_dict['target'] = target['label']
             if gm_object.get('introduced_tags_array'):
                 modification_dict['tags'] = []
                 for tag in gm_object.get('introduced_tags_array'):
@@ -60,6 +70,10 @@ def biosample_summary_information(request, biosampleObject):
                     if tag.get('promoter_used'):
                         tag_dict['promoter'] = request.embed(tag.get('promoter_used'), '@@object').get['label']
                     modification_dict['tags'].append(tag_dict)
+            if gm_object.get('introduced_gene'):
+                gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
+                modification_dict['gene'] = gene_object.get('symbol')
+                modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
             if 'method' in gm_object:
                 if (gm_object['method'] == 'CRISPR' and guides != ''):
                     entry = f'CRISPR ({guides})'
