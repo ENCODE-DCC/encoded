@@ -223,11 +223,7 @@
             "title": "Assay",
             "facet_fields": [
                 "assay_slims",
-                "assay_title",
-                "related_datasets.perturbation_type",
-                "related_datasets.crispr_screen_readout",
-                "related_datasets.replicates.library.biosample.applied_modifications.MOI",
-                "related_datasets.replicates.library.biosample.applied_modifications.guide_type"
+                "assay_title"
             ]
         },
         {
