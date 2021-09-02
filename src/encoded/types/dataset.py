@@ -1383,6 +1383,25 @@ class FunctionalCharacterizationSeries(Series):
     def elements_references(self, request, related_datasets):
         return request.select_distinct_values('elements_references', *related_datasets)
 
+    @calculated_property(schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_slims(self, request, related_datasets):
+        return request.select_distinct_values('assay_slims', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Assay title",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_title(self, request, related_datasets):
+        return request.select_distinct_values('assay_title', *related_datasets)
 
 @collection(
     name='gene-silencing-series',

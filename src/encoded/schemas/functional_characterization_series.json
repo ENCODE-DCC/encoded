@@ -71,8 +71,8 @@
         }
     },
     "facets": {
-        "assay_term_name": {
-            "title": "Assay name"
+        "assay_title": {
+            "title": "Assay title"
         },
         "status": {
             "title": "Status"
