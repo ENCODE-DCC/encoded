@@ -313,7 +313,7 @@ const MatrixHeader = ({ context }) => {
             </div>
             <div className="matrix-header__controls">
                 <div className="matrix-header__filter-controls">
-                    <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
+                    <ClearFilters clearUri={context.clear_filters} searchUri={context['@id']} enableDisplay={!!clearButton} />
                     <SearchFilter context={context} />
                 </div>
                 <div className="matrix-header__search-controls">

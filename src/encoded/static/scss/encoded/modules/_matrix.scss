@@ -1029,6 +1029,16 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
+.chip-seq-matrix__facet {
+    .facet-list-wrapper {
+        display: flex;
+
+        .facet {
+            flex: 1 0 auto;
+        }
+    }
+}
+
 // Contents of organism-selection modal.
 .matrix-reference-epigenome__organism-selector {
     > div {

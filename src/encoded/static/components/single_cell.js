@@ -73,7 +73,7 @@ const SingleCell = (props, context) => {
 
     const handleTabClick = React.useCallback((series) => {
         const href = `/single-cell/${singleCellList[series].search}`;
-        context.navigate(href);
+        context.navigate(href, { reload: true });
         setDescriptionData(singleCellList[series].description);
     }, [context]);
 

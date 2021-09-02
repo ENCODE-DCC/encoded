@@ -627,12 +627,12 @@ class App extends React.Component {
         }
 
         // data-noscroll attribute prevents scrolling to the top when clicking a link.
-        if (target.getAttribute('data-noscroll') !== null) {
+        if (target.getAttribute('data-noscroll') === 'true') {
             options.noscroll = true;
         }
 
         // data-reload forces a page reload after navigating.
-        if (target.getAttribute('data-reload') !== null) {
+        if (target.getAttribute('data-reload') === 'true') {
             options.reload = true;
         }
 
@@ -1164,8 +1164,7 @@ class App extends React.Component {
         let content;
         let { context } = this.state;
         const hrefUrl = url.parse(this.state.href);
-        // Every component is remounted when a new search is executed because 'key' is the full url
-        const key = context['@id'];
+        const key = context && context['@id'] && context['@id'].split('?')[0];
         const currentAction = this.currentAction();
         const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
         if (isHomePage) {

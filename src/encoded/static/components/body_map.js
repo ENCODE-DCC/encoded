@@ -420,7 +420,7 @@ class BodyMap extends React.Component {
             addingClass('active', 'active', true);
             // Renavigate to fresh url
             const href = clearBodyMapSelectionsFromUrl(this.props.context['@id']);
-            this.context.navigate(href, { noscroll: true });
+            this.context.navigate(href, { noscroll: true, reload: true });
         }
     }
 
@@ -606,7 +606,7 @@ class BodyMap extends React.Component {
             }
         }
         const href = `?${query.format()}#openModal`;
-        this.context.navigate(href, { noscroll: true });
+        this.context.navigate(href, { noscroll: true, reload: true });
     }
 
     // Executes on click on SVG body map diagram
@@ -721,7 +721,7 @@ class BodyMap extends React.Component {
                     }
                 }
                 const href = `?${query.format()}#openModal`;
-                this.context.navigate(href, { noscroll: true });
+                this.context.navigate(href, { noscroll: true, reload: true });
             }
         }
     }

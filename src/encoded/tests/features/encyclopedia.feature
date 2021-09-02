@@ -11,4 +11,4 @@ Feature: Encyclopedia
 
         When I press "Homo sapiens"
         And I wait for the content to load
-        Then I should see exactly one element with the css selector ".facet-wrapper"
+        Then I should see exactly one element with the css selector ".facet-list-wrapper"

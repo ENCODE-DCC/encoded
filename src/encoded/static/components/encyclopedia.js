@@ -407,7 +407,7 @@ const Encyclopedia = (props, context) => {
                                                         Reset filters
                                                     </button>
                                                     <div className="box facets">
-                                                        <div className="facet-wrapper">
+                                                        <div className="facet-list-wrapper">
                                                             <div className="facet ">
                                                                 <h5>Annotation Type</h5>
                                                                 {annotationTypes.map((type) => (
