@@ -129,7 +129,7 @@ const newPageData = [
 ];
 
 const Card = ({ item, index }) => (
-    <div className="home-page-card" style={{ order: index }}>
+    <div className={`home-page-card ${index === 0 ? 'is-ref' : ''} ${index !== -1 ? 'carousel-seat' : ''}`} style={{ order: index }}>
         <div className="home-page-card__header"><a href={item.header.url}>{item.header.text}</a></div>
         <div className="home-page-card__content">{item.content}</div>
         <div className="home-page-card__footer">{item.footer}</div>
@@ -138,7 +138,11 @@ const Card = ({ item, index }) => (
 
 Card.propTypes = {
     item: PropTypes.object.isRequired,
-    index: PropTypes.number.isRequired,
+    index: PropTypes.number,
+};
+
+Card.defaultProps = {
+    index: -1,
 };
 
 const MobileDisplayControl = (props) => (
@@ -170,7 +174,7 @@ MobileDisplayControl.propTypes = {
 const Carousel = () => {
     const [expanded, setExpanded] = React.useState(true);
     const [cards, setCards] = React.useState([...newPageData]);
-    const carousel = React.useRef(null);
+    const carouselFullView = React.useRef(null);
     const carouselDataLength = newPageData.length;
 
     const setLayout = () => {
@@ -227,7 +231,56 @@ const Carousel = () => {
         // setCards([lastItem, ...arr]);
     };
 
-    const openedCards = cards.map((item) => <Card key={item.id} item={item} index={item.order} />);
+    const openedCards = cards.map((item, index) => <Card key={item.id} item={item} index={index} />);
+
+    // ////
+    const next = (el) => {
+        const seats = document.querySelectorAll('.carousel-seat');
+        if (el.nextElementSibling) {
+            return el.nextElementSibling;
+        }
+        return seats[0];
+    };
+
+    const prev = (el) => {
+        const seats = document.querySelectorAll('.carousel-seat');
+        if (el.previousElementSibling) {
+            return el.previousElementSibling;
+        }
+        return seats[seats.length - 1];
+    };
+
+    const moveCard = (e, direction) => {
+        const el = document.querySelector('.is-ref');
+        el?.classList?.remove('is-ref');
+
+        const carousel = carouselFullView.current;
+
+        let i;
+        let j;
+        let newSeat;
+        let ref;
+
+        if (direction === 1) {
+            newSeat = next(el);
+            carousel.classList.remove('is-reversing');
+        } else {
+            newSeat = prev(el);
+            carousel.classList.add('is-reversing');
+        }
+        newSeat.classList.add('is-ref');
+        newSeat.order = 1;
+        const seats = document.querySelectorAll('.carousel-seat');
+
+        for (i = j = 2, ref = seats.length; (ref >= 2 ? j <= ref : j >= ref); i = ref >= 2 ? ++j : --j) {
+            newSeat = next(newSeat);
+            newSeat.style.order = i;
+        }
+        carousel.classList.remove('is-set');
+        return setTimeout((() => carousel.classList.add('is-set')), 50);
+    };
+
+    // ////
 
     return (
         <>
@@ -244,15 +297,15 @@ const Carousel = () => {
                 </div>
             </div>
             <div className="home-page-full-view">
-                <div className="home-page-full-view__arrow" onClick={() => shift(-1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
+                <div className="home-page-full-view__arrow" onClick={(e) => moveCard(e, -1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
                     <i className="facet-chevron icon icon-chevron-left" />
                 </div>
                 <div className="home-page-full-view__region">
-                    <div ref={carousel} className="home-page-full-view__region__carousel is-set">
+                    <div ref={carouselFullView} className="home-page-full-view__region__carousel is-set">
                         { openedCards }
                     </div>
                 </div>
-                <div className="home-page-full-view__arrow" onClick={() => shift(1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
+                <div className="home-page-full-view__arrow" onClick={(e) => moveCard(e, 1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
                     <i className="facet-chevron icon icon-chevron-right" />
                 </div>
             </div>
