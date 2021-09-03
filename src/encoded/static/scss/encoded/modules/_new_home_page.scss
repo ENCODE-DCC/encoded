@@ -266,6 +266,11 @@ $card-margin: 5px;
     }
 }
 
+.carousel {
+    left: -33.33333%;
+    transform: translateX(33.33333%);
+}
+
 .is-set {
     transform: none !important;
     transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);

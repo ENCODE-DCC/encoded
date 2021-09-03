@@ -300,7 +300,7 @@ const Carousel = () => {
                 <div className="home-page-full-view__arrow" onClick={(e) => moveCard(e, -1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
                     <i className="facet-chevron icon icon-chevron-left" />
                 </div>
-                <div className="home-page-full-view__region">
+                <div className="home-page-full-view__region carousel">
                     <div ref={carouselFullView} className="home-page-full-view__region__carousel is-set">
                         { openedCards }
                     </div>
@@ -340,7 +340,7 @@ const ChIPSeqMatrix = ({ context }) => {
     return (
         <div className="home-page-layout">
             <div className="home-page-layout__brand">
-                <img className="home-page-layout__brand--brand-img" src="https://test.encodedcc.org/static/img/classic-image-5290.jpg" alt="text" />
+                <img className="home-page-layout__brand--brand-img" src="/static/img/home_image.svg" alt="text" />
             </div>
             <div className="home-page-layout__search">
                 <div className="home-page-layout__search__search-region">
