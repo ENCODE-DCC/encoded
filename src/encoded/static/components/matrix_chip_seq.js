@@ -129,10 +129,8 @@ const newPageData = [
 ];
 
 const Card = ({ item, index }) => (
-    <div className={`home-page-card ${index === 0 ? 'is-ref' : ''} ${index !== -1 ? 'carousel-seat' : ''}`} style={{ order: index }}>
-        <div className="home-page-card__header"><a href={item.header.url}>{item.header.text}</a></div>
-        <div className="home-page-card__content">{item.content}</div>
-        <div className="home-page-card__footer">{item.footer}</div>
+    <div className={`home-page-card carousel-seat ${index === (newPageData.length - 1) ? 'is-ref' : ''}`}>
+        This is card {index}
     </div>
 );
 
@@ -181,77 +179,38 @@ const Carousel = () => {
         setExpanded(!expanded);
     };
 
-    const shift = (direction) => {
-        let arr = [...cards];
-
-        arr = arr.map((card) => {
-            const c = card;
-            const carouselDataLengthMinus1 = carouselDataLength - 1;
-            c.order += direction;
-
-            const isReversed = carousel.current.classList.contains('is-reversing');
-
-            if (direction === 1 && isReversed) {
-                carousel.current.classList.remove('is-reversing');
-            } else if (direction === -1 && !isReversed) {
-                carousel.current.classList.add('is-reversing');
-            }
-
-            if (c.order > carouselDataLengthMinus1) {
-                c.order = 0;
-            } else if (c.order < 0) {
-                c.order = carouselDataLengthMinus1;
-            }
-
-            return c;
-        });
-
-        setCards(arr);
-
-        carousel.current.classList.remove('is-set');
-        setTimeout((() => carousel.current.classList.add('is-set')), 50);
-
-        //     carousel.removeClass('is-set');
-        // return setTimeout((function() {
-        //   return carousel.addClass('is-set');
-        // }), 50);
-
-
-        // const arr = [...cards];
-
-        // if (direction === 1) {
-        //     const firstItem = arr.shift();
-        //     arr.push(firstItem);
-
-        //     setCards(arr);
-        //     return;
-        // }
-
-        // const lastItem = arr.pop();
-        // setCards([lastItem, ...arr]);
-    };
-
     const openedCards = cards.map((item, index) => <Card key={item.id} item={item} index={index} />);
 
-    // ////
     const next = (el) => {
+        console.log('finding next');
         const seats = document.querySelectorAll('.carousel-seat');
         if (el.nextElementSibling) {
+            console.log(el.nextElementSibling.innerHTML);
             return el.nextElementSibling;
         }
+        console.log('no next sibling');
+        console.log(seats[0].innerHTML);
         return seats[0];
     };
 
     const prev = (el) => {
+        console.log('finding previous');
         const seats = document.querySelectorAll('.carousel-seat');
         if (el.previousElementSibling) {
+            console.log(el.previousElementSibling.innerHTML);
             return el.previousElementSibling;
         }
+        console.log('no prev sibling');
+        console.log(seats[seats.length - 1]);
         return seats[seats.length - 1];
     };
 
     const moveCard = (e, direction) => {
+        console.log('move card');
+        console.log(e);
+        console.log(direction);
         const el = document.querySelector('.is-ref');
+        console.log(el);
         el?.classList?.remove('is-ref');
 
         const carousel = carouselFullView.current;
@@ -262,10 +221,14 @@ const Carousel = () => {
         let ref;
 
         if (direction === 1) {
+            console.log('remove is reversing');
             newSeat = next(el);
+            console.log(newSeat.innerHTML);
             carousel.classList.remove('is-reversing');
         } else {
+            console.log('add is reversing');
             newSeat = prev(el);
+            console.log(newSeat.innerHTML);
             carousel.classList.add('is-reversing');
         }
         newSeat.classList.add('is-ref');
@@ -277,41 +240,33 @@ const Carousel = () => {
             newSeat.style.order = i;
         }
         carousel.classList.remove('is-set');
+        console.log('remove is-set');
         return setTimeout((() => carousel.classList.add('is-set')), 50);
     };
 
-    // ////
-
     return (
-        <>
-            <div className="home-page-mobile-view">
-                <div>
-                    <MobileDisplayControl expanded={expanded} setLayout={setLayout} />
-                </div>
-                <div className="home-page-mobile-card-view">
-                    <div className={`${expanded ? 'home-page-cards-mobile-expanded' : 'home-page-cards-mobile-collapsed'}`}>
-                        {
-                            cards.map((item) => <Card key={item.id} item={item} />)
-                        }
-                    </div>
+        <div className="home-page-full-view">
+            <div className="home-page-full-view__arrow" onClick={(e) => moveCard(e, -1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
+                <i className="facet-chevron icon icon-chevron-left" />
+            </div>
+            <div className="home-page-full-view__region carousel">
+                <div ref={carouselFullView} className="home-page-full-view__region__carousel is-set">
+                    { openedCards }
                 </div>
             </div>
-            <div className="home-page-full-view">
-                <div className="home-page-full-view__arrow" onClick={(e) => moveCard(e, -1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
-                    <i className="facet-chevron icon icon-chevron-left" />
-                </div>
-                <div className="home-page-full-view__region carousel">
-                    <div ref={carouselFullView} className="home-page-full-view__region__carousel is-set">
-                        { openedCards }
-                    </div>
-                </div>
-                <div className="home-page-full-view__arrow" onClick={(e) => moveCard(e, 1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
-                    <i className="facet-chevron icon icon-chevron-right" />
-                </div>
+            <div className="home-page-full-view__arrow" onClick={(e) => moveCard(e, 1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
+                <i className="facet-chevron icon icon-chevron-right" />
             </div>
-        </>
+        </div>
     );
 };
+
+
+
+
+
+
+
 
 /**
  * Container for ChIP-Seq Matrix page.
@@ -321,7 +276,6 @@ const Carousel = () => {
  */
 const ChIPSeqMatrix = ({ context }) => {
     const i = 0;
-    console.log(i);
     const clear = React.useRef(null);
     const form = React.useRef(null);
 
@@ -368,7 +322,7 @@ const ChIPSeqMatrix = ({ context }) => {
                     </form>
                 </div>
             </div>
-            <div className="home-page-layout__caurosel">
+            <div className="home-page-layout__carousel">
                 <div>
                     <Carousel />
                 </div>
