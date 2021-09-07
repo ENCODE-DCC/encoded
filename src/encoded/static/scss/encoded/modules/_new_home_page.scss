@@ -272,6 +272,13 @@ $card-margin: 5px;
     transform: translateX(33%);
 }
 
+.carousel {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    transform: translateX(33%);
+}
+
 .is-set {
     transform: none !important;
     transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);

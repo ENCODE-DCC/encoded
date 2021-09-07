@@ -232,7 +232,7 @@ const Carousel = () => {
             carousel.classList.add('is-reversing');
         }
         newSeat.classList.add('is-ref');
-        newSeat.order = 1;
+        newSeat.style.order = 1;
         const seats = document.querySelectorAll('.carousel-seat');
 
         for (i = j = 2, ref = seats.length; (ref >= 2 ? j <= ref : j >= ref); i = ref >= 2 ? ++j : --j) {
@@ -249,8 +249,8 @@ const Carousel = () => {
             <div className="home-page-full-view__arrow" onClick={(e) => moveCard(e, -1)} role="button" tabIndex={-1} onKeyPress={() => {}}>
                 <i className="facet-chevron icon icon-chevron-left" />
             </div>
-            <div className="home-page-full-view__region carousel">
-                <div ref={carouselFullView} className="home-page-full-view__region__carousel is-set">
+            <div className="home-page-full-view__region">
+                <div ref={carouselFullView} className="home-page-full-view__region__carousel carousel">
                     { openedCards }
                 </div>
             </div>
