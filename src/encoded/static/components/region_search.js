@@ -55,7 +55,28 @@ const AutocompleteBox = (props) => {
                     let matchText;
                     let postText;
 
-                    const title = term.title || term.text;
+                    let title = term.title || term.text;
+
+		    if (term.dbxrefs) {
+			if (userTerm.startsWith('hgnc')) {
+			    for (let xref in term.dbxrefs) {
+				if (term.dbxrefs[xref].toLowerCase().startsWith('hgnc')) {
+				    title = term.dbxrefs[xref];
+				}
+			    }
+			} else if (userTerm.startsWith('ensg')) {
+			    for (let xref in term.dbxrefs) {
+				const ensgTerm = term.dbxrefs[xref].split(':').pop();
+				if (ensgTerm.toLowerCase().startsWith('ensg')) {
+				    title = ensgTerm;
+				    if (title == userTerm) {
+					break;
+				    }
+				}
+			    }
+			}
+		    }
+
                     const locations = term.locations || term._source.annotations;
 
                     // Boldface matching part of term
@@ -210,9 +231,6 @@ class SearchBox extends React.Component {
         }
 
         let suggest = `https://www.encodeproject.org${makeSearchUrl(this.state.searchTerm, this.state.genome)}`;
-        if (this.state.searchTerm && this.state.searchTerm.toLowerCase().startsWith('hgnc')) {
-            suggest = `/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
-        }
 
         return (
             <Panel>
@@ -225,7 +243,7 @@ class SearchBox extends React.Component {
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete>
                                     <Param name="auto" url={suggest} type="json" />
-                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} oldSuggestEngine={this.state.oldSuggestEnginde} />
+                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
                                 </FetchedData>
                             : null}
                             <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
@@ -400,30 +418,6 @@ const RegionSearch = (props, context) => {
 
                     <div className="search-results__result-list">
                         <h4>Showing {results.length} of {total}</h4>
-                        <div className="results-table-control__main">
-                            {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                            <a
-                                rel="nofollow"
-                                className="btn btn-info btn-sm"
-                                href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                onClick={handlePagination}
-                            >
-                                View All
-                            </a>
-                            :
-                            <span>
-                                {results.length > 25 ?
-                                    <a
-                                        className="btn btn-info btn-sm"
-                                        href={trimmedSearchBase || '/region-search/'}
-                                        onClick={handlePagination}
-                                    >
-                                        View 25
-                                    </a>
-                                 : null}
-                            </span>
-                            }
-                        </div>
                         <br />
                         <ul className="nav result-table" id="result-table">
                             {results.map((result) => Listing({ context: result, columns, key: result['@id'] }))}
