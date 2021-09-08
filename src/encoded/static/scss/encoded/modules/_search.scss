@@ -460,3 +460,10 @@ $form-bg: #f3f3f3;
         display: none;
     }
 }
+
+.region-search {
+    @at-root #{&}__gbrowser {
+	display: block;
+    }
+}
+

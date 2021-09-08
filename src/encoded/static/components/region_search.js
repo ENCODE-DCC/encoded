@@ -57,25 +57,27 @@ const AutocompleteBox = (props) => {
 
                     let title = term.title || term.text;
 
-		    if (term.dbxrefs) {
-			if (userTerm.startsWith('hgnc')) {
-			    for (let xref in term.dbxrefs) {
-				if (term.dbxrefs[xref].toLowerCase().startsWith('hgnc')) {
-				    title = term.dbxrefs[xref];
-				}
-			    }
-			} else if (userTerm.startsWith('ensg')) {
-			    for (let xref in term.dbxrefs) {
-				const ensgTerm = term.dbxrefs[xref].split(':').pop();
-				if (ensgTerm.toLowerCase().startsWith('ensg')) {
-				    title = ensgTerm;
-				    if (title == userTerm) {
-					break;
-				    }
-				}
-			    }
-			}
-		    }
+                    if (term.dbxrefs) {
+                        if (userTerm.startsWith('hgnc')) {
+                            Object.keys(term.dbxrefs).forEach((xref) => {
+                                if (term.dbxrefs[xref].toLowerCase().startsWith('hgnc')) {
+                                    title = term.dbxrefs[xref];
+                                }
+                            });
+                        } else if (userTerm.startsWith('ensg')) {
+                            Object.keys(term.dbxrefs).forEach((xref) => {
+                                const ensgTerm = term.dbxrefs[xref].split(':').pop();
+                                if (ensgTerm.toLowerCase().startsWith('ensg')) {
+                                    title = ensgTerm;
+                                    if (title === userTerm) {
+                                        /* eslint-disable no-useless-return */
+                                        return;
+                                        /* eslint-enable no-useless-return */
+                                    }
+                                }
+                            });
+                        }
+                    }
 
                     const locations = term.locations || term._source.annotations;
 
@@ -230,7 +232,7 @@ class SearchBox extends React.Component {
             }
         }
 
-        let suggest = `https://www.encodeproject.org${makeSearchUrl(this.state.searchTerm, this.state.genome)}`;
+        const suggest = `https://www.encodeproject.org${makeSearchUrl(this.state.searchTerm, this.state.genome)}`;
 
         return (
             <Panel>
@@ -317,9 +319,6 @@ const RegionSearch = (props, context) => {
 
     const selectedAssembly = url.parse(context.location_href, true).query.genome || defaultAssembly;
 
-    const searchBase = url.parse(context.location_href).search || '';
-    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-
     const results = props.context['@graph'];
 
     const setGenomeBrowserStorageVariables = (coords) => {
@@ -396,13 +395,6 @@ const RegionSearch = (props, context) => {
         window.location = `/region-search/?region=${encodeURIComponent(query)}&annotation=${annotation}&genome=${assembly}`;
     };
 
-    const handlePagination = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        window.location = e.currentTarget.getAttribute('href');
-    };
-
     const resultsList = (
         <Panel>
             <PanelBody>
@@ -429,55 +421,48 @@ const RegionSearch = (props, context) => {
     );
 
     const genomeBrowserView = (
-        <div className="outer-tab-container">
-            <div className="tab-body">
-                <Panel>
-                    <PanelBody>
-                        <div className="search-results">
-                            <div className="search-results__facets">
-                                <FacetList
-                                    context={props.context}
-                                    facets={facets}
-                                    filters={filters}
-                                    onFilter={onFilter}
-                                    additionalFacet={
-                                        <>
-                                            <div className="facet ">
-                                                <h5>File Type</h5>
-                                                {availableFileTypes.map((type) => (
-                                                    <button type="button" name={type} className="facet-term annotation-type" onClick={chooseFileType}>
-                                                        {(selectedFileTypes.indexOf(type) > -1) ?
+        <Panel>
+            <PanelBody>
+                <div className="search-results">
+                    <FacetList
+                        context={props.context}
+                        facets={facets}
+                        filters={filters}
+                        onFilter={onFilter}
+                        additionalFacet={
+                            <>
+                                <div className="facet ">
+                                    <h5>File Type</h5>
+                                    {availableFileTypes.map((type) => (
+                                        <button type="button" name={type} className="facet-term annotation-type" onClick={chooseFileType}>
+                                            {(selectedFileTypes.indexOf(type) > -1) ?
                                                             <span className="full-dot dot" />
                                                         :
                                                             <span className="empty-dot dot" />
-                                                        }
-                                                        <div className="facet-term__text">
-                                                            {type}
-                                                        </div>
-                                                    </button>
-                                                ))}
+                                            }
+                                            <div className="facet-term__text">
+                                                {type}
                                             </div>
-                                        </>
-                                    }
-                                />
-                            </div>
-
-                            <div className="search-results__result-list" style={{ display: 'block' }}>
-                                <GenomeBrowser
-                                    files={gBrowserFiles}
-                                    label="cart"
-                                    assembly={selectedAssembly}
-                                    expanded
-                                    annotation={selectedAssembly === 'mm10' ? 'M21' : 'V29'}
-                                    displaySort
-                                    maxCharPerLine={30}
-                                />
-                            </div>
-                        </div>
-                    </PanelBody>
-                </Panel>
-            </div>
-        </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </>
+                        }
+                    />
+                    <div className="search-results__result-list region-search__gbrowser">
+                        <GenomeBrowser
+                            files={gBrowserFiles}
+                            label="cart"
+                            assembly={selectedAssembly}
+                            expanded
+                            annotation={selectedAssembly === 'mm10' ? 'M21' : 'V29'}
+                            displaySort
+                            maxCharPerLine={30}
+                        />
+                    </div>
+                </div>
+            </PanelBody>
+        </Panel>
     );
 
     return (
