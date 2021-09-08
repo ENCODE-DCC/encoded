@@ -925,7 +925,7 @@ export const ClickableThumbnail = (props) => {
                 <div className="body-list body-list-narrow">
                     <ul className="body-list-inner">
                         {Object.keys(CellsList).map((image) => (
-                            <div
+                            <li
                                 className={`body-inset ${image}`}
                                 id={image}
                                 key={image}
@@ -933,7 +933,7 @@ export const ClickableThumbnail = (props) => {
                                 <img className="active-image" src={`/static/img/bodyMap/insetSVGs/${organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}.svg`} alt={image} />
                                 <img className="inactive-image" src={`/static/img/bodyMap/insetSVGs/${organism === 'Mus musculus' ? 'mouse_' : ''}${image.replace(' ', '_')}_deselected.svg`} alt={image} />
                                 <div className="overlay" />
-                            </div>
+                            </li>
                         ))}
                     </ul>
                 </div>
@@ -967,6 +967,7 @@ export const BodyMapModal = (props) => {
                         organism={organism}
                     />
                 </div>
+                <div className="spacer" />
             </div>
             <div className="modal-backdrop in" />
         </div>

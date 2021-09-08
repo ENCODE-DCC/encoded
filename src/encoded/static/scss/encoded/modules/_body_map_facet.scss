@@ -551,7 +551,7 @@
         left: 0;
         right: 0;
         top: 120px;
-        margin: auto auto 30px;
+        margin: auto;
 
         /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
@@ -669,6 +669,12 @@
             }
         }
     }
+}
+
+.spacer {
+    height: 50px;
+    margin: 0 0 -50px 0;
+    background: transparent;
 }
 
 // Icon styles for the thumbnail version of the body map facet
