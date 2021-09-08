@@ -270,7 +270,7 @@ $card-margin: 5px;
     margin: 0;
     padding: 0;
     position: relative;
-    transform: translateX(33%);
+    transform: translateX(16%);
     display: flex;
     justify-content: center;
 }
@@ -281,5 +281,5 @@ $card-margin: 5px;
 }
 
 .is-reversing {
-    transform: translateX(-33%);
+    transform: translateX(-16%);
 }

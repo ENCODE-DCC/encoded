@@ -176,59 +176,11 @@ const Carousel = () => {
     const [cards, setCards] = React.useState([...newPageData]);
     const carouselFullView = React.useRef(null);
     const carouselDataLength = newPageData.length;
+    const [transformTranslateX, setTransformTranslateX] = React.useState(16);
+    let isReversed = false;
 
     const setLayout = () => {
         setExpanded(!expanded);
-    };
-
-    const shift = (direction) => {
-        let arr = [...cards];
-
-        arr = arr.map((card) => {
-            const c = card;
-            const carouselDataLengthMinus1 = carouselDataLength - 1;
-            c.order += direction;
-
-            const isReversed = carousel.current.classList.contains('is-reversing');
-
-            if (direction === 1 && isReversed) {
-                carousel.current.classList.remove('is-reversing');
-            } else if (direction === -1 && !isReversed) {
-                carousel.current.classList.add('is-reversing');
-            }
-
-            if (c.order > carouselDataLengthMinus1) {
-                c.order = 0;
-            } else if (c.order < 0) {
-                c.order = carouselDataLengthMinus1;
-            }
-
-            return c;
-        });
-
-        setCards(arr);
-
-        carousel.current.classList.remove('is-set');
-        setTimeout((() => carousel.current.classList.add('is-set')), 50);
-
-        //     carousel.removeClass('is-set');
-        // return setTimeout((function() {
-        //   return carousel.addClass('is-set');
-        // }), 50);
-
-
-        // const arr = [...cards];
-
-        // if (direction === 1) {
-        //     const firstItem = arr.shift();
-        //     arr.push(firstItem);
-
-        //     setCards(arr);
-        //     return;
-        // }
-
-        // const lastItem = arr.pop();
-        // setCards([lastItem, ...arr]);
     };
 
     const openedCards = cards.map((item, index) => <Card key={item.id} item={item} index={index} />);
@@ -239,6 +191,7 @@ const Carousel = () => {
         if (el.nextElementSibling) {
             return el.nextElementSibling;
         }
+        isReversed = false;
         return seats[0];
     };
 
@@ -247,6 +200,7 @@ const Carousel = () => {
         if (el.previousElementSibling) {
             return el.previousElementSibling;
         }
+        isReversed = true;
         return seats[seats.length - 1];
     };
 
@@ -277,7 +231,12 @@ const Carousel = () => {
             newSeat.style.order = i;
         }
         carousel.classList.remove('is-set');
-        return setTimeout((() => carousel.classList.add('is-set')), 50);
+        return setTimeout((() => {
+            carousel.classList.add('is-set');
+            const cardsWidth = carousel.offsetWidth;
+            const cardWidth = seats[0]?.offsetWidth || 180;
+            setTransformTranslateX(Math.floor(isReversed ? 1 : -1 * (100 / (cardsWidth / cardWidth))));
+        }), 50);
     };
 
     // ////
@@ -301,7 +260,7 @@ const Carousel = () => {
                     <i className="facet-chevron icon icon-chevron-left" />
                 </div>
                 <div className="home-page-full-view__region">
-                    <div ref={carouselFullView} className="home-page-full-view__region__carousel carousel is-set">
+                    <div ref={carouselFullView} className="home-page-full-view__region__carousel carousel is-set" style={{ transform: `translateX(${transformTranslateX})` }}>
                         { openedCards }
                     </div>
                 </div>
