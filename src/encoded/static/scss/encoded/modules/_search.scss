@@ -463,7 +463,6 @@ $form-bg: #f3f3f3;
 
 .region-search {
     @at-root #{&}__gbrowser {
-	display: block;
+        display: block;
     }
 }
-
