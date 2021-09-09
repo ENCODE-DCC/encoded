@@ -55,7 +55,30 @@ const AutocompleteBox = (props) => {
                     let matchText;
                     let postText;
 
-                    const title = term.title || term.text;
+                    let title = term.title || term.text;
+
+                    if (term.dbxrefs) {
+                        if (userTerm.startsWith('hgnc')) {
+                            Object.keys(term.dbxrefs).forEach((xref) => {
+                                if (term.dbxrefs[xref].toLowerCase().startsWith('hgnc')) {
+                                    title = term.dbxrefs[xref];
+                                }
+                            });
+                        } else if (userTerm.startsWith('ensg')) {
+                            Object.keys(term.dbxrefs).forEach((xref) => {
+                                const ensgTerm = term.dbxrefs[xref].split(':').pop();
+                                if (ensgTerm.toLowerCase().startsWith('ensg')) {
+                                    title = ensgTerm;
+                                    if (title === userTerm) {
+                                        /* eslint-disable no-useless-return */
+                                        return;
+                                        /* eslint-enable no-useless-return */
+                                    }
+                                }
+                            });
+                        }
+                    }
+
                     const locations = term.locations || term._source.annotations;
 
                     // Boldface matching part of term
@@ -176,10 +199,10 @@ class SearchBox extends React.Component {
     handleOnFocus(e) {
         this.setState({ showAutoSuggest: false });
 
-        const query = e.currentTarget.getElementsByClassName('form-control')[0].value;
+        const query = e.currentTarget.getElementsByClassName('form-control')[0].value || '';
         const annotation = e.currentTarget.elements.annotation[0].value;
         const assembly = this.state.genome;
-        this.props.handleSearch(query, annotation, assembly);
+        this.props.handleSearch(query.trim(), annotation, assembly);
 
         e.stopPropagation();
         e.preventDefault();
@@ -209,10 +232,7 @@ class SearchBox extends React.Component {
             }
         }
 
-        let suggest = `https://www.encodeproject.org${makeSearchUrl(this.state.searchTerm, this.state.genome)}`;
-        if (this.state.searchTerm && this.state.searchTerm.toLowerCase().startsWith('hgnc')) {
-            suggest = `/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
-        }
+        const suggest = `https://www.encodeproject.org${makeSearchUrl(this.state.searchTerm, this.state.genome)}`;
 
         return (
             <Panel>
@@ -225,7 +245,7 @@ class SearchBox extends React.Component {
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete>
                                     <Param name="auto" url={suggest} type="json" />
-                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} oldSuggestEngine={this.state.oldSuggestEnginde} />
+                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
                                 </FetchedData>
                             : null}
                             <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
@@ -278,29 +298,27 @@ const RegionSearch = (props, context) => {
     const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
     const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
     const GV_COORDINATES_ANNOTATION = 'ENCODE-GV-annotation';
-    const GV_VIEW = 'ENCODE-GV-view';
+    const GV_FILE_TYPE = 'ENCODE-GV-file-type';
 
     const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
     const availableFileTypes = [...new Set(initialGBrowserFiles.map((file) => file.file_format))];
 
     const { columns, filters, facets, total, coordinates } = props.context;
 
-    let visualization = defaultVisualization;
+    let fileTypes = availableFileTypes;
+
     if (typeof window !== 'undefined' && window.sessionStorage) {
-        const lastView = window.sessionStorage.getItem(GV_VIEW);
-        if (lastView && lastView.split(',')[0] === coordinates) {
-            visualization = lastView[1];
+        const lastFileTypesSelection = window.sessionStorage.getItem(GV_FILE_TYPE);
+        if (lastFileTypesSelection && lastFileTypesSelection.split(',')[0] === coordinates) {
+            fileTypes = lastFileTypesSelection.split(',')[1];
         }
     }
 
-    const [selectedVisualization, setSelectedVisualization] = React.useState(visualization);
-    const [selectedFileTypes, setSelectedFileTypes] = React.useState(availableFileTypes);
+    const [selectedVisualization, setSelectedVisualization] = React.useState(defaultVisualization);
+    const [selectedFileTypes, setSelectedFileTypes] = React.useState(fileTypes);
     const [gBrowserFiles, setGBrowserFiles] = React.useState(initialGBrowserFiles);
 
     const selectedAssembly = url.parse(context.location_href, true).query.genome || defaultAssembly;
-
-    const searchBase = url.parse(context.location_href).search || '';
-    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
 
     const results = props.context['@graph'];
 
@@ -340,6 +358,10 @@ const RegionSearch = (props, context) => {
 
         setSelectedFileTypes(newSelectedTypes);
 
+        if (typeof window !== 'undefined' && window.sessionStorage) {
+            window.sessionStorage.setItem(GV_FILE_TYPE, [props.context.coordinates, newSelectedTypes]);
+        }
+
         e.stopPropagation();
         e.preventDefault();
     };
@@ -360,14 +382,10 @@ const RegionSearch = (props, context) => {
         }
     };
 
-    React.useEffect(() => {
+    const handleVisualization = (tab) => {
         setGenomeBrowserStorageVariables(props.context.coordinates);
-        if (selectedVisualization === 'Genome Browser') {
-            window.sessionStorage.setItem(GV_VIEW, [props.context.coordinates, 'Genome Browser']);
-        } else {
-            window.sessionStorage.removeItem(GV_VIEW);
-        }
-    }, [selectedVisualization]);
+        setSelectedVisualization(tab);
+    };
 
     const visualizationTabs = {};
     visualizationOptions.forEach((visualizationName) => {
@@ -376,13 +394,6 @@ const RegionSearch = (props, context) => {
 
     const handleSearch = (query, annotation, assembly) => {
         window.location = `/region-search/?region=${encodeURIComponent(query)}&annotation=${annotation}&genome=${assembly}`;
-    };
-
-    const handlePagination = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        window.location = e.currentTarget.getAttribute('href');
     };
 
     const resultsList = (
@@ -400,30 +411,6 @@ const RegionSearch = (props, context) => {
 
                     <div className="search-results__result-list">
                         <h4>Showing {results.length} of {total}</h4>
-                        <div className="results-table-control__main">
-                            {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                            <a
-                                rel="nofollow"
-                                className="btn btn-info btn-sm"
-                                href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                onClick={handlePagination}
-                            >
-                                View All
-                            </a>
-                            :
-                            <span>
-                                {results.length > 25 ?
-                                    <a
-                                        className="btn btn-info btn-sm"
-                                        href={trimmedSearchBase || '/region-search/'}
-                                        onClick={handlePagination}
-                                    >
-                                        View 25
-                                    </a>
-                                 : null}
-                            </span>
-                            }
-                        </div>
                         <br />
                         <ul className="nav result-table" id="result-table">
                             {results.map((result) => Listing({ context: result, columns, key: result['@id'] }))}
@@ -435,55 +422,48 @@ const RegionSearch = (props, context) => {
     );
 
     const genomeBrowserView = (
-        <div className="outer-tab-container">
-            <div className="tab-body">
-                <Panel>
-                    <PanelBody>
-                        <div className="search-results">
-                            <div className="search-results__facets">
-                                <FacetList
-                                    context={props.context}
-                                    facets={facets}
-                                    filters={filters}
-                                    onFilter={onFilter}
-                                    additionalFacet={
-                                        <>
-                                            <div className="facet ">
-                                                <h5>File Type</h5>
-                                                {availableFileTypes.map((type) => (
-                                                    <button type="button" name={type} className="facet-term annotation-type" onClick={chooseFileType}>
-                                                        {(selectedFileTypes.indexOf(type) > -1) ?
+        <Panel>
+            <PanelBody>
+                <div className="search-results">
+                    <FacetList
+                        context={props.context}
+                        facets={facets}
+                        filters={filters}
+                        onFilter={onFilter}
+                        additionalFacet={
+                            <>
+                                <div className="facet ">
+                                    <h5>File Type</h5>
+                                    {availableFileTypes.map((type) => (
+                                        <button type="button" name={type} className="facet-term annotation-type" onClick={chooseFileType}>
+                                            {(selectedFileTypes.indexOf(type) > -1) ?
                                                             <span className="full-dot dot" />
                                                         :
                                                             <span className="empty-dot dot" />
-                                                        }
-                                                        <div className="facet-term__text">
-                                                            {type}
-                                                        </div>
-                                                    </button>
-                                                ))}
+                                            }
+                                            <div className="facet-term__text">
+                                                {type}
                                             </div>
-                                        </>
-                                    }
-                                />
-                            </div>
-
-                            <div className="search-results__result-list" style={{ display: 'block' }}>
-                                <GenomeBrowser
-                                    files={gBrowserFiles}
-                                    label="cart"
-                                    assembly={selectedAssembly}
-                                    expanded
-                                    annotation={selectedAssembly === 'mm10' ? 'M21' : 'V29'}
-                                    displaySort
-                                    maxCharPerLine={30}
-                                />
-                            </div>
-                        </div>
-                    </PanelBody>
-                </Panel>
-            </div>
-        </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </>
+                        }
+                    />
+                    <div className="search-results__result-list region-search__gbrowser">
+                        <GenomeBrowser
+                            files={gBrowserFiles}
+                            label="cart"
+                            assembly={selectedAssembly}
+                            expanded
+                            annotation={selectedAssembly === 'mm10' ? 'M21' : 'V29'}
+                            displaySort
+                            maxCharPerLine={30}
+                        />
+                    </div>
+                </div>
+            </PanelBody>
+        </Panel>
     );
 
     return (
@@ -503,7 +483,7 @@ const RegionSearch = (props, context) => {
                         <TabPanel
                             tabs={visualizationTabs}
                             selectedTab={selectedVisualization}
-                            handleTabClick={(tab) => setSelectedVisualization(tab)}
+                            handleTabClick={(tab) => handleVisualization(tab)}
                             tabCss="tab-button"
                             tabPanelCss="tab-container encyclopedia-tabs"
                         >
