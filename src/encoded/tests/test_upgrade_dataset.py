@@ -527,3 +527,10 @@ def test_upgrade_reference_20_to_21(upgrader, upgrade_20_21_reference_a, upgrade
     assert 'transcription start sites' in value['elements_selection_method']
     value = upgrader.upgrade('reference', upgrade_20_21_reference_c, current_version='20', target_version='21')
     assert value['elements_selection_method'] == ['sequence variants']
+
+
+def test_upgrade_annotation_33_to_34(upgrader, annotation_ccre_2):
+    annotation_ccre_2['encyclopedia_version'] = 'ENCODE v5'
+    value = upgrader.upgrade('annotation', annotation_ccre_2, current_version='33', target_version='34')
+    assert value['schema_version'] == '34'
+    assert value['encyclopedia_version'] == 'ENCODE v2'

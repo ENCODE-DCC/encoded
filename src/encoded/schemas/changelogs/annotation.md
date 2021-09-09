@@ -1,5 +1,14 @@
 ## Changelog for annotation.json
 
+### Schema version 34
+* Upgraded the *encyclopedia_version* enums as follows:
+  * *ENCODE v1* is now *ENCODE v0.1*
+  * *ENCODE v2* is now *ENCODE v0.2*
+  * *ENCODE v3* is now *ENCODE v0.3*
+  * *ENCODE v4* is now *ENCODE v1*
+  * *ENCODE v5* is now *ENCODE v2*
+  * *ENCODE v6* is now *ENCODE v3*
+
 ### Minor changes since schema version 33
 * Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
 * Added *calf*, *child*, *mixed stage*, and *newborn* to *relevant_life_stage* enums list

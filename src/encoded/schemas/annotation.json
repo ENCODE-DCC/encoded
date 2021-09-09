@@ -76,7 +76,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "33"
+            "default": "34"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -134,12 +134,12 @@
             "description": " The version of the ENCODE encyclopedia to which this annotation belongs.",
             "type": "string",
             "enum": [
+                "ENCODE v0.1",
+                "ENCODE v0.2",
+                "ENCODE v0.3",
                 "ENCODE v1",
                 "ENCODE v2",
                 "ENCODE v3",
-                "ENCODE v4",
-                "ENCODE v5",
-                "ENCODE v6",
                 "Roadmap"
             ]
         },

@@ -759,3 +759,21 @@ def reference_20_21(value, system):
             value['notes'] = f"{value['notes']} {' '.join(new_notes)}"
         else:
             value['notes'] = ' '.join(new_notes)
+
+
+@upgrade_step('annotation', '33', '34')
+def annotation_33_34(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6143
+    if 'encyclopedia_version' in value:
+        if value['encyclopedia_version'] == 'ENCODE v1':
+            value['encyclopedia_version'] = 'ENCODE v0.1'
+        elif value['encyclopedia_version'] == 'ENCODE v2':
+            value['encyclopedia_version'] = 'ENCODE v0.2'
+        elif value['encyclopedia_version'] == 'ENCODE v3':
+            value['encyclopedia_version'] = 'ENCODE v0.3'
+        elif value['encyclopedia_version'] == 'ENCODE v4':
+            value['encyclopedia_version'] = 'ENCODE v1'
+        elif value['encyclopedia_version'] == 'ENCODE v5':
+            value['encyclopedia_version'] = 'ENCODE v2'
+        elif value['encyclopedia_version'] == 'ENCODE v6':
+            value['encyclopedia_version'] = 'ENCODE v3'
