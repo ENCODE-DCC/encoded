@@ -517,5 +517,19 @@
       "project": "HCA General Community",
       "title": "General Human Cell Atlas research projects that are not funded through Seed Networks or Pilot Projects grants",
       "uuid": "0f541271-bb31-43f0-86af-e39159c8d5c7"
+    },
+    {
+      "name": "HCA100RSP",
+      "project": "HCA Pediatric Networks",
+      "title": "Generic pediatric grant",
+      "focus": "respiratory system",
+      "uuid": "48bc6290-614c-4f7d-bee3-7fb4f9e36b9f"
+    },
+    {
+      "name": "HCA111MUS",
+      "project": "HCA Pediatric Networks",
+      "title": "Generic pediatric muscle grant",
+      "focus": "muscle",
+      "uuid": "31df6c27-9902-4a3f-bec1-544780d1c67f"
     }
 ]

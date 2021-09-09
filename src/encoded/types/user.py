@@ -100,7 +100,7 @@ def user_page_view(context, request):
 def user_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'uuid', 'lab', 'title', 'submits_for', 'institute_name', 'email', 'job_title']:
+    for key in ['@id', '@type', 'uuid', 'lab', 'title', 'submits_for', 'institute_name', 'email', 'job_title', 'aliases','first_name','last_name']:
         try:
             filtered[key] = properties[key]
         except KeyError:
