@@ -70,6 +70,7 @@
             "type": "string",
             "enum": [
                 "HCA Seed Networks",
+                "HCA Pediatric Networks",
                 "HCA Pilot Projects",
                 "HCA General Community"
             ]
@@ -92,6 +93,8 @@
                 "liver",
                 "lung",
                 "lymph nodes",
+                "muscle",
+                "respiratory system",
                 "skin",
                 "tendon",
                 "testis",
