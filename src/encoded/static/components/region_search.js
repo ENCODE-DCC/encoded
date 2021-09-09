@@ -299,28 +299,22 @@ const RegionSearch = (props, context) => {
     const GV_COORDINATES_ASSEMBLY = 'ENCODE-GV-assembly';
     const GV_COORDINATES_ANNOTATION = 'ENCODE-GV-annotation';
     const GV_FILE_TYPE = 'ENCODE-GV-file-type';
-    const GV_VIEW = 'ENCODE-GV-view';
 
     const initialGBrowserFiles = (props.context.gbrowser || []).filter((file) => supportedFileTypes.indexOf(file.file_format) > -1);
     const availableFileTypes = [...new Set(initialGBrowserFiles.map((file) => file.file_format))];
 
     const { columns, filters, facets, total, coordinates } = props.context;
 
-    let visualization = defaultVisualization;
     let fileTypes = availableFileTypes;
-    if (typeof window !== 'undefined' && window.sessionStorage) {
-        const lastView = window.sessionStorage.getItem(GV_VIEW);
-        if (lastView && lastView.split(',')[0] === coordinates) {
-            visualization = lastView.split(',')[1];
-        }
 
+    if (typeof window !== 'undefined' && window.sessionStorage) {
         const lastFileTypesSelection = window.sessionStorage.getItem(GV_FILE_TYPE);
         if (lastFileTypesSelection && lastFileTypesSelection.split(',')[0] === coordinates) {
             fileTypes = lastFileTypesSelection.split(',')[1];
         }
     }
 
-    const [selectedVisualization, setSelectedVisualization] = React.useState(visualization);
+    const [selectedVisualization, setSelectedVisualization] = React.useState(defaultVisualization);
     const [selectedFileTypes, setSelectedFileTypes] = React.useState(fileTypes);
     const [gBrowserFiles, setGBrowserFiles] = React.useState(initialGBrowserFiles);
 
@@ -390,12 +384,6 @@ const RegionSearch = (props, context) => {
 
     const handleVisualization = (tab) => {
         setGenomeBrowserStorageVariables(props.context.coordinates);
-        if (selectedVisualization === 'Genome Browser') {
-            window.sessionStorage.setItem(GV_VIEW, [props.context.coordinates, 'Genome Browser']);
-        } else {
-            window.sessionStorage.removeItem(GV_VIEW);
-        }
-
         setSelectedVisualization(tab);
     };
 
