@@ -64,6 +64,7 @@ def includeme(config):
     config.add_route('search', '/search{slash:/?}')
     config.add_route('series_search', '/series-search{slash:/?}')
     config.add_route('single_cell', '/single-cell{slash:/?}')
+    config.add_route('immune_cells', '/immune-cells{slash:/?}')
     config.add_route('encyclopedia', '/encyclopedia{slash:/?}')
     config.add_route('encode_software', '/encode-software{slash:/?}')
     config.add_route('searchv2_raw', '/searchv2_raw{slash:/?}')
@@ -184,6 +185,38 @@ def single_cell(context, request):
             ),
             AllResponseField(),
             FacetGroupsResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            ClearFiltersResponseField(),
+            ColumnsResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='immune_cells', request_method='GET', permission='search')
+def immune_cells(context, request):
+    # Note the order of rendering matters for some fields, e.g. AllResponseField and
+    # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title="Immune Cells"
+            ),
+            TypeResponseField(
+                at_type=["ImmuneCells"]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            BasicSearchWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES
+            ),
+            AllResponseField(),
             NotificationResponseField(),
             FiltersResponseField(),
             ClearFiltersResponseField(),

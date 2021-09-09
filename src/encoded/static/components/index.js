@@ -55,6 +55,7 @@ require('./experiment_series');
 require('./glossary');
 require('./series_search');
 require('./single_cell');
+require('./immune_cells');
 require('./top_hits');
 
 
