@@ -57,6 +57,7 @@ class FunctionalCharacterizationExperiment(
         'elements_references',
         'elements_references.examined_loci',
         'elements_references.examined_regions',
+        'elements_references.files',
         'files.platform',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',

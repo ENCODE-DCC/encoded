@@ -14,6 +14,7 @@ import {
     DatasetBatchDownloadController,
     RawSequencingBatchDownloadController,
     ReferenceBatchDownloadController,
+    ElementsReferencesDownloadController,
 } from './batch_download';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
@@ -299,6 +300,18 @@ const filterDownloadableFilesByStatus = (context, files) => {
     return [];
 };
 
+const getElementReferencesFiles = (elementsReferences) => {
+    let elementsReferenceFiles = [];
+    if (elementsReferences) {
+        elementsReferenceFiles = elementsReferences.map((elementsReference) => elementsReference.files)
+            .reduce((acc, val) => acc.concat(val), [])
+            .map((elementReferenceFile) => {
+                elementReferenceFile.isElementReferenceFile = true;
+                return elementReferenceFile;
+            });
+    }
+    return elementsReferenceFiles;
+};
 
 export class FileTable extends React.Component {
     static rowClasses() {
@@ -400,8 +413,17 @@ export class FileTable extends React.Component {
         const selectedAnnotation = null;
 
         const nonAnalysisObjectPrefix = 'Other';
+        const isReferenceDataType = context['@type'].includes('reference');
+        const isFCEorFCS = context['@type'].includes('FunctionalCharacterizationExperiment') || context['@type'].includes('FunctionalCharacterizationSeries');
 
-        let datasetFiles = _((items && items.length > 0) ? items : []).uniq((file) => file['@id']);
+        let datasetFiles = _((items && items.length > 0) ? items : [])
+            .uniq((file) => file['@id'])
+            .filter((file) => (
+                (file.output_category !== 'reference' && !file.isElementReferenceFile) ||
+                (isReferenceDataType && file.output_category === 'reference') ||
+                (isFCEorFCS && file.isElementReferenceFile)
+            ));
+
         const isSeries = isSeriesType(context);
         const seriesAnalysesFilesIds = isSeries ? getAnalysesFilesFromContext(context) : [];
 
@@ -450,7 +472,8 @@ export class FileTable extends React.Component {
                     }
                     return 'rawArray';
                 }
-                if (file.output_category === 'reference') {
+
+                if (file.output_category === 'reference' || file.isElementReferenceFile) {
                     return 'ref';
                 }
 
@@ -1467,14 +1490,16 @@ export const FileGallery = ({
     });
 
     React.useEffect(() => {
+        const elementsReferenceFiles = getElementReferencesFiles(context.elements_references);
+
         if (files) {
             // Array of files provided, so set without a request to the server.
-            setData(files);
+            setData([...files, ...elementsReferenceFiles]);
         } else {
             // Request files from the server.
             const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}`;
             requestSearch(query).then((requestedData) => {
-                setData(requestedData['@graph']);
+                setData([...requestedData['@graph'], ...elementsReferenceFiles]);
             });
         }
     }, [fileQuery, files]);
@@ -4195,8 +4220,12 @@ const CollapsingTitleComponent = ({
     // have exactly one allowed "type={something}" in the filters.
     let batchDownloadController;
     const query = convertFiltersToQuery(filters, fileQueryKey);
+    const atType = context['@type'];
+    const isFCEorFCS = atType.includes('FunctionalCharacterizationExperiment') || atType.includes('FunctionalCharacterizationSeries');
     if (analysis) {
         batchDownloadController = new AnalysisBatchDownloadController(context, analysis['@id'], query, fileQueryKey);
+    } else if (isFCEorFCS) {
+        batchDownloadController = new ElementsReferencesDownloadController(context, query);
     } else if (outputCategory === 'reference') {
         batchDownloadController = new ReferenceBatchDownloadController(context, query, outputType, outputCategory, fileQueryKey);
     } else {

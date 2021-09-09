@@ -10,6 +10,7 @@ import DatasetBatchDownloadController from './dataset';
 import RawSequencingBatchDownloadController from './raw_sequencing';
 import ReferenceBatchDownloadController from './reference';
 import SearchBatchDownloadController from './search';
+import ElementsReferencesDownloadController from './elementsReferences';
 
 export {
     // Common batch-download components
@@ -23,4 +24,5 @@ export {
     RawSequencingBatchDownloadController,
     ReferenceBatchDownloadController,
     SearchBatchDownloadController,
+    ElementsReferencesDownloadController,
 };
