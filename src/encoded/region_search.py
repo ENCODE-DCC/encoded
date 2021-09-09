@@ -215,7 +215,7 @@ def region_search(context, request):
         return result
 
     expand = True
-    if region and (re.match('chr\w:\d+-\d+', region) or re.match('rs\d+', region)):
+    if region and (re.match(r'chr\w:\d+-\d+', region) or re.match(r'rs\d+', region)):
         expand = False
 
     try:
