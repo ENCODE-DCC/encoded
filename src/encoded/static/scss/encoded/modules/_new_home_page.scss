@@ -1,4 +1,5 @@
 $box-color: #0a253d;
+$box-color-highlighted: #2f4961;
 $search-radius: 10px;
 
 .home-page-layout {
@@ -199,6 +200,17 @@ $card-margin: 5px;
     margin: $card-margin;
     height: $card-height;
     width: $card-width;
+    $grandparent: &;
+
+    &--highlighted {
+        #{$grandparent}__header {
+            background-color: $box-color-highlighted;
+        }
+
+        #{$grandparent}__footer {
+            background-color: $box-color-highlighted;
+        }
+    }
 
     &__header {
         color: white;

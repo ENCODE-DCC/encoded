@@ -128,13 +128,38 @@ const newPageData = [
     },
 ];
 
-const Card = ({ item, index }) => (
-    <div className={`home-page-card ${index === 0 ? 'is-ref' : ''} ${index !== -1 ? 'carousel-seat' : ''}`} style={{ order: index }}>
-        <div className="home-page-card__header"><a href={item.header.url}>{item.header.text}</a></div>
-        <div className="home-page-card__content">{item.content}</div>
-        <div className="home-page-card__footer">{item.footer}</div>
-    </div>
-);
+const Card = ({ item, index }) => {
+    const clearHighlightedCard = (element) => {
+        const children = element?.children || [];
+
+        for (let i = 0; i < children.length; i += 1) {
+            const child = children[i];
+            child.classList.remove('home-page-card--highlighted');
+        }
+    };
+
+    const onMouseEnterCard = (e) => {
+        const element = e.currentTarget;
+
+        clearHighlightedCard(element.parentElement);
+        element.classList.add('home-page-card--highlighted');
+    };
+
+    const onMouseLeaveCard = (e) => {
+        const element = e.currentTarget;
+
+        clearHighlightedCard(element.parentElement);
+        element.classList.remove('home-page-card--highlighted');
+    };
+
+    return (
+        <div className={`home-page-card ${index === 0 ? 'is-ref' : ''} ${index !== -1 ? 'carousel-seat' : ''}`} style={{ order: index }} onMouseEnter={(e) => onMouseEnterCard(e)} onMouseLeave={(e) => onMouseLeaveCard(e)}>
+            <div className="home-page-card__header"><a href={item.header.url}>{item.header.text}</a></div>
+            <div className="home-page-card__content">{item.content}</div>
+            <div className="home-page-card__footer">{item.footer}</div>
+        </div>
+    );
+};
 
 Card.propTypes = {
     item: PropTypes.object.isRequired,
@@ -183,15 +208,7 @@ const Carousel = () => {
         setExpanded(!expanded);
     };
 
-    const onMouseOverCard = (e) => {
-        ;
-    };
-
-    const onMouseOutCard = (e) => {
-        ;
-    };
-
-    const openedCards = cards.map((item, index) => <Card key={item.id} item={item} index={index} onMouseOver={(e) => onMouseOverCard(e)} onMouseOut={(e) => onMouseOutCard(e)} />);
+    const openedCards = cards.map((item, index) => <Card key={item.id} item={item} index={index} />);
 
     const next = (el) => {
         const seats = document.querySelectorAll('.carousel-seat');
