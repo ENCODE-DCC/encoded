@@ -309,7 +309,7 @@ const RegionSearch = (props, context) => {
     if (typeof window !== 'undefined' && window.sessionStorage) {
         const lastView = window.sessionStorage.getItem(GV_VIEW);
         if (lastView && lastView.split(',')[0] === coordinates) {
-            visualization = lastView[1];
+            visualization = lastView.split(',')[1];
         }
     }
 
