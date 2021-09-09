@@ -375,6 +375,7 @@ export class Graph extends React.Component {
             // Both D3 and Jest have their own conflicting JSDOM instances
             require.ensure(['dagre-d3', 'd3'], (require) => {
                 if (this.graphdisplay) {
+                    // eslint-disable-next-line import/no-unresolved
                     this.d3 = require('d3');
                     this.dagreD3 = require('dagre-d3');
 
