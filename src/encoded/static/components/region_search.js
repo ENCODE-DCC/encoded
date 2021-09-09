@@ -199,10 +199,10 @@ class SearchBox extends React.Component {
     handleOnFocus(e) {
         this.setState({ showAutoSuggest: false });
 
-        const query = e.currentTarget.getElementsByClassName('form-control')[0].value;
+        const query = e.currentTarget.getElementsByClassName('form-control')[0].value || '';
         const annotation = e.currentTarget.elements.annotation[0].value;
         const assembly = this.state.genome;
-        this.props.handleSearch(query, annotation, assembly);
+        this.props.handleSearch(query.trim(), annotation, assembly);
 
         e.stopPropagation();
         e.preventDefault();
