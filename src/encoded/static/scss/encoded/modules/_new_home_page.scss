@@ -49,6 +49,7 @@ $search-radius: 10px;
             &__text-region {
                 display: flex;
                 justify-content: center;
+                color: grey;
             }
 
             .tooltip-home-info {
@@ -139,7 +140,7 @@ $search-radius: 10px;
     justify-content: space-between;
 
     &__arrow {
-        flex: 0 1 2%;
+        flex: 0 1 6%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -152,7 +153,7 @@ $search-radius: 10px;
     }
 
     &__region {
-        flex: 0 1 96%;
+        flex: 0 1 88%;
         overflow: hidden;
 
         &__carousel {
@@ -207,6 +208,11 @@ $card-margin: 5px;
         padding: 5px;
         height: $card-height / (0.1);
         width: $card-width;
+
+        a {
+            color: white;
+            display: block;
+        }
 
         @include ellipsis();
     }

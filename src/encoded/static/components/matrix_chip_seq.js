@@ -183,9 +183,16 @@ const Carousel = () => {
         setExpanded(!expanded);
     };
 
-    const openedCards = cards.map((item, index) => <Card key={item.id} item={item} index={index} />);
+    const onMouseOverCard = (e) => {
+        ;
+    };
 
-    // ////
+    const onMouseOutCard = (e) => {
+        ;
+    };
+
+    const openedCards = cards.map((item, index) => <Card key={item.id} item={item} index={index} onMouseOver={(e) => onMouseOverCard(e)} onMouseOut={(e) => onMouseOutCard(e)} />);
+
     const next = (el) => {
         const seats = document.querySelectorAll('.carousel-seat');
         if (el.nextElementSibling) {
@@ -238,8 +245,6 @@ const Carousel = () => {
             setTransformTranslateX(Math.floor(isReversed ? 1 : -1 * (100 / (cardsWidth / cardWidth))));
         }), 50);
     };
-
-    // ////
 
     return (
         <>
