@@ -378,10 +378,13 @@ const RegionSearch = (props, context) => {
                 ],
             };
 
+            const contig = coords.split(':')[0];
+            const interval = coords.split(':')[1];
+
             const coordinatesObj = {
-                contig: coords.split(':')[0],
-                x0: coords.split(':')[1].split('-')[0],
-                x1: coords.split(':')[1].split('-')[1],
+                contig: `chr${contig.split('chr')[1].toUpperCase()}`,
+                x0: interval.split('-')[0],
+                x1: interval.split('-')[1],
                 pinnedFiles: pinnedFilesAssembly[selectedAssembly],
             };
 
