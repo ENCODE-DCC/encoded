@@ -647,7 +647,8 @@
         ],
         "major_version": 1,
         "output_file_types": [
-            "long range chromatin interactions"
+            "long range chromatin interactions",
+            "chromatin stripes"
         ],
         "status": "released",
         "step_label": "hic-merge-step",
@@ -663,7 +664,8 @@
         ],
         "major_version": 1,
         "output_file_types": [
-            "genome compartments"
+            "genome compartments",
+            "genome subcompartments"
         ],
         "status": "released",
         "step_label": "ultra-res-genome-compartment-calls-step",
