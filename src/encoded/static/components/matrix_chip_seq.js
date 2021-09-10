@@ -339,7 +339,7 @@ const ChIPSeqMatrix = ({ context }) => {
                                 </Tooltip>
                             </div>
                             <div className="home-page-layout__search__search-region__search">
-                                <input type="search" placeholder="Search.." onKeyUp={(e) => searchBoxKeyUp(e)} />
+                                <input type="search" placeholder="Search..." onKeyUp={(e) => searchBoxKeyUp(e)} />
                                 <button type="button">
                                     <i className="icon icon-search" />
                                 </button>
