@@ -324,10 +324,68 @@ const RegionSearch = (props, context) => {
 
     const setGenomeBrowserStorageVariables = (coords) => {
         if (typeof coords !== 'undefined' && typeof window !== 'undefined' && window.sessionStorage) {
+            const pinnedFilesAssembly = {
+                GRCh38: [
+                    {
+                        file_format: 'vdna-dir',
+                        href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
+                    },
+                    {
+                        file_format: 'vgenes-dir',
+                        href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
+                        title: 'GENCODE V29',
+                    },
+                    {
+                        title: 'dbSNP (153)',
+                        file_format: 'variant',
+                        path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38-dbSNP153.vvariants-dir',
+                    },
+                    {
+                        file_format: 'bigBed',
+                        href: '/files/ENCFF088UEJ/@@download/ENCFF088UEJ.bigBed',
+                        dataset: '/annotations/ENCSR169HLH/',
+                        title: 'representative DNase hypersensitivity sites',
+                    },
+                    {
+                        file_format: 'bigBed',
+                        href: '/files/ENCFF389ZVZ/@@download/ENCFF389ZVZ.bigBed',
+                        dataset: '/annotations/ENCSR439EAZ/',
+                        title: 'cCRE, all',
+                    },
+                ],
+                mm10: [
+                    {
+                        file_format: 'vdna-dir',
+                        href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vdna-dir',
+                    },
+                    {
+                        file_format: 'vgenes-dir',
+                        href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vgenes-dir',
+                        title: 'GENCODE M21',
+                    },
+                    {
+                        file_format: 'bigBed',
+                        href: '/files/ENCFF278QAH/@@download/ENCFF278QAH.bigBed',
+                        dataset: '/annotations/ENCSR672RVL/',
+                        title: 'representative DNase hypersensitivity sites',
+                    },
+                    {
+                        file_format: 'bigBed',
+                        href: '/files/ENCFF228JRO/@@download/ENCFF228JRO.bigBed',
+                        dataset: '/annotations/ENCSR394RWS/',
+                        title: 'cCRE, all',
+                    },
+                ],
+            };
+
+            const contig = coords.split(':')[0];
+            const interval = coords.split(':')[1];
+
             const coordinatesObj = {
-                contig: coords.split(':')[0],
-                x0: coords.split(':')[1].split('-')[0],
-                x1: coords.split(':')[1].split('-')[1],
+                contig: `chr${contig.split('chr')[1].toUpperCase()}`,
+                x0: interval.split('-')[0],
+                x1: interval.split('-')[1],
+                pinnedFiles: pinnedFilesAssembly[selectedAssembly],
             };
 
             window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify(coordinatesObj));
