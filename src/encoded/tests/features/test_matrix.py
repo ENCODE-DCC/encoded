@@ -14,6 +14,8 @@ scenarios(
     'matrix_experiment.feature',
     'matrix_reference_epigenome.feature',
     'matrix_chip_seq.feature',
+    'matrix_deeply_profiled.feature',
+    'matrix_deeply_profiled_uniform_batch.feature',
     'matrix_mouse_development.feature',
     'matrix_reference_epigenome_homo_sapien_all.feature',
     'matrix_reference_epigenome_homo_sapien_nonroadmap.feature',
