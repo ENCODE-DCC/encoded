@@ -36,6 +36,8 @@ require('./matrix_experiment');
 require('./matrix_reference_epigenome');
 require('./matrix_sescc_stem_cell');
 require('./matrix_chip_seq');
+require('./matrix_deeply_profiled_uniform_batch');
+require('./matrix_deeply_profiled');
 require('./matrix_encore');
 require('./target');
 require('./publication');
