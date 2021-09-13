@@ -5,7 +5,7 @@
             "longLabel":  "Collection of ENCODE functional characterization series",
             "shortLabel": "ENCODE functional characterization series"
         },
-        "longLabel":  "{assay_title} series of {biosample_summary}  - {accession}",
+        "longLabel":  "{assay_title} series of {biosample_summary} - {accession}",
         "shortLabel": "{assay_title} series of {biosample_term_name} {accession}",
         "sortOrder": [ "Biosample", "Replicates", "Views" ],
         "Views":  {
@@ -26,7 +26,7 @@
                     "autoScale": "off",
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
-                    "output_type": [ "perturbation" ]
+                    "output_type": [ "perturbation signal" ]
                 },
                 "Element gene interactions signal": {
                     "tag": "cEGIS",

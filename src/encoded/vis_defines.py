@@ -177,6 +177,7 @@ SUPPORTED_MASK_TOKENS = [
     "{target.title}",
     "{target.name}",                          # Used in metadata URLs
     "{target.investigated_as}",
+    "{biosample_summary}",
     "{biosample_term_name}", "{biosample_term_name|multiple}",  # "|multiple": none means multiple
     "{output_type_short_label}",                # hard-coded translation from output_type to very
                                                 # short version
@@ -364,7 +365,11 @@ OUTPUT_TYPE_8CHARS = {
     "optimal IDR thresholded peaks":        "oIDR pk",
     "conservative IDR thresholded peaks":   "cIDR pk",
     "enhancer validation":                  "enh val",
-    "semi-automated genome annotation":     "saga"
+    "semi-automated genome annotation":     "saga",
+    "element quantifications":              "elem qt",
+    "guide locations":                      "g locs",
+    "element gene interactions signal":     "egi sig",
+    "element gene interactions p-value":    "egi pval"
     }
 
 # Track coloring is defined by biosample
@@ -790,6 +795,12 @@ class VisDefines(object):
             if token.endswith("|multiple}"):
                 return "multiple biosamples"
             return "Unknown Biosample"
+        elif token == "{biosample_summary}":
+            biosample_summary = dataset.get('biosample_summary')
+            if biosample_summary is None:
+                return "Unknown Biosample"
+            else:
+                return biosample_summary
         elif token == "{biosample_term_name}":
             biosample_ontology = dataset.get('biosample_ontology')
             if biosample_ontology is None:
