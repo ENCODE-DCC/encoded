@@ -3,18 +3,11 @@ import BatchDownloadController, { buildDownloadOptionsIndex } from './base';
 
 /**
  * Batch-download controller for downloads in individual sections within a file table of the file
- * gallery. It only offers two download options.
+ * gallery. It only offers one download options.
  * @param {object} dataset Contains dataset with files to download
  * @param {object} query QueryString of currently selected file facet terms
  */
 export default class ElementsReferencesDownloadController extends BatchDownloadController {
-    // eslint-disable-next-line no-useless-constructor
-    constructor(dataset, query) {
-        // Just need to reorder the parameters so `preBuildDownloadOptions` can access the
-        // parameters beyond `dataset` and `query`.
-        super(dataset, query);
-    }
-
     preBuildDownloadOptions(dataset, query) {
         this._elementsReferences = dataset.elements_references;
         this._query = query;
