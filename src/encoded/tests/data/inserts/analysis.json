@@ -51,5 +51,12 @@
         "files": ["ENCFF762DWI"],
         "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
         "status": "released"
+    },
+    {
+        "uuid": "d97c36ed-62dc-47a9-926d-e63a31d90615",
+        "accession": "ENCAN287CSA",
+        "files": ["ENCFF761PSF"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "status": "released"
     }
 ]

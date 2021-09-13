@@ -13,5 +13,21 @@
         ],
         "uuid": "cc54569d-6a9c-4c47-bd85-9f406a0ddbbc",
         "date_released": "2020-01-10"
-    }
+    },
+    {
+      "_test": "CRISPR screen series",
+      "accession": "ENCSR913CSS",
+      "award": "U54HG006997",
+      "description": "CRISPR screen series",
+      "lab": "bing-ren",
+      "status": "released",
+      "submitted_by": "facilisi.tristique@potenti.vivamus",
+      "related_datasets": [
+          "/experiments/ENCSR112TRG",
+          "/experiments/ENCSR113TRG"
+      ],
+      "uuid": "2c2a6143-adcc-4c6d-a36a-20f9387a9a41",
+      "date_released": "2021-03-23",
+      "analyses": ["ENCAN287CSA"]
+  }
 ]
