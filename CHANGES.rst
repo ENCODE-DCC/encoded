@@ -1,5 +1,31 @@
 Changes
 =======
+122.0 (released) snovault 1.0.60
+--------------------------------
+1. ENCD-6161-fix genome browser pinned files in sessionStorage (#4098)
+2. ENCD-6005-region-search-display-bug-fixes (#4095)
+3. ENCD-6113 FCC search updates (#4091)
+4. ENCD-6129 Removing facets (#4092)
+5. ENCD-6135-cart-view-update (#4089)
+6. ENCD-6005-region-search-dserv-genome-browser (#4052)
+7. ENCD-6136-gkm-svm-annotation-type-file-output-type (#4090)
+8. ENCD-5219-add-deleted-and-inserted-gene-details (#4087)
+9. ENCD-6121-add-screen-tiling-reference (#4081)
+10. ENCD-6109-origin-biosample-property (#4076)
+11. ENCD-6077-perturbations (#4072)
+12. ENCD-6130 file detail title not showing (#4086)
+13. ENCD-6067-update-ontology-slimming-terms (#4080)
+14. ENCD-5687-add-replication-count-to-experiments-and-fcc-experiments (#4078)
+15. ENCD-6096-remove-region-indexer (#4083)
+16. ENCD-6108-controlled-cell-growth-tag (#4070)
+17. ENCD-6099-audit-index-reads-no-read-structure (#4071)
+18. ENCD-6102-change-regex-lot-id-product-id (#4069)
+19. ENCD-6125-specify-location-constraint-in-moto-tests (#4077)
+20. ENCD-5908-add-formatted-biorep-property-to-experiments-and-fcc-experiments (#4065)
+21. ENCD-6105-disable-viz-btn-mouse-dev-matrix (#4066)
+22. ENCD-6103-fix-rush-matrix-urls (#4067)
+23. ENCD-6095-add-mEGFP-tag (#4073)
+
 121.0 (released) snovault 1.0.60
 --------------------------------
 1.	update-snovault-1.0.59 (#4026)
