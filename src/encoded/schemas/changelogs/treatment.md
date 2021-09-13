@@ -2,6 +2,7 @@
 
 ### Minor changes since schema 13
 * Added *perturbation* and *selection* to the *purpose* of treatment
+* Added *control* to the enum list for *purpose*; added *treatment_type_details* property to further describe the type of treatment
 
 ### Schema version 13
 * Modified regex pattern for *product_id* to disallow blank strings.

@@ -93,10 +93,11 @@
             "type": "string",
             "enum": [
                 "activation",
-                "deactivation",   
-                "perturbation",             
+                "control",
+                "deactivation",
+                "perturbation",
                 "selection",
-                "stimulation"                
+                "stimulation"
             ]
         },
         "temperature": {
