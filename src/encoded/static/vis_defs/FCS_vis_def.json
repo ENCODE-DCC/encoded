@@ -1,0 +1,71 @@
+{
+    "FCS": {
+        "rule": "'{@id}'.startswith('/functional-characterization-series/')",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE functional characterization series",
+            "shortLabel": "ENCODE functional characterization series"
+        },
+        "longLabel":  "{assay_title} series of {biosample_summary} - {accession}",
+        "shortLabel": "{assay_title} series of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Guide locations", "Perturbation signal", "Element gene interactions signal", "Element gene interactions p-value" ],
+            "groups": {
+                "Guide locations": {
+                    "tag": "aGL",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "guide locations" ]
+                },
+                "Peturbation Signal": {
+                    "tag": "bPSIG",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "perturbation signal" ]
+                },
+                "Element gene interactions signal": {
+                    "tag": "cEGIS",
+                    "type": "bigInteract",
+                    "visibility": "full",
+                    "interactUp": true,
+                    "output_type": [ "element gene interactions signal" ]
+                },
+                "Element gene interactions p-value": {
+                    "tag": "dEGIPV",
+                    "type": "bigInteract",
+                    "visibility": "full",
+                    "interactUp": true,
+                    "output_type": [ "element gene interactions p-value" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+            "dimensionAchecked": "all",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}",
+                            "combined_title": "Pooled"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{assay_title} series of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}

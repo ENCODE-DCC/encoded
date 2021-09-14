@@ -301,7 +301,7 @@ def test_PCS_bigWig_trackDb(testapp, index_workbook, expected):
     "        parent ENCSR222MPR_aEQS_view on",
     "        bigDataUrl /files/ENCFF527MEQ/@@download/ENCFF527MEQ.bigBed?proxy=true",
     "        longLabel MPRA of K562 element quantifications rep1 ENCSR222MPR - ENCFF527MEQ",
-    "        shortLabel rep1 element quantifications",
+    "        shortLabel rep1 elem qt",
     "        type bigBed",
     "        subGroups BS=K562 EXP=ENCSR222MPR REP=rep01 view=aEQS",
 ])

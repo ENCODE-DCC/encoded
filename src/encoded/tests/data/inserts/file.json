@@ -4770,5 +4770,19 @@
         "file_size": 370148294,
         "output_type": "regulatory elements prediction model",
         "lab": "/labs/richard-myers/"
+    },
+    {
+        "accession": "ENCFF761PSF",
+        "assembly": "GRCh38",
+        "award": "/awards/U54HG006997/",
+        "dataset": "ENCSR913CSS",
+        "file_format": "bigWig",
+        "file_size": 4859023,
+        "lab": "bing-ren",
+        "md5sum": "e224bff2b137f7a4427f948810189134",
+        "output_type": "perturbation signal",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "c6dee687-4030-4edb-85a4-12cf7f9d4183"
     }
 ]

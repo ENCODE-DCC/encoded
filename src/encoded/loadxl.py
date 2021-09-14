@@ -664,7 +664,7 @@ PHASE1_PIPELINES = {
         remove_keys('related_files'),
     ],
     'functional_characterization_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'single_cell_rna_series': [
         remove_keys('related_datasets'),
@@ -777,7 +777,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'functional_characterization_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'single_cell_rna_series': [
         skip_rows_missing_all_keys('related_datasets'),
