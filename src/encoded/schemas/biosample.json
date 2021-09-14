@@ -1040,6 +1040,9 @@
         "treatments.treatment_term_name": {
             "title": "Biosample treatment"
         },
+        "treatments.treatment_type_details": {
+            "title": "Biosample treatment type details"
+        },
         "culture_harvest_date": {
             "title": "Culture harvest date"
         },

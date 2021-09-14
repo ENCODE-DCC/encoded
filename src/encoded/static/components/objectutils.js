@@ -82,9 +82,9 @@ export function singleTreatment(treatment) {
 
 // Display treatment type with treatment type details if present.
 export function treatmentTypeDisplay(treatment) {
-    let treatmentDetails = `${treatment.treatment_type} `;
+    let treatmentDetails = `${treatment.treatment_type}`;
     if (treatment.treatment_type_details) {
-        treatmentDetails += `(${treatment.treatment_type_details})`;
+        treatmentDetails += ` (${treatment.treatment_type_details})`;
     }
     return treatmentDetails;
 }
