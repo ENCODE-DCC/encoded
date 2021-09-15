@@ -76,14 +76,14 @@
         },
         "supersedes": {
             "title": "Supersedes" ,
-            "description": "The single unit dataset(s) that this single cell unit dataset supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "description": "The single cell unit(s) that this single cell unit supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                "comment": "See single_cell_unit_dataset.json for a list of available identifiers.",
+                "comment": "See single_cell_unit.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "SingleCellUnitDataset"
+                "linkTo": "SingleCellUnit"
             }
         },
         "possible_controls": {
