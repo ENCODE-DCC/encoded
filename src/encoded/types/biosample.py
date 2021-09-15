@@ -1044,7 +1044,7 @@ def generate_summary_dictionary(
             treatment_type_details = treatment_object.get('treatment_type_details', '')
             dur = treatment_object.get('duration', '')
             dur_units = treatment_object.get('duration_units', '')
-            to_add = "{}{}{}".format(
+            to_add = "{}{}{}{}".format(
                 (str(amt) + ' ' + amt_units + ' ' if amt and amt_units else ''),
                 (treatment_term_name + ' ' if treatment_term_name else ''),
                 ('(' + treatment_type_details + ') ' if treatment_type_details else ''),
