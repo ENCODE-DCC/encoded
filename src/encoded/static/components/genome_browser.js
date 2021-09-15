@@ -607,6 +607,7 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
                             <li><a href={file.dataset} className="gb-accession">{datasetName}<span className="sr-only">{`Details for dataset ${datasetName}`}</span></a></li>
                             <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
                             <li>{file.output_type}</li>
+                            {file.origin_batches ? <li>{(file.origin_batches).split('/')[2].join(', ')}</li> : null}
                             {file.simple_biosample_summary ? <li>{file.simple_biosample_summary}</li> : null}
                             {biologicalReplicates ? <li>{`rep ${biologicalReplicates}`}</li> : null}
                             {file.biochemical_inputs ? <li>{(file.biochemical_inputs).join(', ')}</li> : null}
@@ -625,6 +626,7 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
                             {file.biosample_ontology && file.biosample_ontology.term_name ? <li>{file.biosample_ontology.term_name}</li> : null}
                             {file.target ? <li>{file.target.label}</li> : null}
                             {file.assay_term_name ? <li>{file.assay_term_name}</li> : null}
+                            {file.origin_batches ? <li>{(file.origin_batches).split('/')[2].join(', ')}</li> : null}
                             {file.simple_biosample_summary ? <li>{file.simple_biosample_summary}</li> : null}
                             <li>{file.output_type}</li>
                             {file.annotation_subtype ? <li>{(file.annotation_subtype)}</li> : null}
