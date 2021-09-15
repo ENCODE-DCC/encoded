@@ -67,6 +67,17 @@ const genomeBrowser = (style) => (
     </svg>
 );
 
+const cellGroup = (style) => (
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="download" className="svg-inline--fa fa-download fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" style={style}>
+        <ellipse cx="2" cy="2" rx="12" ry="9" className="js-cell" />
+        <ellipse cx="2" cy="2" rx="6.5" ry="6" className="js-cell" />
+        <ellipse cx="-5" cy="10" rx="12" ry="9" className="js-cell" />
+        <ellipse cx="-5" cy="10" rx="6.5" ry="5" className="js-cell" />
+        <ellipse cx="10" cy="10" rx="12" ry="9" className="js-cell" />
+        <ellipse cx="10" cy="10" rx="6.5" ry="5" className="js-cell" />
+    </svg>
+);
+
 const expandArrows = (style) => (
     <svg className="expand-arrows" width="1em" height="1em" viewBox="0 0 16 16" style={style} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path fillRule="evenodd" d="M1.464 10.536a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3.5a.5.5 0 0 1-.5-.5v-3.5a.5.5 0 0 1 .5-.5z" />
@@ -218,6 +229,7 @@ const icons = {
     dataset,
     file,
     download,
+    cellGroup,
     venus,
     mars,
 };
