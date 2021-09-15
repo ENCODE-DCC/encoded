@@ -292,6 +292,8 @@ class CalculatedBiosampleSummary:
             'phase',
             'fractionated',
             'sex_stage_age',
+            'disease_term_name',
+            'sentence_divider',
             'post_nucleic_acid_delivery_time',
             'post_differentiation_time',
             'synchronization',
@@ -299,11 +301,13 @@ class CalculatedBiosampleSummary:
             'originated_from',
             'treatments_phrase',
             'depleted_in',
-            'disease_term_name',
             'pulse_chase_time'
         ]
         if drop_age_sex_flag:
             sentence_parts.remove('sex_stage_age')
+            for entry in dictionaries_of_phrases:
+                if 'disease_term_name' in entry and entry['disease_term_name'] != '':
+                    entry['disease_term_name'] = f"from a donor {entry['disease_term_name']}"
         if add_classification_flag:
             sentence_parts.insert(2, 'sample_type')
         if biosample_drop_originated_from_flag:

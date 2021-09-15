@@ -1,6 +1,6 @@
 from .biosample import generate_summary_dictionary
 
-def biosample_summary_information(request, biosampleObject):
+def biosample_summary_information(request, biosampleObject, skip_non_perturbation_treatments_flag=False):
     drop_age_sex_flag = False
     add_classification_flag = False
     drop_originated_from_flag = False
@@ -25,6 +25,10 @@ def biosample_summary_information(request, biosampleObject):
         treatment_objects_list = []
         for t in treatments:
             treatment_objects_list.append(request.embed(t, '@@object'))
+        if skip_non_perturbation_treatments_flag:
+            for treatment in list(treatment_objects_list):
+                if treatment['purpose'] != 'perturbation':
+                    treatment_objects_list.remove(treatment)
 
     part_of_object = None
     if 'part_of' in biosampleObject:

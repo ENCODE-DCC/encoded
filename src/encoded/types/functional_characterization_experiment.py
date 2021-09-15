@@ -26,6 +26,8 @@ from .shared_calculated_properties import (
 )
 
 from .assay_data import assay_terms
+from .biosample import construct_biosample_summary
+from .shared_biosample import biosample_summary_information
 
 @collection(
     name='functional-characterization-experiments',
@@ -235,3 +237,122 @@ class FunctionalCharacterizationExperiment(
             if "FunctionalCharacterizationSeries" in types:
                 return True 
         return False
+
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self, request, replicates=None, elements_references=None):
+        drop_age_sex_flag = False
+        add_classification_flag = False
+        drop_originated_from_flag = False
+        dictionaries_of_phrases = []
+        biosample_accessions = set()
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object')
+                    if libraryObject['status'] == 'deleted':
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] == 'deleted':
+                            continue
+                        if biosampleObject['accession'] not in biosample_accessions:
+                            biosample_accessions.add(biosampleObject['accession'])
+                            biosample_info = biosample_summary_information(request, biosampleObject, skip_non_perturbation_treatments_flag=True)
+                            biosample_summary_dictionary = biosample_info[0]
+                            biosample_drop_age_sex_flag = biosample_info[1]
+                            biosample_add_classification_flag = biosample_info[2]
+                            biosample_drop_originated_from_flag = biosample_info[3]
+                            dictionaries_of_phrases.append(biosample_summary_dictionary)
+                            if biosample_drop_age_sex_flag:
+                                drop_age_sex_flag = True
+                            if biosample_add_classification_flag:
+                                add_classification_flag = True
+                            if biosample_drop_originated_from_flag:
+                                drop_originated_from_flag = True
+        if len(dictionaries_of_phrases) > 0:
+            if elements_references is not None and len(elements_references) > 0:
+                for ref in elements_references:
+                    elements_reference_object = request.embed(ref, '@@object')
+                    loci_terms = []
+                    if 'examined_loci' in elements_reference_object:
+                        if len(elements_reference_object['examined_loci']) > 1:
+                            loci_terms.append('multiple loci')
+                            # loci_phrase = 'for multiple loci'
+                        else:
+                            examined_loci_object = request.embed(elements_reference_object['examined_loci'][0], '@@object')
+                            loci_terms.append(f"{examined_loci_object['symbol']} locus")
+                            # loci_phrase = f"for {examined_loci_object['symbol']} locus"
+                        # for entry in dictionaries_of_phrases:
+                        #     entry['elements_references_examined_loci'] = loci_phrase
+                    elif 'examined_regions' in elements_reference_object:
+                        if len(elements_reference_object['examined_regions']) > 1:
+                            loci_terms.append('multiple loci')
+                            # loci_phrase = 'for multiple loci'
+                        else:
+                            examined_region_object = elements_reference_object['examined_regions'][0]
+                            loci_terms.append(
+                                f"{examined_region_object['chromosome']}:"
+                                f"{examined_region_object['start']}-"
+                                f"{examined_region_object['end']}"
+                            )
+                            # loci_phrase = (
+                            #     f"for {examined_region_object['chromosome']}:"
+                            #     f"{examined_region_object['start']}-"
+                            #     f"{examined_region_object['end']}"
+                            # )
+                        # for entry in dictionaries_of_phrases:
+                        #     entry['elements_references_examined_loci'] = loci_phrase
+                    else:
+                        loci_terms.append('')
+                        # for entry in dictionaries_of_phrases:
+                        #     entry['elements_references_examined_loci'] = ''
+                
+                filtered_loci_terms = [term for term in loci_terms if term not in ['', 'multiple loci']]
+                if len(set(loci_terms)) == 1 and '' in set(loci_terms):
+                    for entry in dictionaries_of_phrases:
+                        entry['elements_references_examined_loci'] = ''
+                elif 'multiple loci' in loci_terms or \
+                        len(set(filtered_loci_terms)) > 1:
+                    for entry in dictionaries_of_phrases:
+                        entry['elements_references_examined_loci'] = f'for multiple loci'
+                else:
+                    for entry in dictionaries_of_phrases:
+                        entry['elements_references_examined_loci'] = f'for {loci_terms}'
+
+            else:
+                for entry in dictionaries_of_phrases:
+                    entry['elements_references_examined_loci'] = ''
+
+        sentence_parts = [
+            'genotype_strain',
+            'experiment_term_phrase',
+            'phase',
+            'fractionated',
+            'sex_stage_age',
+            'disease_term_name',
+            'sentence_divider',
+            'post_nucleic_acid_delivery_time',
+            'post_differentiation_time',
+            'synchronization',
+            'modifications_list',
+            'originated_from',
+            'treatments_phrase',
+            'depleted_in',
+            'pulse_chase_time',
+            'elements_references_examined_loci'
+        ]
+        if drop_age_sex_flag:
+            sentence_parts.remove('sex_stage_age')
+        if add_classification_flag:
+            sentence_parts.insert(2, 'sample_type')
+        if drop_originated_from_flag:
+            sentence_parts.remove('originated_from')
+
+        if len(dictionaries_of_phrases) > 0:
+            return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)

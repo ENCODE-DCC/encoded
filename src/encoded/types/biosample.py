@@ -589,6 +589,7 @@ class Biosample(Item):
         reduced = [
             'sex_stage_age',
             'disease_term_name',
+            'sentence_divider',
             'treatments_phrase',
             'genotype_strain',
             'strain_background',
@@ -605,7 +606,9 @@ class Biosample(Item):
             if biosample_dictionary.get(prop, None) and biosample_dictionary[prop] not in props_list:
                 props_list.append(biosample_dictionary[prop])
 
-        return " ".join(props_list).strip()
+        return construct_biosample_summary([biosample_dictionary],
+                                           reduced)
+        # return " ".join(props_list).strip()
 
     @calculated_property(schema={
         "title": "Summary",
@@ -650,10 +653,11 @@ class Biosample(Item):
             'genotype_strain',
             'sex_stage_age',
             'synchronization',
+            'disease_term_name',
+            'sentence_divider',
             'term_phrase',
             'modifications_list',
             'originated_from',
-            'disease_term_name',
             'treatments_phrase',
             'post_nucleic_acid_delivery_time',
             'post_differentiation_time',
@@ -858,7 +862,8 @@ def generate_summary_dictionary(
         'modifications_list': '',
         'strain_background': '',
         'preservation_method': '',
-        'experiment_term_phrase': ''
+        'experiment_term_phrase': '',
+        'sentence_divider': ';'
     }
 
     if organismObject is not None:
@@ -1173,6 +1178,8 @@ def generate_sentence(phrases_dict, values_list):
                 sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             elif 'pulse_chase_time' in key:
                 sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
+            elif 'sentence_divider' in key:
+                sentence = f'{sentence.strip()}{phrases_dict[key].strip()} '
             else:
                 sentence += phrases_dict[key].strip() + ' '
     return sentence.strip()
@@ -1278,10 +1285,13 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     words = sentence_to_return.split(' ')
     if words[-1] in ['transiently', 'stably']:
         sentence_to_return = ' '.join(words[:-1])
+    if sentence_to_return.endswith(';'):
+        sentence_to_return = sentence_to_return[:-1]
 
     rep = {
         ' percent': '%',
         '.0 ': ' ',
+        ' ;': ';'
     }
     rep = dict((re.escape(k), v) for k, v in rep.items())
     pattern = re.compile("|".join(rep.keys()))
