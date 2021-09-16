@@ -2109,6 +2109,9 @@
         "biosample_ontology.organ_slims": {
             "title": "Organ"
         },
+        "origin_batches": {
+            "title": "Batch"
+        },
         "target.label": {
             "title": "Target label"
         },
