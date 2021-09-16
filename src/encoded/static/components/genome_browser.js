@@ -597,7 +597,9 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
         ]).join(', ');
     }
 
-    console.log(file.simple_biosample_summary)
+    var str = "GeeksforGeeks";
+
+    console.log(str)
     console.log(file.origin_batches)
 
     return (
