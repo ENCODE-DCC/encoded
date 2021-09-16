@@ -404,5 +404,90 @@
         "assay_ontology": "EFO_0009899",
         "name": "10x-3'-v2",
         "title": "10x 3' v2"
+    },
+    {
+        "biological_macromolecule": "RNA",
+        "library_type": "RNA-seq",
+        "name": "VDJ-10x-5'-v2",
+        "title": "VDJ 10x 5' v2"
+    },
+    {
+        "assay_ontology": "/ontology-terms/EFO_0009900/",
+        "biological_macromolecule": "RNA",
+        "construction_platform": "10x",
+        "construction_platform_version": 2,
+        "end_bias": "5'",
+        "extraction_method": "10x GEM generation",
+        "first_strand_primer": "poly(dT)",
+        "fragmentation_method": "enzymatic",
+        "library_amplification_method": "PCR",
+        "library_preamplification_method": "RT-PCR",
+        "library_preparation_environment": "droplet",
+        "library_size_selection_method": "SPRIselect",
+        "library_type": "RNA-seq",
+        "lysis_method": "10x GEM generation",
+        "name": "10x-5'-v2",
+        "polyA_selection": true,
+        "polyA_selection_method": "poly(dT)",
+        "read_structure": [
+            {
+                "end": 16,
+                "start": 1,
+                "sequence_element": "cell barcode",
+                "located_in_read_type": "Read 1"
+            },
+            {
+                "end": 26,
+                "start": 17,
+                "sequence_element": "UMI",
+                "located_in_read_type": "Read 1"
+            }
+        ],
+        "second_strand_primer": "TSO",
+        "sequence_file_standards": [
+            {
+                "required": true,
+                "read_type": "Read 1",
+                "read_length": 26,
+                "sequence_elements": [
+                    "cell barcode",
+                    "UMI"
+                ],
+                "demultiplexed_type": "R1",
+                "read_length_specification": "minimum"
+            },
+            {
+                "required": true,
+                "read_type": "Read 2",
+                "read_length": 90,
+                "sequence_elements": [
+                    "5' of molecule"
+                ],
+                "demultiplexed_type": "R2",
+                "read_length_specification": "ideal"
+            },
+            {
+                "required": false,
+                "read_type": "i7 index",
+                "read_length": 10,
+                "sequence_elements": [
+                    "sample index"
+                ],
+                "demultiplexed_type": "I1",
+                "read_length_specification": "exact"
+            },
+            {
+                "required": false,
+                "read_type": "i5 index",
+                "read_length": 10,
+                "sequence_elements": [
+                    "sample index"
+                ],
+                "demultiplexed_type": "I2",
+                "read_length_specification": "exact"
+            }
+        ],
+        "strand_specificity": "second",
+        "title": "10x 5' v2"
     }
 ]

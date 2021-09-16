@@ -230,5 +230,17 @@
         "status": "current",
         "uuid": "cd09e34b-7513-456c-a69c-66d258b99d83",
         "institute_name": "Clown University"
+    },
+    {
+        "first_name": "Erica",
+        "lab": "/labs/j-michael-cherry/",
+        "groups": [
+            "admin",
+            "verified"
+        ],
+        "last_name": "Rutherford",
+        "status": "current",
+        "uuid": "1ee508c5-e615-499e-b858-f495c69d7565",
+        "institute_name": "Stanford University"
     }
 ]
