@@ -177,7 +177,7 @@
                         "feature_count": 22357
                     }
                 ],
-                "value_scale": "log1p, natural",
+                "value_scale": "log1p, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "scTransform",
@@ -256,7 +256,7 @@
                         "feature_count": 50
                     }
                 ],
-                "value_scale": "log, natural",
+                "value_scale": "log, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "scaled": true,
@@ -332,7 +332,7 @@
                         "feature_count": 329950
                     }
                 ],
-                "value_scale": "log, natural",
+                "value_scale": "log, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "LogNormalize",
@@ -402,7 +402,7 @@
                         "feature_count": 329950
                     }
                 ],
-                "value_scale": "log, natural",
+                "value_scale": "log, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "LogNormalize",
@@ -476,7 +476,7 @@
                         "feature_count": 50
                     }
                 ],
-                "value_scale": "log, natural",
+                "value_scale": "log, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "LogNormalize",
@@ -550,7 +550,7 @@
                         "feature_count": 50
                     }
                 ],
-                "value_scale": "log1p, natural",
+                "value_scale": "log1p, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "LogNormalize",
