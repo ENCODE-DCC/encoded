@@ -11,6 +11,7 @@
 * Added *cell barcode* and *element barcode* to the enum list for *sequence_element* of the *read_structure* property
 * Added *origin_batches* calculated property
 * Added *regulatory elements prediction model* to the enum list for *output_type*
+* Added *genome subcompartments* and *chromatin stripes* to the enum list for *output_type*
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.

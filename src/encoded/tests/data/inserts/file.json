@@ -4770,5 +4770,42 @@
         "file_size": 370148294,
         "output_type": "regulatory elements prediction model",
         "lab": "/labs/richard-myers/"
+    },
+    {
+        "accession": "ENCFF910GSC",
+        "aliases": [
+            "erez-lieberman:HIC036-genome-subcompartments"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "bed",
+        "file_format_type": "bed9",
+        "file_size": 39804185,
+        "lab": "ali-mortazavi",
+        "md5sum": "72e3dec74333eeb6d15c01b17cdd1d49",
+        "output_type": "genome subcompartments",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "abc19456-0c8f-4aff-bead-71e3da5a2cc9"
+    },
+    {
+        "accession": "ENCFF203CSE",
+        "aliases": [
+            "erez-lieberman:HIC036-chromatin-stripes"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "bedpe",
+        "file_size": 4798104,
+        "lab": "ali-mortazavi",
+        "md5sum": "238a0a964769b4dad6e41653f3ee033b",
+        "output_type": "chromatin stripes",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "4ceb92b2-d003-4cd9-9752-9df707bb1715"
     }
 ]
