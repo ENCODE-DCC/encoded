@@ -599,14 +599,8 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
         ]).join(', ');
     }
 
-    const originBatchesList = file.origin_batches ? file.origin_batches.map((batch) => batch.split('/')[2]).join(', ') : '';
+    const originBatchesList = file.origin_batches ? 'batch: ' + file.origin_batches.map((batch) => batch.split('/')[2]).join(', ') : '';
     
-    console.log(file['@id'])
-    console.log(file.origin_batches);
-    console.log(originBatchesList);
-   
-
-
     return (
         <>
             {(label === 'cart') ?
