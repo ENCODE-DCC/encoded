@@ -28,7 +28,8 @@
                 "label": "X",
                 "normalized": true,
                 "value_units": "UMI",
-                "value_scale": "log, base 10"
+                "value_scale": "log, base 10",
+                "is_primary_data": true
             }
         ]
     },
@@ -98,7 +99,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ]
     },
@@ -203,7 +205,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ]
     },
@@ -283,7 +286,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ],
         "accession": "LATDF982KCF"
@@ -357,7 +361,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ],
         "accession": "LATDF611FOP"
@@ -427,7 +432,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ],
         "accession": "LATDF757YHL"
@@ -501,7 +507,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ],
         "accession": "LATDF071TSQ"
@@ -575,7 +582,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": false
             }
         ],
         "accession": "LATDF522RJH"

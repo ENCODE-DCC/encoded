@@ -80,7 +80,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         }, 
         "description": {
             "description": "The text describing the matrix, will be displayed as the title at cellxgene."
@@ -199,7 +199,8 @@
                 "title": "Layer",
                 "description": "",
                 "type": "object",
-                "required": ["normalized", "value_scale", "value_units"],
+                "additionalProperties": false,
+                "required": ["normalized", "value_scale", "value_units", "is_primary_data"],
                 "properties": {
                     "label": {
                         "title": "Label",

@@ -13,3 +13,10 @@ def processed_matrix_file_3_4(value, system):
 		del value['assembly']
 	if 'genome_annotation' in value:
 		del value['genome_annotation']
+
+
+@upgrade_step('processed_matrix_file', '4', '5')
+def processed_matrix_file_4_5(value, system):
+	if 'layers' in value:
+		for l in value['layers']:
+			l['is_primary_data'] = True
