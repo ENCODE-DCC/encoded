@@ -2109,6 +2109,9 @@
         "biosample_ontology.organ_slims": {
             "title": "Organ"
         },
+        "simple_biosample_summary":{
+            "title": "Simple biosample summary"
+        },
         "origin_batches": {
             "title": "Batch"
         },
