@@ -43,7 +43,7 @@ class Donor(Item, CalculatedTreatmentSummary):
                         "description": "The age and age units of the donor.",
                         "comment": "Do not submit. This is a calculated property",
                         "type": "string"})
-    def age_display(self, request, development_ontology, age=None, age_units=None, conceptional_age=None, conceptional_age_units=None):
+    def age_display(self, request, age=None, age_units=None, conceptional_age=None, conceptional_age_units=None):
         if age == 'unknown' or conceptional_age == 'unknown':
             return 'unknown'
         elif age != None:
@@ -145,6 +145,17 @@ class HumanPrenatalDonor(HumanDonor):
     embedded = HumanDonor.embedded + []
 
 
+    @calculated_property(schema={
+        "title": "Age development stage redunancy",
+        "description": "If true, the development_ontology term exactly defines the age.",
+        "comment": "Do not submit. This is a calculated property",
+        "permission": "import_items",
+        "type": "boolean"
+    })
+    def age_development_stage_redundancy(self):
+        return False
+
+
 @collection(
     name='human-postnatal-donors',
     unique_key='accession',
@@ -173,6 +184,23 @@ class HumanPostnatalDonor(HumanDonor):
                 return False
             else:
                 return True
+
+
+    @calculated_property(schema={
+        "title": "Age development stage redunancy",
+        "description": "If true, the development_ontology term exactly defines the age.",
+        "comment": "Do not submit. This is a calculated property",
+        "permission": "import_items",
+        "type": "boolean"
+    })
+    def age_development_stage_redundancy(self, age, age_units=None):
+        if age != 'unknown' and '-' not in age and '>' not in age:
+            if age_units == 'year':
+                return True
+            elif age_units == 'month' and int(age) > 24:
+                return True
+
+        return False
 
 
     @calculated_property(schema={

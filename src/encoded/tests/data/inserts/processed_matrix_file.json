@@ -28,7 +28,8 @@
                 "label": "X",
                 "normalized": true,
                 "value_units": "UMI",
-                "value_scale": "log, base 10"
+                "value_scale": "log, base 10",
+                "is_primary_data": true
             }
         ]
     },
@@ -98,7 +99,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ]
     },
@@ -177,7 +179,7 @@
                         "feature_count": 22357
                     }
                 ],
-                "value_scale": "log1p, natural",
+                "value_scale": "log1p, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "scTransform",
@@ -203,7 +205,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ]
     },
@@ -256,7 +259,7 @@
                         "feature_count": 50
                     }
                 ],
-                "value_scale": "log, natural",
+                "value_scale": "log, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "scaled": true,
@@ -283,7 +286,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ],
         "accession": "LATDF982KCF"
@@ -332,7 +336,7 @@
                         "feature_count": 329950
                     }
                 ],
-                "value_scale": "log, natural",
+                "value_scale": "log, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "LogNormalize",
@@ -357,7 +361,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ],
         "accession": "LATDF611FOP"
@@ -402,7 +407,7 @@
                         "feature_count": 329950
                     }
                 ],
-                "value_scale": "log, natural",
+                "value_scale": "log, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "LogNormalize",
@@ -427,7 +432,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ],
         "accession": "LATDF757YHL"
@@ -476,7 +482,7 @@
                         "feature_count": 50
                     }
                 ],
-                "value_scale": "log, natural",
+                "value_scale": "log, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "LogNormalize",
@@ -501,7 +507,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": true
             }
         ],
         "accession": "LATDF071TSQ"
@@ -550,7 +557,7 @@
                         "feature_count": 50
                     }
                 ],
-                "value_scale": "log1p, natural",
+                "value_scale": "log1p, base e",
                 "value_units": "UMI",
                 "normalized": true,
                 "normalization_method": "LogNormalize",
@@ -575,7 +582,8 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ]
+                ],
+                "is_primary_data": false
             }
         ],
         "accession": "LATDF522RJH"
