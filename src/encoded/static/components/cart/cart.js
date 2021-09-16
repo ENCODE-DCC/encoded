@@ -86,6 +86,7 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'dataset' },
         { field: 'biological_replicates' },
         { field: 'simple_biosample_summary' },
+        { field: 'origin_batches' },
         { field: 'analyses', dataset: true },
         { field: 'target', dataset: true },
         { field: 'targets', dataset: true },
