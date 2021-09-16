@@ -597,6 +597,9 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
         ]).join(', ');
     }
 
+    console.log(file.simple_biosample_summary)
+    console.log((file.origin_batches).join(', '))
+
     return (
         <>
             {(label === 'cart') ?
