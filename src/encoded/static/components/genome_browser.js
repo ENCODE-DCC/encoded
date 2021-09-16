@@ -603,7 +603,7 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
 
     console.log(str)
     console.log(file['@id'])
-    console.log(file.origin_batches)
+    console.log(file['origin_batches'])
 
     return (
         <>
