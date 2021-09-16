@@ -1,0 +1,89 @@
+[
+  {
+    "name": "Hematopoietic stem cell",
+    "children": [
+      {
+		"name": "Myeloid progenitor cell",
+        "children": [
+          {
+              "name": "Megakaryocyte",
+              "children": [
+                { "name": "Platelets" }
+              ]
+          },
+          { "name": "Eosinophil" },
+          { "name": "Basophil" },
+          { "name": "Erythrocytes" },
+          {
+              "name": "Monocyte",
+              "children": [
+                { "name": "Dendritic cell" },
+                { "name": "Macrophage" }
+              ]
+          },
+          { "name": "Neutrophil" }
+        ]
+      },
+      {
+		"name": "Lymphoid progenitor cell",
+        "children": [
+          {
+              "name": "T cell",
+              "children": [
+                {
+                    "name": "Naive CD4+ T cell",
+                    "children": [
+                      { "name": "Th0" },
+                      {
+                          "name": "Memory CD4+ T cell",
+                          "children": [
+                            { "name": "Th1" },
+                            { "name": "Th2" },
+                            { "name": "Th17" },
+                            { "name": "Treg" }
+                          ]
+                      }
+                    ]
+                },
+                {
+                    "name": "Naive CD8+ T cell",
+                    "children": [
+                      { "name" : "Terminal Effector" },
+                      {
+                          "name": "Memory CD8+ T cell",
+                          "children": [
+                            { "name": "Effector memory" },
+                            { "name": "Central memory" }
+                          ]
+                      }
+                    ]
+                }
+              ]
+          },
+          {
+              "name": "B cell",
+              "children": [
+                {
+                    "name": "Naive mature B cell",
+                    "children": [
+                      { "name": "B memory cell" }
+                    ]
+                }
+              ]
+          },
+          {
+              "name": "NK cell",
+              "children": [
+                {
+                    "name": "CD56dim / CD16hi / NK cell",
+                    "children": [
+                      { "name": "CD56bright / CD16lo / NK cell" }
+                    ]
+                }
+              ]
+          }
+        ]
+      }
+    ]
+  }
+]
