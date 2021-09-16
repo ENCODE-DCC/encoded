@@ -323,6 +323,7 @@ const dummyFiles = [
         title: 'ENCFF425LKJ',
         biological_replicates: [1],
         simple_biosample_summary: 'male (34 years)',
+        origin_batches: ['/experiments/ENCSR683CSF/', '/experiments/ENCSR683ABC/'],
     },
     {
         file_format: 'bigWig',
@@ -344,6 +345,7 @@ const dummyFiles = [
         title: 'ENCFF638QHN',
         biological_replicates: [2],
         simple_biosample_summary: 'mild cognitive impairment',
+        origin_batches: ['/experiments/ENCSR683CSF/', '/experiments/ENCSR683ABC/'],
     },
     {
         file_format: 'bigWig',
@@ -366,6 +368,7 @@ const dummyFiles = [
         title: 'ENCFF541XFO',
         biological_replicates: [1],
         simple_biosample_summary: 'male adult (35 years) treated with 5 μg/mL Interferon-gamma antibody , 100 ng/mL Interleukin-4 , anti-CD3 and anti-CD28 coated beads',
+        origin_batches: ['/experiments/ENCSR683CSF/', '/experiments/ENCSR683ABC/'],
     },
     {
         file_format: 'bigBed bedRNAElements',
@@ -388,6 +391,7 @@ const dummyFiles = [
         title: 'ENCFF517WSY',
         biological_replicates: [1],
         simple_biosample_summary: 'mild cognitive impairment',
+        origin_batches: ['/experiments/ENCSR683CSF/', '/experiments/ENCSR683ABC/'],
     },
     {
         file_format: 'bigBed',
@@ -409,6 +413,7 @@ const dummyFiles = [
         title: 'ENCFF026DAN',
         biological_replicates: [2],
         simple_biosample_summary: 'mild cognitive impairment',
+        origin_batches: ['/experiments/ENCSR683CSF/', '/experiments/ENCSR683ABC/'],
     },
     {
         file_format: 'bigBed',
@@ -430,6 +435,7 @@ const dummyFiles = [
         title: 'ENCFF847CBY',
         biological_replicates: [1, 2],
         simple_biosample_summary: 'mild cognitive impairment',
+        origin_batches: ['/experiments/ENCSR683CSF/', '/experiments/ENCSR683ABC/'],
     },
 ];
 
@@ -585,6 +591,12 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
     const biologicalReplicates = file.biological_replicates && file.biological_replicates.join(', ');
     const splitDataset = file.dataset.split('/');
     const datasetName = splitDataset[splitDataset.length - 2];
+    const originBatchesList = file.origin_batches ? file.origin_batches.map((batch) => batch.split('/')[2]).join(', ') : '';
+
+    if (file.origin_batches) {
+        console.log(file.origin_batches);
+        console.log(originBatchesList);
+    }
 
     // For Valis in carts, build the short string.
     let cartShortLabel;
@@ -635,6 +647,7 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
                             <li>{file.output_type}</li>
                             {file.annotation_subtype ? <li>{(file.annotation_subtype)}</li> : null}
                             {file.biochemical_inputs ? <li>{(file.biochemical_inputs).join(', ')}</li> : null}
+                            {file.origin_batches ? <li>{originBatchesList}</li> : null}
                         </>
                     : null}
                 </ul>
@@ -834,6 +847,10 @@ class GenomeBrowser extends React.Component {
         }
         let files = propsFiles;
 
+        console.log(files);
+        console.log(propsFiles);
+        console.log(dummyFiles);
+
         // Apply sort parameters
         if (this.props.displaySort) {
             orderedSortParam.forEach((param) => {
@@ -873,6 +890,7 @@ class GenomeBrowser extends React.Component {
             files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag).filter((file) => file.assembly === this.props.assembly);
             newFiles = [...this.state.pinnedFiles, ...files];
             newFiles = _.uniq(newFiles, (file) => file.href);
+            console.log(newFiles);
             let tracks = [];
             if (files.length > 0) {
                 const maxCharPerLine = this.props.maxCharPerLine || MAX_CHAR_PER_LINE;
@@ -898,7 +916,10 @@ class GenomeBrowser extends React.Component {
     }
 
     filesToTracks(files, label, domain, maxCharPerLine) {
+        console.log(files);
+        console.log(label);
         const tracks = files.map((file) => {
+            console.log(file);
             if (file.output_type === 'candidate Cis-Regulatory Elements' && this.state.colorBlock.indexOf('ccres') === -1) {
                 this.setState((prevState) => ({
                     colorBlock: [...prevState.colorBlock, 'ccres'],
