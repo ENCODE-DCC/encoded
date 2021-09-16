@@ -598,7 +598,7 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
     }
 
     console.log(file.simple_biosample_summary)
-    console.log((file.origin_batches).join(', '))
+    console.log(file.origin_batches)
 
     return (
         <>
