@@ -1552,5 +1552,11 @@
     {
       "name": "hca-general",
       "title": "HCA, General Community"
-    }
+    },
+    {
+    "institute_label": "SGI",
+    "institute_name": "Samsung Genome Institute",
+    "name": "woong-yang-park",
+    "title": "Woong-Yang Park, SGI"
+}
 ]

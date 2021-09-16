@@ -6,6 +6,12 @@
         "status": "released"
     },
     {
+        "uuid": "b2ff9473-7f72-4803-826f-3b206b2126f2",
+        "term_name": "10x 5' v2",
+        "term_id": "EFO:0009900",
+        "status": "released"
+    },
+    {
         "uuid": "147d4022-0af5-4243-877a-caffb5ec3115",
         "term_name": "10x 3' v3 sequencing",
         "term_id": "EFO:0009922",
@@ -301,5 +307,11 @@
         "term_name": "12th week post-fertilization human stage",
         "term_id": "HsapDv:0000049",
         "status": "released"
+    },
+    {
+        "uuid": "37eb1274-47ef-4634-95ad-a90fcef867be",
+        "status": "released",
+        "term_id": "CL:2000001",
+        "term_name": "peripheral blood mononuclear cell"
     }
 ]
