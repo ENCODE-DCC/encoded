@@ -79,6 +79,9 @@
             "type": "typeahead",
             "length": "long"
         },
+        "origin_batches": {
+            "title": "Batch"
+        },
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
