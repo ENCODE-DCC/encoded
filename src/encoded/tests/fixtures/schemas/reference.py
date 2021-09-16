@@ -36,3 +36,42 @@ def reference(lab, award):
         'award': award['@id'],
         'lab': lab['@id']
     }
+
+
+@pytest.fixture
+def upgrade_20_21_reference_a(lab, award, gene):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'examined_loci': [gene['@id']],
+        'reference_type': 'functional elements',
+        'elements_selection_method': ['point mutations', 'DNase-seq'],
+        'schema_version': '20'
+    }
+    return item
+
+
+@pytest.fixture
+def upgrade_20_21_reference_b(lab, award, gene):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'examined_loci': [gene['@id']],
+        'reference_type': 'functional elements',
+        'elements_selection_method': ['candidate cis-regulatory elements', 'GRO-cap'],
+        'schema_version': '20'
+    }
+    return item
+
+
+@pytest.fixture
+def upgrade_20_21_reference_c(lab, award, gene):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'examined_loci': [gene['@id']],
+        'reference_type': 'functional elements',
+        'elements_selection_method': ['point mutations', 'single nucleotide polymorphisms'],
+        'schema_version': '20'
+    }
+    return item
