@@ -361,6 +361,7 @@ const dummyFiles = [
         lab: {
             title: 'ENCODE Processing Pipeline',
         },
+        origin_batches: ['/biosamples/ENCBS087RNA/', '/biosamples/ENCBS888CRI/'],
         status: 'released',
         title: 'ENCFF541XFO',
         biological_replicates: [1],
@@ -376,6 +377,7 @@ const dummyFiles = [
         file_type: 'bigBed tss_peak',
         dataset: '/experiments/ENCSR000CIS/',
         assay_term_name: 'shRNA knockdown followed by RNA-seq',
+        origin_batches: ['/biosamples/ENCBS087RNA/'],
         biosample_ontology: {
             term_name: 'HepG2',
         },
@@ -600,6 +602,7 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
     var str = "GeeksforGeeks";
 
     console.log(str)
+    console.log(file['@id'])
     console.log(file.origin_batches)
 
     return (
