@@ -456,7 +456,9 @@ class File(Item):
         # Return a unique list.
         return list(set(calculated_donors))
 
-    @calculated_property(schema={
+    @calculated_property(
+        define=True,
+        schema={
         "title": "Origin batches",
         "description": "The origin batch biosample(s) associated with this file.",
         "comment": "Do not submit. This field is calculated through the derived_from relationship back to the raw data.",
