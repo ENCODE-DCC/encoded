@@ -457,6 +457,7 @@ class File(Item):
         return list(set(calculated_donors))
 
     @calculated_property(
+        condition='dataset',
         define=True,
         schema={
         "title": "Origin batches",
@@ -467,7 +468,8 @@ class File(Item):
             "title": "Origin batch",
             "description": "@id of the origin batch biosample",
             "type": "string"
-        }
+        },
+        "notSubmittable": True
     })
     def origin_batches(self, request, dataset, root, replicate=None):
         calculated_origin_batches = []
