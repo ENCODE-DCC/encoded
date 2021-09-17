@@ -914,6 +914,7 @@ class GenomeBrowser extends React.Component {
             const defaultExtHeight = 130;
             const extraLineHeight = 14;
             let labelLength = file.title ? Math.floor(file.title.length / maxCharPerLine) : 0;
+            labelLength += file.origin_batches ? (file.origin_batches.length / 2 * 20) : 0;
             let extLabelLength = labelLength;
             // Some labels on the cart which have a target, assay name, and biosample are too long for one line (some actually extend to three lines)
             // Here we do some approximate math to try to figure out how many lines the labels extend to assuming that ~30 characters fit on one line
