@@ -3909,6 +3909,10 @@ const seriesTitleComposers = {
         <BasicSeriesTitle relatedDataset={relatedDataset} />
     ),
 
+    Collection: (relatedDataset) => (
+        <BasicSeriesTitle relatedDataset={relatedDataset} />
+    ),
+
     DifferentiationSeries: (relatedDataset) => (
         <BasicSeriesTitle relatedDataset={relatedDataset} />
     ),

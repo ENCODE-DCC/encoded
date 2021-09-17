@@ -4,6 +4,7 @@ from collections import OrderedDict
 # All series subtypes allowed to download files
 METADATA_SERIES_TYPES = [
     'AggregateSeries',
+    'Collection',
     'DifferentiationSeries',
     'DiseaseSeries',
     'FunctionalCharacterizationSeries',
