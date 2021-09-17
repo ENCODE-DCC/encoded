@@ -599,7 +599,7 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
         ]).join(', ');
     }
 
-    const originBatchesList = file.origin_batches ? `batch${origin_batches.length > 1 ? 'es' : ''}: ${origin_batches.map((batch) => batch.split('/')[2]).join(', ')}` : '';
+    const originBatchesList = file.origin_batches ? `batch${file.origin_batches.length > 1 ? 'es' : ''}: ${file.origin_batches.map((batch) => batch.split('/')[2]).join(', ')}` : '';
 
     return (
         <>
