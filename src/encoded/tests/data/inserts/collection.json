@@ -1,0 +1,32 @@
+[
+    {
+        "_test": "collection series with FC experiments",
+        "accession": "ENCSR916CFC",
+        "award": "UM1HG009442",
+        "description": "Collection of STARR-seq experiments",
+        "lab": "bing-ren",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "ENCSR722STR",
+            "ENCSR928SVL"
+        ],
+        "uuid": "34a567dc-fe26-4d82-883e-bfe2a2e27e0d",
+        "date_released": "2020-04-10"
+    },
+    {
+        "_test": "collection series HiC experiments",
+        "accession": "ENCSR341HCC",
+        "award": "UM1HG009411",
+        "description": "Collection of Hi-C experiments",
+        "lab": "job-dekker",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "ENCSR000AJK",
+            "ENCSR270OQH"
+        ],
+        "uuid": "7be3a19e-2632-4b75-b320-c6c15b8510bd",
+        "date_released": "2021-05-10"
+    }
+]

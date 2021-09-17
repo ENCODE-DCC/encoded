@@ -33,7 +33,7 @@
                 "title": "Dataset",
                 "comment": "See dataset.json for available identifiers.",
                 "type": "string",
-                "linkTo": "Experiment"
+                "linkTo": ["Experiment", "FunctionalCharacterizationExperiment"]
             }
         }
     },

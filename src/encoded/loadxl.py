@@ -64,6 +64,7 @@ ORDER = [
     'multiomics_series',
     'reference_epigenome',
     'disease_series',
+    'collection',
     'software',
     'software_version',
     'analysis_step',
@@ -702,6 +703,9 @@ PHASE1_PIPELINES = {
     'disease_series': [
         remove_keys('related_datasets', 'supersedes'),
     ],
+    'collection': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
     'matched_set': [
         remove_keys('related_datasets'),
     ],
@@ -814,6 +818,9 @@ PHASE2_PIPELINES = {
     ],
     'disease_series': [
         skip_rows_missing_all_keys('related_datasets', 'supersedes'),
+    ],
+    'collection': [
+        skip_rows_missing_all_keys('related_datasets'),
     ],
     'matched_set': [
         skip_rows_missing_all_keys('related_datasets'),
