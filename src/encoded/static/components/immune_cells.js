@@ -70,18 +70,18 @@ function collapse(d) {
 }
 
 // Creates a curved (diagonal) path from parent to the child nodes
-// function diagonal(d, s) {
-//     const path = `M${d.x},${d.y}C${d.x},${(d.y + s.y) / 2} ${s.x},${(d.y + s.y) / 2} ${s.x},${s.y}`;
-//     return path;
-// }
-
-function diagonal(s, d) {
-    const path = `M ${s.y} ${s.x}
-            C ${(s.y + d.y) / 2} ${s.x},
-              ${(s.y + d.y) / 2} ${d.x},
-              ${d.y} ${d.x}`;
+function diagonal(d, s) {
+    const path = `M${d.x},${d.y}C${d.x},${(d.y + s.y) / 2} ${s.x},${(d.y + s.y) / 2} ${s.x},${s.y}`;
     return path;
 }
+
+// function diagonal(s, d) {
+//     const path = `M ${s.y} ${s.x}
+//             C ${(s.y + d.y) / 2} ${s.x},
+//               ${(s.y + d.y) / 2} ${d.x},
+//               ${d.y} ${d.x}`;
+//     return path;
+// }
 
 // function update(source) {
 //     // adds the links between the nodes
@@ -179,7 +179,7 @@ const drawTree = (d3, data, fullWidth) => {
         const nodeEnter = node.enter().append('g')
             .attr('class', 'node')
             .attr("transform", function(d) {
-                return "translate(" + source.y0 + "," + source.x0 + ")";
+                return "translate(" + source.x0 + "," + source.y0 + ")";
             })
             .on('click', click);
 
@@ -235,7 +235,7 @@ const drawTree = (d3, data, fullWidth) => {
         nodeUpdate.transition()
             .duration(duration)
             .attr("transform", function(d) {
-                return "translate(" + d.y + "," + d.x + ")";
+                return "translate(" + d.x + "," + d.y + ")";
              });
 
         // Update the node attributes and style
@@ -251,7 +251,7 @@ const drawTree = (d3, data, fullWidth) => {
         const nodeExit = node.exit().transition()
             .duration(duration)
             .attr("transform", function(d) {
-                return "translate(" + source.y + "," + source.x + ")";
+                return "translate(" + source.x + "," + source.y + ")";
             })
             .remove();
 
