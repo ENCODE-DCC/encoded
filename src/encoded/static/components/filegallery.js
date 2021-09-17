@@ -413,17 +413,9 @@ export class FileTable extends React.Component {
         const selectedAnnotation = null;
 
         const nonAnalysisObjectPrefix = 'Other';
-        const isReferenceDataType = context['@type'].includes('reference');
+        const isReferenceDataType = context['@type'].map((type) => type.toLowerCase()).includes('reference');
         const isFCEorFCS = context['@type'].includes('FunctionalCharacterizationExperiment') || context['@type'].includes('FunctionalCharacterizationSeries');
-
-        let datasetFiles = _((items && items.length > 0) ? items : [])
-            .uniq((file) => file['@id'])
-            .filter((file) => (
-                (file.output_category !== 'reference' && !file.isElementReferenceFile) ||
-                (isReferenceDataType && file.output_category === 'reference') ||
-                (isFCEorFCS && file.isElementReferenceFile)
-            ));
-
+        let datasetFiles = _((items && items.length > 0) ? items : []).uniq((file) => file['@id']);
         const isSeries = isSeriesType(context);
         const seriesAnalysesFilesIds = isSeries ? getAnalysesFilesFromContext(context) : [];
 
@@ -473,8 +465,12 @@ export class FileTable extends React.Component {
                     return 'rawArray';
                 }
 
-                if (file.output_category === 'reference' || file.isElementReferenceFile) {
+                if ((file.isElementReferenceFile && isFCEorFCS) || (file.output_category === 'reference' && isReferenceDataType)) {
                     return 'ref';
+                }
+
+                if (file.output_category === 'reference' && !file.isElementReferenceFile && !isReferenceDataType) {
+                    return nonAnalysisObjectPrefix;
                 }
 
                 const analysisObjectsFile = (analysisObjectsFiles || []).find((a) => a.files.includes(file['@id']));
