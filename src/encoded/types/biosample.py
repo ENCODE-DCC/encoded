@@ -589,7 +589,6 @@ class Biosample(Item):
         reduced = [
             'sex_stage_age',
             'disease_term_name',
-            'sentence_divider',
             'treatments_phrase',
             'genotype_strain',
             'strain_background',
@@ -606,9 +605,7 @@ class Biosample(Item):
             if biosample_dictionary.get(prop, None) and biosample_dictionary[prop] not in props_list:
                 props_list.append(biosample_dictionary[prop])
 
-        return construct_biosample_summary([biosample_dictionary],
-                                           reduced)
-        # return " ".join(props_list).strip()
+        return " ".join(props_list).strip(' ;')
 
     @calculated_property(schema={
         "title": "Summary",
@@ -654,7 +651,6 @@ class Biosample(Item):
             'sex_stage_age',
             'synchronization',
             'disease_term_name',
-            'sentence_divider',
             'term_phrase',
             'modifications_list',
             'originated_from',
@@ -766,7 +762,7 @@ def summary_objects(request,
                     if len(genes) >= 1:
                         gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
                         modification_dict['target_gene'] = gene_object.get('symbol')
-                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name')
                     else:
                         modification_dict['target'] = target['label']
                 else:
@@ -863,7 +859,6 @@ def generate_summary_dictionary(
         'strain_background': '',
         'preservation_method': '',
         'experiment_term_phrase': '',
-        'sentence_divider': ';'
     }
 
     if organismObject is not None:
@@ -953,7 +948,7 @@ def generate_summary_dictionary(
                 str(starting_amount_units)
 
     if disease_term_name is not None:
-        dict_of_phrases['disease_term_name'] = 'with ' + ', '.join(map(str, disease_term_name))
+        dict_of_phrases['disease_term_name'] = f"with {', '.join(map(str, disease_term_name))};"
 
     if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
         dict_of_phrases['depleted_in'] = 'depleted in ' + \
@@ -1178,8 +1173,6 @@ def generate_sentence(phrases_dict, values_list):
                 sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
             elif 'pulse_chase_time' in key:
                 sentence = f'{sentence.strip()}, {phrases_dict[key].strip()} '
-            elif 'sentence_divider' in key:
-                sentence = f'{sentence.strip()}{phrases_dict[key].strip()} '
             else:
                 sentence += phrases_dict[key].strip() + ' '
     return sentence.strip()

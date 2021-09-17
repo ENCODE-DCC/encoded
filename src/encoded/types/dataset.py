@@ -411,7 +411,6 @@ class TransgenicEnhancerExperiment(
             'phase',
             'fractionated',
             'sex_stage_age',
-            'sentence_divider',
             'post_nucleic_acid_delivery_time',
             'post_differentiation_time',
             'synchronization',

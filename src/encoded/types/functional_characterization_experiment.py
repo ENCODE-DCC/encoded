@@ -277,42 +277,27 @@ class FunctionalCharacterizationExperiment(
                                 drop_originated_from_flag = True
         if len(dictionaries_of_phrases) > 0:
             if elements_references is not None and len(elements_references) > 0:
+                loci_terms = []
                 for ref in elements_references:
                     elements_reference_object = request.embed(ref, '@@object')
-                    loci_terms = []
                     if 'examined_loci' in elements_reference_object:
                         if len(elements_reference_object['examined_loci']) > 1:
                             loci_terms.append('multiple loci')
-                            # loci_phrase = 'for multiple loci'
                         else:
                             examined_loci_object = request.embed(elements_reference_object['examined_loci'][0], '@@object')
                             loci_terms.append(f"{examined_loci_object['symbol']} locus")
-                            # loci_phrase = f"for {examined_loci_object['symbol']} locus"
-                        # for entry in dictionaries_of_phrases:
-                        #     entry['elements_references_examined_loci'] = loci_phrase
                     elif 'examined_regions' in elements_reference_object:
                         if len(elements_reference_object['examined_regions']) > 1:
                             loci_terms.append('multiple loci')
-                            # loci_phrase = 'for multiple loci'
                         else:
                             examined_region_object = elements_reference_object['examined_regions'][0]
                             loci_terms.append(
                                 f"{examined_region_object['chromosome']}:"
-                                f"{examined_region_object['start']}-"
-                                f"{examined_region_object['end']}"
+                                f"{examined_region_object['start']}-{examined_region_object['end']}"
                             )
-                            # loci_phrase = (
-                            #     f"for {examined_region_object['chromosome']}:"
-                            #     f"{examined_region_object['start']}-"
-                            #     f"{examined_region_object['end']}"
-                            # )
-                        # for entry in dictionaries_of_phrases:
-                        #     entry['elements_references_examined_loci'] = loci_phrase
                     else:
                         loci_terms.append('')
-                        # for entry in dictionaries_of_phrases:
-                        #     entry['elements_references_examined_loci'] = ''
-                
+
                 filtered_loci_terms = [term for term in loci_terms if term not in ['', 'multiple loci']]
                 if len(set(loci_terms)) == 1 and '' in set(loci_terms):
                     for entry in dictionaries_of_phrases:
@@ -321,9 +306,9 @@ class FunctionalCharacterizationExperiment(
                         len(set(filtered_loci_terms)) > 1:
                     for entry in dictionaries_of_phrases:
                         entry['elements_references_examined_loci'] = f'for multiple loci'
-                else:
+                elif len(set(filtered_loci_terms)) == 1:
                     for entry in dictionaries_of_phrases:
-                        entry['elements_references_examined_loci'] = f'for {loci_terms}'
+                        entry['elements_references_examined_loci'] = f'for {filtered_loci_terms[0]}'
 
             else:
                 for entry in dictionaries_of_phrases:
@@ -336,7 +321,6 @@ class FunctionalCharacterizationExperiment(
             'fractionated',
             'sex_stage_age',
             'disease_term_name',
-            'sentence_divider',
             'post_nucleic_acid_delivery_time',
             'post_differentiation_time',
             'synchronization',

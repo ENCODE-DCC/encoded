@@ -220,7 +220,7 @@ def test_experiment_biosample_summary_4(testapp,
                                                                replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
-        'skin epidermis tissue male child (10 days) with basal cell carcinoma and without disease'
+        'skin epidermis tissue male child (10 days) with basal cell carcinoma; and without disease'
 
 
 def test_experiment_biosample_summary_5(testapp,

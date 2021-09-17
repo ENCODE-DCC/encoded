@@ -293,7 +293,6 @@ class CalculatedBiosampleSummary:
             'fractionated',
             'sex_stage_age',
             'disease_term_name',
-            'sentence_divider',
             'post_nucleic_acid_delivery_time',
             'post_differentiation_time',
             'synchronization',
