@@ -915,8 +915,6 @@ class GenomeBrowser extends React.Component {
             const extraLineHeight = 14;
             let labelLength = file.title ? Math.floor(file.title.length / maxCharPerLine) : 0;
             let extLabelLength = labelLength;
-            extLabelLength += file.simple_biosample_summary ? file.simple_biosample_summary.length : 0;
-            extLabelLength += file.origin_batches ? (file.origin_batches.length * 11 ) : 0;
             // Some labels on the cart which have a target, assay name, and biosample are too long for one line (some actually extend to three lines)
             // Here we do some approximate math to try to figure out how many lines the labels extend to assuming that ~30 characters fit on one line
             // Labels on the experiment pages are short enough to fit on one line (they contain less information) so we can bypass these calculations for those pages
@@ -930,6 +928,8 @@ class GenomeBrowser extends React.Component {
                 labelLength += supplementalShortLabel ? supplementalShortLabel.length : 0;
 
                 extLabelLength += file.output_type ? file.output_type.length : 0;
+                extLabelLength += file.simple_biosample_summary ? file.simple_biosample_summary.length : 0;
+                extLabelLength += file.origin_batches ? (file.origin_batches.length * 11 ) : 0;
                 extLabelLength += file.biological_replicates ? file.biological_replicates.length : 0;
                 extLabelLength += file.biochemical_inputs ? file.biochemical_inputs.length : 0;
 
