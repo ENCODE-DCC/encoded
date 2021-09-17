@@ -2215,6 +2215,7 @@ const computeExpressedGenes = ({ dataset }) => {
                 </>
             );
         }
+    }
     return null;
 };
 
