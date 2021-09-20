@@ -12,6 +12,12 @@ import FacetRegistry from './registry';
 
 
 /**
+ * Configurations and constants for facet animations.
+ */
+export const standardAnimationTransition = { duration: 0.2, ease: 'easeInOut' };
+
+
+/**
  * All the default facet rendering components reside in this file, including ones that aren't
  * technically default in that they don't get registered as a default component, but other custom
  * components can use them. Default facet components get exported so that custom components that
@@ -208,7 +214,7 @@ export const DefaultExistsBinaryFacet = ({
                             initial="close"
                             animate="open"
                             exit="close"
-                            transition={{ duration: 0.2, ease: 'easeInOut' }}
+                            transition={standardAnimationTransition}
                             variants={{
                                 open: { height: 'auto' },
                                 close: { height: 0 },
@@ -720,7 +726,7 @@ export class DefaultDateSelectorFacet extends React.Component {
                                 initial="close"
                                 animate="open"
                                 exit="close"
-                                transition={{ duration: 0.2, ease: 'easeInOut' }}
+                                transition={standardAnimationTransition}
                                 variants={{
                                     open: { height: 'auto' },
                                     close: { height: 0 },
@@ -1366,7 +1372,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                         initial="close"
                         animate="open"
                         exit="close"
-                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        transition={standardAnimationTransition}
                         variants={{
                             open: { height: 'auto' },
                             close: { height: 0 },

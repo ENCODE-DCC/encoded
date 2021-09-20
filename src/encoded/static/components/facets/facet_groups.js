@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
 import _ from 'underscore';
 import { svgIcon } from '../../libs/svg-icons';
+import { standardAnimationTransition } from './defaults';
 
 
 /**
@@ -178,7 +179,7 @@ export const FacetGroup = ({
                         initial="collapsed"
                         animate="open"
                         exit="collapsed"
-                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        transition={standardAnimationTransition}
                         variants={{
                             open: { height: 'auto' },
                             collapsed: { height: 0 },
