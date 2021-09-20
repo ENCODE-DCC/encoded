@@ -458,7 +458,6 @@ class File(Item):
 
     @calculated_property(
         condition='dataset',
-        define=True,
         schema={
         "title": "Origin batches",
         "description": "The origin batch biosample(s) associated with this file.",
@@ -519,7 +518,8 @@ class File(Item):
             path.expand(request, properties)
             for file_ in properties['files']:
                 calculated_origin_batches.extend(file_.get('origin_batches', []))
-        return list(set(calculated_origin_batches))
+        if calculated_origin_batches:
+            return list(set(calculated_origin_batches))
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
