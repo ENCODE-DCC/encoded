@@ -354,6 +354,18 @@ class TransgenicEnhancerExperiment(
     })
 
     @calculated_property(schema={
+        "title": "Related series",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Series.related_datasets",
+        },
+        "notSubmittable": True,
+    })
+    def related_series(self, request, related_series):
+        return paths_filtered_by_status(request, related_series)
+
+    @calculated_property(schema={
         "title": "Superseded by",
         "type": "array",
         "items": {
