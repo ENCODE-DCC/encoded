@@ -759,4 +759,3 @@ def reference_20_21(value, system):
             value['notes'] = f"{value['notes']} {' '.join(new_notes)}"
         else:
             value['notes'] = ' '.join(new_notes)
-    return
