@@ -1127,27 +1127,25 @@ SelectedFilterElement.defaultProps = {
  */
 const SelectedFilters = ({ facet, selectedTerms, searchUri, options }) => {
     let clearAllInFacet = null;
-    if (selectedTerms.length > 0) {
-        if (selectedTerms.length > 1) {
-            // Build a URL and element for an "All" button to clear all terms within the current facet.
-            const parsedSearchUri = url.parse(searchUri);
-            const searchQuery = new QueryString(parsedSearchUri.query);
-            selectedTerms.forEach((selectedTerm) => {
-                // Remove each of the selected terms for the current facet from the query string.
-                const positiveKey = selectedTerm.field.slice(-1) === '!' ? selectedTerm.field.slice(0, -1) : selectedTerm.field;
-                searchQuery.deleteKeyValue(positiveKey, selectedTerm.term);
-            });
+    if (selectedTerms.length > 1) {
+        // Build a URL and element for an "All" button to clear all terms within the current facet.
+        const parsedSearchUri = url.parse(searchUri);
+        const searchQuery = new QueryString(parsedSearchUri.query);
+        selectedTerms.forEach((selectedTerm) => {
+            // Remove each of the selected terms for the current facet from the query string.
+            const positiveKey = selectedTerm.field.slice(-1) === '!' ? selectedTerm.field.slice(0, -1) : selectedTerm.field;
+            searchQuery.deleteKeyValue(positiveKey, selectedTerm.term);
+        });
 
-            // Render the "All" button to add to the ones chosen within the given filters.
-            clearAllInFacet = (
-                <SelectedFilterElement
-                    key="all"
-                    facet={facet}
-                    preventScrollOnTermClick={options.preventScrollOnTermClick}
-                    alternate={{ title: 'All', uri: `?${searchQuery.format()}` }}
-                />
-            );
-        }
+        // Render the "All" button to add to the ones chosen within the given filters.
+        clearAllInFacet = (
+            <SelectedFilterElement
+                key="all"
+                facet={facet}
+                preventScrollOnTermClick={options.preventScrollOnTermClick}
+                alternate={{ title: 'All', uri: `?${searchQuery.format()}` }}
+            />
+        );
     }
 
     return (
