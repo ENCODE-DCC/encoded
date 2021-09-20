@@ -58,7 +58,7 @@
                 "title": "Dataset",
                 "comment": "See dataset.json for available identifiers.",
                 "type": "string",
-                "linkTo": ["Experiment", "SingleCellUnit"]
+                "linkTo": ["Experiment", "SingleCellUnit", "FunctionalCharacterizationExperiment"]
             }
         }
     },

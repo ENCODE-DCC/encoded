@@ -334,6 +334,7 @@ class TransgenicEnhancerExperiment(
         'biosamples.biosample_ontology',
         'biosamples.organism',
         'biosamples.characterizations',
+        'related_series',
     ]
     audit_inherit = [
         'submitted_by',
@@ -348,6 +349,7 @@ class TransgenicEnhancerExperiment(
     set_status_down = []
     rev = Dataset.rev.copy()
     rev.update({
+        'related_series': ('Series', 'related_datasets'),
         'superseded_by': ('TransgenicEnhancerExperiment', 'supersedes')
     })
 
