@@ -46,7 +46,8 @@ class Library(Item,
         'donors.development_ontology',
         'donors.organism',
         'biosample_ontologies',
-        'derived_from'
+        'derived_from',
+        'derived_from.enriched_cell_types'
     ]
 
 
