@@ -6,8 +6,8 @@ import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';
 import * as globals from './globals';
 
-const fullHeight = 1000;
-const margin = { top: 40, right: 90, bottom: 50, left: 90 };
+const fullHeight = 500;
+const margin = { top: 40, right: 0, bottom: 50, left: 0 };
 
 const ellipseSettings = [
     { cx: 2, cy: 2, rx: 12, ry: 9, stroke: 'black', 'stroke-width': 1 },
@@ -133,32 +133,33 @@ const drawTree = (d3, data, fullWidth) => {
     const treeData = data[0];
 
     // Set the dimensions and margins of the diagram
-    const width = 960 - margin.left - margin.right;
-    const height = 500 - margin.top - margin.bottom;
+    const width = fullWidth - margin.left - margin.right;
+    const height = fullHeight - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
     const svg = d3.select('.vertical-node-graph').append('svg')
-        .attr('width', width + margin.right + margin.left)
-        .attr('height', height + margin.top + margin.bottom);
-
-    svg.append('g')
+        .attr('width', fullWidth)
+        .attr('height', fullHeight)
+        .attr('viewBox', `0 0 ${fullWidth} ${fullHeight}`)
+        .attr('preserveAspectRatio', 'xMidYMin meet')
+        .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
     let i = 0;
     const duration = 750;
 
     // declares a tree layout and assigns the size
-    const treemap = d3.tree().size([height, width]);
+    const treemap = d3.tree().size([width, height]);
 
     // Assigns parent, children, height, depth
     const root = d3.hierarchy(treeData, (d) => d.children);
-    root.x0 = height / 2;
-    root.y0 = 0;
+    root.x0 = width / 2;
+    root.y0 = 100;
 
     // Collapse after the second level
-    // root.children.forEach(collapse);
+    root.children.forEach(collapse);
     update(root);
 
     function update(source) {
@@ -169,8 +170,18 @@ const drawTree = (d3, data, fullWidth) => {
         const nodes = treeData.descendants();
         const links = treeData.descendants().slice(1);
 
+        console.log(nodes);
+        const nodeDepth = nodes.map((n) => n.depth);
+        const maxNodeDepth = Math.max(...nodeDepth);
+        console.log(maxNodeDepth);
+
         // Normalize for fixed-depth.
-        nodes.forEach(function(d){ d.y = d.depth * 180});
+        nodes.forEach(function(d) {
+            console.log(d);
+            console.log(d.depth);
+            d.y = d.depth * height / maxNodeDepth;
+            // d.y = height / d.depth;
+        });
 
         const node = svg.selectAll('g.node')
             .data(nodes, function(d) {return d.id || (d.id = ++i); });
@@ -210,23 +221,16 @@ const drawTree = (d3, data, fullWidth) => {
                 .attr('ry', ellipseSetting.ry)
                 .style('stroke', ellipseSetting.stroke)
                 .style('stroke-width', 1)
-                .style("fill", function(d) {
-                    console.log(d);
-                    return d._children ? "lightsteelblue" : "#fff";
-                })
+                .style('fill', (d) => (d._children ? 'lightsteelblue' : '#fff'))
                 .attr('class', () => 'js-cell');
         });
 
-        // Add labels for the nodes
+        // adds the text to the node
         nodeEnter.append('text')
-            .attr("dy", ".35em")
-            .attr("x", function(d) {
-                return d.children || d._children ? -13 : 13;
-            })
-            .attr("text-anchor", function(d) {
-                return d.children || d._children ? "end" : "start";
-            })
-            .text(function(d) { return d.data.name; });
+            .attr('dy', '.35em')
+            .attr('y', (d) => (d.children ? -20 : 30))
+            .style('text-anchor', 'middle')
+            .text((d) => d.data.name);
 
         // UPDATE
         const nodeUpdate = nodeEnter.merge(node);
@@ -234,7 +238,7 @@ const drawTree = (d3, data, fullWidth) => {
         // Transition to the proper position for the node
         nodeUpdate.transition()
             .duration(duration)
-            .attr("transform", function(d) {
+            .attr('transform', function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
              });
 
@@ -255,17 +259,12 @@ const drawTree = (d3, data, fullWidth) => {
             })
             .remove();
 
-        // On exit reduce the node circles size to 0
         nodeExit.select('circle')
             .attr('r', 1e-6);
 
-        // On exit reduce the opacity of text labels
         nodeExit.select('text')
             .style('fill-opacity', 1e-6);
 
-        // ****************** links section ***************************
-
-        // Update the links...
         const link = svg.selectAll('path.link')
             .data(links, function(d) { return d.id; });
 
@@ -277,15 +276,12 @@ const drawTree = (d3, data, fullWidth) => {
                 return diagonal(o, o)
             });
 
-        // UPDATE
         const linkUpdate = linkEnter.merge(link);
 
-        // Transition back to the parent element position
         linkUpdate.transition()
             .duration(duration)
             .attr('d', function(d){ return diagonal(d, d.parent) });
 
-        // Remove any exiting links
         const linkExit = link.exit().transition()
             .duration(duration)
             .attr('d', function(d) {
@@ -294,13 +290,11 @@ const drawTree = (d3, data, fullWidth) => {
             })
             .remove();
 
-        // Store the old positions for transition.
         nodes.forEach((d) => {
             d.x0 = d.x;
             d.y0 = d.y;
         });
 
-        // Toggle children on click.
         function click(event, d) {
             if (d.children) {
                 d._children = d.children;
