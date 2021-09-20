@@ -167,7 +167,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
             header: (
                 clearClassifications ?
                     <div className="matrix__clear-classifications">
-                        <a data-reload href={clearClassifications}><i className="icon icon-times-circle" /> Clear classifications</a>
+                        <a href={clearClassifications}><i className="icon icon-times-circle" /> Clear classifications</a>
                     </div>
                 : null
             ),
@@ -277,7 +277,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                 rowContent: [
                     {
                         header: (
-                            <a data-reload href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}`}>
+                            <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}`}>
                                 <div className="subcategory-row-text">{rowSubcategoryBucket.key}</div>
                             </a>
                         ),
@@ -311,7 +311,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                                 {clearClassifications ?
                                     <div style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</div>
                                 :
-                                    <a data-reload href={`${context['@id']}&${rowCategoryQuery}`} style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</a>
+                                    <a href={`${context['@id']}&${rowCategoryQuery}`} style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</a>
                                 }
                             </div>
                         ),
@@ -365,7 +365,7 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
         // and re-added or not added, as needed.
         query.deleteKeyValue('award.rfa');
         const link = `?${query.format()}${awardRfa}`;
-        reactContext.navigate(link, { reload: true });
+        reactContext.navigate(link);
     };
 
     const query = new QueryString(context.search_base);
@@ -502,20 +502,10 @@ class MatrixPresentation extends React.Component {
         });
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         // Updates only happen for scrolling on this page. Every other update causes an
         // unmount/mount sequence.
         this.handleScrollIndicator(this.scrollElement);
-
-        const prevUrl = prevProps.context['@id'];
-        const currUrl = this.props.context['@id'];
-        if (prevUrl !== currUrl) {
-            this.setState({
-                // Display the organism-chooser modal if the query string doesn't specify an organism to
-                // display.
-                organismChooserVisible: this.getInitialSelectedTab(),
-            });
-        }
     }
 
     /**
@@ -562,7 +552,7 @@ class MatrixPresentation extends React.Component {
         parsedUrl.search = null;
         parsedUrl.query = null;
         const baseMatrixUrl = url.format(parsedUrl);
-        this.context.navigate(`${baseMatrixUrl}?${query.format()}`, { reload: true });
+        this.context.navigate(`${baseMatrixUrl}?${query.format()}`);
     }
 
     /**
@@ -711,7 +701,6 @@ class MatrixPresentation extends React.Component {
                     selectedTab={this.initialSelectedTab}
                     handleTabClick={this.handleTabClick}
                     tabPanelCss="matrix__data-wrapper epigenome-tabs"
-                    forceReload
                 >
                     <div className="header-clear-links">
                         <button type="button" className="clear-organs" onClick={this.clearOrgans}>
@@ -760,7 +749,7 @@ class MatrixPresentation extends React.Component {
                                                 <div className="selectors">
                                                     {Object.keys(organismTabs).map((organism) => (
                                                         // Encode the organism name into the <a> class for BDD testing.
-                                                        <a key={organism} className={`btn btn-info btn__selector--${organism.replace(/ /g, '-')}`} data-reload href={`${context['@id']}&replicates.library.biosample.donor.organism.scientific_name=${encoding.encodedURIComponent(organism)}`}>{organism}</a>
+                                                        <a key={organism} className={`btn btn-info btn__selector--${organism.replace(/ /g, '-')}`} href={`${context['@id']}&replicates.library.biosample.donor.organism.scientific_name=${encoding.encodedURIComponent(organism)}`}>{organism}</a>
                                                     ))}
                                                 </div>
                                             </ModalBody>

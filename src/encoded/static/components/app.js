@@ -266,6 +266,16 @@ AccountCreatedModal.propTypes = {
     closeModal: PropTypes.func.isRequired,
 };
 
+
+// Include paths of all pages that require full-page reloads even when navigating within the page.
+const fullPageReloadPaths = [
+    '/chip-seq-matrix/',
+    '/reference-epigenome-matrix/',
+    '/single-cell/',
+    '/summary/',
+];
+
+
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -1164,7 +1174,12 @@ class App extends React.Component {
         let content;
         let { context } = this.state;
         const hrefUrl = url.parse(this.state.href);
-        const key = context && context['@id'] && context['@id'].split('?')[0];
+
+        // Determine conditions to unmount the entire page and rerender from scratch. Any paths
+        // included in `fullPageReloadPaths` rerender the entire page on navigation. Other paths
+        // cause a rerender only when the path changes.
+        const key = fullPageReloadPaths.includes(hrefUrl.pathname) ? context['@id'] : hrefUrl.pathname;
+
         const currentAction = this.currentAction();
         const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
         if (isHomePage) {

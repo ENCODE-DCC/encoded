@@ -377,7 +377,7 @@ class SummaryBody extends React.Component {
         const query = new QueryString(parsedUrl.query);
         query.replaceKeyValue(organismField, tab, '');
         const href = `?${query.format()}`;
-        this.context.navigate(href, { reload: true });
+        this.context.navigate(href);
     }
 
     render() {
