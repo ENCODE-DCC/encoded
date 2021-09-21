@@ -1,7 +1,7 @@
 {
-    "title": "Collection",
-    "description": "Schema for submitting metadata for a collection.",
-    "id": "/profiles/collection.json",
+    "title": "Collection series",
+    "description": "Schema for submitting metadata for a collection series.",
+    "id": "/profiles/collection_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],
@@ -263,5 +263,5 @@
         "internal_tags": 1.0,
         "doi": 1.0
     },
-    "changelog": "/profiles/changelogs/collection.md"
+    "changelog": "/profiles/changelogs/collection_series.md"
 }

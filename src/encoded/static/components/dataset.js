@@ -35,7 +35,7 @@ import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged
  */
 const METADATA_SERIES_TYPES = [
     'AggregateSeries',
-    'Collection',
+    'CollectionSeries',
     'DifferentiationSeries',
     'DiseaseSeries',
     'FunctionalCharacterizationSeries',
@@ -2784,7 +2784,7 @@ StandardSeries.contextTypes = {
 };
 
 globals.contentViews.register(StandardSeries, 'AggregateSeries');
-globals.contentViews.register(StandardSeries, 'Collection');
+globals.contentViews.register(StandardSeries, 'CollectionSeries');
 globals.contentViews.register(StandardSeries, 'MatchedSet');
 globals.contentViews.register(StandardSeries, 'MultiomicsSeries');
 

@@ -3909,7 +3909,7 @@ const seriesTitleComposers = {
         <BasicSeriesTitle relatedDataset={relatedDataset} />
     ),
 
-    Collection: (relatedDataset) => (
+    CollectionSeries: (relatedDataset) => (
         <BasicSeriesTitle relatedDataset={relatedDataset} />
     ),
 

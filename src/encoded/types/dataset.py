@@ -1525,15 +1525,15 @@ class MultiomicsSeries(Series):
 
 
 @collection(
-    name='collections',
+    name='collection-series',
     unique_key='accession',
     properties={
-        'title': "Collections",
+        'title': "Collection series",
         'description': 'A collection of experiments.',
     })
-class Collection(Series):
-    item_type = 'collection'
-    schema = load_schema('encoded:schemas/collection.json')
+class CollectionSeries(Series):
+    item_type = 'collection_series'
+    schema = load_schema('encoded:schemas/collection_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
     ]

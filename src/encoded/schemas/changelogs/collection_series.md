@@ -1,0 +1,1 @@
+## Changelog for collection_series.json
