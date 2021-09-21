@@ -357,6 +357,7 @@ const ExperimentComponent = (props, reactContext) => {
     // biosamples, but no null entries.
     let biosamples = [];
     const treatments = [];
+    let perturbationTreatments = [];
 
     if (isEnhancerExperiment) {
         if (result.biosamples && result.biosamples.length > 0) {
@@ -370,6 +371,8 @@ const ExperimentComponent = (props, reactContext) => {
         (biosamples.map((biosample) => biosample.treatments)).filter((treatment) => !!treatment).forEach((treatment) => treatment.forEach((t) => {
             treatments.push(t);
         }));
+        // filter treatments with the purpose of perturbation
+        perturbationTreatments = _.flatten(biosamples.map((biosample) => biosample.treatments)).filter((a) => a?.purpose === 'perturbation');
     }
 
     // Get all biosample organism names
@@ -393,16 +396,30 @@ const ExperimentComponent = (props, reactContext) => {
 
     // Collect crispr_screen_tiling for FunctionalCharacterizationExperiment
     let tilingModality = [];
+    let elementsSelectionMethod = [];
+    let referenceLoci = [];
+    let referenceLociCount = '';
     if (isFunctionalExperiment) {
         if (result.elements_references && result.elements_references.length > 0) {
             result.elements_references.forEach((er) => {
                 if (er.crispr_screen_tiling) {
                     tilingModality.push(er.crispr_screen_tiling);
                 }
+                if (er.examined_loci && er.examined_loci.length > 0) {
+                    er.examined_loci.forEach((gene) => {
+                        referenceLoci.push(gene);
+                    });
+                }
+                if (er.elements_selection_method && er.elements_selection_method.length > 0) {
+                    elementsSelectionMethod.push(...er.elements_selection_method);
+                }
             });
-            tilingModality = _.uniq(tilingModality);
         }
+        tilingModality = _.uniq(tilingModality);
+        referenceLoci = _.uniq(referenceLoci);
+        elementsSelectionMethod = _.uniq(elementsSelectionMethod);
     }
+
 
     // Collect library construction platforms / methods / cellular components
     if (result.replicates && result.replicates.length > 0) {
@@ -428,6 +445,7 @@ const ExperimentComponent = (props, reactContext) => {
     }
 
     const uniqueTreatments = getUniqueTreatments(treatments);
+    const uniquePerturbationTreatments = getUniqueTreatments(perturbationTreatments);
 
     // Get a map of related datasets, possibly filtering on their status and
     // categorized by their type.
@@ -467,15 +485,18 @@ const ExperimentComponent = (props, reactContext) => {
                         :
                             <span>{result.assay_term_name}</span>
                         }
+                        {(isFunctionalExperiment && referenceLoci.length > 0) ?
+                            <span>{referenceLoci.length === 1 ? ` of ${referenceLoci[0].symbol}` : ' of multiple loci'}</span>
+                        : null}
+                        {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` in ${result.biosample_ontology.term_name}`}</span> : null}
+                        {(isFunctionalExperiment && examinedLoci.length > 0) ?
+                            <span>
+                                {` with readout of ${examinedLoci.join(', ')}`}
+                            </span>
+                        : null}
                         {(isFunctionalExperiment && result.crispr_screen_readout) ?
                             <span>
                                 {` (${result.crispr_screen_readout})`}
-                            </span>
-                        : null}
-                        {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
-                        {(isFunctionalExperiment && examinedLoci.length > 0) ?
-                            <span>
-                                {` targeting ${examinedLoci.join(', ')}`}
                             </span>
                         : null}
                     </a>
@@ -509,13 +530,28 @@ const ExperimentComponent = (props, reactContext) => {
                                 {synchronizations && synchronizations.length > 0 ?
                                     <div><span className="result-item__property-title">Synchronization timepoint: </span>{synchronizations.join(', ')}</div>
                                 : null}
-
+                                {elementsSelectionMethod && elementsSelectionMethod.length > 0 ?
+                                    <div><span className="result-item__property-title">Elements selection method: </span>{elementsSelectionMethod.join(', ')}</div>
+                                : null}
+                                {referenceLoci && referenceLoci.length > 0 ?
+                                    <div><span className="result-item__property-title">Loci: </span>{referenceLoci.map((locus, i) => <a key={i} href={locus['@id']}>{`${locus.symbol}${i === referenceLoci.length - 1 ? '' : ', '}`}</a>)}</div>
+                                : null}
+                                {tilingModality && tilingModality.length > 0 ?
+                                    <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
+                                : null}
                                 <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
                                 <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
-                                {treatments && treatments.length > 0 ?
+                                {!isFunctionalExperiment && treatments.length > 0 ?
                                     <div><span className="result-item__property-title">Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </span>
                                         <span>
                                             {uniqueTreatments.join(', ')}
+                                        </span>
+                                    </div>
+                                : null}
+                                {isFunctionalExperiment && uniquePerturbationTreatments.length > 0 ?
+                                    <div><span className="result-item__property-title">Treatment{uniquePerturbationTreatments.length !== 1 ? 's' : ''}: </span>
+                                        <span>
+                                            {uniquePerturbationTreatments.join(', ')}
                                         </span>
                                     </div>
                                 : null}
@@ -545,9 +581,6 @@ const ExperimentComponent = (props, reactContext) => {
                                 : null}
                                 {constructionMethods && constructionMethods.length > 0 ?
                                     <div><span className="result-item__property-title">Library construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
-                                : null}
-                                {tilingModality && tilingModality.length > 0 ?
-                                    <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
                                 : null}
                             </>
                         : null}
@@ -678,11 +711,11 @@ const DatasetComponent = ({ context: result, auditIndicators, auditDetail }, rea
                         <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
                     </a>
                     <div className="result-item__data-row">
-                        <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
-                        <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
                         {(isReference && result.crispr_screen_tiling) ?
                             <div><span className="result-item__property-title">CRISPR screen tiling: </span>{result.crispr_screen_tiling}</div>
                          : null}
+                        <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
+                        <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
                     </div>
                 </div>
                 <div className="result-item__meta">
