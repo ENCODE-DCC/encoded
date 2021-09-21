@@ -28,5 +28,19 @@
         ],
         "uuid": "7be3a19e-2632-4b75-b320-c6c15b8510bd",
         "date_released": "2021-05-10"
+    },
+    {
+        "_test": "collection series transgenic enhancer experiments",
+        "accession": "ENCSR219TES",
+        "award": "U54HG007004",
+        "description": "Collection of transgenic enhancer experiments",
+        "lab": "len-pennacchio",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "ENCSR507TEA",
+            "ENCSR514TEA"
+        ],
+        "uuid": "95fe7952-08f7-4c46-a854-1fa3bcb256bb"
     }
 ]
