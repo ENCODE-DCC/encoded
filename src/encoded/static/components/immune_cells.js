@@ -169,18 +169,16 @@ const drawTree = (d3, data, fullWidth) => {
         // Compute the new tree layout.
         const nodes = treeData.descendants();
         const links = treeData.descendants().slice(1);
-
-        console.log(nodes);
         const nodeDepth = nodes.map((n) => n.depth);
         const maxNodeDepth = Math.max(...nodeDepth);
-        console.log(maxNodeDepth);
 
         // Normalize for fixed-depth.
         nodes.forEach(function(d) {
-            console.log(d);
-            console.log(d.depth);
-            d.y = d.depth * height / maxNodeDepth;
-            // d.y = height / d.depth;
+            if (d.depth === 0) {
+                d.y = d.depth * 100;
+            } else {
+                d.y = d.depth * height / maxNodeDepth;
+            }
         });
 
         const node = svg.selectAll('g.node')
@@ -189,28 +187,20 @@ const drawTree = (d3, data, fullWidth) => {
         // Enter any new modes at the parent's previous position.
         const nodeEnter = node.enter().append('g')
             .attr('class', 'node')
-            .attr("transform", function(d) {
+            .attr('transform', function(d) {
                 return "translate(" + source.x0 + "," + source.y0 + ")";
             })
             .on('click', click);
 
-        // Add Circle for the nodes
-        nodeEnter.append('circle')
-            .attr('class', 'node')
-            .attr('r', 1e-6)
-            .style("fill", function(d) {
-                return d._children ? "lightsteelblue" : "#fff";
-        });
-
         const nodeGroup = nodeEnter.append('g')
-            .attr('class', 'cell-group')
+            .attr('class', (d) => (d._children ? 'js-cell parent-cell' : 'js-cell'))
             .on('mouseover', function() {
-                d3.select(this).selectAll('ellipse').style('fill', '#d2d2d2');
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1.2)');
+                d3.select(this).selectAll('ellipse').attr('class', 'hover-class');
             })
             .on('mouseout', function() {
-                d3.select(this).selectAll('ellipse').style('fill', 'white');
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1)');
+                d3.select(this).selectAll('ellipse').attr('class', '');
             });
 
         ellipseSettings.forEach((ellipseSetting) => {
@@ -221,7 +211,7 @@ const drawTree = (d3, data, fullWidth) => {
                 .attr('ry', ellipseSetting.ry)
                 .style('stroke', ellipseSetting.stroke)
                 .style('stroke-width', 1)
-                .style('fill', (d) => (d._children ? 'lightsteelblue' : '#fff'))
+                // .style('fill', (d) => (d._children ? 'lightsteelblue' : '#fff'))
                 .attr('class', () => 'js-cell');
         });
 
@@ -243,13 +233,8 @@ const drawTree = (d3, data, fullWidth) => {
              });
 
         // Update the node attributes and style
-        nodeUpdate.select('circle.node')
-            .attr('r', 10)
-            .style("fill", function(d) {
-                return d._children ? "lightsteelblue" : "#fff";
-            })
-
-        console.log(nodeUpdate.select('circle.node'));
+        nodeUpdate.select('g.js-cell')
+            .attr('class', (d) => (d._children ? 'js-cell parent-cell' : 'js-cell'));
 
         // Remove any exiting nodes
         const nodeExit = node.exit().transition()
@@ -342,13 +327,13 @@ class MatrixPresentation extends React.Component {
 
     updateWindowWidth() {
         this.setState({
-            windowWidth: Math.min(window.screen.width, window.innerWidth),
+            windowWidth: document.getElementById('immune_cells_wrapper').offsetWidth,
         });
     }
 
     render() {
         return (
-            <div className="matrix__presentation">
+            <div className="matrix__presentation" id="immune_cells_wrapper">
                 <div className="sescc_matrix__graph-region">
                     <div className="vertical-node-graph" />
                 </div>

@@ -22,4 +22,30 @@
             cursor: pointer;
         }
     }
+
+    ellipse {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .js-cell {
+        ellipse {
+            fill: white;
+
+            &.hover-class {
+                fill: #f2f2f2;
+            }
+        }
+
+        &.parent-cell {
+            ellipse {
+                fill: #adc7d7;
+
+                &.hover-class {
+                    fill: #76a1bc;
+                }
+            }
+        }
+    }
 }
