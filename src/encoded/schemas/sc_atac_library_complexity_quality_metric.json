@@ -160,7 +160,7 @@
                     "title": "MD5sum"
                 }
             }
-        }  
+        }
     },
     "facets": {
         "assay_term_name": {
