@@ -1,0 +1,7 @@
+median_fragment_count	int	0		archr tarball
+median_tss_enrichment	float	0		archr tarball
+archr_doublet_summary_text	attachment tsv			archr tarball
+archr_doublet_summary_figure	attachment pdf			archr tarball
+archr_fragment_size_distribution	attachment pdf			archr tarball
+archr_pre_filter_metadata	attachment tsv			archr tarball
+archr_tss_by_unique_frags	attachment pdf			archr tarball

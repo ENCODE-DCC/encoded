@@ -1,0 +1,10 @@
+num_reads_total	int	0	
+num_reads_passing	int	0	
+prop_reads_passing	float	0	1
+num_match_dist_0	int	0	
+num_match_dist_1	int	0	
+barcode_reverse_complement	bool		
+num_reads_trimmed	int	0	
+barcode_matching_stats	attachment tsv		
+adapter_trimming_stats	attachment txt		
+barcode_revcomp_stats	attachment txt		

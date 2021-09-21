@@ -1,0 +1,15 @@
+NRF	float	0	1	filtered bam
+PBC1	float	0	1	filtered bam
+PBC2	float	0	1	filtered bam
+distinct_fragments	int	0		filtered bam
+paired_duplicate_reads	int	0		filtered bam
+paired_optical_duplicate_reads	int	0		filtered bam
+paired_reads	int	0		filtered bam
+pct_duplicate_reads	int	0		filtered bam
+positions_with_one_read	int	0		filtered bam
+total_fragments	int	0		filtered bam
+unmapped_reads	int	0		filtered bam
+unpaired_duplicate_reads	int	0		filtered bam
+unpaired_reads	int	0		filtered bam
+picard_markdup_stats	attachment txt			filtered bam
+pbc_stats	attachment tsv			filtered bam
