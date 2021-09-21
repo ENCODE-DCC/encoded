@@ -65,8 +65,14 @@
         "target.investigated_as": {
             "title": "Target category"
         },
+        "target.label": {
+            "title": "Target of assay"
+        },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
@@ -82,15 +88,6 @@
         },
         "related_datasets.files.file_type": {
             "title": "Available file types"
-        },
-        "related_datsets.files.run_type": {
-            "title": "Run type"
-        },
-        "related_datasets.files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "related_datasets.files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
         },
         "lab.title": {
             "title": "Lab"

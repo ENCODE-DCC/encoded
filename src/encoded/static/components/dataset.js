@@ -2504,12 +2504,14 @@ export const SeriesComponent = ({
     // the code takes this into account
     const diseases = [
         ...new Set(context.related_datasets.reduce((accumulatedDiseases, currentRelatedDataset) => {
-            const diseasesTermNames = currentRelatedDataset.replicates.map((replicate) => {
-                if (typeof replicate !== 'string') {
-                    return replicate.library.biosample.disease_term_name;
-                }
-                return null;
-            });
+            const diseasesTermNames = currentRelatedDataset.replicates
+                ? currentRelatedDataset.replicates.map((replicate) => {
+                    if (typeof replicate !== 'string') {
+                        return replicate.library?.biosample?.disease_term_name;
+                    }
+                    return null;
+                })
+                : [];
             return accumulatedDiseases.concat(...diseasesTermNames);
         }, [])),
     ].filter((disease) => disease);
