@@ -9,6 +9,7 @@ import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';
 import * as globals from './globals';
 import { tintColor, isLight } from './datacolors';
+import drawTree from '../libs/ui/node_graph';
 
 
 /**
@@ -24,85 +25,6 @@ const formatPebbleNameToCssClassFriendly = (name) => (!name ? '' : name.toLowerC
  * All assay columns to not include in matrix.
  */
 const excludedAssays = ['Control ChIP-seq'];
-
-/**
- * Stores data on the tree (graph, pebble collection)
- *
- */
-const treeData = [{
-    name: 'H9 Stem Cell',
-    linkColor: '',
-    selectedColor: '#808080',
-    deselectedColor: '#D1D1D1',
-    children: [
-        {
-            name: 'Hepatocyte',
-            linkColor: 'blue',
-            selectedColor: '#808080',
-            deselectedColor: '#D1D1D1',
-            children: null,
-        }, {
-            name: 'Splanchnic Mesodermal Cell',
-            linkColor: 'green',
-            selectedColor: '#008000',
-            deselectedColor: '#E3FAE1',
-            children: [
-                {
-                    name: 'Smooth Muscle Cell',
-                    linkColor: 'green',
-                    selectedColor: '#008000',
-                    deselectedColor: '#E3FAE1',
-                    children: null,
-                },
-                {
-                    name: 'Mesothelial Cell',
-                    linkColor: 'green',
-                    selectedColor: '#008000',
-                    deselectedColor: '#E3FAE1',
-                    children: null,
-                },
-            ],
-        },
-        {
-            name: 'Lateral Mesodermal Cell',
-            linkColor: 'green',
-            selectedColor: '#008000',
-            deselectedColor: '#E3FAE1',
-            children: null,
-        },
-        {
-            name: 'Neural Crest Cell',
-            linkColor: 'green',
-            selectedColor: '#008000',
-            deselectedColor: '#E3FAE1',
-            parent: 'H9 Stem Cell',
-            children: [
-                {
-                    name: 'Mesenchymal Stem Cell',
-                    linkColor: 'purple',
-                    selectedColor: '#EDCF09',
-                    deselectedColor: '#FAFA98',
-                    children: null,
-                },
-            ],
-        },
-        {
-            name: 'Neural Progenitor Cell',
-            linkColor: 'purple',
-            selectedColor: '#800080',
-            deselectedColor: '#E4C6f7',
-            children: null,
-        },
-        {
-            name: 'Ecto Neural Progenitor Cell',
-            linkColor: 'purple',
-            selectedColor: '#800080',
-            deselectedColor: '#E4C6f7',
-            children: null,
-        },
-    ],
-}];
-
 
 const headerDataOrder = [
     'polyA plus RNA-seq',
@@ -147,6 +69,7 @@ const rowDataOrder = [
  * @returns Object
  */
 const convertToDataTableFormat = (context) => {
+    console.log(context);
     if (!context || !context.matrix || !context.matrix.y || !context.matrix.x) {
         return {
             rows: [],
@@ -369,11 +292,14 @@ class MatrixPresentation extends React.Component {
         this.togglePebblesGroupVisibilty = this.togglePebblesGroupVisibilty.bind(this);
         this.state = {
             scrolledRight: false,
+            windowWidth: 0,
         };
     }
 
     componentDidMount() {
         this.handleScrollIndicator(this.scrollElement);
+        this.updateWindowWidth();
+        window.addEventListener('resize', this.updateWindowWidth);
 
         // Based on: https://www.codeseek.co/EleftheriaBatsou/the-tree-layout-or-d3-MveNbW
         // A version for d3.js v4 is: https://bl.ocks.org/d3noob/b024fcce8b4b9264011a1c3e7c7d70dc
@@ -381,165 +307,15 @@ class MatrixPresentation extends React.Component {
         // Both D3 and Jest have their own conflicting JSDOM instances
         require.ensure(['d3'], (require) => {
             this.d3 = require('d3');
-            const margin = { top: 70, left: 50 };
-            const width = 600;
-            const height = 480;
-            const aspect = width / height;
+            const margin = { top: 50, left: 20, bottom: 30, right: 20 };
+            const chartWidth = this.state.windowWidth;
+            console.log(`chartWidth is ${chartWidth}`);
+            const fullHeight = 480;
+            const data = require('./node_graph_data/sescc.json');
+            const treeData = data[0];
+            console.log(treeData);
 
-            const tree = this.d3.layout.tree()
-                .size([height, width]);
-
-            const diagonal = this.d3.svg.diagonal()
-                .projection((d) => [d.x, d.y]);
-
-            const svg = this.d3.select('.sescc_matrix__graph').append('svg')
-                .attr('width', width)
-                .attr('height', height)
-                .attr('viewBox', `0 0 ${width} ${height}`)
-                .attr('preserveAspectRatio', 'xMidYMin meet')
-                .append('g')
-                .attr('transform', `translate(${margin.left},${margin.top})`);
-
-            let index = 0;
-            const svgContainer = this.d3.select('.sescc_matrix__graph svg');
-
-            const resize = () => {
-                const targetWidth = window.innerWidth < width ? window.innerWidth : width;
-                const targetHeight = Math.round(targetWidth / aspect) < width ? Math.round(targetWidth / aspect) : width;
-
-                // adjust the group (g) as a whole
-                svg
-                    .attr('width', targetWidth)
-                    .attr('height', targetHeight);
-
-                // adjust svg container (of the group [g])
-                svgContainer
-                    .attr('width', targetWidth)
-                    .attr('height', targetHeight);
-            };
-
-            resize(); // important for adjusting the graph to fix screen size onload
-            window.addEventListener('resize', resize);
-
-            const update = (root) => {
-                // Compute the new tree layout.
-                const nodes = tree.nodes(root).reverse();
-                const links = tree.links(nodes);
-
-                // Normalize for fixed-depth.
-                nodes.forEach((d) => {
-                    d.y = d.depth * 150;
-                });
-
-                // Declare the nodes…
-                const node = svg.selectAll('g.sescc_matrix__node')
-                    .data(nodes, (d) => {
-                        if (!d.id) {
-                            index += 1;
-                            d.id = index;
-                        }
-                        return d.id;
-                    });
-
-                // create nodes.
-                const nodeEnter = node.enter().append('g')
-                    .attr('class', 'sescc_matrix__node')
-                    .attr('transform', (d) => `translate(${d.x},${d.y})`)
-                    .style('cursor', 'pointer')
-                    .on('click', function updater(d) {
-                        const name = formatH9HeaderTitle(d.name);
-                        const elementClass = formatPebbleNameToCssClassFriendly(name);
-                        const element = document.querySelector(`.${elementClass}`);
-
-                        if (!element) {
-                            return;
-                        }
-                        const { display } = element.style;
-                        element.style.display = display === '' ? 'none' : '';
-                        const color = display === '' ? d.deselectedColor : d.selectedColor;
-
-                        for (let j = 0; j < this.children.length; j += 1) {
-                            const child = this.children[j];
-
-                            if (child.tagName === 'ellipse') {
-                                child.style.fill = color;
-                            }
-                        }
-                    })
-                    .on('mouseover', (d) => {
-                        const name = formatH9HeaderTitle(d.name);
-                        const elementClass = formatPebbleNameToCssClassFriendly(name);
-                        const element = document.querySelector(`.${elementClass} th`);
-                        const text = document.querySelector(`.${elementClass} th .subcategory-row-text`);
-
-                        if (element) {
-                            const cellColor = tintColor(d.selectedColor, 0.1);
-                            const textColor = isLight(cellColor) ? '#000' : '#fff';
-
-                            element.style.backgroundColor = cellColor;
-
-                            if (text) {
-                                text.style.color = textColor;
-                            }
-                        }
-                    })
-                    .on('mouseout', (d) => {
-                        const name = formatH9HeaderTitle(d.name);
-                        const elementClass = formatPebbleNameToCssClassFriendly(name);
-                        const element = document.querySelector(`.${elementClass} th`);
-                        const text = document.querySelector(`.${elementClass} th .subcategory-row-text`);
-
-                        if (element) {
-                            element.style.backgroundColor = 'white';
-
-                            if (text) {
-                                text.style.color = 'black';
-                            }
-                        }
-                    });
-
-                const ellipseSettings = [
-                    { cx: 2, cy: 2, rx: 12, ry: 9, stroke: 'black', 'stroke-width': 1.5 },
-                    { cx: 2, cy: 2, rx: 6.5, ry: 6, stroke: 'black', 'stroke-width': 1.5 },
-                    { cx: -5, cy: 10, rx: 12, ry: 9, stroke: 'black', 'stroke-width': 1.5 },
-                    { cx: -5, cy: 10, rx: 6.5, ry: 5, stroke: 'black', 'stroke-width': 1.5 },
-                    { cx: 10, cy: 10, rx: 12, ry: 9, stroke: 'black', 'stroke-width': 1.5 },
-                    { cx: 10, cy: 10, rx: 6.5, ry: 5, stroke: 'black', 'stroke-width': 1.5 },
-                ];
-
-                nodeEnter.append('svg:title').text((d) => `Click to toggle matrix row: ${d.name}`);
-
-                ellipseSettings.forEach((ellipseSetting) => {
-                    nodeEnter.append('ellipse')
-                        .attr('cx', ellipseSetting.cx)
-                        .attr('cy', ellipseSetting.cy)
-                        .attr('rx', ellipseSetting.rx)
-                        .attr('ry', ellipseSetting.ry)
-                        .style('stroke', ellipseSetting.stroke)
-                        .style('stroke-width', ellipseSetting['stroke-width'])
-                        .style('fill', (d) => d.selectedColor)
-                        .attr('class', () => 'js-cell');
-                });
-
-                nodeEnter.append('text')
-                    .attr('y', () => -18)
-                    .attr('dy', '.35em')
-                    .attr('text-anchor', 'middle')
-                    .attr('transform', 'rotate(310)')
-                    .text((d) => d.name)
-                    .style('fill-opacity', 1);
-
-                // Declare the link
-                const link = svg.selectAll('path.sescc_matrix__link')
-                    .data(links, (d) => d.target.id);
-
-                // Update the links.
-                link.enter().insert('path', 'g')
-                    .attr('class', 'sescc_matrix__link')
-                    .style('stroke', (d) => d.target.linkColor)
-                    .attr('d', diagonal);
-            };
-            update(treeData[0]);
+            drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin);
         });
     }
 
@@ -580,6 +356,11 @@ class MatrixPresentation extends React.Component {
         }
     }
 
+    updateWindowWidth() {
+        this.setState({
+            windowWidth: document.getElementsByClassName('matrix__presentation')[0].offsetWidth,
+        });
+    }
 
     /**
      * Toggle matrix row (biosample) visibility of a specified row in the matrix and change corresponding pebble (node)-color in the tree
@@ -611,11 +392,10 @@ class MatrixPresentation extends React.Component {
         return (
             <div className="matrix__presentation">
                 <div className="sescc_matrix__graph-region">
-                    <div className="sescc_matrix__graph" />
+                    <div className="sescc_matrix__graph vertical-node-graph" />
                     <div className="sescc_matrix__germ-layer">
                         <div>
                             <span className="sescc_matrix__germ-layer-title">Germ Layers</span>
-                            <hr />
                             <ul>
                                 <li className="endodermColor">Endoderm</li>
                                 <li className="mesodermColor">Mesoderm</li>

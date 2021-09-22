@@ -48,4 +48,55 @@
             }
         }
     }
+
+    .unlabeled {
+        ellipse {
+            fill: #808080;
+        }
+    }
+
+    .mesoderm {
+        ellipse {
+            fill: #008000;
+        }
+    }
+
+    .ectoderm {
+        ellipse {
+            fill: #800080;
+        }
+    }
+
+    .stem {
+        ellipse {
+            fill: #edcf09;
+        }
+    }
+}
+
+.sescc_matrix__graph-region {
+    /* stylelint-disable-next-line selector-class-pattern */
+    .endodermColor {
+        color: blue;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .mesodermColor {
+        color: green;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .ectoDermColor {
+        color: purple;
+    }
+}
+
+.sescc_matrix__graph-region {
+    position: relative;
+
+    .sescc_matrix__germ-layer {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
 }

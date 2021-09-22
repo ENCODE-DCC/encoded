@@ -1459,7 +1459,7 @@ $divider-color: #000; // Color of dividers between assays with targets
     @at-root #{&}__germ-layer {
         display: flex;
         align-items: center;
-        font-weight: bold;
+        // font-weight: bold;
 
         @at-root #{&}-title {
             display: flex;
@@ -1475,27 +1475,12 @@ $divider-color: #000; // Color of dividers between assays with targets
             padding-left: 0;
         }
 
-        li {
-            margin: 10px;
-        }
+        // li {
+        //     margin: 10px;
+        // }
 
         hr {
             margin-bottom: 0;
-        }
-
-        /* stylelint-disable-next-line selector-class-pattern */
-        .endodermColor {
-            color: blue;
-        }
-
-        /* stylelint-disable-next-line selector-class-pattern */
-        .mesodermColor {
-            color: green;
-        }
-
-        /* stylelint-disable-next-line selector-class-pattern */
-        .ectoDermColor {
-            color: purple;
         }
     }
 
