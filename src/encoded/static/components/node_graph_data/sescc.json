@@ -1,75 +1,79 @@
 [
     {
-        name: 'H9 Stem Cell',
-        linkColor: '',
-        selectedColor: '#808080',
-        deselectedColor: '#D1D1D1',
-        children: [
+        "name": "H9 Stem Cell",
+        "class": "unlabeled",
+        "linkColor": "",
+        "selectedColor": "#808080",
+        "deselectedColor": "#D1D1D1",
+        "children": [
             {
-                name: 'Hepatocyte',
-                linkColor: 'blue',
-                selectedColor: '#808080',
-                deselectedColor: '#D1D1D1',
-                children: null,
-            }, {
-                name: 'Splanchnic Mesodermal Cell',
-                linkColor: 'green',
-                selectedColor: '#008000',
-                deselectedColor: '#E3FAE1',
-                children: [
+                "name": "Hepatocyte",
+                "class": "unlabeled",
+                "linkColor": "blue",
+                "selectedColor": "#808080",
+                "deselectedColor": "#D1D1D1"
+            },
+            {
+                "name": "Splanchnic Mesodermal Cell",
+                "class": "mesoderm",
+                "linkColor": "green",
+                "selectedColor": "#008000",
+                "deselectedColor": "#E3FAE1",
+                "children": [
                     {
-                        name: 'Smooth Muscle Cell',
-                        linkColor: 'green',
-                        selectedColor: '#008000',
-                        deselectedColor: '#E3FAE1',
-                        children: null,
+                        "name": "Smooth Muscle Cell",
+                        "class": "mesoderm",
+                        "linkColor": "green",
+                        "selectedColor": "#008000",
+                        "deselectedColor": "#E3FAE1"
                     },
                     {
-                        name: 'Mesothelial Cell',
-                        linkColor: 'green',
-                        selectedColor: '#008000',
-                        deselectedColor: '#E3FAE1',
-                        children: null,
-                    },
-                ],
+                        "name": "Mesothelial Cell",
+                        "class": "mesoderm",
+                        "linkColor": "green",
+                        "selectedColor": "#008000",
+                        "deselectedColor": "#E3FAE1"
+                    }
+                ]
             },
             {
-                name: 'Lateral Mesodermal Cell',
-                linkColor: 'green',
-                selectedColor: '#008000',
-                deselectedColor: '#E3FAE1',
-                children: null,
+                "name": "Lateral Mesodermal Cell",
+                "class": "mesoderm",
+                "linkColor": "green",
+                "selectedColor": "#008000",
+                "deselectedColor": "#E3FAE1"
             },
             {
-                name: 'Neural Crest Cell',
-                linkColor: 'green',
-                selectedColor: '#008000',
-                deselectedColor: '#E3FAE1',
-                parent: 'H9 Stem Cell',
-                children: [
+                "name": "Neural Crest Cell",
+                "class": "mesoderm",
+                "linkColor": "green",
+                "selectedColor": "#008000",
+                "deselectedColor": "#E3FAE1",
+                "parent": "H9 Stem Cell",
+                "children": [
                     {
-                        name: 'Mesenchymal Stem Cell',
-                        linkColor: 'purple',
-                        selectedColor: '#EDCF09',
-                        deselectedColor: '#FAFA98',
-                        children: null,
-                    },
-                ],
+                        "name": "Mesenchymal Stem Cell",
+                        "class": "stem",
+                        "linkColor": "purple",
+                        "selectedColor": "#EDCF09",
+                        "deselectedColor": "#FAFA98"
+                    }
+                ]
             },
             {
-                name: 'Neural Progenitor Cell',
-                linkColor: 'purple',
-                selectedColor: '#800080',
-                deselectedColor: '#E4C6f7',
-                children: null,
+                "name": "Neural Progenitor Cell",
+                "class": "ectoderm",
+                "linkColor": "purple",
+                "selectedColor": "#800080",
+                "deselectedColor": "#E4C6f7"
             },
             {
-                name: 'Ecto Neural Progenitor Cell',
-                linkColor: 'purple',
-                selectedColor: '#800080',
-                deselectedColor: '#E4C6f7',
-                children: null,
-            },
-        ],
+                "name": "Ecto Neural Progenitor Cell",
+                "class": "ectoderm",
+                "linkColor": "purple",
+                "selectedColor": "#800080",
+                "deselectedColor": "#E4C6f7"
+            }
+        ]
     }
 ]
