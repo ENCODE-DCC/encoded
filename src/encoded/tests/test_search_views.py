@@ -190,6 +190,110 @@ def test_search_views_search_view_no_type_debug(index_workbook, testapp):
     assert not r.json['debug']['raw_query']['post_filter']['bool']
 
 
+def test_search_views_search_view_facets_from_configs(index_workbook, testapp, dummy_request):
+    from snosearch.configs import SearchConfig
+    from snosearch.interfaces import SEARCH_CONFIG
+    search_registry = dummy_request.registry[SEARCH_CONFIG]
+    config1 = SearchConfig(
+        'config1',
+        {
+            'facets': {
+                "status": {
+                    "title": "Dataset status"
+                },
+                "files.file_type": {
+                    "title": "Available data"
+                }
+            },
+            'columns': {
+                '@id': {
+                    'title': 'ID'
+                },
+                'count': {
+                    'title': 'Count'
+                }
+            }
+        }
+    )
+    config2 = SearchConfig(
+        'config2',
+        {
+            'facets': {
+                "date_released": {
+                    "title": "Date released"
+                },
+                "lab.title": {
+                    "title": "Lab"
+                }
+            },
+            'columns': {
+                'value': {
+                    'title': 'Value'
+                }
+            },
+        }
+    )
+    search_registry.add(config1)
+    search_registry.add(config2)
+    r = testapp.get('/search/?type=Experiment')
+    assert 30 < len(r.json['facets']) < 50
+    r = testapp.get('/search/?type=Experiment&config=Dataset')
+    assert 8 < len(r.json['facets']) < 18
+    r = testapp.get('/search/?type=Experiment&config=config1')
+    assert len(r.json['facets']) == 6
+    assert r.json['facets'][1]['field'] == 'status'
+    assert r.json['facets'][2]['field'] == 'files.file_type'
+    r = testapp.get('/search/?type=Experiment&config=config1&config=config2')
+    assert len(r.json['facets']) == 8
+    assert r.json['facets'][3]['field'] == 'date_released'
+    assert r.json['facets'][4]['field'] == 'lab.title'
+    r = testapp.get('/search/?type=Experiment&type=Dataset&config=config2')
+    assert len(r.json['facets']) == 6
+
+
+def test_search_views_search_view_columns_from_configs(index_workbook, testapp, dummy_request):
+    from snosearch.configs import SearchConfig
+    from snosearch.interfaces import SEARCH_CONFIG
+    search_registry = dummy_request.registry[SEARCH_CONFIG]
+    config1 = SearchConfig(
+        'config1',
+        {
+            'columns': {
+                '@id': {
+                    'title': 'ID'
+                },
+                'count': {
+                    'title': 'Count'
+                }
+            }
+        }
+    )
+    config2 = SearchConfig(
+        'config2',
+        {
+            'columns': {
+                'value': {
+                    'title': 'Value'
+                }
+            },
+        }
+    )
+    search_registry.add(config1)
+    search_registry.add(config2)
+    r = testapp.get('/search/?type=Experiment')
+    assert 30 < len(r.json['columns']) < 40
+    r = testapp.get('/search/?type=Experiment&config=config1')
+    assert len(r.json['columns']) == 2
+    r = testapp.get('/search/?type=Experiment&config=config1&config=config2')
+    assert len(r.json['columns']) == 3
+    r = testapp.get('/search/?type=Experiment&type=Dataset&config=config1&config=config2')
+    assert len(r.json['columns']) == 3
+    r = testapp.get('/search/?type=Experiment&type=Dataset')
+    assert 35 < len(r.json['columns']) < 45
+    r = testapp.get('/search/?type=Donor')
+    assert 15 < len(r.json['columns']) < 25
+
+
 def test_search_views_search_raw_view_raw_response(index_workbook, testapp):
     r = testapp.get('/searchv2_raw/?type=Experiment')
     assert 'hits' in r.json
