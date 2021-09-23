@@ -42,5 +42,19 @@
             "ENCSR514TEA"
         ],
         "uuid": "95fe7952-08f7-4c46-a854-1fa3bcb256bb"
+    },
+    {
+        "_test": "collection series combining FC and TE experiments",
+        "accession": "ENCSR239FTE",
+        "award": "U54HG007004",
+        "description": "Collection of different dataset types",
+        "lab": "len-pennacchio",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "ENCSR507TEA",
+            "ENCSR928SVL"
+        ],
+        "uuid": "c8dc224f-6deb-4175-a8f1-0e57344b6f49"
     }
 ]
