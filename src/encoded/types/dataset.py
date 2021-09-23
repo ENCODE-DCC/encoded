@@ -356,7 +356,7 @@ class TransgenicEnhancerExperiment(
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "InVivoExperiment.supersedes",
+            "linkFrom": "TransgenicEnhancerExperiment.supersedes",
         },
         "notSubmittable": True,
     })
