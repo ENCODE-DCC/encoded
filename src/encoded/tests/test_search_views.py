@@ -412,6 +412,36 @@ def test_search_views_report_view(index_workbook, testapp):
     assert r.json['clear_filters'] == '/report/?type=Experiment'
     assert 'debug' not in r.json
     assert 'columns' in r.json
+    assert len(r.json['columns']) > 10
+    assert 'non_sortable' in r.json
+    assert 'sort' in r.json
+
+
+def test_search_views_report_view_custom_columns(index_workbook, testapp):
+    r = testapp.get(
+        '/report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/'
+        '&accession=ENCSR000ADI&status=released&config=custom-columns'
+    )
+    assert r.json['title'] == 'Report'
+    assert len(r.json['@graph']) == 1
+    assert r.json['@graph'][0]['status'] == 'released'
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == (
+        '/report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/'
+        '&accession=ENCSR000ADI&status=released'
+        '&config=custom-columns'
+    )
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Report']
+    assert r.json['total'] == 1
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 4
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/report/?type=Experiment'
+    assert 'debug' not in r.json
+    assert 'columns' in r.json
+    assert len(r.json['columns']) == 6
     assert 'non_sortable' in r.json
     assert 'sort' in r.json
 
@@ -568,6 +598,30 @@ def test_search_views_matrix_response(index_workbook, testapp):
     assert 'biosample_ontology.term_name' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
     assert 'search_base' in r.json
     assert r.json['search_base'] == '/search/?type=Experiment'
+
+
+def test_search_views_matrix_from_config_response(index_workbook, testapp):
+    r = testapp.get('/matrix/?type=Experiment&config=custom-matrix')
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Matrix'
+    assert r.json['@type'] == ['Matrix']
+    assert r.json['clear_filters'] == '/matrix/?type=Experiment'
+    assert r.json['filters'] == [{'field': 'type', 'term': 'Experiment', 'remove': '/matrix/?config=custom-matrix'}]
+    assert r.json['@id'] == '/matrix/?type=Experiment&config=custom-matrix'
+    assert r.json['total'] >= 22
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'Matrix'
+    assert 'facets' in r.json
+    assert r.json['@context'] == '/terms/'
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == 'assay_title'
+    assert r.json['matrix']['y']['group_by'] == [
+        'award.rfa',
+        'lab.title',
+    ]
+    assert r.json['search_base'] == '/search/?type=Experiment&config=custom-matrix'
 
 
 def test_search_views_matrix_response_with_search_term_type_only_clear_filters(index_workbook, testapp):

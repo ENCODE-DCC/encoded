@@ -43,6 +43,52 @@ def custom_search_config():
     }
 
 
+@search_config(
+    name='custom-matrix'
+)
+def custom_matrix_config():
+    return {
+        'matrix': {
+            'y': {
+                'group_by': [
+                    'award.rfa',
+                    'lab.title',
+                ],
+                'label': 'Lab',
+            },
+            'x': {
+                'group_by': 'assay_title',
+                'label': 'Assay',
+            }
+        }
+    }
+
+
+@search_config(
+    name='custom-columns'
+)
+def custom_columns_config():
+    return {
+        'columns': {
+            'award.rfa': {
+                'title': 'Project',
+            },
+            'assay_title': {
+                'title': 'Assay',
+            },
+            'lab.title': {
+                'title': 'Lab',
+            },
+            'assembly': {
+                'title': 'Assembly',
+            },
+            'status': {
+                'title': 'Status',
+            },
+        }
+    }
+
+
 ALIASES = {
     'DonorSubtypes': [
         'HumanDonor',
