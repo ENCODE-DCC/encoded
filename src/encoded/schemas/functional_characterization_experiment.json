@@ -370,9 +370,6 @@
             "title": "Cell",
             "type": "typeahead"
         },
-        "replicates.library.biosample.life_stage": {
-            "title": "Life stage"
-        },
         "replicates.library.biosample.disease_term_name": {
             "title": "Disease"
         },
@@ -394,9 +391,6 @@
         },
         "files.platform.term_name": {
             "title": "Platform"
-        },
-        "files.run_type": {
-            "title": "Run type"
         },
         "replicates.library.nucleic_acid_term_name": {
             "title": "Library material"

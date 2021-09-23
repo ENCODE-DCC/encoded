@@ -111,17 +111,11 @@
         "related_datasets.replicates.library.biosample.applied_modifications.MOI": {
             "title": "Multiplicity of infection"
         },
-        "related_datasets.replicates.library.biosample.life_stage": {
-            "title": "Life stage"
-        },
         "treatment_term_name": {
             "title": "Biosample treatment"
         },
         "related_datasets.files.file_type": {
             "title": "Available file types"
-        },
-        "related_datsets.files.run_type": {
-            "title": "Run type"
         },
         "related_datasets.replicates.library.nucleic_acid_term_name": {
             "title": "Library material"
