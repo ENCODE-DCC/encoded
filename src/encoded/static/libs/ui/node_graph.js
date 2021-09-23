@@ -142,6 +142,9 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin) => {
             .style('text-anchor', 'middle')
             .text((d) => d.data.name);
 
+        nodeEnter.selectAll('text')
+            .call(wrap, textWrapWidth);
+
         // UPDATE
         const nodeUpdate = nodeEnter.merge(node);
 
@@ -156,8 +159,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin) => {
         nodeUpdate.select('g.js-cell')
             .attr('class', (d) => (d._children ? 'js-cell parent-cell' : 'js-cell'));
 
-        nodeUpdate.selectAll('text')
-            .call(wrap, textWrapWidth);
+
 
         // Remove any exiting nodes
         const nodeExit = node.exit().transition()
@@ -167,8 +169,8 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin) => {
             })
             .remove();
 
-        nodeExit.select('circle')
-            .attr('r', 1e-6);
+        // nodeExit.select('circle')
+        //     .attr('r', 1e-6);
 
         nodeExit.select('text')
             .style('fill-opacity', 1e-6);
@@ -178,7 +180,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin) => {
 
         // Enter any new links at the parent's previous position.
         const linkEnter = link.enter().insert('path', "g")
-            .attr("class", "link")
+            .attr('class', 'link')
             .attr('d', function(d){
                 const o = {x: source.x0, y: source.y0}
                 return diagonal(o, o)
