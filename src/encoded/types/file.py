@@ -305,7 +305,7 @@ class File(Item):
         if read_length is not None or mapped_read_length is not None:
             return "nt"
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Biological replicates",
         "description": "The biological replicate numbers associated with this file.",
         "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
@@ -371,6 +371,15 @@ class File(Item):
             for uuid in replicates
         }
         return sorted(techreps)
+
+    @calculated_property(schema={
+        "title": "Formatted biological replicates",
+        "description": "The biological replicate numbers associated with this file as formatted text.",
+        "comment": "Do not submit. This field is calculated through the biological_replicates property.",
+        "type": "string"
+    })
+    def biological_replicates_formatted(self, biological_replicates):
+        return ', '.join(["Rep {}".format(v) for v in biological_replicates])
 
     @calculated_property(
         condition='dataset',

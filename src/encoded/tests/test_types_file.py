@@ -510,3 +510,15 @@ def test_file_origin_batches(testapp, file_bam_1_1, replicate_1_1, base_library,
     res = testapp.get(file_bam_1_1['@id'] + '@@index-data')
     origin_batches = res.json['object']['origin_batches']
     assert biosample_human_1['@id'] in origin_batches
+
+
+def test_file_replicates_1(testapp, file_bam):
+    r = testapp.get(file_bam['@id'] + '?frame=embedded') 
+    assert r.json['biological_replicates'] == [1]
+    assert r.json['biological_replicates_formatted'] == "Rep 1"
+
+
+def test_file_replicates_2_3(testapp, file_bed_IDR_peaks_2_atac):
+    r = testapp.get(file_bed_IDR_peaks_2_atac['@id'] + '?frame=embedded') 
+    assert r.json['biological_replicates'] == [2, 3]
+    assert r.json['biological_replicates_formatted'] == "Rep 2, Rep 3"

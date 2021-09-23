@@ -51,7 +51,7 @@ const analysisFieldMap = () => (
 
 
 /**
- * Field mapping transform for dataset targets. Annotations have arrays of targets while otherx
+ * Field mapping transform for dataset targets. Annotations have arrays of targets while other
  * datasets have a single target at most.
  * @param {array} datasetType Dataset type being downloaded
  * @return {string} Query string key selecting dataset targets.
@@ -67,6 +67,17 @@ const targetFieldMap = (datasetType) => (
  * @return {string} Top-level @type of given dataset
  */
 const datasetTypeValue = (dataset) => dataset['@type'][0];
+
+
+/**
+ * Get the `biological_replicates_formatted` value from the file, but return undefined if the value
+ * is the empty string.
+ * @param {object} file File object to retrieve the value from
+ * @returns {string} Formatted biological replicates value or undefined if none.
+ */
+const biologicalReplicateValue = (file) => (
+    file.biological_replicates_formatted ? file.biological_replicates_formatted : undefined
+);
 
 
 /**
@@ -126,6 +137,11 @@ export const displayedFileFacetFields = [
         calculated: true,
         parent: 'assembly',
         css: 'cart-facet--analysis',
+    },
+    {
+        field: 'biological_replicates_formatted',
+        title: 'Biological replicates',
+        getValue: biologicalReplicateValue,
     },
     {
         field: 'output_type',
