@@ -108,3 +108,8 @@ def test_biosample_summary_from_related_datasets(testapp,
     res = testapp.get(treated_differentiation_series['@id']+'@@index-data')
     biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data').json['object']['biosample_summary']
     assert 'heart tissue treated with' and 'ethanol' and 'estradiol' in biosample_summary
+
+
+def test_assay_collection_series(testapp, base_collection_series):
+    res = testapp.get(base_collection_series['@id'] + '@@index-data')
+    assert sorted(res.json['object']['assay_term_name']) == ['MPRA']
