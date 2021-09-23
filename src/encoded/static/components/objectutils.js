@@ -80,10 +80,20 @@ export function singleTreatment(treatment) {
     return treatmentText;
 }
 
+// Display treatment type with treatment type details if present.
+export function treatmentTypeDisplay(treatment) {
+    let treatmentDetails = `${treatment.treatment_type}`;
+    if (treatment.treatment_type_details) {
+        treatmentDetails += ` (${treatment.treatment_type_details})`;
+    }
+    return treatmentDetails;
+}
+
 
 // Display a treatment definition list.
 export function treatmentDisplay(treatment) {
     const treatmentText = singleTreatment(treatment);
+    const treatmentDetails = treatmentTypeDisplay(treatment);
     return (
         <dl key={treatment.uuid} className="key-value">
             <div data-test="treatment">
@@ -93,7 +103,7 @@ export function treatmentDisplay(treatment) {
 
             <div data-test="type">
                 <dt>Type</dt>
-                <dd>{treatment.treatment_type}</dd>
+                <dd>{treatmentDetails}</dd>
             </div>
         </dl>
     );

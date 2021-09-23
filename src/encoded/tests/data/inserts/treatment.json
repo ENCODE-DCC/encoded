@@ -87,7 +87,8 @@
         "duration_units": "hour",
         "amount": 100,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:100mM_dex_8hr"]
+        "aliases": ["robert-waterston:100mM_dex_8hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -99,7 +100,8 @@
         "duration_units": "hour",
         "amount": 100,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:100mM_dex_10hr"]
+        "aliases": ["robert-waterston:100mM_dex_10hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -111,7 +113,8 @@
         "duration_units": "hour",
         "amount": 100,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:100mM_dex_12hr"]
+        "aliases": ["robert-waterston:100mM_dex_12hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -123,7 +126,8 @@
         "duration_units": "hour",
         "amount": 80,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:80mM_dex_8hr"]
+        "aliases": ["robert-waterston:80mM_dex_8hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -135,7 +139,8 @@
         "duration_units": "hour",
         "amount": 60,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:60mM_dex_8hr"]
+        "aliases": ["robert-waterston:60mM_dex_8hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "uuid": "a7ab9449-73ea-4693-be2d-a726a9e82056",
@@ -168,7 +173,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "treatment_term_id": "CL:0000815",
         "treatment_term_name": "regulatory T cell",
-        "treatment_type": "injection"
+        "treatment_type": "injection",
+        "purpose": "labeling"
     },
     {
         "amount": 100,
@@ -224,5 +230,17 @@
         "treatment_term_name": "Puromycin",
         "treatment_type": "protein",
         "uuid": "313bf347-6f73-4dd9-a952-b4c1ded4b2c0"
+    },
+    {
+        "amount": 100,
+        "amount_units": "nM",
+        "duration": 4,
+        "duration_units": "hour",
+        "purpose": "perturbation",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "CHEBI:28264",
+        "treatment_term_name": "DMSO",
+        "treatment_type": "chemical",
+        "uuid": "627fdc6b-71c0-427c-8975-27cc2fcb9941"
     }
 ]

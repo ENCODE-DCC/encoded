@@ -511,6 +511,15 @@
             "title": "Biosample treatment",
             "description": "Ontology term describing a component in the treatment.",
             "type":  "string"
+        },
+        "treatment_type_details": {
+            "title": "Treatment type details",
+            "description": "Further information about the type of treatment",
+            "type": "string",
+            "enum": [
+                "agonist",
+                "antagonist"
+            ]
         }
     },
     "url": {

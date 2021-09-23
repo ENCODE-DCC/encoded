@@ -9,7 +9,7 @@ import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
-import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, ItemAccessories, InternalTags, TopAccessories, requestObjects } from './objectutils';
+import { singleTreatment, treatmentDisplay, treatmentTypeDisplay, PanelLookup, AlternateAccession, ItemAccessories, InternalTags, TopAccessories, requestObjects } from './objectutils';
 import pubReferenceList from './reference';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
@@ -632,6 +632,7 @@ const Treatment = (props) => {
     const { context } = props;
 
     const treatmentText = singleTreatment(context);
+    const treatmentDetails = treatmentTypeDisplay(context);
     return (
         <dl className="key-value">
             <div data-test="treatment">
@@ -641,7 +642,7 @@ const Treatment = (props) => {
 
             <div data-test="type">
                 <dt>Type</dt>
-                <dd>{context.treatment_type}</dd>
+                <dd>{treatmentDetails}</dd>
             </div>
         </dl>
     );

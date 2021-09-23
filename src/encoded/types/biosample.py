@@ -1041,11 +1041,13 @@ def generate_summary_dictionary(
             amt = treatment_object.get('amount', '')
             amt_units = treatment_object.get('amount_units', '')
             treatment_term_name = treatment_object.get('treatment_term_name', '')
+            treatment_type_details = treatment_object.get('treatment_type_details', '')
             dur = treatment_object.get('duration', '')
             dur_units = treatment_object.get('duration_units', '')
-            to_add = "{}{}{}".format(
+            to_add = "{}{}{}{}".format(
                 (str(amt) + ' ' + amt_units + ' ' if amt and amt_units else ''),
                 (treatment_term_name + ' ' if treatment_term_name else ''),
+                ('(' + treatment_type_details + ') ' if treatment_type_details else ''),
                 ('for ' + pluralize(dur, dur_units) if dur and dur_units else '')
             )
             if to_add != '':

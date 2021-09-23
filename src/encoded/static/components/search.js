@@ -239,7 +239,16 @@ class BiosampleComponent extends React.Component {
         const lifeStage = (result.life_stage && result.life_stage !== 'unknown') ? ` ${result.life_stage}` : '';
         const ageDisplay = (result.age_display && result.age_display !== '') ? ` ${result.age_display}` : '';
         const separator = (lifeStage || ageDisplay) ? ',' : '';
-        const treatment = (result.treatments && result.treatments.length > 0) ? result.treatments[0].treatment_term_name : '';
+        const treatment = [];
+        if (result.treatments && result.treatments.length > 0) {
+            result.treatments.forEach((treat) => {
+                if (treat.treatment_type_details) {
+                    treatment.push(`${treat.treatment_term_name} (${treat.treatment_type_details})`);
+                } else {
+                    treatment.push(treat.treatment_term_name);
+                }
+            });
+        }
 
         // Calculate genetic modification properties for display.
         const rnais = [];
@@ -284,7 +293,7 @@ class BiosampleComponent extends React.Component {
                             {result.summary ? <div><span className="result-item__property-title">Summary: </span>{BiosampleSummaryString(result)}</div> : null}
                             {rnais.length > 0 ? <div><span className="result-item__property-title">RNAi targets: </span>{rnais.join(', ')}</div> : null}
                             {constructs.length > 0 ? <div><span className="result-item__property-title">Constructs: </span>{constructs.join(', ')}</div> : null}
-                            {treatment ? <div><span className="result-item__property-title">Treatment: </span>{treatment}</div> : null}
+                            {treatment.length > 0 ? <div><span className="result-item__property-title">Treatment: </span>{treatment.join(', ')}</div> : null}
                             {mutatedGenes.length > 0 ? <div><span className="result-item__property-title">Mutated genes: </span>{mutatedGenes.join(', ')}</div> : null}
                             {result.culture_harvest_date ? <div><span className="result-item__property-title">Culture harvest date: </span>{result.culture_harvest_date}</div> : null}
                             {result.date_obtained ? <div><span className="result-item__property-title">Date obtained: </span>{result.date_obtained}</div> : null}
