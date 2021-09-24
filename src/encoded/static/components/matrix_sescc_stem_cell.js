@@ -289,11 +289,16 @@ class MatrixPresentation extends React.Component {
     constructor(props) {
         super(props);
 
-        this.togglePebblesGroupVisibilty = this.togglePebblesGroupVisibilty.bind(this);
+        this.layers = ['Endoderm', 'Mesoderm', 'Ectoderm'];
+
         this.state = {
             scrolledRight: false,
             windowWidth: 0,
+            selectedLayers: this.layers,
         };
+
+        this.togglePebblesGroupVisibilty = this.togglePebblesGroupVisibilty.bind(this);
+        this.selectLayer = this.selectLayer.bind(this);
     }
 
     componentDidMount() {
@@ -307,15 +312,14 @@ class MatrixPresentation extends React.Component {
         // Both D3 and Jest have their own conflicting JSDOM instances
         require.ensure(['d3'], (require) => {
             this.d3 = require('d3');
-            const margin = { top: 50, left: 20, bottom: 30, right: 20 };
+            const margin = { top: 50, left: 20, bottom: 110, right: 20 };
             const chartWidth = this.state.windowWidth;
-            console.log(`chartWidth is ${chartWidth}`);
-            const fullHeight = 480;
+            const fullHeight = 400;
             const data = require('./node_graph_data/sescc.json');
             const treeData = data[0];
             console.log(treeData);
-
-            drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin);
+            const selectedNodes = ['Hepatocyte'];
+            drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, selectedNodes);
         });
     }
 
@@ -384,6 +388,12 @@ class MatrixPresentation extends React.Component {
         }
     }
 
+    selectLayer(layer) {
+        console.log('select layer');
+        console.log(layer);
+        console.log(this);
+    }
+
 
     render() {
         const { context } = this.props;
@@ -394,14 +404,7 @@ class MatrixPresentation extends React.Component {
                 <div className="sescc_matrix__graph-region">
                     <div className="sescc_matrix__graph vertical-node-graph" />
                     <div className="sescc_matrix__germ-layer">
-                        <div>
-                            <span className="sescc_matrix__germ-layer-title">Germ Layers</span>
-                            <ul>
-                                <li className="endodermColor">Endoderm</li>
-                                <li className="mesodermColor">Mesoderm</li>
-                                <li className="ectoDermColor">Ectoderm</li>
-                            </ul>
-                        </div>
+                        {this.layers.map((layer) => <button className={`layer-element ${layer}`} onClick={this.selectLayer(layer)} type="button"><div className={`layer-bubble ${this.state.selectedLayers.includes(layer) ? layer.toLowerCase() : ''}`} /><div className="layer-name">{layer}</div></button>)}
                     </div>
                 </div>
                 <div className="sescc_matrix__show-all">

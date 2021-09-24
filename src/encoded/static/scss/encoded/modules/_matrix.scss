@@ -1457,8 +1457,8 @@ $divider-color: #000; // Color of dividers between assays with targets
     }
 
     @at-root #{&}__germ-layer {
-        display: flex;
-        align-items: center;
+        // display: flex;
+        // align-items: center;
         // font-weight: bold;
 
         @at-root #{&}-title {
@@ -1473,6 +1473,7 @@ $divider-color: #000; // Color of dividers between assays with targets
             padding-top: 0;
             flex-direction: column;
             padding-left: 0;
+            margin-bottom: 0;
         }
 
         // li {
