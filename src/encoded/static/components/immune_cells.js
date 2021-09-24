@@ -8,7 +8,7 @@ import * as globals from './globals';
 import drawTree from '../libs/ui/node_graph';
 
 const fullHeight = 500;
-const margin = { top: 40, right: 0, bottom: 50, left: 0 };
+const margin = { top: 60, right: 0, bottom: 50, left: 0 };
 
 /**
  * Render the area above the matrix itself, including the page title.

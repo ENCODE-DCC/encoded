@@ -1,3 +1,9 @@
+$bubbleSize: 13px;
+$mesoderm: #008000;
+$ectoderm: #800080;
+$stem: #edcf09;
+$endoderm: blue;
+
 .node--internal text {
     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
 }
@@ -77,17 +83,17 @@
 .sescc_matrix__graph-region {
     /* stylelint-disable-next-line selector-class-pattern */
     .endodermColor {
-        color: blue;
+        color: $endoderm;
     }
 
     /* stylelint-disable-next-line selector-class-pattern */
     .mesodermColor {
-        color: green;
+        color: $mesoderm;
     }
 
     /* stylelint-disable-next-line selector-class-pattern */
     .ectoDermColor {
-        color: purple;
+        color: $ectoderm;
     }
 }
 
@@ -98,5 +104,38 @@
         position: absolute;
         top: 10px;
         left: 10px;
+    }
+}
+
+.layer-element {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 0;
+
+    .layer-bubble {
+        flex: 0 1 auto;
+        height: $bubbleSize;
+        width: $bubbleSize;
+        border-radius: $bubbleSize;
+        background: red;
+        margin-right: 5px;
+        border: 1px solid #d2d2d2;
+
+        &.endoderm {
+            background: $endoderm;
+        }
+
+        &.mesoderm {
+            background: $mesoderm;
+        }
+
+        &.ectoderm {
+            background: $ectoderm;
+        }
+    }
+
+    .layer-name {
+        flex: 0 1 auto;
     }
 }
