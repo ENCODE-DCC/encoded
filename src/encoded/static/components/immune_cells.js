@@ -8,7 +8,7 @@ import * as globals from './globals';
 import drawTree from '../libs/ui/node_graph';
 
 const fullHeight = 500;
-const margin = { top: 60, right: 0, bottom: 50, left: 0 };
+const margin = { top: 60, right: 0, bottom: 60, left: 0 };
 
 /**
  * Render the area above the matrix itself, including the page title.
@@ -80,7 +80,8 @@ class MatrixPresentation extends React.Component {
             this.d3 = require('d3');
 
             const chartWidth = this.state.windowWidth;
-            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin);
+            const selectedNodes = [];
+            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, selectedNodes);
         });
     }
 
