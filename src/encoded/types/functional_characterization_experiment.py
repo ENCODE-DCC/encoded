@@ -221,6 +221,13 @@ class FunctionalCharacterizationExperiment(
         "title": "Datapoint",
         "description": "A flag to indicate whether the FC Experiment is a datapoint that should be displayed only as a part of Series object.",
         "type": "boolean",
+        "notSubmittable": True,
     })
-    def datapoint(self, request):
+    def datapoint(self, request, related_series=None):
+        if not related_series:
+            return False
+        for series in related_series:
+            series_object = request.embed(series, "@@object?skip_calculated=true")
+            if "FunctionalCharacterizationSeries" in series_object["@type"]:
+                return True 
         return False
