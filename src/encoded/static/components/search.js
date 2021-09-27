@@ -398,25 +398,16 @@ const ExperimentComponent = (props, reactContext) => {
     let tilingModality = [];
     let elementsSelectionMethod = [];
     let referenceLoci = [];
-    let referenceLociCount = '';
     if (isFunctionalExperiment) {
         if (result.elements_references && result.elements_references.length > 0) {
             result.elements_references.forEach((er) => {
-                if (er.crispr_screen_tiling) {
-                    tilingModality.push(er.crispr_screen_tiling);
-                }
-                if (er.examined_loci && er.examined_loci.length > 0) {
-                    er.examined_loci.forEach((gene) => {
-                        referenceLoci.push(gene);
-                    });
-                }
-                if (er.elements_selection_method && er.elements_selection_method.length > 0) {
-                    elementsSelectionMethod.push(...er.elements_selection_method);
-                }
+                tilingModality = er.crispr_screen_tiling ? tilingModality.concat(er.crispr_screen_tiling) : tilingModality;
+                referenceLoci = er.examined_loci ? referenceLoci.concat(er.examined_loci) : referenceLoci;
+                elementsSelectionMethod = er.elements_selection_method ? elementsSelectionMethod.concat(er.elements_selection_method) : elementsSelectionMethod;
             });
         }
         tilingModality = _.uniq(tilingModality);
-        referenceLoci = _.uniq(referenceLoci);
+        referenceLoci = _.uniq(referenceLoci, (locus) => locus['@id']);
         elementsSelectionMethod = _.uniq(elementsSelectionMethod);
     }
 
@@ -534,7 +525,15 @@ const ExperimentComponent = (props, reactContext) => {
                                     <div><span className="result-item__property-title">Elements selection method: </span>{elementsSelectionMethod.join(', ')}</div>
                                 : null}
                                 {referenceLoci && referenceLoci.length > 0 ?
-                                    <div><span className="result-item__property-title">Loci: </span>{referenceLoci.map((locus, i) => <a key={i} href={locus['@id']}>{`${locus.symbol}${i === referenceLoci.length - 1 ? '' : ', '}`}</a>)}</div>
+                                    <div><span className="result-item__property-title">Loci: </span>{referenceLoci.map((locus, i) => (
+                                        <span key={locus['@id']}>
+                                            {i > 0 ? ', ' : null}
+                                            <a href={locus['@id']}>
+                                                {locus.symbol}
+                                            </a>
+                                        </span>
+                                    ))}
+                                    </div>
                                 : null}
                                 {tilingModality && tilingModality.length > 0 ?
                                     <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>

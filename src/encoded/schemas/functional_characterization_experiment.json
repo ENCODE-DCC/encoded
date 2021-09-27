@@ -451,7 +451,10 @@
         "elements_references.elements_selection_method": {
             "title": "Elements selection method"
         },
-        "elements_references.examined_loci": {
+        "elements_references.examined_loci.@id": {
+            "title": "Reference loci gene ID"
+        },
+        "elements_references.examined_loci.symbol": {
             "title": "Reference loci"
         },
         "crispr_screen_readout": {

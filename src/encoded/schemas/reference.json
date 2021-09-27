@@ -291,9 +291,9 @@
             "title": "Elements selection method",
             "type": "array"
         },
-        "examined_loci.gene.symbol": {
+        "examined_loci.symbol": {
             "title": "Examined loci",
-            "type": "array"
+            "type": "string"
         },
         "crispr_screen_tiling": {
             "title": "CRISPR screen tiling",
