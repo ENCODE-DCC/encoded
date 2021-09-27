@@ -79,7 +79,8 @@ REGION_SEARCH_FILE_FIELDS = [
     'uuid',
     'accession',
     'file_format',
-    'status'
+    'status',
+    'preferred_default'
 ]
 
 REGION_SEARCH_UNNECESSARY_FIELDS = [
