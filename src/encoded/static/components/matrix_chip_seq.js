@@ -9,7 +9,8 @@ import { Panel, PanelBody, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { MatrixBadges, DisplayAsJson, useMount } from './objectutils';
+import { useMount } from './hooks';
+import { MatrixBadges, DisplayAsJson } from './objectutils';
 import { SearchFilter } from './matrix';
 import { TextFilter, FacetList, ClearFilters } from './search';
 import { DivTable } from './datatable';
@@ -974,7 +975,7 @@ const ChIPSeqMatrixFacets = ({ context }) => {
                     </button>
                 </div>
                 <div className="chip-seq-matrix__facet__expander-wrapper--clear">
-                    <ClearFilters searchUri={context.clear_filters} enableDisplay={facetOpen} />
+                    <ClearFilters clearUri={context.clear_filters} searchUri={context['@id']} enableDisplay={facetOpen} />
                 </div>
             </div>
             <div className="chip-seq-matrix__facet__content">

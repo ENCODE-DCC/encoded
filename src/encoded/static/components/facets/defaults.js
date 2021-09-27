@@ -1,11 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
+import { AnimatePresence, motion } from 'framer-motion';
 import _ from 'underscore';
 import url from 'url';
 import QueryString from '../../libs/query_string';
+import { svgIcon } from '../../libs/svg-icons';
 import { sanitizedString } from '../globals';
+import { FacetContext } from '../search';
 import FacetRegistry from './registry';
+
+
+/**
+ * Configurations and constants for facet animations.
+ */
+export const standardAnimationTransition = { duration: 0.2, ease: 'easeInOut' };
 
 
 /**
@@ -112,7 +121,17 @@ DefaultBooleanFacet.contextTypes = {
  * component to render all "exists" facets
  * consistently. For future expansion, note that all properties available to facet-rendering
  * components are available, but this particular implementation only uses a subset of them. */
-export const DefaultExistsBinaryFacet = ({ facet, relevantFilters, queryString, defaultValue }, reactContext) => {
+export const DefaultExistsBinaryFacet = ({
+    facet,
+    relevantFilters,
+    queryString,
+    defaultValue,
+    isExpanded,
+    handleExpanderClick,
+    handleKeyDown,
+    isExpandable,
+    forceDisplay,
+}, reactContext) => {
     let currentOption = defaultValue;
 
     if (relevantFilters.length === 1) {
@@ -174,20 +193,47 @@ export const DefaultExistsBinaryFacet = ({ facet, relevantFilters, queryString, 
     const isFieldPartOfSearchQuery = !!query.getKeyValuesIfPresent(facet.field)[0];
 
     return (
-        facet.total > 0 || isFieldPartOfSearchQuery ?
+        facet.total > 0 || isFieldPartOfSearchQuery || forceDisplay ?
             <fieldset className="facet">
-                <legend>{facet.title}</legend>
-                <div className="facet__content--exists">
-                    {terms.map((term) => (
-                        <div key={term.key} className="facet__radio">
-                            <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
-                            <label htmlFor={term.key}>
-                                <div className="facet__radio-label">{term.key}</div>
-                                <div className="facet__radio-count">{term.doc_count}</div>
-                            </label>
-                        </div>
-                    ))}
-                </div>
+                <button
+                    className="facet-expander"
+                    type="button"
+                    id={`facet-expander-${facet.field}`}
+                    aria-label={facet.field}
+                    aria-pressed={isExpanded}
+                    onClick={(e) => handleExpanderClick(e, isExpanded, facet.field)}
+                    onKeyDown={(e) => handleKeyDown(e, isExpanded, facet.field)}
+                >
+                    <legend>{facet.title}</legend>
+                    {isExpandable && <div className="facet-chevron">{svgIcon(isExpanded ? 'chevronUp' : 'chevronDown')}</div>}
+                </button>
+                <AnimatePresence>
+                    {isExpanded && (
+                        <motion.div
+                            className="facet-content"
+                            initial="close"
+                            animate="open"
+                            exit="close"
+                            transition={standardAnimationTransition}
+                            variants={{
+                                open: { height: 'auto' },
+                                close: { height: 0 },
+                            }}
+                        >
+                            <div className="facet__content--exists">
+                                {terms.map((term) => (
+                                    <div key={term.key} className="facet__radio">
+                                        <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
+                                        <label htmlFor={term.key}>
+                                            <div className="facet__radio-label">{term.key}</div>
+                                            <div className="facet__radio-count">{term.doc_count}</div>
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </fieldset>
         : null
     );
@@ -202,11 +248,26 @@ DefaultExistsBinaryFacet.propTypes = {
     queryString: PropTypes.string,
     /** Default selection */
     defaultValue: PropTypes.string,
+    /** True if facet is to be expanded */
+    isExpanded: PropTypes.bool,
+    /** Expand or collapse facet */
+    handleExpanderClick: PropTypes.func,
+    /** Handles key-press and toggling facet */
+    handleKeyDown: PropTypes.func,
+    /** True if expandable, false otherwise */
+    isExpandable: PropTypes.bool,
+    /** True to force facet to display in cases it would normally be hidden */
+    forceDisplay: PropTypes.bool,
 };
 
 DefaultExistsBinaryFacet.defaultProps = {
     queryString: '',
     defaultValue: 'yes',
+    isExpanded: false,
+    handleExpanderClick: () => {},
+    handleKeyDown: () => {},
+    isExpandable: true,
+    forceDisplay: false,
 };
 
 DefaultExistsBinaryFacet.contextTypes = {
@@ -219,7 +280,7 @@ DefaultExistsBinaryFacet.contextTypes = {
  * consistently. For future expansion, note that all properties available to facet-rendering
  * components are available, but this particular implementation only uses a subset of them.
  */
-export const DefaultExistsFacet = ({ facet, relevantFilters, queryString }, reactContext) => {
+export const DefaultExistsFacet = ({ facet, relevantFilters, queryString, forceDisplay }, reactContext) => {
     // Based on the current filter for this "exists" facet, determine which radio button should
     // appear checked. Note that if the user put some non "*" value for this "exists" query string
     // element, then we check the "either" radio button because a non-"*" value has no defined
@@ -263,7 +324,7 @@ export const DefaultExistsFacet = ({ facet, relevantFilters, queryString }, reac
 
     // this field show display if it is part of the search query even if there are no results. Otherwise hide
     return (
-        facet.total > 0 || isFieldPartOfSearchQuery ?
+        facet.total > 0 || isFieldPartOfSearchQuery || forceDisplay ?
             <fieldset className="facet">
                 <legend>{facet.title}</legend>
                 <div className="facet__content--exists">
@@ -296,10 +357,13 @@ DefaultExistsFacet.propTypes = {
     relevantFilters: PropTypes.array.isRequired,
     /** Query-string portion of current URL without initial ? */
     queryString: PropTypes.string,
+    /** True to force facet to display in cases it would normally be hidden */
+    forceDisplay: PropTypes.bool,
 };
 
 DefaultExistsFacet.defaultProps = {
     queryString: '',
+    forceDisplay: false,
 };
 
 DefaultExistsFacet.contextTypes = {
@@ -531,7 +595,7 @@ export class DefaultDateSelectorFacet extends React.Component {
     }
 
     render() {
-        const { facet, results, queryString } = this.props;
+        const { facet, results, isExpanded, handleExpanderClick, handleKeyDown, queryString, isExpandable } = this.props;
         const searchBase = `?${queryString}&`;
         const field = this.state.activeFacet;
         const activeFacet = results.facets.filter((f) => f.field === this.state.activeFacet)[0];
@@ -643,103 +707,130 @@ export class DefaultDateSelectorFacet extends React.Component {
         if ((activeFacet && (activeFacet.terms.length > 0) && activeFacet.terms.some((term) => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''}`}>
-                    <h5>Date range selection</h5>
-                    {(queryString.indexOf('date_released!=*') > -1) ?
-                        <div className="filter-container">
-                            <div className="filter-hed">Selected filter for date released:</div>
-                            <a href={deleteReleasedFilter} className="negation-filter">
-                                <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
-                            </a>
-                        </div>
-                    : null}
-                    {(queryString.indexOf('date_submitted!=*') > -1) ?
-                        <div className="filter-container">
-                            <div className="filter-hed">Selected filter for date submitted:</div>
-                            <a href={deleteSubmittedFilter} className="negation-filter">
-                                <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
-                            </a>
-                        </div>
-                    : null}
-                    {existingFilter.length > 0 ?
-                        <div className="selected-date-range">
-                            <div>Selected range: </div>
-                            {existingFilter.map((filter) => (
-                                <div key={filter.term}>{dateRangeString}</div>
-                            ))}
-                        </div>
-                    : null}
-
-                    <div className="date-selector-toggle-wrapper">
-                        <div className="date-selector-toggle">
-                            <input
-                                type="radio"
-                                name="released"
-                                value="released"
-                                id="released-radio-button"
-                                checked={this.state.activeFacet === 'date_released'}
-                                onChange={this.toggleDateFacet}
-                                disabled={missingField === 'date_released'}
-                            />
-                            <label htmlFor="released-radio-button" id="released-radio-button-label">Released</label>
-                        </div>
-                        <div className="date-selector-toggle">
-                            <input
-                                type="radio"
-                                name="submitted"
-                                value="submitted"
-                                id="submitted-radio-button"
-                                checked={this.state.activeFacet === 'date_submitted'}
-                                onChange={this.toggleDateFacet}
-                                disabled={missingField === 'date_submitted'}
-                            />
-                            <label htmlFor="submitted-radio-button" id="submitted-radio-button-label">Submitted</label>
-                        </div>
-                    </div>
-                    <button type="button" className="date-selector-btn" onClick={() => this.handleQuickLink(searchBaseForDateRange, field)}>
-                        <i className="icon icon-caret-right" />
-                        See results for the past year
+                    <button
+                        className="facet-expander"
+                        type="button"
+                        id={`facet-expander-${facet.field}`}
+                        aria-label={facet.field}
+                        aria-pressed={isExpanded}
+                        onClick={(e) => handleExpanderClick(e, isExpanded, facet.field)}
+                        onKeyDown={(e) => handleKeyDown(e, isExpanded, facet.field)}
+                    >
+                        <h5>Date range selection</h5>
+                        {isExpandable ? <div className="facet-chevron">{svgIcon(isExpanded ? 'chevronUp' : 'chevronDown')}</div> : null}
                     </button>
-                    <div className="date-container">
-                        <div className="date-selector-module">
-                            <h6>Start date:</h6>
-                            <div className="date-selector">
-                                <select id="select-start-month" value={this.state.startMonth} onChange={this.selectMonth}>
-                                    {this.state.startMonths.map((month) => (
-                                        <option value={month} key={month}>{month}</option>
-                                    ))}
-                                </select>
-                                <select id="select-start-year" value={this.state.startYear} onChange={this.selectYear}>
-                                    {this.state.startYears.map((year) => (
-                                        <option value={year} key={year}>{year}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="date-arrow">
-                            <i className="icon icon-arrow-right" />
-                        </div>
-                        <div className="date-selector-module">
-                            <h6>End date:</h6>
-                            <div className="date-selector">
-                                <select id="select-end-month" value={this.state.endMonth} onChange={this.selectMonth}>
-                                    {this.state.endMonths.map((month) => (
-                                        <option value={month} key={month}>{month}</option>
-                                    ))}
-                                </select>
-                                <select id="select-end-year" value={this.state.endYear} onChange={this.selectYear}>
-                                    {this.state.endYears.map((year) => (
-                                        <option value={year} key={year}>{year}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="date-selector-facet__controls">
-                        <a className="btn btn-info btn-sm apply-date-selector" href={searchString}>Apply changes</a>
-                        <button type="button" className="btn btn-info btn-sm reset-date-selector" onClick={() => this.handleReset(resetString)}>
-                            Reset
-                        </button>
-                    </div>
+                    <AnimatePresence>
+                        {(isExpanded || !isExpandable) && (
+                            <motion.div
+                                className="facet-content"
+                                initial="close"
+                                animate="open"
+                                exit="close"
+                                transition={standardAnimationTransition}
+                                variants={{
+                                    open: { height: 'auto' },
+                                    close: { height: 0 },
+                                }}
+                            >
+                                {(queryString.indexOf('date_released!=*') > -1) ?
+                                    <div className="filter-container">
+                                        <div className="filter-hed">Selected filter for date released:</div>
+                                        <a href={deleteReleasedFilter} className="negation-filter">
+                                            <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
+                                        </a>
+                                    </div>
+                                : null}
+                                {(queryString.indexOf('date_submitted!=*') > -1) ?
+                                    <div className="filter-container">
+                                        <div className="filter-hed">Selected filter for date submitted:</div>
+                                        <a href={deleteSubmittedFilter} className="negation-filter">
+                                            <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
+                                        </a>
+                                    </div>
+                                : null}
+                                {existingFilter.length > 0 ?
+                                    <div className="selected-date-range">
+                                        <div>Selected range: </div>
+                                        {existingFilter.map((filter) => (
+                                            <div key={filter.term}>{dateRangeString}</div>
+                                        ))}
+                                    </div>
+                                : null}
+
+                                <div className="date-selector-toggle-wrapper">
+                                    <div className="date-selector-toggle">
+                                        <input
+                                            type="radio"
+                                            name="released"
+                                            value="released"
+                                            id="released-radio-button"
+                                            checked={this.state.activeFacet === 'date_released'}
+                                            onChange={this.toggleDateFacet}
+                                            disabled={missingField === 'date_released'}
+                                        />
+                                        <label htmlFor="released-radio-button" id="released-radio-button-label">Released</label>
+                                    </div>
+                                    <div className="date-selector-toggle">
+                                        <input
+                                            type="radio"
+                                            name="submitted"
+                                            value="submitted"
+                                            id="submitted-radio-button"
+                                            checked={this.state.activeFacet === 'date_submitted'}
+                                            onChange={this.toggleDateFacet}
+                                            disabled={missingField === 'date_submitted'}
+                                        />
+                                        <label htmlFor="submitted-radio-button" id="submitted-radio-button-label">Submitted</label>
+                                    </div>
+                                </div>
+                                <button type="button" className="date-selector-btn" onClick={() => this.handleQuickLink(searchBaseForDateRange, field)}>
+                                    <i className="icon icon-caret-right" />
+                                    See results for the past year
+                                </button>
+                                <div className="date-container">
+                                    <div className="date-selector-module">
+                                        <h6>Start date:</h6>
+                                        <div className="date-selector">
+                                            <select id="select-start-month" value={this.state.startMonth} onChange={this.selectMonth}>
+                                                {this.state.startMonths.map((month) => (
+                                                    <option value={month} key={month}>{month}</option>
+                                                ))}
+                                            </select>
+                                            <select id="select-start-year" value={this.state.startYear} onChange={this.selectYear}>
+                                                {this.state.startYears.map((year) => (
+                                                    <option value={year} key={year}>{year}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="date-arrow">
+                                        <i className="icon icon-arrow-right" />
+                                    </div>
+                                    <div className="date-selector-module">
+                                        <h6>End date:</h6>
+                                        <div className="date-selector">
+                                            <select id="select-end-month" value={this.state.endMonth} onChange={this.selectMonth}>
+                                                {this.state.endMonths.map((month) => (
+                                                    <option value={month} key={month}>{month}</option>
+                                                ))}
+                                            </select>
+                                            <select id="select-end-year" value={this.state.endYear} onChange={this.selectYear}>
+                                                {this.state.endYears.map((year) => (
+                                                    <option value={year} key={year}>{year}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="date-selector-facet__controls">
+                                    <a className="btn btn-info btn-sm apply-date-selector" href={searchString}>Apply changes</a>
+                                    <button type="button" className="btn btn-info btn-sm reset-date-selector" onClick={() => this.handleReset(resetString)}>
+                                        Reset
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             );
         }
@@ -756,6 +847,21 @@ DefaultDateSelectorFacet.propTypes = {
     results: PropTypes.object.isRequired,
     /** Query-string portion of current URL without initial ? */
     queryString: PropTypes.string.isRequired,
+    /** True if facet is to be expanded */
+    isExpanded: PropTypes.bool,
+    /** Expand or collapse facet */
+    handleExpanderClick: PropTypes.func,
+    /** Handles key-press and toggling facet */
+    handleKeyDown: PropTypes.func,
+    /** True if expandable, false otherwise */
+    isExpandable: PropTypes.bool,
+};
+
+DefaultDateSelectorFacet.defaultProps = {
+    isExpanded: false,
+    handleExpanderClick: () => {},
+    handleKeyDown: () => {},
+    isExpandable: true,
 };
 
 DefaultDateSelectorFacet.contextTypes = {
@@ -793,20 +899,38 @@ DefaultTermName.propTypes = {
  * Default component to render the name of a selected term from the search result filters. Used for
  * the "Selected filters" links, and the term gets rendered inside an <a>.
  */
-export const DefaultSelectedTermName = ({ filter }) => (
-    <span>{filter.term}</span>
+export const DefaultSelectedTermName = ({ filter, alternateTitle }) => (
+    <>{alternateTitle || filter.term}</>
 );
 
 DefaultSelectedTermName.propTypes = {
     /** facet.filters object for the selected term we're rendering */
-    filter: PropTypes.object.isRequired,
+    filter: PropTypes.object,
+    /** Title to override the one from `filter` */
+    alternateTitle: PropTypes.string,
+};
+
+DefaultSelectedTermName.defaultProps = {
+    filter: null,
+    alternateTitle: '',
 };
 
 
 /**
  * Default component to render a single term within the default facet.
  */
-export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation }) => {
+export const DefaultTerm = ({
+    term,
+    facet,
+    results,
+    mode,
+    relevantFilters,
+    pathname,
+    queryString,
+    onFilter,
+    allowNegation,
+    forceReload,
+}) => {
     const TermNameComponent = FacetRegistry.TermName.lookup(facet.field);
     let href;
     let negHref;
@@ -858,9 +982,12 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
         width: `${Math.ceil((term.doc_count / facet.total) * 100)}%`,
     };
 
+    // Prevent scrolling if facet groups exist.
+    const preventScrollOnTermClick = results.facet_groups && results.facet_groups.length > 0;
+
     return (
         <li className="facet-term">
-            <a href={href} onClick={mode === 'picker' ? onFilter : null} className={`facet-term__item${termCss}`}>
+            <a href={href} data-noscroll={preventScrollOnTermClick} data-reload={forceReload} onClick={mode === 'picker' ? onFilter : null} className={`facet-term__item${termCss}`}>
                 <div className="facet-term__text">
                     <TermNameComponent
                         termName={term.key}
@@ -879,7 +1006,15 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
             <div className="facet-term__negator">
                 {allowNegation ?
                     <>
-                        {selectedTermFilter ? null : <a href={negHref} title="Do not include items with this term"><span className="sr-only">Do not include items with this term</span><i className="icon icon-minus-circle" /></a>}
+                        {selectedTermFilter
+                            ? null
+                            : (
+                                <a href={negHref} data-noscroll={preventScrollOnTermClick} data-reload={forceReload} title="Do not include items with this term">
+                                    <span className="sr-only">Do not include items with this term</span>
+                                    <i className="icon icon-minus-circle" />
+                                </a>
+                            )
+                        }
                     </>
                 : null}
             </div>
@@ -906,6 +1041,8 @@ DefaultTerm.propTypes = {
     onFilter: PropTypes.func,
     /** True to display negation control */
     allowNegation: PropTypes.bool,
+    /** True to force page reload when clicking a term */
+    forceReload: PropTypes.bool,
 };
 
 DefaultTerm.defaultProps = {
@@ -913,6 +1050,7 @@ DefaultTerm.defaultProps = {
     queryString: '',
     onFilter: null,
     allowNegation: true,
+    forceReload: false,
 };
 
 
@@ -922,7 +1060,6 @@ DefaultTerm.defaultProps = {
  */
 const Typeahead = ({ typeaheadTerm, facet, handleTypeAhead }) => (
     <div className="typeahead-entry" role="search">
-        <i className="icon icon-search" />
         <div className="searchform">
             <input
                 type="search"
@@ -947,23 +1084,90 @@ Typeahead.propTypes = {
 
 
 /**
+ * Renders one element in the list of filter selections used to clear selected terms.
+ */
+const SelectedFilterElement = ({ facet, filter, preventScrollOnTermClick, alternate }) => {
+    const SelectedTermNameComponent = FacetRegistry.SelectedTermName.lookup(facet.field);
+    const isNegativeTerm = filter?.field.indexOf('!') > -1;
+    const isAlternateTerm = Object.keys(alternate).length > 0;
+
+    return (
+        <a
+            href={alternate.uri || filter.remove}
+            data-noscroll={preventScrollOnTermClick}
+            className={`filter-link${isNegativeTerm ? ' filter-link--negative' : ''}${isAlternateTerm ? ' filter-link--alternate' : ''}`}
+        >
+            <div className="filter-link__title">
+                <SelectedTermNameComponent filter={filter} alternateTitle={alternate.title} />
+            </div>
+            <div className="filter-link__icon">{svgIcon('multiplication')}</div>
+        </a>
+    );
+};
+
+SelectedFilterElement.propTypes = {
+    /** Relevant `facet` object from `facets` array in `results` */
+    facet: PropTypes.object.isRequired,
+    /** Filter that this selection link uses to form its link */
+    filter: PropTypes.object,
+    /** True if clicking this element should prevent the page from scrolling to the top */
+    preventScrollOnTermClick: PropTypes.bool.isRequired,
+    /** Alternative link and title to override the ones from `filter` */
+    alternate: PropTypes.shape({
+        /** Alternative title displayed in the element */
+        title: PropTypes.string,
+        /** Alternative URI for the button to navigate to */
+        uri: PropTypes.string,
+    }),
+};
+
+SelectedFilterElement.defaultProps = {
+    filter: null,
+    alternate: {},
+};
+
+
+/**
  * Display links to clear the terms currently selected in the facet. Display nothing if no terms
  * have been selected.
  */
-const SelectedFilters = ({ facet, selectedTerms }) => {
-    const SelectedTermNameComponent = FacetRegistry.SelectedTermName.lookup(facet.field);
+const SelectedFilters = ({ facet, selectedTerms, searchUri, options }) => {
+    let clearAllInFacet = null;
+    if (selectedTerms.length > 1) {
+        // Build a URL and element for an "All" button to clear all terms within the current facet.
+        const parsedSearchUri = url.parse(searchUri);
+        const searchQuery = new QueryString(parsedSearchUri.query);
+        selectedTerms.forEach((selectedTerm) => {
+            // Remove each of the selected terms for the current facet from the query string.
+            const positiveKey = selectedTerm.field.slice(-1) === '!' ? selectedTerm.field.slice(0, -1) : selectedTerm.field;
+            searchQuery.deleteKeyValue(positiveKey, selectedTerm.term);
+        });
+
+        // Render the "All" button to add to the ones chosen within the given filters.
+        clearAllInFacet = (
+            <SelectedFilterElement
+                key="all"
+                facet={facet}
+                preventScrollOnTermClick={options.preventScrollOnTermClick}
+                alternate={{ title: 'All', uri: `?${searchQuery.format()}` }}
+            />
+        );
+    }
+
     return (
         <>
-            {(selectedTerms.length > 0) ?
+            {selectedTerms.length > 0 &&
                 <div className="filter-container">
-                    <div className="filter-hed">Selected filters:</div>
                     {selectedTerms.map((filter) => (
-                        <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}>
-                            <div className="filter-link"><i className="icon icon-times-circle" /> <SelectedTermNameComponent filter={filter} /></div>
-                        </a>
-                    ))}
+                        <SelectedFilterElement
+                            key={filter.term}
+                            facet={facet}
+                            filter={filter}
+                            preventScrollOnTermClick={options.preventScrollOnTermClick}
+                        />
+                    )).concat(clearAllInFacet)}
                 </div>
-            : null}
+            }
         </>
     );
 };
@@ -973,6 +1177,13 @@ SelectedFilters.propTypes = {
     facet: PropTypes.object.isRequired,
     /** Search-result filters relevant to the facet */
     selectedTerms: PropTypes.array.isRequired,
+    /** Complete search URI for the current page of results */
+    searchUri: PropTypes.string.isRequired,
+    /** Extra options object */
+    options: PropTypes.shape({
+        /** True to prevent scrolling to the top of the page when clicking a term */
+        preventScrollOnTermClick: PropTypes.bool,
+    }).isRequired,
 };
 
 
@@ -982,6 +1193,7 @@ SelectedFilters.propTypes = {
  * avoiding needless re-renders when a different facet needs to rerender.
  */
 const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname, queryString, filteredTerms, onFilter, allowNegation }) => {
+    const options = React.useContext(FacetContext);
     const TermComponent = FacetRegistry.Term.lookup(facet.field);
     const facetTitle = facet.title.replace(/\s+/g, '');
     return (
@@ -998,6 +1210,7 @@ const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname
                     queryString={queryString}
                     onFilter={onFilter}
                     allowNegation={allowNegation}
+                    forceReload={options.forceReload}
                 />
             ))}
         </div>
@@ -1056,7 +1269,8 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     // For straightforward numerical facets, just sort by value
     const processedTerms = significantTerms.every(numericalTest) ? _.sortBy(significantTerms, (obj) => obj.key) : significantTerms;
 
-    const disabledCss = (filters) => filters.some((f) => f.field.indexOf('!') !== -1 && f.term.trim() === '*');
+    // Prevent scrolling if facet groups exist.
+    const preventScrollOnTermClick = results.facet_groups && results.facet_groups.length > 0;
 
     // Filter the list of facet terms to those allowed by the optional typeahead field. Memoize the
     // resulting list to avoid needlessly re-rendering the facet-term list that can get very long.
@@ -1088,20 +1302,22 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     // of itself can cause needless re-rendering of dependent components.
     const handleScrollShading = React.useCallback(() => {
         const element = scrollingElement.current;
-        if (element.scrollTop === 0 && topShadingVisible) {
-            // Top edge of the facet scrolled into view.
-            setTopShadingVisible(false);
-        } else if (element.scrollTop > 0 && !topShadingVisible) {
-            // Top edge of the facet scrolls out of view.
-            setTopShadingVisible(true);
-        } else {
-            const scrollDiff = Math.abs((element.scrollHeight - element.scrollTop) - element.clientHeight);
-            if (scrollDiff === 0 && bottomShadingVisible) {
-                // Bottom edge of the facet scrolled into view.
-                setBottomShadingVisible(false);
-            } else if (scrollDiff > 0 && !bottomShadingVisible) {
-                // Bottom edge of the facet scrolled out of view.
-                setBottomShadingVisible(true);
+        if (element) {
+            if (element.scrollTop === 0 && topShadingVisible) {
+                // Top edge of the facet scrolled into view.
+                setTopShadingVisible(false);
+            } else if (element.scrollTop > 0 && !topShadingVisible) {
+                // Top edge of the facet scrolls out of view.
+                setTopShadingVisible(true);
+            } else {
+                const scrollDiff = Math.abs((element.scrollHeight - element.scrollTop) - element.clientHeight);
+                if (scrollDiff === 0 && bottomShadingVisible) {
+                    // Bottom edge of the facet scrolled into view.
+                    setBottomShadingVisible(false);
+                } else if (scrollDiff > 0 && !bottomShadingVisible) {
+                    // Bottom edge of the facet scrolled out of view.
+                    setBottomShadingVisible(true);
+                }
             }
         }
     }, [topShadingVisible, bottomShadingVisible, scrollingElement]);
@@ -1137,49 +1353,61 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
 
     return (
         <div className="facet">
-            <div
-                className="facet__expander--header"
-                tabIndex="0"
-                role="button"
+            <button
+                className="facet-expander"
+                type="button"
+                id={`facet-expander-${facet.field}`}
                 aria-label={facet.field}
                 aria-pressed={isExpanded}
                 onClick={(e) => handleExpanderClick(e, isExpanded, facet.field)}
                 onKeyDown={(e) => handleKeyDown(e, isExpanded, facet.field)}
             >
                 <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
-                {isExpandable ? <i className={`facet-chevron icon icon-chevron-${isExpanded ? 'up' : 'down'}`} /> : null}
-            </div>
-            <SelectedFilters facet={facet} selectedTerms={relevantFilters} />
-            <div className={`${disabledCss(relevantFilters) ? 'facet-list-disabled' : ''}`}>
-                <div className={`facet-content facet-${(isExpanded || !isExpandable) ? 'open' : 'close'}`}>
-                    {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
-                    <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
-                        <ul onScroll={handleScroll} ref={scrollingElement}>
-                            {(filteredTerms.length === 0) ?
-                                <div className="searcherror">
-                                    Try a different search term for results.
-                                </div>
-                            :
-                                <>
-                                    <FacetTerms
-                                        facet={facet}
-                                        results={results}
-                                        mode={mode}
-                                        relevantFilters={relevantFilters}
-                                        pathname={pathname}
-                                        queryString={queryString}
-                                        filteredTerms={filteredTerms}
-                                        onFilter={onFilter}
-                                        allowNegation={allowNegation}
-                                    />
-                                    <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
-                                    <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
-                                </>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
+                {isExpandable ? <div className="facet-chevron">{svgIcon(isExpanded ? 'chevronUp' : 'chevronDown')}</div> : null}
+            </button>
+            <AnimatePresence>
+                {(isExpanded || !isExpandable) && (
+                    <motion.div
+                        className="facet-content"
+                        initial="close"
+                        animate="open"
+                        exit="close"
+                        transition={standardAnimationTransition}
+                        variants={{
+                            open: { height: 'auto' },
+                            close: { height: 0 },
+                        }}
+                    >
+                        {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
+                        <div className={`facet-terms${facet.type === 'typeahead' ? ' facet-terms--typeahead' : ''}`}>
+                            <ul onScroll={handleScroll} ref={scrollingElement}>
+                                {(filteredTerms.length === 0) ?
+                                    <div className="searcherror">
+                                        Try a different search term for results.
+                                    </div>
+                                :
+                                    <>
+                                        <FacetTerms
+                                            facet={facet}
+                                            results={results}
+                                            mode={mode}
+                                            relevantFilters={relevantFilters}
+                                            pathname={pathname}
+                                            queryString={queryString}
+                                            filteredTerms={filteredTerms}
+                                            onFilter={onFilter}
+                                            allowNegation={allowNegation}
+                                        />
+                                        <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
+                                        <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
+                                    </>
+                                }
+                            </ul>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            <SelectedFilters facet={facet} selectedTerms={relevantFilters} searchUri={results['@id']} options={{ preventScrollOnTermClick }} />
         </div>
     );
 };

@@ -32,15 +32,21 @@ PerturbedTermName.propTypes = {
  * Maps the `perturbed` true/false and 0/1 keys from the search result filters to human-readable
  * strings for the "Selected filters" links.
  */
-const PerturbedSelectedTermName = ({ filter }) => (
-    <span>{perturbedTerms[filter.term]}</span>
+const PerturbedSelectedTermName = ({ filter, alternateTitle }) => (
+    <span>{filter ? perturbedTerms[filter.term] : alternateTitle}</span>
 );
 
 PerturbedSelectedTermName.propTypes = {
     /** facet.filters object for the selected term we're mapping */
-    filter: PropTypes.object.isRequired,
+    filter: PropTypes.object,
+    /** Title to override the one from `filter` */
+    alternateTitle: PropTypes.string,
 };
 
+PerturbedSelectedTermName.defaultProps = {
+    filter: null,
+    alternateTitle: '',
+};
 
 FacetRegistry.TermName.register('perturbed', PerturbedTermName);
 FacetRegistry.SelectedTermName.register('perturbed', PerturbedSelectedTermName);

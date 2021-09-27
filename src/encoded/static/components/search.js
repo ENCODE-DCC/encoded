@@ -4,10 +4,22 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import QueryString from '../libs/query_string';
+import { svgIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls, cartGetAllowedTypes } from './cart';
-import { FacetRegistry, SpecialFacetRegistry } from './facets';
+import {
+    FacetRegistry,
+    SpecialFacetRegistry,
+    FacetGroup,
+    filterTopLevelFacets,
+    generateFacetGroupIdentifier,
+    generateFacetGroupIdentifierList,
+    generateFacetGroupNameList,
+    getFacetGroupFieldsInFacets,
+    areFacetGroupsEqual,
+} from './facets';
 import * as globals from './globals';
+import { usePrevious } from './hooks';
 import {
     DisplayAsJson,
     DocTypeTitle,
@@ -1106,6 +1118,12 @@ globals.listingViews.register(Image, 'Image');
 
 
 /**
+ * Context to pass options from facets to any downstream facet code that needs it.
+ */
+export const FacetContext = React.createContext({});
+
+
+/**
  * Entry field for filtering the results list when search results appear in edit forms.
  *
  * @export
@@ -1192,11 +1210,104 @@ TextFilter.propTypes = {
 };
 
 
+/**
+ * Renders a single facet of any type.
+ */
+const Facet = ({
+    facet,
+    expandedFacets,
+    results,
+    mode,
+    onFilter,
+    expanderClickHandler,
+    keyDownHandler,
+    isExpandable,
+    forceDisplay,
+}) => {
+    const parsedUrl = results && results['@id'] && url.parse(results['@id']);
+
+    // Filter the filters to just the ones relevant to the current facet,
+    // matching negation filters too.
+    const relevantFilters = results && results.filters.filter((filter) => (
+        filter.field === facet.field || filter.field === `${facet.field}!`
+    ));
+
+    // Look up the renderer registered for this facet and use it to render this
+    // facet if a renderer exists. A non-existing renderer suppresses the
+    // display of a facet.
+    let FacetRenderer;
+    if (facet.specialFieldName) {
+        FacetRenderer = SpecialFacetRegistry.Facet.lookup(facet.field);
+    } else {
+        FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
+    }
+    const isExpanded = expandedFacets.has(facet.field);
+    return FacetRenderer && <FacetRenderer
+        key={facet.specialFieldName || facet.field}
+        facet={facet}
+        results={results}
+        mode={mode}
+        relevantFilters={relevantFilters}
+        pathname={parsedUrl.pathname}
+        queryString={parsedUrl.query}
+        onFilter={onFilter}
+        isExpanded={isExpanded}
+        handleExpanderClick={expanderClickHandler}
+        handleKeyDown={keyDownHandler}
+        isExpandable={isExpandable}
+        forceDisplay={forceDisplay}
+    />;
+};
+
+Facet.propTypes = {
+    /** Facet to render from search results */
+    facet: PropTypes.object.isRequired,
+    /** List of facets that are expanded */
+    expandedFacets: PropTypes.object.isRequired,
+    /** Entire search results object */
+    results: PropTypes.object.isRequired,
+    /** Special facet-term click handler for edit forms */
+    onFilter: PropTypes.func,
+    /** Called when the user clicks a facet title to expand/collapse it */
+    expanderClickHandler: PropTypes.func.isRequired,
+    /** Called when the user presses a key while the facet title has focus */
+    keyDownHandler: PropTypes.func.isRequired,
+    /** True if the collapsible, false otherwise  */
+    isExpandable: PropTypes.bool,
+    /** True to force facet to display in cases it would normally be hidden */
+    forceDisplay: PropTypes.bool,
+    /** Special search-result modes, e.g. "picker" */
+    mode: PropTypes.string,
+};
+
+Facet.defaultProps = {
+    onFilter: null,
+    isExpandable: false,
+    forceDisplay: false,
+    mode: '',
+};
+
+
 // Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
-    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter, isExpandable, hideDocType } = props;
+    const {
+        context,
+        facets,
+        filters,
+        mode,
+        orientation,
+        hideTextFilter,
+        addClasses,
+        docTypeTitleSuffix,
+        supressTitle,
+        onFilter,
+        isExpandable,
+        hideDocType,
+        options,
+    } = props;
 
     const [expandedFacets, setExpandFacets] = React.useState(new Set());
+    const [expandedGroups, setExpandedGroups] = React.useState(() => new Set());
 
     // Get facets from storage that need to be expanded
     React.useEffect(() => {
@@ -1232,6 +1343,16 @@ export const FacetList = (props) => {
         setExpandFacets(facetList); // initialize facet collapse-state
     }, [context, facets]);
 
+    // Initialize expanded facet groups if `facet_groups` has changed.
+    const prevFacetGroups = usePrevious(context.facet_groups);
+    React.useEffect(() => {
+        if (!areFacetGroupsEqual(prevFacetGroups, context.facet_groups)) {
+            // Initialize the expanded groups to all be closed except for the first facet group.
+            const firstFacetGroupIdentifier = context.facet_groups && generateFacetGroupIdentifier(context.facet_groups[0]);
+            setExpandedGroups(new Set(firstFacetGroupIdentifier && [firstFacetGroupIdentifier]));
+        }
+    }, [context.facet_groups, prevFacetGroups]);
+
     if (facets.length === 0 && mode !== 'picker') {
         return <div />;
     }
@@ -1259,6 +1380,35 @@ export const FacetList = (props) => {
 
         sessionStorage.setItem(FACET_STORAGE, [...facetList].join(',')); // replace rather than update memory
         setExpandFacets(facetList); // controls open/closed facets
+    };
+
+    /**
+     * Called when the user clicks a facet group title to expand or collapse it.
+     * @param {string} groupIdentifier Title of the facet group
+     * @param {boolean} altKey True if the user has held down the alt-key
+     */
+    const handleGroupExpanderClick = (groupIdentifier, altKey) => {
+        const isGroupExpanded = expandedGroups.has(groupIdentifier);
+        if (altKey) {
+            if (isGroupExpanded) {
+                // Empty the list of expanded groups to close all facet groups.
+                const newExpandedGroups = new Set();
+                setExpandedGroups(newExpandedGroups);
+            } else {
+                // Add every facet group identifier to the expanded groups to open all facet groups.
+                const allFacetGroupIdentifiers = generateFacetGroupIdentifierList(context.facet_groups);
+                const newExpandedGroups = new Set(allFacetGroupIdentifiers);
+                setExpandedGroups(newExpandedGroups);
+            }
+        } else {
+            const newExpandedGroups = new Set(expandedGroups);
+            if (isGroupExpanded) {
+                newExpandedGroups.delete(groupIdentifier);
+            } else {
+                newExpandedGroups.add(groupIdentifier);
+            }
+            setExpandedGroups(newExpandedGroups);
+        }
     };
 
     /**
@@ -1306,68 +1456,111 @@ export const FacetList = (props) => {
 
     // Combine facets from search results with special facets, and treat them mostly the same.
     const allFacets = SpecialFacetRegistry.Facet.getFacets().concat(facets);
+    const topLevelFacets = filterTopLevelFacets(allFacets, context.facet_groups);
+    const isNameDisplayed = generateFacetGroupNameList(context.facet_groups).length > 1;
+
+    // If we have facet groups, add an "Other filters" group to hold facets not included in a group.
+    let facetGroups = context.facet_groups || [];
+    if (facetGroups.length > 0 && topLevelFacets.length > 0) {
+        const otherFacetGroup = {
+            name: 'OtherFilters',
+            title: 'Other filters',
+            facet_fields: topLevelFacets.map((facet) => facet.field),
+        };
+        facetGroups = facetGroups.concat(otherFacetGroup);
+    }
 
     return (
         <div className="search-results__facets">
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
                 <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`} data-test="facetcontainer">
-                    {(!supressTitle || clearButton) ?
-                        <div className="search-header-control">
-                            {!(hideDocType) ?
-                                <DocTypeTitle searchResults={context} wrapper={(children) => <h1>{children} {docTypeTitleSuffix}</h1>} />
-                            : null}
-                            {context.clear_filters ?
-                                <ClearFilters searchUri={context.clear_filters} enableDisplay={clearButton} />
-                            : null}
-                        </div>
-                    : null}
-                    {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
-                    <div className="facet-wrapper">
-                        {props.bodyMap ?
-                            <BodyMapThumbnailAndModal
-                                context={context}
-                                location={context['@id']}
-                                organism="Homo sapiens"
-                            />
+                    <FacetContext.Provider value={options}>
+                        {(!supressTitle || clearButton) ?
+                            <div className="search-header-control">
+                                {!(hideDocType) ?
+                                    <DocTypeTitle searchResults={context} wrapper={(children) => <h1>{children} {docTypeTitleSuffix}</h1>} />
+                                : null}
+                                {context.clear_filters ?
+                                    <ClearFilters clearUri={context.clear_filters} searchUri={context['@id']} enableDisplay={clearButton} />
+                                : null}
+                            </div>
                         : null}
-                        {props.additionalFacet ?
-                            <>
-                                {props.additionalFacet}
-                            </>
-                        : null}
-                        {allFacets.map((facet) => {
-                            // Filter the filters to just the ones relevant to the current facet,
-                            // matching negation filters too.
-                            const relevantFilters = context && context.filters.filter((filter) => (
-                                filter.field === facet.field || filter.field === `${facet.field}!`
-                            ));
-
-                            // Look up the renderer registered for this facet and use it to render this
-                            // facet if a renderer exists. A non-existing renderer suppresses the
-                            // display of a facet.
-                            let FacetRenderer;
-                            if (facet.specialFieldName) {
-                                FacetRenderer = SpecialFacetRegistry.Facet.lookup(facet.field);
-                            } else {
-                                FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
-                            }
-                            const isExpanded = expandedFacets.has(facet.field);
-                            return FacetRenderer && <FacetRenderer
-                                key={facet.specialFieldName || facet.field}
-                                facet={facet}
-                                results={context}
-                                mode={mode}
-                                relevantFilters={relevantFilters}
-                                pathname={parsedUrl.pathname}
-                                queryString={parsedUrl.query}
-                                onFilter={onFilter}
-                                isExpanded={isExpanded}
-                                handleExpanderClick={handleExpanderClick}
-                                handleKeyDown={handleKeyDown}
-                                isExpandable={isExpandable}
-                            />;
-                        })}
-                    </div>
+                        {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
+                        {facetGroups.length > 0
+                            ? (
+                                <div className="facet-list-wrapper facet-list-wrapper--facet-group">
+                                    {props.bodyMap ?
+                                        <BodyMapThumbnailAndModal
+                                            context={context}
+                                            location={context['@id']}
+                                            organism="Homo sapiens"
+                                        />
+                                    : null}
+                                    {facetGroups.map((group) => {
+                                        // Only render facet group if it actually contains facets.
+                                        const facetGroupFieldsInFacets = getFacetGroupFieldsInFacets(group, allFacets);
+                                        if (facetGroupFieldsInFacets.length > 0) {
+                                            const groupIdentifier = generateFacetGroupIdentifier(group);
+                                            const isGroupExpanded = expandedGroups.has(groupIdentifier);
+                                            return (
+                                                <FacetGroup
+                                                    key={groupIdentifier}
+                                                    group={group}
+                                                    filters={context.filters}
+                                                    isExpanded={isGroupExpanded}
+                                                    isNameDisplayed={isNameDisplayed}
+                                                    expanderHandler={handleGroupExpanderClick}
+                                                >
+                                                    {isGroupExpanded && group.facet_fields.map((facetField) => {
+                                                        const facet = allFacets.find((singleFacet) => singleFacet.field === facetField);
+                                                        if (facet) {
+                                                            return (
+                                                                <Facet
+                                                                    key={facet.specialFieldName || facet.field}
+                                                                    facet={facet}
+                                                                    expandedFacets={expandedFacets}
+                                                                    results={context}
+                                                                    mode={mode}
+                                                                    onFilter={onFilter}
+                                                                    expanderClickHandler={handleExpanderClick}
+                                                                    keyDownHandler={handleKeyDown}
+                                                                    isExpandable={isExpandable}
+                                                                    forceDisplay
+                                                                />
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })}
+                                                </FacetGroup>
+                                            );
+                                        }
+                                        return null;
+                                    })}
+                                </div>
+                            )
+                            : (
+                                <>
+                                    {topLevelFacets.length > 0 &&
+                                        <div className="facet-list-wrapper">
+                                            {topLevelFacets.map((facet) => (
+                                                <Facet
+                                                    key={facet.specialFieldName || facet.field}
+                                                    facet={facet}
+                                                    expandedFacets={expandedFacets}
+                                                    results={context}
+                                                    mode={mode}
+                                                    onFilter={onFilter}
+                                                    expanderClickHandler={handleExpanderClick}
+                                                    keyDownHandler={handleKeyDown}
+                                                    isExpandable={isExpandable}
+                                                />
+                                            ))}
+                                        </div>
+                                    }
+                                </>
+                            )
+                        }
+                    </FacetContext.Provider>
                 </div>
             </div>
         </div>
@@ -1395,6 +1588,8 @@ FacetList.propTypes = {
     isExpandable: PropTypes.bool,
     bodyMap: PropTypes.bool,
     additionalFacet: PropTypes.object,
+    /** Options to pass to facet components in FacetContext */
+    options: PropTypes.object,
 };
 
 FacetList.defaultProps = {
@@ -1409,6 +1604,7 @@ FacetList.defaultProps = {
     isExpandable: true,
     bodyMap: false,
     additionalFacet: null,
+    options: {},
 };
 
 FacetList.contextTypes = {
@@ -1421,14 +1617,44 @@ FacetList.contextTypes = {
 /**
  * Display the "Clear filters" link.
  */
-export const ClearFilters = ({ searchUri, enableDisplay }) => (
-    <div className="clear-filters-control">
-        {enableDisplay ? <div><a href={searchUri}>Clear Filters <i className="icon icon-times-circle" /></a></div> : null}
-    </div>
-);
+export const ClearFilters = ({ clearUri, searchUri, enableDisplay }) => {
+    // Preserve any 'config=' query parameters in the current URI in `clearUri`.
+    let composedClearUri = clearUri;
+    const parsedSearchUri = url.parse(searchUri);
+    const searchQuery = new QueryString(parsedSearchUri.query);
+    const searchQueryKeyValues = searchQuery.getKeyValues('config');
+    if (searchQueryKeyValues.length > 0) {
+        // Add the 'config=' query parameters from the current URI to the clear URI.
+        const parsedClearUri = url.parse(clearUri);
+        const clearQuery = new QueryString(parsedClearUri.query);
+        searchQueryKeyValues.forEach((value) => {
+            clearQuery.addKeyValue('config', value);
+        });
+        composedClearUri = `?${clearQuery.format()}`;
+    }
+
+    return (
+        <div className="clear-filters-control">
+            {enableDisplay && (
+                <div className="filter-container">
+                    <a href={composedClearUri} className="filter-link">
+                        <div className="filter-link__title">
+                            Clear all selections
+                        </div>
+                        <div className="filter-link__icon">
+                            {svgIcon('multiplication')}
+                        </div>
+                    </a>
+                </div>
+            )}
+        </div>
+    );
+};
 
 ClearFilters.propTypes = {
     /** URI for the Clear Filters link */
+    clearUri: PropTypes.string.isRequired,
+    /** Current search page's URI */
     searchUri: PropTypes.string.isRequired,
     /** True to display the link */
     enableDisplay: PropTypes.bool,

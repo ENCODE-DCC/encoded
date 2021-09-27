@@ -70,6 +70,69 @@
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_title",
+                "control_type",
+                "related_datasets.perturbation_type",
+                "related_datasets.crispr_screen_readout",
+                "related_datasets.replicates.library.biosample.applied_modifications.MOI",
+                "related_datasets.replicates.library.biosample.applied_modifications.guide_type",
+                "related_datasets.replicates.library.nucleic_acid_term_name"
+            ]
+        },
+        {
+            "title": "Elements",
+            "facet_fields": [
+                "related_datasets.examined_loci.gene.symbol",
+                "target.investigated_as"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "organism.scientific_name",
+                "biosample_ontology.term_name",
+                "biosample_ontology.classification",
+                "related_datasets.replicates.library.biosample.life_stage",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "treatment_term_name"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "assembly",
+                "related_datasets.files.file_type",
+                "related_datasets.files.run_type"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "award.project",
+                "award.rfa",
+                "lab.title",
+                "date_submitted",
+                "date_released"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "related_datasets.files.read_length",
+                "related_datasets.replicates.library.size_range",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "assay_title": {
             "title": "Assay title"
@@ -119,6 +182,13 @@
         },
         "related_datasets.replicates.library.nucleic_acid_term_name": {
             "title": "Library material"
+        },
+        "date_released": {
+            "title": "Date released",
+            "length": "long"
+        },
+        "date_submitted": {
+            "title": "Date submitted"
         },
         "lab.title": {
             "title": "Lab"

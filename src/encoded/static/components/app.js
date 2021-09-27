@@ -266,6 +266,16 @@ AccountCreatedModal.propTypes = {
     closeModal: PropTypes.func.isRequired,
 };
 
+
+// Include paths of all pages that require full-page reloads even when navigating within the page.
+const fullPageReloadPaths = [
+    '/chip-seq-matrix/',
+    '/reference-epigenome-matrix/',
+    '/single-cell/',
+    '/summary/',
+];
+
+
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -627,12 +637,12 @@ class App extends React.Component {
         }
 
         // data-noscroll attribute prevents scrolling to the top when clicking a link.
-        if (target.getAttribute('data-noscroll') !== null) {
+        if (target.getAttribute('data-noscroll') === 'true') {
             options.noscroll = true;
         }
 
         // data-reload forces a page reload after navigating.
-        if (target.getAttribute('data-reload') !== null) {
+        if (target.getAttribute('data-reload') === 'true') {
             options.reload = true;
         }
 
@@ -1164,8 +1174,12 @@ class App extends React.Component {
         let content;
         let { context } = this.state;
         const hrefUrl = url.parse(this.state.href);
-        // Every component is remounted when a new search is executed because 'key' is the full url
-        const key = context['@id'];
+
+        // Determine conditions to unmount the entire page and rerender from scratch. Any paths
+        // included in `fullPageReloadPaths` rerender the entire page on navigation. Other paths
+        // cause a rerender only when the path changes.
+        const key = fullPageReloadPaths.includes(hrefUrl.pathname) ? context['@id'] : hrefUrl.pathname;
+
         const currentAction = this.currentAction();
         const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
         if (isHomePage) {
