@@ -494,6 +494,7 @@ def test_upgrade_dataset_29_to_30(upgrader, experiment_33, annotation_31, fcc_ex
     assert 'analysis_objects' not in value
     assert 'analyses' in value
 
+
 def test_upgrade_dataset_30_to_31(upgrader, experiment_34, annotation_32, reference_19):
     assert experiment_34['schema_version'] == '34'
     value = upgrader.upgrade('experiment', experiment_34, current_version='34', target_version='35')
@@ -509,8 +510,20 @@ def test_upgrade_dataset_30_to_31(upgrader, experiment_34, annotation_32, refere
     assert 'RegulomeDB' not in value
     assert value['internal_tags'] == ['RegulomeDB_1_0']
 
+
 def test_upgrade_dataset_31_to_32(upgrader, experiment_35):
     assert experiment_35['schema_version'] == '35'
     value = upgrader.upgrade('experiment', experiment_35, current_version='35', target_version='36')
     assert value['schema_version'] == '36'
     assert value['assay_term_name'] == 'capture Hi-C'
+
+
+def test_upgrade_reference_20_to_21(upgrader, upgrade_20_21_reference_a, upgrade_20_21_reference_b, upgrade_20_21_reference_c):
+    value = upgrader.upgrade('reference', upgrade_20_21_reference_a, current_version='20', target_version='21')
+    assert 'sequence variants' in value['elements_selection_method']
+    assert 'DNase hypersensitive sites' in value['elements_selection_method']
+    value = upgrader.upgrade('reference', upgrade_20_21_reference_b, current_version='20', target_version='21')
+    assert 'candidate cis-regulatory elements' in value['elements_selection_method']
+    assert 'transcription start sites' in value['elements_selection_method']
+    value = upgrader.upgrade('reference', upgrade_20_21_reference_c, current_version='20', target_version='21')
+    assert value['elements_selection_method'] == ['sequence variants']

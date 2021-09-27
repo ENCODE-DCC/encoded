@@ -731,3 +731,31 @@ def experiment_35_36(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5964
     if value.get('assay_term_name') == 'Capture Hi-C':
         value['assay_term_name'] = 'capture Hi-C'
+
+
+@upgrade_step('reference', '20', '21')
+def reference_20_21(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6134
+    new_elements_selection_method = []
+    new_notes = []
+    old_to_new = {
+        'ATAC-seq': 'accessible genome regions',
+        'DNase-seq': 'DNase hypersensitive sites',
+        'GRO-cap': 'transcription start sites',
+        'point mutations': 'sequence variants',
+        'single nucleotide polymorphisms': 'sequence variants',
+        'transcription factors': 'TF binding sites'
+    }
+    if 'elements_selection_method' in value:
+        for element_selection_method in value['elements_selection_method']:
+            if element_selection_method in old_to_new:
+                new_elements_selection_method.append(old_to_new[element_selection_method])
+                new_notes.append(f"This elements_selection_method was previously {element_selection_method} but now has been renamed to be {old_to_new[element_selection_method]}.")
+            else:
+                new_elements_selection_method.append(element_selection_method)
+    if len(new_elements_selection_method) >= 1:
+        value['elements_selection_method'] = list(set(new_elements_selection_method))
+        if 'notes' in value:
+            value['notes'] = f"{value['notes']} {' '.join(new_notes)}"
+        else:
+            value['notes'] = ' '.join(new_notes)

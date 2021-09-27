@@ -81,7 +81,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "20"
+            "default": "21"
         },
         "reference_type": {
             "title": "Reference type",
@@ -203,14 +203,16 @@
                 "description": "The method or criteria used to select the elements specified in the reference.",
                 "type": "string",
                 "enum": [
-                    "ATAC-seq",
+                    "accessible genome regions",
                     "candidate cis-regulatory elements",
-                    "DNase-seq",
+                    "chromatin states",
+                    "DNase hypersensitive sites",
                     "essential genes",
-                    "GRO-cap",
-                    "point mutations",
-                    "single nucleotide polymorphisms",
-                    "transcription factors"
+                    "histone modifications",
+                    "sequence variants",
+                    "synthetic elements",
+                    "transcription start sites",
+                    "TF binding sites"
                 ]
             }
         },

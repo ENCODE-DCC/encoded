@@ -1,5 +1,10 @@
 ## Changelog for reference.json
 
+### Schema version 21
+* Renamed the *ATAC-seq*, *DNase-seq*, *transcription factors*, and *GRO-cap* enum of *elements_selection_method* to be *accessible genome regions*, *DNase hypersensitive sites*, *TF binding sites* and *transcription start sites* respectively.
+* Renamed both *point mutations* and *single nucleotide polymorphisms* enum of *elements_selection_method* to be *sequence variants*.
+* Added *chromatin states*, *histone modifications* and *synthetic elements* to the list of *elements_selection_method*.
+
 ### Minor changes since schema version 20
 * Added *elements_selection_method* property to capture the selection of elements specified in references that are *reference_type*: *functional elements*
 * Added *Deeply Profiled* to the *internal_tags* enum

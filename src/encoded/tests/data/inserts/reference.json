@@ -78,7 +78,7 @@
         "award": "U54HG007005",
         "reference_type": "functional elements",
         "description": "Elements DNA sequences",
-        "elements_selection_method": ["ATAC-seq", "DNase-seq"],
+        "elements_selection_method": ["accessible genome regions", "DNase hypersensitive sites", "chromatin states"],
         "lab": "thomas-gingeras",
         "crispr_screen_tiling": "peak tiling",
         "status": "archived",
