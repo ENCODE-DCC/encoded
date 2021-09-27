@@ -465,7 +465,9 @@ class File(Item):
         # Return a unique list.
         return list(set(calculated_donors))
 
-    @calculated_property(schema={
+    @calculated_property(
+        condition='dataset',
+        schema={
         "title": "Origin batches",
         "description": "The origin batch biosample(s) associated with this file.",
         "comment": "Do not submit. This field is calculated through the derived_from relationship back to the raw data.",
@@ -474,7 +476,8 @@ class File(Item):
             "title": "Origin batch",
             "description": "@id of the origin batch biosample",
             "type": "string"
-        }
+        },
+        "notSubmittable": True
     })
     def origin_batches(self, request, dataset, root, replicate=None):
         calculated_origin_batches = []
@@ -524,7 +527,8 @@ class File(Item):
             path.expand(request, properties)
             for file_ in properties['files']:
                 calculated_origin_batches.extend(file_.get('origin_batches', []))
-        return list(set(calculated_origin_batches))
+        if calculated_origin_batches:
+            return list(set(calculated_origin_batches))
 
     @calculated_property(schema={
         "title": "Analysis Step Version",

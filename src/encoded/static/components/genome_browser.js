@@ -361,6 +361,7 @@ const dummyFiles = [
         lab: {
             title: 'ENCODE Processing Pipeline',
         },
+        origin_batches: ['/biosamples/ENCBS087RNA/', '/biosamples/ENCBS888CRI/'],
         status: 'released',
         title: 'ENCFF541XFO',
         biological_replicates: [1],
@@ -376,6 +377,7 @@ const dummyFiles = [
         file_type: 'bigBed tss_peak',
         dataset: '/experiments/ENCSR000CIS/',
         assay_term_name: 'shRNA knockdown followed by RNA-seq',
+        origin_batches: ['/biosamples/ENCBS087RNA/'],
         biosample_ontology: {
             term_name: 'HepG2',
         },
@@ -597,6 +599,8 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
         ]).join(', ');
     }
 
+    const originBatchesList = file.origin_batches ? `batch${file.origin_batches.length > 1 ? 'es' : ''}: ${file.origin_batches.map((batch) => batch.split('/')[2]).join(', ')}` : '';
+
     return (
         <>
             {(label === 'cart') ?
@@ -607,6 +611,7 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
                             <li><a href={file.dataset} className="gb-accession">{datasetName}<span className="sr-only">{`Details for dataset ${datasetName}`}</span></a></li>
                             <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
                             <li>{file.output_type}</li>
+                            {file.origin_batches ? <li>{originBatchesList}</li> : null}
                             {file.simple_biosample_summary ? <li>{file.simple_biosample_summary}</li> : null}
                             {biologicalReplicates ? <li>{`rep ${biologicalReplicates}`}</li> : null}
                             {file.biochemical_inputs ? <li>{(file.biochemical_inputs).join(', ')}</li> : null}
@@ -625,6 +630,7 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
                             {file.biosample_ontology && file.biosample_ontology.term_name ? <li>{file.biosample_ontology.term_name}</li> : null}
                             {file.target ? <li>{file.target.label}</li> : null}
                             {file.assay_term_name ? <li>{file.assay_term_name}</li> : null}
+                            {file.origin_batches ? <li>{originBatchesList}</li> : null}
                             {file.simple_biosample_summary ? <li>{file.simple_biosample_summary}</li> : null}
                             <li>{file.output_type}</li>
                             {file.annotation_subtype ? <li>{(file.annotation_subtype)}</li> : null}
@@ -923,6 +929,7 @@ class GenomeBrowser extends React.Component {
 
                 extLabelLength += file.output_type ? file.output_type.length : 0;
                 extLabelLength += file.simple_biosample_summary ? file.simple_biosample_summary.length : 0;
+                extLabelLength += file.origin_batches ? (file.origin_batches.length * 11) : 0;
                 extLabelLength += file.biological_replicates ? file.biological_replicates.length : 0;
                 extLabelLength += file.biochemical_inputs ? file.biochemical_inputs.length : 0;
 
