@@ -27,7 +27,7 @@ import {
 } from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
+import BiosampleSummaryDisplay, { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
 import { BatchDownloadControls, ViewControls } from './view_controls';
 import { BrowserSelector } from './vis_defines';
 import { BodyMapThumbnailAndModal } from './body_map';
@@ -263,6 +263,7 @@ class BiosampleComponent extends React.Component {
                 }
             });
         }
+        const organismName = BiosampleOrganismNames([result]);
 
         // Calculate genetic modification properties for display.
         const rnais = [];
@@ -304,7 +305,7 @@ class BiosampleComponent extends React.Component {
                         </a>
                         <div className="result-item__data-row">
                             <div><span className="result-item__property-title">Type: </span>{result.biosample_ontology.classification}</div>
-                            {result.summary ? <div><span className="result-item__property-title">Summary: </span>{BiosampleSummaryString(result)}</div> : null}
+                            {result.summary ? <div><span className="result-item__property-title">Summary: </span>  <BiosampleSummaryDisplay summary={result.summary} organisms={organismName} /> </div> : null}
                             {rnais.length > 0 ? <div><span className="result-item__property-title">RNAi targets: </span>{rnais.join(', ')}</div> : null}
                             {constructs.length > 0 ? <div><span className="result-item__property-title">Constructs: </span>{constructs.join(', ')}</div> : null}
                             {treatment.length > 0 ? <div><span className="result-item__property-title">Treatment: </span>{treatment.join(', ')}</div> : null}
@@ -516,17 +517,7 @@ const ExperimentComponent = (props, reactContext) => {
                     </a>
                     {result.biosample_summary ?
                         <div className="result-item__highlight-row">
-                            {organismNames.length > 0 ?
-                                <span>
-                                    {organismNames.map((organism, i) => (
-                                        <span key={organism}>
-                                            {i > 0 ? <span>and </span> : null}
-                                            <i>{organism} </i>
-                                        </span>
-                                    ))}
-                                </span>
-                            : null}
-                            {result.biosample_summary}
+                            {result.biosample_summary ? <div><BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames} /> </div> : null}
                         </div>
                     : null}
                     <div className="result-item__data-row">

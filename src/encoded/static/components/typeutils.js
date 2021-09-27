@@ -30,6 +30,47 @@ export function BiosampleSummaryString(biosample, supressOrganism) {
     return <span><i>{biosample.organism.scientific_name}</i> {organismlessSummary}</span>;
 }
 
+/**
+ * Display the given biosample summary string with any of the given organism names italicized.
+ */
+const BiosampleSummaryDisplay = ({ summary, organisms }) => {
+    const displayedElements = [];
+
+    // Generate the equivalent shortened organism scientific names.
+    const shortenedOrganisms = organisms.map((organism) => organism.replace(/^(\S)\S* (\S+)$/, '$1. $2'));
+
+    let cursor = 0;
+    organisms.concat(shortenedOrganisms).forEach((organism) => {
+        const remainingString = summary.slice(cursor);
+        const matchData = remainingString.match(new RegExp(organism));
+        if (matchData) {
+            if (matchData.index > 0) {
+                // Add the text before the match.
+                const preMatch = remainingString.slice(0, matchData.index);
+                displayedElements.push(<React.Fragment key={cursor}>{preMatch}</React.Fragment>);
+                cursor += preMatch.length;
+            }
+
+            // Add the italicized organism name.
+            displayedElements.push(<i key={cursor}>{organism}</i>);
+            cursor += organism.length;
+        }
+    });
+
+    // Add the remaining text after any matches.
+    displayedElements.push(<React.Fragment key={'remaining'}>{summary.slice(cursor)}</React.Fragment>);
+    return displayedElements;
+};
+
+BiosampleSummaryDisplay.propTypes = {
+    /** Biosample summary string possibly containing organism scientific names */
+    summary: PropTypes.string.isRequired,
+    /** List of organism scientific names to check against */
+    organisms: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+export default BiosampleSummaryDisplay;
+
 // Some biosample-specific utilities
 //   Return an array of biosample scientific names from the given array of biosamples.
 export function BiosampleOrganismNames(biosamples) {

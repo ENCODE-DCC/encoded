@@ -287,12 +287,13 @@ class CalculatedBiosampleSummary:
                                         add_classification_flag = True
 
         sentence_parts = [
+            'organism_name',
             'genotype_strain',
+            'disease_term_name',
             'experiment_term_phrase',
             'phase',
             'fractionated',
             'sex_stage_age',
-            'disease_term_name',
             'post_nucleic_acid_delivery_time',
             'post_differentiation_time',
             'synchronization',

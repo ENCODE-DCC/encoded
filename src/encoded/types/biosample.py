@@ -762,7 +762,9 @@ def summary_objects(request,
                     if len(genes) >= 1:
                         gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
                         modification_dict['target_gene'] = gene_object.get('symbol')
-                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name')
+                        gene_organism_name_parts = request.embed(
+                            gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name').split(' ')
+                        modification_dict['organism'] = f'{gene_organism_name_parts[0][0]}. {gene_organism_name_parts[1]}'
                     else:
                         modification_dict['target'] = target['label']
                 else:
@@ -773,14 +775,14 @@ def summary_objects(request,
                     tag_dict = {'location': tag['location'], 'name': tag['name']}
                     if tag.get('promoter_used'):
                         tag_dict['promoter'] = request.embed(
-                            tag.get('promoter_used'),
-                                    '@@object').get('label')
+                            tag.get('promoter_used'),'@@object').get('label')
                     modification_dict['tags'].append(tag_dict)
             if gm_object.get('introduced_gene'):
                 gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
                 modification_dict['gene'] = gene_object.get('symbol')
-                modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
-
+                gene_organism_name_parts = request.embed(
+                    gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name').split(' ')
+                modification_dict['organism'] = f'{gene_organism_name_parts[0][0]}. {gene_organism_name_parts[1]}'
 
             if 'method' in gm_object:
                 if (gm_object['method'] == 'CRISPR' and guides != ''):
@@ -1146,8 +1148,8 @@ def generate_modification_summary(method, modification):
 
         if modification.get('target_gene'):
             target = modification.get('target_gene')
-            organism = modification.get('organism')
-            modification_summary += f' targeting {organism} {target}'
+            organism_name_parts = modification.get('organism').split(' ')
+            modification_summary += f' targeting {organism_name_parts[0][0]}. {organism_name_parts[1]} {target}'
 
         if modification.get('target'):
             target = modification.get('target')
@@ -1155,8 +1157,8 @@ def generate_modification_summary(method, modification):
 
         if modification.get('gene'):
             gene = modification.get('gene')
-            organism = modification.get('organism')
-            modification_summary += f' inserting {organism} {gene}'
+            organism_name_parts = modification.get('organism').split(' ')
+            modification_summary += f' inserting {organism_name_parts[0][0]}. {organism_name_parts[1]} {gene}'
 
     return modification_summary.strip()
 

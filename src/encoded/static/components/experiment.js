@@ -14,7 +14,7 @@ import { singleTreatment, ItemAccessories, InternalTags, TopAccessories } from '
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import {
+import BiosampleSummaryDisplay, {
     AwardRef,
     BiosampleSummaryString,
     BiosampleOrganismNames,
@@ -690,18 +690,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div data-test="biosample-summary">
                                     <dt>Biosample summary</dt>
                                     <dd>
-                                        {organismNames.length > 0 ?
-                                            <span>
-                                                {organismNames.map((organismName, i) => (
-                                                    <span key={organismName}>
-                                                        {i > 0 ? <span> and </span> : null}
-                                                        <i>{organismName}</i>
-                                                    </span>
-                                                ))}
-                                                &nbsp;
-                                            </span>
-                                        : null}
-                                        <span>{context.biosample_summary}</span>
+                                        {context.biosample_summary ? <div> <BiosampleSummaryDisplay summary={context.biosample_summary} organisms={organismNames} /> </div> : null}
                                     </dd>
                                 </div>
                             : null}
@@ -1091,7 +1080,7 @@ const replicateTableColumns = {
 
             // Else, display biosample summary if the biosample exists
             if (replicate.library && replicate.library.biosample) {
-                return <span>{BiosampleSummaryString(replicate.library.biosample)}</span>;
+                return <span><BiosampleSummaryDisplay summary={replicate.library.biosample.summary} organisms={[replicate.library.biosample.organism.scientific_name]} /></span>;
             }
 
             // Else, display nothing

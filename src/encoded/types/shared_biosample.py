@@ -62,7 +62,7 @@ def biosample_summary_information(request, biosampleObject, skip_non_perturbatio
                     if len(genes) >= 1:
                         gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
                         modification_dict['target_gene'] = gene_object.get('symbol')
-                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name')
                     else:
                         modification_dict['target'] = target['label']
                 else:
@@ -77,7 +77,7 @@ def biosample_summary_information(request, biosampleObject, skip_non_perturbatio
             if gm_object.get('introduced_gene'):
                 gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
                 modification_dict['gene'] = gene_object.get('symbol')
-                modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+                modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name')
             if 'method' in gm_object:
                 if (gm_object['method'] == 'CRISPR' and guides != ''):
                     entry = f'CRISPR ({guides})'
