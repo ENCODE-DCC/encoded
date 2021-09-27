@@ -1,10 +1,10 @@
 import { svgIcon } from '../svg-icons';
 
 const animationDuration = 300;
-const textWrapWidth = 120;
+const textWrapWidth = 150;
 
-const emptyCheckbox = '\u25EF';
-const filledCheckbox = '\u2B24';
+const emptyCheckbox = '\u2295';
+const filledCheckbox = '\u2296';
 
 // const emptyCheckbox = '\u2295';
 // const filledCheckbox = '\u2295';
@@ -76,28 +76,17 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             text = d3.select(this);
             const words = text.text().split(/\s+/).reverse();
             let word = '';
-            console.log(text.text());
             let line = [];
-            console.log(emptyCheckbox);
-            console.log(filledCheckbox);
-            if (selectedNodes.indexOf(text.text()) > -1) {
-                line = [emptyCheckbox];
-            } else {
-                line = [filledCheckbox];
-            }
             let lineNumber = 0;
             const lineHeight = 1.1;
             const y = text.attr('y');
             const dy = parseFloat(text.attr('dy'));
+            let newDy = '';
 
             // append checkbox
             let tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y);
-            // tspan.attr('class', 'layer-bubble');
-            // tspan.attr('dy', '-1em');
-            // tspan.text(emptyCheckbox);
-            //
-            // // loop through words appending tspans
-            // tspan = text.append('tspan').attr('x', 0).attr('y', y);
+            // loop through words appending tspans
+            tspan = text.append('tspan').attr('x', 0).attr('y', y);
             while (word = words.pop()) {
                 line.push(word);
                 tspan.text(line.join(' '));
@@ -106,8 +95,18 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                     tspan.text(line.join(' '));
                     line = [word];
                     tspan = text.append('tspan').attr('x', 0).attr('y', y);
-                    tspan.attr('dy', `${(lineNumber += 1) * lineHeight + dy}em`).text(word);
+                    newDy = `${(lineNumber += 1) * lineHeight + dy}em`;
+                    tspan.attr('dy', newDy);
+                    tspan.text(word);
                 }
+            }
+            tspan = text.append('tspan').attr('x', 0).attr('y', y).style('font-size', '28px');
+            newDy = `${(lineNumber += 1) * 0.6 + 0.5}em`;
+            tspan.attr('dy', newDy);
+            if (selectedNodes.indexOf(text.text()) > -1) {
+                tspan.text(emptyCheckbox);
+            } else {
+                tspan.text(filledCheckbox);
             }
         });
     }
@@ -172,7 +171,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         // adds the text to the node
         nodeEnter.append('text')
             .attr('dy', '.35em')
-            .attr('y', (d) => ((d.children && (d.data.name.length < 16 || d.data.name.split(' ').length === 1)) ? -20 : d.children ? -40 : 30))
+            .attr('y', (d) => ((d.children && (d.data.name.length < 16 || d.data.name.split(' ').length === 1)) ? -40 : d.children ? -60 : 30))
             .style('text-anchor', 'middle')
             .text((d) => d.data.name)
             .on('click', textClick);
@@ -183,7 +182,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         // adds the text to the node
         // nodeEnter.append('circle')
         //     .attr('class', 'node')
-        //     .attr('r', 1e-6)
+        //     .attr('r', '10px')
         //     .style('fill', 'red');
 
         // UPDATE
@@ -195,10 +194,6 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .attr('transform', function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
              });
-
-        // Update the node attributes and style
-        // nodeUpdate.select('circle.node')
-        //     .attr('r', 10);
 
         // Update the node attributes and style
         nodeUpdate.select('g.js-cell')
