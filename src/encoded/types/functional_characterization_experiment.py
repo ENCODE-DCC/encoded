@@ -216,3 +216,11 @@ class FunctionalCharacterizationExperiment(
                 if len(set(methods)) == 1:
                     crispr_screen_readout = str(methods[0])
             return crispr_screen_readout
+
+    @calculated_property(schema={
+        "title": "Datapoint",
+        "description": "A flag to indicate whether the FC Experiment is a datapoint that should be displayed only as a part of Series object.",
+        "type": "boolean",
+    })
+    def datapoint(self, request):
+        return False
