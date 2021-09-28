@@ -4,6 +4,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     paths_filtered_by_status
 )
@@ -227,7 +228,10 @@ class FunctionalCharacterizationExperiment(
         if not related_series:
             return False
         for series in related_series:
-            series_object = request.embed(series, "@@object?skip_calculated=true")
-            if "FunctionalCharacterizationSeries" in series_object.get("@type", []):
+            properties = {'series': series}
+            path = Path('series', include=["@type"])
+            path.expand(request, properties)
+            types = properties.get('series', {}).get('@type', [])
+            if "FunctionalCharacterizationSeries" in types:
                 return True 
         return False
