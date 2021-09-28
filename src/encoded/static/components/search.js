@@ -1549,6 +1549,11 @@ export const FacetList = (props) => {
                                             organism="Homo sapiens"
                                         />
                                     : null}
+                                    {props.additionalFacet ?
+                                        <>
+                                            {props.additionalFacet}
+                                        </>
+                                    : null}
                                     {facetGroups.map((group) => {
                                         // Only render facet group if it actually contains facets.
                                         const facetGroupFieldsInFacets = getFacetGroupFieldsInFacets(group, allFacets);
@@ -1595,6 +1600,11 @@ export const FacetList = (props) => {
                                 <>
                                     {topLevelFacets.length > 0 &&
                                         <div className="facet-list-wrapper">
+                                            {props.additionalFacet ?
+                                                <>
+                                                    {props.additionalFacet}
+                                                </>
+                                            : null}
                                             {topLevelFacets.map((facet) => (
                                                 <Facet
                                                     key={facet.specialFieldName || facet.field}

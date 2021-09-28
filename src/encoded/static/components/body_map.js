@@ -1019,7 +1019,7 @@ export const BodyMapThumbnailAndModal = (props) => {
     };
 
     return (
-        <div className="body-map-thumbnail-and-modal">
+        <div className="facet body-map-thumbnail-and-modal">
             <ClickableThumbnail
                 toggleThumbnail={toggleThumbnail}
                 organism={props.organism}

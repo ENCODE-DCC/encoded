@@ -81,6 +81,7 @@
         },
         "origin_batches": {
             "title": "Batch"
+        },
         "biosample_ontology.cell_slims": {
             "title": "Cell",
             "type": "typeahead"

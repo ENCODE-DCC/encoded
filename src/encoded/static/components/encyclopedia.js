@@ -66,6 +66,7 @@ const Encyclopedia = (props, context) => {
     const assembly = props.context.filters.filter((f) => f.field === 'assembly').map((f) => f.term)[0] || 'GRCh38';
     const organism = ASSEMBLY_DETAILS[assembly].species;
     const searchBase = `?type=File&annotation_type=${annotation}&assembly=${assembly}&file_format=bigBed&file_format=bigWig`;
+    const resetUrl = `?type=File&annotation_type=candidate+Cis-Regulatory+Elements&assembly=${assembly}&file_format=bigBed&file_format=bigWig`;
     // If annotation or assembly is not set in url (required) page is reloaded with defaults
     const reloadPage = props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term).length === 0 || props.context.filters.filter((f) => f.field === 'assembly').map((f) => f.term).length === 0;
 
@@ -102,7 +103,7 @@ const Encyclopedia = (props, context) => {
 
     // Reset page to defaults, clearing extraneous filters
     const handleReset = () => {
-        context.navigate(searchBase);
+        context.navigate(resetUrl);
     };
 
     // Set page to defaults if no annotation or assembly is defined by url
@@ -282,7 +283,7 @@ const Encyclopedia = (props, context) => {
                                                                                 :
                                                                                     <span className="empty-dot dot" />
                                                                                 }
-                                                                                <div className="facet-term__text">
+                                                                                <div className="facet-term__item">
                                                                                     {type} ({annotationCounts[type]})
                                                                                 </div>
                                                                             </button>
@@ -306,7 +307,7 @@ const Encyclopedia = (props, context) => {
                                                                     :
                                                                         <span className="empty-dot dot" />
                                                                     }
-                                                                    <div className="facet-term__text">
+                                                                    <div className="facet-term__item">
                                                                         {type} ({annotationCounts[type]})
                                                                     </div>
                                                                 </button>

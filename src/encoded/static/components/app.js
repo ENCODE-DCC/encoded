@@ -273,6 +273,7 @@ const fullPageReloadPaths = [
     '/reference-epigenome-matrix/',
     '/single-cell/',
     '/summary/',
+    '/encyclopedia/',
 ];
 
 
