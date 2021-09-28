@@ -533,4 +533,4 @@ def test_upgrade_annotation_33_to_34(upgrader, annotation_ccre_2):
     annotation_ccre_2['encyclopedia_version'] = 'ENCODE v5'
     value = upgrader.upgrade('annotation', annotation_ccre_2, current_version='33', target_version='34')
     assert value['schema_version'] == '34'
-    assert value['encyclopedia_version'] == 'ENCODE v2'
+    assert value['encyclopedia_version'] == ['ENCODE v2', 'current']

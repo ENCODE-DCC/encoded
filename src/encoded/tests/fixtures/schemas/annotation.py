@@ -167,7 +167,7 @@ def annotation_ccre(testapp, award, lab):
         'award': award['@id'],
         'lab': lab['@id'],
         'annotation_type': 'candidate Cis-Regulatory Elements',
-        'encyclopedia_version': 'ENCODE v2'
+        'encyclopedia_version': ['ENCODE v2']
     }
     return testapp.post_json('/annotation', item).json['@graph'][0]
 
@@ -178,7 +178,7 @@ def annotation_dhs(testapp, award, lab):
         'award': award['@id'],
         'lab': lab['@id'],
         'annotation_type': 'representative DNase hypersensitivity sites',
-        'encyclopedia_version': 'ENCODE v2'
+        'encyclopedia_version': ['ENCODE v2']
     }
     return testapp.post_json('/annotation', item).json['@graph'][0]
 

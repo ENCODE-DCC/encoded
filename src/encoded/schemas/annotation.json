@@ -132,16 +132,21 @@
         "encyclopedia_version": {
             "title": "Encyclopedia version",
             "description": " The version of the ENCODE encyclopedia to which this annotation belongs.",
-            "type": "string",
-            "enum": [
-                "ENCODE v0.1",
-                "ENCODE v0.2",
-                "ENCODE v0.3",
-                "ENCODE v1",
-                "ENCODE v2",
-                "ENCODE v3",
-                "Roadmap"
-            ]
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "ENCODE v0.1",
+                    "ENCODE v0.2",
+                    "ENCODE v0.3",
+                    "ENCODE v1",
+                    "ENCODE v2",
+                    "ENCODE v3",
+                    "Roadmap",
+                    "current"
+                ]
+            }
         },
         "dbxrefs": {
             "@type": "@id",
