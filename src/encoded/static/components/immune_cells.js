@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixBadges } from './objectutils';
@@ -7,8 +8,8 @@ import { SearchControls } from './search';
 import * as globals from './globals';
 import drawTree from '../libs/ui/node_graph';
 
-const fullHeight = 500;
-const margin = { top: 60, right: 0, bottom: 60, left: 0 };
+const fullHeight = 700;
+const margin = { top: 70, right: 0, bottom: 60, left: 0 };
 
 /**
  * Render the area above the matrix itself, including the page title.
@@ -66,10 +67,12 @@ class MatrixPresentation extends React.Component {
 
         this.state = {
             windowWidth: 0,
+            selectedNodes: [],
         };
 
         this.immuneCells = immuneCells[0];
         this.updateWindowWidth = this.updateWindowWidth.bind(this);
+        this.setSelectedNodes = this.setSelectedNodes.bind(this);
     }
 
     componentDidMount() {
@@ -80,8 +83,32 @@ class MatrixPresentation extends React.Component {
             this.d3 = require('d3');
 
             const chartWidth = this.state.windowWidth;
-            const selectedNodes = [];
-            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, selectedNodes);
+            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes, true);
+        });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const nodesUpdate = !(_.isEqual(this.state.selectedNodes, prevState.selectedNodes));
+        if (nodesUpdate) {
+            require.ensure(['d3'], (require) => {
+                this.d3 = require('d3');
+
+                const chartWidth = this.state.windowWidth;
+                drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes, false);
+            });
+        }
+    }
+
+    setSelectedNodes(newNode) {
+        this.setState((prevState) => {
+            const newSelection = newNode.replace(/\s/g, '').toLowerCase();
+            if (prevState.selectedNodes.indexOf(newSelection) > -1 && prevState.selectedNodes.length > 1) {
+                return { selectedNodes: prevState.filter((s) => s !== newSelection) };
+            }
+            if (prevState.selectedNodes.indexOf(newSelection) > -1) {
+                return { selectedNodes: [] };
+            }
+            return { selectedNodes: [...prevState.selectedNodes, newSelection] };
         });
     }
 

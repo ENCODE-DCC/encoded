@@ -1,27 +1,15 @@
-import { svgIcon } from '../svg-icons';
-
-const animationDuration = 300;
 const textWrapWidth = 150;
 
-const emptyCheckbox = '\u2295';
-const filledCheckbox = '\u2296';
-
-// const emptyCheckbox = '\u2295';
-// const filledCheckbox = '\u2295';
-
-// const emptyCheckbox = '&#xf058;';
-// const filledCheckbox = '&#xf05d;';
-
-// const emptyCheckbox = '○';
-// const filledCheckbox = '●';
+const circlePlus = '\u2295';
+const circleMinus = '\u2296';
 
 const ellipseSettings = [
-    { cx: 2, cy: 2, rx: 12, ry: 9, stroke: 'black', 'stroke-width': 1 },
-    { cx: 2, cy: 2, rx: 6.5, ry: 6, stroke: 'black', 'stroke-width': 1 },
-    { cx: -5, cy: 10, rx: 12, ry: 9, stroke: 'black', 'stroke-width': 1 },
-    { cx: -5, cy: 10, rx: 6.5, ry: 5, stroke: 'black', 'stroke-width': 1 },
-    { cx: 10, cy: 10, rx: 12, ry: 9, stroke: 'black', 'stroke-width': 1 },
-    { cx: 10, cy: 10, rx: 6.5, ry: 5, stroke: 'black', 'stroke-width': 1 },
+    { cx: 2, cy: 2, rx: 12, ry: 9 },
+    { cx: 2, cy: 2, rx: 6.5, ry: 6 },
+    { cx: -5, cy: 10, rx: 12, ry: 9 },
+    { cx: -5, cy: 10, rx: 6.5, ry: 5 },
+    { cx: 10, cy: 10, rx: 12, ry: 9 },
+    { cx: 10, cy: 10, rx: 6.5, ry: 5 },
 ];
 
 // Collapse node and its children
@@ -33,22 +21,23 @@ function collapse(d) {
     }
 }
 
-function textClick(e, d) {
-    console.log(d.data.name);
-    console.log(e);
-    e.stopPropagation();
-}
-
 // Creates a curved (diagonal) path from parent to the child nodes
 function diagonal(d, s) {
     const path = `M${d.x},${d.y}C${d.x},${(d.y + s.y) / 2} ${s.x},${(d.y + s.y) / 2} ${s.x},${s.y}`;
     return path;
 }
 
-const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, selectedNodes) => {
+const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes, initial) => {
     // Set the dimensions and margins of the diagram
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
+
+    d3.select(targetDiv).select('svg').remove();
+
+    let animationDuration = 300;
+    if (!initial) {
+        animationDuration = 0;
+    }
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
@@ -103,10 +92,10 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             tspan = text.append('tspan').attr('x', 0).attr('y', y).style('font-size', '28px');
             newDy = `${(lineNumber += 1) * 0.6 + 0.5}em`;
             tspan.attr('dy', newDy);
-            if (selectedNodes.indexOf(text.text()) > -1) {
-                tspan.text(emptyCheckbox);
+            if (selectedNodes.indexOf(text.text().replace(/\s/g, '').toLowerCase()) > -1) {
+                tspan.text(circleMinus);
             } else {
-                tspan.text(filledCheckbox);
+                tspan.text(circlePlus);
             }
         });
     }
@@ -147,7 +136,16 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .on('click', click);
 
         const nodeGroup = nodeEnter.append('g')
-            .attr('class', (d) => (d._children ? 'js-cell parent-cell' : 'js-cell'))
+            .attr('class', (d) => {
+                const active = selectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1;
+                if (active) {
+                    return 'js-cell active-cell';
+                }
+                if (d._children) {
+                    return 'js-cell parent-cell';
+                }
+                return 'js-cell';
+            })
             .on('mouseover', function() {
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1.2)');
                 d3.select(this).selectAll('ellipse').attr('class', 'hover-class');
@@ -165,7 +163,16 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 .attr('ry', ellipseSetting.ry)
                 .style('stroke', ellipseSetting.stroke)
                 .style('stroke-width', 1)
-                .attr('class', () => 'js-cell');
+                .attr('class', (d) => {
+                    const active = selectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1;
+                    if (active) {
+                        return 'js-cell active-cell';
+                    }
+                    if (d._children) {
+                        return 'js-cell parent-cell';
+                    }
+                    return 'js-cell';
+                });
         });
 
         // adds the text to the node
@@ -174,7 +181,11 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .attr('y', (d) => ((d.children && (d.data.name.length < 16 || d.data.name.split(' ').length === 1)) ? -40 : d.children ? -60 : 30))
             .style('text-anchor', 'middle')
             .text((d) => d.data.name)
-            .on('click', textClick);
+            .attr('class', 'node-text')
+            .on('click', function(e, d) {
+                setSelectedNodes(d.data.name);
+                e.stopPropagation();
+            });
 
         nodeEnter.selectAll('text')
             .call(wrap, textWrapWidth);
@@ -197,7 +208,16 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
         // Update the node attributes and style
         nodeUpdate.select('g.js-cell')
-            .attr('class', (d) => (d._children ? 'js-cell parent-cell' : 'js-cell'));
+            .attr('class', (d) => {
+                const active = selectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1;
+                if (active) {
+                    return 'js-cell active-cell';
+                }
+                if (d._children) {
+                    return 'js-cell parent-cell';
+                }
+                return 'js-cell';
+            });
 
 
         // Remove any exiting nodes

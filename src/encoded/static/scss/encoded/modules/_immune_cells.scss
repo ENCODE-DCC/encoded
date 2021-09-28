@@ -21,6 +21,9 @@ $endoderm: blue;
 
     ellipse {
         transition: all 50ms ease-in-out;
+        stroke: black;
+        stroke-width: 1px;
+        fill: white;
     }
 
     .cell-group {
@@ -37,8 +40,6 @@ $endoderm: blue;
 
     .js-cell {
         ellipse {
-            fill: white;
-
             &.hover-class {
                 fill: #f2f2f2;
             }
@@ -51,6 +52,13 @@ $endoderm: blue;
                 &.hover-class {
                     fill: #76a1bc;
                 }
+            }
+        }
+
+        &.active-cell {
+            ellipse {
+                fill: #36586d;
+                stroke: white;
             }
         }
     }
@@ -104,6 +112,15 @@ $endoderm: blue;
         position: absolute;
         top: 10px;
         left: 10px;
+    }
+}
+
+.node-text {
+    cursor: pointer;
+
+    &:hover {
+        font-weight: bold;
+        background: #d2d2d2;
     }
 }
 
