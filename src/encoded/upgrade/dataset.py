@@ -763,6 +763,15 @@ def reference_20_21(value, system):
 
 @upgrade_step('annotation', '33', '34')
 def annotation_33_34(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6169
+    annotation_type = value.get('annotation_type', None)
+
+    if annotation_type == "gkmSVM-model":
+        value['annotation_type'] = 'gkm-SVM-model'
+
+
+@upgrade_step('annotation', '33', '34')
+def annotation_33_34(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-6143
     if 'encyclopedia_version' in value:
         if value['encyclopedia_version'] == 'ENCODE v1':
