@@ -1081,7 +1081,7 @@ const replicateTableColumns = {
 
             // Else, display biosample summary if the biosample exists
             if (replicate.library && replicate.library.biosample) {
-                return <span>{<BiosampleSummaryDisplay summary={replicate.library.biosample.summary} organisms={[replicate.library.biosample.organism.scientific_name]} />}</span>;
+                return <span>{<BiosampleSummaryDisplay summary={replicate.library.biosample.summary} organisms={[replicate.library.biosample.organism.scientific_name].concat(GeneticModificationOrganismNames([replicate.library.biosample]))} />}</span>;
             }
 
             // Else, display nothing

@@ -517,7 +517,7 @@ const ExperimentComponent = (props, reactContext) => {
                     </a>
                     {result.biosample_summary ?
                         <div className="result-item__highlight-row">
-                            {result.biosample_summary ? <div><BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames} /> </div> : null}
+                            {result.biosample_summary ? <div><BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} /> </div> : null}
                         </div>
                     : null}
                     <div className="result-item__data-row">

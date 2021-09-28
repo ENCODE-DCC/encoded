@@ -81,9 +81,26 @@ export function BiosampleOrganismNames(biosamples) {
 
 //   Return an array of biosample scientific names from the given array of genetic modifications.
 export function GeneticModificationOrganismNames(biosamples) {
-    const introducedGeneOrganisms = biosamples.map((biosample) => biosample.applied_modifications?.introduced_gene?.organism?.scientific_name).filter((name) => !!name);
-    const modifiedSiteByTargetIDOrganisms = biosamples.map((biosample) => biosample.applied_modifications?.modified_site_by_target_id?.organism?.scientific_name).filter((name) => !!name);
-    return _.uniq(modifiedSiteByTargetIDOrganisms.concat(introducedGeneOrganisms));
+    const geneticModificationOrganisms = [];
+    biosamples.forEach((biosample) => {
+        if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
+            const appliedModifications = biosample.applied_modifications;
+            appliedModifications.forEach((modification) => {
+                if (modification.introduced_gene && modification.introduced_gene.organism) {
+                    geneticModificationOrganisms.push(modification.introduced_gene.organism.scientific_name);
+                } else if (modification.modified_site_by_target_id && modification.modified_site_by_target_id.organism) {
+                    geneticModificationOrganisms.push(modification.modified_site_by_target_id.organism.scientific_name);
+                }
+            });
+        }
+    });
+    const reducedGeneticModificationOrganisms = geneticModificationOrganisms.reduce((previousValue, currentValue) => {
+        if (!(previousValue.includes(currentValue))) {
+            previousValue.push(currentValue);
+        }
+        return previousValue;
+    }, []);
+    return reducedGeneticModificationOrganisms;
 }
 
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
