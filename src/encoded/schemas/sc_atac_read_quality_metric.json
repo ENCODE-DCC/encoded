@@ -27,39 +27,40 @@
             "type": "integer",
             "minimum": 0
         },
-        "num_reads_passing": {
-            "title": "Number of reads passing QC",
-            "description": "Number of reads passing QC.",
+        "num_reads_matched": {
+            "title": "Number of whitelist matching reads",
+            "description": "Number of reads with a barcode matching in whitelist",
             "type": "integer",
             "minimum": 0
         },
-        "prop_reads_passing": {
-            "title": "Proportion of reads passing QC",
-            "description": "Proportion of reads passing QC.",
+        "frac_reads_matched": {
+            "title": "Fraction of whitelist matching reads",
+            "description": "Fraction of reads with a barcode matching in whitelist",
             "type": "number",
             "minimum":0,
             "maximum": 1
         },
         "num_match_dist_0": {
-            "title": "",
-            "description": "",
+            "title": "Number of barcode matches",
+            "description": "Number of exact barcode matches",
             "type": "integer",
             "minimum": 0
         },
         "num_match_dist_1": {
-            "title": "",
-            "description": "",
+            "title": "Number of near barcode matches",
+            "description": "Number of barcode matches with an edit distance of 1",
             "type": "integer",
             "minimum": 0
         },
         "num_reads_trimmed": {
-            "title": "",
-            "description": "",
+            "title": "Number of trimmed reads",
+            "description": "Number of reads that are adapter-trimmed",
             "type": "integer",
             "minimum": 0
         },
         "barcode_reverse_complement": {
-            "title": "",
+            "title": "Barcode reverse complement",
+            "description": "A flag indicating whether the barcode sequences are reverse-complemented relative to the raw fastq",
             "type": "boolean"
         },
         "barcode_matching_stats": {
