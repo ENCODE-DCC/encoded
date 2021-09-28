@@ -289,9 +289,11 @@ def test_search_views_search_view_columns_from_configs(index_workbook, testapp, 
     r = testapp.get('/search/?type=Experiment&type=Dataset&config=config1&config=config2')
     assert len(r.json['columns']) == 3
     r = testapp.get('/search/?type=Experiment&type=Dataset')
-    assert 35 < len(r.json['columns']) < 45
+    assert len(r.json['columns']) > 80
     r = testapp.get('/search/?type=Donor')
     assert 15 < len(r.json['columns']) < 25
+    r = testapp.get('/search/?type=Item')
+    assert len(r.json['columns']) > 240
 
 
 def test_search_views_search_raw_view_raw_response(index_workbook, testapp):
