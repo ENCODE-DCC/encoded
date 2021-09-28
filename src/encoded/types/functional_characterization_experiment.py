@@ -228,6 +228,6 @@ class FunctionalCharacterizationExperiment(
             return False
         for series in related_series:
             series_object = request.embed(series, "@@object?skip_calculated=true")
-            if "FunctionalCharacterizationSeries" in series_object["@type"]:
+            if "FunctionalCharacterizationSeries" in series_object.get("@type", []):
                 return True 
         return False
