@@ -1,33 +1,3 @@
-diff_chroms	int	0
-diff_chroms_qc_failed	int	0
-duplicate_reads	int	0
-duplicate_reads_qc_failed	int	0
-frac_mito_reads	float	0
-mapped_reads	int	0
-mapped_reads_qc_failed	int	0
-mito_reads	int	0
-non_mito_reads	int	0
-paired_reads	int	0
-paired_reads_qc_failed	int	0
-pct_mapped_reads	float	0
-pct_properly_paired_reads	float	0
-pct_singletons	float	0
-properly_paired_reads	int	0
-properly_paired_reads_qc_failed	float	0
-read1	int	0
-read1_qc_failed	int	0
-read2	int	0
-read2_qc_failed	int	0
-singletons	int	0
-singletons_qc_failed	int	0
-total_reads	int	0
-total_reads_qc_failed	int	0
-usable_fragments	int	0
-with_itself	int	0
-with_itself_qc_failed	int	0
-samstats	attachment txt	
-mito_stats	attachment txt	
-
 {
     "title": "scATAC-seq alignment quality metric",
     "description": "Schema for scATAC-seq alignment quality metrics",
@@ -51,7 +21,216 @@ mito_stats	attachment txt
         "schema_version": {
             "default": "1"
         },
-  
+        "with_itself": {
+            "title": "Number of reads with itself & mate mapped passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "with_itself_qc_failed": {
+            "title": "Number of reads with itself & mate mapped failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "usable_fragments": {
+            "title": "Number usable fragments",
+            "type": "integer",
+            "minimum": 0
+        },
+        "properly_paired_reads": {
+            "title": "Number of properly paired reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "properly_paired_reads_qc_failed": {
+            "title": "Number of properly paired reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        
+        "paired_reads": {
+            "title": "Number of paired reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "paired_reads_qc_failed": {
+            "title": "Number of paired reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_properly_paired_reads": {
+            "title": "Percentage of properly paired reads passing QC",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        
+        "mapped_reads": {
+            "title": "Number of mapped reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "mapped_reads_qc_failed": {
+            "title": "Number of mapped reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_mapped_reads": {
+            "title": "Percentage of mapped reads passing QC",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "singletons": {
+            "title": "Number of singletons passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "singletons_qc_failed": {
+            "title": "Number of singletons failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "read1": {
+            "title": "Number of read1 reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "read1_qc_failed": {
+            "title": "Number of read1 reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "read2": {
+            "title": "Number of read2 reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "read2_qc_failed": {
+            "title": "Number of read2 reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "total_reads": {
+            "title": "Number of total reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "total_reads_qc_failed": {
+            "title": "Number of total reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "duplicate_reads": {
+            "title": "Number of reads with duplicates passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "duplicate_reads_qc_failed": {
+            "title": "Number of reads with duplicates failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_singletons": {
+            "title": "Percentage of singletons passing QC",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },        
+        "diff_chroms": {
+            "title": "Number of reads with mate mapped to different chromosomes passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "diff_chroms_qc_failed": {
+            "title": "Number of reads with mate mapped to different chromosomes failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        
+        "non_mito_reads": {
+            "title": "Number of non-mitochondrial reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "mito_reads": {
+            "title": "Number of mitochondrial reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "frac_mito_reads": {
+            "title": "Fraction of mitochondrial reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "mito_stats": {
+            "title": "Mitochondrial read statistics",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "text/plain"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                }
+            }
+        },
+        "samstats": {
+            "title": "SAMstats QC",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "text/plain"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                }
+            }
+        }
     },
     "facets": {
         "assay_term_name": {
