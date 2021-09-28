@@ -22,20 +22,19 @@
             "default": "1"
         },
         "median_fragment_count": {
-            "title": "",
-            "description": "",
+            "title": "Median fragments count",
+            "description": "Median number of fragments across barcodes",
             "type": "integer",
             "minimum": 0
         },
         "median_tss_enrichment": {
-            "title": "",
-            "description": "",
+            "title": "Median TSS enrichment",
+            "description": "Median TSS enrichment across barcodes",
             "type": "number",
             "minimum": 0
         },
         "archr_doublet_summary_figure": {
-            "title": "",
-            "description": "",
+            "title": "ArchR doublet summary",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -69,8 +68,7 @@
             }
         },
         "archr_fragment_size_distribution": {
-            "title": "",
-            "description": "",
+            "title": "ArchR fragment size distribution",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -104,8 +102,7 @@
             }
         },
         "archr_tss_by_unique_frags": {
-            "title": "",
-            "description": "",
+            "title": "ArchR TSS-by-fragment plot",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -139,8 +136,7 @@
             }
         },
         "archr_doublet_summary_text": {
-            "title": "",
-            "description": "",
+            "title": "ArchR doublet data",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -174,8 +170,7 @@
             }
         },
         "archr_pre_filter_metadata": {
-            "title": "",
-            "description": "",
+            "title": "ArchR pre-filter metadata ",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
