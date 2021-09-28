@@ -170,7 +170,7 @@
             }
         },
         "archr_pre_filter_metadata": {
-            "title": "ArchR pre-filter metadata ",
+            "title": "ArchR pre-filter metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
