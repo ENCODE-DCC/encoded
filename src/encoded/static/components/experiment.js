@@ -691,7 +691,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div data-test="biosample-summary">
                                     <dt>Biosample summary</dt>
                                     <dd>
-                                        {context.biosample_summary ? <div><BiosampleSummaryDisplay summary={context.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))}/></div> : null}
+                                        {context.biosample_summary ? <div><BiosampleSummaryDisplay summary={context.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} /></div> : null}
                                     </dd>
                                 </div>
                             : null}

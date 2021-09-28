@@ -305,7 +305,7 @@ class BiosampleComponent extends React.Component {
                         </a>
                         <div className="result-item__data-row">
                             <div><span className="result-item__property-title">Type: </span>{result.biosample_ontology.classification}</div>
-                            {result.summary ? <div><span className="result-item__property-title">Summary: </span><BiosampleSummaryDisplay summary={result.summary} organisms={organismName.concat(GeneticModificationOrganismNames([result]))}/> </div> : null}
+                            {result.summary ? <div><span className="result-item__property-title">Summary: </span><BiosampleSummaryDisplay summary={result.summary} organisms={organismName.concat(GeneticModificationOrganismNames([result]))} /> </div> : null}
                             {rnais.length > 0 ? <div><span className="result-item__property-title">RNAi targets: </span>{rnais.join(', ')}</div> : null}
                             {constructs.length > 0 ? <div><span className="result-item__property-title">Constructs: </span>{constructs.join(', ')}</div> : null}
                             {treatment.length > 0 ? <div><span className="result-item__property-title">Treatment: </span>{treatment.join(', ')}</div> : null}
