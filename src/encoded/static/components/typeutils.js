@@ -33,16 +33,17 @@ export function BiosampleSummaryString(biosample, supressOrganism) {
 /**
  * Display the given biosample summary string with any of the given organism names italicized.
  */
-const BiosampleSummaryDisplay = ({ summary, organisms }) => {
-    const displayedElements = [];
-
+export const BiosampleSummaryDisplay = ({ summary, organisms }) => {
     // Generate the equivalent shortened organism scientific names.
-    const shortenedOrganisms = organisms.map((organism) => organism.replace(/^(\S)\S* (\S+)$/, '$1. $2'));
+    const organismsWithShortenedNames = organisms.concat(organisms.map((organism) => organism.replace(/^(\S)\S* (\S+)$/, '$1. $2')));
 
     let cursor = 0;
-    organisms.concat(shortenedOrganisms).forEach((organism) => {
+    let maybeMoreMatches = true;
+    const allOrganismsRegex = new RegExp(organismsWithShortenedNames.join('|'));
+    const displayedElements = [];
+    while (cursor < summary.length && maybeMoreMatches) {
         const remainingString = summary.slice(cursor);
-        const matchData = remainingString.match(new RegExp(organism));
+        const matchData = remainingString.match(new RegExp(allOrganismsRegex));
         if (matchData) {
             if (matchData.index > 0) {
                 // Add the text before the match.
@@ -52,13 +53,15 @@ const BiosampleSummaryDisplay = ({ summary, organisms }) => {
             }
 
             // Add the italicized organism name.
-            displayedElements.push(<i key={cursor}>{organism}</i>);
-            cursor += organism.length;
+            displayedElements.push(<i key={cursor}>{matchData[0]}</i>);
+            cursor += matchData[0].length;
+        } else {
+            maybeMoreMatches = false;
         }
-    });
+    }
 
     // Add the remaining text after any matches.
-    displayedElements.push(<React.Fragment key={'remaining'}>{summary.slice(cursor)}</React.Fragment>);
+    displayedElements.push(<React.Fragment key="remaining">{summary.slice(cursor)}</React.Fragment>);
     return displayedElements;
 };
 
@@ -69,7 +72,6 @@ BiosampleSummaryDisplay.propTypes = {
     organisms: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-export default BiosampleSummaryDisplay;
 
 // Some biosample-specific utilities
 //   Return an array of biosample scientific names from the given array of biosamples.
@@ -77,6 +79,12 @@ export function BiosampleOrganismNames(biosamples) {
     return _.uniq(biosamples.map((biosample) => biosample.organism.scientific_name));
 }
 
+//   Return an array of biosample scientific names from the given array of genetic modifications.
+export function GeneticModificationOrganismNames(biosamples) {
+    const introducedGeneOrganisms = biosamples.map((biosample) => biosample.applied_modifications?.introduced_gene?.organism?.scientific_name).filter((name) => !!name);
+    const modifiedSiteByTargetIDOrganisms = biosamples.map((biosample) => biosample.applied_modifications?.modified_site_by_target_id?.organism?.scientific_name).filter((name) => !!name);
+    return _.uniq(modifiedSiteByTargetIDOrganisms.concat(introducedGeneOrganisms));
+}
 
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
 // documents (with @type of Document or Characterization). If the given biosample has no documents, this

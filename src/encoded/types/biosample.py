@@ -77,8 +77,10 @@ class Biosample(Item):
         'organism',
         'applied_modifications',
         'applied_modifications.introduced_gene',
+        'applied_modifications.introduced_gene.organism',
         'applied_modifications.modified_site_by_target_id',
         'applied_modifications.modified_site_by_target_id.genes',
+        'applied_modifications.modified_site_by_target_id.organism',
         'applied_modifications.treatments'
     ]
     embedded_with_frame = [

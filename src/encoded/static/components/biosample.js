@@ -12,7 +12,7 @@ import { RelatedItems } from './item';
 import { singleTreatment, treatmentDisplay, treatmentTypeDisplay, PanelLookup, AlternateAccession, ItemAccessories, InternalTags, TopAccessories, requestObjects } from './objectutils';
 import pubReferenceList from './reference';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
-import BiosampleSummaryDisplay, { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
+import { BiosampleSummaryDisplay, GeneticModificationOrganismNames, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
 import formatMeasurement from '../libs/formatMeasurement';
 
 
@@ -183,7 +183,7 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
 
                             <div data-test="summary">
                                 <dt>Summary</dt>
-                                <dd>{context.summary ? <div> <BiosampleSummaryDisplay summary={context.summary} organisms={[context.organism.scientific_name]} /> </div> : null}</dd>
+                                <dd>{context.summary ? <div> <BiosampleSummaryDisplay summary={context.summary} organisms={[context.organism.scientific_name].concat(GeneticModificationOrganismNames([context]))} /> </div> : null}</dd>
                             </div>
 
                             {context.description ?
