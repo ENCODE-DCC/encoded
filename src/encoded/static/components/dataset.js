@@ -221,7 +221,7 @@ const AnnotationComponent = (props, reactContext) => {
                             {context.encyclopedia_version ?
                                 <div data-test="encyclopediaversion">
                                     <dt>Encyclopedia version</dt>
-                                    <dd>{context.encyclopedia_version}</dd>
+                                    <dd>{context.encyclopedia_version.join(', ')}</dd>
                                 </div>
                             : null}
 
