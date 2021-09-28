@@ -64,8 +64,7 @@
             "type": "boolean"
         },
         "barcode_matching_stats": {
-            "title": "",
-            "description": "",
+            "title": "Barcode matching QC",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -99,8 +98,7 @@
             }
         },
         "adapter_trimming_stats": {
-            "title": "",
-            "description": "",
+            "title": "Adapter trimming QC",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -134,8 +132,7 @@
             }
         },
         "barcode_revcomp_stats": {
-            "title": "",
-            "description": "",
+            "title": "Barcode reverse complement detection QC",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
