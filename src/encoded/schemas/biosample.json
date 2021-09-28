@@ -1016,6 +1016,12 @@
         "applied_modifications.modified_site_by_target_id.name": {
             "title": "Modification site"
         },
+        "applied_modifications.modified_site_by_target_id.organism": {
+            "title": "Modification site target organism"
+        },
+        "applied_modifications.introduced_gene.organism": {
+            "title": "Modification site introduced gene organism"
+        },
         "applied_modifications.purpose": {
             "title": "Modification purpose"
         },

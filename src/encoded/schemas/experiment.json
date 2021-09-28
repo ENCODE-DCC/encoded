@@ -420,6 +420,12 @@
         "replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units"
         },
+        "replicates.library.biosample.applied_modifications.modified_site_by_target_id.organism": {
+            "title": "Biosample modification site target organism"
+        },
+        "replicates.library.biosample.applied_modifications.introduced_gene.organism": {
+            "title": "Biosample modification site introduced gene organism"
+        },
         "replicates.@id": {
             "title": "Replicates"
         },
