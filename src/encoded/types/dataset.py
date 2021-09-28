@@ -335,6 +335,7 @@ class TransgenicEnhancerExperiment(
         'biosamples.organism',
         'biosamples.characterizations',
         'related_series',
+        'possible_controls',
     ]
     audit_inherit = [
         'submitted_by',

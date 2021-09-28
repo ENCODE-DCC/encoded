@@ -490,6 +490,8 @@ ExperimentTable.defaultProps = {
 const tableContentMap = {
     Experiment: 'Experiments',
     FunctionalCharacterizationExperiment: 'Functional characterization experiments',
+    SingleCellUnit: 'Single cell units',
+    TransgenicEnhancerExperiment: 'Transgenic enhancer experiments',
 };
 /**
  * Display a table of experiments with the dataset in `context` as a possible_controls.

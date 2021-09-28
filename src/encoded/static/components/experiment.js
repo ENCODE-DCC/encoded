@@ -598,6 +598,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const fcelementsmappingUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_mapping=${context['@id']}`;
     const fcelementscloningUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_cloning=${context['@id']}`;
     const singlecellunitsUrl = `/search/?type=SingleCellUnit&possible_controls.accession=${context.accession}`;
+    const transgenicexptsUrl = `/search/?type=TransgenicEnhancerExperiment&possible_controls.accession=${context.accession}`;
 
 
     // Make a list of reference links, if any.
@@ -1013,6 +1014,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             <FetchedItems context={context} url={fcexperimentsUrl} Component={ControllingExperiments} />
 
             <FetchedItems context={context} url={singlecellunitsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems context={context} url={transgenicexptsUrl} Component={ControllingExperiments} />
 
             <FetchedItems
                 context={context}
