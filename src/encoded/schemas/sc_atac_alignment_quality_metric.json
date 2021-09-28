@@ -61,7 +61,7 @@
             "title": "Percentage of properly paired reads passing QC",
             "type": "number",
             "minimum": 0,
-            "maximum": 100.0
+            "maximum": 1
         },
         
         "mapped_reads": {
@@ -78,7 +78,7 @@
             "title": "Percentage of mapped reads passing QC",
             "type": "number",
             "minimum": 0,
-            "maximum": 100.0
+            "maximum": 1
         },
         "singletons": {
             "title": "Number of singletons passing QC",
