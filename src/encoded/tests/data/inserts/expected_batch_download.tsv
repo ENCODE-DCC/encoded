@@ -141,5 +141,10 @@ http://localhost/files/ENCFF001RCV/@@download/ENCFF001RCV.bam
 http://localhost/files/ENCFF001RCW/@@download/ENCFF001RCW.bam
 http://localhost/files/ENCFF001RCY/@@download/ENCFF001RCY.bigWig
 http://localhost/files/ENCFF001RCZ/@@download/ENCFF001RCZ.bigWig
+http://localhost/files/ENCFF127ACM/@@download/ENCFF127ACM.fastq.gz
+http://localhost/files/ENCFF333STR/@@download/ENCFF333STR.starch
+http://localhost/files/ENCFF718LJW/@@download/ENCFF718LJW.bam
+http://localhost/files/ENCFF081AVF/@@download/ENCFF081AVF.bed.gz
+http://localhost/files/SRR1270627/@@download/SRR1270627.sra
 http://localhost/files/ENCFF000RCC/@@download/ENCFF000RCC.rcc
 http://localhost/files/ENCFF000DAT/@@download/ENCFF000DAT.idat
