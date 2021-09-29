@@ -469,10 +469,6 @@ export class FileTable extends React.Component {
                     return 'ref';
                 }
 
-                if (file.output_category === 'reference' && !file.isElementReferenceFile && !isReferenceDataType) {
-                    return nonAnalysisObjectPrefix;
-                }
-
                 const analysisObjectsFile = (analysisObjectsFiles || []).find((a) => a.files.includes(file['@id']));
                 const analysisObjectsAccession = analysisObjectsFile ? analysisObjectsFile.accession : null;
 
