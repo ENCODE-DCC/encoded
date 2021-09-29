@@ -1903,8 +1903,14 @@ function sortStage(a, b) {
         return sortMouseArray(a.life_stage_age, b.life_stage_age);
     }
     // special case with multiple replicates (old data)
-    if (a.replicates[0].library.biosample.age_display && b.replicates[0].library.biosample.age_display) {
+    if (a.replicates && b.replicates && a.replicates[0].library.biosample.age_display && b.replicates[0].library.biosample.age_display) {
         return (a.replicates[0].library.biosample.age_display.split(' ')[0] - b.replicates[0].library.biosample.age_display.split(' ')[0]);
+    }
+    if (a.replicates && a.replicates[0].library.biosample.age_display) {
+        return -a.replicates[0].library.biosample.age_display.split(' ')[0];
+    }
+    if (b.replicates && b.replicates[0].library.biosample.age_display) {
+        return b.replicates[0].library.biosample.age_display.split(' ')[0];
     }
     return 0;
 }
