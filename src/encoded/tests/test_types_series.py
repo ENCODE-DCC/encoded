@@ -88,7 +88,7 @@ def test_biosample_summary_from_related_datasets(testapp,
     )
     testapp.patch_json(experiment_2['@id'], {'biosample_ontology': liver['uuid']})
     res = testapp.get(treated_differentiation_series['@id']+'@@index-data')
-    assert res.json['object']['biosample_summary'] == 'heart tissue treated with estradiol'
+    assert res.json['object']['biosample_summary'] == 'Homo sapiens heart tissue treated with estradiol'
 
     testapp.patch_json(
         treated_differentiation_series['@id'],
