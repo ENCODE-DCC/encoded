@@ -2688,7 +2688,7 @@ export const SeriesComponent = ({
 
             {/* Display list of released and unreleased files */}
             {/* Set hideGraph to false to show "Association Graph" for all series */}
-            {files.length > 0 ?
+            {files.length > 0 || context?.elements_references.length > 0 ?
                 <FileGallery
                     context={context}
                     files={files}
