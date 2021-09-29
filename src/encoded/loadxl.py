@@ -152,7 +152,21 @@ IS_ATTACHMENT = [
     'insert_size_histogram',
     'insert_size_metric',
     'nuclear_preseq',
-    'nuclear_preseq_targets'
+    'nuclear_preseq_targets',
+    'excluded_barcodes',
+    'multiplet_stats',
+    'picard_markdup_stats',
+    'pbc_stats',
+    'archr_doublet_summary_figure',
+    'archr_fragment_size_distribution',
+    'archr_tss_by_unique_frags',
+    'archr_doublet_summary_text',
+    'archr_pre_filter_metadata',
+    'barcode_matching_stats',
+    'adapter_trimming_stats',
+    'barcode_revcomp_stats',
+    'mito_stats',
+    'samstats'
 ]
 
 
