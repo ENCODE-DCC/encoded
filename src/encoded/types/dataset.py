@@ -1524,6 +1524,7 @@ class DifferentialAccessibilitySeries(Series):
     schema = load_schema('encoded:schemas/differential_accessibility_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.replicates.',
         'related_datasets.replicates.library',
         'related_datasets.replicates.library.biosample',
         'related_datasets.replicates.library.biosample.expressed_genes',

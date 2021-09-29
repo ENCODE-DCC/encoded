@@ -79,7 +79,9 @@ class Biosample(Item):
         'applied_modifications.introduced_gene',
         'applied_modifications.modified_site_by_target_id',
         'applied_modifications.modified_site_by_target_id.genes',
-        'applied_modifications.treatments'
+        'applied_modifications.treatments',
+        'expressed_genes',
+        'expressed_genes.gene'
     ]
     embedded_with_frame = [
         Path('donor.references', exclude=['datasets', 'publication_data']),

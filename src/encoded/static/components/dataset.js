@@ -2192,31 +2192,18 @@ const functionalCharacterizationSeriesTableColumns = {
 /**
  * Generate a comma-separated string of expressed_genes from the given experiment's biosamples.
  */
-const computeExpressedGenes = ({ dataset }) => {
+const computeExpressedGenes = (dataset) => {
     // Render all expressed_genes as links.
     const biosamples = collectDatasetBiosamples(dataset);
-    if (biosamples.length > 0) {
-        const genes = (biosamples.expressed_genes && biosamples.expressed_genes.length > 0)
-            ? biosamples.expressed_genes.map((locus) => <a key={locus['@id']} href={locus['@id']}>{locus.symbol}</a>)
-            : [];
-
-        // Render to the page.
-        if (genes.length > 0) {
-            return (
-                <>
-                    &nbsp;(
-                    {genes.map((locus, i) => (
-                        <React.Fragment key={i}>
-                            {i > 0 ? ', ' : null}
-                            {genes}
-                        </React.Fragment>
-                    ))}
-                    )
-                </>
-            );
+    let geneList = [];
+    biosamples.forEach((biosample) => {
+        if (biosample.expressed_genes) {
+            geneList = [...geneList, ...biosample.expressed_genes];
         }
-    }
-    return null;
+    });
+    return (
+        geneList.map((gene) => <a key={gene.gene['@id']} href={gene.gene['@id']}>{gene.gene.symbol}</a>)
+    );
 };
 
 ElementsReferences.propTypes = {
