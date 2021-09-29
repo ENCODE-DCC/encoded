@@ -3236,13 +3236,13 @@ const TreatmentConcentrationSeries = ({ context }, reactContext) => {
     // related datasets.
     const treatmentDurations = context.related_datasets.reduce((accTreatmentDurations, relatedDataset) => {
         // Collect any biosamples found in all related datasets.
-        const biosamples = relatedDataset.replicates.reduce((accBiosamples, replicate) => {
+        const biosamples = relatedDataset.replicates?.reduce((accBiosamples, replicate) => {
             const biosample = replicate.library && replicate.library.biosample;
             return biosample ? accBiosamples.concat(biosample) : accBiosamples;
         }, []);
 
         // Collect durations in the biosample treatments and compose them into displayable strings.
-        const collectedDurations = biosamples.reduce((accCollectedDurations, biosample) => {
+        const collectedDurations = biosamples?.reduce((accCollectedDurations, biosample) => {
             const durations = biosample.treatments.reduce((accDurations, treatment) => (
                 treatment.duration
                     ? accDurations.concat(`${treatment.duration} ${treatment.duration_units}${treatment.duration > 1 ? 's' : ''}`)
