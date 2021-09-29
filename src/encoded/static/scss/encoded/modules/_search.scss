@@ -370,6 +370,40 @@ $form-bg: #f3f3f3;
     display: inline-block;
 }
 
+// View control report button
+.view-type-report {
+    > button {
+        @extend .btn-info;
+        @extend .btn-sm;
+    }
+
+    .dropdown-button__content {
+        width: auto;
+        white-space: nowrap;
+
+        a {
+            font-family: Quicksand, sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+.view-type-report-dropdown {
+    display: flex;
+    align-items: center;
+
+    .svg-icon.svg-icon-chevron-down {
+        width: 10px;
+        margin: 0 0 0 5px;
+        fill: #fff;
+    }
+}
+
 .page-listing-date {
     font-weight: bold;
     font-size: 1rem;

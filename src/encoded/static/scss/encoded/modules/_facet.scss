@@ -181,6 +181,10 @@
         flex: 0 0 16px;
         width: 16px;
         height: 10px;
+
+        .svg-icon {
+            fill: #000;
+        }
     }
 
     .facet-open {
@@ -826,8 +830,11 @@ $facet-group-color-accent: scale-color($facet-group-color, $lightness: 95%);
     .facet-group-title__expand-indicator {
         flex: 0 0 16px;
         width: 16px;
-        fill: #000;
-        transition: fill $facet-group-title-transition-time linear;
+
+        .svg-icon {
+            fill: #000;
+            transition: fill $facet-group-title-transition-time linear;
+        }
     }
 
     &.facet-group-title--open {
@@ -852,8 +859,10 @@ $facet-group-color-accent: scale-color($facet-group-color, $lightness: 95%);
         }
 
         .facet-group-title__expand-indicator {
-            fill: #fff;
-            transition: fill $facet-group-title-transition-time linear;
+            .svg-icon {
+                fill: #fff;
+                transition: fill $facet-group-title-transition-time linear;
+            }
         }
     }
 }

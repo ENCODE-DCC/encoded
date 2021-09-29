@@ -1,5 +1,6 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme, { mount } from 'enzyme';
+import { PropTypes } from 'prop-types';
 import _ from 'underscore';
 
 // Import test component and data.
@@ -14,7 +15,7 @@ describe('View controls for search with Experiments', () => {
         let searchControls;
 
         beforeAll(() => {
-            const contextResults = _.clone(context);
+            const contextResults = _.clone(context.single_type);
             searchControls = mount(
                 <SearchControls context={contextResults} />,
                 { context: { location_href: '/search/?type=Experiment' } }
@@ -35,6 +36,45 @@ describe('View controls for search with Experiments', () => {
             expect(buttons.at(0).text()).toEqual('Download');
             expect(buttons.at(1).text()).toEqual('Visualize');
             expect(buttons.at(2).text()).toEqual('{ ; }');
+        });
+    });
+
+    describe('Mutliple searched types', () => {
+        let searchControls;
+
+        beforeAll(() => {
+            const contextResults = _.clone(context.multiple_types);
+            searchControls = mount(
+                <SearchControls context={contextResults} />,
+                {
+                    context: {
+                        location_href: '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries',
+                        profilesTitles: {
+                            FunctionalCharacterizationExperiment: 'Functional characterization experiment',
+                            FunctionalCharacterizationSeries: 'Functional characterization series',
+                        },
+                    },
+                    childContextTypes: {
+                        location_href: PropTypes.toString,
+                        profilesTitles: PropTypes.object,
+                    },
+                },
+            );
+        });
+
+        test('has a single view control button', () => {
+            const viewControls = searchControls.find('.btn-attached');
+            const buttons = viewControls.find('button');
+            expect(buttons).toHaveLength(1);
+            expect(buttons.at(0).text()).toEqual('Report');
+
+            // Click the Report button dropdown and test its contents.
+            buttons.at(0).simulate('click', { nativeEvent: { stopImmediatePropagation: _.noop } });
+            const typeOptions = searchControls.find('#view-type-report-menu');
+            const typeItems = typeOptions.find('li');
+            expect(typeItems).toHaveLength(2);
+            expect(typeItems.at(0).text()).toEqual('Functional characterization experiment');
+            expect(typeItems.at(1).text()).toEqual('Functional characterization series');
         });
     });
 });

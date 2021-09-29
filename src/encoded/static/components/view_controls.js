@@ -1,24 +1,160 @@
 import PropTypes from 'prop-types';
-import * as encoding from '../libs/query_encoding';
+import _ from 'underscore';
+import url from 'url';
+import QueryString from '../libs/query_string';
 import { svgIcon } from '../libs/svg-icons';
+import * as DropdownButton from '../libs/ui/button';
 import { getIsCartSearch } from './cart';
 import { BatchDownloadActuator, SearchBatchDownloadController } from './batch_download';
-import QueryString from '../libs/query_string';
+
+
+/**
+ * Displays any of the view type bu†tons, wrapping the actual button title.
+ */
+const ViewControlButton = ({ viewType, queryString, children }) => (
+    <a
+        href={`/${viewType.path}/?${queryString}`}
+        role="button"
+        className="btn btn-info btn-sm"
+        id={`search-control-${viewType.type}`}
+        data-test={viewType.type}
+        aria-label={`${viewType.label}`}
+    >
+        {svgIcon(viewType.icon)}
+        {children}
+    </a>
+);
+
+ViewControlButton.propTypes = {
+    /** Single relevant entry from `viewTypeMap` */
+    viewType: PropTypes.object.isRequired,
+    /** Current search query string */
+    queryString: PropTypes.string.isRequired,
+    /** Button title content */
+    children: PropTypes.node.isRequired,
+};
+
+
+/**
+ * Renders the view type button for the search page.
+ */
+const SearchViewButton = ({ viewType, query }) => (
+    <ViewControlButton viewType={viewType} queryString={query.format()}>
+        {viewType.title}
+    </ViewControlButton>
+);
+
+SearchViewButton.propTypes = {
+    /** Single relevant entry from `viewTypeMap` */
+    viewType: PropTypes.object.isRequired,
+    /** Current search query object */
+    query: PropTypes.object.isRequired,
+};
+
+
+/**
+ * Renders the view type button for the report page. This renders a normal button like the search
+ * and matrix views when one "type=" exists in the query string, but renders a dropdown button when
+ * more than one "type=" exists in the query string -- one entry in the dropdown for each "type="
+ * in the query string.
+ */
+const ReportViewButton = ({ viewType, query }, reactContext) => {
+    const typeValues = query.getKeyValues('type');
+    if (typeValues.length === 1) {
+        // One "type=" in the query string so render a regular link to the report page.
+        return (
+            <ViewControlButton viewType={viewType} queryString={query.format()}>
+                {viewType.title}
+            </ViewControlButton>
+        );
+    }
+
+    // More than one "type=" in the query string so render a dropdown button. The menu items
+    // display the "type=" value until the <App> component has loaded the human-readable type
+    // names.
+    const uniqueTypeValues = new Set(typeValues);
+    return (
+        <DropdownButton.Immediate
+            label={
+                <div className="view-type-report-dropdown">
+                    {svgIcon(viewType.icon)}
+                    {viewType.title}
+                    {svgIcon('chevronDown')}
+                </div>
+            }
+            id="view-type-report"
+            css="view-type-report"
+        >
+            {_.sortBy([...uniqueTypeValues]).map((typeValue) => {
+                query.deleteKeyValue('type').addKeyValue('type', typeValue);
+                return (
+                    <a key={typeValue} href={`/${viewType.path}/?${query.format()}`}>
+                        {reactContext.profilesTitles[typeValue] || typeValue}
+                    </a>
+                );
+            })}
+        </DropdownButton.Immediate>
+    );
+};
+
+ReportViewButton.propTypes = {
+    /** Single relevant entry from `viewTypeMap` */
+    viewType: PropTypes.object.isRequired,
+    /** Current search query object */
+    query: PropTypes.object.isRequired,
+};
+
+ReportViewButton.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+
+/**
+ * Some search query-string types (?type={something}) don't have a matrix view and would generate
+ * a user-visible error if you tried. This list includes the possible search types to allow a
+ * matrix button on the /search/ and /report/ pages. Add to this list for any new object types that
+ * should include a matrix button on those pages.
+ */
+const matrixTypes = ['Experiment', 'Annotation'];
+
+
+/**
+ * Renders the view type button for the matrix pages. The query type gets inserted in the button
+ * label.
+ */
+const MatrixViewButton = ({ viewType, query }) => {
+    const typeValues = query.getKeyValues('type');
+
+    return (
+        (typeValues.length === 1 && matrixTypes.includes(typeValues[0])) &&
+            <ViewControlButton viewType={viewType} queryString={query.format()}>
+                {`${typeValues[0]} ${viewType.title}`}
+            </ViewControlButton>
+    );
+};
+
+MatrixViewButton.propTypes = {
+    /** Single relevant entry from `viewTypeMap` */
+    viewType: PropTypes.object.isRequired,
+    /** Current search query object */
+    query: PropTypes.object.isRequired,
+};
 
 
 /**
  * Maps the page type to the corresponding view control elements. Extend this array on the rare
  * occasions that a new search view gets implemented.
  *   type: identifier for each element
+ *   renderer: React component to render the button for the type
  *   path: goes between slashes in search path /{path}/
  *   icon: variable name of icon in svg-icons.js for icon in button
  *   title: Used in button; matrix prepended by type
  *   label: Used for screen readers
  */
 const viewTypeMap = [
-    { type: 'search', path: 'search', icon: 'search', title: 'List', label: 'View search results as a list' },
-    { type: 'report', path: 'report', icon: 'table', title: 'Report', label: 'View search results as a tabular report' },
-    { type: 'matrix', path: 'matrix', icon: 'matrix', title: 'matrix', label: 'View search results as a matrix' },
+    { type: 'search', renderer: SearchViewButton, path: 'search', icon: 'search', title: 'List', label: 'View search results as a list' },
+    { type: 'report', renderer: ReportViewButton, path: 'report', icon: 'table', title: 'Report', label: 'View search results as a tabular report' },
+    { type: 'matrix', renderer: MatrixViewButton, path: 'matrix', icon: 'matrix', title: 'matrix', label: 'View search results as a matrix' },
 ];
 
 
@@ -51,84 +187,34 @@ const getSearchPageType = (context) => {
 
 
 /**
- * Some search query-string types (?type={something}) don't have a matrix view and would generate
- * a user-visible error if you tried. This list includes the possible search types to allow a
- * matrix button on the /search/ and /report/ pages. Add to this list for any new object types that
- * should include a matrix button on those pages.
- */
-const matrixTypes = ['Experiment', 'Annotation'];
-
-
-const modalDefaultText = (
-    <>
-        <p>
-            Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-            The first line of the file has the URL or command line to download the metadata file.
-        </p>
-        <p>
-            Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
-        </p>
-        <p>
-            The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-            The following command using cURL can be used to download all the files in the list:
-        </p>
-        <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
-    </>);
-
-
-/**
- * Generate a query string from the elements of the `filters` property of search results. All
- * "type" queries come first, followed by other fields, followed by "searchTerm" queries.
- * @param {array} filters From `filters` property of search results
- *
- * @return {string} Ampersand-separated query string, not including initial question mark.
- */
-const getQueryFromFilters = (filters) => {
-    const typeQueries = filters.filter((searchFilter) => searchFilter.field === 'type');
-    const termQueries = filters.filter((searchFilter) => searchFilter.field !== 'type' && searchFilter.field !== 'searchTerm');
-    const searchTermQueries = filters.filter((searchFilter) => searchFilter.field === 'searchTerm');
-    const queryElements = typeQueries.concat(termQueries, searchTermQueries).map((searchFilter) => `${searchFilter.field}=${encoding.encodedURIComponentOLD(searchFilter.term)}`);
-    return `${queryElements.join('&')}`;
-};
-
-
-/**
  * Displays view control buttons appropriate for the given search results.
  */
 export const ViewControls = ({ results, additionalFilters }) => {
     // Don't render view controls for cart searches.
-    if (getIsCartSearch(results)) {
-        return null;
-    }
+    if (!getIsCartSearch(results)) {
+        const searchPageType = getSearchPageType(results);
+        const parsedUrl = url.parse(results['@id']);
+        const query = new QueryString(parsedUrl.query);
 
-    const filters = results.filters.concat(additionalFilters);
-    const searchPageType = getSearchPageType(results);
+        // Add any additional filters to the query from pages that do front-end filtering without
+        // doing a new query.
+        additionalFilters.forEach((filter) => {
+            query.addKeyValue(filter.field, filter.term);
+        });
 
-    // Get all "type=" in query string. We only display controls when URL has exactly one "type=".
-    const typeFilters = filters.filter((filter) => filter.field === 'type');
-    if (typeFilters.length === 1) {
-        const queryString = getQueryFromFilters(filters);
-        const typeQuery = typeFilters[0].term;
-        return (
+        // Only render these buttons if at least one 'type=' is in the query string.
+        return (query.getKeyValues('type').length > 0 &&
             <div className="btn-attached">
                 {viewTypeMap.map((viewType) => {
-                    // Don't render a view control button linking to the viewed page, and only
-                    // include a matrix button if the `type=` query string parameter value allows
-                    // a matrix view.
-                    if (viewType.type !== searchPageType && (viewType.type !== 'matrix' || matrixTypes.includes(typeQuery))) {
+                    // Don't render a view control button linking to the currently viewed page.
+                    if (viewType.type !== searchPageType) {
+                        const ViewTypeRenderer = viewType.renderer;
                         return (
-                            <a
-                                key={viewType.path}
-                                href={`/${viewType.path}/?${queryString}`}
-                                role="button"
-                                className="btn btn-info btn-sm"
-                                id={`search-control-${viewType.type}`}
-                                data-test={viewType.type}
-                                aria-label={`${viewType.label}`}
-                            >
-                                {svgIcon(viewType.icon)}
-                                {viewType.type === 'matrix' ? `${typeQuery} ${viewType.title}` : viewType.title}
-                            </a>
+                            <ViewTypeRenderer
+                                key={viewType.type}
+                                viewType={viewType}
+                                query={query}
+                            />
                         );
                     }
                     return null;
@@ -149,6 +235,23 @@ ViewControls.propTypes = {
 ViewControls.defaultProps = {
     additionalFilters: [],
 };
+
+
+const modalDefaultText = (
+    <>
+        <p>
+            Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+            The first line of the file has the URL or command line to download the metadata file.
+        </p>
+        <p>
+            Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
+        </p>
+        <p>
+            The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
+            The following command using cURL can be used to download all the files in the list:
+        </p>
+        <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
+    </>);
 
 
 /**
