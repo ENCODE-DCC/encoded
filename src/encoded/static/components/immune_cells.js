@@ -103,7 +103,7 @@ class MatrixPresentation extends React.Component {
         this.setState((prevState) => {
             const newSelection = newNode.replace(/\s/g, '').toLowerCase();
             if (prevState.selectedNodes.indexOf(newSelection) > -1 && prevState.selectedNodes.length > 1) {
-                return { selectedNodes: prevState.filter((s) => s !== newSelection) };
+                return { selectedNodes: prevState.selectedNodes.filter((s) => s !== newSelection) };
             }
             if (prevState.selectedNodes.indexOf(newSelection) > -1) {
                 return { selectedNodes: [] };
