@@ -777,3 +777,5 @@ def annotation_33_34(value, system):
             value['encyclopedia_version'] = ['ENCODE v2', 'current']
         elif value['encyclopedia_version'] == 'ENCODE v6':
             value['encyclopedia_version'] = ['ENCODE v3']
+        elif value['encyclopedia_version'] == 'Roadmap':
+            value['encyclopedia_version'] = ['Roadmap']
