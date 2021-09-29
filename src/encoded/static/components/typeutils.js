@@ -34,35 +34,40 @@ export function BiosampleSummaryString(biosample, supressOrganism) {
  * Display the given biosample summary string with any of the given organism names italicized.
  */
 export const BiosampleSummaryDisplay = ({ summary, organisms }) => {
-    // Generate the equivalent shortened organism scientific names.
-    const organismsWithShortenedNames = organisms.concat(organisms.map((organism) => organism.replace(/^(\S)\S* (\S+)$/, '$1. $2')));
+    if (organisms.length > 0) {
+        // Generate the equivalent shortened organism scientific names.
+        const organismsWithShortenedNames = organisms.concat(organisms.map((organism) => organism.replace(/^(\S)\S* (\S+)$/, '$1. $2')));
 
-    let cursor = 0;
-    let maybeMoreMatches = true;
-    const allOrganismsRegex = new RegExp(organismsWithShortenedNames.join('|'));
-    const displayedElements = [];
-    while (cursor < summary.length && maybeMoreMatches) {
-        const remainingString = summary.slice(cursor);
-        const matchData = remainingString.match(new RegExp(allOrganismsRegex));
-        if (matchData) {
-            if (matchData.index > 0) {
-                // Add the text before the match.
-                const preMatch = remainingString.slice(0, matchData.index);
-                displayedElements.push(<React.Fragment key={cursor}>{preMatch}</React.Fragment>);
-                cursor += preMatch.length;
+        let cursor = 0;
+        let maybeMoreMatches = true;
+        const allOrganismsRegex = new RegExp(organismsWithShortenedNames.join('|'));
+        const displayedElements = [];
+        while (cursor < summary.length && maybeMoreMatches) {
+            const remainingString = summary.slice(cursor);
+            const matchData = remainingString.match(new RegExp(allOrganismsRegex));
+            if (matchData) {
+                if (matchData.index > 0) {
+                    // Add the text before the match.
+                    const preMatch = remainingString.slice(0, matchData.index);
+                    displayedElements.push(<React.Fragment key={cursor}>{preMatch}</React.Fragment>);
+                    cursor += preMatch.length;
+                }
+
+                // Add the italicized organism name.
+                displayedElements.push(<i key={cursor}>{matchData[0]}</i>);
+                cursor += matchData[0].length;
+            } else {
+                maybeMoreMatches = false;
             }
-
-            // Add the italicized organism name.
-            displayedElements.push(<i key={cursor}>{matchData[0]}</i>);
-            cursor += matchData[0].length;
-        } else {
-            maybeMoreMatches = false;
         }
+
+        // Add the remaining text after any matches.
+        displayedElements.push(<React.Fragment key="remaining">{summary.slice(cursor)}</React.Fragment>);
+        return displayedElements;
     }
 
-    // Add the remaining text after any matches.
-    displayedElements.push(<React.Fragment key="remaining">{summary.slice(cursor)}</React.Fragment>);
-    return displayedElements;
+    // No organisms to italicize.
+    return <>{summary}</>;
 };
 
 BiosampleSummaryDisplay.propTypes = {
