@@ -1,7 +1,7 @@
 ## Changelog for annotation.json
 
 ### Schema version 34
-* Updated the *annotation_type* enum from *gkmSVM-model"* to *gkm-SVM-model"*
+* Updated the *annotation_type* enum from *gkmSVM-model* to *gkm-SVM-model*
 
 ### Schema version 34
 * Changed *encyclopedia_version* to an array and updated the enums as follows:
