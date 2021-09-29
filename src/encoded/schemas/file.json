@@ -989,6 +989,7 @@
                                         "idat red channel",
                                         "intensity values",
                                         "reads",
+                                        "filtered reads",
                                         "index reads",
                                         "rejected reads",
                                         "raw data",

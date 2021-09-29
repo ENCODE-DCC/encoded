@@ -4840,7 +4840,9 @@
         "lab": "ali-mortazavi",
         "md5sum": "238a0a96476b0d5ad6e41653517c6bd4",
         "output_type": "filtered reads",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "run_type": "single-ended",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "93293dd5-d003-b6ba-9752-9df707bbb0d5"
