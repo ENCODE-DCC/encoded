@@ -1,0 +1,26 @@
+[
+    {
+        "status": "released",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "44c4106e-9d40-44c4-b1eb-5185232eb20f",
+        "assay_term_name": "single-nucleus ATAC-seq",
+        "quality_metric_of": ["ENCFF789ARC"],
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "award": "/awards/U54HG007010/",
+        "NRF": 0.89,
+        "PBC1": 0.54,
+        "PBC2": 8,
+        "distinct_fragments": 10924,
+        "paired_duplicate_reads": 899,
+        "paired_optical_duplicate_reads": 490,
+        "paired_reads": 8320,
+        "pct_duplicate_reads": 0.2,
+        "positions_with_one_read": 9012,
+        "total_fragments": 12004,
+        "unpaired_duplicate_reads": 309,
+        "unpaired_reads": 490,
+        "unmapped_reads": 80,
+        "picard_markdup_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png",
+        "pbc_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png"
+    }
+]

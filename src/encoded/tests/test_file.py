@@ -201,3 +201,9 @@ def test_file_post_fragments_tar(testapp, fragments_file_csv):
     testapp.post_json('/file', fragments_file_csv, status=422)
     fragments_file_csv['file_format'] = "tar"
     testapp.post_json('/file', fragments_file_csv, status=201)
+
+
+def test_file_post_archr_project(testapp, archr_project_file):
+    testapp.post_json('/file', archr_project_file, status=201)
+    archr_project_file['file_format'] = "tsv"
+    testapp.post_json('/file', archr_project_file, status=422)

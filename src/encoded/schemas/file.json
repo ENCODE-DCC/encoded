@@ -1104,6 +1104,30 @@
                 }
             ]
         },
+        "file_format_type":{
+            "comment": "mex file_format_type can only be used with tar files.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "file_format_type": {
+                            "enum": ["mex"]
+                        },
+                        "file_format": {
+                            "enum": ["tar"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "file_format_type": {
+                                "enum": ["mex"]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
         "content_error_detail":{
             "comment": "Specification of status of content error is required if content_error_detail is specified",
             "required": ["status"],
