@@ -14,8 +14,8 @@
         "num_match_dist_1": 17900,
         "num_reads_trimmed": 17600,
         "barcode_reverse_complement": false,
-        "barcode_matching_stats": "scatac_tsv_quality_metric.tsv",
-        "adapter_trimming_stats": "scatac_txt_quality_metric.txt",
-        "barcode_revcomp_stats": "scatac_txt_quality_metric.txt"
+        "barcode_matching_stats": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
+        "adapter_trimming_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
+        "barcode_revcomp_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt"
     }
 ]

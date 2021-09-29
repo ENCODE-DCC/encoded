@@ -20,7 +20,7 @@
         "unpaired_duplicate_reads": 309,
         "unpaired_reads": 490,
         "unmapped_reads": 80,
-        "picard_markdup_stats": "scatac_txt_quality_metric.txt",
-        "pbc_stats": "scatac_tsv_quality_metric.tsv"
+        "picard_markdup_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
+        "pbc_stats": "HAIB_TCF4_WH0006925M2_MassSpec.tsv"
     }
 ]

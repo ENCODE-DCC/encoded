@@ -32,9 +32,9 @@
         "diff_chroms": 599,
         "diff_chroms_qc_failed": 239,
         "non_mito_reads": 200,
-        "mito_reads":2000,
+        "mito_reads": 2000,
         "frac_mito_reads": 0.3,
-        "mito_stats": "scatac_txt_quality_metric.txt",
-        "samstats": "scatac_txt_quality_metric.txt"
+        "mito_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
+        "samstats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt"
     }
 ]

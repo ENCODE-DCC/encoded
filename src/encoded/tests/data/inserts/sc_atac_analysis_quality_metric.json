@@ -9,10 +9,10 @@
         "award": "/awards/U54HG007010/",
         "median_fragment_count": 83901,
         "median_tss_enrichment": 9,
-        "archr_doublet_summary_figure": "scatac_pdf_quality_metric.pdf",
-        "archr_fragment_size_distribution": "scatac_pdf_quality_metric.pdf",
-        "archr_tss_by_unique_frags": "scatac_pdf_quality_metric.pdf",
-        "archr_doublet_summary_text": "scatac_tsv_quality_metric.tsv",
-        "archr_pre_filter_metadata": "scatac_tsv_quality_metric.tsv"
+        "archr_doublet_summary_figure": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
+        "archr_fragment_size_distribution": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
+        "archr_tss_by_unique_frags": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
+        "archr_doublet_summary_text": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
+        "archr_pre_filter_metadata": "HAIB_TCF4_WH0006925M2_MassSpec.tsv"
     }
 ]
