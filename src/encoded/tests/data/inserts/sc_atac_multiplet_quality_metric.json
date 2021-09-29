@@ -11,7 +11,7 @@
         "original_barcode_count": 38041,
         "gb_analysis_barcode_count": 37009,
         "final_barcode_count": 36219,
-        "excluded_barcodes": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
-        "multiplet_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt"
+        "excluded_barcodes": "scatac_tsv_quality_metric.tsv",
+        "multiplet_stats": "scatac_txt_quality_metric.txt"
     }
 ]

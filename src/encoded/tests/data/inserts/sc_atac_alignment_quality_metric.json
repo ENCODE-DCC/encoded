@@ -17,7 +17,7 @@
         "pct_properly_paired_reads": 0.96,
         "mapped_reads": 5390,
         "mapped_reads_qc_failed": 89,
-        "pct_mapped_reads"
+        "pct_mapped_reads": 0.87,
         "singletons": 3890,
         "singletons_qc_failed": 90,
         "read1": 4540,
@@ -34,7 +34,7 @@
         "non_mito_reads": 200,
         "mito_reads":2000,
         "frac_mito_reads": 0.3,
-        "mito_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png",
-        "samstats": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png",
+        "mito_stats": "scatac_txt_quality_metric.txt",
+        "samstats": "scatac_txt_quality_metric.txt"
     }
 ]

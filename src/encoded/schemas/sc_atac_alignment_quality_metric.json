@@ -46,7 +46,6 @@
             "type": "integer",
             "minimum": 0
         },
-        
         "paired_reads": {
             "title": "Number of paired reads passing QC",
             "type": "integer",
@@ -63,7 +62,6 @@
             "minimum": 0,
             "maximum": 1
         },
-        
         "mapped_reads": {
             "title": "Number of mapped reads passing QC",
             "type": "integer",
