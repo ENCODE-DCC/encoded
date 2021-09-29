@@ -309,7 +309,7 @@ class CalculatedBiosampleSummary:
                 if 'disease_term_name' in entry and entry['disease_term_name'] != '':
                     entry['disease_term_name'] = f"from a donor {entry['disease_term_name']}"
         if add_classification_flag:
-            sentence_parts.insert(2, 'sample_type')
+            sentence_parts.insert(4, 'sample_type')
         if biosample_drop_originated_from_flag:
             sentence_parts.remove('originated_from')
 
