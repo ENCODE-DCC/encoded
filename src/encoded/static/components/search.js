@@ -820,7 +820,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                             postDiffTimeUnits = biosample.post_differentiation_time_units;
                         }
                         if (biosample.expressed_genes && biosample.expressed_genes.length > 0) {
-                            dataset.expressed_genes.forEach((loci) => {
+                            biosample.expressed_genes.forEach((loci) => {
                                 expressedGenes.push(loci.gene.symbol);
                             });
                         }
@@ -1003,7 +1003,7 @@ const SeriesComponent = ({ context: result, auditDetail, auditIndicators }, reac
                             <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
                         : null}
                         {expressedGenes.length > 0 ?
-                            <div><span className="result-item__property-title">Sorted gene expression{expressedGenes.length > 1 ? 's' : ''}: </span>{expressedGenes.join(', ')}</div>
+                            <div><span className="result-item__property-title">Sorted gene expression: </span>{expressedGenes.join(', ')}</div>
                         : null}
                     </div>
                 </div>

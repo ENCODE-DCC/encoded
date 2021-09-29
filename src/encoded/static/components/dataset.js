@@ -2226,7 +2226,7 @@ const differentialAccessibilitySeriesTableColumns = {
     },
 
     expressed_genes: {
-        title: 'Expressed genes',
+        title: 'Sorted gene expression',
         getValue: (experiment) => computeExpressedGenes(experiment),
     },
 
