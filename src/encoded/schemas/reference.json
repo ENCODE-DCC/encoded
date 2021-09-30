@@ -289,6 +289,14 @@
             "title": "Project",
             "type": "string"
         },
+        "elements_selection_method": {
+            "title": "Elements selection method",
+            "type": "array"
+        },
+        "examined_loci.symbol": {
+            "title": "Examined loci",
+            "type": "string"
+        },
         "crispr_screen_tiling": {
             "title": "CRISPR screen tiling",
             "type": "string"
