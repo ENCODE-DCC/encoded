@@ -153,7 +153,6 @@ IS_ATTACHMENT = [
     'insert_size_metric',
     'nuclear_preseq',
     'nuclear_preseq_targets',
-    'excluded_barcodes',
     'multiplet_stats',
     'picard_markdup_stats',
     'pbc_stats',
@@ -166,7 +165,11 @@ IS_ATTACHMENT = [
     'adapter_trimming_stats',
     'barcode_revcomp_stats',
     'mito_stats',
-    'samstats'
+    'samstats',
+    'barcodes_status',
+    'barcode_pairs_multiplets',
+    'barcode_pairs_expanded',
+    'multiplet_threshold_plot'
 ]
 
 
