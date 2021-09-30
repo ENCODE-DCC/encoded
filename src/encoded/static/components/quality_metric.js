@@ -77,6 +77,10 @@ const qcAttachmentProperties = {
     ScAtacMultipletQualityMetric: [
         { excluded_barcodes: 'Excluded barcodes from multiplet filtering' },
         { multiplet_stats: 'Multiplet detection statistics file' },
+        { barcodes_status: 'Per-barcode multiplet status' },
+        { barcode_pairs_multiplets: 'Multiplet barcode pair statistics' },
+        { barcode_pairs_expanded: 'Total barcode pair statistics' },
+        { multiplet_threshold_plot: 'Plot illustrating multiplet Jaccard distance threshold' },
     ],
     ScAtacLibraryComplexityQualityMetric: [
         { picard_markdup_stats: 'Picard MarkDup statistics' },
