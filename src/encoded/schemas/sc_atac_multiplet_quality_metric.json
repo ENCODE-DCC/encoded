@@ -179,8 +179,8 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "application/gzip"
-                     ]
+                        "text/tab-separated-values"
+                    ]
                 },
                 "size": {
                     "title": "File size",
@@ -191,16 +191,6 @@
                     "format": "md5sum",
                     "type": "string",
                     "title": "MD5sum"
-                },
-                "width": {
-                    "title": "Image width",
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "height": {
-                    "title": "Image height",
-                    "type": "integer",
-                    "minimum": 0
                 }
             }
         },
