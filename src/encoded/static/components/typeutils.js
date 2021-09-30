@@ -205,7 +205,11 @@ BiosampleTable.columns = {
         title: 'Term',
         getValue: (item) => item.biosample_ontology && item.biosample_ontology.term_name,
     },
-    summary: { title: 'Summary', sorter: false },
+    summary: {
+        title: 'Summary',
+        sorter: false,
+        display: (biosample) => < BiosampleSummaryDisplay summary={biosample.summary} organisms={[biosample.organism.scientific_name].concat(GeneticModificationOrganismNames([biosample]))} /> ,
+    },
 };
 
 
