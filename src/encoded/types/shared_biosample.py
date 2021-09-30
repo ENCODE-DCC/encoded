@@ -25,10 +25,14 @@ def biosample_summary_information(request, biosampleObject, skip_non_perturbatio
         treatment_objects_list = []
         for t in treatments:
             treatment_objects_list.append(request.embed(t, '@@object'))
+
         if skip_non_perturbation_treatments_flag:
-            for treatment in list(treatment_objects_list):
-                if treatment['purpose'] != 'perturbation':
-                    treatment_objects_list.remove(treatment)
+            filtered_treatments_list = [
+                treatment for treatment in treatment_objects_list
+                if ('purpose' in treatment and treatment['purpose'] == 'perturbation')
+                or 'purpose' not in treatment
+            ]
+            treatment_objects_list = filtered_treatments_list
 
     part_of_object = None
     if 'part_of' in biosampleObject:
