@@ -78,7 +78,7 @@ const qcAttachmentProperties = {
         { excluded_barcodes: 'Excluded barcodes from multiplet filtering' },
         { multiplet_stats: 'Multiplet detection statistics file' },
     ],
-    ScAtacLibraryComplexityMetric: [
+    ScAtacLibraryComplexityQualityMetric: [
         { picard_markdup_stats: 'Picard MarkDup statistics' },
         { pbc_stats: 'PBC statistics' },
     ],
