@@ -3257,7 +3257,7 @@ const TreatmentConcentrationSeries = ({ context }, reactContext) => {
             return accCollectedDurations.concat(durations);
         }, []);
 
-        return [...new Set(accTreatmentDurations.concat(collectedDurations))];
+        return [...new Set(collectedDurations ? accTreatmentDurations.concat(collectedDurations) : accTreatmentDurations)];
     }, []);
 
     const options = {
