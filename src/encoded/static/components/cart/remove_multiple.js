@@ -30,9 +30,9 @@ const CartRemoveElementsModalComponent = ({ elements, closeClickHandler, removeM
             <ModalHeader labelId="label-remove-selected" title="Remove selected datasets from cart" closeModal={closeClickHandler} />
             <ModalBody>
                 <p id="description-remove-selected">
-                    Remove the {elements.length} currently selected datasets from the cart. Series
-                    datasets remain in the cart and can only be removed as a part of a series. This
-                    action is not reversible.
+                    Remove the {elements.length === 1 ? 'currently selected dataset' : `${elements.length} currently selected datasets`} from
+                    the cart. Series datasets remain in the cart and can only be removed as a part
+                    of a series. This action is not reversible.
                 </p>
             </ModalBody>
             <ModalFooter
@@ -135,9 +135,7 @@ const CartRemoveElementsComponent = ({
             <div className="remove-multiple-control__note">
                 Any datasets belonging to a series remain after removing the selected items from the cart.
             </div>
-            {isModalVisible
-                ? <CartRemoveElementsModal elements={nonSeriesDatasets} closeClickHandler={handleCloseClick} />
-                : null}
+            {isModalVisible && <CartRemoveElementsModal elements={nonSeriesDatasets} closeClickHandler={handleCloseClick} />}
         </div>
     );
 };

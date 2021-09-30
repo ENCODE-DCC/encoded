@@ -619,7 +619,7 @@ const addToAccumulatingDatasets = (datasets, currentResults) => {
  * @return {array} `series` with search-result series added
  */
 const addToAccumulatingSeries = (series, currentResults) => {
-    if (currentResults['@graph'] && currentResults['@graph'].length > 0) {
+    if (currentResults['@graph']?.length > 0) {
         const seriesDatasets = currentResults['@graph'].filter((dataset) => hasType(dataset, 'Series'));
 
         // Return a new array combining the existing partial files with the additional files.
