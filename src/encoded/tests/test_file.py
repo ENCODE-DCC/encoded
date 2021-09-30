@@ -88,7 +88,7 @@ def test_file_calculated_assay_term_name(testapp, fastq_pair_1):
 
 
 def test_file_calculated_encylopedia_version(testapp, file_ccre):
-    assert file_ccre['encyclopedia_version'] == 'ENCODE v5'
+    assert file_ccre['encyclopedia_version'] == ['ENCODE v2']
 
 
 def test_file_calculated_biosample_ontology(testapp, fastq_pair_1):

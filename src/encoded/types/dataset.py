@@ -749,9 +749,7 @@ class Annotation(FileSet, CalculatedVisualize):
         inputs_set = set()
         inputs_list = []
         if encyclopedia_version is not None and \
-            encyclopedia_version in [
-                'ENCODE v4', 'ENCODE v5', 'ENCODE v6'
-                ]:
+                any(version in ['ENCODE v1', 'ENCODE v2', 'ENCODE v3'] for version in encyclopedia_version):
             if annotation_type == 'candidate Cis-Regulatory Elements':
                 if contributing_files is not None:
                     for input_file in contributing_files:

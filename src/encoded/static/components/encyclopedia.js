@@ -70,7 +70,7 @@ const Encyclopedia = (props, context) => {
     const defaultAnnotation = 'candidate Cis-Regulatory Elements';
     const defaultAssembly = 'GRCh38';
     const defaultFileDownload = 'all';
-    const encyclopediaVersion = 'ENCODE v5';
+    const encyclopediaVersion = 'current';
     const searchBase = url.parse(context.location_href).search || '';
     const fileOptions = ['CTCF-only', 'proximal enhancer-like', 'DNase-H3K4me3', 'distal enhancer-like', 'promoter-like', 'rDHS', 'all']; // Download options for cell-type agnostic cCREs
 
