@@ -75,6 +75,21 @@ GBROWSER_EMBEDDED_FIELDS = [
     'title'
 ]
 
+REGION_SEARCH_FILE_FIELDS = [
+    'uuid',
+    'accession',
+    'file_format',
+    'status',
+    'preferred_default'
+]
+
+REGION_SEARCH_UNNECESSARY_FIELDS = [
+    'revoked_files',
+    'contributing_files',
+    'original_files',
+    'analyses',
+    'references'
+]
 
 def includeme(config):
     config.add_route('region-search', '/region-search{slash:/?}')
@@ -711,6 +726,19 @@ def format_results(request, hits, result=None):
                 item['highlight'] = {}
                 for key in hit['highlight']:
                     item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
+
+            filtered_files = []
+            for file_ in item['files']:
+                filtered_file = {}
+                for field in REGION_SEARCH_FILE_FIELDS:
+                    if field in file_:
+                        filtered_file[field] = file_[field]
+                filtered_files.append(filtered_file)
+            item['files'] = filtered_files
+
+            for field in REGION_SEARCH_UNNECESSARY_FIELDS:
+                item.pop(field)
+
             yield item
 
     # After all are yielded, it may not be too late to change this result setting
