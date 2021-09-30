@@ -557,7 +557,7 @@ def attachment(path):
             'href': 'data:%s;base64,%s' % (mime_type, b64encode(stream.read()).decode('ascii'))
         }
 
-        if mime_type in ('application/pdf', 'application/json', 'text/plain', 'text/tab-separated-values', 'text/html'):
+        if mime_type in ('application/gzip', 'application/pdf', 'application/json', 'text/plain', 'text/tab-separated-values', 'text/html'):
             # XXX Should use chardet to detect charset for text files here.
             return attach
 
