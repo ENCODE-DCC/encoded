@@ -75,7 +75,6 @@ const qcAttachmentProperties = {
         { barcode_revcomp_stats: 'Barcode reverse complement detection QC' },
     ],
     ScAtacMultipletQualityMetric: [
-        { excluded_barcodes: 'Excluded barcodes from multiplet filtering' },
         { multiplet_stats: 'Multiplet detection statistics file' },
         { barcodes_status: 'Per-barcode multiplet status' },
         { barcode_pairs_multiplets: 'Multiplet barcode pair statistics' },
