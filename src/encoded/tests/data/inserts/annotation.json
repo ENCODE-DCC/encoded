@@ -209,7 +209,7 @@
         "_test": "gkmSVM annotation",
         "accession": "ENCSR831GKM",
         "award": "U54HG007004",
-        "annotation_type": "gkmSVM-model",
+        "annotation_type": "gkm-SVM-model",
         "description": "gkmSVM-model for A549",
         "lab": "j-michael-cherry",
         "status": "released",

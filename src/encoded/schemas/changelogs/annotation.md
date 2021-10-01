@@ -1,6 +1,7 @@
 ## Changelog for annotation.json
 
 ### Schema version 34
+* Updated the *annotation_type* enum from *gkmSVM-model* to *gkm-SVM-model*
 * Changed *encyclopedia_version* to an array and updated the enums as follows:
   * *ENCODE v1* is now *ENCODE v0.1*
   * *ENCODE v2* is now *ENCODE v0.2*

@@ -1071,7 +1071,10 @@
                                         "bias model",
                                         "chromosomes reference",
                                         "sequence barcodes",
-                                        "regulatory elements prediction model"
+                                        "regulatory elements prediction model",
+                                        "TF binding prediction model",
+                                        "enhancer prediction model",
+                                        "promoter prediction model"
                                     ]
                                 }
                             }
@@ -1621,6 +1624,7 @@
                         "element gene interactions p-value",
                         "element gene interactions signal",
                         "element quantifications",
+                        "enhancer prediction model",
                         "enhancer validation",
                         "enrichment",
                         "enhancers reference",
@@ -1703,6 +1707,7 @@
                         "positive control regions",
                         "predicted enhancers",
                         "preprocessed alignments",
+                        "promoter prediction model",
                         "promoters reference",
                         "protein expression quantifications",
                         "pseudoreplicated peaks",
@@ -1720,7 +1725,6 @@
                         "repeat elements annotation",
                         "reference variants",
                         "regulatory elements",
-                        "regulatory elements prediction model",
                         "relative replication signal",
                         "replicated peaks",
                         "replication timing profile",
@@ -1744,6 +1748,7 @@
                         "sparse transcript count matrix",
                         "splice junctions",
                         "subreads",
+                        "TF binding prediction model",
                         "topologically associated domains",
                         "transcribed region quantifications",
                         "transcript quantifications",
@@ -1790,6 +1795,7 @@
                         "redacted transcriptome alignments",
                         "redacted unfiltered alignments",
                         "reference",
+                        "regulatory elements prediction model",
                         "rejected reads",
                         "sequence alignability",
                         "sequence uniqueness",
@@ -2375,6 +2381,10 @@
         "polyA sites": "annotation",
         "functional conservation quantifications": "annotation",
         "regulatory elements prediction model": "annotation",
+        "TF binding prediction model": "annotation",
+        "enhancer prediction model": "annotation",
+        "promoter prediction model": "annotation",
+
         "genome subcompartments": "annotation",
         "chromatin stripes": "annotation",
 

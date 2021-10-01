@@ -4757,7 +4757,7 @@
         "aliases": ["hongkai-ji:human_elements_scored_file"]
     },
     {
-        "_test": "regulatory elements prediction model annotation",
+        "_test": "TF binding prediction model annotation",
         "status": "in progress",
         "uuid": "f4d07aba-8a45-49c9-9656-5379e439c16c",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -4768,7 +4768,7 @@
         "assembly": "GRCh38",
         "dataset": "/experiments/ENCSR831GKM/",
         "file_size": 370148294,
-        "output_type": "regulatory elements prediction model",
+        "output_type": "TF binding prediction model",
         "lab": "/labs/richard-myers/"
     },
     {

@@ -209,3 +209,13 @@ def annotation_ccre_2(testapp, award, lab):
         'lab': lab['@id'],
         'annotation_type': 'candidate Cis-Regulatory Elements',
     }
+
+
+@pytest.fixture
+def annotation_33(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '33',
+        'annotation_type': 'gkmSVM-model',
+    }
