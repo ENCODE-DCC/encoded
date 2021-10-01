@@ -9,6 +9,7 @@
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *biosample_summary* calculated property
 * Added *Deeply Profiled* to the *internal_tags* enum
+* Added a calculated boolean property *datapoint* 
 
 ### Schema version 3
 

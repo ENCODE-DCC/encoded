@@ -4,6 +4,7 @@
 * Added *Deeply Profiled* to the *internal_tags* enum
 * Added *bio_replicate_count* and *tech_replicate_count* for the respective counts of the embedded replicates as a calculated property
 * Added *biological_replicates* with a formatted text version of biological replicates as a calculated property
+* Added a calculated boolean property *datapoint* 
 
 ### Schema version 10
 * The pooled clone sequencing assay term name requires specification of the control_type

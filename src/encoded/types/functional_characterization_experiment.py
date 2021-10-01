@@ -4,6 +4,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     paths_filtered_by_status
 )
@@ -216,3 +217,21 @@ class FunctionalCharacterizationExperiment(
                 if len(set(methods)) == 1:
                     crispr_screen_readout = str(methods[0])
             return crispr_screen_readout
+
+    @calculated_property(schema={
+        "title": "Datapoint",
+        "description": "A flag to indicate whether the FC Experiment is a datapoint that should be displayed only as a part of Series object.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def datapoint(self, request, related_series=None):
+        if not related_series:
+            return False
+        for series in related_series:
+            properties = {'series': series}
+            path = Path('series', include=["@type"])
+            path.expand(request, properties)
+            types = properties.get('series', {}).get('@type', [])
+            if "FunctionalCharacterizationSeries" in types:
+                return True 
+        return False

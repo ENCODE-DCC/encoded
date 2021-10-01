@@ -1416,6 +1416,16 @@ class FunctionalCharacterizationSeries(Series):
     })
     def assay_title(self, request, related_datasets):
         return request.select_distinct_values('assay_title', *related_datasets)
+    
+    @calculated_property(schema={
+        "title": "Datapoint",
+        "description": "A flag to indicate whether the FC Series is a datapoint that should not be displayed on it's own.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def datapoint(self, request):
+        return False
+
 
 @collection(
     name='gene-silencing-series',
