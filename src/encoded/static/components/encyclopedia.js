@@ -65,8 +65,8 @@ const Encyclopedia = (props, context) => {
     const annotation = props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term).length > 0 ? props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term) : 'candidate Cis-Regulatory Elements';
     const assembly = props.context.filters.filter((f) => f.field === 'assembly').map((f) => f.term)[0] || 'GRCh38';
     const organism = ASSEMBLY_DETAILS[assembly].species;
-    const searchBase = `?type=File&annotation_type=${annotation}&assembly=${assembly}&file_format=bigBed&file_format=bigWig`;
-    const resetUrl = `?type=File&annotation_type=candidate+Cis-Regulatory+Elements&assembly=${assembly}&file_format=bigBed&file_format=bigWig`;
+    const searchBase = `?type=File&annotation_type=${annotation}&assembly=${assembly}&file_format=bigBed&file_format=bigWig&encyclopedia_version=current`;
+    const resetUrl = `?type=File&annotation_type=candidate+Cis-Regulatory+Elements&assembly=${assembly}&file_format=bigBed&file_format=bigWig&encyclopedia_version=current`;
     // If annotation or assembly is not set in url (required) page is reloaded with defaults
     const reloadPage = props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term).length === 0 || props.context.filters.filter((f) => f.field === 'assembly').map((f) => f.term).length === 0;
 
@@ -76,7 +76,7 @@ const Encyclopedia = (props, context) => {
     const [selectedFiles, setSelectedFiles] = React.useState([defaultFileDownload]);
 
     // Links used to generate batch download objects
-    const [downloadHref, setdownloadHref] = React.useState(`type=Annotation&annotation_subtype=${defaultFileDownload}&status=released&encyclopedia_version=${encyclopediaVersion}&assembly=${assembly}`);
+    const [downloadHref, setdownloadHref] = React.useState(`type=Annotation&annotation_subtype=${defaultFileDownload}&status=released&assembly=${assembly}&encyclopedia_version=current`);
     const [downloadController, setDownloadController] = React.useState(null);
 
     const browserQuery = new QueryString(props.context['@id'].replace('File', 'Annotation').split('?')[1]);
@@ -192,7 +192,6 @@ const Encyclopedia = (props, context) => {
                         <div className="encyclopedia-info-wrapper">
                             <div className="badge-container">
                                 <h1>Encyclopedia - Integrative Annotations</h1>
-                                <span className="encyclopedia-badge">{encyclopediaVersion}</span>
                             </div>
                             <div className="related-links-container">
                                 <div className="boder-container">
