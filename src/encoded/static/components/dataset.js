@@ -1581,7 +1581,7 @@ const geneSilencingSeriesTableColumns = {
 const computeDurations = (experiment) => {
     let durations = [];
     if (experiment.replicates && experiment.replicates.length > 0) {
-        const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+        const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample).filter((biosample) => !!biosample);
         durations = biosamples.reduce((accDurations, biosample) => {
             if (biosample.treatments && biosample.treatments.length > 0) {
                 return accDurations.add(`${biosample.treatments[0].duration} ${biosample.treatments[0].duration_units}${biosample.treatments[0].duration > 1 ? 's' : ''}`);
@@ -1638,7 +1638,7 @@ const timeSeriesTableColumns = {
 function computeConcentration(experiment) {
     let concentration = [];
     if (experiment.replicates && experiment.replicates.length > 0) {
-        const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+        const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample).filter((biosample) => !!biosample);
         if (biosamples && biosamples.length > 0 && biosamples[0].treatments && biosamples[0].treatments.length > 0 && biosamples[0].treatments[0].amount) {
             concentration = `${biosamples[0].treatments[0].amount} ${biosamples[0].treatments[0].amount_units}`;
         }
@@ -1691,7 +1691,7 @@ const treatmentSeriesTableColumns = {
 function computePhase(experiment) {
     let phases = [];
     if (experiment.replicates && experiment.replicates.length > 0) {
-        const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+        const biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample).filter((biosample) => !!biosample);
         phases = _.chain(biosamples.map((biosample) => biosample.phase)).compact().uniq().value();
     }
     return phases.join(', ');
@@ -1753,7 +1753,7 @@ function computeDifferentiation(experiment) {
     let postDifferentiationTime;
 
     if (experiment.replicates && experiment.replicates.length > 0) {
-        biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+        biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample).filter((biosample) => !!biosample);
     }
     if (biosamples && biosamples.length > 0) {
         biosamples.forEach((biosample) => {
@@ -1960,7 +1960,7 @@ const computeLifeStageAge = (experiment) => {
 
     // Collect all biosamples in all experiment replicates.
     if (experiment.replicates && experiment.replicates.length > 0) {
-        biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+        biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample).filter((biosample) => !!biosample);
     }
     if (biosamples.length > 0) {
         biosamples.forEach((biosample) => {
@@ -2002,7 +2002,7 @@ const organismDevelopmentSeriesTableColumns = {
             experiments.forEach((experiment) => {
                 let biosamples;
                 if (experiment.replicates && experiment.replicates.length > 0) {
-                    biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+                    biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample).filter((biosample) => !!biosample);
                 }
                 if (biosamples && biosamples.length > 0) {
                     ageUnits = [...ageUnits, ...biosamples.map((b) => b.age_units)];
@@ -2050,7 +2050,7 @@ function computeSynchBiosample(experiment) {
     let synchronizationBiosample;
 
     if (experiment.replicates && experiment.replicates.length > 0) {
-        biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+        biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample).filter((biosample) => !!biosample);
     }
     if (biosamples && biosamples.length > 0) {
         synchronizationBiosample = biosamples.find((biosample) => biosample.synchronization);
@@ -2116,7 +2116,7 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
             let synchronizationBiosample;
 
             if (experiment.replicates && experiment.replicates.length > 0) {
-                biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample);
+                biosamples = experiment.replicates.map((replicate) => replicate.library && replicate.library.biosample).filter((biosample) => !!biosample);
             }
             if (biosamples && biosamples.length > 0) {
                 synchronizationBiosample = biosamples.find((biosample) => biosample.synchronization);
