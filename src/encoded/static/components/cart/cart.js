@@ -35,8 +35,7 @@ import {
     datasetFieldFileFacets,
     displayedDatasetFacetFields,
     displayedFileFacetFields,
-    resetDatasetFacets,
-    resetFileFacets,
+    initSelectedTerms,
 } from './facet';
 import { CartFileViewToggle, CartFileViewOnlyToggle, FileViewControl } from './file_view';
 import CartLockTrigger from './lock';
@@ -84,6 +83,8 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'annotation_subtype' },
         { field: 'annotation_type' },
         { field: 'file_format_type' },
+        { field: 'output_category' },
+        { field: 'processed' },
         { field: 'title' },
         { field: 'genome_annotation' },
         { field: 'href' },
@@ -115,40 +116,39 @@ const datasetTabTitles = {
 /**
  * Display browser tracks for the selected page of files.
  */
-const CartBrowser = ({ files, assembly, pageNumber, loading }) => {
-    if (!loading) {
-        // Extract the current page of file objects.
-        const pageStartingIndex = pageNumber * constants.PAGE_TRACK_COUNT;
-        const pageFiles = files.slice(pageStartingIndex, pageStartingIndex + constants.PAGE_TRACK_COUNT).map((file) => ({ ...file }));
-
-        // Shorten long annotation_type values for the Valis track label; fine to mutate `pageFiles` as
-        // it holds a copy of a segment of `files`.
-        pageFiles.forEach((file) => {
-            if (file.annotation_type) {
-                const mappedAnnotationType = annotationTypeMap[file.annotation_type];
-                if (mappedAnnotationType) {
-                    file.annotation_type = mappedAnnotationType;
-                }
-            }
-        });
-
-        const sortParam = ['Assay term name', 'Biosample term name', 'Output type'];
-        return <GenomeBrowser files={pageFiles} label="cart" assembly={assembly} expanded sortParam={sortParam} />;
-    }
-
-    // Message for page loading.
+const CartBrowser = ({ files, assemblies, pageNumber, loading }) => {
     if (loading) {
-        return <div className="nav result-table cart__empty-message">Page currently loading&hellip;</div>;
+        return <div className="cart__empty-message">Page currently loading&hellip;</div>;
     }
 
-    return null;
+    if (assemblies.length !== 1) {
+        return <div className="cart__empty-message">Select single assembly to view genome browser</div>;
+    }
+
+    // Extract the current page of file objects.
+    const pageStartingIndex = pageNumber * constants.PAGE_TRACK_COUNT;
+    const pageFiles = files.slice(pageStartingIndex, pageStartingIndex + constants.PAGE_TRACK_COUNT).map((file) => ({ ...file }));
+
+    // Shorten long annotation_type values for the Valis track label; fine to mutate `pageFiles` as
+    // it holds a copy of a segment of `files`.
+    pageFiles.forEach((file) => {
+        if (file.annotation_type) {
+            const mappedAnnotationType = annotationTypeMap[file.annotation_type];
+            if (mappedAnnotationType) {
+                file.annotation_type = mappedAnnotationType;
+            }
+        }
+    });
+
+    const sortParam = ['Assay term name', 'Biosample term name', 'Output type'];
+    return <GenomeBrowser files={pageFiles} label="cart" assembly={assemblies[0]} expanded sortParam={sortParam} />;
 };
 
 CartBrowser.propTypes = {
     /** Files of all visualizable tracks, not just on the displayed page */
     files: PropTypes.array.isRequired,
-    /** Assembly to display; can be empty before partial files loaded */
-    assembly: PropTypes.string.isRequired,
+    /** Assembly to display; only one entry results in browser display */
+    assemblies: PropTypes.array.isRequired,
     /** Page of files to display */
     pageNumber: PropTypes.number.isRequired,
     /** True if the page is currently loading */
@@ -245,11 +245,11 @@ const CartFiles = ({
 
     // Message for page loading.
     if (loading) {
-        return <div className="nav result-table cart__empty-message">Page currently loading&hellip;</div>;
+        return <div className="cart__empty-message">Page currently loading&hellip;</div>;
     }
 
     // Page not loading and no elements.
-    return <div className="nav result-table cart__empty-message">No files to view in any dataset in the cart.</div>;
+    return <div className="cart__empty-message">No files to view in any dataset in the cart.</div>;
 };
 
 CartFiles.propTypes = {
@@ -528,23 +528,28 @@ const CartSearchResultsControls = ({
         fileViewControlsEnabled,
         isFileViewOnly,
     } = fileViewOptions;
-    return (
+    const pager = totalPageCount > 1 && (
+        <CartPager
+            currentPage={currentPage}
+            totalPageCount={totalPageCount}
+            updateCurrentPage={updateCurrentPage}
+        />
+    );
+    const controls = currentTab === 'datasets' && cartType === 'ACTIVE'
+        ? <CartRemoveElements elements={elements} loading={loading} />
+        : currentTab === 'processeddata' &&
+            <FileViewControl
+                files={filesToAddToFileView}
+                fileViewName={fileViewName}
+                fileViewControlsEnabled={fileViewControlsEnabled}
+                isFileViewOnly={isFileViewOnly}
+                disabled={cartType !== 'ACTIVE'}
+            />;
+
+    return (controls || pager) && (
         <div className="cart-search-results-controls">
-            {currentTab === 'datasets' && cartType === 'ACTIVE'
-                ? <CartRemoveElements elements={elements} loading={loading} />
-                : (currentTab === 'processeddata' ?
-                    <FileViewControl
-                        files={filesToAddToFileView}
-                        fileViewName={fileViewName}
-                        fileViewControlsEnabled={fileViewControlsEnabled}
-                        isFileViewOnly={isFileViewOnly}
-                        disabled={cartType !== 'ACTIVE'}
-                    />
-                : <div />)
-            }
-            {totalPageCount > 1
-                ? <CartPager currentPage={currentPage} totalPageCount={totalPageCount} updateCurrentPage={updateCurrentPage} />
-                : null}
+            {controls}
+            {pager}
         </div>
     );
 };
@@ -1168,7 +1173,8 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
     ]);
 
     // Construct the file lists for the genome browser and raw file tabs.
-    const rawdataFiles = React.useMemo(() => selectedDatasetFiles.filter((files) => !files.assembly), [selectedDatasetFiles]);
+    const rawdataFiles = React.useMemo(() => selectedDatasetFiles.filter((files) => files.output_category === 'raw data'), [selectedDatasetFiles]);
+    const selectedProcessedFiles = React.useMemo(() => selectedFiles.filter((files) => files.processed), [selectedFiles]);
 
     // Called when the user selects a new page of items to view using the pager.
     const updateDisplayedPage = (newDisplayedPage) => {
@@ -1183,41 +1189,31 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
 
     // Called when the user clicks any term in any facet.
     const handleDatasetTermClick = (clickedField, clickedTerm) => {
+        // The user clicked a checkbox facet. Determine whether we need to add or subtract
+        // a term from the facet selections.
         const newSelectedTerms = {};
-        const matchingFacetField = displayedDatasetFacetFields.find((facetField) => facetField.field === clickedField);
-        if (matchingFacetField && matchingFacetField.radio) {
-            // The user clicked a radio-button facet.
-            displayedDatasetFacetFields.usedFileFacetFields.forEach((facetField) => {
-                // Set new term for the clicked radio button, or copy the array for other
-                // terms within this as well as other facets.
-                newSelectedTerms[facetField.field] = facetField.field === clickedField ? [clickedTerm] : selectedDatasetTerms[facetField.field].slice(0);
+        const addTerm = selectedDatasetTerms[clickedField].indexOf(clickedTerm) === -1;
+        if (addTerm) {
+            // Adding a selected term. Copy the previous selectedDatasetTerms, adding the newly
+            // selected term in its facet in sorted position.
+            displayedDatasetFacetFields.forEach((facetField) => {
+                if (clickedField === facetField.field) {
+                    // Clicked term belongs to this field's facet. Insert it into its
+                    // sorted position in a copy of the selectedDatasetTerms array.
+                    const sortedIndex = _(selectedDatasetTerms[facetField.field]).sortedIndex(clickedTerm);
+                    newSelectedTerms[facetField.field] = [...selectedDatasetTerms[facetField.field].slice(0, sortedIndex), clickedTerm, ...selectedDatasetTerms[facetField.field].slice(sortedIndex)];
+                } else {
+                    // Clicked term doesn't belong to this field's facet. Just copy the
+                    // `selectedDatasetTerms` array unchanged.
+                    newSelectedTerms[facetField.field] = selectedDatasetTerms[facetField.field].slice(0);
+                }
             });
         } else {
-            // The user clicked a checkbox facet. Determine whether we need to add or subtract
-            // a term from the facet selections.
-            const addTerm = selectedDatasetTerms[clickedField].indexOf(clickedTerm) === -1;
-            if (addTerm) {
-                // Adding a selected term. Copy the previous selectedDatasetTerms, adding the newly
-                // selected term in its facet in sorted position.
-                displayedDatasetFacetFields.forEach((facetField) => {
-                    if (clickedField === facetField.field) {
-                        // Clicked term belongs to this field's facet. Insert it into its
-                        // sorted position in a copy of the selectedDatasetTerms array.
-                        const sortedIndex = _(selectedDatasetTerms[facetField.field]).sortedIndex(clickedTerm);
-                        newSelectedTerms[facetField.field] = [...selectedDatasetTerms[facetField.field].slice(0, sortedIndex), clickedTerm, ...selectedDatasetTerms[facetField.field].slice(sortedIndex)];
-                    } else {
-                        // Clicked term doesn't belong to this field's facet. Just copy the
-                        // `selectedDatasetTerms` array unchanged.
-                        newSelectedTerms[facetField.field] = selectedDatasetTerms[facetField.field].slice(0);
-                    }
-                });
-            } else {
-                // Removing a selected term. Copy the previous selectedDatasetTerms, filtering out
-                // the unselected term in its facet.
-                displayedDatasetFacetFields.forEach((facetField) => {
-                    newSelectedTerms[facetField.field] = selectedDatasetTerms[facetField.field].filter((term) => term !== clickedTerm);
-                });
-            }
+            // Removing a selected term. Copy the previous selectedDatasetTerms, filtering out
+            // the unselected term in its facet.
+            displayedDatasetFacetFields.forEach((facetField) => {
+                newSelectedTerms[facetField.field] = selectedDatasetTerms[facetField.field].filter((term) => term !== clickedTerm);
+            });
         }
 
         setSelectedDatasetTerms(newSelectedTerms);
@@ -1225,41 +1221,31 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
 
     // Called when the user clicks any term in any facet.
     const handleFileTermClick = (clickedField, clickedTerm) => {
+        // The user clicked a checkbox facet. Determine whether we need to add or subtract
+        // a term from the facet selections.
         const newSelectedTerms = {};
-        const matchingFacetField = displayedFileFacetFields.find((facetField) => facetField.field === clickedField);
-        if (matchingFacetField && matchingFacetField.radio) {
-            // The user clicked a radio-button facet.
+        const addTerm = selectedFileTerms[clickedField].indexOf(clickedTerm) === -1;
+        if (addTerm) {
+            // Adding a selected term. Copy the previous selectedFacetTerms, adding the newly
+            // selected term in its facet in sorted position.
             displayedFileFacetFields.forEach((facetField) => {
-                // Set new term for the clicked radio button, or copy the array for other
-                // terms within this as well as other facets.
-                newSelectedTerms[facetField.field] = facetField.field === clickedField ? [clickedTerm] : selectedFileTerms[facetField.field].slice(0);
+                if (clickedField === facetField.field) {
+                    // Clicked term belongs to this field's facet. Insert it into its
+                    // sorted position in a copy of the selectedTerms array.
+                    const sortedIndex = _(selectedFileTerms[facetField.field]).sortedIndex(clickedTerm);
+                    newSelectedTerms[facetField.field] = [...selectedFileTerms[facetField.field].slice(0, sortedIndex), clickedTerm, ...selectedFileTerms[facetField.field].slice(sortedIndex)];
+                } else {
+                    // Clicked term doesn't belong to this field's facet. Just copy the
+                    // `selectedTerms` array unchanged.
+                    newSelectedTerms[facetField.field] = selectedFileTerms[facetField.field].slice(0);
+                }
             });
         } else {
-            // The user clicked a checkbox facet. Determine whether we need to add or subtract
-            // a term from the facet selections.
-            const addTerm = selectedFileTerms[clickedField].indexOf(clickedTerm) === -1;
-            if (addTerm) {
-                // Adding a selected term. Copy the previous selectedFacetTerms, adding the newly
-                // selected term in its facet in sorted position.
-                displayedFileFacetFields.forEach((facetField) => {
-                    if (clickedField === facetField.field) {
-                        // Clicked term belongs to this field's facet. Insert it into its
-                        // sorted position in a copy of the selectedTerms array.
-                        const sortedIndex = _(selectedFileTerms[facetField.field]).sortedIndex(clickedTerm);
-                        newSelectedTerms[facetField.field] = [...selectedFileTerms[facetField.field].slice(0, sortedIndex), clickedTerm, ...selectedFileTerms[facetField.field].slice(sortedIndex)];
-                    } else {
-                        // Clicked term doesn't belong to this field's facet. Just copy the
-                        // `selectedTerms` array unchanged.
-                        newSelectedTerms[facetField.field] = selectedFileTerms[facetField.field].slice(0);
-                    }
-                });
-            } else {
-                // Removing a selected term. Copy the previous selectedFacetTerms, filtering out
-                // the unselected term in its facet.
-                displayedFileFacetFields.forEach((facetField) => {
-                    newSelectedTerms[facetField.field] = selectedFileTerms[facetField.field].filter((term) => term !== clickedTerm);
-                });
-            }
+            // Removing a selected term. Copy the previous selectedFacetTerms, filtering out
+            // the unselected term in its facet.
+            displayedFileFacetFields.forEach((facetField) => {
+                newSelectedTerms[facetField.field] = selectedFileTerms[facetField.field].filter((term) => term !== clickedTerm);
+            });
         }
 
         setSelectedFileTerms(newSelectedTerms);
@@ -1327,14 +1313,11 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
     // facets to their initial states should only happen with a change to files.
     React.useEffect(() => {
         // Reset file terms.
-        const files = defaultOnly ? filterForDefaultFiles(allFiles) : allFiles;
-        const allVisualizableFiles = filterForVisualizableFiles(files);
-        const consideredFiles = visualizableOnly ? allVisualizableFiles : files;
-        const newSelectedFileTerms = resetFileFacets(consideredFiles, analyses, displayedFileFacetFields);
+        const newSelectedFileTerms = initSelectedTerms(displayedFileFacetFields);
         setSelectedFileTerms(newSelectedFileTerms);
 
         // Reset dataset terms.
-        const newSelectedDatasetTerms = resetDatasetFacets(viewableDatasets, displayedDatasetFacetFields);
+        const newSelectedDatasetTerms = initSelectedTerms(displayedDatasetFacetFields);
         setSelectedDatasetTerms(newSelectedDatasetTerms);
     }, [allFiles]);
 
@@ -1364,7 +1347,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
         const seriesPageCount = calcTotalPageCount(allSeries.length, constants.PAGE_ELEMENT_COUNT);
         const datasetPageCount = calcTotalPageCount(selectedDatasets.length, constants.PAGE_ELEMENT_COUNT);
         const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, constants.PAGE_TRACK_COUNT);
-        const processedDataPageCount = calcTotalPageCount(selectedFiles.length, constants.PAGE_FILE_COUNT);
+        const processedDataPageCount = calcTotalPageCount(selectedProcessedFiles.length, constants.PAGE_FILE_COUNT);
         const rawdataPageCount = calcTotalPageCount(rawdataFiles.length, constants.PAGE_FILE_COUNT);
         dispatchTotalPageCounts({ tab: 'series', totalPageCount: seriesPageCount });
         dispatchTotalPageCounts({ tab: 'datasets', totalPageCount: datasetPageCount });
@@ -1388,7 +1371,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
         if (pageNumbers.rawdata >= rawdataPageCount) {
             dispatchPageNumbers({ tab: 'rawdata', pageNumber: 0 });
         }
-    }, [selectedDatasets, selectedVisualizableFiles, selectedFiles, rawdataFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.processeddata, pageNumbers.rawdata]);
+    }, [selectedDatasets, selectedVisualizableFiles, selectedProcessedFiles, rawdataFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.processeddata, pageNumbers.rawdata]);
 
     return (
         <CartViewContext.Provider
@@ -1484,22 +1467,36 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                             series: 'Series',
                                             datasets: 'All datasets',
                                             browser: 'Genome browser',
-                                            processeddata: 'Processed data',
-                                            rawdata: 'Raw data',
+                                            processeddata: 'Processed',
+                                            rawdata: 'Raw',
                                         } : {
                                             browser: 'Genome browser',
-                                            processeddata: 'Processed data',
+                                            processeddata: 'Processed',
                                         }
                                     }
                                     tabDisplay={!isFileViewOnly
                                         ? {
                                             series: <CounterTab title="Series" count={allSeries.length} icon="dataset" voice="series" />,
-                                            datasets: <CounterTab title={`Selected ${selectedDatasetType ? datasetTabTitles[selectedDatasetType] : 'datasets'}`} count={selectedDatasets.length} icon="dataset" voice="selected datasets" />,
-                                            browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
+                                            datasets: (
+                                                <CounterTab
+                                                    title={`Selected ${selectedDatasetType ? datasetTabTitles[selectedDatasetType] : 'datasets'}`}
+                                                    count={selectedDatasets.length}
+                                                    icon="dataset"
+                                                    voice="selected datasets"
+                                                />
+                                            ),
+                                            browser: (
+                                                <CounterTab
+                                                    title="Genome browser"
+                                                    count={selectedFileTerms.assembly?.length === 1 ? selectedVisualizableFiles.length : 0}
+                                                    icon="file"
+                                                    voice="visualizable tracks"
+                                                />
+                                            ),
                                             processeddata: <CounterTab title="Processed" count={selectedFiles.length} icon="file" voice="processed data files" />,
                                             rawdata: <CounterTab title="Raw" count={rawdataFiles.length} icon="file" voice="raw data files" />,
                                         } : {
-                                            browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
+                                            browser: <CounterTab title="Genome browser" count={selectedFileTerms.assembly?.length === 1 ? selectedVisualizableFiles.length : 0} icon="file" voice="visualizable tracks" />,
                                             processeddata: <CounterTab title="Processed" count={selectedFiles.length} icon="file" voice="processed data files" />,
                                         }
                                     }
@@ -1545,9 +1542,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                             cartType={cartType}
                                             loading={facetProgress !== -1}
                                         />
-                                        {selectedFileTerms.assembly && selectedFileTerms.assembly.length > 0
-                                            ? <CartBrowser files={selectedVisualizableFiles} assembly={selectedFileTerms.assembly[0]} pageNumber={pageNumbers.browser} loading={facetProgress !== -1} />
-                                            : null}
+                                        <CartBrowser files={selectedVisualizableFiles} assemblies={selectedFileTerms.assembly || []} pageNumber={pageNumbers.browser} loading={facetProgress !== -1} />
                                     </TabPanelPane>
                                     <TabPanelPane key="processeddata">
                                         <CartSearchResultsControls
@@ -1566,7 +1561,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                             loading={facetProgress !== -1}
                                         />
                                         <CartFiles
-                                            files={selectedFiles}
+                                            files={selectedProcessedFiles}
                                             isFileViewOnly={isFileViewOnly}
                                             selectedFilesInFileView={selectedFilesInFileView}
                                             currentPage={pageNumbers.processeddata}

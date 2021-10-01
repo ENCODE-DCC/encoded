@@ -106,7 +106,6 @@ DatasetTypeTermDisplay.contextTypes = {
  * File facet fields to display in order of display.
  * - field: `facet` field property
  * - title: Displayed facet title
- * - radio: True if radio-button facet; otherwise checkbox facet
  * - dataset: True to retrieve value from dataset instead of files
  * - sorter: Function to sort terms within the facet
  * - fieldMapper: Function to generate a batch download query string
@@ -121,7 +120,6 @@ export const displayedFileFacetFields = [
     {
         field: 'assembly',
         title: 'Analysis/Assembly',
-        radio: true,
         sorter: assemblySorter,
         preferred: true,
         expanded: true,
@@ -304,31 +302,22 @@ SelectionItem.propTypes = {
  */
 const Selections = ({ datasetTerms, datasetTermClickHandler, fileTerms, fileTermClickHandler }) => (
     <div className="facet-selections">
-        {Object.keys(datasetTerms).map((term) => {
+        {Object.keys(datasetTerms).map((term) => (
             // Render the selected dataset facet terms first.
-            if (datasetTerms[term].length > 0) {
-                return (
-                    datasetTerms[term].map((selection) => (
-                        <SelectionItem key={selection} selection={selection} term={term} selectionType="dataset" clickHandler={datasetTermClickHandler} />
-                    ))
-                );
-            }
-            return null;
-        })}
-        {Object.keys(fileTerms).map((term) => {
+            datasetTerms[term].length > 0 && (
+                datasetTerms[term].map((selection) => (
+                    <SelectionItem key={selection} selection={selection} term={term} selectionType="dataset" clickHandler={datasetTermClickHandler} />
+                ))
+            )
+        ))}
+        {Object.keys(fileTerms).map((term) => (
             // Render the selected file facet terms second.
-            const matchingDisplayField = displayedFileFacetFields.find((fieldDef) => (
-                fieldDef.field === term
-            ));
-            if (!matchingDisplayField.radio && fileTerms[term].length > 0) {
-                return (
-                    fileTerms[term].map((selection) => (
-                        <SelectionItem key={selection} selection={selection} term={term} selectionType="file" clickHandler={fileTermClickHandler} />
-                    ))
-                );
-            }
-            return null;
-        })}
+            fileTerms[term].length > 0 && (
+                fileTerms[term].map((selection) => (
+                    <SelectionItem key={selection} selection={selection} term={term} selectionType="file" clickHandler={fileTermClickHandler} />
+                ))
+            )
+        ))}
     </div>
 );
 
@@ -357,27 +346,6 @@ FacetTermCheck.propTypes = {
 };
 
 FacetTermCheck.defaultProps = {
-    checked: false,
-};
-
-
-/**
- * Display the selection radio button for a single cart file facet term.
- */
-const FacetTermRadio = ({ checked }) => (
-    <div className={`cart-facet-term__radio${checked ? ' cart-facet-term__radio--checked' : ''}`}>
-        {checked ?
-            <i className="icon icon-circle" />
-        : null}
-    </div>
-);
-
-FacetTermRadio.propTypes = {
-    /** True if facet term radio button checked */
-    checked: PropTypes.bool,
-};
-
-FacetTermRadio.defaultProps = {
     checked: false,
 };
 
@@ -436,7 +404,6 @@ const FacetTerm = ({
     selected,
     visualizable,
     termClickHandler,
-    FacetTermSelectRenderer,
 }) => {
     /**
      * Called when user clicks a term within a facet.
@@ -455,7 +422,7 @@ const FacetTerm = ({
                 aria-pressed={selected}
                 aria-label={`${termCount} ${term} file${termCount === 1 ? '' : 's'}${visualizable ? ' visualizable' : ''}`}
             >
-                <FacetTermSelectRenderer checked={selected} />
+                <FacetTermCheck checked={selected} />
                 <FacetTermContent term={term} displayedFacetField={displayedFacetField} />
                 <FacetTermMagnitude termCount={termCount} maxTermCount={maxTermCount} />
                 <div className="cart-facet-term__visualizable">
@@ -483,8 +450,6 @@ FacetTerm.propTypes = {
     visualizable: PropTypes.bool,
     /** Callback for handling clicks in the term */
     termClickHandler: PropTypes.func.isRequired,
-    /** Facet term checkbox/radio renderer */
-    FacetTermSelectRenderer: PropTypes.elementType.isRequired,
 };
 
 FacetTerm.defaultProps = {
@@ -614,78 +579,68 @@ FacetExpander.defaultProps = {
 /**
  * Display a single file facet.
  */
-class Facet extends React.Component {
-    constructor() {
-        super();
-        this.handleFacetTermClick = this.handleFacetTermClick.bind(this);
-        this.handleExpanderEvent = this.handleExpanderEvent.bind(this);
-    }
-
+const Facet = ({
+    facet,
+    displayedFacetField,
+    expanded,
+    expanderClickHandler,
+    selectedFacetTerms,
+    facetTermClickHandler,
+    clearFacetSelections,
+    options,
+}) => {
     /**
      * Handle a click in a facet term by calling a parent handler.
      * @param {string} term Clicked facet term
      */
-    handleFacetTermClick(term) {
-        this.props.facetTermClickHandler(this.props.displayedFacetField.field, term);
-    }
+    const handleFacetTermClick = (term) => {
+        facetTermClickHandler(displayedFacetField.field, term);
+    };
 
     /**
      * Handle a click in the facet expander by calling a parent handler.
      * @param {object} e React synthetic event
      */
-    handleExpanderEvent(e) {
-        this.props.expanderClickHandler(this.props.displayedFacetField.field, e.altKey);
-    }
+    const handleExpanderEvent = (e) => {
+        expanderClickHandler(displayedFacetField.field, e.altKey);
+    };
 
-    render() {
-        const {
-            facet,
-            displayedFacetField,
-            expanded,
-            expanderClickHandler,
-            selectedFacetTerms,
-            clearFacetSelections,
-            options,
-        } = this.props;
-        const maxTermCount = Math.max(...facet.terms.map((term) => term.count));
-        const labelId = `${displayedFacetField.field}-label`;
-        const FacetTermSelectRenderer = displayedFacetField.radio ? FacetTermRadio : FacetTermCheck;
-        return (
-            <div className="facet">
-                {!options.supressTitle
-                    ? (
-                        <FacetExpander
-                            title={facet.title}
-                            field={displayedFacetField.field}
-                            labelId={labelId}
-                            expanded={expanded}
-                            expanderEventHandler={displayedFacetField.nonCollapsable || !expanderClickHandler ? null : this.handleExpanderEvent}
-                            selectionCount={selectedFacetTerms.length}
-                            clearFacetSelections={displayedFacetField.radio ? null : clearFacetSelections}
+    const maxTermCount = Math.max(...facet.terms.map((term) => term.count));
+    const labelId = `${displayedFacetField.field}-label`;
+    return (
+        <div className="facet">
+            {!options.supressTitle
+                ? (
+                    <FacetExpander
+                        title={facet.title}
+                        field={displayedFacetField.field}
+                        labelId={labelId}
+                        expanded={expanded}
+                        expanderEventHandler={displayedFacetField.nonCollapsable || !expanderClickHandler ? null : handleExpanderEvent}
+                        selectionCount={selectedFacetTerms.length}
+                        clearFacetSelections={clearFacetSelections}
+                    />
+                )
+            : null}
+            {expanded || displayedFacetField.nonCollapsable ?
+                <ul className={`cart-facet${displayedFacetField.css ? ` ${displayedFacetField.css}` : ''}`} role="region" id={displayedFacetField.field} aria-labelledby={labelId}>
+                    {facet.terms.map((facetTerm) => (
+                        <FacetTerm
+                            key={facetTerm.term}
+                            displayedFacetField={displayedFacetField}
+                            term={facetTerm.term}
+                            termCount={facetTerm.count}
+                            visualizable={options.suppressVisualizable ? false : facetTerm.visualizable}
+                            maxTermCount={maxTermCount}
+                            selected={selectedFacetTerms.indexOf(facetTerm.term) > -1}
+                            termClickHandler={handleFacetTermClick}
                         />
-                    )
-                : null}
-                {expanded || displayedFacetField.nonCollapsable ?
-                    <ul className={`cart-facet${displayedFacetField.css ? ` ${displayedFacetField.css}` : ''}`} role="region" id={displayedFacetField.field} aria-labelledby={labelId}>
-                        {facet.terms.map((facetTerm) => (
-                            <FacetTerm
-                                key={facetTerm.term}
-                                displayedFacetField={displayedFacetField}
-                                term={facetTerm.term}
-                                termCount={facetTerm.count}
-                                visualizable={options.suppressVisualizable ? false : facetTerm.visualizable}
-                                maxTermCount={maxTermCount}
-                                selected={selectedFacetTerms.indexOf(facetTerm.term) > -1}
-                                termClickHandler={this.handleFacetTermClick}
-                                FacetTermSelectRenderer={FacetTermSelectRenderer}
-                            />
-                        ))}
-                    </ul>
-                : null}
-            </div>
-        );
-    }
-}
+                    ))}
+                </ul>
+            : null}
+        </div>
+    );
+};
 
 Facet.propTypes = {
     /** Facet object to display */
@@ -1376,8 +1331,7 @@ export const assembleFileFacets = (selectedTerms, files, analyses, usedFacetFiel
 
     // Get complete list of files to consider -- processed files, and those associated with all
     // available analyses if any selected.
-    let consideredFiles;
-    consideredFiles = files.filter((file) => file.assembly);
+    let consideredFiles = files;
     if (usedSelectedTerms.analysis && usedSelectedTerms.analysis.length > 0) {
         // Consider all files the selected analyses corresponds to.
         const fileIds = getAnalysesFileIds(analyses);
@@ -1465,83 +1419,15 @@ export const assembleFileFacets = (selectedTerms, files, analyses, usedFacetFiel
 
 
 /**
- * For any radio-button facets, select the first term if no items within them have been selected.
- * @param {array} facets Simplified facet object
- * @param {object} selectedTerms Selected terms within the facets
- *
- * @return {object} Same as `selectedTerms` but with radio-button facet terms selected
- */
-const initRadioFacets = (facets, selectedTerms, usedFacetFields) => {
-    const newSelectedTerms = {};
-    usedFacetFields.forEach((facetField) => {
-        if (facetField.radio && selectedTerms[facetField.field].length === 0) {
-            // Assign the first term of the radio-button facet as the sole selection. In the
-            // unusual case that no facet terms for this radio-button facet have been collected,
-            // just copy the existing selection for the facet.
-            const matchingFacet = facets.find((facet) => facet.field === facetField.field);
-            newSelectedTerms[facetField.field] = (
-                matchingFacet ? [matchingFacet.terms[0].term] : selectedTerms[facetField.field].slice(0)
-            );
-        } else {
-            // Not a radio-button facet, or radio-button facet has selected terms; copy existing
-            // selected terms.
-            newSelectedTerms[facetField.field] = selectedTerms[facetField.field].slice(0);
-        }
-    });
-    return newSelectedTerms;
-};
-
-
-/**
  * Make a selected-terms object showing no selections based on the given facet properties.
  * @param {array} usedFacetFields Currently used subset of `displayedFileFacetFields`.
  *
  * @return {object} Selected facet showing no selections; used with `assembleFileFacets`
  */
-const initSelectedTerms = (usedFacetFields) => {
+export const initSelectedTerms = (usedFacetFields) => {
     const emptySelectedTerms = {};
     usedFacetFields.forEach((facetField) => {
         emptySelectedTerms[facetField.field] = [];
     });
     return emptySelectedTerms;
 };
-
-
-/**
- * Reset the facets to no selections as if the page has just been loaded.
- * @param {array} files Files to consider when building facets.
- * @param {array} usedFacetFields Facet fields to consider
- *
- * @return {object} Initial facet-term selections
- */
-export const resetDatasetFacets = (datasets, usedFacetFields) => {
-    // Make an empty selected-terms object so `assembleDatasetFacets` can generate fresh simplified
-    // facets.
-    const emptySelectedTerms = initSelectedTerms(usedFacetFields);
-
-    // Build the facets based on no selections, then select the first term of any radio-button
-    // facets.
-    const { datasetFacets } = assembleDatasetFacets(emptySelectedTerms, datasets, usedFacetFields);
-    return initRadioFacets(datasetFacets, emptySelectedTerms, usedFacetFields);
-};
-
-
-/**
- * Reset the facets to no selections, and select the first term of radio-button facets, all as if
- * the page has just been loaded.
- * @param {array} files Files to consider when building facets.
- * @param {array} usedFacetFields Facet fields to consider
- *
- * @return {object} Initial facet-term selections
- */
-export const resetFileFacets = (files, analyses, usedFacetFields) => {
-    // Make an empty selected-terms object so `assembleFileFacets` can generate fresh simplified
-    // facets.
-    const emptySelectedTerms = initSelectedTerms(usedFacetFields);
-
-    // Build the facets based on no selections, then select the first term of any radio-button
-    // facets.
-    const { fileFacets } = assembleFileFacets(emptySelectedTerms, files, analyses, usedFacetFields);
-    return initRadioFacets(fileFacets, emptySelectedTerms, usedFacetFields);
-};
-

@@ -842,6 +842,17 @@ class File(Item):
     def analyses(self, request, analyses):
         return paths_filtered_by_status(request, analyses)
 
+    @calculated_property(schema={
+        "title": "Processed",
+        "description": "True for processed file",
+        "comment": "Do not submit. Value is calculated.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def processed(self, output_type):
+        output_category = self.schema['output_type_output_category'].get(output_type)
+        return output_category != 'raw data'
+
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
