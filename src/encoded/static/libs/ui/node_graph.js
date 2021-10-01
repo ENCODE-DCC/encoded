@@ -89,14 +89,14 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                     tspan.text(word);
                 }
             }
-            tspan = text.append('tspan').attr('x', 0).attr('y', y).style('font-size', '28px');
-            newDy = `${(lineNumber += 1) * 0.6 + 0.5}em`;
-            tspan.attr('dy', newDy);
-            if (selectedNodes.indexOf(text.text().replace(/\s/g, '').toLowerCase()) > -1) {
-                tspan.text(circleMinus);
-            } else {
-                tspan.text(circlePlus);
-            }
+            // tspan = text.append('tspan').attr('x', 0).attr('y', y).style('font-size', '28px');
+            // newDy = `${(lineNumber += 1) * 0.6 + 0.5}em`;
+            // tspan.attr('dy', newDy);
+            // if (selectedNodes.indexOf(text.text().replace(/\s/g, '').toLowerCase()) > -1) {
+            //     tspan.text(circleMinus);
+            // } else {
+            //     tspan.text(circlePlus);
+            // }
         });
     }
 
@@ -133,7 +133,11 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .attr('transform', function(d) {
                 return "translate(" + source.x0 + "," + source.y0 + ")";
             })
-            .on('click', click);
+            .on('click', function(e, d) {
+                setSelectedNodes(d.data.name);
+                e.stopPropagation();
+            });
+            // .on('click', click);
 
         const nodeGroup = nodeEnter.append('g')
             .attr('class', (d) => {
@@ -181,20 +185,36 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .attr('y', (d) => ((d.children && (d.data.name.length < 16 || d.data.name.split(' ').length === 1)) ? -40 : d.children ? -60 : 30))
             .style('text-anchor', 'middle')
             .text((d) => d.data.name)
-            .attr('class', 'node-text')
-            .on('click', function(e, d) {
-                setSelectedNodes(d.data.name);
-                e.stopPropagation();
-            });
+            .attr('class', 'node-text');
+            // .on('click', click);
+            // .on('click', function(e, d) {
+            //     console.log(d);
+            //     console.log(e);
+            //     click(e, d);
+            //     e.stopPropagation();
+            // });
 
         nodeEnter.selectAll('text')
             .call(wrap, textWrapWidth);
 
         // adds the text to the node
-        // nodeEnter.append('circle')
-        //     .attr('class', 'node')
-        //     .attr('r', '10px')
-        //     .style('fill', 'red');
+        nodeEnter.append('text')
+            .attr('class', 'node-expander-collapser')
+            .text((d) => ((d.children && d._children) ? circlePlus : d.children ? circleMinus : ''))
+            .attr('y', '-10px')
+            .attr('x', '-10px')
+            .style('font-size', '28px')
+            .on('click', function(e, d) {
+                const thisText = d3.select(this).text();
+                console.log(thisText);
+                if (thisText === circlePlus) {
+                    d3.select(this).text(circleMinus);
+                } else {
+                    d3.select(this).text(circlePlus);
+                }
+                click(e, d);
+                e.stopPropagation();
+            });
 
         // UPDATE
         const nodeUpdate = nodeEnter.merge(node);
@@ -218,7 +238,6 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 }
                 return 'js-cell';
             });
-
 
         // Remove any exiting nodes
         const nodeExit = node.exit().transition()
