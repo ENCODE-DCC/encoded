@@ -16,8 +16,9 @@ $endoderm: blue;
 
 .node-expander-collapser {
     &:hover {
-        font-size: 30px;
         cursor: pointer;
+        font-weight: bold;
+        // fill: #d2d2d2;
     }
 }
 

@@ -83,7 +83,7 @@ class MatrixPresentation extends React.Component {
             this.d3 = require('d3');
 
             const chartWidth = this.state.windowWidth;
-            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes, true);
+            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
         });
     }
 
@@ -94,7 +94,7 @@ class MatrixPresentation extends React.Component {
                 this.d3 = require('d3');
 
                 const chartWidth = this.state.windowWidth;
-                drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes, false);
+                drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
             });
         }
     }
