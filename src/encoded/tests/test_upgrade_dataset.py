@@ -529,15 +529,13 @@ def test_upgrade_reference_20_to_21(upgrader, upgrade_20_21_reference_a, upgrade
     assert value['elements_selection_method'] == ['sequence variants']
 
 
-def test_upgrade_annotation_33_to_34(upgrader, annotation_33):
+def test_upgrade_annotation_33_to_34(upgrader, annotation_33, annotation_ccre_2):
     value = upgrader.upgrade(
         'annotation', annotation_33, current_version='33', target_version='34'
     )
     assert value['schema_version'] == '34'
     assert value['annotation_type'] == 'gkm-SVM-model'
 
-
-def test_upgrade_annotation_33_to_34(upgrader, annotation_ccre_2):
     annotation_ccre_2['encyclopedia_version'] = 'ENCODE v5'
     value = upgrader.upgrade('annotation', annotation_ccre_2, current_version='33', target_version='34')
     assert value['schema_version'] == '34'
