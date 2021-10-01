@@ -280,23 +280,25 @@ class FunctionalCharacterizationExperiment(
                 loci_terms = []
                 for ref in elements_references:
                     elements_reference_object = request.embed(ref, '@@object')
-                    if 'examined_loci' in elements_reference_object:
-                        if len(elements_reference_object['examined_loci']) > 1:
-                            loci_terms.append('multiple loci')
-                        else:
-                            examined_loci_object = request.embed(elements_reference_object['examined_loci'][0], '@@object')
-                            loci_terms.append(f"{examined_loci_object['symbol']} locus")
-                    elif 'examined_regions' in elements_reference_object:
-                        if len(elements_reference_object['examined_regions']) > 1:
-                            loci_terms.append('multiple loci')
-                        else:
-                            examined_region_object = elements_reference_object['examined_regions'][0]
-                            loci_terms.append(
-                                f"{examined_region_object['chromosome']}:"
-                                f"{examined_region_object['start']}-{examined_region_object['end']}"
-                            )
-                    else:
+                    if 'examined_loci' not in elements_reference_object and \
+                            'examined_regions' not in elements_reference_object:
                         loci_terms.append('')
+                    else:
+                        if 'examined_loci' in elements_reference_object:
+                            if len(elements_reference_object['examined_loci']) > 1:
+                                loci_terms.append('multiple loci')
+                            else:
+                                examined_loci_object = request.embed(elements_reference_object['examined_loci'][0], '@@object')
+                                loci_terms.append(f"{examined_loci_object['symbol']} locus")
+                        if 'examined_regions' in elements_reference_object:
+                            if len(elements_reference_object['examined_regions']) > 1:
+                                loci_terms.append('multiple loci')
+                            else:
+                                examined_region_object = elements_reference_object['examined_regions'][0]
+                                loci_terms.append(
+                                    f"{examined_region_object['chromosome']}:"
+                                    f"{examined_region_object['start']}-{examined_region_object['end']}"
+                                )
 
                 filtered_loci_terms = [term for term in loci_terms if term not in ['', 'multiple loci']]
                 if len(set(loci_terms)) == 1 and '' in set(loci_terms):
