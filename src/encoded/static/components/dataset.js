@@ -2520,7 +2520,7 @@ export const SeriesComponent = ({
                 <h1>Summary for {title.toLowerCase()} {context.accession}</h1>
                 <DoiRef context={context} />
                 <ReplacementAccessions context={context} />
-                <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} hasCartControls={seriesType === 'FunctionalCharacterizationSeries'} />
+                <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} hasCartControls />
             </header>
             {auditDetail(context.audit, 'series-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>

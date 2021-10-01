@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import url from 'url';
 import QueryString from '../../libs/query_string';
-import { atIdToType, truncateString } from '../globals';
+import { atIdToType, hasType, truncateString } from '../globals';
 import { requestSearch } from '../objectutils';
 import { addMultipleToCartAndSave, cartOperationInProgress, triggerAlert } from './actions';
 import CartLoggedOutWarning, { useLoggedOutWarning } from './loggedout_warning';
@@ -43,7 +43,7 @@ const CartAddAllSearchComponent = ({
             // of them. Do the same search but with limit=all and field=@id.
             const parsedUrl = url.parse(searchResults['@id']);
             const query = new QueryString(parsedUrl.query);
-            query.replaceKeyValue('limit', 'all').addKeyValue('field', '@id');
+            query.replaceKeyValue('limit', 'all').addKeyValue('field', '@id').addKeyValue('field', 'related_datasets');
             const searchQuery = query.format();
 
             // With the updated query string, perform the search of all @ids matching the current
@@ -55,7 +55,17 @@ const CartAddAllSearchComponent = ({
                     const allowedTypes = cartGetAllowedTypes();
 
                     // Get all elements from results that qualify to exist in carts.
-                    const elementsForCart = results['@graph'].filter((result) => allowedTypes.includes(result['@type'][0])).map((result) => result['@id']);
+                    const allowedElements = results['@graph'].filter((result) => allowedTypes.includes(result['@type'][0]));
+
+                    // For any elements with related datasets, also add those to the cart.
+                    const elementsForCart = allowedElements.reduce((accSeriesAndDatasets, element) => {
+                        if (hasType(element, 'Series')) {
+                            // Extract all child datasets from the series and add them to the cart.
+                            const allowedRelatedDatasets = element.related_datasets.filter((dataset) => allowedTypes.includes(dataset['@type'][0]));
+                            return accSeriesAndDatasets.concat(allowedRelatedDatasets);
+                        }
+                        return accSeriesAndDatasets;
+                    }, allowedElements).map((element) => element['@id']);
 
                     // Check whether the final cart would have more elements than allowed by doing a
                     // trial merge. If the merged cart fits under the limit, add the new elements

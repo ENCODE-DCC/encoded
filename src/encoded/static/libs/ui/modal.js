@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { keyCode } from '../constants';
 
 
 // Display a modal dialog box that blocks all other page input until the user dismisses it. The
@@ -47,7 +48,7 @@ import PropTypes from 'prop-types';
 // either renders the modal to display it opened, or doesn't to hide it. That typically looks
 // something like:
 //
-// {this.state.displayModal ? <Modal>{child components}</Modal> : null}
+// {this.state.displayModal && <Modal>{child components}</Modal>}
 //
 // <Modal> usage details:
 // actuator: Component that opens the modal. You don't normally need a click handler for this
@@ -91,7 +92,9 @@ export const ModalHeader = ({ title, closeModal, addCss, labelId, focusClose, ch
     /** Holds ref of header close box */
     const closeRef = React.useRef(null);
 
-    const internalCloseModal = () => {
+    const internalCloseModal = (e) => {
+        e.stopPropagation();
+
         // Call directly given close handler.
         if (typeof closeModal === 'function') {
             closeModal();
@@ -116,15 +119,13 @@ export const ModalHeader = ({ title, closeModal, addCss, labelId, focusClose, ch
 
     return (
         <div className={`modal__header${addCss ? ` ${addCss}` : ''}`} id={labelId}>
-            {titleRender ? <div className="modal__header-title">{titleRender}</div> : null}
+            {titleRender && <div className="modal__header-title">{titleRender}</div>}
             {children}
-            {closeModal
-                ? (
-                    <button type="button" className="modal__header-close" name="close-modal" aria-label="Close" onClick={internalCloseModal} ref={closeRef}>
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                )
-                : null}
+            {closeModal && (
+                <button type="button" className="modal__header-close" name="close-modal" aria-label="Close" onClick={internalCloseModal} ref={closeRef}>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            )}
         </div>
     );
 };
@@ -173,83 +174,86 @@ ModalBody.defaultProps = {
 };
 
 
-export class ModalFooter extends React.Component {
-    constructor() {
-        super();
+export const ModalFooter = ({
+    submitBtn,
+    submitTitle,
+    cancelTitle,
+    addCss,
+    closeModal,
+    dontClose,
+    closeId,
+    cCloseModal,
+    children,
+}) => {
+    const chainedCloseModal = React.useRef(null);
 
-        // Bind this to non-React methods.
-        this.closeModal = this.closeModal.bind(this);
-        this.submitModal = this.submitModal.bind(this);
-    }
+    const internalCloseModal = (e) => {
+        e.stopPropagation();
 
-    closeModal() {
         // Call close button's existing close handler if it had one first.
-        if (this.chainedCloseModal) {
-            this.chainedCloseModal();
+        if (chainedCloseModal.current) {
+            chainedCloseModal.current();
         }
 
         // Now call the standard close handler.
-        this.props.cCloseModal();
-    }
+        cCloseModal();
+    };
 
-    submitModal() {
-        const { submitBtn, dontClose } = this.props;
+    const submitModal = (e) => {
+        e.stopPropagation();
+
         if (typeof submitBtn === 'function') {
             submitBtn();
         }
         if (!dontClose) {
-            this.closeModal();
+            internalCloseModal();
         }
+    };
+
+    let submitBtnComponent = null;
+    let closeBtnComponent = null;
+
+    // Make a Submit button component -- either the given one or a default one that calls the
+    // given function. Note: if you pass `null` in the submitBtn property, this component
+    // thinks that's a function because of an old Javascript characteristic.
+    if (submitBtn) {
+        submitBtnComponent = (typeof submitBtn === 'object') ? submitBtn : <button type="button" className="btn btn-info" onClick={submitModal}>{submitTitle}</button>;
     }
 
-    render() {
-        const { submitBtn, submitTitle, addCss, cancelTitle } = this.props;
-        let { closeModal } = this.props;
-        let submitBtnComponent = null;
-        let closeBtnComponent = null;
-
-        // Make a Submit button component -- either the given one or a default one that calls the
-        // given function. Note: if you pass `null` in the submitBtn property, this component
-        // thinks that's a function because of an old Javascript characteristic.
-        if (submitBtn) {
-            submitBtnComponent = (typeof submitBtn === 'object') ? submitBtn : <button type="button" className="btn btn-info" onClick={this.submitModal}>{submitTitle}</button>;
+    // If the given closeModal property is a component, make sure it calls the close function
+    // when it gets clicked.
+    if (typeof closeModal === 'object') {
+        // If the close button had a click handler, save it so we can call it before calling
+        // the standard one.
+        if (closeModal.props.onClick) {
+            chainedCloseModal.current = closeModal.props.onClick;
         }
-
-        // If the given closeModal property is a component, make sure it calls the close function
-        // when it gets clicked.
-        if (typeof closeModal === 'object') {
-            // If the close button had a click handler, save it so we can call it before calling
-            // the standard one.
-            if (closeModal.props.onClick) {
-                this.chainedCloseModal = closeModal.props.onClick;
-            }
-            closeModal = React.cloneElement(closeModal, { onClick: this.closeModal });
-        } else if (typeof closeModal === 'function') {
-            this.chainedCloseModal = closeModal;
-        }
-
-        // Make a Cancel button component -- either the given one, a default one that calls the
-        // given function, or a default one that calls the default function. Note: if you pass
-        // `null` in the closeModal property, this component thinks that's a function because of an
-        // old Javascript characteristic.
-        if (closeModal) {
-            const closeBtnFunc = (typeof closeModal === 'function') ? closeModal : (typeof closeModal === 'boolean' ? this.props.cCloseModal : null);
-            closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button type="button" className="btn btn-default" onClick={closeBtnFunc} id={this.props.closeId}>{cancelTitle}</button>;
-        }
-
-        return (
-            <div className={`modal__footer${addCss ? ` ${addCss}` : ''}`}>
-                {this.props.children ? this.props.children : null}
-                {submitBtnComponent || closeBtnComponent ?
-                    <div className="modal__footer-controls">
-                        {closeBtnComponent}
-                        {submitBtnComponent}
-                    </div>
-                : null}
-            </div>
-        );
+        closeModal = React.cloneElement(closeModal, { onClick: internalCloseModal });
+    } else if (typeof closeModal === 'function') {
+        chainedCloseModal.current = closeModal;
     }
-}
+
+    // Make a Cancel button component -- either the given one, a default one that calls the
+    // given function, or a default one that calls the default function. Note: if you pass
+    // `null` in the closeModal property, this component thinks that's a function because of an
+    // old Javascript characteristic.
+    if (closeModal) {
+        const closeBtnFunc = (typeof closeModal === 'function') ? closeModal : (typeof closeModal === 'boolean' ? cCloseModal : null);
+        closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button type="button" className="btn btn-default" onClick={closeBtnFunc} id={closeId}>{cancelTitle}</button>;
+    }
+
+    return (
+        <div className={`modal__footer${addCss ? ` ${addCss}` : ''}`}>
+            {children}
+            {(submitBtnComponent || closeBtnComponent) && (
+                <div className="modal__footer-controls">
+                    {closeBtnComponent}
+                    {submitBtnComponent}
+                </div>
+            )}
+        </div>
+    );
+};
 
 ModalFooter.propTypes = {
     submitBtn: PropTypes.oneOfType([
@@ -286,42 +290,26 @@ ModalFooter.defaultProps = {
 /**
  * Renders the modal without conditions -- conditions need to be handled outside this component.
  */
-export class ModalElement extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleTab = this.handleTab.bind(this);
-        this.modalEl = document.createElement('div');
-        this.focusableElements = null;
-    }
+const ModalElement = ({
+    modalChildren,
+    descriptionId,
+    addClasses,
+    focusId,
+    labelId,
+}) => {
+    const modalEl = React.useRef(null);
+    const focusableElements = React.useRef(null);
 
-    componentDidMount() {
-        // Modal HTML gets injected at the end of <body> so the backdrop overlay works, even with other
-        // fixed elements on the page. The "modal-root" div is defined in app.js at the end of the
-        // <body> section.
-        const modalRoot = document.getElementById('modal-root');
-        modalRoot.appendChild(this.modalEl);
-
-        // Focus screen reader on the given element if specified.
-        if (this.props.focusId) {
-            const focusElement = document.getElementById(this.props.focusId);
-            if (focusElement) {
-                focusElement.focus();
-            }
+    /**
+     * Retrieve the current <div> DOM node for the modal. Lazily create this node if needed.
+     * @returns {DOM node} Injected DOM node reference for modal
+     */
+    const getModalEl = () => {
+        if (modalEl.current === null) {
+            modalEl.current = document.createElement('div');
         }
-
-        // Attach tab-key listener.
-        document.addEventListener('keydown', this.handleTab, false);
-
-        // Collect all the focusable elements.
-        this.focusableElements = this.modalEl.querySelectorAll('a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select');
-    }
-
-    componentWillUnmount() {
-        const modalRoot = document.getElementById('modal-root');
-        modalRoot.removeChild(this.modalEl);
-        document.removeEventListener('keydown', this.handleTab, false);
-        this.focusableElements = null;
-    }
+        return modalEl.current;
+    };
 
     /**
      * Handle key presses while the modal is open, but only handle and consume TAB key presses
@@ -329,10 +317,10 @@ export class ModalElement extends React.Component {
      * shift key is held down at the time.
      * @param {object} e React synthetic event
      */
-    handleTab(e) {
-        if (e.keyCode === 9 && this.focusableElements) {
-            const firstFocusableElement = this.focusableElements[0];
-            const lastFocusableElement = this.focusableElements[this.focusableElements.length - 1];
+    const handleTab = (e) => {
+        if (e.keyCode === keyCode.TAB && focusableElements) {
+            const firstFocusableElement = focusableElements[0];
+            const lastFocusableElement = focusableElements[focusableElements.length - 1];
             if (e.shiftKey) {
                 if (document.activeElement === firstFocusableElement) {
                     lastFocusableElement.focus();
@@ -343,24 +331,52 @@ export class ModalElement extends React.Component {
                 e.preventDefault();
             }
         }
-    }
+    };
 
-    render() {
-        return ReactDOM.createPortal(
-            <div>
-                <div className="modal" style={{ display: 'block' }}>
-                    <div className={`modal-dialog${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`} role="alertdialog" aria-modal="true" aria-labelledby={this.props.labelId} aria-describedby={this.props.descriptionId}>
-                        <div className="modal-content">
-                            {this.props.modalChildren}
-                        </div>
+    React.useEffect(() => {
+        // Modal HTML gets injected at the end of <body> so the backdrop overlay works, even with other
+        // fixed elements on the page. The "modal-root" div is defined in app.js at the end of the
+        // <body> section.
+        const modalRoot = document.getElementById('modal-root');
+        modalRoot.appendChild(getModalEl());
+
+        // Focus screen reader on the given element if specified.
+        if (focusId) {
+            const focusElement = document.getElementById(focusId);
+            if (focusElement) {
+                focusElement.focus();
+            }
+        }
+
+        // Attach tab-key listener.
+        document.addEventListener('keydown', handleTab, false);
+
+        // Collect all the focusable elements.
+        focusableElements.current = getModalEl().querySelectorAll('a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select');
+
+        // When unmounting...
+        return () => {
+            const modalRootForUnmount = document.getElementById('modal-root');
+            modalRootForUnmount.removeChild(getModalEl());
+            document.removeEventListener('keydown', handleTab, false);
+            focusableElements.current = null;
+        };
+    }, [focusId]);
+
+    return ReactDOM.createPortal(
+        <div>
+            <div className="modal" style={{ display: 'block' }}>
+                <div className={`modal-dialog${addClasses ? ` ${addClasses}` : ''}`} role="alertdialog" aria-modal="true" aria-labelledby={labelId} aria-describedby={descriptionId}>
+                    <div className="modal-content">
+                        {modalChildren}
                     </div>
                 </div>
-                <div className="modal-backdrop in" />
-            </div>,
-            this.modalEl
-        );
-    }
-}
+            </div>
+            <div className="modal-backdrop in" />
+        </div>,
+        getModalEl()
+    );
+};
 
 ModalElement.propTypes = {
     /** Array of child elements inside the modal */
@@ -383,95 +399,103 @@ ModalElement.defaultProps = {
 };
 
 
-export class Modal extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            modalOpen: false, // True if modal is visible. Ignored if no actuator given
-        };
-        this.handleKey = this.handleKey.bind(this);
-        this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-    }
+export const Modal = ({
+    actuator,
+    descriptionId,
+    labelId,
+    focusId,
+    submitModal,
+    closeModal,
+    addClasses,
+    children,
+}) => {
+    // True if modal is visible. Ignored if no actuator given.
+    const [modalOpen, setModalOpen] = React.useState(false);
 
-    componentDidMount() {
-        // Have ESC key press close the modal.
-        document.addEventListener('keydown', this.handleKey, false);
-    }
+    // Open the modal
+    const openModal = () => {
+        setModalOpen(true);
+    };
 
-    componentWillUnmount() {
-        document.removeEventListener('keydown', this.handleKey, false);
-    }
+    // Default function to close the modal without doing anything.
+    const internalCloseModal = () => {
+        setModalOpen(false);
+    };
 
     // Called when the user presses the ESC key.
-    handleKey(e) {
-        if (!this.props.actuator || this.state.modalOpen) {
-            if (e.keyCode === 27) {
+    const handleKey = (e) => {
+        if (!actuator || modalOpen) {
+            e.stopPropagation();
+            if (e.keyCode === keyCode.ESC) {
                 // User typed ESC.
-                if (this.props.closeModal) {
-                    this.props.closeModal();
+                if (closeModal) {
+                    closeModal();
                 } else {
-                    this.closeModal();
+                    internalCloseModal();
                 }
-            } else if (e.keyCode === 13) {
+            } else if (e.keyCode === keyCode.RETURN) {
                 // User typed RETURN.
-                if (this.props.submitModal) {
-                    this.props.submitModal();
+                if (submitModal) {
+                    submitModal();
                 }
             }
         }
-    }
+    };
 
-    // Open the modal
-    openModal() {
-        this.setState({ modalOpen: true });
-    }
+    React.useEffect(() => {
+        // Have ESC key press close the modal.
+        document.addEventListener('keydown', handleKey, false);
 
-    // Default function to close the modal without doing anything.
-    closeModal() {
-        this.setState({ modalOpen: false });
-    }
+        return () => {
+            document.removeEventListener('keydown', handleKey, false);
+        };
+    }, []);
 
-    render() {
-        // We don't require/allow a click handler for the actuator, so we attach the built-in one
-        // here. You can't add attributes to an existing component in React, but React has no issue
-        // adding attributes while cloning a component.
-        const actuator = this.props.actuator ? React.cloneElement(this.props.actuator, { onClick: this.openModal }) : null;
+    // We don't require/allow a click handler for the actuator, so we attach the built-in one
+    // here. You can't add attributes to an existing component in React, but React has no issue
+    // adding attributes while cloning a component.
+    const modalActuator = actuator ? React.cloneElement(actuator, { onClick: openModal }) : null;
 
-        // Pass important Modal states and functions to child objects without the parent component
-        // needing to do it explicitly.
-        const modalChildren = React.Children.map(this.props.children, (child) => {
-            if (child.type === ModalHeader || child.type === ModalBody || child.type === ModalFooter) {
-                return React.cloneElement(child, { cCloseModal: this.closeModal, cModalOpen: this.state.modalOpen });
+    // Pass important Modal states and functions to child objects without the parent component
+    // needing to do it explicitly.
+    const modalChildren = React.Children.map(children, (child) => {
+        if (child.type === ModalHeader || child.type === ModalBody || child.type === ModalFooter) {
+            return React.cloneElement(child, { cCloseModal: internalCloseModal, cModalOpen: modalOpen });
+        }
+        return child;
+    });
+
+    return (
+        <>
+            {modalActuator && <>{modalActuator}</>}
+            {(!actuator || modalOpen) &&
+                <ModalElement
+                    modalChildren={modalChildren}
+                    descriptionId={descriptionId}
+                    addClasses={addClasses}
+                    labelId={labelId}
+                    focusId={focusId}
+                />
             }
-            return child;
-        });
-
-        return (
-            <>
-                {actuator ? <>{actuator}</> : null}
-                {!this.props.actuator || this.state.modalOpen ?
-                    <ModalElement
-                        modalChildren={modalChildren}
-                        descriptionId={this.props.descriptionId}
-                        addClasses={this.props.addClasses}
-                        labelId={this.props.labelId}
-                        focusId={this.props.focusId}
-                    />
-                : null}
-            </>
-        );
-    }
-}
+        </>
+    );
+};
 
 Modal.propTypes = {
-    actuator: PropTypes.object, // Component (usually a button) that makes the modal appear
-    closeModal: PropTypes.func, // Called to close the modal if an actuator isn't provided
-    submitModal: PropTypes.func, // Called to close the modal with a submit
-    addClasses: PropTypes.string, // CSS classes to add to the default
-    labelId: PropTypes.string, // id of modal label element
-    descriptionId: PropTypes.string, // id of modal description element
-    focusId: PropTypes.string, // id of first focusable element
+    /** Component (usually a button) that makes the modal appear */
+    actuator: PropTypes.object,
+    /** Called to close the modal if an actuator isn't provided */
+    closeModal: PropTypes.func,
+    /** Called to close the modal with a submit */
+    submitModal: PropTypes.func,
+    /** CSS classes to add to the default */
+    addClasses: PropTypes.string,
+    /** id of modal label element */
+    labelId: PropTypes.string,
+    /** id of modal description element */
+    descriptionId: PropTypes.string,
+    /** id of first focusable element */
+    focusId: PropTypes.string,
     children: PropTypes.node,
 };
 

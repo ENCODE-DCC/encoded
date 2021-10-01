@@ -466,7 +466,7 @@ const ListingComponent = (props, context) => {
     const authors = authorList.length === 4 ? `${authorList.splice(0, 3).join(', ')}, et al` : result.authors;
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">{result.title}</a>
@@ -493,7 +493,7 @@ const ListingComponent = (props, context) => {
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: context.session, sessionProperties: context.session_properties, forcedEditLink: true })}
-        </li>
+        </div>
     );
 };
 

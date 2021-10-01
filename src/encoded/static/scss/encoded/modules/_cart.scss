@@ -1554,3 +1554,124 @@ $file-view-checkbox-size: 14px;
         }
     }
 }
+
+.cart-series-confirmation {
+    position: absolute;
+    top: 50px;
+    right: 10%;
+    left: 10%;
+    padding: 10px;
+    border: 1px solid #c0c0c0;
+    background-color: #fff;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    z-index: 20;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        gap: 20px;
+    }
+
+    .cart-series-confirmation__controls {
+        @media screen and (min-width: $screen-sm-min) {
+            order: 2;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            gap: 5px;
+        }
+    }
+
+    .cart-series-confirmation__help {
+        @media screen and (min-width: $screen-sm-min) {
+            order: 1;
+        }
+    }
+
+    .cart-series-confirmation__button {
+        width: 100%;
+        margin-bottom: 5px;
+        height: 40px;
+
+        @media screen and (min-width: $screen-md-min) {
+            width: auto;
+            height: 29px;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        &.cart-series-confirmation__button--confirm {
+            order: 2;
+        }
+
+        &.cart-series-confirmation__button--cancel {
+            order: 1;
+        }
+    }
+}
+
+.manage-series {
+    position: relative;
+
+    .manage-series__header {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 0 5px;
+        border-top: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        border-bottom: none;
+        border-left: 1px solid #ccc;
+        background-color: #f0f0f0;
+
+        h2 {
+            margin: 0;
+            font-size: 1rem;
+            border: none;
+        }
+    }
+
+    .manage-series__header-pagination {
+        flex: 0 1 auto;
+
+        .pager {
+            display: block;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+    }
+
+    .manage-series__removal-note {
+        font-size: 0.9rem;
+        font-weight: normal;
+        color: #404040;
+    }
+
+    .manage-series__result-table {
+        position: relative;
+    }
+
+    .manage-series__cover {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        backdrop-filter: blur(1px);
+        z-index: 10;
+    }
+}
+
+.result-table.result-table--manage-series {
+    margin-bottom: 10px;
+}
+
+.remove-multiple-control {
+    .remove-multiple-control__note {
+        font-size: 0.9rem;
+        color: #606060;
+    }
+}

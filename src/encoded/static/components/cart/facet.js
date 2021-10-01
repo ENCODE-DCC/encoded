@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody } from '../../libs/ui/modal';
+import { keyCode } from '../../libs/constants';
 import { svgIcon } from '../../libs/svg-icons';
 import { tintColor, isLight } from '../datacolors';
-import { keyCode } from '../globals';
 import {
     isFileVisualizable,
     computeAssemblyAnnotationValue,
@@ -1030,6 +1030,7 @@ export const CartFacets = ({
                     </ModalBody>
                 </Modal>
             : null}
+            {options.disabled ? <div className="cart__facet-disabled-overlay" /> : null}
         </div>
     );
 };
@@ -1069,6 +1070,8 @@ CartFacets.propTypes = {
         preferredOnly: PropTypes.bool,
         /** Called when the user changes the checkbox for viewing default files only */
         preferredOnlyChangeHandler: PropTypes.func,
+        /** True to disable the facets entirely */
+        disabled: PropTypes.bool,
     }).isRequired,
     /** Currently selected datasets */
     datasets: PropTypes.array.isRequired,

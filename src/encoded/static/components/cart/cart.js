@@ -11,7 +11,7 @@ import * as DropdownButton from '../../libs/ui/button';
 import * as Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
 import GenomeBrowser, { annotationTypeMap } from '../genome_browser';
-import { itemClass, atIdToType } from '../globals';
+import { itemClass, atIdToType, hasType } from '../globals';
 import {
     ItemAccessories,
     computeAssemblyAnnotationValue,
@@ -21,10 +21,11 @@ import {
     filterForReleasedAnalyses,
     isFileVisualizable,
 } from '../objectutils';
-import { ResultTableList } from '../search';
 import { compileDatasetAnalyses, sortDatasetAnalyses } from './analysis';
 import CartBatchDownload from './batch_download';
 import CartClearButton from './clear';
+import * as constants from './constants';
+import CartViewContext from './context';
 import {
     assembleFileFacets,
     assembleDatasetFacets,
@@ -40,9 +41,11 @@ import {
 import { CartFileViewToggle, CartFileViewOnlyToggle, FileViewControl } from './file_view';
 import CartLockTrigger from './lock';
 import CartMergeShared from './merge_shared';
+import { CartSearchResults } from './search_results';
 import Status from '../status';
 import CartRemoveElements from './remove_multiple';
-import { allowedDatasetTypes, DEFAULT_FILE_VIEW_NAME } from './util';
+import { ManageSeriesModal, useSeriesManager } from './series';
+import { allowedDatasetTypes, calcTotalPageCount, DEFAULT_FILE_VIEW_NAME } from './util';
 
 
 /**
@@ -57,12 +60,12 @@ import { allowedDatasetTypes, DEFAULT_FILE_VIEW_NAME } from './util';
  */
 
 
-/** Number of dataset elements to display per page */
-const PAGE_ELEMENT_COUNT = 25;
-/** Number of genome-browser tracks to display per page */
-const PAGE_TRACK_COUNT = 20;
-/** Number of files to display per page */
-const PAGE_FILE_COUNT = 25;
+/**
+ * Get the value of the dataset `target` property. For series, return the empty string because its `target` is an array.
+ * @param {object} dataset - Dataset object whose target we need
+ * @returns {string} - The value of the `target` property
+ */
+const datasetTarget = (dataset) => (hasType(dataset, 'Series') ? '' : dataset.target);
 
 
 /**
@@ -73,6 +76,7 @@ const requestedFacetFields = displayedFileFacetFields
     .concat(displayedDatasetFacetFields.map((facetField) => ({ ...facetField, dataset: true })))
     .filter((field) => !field.calculated).concat([
         { field: '@id' },
+        { field: 'related_datasets', dataset: true },
         { field: 'accession', dataset: true },
         { field: 'biosample_summary', dataset: true },
         { field: 'assembly' },
@@ -88,7 +92,7 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'simple_biosample_summary' },
         { field: 'origin_batches' },
         { field: 'analyses', dataset: true },
-        { field: 'target', dataset: true },
+        { field: 'target', dataset: true, getValue: datasetTarget },
         { field: 'targets', dataset: true },
         { field: 'preferred_default' },
         { field: 'annotation_subtype', dataset: true },
@@ -109,54 +113,13 @@ const datasetTabTitles = {
 
 
 /**
- * Display a page of cart contents within the cart display.
- */
-const CartSearchResults = ({ elements, currentPage, cartControls, loading }) => {
-    if (elements.length > 0) {
-        const pageStartIndex = currentPage * PAGE_ELEMENT_COUNT;
-        const currentPageElements = elements.slice(pageStartIndex, pageStartIndex + PAGE_ELEMENT_COUNT);
-        return (
-            <div className="cart-search-results">
-                <ResultTableList results={currentPageElements} cartControls={cartControls} mode="cart-view" />
-            </div>
-        );
-    }
-
-    // No elements and the page isn't currently loading, so indicate no datasets to view.
-    if (!loading) {
-        return <div className="nav result-table cart__empty-message">No visible datasets on this page.</div>;
-    }
-
-    // Page is currently loading, so don't display anything for now.
-    return <div className="nav result-table cart__empty-message">Page currently loading&hellip;</div>;
-};
-
-CartSearchResults.propTypes = {
-    /** Array of cart items */
-    elements: PropTypes.array,
-    /** Page of results to display */
-    currentPage: PropTypes.number,
-    /** True if displaying an active cart */
-    cartControls: PropTypes.bool,
-    /** True if cart currently loading on page */
-    loading: PropTypes.bool.isRequired,
-};
-
-CartSearchResults.defaultProps = {
-    elements: [],
-    currentPage: 0,
-    cartControls: false,
-};
-
-
-/**
  * Display browser tracks for the selected page of files.
  */
 const CartBrowser = ({ files, assembly, pageNumber, loading }) => {
     if (!loading) {
         // Extract the current page of file objects.
-        const pageStartingIndex = pageNumber * PAGE_TRACK_COUNT;
-        const pageFiles = files.slice(pageStartingIndex, pageStartingIndex + PAGE_TRACK_COUNT).map((file) => ({ ...file }));
+        const pageStartingIndex = pageNumber * constants.PAGE_TRACK_COUNT;
+        const pageFiles = files.slice(pageStartingIndex, pageStartingIndex + constants.PAGE_TRACK_COUNT).map((file) => ({ ...file }));
 
         // Shorten long annotation_type values for the Valis track label; fine to mutate `pageFiles` as
         // it holds a copy of a segment of `files`.
@@ -206,8 +169,8 @@ const CartFiles = ({
     loading,
 }) => {
     if (files.length > 0) {
-        const pageStartIndex = currentPage * PAGE_FILE_COUNT;
-        const currentPageFiles = files.slice(pageStartIndex, pageStartIndex + PAGE_ELEMENT_COUNT);
+        const pageStartIndex = currentPage * constants.PAGE_FILE_COUNT;
+        const currentPageFiles = files.slice(pageStartIndex, pageStartIndex + constants.PAGE_ELEMENT_COUNT);
         const pseudoDefaultFiles = files.filter((file) => file.pseudo_default);
         return (
             <div className="cart-list cart-list--file">
@@ -460,8 +423,8 @@ const CartTools = ({
     isFileViewOnly,
 }) => {
     // Make a list of all the dataset types currently in the cart.
-    const usedDatasetTypes = elements.reduce((types, elementAtId) => {
-        const type = atIdToType(elementAtId);
+    const usedDatasetTypes = elements.reduce((types, element) => {
+        const type = atIdToType(element['@id']);
         return types.includes(type) ? types : types.concat(type);
     }, []);
 
@@ -619,29 +582,52 @@ CartSearchResultsControls.defaultProps = {
 };
 
 /**
- * Add the datasets search results to the given array of datasets.
- * @param {array} datasets Add new search results to this array
+ * Add the datasets search results to the given array of datasets, only including individual
+ * datasets -- not series objects.
+ * @param {array} datasets Add new search result individual datasets to this array
  * @param {object} currentResults Dataset search results
  * @return {array} `datasets` with search-result datasets added
  */
 const addToAccumulatingDatasets = (datasets, currentResults) => {
     if (currentResults['@graph'] && currentResults['@graph'].length > 0) {
-        currentResults['@graph'].forEach((dataset) => {
+        // Filter out series datasets; only consider individual datasets.
+        const individualDatasets = currentResults['@graph'].filter((dataset) => !hasType(dataset, 'Series'));
+        individualDatasets.forEach((dataset) => {
             // Mutate the datasets for those properties that need their values altered from how
             // they appear in search results.
-            displayedDatasetFacetFields.forEach((facetField) => {
+            requestedFacetFields.forEach((facetField) => {
                 if (facetField.getValue) {
                     dataset[facetField.field] = facetField.getValue(dataset);
                 }
             });
         });
 
-        // Return a new array combining the existing partial files with the additional files.
-        return datasets.concat(currentResults['@graph']);
+        // Return a new array combining the existing individual datasets with the datasets from
+        // the given search results.
+        return datasets.concat(individualDatasets);
     }
 
     // No search results; just return unchanged list of datasets.
     return datasets;
+};
+
+
+/**
+ * Add the series search results to the given array of series.
+ * @param {array} series Add new search results to this array
+ * @param {object} currentResults Dataset search results
+ * @return {array} `series` with search-result series added
+ */
+const addToAccumulatingSeries = (series, currentResults) => {
+    if (currentResults['@graph']?.length > 0) {
+        const seriesDatasets = currentResults['@graph'].filter((dataset) => hasType(dataset, 'Series'));
+
+        // Return a new array combining the existing partial files with the additional files.
+        return series.concat(seriesDatasets);
+    }
+
+    // No search results; just return unchanged list of datasets.
+    return series;
 };
 
 
@@ -828,6 +814,33 @@ const processDatasetTargetList = (datasets) => {
 
 
 /**
+ * Fill in a `_relatedSeries` property of each of the given `datasets` objects with an array of the
+ * @ids of the given `series` objects that include each dataset. That allows you to see what series
+ * objects include a given dataset, if any.
+ * @param {object} series Array of series objects in cart to apply to their related datasets
+ * @param {object} datasets Array of dataset objects in cart to apply their related series
+ */
+const processSeriesDatasets = (series, datasets) => {
+    if (series && series.length > 0) {
+        series.forEach((singleSeries) => {
+            if (singleSeries.related_datasets && singleSeries.related_datasets.length > 0) {
+                singleSeries.related_datasets.forEach((relatedDataset) => {
+                    const matchingRelatedDataset = datasets.find((dataset) => relatedDataset['@id'] === dataset['@id']);
+                    if (matchingRelatedDataset) {
+                        if (matchingRelatedDataset._relatedSeries) {
+                            matchingRelatedDataset._relatedSeries.push(singleSeries['@id']);
+                        } else {
+                            matchingRelatedDataset._relatedSeries = [singleSeries['@id']];
+                        }
+                    }
+                });
+            }
+        });
+    }
+};
+
+
+/**
  * Use the following order when sorting files by status for evaluating pseudo-default files.
  */
 const pseudoDefaultFileStatusOrder = ['released', 'archived', 'in progress'];
@@ -973,17 +986,19 @@ const retrieveDatasetsFiles = (datasetsIds, facetProgressHandler, fetch, session
                 return {
                     datasetFiles: addToAccumulatingFiles(accumulatingResults.datasetFiles, currentResults),
                     datasets: addToAccumulatingDatasets(accumulatingResults.datasets, currentResults),
+                    series: addToAccumulatingSeries(accumulatingResults.series, currentResults),
                     datasetAnalyses: addToAccumulatingAnalyses(accumulatingResults.datasetAnalyses, currentResults),
                 };
             })
         ))
-    ), Promise.resolve({ datasetFiles: [], datasets: [], datasetAnalyses: [] })).then(({ datasetFiles, datasets, datasetAnalyses }) => {
+    ), Promise.resolve({ datasetFiles: [], datasets: [], series: [], datasetAnalyses: [] })).then(({ datasetFiles, datasets, series, datasetAnalyses }) => {
         facetProgressHandler(-1);
 
         // Mutate the files or datasets for their calculated properties.
         processFilesAnalyses(datasetFiles, datasetAnalyses);
         processDatasetTargetList(datasets);
-        return { datasetFiles, datasets, datasetAnalyses: sortDatasetAnalyses(datasetAnalyses) };
+        processSeriesDatasets(series, datasets);
+        return { datasetFiles, datasets, series, datasetAnalyses: sortDatasetAnalyses(datasetAnalyses) };
     });
 };
 
@@ -1033,17 +1048,6 @@ const reducerTabPaneTotalPageCount = (state, action) => {
 
 
 /**
- * Calculate the total number of pages needed to display all items in any of the tab panes
- * (datasets, files, etc.).
- * @param {number} itemCount Total number of items being displayed on pages
- * @param {number} maxCount Maximum number of items per page
- *
- * @return {number} Number of pages to contain all items
- */
-const calcTotalPageCount = (itemCount, maxCount) => Math.floor(itemCount / maxCount) + (itemCount % maxCount !== 0 ? 1 : 0);
-
-
-/**
  * Renders the cart search results page. Display either:
  * 1. OBJECT (/carts/<uuid>)
  *    * context contains items to display (shared cart).
@@ -1060,14 +1064,16 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
     const [selectedFileTerms, setSelectedFileTerms] = React.useState({});
     // Array of datasets the user has access to view; subset of `cartDatasets`.
     const [viewableDatasets, setViewableDatasets] = React.useState([]);
+    // Array of series objects in the cart.
+    const [allSeries, setAllSeries] = React.useState([]);
     // True if the user has selected viewing only file view files
     const [isFileViewOnly, setIsFileViewOnly] = React.useState(false);
     // Compiled analyses applicable to the current datasets.
     const [analyses, setAnalyses] = React.useState([]);
     // Currently displayed page number for each tab panes; for pagers.
-    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
+    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { series: 0, datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
     // Total number of displayed pages for each tab pane; for pagers.
-    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
+    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { series: 0, datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
     // Currently displayed tab; match key of first TabPanelPane initially.
     const [displayedTab, setDisplayedTab] = React.useState('datasets');
     // Facet-loading progress bar value; null=indeterminate; -1=disable
@@ -1080,6 +1086,8 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
     const [allFiles, setAllFiles] = React.useState([]);
     // Tracks previous contents of `cartDatasets` to know if the cart contents have changed.
     const cartDatasetsRef = React.useRef([]);
+    // Series manager states and actions.
+    const seriesManager = useSeriesManager();
 
     // Retrieve current unfiltered cart information regardless of its source (object or active).
     // Determine if the cart contents have changed.
@@ -1117,7 +1125,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
             return assembleDatasetFacets(selectedDatasetTerms, viewableDatasets, displayedDatasetFacetFields);
         }
         return { datasetFacets: null, selectedDatasets: viewableDatasets };
-    }, [selectedDatasetTerms, viewableDatasets, isFileViewOnly]);
+    }, [selectedDatasetTerms, viewableDatasets, isFileViewOnly, isCartDatasetsChanged]);
 
     // Build the file facets based on the currently selected facet terms.
     const selectedDatasetFiles = React.useMemo(() => filterForDatasetFiles(allFiles, selectedDatasets), [allFiles, selectedDatasets]);
@@ -1334,7 +1342,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
     // permission level and from them extract all their files.
     React.useEffect(() => {
         if (isCartDatasetsChanged) {
-            retrieveDatasetsFiles(cartDatasets, setFacetProgress, fetch, session).then(({ datasetFiles, datasets, datasetAnalyses }) => {
+            retrieveDatasetsFiles(cartDatasets, setFacetProgress, fetch, session).then(({ datasetFiles, datasets, series, datasetAnalyses }) => {
                 // Mutate files for special cases.
                 datasetFiles.forEach((file) => {
                     // De-embed any embedded datasets.files.dataset.
@@ -1345,6 +1353,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
 
                 setAllFiles(datasetFiles);
                 setViewableDatasets(datasets);
+                setAllSeries(series);
                 setAnalyses(datasetAnalyses);
             });
         }
@@ -1352,16 +1361,21 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
 
     // Data changes or initial load need a total-page-count calculation.
     React.useEffect(() => {
-        const datasetPageCount = calcTotalPageCount(selectedDatasets.length, PAGE_ELEMENT_COUNT);
-        const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, PAGE_TRACK_COUNT);
-        const processedDataPageCount = calcTotalPageCount(selectedFiles.length, PAGE_FILE_COUNT);
-        const rawdataPageCount = calcTotalPageCount(rawdataFiles.length, PAGE_FILE_COUNT);
+        const seriesPageCount = calcTotalPageCount(allSeries.length, constants.PAGE_ELEMENT_COUNT);
+        const datasetPageCount = calcTotalPageCount(selectedDatasets.length, constants.PAGE_ELEMENT_COUNT);
+        const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, constants.PAGE_TRACK_COUNT);
+        const processedDataPageCount = calcTotalPageCount(selectedFiles.length, constants.PAGE_FILE_COUNT);
+        const rawdataPageCount = calcTotalPageCount(rawdataFiles.length, constants.PAGE_FILE_COUNT);
+        dispatchTotalPageCounts({ tab: 'series', totalPageCount: seriesPageCount });
         dispatchTotalPageCounts({ tab: 'datasets', totalPageCount: datasetPageCount });
         dispatchTotalPageCounts({ tab: 'browser', totalPageCount: browserPageCount });
         dispatchTotalPageCounts({ tab: 'processeddata', totalPageCount: processedDataPageCount });
         dispatchTotalPageCounts({ tab: 'rawdata', totalPageCount: rawdataPageCount });
 
         // Go to first page if current page number goes out of range of new page count.
+        if (pageNumbers.series >= seriesPageCount) {
+            dispatchPageNumbers({ tab: 'series', pageNumber: 0 });
+        }
         if (pageNumbers.datasets >= datasetPageCount) {
             dispatchPageNumbers({ tab: 'datasets', pageNumber: 0 });
         }
@@ -1377,196 +1391,219 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
     }, [selectedDatasets, selectedVisualizableFiles, selectedFiles, rawdataFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.processeddata, pageNumbers.rawdata]);
 
     return (
-        <div className={itemClass(context, 'view-item')}>
-            <header>
-                <h1>{cartName}</h1>
-                <CartAccessories
-                    savedCartObj={savedCartObj}
-                    viewableDatasets={viewableDatasets}
-                    sharedCart={context}
-                    cartType={cartType}
-                    inProgress={inProgress}
-                />
-                {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
-            </header>
-            <Panel addClasses="cart__result-table">
-                {selectedDatasets.length > 0 ?
-                    <PanelHeading addClasses="cart__header">
-                        <CartTools
-                            elements={cartDatasets}
-                            analyses={analyses}
-                            selectedDatasetType={selectedDatasetType}
-                            savedCartObj={savedCartObj}
-                            selectedFileTerms={selectedFileTerms}
-                            selectedDatasetTerms={selectedDatasetTerms}
-                            facetFields={displayedFileFacetFields.concat(displayedDatasetFacetFields)}
-                            viewableDatasets={viewableDatasets}
-                            cartType={cartType}
-                            sharedCart={context}
-                            fileCounts={{ processed: selectedFiles.length, raw: rawdataFiles.length, all: allFiles.length }}
-                            visualizable={visualizableOnly}
-                            preferredDefault={defaultOnly}
-                            isFileViewOnly={isFileViewOnly}
-                        />
-                        <CartFileViewOnlyToggle
-                            isFileViewOnly={isFileViewOnly}
-                            updateFileViewOnly={handleFileViewOnlyClick}
-                            selectedFilesInFileView={selectedFilesInFileView}
-                        />
-                    </PanelHeading>
-                : null}
-                <PanelBody>
-                    {cartDatasets.length > 0 ?
-                        <div className="cart__display">
-                            {!isFileViewOnly
-                                ?
-                                    <CartFacets
-                                        datasetProps={{
-                                            facets: datasetFacets,
-                                            selectedTerms: selectedDatasetTerms,
-                                            termClickHandler: handleDatasetTermClick,
-                                            clearFacetSelections: clearDatasetFacetSelections,
-                                        }}
-                                        fileProps={{
-                                            facets: fileFacets,
-                                            selectedTerms: selectedFileTerms,
-                                            termClickHandler: handleFileTermClick,
-                                            clearFacetSelections: clearFileFacetSelections,
-                                            usedFacetFields: usedFileFacetFields,
-                                        }}
-                                        options={{
-                                            visualizableOnly,
-                                            visualizableOnlyChangeHandler: handleVisualizableOnlyChange,
-                                            preferredOnly: defaultOnly,
-                                            preferredOnlyChangeHandler: handlePreferredOnlyChange,
-                                        }}
-                                        datasets={selectedDatasets}
-                                        files={selectedFiles}
-                                        facetProgress={facetProgress}
-                                    />
-                                : (
-                                    displayedTab === 'browser'
-                                        ?
-                                            <CartFacetsFileView
-                                                files={selectedVisualizableFiles}
-                                                facetProgress={facetProgress}
-                                                fileProps={{
-                                                    facets: fileFacets,
-                                                    selectedTerms: selectedFileTerms,
-                                                    termClickHandler: handleFileTermClick,
-                                                }}
+        <CartViewContext.Provider
+            value={{
+                allSeriesInCart: allSeries,
+                allDatasetsInCart: viewableDatasets,
+                setManagedSeries: seriesManager.setManagedSeries,
+            }}
+        >
+            <div className={itemClass(context, 'view-item')}>
+                <header>
+                    <h1>{cartName}</h1>
+                    <CartAccessories
+                        savedCartObj={savedCartObj}
+                        viewableDatasets={viewableDatasets}
+                        sharedCart={context}
+                        cartType={cartType}
+                        inProgress={inProgress}
+                    />
+                    {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
+                </header>
+                <Panel addClasses="cart__result-table">
+                    {selectedDatasets.length > 0 ?
+                        <PanelHeading addClasses="cart__header">
+                            <CartTools
+                                elements={viewableDatasets}
+                                selectedFileTerms={selectedFileTerms}
+                                selectedDatasetTerms={selectedDatasetTerms}
+                                selectedDatasetType={selectedDatasetType}
+                                facetFields={displayedFileFacetFields.concat(displayedDatasetFacetFields)}
+                                savedCartObj={savedCartObj}
+                                cartType={cartType}
+                                sharedCart={context}
+                                visualizable={visualizableOnly}
+                                isFileViewOnly={isFileViewOnly}
+                            />
+                            <CartFileViewOnlyToggle
+                                isFileViewOnly={isFileViewOnly}
+                                updateFileViewOnly={handleFileViewOnlyClick}
+                                selectedFilesInFileView={selectedFilesInFileView}
+                            />
+                        </PanelHeading>
+                    : null}
+                    <PanelBody>
+                        {cartDatasets.length > 0 || allSeries.length > 0 ?
+                            <div className="cart__display">
+                                {!isFileViewOnly
+                                    ?
+                                        <CartFacets
+                                            datasetProps={{
+                                                facets: datasetFacets,
+                                                selectedTerms: selectedDatasetTerms,
+                                                termClickHandler: handleDatasetTermClick,
+                                                clearFacetSelections: clearDatasetFacetSelections,
+                                            }}
+                                            fileProps={{
+                                                facets: fileFacets,
+                                                selectedTerms: selectedFileTerms,
+                                                termClickHandler: handleFileTermClick,
+                                                clearFacetSelections: clearFileFacetSelections,
+                                                usedFacetFields: usedFileFacetFields,
+                                            }}
+                                            options={{
+                                                visualizableOnly,
+                                                visualizableOnlyChangeHandler: handleVisualizableOnlyChange,
+                                                preferredOnly: defaultOnly,
+                                                preferredOnlyChangeHandler: handlePreferredOnlyChange,
+                                                disabled: displayedTab === 'series',
+                                            }}
+                                            datasets={selectedDatasets}
+                                            files={selectedFiles}
+                                            facetProgress={facetProgress}
+                                        />
+                                    : (
+                                        displayedTab === 'browser'
+                                            ?
+                                                <CartFacetsFileView
+                                                    files={selectedVisualizableFiles}
+                                                    facetProgress={facetProgress}
+                                                    fileProps={{
+                                                        facets: fileFacets,
+                                                        selectedTerms: selectedFileTerms,
+                                                        termClickHandler: handleFileTermClick,
+                                                    }}
+                                                />
+                                            : <CartFacetsStandin files={displayedTab === 'processeddata' ? selectedFiles : []} facetProgress={facetProgress} />
+                                    )
+                                }
+                                <TabPanel
+                                    tabPanelCss="cart__display-content"
+                                    tabs={!isFileViewOnly
+                                        ? {
+                                            series: 'Series',
+                                            datasets: 'All datasets',
+                                            browser: 'Genome browser',
+                                            processeddata: 'Processed data',
+                                            rawdata: 'Raw data',
+                                        } : {
+                                            browser: 'Genome browser',
+                                            processeddata: 'Processed data',
+                                        }
+                                    }
+                                    tabDisplay={!isFileViewOnly
+                                        ? {
+                                            series: <CounterTab title="Series" count={allSeries.length} icon="dataset" voice="series" />,
+                                            datasets: <CounterTab title={`Selected ${selectedDatasetType ? datasetTabTitles[selectedDatasetType] : 'datasets'}`} count={selectedDatasets.length} icon="dataset" voice="selected datasets" />,
+                                            browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
+                                            processeddata: <CounterTab title="Processed" count={selectedFiles.length} icon="file" voice="processed data files" />,
+                                            rawdata: <CounterTab title="Raw" count={rawdataFiles.length} icon="file" voice="raw data files" />,
+                                        } : {
+                                            browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
+                                            processeddata: <CounterTab title="Processed" count={selectedFiles.length} icon="file" voice="processed data files" />,
+                                        }
+                                    }
+                                    selectedTab={displayedTab}
+                                    handleTabClick={handleTabClick}
+                                >
+                                    {!isFileViewOnly ?
+                                        <TabPanelPane key="series">
+                                            <CartSearchResults
+                                                elements={allSeries}
+                                                currentPage={pageNumbers.series}
+                                                cartControls={cartType !== 'OBJECT'}
+                                                loading={facetProgress !== -1}
                                             />
-                                        : <CartFacetsStandin files={displayedTab === 'processeddata' ? selectedFiles : []} facetProgress={facetProgress} />
-                                )
-                            }
-                            <TabPanel
-                                tabPanelCss="cart__display-content"
-                                tabs={!isFileViewOnly
-                                    ? {
-                                        datasets: 'All datasets',
-                                        browser: 'Genome browser',
-                                        processeddata: 'Processed data',
-                                        rawdata: 'Raw data',
-                                    } : {
-                                        browser: 'Genome browser',
-                                        processeddata: 'Processed data',
-                                    }
-                                }
-                                tabDisplay={!isFileViewOnly
-                                    ? {
-                                        datasets: <CounterTab title={`Selected ${selectedDatasetType ? datasetTabTitles[selectedDatasetType] : 'datasets'}`} count={selectedDatasets.length} icon="dataset" voice="selected datasets" />,
-                                        browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
-                                        processeddata: <CounterTab title="Processed data" count={selectedFiles.length} icon="file" voice="processed data files" />,
-                                        rawdata: <CounterTab title="Raw data" count={rawdataFiles.length} icon="file" voice="raw data files" />,
-                                    } : {
-                                        browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
-                                        processeddata: <CounterTab title="Processed data" count={selectedFiles.length} icon="file" voice="processed data files" />,
-                                    }
-                                }
-                                selectedTab={displayedTab}
-                                handleTabClick={handleTabClick}
-                            >
-                                {!isFileViewOnly ?
-                                    <TabPanelPane key="datasets">
+                                        </TabPanelPane>
+                                    : null}
+                                    {!isFileViewOnly ?
+                                        <TabPanelPane key="datasets">
+                                            <CartSearchResultsControls
+                                                currentTab={displayedTab}
+                                                elements={selectedDatasets}
+                                                currentPage={pageNumbers.datasets}
+                                                totalPageCount={totalPageCount.datasets}
+                                                updateCurrentPage={updateDisplayedPage}
+                                                cartType={cartType}
+                                                loading={facetProgress !== -1}
+                                            />
+                                            <CartSearchResults
+                                                elements={selectedDatasets}
+                                                currentPage={pageNumbers.datasets}
+                                                cartControls={cartType !== 'OBJECT'}
+                                                loading={facetProgress !== -1}
+                                            />
+                                        </TabPanelPane>
+                                    : null}
+                                    <TabPanelPane key="browser">
                                         <CartSearchResultsControls
                                             currentTab={displayedTab}
                                             elements={selectedDatasets}
-                                            currentPage={pageNumbers.datasets}
-                                            totalPageCount={totalPageCount.datasets}
+                                            currentPage={pageNumbers.browser}
+                                            totalPageCount={totalPageCount.browser}
                                             updateCurrentPage={updateDisplayedPage}
                                             cartType={cartType}
                                             loading={facetProgress !== -1}
                                         />
-                                        <CartSearchResults
-                                            elements={selectedDatasets}
-                                            currentPage={pageNumbers.datasets}
-                                            cartControls={cartType !== 'OBJECT'}
-                                            loading={facetProgress !== -1}
-                                        />
+                                        {selectedFileTerms.assembly && selectedFileTerms.assembly.length > 0
+                                            ? <CartBrowser files={selectedVisualizableFiles} assembly={selectedFileTerms.assembly[0]} pageNumber={pageNumbers.browser} loading={facetProgress !== -1} />
+                                            : null}
                                     </TabPanelPane>
-                                : null}
-                                <TabPanelPane key="browser">
-                                    <CartSearchResultsControls
-                                        currentTab={displayedTab}
-                                        elements={selectedDatasets}
-                                        currentPage={pageNumbers.browser}
-                                        totalPageCount={totalPageCount.browser}
-                                        updateCurrentPage={updateDisplayedPage}
-                                        cartType={cartType}
-                                        loading={facetProgress !== -1}
-                                    />
-                                    {selectedFileTerms.assembly && selectedFileTerms.assembly.length > 0
-                                        ? <CartBrowser files={selectedVisualizableFiles} assembly={selectedFileTerms.assembly[0]} pageNumber={pageNumbers.browser} loading={facetProgress !== -1} />
-                                        : null}
-                                </TabPanelPane>
-                                <TabPanelPane key="processeddata">
-                                    <CartSearchResultsControls
-                                        currentTab={displayedTab}
-                                        elements={selectedDatasets}
-                                        currentPage={pageNumbers.processeddata}
-                                        totalPageCount={totalPageCount.processeddata}
-                                        updateCurrentPage={updateDisplayedPage}
-                                        fileViewOptions={{
-                                            filesToAddToFileView: filterForVisualizableFiles(selectedFiles),
-                                            fileViewName: DEFAULT_FILE_VIEW_NAME,
-                                            fileViewControlsEnabled: true,
-                                            isFileViewOnly,
-                                        }}
-                                        cartType={cartType}
-                                        loading={facetProgress !== -1}
-                                    />
-                                    <CartFiles
-                                        files={selectedFiles}
-                                        isFileViewOnly={isFileViewOnly}
-                                        selectedFilesInFileView={selectedFilesInFileView}
-                                        currentPage={pageNumbers.processeddata}
-                                        defaultOnly={defaultOnly}
-                                        cartType={cartType}
-                                        loading={facetProgress !== -1}
-                                    />
-                                </TabPanelPane>
-                                {!isFileViewOnly ?
-                                    <TabPanelPane key="rawdata">
+                                    <TabPanelPane key="processeddata">
                                         <CartSearchResultsControls
                                             currentTab={displayedTab}
                                             elements={selectedDatasets}
-                                            currentPage={pageNumbers.rawdata}
-                                            totalPageCount={totalPageCount.rawdata}
+                                            currentPage={pageNumbers.processeddata}
+                                            totalPageCount={totalPageCount.processeddata}
                                             updateCurrentPage={updateDisplayedPage}
+                                            fileViewOptions={{
+                                                filesToAddToFileView: filterForVisualizableFiles(selectedFiles),
+                                                fileViewName: DEFAULT_FILE_VIEW_NAME,
+                                                fileViewControlsEnabled: true,
+                                                isFileViewOnly,
+                                            }}
                                             cartType={cartType}
                                             loading={facetProgress !== -1}
                                         />
-                                        <CartFiles files={rawdataFiles} currentPage={pageNumbers.rawdata} cartType={cartType} loading={facetProgress !== -1} />
+                                        <CartFiles
+                                            files={selectedFiles}
+                                            isFileViewOnly={isFileViewOnly}
+                                            selectedFilesInFileView={selectedFilesInFileView}
+                                            currentPage={pageNumbers.processeddata}
+                                            defaultOnly={defaultOnly}
+                                            cartType={cartType}
+                                            loading={facetProgress !== -1}
+                                        />
                                     </TabPanelPane>
-                                : null}
-                            </TabPanel>
-                        </div>
-                    :
-                        <p className="cart__empty-message">Empty cart</p>
-                    }
-                </PanelBody>
-            </Panel>
-        </div>
+                                    {!isFileViewOnly ?
+                                        <TabPanelPane key="rawdata">
+                                            <CartSearchResultsControls
+                                                currentTab={displayedTab}
+                                                elements={selectedDatasets}
+                                                currentPage={pageNumbers.rawdata}
+                                                totalPageCount={totalPageCount.rawdata}
+                                                updateCurrentPage={updateDisplayedPage}
+                                                cartType={cartType}
+                                                loading={facetProgress !== -1}
+                                            />
+                                            <CartFiles files={rawdataFiles} currentPage={pageNumbers.rawdata} cartType={cartType} loading={facetProgress !== -1} />
+                                        </TabPanelPane>
+                                    : null}
+                                </TabPanel>
+                            </div>
+                        :
+                            <p className="cart__empty-message">Empty cart</p>
+                        }
+                    </PanelBody>
+                </Panel>
+                {seriesManager.isSeriesManagerOpen && (
+                    <ManageSeriesModal
+                        series={seriesManager.managedSeries}
+                        onCloseModalClick={() => seriesManager.setManagedSeries(null)}
+                    />
+                )}
+            </div>
+        </CartViewContext.Provider>
     );
 };
 

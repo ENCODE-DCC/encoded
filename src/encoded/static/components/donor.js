@@ -736,7 +736,7 @@ const DonorListingComponent = (props, reactContext) => {
     ].filter(Boolean);
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
@@ -762,7 +762,7 @@ const DonorListingComponent = (props, reactContext) => {
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+        </div>
     );
 };
 

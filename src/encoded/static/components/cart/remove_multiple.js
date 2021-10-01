@@ -29,7 +29,11 @@ const CartRemoveElementsModalComponent = ({ elements, closeClickHandler, removeM
         <Modal labelId="label-remove-selected" descriptionId="description-remove-selected" focusId="close-remove-items">
             <ModalHeader labelId="label-remove-selected" title="Remove selected datasets from cart" closeModal={closeClickHandler} />
             <ModalBody>
-                <p id="description-remove-selected">Remove the {elements.length} currently selected datasets from the cart. This action is not reversible.</p>
+                <p id="description-remove-selected">
+                    Remove the {elements.length === 1 ? 'currently selected dataset' : `${elements.length} currently selected datasets`} from
+                    the cart. Series datasets remain in the cart and can only be removed as a part
+                    of a series. This action is not reversible.
+                </p>
             </ModalBody>
             <ModalFooter
                 closeModal={<button type="button" id="close-remove-items" onClick={closeClickHandler} className="btn btn-default">Cancel</button>}
@@ -101,6 +105,9 @@ const CartRemoveElementsComponent = ({
     /** True if the alert modal is visible */
     const [isModalVisible, setIsModalVisible] = React.useState(false);
 
+    // Filter the given elements so we only remove datasets not within a series.
+    const nonSeriesDatasets = elements.filter((element) => !element._relatedSeries);
+
     /**
      * Handle a click in the actuator button to open the alert modal.
      */
@@ -116,19 +123,20 @@ const CartRemoveElementsComponent = ({
     };
 
     return (
-        <>
+        <div className="remove-multiple-control">
             <button
                 type="button"
-                disabled={loading || inProgress || (savedCartObj && savedCartObj.locked)}
+                disabled={nonSeriesDatasets.length === 0 || loading || inProgress || (savedCartObj && savedCartObj.locked)}
                 className="btn btn-info btn-sm"
                 onClick={handleOpenClick}
             >
                 Remove selected items from cart
             </button>
-            {isModalVisible
-                ? <CartRemoveElementsModal elements={elements} closeClickHandler={handleCloseClick} />
-                : null}
-        </>
+            <div className="remove-multiple-control__note">
+                Any datasets belonging to a series remain after removing the selected items from the cart.
+            </div>
+            {isModalVisible && <CartRemoveElementsModal elements={nonSeriesDatasets} closeClickHandler={handleCloseClick} />}
+        </div>
     );
 };
 
