@@ -1456,6 +1456,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                                 visualizableOnlyChangeHandler: handleVisualizableOnlyChange,
                                                 preferredOnly: defaultOnly,
                                                 preferredOnlyChangeHandler: handlePreferredOnlyChange,
+                                                disabled: displayedTab === 'series',
                                             }}
                                             datasets={selectedDatasets}
                                             files={selectedFiles}

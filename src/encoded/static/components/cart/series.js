@@ -44,8 +44,8 @@ const CartSeriesConfirmation = ({ requestRemoveConfirmation }) => {
                 </button>
             </div>
             <div className="cart-series-confirmation__help">
-                Removing a series object also removes its additional datasets from the cart. This
-                action is not reversible.
+                Removing a series object also removes its datasets from the cart. This action is
+                not reversible.
             </div>
         </div>
     );
