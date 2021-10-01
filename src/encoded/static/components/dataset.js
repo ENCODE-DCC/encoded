@@ -2372,7 +2372,7 @@ const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sort
     if (experiments.length > 0) {
         // Get all the control experiments from the given experiments' `possible_controls`. Then
         // filter those out of the given experiments.
-        const controls = _.uniq(experiments.reduce((accControls, experiment) => accControls.concat(experiment.possible_controls), []), (control) => control['@id']);
+        const controls = _.uniq(experiments.reduce((accControls, experiment) => (experiment.possible_controls ? accControls.concat(experiment.possible_controls) : accControls), []), (control) => control['@id']);
         const experimentsWithoutControls = experiments.filter((experiment) => !controls.find((control) => control['@id'] === experiment['@id']));
 
         return (
