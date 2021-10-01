@@ -71,7 +71,6 @@ const Encyclopedia = (props, context) => {
     const reloadPage = props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term).length === 0 || props.context.filters.filter((f) => f.field === 'assembly').map((f) => f.term).length === 0;
 
     const defaultFileDownload = 'all';
-    const encyclopediaVersion = 'current';
     const fileOptions = ['CTCF-only', 'proximal enhancer-like', 'DNase-H3K4me3', 'distal enhancer-like', 'promoter-like', 'rDHS', 'all']; // Download options for cell-type agnostic cCREs
     const [selectedFiles, setSelectedFiles] = React.useState([defaultFileDownload]);
 
