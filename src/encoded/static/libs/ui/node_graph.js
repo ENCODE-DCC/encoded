@@ -27,17 +27,12 @@ function diagonal(d, s) {
     return path;
 }
 
-const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes, initial) => {
+const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes) => {
     // Set the dimensions and margins of the diagram
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
 
     d3.select(targetDiv).select('svg').remove();
-
-    let animationDuration = 300;
-    if (!initial) {
-        animationDuration = 0;
-    }
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
@@ -102,9 +97,11 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
     // Collapse after the second level
     // root.children.forEach(collapse);
-    update(root);
+    update(root, 0);
 
-    function update(source) {
+    function update(source, animationDuration) {
+        console.log('update!!');
+        console.log(`animation duration is ${animationDuration}`);
         // Assigns the x and y position for the nodes
         const treeData = treemap(root);
 
@@ -206,7 +203,6 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .style('font-size', '28px')
             .on('click', function(e, d) {
                 const thisText = d3.select(this).text();
-                console.log(thisText);
                 if (thisText === circlePlus) {
                     d3.select(this).text(circleMinus);
                 } else {
@@ -288,7 +284,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 d.children = d._children;
                 d._children = null;
             }
-            update(d);
+            update(d, 300);
         }
     }
 };
