@@ -10,6 +10,7 @@
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *biosample_summary* calculated property
 * Added *Deeply Profiled* to the *internal_tags* enum
+* *related_datasets* now includes FunctionalCharacterizationExperiment.json and TransgenicEnhancerExperiment.json
 
 ### Schema version 17
 

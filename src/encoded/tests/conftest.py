@@ -56,6 +56,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.chip_alignment_samstat_quality_metric',
     'encoded.tests.fixtures.schemas.chip_library_quality_metric',
     'encoded.tests.fixtures.schemas.chipseq_filter_quality_metric',
+    'encoded.tests.fixtures.schemas.collection_series',
     'encoded.tests.fixtures.schemas.computational_model',
     'encoded.tests.fixtures.schemas.correlation_quality_metric',
     'encoded.tests.fixtures.schemas.cpg_correlation_quality_metric',

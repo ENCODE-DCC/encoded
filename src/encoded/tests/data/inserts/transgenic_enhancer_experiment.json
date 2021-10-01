@@ -1,5 +1,32 @@
 [
     {
+        "_test": "mouse transgenic enhancer control",
+        "accession": "ENCSR928TEA",
+        "assay_term_name": "transgenic enhancer assay",
+        "award": "U54HG007004",
+        "biosample_ontology": "whole_organisms_UBERON_0000468",
+        "biosamples": [
+            "ENCBS001MWO",
+            "ENCBS000MUS"
+        ],
+        "tissue_with_enhancer_activity": [
+            "unidentified tissue"
+        ],
+        "element_location": {
+            "assembly": "GRCh38",
+            "chromosome": "chr2",
+            "start": 30000,
+            "end": 35000
+        },
+        "description": "Mouse transgenic enhancer control",
+        "lab": "len-pennacchio",
+        "status": "in progress",
+        "date_submitted": "2018-01-17",
+        "date_released": "2020-01-12",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "824917ec-c443-458a-b6c8-481ca3b92e55"
+    },
+    {
         "_test": "mouse transgenic enhancer1 assay",
         "accession": "ENCSR507TEA",
         "assay_term_name": "transgenic enhancer assay",
@@ -54,6 +81,7 @@
         "date_submitted": "2019-12-30",
         "date_released": "2020-01-15",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "a8ecafef-4d0f-4a42-8bb8-d85d3f76810b"
+        "uuid": "a8ecafef-4d0f-4a42-8bb8-d85d3f76810b",
+        "possible_controls": ["ENCSR928TEA"]
     }
 ]

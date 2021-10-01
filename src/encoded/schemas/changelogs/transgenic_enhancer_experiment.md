@@ -15,3 +15,5 @@
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
 * Added *Deeply Profiled* to the *internal_tags* enum
+* Added *related_series* calculated property
+* Added *possible_controls* property

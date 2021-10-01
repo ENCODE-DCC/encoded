@@ -121,6 +121,20 @@
                 "linkTo": "Biosample"
             }
         },
+        "possible_controls": {
+            "title": "Controls",
+            "description": "Dataset that contain files that can serve as scientific controls for this transgenic enhancer experiment.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Control",
+                "description": "A dataset that contains files that can serve as a scientific control for this transgenic enhancer experiment.",
+                "comment": "See dataset.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "Dataset"
+            }
+        },
         "element_location": {
             "title": "Element location",
             "description": "The genomic coordinates specifying the location of the tested element.",

@@ -334,6 +334,8 @@ class TransgenicEnhancerExperiment(
         'biosamples.biosample_ontology',
         'biosamples.organism',
         'biosamples.characterizations',
+        'related_series',
+        'possible_controls',
     ]
     audit_inherit = [
         'submitted_by',
@@ -348,8 +350,21 @@ class TransgenicEnhancerExperiment(
     set_status_down = []
     rev = Dataset.rev.copy()
     rev.update({
+        'related_series': ('Series', 'related_datasets'),
         'superseded_by': ('TransgenicEnhancerExperiment', 'supersedes')
     })
+
+    @calculated_property(schema={
+        "title": "Related series",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Series.related_datasets",
+        },
+        "notSubmittable": True,
+    })
+    def related_series(self, request, related_series):
+        return paths_filtered_by_status(request, related_series)
 
     @calculated_property(schema={
         "title": "Superseded by",
@@ -1509,3 +1524,18 @@ class MultiomicsSeries(Series):
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+
+@collection(
+    name='collection-series',
+    unique_key='accession',
+    properties={
+        'title': "Collection series",
+        'description': 'A collection of experiments.',
+    })
+class CollectionSeries(Series):
+    item_type = 'collection_series'
+    schema = load_schema('encoded:schemas/collection_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+    ]
