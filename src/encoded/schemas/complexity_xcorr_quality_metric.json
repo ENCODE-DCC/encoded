@@ -55,7 +55,7 @@
             "title": "PCR bottlenecking coefficient 2",
             "type": ["number", "string"],
             "minimum":0,
-            "pattern": "^(\\d+(\\.\\d+)?|Infinity)$",
+            "pattern": "^Infinity$",
             "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = Single-read Locations / Multi-read Locations"
         },
         "NSC": {

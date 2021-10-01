@@ -40,7 +40,7 @@
             "title": "PCR bottlenecking coefficient 2",
             "type": ["number", "string"],
             "minimum":0,
-            "pattern": "^(\\d+(\\.\\d+)?|Infinity)$",
+            "pattern": "^Infinity$",
             "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely"
         },
         "fragment length": {
