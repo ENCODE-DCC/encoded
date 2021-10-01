@@ -3,6 +3,9 @@ const textWrapWidth = 150;
 const circlePlus = '\u2295';
 const circleMinus = '\u2296';
 
+const slowAnimation = 400;
+const fastAnimation = 0;
+
 const ellipseSettings = [
     { cx: 2, cy: 2, rx: 12, ry: 9 },
     { cx: 2, cy: 2, rx: 6.5, ry: 6 },
@@ -14,10 +17,13 @@ const ellipseSettings = [
 
 // Collapse node and its children
 function collapse(d) {
+    console.log('collapse!');
     if (d.children) {
         d._children = d.children;
-        d._children.forEach(collapse);
         d.children = null;
+    } else {
+        d.children = d._children;
+        d._children = null;
     }
 }
 
@@ -27,12 +33,14 @@ function diagonal(d, s) {
     return path;
 }
 
-const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes) => {
+const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes, collapsedNodes, updateCollapsedNodes) => {
     // Set the dimensions and margins of the diagram
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
 
     d3.select(targetDiv).select('svg').remove();
+
+    console.log(collapsedNodes);
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
@@ -97,11 +105,24 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
     // Collapse after the second level
     // root.children.forEach(collapse);
-    update(root, 0);
+    update(root, fastAnimation);
+    collapsedNodes.forEach((node) => {
+        console.log('updating node');
+        if (node.children) {
+            node._children = node.children;
+            node.children = null;
+        } else {
+            node.children = node._children;
+            node._children = null;
+        }
+        update(node, fastAnimation);
+    });
+
 
     function update(source, animationDuration) {
-        console.log('update!!');
-        console.log(`animation duration is ${animationDuration}`);
+        console.log('update');
+        console.log('source is');
+        console.log(source);
         // Assigns the x and y position for the nodes
         const treeData = treemap(root);
 
@@ -277,6 +298,8 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         });
 
         function click(event, d) {
+            console.log('click collapse!');
+            console.log(d);
             if (d.children) {
                 d._children = d.children;
                 d.children = null;
@@ -284,7 +307,8 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 d.children = d._children;
                 d._children = null;
             }
-            update(d, 300);
+            updateCollapsedNodes(d);
+            update(d, slowAnimation);
         }
     }
 };
