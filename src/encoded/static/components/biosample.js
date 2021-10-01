@@ -480,6 +480,7 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
                     title="Pooled from biosamples"
                     items={context.pooled_from}
                     total={context.pooled_from.length}
+                    organisms={[context.organism.scientific_name]}
                 />
             : null}
 
@@ -521,6 +522,7 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
                     limit={0}
                     total={biosampleChildren.length}
                     title="Biosamples that are part of this biosample"
+                    organisms={[context.organism.scientific_name]}
                 />
             : null}
 

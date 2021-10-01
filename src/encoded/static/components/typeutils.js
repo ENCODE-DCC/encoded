@@ -151,7 +151,7 @@ export function CollectBiosampleDocs(biosample) {
 
 
 // Display a table of retrieved biosamples related to the displayed biosample
-export const BiosampleTable = ({ items, limit, total, url, title }) => {
+export const BiosampleTable = ({ items, limit, total, url, title, organisms }) => {
     let biosamples = items;
     let footer = null;
     let subheader = null;
@@ -172,7 +172,7 @@ export const BiosampleTable = ({ items, limit, total, url, title }) => {
 
     return (
         <SortTablePanel title={title} subheader={subheader}>
-            <SortTable list={biosamples} columns={BiosampleTable.columns} footer={footer} />
+            <SortTable list={biosamples} columns={BiosampleTable.columns} meta={{ organisms }} footer={footer} />
         </SortTablePanel>
     );
 };
@@ -183,6 +183,7 @@ BiosampleTable.propTypes = {
     total: PropTypes.number,
     url: PropTypes.string,
     title: PropTypes.string,
+    organisms: PropTypes.array,
 };
 
 BiosampleTable.defaultProps = {
@@ -190,6 +191,7 @@ BiosampleTable.defaultProps = {
     total: 0,
     url: '',
     title: '',
+    organisms: [],
 };
 
 BiosampleTable.columns = {
@@ -208,7 +210,12 @@ BiosampleTable.columns = {
     summary: {
         title: 'Summary',
         sorter: false,
-        display: (biosample) => < BiosampleSummaryDisplay summary={biosample.summary} organisms={[biosample.organism.scientific_name].concat(GeneticModificationOrganismNames([biosample]))} /> ,
+        display: (biosample, meta) => {
+            const organismNames = typeof biosample.organism === 'string'
+                ? meta.organisms
+                : [biosample.organism.scientific_name].concat(GeneticModificationOrganismNames([biosample]));
+            return <BiosampleSummaryDisplay summary={biosample.summary} organisms={organismNames} />;
+        },
     },
 };
 
