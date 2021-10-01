@@ -1368,6 +1368,7 @@ class FunctionalCharacterizationSeries(Series):
         'related_datasets.elements_references.examined_loci',
         'elements_references',
         'elements_references.examined_loci',
+        'elements_references.files',
     ]
 
     @calculated_property(condition='related_datasets', schema={
