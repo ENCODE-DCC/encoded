@@ -60,7 +60,7 @@ def test_experiment_series_biosample_summary(
     )
     res = testapp.get(base_experiment_series['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == [
-        'S2R+ nuclear fraction treated with ethanol'
+        'Homo sapiens S2R+ nuclear fraction treated with ethanol'
     ]
     testapp.patch_json(
         base_experiment_series['@id'],
@@ -68,6 +68,6 @@ def test_experiment_series_biosample_summary(
     )
     res = testapp.get(base_experiment_series['@id']+'@@index-data')
     assert sorted(res.json['object']['biosample_summary']) == [
-        'S2R+ nuclear fraction treated with ethanol',
-        'liver tissue male child (1 day) treated with ethanol',
+        'Homo sapiens S2R+ nuclear fraction treated with ethanol',
+        'Homo sapiens liver tissue male child (1 day) treated with ethanol',
     ]

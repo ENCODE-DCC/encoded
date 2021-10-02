@@ -1,6 +1,6 @@
 from .biosample import generate_summary_dictionary
 
-def biosample_summary_information(request, biosampleObject):
+def biosample_summary_information(request, biosampleObject, skip_non_perturbation_treatments_flag=False):
     drop_age_sex_flag = False
     add_classification_flag = False
     drop_originated_from_flag = False
@@ -25,6 +25,14 @@ def biosample_summary_information(request, biosampleObject):
         treatment_objects_list = []
         for t in treatments:
             treatment_objects_list.append(request.embed(t, '@@object'))
+
+        if skip_non_perturbation_treatments_flag:
+            filtered_treatments_list = [
+                treatment for treatment in treatment_objects_list
+                if ('purpose' in treatment and treatment['purpose'] == 'perturbation')
+                or 'purpose' not in treatment
+            ]
+            treatment_objects_list = filtered_treatments_list
 
     part_of_object = None
     if 'part_of' in biosampleObject:
@@ -58,7 +66,7 @@ def biosample_summary_information(request, biosampleObject):
                     if len(genes) >= 1:
                         gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
                         modification_dict['target_gene'] = gene_object.get('symbol')
-                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+                        modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name')
                     else:
                         modification_dict['target'] = target['label']
                 else:
@@ -73,7 +81,7 @@ def biosample_summary_information(request, biosampleObject):
             if gm_object.get('introduced_gene'):
                 gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
                 modification_dict['gene'] = gene_object.get('symbol')
-                modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('name')
+                modification_dict['organism'] = request.embed(gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name')
             if 'method' in gm_object:
                 if (gm_object['method'] == 'CRISPR' and guides != ''):
                     entry = f'CRISPR ({guides})'

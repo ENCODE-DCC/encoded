@@ -30,12 +30,83 @@ export function BiosampleSummaryString(biosample, supressOrganism) {
     return <span><i>{biosample.organism.scientific_name}</i> {organismlessSummary}</span>;
 }
 
+/**
+ * Display the given biosample summary string with any of the given organism names italicized.
+ */
+export const BiosampleSummaryDisplay = ({ summary, organisms }) => {
+    if (organisms.length > 0) {
+        // Generate the equivalent shortened organism scientific names.
+        const organismsWithShortenedNames = organisms.concat(organisms.map((organism) => organism.replace(/^(\S)\S* (\S+)$/, '$1. $2')));
+
+        let cursor = 0;
+        let maybeMoreMatches = true;
+        const allOrganismsRegex = new RegExp(organismsWithShortenedNames.join('|'));
+        const displayedElements = [];
+        while (cursor < summary.length && maybeMoreMatches) {
+            const remainingString = summary.slice(cursor);
+            const matchData = remainingString.match(new RegExp(allOrganismsRegex));
+            if (matchData) {
+                if (matchData.index > 0) {
+                    // Add the text before the match.
+                    const preMatch = remainingString.slice(0, matchData.index);
+                    displayedElements.push(<React.Fragment key={cursor}>{preMatch}</React.Fragment>);
+                    cursor += preMatch.length;
+                }
+
+                // Add the italicized organism name.
+                displayedElements.push(<i key={cursor}>{matchData[0]}</i>);
+                cursor += matchData[0].length;
+            } else {
+                maybeMoreMatches = false;
+            }
+        }
+
+        // Add the remaining text after any matches.
+        displayedElements.push(<React.Fragment key="remaining">{summary.slice(cursor)}</React.Fragment>);
+        return displayedElements;
+    }
+
+    // No organisms to italicize.
+    return <>{summary}</>;
+};
+
+BiosampleSummaryDisplay.propTypes = {
+    /** Biosample summary string possibly containing organism scientific names */
+    summary: PropTypes.string.isRequired,
+    /** List of organism scientific names to check against */
+    organisms: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+
 // Some biosample-specific utilities
 //   Return an array of biosample scientific names from the given array of biosamples.
 export function BiosampleOrganismNames(biosamples) {
     return _.uniq(biosamples.map((biosample) => biosample.organism.scientific_name));
 }
 
+//   Return an array of biosample scientific names from the given array of genetic modifications.
+export function GeneticModificationOrganismNames(biosamples) {
+    const geneticModificationOrganisms = [];
+    biosamples.forEach((biosample) => {
+        if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
+            const appliedModifications = biosample.applied_modifications;
+            appliedModifications.forEach((modification) => {
+                if (modification.introduced_gene && modification.introduced_gene.organism) {
+                    geneticModificationOrganisms.push(modification.introduced_gene.organism.scientific_name);
+                } else if (modification.modified_site_by_target_id && modification.modified_site_by_target_id.organism) {
+                    geneticModificationOrganisms.push(modification.modified_site_by_target_id.organism.scientific_name);
+                }
+            });
+        }
+    });
+    const reducedGeneticModificationOrganisms = geneticModificationOrganisms.reduce((previousValue, currentValue) => {
+        if (!(previousValue.includes(currentValue))) {
+            previousValue.push(currentValue);
+        }
+        return previousValue;
+    }, []);
+    return reducedGeneticModificationOrganisms;
+}
 
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
 // documents (with @type of Document or Characterization). If the given biosample has no documents, this
@@ -80,7 +151,7 @@ export function CollectBiosampleDocs(biosample) {
 
 
 // Display a table of retrieved biosamples related to the displayed biosample
-export const BiosampleTable = ({ items, limit, total, url, title }) => {
+export const BiosampleTable = ({ items, limit, total, url, title, organisms }) => {
     let biosamples = items;
     let footer = null;
     let subheader = null;
@@ -101,7 +172,7 @@ export const BiosampleTable = ({ items, limit, total, url, title }) => {
 
     return (
         <SortTablePanel title={title} subheader={subheader}>
-            <SortTable list={biosamples} columns={BiosampleTable.columns} footer={footer} />
+            <SortTable list={biosamples} columns={BiosampleTable.columns} meta={{ organisms }} footer={footer} />
         </SortTablePanel>
     );
 };
@@ -112,6 +183,7 @@ BiosampleTable.propTypes = {
     total: PropTypes.number,
     url: PropTypes.string,
     title: PropTypes.string,
+    organisms: PropTypes.array,
 };
 
 BiosampleTable.defaultProps = {
@@ -119,6 +191,7 @@ BiosampleTable.defaultProps = {
     total: 0,
     url: '',
     title: '',
+    organisms: [],
 };
 
 BiosampleTable.columns = {
@@ -134,7 +207,16 @@ BiosampleTable.columns = {
         title: 'Term',
         getValue: (item) => item.biosample_ontology && item.biosample_ontology.term_name,
     },
-    summary: { title: 'Summary', sorter: false },
+    summary: {
+        title: 'Summary',
+        sorter: false,
+        display: (biosample, meta) => {
+            const organismNames = typeof biosample.organism === 'string'
+                ? meta.organisms
+                : [biosample.organism.scientific_name].concat(GeneticModificationOrganismNames([biosample]));
+            return <BiosampleSummaryDisplay summary={biosample.summary} organisms={organismNames} />;
+        },
+    },
 };
 
 

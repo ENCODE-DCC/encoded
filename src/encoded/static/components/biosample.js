@@ -12,7 +12,7 @@ import { RelatedItems } from './item';
 import { singleTreatment, treatmentDisplay, treatmentTypeDisplay, PanelLookup, AlternateAccession, ItemAccessories, InternalTags, TopAccessories, requestObjects } from './objectutils';
 import pubReferenceList from './reference';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
-import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
+import { BiosampleSummaryDisplay, GeneticModificationOrganismNames, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
 import formatMeasurement from '../libs/formatMeasurement';
 
 
@@ -183,7 +183,7 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
 
                             <div data-test="summary">
                                 <dt>Summary</dt>
-                                <dd>{BiosampleSummaryString(context)}</dd>
+                                <dd>{context.summary ? <div> <BiosampleSummaryDisplay summary={context.summary} organisms={[context.organism.scientific_name].concat(GeneticModificationOrganismNames([context]))} /> </div> : null}</dd>
                             </div>
 
                             {context.description ?
@@ -480,6 +480,7 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
                     title="Pooled from biosamples"
                     items={context.pooled_from}
                     total={context.pooled_from.length}
+                    organisms={[context.organism.scientific_name]}
                 />
             : null}
 
@@ -521,6 +522,7 @@ const BiosampleComponent = ({ context, auditIndicators, auditDetail }, reactCont
                     limit={0}
                     total={biosampleChildren.length}
                     title="Biosamples that are part of this biosample"
+                    organisms={[context.organism.scientific_name]}
                 />
             : null}
 

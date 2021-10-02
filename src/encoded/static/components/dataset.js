@@ -2461,22 +2461,6 @@ export const SeriesComponent = ({
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
-    // Calculate the species for biosample summary
-    let speciesRender = null;
-    if (context.organism && context.organism.length > 0) {
-        const speciesList = [...new Set(context.organism.map((organism) => organism.scientific_name))];
-        speciesRender = (
-            <span>
-                {speciesList.map((species, i) => (
-                    <span key={i}>
-                        {i > 0 ? <span> and </span> : null}
-                        <i>{species}</i>
-                    </span>
-                ))}
-            </span>
-        );
-    }
-
     // Calculate the donor diversity.
     const diversity = options.suppressDonorDiversity ? null : donorDiversity(context);
 
@@ -2572,12 +2556,11 @@ export const SeriesComponent = ({
                                 </div>
                             : null}
 
-                            {context.biosample_summary || speciesRender ?
+                            {context.biosample_summary ?
                                 <div data-test="biosamplesummary">
                                     <dt>Biosample summary</dt>
                                     <dd>
                                         {context.biosample_summary ? <span>{context.biosample_summary} </span> : null}
-                                        {speciesRender ? <span>({speciesRender})</span> : null}
                                     </dd>
                                 </div>
                             : null}

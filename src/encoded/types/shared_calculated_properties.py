@@ -287,7 +287,9 @@ class CalculatedBiosampleSummary:
                                         add_classification_flag = True
 
         sentence_parts = [
+            'organism_name',
             'genotype_strain',
+            'disease_term_name',
             'experiment_term_phrase',
             'phase',
             'fractionated',
@@ -299,13 +301,15 @@ class CalculatedBiosampleSummary:
             'originated_from',
             'treatments_phrase',
             'depleted_in',
-            'disease_term_name',
             'pulse_chase_time'
         ]
         if drop_age_sex_flag:
             sentence_parts.remove('sex_stage_age')
+            for entry in dictionaries_of_phrases:
+                if 'disease_term_name' in entry and entry['disease_term_name'] != '':
+                    entry['disease_term_name'] = f"from a donor {entry['disease_term_name']}"
         if add_classification_flag:
-            sentence_parts.insert(2, 'sample_type')
+            sentence_parts.insert(4, 'sample_type')
         if biosample_drop_originated_from_flag:
             sentence_parts.remove('originated_from')
 
