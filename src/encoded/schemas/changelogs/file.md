@@ -13,6 +13,8 @@
 * Added *regulatory elements prediction model* to the enum list for *output_type*
 * Added *genome subcompartments* and *chromatin stripes* to the enum list for *output_type*
 * Added *TF binding prediction model*, *enhancer prediction model* and *promoter prediction model*  to the enum list for *output_type*, restricted the use of *regulatory elements prediction model* *output_type* to DCC personnel only
+* Added *filtered reads* and *archr project* to the enum list for *output_type*
+* Added *mex* to the enum list for *file_format_type*, to be used only with .tar files.
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.

@@ -574,3 +574,53 @@ class ChiaPetPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
 class HicQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'hic_quality_metric'
     schema = load_schema('encoded:schemas/hic_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-alignment-quality-metrics',
+    properties={
+        'title': "scATAC Alignment Quality Metrics",
+    })
+class ScAtacAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_alignment_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-read-quality-metrics',
+    properties={
+        'title': "scATAC Read Quality Metrics",
+    })
+class ScAtacReadQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_read_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_read_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-multiplet-quality-metrics',
+    properties={
+        'title': "scATAC Multiplet Quality Metrics",
+    })
+class ScAtacMultipletQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_multiplet_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_multiplet_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-library-complexity-quality-metrics',
+    properties={
+        'title': "scATAC Library Complexity Quality Metrics",
+    })
+class ScAtacLibraryComplexityQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_library_complexity_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_library_complexity_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-analysis-quality-metrics',
+    properties={
+        'title': "scATAC Analysis Quality Metrics",
+    })
+class ScAtacAnalysisQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_analysis_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_analysis_quality_metric.json')

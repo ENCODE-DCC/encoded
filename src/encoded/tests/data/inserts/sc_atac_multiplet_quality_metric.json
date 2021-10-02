@@ -1,0 +1,22 @@
+[
+    {
+        "status": "released",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "9d40106e-b1eb-44c4-8535-5185232eb20f",
+        "assay_term_name": "single-nucleus ATAC-seq",
+        "quality_metric_of": ["ENCFF789ARC"],
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "award": "/awards/U54HG007010/",
+        "original_barcode_count": 38041,
+        "final_barcode_count": 36219,
+        "analyzed_barcode_count": 89,
+        "multiplet_barcode_count": 9999,
+        "frac_multiplets":0.7293,
+        "multiplet_threshold": 0.666,
+        "multiplet_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
+        "barcode_pairs_expanded": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
+        "barcodes_status": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
+        "barcode_pairs_multiplets": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
+        "multiplet_threshold_plot": "search-result-bone-chip.png"
+    }
+]

@@ -1880,6 +1880,11 @@ function qcAbbr(qc) {
         ChiaPetAlignmentQualityMetric: 'AL',
         ChiaPetChrInteractionsQualityMetric: 'CI',
         ChiaPetPeakEnrichmentQualityMetric: 'PE',
+        ScAtacAlignmentQualityMetric: 'AL',
+        ScAtacReadQualityMetric: 'RQ',
+        ScAtacMultipletQualityMetric: 'MQ',
+        ScAtacLibraryComplexityQualityMetric: 'LC',
+        ScAtacAnalysisQualityMetric: 'AQ',
     };
 
     let abbr = qcAbbrMap[qc['@type'][0]];

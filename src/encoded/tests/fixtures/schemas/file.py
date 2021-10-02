@@ -2181,3 +2181,19 @@ def fragments_file_csv(testapp, experiment, award, lab):
         "status": "in progress"
     }
     return item
+
+
+@pytest.fixture
+def archr_project_file(testapp, experiment, award, lab):
+    item = {
+        "assembly": "GRCh38",
+        "award": award['@id'],
+        'dataset': experiment['@id'],
+        "file_format": "tar",
+        "file_size": 16000555,
+        'lab': lab['@id'],
+        "md5sum": "b1ebd74b6e11928714b1ca96517c6bd4",
+        "output_type": "archr project",
+        "status": "in progress"
+    }
+    return item

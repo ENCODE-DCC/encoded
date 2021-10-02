@@ -65,6 +65,33 @@ const qcAttachmentProperties = {
         { nuclear_preseq: 'Total read metric file' },
         { nuclear_preseq_targets: 'Sequencing depths file' },
     ],
+    ScAtacAlignmentQualityMetric: [
+        { mito_stats: 'Mitochondrial read statistics' },
+        { samstats: 'SAMstats QC' },
+    ],
+    ScAtacReadQualityMetric: [
+        { barcode_matching_stats: 'Barcode matching QC' },
+        { adapter_trimming_stats: 'Adapter trimming QC' },
+        { barcode_revcomp_stats: 'Barcode reverse complement detection QC' },
+    ],
+    ScAtacMultipletQualityMetric: [
+        { multiplet_stats: 'Multiplet detection statistics file' },
+        { barcodes_status: 'Per-barcode multiplet status' },
+        { barcode_pairs_multiplets: 'Multiplet barcode pair statistics' },
+        { barcode_pairs_expanded: 'Total barcode pair statistics' },
+        { multiplet_threshold_plot: 'Plot illustrating multiplet Jaccard distance threshold' },
+    ],
+    ScAtacLibraryComplexityQualityMetric: [
+        { picard_markdup_stats: 'Picard MarkDup statistics' },
+        { pbc_stats: 'PBC statistics' },
+    ],
+    ScAtacAnalysisQualityMetric: [
+        { archr_doublet_summary_figure: 'ArchR doublet summary' },
+        { archr_fragment_size_distribution: 'ArchR fragment size distribution' },
+        { archr_tss_by_unique_frags: 'ArchR TSS-by-fragment plot' },
+        { archr_doublet_summary_text: 'ArchR doublet data' },
+        { archr_pre_filter_metadata: 'ArchR pre-filter metadata' },
+    ],
 };
 
 

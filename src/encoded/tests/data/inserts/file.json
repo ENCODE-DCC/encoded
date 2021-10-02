@@ -4727,7 +4727,8 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "md5sum": "05fcff66116ff87c3acf0ffa31d1d164",
         "accession": "ENCFF809SPM",
-        "file_format": "h5ad",
+        "file_format": "tar",
+        "file_format_type": "mex",
         "award": "/awards/U54HG006998/",
         "assembly": "GRCh38",
         "dataset": "/experiments/ENCSR000SCR/",
@@ -4807,5 +4808,43 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "4ceb92b2-d003-4cd9-9752-9df707bb1715"
+    },
+    {
+        "accession": "ENCFF789ARC",
+        "aliases": [
+            "will-greenleaf:archr_project_file"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR606VJQ",
+        "file_format": "tar",
+        "file_size": 5000000,
+        "lab": "ali-mortazavi",
+        "md5sum": "517c6bd44769b4dad6571753f3ee033b",
+        "output_type": "archr project",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "4ceb92b2-b0d5-4cd9-b6ba-93293dd51715"
+    },
+    {
+        "accession": "ENCFF456FLR",
+        "aliases": [
+            "will-greenleaf:filtered_reads"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR606VJQ",
+        "file_format": "fastq",
+        "read_length": 76,
+        "file_size": 9000000,
+        "lab": "ali-mortazavi",
+        "md5sum": "238a0a96476b0d5ad6e41653517c6bd4",
+        "output_type": "filtered reads",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "run_type": "single-ended",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "93293dd5-d003-b6ba-9752-9df707bbb0d5"
     }
 ]
