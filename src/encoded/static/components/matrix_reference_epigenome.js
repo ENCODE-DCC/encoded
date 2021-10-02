@@ -11,7 +11,7 @@ import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
 import * as globals from './globals';
 import { RowCategoryExpander } from './matrix';
-import { BodyMapThumbnailAndModal, organField, systemsField, clearBodyMapSelectionsFromUrl } from './body_map';
+import { BodyMapThumbnailAndModal, clearBodyMapSelectionsFromUrl } from './body_map';
 import { BatchDownloadControls, ViewControls } from './view_controls';
 import { MatrixBadges } from './objectutils';
 
@@ -422,42 +422,6 @@ MatrixHeader.contextTypes = {
     navigate: PropTypes.func,
 };
 
-const SelectedFilters = (props) => {
-    const selectedFilters = props.filters;
-    const organTerms = selectedFilters.filter((f) => f.field === organField);
-    const systemsTerms = selectedFilters.filter((f) => f.field === systemsField);
-    const freeSearchTerms = selectedFilters.filter((f) => f.field === 'searchTerm');
-    const selectedTerms = [...organTerms, ...systemsTerms, ...freeSearchTerms];
-    return (
-        <>
-            {(selectedTerms.length > 0) ?
-                <div className="filter-container">
-                    <div className="filter-hed">Selected filters:</div>
-                    {selectedTerms.map((filter) => {
-                        const isNegativeTerm = filter.field.indexOf('!') > -1;
-                        return (
-                            <a
-                                href={filter.remove}
-                                key={filter.term}
-                                className={`filter-link${isNegativeTerm ? ' filter-link--negative' : ''}`}
-                            >
-                                <div className="filter-link__title">
-                                    {filter.term}
-                                </div>
-                                <div className="filter-link__icon">{svgIcon('multiplication')}</div>
-                            </a>
-                        );
-                    })}
-                </div>
-            : null}
-        </>
-    );
-};
-
-SelectedFilters.propTypes = {
-    filters: PropTypes.array.isRequired,
-};
-
 /**
  * Display the matrix and associated controls above them.
  */
@@ -718,7 +682,6 @@ class MatrixPresentation extends React.Component {
                             Clear all body map selections
                         </button>
                     </div>
-                    <SelectedFilters filters={context.filters} />
                     <div className="matrix-facet-container">
                         {(this.initialSelectedTab === 'Homo sapiens') ?
                             <BodyMapThumbnailAndModal

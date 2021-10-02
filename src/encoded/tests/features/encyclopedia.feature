@@ -1,7 +1,7 @@
 @Summary
 Feature: Encyclopedia
     Scenario: Encyclopedia
-        When I visit "/encyclopedia"
+        When I visit "/encyclopedia/?type=File&annotation_type=candidate+Cis-Regulatory+Elements&assembly=GRCh38&file_format=bigBed&file_format=bigWig"
         And I wait for the content to load
         Then I should see "Encyclopedia - Integrative Annotations"
 
@@ -11,4 +11,4 @@ Feature: Encyclopedia
 
         When I press "Homo sapiens"
         And I wait for the content to load
-        Then I should see exactly one element with the css selector ".facet-list-wrapper"
+        Then I should see exactly one element with the css selector ".file-gallery-facet-redirect"

@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import url from 'url';
 import { Panel, TabPanel } from '../libs/ui/panel';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
-import getSeriesData from './series_search.js';
 import { FacetList } from './search';
 import { ASSEMBLY_DETAILS } from './vis_defines';
 import {
@@ -13,6 +11,7 @@ import {
 } from './batch_download';
 import { svgIcon } from '../libs/svg-icons';
 import QueryString from '../libs/query_string';
+import { BodyMapThumbnailAndModal } from './body_map';
 
 // Generate tabs for available organisms
 const organismTabs = {};
@@ -27,7 +26,6 @@ const keepFacets = [
     'assembly', // We will not display the default assembly facet, but we want to keep the facet data in order to generate the special assembly facet
     'biochemical_inputs',
     'biosample_ontology.term_name',
-    'biosample_ontology.organ_slims',
     'targets.label',
     'assay_title',
     'encyclopedia_version',
@@ -57,130 +55,43 @@ const defaultAssemblyByOrganism = {
 };
 
 // Hide facets that we don't want to display
-const filterFacet = (response) => {
-    const newResponse = response;
-    const filteredFacets = response.facets.filter((facet) => (keepFacets.indexOf(facet.field) > -1));
-    newResponse.facets = filteredFacets;
-    return newResponse;
+const filterFacet = (facets) => {
+    const filteredFacets = facets.filter((facet) => (keepFacets.indexOf(facet.field) > -1));
+    return filteredFacets;
 };
 
 // The encyclopedia page displays a table of results corresponding to a selected annotation type
 const Encyclopedia = (props, context) => {
-    const defaultOrganism = 'Homo sapiens';
-    const defaultAnnotation = 'candidate Cis-Regulatory Elements';
-    const defaultAssembly = 'GRCh38';
-    const defaultFileDownload = 'all';
-    const encyclopediaVersion = 'current';
-    const searchBase = url.parse(context.location_href).search || '';
-    const fileOptions = ['CTCF-only', 'proximal enhancer-like', 'DNase-H3K4me3', 'distal enhancer-like', 'promoter-like', 'rDHS', 'all']; // Download options for cell-type agnostic cCREs
+    const annotation = props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term).length > 0 ? props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term) : 'candidate Cis-Regulatory Elements';
+    const assembly = props.context.filters.filter((f) => f.field === 'assembly').map((f) => f.term)[0] || 'GRCh38';
+    const organism = ASSEMBLY_DETAILS[assembly].species;
+    const searchBase = `?type=File&annotation_type=${annotation}&assembly=${assembly}&file_format=bigBed&file_format=bigWig&encyclopedia_version=current`;
+    const resetUrl = `?type=File&annotation_type=candidate+Cis-Regulatory+Elements&assembly=${assembly}&file_format=bigBed&file_format=bigWig&encyclopedia_version=current`;
+    // If annotation or assembly is not set in url (required) page is reloaded with defaults
+    const reloadPage = props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term).length === 0 || props.context.filters.filter((f) => f.field === 'assembly').map((f) => f.term).length === 0;
 
-    const [selectedOrganism, setSelectedOrganism] = React.useState(defaultOrganism);
-    const [annotationType, setAnnotationType] = React.useState([defaultAnnotation]);
-    const [selectedAssembly, setAssembly] = React.useState(defaultAssembly);
-    const [assemblyList, setAssemblyList] = React.useState([defaultAssembly]);
+    const defaultFileDownload = 'all';
+    const fileOptions = ['CTCF-only', 'proximal enhancer-like', 'DNase-H3K4me3', 'distal enhancer-like', 'promoter-like', 'rDHS', 'all']; // Download options for cell-type agnostic cCREs
     const [selectedFiles, setSelectedFiles] = React.useState([defaultFileDownload]);
 
-    // Data which populates the browser
-    const [facetData, setFacetData] = React.useState([]);
-    const [vizFiles, setVizFiles] = React.useState([]);
-
     // Links used to generate batch download objects
-    const [downloadHref, setdownloadHref] = React.useState(`type=Annotation&annotation_subtype=${defaultFileDownload}&status=released&encyclopedia_version=${encyclopediaVersion}&assembly=${defaultAssembly}`);
+    const [downloadHref, setdownloadHref] = React.useState(`type=Annotation&annotation_subtype=${defaultFileDownload}&status=released&assembly=${assembly}&encyclopedia_version=current`);
     const [downloadController, setDownloadController] = React.useState(null);
-    const [browserHref, setBrowserHref] = React.useState('');
-    const [browserController, setBrowserController] = React.useState(null);
 
-    // vizFilesError is true when there are no results for selected filters
-    const [vizFilesError, setVizFilesError] = React.useState(false);
-    // Number of files available is displayed
-    const [totalFiles, setTotalFiles] = React.useState(0);
+    const browserQuery = new QueryString(props.context['@id'].replace('File', 'Annotation').split('?')[1]);
+    browserQuery.deleteKeyValue('file_format');
+    const browserController = new SearchBatchDownloadController('Annotation', browserQuery);
 
-    // Reset button resets to cCREs and the assembly matching the organism tab
-    const resetPage = () => {
-        const assembly = defaultAssemblyByOrganism[selectedOrganism];
-        setAssembly(assembly);
-        const newBrowserHref = `?type=File&annotation_type=${defaultAnnotation}&status=released&encyclopedia_version=${encyclopediaVersion}&file_format=bigBed&file_format=bigWig&assembly=${assembly}`;
-        setAnnotationType(['candidate Cis-Regulatory Elements']);
-        setBrowserHref(newBrowserHref);
-        getSeriesData(newBrowserHref, context.fetch).then((response) => {
-            if (response) {
-                const newResponse = filterFacet(response, selectedOrganism);
-                setFacetData(newResponse);
-                setTotalFiles(newResponse.total);
-                setVizFilesError(false);
-            } else {
-                setFacetData([]);
-                setTotalFiles(0);
-                setVizFilesError(true);
-            }
-        });
-    };
+    const newFacets = filterFacet(props.context.facets.filter((facet) => facet.field !== 'assembly'));
 
-    // Compile list of available assemblies from facet
-    const findAvailableAssemblies = (facets) => {
-        const newAssemblyList = [];
-        facets.forEach((facet) => {
-            if (facet.field === 'assembly') {
-                facet.terms.forEach((term) => {
-                    const termName = term.key.toString();
-                    if (ASSEMBLY_DETAILS[termName] && ASSEMBLY_DETAILS[termName].species === selectedOrganism) {
-                        newAssemblyList.push(termName);
-                    }
-                });
-                setAssemblyList(newAssemblyList);
-            }
-        });
-    };
-
-    // Update browser link and facet data when organism, assembly, or annotation type changes
-    React.useEffect(() => {
-        let newBrowserHref;
-        // If "browserHref" is already set, update assembly and annotation
-        if (browserHref) {
-            const query = new QueryString(browserHref);
-            query.deleteKeyValue('annotation_type');
-            annotationType.forEach((type) => {
-                query.addKeyValue('annotation_type', type);
-            });
-            query.deleteKeyValue('assembly');
-            query.addKeyValue('assembly', selectedAssembly);
-            newBrowserHref = query.format();
-        // Set browserHref if it is not set
+    const annotationCounts = {};
+    annotationTypes.forEach((type) => {
+        if (props.context.facets.filter((f) => f.field === 'annotation_type')[0]?.terms.filter((t) => t.key === type)[0]) {
+            annotationCounts[type] = props.context.facets.filter((f) => f.field === 'annotation_type')[0].terms.filter((t) => t.key === type)[0].doc_count;
         } else {
-            newBrowserHref = `?type=File&annotation_type=${annotationType}&status=released&encyclopedia_version=${encyclopediaVersion}&file_format=bigBed&file_format=bigWig&assembly=${selectedAssembly}`;
+            annotationCounts[type] = 0;
         }
-        setBrowserHref(newBrowserHref);
-        getSeriesData(newBrowserHref, context.fetch).then((response) => {
-            if (response) {
-                const newResponse = filterFacet(response, selectedOrganism);
-                findAvailableAssemblies(newResponse.facets);
-                setFacetData(newResponse);
-                setTotalFiles(newResponse.total);
-                setVizFilesError(false);
-            } else {
-                setFacetData([]);
-                setTotalFiles(0);
-                setVizFilesError(true);
-            }
-        });
-    }, [selectedOrganism, selectedAssembly, annotationType, context.fetch]);
-
-    // Update visualized files when facet data is updated
-    // Filter out cCRE files that are not the "cCRE, all" file
-    React.useEffect(() => {
-        let newFiles = [];
-        if (facetData && facetData['@graph']) {
-            newFiles = facetData['@graph'];
-            const filteredFiles = newFiles.filter(((file) => {
-                let hideFile = false;
-                hideFile = file.annotation_type === 'candidate Cis-Regulatory Elements' && file.annotation_subtype && file.annotation_subtype !== 'all';
-                return !hideFile;
-            }));
-            setVizFiles(filteredFiles);
-        } else {
-            setVizFiles([]);
-        }
-    }, [facetData]);
+    });
 
     // Update cell-type agnostic batch download button when download link changes
     React.useEffect(() => {
@@ -189,13 +100,17 @@ const Encyclopedia = (props, context) => {
         setDownloadController(controller);
     }, [downloadHref]);
 
-    // Update browser files batch download button when browser files link changes
+    // Reset page to defaults, clearing extraneous filters
+    const handleReset = () => {
+        context.navigate(resetUrl);
+    };
+
+    // Set page to defaults if no annotation or assembly is defined by url
     React.useEffect(() => {
-        const query = new QueryString(browserHref.replace('File', 'Annotation').split('?')[1]);
-        query.deleteKeyValue('file_format');
-        const controller = new SearchBatchDownloadController('Annotation', query);
-        setBrowserController(controller);
-    }, [browserHref]);
+        if (reloadPage) {
+            handleReset();
+        }
+    }, []);
 
     // Update download link from selection on batch download modal
     const changedownloadHref = (input) => {
@@ -225,29 +140,25 @@ const Encyclopedia = (props, context) => {
         setdownloadHref(newHref);
     };
 
-    // Update assembly, organism, browser files, and download link when user clicks on tab
     const handleTabClick = (tab) => {
-        setVizFiles([]);
-        setSelectedOrganism(tab);
-        setAssembly(defaultAssemblyByOrganism[tab]);
-
-        // Update download link
-        const query = new QueryString(downloadHref);
+        const query = new QueryString(props.context['@id']);
         query.replaceKeyValue('assembly', defaultAssemblyByOrganism[tab]);
-        const newHref = query.format();
-        setdownloadHref(newHref);
+        context.navigate(query.format());
     };
 
     // Annotation type facet is not a normal facet, at least one annotation must be selected
     // Facet filters look like radiobuttons
     const chooseAnnotationType = (type) => {
-        let newAnnotationType = annotationType;
-        if (annotationType.indexOf(type) > -1 && annotationType.length > 1) {
-            newAnnotationType = annotationType.filter((annotation) => annotation !== type);
-        } else if (annotationType.indexOf(type) === -1) {
-            newAnnotationType = [...annotationType, type];
+        const query = new QueryString(props.context['@id']);
+        const existingAnnotations = query.getKeyValues('annotation_type');
+        if (existingAnnotations.indexOf(type) > -1 && existingAnnotations.length > 1) {
+            query.deleteKeyValue('annotation_type', type);
+        } else if (existingAnnotations.indexOf(type) === -1) {
+            query.addKeyValue('annotation_type', type);
+        } else {
+            query.replaceKeyValue('annotation_type', 'candidate Cis-Regulatory Elements');
         }
-        setAnnotationType(newAnnotationType);
+        context.navigate(query.format());
     };
 
     // Update browser url from facet filters
@@ -262,197 +173,178 @@ const Encyclopedia = (props, context) => {
             if (!clickedLink && e.target.href) {
                 clickedLink = e.target;
             }
-            if (clickedLink && clickedLink.href) {
+            if (clickedLink?.href) {
                 const clickedHref = clickedLink.href;
-                getSeriesData(clickedHref, context.fetch).then((response) => {
-                    if (response) {
-                        const newResponse = filterFacet(response, selectedOrganism);
-                        setFacetData(newResponse);
-                        setTotalFiles(newResponse.total);
-                        setBrowserHref(clickedHref);
-                    } else {
-                        setFacetData([]);
-                        setTotalFiles(0);
-                        setVizFilesError(true);
-                    }
-                });
+                context.navigate(clickedHref);
             }
         // Reset annotation type and assembly on "Clear filters" click
         } else if (isClearFilters) {
-            resetPage();
+            handleReset();
         }
     };
 
-    return (
-        <div className="layout">
-            <div className="layout__block layout__block--100">
-                <div className="block series-search">
-                    <div className="encyclopedia-info-wrapper">
-                        <div className="badge-container">
-                            <h1>Encyclopedia - Integrative Annotations</h1>
-                            <span className="encyclopedia-badge">{encyclopediaVersion}</span>
-                        </div>
-                        <div className="related-links-container">
-                            <div className="boder-container">
-                                <div className="encyclopedia-subhead">Variant Annotation</div>
-                                <div><a href="https://regulomedb.org/regulome-search/">RegulomeDB</a></div>
-                                <div><a href="http://funseq2.gersteinlab.org/">FunSeq2</a></div>
-                                <div><a href="https://pubs.broadinstitute.org/mammals/haploreg/haploreg.php">HaploReg</a></div>
+    if (!reloadPage) {
+        return (
+            <div className="layout">
+                <div className="layout__block layout__block--100">
+                    <div className="block series-search">
+                        <div className="encyclopedia-info-wrapper">
+                            <div className="badge-container">
+                                <h1>Encyclopedia - Integrative Annotations</h1>
+                            </div>
+                            <div className="related-links-container">
+                                <div className="boder-container">
+                                    <div className="encyclopedia-subhead">Variant Annotation</div>
+                                    <a className="encyclopedia-href" href="https://regulomedb.org/regulome-search/">
+                                        <img src="/static/img/regulome.ico" alt="Regulome" />
+                                        <div className="href-name">RegulomeDB</div>
+                                    </a>
+                                    <a className="encyclopedia-href" href="http://funseq2.gersteinlab.org/">
+                                        <img src="/static/img/FunSeq2.png" alt="FunSeq2" />
+                                        <div className="href-name">FunSeq2</div>
+                                    </a>
+                                    <a className="encyclopedia-href" href="https://pubs.broadinstitute.org/mammals/haploreg/haploreg.php">
+                                        <img src="/static/img/broadinstitute.ico" alt="Haplo" />
+                                        <div className="href-name">HaploReg</div>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="outer-tab-container">
-                        <TabPanel
-                            tabs={organismTabs}
-                            selectedTab={selectedOrganism}
-                            handleTabClick={(tab) => handleTabClick(tab)}
-                            tabCss="tab-button"
-                            tabPanelCss="tab-container encyclopedia-tabs"
-                        >
-                            <div className="tab-body">
-                                <div className="download-wrapper">
-                                    <hr />
-                                    {downloadController ?
-                                        <div className="download-line">
-                                            <BatchDownloadActuator
-                                                controller={downloadController}
-                                                actuator={
-                                                    <button className="download-icon-button" type="button">
-                                                        {svgIcon('download')}
-                                                    </button>
-                                                }
-                                                modalContent={
-                                                    <div className="download-selections">
-                                                        <div className="encyclopedia-subhead">Download cell-type agnostic cCREs:</div>
-                                                        {fileOptions.map((download) => <label className="download-checkbox"><input type="checkbox" name="checkbox" value={download} onChange={() => changedownloadHref(download)} checked={(selectedFiles.indexOf(download) > -1)} />{download}</label>)}
-                                                    </div>
-                                                }
-                                            />
-                                            <span>Download cell-type agnostic cCREs</span>
-                                        </div>
-                                    : null}
-                                    {browserController ?
-                                        <div className="download-line">
-                                            <BatchDownloadActuator
-                                                controller={browserController}
-                                                actuator={
-                                                    <button className="download-icon-button" type="button">
-                                                        {svgIcon('download')}
-                                                    </button>
-                                                }
-                                            />
-                                            <span>Download selected annotations</span>
-                                        </div>
-                                    : null}
-                                    <hr />
-                                </div>
-                                <div className="series-wrapper">
-                                    <div>There are {vizFiles.length} file{vizFiles.length === 1 ? '' : 's'} displayed out of {totalFiles} file{totalFiles.length > 1 ? '' : 's'} that match the selected filters.</div>
-                                    <Panel>
-                                        <div className="file-gallery-container encyclopedia-file-gallery">
-                                            {(facetData && facetData.facets && facetData.facets.length > 0) ?
-                                                <div className="file-gallery-facet-redirect" onClick={(e) => handleFacetClick(e)}>{/* eslint-disable-line */}
-                                                    <button className="reset-encyclopedia" type="button">
-                                                        Reset filters
-                                                    </button>
-                                                    <FacetList
-                                                        context={facetData}
-                                                        facets={facetData.facets.filter((facet) => facet.field !== 'assembly')}
-                                                        filters={facetData.filters}
-                                                        searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-                                                        hideDocType
-                                                        additionalFacet={
-                                                            <>
-                                                                <div className="facet ">
-                                                                    <h5>Annotation Type</h5>
-                                                                    {annotationTypes.map((type) => (
-                                                                        <button type="button" key={type} className="facet-term annotation-type" onClick={() => chooseAnnotationType(type)}>
-                                                                            {(annotationType.indexOf(type) > -1) ?
-                                                                                <span className="full-dot dot" />
-                                                                            :
-                                                                                <span className="empty-dot dot" />
-                                                                            }
-                                                                            <div className="facet-term__text">
-                                                                                {type}
-                                                                            </div>
-                                                                        </button>
-                                                                    ))}
-                                                                </div>
-                                                                <div className="facet ">
-                                                                    <h5>Genome assembly</h5>
-                                                                    {(assemblyList.length > 0) ?
-                                                                        <>
-                                                                            {assemblyList.map((assembly) => (
-                                                                                <button type="button" key={assembly} className="facet-term annotation-type" onClick={() => setAssembly(assembly)}>
-                                                                                    {(selectedAssembly.indexOf(assembly) > -1) ?
-                                                                                        <span className="full-dot dot" />
-                                                                                    :
-                                                                                        <span className="empty-dot dot" />
-                                                                                    }
-                                                                                    <div className="facet-term__text">
-                                                                                        {assembly}
-                                                                                    </div>
-                                                                                </button>
-                                                                            ))}
-                                                                        </>
-                                                                    : null}
-                                                                </div>
-                                                            </>
-                                                        }
-                                                    />
-                                                </div>
-                                            :
-                                                <div className="file-gallery-facet-redirect">
-                                                    <button className="reset-encyclopedia" type="button" onClick={resetPage}>
-                                                        Reset filters
-                                                    </button>
-                                                    <div className="box facets">
-                                                        <div className="facet-list-wrapper">
-                                                            <div className="facet ">
-                                                                <h5>Annotation Type</h5>
-                                                                {annotationTypes.map((type) => (
-                                                                    <button type="button" key={type} className="facet-term annotation-type" onClick={() => chooseAnnotationType(type)}>
-                                                                        {(annotationType.indexOf(type) > -1) ?
-                                                                            <span className="full-dot dot" />
-                                                                        :
-                                                                            <span className="empty-dot dot" />
-                                                                        }
-                                                                        <div className="facet-term__text">
-                                                                            {type}
-                                                                        </div>
-                                                                    </button>
-                                                                ))}
-                                                            </div>
+                        <div className="outer-tab-container">
+                            <TabPanel
+                                tabs={organismTabs}
+                                selectedTab={organism}
+                                handleTabClick={(tab) => handleTabClick(tab)}
+                                tabCss="tab-button"
+                                tabPanelCss="tab-container encyclopedia-tabs"
+                            >
+                                <div className="tab-body">
+                                    <div className="download-wrapper">
+                                        <hr />
+                                        {downloadController ?
+                                            <div className="download-line">
+                                                <BatchDownloadActuator
+                                                    controller={downloadController}
+                                                    actuator={
+                                                        <button className="download-icon-button" type="button">
+                                                            {svgIcon('download')}
+                                                        </button>
+                                                    }
+                                                    modalContent={
+                                                        <div className="download-selections">
+                                                            <div className="encyclopedia-subhead">Download cell-type agnostic cCREs:</div>
+                                                            {fileOptions.map((download) => <label className="download-checkbox"><input type="checkbox" name="checkbox" value={download} onChange={() => changedownloadHref(download)} checked={(selectedFiles.indexOf(download) > -1)} />{download}</label>)}
                                                         </div>
+                                                    }
+                                                />
+                                                <span>Download cell-type agnostic cCREs</span>
+                                            </div>
+                                        : null}
+                                        {browserController ?
+                                            <div className="download-line">
+                                                <BatchDownloadActuator
+                                                    controller={browserController}
+                                                    actuator={
+                                                        <button className="download-icon-button" type="button">
+                                                            {svgIcon('download')}
+                                                        </button>
+                                                    }
+                                                />
+                                                <span>Download selected annotations</span>
+                                            </div>
+                                        : null}
+                                        <hr />
+                                    </div>
+                                    <div className="series-wrapper">
+                                        <div>There are {props.context['@graph'].length} file{props.context['@graph'].length === 1 ? '' : 's'} displayed out of {props.context.total} file{props.context.total !== 1 ? 's' : ''} that match the selected filters.</div>
+                                        <Panel>
+                                            <div className="file-gallery-container encyclopedia-file-gallery">
+                                                <div className="file-gallery-facet-redirect" onClick={(e) => handleFacetClick(e)}>{/* eslint-disable-line */}
+                                                    <button className="reset-encyclopedia" type="button" onClick={handleReset}>
+                                                        Reset filters
+                                                    </button>
+                                                    {newFacets.length > 0 ?
+                                                        <FacetList
+                                                            context={props.context}
+                                                            facets={newFacets}
+                                                            filters={props.context.filters}
+                                                            searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                                                            hideDocType
+                                                            additionalFacet={
+                                                                <>
+                                                                    <div className="facet ">
+                                                                        <h5>Annotation Type</h5>
+                                                                        {annotationTypes.map((type) => (
+                                                                            <button type="button" key={type} className="facet-term annotation-type" onClick={() => chooseAnnotationType(type)}>
+                                                                                {(annotation.indexOf(type) > -1) ?
+                                                                                    <span className="full-dot dot" />
+                                                                                :
+                                                                                    <span className="empty-dot dot" />
+                                                                                }
+                                                                                <div className="facet-term__item">
+                                                                                    {type} ({annotationCounts[type]})
+                                                                                </div>
+                                                                            </button>
+                                                                        ))}
+                                                                    </div>
+                                                                    <BodyMapThumbnailAndModal
+                                                                        context={props.context}
+                                                                        location={context.location_href.replace('File', 'Experiment')}
+                                                                        organism={organism}
+                                                                    />
+                                                                </>
+                                                            }
+                                                        />
+                                                    :
+                                                        <div className="facet ">
+                                                            <h5>Annotation Type</h5>
+                                                            {annotationTypes.map((type) => (
+                                                                <button type="button" key={type} className="facet-term annotation-type" onClick={() => chooseAnnotationType(type)}>
+                                                                    {(annotation.indexOf(type) > -1) ?
+                                                                        <span className="full-dot dot" />
+                                                                    :
+                                                                        <span className="empty-dot dot" />
+                                                                    }
+                                                                    <div className="facet-term__item">
+                                                                        {type} ({annotationCounts[type]})
+                                                                    </div>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    }
+                                                </div>
+                                                {(props.context['@graph'].length > 0) ?
+                                                    <div className="file-gallery-tab-bar">
+                                                        <GenomeBrowser
+                                                            files={props.context['@graph']}
+                                                            label="cart"
+                                                            expanded
+                                                            assembly={assembly}
+                                                            annotation="V29"
+                                                            displaySort
+                                                            sortParam={['Biosample term name', 'Annotation type']}
+                                                            maxCharPerLine={30}
+                                                        />
                                                     </div>
-                                                </div>
-                                            }
-                                            {((vizFiles && vizFiles.length > 0) && !vizFilesError) ?
-                                                <div className="file-gallery-tab-bar">
-                                                    <GenomeBrowser
-                                                        files={vizFiles}
-                                                        label="cart"
-                                                        expanded
-                                                        assembly={selectedAssembly}
-                                                        annotation="V33"
-                                                        displaySort
-                                                        sortParam={['Biosample term name', 'Annotation type']}
-                                                        maxCharPerLine={30}
-                                                    />
-                                                </div>
-                                            :
-                                                <div>There are no visualizable results.</div>
-                                            }
-                                        </div>
-                                    </Panel>
+                                                :
+                                                    <div>There are no visualizable results.</div>
+                                                }
+                                            </div>
+                                        </Panel>
+                                    </div>
                                 </div>
-                            </div>
-                        </TabPanel>
+                            </TabPanel>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
+    return null;
+};
+
+Encyclopedia.propTypes = {
+    context: PropTypes.object.isRequired, // Summary search result object
 };
 
 Encyclopedia.contextTypes = {

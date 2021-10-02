@@ -82,6 +82,13 @@
         "origin_batches": {
             "title": "Batch"
         },
+        "biosample_ontology.cell_slims": {
+            "title": "Cell",
+            "type": "typeahead"
+        },
+        "biosample_ontology.system_slims": {
+            "title": "Systems"
+        },
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
@@ -93,7 +100,7 @@
             "length": "long"
         },
         "biochemical_inputs": {
-            "title": "Biochemical inputs"
+            "title": "Biochemical activity"
         },
         "encyclopedia_version": {
             "title": "Encyclopedia version"
@@ -125,13 +132,13 @@
                                 {
                                     "not": {
                                         "required": ["status"]
-                                    },                                   
-                                    "properties": {                                        
+                                    },
+                                    "properties": {
                                         "no_file_available": {
                                             "enum": [false]
                                         }
                                     }
-                                },                                    
+                                },
                                 {
                                     "required": ["file_size", "status"],
                                     "properties": {
@@ -155,10 +162,10 @@
                                     }
                                 }
                             ]
-                            
+
                         }
                     ]
-                   
+
                 }
             ]
         },
@@ -193,7 +200,7 @@
         },
         "run_type": {
             "comment": "run_type should not be specified for PacBio platform FASTQ files. Illumina produced paired-ended files should have paired_end value specified.",
-            "required": ["platform"], 
+            "required": ["platform"],
             "allOf": [
                 {
                     "not": {
@@ -217,7 +224,7 @@
                             "properties": {
                                 "run_type": {
                                     "enum": ["single-ended"]
-                                }                        
+                                }
                             }
                         },
                         {
@@ -233,7 +240,7 @@
                         }
                     ]
                 }
-            ]           
+            ]
         },
         "external_accession": {
             "comment": "A file with an external accession should not get an ENCODE accession.",
@@ -382,7 +389,7 @@
                                         "c7564b38-ab4f-4c42-a401-3de48689a998"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -399,7 +406,7 @@
                                         "ced61406-dcc6-43c4-bddd-4c977cc676e8"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -416,7 +423,7 @@
                                         "e2be5728-5744-4da4-8881-cb9526d0389e"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -433,7 +440,7 @@
                                         "6c275b37-018d-4bf8-85f6-6e3b830524a9"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -450,7 +457,7 @@
                                         "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -568,7 +575,7 @@
                     "properties": {
                         "file_format": {
                             "enum": [
-                                "tar"                                
+                                "tar"
                             ]
                         },
                         "output_type": {
@@ -2258,7 +2265,7 @@
             "title": "Annotation subtype"
         },
         "biochemical_inputs": {
-            "title": "Biochemical inputs"
+            "title": "Biochemical activity"
         },
         "encyclopedia_version": {
             "title": "Encyclopedia version"
@@ -2477,7 +2484,7 @@
 
         "enhancer validation": "validation",
         "validation": "validation",
-        
+
         "HMM predicted chromatin state": "annotation",
         "semi-automated genome annotation": "annotation",
         "capture targets": "annotation",

@@ -295,7 +295,7 @@
             "open_on_load": true
         },
         "biochemical_inputs": {
-            "title": "Biochemical inputs"
+            "title": "Biochemical activity"
         },
         "targets.investigated_as": {
             "title": "Target category"

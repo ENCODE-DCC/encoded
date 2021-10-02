@@ -1,6 +1,12 @@
 .fa-download {
-    height: 15px;
+    height: 17px;
     width: 15px;
+    padding-bottom: 3px;
+
+    @media screen and (min-width: $screen-md-min) {
+        height: 15px;
+        padding-bottom: 0;
+    }
 }
 
 .encyclopedia-tabs {
@@ -18,8 +24,10 @@
         padding-top: 10px;
 
         .download-line {
-            display: inline-block;
+            display: flex;
+            align-items: center;
             margin-right: 15px;
+            float: left;
         }
 
         .batch-download-actuator {
@@ -78,6 +86,22 @@
     font-size: 1.2rem;
     font-weight: 400;
     margin-bottom: 5px;
+}
+
+.encyclopedia-href {
+    display: flex;
+    padding-bottom: 2px;
+
+    .href-name {
+        flex: 0 1 auto;
+    }
+
+    img {
+        flex: 0 1 20px;
+        max-width: 20px;
+        height: auto;
+        margin-right: 5px;
+    }
 }
 
 .encyclopedia-file-gallery {
