@@ -485,23 +485,18 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     }
 
     // Collect expressed genes from biosamples in the dataset
-    const computeExpressedGenes = (dataset) => {
-        /* A user can have a gene repeat. Therefore, uuid alone is not sufficient as an identifier */
-        biosamples.forEach((biosample) => {
-            {biosample.expressed_genes.map((loci, i) => (
-                loci.gene ?
-                    <span key={`${loci.gene.uuid}-${i}`}>
-                        {i > 0 ? <span>, </span> : null}
-                        <a href={loci.gene['@id']}>{loci.gene.symbol}</a>
-                        {/* 0 is falsy but we still want it to display, so 0 is explicitly checked for */}
-                        {loci.expression_percentile || loci.expression_percentile === 0 ? <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span> : null}
-                        {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ? <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span> : null}
-                    </span>
-                : null
-            ))
+    let expressedGenes = [];
+    biosamples.forEach((biosample) => {
+        console.log(biosample);
+        if (biosample.expressed_genes) {
+            biosample.expressed_genes.forEach((loci) => {
+                if (loci.gene) {
+                    expressedGenes.push(loci.gene);
+                }
+            });
         }
-        computeExpressedGenes = _.uniq(computeExpressedGenes);
-    }
+    });
+    expressedGenes = _.uniq(expressedGenes);
 
     // Create platforms array from file platforms; ignore duplicate platforms.
     const platforms = {};
@@ -766,10 +761,23 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {computeExpressedGenes.length > 0 ?
+                            {expressedGenes ?
                                 <div data-test="expressed-genes">
-                                    <dt>Sorted gene expression</dt>
-                                    <dd>{computeExpressedGenes.join(', ')}</dd>
+                                    <dt>Expressed genes</dt>
+                                    <dd>
+                                        {expressedGenes.map((loci, i) => (
+                                            <span key={`${loci.uuid}-${i}`}>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={loci['@id']}>{loci.symbol}</a>
+                                                {loci.expression_percentile || loci.expression_percentile === 0 ?
+                                                    <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span>
+                                                : null}
+                                                {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ?
+                                                    <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span>
+                                                : null}
+                                            </span>
+                                        ))}
+                                    </dd>
                                 </div>
                             : null}
 

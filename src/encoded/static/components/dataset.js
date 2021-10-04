@@ -2201,8 +2201,13 @@ const computeExpressedGenes = (dataset) => {
             geneList = [...geneList, ...biosample.expressed_genes];
         }
     });
+
     return (
-        geneList.map((gene) => <a key={gene.gene['@id']} href={gene.gene['@id']}>{gene.gene.symbol}</a>)
+        geneList.map((gene) => (
+            <a key={gene.gene['@id']} href={gene.gene['@id']}>
+                {gene.gene.symbol} ({gene.expression_percentile}th percentile)
+            </a>
+        ))
     );
 };
 
@@ -2226,7 +2231,7 @@ const differentialAccessibilitySeriesTableColumns = {
     },
 
     expressed_genes: {
-        title: 'Sorted gene expression',
+        title: 'Gene expression',
         getValue: (experiment) => computeExpressedGenes(experiment),
     },
 
@@ -2538,6 +2543,14 @@ export const SeriesComponent = ({
     // Calculate the donor diversity.
     const diversity = options.suppressDonorDiversity ? null : donorDiversity(context);
 
+    // Calculate expressed genes
+    const genes = [];
+    context.related_datasets.forEach((dataset) => {
+        dataset.replicates.forEach((replicate) => {
+            genes.push([...replicate.library.biosample.expressed_genes.map((g) => g.gene.symbol)]);
+        });
+    });
+
     // Collect CRISPR screen tiling modality for FunctionalCharacterizationExperiment only.
     let tilingModality = [];
     if (seriesType === 'FunctionalCharacterizationSeries') {
@@ -2642,6 +2655,13 @@ export const SeriesComponent = ({
                                 <dt>Disease{diseases && diseases.length !== 1 ? 's' : ''}</dt>
                                 <dd>{diseases && diseases.length > 0 ? diseases.join(', ') : 'Not reported'}</dd>
                             </div>
+
+                            {genes && genes.length > 0 ?
+                                <div data-test="geneexpression">
+                                    <dt>Gene expression</dt>
+                                    <dd>{genes.join(', ')}</dd>
+                                </div>
+                            : null}
 
                             {context.treatment_term_name && context.treatment_term_name.length > 0 ?
                                 <div data-test="treatmenttermname">
