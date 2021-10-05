@@ -873,7 +873,6 @@ class GenomeBrowser extends React.Component {
             files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag).filter((file) => file.assembly === this.props.assembly);
             newFiles = [...this.state.pinnedFiles, ...files];
             newFiles = _.uniq(newFiles, (file) => file.href);
-            console.log(newFiles);
             let tracks = [];
             if (files.length > 0) {
                 const maxCharPerLine = this.props.maxCharPerLine || MAX_CHAR_PER_LINE;
@@ -899,10 +898,7 @@ class GenomeBrowser extends React.Component {
     }
 
     filesToTracks(files, label, domain, maxCharPerLine) {
-        console.log(files);
-        console.log(label);
         const tracks = files.map((file) => {
-            console.log(file);
             if (file.output_type === 'candidate Cis-Regulatory Elements' && this.state.colorBlock.indexOf('ccres') === -1) {
                 this.setState((prevState) => ({
                     colorBlock: [...prevState.colorBlock, 'ccres'],
