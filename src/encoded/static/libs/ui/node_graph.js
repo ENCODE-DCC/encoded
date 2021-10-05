@@ -15,18 +15,6 @@ const ellipseSettings = [
     { cx: 10, cy: 10, rx: 6.5, ry: 5 },
 ];
 
-// Collapse node and its children
-function collapse(d) {
-    console.log('collapse!');
-    if (d.children) {
-        d._children = d.children;
-        d.children = null;
-    } else {
-        d.children = d._children;
-        d._children = null;
-    }
-}
-
 // Creates a curved (diagonal) path from parent to the child nodes
 function diagonal(d, s) {
     const path = `M${d.x},${d.y}C${d.x},${(d.y + s.y) / 2} ${s.x},${(d.y + s.y) / 2} ${s.x},${s.y}`;
@@ -40,7 +28,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
     d3.select(targetDiv).select('svg').remove();
 
-    console.log(collapsedNodes);
+    const internalCollapsedNodes = collapsedNodes;
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
@@ -92,39 +80,17 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                     tspan.text(word);
                 }
             }
-            // tspan = text.append('tspan').attr('x', 0).attr('y', y).style('font-size', '28px');
-            // newDy = `${(lineNumber += 1) * 0.6 + 0.5}em`;
-            // tspan.attr('dy', newDy);
-            // if (selectedNodes.indexOf(text.text().replace(/\s/g, '').toLowerCase()) > -1) {
-            //     tspan.text(circleMinus);
-            // } else {
-            //     tspan.text(circlePlus);
-            // }
         });
     }
 
-    // Collapse after the second level
-    // root.children.forEach(collapse);
     update(root, fastAnimation);
-    collapsedNodes.forEach((node) => {
-        console.log('updating node');
-        if (node.children) {
-            node._children = node.children;
-            node.children = null;
-        } else {
-            node.children = node._children;
-            node._children = null;
-        }
-        update(node, fastAnimation);
-    });
-
 
     function update(source, animationDuration) {
-        console.log('update');
-        console.log('source is');
-        console.log(source);
         // Assigns the x and y position for the nodes
         const treeData = treemap(root);
+
+        console.log('internal collapsed nodes');
+        console.log(internalCollapsedNodes);
 
         // Compute the new tree layout.
         const nodes = treeData.descendants();
@@ -147,27 +113,20 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
         // Enter any new modes at the parent's previous position.
         const nodeEnter = node.enter().append('g')
-            .attr('class', (d) => `node ${d.data.class ? d.data.class : ''}`)
+            .attr('class', (d) => `node ${d.data.class} ${d.data.name}`)
             .attr('transform', function(d) {
                 return "translate(" + source.x0 + "," + source.y0 + ")";
             })
             .on('click', function(e, d) {
                 setSelectedNodes(d.data.name);
+                const clickedCell = d3.select(`.js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()}`);
+                clickedCell.attr('class', (d) => `active-cell js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${d._children ? 'parent-cell' : ''}`);
+                internalCollapsedNodes.push(d.data.name.replace(/\s/g, '').toLowerCase());
                 e.stopPropagation();
             });
-            // .on('click', click);
 
         const nodeGroup = nodeEnter.append('g')
-            .attr('class', (d) => {
-                const active = selectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1;
-                if (active) {
-                    return 'js-cell active-cell';
-                }
-                if (d._children) {
-                    return 'js-cell parent-cell';
-                }
-                return 'js-cell';
-            })
+            .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalCollapsedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
             .on('mouseover', function() {
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1.2)');
                 d3.select(this).selectAll('ellipse').attr('class', 'hover-class');
@@ -185,16 +144,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 .attr('ry', ellipseSetting.ry)
                 .style('stroke', ellipseSetting.stroke)
                 .style('stroke-width', 1)
-                .attr('class', (d) => {
-                    const active = selectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1;
-                    if (active) {
-                        return 'js-cell active-cell';
-                    }
-                    if (d._children) {
-                        return 'js-cell parent-cell';
-                    }
-                    return 'js-cell';
-                });
+                .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalCollapsedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
         });
 
         // adds the text to the node
@@ -204,21 +154,15 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .style('text-anchor', 'middle')
             .text((d) => d.data.name)
             .attr('class', 'node-text');
-            // .on('click', click);
-            // .on('click', function(e, d) {
-            //     console.log(d);
-            //     console.log(e);
-            //     click(e, d);
-            //     e.stopPropagation();
-            // });
 
         nodeEnter.selectAll('text')
             .call(wrap, textWrapWidth);
 
         // adds the text to the node
         nodeEnter.append('text')
-            .attr('class', 'node-expander-collapser')
+            .attr('class', (d) => `node-expander-collapser clicker-${d.data.name.replace(/\s/g, '').toLowerCase()}`)
             .text((d) => ((d.children && d._children) ? circlePlus : d.children ? circleMinus : ''))
+            .text(circleMinus)
             .attr('y', '-10px')
             .attr('x', '-10px')
             .style('font-size', '28px')
@@ -245,16 +189,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
         // Update the node attributes and style
         nodeUpdate.select('g.js-cell')
-            .attr('class', (d) => {
-                const active = selectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1;
-                if (active) {
-                    return 'js-cell active-cell';
-                }
-                if (d._children) {
-                    return 'js-cell parent-cell';
-                }
-                return 'js-cell';
-            });
+            .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalCollapsedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`);
 
         // Remove any exiting nodes
         const nodeExit = node.exit().transition()
@@ -298,8 +233,6 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         });
 
         function click(event, d) {
-            console.log('click collapse!');
-            console.log(d);
             if (d.children) {
                 d._children = d.children;
                 d.children = null;

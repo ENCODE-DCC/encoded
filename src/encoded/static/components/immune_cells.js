@@ -89,18 +89,10 @@ class MatrixPresentation extends React.Component {
         });
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        const nodesUpdate = !(_.isEqual(this.state.selectedNodes, prevState.selectedNodes));
-        const collapsedNodesUpdate = false;//!(_.isEqual(this.state.collapsedNodes, prevState.collapsedNodes));
-        if (nodesUpdate || collapsedNodesUpdate) {
-            require.ensure(['d3'], (require) => {
-                this.d3 = require('d3');
-
-                const chartWidth = this.state.windowWidth;
-                drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes, this.state.collapsedNodes, this.updateCollapsedNodes);
-            });
-        }
-    }
+    // componentDidUpdate(prevProps, prevState) {
+    //     console.log(prevState.selectedNodes);
+    //     console.log(this.state.selectedNodes);
+    // }
 
     setSelectedNodes(newNode) {
         this.setState((prevState) => {
