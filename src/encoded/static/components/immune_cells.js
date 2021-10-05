@@ -68,11 +68,9 @@ class MatrixPresentation extends React.Component {
         this.state = {
             windowWidth: 0,
             selectedNodes: [],
-            collapsedNodes: [],
         };
 
         this.immuneCells = immuneCells[0];
-        this.updateCollapsedNodes = this.updateCollapsedNodes.bind(this);
         this.updateWindowWidth = this.updateWindowWidth.bind(this);
         this.setSelectedNodes = this.setSelectedNodes.bind(this);
     }
@@ -85,14 +83,13 @@ class MatrixPresentation extends React.Component {
             this.d3 = require('d3');
 
             const chartWidth = this.state.windowWidth;
-            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes, this.state.collapsedNodes, this.updateCollapsedNodes);
+            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
         });
     }
 
-    // componentDidUpdate(prevProps, prevState) {
-    //     console.log(prevState.selectedNodes);
-    //     console.log(this.state.selectedNodes);
-    // }
+    componentDidUpdate() {
+        console.log(this.state.selectedNodes);
+    }
 
     setSelectedNodes(newNode) {
         this.setState((prevState) => {
@@ -105,10 +102,6 @@ class MatrixPresentation extends React.Component {
             }
             return { selectedNodes: [...prevState.selectedNodes, newSelection] };
         });
-    }
-
-    updateCollapsedNodes(newNode) {
-        this.setState((prevState) => ({ collapsedNodes: [...prevState.collapsedNodes, newNode] }));
     }
 
     updateWindowWidth() {
