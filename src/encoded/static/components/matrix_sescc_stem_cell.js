@@ -295,10 +295,12 @@ class MatrixPresentation extends React.Component {
             scrolledRight: false,
             windowWidth: 0,
             selectedLayers: this.layers,
+            selectedNodes: ['hepatocyte'],
         };
 
         this.togglePebblesGroupVisibilty = this.togglePebblesGroupVisibilty.bind(this);
         this.selectLayer = this.selectLayer.bind(this);
+        this.setSelectedNodes = this.setSelectedNodes.bind(this);
     }
 
     componentDidMount() {
@@ -317,9 +319,7 @@ class MatrixPresentation extends React.Component {
             const fullHeight = 400;
             const data = require('./node_graph_data/sescc.json');
             const treeData = data[0];
-            console.log(treeData);
-            const selectedNodes = ['Hepatocyte'];
-            drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, selectedNodes);
+            drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
         });
     }
 
@@ -358,6 +358,19 @@ class MatrixPresentation extends React.Component {
         } else if (!this.state.scrolledRight) {
             this.setState({ scrolledRight: true });
         }
+    }
+
+    setSelectedNodes(newNode) {
+        this.setState((prevState) => {
+            const newSelection = newNode.replace(/\s/g, '').toLowerCase();
+            if (prevState.selectedNodes.indexOf(newSelection) > -1 && prevState.selectedNodes.length > 1) {
+                return { selectedNodes: prevState.selectedNodes.filter((s) => s !== newSelection) };
+            }
+            if (prevState.selectedNodes.indexOf(newSelection) > -1) {
+                return { selectedNodes: [] };
+            }
+            return { selectedNodes: [...prevState.selectedNodes, newSelection] };
+        });
     }
 
     updateWindowWidth() {

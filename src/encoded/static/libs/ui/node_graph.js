@@ -21,14 +21,14 @@ function diagonal(d, s) {
     return path;
 }
 
-const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes, collapsedNodes, updateCollapsedNodes) => {
+const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes) => {
     // Set the dimensions and margins of the diagram
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
 
     d3.select(targetDiv).select('svg').remove();
 
-    const internalCollapsedNodes = collapsedNodes;
+    const internalCollapsedNodes = [];
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
@@ -240,7 +240,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 d.children = d._children;
                 d._children = null;
             }
-            updateCollapsedNodes(d);
+            // updateCollapsedNodes(d);
             update(d, slowAnimation);
         }
     }
