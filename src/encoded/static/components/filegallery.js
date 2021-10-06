@@ -189,6 +189,7 @@ const getSeriesFiles = (context) => {
  * @param {array} analyses Analyses to compile, from one or more datasets
  * @param {array} files Array of all files from search that gets included in file gallery
  * @param {string} dataFormat Massages data to a be in a particular structure if set
+ * @param {boolean} allowedMixed True if mixed assembly are factored into result
  *
  * @return {array} Compiled analyses information, each element with the form:
  * {
@@ -486,8 +487,12 @@ export class FileTable extends React.Component {
 
             const analysisObjectKeys = Object.keys(files).filter((file) => file.includes('ENCAN') || file.includes('TSTAN'));
             const otherKeys = Object.keys(files).filter((file) => file === nonAnalysisObjectPrefix); // all files not parts of an analysis object
+
+            // compiled analysis excluding those with mixed assemblies
             const compileAnalysis = compileAnalyses(analyses, datasetFiles, 'processed data');
             const compileAnalysisKeys = compileAnalysis.map((c) => c.accession);
+
+            // compiled analysis including mixed assemblies
             const compileAnalysisMixed = compileAnalyses(analyses, datasetFiles, 'processed data', true);
             const compileAnalysisWithMixedKeys = compileAnalysisMixed.map((c) => c.accession);
 
