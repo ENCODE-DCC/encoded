@@ -68,7 +68,6 @@ const rowDataOrder = [
  * @returns Object
  */
 const convertToDataTableFormat = (context) => {
-    console.log(context);
     if (!context || !context.matrix || !context.matrix.y || !context.matrix.x) {
         return {
             rows: [],
@@ -288,29 +287,29 @@ class MatrixPresentation extends React.Component {
     constructor(props) {
         super(props);
 
-        this.layers = ['Endoderm', 'Mesoderm', 'Ectoderm'];
+        // this.layers = ['Endoderm', 'Mesoderm', 'Ectoderm'];
 
         this.state = {
             scrolledRight: false,
             windowWidth: 0,
             // selectedLayers: this.layers,
-            selectedNodes: ['hepatocyte'],
+            selectedNodes: rowDataOrder,
         };
 
-        this.togglePebblesGroupVisibilty = this.togglePebblesGroupVisibilty.bind(this);
-        this.selectLayer = this.selectLayer.bind(this);
+        // this.togglePebblesGroupVisibilty = this.togglePebblesGroupVisibilty.bind(this);
+        // this.selectLayer = this.selectLayer.bind(this);
         this.setSelectedNodes = this.setSelectedNodes.bind(this);
     }
 
     componentDidMount() {
-        this.handleScrollIndicator(this.scrollElement);
+        // this.handleScrollIndicator(this.scrollElement);
         this.updateWindowWidth();
         window.addEventListener('resize', this.updateWindowWidth);
 
         const matrixRows = document.getElementsByClassName('matrix__row-data');
         for (let idx = 0; idx < matrixRows.length; idx += 1) {
             console.log(matrixRows[idx].classList);
-            if (this.state.selectedNodes.includes(matrixRows[idx].classList)) {
+            if (this.state.selectedNodes.indexOf(matrixRows[idx].classList) > -1) {
                 matrixRows[idx].classList.add('hide');
             }
         }
@@ -399,33 +398,33 @@ class MatrixPresentation extends React.Component {
         });
     }
 
-    /**
-     * Toggle matrix row (biosample) visibility of a specified row in the matrix and change corresponding pebble (node)-color in the tree
-     *
-     * @param {e} event
-     * @memberof MatrixPresentation
-     */
-    togglePebblesGroupVisibilty(visible) {
-        const cells = this.d3.selectAll('.js-cell')[0];
+    // /**
+    //  * Toggle matrix row (biosample) visibility of a specified row in the matrix and change corresponding pebble (node)-color in the tree
+    //  *
+    //  * @param {e} event
+    //  * @memberof MatrixPresentation
+    //  */
+    // togglePebblesGroupVisibilty(visible) {
+    //     const cells = this.d3.selectAll('.js-cell')[0];
+    //
+    //     cells.forEach((cell) => {
+    //         const data = cell.__data__;
+    //         cell.style.fill = data[visible ? 'selectedColor' : 'deselectedColor'];
+    //     });
+    //
+    //     const elements = document.querySelectorAll('.matrix .matrix__row-data');
+    //
+    //     for (let i = 0; i < elements.length; i += 1) {
+    //         const element = elements[i];
+    //         element.style.display = visible ? '' : 'none';
+    //     }
+    // }
 
-        cells.forEach((cell) => {
-            const data = cell.__data__;
-            cell.style.fill = data[visible ? 'selectedColor' : 'deselectedColor'];
-        });
-
-        const elements = document.querySelectorAll('.matrix .matrix__row-data');
-
-        for (let i = 0; i < elements.length; i += 1) {
-            const element = elements[i];
-            element.style.display = visible ? '' : 'none';
-        }
-    }
-
-    selectLayer(layer) {
-        console.log('select layer');
-        console.log(layer);
-        console.log(this);
-    }
+    // selectLayer(layer) {
+    //     console.log('select layer');
+    //     console.log(layer);
+    //     console.log(this);
+    // }
 
     // <div className="sescc_matrix__germ-layer">
     //     {this.layers.map((layer) => <button className={`layer-element ${layer}`} onClick={this.selectLayer(layer)} type="button"><div className={`layer-bubble ${this.state.selectedLayers.includes(layer) ? layer.toLowerCase() : ''}`} /><div className="layer-name">{layer}</div></button>)}
