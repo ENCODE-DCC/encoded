@@ -365,20 +365,20 @@ class MatrixPresentation extends React.Component {
             const matrixRows = document.getElementsByClassName(newSelection);
             console.log(matrixRows);
             if (prevState.selectedNodes.indexOf(newSelection) > -1 && prevState.selectedNodes.length > 1) {
-                matrixRows.forEach((row) => {
-                    row.classList.add('hide');
-                });
+                for (let idx = 0; idx < matrixRows.length; idx += 1) {
+                    matrixRows[idx].classList.add('hide');
+                }
                 return { selectedNodes: prevState.selectedNodes.filter((s) => s !== newSelection) };
             }
             if (prevState.selectedNodes.indexOf(newSelection) > -1) {
-                matrixRows.forEach((row) => {
-                    row.classList.add('hide');
-                });
+                for (let idx = 0; idx < matrixRows.length; idx += 1) {
+                    matrixRows[idx].classList.add('hide');
+                }
                 return { selectedNodes: [] };
             }
-            matrixRows.forEach((row) => {
-                row.classList.remove('hide');
-            });
+            for (let idx = 0; idx < matrixRows.length; idx += 1) {
+                matrixRows[idx].classList.remove('hide');
+            }
             return { selectedNodes: [...prevState.selectedNodes, newSelection] };
         }, () => {
             console.log(this.state.selectedNodes);
