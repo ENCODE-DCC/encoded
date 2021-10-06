@@ -162,7 +162,6 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         nodeEnter.append('text')
             .attr('class', (d) => `node-expander-collapser clicker-${d.data.name.replace(/\s/g, '').toLowerCase()}`)
             .text((d) => ((d.children && d._children) ? circlePlus : d.children ? circleMinus : ''))
-            .text(circleMinus)
             .attr('y', '-10px')
             .attr('x', '-10px')
             .style('font-size', '28px')
