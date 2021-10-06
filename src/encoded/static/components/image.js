@@ -92,8 +92,6 @@ export const Attachment = ({ context, attachment, className, showLink }) => {
                 return <img className={imgClass} src={src} height={height} width={width} alt={alt} />;
             }
 
-            console.log(attachmentHref);
-
             // Display the attachment image in a light box.
             return (
                 <div>
