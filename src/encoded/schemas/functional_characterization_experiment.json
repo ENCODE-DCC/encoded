@@ -318,6 +318,7 @@
                 "perturbation_type",
                 "examined_loci.expression_measurement_method",
                 "crispr_screen_readout",
+                "elements_references.crispr_screen_tiling",
                 "replicates.library.biosample.applied_modifications.guide_type",
                 "replicates.library.biosample.applied_modifications.MOI",
                 "replicates.library.biosample.applied_modifications.reagents.promoter_details",

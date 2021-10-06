@@ -78,6 +78,7 @@
                 "control_type",
                 "related_datasets.perturbation_type",
                 "related_datasets.crispr_screen_readout",
+                "elements_references.crispr_screen_tiling",
                 "related_datasets.replicates.library.biosample.applied_modifications.MOI",
                 "related_datasets.replicates.library.biosample.applied_modifications.guide_type",
                 "related_datasets.replicates.library.nucleic_acid_term_name"
