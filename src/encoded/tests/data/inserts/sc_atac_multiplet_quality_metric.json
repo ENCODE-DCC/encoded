@@ -14,7 +14,7 @@
         "frac_multiplets":0.7293,
         "multiplet_threshold": 0.666,
         "multiplet_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
-        "barcode_pairs_expanded": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
+        "barcode_pairs_expanded": "tarball2.tgz",
         "barcodes_status": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
         "barcode_pairs_multiplets": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
         "multiplet_threshold_plot": "search-result-bone-chip.png"
