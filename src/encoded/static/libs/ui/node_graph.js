@@ -170,7 +170,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 const thisText = d3.select(this).text();
                 if (thisText === circlePlus) {
                     d3.select(this).text(circleMinus);
-                } else {
+                } else if (thisText === circleMinus) {
                     d3.select(this).text(circlePlus);
                 }
                 click(e, d);

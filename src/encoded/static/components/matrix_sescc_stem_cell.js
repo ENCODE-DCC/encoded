@@ -8,7 +8,6 @@ import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';
 import * as globals from './globals';
-import { tintColor, isLight } from './datacolors';
 import drawTree from '../libs/ui/node_graph';
 
 
@@ -363,13 +362,26 @@ class MatrixPresentation extends React.Component {
     setSelectedNodes(newNode) {
         this.setState((prevState) => {
             const newSelection = newNode.replace(/\s/g, '').toLowerCase();
+            const matrixRows = document.getElementsByClassName(newSelection);
+            console.log(matrixRows);
             if (prevState.selectedNodes.indexOf(newSelection) > -1 && prevState.selectedNodes.length > 1) {
+                matrixRows.forEach((row) => {
+                    row.classList.add('hide');
+                });
                 return { selectedNodes: prevState.selectedNodes.filter((s) => s !== newSelection) };
             }
             if (prevState.selectedNodes.indexOf(newSelection) > -1) {
+                matrixRows.forEach((row) => {
+                    row.classList.add('hide');
+                });
                 return { selectedNodes: [] };
             }
+            matrixRows.forEach((row) => {
+                row.classList.remove('hide');
+            });
             return { selectedNodes: [...prevState.selectedNodes, newSelection] };
+        }, () => {
+            console.log(this.state.selectedNodes);
         });
     }
 
