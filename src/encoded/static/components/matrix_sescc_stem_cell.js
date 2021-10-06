@@ -293,7 +293,7 @@ class MatrixPresentation extends React.Component {
         this.state = {
             scrolledRight: false,
             windowWidth: 0,
-            selectedLayers: this.layers,
+            // selectedLayers: this.layers,
             selectedNodes: ['hepatocyte'],
         };
 
@@ -306,6 +306,14 @@ class MatrixPresentation extends React.Component {
         this.handleScrollIndicator(this.scrollElement);
         this.updateWindowWidth();
         window.addEventListener('resize', this.updateWindowWidth);
+
+        const matrixRows = document.getElementsByClassName('matrix__row-data');
+        for (let idx = 0; idx < matrixRows.length; idx += 1) {
+            console.log(matrixRows[idx].classList);
+            if (this.state.selectedNodes.includes(matrixRows[idx].classList)) {
+                matrixRows[idx].classList.add('hide');
+            }
+        }
 
         // Based on: https://www.codeseek.co/EleftheriaBatsou/the-tree-layout-or-d3-MveNbW
         // A version for d3.js v4 is: https://bl.ocks.org/d3noob/b024fcce8b4b9264011a1c3e7c7d70dc
@@ -322,42 +330,42 @@ class MatrixPresentation extends React.Component {
         });
     }
 
-    componentDidUpdate() {
-        // Updates only happen for scrolling on this page. Every other update causes an
-        // unmount/mount sequence.
-        this.handleScrollIndicator(this.scrollElement);
-    }
+    // componentDidUpdate() {
+    //     // Updates only happen for scrolling on this page. Every other update causes an
+    //     // unmount/mount sequence.
+    //     this.handleScrollIndicator(this.scrollElement);
+    // }
 
-    /**
-        * Called when the user scrolls the matrix horizontally within its div to handle scroll
-        * indicators
-        * @param {object} e React synthetic scroll event
-    */
-    handleOnScroll(e) {
-        this.handleScrollIndicator(e.target);
-    }
-
-
-    /**
-        * Show a scroll indicator depending on current scrolled position.
-        * @param {object} element DOM element to apply shading to
-    */
-    handleScrollIndicator(element) {
-        if (element) {
-            // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
-            // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
-            const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
-            if (scrollDiff < 2 && !this.state.scrolledRight) {
-                // Right edge of matrix scrolled into view.
-                this.setState({ scrolledRight: true });
-            } else if (scrollDiff >= 2 && this.state.scrolledRight) {
-                // Right edge of matrix scrolled out of view.
-                this.setState({ scrolledRight: false });
-            }
-        } else if (!this.state.scrolledRight) {
-            this.setState({ scrolledRight: true });
-        }
-    }
+    // /**
+    //     * Called when the user scrolls the matrix horizontally within its div to handle scroll
+    //     * indicators
+    //     * @param {object} e React synthetic scroll event
+    // */
+    // handleOnScroll(e) {
+    //     this.handleScrollIndicator(e.target);
+    // }
+    //
+    //
+    // /**
+    //     * Show a scroll indicator depending on current scrolled position.
+    //     * @param {object} element DOM element to apply shading to
+    // */
+    // handleScrollIndicator(element) {
+    //     if (element) {
+    //         // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
+    //         // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
+    //         const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
+    //         if (scrollDiff < 2 && !this.state.scrolledRight) {
+    //             // Right edge of matrix scrolled into view.
+    //             this.setState({ scrolledRight: true });
+    //         } else if (scrollDiff >= 2 && this.state.scrolledRight) {
+    //             // Right edge of matrix scrolled out of view.
+    //             this.setState({ scrolledRight: false });
+    //         }
+    //     } else if (!this.state.scrolledRight) {
+    //         this.setState({ scrolledRight: true });
+    //     }
+    // }
 
     setSelectedNodes(newNode) {
         this.setState((prevState) => {
@@ -419,6 +427,10 @@ class MatrixPresentation extends React.Component {
         console.log(this);
     }
 
+    // <div className="sescc_matrix__germ-layer">
+    //     {this.layers.map((layer) => <button className={`layer-element ${layer}`} onClick={this.selectLayer(layer)} type="button"><div className={`layer-bubble ${this.state.selectedLayers.includes(layer) ? layer.toLowerCase() : ''}`} /><div className="layer-name">{layer}</div></button>)}
+    // </div>
+
 
     render() {
         const { context } = this.props;
@@ -428,9 +440,6 @@ class MatrixPresentation extends React.Component {
             <div className="matrix__presentation">
                 <div className="sescc_matrix__graph-region">
                     <div className="sescc_matrix__graph vertical-node-graph" />
-                    <div className="sescc_matrix__germ-layer">
-                        {this.layers.map((layer) => <button className={`layer-element ${layer}`} onClick={this.selectLayer(layer)} type="button"><div className={`layer-bubble ${this.state.selectedLayers.includes(layer) ? layer.toLowerCase() : ''}`} /><div className="layer-name">{layer}</div></button>)}
-                    </div>
                 </div>
                 <div className="sescc_matrix__show-all">
                     <button type="button" className="btn btn-sm btn-info" onClick={() => this.togglePebblesGroupVisibilty(true)}>Show All</button>
