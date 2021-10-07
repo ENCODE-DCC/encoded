@@ -18,8 +18,8 @@ def test_json_attachment(testapp, generic_json_quality_metric):
 
 def test_tsv_gz_attachment(testapp, sc_atac_multiplet_quality_metric):
     r = testapp.post_json(
-        '/generic_quality_metric',
-        generic_json_quality_metric,
+        '/sc_atac_multiplet_quality_metric',
+        sc_atac_multiplet_quality_metric,
         expect_errors=False
     )
     assert r.status_code == 201
