@@ -136,11 +136,11 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
             .on('mouseover', function() {
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1.2)');
-                d3.select(this).selectAll('ellipse').attr('class', 'hover-class');
+                d3.select(this).selectAll('ellipse').attr('class', (d) => `hover-class ${d.data.class ? d.data.class : 'default'}`);
             })
             .on('mouseout', function() {
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1)');
-                d3.select(this).selectAll('ellipse').attr('class', '');
+                d3.select(this).selectAll('ellipse').attr('class', (d) => (d.data.class ? d.data.class : 'default'));
             });
 
         ellipseSettings.forEach((ellipseSetting) => {
@@ -151,7 +151,8 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 .attr('ry', ellipseSetting.ry)
                 .style('stroke', ellipseSetting.stroke)
                 .style('stroke-width', 1)
-                .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
+                .attr('class', (d) => (d.data.class ? d.data.class : 'default'));//`${d.data.name.replace(/\s/g, '').toLowerCase()} ${d.data.class}`);
+                // .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
         });
 
         // adds the text to the node
@@ -212,10 +213,13 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .data(links, function(d) { return d.id; });
 
         // Enter any new links at the parent's previous position.
-        const linkEnter = link.enter().insert('path', "g")
+        const linkEnter = link.enter().insert('path', 'g')
             .attr('class', 'link')
             .attr('d', function(d){
-                const o = {x: source.x0, y: source.y0}
+                const o = {
+                    x: source.x0,
+                    y: source.y0
+                };
                 return diagonal(o, o)
             });
 

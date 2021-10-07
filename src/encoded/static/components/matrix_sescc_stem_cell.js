@@ -308,7 +308,6 @@ class MatrixPresentation extends React.Component {
 
         const matrixRows = document.getElementsByClassName('matrix__row-data');
         for (let idx = 0; idx < matrixRows.length; idx += 1) {
-            console.log(matrixRows[idx].classList);
             if (this.state.selectedNodes.indexOf(matrixRows[idx].classList) > -1) {
                 matrixRows[idx].classList.add('hide');
             }
@@ -371,7 +370,6 @@ class MatrixPresentation extends React.Component {
             const matrixSelection = newNode.replace(/\s/g, '_').toLowerCase();
             const newSelection = newNode.replace(/\s/g, '').toLowerCase();
             const matrixRows = document.getElementsByClassName(matrixSelection);
-            console.log(matrixRows);
             if (prevState.selectedNodes.indexOf(newSelection) > -1 && prevState.selectedNodes.length > 1) {
                 for (let idx = 0; idx < matrixRows.length; idx += 1) {
                     matrixRows[idx].classList.add('hide');
@@ -388,8 +386,6 @@ class MatrixPresentation extends React.Component {
                 matrixRows[idx].classList.remove('hide');
             }
             return { selectedNodes: [...prevState.selectedNodes, newSelection] };
-        }, () => {
-            console.log(this.state.selectedNodes);
         });
     }
 
