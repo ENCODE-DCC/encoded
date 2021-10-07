@@ -318,10 +318,10 @@
                 "perturbation_type",
                 "examined_loci.expression_measurement_method",
                 "crispr_screen_readout",
+                "elements_references.crispr_screen_tiling",
                 "replicates.library.biosample.applied_modifications.guide_type",
                 "replicates.library.biosample.applied_modifications.MOI",
                 "replicates.library.biosample.applied_modifications.reagents.promoter_details",
-                "replicates.library.biosample.disease_term_name",
                 "replicates.library.construction_platform.term_name"
             ]
         },
@@ -343,6 +343,7 @@
                 "biosample_ontology.cell_slims",
                 "replicates.library.biosample.life_stage",
                 "replicates.library.biosample.treatments.treatment_term_name",
+                "replicates.library.biosample.disease_term_name",
                 "replicates.library.nucleic_acid_term_name"
             ]
         },
