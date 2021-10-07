@@ -368,8 +368,9 @@ class MatrixPresentation extends React.Component {
 
     setSelectedNodes(newNode) {
         this.setState((prevState) => {
+            const matrixSelection = newNode.replace(/\s/g, '_').toLowerCase();
             const newSelection = newNode.replace(/\s/g, '').toLowerCase();
-            const matrixRows = document.getElementsByClassName(newSelection);
+            const matrixRows = document.getElementsByClassName(matrixSelection);
             console.log(matrixRows);
             if (prevState.selectedNodes.indexOf(newSelection) > -1 && prevState.selectedNodes.length > 1) {
                 for (let idx = 0; idx < matrixRows.length; idx += 1) {
