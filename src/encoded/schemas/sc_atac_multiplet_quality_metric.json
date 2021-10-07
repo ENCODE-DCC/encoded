@@ -179,7 +179,8 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "text/tab-separated-values"
+                        "application/gzip",
+                        "application/x-gzip"
                     ]
                 },
                 "size": {
