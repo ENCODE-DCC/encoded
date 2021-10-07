@@ -951,13 +951,13 @@
             "title": "Donor",
             "facet_fields": [
                 "organism.scientific_name",
-                "sex",
+                "sex"
             ]
         },
         {
             "title": "Perturbations",
             "facet_fields": [
-                "treatments.treatment_term_name"
+                "treatments.treatment_term_name",
                 "perturbed"
             ]
         },
@@ -980,7 +980,7 @@
                 "audit.WARNING.category",
                 "audit.INTERNAL_ACTION.category"
             ]
-        },
+        }
     ],
     "facets": {
         "organism.scientific_name": {

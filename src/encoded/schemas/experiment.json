@@ -273,7 +273,7 @@
                 "audit.WARNING.category",
                 "audit.INTERNAL_ACTION.category"
             ]
-        },
+        }
     ],
     "facets": {
         "assay_slims": {

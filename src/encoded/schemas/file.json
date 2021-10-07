@@ -79,7 +79,7 @@
                 "audit.WARNING.category",
                 "audit.INTERNAL_ACTION.category"
             ]
-        },
+        }
     ],
     "facets": {
         "status": {

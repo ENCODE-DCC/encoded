@@ -95,7 +95,7 @@
                 "audit.WARNING.category",
                 "audit.INTERNAL_ACTION.category"
             ]
-        },
+        }
     ],
     "facets": {
         "assay_term_name": {

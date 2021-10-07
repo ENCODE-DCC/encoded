@@ -112,7 +112,7 @@
                 "audit.WARNING.category",
                 "audit.INTERNAL_ACTION.category"
             ]
-        },
+        }
     ],
     "facets": {
         "organism.scientific_name": {
