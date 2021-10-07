@@ -2,7 +2,10 @@ $bubbleSize: 13px;
 $mesoderm: #008000;
 $ectoderm: #800080;
 $stem: #edcf09;
+$unlabeled: #808080;
 $endoderm: blue;
+$default-active: #36586d;
+$default-hover: #f2f2f2;
 
 .node--internal text {
     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
@@ -18,7 +21,6 @@ $endoderm: blue;
     &:hover {
         cursor: pointer;
         font-weight: bold;
-        // fill: #d2d2d2;
     }
 }
 
@@ -47,51 +49,17 @@ $endoderm: blue;
     }
 
     .js-cell {
-        ellipse {
+        .default {
             &.hover-class {
-                fill: #f2f2f2;
-            }
-        }
-
-        &.parent-cell {
-            ellipse {
-                fill: #adc7d7;
-
-                &.hover-class {
-                    fill: #76a1bc;
-                }
+                fill: $default-hover;
             }
         }
 
         &.active-cell {
-            ellipse {
-                fill: #36586d;
+            .default {
+                fill: $default-active;
                 stroke: white;
             }
-        }
-    }
-
-    .unlabeled {
-        ellipse {
-            fill: #808080;
-        }
-    }
-
-    .mesoderm {
-        ellipse {
-            fill: #008000;
-        }
-    }
-
-    .ectoderm {
-        ellipse {
-            fill: #800080;
-        }
-    }
-
-    .stem {
-        ellipse {
-            fill: #edcf09;
         }
     }
 }
@@ -100,18 +68,53 @@ $endoderm: blue;
     display: none;
 }
 
+// sescc matrix-specific colors and styles
+
+.sescc_matrix__graph {
+    .js-cell {
+        .unlabeled {
+            fill: lighten($unlabeled, 30%);
+        }
+
+        .mesoderm {
+            fill: lighten($mesoderm, 30%);
+        }
+
+        .ectoderm {
+            fill: lighten($ectoderm, 60%);
+        }
+
+        .stem {
+            fill: lighten($stem, 30%);
+        }
+
+        &.active-cell {
+            .unlabeled {
+                fill: $unlabeled;
+            }
+
+            .mesoderm {
+                fill: $mesoderm;
+            }
+
+            .ectoderm {
+                fill: $ectoderm;
+            }
+
+            .stem {
+                fill: $stem;
+            }
+        }
+    }
+}
+
 .sescc_matrix__graph-region {
-    /* stylelint-disable-next-line selector-class-pattern */
     .endodermColor {
         color: $endoderm;
     }
-
-    /* stylelint-disable-next-line selector-class-pattern */
     .mesodermColor {
         color: $mesoderm;
     }
-
-    /* stylelint-disable-next-line selector-class-pattern */
     .ectoDermColor {
         color: $ectoderm;
     }

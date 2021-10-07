@@ -87,9 +87,9 @@ class MatrixPresentation extends React.Component {
         });
     }
 
-    componentDidUpdate() {
-        console.log(this.state.selectedNodes);
-    }
+    // componentDidUpdate() {
+    //     console.log(this.state.selectedNodes);
+    // }
 
     setSelectedNodes(newNode) {
         this.setState((prevState) => {
