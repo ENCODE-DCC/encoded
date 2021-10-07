@@ -24,6 +24,63 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
+    "facet_groups": [
+        {
+            "title": "File",
+            "facet_fields": [
+                "output_category",
+                "output_type",
+                "file_format",
+                "file_format_type",
+                "file_type"
+            ]
+        },
+        {
+            "title": "Dataset",
+            "facet_fields": [
+                "assay_title",
+                "annotation_type",
+                "annotation_subtype",
+                "platform.term_name",
+                "target.label",
+                "targets.label",
+                "encyclopedia_version"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "origin_batches",
+                "biosample_ontology.cell_slims",
+                "biosample_ontology.system_slims"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "assembly"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "award.project",
+                "lab.title"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        },
+    ],
     "facets": {
         "status": {
             "title": "Status",

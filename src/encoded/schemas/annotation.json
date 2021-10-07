@@ -271,6 +271,62 @@
             "linkTo": "Experiment"
         }
     },
+    "facet_groups": [
+        {
+            "title": "Annotation",
+            "facet_fields": [
+                "annotation_type",
+                "annotation_subtype",
+                "assay_term_name",
+                "targets.investigated_as",
+                "targets.label"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "biosample_ontology.classification",
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "relevant_life_stage"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "software_used.software.name",
+                "assembly",
+                "files.file_type"
+            ]
+        },
+        {
+            "title": "Library",
+            "facet_fields": [
+                "files.run_type",
+                "files.read_length",
+                "files.mapped_read_length"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title",
+                "award.project",
+                "award.rfa"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        },
+    ],
     "facets": {
         "annotation_type": {
             "title": "Annotation type",
@@ -300,7 +356,7 @@
         "targets.investigated_as": {
             "title": "Target category"
         },
-         "targets.label": {
+        "targets.label": {
             "title": "Target",
             "type": "typeahead",
             "open_on_load": true
