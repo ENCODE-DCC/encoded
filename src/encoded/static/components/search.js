@@ -1235,16 +1235,14 @@ export class TextFilter extends React.Component {
     */
     render() {
         return (
-            <div className="facet">
-                <input
-                    type="search"
-                    className="search-query"
-                    placeholder="Enter search term(s)"
-                    defaultValue={this.getValue(this.props)}
-                    onKeyDown={this.onKeyDown}
-                    data-test="filter-search-box"
-                />
-            </div>
+            <input
+                type="search"
+                className="search-query"
+                placeholder="Enter search term(s)"
+                defaultValue={this.getValue(this.props)}
+                onKeyDown={this.onKeyDown}
+                data-test="filter-search-box"
+            />
         );
     }
 }

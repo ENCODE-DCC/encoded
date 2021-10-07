@@ -1083,7 +1083,12 @@ table.matrix th.group-all-groups-cell {
             }
 
             &--clear {
+                flex: 1 0 auto;
                 min-width: 100px;
+
+                .clear-filters-control {
+                    margin-top: 0;
+                }
             }
         }
 

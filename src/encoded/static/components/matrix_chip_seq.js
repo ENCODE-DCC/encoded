@@ -395,7 +395,7 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
             'Enter any text string such as ac or H3 to filter ChIP target';
 
         return (
-            <div className="facet chip-seq-matrix-search">
+            <div className="chip-seq-matrix-search">
                 <input
                     type="search"
                     className="search-query"
