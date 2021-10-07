@@ -206,7 +206,7 @@ export const ModalFooter = ({
             submitBtn();
         }
         if (!dontClose) {
-            internalCloseModal();
+            internalCloseModal(e);
         }
     };
 
