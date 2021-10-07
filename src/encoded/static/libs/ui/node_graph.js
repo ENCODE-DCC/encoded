@@ -28,7 +28,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
     d3.select(targetDiv).select('svg').remove();
 
-    const internalCollapsedNodes = [];
+    let internalSelectedNodes = selectedNodes;
 
     // append the svg object to the body of the page
     // appends a 'group' element to 'svg'
@@ -90,7 +90,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         const treeData = treemap(root);
 
         console.log('internal collapsed nodes');
-        console.log(internalCollapsedNodes);
+        console.log(internalSelectedNodes);
 
         // Compute the new tree layout.
         const nodes = treeData.descendants();
@@ -119,14 +119,21 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             })
             .on('click', function(e, d) {
                 setSelectedNodes(d.data.name);
+                const clickedName = d.data.name.replace(/\s/g, '').toLowerCase();
+                if (internalSelectedNodes.indexOf(clickedName) > -1 && internalSelectedNodes.length > 1) {
+                    internalSelectedNodes = internalSelectedNodes.filter((s) => s !== clickedName);
+                } else if (internalSelectedNodes.indexOf(clickedName) > -1) {
+                    internalSelectedNodes = [];
+                } else {
+                    internalSelectedNodes = [...internalSelectedNodes, clickedName];
+                }
                 const clickedCell = d3.select(`.js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()}`);
-                clickedCell.attr('class', (d) => `active-cell js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${d._children ? 'parent-cell' : ''}`);
-                internalCollapsedNodes.push(d.data.name.replace(/\s/g, '').toLowerCase());
+                clickedCell.attr('class', (d) => `${internalSelectedNodes.indexOf(clickedName) > -1 ? 'active-cell' : ''} js-cell-${clickedName} js-cell ${d._children ? 'parent-cell' : ''}`);
                 e.stopPropagation();
             });
 
         const nodeGroup = nodeEnter.append('g')
-            .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalCollapsedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
+            .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
             .on('mouseover', function() {
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1.2)');
                 d3.select(this).selectAll('ellipse').attr('class', 'hover-class');
@@ -144,7 +151,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 .attr('ry', ellipseSetting.ry)
                 .style('stroke', ellipseSetting.stroke)
                 .style('stroke-width', 1)
-                .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalCollapsedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
+                .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
         });
 
         // adds the text to the node
@@ -188,7 +195,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
         // Update the node attributes and style
         nodeUpdate.select('g.js-cell')
-            .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalCollapsedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`);
+            .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`);
 
         // Remove any exiting nodes
         const nodeExit = node.exit().transition()

@@ -293,7 +293,7 @@ class MatrixPresentation extends React.Component {
             scrolledRight: false,
             windowWidth: 0,
             // selectedLayers: this.layers,
-            selectedNodes: rowDataOrder,
+            selectedNodes: rowDataOrder.map((row) => row.replace(/\s/g, '').toLowerCase()),
         };
 
         // this.togglePebblesGroupVisibilty = this.togglePebblesGroupVisibilty.bind(this);
