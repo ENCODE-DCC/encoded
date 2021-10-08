@@ -39,7 +39,7 @@ describe('View controls for search with Experiments', () => {
         });
     });
 
-    describe('Mutliple searched types', () => {
+    describe('Multiple searched types', () => {
         let searchControls;
 
         beforeAll(() => {

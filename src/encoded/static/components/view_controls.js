@@ -62,11 +62,7 @@ const ReportViewButton = ({ viewType, query }, reactContext) => {
     const typeValues = query.getKeyValues('type');
     if (typeValues.length === 1) {
         // One "type=" in the query string so render a regular link to the report page.
-        return (
-            <ViewControlButton viewType={viewType} queryString={query.format()}>
-                {viewType.title}
-            </ViewControlButton>
-        );
+        return <SearchViewButton viewType={viewType} query={query} />;
     }
 
     // More than one "type=" in the query string so render a dropdown button. The menu items
