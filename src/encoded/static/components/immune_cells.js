@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixBadges } from './objectutils';
@@ -86,10 +85,6 @@ class MatrixPresentation extends React.Component {
             drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
         });
     }
-
-    // componentDidUpdate() {
-    //     console.log(this.state.selectedNodes);
-    // }
 
     setSelectedNodes(newNode) {
         this.setState((prevState) => {
