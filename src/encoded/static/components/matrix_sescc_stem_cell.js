@@ -391,6 +391,8 @@ class MatrixPresentation extends React.Component {
             console.log(rowClass);
             if (this.state.selectedNodes.indexOf(rowClass) === -1) {
                 matrixRows[idx].classList.add('hide');
+            } else {
+                matrixRows[idx].classList.remove('hide');
             }
         }
     }
