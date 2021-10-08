@@ -287,16 +287,15 @@ class MatrixPresentation extends React.Component {
     constructor(props) {
         super(props);
 
-        // this.layers = ['Endoderm', 'Mesoderm', 'Ectoderm'];
+        this.layers = ['Endoderm', 'Mesoderm', 'Ectoderm'];
 
         this.state = {
             scrolledRight: false,
             windowWidth: 0,
-            // selectedLayers: this.layers,
             selectedNodes: rowDataOrder.map((row) => row.replace(/\s/g, '').toLowerCase()),
         };
 
-        // this.togglePebblesGroupVisibilty = this.togglePebblesGroupVisibilty.bind(this);
+        this.selectAll = this.selectAll.bind(this);
         // this.selectLayer = this.selectLayer.bind(this);
         this.setSelectedNodes = this.setSelectedNodes.bind(this);
     }
@@ -395,38 +394,38 @@ class MatrixPresentation extends React.Component {
         });
     }
 
-    // /**
-    //  * Toggle matrix row (biosample) visibility of a specified row in the matrix and change corresponding pebble (node)-color in the tree
-    //  *
-    //  * @param {e} event
-    //  * @memberof MatrixPresentation
-    //  */
-    // togglePebblesGroupVisibilty(visible) {
-    //     const cells = this.d3.selectAll('.js-cell')[0];
-    //
-    //     cells.forEach((cell) => {
-    //         const data = cell.__data__;
-    //         cell.style.fill = data[visible ? 'selectedColor' : 'deselectedColor'];
-    //     });
-    //
-    //     const elements = document.querySelectorAll('.matrix .matrix__row-data');
-    //
-    //     for (let i = 0; i < elements.length; i += 1) {
-    //         const element = elements[i];
-    //         element.style.display = visible ? '' : 'none';
-    //     }
-    // }
-
-    // selectLayer(layer) {
-    //     console.log('select layer');
-    //     console.log(layer);
-    //     console.log(this);
-    // }
-
-    // <div className="sescc_matrix__germ-layer">
-    //     {this.layers.map((layer) => <button className={`layer-element ${layer}`} onClick={this.selectLayer(layer)} type="button"><div className={`layer-bubble ${this.state.selectedLayers.includes(layer) ? layer.toLowerCase() : ''}`} /><div className="layer-name">{layer}</div></button>)}
-    // </div>
-
+    selectAll(selection) {
+        console.log(`selection is ${selection}`);
+        if (selection === 'all') {
+            this.setState({
+                selectedNodes: rowDataOrder.map((row) => row.replace(/\s/g, '').toLowerCase()),
+            }, () => {
+                require.ensure(['d3'], (require) => {
+                    this.d3 = require('d3');
+                    const margin = { top: 50, left: 20, bottom: 110, right: 20 };
+                    const chartWidth = this.state.windowWidth;
+                    const fullHeight = 400;
+                    const data = require('./node_graph_data/sescc.json');
+                    const treeData = data[0];
+                    drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+                });
+            });
+        } else {
+            this.setState({
+                selectedNodes: [],
+            }, () => {
+                require.ensure(['d3'], (require) => {
+                    this.d3 = require('d3');
+                    const margin = { top: 50, left: 20, bottom: 110, right: 20 };
+                    const chartWidth = this.state.windowWidth;
+                    const fullHeight = 400;
+                    const data = require('./node_graph_data/sescc.json');
+                    const treeData = data[0];
+                    drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+                });
+            });
+        }
+    }
 
     render() {
         const { context } = this.props;
@@ -435,11 +434,20 @@ class MatrixPresentation extends React.Component {
         return (
             <div className="matrix__presentation">
                 <div className="sescc_matrix__graph-region">
+                    <div className="sescc_matrix__germ-layer">
+                        {this.layers.map((layer) => (
+                            <div className={`layer-element ${layer}`} key={layer}>
+                                <div className={`layer-bubble ${layer.toLowerCase()}`} />
+                                <div className="layer-name">{layer}</div>
+                            </div>
+                        ))}
+                    </div>
                     <div className="sescc_matrix__graph vertical-node-graph" />
                 </div>
+
                 <div className="sescc_matrix__show-all">
-                    <button type="button" className="btn btn-sm btn-info" onClick={() => this.togglePebblesGroupVisibilty(true)}>Show All</button>
-                    <button type="button" className="btn btn-sm btn-info" onClick={() => this.togglePebblesGroupVisibilty(false)}>Hide All</button>
+                    <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectAll('all')}>Show All</button>
+                    <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectAll('none')}>Hide All</button>
                 </div>
 
                 <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>
