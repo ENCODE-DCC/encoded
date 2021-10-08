@@ -17,8 +17,13 @@ import drawTree from '../libs/ui/node_graph';
  * @param {string} title
  */
 const formatH9HeaderTitle = (title) => (title && title.trim() !== 'H9' ? title.trim() : 'H9 Stem Cell');
-
 const formatPebbleNameToCssClassFriendly = (name) => (!name ? '' : name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_'));
+
+const fullHeight = 400;
+const margin = { top: 50, left: 20, bottom: 110, right: 20 };
+const data = require('./node_graph_data/sescc.json');
+
+const treeData = data[0];
 
 /**
  * All assay columns to not include in matrix.
@@ -296,12 +301,11 @@ class MatrixPresentation extends React.Component {
         };
 
         this.selectAll = this.selectAll.bind(this);
-        // this.selectLayer = this.selectLayer.bind(this);
         this.setSelectedNodes = this.setSelectedNodes.bind(this);
     }
 
     componentDidMount() {
-        // this.handleScrollIndicator(this.scrollElement);
+        this.handleScrollIndicator(this.scrollElement);
         this.updateWindowWidth();
         window.addEventListener('resize', this.updateWindowWidth);
 
@@ -318,51 +322,48 @@ class MatrixPresentation extends React.Component {
         // Both D3 and Jest have their own conflicting JSDOM instances
         require.ensure(['d3'], (require) => {
             this.d3 = require('d3');
-            const margin = { top: 50, left: 20, bottom: 110, right: 20 };
             const chartWidth = this.state.windowWidth;
-            const fullHeight = 400;
-            const data = require('./node_graph_data/sescc.json');
-            const treeData = data[0];
             drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
         });
     }
 
-    // componentDidUpdate() {
-    //     // Updates only happen for scrolling on this page. Every other update causes an
-    //     // unmount/mount sequence.
-    //     this.handleScrollIndicator(this.scrollElement);
-    // }
+    componentDidUpdate() {
+        // Updates only happen for scrolling on this page. Every other update causes an
+        // unmount/mount sequence.
+        console.log(this.scrollElement);
+        this.handleScrollIndicator(this.scrollElement);
+    }
 
-    // /**
-    //     * Called when the user scrolls the matrix horizontally within its div to handle scroll
-    //     * indicators
-    //     * @param {object} e React synthetic scroll event
-    // */
-    // handleOnScroll(e) {
-    //     this.handleScrollIndicator(e.target);
-    // }
-    //
-    //
-    // /**
-    //     * Show a scroll indicator depending on current scrolled position.
-    //     * @param {object} element DOM element to apply shading to
-    // */
-    // handleScrollIndicator(element) {
-    //     if (element) {
-    //         // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
-    //         // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
-    //         const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
-    //         if (scrollDiff < 2 && !this.state.scrolledRight) {
-    //             // Right edge of matrix scrolled into view.
-    //             this.setState({ scrolledRight: true });
-    //         } else if (scrollDiff >= 2 && this.state.scrolledRight) {
-    //             // Right edge of matrix scrolled out of view.
-    //             this.setState({ scrolledRight: false });
-    //         }
-    //     } else if (!this.state.scrolledRight) {
-    //         this.setState({ scrolledRight: true });
-    //     }
-    // }
+    /**
+        * Called when the user scrolls the matrix horizontally within its div to handle scroll
+        * indicators
+        * @param {object} e React synthetic scroll event
+    */
+    handleOnScroll(e) {
+        this.handleScrollIndicator(e.target);
+    }
+
+    /**
+        * Show a scroll indicator depending on current scrolled position.
+        * @param {object} element DOM element to apply shading to
+    */
+    handleScrollIndicator(element) {
+        console.log(element);
+        if (element) {
+            // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
+            // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
+            const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
+            if (scrollDiff < 2 && !this.state.scrolledRight) {
+                // Right edge of matrix scrolled into view.
+                this.setState({ scrolledRight: true });
+            } else if (scrollDiff >= 2 && this.state.scrolledRight) {
+                // Right edge of matrix scrolled out of view.
+                this.setState({ scrolledRight: false });
+            }
+        } else if (!this.state.scrolledRight) {
+            this.setState({ scrolledRight: true });
+        }
+    }
 
     setSelectedNodes(newNode) {
         this.setState((prevState) => {
@@ -400,13 +401,8 @@ class MatrixPresentation extends React.Component {
             this.setState({
                 selectedNodes: rowDataOrder.map((row) => row.replace(/\s/g, '').toLowerCase()),
             }, () => {
-                require.ensure(['d3'], (require) => {
-                    this.d3 = require('d3');
-                    const margin = { top: 50, left: 20, bottom: 110, right: 20 };
+                require.ensure(['d3'], () => {
                     const chartWidth = this.state.windowWidth;
-                    const fullHeight = 400;
-                    const data = require('./node_graph_data/sescc.json');
-                    const treeData = data[0];
                     drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
                 });
             });
@@ -414,13 +410,8 @@ class MatrixPresentation extends React.Component {
             this.setState({
                 selectedNodes: [],
             }, () => {
-                require.ensure(['d3'], (require) => {
-                    this.d3 = require('d3');
-                    const margin = { top: 50, left: 20, bottom: 110, right: 20 };
+                require.ensure(['d3'], () => {
                     const chartWidth = this.state.windowWidth;
-                    const fullHeight = 400;
-                    const data = require('./node_graph_data/sescc.json');
-                    const treeData = data[0];
                     drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
                 });
             });
