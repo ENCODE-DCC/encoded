@@ -87,9 +87,6 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         // Assigns the x and y position for the nodes
         const treeData = treemap(root);
 
-        console.log('internal collapsed nodes');
-        console.log(internalSelectedNodes);
-
         // Compute the new tree layout.
         const nodes = treeData.descendants();
         const links = treeData.descendants().slice(1);
@@ -97,12 +94,11 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         const maxNodeDepth = Math.max(...nodeDepth);
 
         // Normalize for fixed-depth.
-        nodes.forEach(function(d) {
-            // d.y = d.depth * 100;
+        nodes.forEach((d) => {
             if (d.depth === 0) {
                 d.y = d.depth * 100;
             } else {
-                d.y = d.depth * height / maxNodeDepth;
+                d.y = (d.depth * height) / maxNodeDepth;
             }
         });
 
@@ -112,10 +108,8 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         // Enter any new modes at the parent's previous position.
         const nodeEnter = node.enter().append('g')
             .attr('class', (d) => `node ${d.data.class} ${d.data.name}`)
-            .attr('transform', function(d) {
-                return "translate(" + source.x0 + ',' + source.y0 + ')';
-            })
-            .on('click', function(e, d) {
+            .attr('transform', (d) => `translate(${source.x0},${source.y0})`)
+            .on('click', (e, d) => {
                 setSelectedNodes(d.data.name);
                 const clickedName = d.data.name.replace(/\s/g, '').toLowerCase();
                 if (internalSelectedNodes.indexOf(clickedName) > -1 && internalSelectedNodes.length > 1) {
@@ -126,17 +120,17 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                     internalSelectedNodes = [...internalSelectedNodes, clickedName];
                 }
                 const clickedCell = d3.select(`.js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()}`);
-                clickedCell.attr('class', (d) => `${internalSelectedNodes.indexOf(clickedName) > -1 ? 'active-cell' : ''} js-cell-${clickedName} js-cell ${d._children ? 'parent-cell' : ''}`);
+                clickedCell.attr('class', `${internalSelectedNodes.indexOf(clickedName) > -1 ? 'active-cell' : ''} js-cell-${clickedName} js-cell ${d._children ? 'parent-cell' : ''}`);
                 e.stopPropagation();
             });
 
         const nodeGroup = nodeEnter.append('g')
             .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
-            .on('mouseover', function() {
+            .on('mouseover', () => {
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1.2)');
                 d3.select(this).selectAll('ellipse').attr('class', (d) => `hover-class ${d.data.class ? d.data.class : 'default'}`);
             })
-            .on('mouseout', function() {
+            .on('mouseout', () => {
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1)');
                 d3.select(this).selectAll('ellipse').attr('class', (d) => (d.data.class ? d.data.class : 'default'));
             });
@@ -187,9 +181,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         // Transition to the proper position for the node
         nodeUpdate.transition()
             .duration(animationDuration)
-            .attr('transform', function(d) {
-                return "translate(" + d.x + ',' + d.y + ')';
-             });
+            .attr('transform', (d) => `translate(${d.x},${d.y})`);
 
         // Update the node attributes and style
         nodeUpdate.select('g.js-cell')
@@ -198,9 +190,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         // Remove any exiting nodes
         const nodeExit = node.exit().transition()
             .duration(animationDuration)
-            .attr("transform", function(d) {
-                return "translate(" + source.x + "," + source.y + ")";
-            })
+            .attr('transform', (d) => `translate(${source.x},${source.y})`)
             .remove();
 
         nodeExit.select('text')
@@ -212,25 +202,28 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         // Enter any new links at the parent's previous position.
         const linkEnter = link.enter().insert('path', 'g')
             .attr('class', 'link')
-            .attr('d', function(d){
+            .attr('d', (d) => {
                 const o = {
                     x: source.x0,
-                    y: source.y0
+                    y: source.y0,
                 };
-                return diagonal(o, o)
+                return diagonal(o, o);
             });
 
         const linkUpdate = linkEnter.merge(link);
 
         linkUpdate.transition()
             .duration(animationDuration)
-            .attr('d', function(d){ return diagonal(d, d.parent) });
+            .attr('d', (d) => diagonal(d, d.parent));
 
-        const linkExit = link.exit().transition()
+        link.exit().transition()
             .duration(animationDuration)
-            .attr('d', function(d) {
-                const o = {x: source.x, y: source.y}
-                return diagonal(o, o)
+            .attr('d', (d) => {
+                const o = {
+                    x: source.x,
+                    y: source.y,
+                };
+                return diagonal(o, o);
             })
             .remove();
 
