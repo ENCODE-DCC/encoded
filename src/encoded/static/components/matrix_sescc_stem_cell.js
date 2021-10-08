@@ -389,7 +389,7 @@ class MatrixPresentation extends React.Component {
         for (let idx = 0; idx < matrixRows.length; idx += 1) {
             const rowClass = matrixRows[idx].classList[1].replace(/_/g, '');
             console.log(rowClass);
-            if (this.state.selectedNodes.indexOf(rowClass) > -1) {
+            if (this.state.selectedNodes.indexOf(rowClass) === -1) {
                 matrixRows[idx].classList.add('hide');
             }
         }
