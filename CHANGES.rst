@@ -1,5 +1,30 @@
 Changes
 =======
+123.0 (released) snovault 1.0.60
+--------------------------------
+1.	ENCD-6180-matrix-search (#4123)
+2.	ENCD-6181-move-warning-facet-to-quality-group (#4125)
+3.	ENCD-6142-biosample-summary-updates (#4105)
+4.	ENCD-6035 add body map (#4093)
+5.	ENCD-6160-snatac (#4120)
+6.	ENCD-6169 gkm-SVM-model (#4118)
+7.	ENCD-6148 exclude fcc datapoints (#4117)
+8.	ENCD-6154-collection-series (#4111)
+9.	ENCD-6159-updates-to-reference-data-table (#4096)
+10.	ENCD-6097-allow-series-and-related-datasets-in-cart (#4119)
+11.	ENCD-6173-circle-node-install-fix (#4121)
+12.	ENCD-6143-upgrade-encyclopedia-version-enums (#4102)
+13.	ENCD-6166-Filtering out unnecessary Region Search fields (#4113)
+14.	ENCD-6141-update-fc-title-search (#4115)
+15.	ENCD-6134-add-elements-selection-method-enums (#4109)
+16.	ENCD-6093-facets-appear-in-groups-on-certain-search-result-pages (#4104)
+17.	ENCD-6144 tracks batch (#4106)
+18.	ENCD-6150 Removing both lifestage and run_type from facets (#4110)
+19.	ENCD-6162-fix-single-cell-unit-schema-link (#4103)
+20.	ENCD-6158-treatment-details-add-purpose-enum (#4108)
+21.	ENCD-5758-cart-rep-facet (#4079)
+22.	ENCD-6149-add-hic-file-output-types (#4097)
+
 122.0 (released) snovault 1.0.60
 --------------------------------
 1. ENCD-6161-fix genome browser pinned files in sessionStorage (#4098)
