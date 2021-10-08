@@ -1,9 +1,17 @@
 $bubbleSize: 13px;
+
 $mesoderm: #008000;
 $ectoderm: #800080;
 $stem: #edcf09;
 $unlabeled: #808080;
 $endoderm: blue;
+
+$mesoderm-light: #e3fae1;
+$ectoderm-light: #e4c6f7;
+$stem-light: #fafa98;
+$unlabeled-light: #d1d1d1;
+$endoderm-light: blue;
+
 $default-active: #36586d;
 $default-hover: #f2f2f2;
 
@@ -70,25 +78,33 @@ $default-hover: #f2f2f2;
 
 // sescc matrix-specific colors and styles
 
+.sescc_matrix__graph-region {
+    min-height: 100px;
+}
+
 .sescc_matrix__graph {
     .js-cell {
         .unlabeled {
-            fill: lighten($unlabeled, 30%);
+            fill: $unlabeled-light;
         }
 
         .mesoderm {
-            fill: lighten($mesoderm, 30%);
+            fill: $mesoderm-light;
         }
 
         .ectoderm {
-            fill: lighten($ectoderm, 60%);
+            fill: $ectoderm-light;
         }
 
         .stem {
-            fill: lighten($stem, 30%);
+            fill: $stem-light;
         }
 
         &.active-cell {
+            ellipse {
+                stroke: white;
+            }
+
             .unlabeled {
                 fill: $unlabeled;
             }

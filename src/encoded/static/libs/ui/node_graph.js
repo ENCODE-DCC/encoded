@@ -1,4 +1,5 @@
-const textWrapWidth = 150;
+const textWrapWidth = 115;
+const characterLimitForWrap = 18;
 
 const circlePlus = '\u2295';
 const circleMinus = '\u2296';
@@ -30,9 +31,6 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
     let internalSelectedNodes = selectedNodes;
 
-    // append the svg object to the body of the page
-    // appends a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
     const svg = d3.select(targetDiv).append('svg')
         .attr('width', fullWidth)
         .attr('height', fullHeight)
@@ -115,7 +113,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         const nodeEnter = node.enter().append('g')
             .attr('class', (d) => `node ${d.data.class} ${d.data.name}`)
             .attr('transform', function(d) {
-                return "translate(" + source.x0 + "," + source.y0 + ")";
+                return "translate(" + source.x0 + ',' + source.y0 + ')';
             })
             .on('click', function(e, d) {
                 setSelectedNodes(d.data.name);
@@ -151,14 +149,13 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 .attr('ry', ellipseSetting.ry)
                 .style('stroke', ellipseSetting.stroke)
                 .style('stroke-width', 1)
-                .attr('class', (d) => (d.data.class ? d.data.class : 'default'));//`${d.data.name.replace(/\s/g, '').toLowerCase()} ${d.data.class}`);
-                // .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
+                .attr('class', (d) => (d.data.class ? d.data.class : 'default'));
         });
 
         // adds the text to the node
         nodeEnter.append('text')
             .attr('dy', '.35em')
-            .attr('y', (d) => ((d.children && (d.data.name.length < 16 || d.data.name.split(' ').length === 1)) ? -40 : d.children ? -60 : 30))
+            .attr('y', (d) => ((d.children && (d.data.name.length < characterLimitForWrap || d.data.name.split(' ').length === 1)) ? -40 : d.children ? -60 : 30))
             .style('text-anchor', 'middle')
             .text((d) => d.data.name)
             .attr('class', 'node-text');
@@ -191,7 +188,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         nodeUpdate.transition()
             .duration(animationDuration)
             .attr('transform', function(d) {
-                return "translate(" + d.x + "," + d.y + ")";
+                return "translate(" + d.x + ',' + d.y + ')';
              });
 
         // Update the node attributes and style
@@ -250,7 +247,6 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                 d.children = d._children;
                 d._children = null;
             }
-            // updateCollapsedNodes(d);
             update(d, slowAnimation);
         }
     }
