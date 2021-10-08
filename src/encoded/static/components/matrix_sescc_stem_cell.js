@@ -301,6 +301,7 @@ class MatrixPresentation extends React.Component {
         };
 
         this.selectAll = this.selectAll.bind(this);
+        this.setMatrixRows = this.setMatrixRows.bind(this);
         this.setSelectedNodes = this.setSelectedNodes.bind(this);
     }
 
@@ -308,13 +309,7 @@ class MatrixPresentation extends React.Component {
         this.handleScrollIndicator(this.scrollElement);
         this.updateWindowWidth();
         window.addEventListener('resize', this.updateWindowWidth);
-
-        const matrixRows = document.getElementsByClassName('matrix__row-data');
-        for (let idx = 0; idx < matrixRows.length; idx += 1) {
-            if (this.state.selectedNodes.indexOf(matrixRows[idx].classList) > -1) {
-                matrixRows[idx].classList.add('hide');
-            }
-        }
+        this.setMatrixRows();
 
         // Based on: https://www.codeseek.co/EleftheriaBatsou/the-tree-layout-or-d3-MveNbW
         // A version for d3.js v4 is: https://bl.ocks.org/d3noob/b024fcce8b4b9264011a1c3e7c7d70dc
@@ -387,6 +382,15 @@ class MatrixPresentation extends React.Component {
         });
     }
 
+    setMatrixRows() {
+        const matrixRows = document.getElementsByClassName('matrix__row-data');
+        for (let idx = 0; idx < matrixRows.length; idx += 1) {
+            if (this.state.selectedNodes.indexOf(matrixRows[idx].classList) > -1) {
+                matrixRows[idx].classList.add('hide');
+            }
+        }
+    }
+
     updateWindowWidth() {
         this.setState({
             windowWidth: document.getElementsByClassName('matrix__presentation')[0].offsetWidth,
@@ -401,6 +405,7 @@ class MatrixPresentation extends React.Component {
                 require.ensure(['d3'], () => {
                     const chartWidth = this.state.windowWidth;
                     drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+                    this.setMatrixRows();
                 });
             });
         } else {
@@ -410,6 +415,7 @@ class MatrixPresentation extends React.Component {
                 require.ensure(['d3'], () => {
                     const chartWidth = this.state.windowWidth;
                     drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+                    this.setMatrixRows();
                 });
             });
         }
