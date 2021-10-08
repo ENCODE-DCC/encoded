@@ -330,7 +330,6 @@ class MatrixPresentation extends React.Component {
     componentDidUpdate() {
         // Updates only happen for scrolling on this page. Every other update causes an
         // unmount/mount sequence.
-        console.log(this.scrollElement);
         this.handleScrollIndicator(this.scrollElement);
     }
 
@@ -348,7 +347,6 @@ class MatrixPresentation extends React.Component {
         * @param {object} element DOM element to apply shading to
     */
     handleScrollIndicator(element) {
-        console.log(element);
         if (element) {
             // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
             // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
@@ -396,7 +394,6 @@ class MatrixPresentation extends React.Component {
     }
 
     selectAll(selection) {
-        console.log(`selection is ${selection}`);
         if (selection === 'all') {
             this.setState({
                 selectedNodes: rowDataOrder.map((row) => row.replace(/\s/g, '').toLowerCase()),
