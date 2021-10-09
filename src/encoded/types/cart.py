@@ -46,6 +46,10 @@ class Cart(Item):
         'disabled': [(Allow, 'role.owner', ['view', 'edit'])] + ONLY_ADMIN_VIEW,
     }
 
+    embedded = [
+        'submitted_by'
+    ]
+
     def __ac_local_roles__(self):
         owner = 'userid.%s' % self.properties['submitted_by']
         return {

@@ -1,5 +1,9 @@
 ## Changelog for cart.json
 
+### Schema version 3
+
+* Added *description* and *doi* properties.
+
 ### Schema version 2
 
 * Added *file_views* array property.

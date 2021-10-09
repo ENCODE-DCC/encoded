@@ -191,7 +191,21 @@
         "data_used": {
             "title": "Data used",
             "type": "string"
-        }
+        },
+        "carts": {
+            "title": "Carts",
+            "description": "Array of carts containing associated dataset(s).",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Cart",
+                "description": "A cart containing dataset(s) associated with this Publication.",
+                "comment": "See cart.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "Cart"
+            }
+        },
     },
     "facets": {
         "status": {
