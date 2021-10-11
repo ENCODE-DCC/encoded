@@ -4,6 +4,8 @@ const circleMinus = '\u2296';
 const slowAnimation = 400;
 const fastAnimation = 0;
 
+const mobileLimit = 400;
+
 const ellipseSettings = [
     { cx: 2, cy: 2, rx: 12, ry: 9 },
     { cx: 2, cy: 2, rx: 6.5, ry: 6 },
@@ -28,12 +30,14 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
 
-    let textWrapWidth = 115;
-    let characterLimitForWrap = 18;
-    if (fullWidth < 400) {
-        textWrapWidth = 80;
-        characterLimitForWrap = 60;
-    }
+    const textWrapWidth = 115;
+    const characterLimitForWrap = 18;
+    const isMobile = fullWidth < mobileLimit;
+    // if (isMobile) {
+    //     textWrapWidth = 80;
+    //     characterLimitForWrap = 60;
+    // }
+    console.log(`is it mobile? ${isMobile}`);
 
     d3.select(targetDiv).select('svg').remove();
 
@@ -57,8 +61,9 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
 
     function wrap(text, textWidth) {
         text.each(function textWrap() {
+            console.log('text wrap');
             text = d3.select(this);
-            const words = text.text().split(/\s+/).reverse();
+            const words = text.text().split(/\s+/);
             let line = [];
             let lineNumber = 0;
             const lineHeight = 1.1;
@@ -158,13 +163,16 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
         // adds the text to the node
         nodeEnter.append('text')
             .attr('dy', '.35em')
+            .attr('transform', isMobile ? 'rotate(310)' : 'rotate(0)')
             .attr('y', (d) => ((d.children && (d.data.name.length < characterLimitForWrap || d.data.name.split(' ').length === 1)) ? -40 : d.children ? -60 : 30))
             .style('text-anchor', 'middle')
             .text((d) => d.data.name)
             .attr('class', 'node-text');
 
-        nodeEnter.selectAll('text')
-            .call(wrap, textWrapWidth);
+        // if (!isMobile) {
+            nodeEnter.selectAll('text')
+                .call(wrap, textWrapWidth);
+        // }
 
         // adds the text to the node
         nodeEnter.append('text')
