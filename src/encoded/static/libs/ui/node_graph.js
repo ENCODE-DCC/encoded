@@ -51,7 +51,7 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
     root.y0 = 100;
 
     function wrap(text, textWidth) {
-        text.each(function () {
+        text.each(function textWrap() {
             text = d3.select(this);
             const words = text.text().split(/\s+/).reverse();
             let line = [];
@@ -168,7 +168,7 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
             .attr('y', '-10px')
             .attr('x', '-10px')
             .style('font-size', '28px')
-            .on('click', function (e, d) {
+            .on('click', function clickFunction(e, d) {
                 const thisText = d3.select(this).text();
                 if (thisText === circlePlus) {
                     d3.select(this).text(circleMinus);
