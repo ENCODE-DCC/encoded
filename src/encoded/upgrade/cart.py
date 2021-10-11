@@ -15,7 +15,5 @@ def cart_1_2(value, system):
 
 @upgrade_step('cart', '2', '3')
 def cart_2_3(value, system):
-    if value['status'] == 'disabled':
-        value['status'] = 'deleted'
-    if value['status'] == 'current':
+    if value['status'] in ['disabled', 'current']:
         value['status'] = 'unlisted'
