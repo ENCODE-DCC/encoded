@@ -33,7 +33,7 @@
                     "permission": "import_items",
                     "enum": [
                         "released",
-                        "revoked",
+                        "revoked"
                     ]
                 }
             ]
