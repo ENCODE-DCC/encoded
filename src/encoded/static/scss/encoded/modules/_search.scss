@@ -323,7 +323,7 @@ $form-bg: #f3f3f3;
                 border-bottom-left-radius: $border-radius-base;
             }
 
-            .btn:last-child {
+            .btn:last-of-type {
                 border-top-right-radius: $border-radius-base;
                 border-bottom-right-radius: $border-radius-base;
                 border-right: 1px solid #c0c0c0;
