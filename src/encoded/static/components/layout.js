@@ -82,7 +82,7 @@ class BlockEditModal extends React.Component {
                     <BlockEdit schema={blocktype.schema} value={this.state.value} onChange={this.onChange} />
                 </ModalBody>
                 <ModalFooter
-                    closeBtn={<button type="button" className="btn btn-default" onClick={this.cancel}>Cancel</button>}
+                    closeModal={<button type="button" className="btn btn-default" onClick={this.cancel}>Cancel</button>}
                     submitBtn={this.save}
                 />
             </Modal>

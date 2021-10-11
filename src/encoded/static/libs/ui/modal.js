@@ -92,9 +92,7 @@ export const ModalHeader = ({ title, closeModal, addCss, labelId, focusClose, ch
     /** Holds ref of header close box */
     const closeRef = React.useRef(null);
 
-    const internalCloseModal = (e) => {
-        e.stopPropagation();
-
+    const internalCloseModal = () => {
         // Call directly given close handler.
         if (typeof closeModal === 'function') {
             closeModal();
@@ -187,9 +185,7 @@ export const ModalFooter = ({
 }) => {
     const chainedCloseModal = React.useRef(null);
 
-    const internalCloseModal = (e) => {
-        e.stopPropagation();
-
+    const internalCloseModal = () => {
         // Call close button's existing close handler if it had one first.
         if (chainedCloseModal.current) {
             chainedCloseModal.current();
