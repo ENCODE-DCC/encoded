@@ -1404,30 +1404,7 @@ $divider-color: #000; // Color of dividers between assays with targets
     }
 }
 
-/* stylelint-disable-next-line selector-class-pattern */
-.sescc_matrix {
-    @at-root #{&}__title-img {
-        /* stylelint-disable-next-line media-feature-name-disallowed-list */
-        @media screen and (max-width: $screen-xs-min) {
-            display: none;
-        }
-    }
-
-    @at-root #{&}__graph-region {
-        display: flex;
-        justify-content: center;
-
-        /* stylelint-disable-next-line media-feature-name-disallowed-list */
-        @media screen and (max-width: $screen-sm-min) {
-            display: block;
-        }
-    }
-
-    @at-root #{&}__graph {
-        display: flex;
-        justify-content: left;
-    }
-
+.sescc__matrix {
     @at-root #{&}__data {
         overflow-x: auto;
 
@@ -1454,48 +1431,6 @@ $divider-color: #000; // Color of dividers between assays with targets
         .btn {
             margin-right: 3px;
         }
-    }
-
-    @at-root #{&}__germ-layer {
-        // display: flex;
-        // align-items: center;
-        // font-weight: bold;
-
-        @at-root #{&}-title {
-            display: flex;
-            justify-content: center;
-        }
-
-        ul {
-            display: flex;
-            list-style: none;
-            margin-top: 0;
-            padding-top: 0;
-            flex-direction: column;
-            padding-left: 0;
-            margin-bottom: 0;
-        }
-
-        // li {
-        //     margin: 10px;
-        // }
-
-        hr {
-            margin-bottom: 0;
-        }
-    }
-
-    @at-root #{&}__node {
-        text {
-            font-size: 1.15em;
-            font-weight: 500;
-        }
-    }
-
-    @at-root #{&}__link {
-        fill: none;
-        stroke: #ccc;
-        stroke-width: 2px;
     }
 }
 

@@ -318,7 +318,7 @@ class MatrixPresentation extends React.Component {
         require.ensure(['d3'], (require) => {
             this.d3 = require('d3');
             const chartWidth = this.state.windowWidth;
-            drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
         });
     }
 
@@ -407,7 +407,7 @@ class MatrixPresentation extends React.Component {
             }, () => {
                 require.ensure(['d3'], () => {
                     const chartWidth = this.state.windowWidth;
-                    drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
                     this.setMatrixRows();
                 });
             });
@@ -417,7 +417,7 @@ class MatrixPresentation extends React.Component {
             }, () => {
                 require.ensure(['d3'], () => {
                     const chartWidth = this.state.windowWidth;
-                    drawTree(this.d3, '.sescc_matrix__graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
                     this.setMatrixRows();
                 });
             });
@@ -430,8 +430,8 @@ class MatrixPresentation extends React.Component {
 
         return (
             <div className="matrix__presentation">
-                <div className="sescc_matrix__graph-region">
-                    <div className="sescc_matrix__germ-layer">
+                <div className="sescc_matrix-graph-container">
+                    <div className="sescc-layer-legend">
                         {this.layers.map((layer) => (
                             <div className={`layer-element ${layer}`} key={layer}>
                                 <div className={`layer-bubble ${layer.toLowerCase()}`} />
@@ -439,10 +439,10 @@ class MatrixPresentation extends React.Component {
                             </div>
                         ))}
                     </div>
-                    <div className="sescc_matrix__graph vertical-node-graph" />
+                    <div className="sescc-matrix-graph vertical-node-graph" />
                 </div>
 
-                <div className="sescc_matrix__show-all">
+                <div className="sescc__matrix__show-all">
                     <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectAll('all')}>Show All</button>
                     <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectAll('none')}>Hide All</button>
                 </div>
@@ -453,7 +453,7 @@ class MatrixPresentation extends React.Component {
                 </div>
                 <div className="matrix__presentation-content">
                     <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
-                    <div className="sescc_matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
+                    <div className="sescc__matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
                         <DataTable tableData={convertToDataTableFormat(context)} />
                     </div>
                 </div>

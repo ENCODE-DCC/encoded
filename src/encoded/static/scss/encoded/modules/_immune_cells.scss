@@ -35,6 +35,11 @@ $default-hover: #f2f2f2;
 .vertical-node-graph {
     svg {
         max-width: 100%;
+        font-size: 0.7rem;
+
+        @media screen and (min-width: $screen-md-min) {
+            font-size: 1rem;
+        }
     }
 
     ellipse {
@@ -77,12 +82,7 @@ $default-hover: #f2f2f2;
 }
 
 // sescc matrix-specific colors and styles
-
-.sescc_matrix__graph-region {
-    min-height: 100px;
-}
-
-.sescc_matrix__graph {
+.sescc-matrix-graph {
     .js-cell {
         .unlabeled {
             fill: $unlabeled-light;
@@ -124,25 +124,18 @@ $default-hover: #f2f2f2;
     }
 }
 
-.sescc_matrix__graph-region {
-    .endodermColor {
-        color: $endoderm;
-    }
-    .mesodermColor {
-        color: $mesoderm;
-    }
-    .ectoDermColor {
-        color: $ectoderm;
-    }
-}
-
-.sescc_matrix__graph-region {
+.sescc-matrix-graph-container {
     position: relative;
+    min-height: 100px;
 
-    .sescc_matrix__germ-layer {
-        position: absolute;
-        top: 10px;
-        left: 10px;
+    .sescc-layer-legend {
+        position: relative;
+
+        @media screen and (min-width: $screen-md-min) {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
     }
 }
 
