@@ -13,6 +13,11 @@ const ellipseSettings = [
     { cx: 10, cy: 10, rx: 6.5, ry: 5 },
 ];
 
+// Standardizes node names
+function nodeKeyName(name) {
+    return name.replace(/\s/g, '').toLowerCase();
+}
+
 // Creates a curved (diagonal) path from parent to the child nodes
 function diagonal(d, s) {
     const path = `M${d.x},${d.y}C${d.x},${(d.y + s.y) / 2} ${s.x},${(d.y + s.y) / 2} ${s.x},${s.y}`;
@@ -98,7 +103,7 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
 
         // Normalize for fixed-depth.
         nodes.forEach((d) => {
-            d.id = d.data.name.replace(/\s/g, '').toLowerCase();
+            d.id = nodeKeyName(d.data.name);
             if (d.depth === 0) {
                 d.y = d.depth * 100;
             } else {
@@ -115,7 +120,7 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
             .attr('transform', `translate(${source.x0},${source.y0})`)
             .on('click', (e, d) => {
                 setSelectedNodes(d.data.name);
-                const clickedName = d.data.name.replace(/\s/g, '').toLowerCase();
+                const clickedName = nodeKeyName(d.data.name);
                 if (internalSelectedNodes.indexOf(clickedName) > -1 && internalSelectedNodes.length > 1) {
                     internalSelectedNodes = internalSelectedNodes.filter((s) => s !== clickedName);
                 } else if (internalSelectedNodes.indexOf(clickedName) > -1) {
@@ -123,13 +128,13 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
                 } else {
                     internalSelectedNodes = [...internalSelectedNodes, clickedName];
                 }
-                const clickedCell = d3.select(`.js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()}`);
+                const clickedCell = d3.select(`.js-cell-${nodeKeyName(d.data.name)}`);
                 clickedCell.attr('class', `${internalSelectedNodes.indexOf(clickedName) > -1 ? 'active-cell' : ''} js-cell-${clickedName} js-cell ${d._children ? 'parent-cell' : ''}`);
                 e.stopPropagation();
             });
 
         const nodeGroup = nodeEnter.append('g')
-            .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
+            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
             .on('mouseover', () => {
                 d3.select(this).selectAll('ellipse').style('transform', 'scale(1.2)');
                 d3.select(this).selectAll('ellipse').attr('class', (d) => `hover-class ${d.data.class ? d.data.class : 'default'}`);
@@ -163,7 +168,7 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
 
         // adds the text to the node
         nodeEnter.append('text')
-            .attr('class', (d) => `node-expander-collapser clicker-${d.data.name.replace(/\s/g, '').toLowerCase()}`)
+            .attr('class', (d) => `node-expander-collapser clicker-${nodeKeyName(d.data.name)}`)
             .text((d) => ((d.children && d._children) ? circlePlus : d.children ? circleMinus : ''))
             .attr('y', '-10px')
             .attr('x', '-10px')
@@ -189,7 +194,7 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
 
         // Update the node attributes and style
         nodeUpdate.select('g.js-cell')
-            .attr('class', (d) => `js-cell-${d.data.name.replace(/\s/g, '').toLowerCase()} js-cell ${internalSelectedNodes.indexOf(d.data.name.replace(/\s/g, '').toLowerCase()) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`);
+            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`);
 
         // Remove any exiting nodes
         const nodeExit = node.exit().transition()
