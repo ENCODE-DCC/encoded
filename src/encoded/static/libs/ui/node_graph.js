@@ -1,6 +1,3 @@
-const textWrapWidth = 115;
-const characterLimitForWrap = 18;
-
 const circlePlus = '\u2295';
 const circleMinus = '\u2296';
 
@@ -22,10 +19,16 @@ function diagonal(d, s) {
     return path;
 }
 
-const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes) => {
-    // Set the dimensions and margins of the diagram
+const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes) => {
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
+
+    let textWrapWidth = 115;
+    let characterLimitForWrap = 18;
+    if (fullWidth < 400) {
+        textWrapWidth = 80;
+        characterLimitForWrap = 60;
+    }
 
     d3.select(targetDiv).select('svg').remove();
 
@@ -39,33 +42,27 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    let i = 0;
-
     // declares a tree layout and assigns the size
     const treemap = d3.tree().size([width, height]);
 
     // Assigns parent, children, height, depth
-    const root = d3.hierarchy(treeData, (d) => d.children);
+    const root = d3.hierarchy(data, (d) => d.children);
     root.x0 = width / 2;
     root.y0 = 100;
 
     function wrap(text, textWidth) {
-        text.each(function() {
+        text.each(function () {
             text = d3.select(this);
             const words = text.text().split(/\s+/).reverse();
-            let word = '';
             let line = [];
             let lineNumber = 0;
             const lineHeight = 1.1;
             const y = text.attr('y');
             const dy = parseFloat(text.attr('dy'));
             let newDy = '';
-
-            // append checkbox
             let tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y);
-            // loop through words appending tspans
             tspan = text.append('tspan').attr('x', 0).attr('y', y);
-            while (word = words.pop()) {
+            words.forEach((word) => {
                 line.push(word);
                 tspan.text(line.join(' '));
                 if (tspan.node().getComputedTextLength() > textWidth) {
@@ -77,17 +74,23 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
                     tspan.attr('dy', newDy);
                     tspan.text(word);
                 }
-            }
+            });
         });
     }
 
-    update(root, fastAnimation);
-
     function update(source, animationDuration) {
-        // Assigns the x and y position for the nodes
-        const treeData = treemap(root);
+        function click(event, d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = d._children;
+                d._children = null;
+            }
+            update(d, slowAnimation);
+        }
 
-        // Compute the new tree layout.
+        const treeData = treemap(root);
         const nodes = treeData.descendants();
         const links = treeData.descendants().slice(1);
         const nodeDepth = nodes.map((n) => n.depth);
@@ -95,6 +98,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
         // Normalize for fixed-depth.
         nodes.forEach((d) => {
+            d.id = d.data.name.replace(/\s/g, '').toLowerCase();
             if (d.depth === 0) {
                 d.y = d.depth * 100;
             } else {
@@ -103,12 +107,12 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         });
 
         const node = svg.selectAll('g.node')
-            .data(nodes, function(d) {return d.id || (d.id = (i += 1)); });
+            .data(nodes, (d) => d.id);
 
         // Enter any new modes at the parent's previous position.
         const nodeEnter = node.enter().append('g')
             .attr('class', (d) => `node ${d.data.class} ${d.data.name}`)
-            .attr('transform', (d) => `translate(${source.x0},${source.y0})`)
+            .attr('transform', `translate(${source.x0},${source.y0})`)
             .on('click', (e, d) => {
                 setSelectedNodes(d.data.name);
                 const clickedName = d.data.name.replace(/\s/g, '').toLowerCase();
@@ -164,7 +168,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             .attr('y', '-10px')
             .attr('x', '-10px')
             .style('font-size', '28px')
-            .on('click', function(e, d) {
+            .on('click', function (e, d) {
                 const thisText = d3.select(this).text();
                 if (thisText === circlePlus) {
                     d3.select(this).text(circleMinus);
@@ -190,19 +194,19 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
         // Remove any exiting nodes
         const nodeExit = node.exit().transition()
             .duration(animationDuration)
-            .attr('transform', (d) => `translate(${source.x},${source.y})`)
+            .attr('transform', `translate(${source.x},${source.y})`)
             .remove();
 
         nodeExit.select('text')
             .style('fill-opacity', 1e-6);
 
         const link = svg.selectAll('path.link')
-            .data(links, function(d) { return d.id; });
+            .data(links, (d) => d.id);
 
         // Enter any new links at the parent's previous position.
         const linkEnter = link.enter().insert('path', 'g')
             .attr('class', 'link')
-            .attr('d', (d) => {
+            .attr('d', () => {
                 const o = {
                     x: source.x0,
                     y: source.y0,
@@ -218,7 +222,7 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
 
         link.exit().transition()
             .duration(animationDuration)
-            .attr('d', (d) => {
+            .attr('d', () => {
                 const o = {
                     x: source.x,
                     y: source.y,
@@ -231,18 +235,9 @@ const drawTree = (d3, targetDiv, treeData, fullWidth, fullHeight, margin, select
             d.x0 = d.x;
             d.y0 = d.y;
         });
-
-        function click(event, d) {
-            if (d.children) {
-                d._children = d.children;
-                d.children = null;
-            } else {
-                d.children = d._children;
-                d._children = null;
-            }
-            update(d, slowAnimation);
-        }
     }
+
+    update(root, fastAnimation);
 };
 
 export default drawTree;
