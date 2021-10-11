@@ -35,6 +35,7 @@ require('./matrix_mouse_development');
 require('./matrix_experiment');
 require('./matrix_reference_epigenome');
 require('./matrix_sescc_stem_cell');
+require('./matrix_deeply_profiled');
 require('./matrix_chip_seq');
 require('./matrix_encore');
 require('./target');

@@ -76,6 +76,8 @@ def includeme(config):
     config.add_route('brain-matrix', '/brain-matrix{slash:/?}')
     config.add_route('sescc-stem-cell-matrix', '/sescc-stem-cell-matrix{slash:/?}')
     config.add_route('chip-seq-matrix', '/chip-seq-matrix{slash:/?}')
+    config.add_route('deeply-profiled-matrix', '/deeply-profiled-matrix{slash:/?}')
+    config.add_route('deeply-profiled-uniform-batch-matrix', '/deeply-profiled-uniform-batch-matrix{slash:/?}')
     config.add_route('mouse-development-matrix', '/mouse-development-matrix{slash:/?}')
     config.add_route('encore-matrix', '/encore-matrix{slash:/?}')
     config.add_route('encore-rna-seq-matrix', '/encore-rna-seq-matrix{slash:/?}')
@@ -488,6 +490,66 @@ def chip_seq_matrix(context, request):
                 reserved_keys=RESERVED_KEYS,
             ),
             FacetGroupsResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='deeply-profiled-matrix', request_method='GET', permission='search')
+def deeply_profiled_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Deeply Profiled Cell Lines'
+            ),
+            TypeResponseField(
+                at_type=['DeeplyProfiledMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            MissingMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='deeply_profiled_matrix',
+                reserved_keys=RESERVED_KEYS,
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='deeply-profiled-uniform-batch-matrix', request_method='GET', permission='search')
+def deeply_profiled_uniform_batch_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Deeply Profiled Cell Lines'
+            ),
+            TypeResponseField(
+                at_type=['DeeplyProfiledUniformBatchMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            MissingMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='deeply_profiled_uniform_batch_matrix',
+                reserved_keys=RESERVED_KEYS,
+            ),
             NotificationResponseField(),
             FiltersResponseField(),
             TypeOnlyClearFiltersResponseField(),
