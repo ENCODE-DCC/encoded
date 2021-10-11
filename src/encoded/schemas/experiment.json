@@ -236,8 +236,6 @@
             "facet_fields": [
                 "files.platform.term_name",
                 "files.run_type",
-                "files.read_length",
-                "files.mapped_read_length",
                 "replicates.library.size_range",
                 "replicates.library.nucleic_acid_term_name",
                 "replicates.library.depleted_in_term_name",
@@ -249,7 +247,9 @@
             "title": "Analysis",
             "facet_fields": [
                 "assembly",
-                "files.file_type"
+                "files.file_type",
+                "files.read_length",
+                "files.mapped_read_length"
             ]
         },
         {

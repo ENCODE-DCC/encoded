@@ -279,7 +279,8 @@
                 "annotation_subtype",
                 "assay_term_name",
                 "targets.investigated_as",
-                "targets.label"
+                "targets.label",
+                "biochemical_inputs"
             ]
         },
         {
@@ -297,15 +298,15 @@
             "facet_fields": [
                 "software_used.software.name",
                 "assembly",
-                "files.file_type"
+                "files.file_type",
+                "files.read_length",
+                "files.mapped_read_length"
             ]
         },
         {
             "title": "Library",
             "facet_fields": [
-                "files.run_type",
-                "files.read_length",
-                "files.mapped_read_length"
+                "files.run_type"
             ]
         },
         {

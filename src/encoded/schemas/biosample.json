@@ -936,18 +936,6 @@
             ]
         },
         {
-            "title": "Dataset",
-            "facet_fields": [
-                "assay_title",
-                "annotation_type",
-                "annotation_subtype",
-                "platform.term_name",
-                "target.label",
-                "targets.label",
-                "encyclopedia_version"
-            ]
-        },
-        {
             "title": "Donor",
             "facet_fields": [
                 "organism.scientific_name",

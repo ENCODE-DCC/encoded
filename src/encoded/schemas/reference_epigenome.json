@@ -100,8 +100,6 @@
             "title": "Library",
             "facet_fields": [
                 "related_datsets.files.run_type",
-                "related_datasets.files.read_length",
-                "related_datasets.files.mapped_read_length",
                 "related_datasets.replicates.library.size_range",
                 "related_datasets.replicates.library.nucleic_acid_term_name",
                 "related_datasets.replicates.library.depleted_in_term_name",
@@ -112,7 +110,9 @@
             "title": "Analysis",
             "facet_fields": [
                 "assembly",
-                "related_datasets.files.file_type"
+                "related_datasets.files.file_type",
+                "related_datasets.files.read_length",
+                "related_datasets.files.mapped_read_length"
             ]
         },
         {
