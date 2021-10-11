@@ -19,7 +19,7 @@ When downloading files from a cart:
 You would allocate a cart batch download controller like this:
 
 ```javascript
-const controller = new CartBatchDownloadController(cartPath, datasetType, assembly, query);
+const controller = new CartBatchDownloadController(cartPath, datasetType, assemblies, query);
 ```
 
 ## Search Scenario

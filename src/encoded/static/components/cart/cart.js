@@ -1457,7 +1457,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                                         termClickHandler: handleFileTermClick,
                                                     }}
                                                 />
-                                            : <CartFacetsStandin files={displayedTab === 'processeddata' ? selectedFiles : []} facetProgress={facetProgress} />
+                                            : <CartFacetsStandin files={displayedTab === 'processeddata' ? selectedProcessedFiles : []} facetProgress={facetProgress} />
                                     )
                                 }
                                 <TabPanel
@@ -1493,11 +1493,11 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                                     voice="visualizable tracks"
                                                 />
                                             ),
-                                            processeddata: <CounterTab title="Processed" count={selectedFiles.length} icon="file" voice="processed data files" />,
+                                            processeddata: <CounterTab title="Processed" count={selectedProcessedFiles.length} icon="file" voice="processed data files" />,
                                             rawdata: <CounterTab title="Raw" count={rawdataFiles.length} icon="file" voice="raw data files" />,
                                         } : {
                                             browser: <CounterTab title="Genome browser" count={selectedFileTerms.assembly?.length === 1 ? selectedVisualizableFiles.length : 0} icon="file" voice="visualizable tracks" />,
-                                            processeddata: <CounterTab title="Processed" count={selectedFiles.length} icon="file" voice="processed data files" />,
+                                            processeddata: <CounterTab title="Processed" count={selectedProcessedFiles.length} icon="file" voice="processed data files" />,
                                         }
                                     }
                                     selectedTab={displayedTab}
@@ -1552,7 +1552,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                             totalPageCount={totalPageCount.processeddata}
                                             updateCurrentPage={updateDisplayedPage}
                                             fileViewOptions={{
-                                                filesToAddToFileView: filterForVisualizableFiles(selectedFiles),
+                                                filesToAddToFileView: filterForVisualizableFiles(selectedProcessedFiles),
                                                 fileViewName: DEFAULT_FILE_VIEW_NAME,
                                                 fileViewControlsEnabled: true,
                                                 isFileViewOnly,

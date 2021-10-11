@@ -304,11 +304,9 @@ const Selections = ({ datasetTerms, datasetTermClickHandler, fileTerms, fileTerm
     <div className="facet-selections">
         {Object.keys(datasetTerms).map((term) => (
             // Render the selected dataset facet terms first.
-            datasetTerms[term].length > 0 && (
-                datasetTerms[term].map((selection) => (
-                    <SelectionItem key={selection} selection={selection} term={term} selectionType="dataset" clickHandler={datasetTermClickHandler} />
-                ))
-            )
+            datasetTerms[term].map((selection) => (
+                <SelectionItem key={selection} selection={selection} term={term} selectionType="dataset" clickHandler={datasetTermClickHandler} />
+            ))
         ))}
         {Object.keys(fileTerms).map((term) => (
             // Render the selected file facet terms second.
