@@ -35,7 +35,7 @@ def deleted_cart(testapp, submitter):
 def autosave_cart(testapp, submitter):
     item = {
         'name': 'test cart',
-        'status': 'disabled',
+        'status': 'deleted',
         'locked': False,
         'elements': [],
         'submitted_by': submitter['uuid'],
