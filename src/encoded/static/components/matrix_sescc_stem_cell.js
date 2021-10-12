@@ -430,7 +430,7 @@ class MatrixPresentation extends React.Component {
 
         return (
             <div className="matrix__presentation">
-                <div className="sescc_matrix-graph-container">
+                <div className="sescc__matrix-graph-container">
                     <div className="sescc-layer-legend">
                         {this.layers.map((layer) => (
                             <div className={`layer-element ${layer}`} key={layer}>

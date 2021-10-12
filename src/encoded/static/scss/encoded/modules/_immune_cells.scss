@@ -124,17 +124,19 @@ $default-hover: #f2f2f2;
     }
 }
 
-.sescc-matrix-graph-container {
+.sescc__matrix-graph-container {
     position: relative;
-    min-height: 100px;
+    min-height: 130px;
 
     .sescc-layer-legend {
         position: relative;
+        font-size: 0.8rem;
 
         @media screen and (min-width: $screen-md-min) {
             position: absolute;
             top: 10px;
             left: 10px;
+            font-size: 1rem;
         }
     }
 }
