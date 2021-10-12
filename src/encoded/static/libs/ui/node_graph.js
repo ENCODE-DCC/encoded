@@ -6,6 +6,9 @@ const fastAnimation = 0;
 
 const mobileLimit = 400;
 
+let offset = -40;
+let doubleOffset = -60;
+
 const ellipseSettings = [
     { cx: 2, cy: 2, rx: 12, ry: 9 },
     { cx: 2, cy: 2, rx: 6.5, ry: 6 },
@@ -27,17 +30,22 @@ function diagonal(d, s) {
 }
 
 const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes) => {
+    let textWrapWidth = 115;
+    let characterLimitForWrap = 18;
+    const isMobile = fullWidth < mobileLimit;
+    if (isMobile) {
+        textWrapWidth = 80;
+        characterLimitForWrap = 15;
+        margin.top = 50;
+        margin.bottom = 80;
+        margin.left = 3;
+        margin.right = 3;
+        offset = -35;
+        doubleOffset = -65;
+    }
+
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
-
-    const textWrapWidth = 115;
-    const characterLimitForWrap = 18;
-    const isMobile = fullWidth < mobileLimit;
-    // if (isMobile) {
-    //     textWrapWidth = 80;
-    //     characterLimitForWrap = 60;
-    // }
-    console.log(`is it mobile? ${isMobile}`);
 
     d3.select(targetDiv).select('svg').remove();
 
@@ -51,17 +59,13 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // declares a tree layout and assigns the size
     const treemap = d3.tree().size([width, height]);
-
-    // Assigns parent, children, height, depth
     const root = d3.hierarchy(data, (d) => d.children);
     root.x0 = width / 2;
     root.y0 = 100;
 
     function wrap(text, textWidth) {
         text.each(function textWrap() {
-            console.log('text wrap');
             text = d3.select(this);
             const words = text.text().split(/\s+/);
             let line = [];
@@ -106,7 +110,6 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
         const nodeDepth = nodes.map((n) => n.depth);
         const maxNodeDepth = Math.max(...nodeDepth);
 
-        // Normalize for fixed-depth.
         nodes.forEach((d) => {
             d.id = nodeKeyName(d.data.name);
             if (d.depth === 0) {
@@ -119,7 +122,6 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
         const node = svg.selectAll('g.node')
             .data(nodes, (d) => d.id);
 
-        // Enter any new modes at the parent's previous position.
         const nodeEnter = node.enter().append('g')
             .attr('class', (d) => `node ${d.data.class} ${d.data.name}`)
             .attr('transform', `translate(${source.x0},${source.y0})`)
@@ -160,21 +162,16 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
                 .attr('class', (d) => (d.data.class ? d.data.class : 'default'));
         });
 
-        // adds the text to the node
         nodeEnter.append('text')
             .attr('dy', '.35em')
-            .attr('transform', isMobile ? 'rotate(310)' : 'rotate(0)')
-            .attr('y', (d) => ((d.children && (d.data.name.length < characterLimitForWrap || d.data.name.split(' ').length === 1)) ? -40 : d.children ? -60 : 30))
+            .attr('y', (d) => ((d.children && (d.data.name.length < characterLimitForWrap || d.data.name.split(' ').length === 1)) ? offset : d.children ? doubleOffset : 30))
             .style('text-anchor', 'middle')
             .text((d) => d.data.name)
             .attr('class', 'node-text');
 
-        // if (!isMobile) {
-            nodeEnter.selectAll('text')
-                .call(wrap, textWrapWidth);
-        // }
+        nodeEnter.selectAll('text')
+            .call(wrap, textWrapWidth);
 
-        // adds the text to the node
         nodeEnter.append('text')
             .attr('class', (d) => `node-expander-collapser clicker-${nodeKeyName(d.data.name)}`)
             .text((d) => ((d.children && d._children) ? circlePlus : d.children ? circleMinus : ''))
@@ -192,19 +189,15 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
                 e.stopPropagation();
             });
 
-        // UPDATE
         const nodeUpdate = nodeEnter.merge(node);
 
-        // Transition to the proper position for the node
         nodeUpdate.transition()
             .duration(animationDuration)
             .attr('transform', (d) => `translate(${d.x},${d.y})`);
 
-        // Update the node attributes and style
         nodeUpdate.select('g.js-cell')
             .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`);
 
-        // Remove any exiting nodes
         const nodeExit = node.exit().transition()
             .duration(animationDuration)
             .attr('transform', `translate(${source.x},${source.y})`)
@@ -216,7 +209,6 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
         const link = svg.selectAll('path.link')
             .data(links, (d) => d.id);
 
-        // Enter any new links at the parent's previous position.
         const linkEnter = link.enter().insert('path', 'g')
             .attr('class', 'link')
             .attr('d', () => {
