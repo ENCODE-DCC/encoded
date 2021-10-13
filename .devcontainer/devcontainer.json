@@ -1,0 +1,17 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.195.0/containers/python-3
+{
+	"name": "encoded",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	},
+	"forwardPorts": [6543],
+	"portsAttributes": {
+		"6543": {
+			"label": "nginx",
+			"onAutoForward": "notify"
+		}
+	},
+	"postCreateCommand": "make devcontainer"
+}

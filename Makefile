@@ -4,6 +4,12 @@ clean:
 	rm -rf src/encoded/static/build/*
 	rm -rf src/encoded/static/build-server/*
 
+devcontainer: download-ontology
+	ln -sf /app/node_modules .
+	npm run build
+	pip install -e '.[dev]'
+	cp conf/pyramid/development.ini .
+
 install: download-ontology javascript
 	pip install -e '.[dev]'
 	cp conf/pyramid/development.ini .
