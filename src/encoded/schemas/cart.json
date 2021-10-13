@@ -16,12 +16,23 @@
     "dependencies": {
         "status":{
             "comment": "Listed, released, or revoked carts must have a description.",
-            "required": ["description"],
-            "properties": {
-                "status": {
-                    "enum": ["listed", "released", "revoked"]
+            "oneOf": [
+                {
+                    "required": ["description"],
+                    "properties": {
+                        "status": {
+                            "enum": ["listed", "released", "revoked"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "status": {
+                            "enum": ["unlisted", "deleted"]
+                        }
+                    }
                 }
-            }
+            ]
         }
     },
     "properties": {
