@@ -3935,6 +3935,10 @@ const seriesTitleComposers = {
         <BasicSeriesTitle relatedDataset={relatedDataset} />
     ),
 
+    DifferentialAccessibilitySeries: (relatedDataset) => (
+        <BasicSeriesTitle relatedDataset={relatedDataset} />
+    ),
+
     DifferentiationSeries: (relatedDataset) => (
         <BasicSeriesTitle relatedDataset={relatedDataset} />
     ),

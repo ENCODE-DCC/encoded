@@ -5,6 +5,7 @@ from collections import OrderedDict
 METADATA_SERIES_TYPES = [
     'AggregateSeries',
     'CollectionSeries',
+    'DifferentialAccessibilitySeries',
     'DifferentiationSeries',
     'DiseaseSeries',
     'FunctionalCharacterizationSeries',
