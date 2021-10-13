@@ -17,3 +17,4 @@
 * Added *Deeply Profiled* to the *internal_tags* enum
 * Added *related_series* calculated property
 * Added *possible_controls* property
+* Added a calculated boolean property *datapoint*

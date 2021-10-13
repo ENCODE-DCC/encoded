@@ -14,3 +14,9 @@ def test_fcc_datapoint(testapp, base_functional_characterization_series):
     # https://encodedcc.atlassian.net/browse/ENCD-6148
     res = testapp.get(base_functional_characterization_series['@id'] + '@@index-data') 
     assert res.json['object']['datapoint'] is False
+
+
+def test_transgenic_enhancer_experiment_datapoint(testapp, transgenic_enhancer_experiment):
+    # https://encodedcc.atlassian.net/browse/ENCD-6195
+    res = testapp.get(transgenic_enhancer_experiment['@id'] + '@@index-data')
+    assert res.json['object']['datapoint'] is False
