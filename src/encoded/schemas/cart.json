@@ -13,6 +13,17 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/uuid" }
     ],
+    "dependencies": {
+        "status":{
+            "comment": "Listed, released, or revoked carts must have a description.",
+            "required": ["description"],
+            "properties": {
+                "status": {
+                    "enum": ["listed", "released", "revoked"]
+                }
+            }
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "3"
