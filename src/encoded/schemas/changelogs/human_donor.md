@@ -1,5 +1,9 @@
 ## Changelog for human_donor.json
 
+### Schema version 13
+
+* *ethnicity* enum *Caucasian* was changed to *European*
+
 ### Minor update since Schema version 12
 * *RushAD* added to *internal_tags* enum.
 

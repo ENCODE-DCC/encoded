@@ -260,3 +260,19 @@ def human_donor_11_12(value, system):
             value['ethnicity'] = old_to_new[old_ethn]
         else:
             value['ethnicity'] = [value['ethnicity']]
+
+@upgrade_step('human_donor', '12', '13')
+def human_donor_12_13(value, system):
+    #https://encodedcc.atlassian.net/browse/ENCD-6131
+    new_ethnicity = []
+    notes = value.get('notes', '')
+    if 'ethnicity' in value:
+        old_ethnicity = value.get('ethnicity')
+        if 'Caucasian' in old_ethnicity:
+            new_ethnicity.append('European')
+            for ethnicity in old_ethnicity:
+                if ethnicity != 'Caucasian':
+                    new_ethnicity.append(ethnicity)
+    if len(new_ethnicity) >= 1:
+        value['ethnicity'] = new_ethnicity
+        value['notes'] = (notes + ' The ethnicity of this donor has been updated to European as the term Caucasian has been deprecated.').strip()

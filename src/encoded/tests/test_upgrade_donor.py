@@ -100,3 +100,11 @@ def test_upgrade_human_donor_11_12(root, upgrader, human_donor_11a, human_donor_
     assert 'Arab' in value['ethnicity']
     assert 'Indian' in value['ethnicity']
     assert 'Arab Indian' not in value['ethnicity']
+
+
+def test_upgrade_human_donor_12_13(root, upgrader, human_donor_12):
+    value = upgrader.upgrade('human_donor', human_donor_12, current_version='12', target_version='13')
+    assert 'European' in value['ethnicity']
+    assert 'Asian' in value['ethnicity']
+    assert 'Caucasian' not in value['ethnicity']
+    assert value['notes'] == 'The ethnicity of this donor has been updated to European as the term Caucasian has been deprecated.'

@@ -10,7 +10,7 @@
             "ENCDO117AAA"
         ],
         "award": "U41HG006992",
-        "ethnicity": ["Caucasian"],
+        "ethnicity": ["European"],
         "health_status": "Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV",
         "lab": "j-michael-cherry",
         "life_stage": "adult",
@@ -26,7 +26,7 @@
             "michael-snyder:STL003"
         ],
         "award": "U41HG006992",
-        "ethnicity": ["Caucasian"],
+        "ethnicity": ["European"],
         "health_status": "Healthy",
         "lab": "j-michael-cherry",
         "life_stage": "adult",
@@ -110,7 +110,7 @@
             "encode:donor of GM12878"
         ],
         "award": "U41HG006992",
-        "ethnicity": ["Caucasian"],
+        "ethnicity": ["European"],
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "adult",
@@ -251,7 +251,7 @@
         "dbxrefs": [
             "GEO:SAMN13691287"
         ],
-        "ethnicity": ["Caucasian", "Hispanic"],
+        "ethnicity": ["European", "Hispanic"],
         "health_status": "DM: no; HTN: no; CAD: no",
         "lab": "michael-snyder",
         "life_stage": "child",
@@ -267,7 +267,7 @@
         "age": "90 or above",
         "age_units": "year",
         "award": "UM1HG009442",
-        "ethnicity": ["Caucasian"],
+        "ethnicity": ["European"],
         "lab": "john-stamatoyannopoulos",
         "life_stage": "adult",
         "organism": "human",
