@@ -275,4 +275,4 @@ def human_donor_12_13(value, system):
                     new_ethnicity.append(ethnicity)
     if len(new_ethnicity) >= 1:
         value['ethnicity'] = new_ethnicity
-        value['notes'] = (notes + ' The ethnicity of this donor has been updated to European as the term Caucasian has been deprecated.').strip()
+        value['notes'] = (notes + ' The ethnicity of this donor has been updated to European as the term Caucasian is deprecated.').strip()
