@@ -71,14 +71,13 @@ const isAllDeeplyMatrix = (url) => url.includes('deeply-profiled-matrix');
 
 /** Switch page */
 const switchDeeplyProfilePageType = (isAll, pageUrl, navigate) => {
-    const queryStringKeyValues = pageUrl.split('/?')[1];
+    const query = new QueryString(pageUrl);
+    query.deleteKeyValue(internalTagKey);
+    const queryStringKeyValues = query.format().split('/?')[1];
+    const deeplyProfileType = isAll ? 'deeply-profiled-matrix' : 'deeply-profiled-uniform-batch-matrix';
+    const internalTagQueryString = deeplyProfileType === 'deeply-profiled-uniform-batch-matrix' ? `${internalTagKey}=Deeply Profiled` : '';
 
-    navigate([
-        '/',
-        isAll ? 'deeply-profiled-matrix' : 'deeply-profiled-uniform-batch-matrix',
-        '/?',
-        queryStringKeyValues,
-    ].join(''));
+    navigate(`/${deeplyProfileType}/?${queryStringKeyValues}&${internalTagQueryString}`);
 };
 
 /**

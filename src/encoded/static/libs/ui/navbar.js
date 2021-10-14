@@ -185,7 +185,7 @@ export const NavItem = (props) => {
                     css={buttonCss}
                 />
             : null}
-            {props.children}
+            {dropdownOpen && props.children}
         </li>
     );
 };
