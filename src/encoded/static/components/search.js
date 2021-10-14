@@ -780,6 +780,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
     let lifeStages = [];
     let organisms = [];
     let phases = [];
+    let perturbationTreatments = [];
     let treatmentTerm = [];
     let treatments = [];
     let treatmentUnit;
@@ -802,20 +803,25 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
         biosamples = result.biosample_ontology.map((biosample) => biosample.term_name);
     }
 
-    // Collect crispr_screen_tiling for each dataset elements_references in FunctionalCharacterizationSeries
+    // Collect crispr_screen_tiling, examined_loci, and elements_selection_method for each dataset elements_references in FunctionalCharacterizationSeries
     let tilingModality = [];
+    let referenceLoci = [];
+    let elementsSelectionMethod = [];
     if (fccSeries) {
         if (result.elements_references && result.elements_references.length > 0) {
             result.elements_references.forEach((er) => {
-                if (er.crispr_screen_tiling) {
-                    tilingModality.push(er.crispr_screen_tiling);
-                }
+                tilingModality = er.crispr_screen_tiling ? tilingModality.concat(er.crispr_screen_tiling) : tilingModality;
+                referenceLoci = er.examined_loci ? referenceLoci.concat(er.examined_loci) : referenceLoci;
+                elementsSelectionMethod = er.elements_selection_method ? elementsSelectionMethod.concat(er.elements_selection_method) : elementsSelectionMethod;
             });
-            tilingModality = _.uniq(tilingModality);
         }
+        tilingModality = _.uniq(tilingModality);
+        referenceLoci = _.uniq(referenceLoci, (locus) => locus['@id']);
+        elementsSelectionMethod = _.uniq(elementsSelectionMethod);
     }
 
     // Dig through the biosample life stages and ages
+    // khine collect related_datasets.examined_lcoi
     if (result.related_datasets && result.related_datasets.length > 0) {
         result.related_datasets.forEach((dataset) => {
             if (dataset.assay_term_name) {
@@ -865,8 +871,11 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         if (lifeStage) {
                             lifeStages.push(lifeStage);
                         }
-                        if (biosample.treatments?.length > 0 && (differentiationSeries || fccSeries)) {
+                        if (biosample.treatments?.length > 0 && differentiationSeries) {
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
+                        }
+                        if (biosample.treatments?.length > 0 && fccSeries) {
+                            perturbationTreatments = biosample.treatments.filter((a) => a?.purpose === 'perturbation').map((t) => t.treatment_term_name);
                         }
                         if (biosample.treatments?.length > 0 && treatmentConcentration) {
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
@@ -919,6 +928,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
         examineLociGene = _.uniq(examineLociGene);
         crisprReadout = _.uniq(crisprReadout);
         perturbationType = _.uniq(perturbationType);
+        perturbationTreatments = _.uniq(perturbationTreatments);
         diseases = _.uniq(diseases);
         constructionPlatforms = _.uniq(constructionPlatforms);
         constructionMethods = _.uniq(constructionMethods);
@@ -961,6 +971,22 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                                             {` ${assays.join(', ')} series`}
                                         </span>
                                     : null}
+                                    {referenceLoci.length > 0 ?
+                                        <span>{referenceLoci.length === 1 ? ` of ${referenceLoci[0].symbol}` : ' of multiple loci'}</span>
+                                    : null}
+                                </>
+                            )
+                            : <span>{`${datasetTypes[result['@type'][0]]}`}</span>
+                        }
+                        {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+                        {fccSeries
+                            ? (
+                                <>
+                                    {examineLociGene.length > 0 ?
+                                        <span>
+                                            {` with readout of ${examineLociGene.join(', ')}`}
+                                        </span>
+                                    : null}
                                     {crisprReadout.length > 0 ?
                                         <span>
                                             {` (${crisprReadout.join(', ')})`}
@@ -968,20 +994,13 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                                     : null}
                                 </>
                             )
-                            : <span>{`${datasetTypes[result['@type'][0]]}`}</span>
-                        }
-                        {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+                        : null}
                         {(!fccSeries && (organism || lifeSpec.length > 0)) || (fccSeries && biosampleclassifications !== 'cell line' && (organism || lifeSpec.length > 0)) ?
                             <span>
                                 {' ('}
                                 {organism ? <i>{organism}</i> : null}
                                 {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
                                 )
-                            </span>
-                        : null}
-                        {(fccSeries && examineLociGene.length > 0) ?
-                            <span>
-                                {` targeting ${examineLociGene.join(', ')}`}
                             </span>
                         : null}
                     </a>
@@ -1016,7 +1035,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         {postDiffTime.length > 0 ?
                             <div><span className="result-item__property-title">Post-differentiation time: </span>{postDiffTime.join(', ')} {postDiffTimeUnits}s</div>
                         : null}
-                        { (uniqueTreatments && (treatmentTime || treatmentConcentration || differentiationSeries || fccSeries)) ?
+                        { (uniqueTreatments && (treatmentTime || treatmentConcentration || differentiationSeries)) ?
                             <div><span className="result-item__property-title">Treatment{treatments.length !== 1 ? 's' : ''}: </span>
                                 <span>
                                     {uniqueTreatments}
@@ -1036,8 +1055,29 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         {constructionMethods.length > 0 ?
                             <div><span className="result-item__property-title">Construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
                         : null}
+                        {elementsSelectionMethod && elementsSelectionMethod.length > 0 ?
+                                     <div><span className="result-item__property-title">Elements selection method: </span>{elementsSelectionMethod.join(', ')}</div>
+                        : null}
+                        {referenceLoci && referenceLoci.length > 0 ?
+                            <div><span className="result-item__property-title">Loci: </span>{referenceLoci.map((locus, i) => (
+                                <span key={locus['@id']}>
+                                    {i > 0 ? ', ' : null}
+                                    <a href={locus['@id']}>
+                                        {locus.symbol}
+                                    </a>
+                                </span>
+                            ))}
+                            </div>
+                        : null}
                         {tilingModality.length > 0 ?
                             <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
+                        : null}
+                        {perturbationTreatments.length > 0 && fccSeries ?
+                            <div><span className="result-item__property-title">Treatment{perturbationTreatments.length !== 1 ? 's' : ''}: </span>
+                                <span>
+                                    {perturbationTreatments.join(', ')}
+                                </span>
+                            </div>
                         : null}
                     </div>
                 </div>
