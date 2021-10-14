@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import QueryString from '../libs/query_string';
+import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
@@ -67,17 +68,17 @@ const sortByDescending = (a, b) => {
 const matrixDescription = 'Cell line samples that were deeply profiled using a set of diverse biochemical approaches, listed with the corresponding batch identifiers.';
 
 /** Determines if user is on All-page or not  */
-const isAllDeeplyMatrix = (url) => url.includes('deeply-profiled-matrix');
+const isAllDeeplyMatrix = (pageUrl) => pageUrl.includes('deeply-profiled-matrix');
 
 /** Switch page */
 const switchDeeplyProfilePageType = (isAll, pageUrl, navigate) => {
-    const query = new QueryString(pageUrl);
-    query.deleteKeyValue(internalTagKey);
-    const queryStringKeyValues = query.format().split('/?')[1];
-    const deeplyProfileType = isAll ? 'deeply-profiled-matrix' : 'deeply-profiled-uniform-batch-matrix';
-    const internalTagQueryString = deeplyProfileType === 'deeply-profiled-uniform-batch-matrix' ? `${internalTagKey}=Deeply Profiled` : '';
+    const link = url.parse(pageUrl, true);
+    const internalTagKeyValue = `${internalTagKey}=Deeply Profiled`;
+    const queryStrings = link.search.replace(internalTagKeyValue, '');
+    const pathName = isAll ? 'deeply-profiled-matrix' : 'deeply-profiled-uniform-batch-matrix';
+    const internalTagQueryString = pathName === 'deeply-profiled-uniform-batch-matrix' ? `${internalTagKeyValue}` : '';
 
-    navigate(`/${deeplyProfileType}/?${queryStringKeyValues}&${internalTagQueryString}`);
+    navigate(`/${pathName}/${queryStrings}&${internalTagQueryString}`);
 };
 
 /**
