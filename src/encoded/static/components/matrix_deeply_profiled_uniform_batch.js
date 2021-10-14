@@ -17,7 +17,7 @@ import { CartAddAllElements } from './cart';
  * Number of subcategory items to show when subcategory isn't expanded.
  * @constant
  */
-const SUB_CATEGORY_SHORT_SIZE = 0;
+const SUB_CATEGORY_SHORT_SIZE = 3;
 
 /** Page name */
 const matrixName = 'deeply-profiled-uniform-batch-matrix';

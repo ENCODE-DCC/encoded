@@ -314,31 +314,31 @@ export const biosampleTypeList = [
 ];
 
 
+// order is important
 export const DeeplyProfiledCellLineList = [
+    'A549',
     'A673',
-    'MCF-7',
-    'OCI-LY7',
-    'Panc1',
-    'PC-9',
-    'PC3',
-    'MCF10A',
-    'WTC11',
-    'HCT-116',
-    'HMEC',
-    'HUVEC',
-    'GM12878',
-    'IMR-90',
-    'HEPG2',
-    'K562',
     'Caco-2',
     'Calu3',
-    'HFFc6',
-    'H1',
-    'A549',
+    'GM12878',
     'GM23338',
+    'H1',
     'H9',
+    'HCT-116',
+    'HEPG2',
+    'HFFc6',
+    'HMEC',
+    'HUVEC',
+    'IMR-90',
+    'K562',
+    'MCF-7',
+    'MCF10A',
+    'OCI-LY7',
+    'PC-9',
+    'PC3',
+    'Panc1',
+    'WTC11',
 ];
-
 
 export const replicateTypeList = [
     'unreplicated',
