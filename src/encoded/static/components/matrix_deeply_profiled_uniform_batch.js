@@ -72,13 +72,18 @@ const isAllDeeplyMatrix = (pageUrl) => pageUrl.includes('deeply-profiled-matrix'
 
 /** Switch page */
 const switchDeeplyProfilePageType = (isAll, pageUrl, navigate) => {
-    const link = url.parse(pageUrl, true);
-    const internalTagKeyValue = `${internalTagKey}=Deeply Profiled`;
-    const queryStrings = link.search.replace(internalTagKeyValue, '');
-    const pathName = isAll ? 'deeply-profiled-matrix' : 'deeply-profiled-uniform-batch-matrix';
-    const internalTagQueryString = pathName === 'deeply-profiled-uniform-batch-matrix' ? `${internalTagKeyValue}` : '';
+    const queryStrings = url.parse(pageUrl, true);
+    const query = new QueryString(queryStrings.search);
+    query.deleteKeyValue(internalTagKey);
+    let pathName = '';
 
-    navigate(`/${pathName}/${queryStrings}&${internalTagQueryString}`);
+    if (isAll) {
+        pathName = 'deeply-profiled-matrix';
+    } else {
+        pathName = 'deeply-profiled-uniform-batch-matrix';
+        query.addKeyValue(internalTagKey, 'Deeply Profiled');
+    }
+    navigate(`/${pathName}/${query.format()}`);
 };
 
 /**
