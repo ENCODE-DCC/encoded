@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import QueryString from '../libs/query_string';
 import url from 'url';
+import QueryString from '../libs/query_string';
 import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
@@ -401,10 +401,10 @@ MatrixHeader.contextTypes = {
 
 const MatrixAddCart = ({ context, fetch, pageName }) => {
     const [experimentData, setExperimentData] = React.useState(null);
-    const url = [context['@id'].replace(pageName, 'search'), '&limit=all'].join('');
+    const link = [context['@id'].replace(pageName, 'search'), '&limit=all'].join('');
 
     React.useEffect(() => {
-        fetch(url, {
+        fetch(link, {
             headers: { Accept: 'application/json' },
         }).then((response) => {
             if (response.ok) {
