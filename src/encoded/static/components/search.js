@@ -821,7 +821,6 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
     }
 
     // Dig through the biosample life stages and ages
-    // khine collect related_datasets.examined_lcoi
     if (result.related_datasets && result.related_datasets.length > 0) {
         result.related_datasets.forEach((dataset) => {
             if (dataset.assay_term_name) {
@@ -875,7 +874,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
                         }
                         if (biosample.treatments?.length > 0 && fccSeries) {
-                            perturbationTreatments = biosample.treatments.filter((a) => a?.purpose === 'perturbation').map((t) => t.treatment_term_name);
+                            perturbationTreatments = biosample.treatments.filter((a) => a.purpose === 'perturbation').map((t) => t.treatment_term_name);
                         }
                         if (biosample.treatments?.length > 0 && treatmentConcentration) {
                             treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
@@ -1056,7 +1055,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                             <div><span className="result-item__property-title">Construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
                         : null}
                         {elementsSelectionMethod && elementsSelectionMethod.length > 0 ?
-                                     <div><span className="result-item__property-title">Elements selection method: </span>{elementsSelectionMethod.join(', ')}</div>
+                            <div><span className="result-item__property-title">Elements selection method: </span>{elementsSelectionMethod.join(', ')}</div>
                         : null}
                         {referenceLoci && referenceLoci.length > 0 ?
                             <div><span className="result-item__property-title">Loci: </span>{referenceLoci.map((locus, i) => (
@@ -1072,12 +1071,8 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         {tilingModality.length > 0 ?
                             <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
                         : null}
-                        {perturbationTreatments.length > 0 && fccSeries ?
-                            <div><span className="result-item__property-title">Treatment{perturbationTreatments.length !== 1 ? 's' : ''}: </span>
-                                <span>
-                                    {perturbationTreatments.join(', ')}
-                                </span>
-                            </div>
+                        {fccSeries && perturbationTreatments.length > 0 ?
+                            <div><span className="result-item__property-title">Treatment{perturbationTreatments.length !== 1 ? 's' : ''}: </span>{perturbationTreatments.join(', ')}</div>
                         : null}
                     </div>
                 </div>
