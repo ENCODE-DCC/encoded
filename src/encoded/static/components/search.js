@@ -1049,7 +1049,10 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                 </div>
                 {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
                     <div className="result-item__cart-control">
-                        <CartToggle element={result} removeConfirmation={removeConfirmation} />
+                        <CartToggle
+                            element={result}
+                            removeConfirmation={Object.keys(removeConfirmation).length > 0 ? removeConfirmation : { immediate: true }}
+                        />
                     </div>
                 : null}
                 <PickerActions context={result} />
@@ -1071,6 +1074,8 @@ SeriesComponent.propTypes = {
         requestRemoveConfirmation: PropTypes.func,
         /** True if the user has confirmed they want to remove the series object from the cart */
         isRemoveConfirmed: PropTypes.bool,
+        /** True to remove series and its related datasets without a confirmation modal */
+        immediate: PropTypes.bool,
     }),
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
