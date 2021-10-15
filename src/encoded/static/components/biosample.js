@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import QueryString from '../libs/query_string';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
@@ -15,6 +16,21 @@ import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { BiosampleSummaryDisplay, GeneticModificationOrganismNames, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
 import formatMeasurement from '../libs/formatMeasurement';
 
+
+/**
+ * Properties to retrieve from downstream biosamples. If you subsequently use any properties of
+ * these biosamples, make sure you include those properties in this array.
+ */
+const biosampleFieldsRetrieved = [
+    'accession',
+    'biosample_ontology.classification',
+    'biosample_ontology.term_name',
+    'biosample_ontology.term_name',
+    'organism.scientific_name',
+    'parent_of',
+    'status',
+    'summary',
+];
 
 /**
  * Collect the entire tree of biosamples under a single biosample through the `parent_of/part_of`
@@ -38,6 +54,12 @@ export const collectChildren = async (rootBiosample, session, sessionProperties)
     const accessLevel = sessionToAccessLevel(session, sessionProperties);
     const viewableStatuses = getObjectStatuses('Biosample', accessLevel);
 
+    // Build the query string for the biosample properties to retrieve from downstream biosamples.
+    const biosampleQuery = new QueryString();
+    biosampleFieldsRetrieved.forEach((field) => {
+        biosampleQuery.addKeyValue('field', field);
+    });
+
     const totalBiosamples = [];
     let layerContents;
     if (rootBiosample.parent_of.length > 0) {
@@ -56,7 +78,7 @@ export const collectChildren = async (rootBiosample, session, sessionProperties)
                     // the next level of the tree to reduce the size of the resulting search object.
                     layerBiosamples = await requestObjects(
                         layerContents,
-                        '/search/?type=Biosample&field=accession&field=biosample_ontology.classification&field=biosample_ontology.term_name&field=biosample_ontology.term_name&field=status&field=parent_of&field=summary&limit=all'
+                        `/search/?type=Biosample&${biosampleQuery.format()}&limit=all`
                     );
                 } else {
                     // We already have biosample objects.
