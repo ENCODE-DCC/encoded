@@ -62,6 +62,18 @@ SeriesRemovalWarning.propTypes = {
 
 
 /**
+ * Initiates the immediate removal of a series object and its related datasets from the cart.
+ * @param {object} seriesElement Series object to remove from the cart
+ * @param {function} removeSeriesDatasets Function to remove the series and its datasets from the cart
+ * @returns {Promise} Promise that resolves when the series and its datasets are removed from the cart
+ */
+const removeSeries = async (seriesElement, removeSeriesDatasets) => {
+    const seriesAndRelatedDatasetPaths = [seriesElement].concat(seriesElement.related_datasets);
+    return removeSeriesDatasets(seriesAndRelatedDatasetPaths);
+};
+
+
+/**
  * Renders and controls the individual cart toggle icons.
  */
 const CartToggleComponent = ({
@@ -86,8 +98,7 @@ const CartToggleComponent = ({
         if (removeConfirmation.isRemoveConfirmed) {
             // Combine the series path with the paths of its related datasets and remove them all
             // from the cart.
-            const seriesAndRelatedDatasetPaths = [targetElement].concat(targetElement.related_datasets);
-            removeSeriesDatasets(seriesAndRelatedDatasetPaths).then(() => {
+            removeSeries(targetElement, removeSeriesDatasets).then(() => {
                 if (removeConfirmation.onCompleteRemoveSeries) {
                     removeConfirmation.onCompleteRemoveSeries();
                 }
@@ -120,7 +131,9 @@ const CartToggleComponent = ({
             } else if (hasType(targetElement, 'Series')) {
                 // Indicate that the user has requested removing a series object from the cart and
                 // therefore we need some user action.
-                if (removeConfirmation.requestRemove) {
+                if (removeConfirmation.immediate) {
+                    removeSeries(targetElement, removeSeriesDatasets);
+                } else if (removeConfirmation.requestRemove) {
                     removeConfirmation.requestRemove();
                 }
             } else {
@@ -188,6 +201,8 @@ CartToggleComponent.propTypes = {
         isRemoveConfirmed: PropTypes.bool,
         /** Called once removing a series object from the cart has completed */
         onCompleteRemoveSeries: PropTypes.func,
+        /** True to remove series and its related datasets without a confirmation modal */
+        immediate: PropTypes.bool,
     }),
     /** True if user is logged in */
     loggedIn: PropTypes.bool,
