@@ -53,7 +53,7 @@
         {
             "title": "Assay",
             "facet_fields": [
-                "assay_term_name",
+                "related_datasets.assay_term_name",
                 "target.investigated_as",
                 "target.label"
             ]

@@ -277,15 +277,22 @@
             "facet_fields": [
                 "annotation_type",
                 "annotation_subtype",
+                "encyclopedia_version",
+                "biochemical_inputs"
+            ]
+        },
+        {
+            "title": "Assay",
+            "facet_fields": [
                 "assay_term_name",
                 "targets.investigated_as",
-                "targets.label",
-                "biochemical_inputs"
+                "targets.label"
             ]
         },
         {
             "title": "Biosample",
             "facet_fields": [
+                "organism.scientific_name",
                 "biosample_ontology.classification",
                 "biosample_ontology.term_name",
                 "biosample_ontology.organ_slims",

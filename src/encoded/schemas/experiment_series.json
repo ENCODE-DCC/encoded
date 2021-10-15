@@ -59,6 +59,43 @@
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_slims",
+                "assay_title",
+                "target.investigated_as",
+                "target.label"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "biosample_ontology.classification",
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "contributors.title",
+                "date_released"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "assay_slims": {
             "title": "Assay type"

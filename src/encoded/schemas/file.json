@@ -26,7 +26,7 @@
     ],
     "facet_groups": [
         {
-            "title": "File",
+            "title": "Format",
             "facet_fields": [
                 "output_category",
                 "output_type",
@@ -36,14 +36,19 @@
             ]
         },
         {
-            "title": "Dataset",
+            "title": "Assay",
             "facet_fields": [
                 "assay_title",
-                "annotation_type",
-                "annotation_subtype",
                 "platform.term_name",
                 "target.label",
-                "targets.label",
+                "targets.label"
+            ]
+        },
+        {
+            "title": "Annotation",
+            "facet_fields": [
+                "annotation_type",
+                "annotation_subtype",
                 "encyclopedia_version"
             ]
         },
