@@ -313,33 +313,6 @@ export const biosampleTypeList = [
     'technical sample',
 ];
 
-
-// order is important
-export const DeeplyProfiledCellLineList = [
-    'A549',
-    'A673',
-    'Caco-2',
-    'Calu3',
-    'GM12878',
-    'GM23338',
-    'H1',
-    'H9',
-    'HCT-116',
-    'HEPG2',
-    'HFFc6',
-    'HMEC',
-    'HUVEC',
-    'IMR-90',
-    'K562',
-    'MCF-7',
-    'MCF10A',
-    'OCI-LY7',
-    'PC-9',
-    'PC3',
-    'Panc1',
-    'WTC11',
-];
-
 export const replicateTypeList = [
     'unreplicated',
     'isogenic',
@@ -351,7 +324,7 @@ export const replicateTypeList = [
 export const projectColors = new DataColors(projectList);
 export const biosampleTypeColors = new DataColors(biosampleTypeList);
 export const replicateTypeColors = new DataColors(replicateTypeList);
-export const DeeplyProfiledCellLineListColors = new DataColors(DeeplyProfiledCellLineList);
+export const DeeplyProfiledCellLineListColors = new DataColors();
 
 
 // Map view icons to svg icons.
