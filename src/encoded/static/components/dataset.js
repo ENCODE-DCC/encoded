@@ -2209,18 +2209,17 @@ const computeExpressedGenes = (dataset) => {
             geneList = [...geneList, ...biosample.expressed_genes];
         }
     });
+    geneList = _.uniq(geneList, (gene) => `${gene.gene.geneid}-${gene.expression_percentile}-${gene.expression_range_maximum}-${gene.expression_range_minimum}`);
 
     return (
-        geneList.map((gene) => _.uniq(
-            <span key={`${gene.uuid}-${gene}`}>
-                {geneList > 0 ? <span>, </span> : null}
-                <a href={gene['@id']}>{gene.symbol}</a>
-                {/* 0 is falsy but we still want it to display, so 0 is explicitly checked for */}
+        geneList.map((gene, geneIdx) => (
+            <span key={`${gene.uuid}`}>
+                {gene.gene.symbol}
                 {gene.expression_percentile || gene.expression_percentile === 0 ?
-                    <span>{' '}({getNumberWithOrdinal(gene.expression_percentile)} percentile)</span>
+                    <span> ({getNumberWithOrdinal(gene.expression_percentile)} percentile)</span>
                 : null}
                 {(gene.expression_range_maximum && gene.expression_range_minimum) || (gene.expression_range_maximum === 0 || gene.expression_range_minimum === 0) ?
-                    <span>{' '}({gene.expression_range_minimum}-{gene.expression_range_maximum}%)</span>
+                    <span>` (${gene.expression_range_minimum}-${gene.expression_range_maximum}%)${(geneIdx < geneList.length && geneList.length > 1) ? ', ' : ''}`</span>
                 : null}
             </span>
         ))
@@ -2544,12 +2543,13 @@ export const SeriesComponent = ({
     const diversity = options.suppressDonorDiversity ? null : donorDiversity(context);
 
     // Calculate expressed genes
-    const genes = [];
+    let genes = [];
     context.related_datasets.forEach((dataset) => {
         dataset.replicates.forEach((replicate) => {
-            genes.push([...replicate.library.biosample.expressed_genes.map((g) => g.gene.symbol)]);
+            genes.push(...replicate.library.biosample.expressed_genes);
         });
     });
+    genes = _.uniq(genes, (gene) => gene.gene.geneid);
 
     // Collect CRISPR screen tiling modality for FunctionalCharacterizationExperiment only.
     let tilingModality = [];
@@ -2660,7 +2660,14 @@ export const SeriesComponent = ({
                             {genes && genes.length > 0 ?
                                 <div data-test="geneexpression">
                                     <dt>Sorted gene expression</dt>
-                                    <dd>{genes.join(', ')}</dd>
+                                    <dd>
+                                        {genes.map((gene, geneIdx) => (
+                                            <span>
+                                                <a href={gene.gene['@id']}>{gene.gene.symbol}</a>
+                                                {genes.length > 1 && geneIdx < genes.length ? ', ' : ''}
+                                            </span>
+                                        ))}
+                                    </dd>
                                 </div>
                             : null}
 
