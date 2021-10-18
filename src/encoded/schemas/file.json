@@ -589,12 +589,30 @@
                     "properties": {
                         "file_format": {
                             "enum": [
-                                "tar"                                
+                                "tar"
                             ]
                         },
                         "output_type": {
                             "enum": [
                                 "archr project",
+                                "unfiltered sparse gene count matrix of all reads",
+                                "unfiltered sparse gene count matrix of unique reads",
+                                "unfiltered sparse splice junction count matrix of unique reads",
+                                "sparse gene count matrix of all reads",
+                                "sparse gene count matrix of unique reads"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "h5ad"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
                                 "unfiltered sparse gene count matrix of all reads",
                                 "unfiltered sparse gene count matrix of unique reads",
                                 "unfiltered sparse splice junction count matrix of unique reads",
