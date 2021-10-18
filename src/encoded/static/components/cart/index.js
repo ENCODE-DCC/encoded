@@ -261,9 +261,9 @@ const initializeCart = () => {
         /** @id of current cart */
         current: '',
         /** Cache of saved cart */
-        savedCartObj: {},
+        savedCartObj: { elements: [] },
         /** Indicates cart operations currently in progress */
-        inProgress: false,
+        inProgress: true,
         /** React component of alert to display */
         alert: null,
     };

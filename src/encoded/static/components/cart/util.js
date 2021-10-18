@@ -42,6 +42,8 @@ export const allowedDatasetTypes = {
     'single-cell-rna-series': { title: 'Single-cell RNA series', type: 'SingleCellRnaSeries' },
     'treatment-concentration-series': { title: 'Treatment concentration series', type: 'TreatmentConcentrationSeries' },
     'treatment-time-series': { title: 'Treatment time series', type: 'TreatmentTimeSeries' },
+    'collection-series': { title: 'Collection series', type: 'CollectionSeries' },
+    'transgenic-enhancer-experiments': { title: 'Transgenic enhancer experiments', type: 'TransgenicEnhancerExperiment' },
 };
 
 /**

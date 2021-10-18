@@ -110,6 +110,7 @@ const datasetTabTitles = {
     Annotation: 'annotations',
     FunctionalCharacterizationExperiment: 'FCEs',
     SingleCellUnit: 'single-cell units',
+    TransgenicEnhancerExperiment: 'TEEs',
 };
 
 
@@ -422,11 +423,12 @@ const CartTools = ({
     visualizable,
     isFileViewOnly,
 }) => {
-    // Make a list of all the dataset types currently in the cart.
-    const usedDatasetTypes = elements.reduce((types, element) => {
-        const type = atIdToType(element['@id']);
-        return types.includes(type) ? types : types.concat(type);
-    }, []);
+    // Make a list of all the allowed dataset types currently in the cart.
+    const usedDatasetTypes = new Set(
+        elements
+            .map((element) => atIdToType(element['@id']))
+            .filter((type) => allowedDatasetTypes[type])
+    );
 
     return (
         <div className="cart-tools">
@@ -447,7 +449,7 @@ const CartTools = ({
                 savedCartObj={savedCartObj}
                 sharedCartObj={sharedCart}
                 cartType={cartType}
-                usedDatasetTypes={usedDatasetTypes}
+                usedDatasetTypes={[...usedDatasetTypes]}
             />
         </div>
     );
@@ -1479,7 +1481,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                             series: <CounterTab title="Series" count={allSeries.length} icon="dataset" voice="series" />,
                                             datasets: (
                                                 <CounterTab
-                                                    title={`Selected ${selectedDatasetType ? datasetTabTitles[selectedDatasetType] : 'datasets'}`}
+                                                    title={`Selected ${selectedDatasetType && datasetTabTitles[selectedDatasetType] ? datasetTabTitles[selectedDatasetType] : 'datasets'}`}
                                                     count={selectedDatasets.length}
                                                     icon="dataset"
                                                     voice="selected datasets"

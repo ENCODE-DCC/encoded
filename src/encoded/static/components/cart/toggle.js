@@ -16,8 +16,8 @@ import {
 } from './actions';
 import CartLoggedOutWarning, { useLoggedOutWarning } from './loggedout_warning';
 import CartMaxElementsWarning from './max_elements_warning';
-import { CART_MAX_ELEMENTS, DEFAULT_FILE_VIEW_NAME } from './util';
-import { hasType, truncateString } from '../globals';
+import { allowedDatasetTypes, CART_MAX_ELEMENTS, DEFAULT_FILE_VIEW_NAME } from './util';
+import { atIdToType, hasType, truncateString } from '../globals';
 
 
 /**
@@ -108,8 +108,10 @@ const CartToggleComponent = ({
                     showMaxElementsWarning();
                 } else {
                     if (hasType(targetElement, 'Series')) {
-                        // Extract all child datasets from the series and add them to the cart.
-                        const relatedDatasetPaths = targetElement.related_datasets.map((relatedDataset) => relatedDataset['@id']);
+                        // Extract allowed child datasets from the series and add them to the cart.
+                        const relatedDatasetPaths = targetElement.related_datasets
+                            .map((relatedDataset) => relatedDataset['@id'])
+                            .filter((path) => allowedDatasetTypes[atIdToType(path)]);
                         const seriesAndRelatedDatasetPaths = [targetElement['@id']].concat(relatedDatasetPaths);
                         addSeriesDatasets(seriesAndRelatedDatasetPaths);
                     }
