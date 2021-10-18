@@ -94,6 +94,8 @@ const CartToggleComponent = ({
     /** Get hooks for the logged-out warning modal */
     const [loggedOutWarningStates, loggedOutWarningActions] = useLoggedOutWarning(false);
 
+    const isTargetElementInCart = elements.includes(targetElement['@id']);
+
     React.useEffect(() => {
         if (removeConfirmation.isRemoveConfirmed) {
             // Combine the series path with the paths of its related datasets and remove them all
@@ -112,7 +114,7 @@ const CartToggleComponent = ({
      */
     const handleClick = () => {
         if (loggedIn) {
-            if (elements.indexOf(targetElement['@id']) === -1) {
+            if (!isTargetElementInCart) {
                 // Toggling an element on (adding to cart) so first make sure we don't exceed the
                 // maximum number of elements in the cart with the addition.
                 if (savedCartObj.elements.length + 1 > CART_MAX_ELEMENTS) {
@@ -129,11 +131,13 @@ const CartToggleComponent = ({
                     onAddToCartClick();
                 }
             } else if (hasType(targetElement, 'Series')) {
-                // Indicate that the user has requested removing a series object from the cart and
-                // therefore we need some user action.
                 if (removeConfirmation.immediate) {
+                    // Series object in the cart and its related datasets in the cart get removed
+                    // immediately.
                     removeSeries(targetElement, removeSeriesDatasets);
                 } else if (removeConfirmation.requestRemove) {
+                    // Indicate that the user has requested removing a series object from the cart and
+                    // therefore we need some user action.
                     removeConfirmation.requestRemove();
                 }
             } else {
@@ -152,20 +156,30 @@ const CartToggleComponent = ({
     const locked = savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.locked : false;
     const lockedToolTip = locked ? `Cart ${uc.ldquo}${cartName}${uc.rdquo} locked` : '';
 
+    // Determine if the target element is in the cart and belongs to a series that is also in the
+    // cart.
+    let isTargetADatasetWithRelatedSeries = false;
+    let relatedSeriesTooltip = '';
+    if (isTargetElementInCart && targetElement.related_series?.length > 0) {
+        isTargetADatasetWithRelatedSeries = targetElement.related_series.some((relatedSeries) => elements.includes(typeof relatedSeries === 'string' ? relatedSeries : relatedSeries['@id']));
+        relatedSeriesTooltip = isTargetADatasetWithRelatedSeries && `Part of a series in the current cart. Remove from the current cart through ${uc.ldquo}View cart${uc.rdquo} in the cart menu`;
+    }
+
     // "name" attribute needed for BDD test targeting.
+    const toggleDisabled = inProgress || locked || isTargetADatasetWithRelatedSeries;
     return (
         <div className={`cart-toggle${inCart ? ' cart-toggle--in-cart' : ''}${css ? ` ${css}` : ''}`}>
             {displayName && savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
             <button
                 type="button"
                 onClick={handleClick}
-                disabled={inProgress || locked}
-                title={inProgressToolTip || lockedToolTip || inCartToolTip}
+                disabled={toggleDisabled}
+                title={inProgressToolTip || lockedToolTip || relatedSeriesTooltip || inCartToolTip}
                 aria-pressed={inCart}
-                aria-label={inProgressToolTip || lockedToolTip || inCartToolTip}
+                aria-label={inProgressToolTip || lockedToolTip || relatedSeriesTooltip || inCartToolTip}
                 name={targetElement['@id']}
             >
-                {svgIcon('cart', inProgress || locked ? { fill: '#a0a0a0', stroke: '#a0a0a0' } : null)}
+                {svgIcon('cart', toggleDisabled ? { fill: '#a0a0a0', stroke: '#a0a0a0' } : null)}
             </button>
             {loggedOutWarningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={loggedOutWarningActions.handleCloseWarning} /> : null}
         </div>
