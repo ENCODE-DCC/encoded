@@ -25,7 +25,6 @@ const biosampleFieldsRetrieved = [
     'accession',
     'biosample_ontology.classification',
     'biosample_ontology.term_name',
-    'biosample_ontology.term_name',
     'organism.scientific_name',
     'parent_of',
     'status',
