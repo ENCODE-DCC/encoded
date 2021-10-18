@@ -431,6 +431,15 @@ class TransgenicEnhancerExperiment(
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
+    @calculated_property(schema={
+        "title": "Datapoint",
+        "description": "A flag to indicate whether the Transgenic Enhancer Experiment is a datapoint that should not be displayed on it's own.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def datapoint(self, request):
+        return False
+
 
 @collection(
     name='single-cell-units',
