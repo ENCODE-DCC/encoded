@@ -323,7 +323,7 @@ $form-bg: #f3f3f3;
                 border-bottom-left-radius: $border-radius-base;
             }
 
-            .btn:last-child {
+            .btn:last-of-type {
                 border-top-right-radius: $border-radius-base;
                 border-bottom-right-radius: $border-radius-base;
                 border-right: 1px solid #c0c0c0;
@@ -368,6 +368,40 @@ $form-bg: #f3f3f3;
 
 .results-table-button {
     display: inline-block;
+}
+
+// View control report button
+.view-type-report {
+    > button {
+        @extend .btn-info;
+        @extend .btn-sm;
+    }
+
+    .dropdown-button__content {
+        width: auto;
+        white-space: nowrap;
+
+        a {
+            font-family: $button-font;
+            font-weight: 700;
+            font-size: 0.9rem;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+.view-type-report-dropdown {
+    display: flex;
+    align-items: center;
+
+    .svg-icon.svg-icon-chevron-down {
+        width: 10px;
+        margin: 0 0 0 5px;
+        fill: #fff;
+    }
 }
 
 .page-listing-date {

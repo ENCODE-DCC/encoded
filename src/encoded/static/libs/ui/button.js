@@ -209,6 +209,7 @@ export const Immediate = ({ label, id, css, inline, disabled, children }) => {
                 id={id}
                 aria-haspopup="true"
                 aria-expanded={state.dropdownOpen}
+                aria-controls={`${id}-menu`}
                 onKeyUp={actions.handleKey}
                 onMouseEnter={actions.handleMouseEnter}
                 onMouseLeave={actions.houseMouseLeave}
@@ -220,6 +221,7 @@ export const Immediate = ({ label, id, css, inline, disabled, children }) => {
             </button>
             {state.dropdownOpen ?
                 <ul
+                    id={`${id}-menu`}
                     aria-labelledby={id}
                     className="dropdown-button__content"
                     onMouseEnter={actions.handleMouseEnter}
