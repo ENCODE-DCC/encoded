@@ -224,7 +224,20 @@
             "type": "string"
         },
         "elements_references.crispr_screen_tiling": {
-            "title": "CRISPR screen tiling"
+            "title": "CRISPR screen tiling",
+            "type": "array"
+        },
+        "elements_references.elements_selection_method": {
+            "title": "Element selection method",
+            "type": "array"
+        },
+        "elements_references.examined_loci.@id": {
+            "title": "Reference loci gene ID",
+            "type": "array"
+        },
+        "elements_references.examined_loci.symbol": {
+            "title": "Reference loci",
+            "type": "array"
         },
         "lab.title": {
             "title": "Lab",
@@ -264,6 +277,10 @@
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.treatments.purpose": {
+            "title": "Biosample treatment purpose",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_id": {
