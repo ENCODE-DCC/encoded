@@ -147,6 +147,9 @@
         "treatment_type": {
             "title": "Treatment type"
         },
+        "purpose": {
+            "title": "Purpose"
+        },
         "status": {
             "title": "Status"
         }

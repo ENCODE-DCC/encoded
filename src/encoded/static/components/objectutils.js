@@ -106,6 +106,13 @@ export function treatmentDisplay(treatment) {
                 <dt>Type</dt>
                 <dd>{treatmentDetails}</dd>
             </div>
+
+            {treatment.purpose ?
+                <div data-test="purpose">
+                    <dt>Purpose</dt>
+                    <dd>{treatment.purpose}</dd>
+                </div>
+            : null}
         </dl>
     );
 }
