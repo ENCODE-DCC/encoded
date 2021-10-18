@@ -78,11 +78,11 @@ export const CartSearchResults = ({ elements, currentPage, cartControls, loading
 
     // No elements and the page isn't currently loading, so indicate no datasets to view.
     if (!loading) {
-        return <div className="nav result-table cart__empty-message">No visible datasets on this page.</div>;
+        return <div className="cart__empty-message">No visible datasets on this page.</div>;
     }
 
     // Page is currently loading, so don't display anything for now.
-    return <div className="nav result-table cart__empty-message">Page currently loading&hellip;</div>;
+    return <div className="cart__empty-message">Page currently loading&hellip;</div>;
 };
 
 CartSearchResults.propTypes = {

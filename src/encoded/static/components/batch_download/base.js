@@ -228,7 +228,7 @@ const downloadOptionsTemplate = [
         id: 'raw-files',
         label: 'Download raw files',
         title: 'Raw files',
-        description: 'Downloads all files that don\u2019t have assemblies and without using any selected filters.',
+        description: 'Downloads all raw data files without using any selected filters.',
         query: '',
     },
     {
@@ -287,7 +287,7 @@ export default class BatchDownloadController {
      */
     formatProcessedQuery() {
         const query = this.buildBasicQuery()
-            .addKeyValue('files.assembly', '*');
+            .addKeyValue('files.processed', 'true');
         this._processedQueryString = query.format();
     }
 
@@ -299,7 +299,7 @@ export default class BatchDownloadController {
         query
             .addKeyValue('type', this._dataset['@type'][0])
             .addKeyValue('@id', this._dataset['@id'])
-            .addKeyValue('option', 'raw');
+            .addKeyValue('files.output_category', 'raw data');
         this._rawQueryString = query.format();
     }
 

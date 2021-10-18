@@ -1,6 +1,7 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 29
+* Added *processed* boolean as a calculated property to indicate that the file does not have the *output_category* of *raw data*
 * Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
 * Added *polyA sites* to the enum list for *output_type*.
 * Added properties *filter_type* and *filter_value*

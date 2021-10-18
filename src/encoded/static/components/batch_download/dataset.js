@@ -44,7 +44,7 @@ export default class DatasetBatchDownloadController extends BatchDownloadControl
                 id: 'raw-files',
                 label: 'Download raw files',
                 title: 'Raw files',
-                description: 'Downloads all files that don\u2019t have assemblies and without using any selected filters.',
+                description: 'Downloads all raw data files without using any selected filters.',
                 query: '',
             },
             {
@@ -88,7 +88,7 @@ export default class DatasetBatchDownloadController extends BatchDownloadControl
      */
     formatProcessedQuery() {
         const query = this.buildBasicQuery()
-            .addKeyValue(`${this._fileQueryKey}.assembly`, '*');
+            .addKeyValue(`${this._fileQueryKey}.processed`, 'true');
         this._processedQueryString = query.format();
     }
 

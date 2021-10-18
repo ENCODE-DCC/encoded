@@ -522,3 +522,13 @@ def test_file_replicates_2_3(testapp, file_bed_IDR_peaks_2_atac):
     r = testapp.get(file_bed_IDR_peaks_2_atac['@id'] + '?frame=embedded') 
     assert r.json['biological_replicates'] == [2, 3]
     assert r.json['biological_replicates_formatted'] == "Rep 2, Rep 3"
+
+
+def test_file_raw_data(testapp, file_fastq_2):
+    res = testapp.get(file_fastq_2['@id'] + '@@index-data')
+    assert res.json['object']['processed'] == False
+
+
+def test_file_processed_with_assembly(testapp, GRCh38_file):
+    res = testapp.get(GRCh38_file['@id'] + '@@index-data')
+    assert res.json['object']['processed'] == True

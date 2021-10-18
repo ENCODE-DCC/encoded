@@ -3,60 +3,94 @@ import BatchDownloadController, { buildDownloadOptionsIndex } from './base';
 
 
 /**
+ * Download-menu template when the user has selected an assembly.
+ */
+const selectedAssemblyTemplate = [
+    {
+        id: 'default-files',
+        label: 'Download default files',
+        title: 'Default files',
+        description: 'Downloads default files within the default analysis along with selected file filters.',
+        query: '',
+    },
+    {
+        id: 'default-analysis',
+        label: 'Download default analysis files',
+        title: 'Default analysis',
+        description: 'Downloads files within the default analysis along with selected file filters.',
+        query: '',
+    },
+    {
+        id: 'processed-files',
+        label: 'Download processed files',
+        title: 'Processed files',
+        description: 'Download processed files associated with an assembly that match the selected file filters.',
+        query: '',
+    },
+    {
+        id: 'raw-files',
+        label: 'Download raw files',
+        title: 'Raw files',
+        description: 'Downloads all raw data files without using any selected filters.',
+        query: '',
+    },
+    {
+        id: 'all-files',
+        label: 'Download all files',
+        title: 'All files',
+        description: 'Downloads all files without using any selected filters.',
+        query: '',
+    },
+];
+
+
+/**
+ * Download-menu template when the user has not selected an assembly.
+ */
+const noSelectedAssemblyTemplate = [
+    {
+        id: 'processed-files',
+        label: 'Download processed files',
+        title: 'Processed files',
+        description: 'Download processed files that match the selected file filters',
+        query: '',
+    },
+    {
+        id: 'raw-files',
+        label: 'Download raw files',
+        title: 'Raw files',
+        description: 'Downloads all raw data files without using any selected filters.',
+        query: '',
+    },
+    {
+        id: 'all-files',
+        label: 'Download all files',
+        title: 'All files',
+        description: 'Downloads all files without using any selected filters.',
+        query: '',
+    },
+];
+
+
+/**
  * Controller to handle batch downloads on the cart-view page.
  * @param {string} cartPath @id of the cart with the dataset files to download
  * @param {string} datasetType @type of dataset to select
- * @param {string} assembly Currently selected assembly
+ * @param {string} assemblies Currently selected assemblies
  * @param {object} query QueryString object with facet selections
  */
 export default class CartBatchDownloadController extends BatchDownloadController {
-    constructor(cartPath, datasetType, assembly, query) {
+    constructor(cartPath, datasetType, assemblies, query) {
         // Just need to reorder the parameters so `preBuildDownloadOptions` can access the
         // parameters beyond `dataset` and `query`.
-        super(null, query, cartPath, datasetType, assembly);
+        super(null, query, cartPath, datasetType, assemblies);
     }
 
-    preBuildDownloadOptions(dataset, query, cartPath, datasetType, assembly) {
+    preBuildDownloadOptions(dataset, query, cartPath, datasetType, assemblies) {
         this._cartPath = cartPath;
         this._datasetType = datasetType;
-        this._assembly = assembly;
-        this._downloadOptionsTemplate = [
-            {
-                id: 'default-files',
-                label: 'Download default files',
-                title: 'Default files',
-                description: 'Downloads default files within the default analysis along with selected file filters.',
-                query: '',
-            },
-            {
-                id: 'default-analysis',
-                label: 'Download default analysis files',
-                title: 'Default analysis',
-                description: 'Downloads files within the default analysis along with selected file filters.',
-                query: '',
-            },
-            {
-                id: 'processed-files',
-                label: 'Download processed files',
-                title: 'Processed files',
-                description: 'Downloads processed files matching the selected file filters.',
-                query: '',
-            },
-            {
-                id: 'raw-files',
-                label: 'Download raw files',
-                title: 'Raw files',
-                description: 'Downloads all files that don\u2019t have assemblies and without using any selected filters.',
-                query: '',
-            },
-            {
-                id: 'all-files',
-                label: 'Download all files',
-                title: 'All files',
-                description: 'Downloads all files without using any selected filters.',
-                query: '',
-            },
-        ];
+        this._assemblies = assemblies || [];
+        this._downloadOptionsTemplate = assemblies.length > 0 ? selectedAssemblyTemplate : noSelectedAssemblyTemplate;
         this._downloadOptionsTemplateIndex = buildDownloadOptionsIndex(this._downloadOptionsTemplate);
     }
 
@@ -76,14 +110,21 @@ export default class CartBatchDownloadController extends BatchDownloadController
     }
 
     /**
+     * Add the batch download assemblies to the given QueryString object.
+     * @param {object} query QueryString object to add assembly terms to
+     */
+    addAssembliesToQuery(query) {
+        this._assemblies.forEach((assembly) => {
+            query.addKeyValue('files.assembly', assembly);
+        });
+    }
+
+    /**
      * Format the default-file download query string.
      */
     formatDefaultFileQuery() {
         const query = this.buildBasicQuery();
-        if (this._assembly) {
-            // In rare cases, no selected files include an assembly.
-            query.addKeyValue('files.assembly', this._assembly);
-        }
+        this.addAssembliesToQuery(query);
         query
             .addKeyValue('files.analyses.status', 'released')
             .addKeyValue('files.preferred_default', 'true');
@@ -95,10 +136,7 @@ export default class CartBatchDownloadController extends BatchDownloadController
      */
     formatDefaultAnalysisQuery() {
         const query = this.buildBasicQuery();
-        if (this._assembly) {
-            // In rare cases, no selected files include an assembly.
-            query.addKeyValue('files.assembly', this._assembly);
-        }
+        this.addAssembliesToQuery(query);
         query.addKeyValue('files.analyses.status', 'released');
         this._defaultAnalysisQueryString = query.format();
     }
@@ -108,7 +146,11 @@ export default class CartBatchDownloadController extends BatchDownloadController
      */
     formatProcessedQuery() {
         const query = this.buildBasicQuery();
-        query.addKeyValue('files.assembly', this._assembly || '*');
+        if (this._assemblies.length > 0) {
+            this.addAssembliesToQuery(query);
+        } else {
+            query.addKeyValue('files.processed', 'true');
+        }
         this._processedQueryString = query.format();
     }
 
@@ -120,7 +162,7 @@ export default class CartBatchDownloadController extends BatchDownloadController
         query
             .addKeyValue('type', this._datasetType)
             .addKeyValue('cart', this._cartPath)
-            .addKeyValue('option', 'raw');
+            .addKeyValue('files.output_category', 'raw data');
         this._rawQueryString = query.format();
     }
 
@@ -156,20 +198,27 @@ export default class CartBatchDownloadController extends BatchDownloadController
         // Build all the query strings based on the dataset.
         this.buildQueryStrings();
 
-        // Add the entire options menu. Annotations only have two items, while experiments and FCCs
-        // have the whole set.
-        this._downloadOptions = [
-            {
-                ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['default-files']],
-                query: this._defaultFileQueryString,
-            },
-        ];
-        if (this._datasetType !== 'Annotation') {
-            this._downloadOptions.push(
+        // Add the entire options menu. Annotations only have one or two items, while experiments
+        // and FCCs have the whole set.
+        this._downloadOptions = [];
+        if (this._assemblies.length > 0) {
+            this._downloadOptions = [
                 {
-                    ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['default-analysis']],
-                    query: this._defaultAnalysisQueryString,
+                    ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['default-files']],
+                    query: this._defaultFileQueryString,
                 },
+            ];
+        }
+        if (this._datasetType !== 'Annotation') {
+            if (this._assemblies.length > 0) {
+                this._downloadOptions.push(
+                    {
+                        ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['default-analysis']],
+                        query: this._defaultAnalysisQueryString,
+                    }
+                );
+            }
+            this._downloadOptions.push(
                 {
                     ...this._downloadOptionsTemplate[this._downloadOptionsTemplateIndex['processed-files']],
                     query: this._processedQueryString,

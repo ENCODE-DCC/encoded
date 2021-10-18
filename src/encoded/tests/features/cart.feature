@@ -35,7 +35,8 @@ Feature: Cart
         And I click the link to "/cart-view/"
         And I wait for the content to load
         Then I should see 8 elements with the css selector ".result-item"
-        And I should see "6 files selected"
+        When I press "cart-facet-term-hg19"
+        Then I should see "6 files selected"
         When I press "cart-facet-term-Experiment"
         Then I should see "3 files selected"
 
@@ -69,6 +70,7 @@ Feature: Cart
         And I wait for 5 seconds
         And I press "/experiments/ENCSR000INT/"
         And I wait for the content to load
+        And I press "cart-facet-term-GRCh38"
         Then I should see 7 elements with the css selector ".result-item"
         And I should see "4 files selected"
 

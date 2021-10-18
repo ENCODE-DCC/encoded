@@ -116,9 +116,9 @@ const CartBatchDownloadComponent = (
 
     // Build the cart batch-download controller from the user selections.
     const cart = cartType === 'ACTIVE' ? savedCartObj : sharedCart;
-    const selectedAssembly = selectedFileTerms.assembly[0];
+    const selectedAssemblies = selectedFileTerms.assembly;
     const cartQuery = buildQueryFromTerms(selectedDatasetTerms, selectedFileTerms, selectedDatasetType, visualizable, facetFields);
-    const cartController = new CartBatchDownloadController(cart['@id'], selectedDatasetType, selectedAssembly, cartQuery);
+    const cartController = new CartBatchDownloadController(cart['@id'], selectedDatasetType, selectedAssemblies, cartQuery);
 
     // Display a warning message in the modal if we have more than a threshold number of datasets
     // in the cart.

@@ -84,7 +84,7 @@ export default class SearchBatchDownloadController extends BatchDownloadControll
      */
     formatProcessedQuery() {
         const query = this.buildBasicQuery()
-            .addKeyValue('files.assembly', '*');
+            .addKeyValue('files.processed', 'true');
         this._processedQueryString = query.format();
     }
 
