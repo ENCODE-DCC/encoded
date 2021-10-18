@@ -65,7 +65,7 @@ const sortByDescending = (a, b) => {
 };
 
 /** Page description */
-const matrixDescription = 'Cell line samples that were deeply profiled using a set of diverse biochemical approaches, listed with the corresponding batch identifiers.';
+const matrixDescription = 'Cell line samples that were deeply profiled using a set of diverse biochemical approaches.';
 
 /** Determines if user is on All-page or not  */
 const isAllDeeplyMatrix = (pageUrl) => pageUrl.includes('deeply-profiled-matrix');
