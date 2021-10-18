@@ -189,6 +189,7 @@ const getSeriesFiles = (context) => {
  * @param {array} analyses Analyses to compile, from one or more datasets
  * @param {array} files Array of all files from search that gets included in file gallery
  * @param {string} dataFormat Massages data to a be in a particular structure if set
+ * @param {boolean} allowedMixed True if mixed assembly are factored into result
  *
  * @return {array} Compiled analyses information, each element with the form:
  * {
@@ -486,17 +487,17 @@ export class FileTable extends React.Component {
 
             const analysisObjectKeys = Object.keys(files).filter((file) => file.includes('ENCAN') || file.includes('TSTAN'));
             const otherKeys = Object.keys(files).filter((file) => file === nonAnalysisObjectPrefix); // all files not parts of an analysis object
+
+            // compiled analysis excluding those with mixed assemblies
             const compileAnalysis = compileAnalyses(analyses, datasetFiles, 'processed data');
+            const compileAnalysisKeys = compileAnalysis.map((c) => c.accession);
 
-            const getAnalysisName = (accession) => {
-                const selectedAnalysis = compileAnalysis.find((c) => c.accession === accession);
+            // compiled analysis including mixed assemblies
+            const compileAnalysisMixed = compileAnalyses(analyses, datasetFiles, 'processed data', true);
+            const compileAnalysisWithMixedKeys = compileAnalysisMixed.map((c) => c.accession);
 
-                return selectedAnalysis ? selectedAnalysis.title : '';
-            };
-
-            const getMixAnalysisName = (accession) => {
-                const compileAnalysisMixed = compileAnalyses(analyses, datasetFiles, 'processed data', true);
-                const selectedAnalysis = compileAnalysisMixed.find((c) => c.accession === accession);
+            const getAnalysisName = (accession, compileAnalysisList = compileAnalysis) => {
+                const selectedAnalysis = compileAnalysisList.find((c) => c.accession === accession);
 
                 return selectedAnalysis?.title || '';
             };
@@ -557,10 +558,10 @@ export class FileTable extends React.Component {
                             } else {
                                 if (key === nonAnalysisObjectPrefix) {
                                     titleSuffix = 'Other';
-                                } else if (compileAnalysis.some((c) => c.assembly !== 'mixed')) {
+                                } else if (compileAnalysisKeys.includes(key)) {
                                     titleSuffix = getAnalysisName(key);
-                                } else {
-                                    titleSuffix = getMixAnalysisName(key);
+                                } else if (compileAnalysisWithMixedKeys.includes(key)) {
+                                    titleSuffix = getAnalysisName(key, compileAnalysisMixed);
                                 }
                                 tableData = files && files[key] ? files[key] : [];
                             }
