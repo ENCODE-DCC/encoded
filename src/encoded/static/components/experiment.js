@@ -487,16 +487,11 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // Collect expressed genes from biosamples in the dataset
     let expressedGenes = [];
     biosamples.forEach((biosample) => {
-        console.log(biosample);
         if (biosample.expressed_genes) {
-            biosample.expressed_genes.forEach((loci) => {
-                if (loci) {
-                    expressedGenes.push(loci);
-                }
-            });
-            expressedGenes = _.uniq(expressedGenes);
+            expressedGenes = [...expressedGenes, ...biosample.expressed_genes];
         }
     });
+    expressedGenes = _.uniq(expressedGenes, (gene) => `${gene.gene.geneid}-${gene.expression_percentile}-${gene.expression_range_maximum}-${gene.expression_range_minimum}`);
 
     // Create platforms array from file platforms; ignore duplicate platforms.
     const platforms = {};
@@ -756,19 +751,16 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dt>Sorted gene expression</dt>
                                     <dd>
                                         {expressedGenes.map((loci, i) => (
-                                            loci.gene ?
-                                                <span key={`${loci.gene.uuid}-${i}`}>
-                                                    {i > 0 ? <span>, </span> : null}
-                                                    <a href={loci.gene['@id']}>{loci.gene.symbol}</a>
-                                                    {/* 0 is falsy but we still want it to display, so 0 is explicitly checked for */}
-                                                    {loci.expression_percentile || loci.expression_percentile === 0 ?
-                                                        <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span>
-                                                    : null}
-                                                    {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ?
-                                                        <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span>
-                                                    : null}
-                                                </span>
-                                            : null
+                                            <span key={`${loci.gene.uuid}-${i}`}>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={loci.gene['@id']}>{loci.gene.symbol}</a>
+                                                {loci.expression_percentile || loci.expression_percentile === 0 ?
+                                                    <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span>
+                                                : null}
+                                                {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ?
+                                                    <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span>
+                                                : null}
+                                            </span>
                                         ))}
                                     </dd>
                                 </div>
