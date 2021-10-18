@@ -594,7 +594,12 @@
                         },
                         "output_type": {
                             "enum": [
-                                "archr project"
+                                "archr project",
+                                "unfiltered sparse gene count matrix of all reads",
+                                "unfiltered sparse gene count matrix of unique reads",
+                                "unfiltered sparse splice junction count matrix of unique reads",
+                                "sparse gene count matrix of all reads",
+                                "sparse gene count matrix of unique reads"
                             ]
                         }
                     }
@@ -603,7 +608,25 @@
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["archr project", "reads", "filtered reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference", "nanopore signal", "R2C2 subreads", "guide locations", "fragments"]
+                                "enum": [
+                                    "archr project",
+                                    "reads",
+                                    "filtered reads",
+                                    "index reads",
+                                    "restriction enzyme site locations",
+                                    "subreads",
+                                    "hotspots1 reference",
+                                    "hotspots2 reference",
+                                    "nanopore signal",
+                                    "R2C2 subreads",
+                                    "guide locations",
+                                    "fragments",
+                                    "unfiltered sparse gene count matrix of all reads",
+                                    "unfiltered sparse gene count matrix of unique reads",
+                                    "unfiltered sparse splice junction count matrix of unique reads",
+                                    "sparse gene count matrix of all reads",
+                                    "sparse gene count matrix of unique reads"
+                                ]
                             }
                         }
                     }
@@ -1103,7 +1126,8 @@
                                         "regulatory elements prediction model",
                                         "TF binding prediction model",
                                         "enhancer prediction model",
-                                        "promoter prediction model"
+                                        "promoter prediction model",
+                                        "inclusion list"
                                     ]
                                 }
                             }
@@ -1715,6 +1739,7 @@
                         "hotspots2 reference",
                         "idat green channel",
                         "idat red channel",
+                        "inclusion list",
                         "index reads",
                         "intensity values",
                         "IDR ranked peaks",
@@ -1799,6 +1824,8 @@
                         "spike-ins",
                         "smoothed methylation state at CpG",
                         "sparse gene count matrix",
+                        "sparse gene count matrix of all reads",
+                        "sparse gene count matrix of unique reads",
                         "sparse gRNA count matrix",
                         "sparse peak count matrix",
                         "sparse transcript count matrix",
@@ -1816,6 +1843,9 @@
                         "transcriptome reference",
                         "TSS reference",
                         "unfiltered alignments",
+                        "unfiltered sparse gene count matrix of all reads",
+                        "unfiltered sparse gene count matrix of unique reads",
+                        "unfiltered sparse splice junction count matrix of unique reads",
                         "unidirectional peaks",
                         "UV enriched segment quantifications",
                         "variant calls"
@@ -2366,6 +2396,11 @@
         "fragments": "quantification",
         "sparse peak count matrix": "quantification",
         "archr project": "quantification",
+        "unfiltered sparse gene count matrix of all reads": "quantification",
+        "unfiltered sparse gene count matrix of unique reads": "quantification",
+        "unfiltered sparse splice junction count matrix of unique reads": "quantification",
+        "sparse gene count matrix of all reads": "quantification",
+        "sparse gene count matrix of unique reads": "quantification",
 
         "hotspots": "annotation",
         "footprints": "annotation",
@@ -2442,6 +2477,7 @@
         "TF binding prediction model": "annotation",
         "enhancer prediction model": "annotation",
         "promoter prediction model": "annotation",
+        "inclusion list": "annotation",
 
         "genome subcompartments": "annotation",
         "chromatin stripes": "annotation",
