@@ -26,7 +26,7 @@ const rootColorList = [
     '#82ae4e',
     '#661026',
     '#2e0929',
-    '#240a36',
+    '#72145b',
     '#2e0e6b',
     '#9d99cd',
     '#303d4a',
@@ -46,7 +46,7 @@ const rootColorList = [
  * @return {object} { r, g, b } values
  */
 export const colorToTriple = (color) => {
-    const num = parseInt(color.slice(1), 16);
+    const num = parseInt((color?.slice(1) || 1), 16);
     const r = num >> 16;
     const g = (num >> 8) & 0x00FF;
     const b = num & 0x0000FF;
