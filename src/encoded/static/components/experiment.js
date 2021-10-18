@@ -490,13 +490,13 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         console.log(biosample);
         if (biosample.expressed_genes) {
             biosample.expressed_genes.forEach((loci) => {
-                if (loci.gene) {
-                    expressedGenes.push(loci.gene);
+                if (loci) {
+                    expressedGenes.push(loci);
                 }
             });
+            expressedGenes = _.uniq(expressedGenes);
         }
     });
-    expressedGenes = _.uniq(expressedGenes);
 
     // Create platforms array from file platforms; ignore duplicate platforms.
     const platforms = {};
@@ -753,19 +753,22 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
                             {expressedGenes ?
                                 <div data-test="expressed-genes">
-                                    <dt>Expressed genes</dt>
+                                    <dt>Sorted gene expression</dt>
                                     <dd>
                                         {expressedGenes.map((loci, i) => (
-                                            <span key={`${loci.uuid}-${i}`}>
-                                                {i > 0 ? <span>, </span> : null}
-                                                <a href={loci['@id']}>{loci.symbol}</a>
-                                                {loci.expression_percentile || loci.expression_percentile === 0 ?
-                                                    <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span>
-                                                : null}
-                                                {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ?
-                                                    <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span>
-                                                : null}
-                                            </span>
+                                            loci.gene ?
+                                                <span key={`${loci.gene.uuid}-${i}`}>
+                                                    {i > 0 ? <span>, </span> : null}
+                                                    <a href={loci.gene['@id']}>{loci.gene.symbol}</a>
+                                                    {/* 0 is falsy but we still want it to display, so 0 is explicitly checked for */}
+                                                    {loci.expression_percentile || loci.expression_percentile === 0 ?
+                                                        <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span>
+                                                    : null}
+                                                    {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ?
+                                                        <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span>
+                                                    : null}
+                                                </span>
+                                            : null
                                         ))}
                                     </dd>
                                 </div>

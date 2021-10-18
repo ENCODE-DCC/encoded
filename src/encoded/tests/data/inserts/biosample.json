@@ -676,6 +676,31 @@
         "uuid": "d8ca0867-13cd-40df-9de0-29f9da53d935"
     },
     {
+        "accession": "ENCBS631AAA",
+        "award": "ENCODE2",
+        "biosample_ontology": "cell_line_EFO_0002784",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:GM12878"
+        ],
+        "description": "B-lymphocyte, lymphoblastoid, International HapMap Project - CEPH/Utah - European Caucasion, Epstein-Barr Virus",
+        "donor": "ENCDO000AAK",
+        "lab": "michael-snyder",
+        "organism": "human",
+        "product_id": "GM12878",
+        "cell_isolation_method": "fluorescence activated cell sorting",
+        "expressed_genes": [
+            {
+                "gene": "/genes/1879/",
+                "expression_percentile": 15
+            }
+        ],
+        "source": "coriell",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM12878",
+        "uuid": "3a5955ce-810f-4535-bef1-10f0cc23cca7"
+    },
+    {
         "_test": "Paired set 1 biosample",
         "organism": "human",
         "status": "released",

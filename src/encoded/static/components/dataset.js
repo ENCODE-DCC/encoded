@@ -28,6 +28,7 @@ import { FileGallery } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
+import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
 /**
  * All Series types allowed to have a download button. Keep in sync with the same variable in
@@ -2210,10 +2211,18 @@ const computeExpressedGenes = (dataset) => {
     });
 
     return (
-        geneList.map((gene) => (
-            <a key={gene.gene['@id']} href={gene.gene['@id']}>
-                {gene.gene.symbol} ({gene.expression_percentile}th percentile)
-            </a>
+        geneList.map((gene) => _.uniq(
+            <span key={`${gene.uuid}-${gene}`}>
+                {geneList > 0 ? <span>, </span> : null}
+                <a href={gene['@id']}>{gene.symbol}</a>
+                {/* 0 is falsy but we still want it to display, so 0 is explicitly checked for */}
+                {gene.expression_percentile || gene.expression_percentile === 0 ?
+                    <span>{' '}({getNumberWithOrdinal(gene.expression_percentile)} percentile)</span>
+                : null}
+                {(gene.expression_range_maximum && gene.expression_range_minimum) || (gene.expression_range_maximum === 0 || gene.expression_range_minimum === 0) ?
+                    <span>{' '}({gene.expression_range_minimum}-{gene.expression_range_maximum}%)</span>
+                : null}
+            </span>
         ))
     );
 };
@@ -2238,7 +2247,7 @@ const differentialAccessibilitySeriesTableColumns = {
     },
 
     expressed_genes: {
-        title: 'Gene expression',
+        title: 'Sorted gene expression',
         getValue: (experiment) => computeExpressedGenes(experiment),
     },
 
@@ -2650,7 +2659,7 @@ export const SeriesComponent = ({
 
                             {genes && genes.length > 0 ?
                                 <div data-test="geneexpression">
-                                    <dt>Gene expression</dt>
+                                    <dt>Sorted gene expression</dt>
                                     <dd>{genes.join(', ')}</dd>
                                 </div>
                             : null}

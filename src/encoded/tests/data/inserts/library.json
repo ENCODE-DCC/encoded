@@ -1060,6 +1060,16 @@
         "uuid": "60c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
     },
     {
+        "accession": "ENCLB724ATA",
+        "award": "UM1HG009442",
+        "biosample": "ENCBS631AAA",
+        "lab": "michael-snyder/",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "d90970a2-5ae2-43ce-a430-bbdb80b79454"
+    },
+    {
         "accession": "ENCLB414HBO",
         "aliases": ["eric-lecuyer:L-HepG2-init-Insoluble_1"],
         "award": "UM1HG009442",

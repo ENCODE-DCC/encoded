@@ -101,8 +101,8 @@
         "treatment_term_name": {
             "title": "Biosample treatment"
         },
-        "related_datasets.replicates.library.biosample.expressed_genes": {
-            "title": "Expressed genes"
+        "related_datasets.replicates.library.biosample.expressed_genes.gene.symbol": {
+            "title": "Sorted gene expression"
         },
         "related_datasets.files.file_type": {
             "title": "Available file types"
@@ -199,11 +199,12 @@
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.expressed_genes": {
-            "title": "Expressed genes",
+            "title": "Sorted gene expression",
             "type": "array"
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "accession": 20.0,
         "alternate_accessions": 1.0,
         "related_datasets.assay_term_name": 1.0,
@@ -238,7 +239,6 @@
         "related_datasets.replicates.library.biosample.sex": 5.0,
         "related_datasets.replicates.library.biosample.alternate_accessions": 1.0,
         "related_datasets.replicates.library.biosample.aliases": 1.0,
-        "related_datasets.replicates.library.biosample.expressed_genes": 1.0,
         "related_datasets.replicates.library.biosample.subcellular_fraction_term_name" : 1.0,
         "related_datasets.replicates.library.biosample.donor.accession": 1.0,
         "related_datasets.replicates.library.biosample.donor.alternate_accessions": 1.0,
