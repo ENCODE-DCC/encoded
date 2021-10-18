@@ -11,10 +11,10 @@
         "final_barcode_count": 36219,
         "analyzed_barcode_count": 89,
         "multiplet_barcode_count": 9999,
-        "frac_multiplets":0.7293,
+        "frac_multiplets": 0.7293,
         "multiplet_threshold": 0.666,
         "multiplet_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
-        "barcode_pairs_expanded": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
+        "barcode_pairs_expanded": "HAIB_TCF4_WH0006925M2_MassSpec.tsv.gz",
         "barcodes_status": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
         "barcode_pairs_multiplets": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
         "multiplet_threshold_plot": "search-result-bone-chip.png"

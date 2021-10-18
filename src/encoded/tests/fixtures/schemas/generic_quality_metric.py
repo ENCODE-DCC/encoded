@@ -11,7 +11,7 @@ def generic_quality_metric(analysis_step_run, file, award, lab):
         'step_run': analysis_step_run['uuid'],
         'quality_metric_of': [file['uuid']],
         'attachment': {
-            'download': 'test.tgz',
+            'download': 'test.tar',
             'type': 'application/x-tar',
             'href': TAR_BALL
         }
