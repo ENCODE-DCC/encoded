@@ -197,6 +197,13 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.annotation_type === 'gkm-SVM-model' && context.experimental_input ?
+                                <div data-test="experimentalinput">
+                                    <dt>Experimental input</dt>
+                                    <dd><a href={context.experimental_input}>{globals.atIdToAccession(context.experimental_input)}</a></dd>
+                                </div>
+                            : null}
+
                             {context.biochemical_inputs && context.biochemical_inputs.length > 0 ?
                                  <div data-test="biochemicalinputs">
                                      <dt>Biochemical activity</dt>
