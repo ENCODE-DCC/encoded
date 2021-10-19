@@ -143,6 +143,15 @@ const libraryPropertyExtractors = {
         const libraryPropertyString = library.strand_specificity;
         return { libraryPropertyString };
     },
+
+    construction_method: (library) => {
+        const constrMethods = library.construction_method;
+        let libraryPropertyString = null;
+        if (constrMethods && constrMethods.length > 0) {
+            libraryPropertyString = constrMethods.sort().join(', ');
+        }
+        return { libraryPropertyString };
+    },
 };
 
 

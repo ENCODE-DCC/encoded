@@ -223,7 +223,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "19"
+            "default": "20"
         },
         "accession": {
             "accessionType": "LB"
@@ -502,7 +502,8 @@
                         "Invitrogen EGel EX 2% agarose (Cat# G402002)",
                         "Pippin HT",
                         "Sera-mag SpeedBeads",
-                        "SPRI beads"
+                        "SPRI beads",
+                        "Streptavidin magnetic beads"
                     ]
                 },
                 {
@@ -724,14 +725,21 @@
         "construction_method": {
             "title": "The kit or protocol technique used to generate the library.",
             "description": "The kit or protocol technique used to generate the library of nucleic acid material being sequenced.",
-            "type": "string",
-            "enum": [
-                "CapTrap",
-                "Nanopore Direct RNA Kit",
-                "Nanopore PCR-cDNA Kit",
-                "Parse Single Cell Whole Transcriptome Kit",
-                "R2C2"
-            ]
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "capped RNA enrichment",
+                    "CapTrap",
+                    "Nanopore Direct RNA Kit",
+                    "Nanopore PCR-cDNA Kit",
+                    "Parse Single Cell Whole Transcriptome Kit",
+                    "PCR-free",
+                    "R2C2",
+                    "uncapped RNA enrichment"
+                ]
+            }
         }
     },
     "columns": {

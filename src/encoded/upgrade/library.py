@@ -336,3 +336,19 @@ def library_18_19(value, system):
         value.pop('lot_id')
     if 'product_id' in value and value['product_id'] == '':
         value.pop('product_id')
+
+
+@upgrade_step('library', '19', '20')
+def library_19_20(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6178
+    if 'construction_method' in value:
+        if value['construction_method'] == 'CapTrap':
+            value['construction_method'] = ['CapTrap']
+        if value['construction_method'] == 'Nanopore Direct RNA Kit':
+            value['construction_method'] = ['Nanopore Direct RNA Kit']
+        if value['construction_method'] == 'Nanopore PCR-cDNA Kit':
+            value['construction_method'] = ['Nanopore PCR-cDNA Kit']
+        if value['construction_method'] == 'Parse Single Cell Whole Transcriptome Kit':
+            value['construction_method'] = ['Parse Single Cell Whole Transcriptome Kit']
+        if value['construction_method'] == 'R2C2':
+            value['construction_method'] = ['R2C2']

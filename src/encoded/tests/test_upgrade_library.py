@@ -144,3 +144,9 @@ def test_library_upgrade_18_to_19(upgrader, base_library):
     assert value['schema_version'] == '19'
     assert 'lot_id' not in value
     assert 'product_id' not in value
+
+
+def test_library_upgrade_19_to_20(upgrader, library_schema_19):
+    value = upgrader.upgrade('library', library_schema_19, target_version='20')
+    assert value['schema_version'] == '20'
+    assert value['construction_method'] == ['Nanopore Direct RNA Kit']

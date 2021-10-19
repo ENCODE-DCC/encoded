@@ -354,7 +354,7 @@ const ExperimentComponent = (props, reactContext) => {
     const { context: result, cartControls, mode } = props;
     let synchronizations;
     let constructionPlatforms;
-    let constructionMethods;
+    let constructionMethods = [];
     let cellularComponents;
     let examinedLoci = [];
 
@@ -442,9 +442,9 @@ const ExperimentComponent = (props, reactContext) => {
             replicate.library && replicate.library.construction_platform && replicate.library.construction_platform.term_name
         )).map((replicate) => replicate.library.construction_platform.term_name));
 
-        constructionMethods = _.uniq(result.replicates.filter((replicate) => (
-            replicate.library && replicate.library.construction_method
-        )).map((replicate) => replicate.library.construction_method));
+        constructionMethods = _.uniq(result.replicates.reduce((accMethods, replicate) => (
+            replicate.library && replicate.library.construction_method ? accMethods.concat(replicate.library.construction_method) : accMethods
+        ), []));
 
         cellularComponents = _.uniq(result.replicates.filter((replicate) => (
             replicate.library && replicate.library.biosample && replicate.library.biosample.subcellular_fraction_term_name
@@ -907,14 +907,17 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         if (replicate.library.construction_platform) {
                             constructionPlatforms.push(replicate.library.construction_platform.term_name);
                         }
-                        if (replicate.library.construction_method) {
-                            constructionMethods.push(replicate.library.construction_method);
-                        }
                         if (replicate.library.subcellular_fraction_term_name) {
                             cellularComponents.push(replicate.library.subcellular_fraction_term_name);
                         }
                     }
                 });
+            }
+            // Collect library construction methods
+            if (dataset.replicates && dataset.replicates.length > 0) {
+                constructionMethods = _.uniq(dataset.replicates.reduce((accMethods, replicate) => (
+                    replicate.library && replicate.library.construction_method ? accMethods.concat(replicate.library.construction_method) : accMethods
+                ), []));
             }
         });
         lifeStages = _.uniq(lifeStages);
@@ -930,7 +933,6 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
         perturbationTreatments = _.uniq(perturbationTreatments);
         diseases = _.uniq(diseases);
         constructionPlatforms = _.uniq(constructionPlatforms);
-        constructionMethods = _.uniq(constructionMethods);
         cellularComponents = _.uniq(cellularComponents);
     }
     const lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
