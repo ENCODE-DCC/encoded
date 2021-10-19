@@ -48,7 +48,8 @@ class Award(Item):
     }
     embedded = [
         'principal_investigators',
-        'collaborators'
+        'collaborators',
+        'coordinating_pi'
     ]
 
 
