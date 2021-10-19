@@ -2,4 +2,4 @@
 
 ### Schema version 2
 
-* Renamed *pct_duplicate_reads* to be *frac_duplicate_reads*
+* Renamed *pct_duplicate_reads* to be *frac_duplicate_reads*.
