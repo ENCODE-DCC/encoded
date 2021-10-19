@@ -2,7 +2,7 @@
      {
          "status": "released",
          "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
-         "uuid": "b76ed89f-9d40-44c4-8535-5185232eb20z",
+         "uuid": "0c27cdd4-30fc-11ec-8d3d-0242ac130003",
          "assay_term_name": "single-nucleus ATAC-seq",
          "quality_metric_of": ["ENCFF789ARC"],
          "lab": "/labs/john-stamatoyannopoulos/",
