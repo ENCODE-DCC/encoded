@@ -14,7 +14,7 @@
         "paired_duplicate_reads": 899,
         "paired_optical_duplicate_reads": 490,
         "paired_reads": 8320,
-        "pct_duplicate_reads": 0.2,
+        "frac_duplicate_reads": 0.2,
         "positions_with_one_read": 9012,
         "total_fragments": 12004,
         "unpaired_duplicate_reads": 309,
