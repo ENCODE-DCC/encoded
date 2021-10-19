@@ -81,7 +81,6 @@ const ManageSeriesModalComponent = ({ series, onCloseModalClick, setCartInProgre
         ? 'Remove the series to remove these datasets from the cart.'
         : 'Remove independently of the series, or remove all by removing the series';
 
-
     /**
      * Called when the user confirms closing the modal without taking action.
      */

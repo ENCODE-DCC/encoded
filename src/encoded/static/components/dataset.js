@@ -2516,7 +2516,7 @@ export const SeriesComponent = ({
     return (
         <div className={itemClass}>
             <header>
-                <TopAccessories context={context} crumbs={displayedBreadCrumbs} />
+                <TopAccessories context={context} crumbs={displayedBreadCrumbs} removeConfirmation={{ immediate: true }} />
                 <h1>Summary for {title.toLowerCase()} {context.accession}</h1>
                 <DoiRef context={context} />
                 <ReplacementAccessions context={context} />

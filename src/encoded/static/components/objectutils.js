@@ -815,7 +815,7 @@ ItemAccessories.contextTypes = {
 /**
  * Display the top section containing the breadcrumb links on summary pages.
  */
-export const TopAccessories = ({ context, crumbs }) => {
+export const TopAccessories = ({ context, crumbs, removeConfirmation }) => {
     const type = context['@type'][0];
     const isItemAllowedInCart = cartGetAllowedTypes().includes(type);
 
@@ -823,7 +823,11 @@ export const TopAccessories = ({ context, crumbs }) => {
         <div className="top-accessories">
             <Breadcrumbs root={`/search/?type=${type}${controlTypeParameter(type)}`} crumbs={crumbs} crumbsReleased={context.status === 'released'} />
             {isItemAllowedInCart ?
-                <CartToggle element={context} displayName />
+                <CartToggle
+                    element={context}
+                    removeConfirmation={removeConfirmation}
+                    displayName
+                />
             : null}
         </div>
     );
@@ -834,6 +838,20 @@ TopAccessories.propTypes = {
     context: PropTypes.object.isRequired,
     /** Object with breadcrumb contents */
     crumbs: PropTypes.arrayOf(PropTypes.object).isRequired,
+    /** For removing a series object on individual series pages */
+    removeConfirmation: PropTypes.shape({
+        /** Called by cart toggle when the user requests removing a series object from the cart */
+        requestRemove: PropTypes.func,
+        /** Called when the user confirms removing a series object from the cart */
+        requestRemoveConfirmation: PropTypes.func,
+        /** True if the user has confirmed they want to remove the series object from the cart */
+        isRemoveConfirmed: PropTypes.bool,
+        /** True to remove series and its related datasets without a confirmation modal */
+        immediate: PropTypes.bool,
+    }),
+};
+TopAccessories.defaultProps = {
+    removeConfirmation: {},
 };
 
 
