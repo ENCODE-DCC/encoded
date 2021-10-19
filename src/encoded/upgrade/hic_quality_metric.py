@@ -58,5 +58,5 @@ def hic_quality_metric_1_2(value, system):
     if 'unmapped_reads' in value:
         value['one_or_both_reads_unmapped'] = value['unmapped_reads']
         value.pop('unmapped_reads')
-    if 'read_type' not in value:
-        value['read_type'] = 'paired-ended'
+    if 'run_type' not in value:
+        value['run_type'] = 'paired-ended'

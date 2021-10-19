@@ -77,7 +77,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.gene_silencing_series',
     'encoded.tests.fixtures.schemas.functional_characterization_experiment',
     'encoded.tests.fixtures.schemas.functional_characterization_series',
-    #'encoded.tests.fixtures.schemas.hic_quality_metric',
+    'encoded.tests.fixtures.schemas.hic_quality_metric',
     'encoded.tests.fixtures.schemas.histone_chipseq_quality_metric',
     'encoded.tests.fixtures.schemas.hotspot_quality_metric',
     'encoded.tests.fixtures.schemas.human_donor',
