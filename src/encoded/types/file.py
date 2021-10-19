@@ -181,6 +181,25 @@ class DataFile(File, CalculatedAward):
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
     audit_inherit = File.audit_inherit + []
+    rev = {
+        'superseded_by': ('DataFile', 'supersedes')
+    }
+
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The File that supersedes this one.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "DataFile.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by=None):
+        if superseded_by:
+            return paths_filtered_by_status(request, superseded_by)
 
 
     @calculated_property(schema={
@@ -243,6 +262,7 @@ class SequenceAlignmentFile(AnalysisFile):
     item_type = 'sequence_alignment_file'
     schema = load_schema('encoded:schemas/sequence_alignment_file.json')
     embedded = AnalysisFile.embedded + []
+    rev = DataFile.rev.copy()
 
 
 @collection(
@@ -255,9 +275,10 @@ class SequenceAlignmentFile(AnalysisFile):
 class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
-    rev = {
+    rev = DataFile.rev.copy()
+    rev.update({
         'raw_matrix_files': ('RawMatrixFile', 'derived_from')
-    }
+    })
     embedded = DataFile.embedded + ['derived_from']
     audit_inherit = DataFile.audit_inherit + ['derived_from']
 
@@ -331,9 +352,10 @@ class RawMatrixFile(AnalysisFile):
     item_type = 'raw_matrix_file'
     schema = load_schema('encoded:schemas/raw_matrix_file.json')
     embedded = AnalysisFile.embedded + []
-    rev = {
+    rev = DataFile.rev.copy()
+    rev.update({
         'quality_metrics': ('Metrics', 'quality_metric_of')
-    }
+    })
 
 
     @calculated_property(schema={
@@ -411,10 +433,11 @@ class ProcessedMatrixFile(AnalysisFile):
     item_type = 'processed_matrix_file'
     schema = load_schema('encoded:schemas/processed_matrix_file.json')
     embedded = AnalysisFile.embedded + ['cell_annotations', 'cell_annotations.cell_ontology', 'experimental_variable_disease']
-    rev = {
+    rev = DataFile.rev.copy()
+    rev.update({
         'cell_annotations': ('CellAnnotation', 'matrix_files'),
         'quality_metrics': ('Metrics', 'quality_metric_of')
-    }
+    })
 
 
     @calculated_property(schema={

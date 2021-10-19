@@ -13,13 +13,21 @@
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/supersedes"},
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/uuid"},
-        {"$ref": "mixins.json#/standard_status"}
+        {"$ref": "mixins.json#/accessioned_status"}
     ],
     "properties": {
         "schema_version": {
             "default": "3"
+        },
+        "supersedes": {
+            "items": {
+                "title": "Supersedes",
+                "type": "string",
+                "linkTo": "SequencingRun"
+            }
         },
         "dbxrefs": {
             "items": {

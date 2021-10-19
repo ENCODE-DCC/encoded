@@ -19,8 +19,25 @@ class SequencingRun(Item):
     item_type = 'sequencing_run'
     schema = load_schema('encoded:schemas/sequencing_run.json')
     rev = {
-        'files': ('RawSequenceFile', 'derived_from')
+        'files': ('RawSequenceFile', 'derived_from'),
+        'superseded_by': ('SequencingRun', 'supersedes')
     }
+
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The SequencingRun that supersedes this one.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "SequencingRun.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by=None):
+        if superseded_by:
+            return paths_filtered_by_status(request, superseded_by)
 
 
     @calculated_property(schema={
