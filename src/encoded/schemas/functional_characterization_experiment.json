@@ -105,7 +105,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "10"
+            "default": "11"
         },
         "assay_term_name": {
             "title": "Assay name",
@@ -282,11 +282,10 @@
                         "type": "string",
                         "enum": [
                             "antibody Sort-seq",
-                            "CRISPRi-FlowFISH",
                             "endogenous protein Sort-seq",
                             "fluorescence activated cell sorting",
                             "HCR-FlowFISH",
-                            "magnetic separation Sort-seq",
+                            "magnetic separation Sort-seq",                            
                             "PrimeFlow",
                             "qPCR",
                             "RNA-seq"

@@ -46,3 +46,10 @@ def functional_characterization_experiment_8_9(value, system):
 def functional_characterization_experiment_9_10(value, system):
     if value.get('assay_term_name', "") == "pooled clone sequencing" and "control_type" not in value:
         value['control_type'] = "control"
+
+
+@upgrade_step('functional_characterization_experiment', '10', '11')
+def functional_characterization_experiment_10_11(value, system):
+    for examined_locus in value.get('examined_loci', []):
+        if examined_locus.get('expression_measurement_method', None) == 'CRISPRi-FlowFISH':
+            examined_locus['expression_measurement_method'] = 'PrimeFlow'
