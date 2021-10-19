@@ -132,7 +132,7 @@
             "minimum": 0
         },
         "2_alignments_a_b": {
-            "title": "Number of 2 alignments a_b",
+            "title": "Number of 2 alignments (A...B)",
             "type": "integer",
             "minimum": 0
         },
@@ -147,7 +147,7 @@
             "minimum": 0
         },
         "2_alignments_a1_a2b_a1b2_b1a2": {
-            "title": "Number of 2 alignments a1_a2b_a1b2_b1a2",
+            "title": "Number of 2 alignments (A1...A2B; A1B2...B1A2)",
             "type": "integer",
             "minimum": 0
         },
