@@ -190,6 +190,112 @@ def test_search_views_search_view_no_type_debug(index_workbook, testapp):
     assert not r.json['debug']['raw_query']['post_filter']['bool']
 
 
+def test_search_views_search_view_facets_from_configs(index_workbook, testapp, dummy_request):
+    from snosearch.configs import SearchConfig
+    from snosearch.interfaces import SEARCH_CONFIG
+    search_registry = dummy_request.registry[SEARCH_CONFIG]
+    config1 = SearchConfig(
+        'config1',
+        {
+            'facets': {
+                "status": {
+                    "title": "Dataset status"
+                },
+                "files.file_type": {
+                    "title": "Available data"
+                }
+            },
+            'columns': {
+                '@id': {
+                    'title': 'ID'
+                },
+                'count': {
+                    'title': 'Count'
+                }
+            }
+        }
+    )
+    config2 = SearchConfig(
+        'config2',
+        {
+            'facets': {
+                "date_released": {
+                    "title": "Date released"
+                },
+                "lab.title": {
+                    "title": "Lab"
+                }
+            },
+            'columns': {
+                'value': {
+                    'title': 'Value'
+                }
+            },
+        }
+    )
+    search_registry.add(config1)
+    search_registry.add(config2)
+    r = testapp.get('/search/?type=Experiment')
+    assert 30 < len(r.json['facets']) < 50
+    r = testapp.get('/search/?type=Experiment&config=Dataset')
+    assert 8 < len(r.json['facets']) < 18
+    r = testapp.get('/search/?type=Experiment&config=config1')
+    assert len(r.json['facets']) == 6
+    assert r.json['facets'][1]['field'] == 'status'
+    assert r.json['facets'][2]['field'] == 'files.file_type'
+    r = testapp.get('/search/?type=Experiment&config=config1&config=config2')
+    assert len(r.json['facets']) == 8
+    assert r.json['facets'][3]['field'] == 'date_released'
+    assert r.json['facets'][4]['field'] == 'lab.title'
+    r = testapp.get('/search/?type=Experiment&type=Dataset&config=config2')
+    assert len(r.json['facets']) == 6
+
+
+def test_search_views_search_view_columns_from_configs(index_workbook, testapp, dummy_request):
+    from snosearch.configs import SearchConfig
+    from snosearch.interfaces import SEARCH_CONFIG
+    search_registry = dummy_request.registry[SEARCH_CONFIG]
+    config1 = SearchConfig(
+        'config1',
+        {
+            'columns': {
+                '@id': {
+                    'title': 'ID'
+                },
+                'count': {
+                    'title': 'Count'
+                }
+            }
+        }
+    )
+    config2 = SearchConfig(
+        'config2',
+        {
+            'columns': {
+                'value': {
+                    'title': 'Value'
+                }
+            },
+        }
+    )
+    search_registry.add(config1)
+    search_registry.add(config2)
+    r = testapp.get('/search/?type=Experiment')
+    assert 30 < len(r.json['columns']) < 40
+    r = testapp.get('/search/?type=Experiment&config=config1')
+    assert len(r.json['columns']) == 2
+    r = testapp.get('/search/?type=Experiment&config=config1&config=config2')
+    assert len(r.json['columns']) == 3
+    r = testapp.get('/search/?type=Experiment&type=Dataset&config=config1&config=config2')
+    assert len(r.json['columns']) == 3
+    r = testapp.get('/search/?type=Experiment&type=Dataset')
+    assert len(r.json['columns']) > 80
+    r = testapp.get('/search/?type=Donor')
+    assert 15 < len(r.json['columns']) < 25
+    r = testapp.get('/search/?type=Item')
+    assert len(r.json['columns']) > 240
+
+
 def test_search_views_search_raw_view_raw_response(index_workbook, testapp):
     r = testapp.get('/searchv2_raw/?type=Experiment')
     assert 'hits' in r.json
@@ -308,6 +414,36 @@ def test_search_views_report_view(index_workbook, testapp):
     assert r.json['clear_filters'] == '/report/?type=Experiment'
     assert 'debug' not in r.json
     assert 'columns' in r.json
+    assert len(r.json['columns']) > 10
+    assert 'non_sortable' in r.json
+    assert 'sort' in r.json
+
+
+def test_search_views_report_view_custom_columns(index_workbook, testapp):
+    r = testapp.get(
+        '/report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/'
+        '&accession=ENCSR000ADI&status=released&config=custom-columns'
+    )
+    assert r.json['title'] == 'Report'
+    assert len(r.json['@graph']) == 1
+    assert r.json['@graph'][0]['status'] == 'released'
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == (
+        '/report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/'
+        '&accession=ENCSR000ADI&status=released'
+        '&config=custom-columns'
+    )
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Report']
+    assert r.json['total'] == 1
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 4
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/report/?type=Experiment'
+    assert 'debug' not in r.json
+    assert 'columns' in r.json
+    assert len(r.json['columns']) == 6
     assert 'non_sortable' in r.json
     assert 'sort' in r.json
 
@@ -464,6 +600,30 @@ def test_search_views_matrix_response(index_workbook, testapp):
     assert 'biosample_ontology.term_name' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
     assert 'search_base' in r.json
     assert r.json['search_base'] == '/search/?type=Experiment'
+
+
+def test_search_views_matrix_from_config_response(index_workbook, testapp):
+    r = testapp.get('/matrix/?type=Experiment&config=custom-matrix')
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Matrix'
+    assert r.json['@type'] == ['Matrix']
+    assert r.json['clear_filters'] == '/matrix/?type=Experiment'
+    assert r.json['filters'] == [{'field': 'type', 'term': 'Experiment', 'remove': '/matrix/?config=custom-matrix'}]
+    assert r.json['@id'] == '/matrix/?type=Experiment&config=custom-matrix'
+    assert r.json['total'] >= 22
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'Matrix'
+    assert 'facets' in r.json
+    assert r.json['@context'] == '/terms/'
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == 'assay_title'
+    assert r.json['matrix']['y']['group_by'] == [
+        'award.rfa',
+        'lab.title',
+    ]
+    assert r.json['search_base'] == '/search/?type=Experiment&config=custom-matrix'
 
 
 def test_search_views_matrix_response_with_search_term_type_only_clear_filters(index_workbook, testapp):
