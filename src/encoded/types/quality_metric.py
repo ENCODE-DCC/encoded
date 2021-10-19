@@ -627,7 +627,7 @@ class ScAtacAnalysisQualityMetric(QualityMetric, CalculatedAssayTermID):
 
 
 @collection(
-    name='sc-atac-counts-summary-quality-metrics',
+    name='sc-atac-counts-summary-quality-metric',
     properties={
         'title': "scATAC Counts Summary Quality Metrics",
     })
