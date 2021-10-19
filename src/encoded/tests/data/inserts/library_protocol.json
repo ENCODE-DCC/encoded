@@ -82,6 +82,7 @@
         "second_strand_primer": "TSO",
         "construction_platform": "10x",
         "polyA_selection_method": "poly(dT)",
+        "cell_barcode_whitelist": "10x_3prime_737Kbarcodes.txt",
         "sequence_file_standards": [
             {
                 "required": true,
@@ -109,7 +110,8 @@
                 "read_type": "i7 index",
                 "read_length": 10,
                 "sequence_elements": [
-                    "sample index"
+                    "sample index",
+                    "Spacer"
                 ],
                 "demultiplexed_type": "I1",
                 "read_length_specification": "exact"
@@ -379,6 +381,24 @@
                 "read_length_specification": "exact"
             }
         ]
+    },
+    {
+        "biological_macromolecule": "DNA",
+        "library_type": "ATAC-seq",
+        "name": "10x-multiome-ATAC-v1",
+        "title": "10x multiome ATAC v1"
+    },
+    {
+        "biological_macromolecule": "RNA",
+        "library_type": "RNA-seq",
+        "name": "10x-multiome-GEX-v1",
+        "title": "10x multiome GEX v1"
+    },
+    {
+        "biological_macromolecule": "RNA",
+        "library_type": "RNA-seq",
+        "name": "mcSCRB-seq",
+        "title": "mcSCRB-seq"
     },
     {
         "biological_macromolecule": "RNA",
