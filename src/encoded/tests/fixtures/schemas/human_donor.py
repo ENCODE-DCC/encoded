@@ -156,3 +156,14 @@ def human_donor_11b(root, donor_1):
         'ethnicity': 'Arab Indian'
     })
     return properties
+
+
+@pytest.fixture
+def human_donor_12(root, donor_1):
+    item = root.get_by_uuid(donor_1['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '12',
+        'ethnicity': ['Caucasian', 'Asian']
+    })
+    return properties

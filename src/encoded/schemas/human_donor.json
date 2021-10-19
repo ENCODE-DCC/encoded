@@ -83,7 +83,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "12"
+            "default": "13"
         },
         "organism": {
             "comment": "Do not submit, value is assigned by the object.",
@@ -147,10 +147,10 @@
                     "Asian",
                     "Black",
                     "Black African",
-                    "Caucasian",
                     "Chinese",
                     "Esan",
                     "Eskimo",
+                    "European",
                     "Gambian",
                     "Han Chinese",
                     "Hispanic",
