@@ -213,10 +213,6 @@
                     "title": "Global glomerulosclerosis",
                     "type": "string"
                 },
-                "sCr": {
-                    "title": "Serum creatinine",
-                    "type": "string"
-                },
                 "ANS": {
                     "title": "Arteriosclerosis",
                     "type": "string"
@@ -225,16 +221,149 @@
                     "title": "Interstitial fibrosis and tubular atrophy",
                     "type": "string"
                 },
+                "hemoglobin": {
+                    "title": "Hemoglobin test",
+                    "comment": "Healthy values: men 13.5-17.5 g/dL, women is 12.0-15.5 g/dL",
+                    "type": "string"
+                },
+                "hemocrit": {
+                    "title": "Hemocrit",
+                    "comment": "Healthy values: men 38.3-48.6%, women 35.5-44.9%",
+                    "type": "string"
+                },
+                "WBC": {
+                    "title": "White blood cell count",
+                    "comment": "Healthy values: 4500-11000 WBC/\u00b5l, 4.5-11 x 10^3/\u00b5L",
+                    "type": "string"
+                },
+                "polys": {
+                    "title": "Polys count",
+                    "comment": "Healthy values: 2.2-4.8 x 10^3/\u00b5L",
+                    "type": "string"
+                },
+                "lymphocytes": {
+                    "title": "Lymphocyte count",
+                    "comment": "Healthy values: 1.3-2.9 x 10^3/\u00b5L",
+                    "type": "string"
+                },
+                "monocytes": {
+                    "title": "Monocyte count",
+                    "comment": "Healthy values: 0.3-0.8 x 10^3/\u00b5L",
+                    "type": "string"
+                },
+                "eosinophils": {
+                    "title": "Eosinophil count",
+                    "comment": "Healthy values: 0.0-0.2 x 10^3/\u00b5L",
+                    "type": "string"
+                },
+                "basophils": {
+                    "title": "Basophil count",
+                    "comment": "Healthy values: 0.0-0.1 x 10^3/\u00b5L",
+                    "type": "string"
+                },
+                "fasting_glucose": {
+                    "title": "Fasting plasma glucose or fasting blood glucose",
+                    "comment": "Healthy values: 3.5-5.5 g/dL",
+                    "type": "string"
+                },
+                "BUN": {
+                    "title": "blood urea nitrogen test",
+                    "comment": "Healthy values: 6-24 mg/dL (2.1-8.5 mmol/L ) but variable",
+                    "type": "string"
+                },
+                "sCr": {
+                    "title": "Serum creatinine",
+                    "comment": "Healthy values: men 0.74-1.35 mg/dL (65.4-119.3 \u00b5/L), women, 0.59-1.04 mg/dL (52.2-91.9 \u00b5/L)",
+                    "type": "string"
+                },
+                "calcium": {
+                    "title": "Serum calcium",
+                    "comment": "Healthy values: 2.0-3.5 g/dL or 20-35 g/L",
+                    "type": "string"
+                },
                 "serum_K+": {
                     "title": "Potassium blood level",
+                    "comment": "Healthy values: 3.6-5.2 mmol/L or mEq/L",
+                    "type": "string"
+                },
+                "albumin": {
+                    "title": "Albumin blood level",
+                    "comment": "Healthy values: 3.5-5.5 g/dL",
+                    "type": "string"
+                },
+                "globulin": {
+                    "title": "Serum globulin",
+                    "comment": "Healthy values: 2.0-3.5 g/dL or 20-35 g/L",
+                    "type": "string"
+                },
+                "AST": {
+                    "title": "SGOT or AST = aspartate aminotransferase enzyme blood level",
+                    "comment": "Healthy values: 5-40 IU/L of blood serum",
+                    "type": "string"
+                },
+                "ALT": {
+                    "title": "SGPT or ALT = alanine aminotransferase enzyme blood level",
+                    "comment": "Healthy values: 7-56 IU/L of blood serum",
+                    "type": "string"
+                },
+                "alkphos": {
+                    "title": "Alkaline phosphatase",
+                    "comment": "Healthy values: 20-140 IU/L",
+                    "type": "string"
+                },
+                "urine_pH": {
+                    "title": "Urinalysis pH",
+                    "comment": "Healthy values: pH 4.5-7.2",
+                    "type": "string"
+                },
+                "LDL": {
+                    "title": "Low-Density Lipoprotein cholesterol",
+                    "comment": "Healthy values: <130 mg/dL",
+                    "type": "string"
+                },
+                "total_cholesterol": {
+                    "title": "Total cholesterol",
+                    "comment": "Healthy values: <200 mg/dL",
+                    "type": "string"
+                },
+                "triglycerides": {
+                    "title": "Triglycerides",
+                    "comment": "Healthy values: <150 mg/dL, <1.7 mmol/L",
+                    "type": "string"
+                },
+                "HDL": {
+                    "title": "High-Density Lipoprotein cholesterol",
+                    "comment": "Healthy values: men >40 mg/dL, wormen >50 mg/dL",
+                    "type": "string"
+                },
+                "CRP": {
+                    "title": "C-Reactive protein",
+                    "comment": "Healthy values: <1.0 mg/dL (or <10 mg/L)",
+                    "type": "string"
+                },
+                "insulin": {
+                    "title": "Insulin",
+                    "comment": "Healthy values: <8.4 mcU/ml or mIU/ml",
                     "type": "string"
                 },
                 "A1c": {
                     "title": "Hemoglobin A1C",
+                    "comment": "Healthy values: <42 mmol/mol or <6.0%, Converter: https://www.hba1cnet.com/hba1c-calculator/",
+                    "type": "string"
+                },
+                "DiasBP": {
+                    "title": "Diastolic blood pressure",
+                    "comment": "Healthy values: <80 mm Hg+",
+                    "type": "string"
+                },
+                "SysBP": {
+                    "title": "Systolic blood pressure",
+                    "comment": "Healthy values: <120 mm Hg",
                     "type": "string"
                 },
                 "LVEF": {
-                    "title": "Left ventricular ejection fraction",
+                    "title": "Echocardiography: left ventricular ejection fraction",
+                    "comment": "Healthy values: 55% - 70%",
                     "type": "string"
                 }
             },
