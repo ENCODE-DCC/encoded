@@ -26,5 +26,5 @@ def processed_matrix_file_4_5(value, system):
 @upgrade_step('processed_matrix_file', '5', '6')
 def processed_matrix_file_5_6(value, system):
 	if 'layers' in value:
-		primary_value = value['layers'][0]['is_primary_data']
+		primary_value = str(value['layers'][0]['is_primary_data'])
 		value['is_primary_data'] = primary_value
