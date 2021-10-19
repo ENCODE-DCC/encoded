@@ -4,7 +4,7 @@
     "id": "/profiles/hic_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["run_type","step_run","quality_metric_of", "award", "lab"],
+    "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
