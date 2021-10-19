@@ -178,7 +178,7 @@
         }, {"gene": "/genes/6482/",
             "expression_measurement_method": "fluorescence activated cell sorting"
         }, {"gene": "/genes/15077/",
-            "expression_measurement_method": "CRISPRi-FlowFISH"
+            "expression_measurement_method": "PrimeFlow"
         }]
     },
     {
