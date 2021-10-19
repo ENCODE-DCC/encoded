@@ -131,11 +131,15 @@
                 ]
             }
         },
-        "target": {
-            "title": "Target",
+        "targets": {
+            "title": "Targets",
             "description": "The object representing the protein, protein complex, etc. that is the intended target of the Antibody.",
-            "type": "string",
-            "linkTo": "Target"
+            "type": "array",
+            "items": {
+                "title": "Target",
+                "type": "string",
+                "linkTo": "Target"   
+            }
         },
         "oligo_sequence": {
             "title": "Oligo sequence",
@@ -190,8 +194,8 @@
         "format": {
             "title": "Format"
         },
-        "target.label": {
-            "title": "Target"
+        "targets.label": {
+            "title": "Targets"
         },
         "clonality": {
             "title": "Clonality"
