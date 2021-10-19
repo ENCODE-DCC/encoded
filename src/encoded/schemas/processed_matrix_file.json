@@ -202,7 +202,12 @@
             "title": "Is primary data",
             "description": "If true, this will be the primary representation of the cells within the matrix at cellxgene.",
             "comment": "Each cell should be primary exactly once at cellxgene.",
-            "type": "boolean"
+            "type": "string",
+            "enum": [
+                "True",
+                "False",
+                "mixed"
+            ]
         },
         "layers": {
             "title": "Layers",

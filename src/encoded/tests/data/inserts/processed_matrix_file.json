@@ -23,7 +23,7 @@
         "uuid": "e7e83b90-a02d-497c-937f-83c475477949",
         "accession": "LATDF417SAQ",
         "description": "There's organoid data in this one!",
-        "is_primary_data": true,
+        "is_primary_data": "True",
         "layers": [
             {
                 "label": "X",
@@ -102,7 +102,7 @@
                 ]
             }
         ],
-        "is_primary_data": true
+        "is_primary_data": "True"
     },
     {
         "aliases": [
@@ -208,7 +208,7 @@
                 ]
             }
         ],
-        "is_primary_data": true
+        "is_primary_data": "True"
     },
     {
         "aliases": [
@@ -290,7 +290,7 @@
             }
         ],
         "accession": "LATDF982KCF",
-        "is_primary_data": true
+        "is_primary_data": "True"
     },
     {
         "aliases": [
@@ -365,7 +365,7 @@
             }
         ],
         "accession": "LATDF611FOP",
-        "is_primary_data": true
+        "is_primary_data": "True"
     },
     {
         "aliases": [
@@ -436,7 +436,7 @@
             }
         ],
         "accession": "LATDF757YHL",
-        "is_primary_data": true
+        "is_primary_data": "True"
     },
     {
         "aliases": [
@@ -511,7 +511,7 @@
             }
         ],
         "accession": "LATDF071TSQ",
-        "is_primary_data": true
+        "is_primary_data": "True"
     },
     {
         "aliases": [
@@ -586,6 +586,6 @@
             }
         ],
         "accession": "LATDF522RJH",
-        "is_primary_data": false
+        "is_primary_data": "False"
     }
 ]
