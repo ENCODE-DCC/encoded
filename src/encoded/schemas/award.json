@@ -126,6 +126,9 @@
         "name": {
             "title": "Name"
         },
+        "coordinating_pi.title": {
+            "title": "Coordinating PI"
+        },
         "principal_investigators.title": {
             "title": "PIs"
         },

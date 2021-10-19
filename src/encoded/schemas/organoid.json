@@ -63,7 +63,8 @@
                 "mg",
                 "μg",
                 "cm",
-                "sq cm"
+                "sq cm",
+                "cells"
             ]
         },
         "embedded_in_matrigel": {

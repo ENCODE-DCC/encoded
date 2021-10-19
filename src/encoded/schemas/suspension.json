@@ -209,7 +209,8 @@
                 "cell hashtag",
                 "Fluidigm C1",
                 "Drop-seq",
-                "sci-seq"
+                "sci-seq",
+                "image-based sorted"
             ]
         },
         "single_cell_isolation_method_version": {

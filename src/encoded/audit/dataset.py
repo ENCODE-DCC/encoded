@@ -67,7 +67,7 @@ def audit_contributor_lists(value, system):
     if 'contributors' in value and 'corresponding_contributors' in value:
         for user in value['corresponding_contributors']:
             if user in value.get('contributors'):
-                duplicates.append(user)
+                duplicates.append(user.get('uuid'))
     if duplicates:
         detail = ('Dataset {} contains duplicated contributors {}.'.format(
                 audit_link(path_to_text(value['@id']), value['@id']),

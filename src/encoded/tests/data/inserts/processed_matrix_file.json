@@ -23,13 +23,13 @@
         "uuid": "e7e83b90-a02d-497c-937f-83c475477949",
         "accession": "LATDF417SAQ",
         "description": "There's organoid data in this one!",
+        "is_primary_data": true,
         "layers": [
             {
                 "label": "X",
                 "normalized": true,
                 "value_units": "UMI",
-                "value_scale": "log, base 10",
-                "is_primary_data": true
+                "value_scale": "log, base 10"
             }
         ]
     },
@@ -99,10 +99,10 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ],
-                "is_primary_data": true
+                ]
             }
-        ]
+        ],
+        "is_primary_data": true
     },
     {
         "aliases": [
@@ -205,10 +205,10 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ],
-                "is_primary_data": true
+                ]
             }
-        ]
+        ],
+        "is_primary_data": true
     },
     {
         "aliases": [
@@ -286,11 +286,11 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ],
-                "is_primary_data": true
+                ]
             }
         ],
-        "accession": "LATDF982KCF"
+        "accession": "LATDF982KCF",
+        "is_primary_data": true
     },
     {
         "aliases": [
@@ -361,11 +361,11 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ],
-                "is_primary_data": true
+                ]
             }
         ],
-        "accession": "LATDF611FOP"
+        "accession": "LATDF611FOP",
+        "is_primary_data": true
     },
     {
         "aliases": [
@@ -432,11 +432,11 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ],
-                "is_primary_data": true
+                ]
             }
         ],
-        "accession": "LATDF757YHL"
+        "accession": "LATDF757YHL",
+        "is_primary_data": true
     },
     {
         "aliases": [
@@ -507,11 +507,11 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ],
-                "is_primary_data": true
+                ]
             }
         ],
-        "accession": "LATDF071TSQ"
+        "accession": "LATDF071TSQ",
+        "is_primary_data": true
     },
     {
         "aliases": [
@@ -582,10 +582,10 @@
                         "cutoff_units": "cells/gene",
                         "cutoff_type": "minimum"
                     }
-                ],
-                "is_primary_data": false
+                ]
             }
         ],
-        "accession": "LATDF522RJH"
+        "accession": "LATDF522RJH",
+        "is_primary_data": false
     }
 ]

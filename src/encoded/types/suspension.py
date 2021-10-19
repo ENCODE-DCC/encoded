@@ -40,5 +40,5 @@ class Suspension(Item,
         'donors.diseases',
         'donors.development_ontology',
         'feature_antibodies',
-        'feature_antibodies.target'
+        'feature_antibodies.targets'
     ]

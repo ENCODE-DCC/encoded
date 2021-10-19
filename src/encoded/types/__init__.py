@@ -48,7 +48,8 @@ class Award(Item):
     }
     embedded = [
         'principal_investigators',
-        'collaborators'
+        'collaborators',
+        'coordinating_pi'
     ]
 
 
@@ -87,4 +88,4 @@ class AntibodyLot(Item):
     item_type = 'antibody_lot'
     schema = load_schema('encoded:schemas/antibody_lot.json')
     name_key = 'accession'
-    embedded = ['target']
+    embedded = ['targets']

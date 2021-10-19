@@ -162,7 +162,17 @@ class Dataset(Item):
     })
     def files(self, request, status, original_files=None):
         if original_files:
-            if status in ('released', 'archived'):
+            if status in ('in progress'):
+                return paths_filtered_by_status(
+                    request, original_files,
+                    include=('released', 'in progress'),
+                )
+            elif status in ('released'):
+                return paths_filtered_by_status(
+                    request, original_files,
+                    include=('released'),
+                )
+            elif status in ('archived'):
                 return paths_filtered_by_status(
                     request, original_files,
                     include=('released', 'archived'),

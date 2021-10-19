@@ -192,9 +192,8 @@
         },
         "cell_barcode_whitelist": {
             "title": "Cell barcode whitelist",
-            "description": "The file containing the list of legitimate cell barcode sequences.",
-            "type": "string",
-            "linkTo": "DataFile"
+            "description": "The name of the file containing the list of legitimate cell barcode sequences.",
+            "type": "string"
         },
         "read_structure": {
             "title": "Read structure",
@@ -215,7 +214,8 @@
                             "cell barcode",
                             "feature barcode",
                             "spatial barcode",
-                            "UMI"
+                            "UMI",
+                            "Spacer"
                         ]
                     },
                     "located_in_read_type": {
@@ -334,7 +334,8 @@
                                 "spatial barcode",
                                 "sample index",
                                 "UMI",
-                                "fragment"
+                                "fragment",
+                                "Spacer"
                             ]
                         }
                     },
