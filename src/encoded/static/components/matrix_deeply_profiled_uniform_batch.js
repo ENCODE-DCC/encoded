@@ -666,7 +666,7 @@ class DeeplyProfiledUniformBatchMatrix extends React.Component {
     getRowCategories() {
         const rowCategory = this.props.context.matrix.y.group_by[0];
         const rowCategoryData = this.props.context.matrix.y[rowCategory].buckets.sort((a, b) => sortByDescending(a.key, b.key));
-        const rowCategoryColors = globals.DeeplyProfiledCellLineListColors.colorList();
+        const rowCategoryColors = globals.DeeplyProfiledCellLineListColors.colorList(rowCategoryData.map((rowCategoryDatum) => rowCategoryDatum.key));
         const rowCategoryNames = {};
         rowCategoryData.forEach((datum) => {
             rowCategoryNames[datum.key] = datum.key;
