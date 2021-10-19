@@ -4,7 +4,7 @@
     "id": "/profiles/hic_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run","quality_metric_of", "award", "lab"],
+    "required": ["read_type","step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -21,51 +21,182 @@
         "schema_version": {
             "default": "1"
         },
+        "read_type": {
+            "title": "Indicates if file is part of a single or paired end sequencing run",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended"
+            ]
+        },
+        "sequenced_read": {
+            "title": "Number of sequenced read",
+            "type": "integer",
+            "minimum": 0
+        },
         "sequenced_read_pairs": {
             "title": "Number of sequenced read pairs",
             "type": "integer",
             "minimum": 0
         },
-        "normal_paired": {
-            "title": "Number of normal paired",
+        "no_chimera_found": {
+            "title": "Number of no chimera found",
             "type": "integer",
             "minimum": 0
         },
-        "pct_normal_paired": {
-            "title": "Percentage of normal paired",
+        "0_alignments": {
+            "title": "Number of 0 alignment",
+            "type": "integer",
+            "minimum": 0
+        },
+        "1_alignment": {
+            "title": "Number of 1 alignment",
+            "type": "integer",
+            "minimum": 0
+        },
+        "1_alignment_unique": {
+            "title": "Number of 1 alignment unique",
+            "type": "integer",
+            "minimum": 0
+        },
+        "1_alignment_duplicates": {
+            "title": "Number of 1 alignment duplicates",
+            "type": "integer",
+            "minimum": 0
+        },
+        "2_alignments": {
+            "title": "Number of 2 alignments",
+            "type": "integer",
+            "minimum": 0
+        },
+        "2_alignments_a_b": {
+            "title": "Number of 2 alignments a_b",
+            "type": "integer",
+            "minimum": 0
+        },
+        "2_alignments_duplicates": {
+            "title": "Number of 2 alignments duplicates",
+            "type": "integer",
+            "minimum": 0
+        },
+        "2_alignments_unique": {
+            "title": "Number of 2 alignments unique",
+            "type": "integer",
+            "minimum": 0
+        },
+        "2_alignments_a1_a2b_a1b2_b1a2": {
+            "title": "Number of 2 alignments a1_a2b_a1b2_b1a2",
+            "type": "integer",
+            "minimum": 0
+        },
+        "3_or_more_alignments": {
+            "title": "Number of 3 or more alignments",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_no_chimera_found": {
+            "title": "Percentage of no chimera found",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
         },
-        "chimeric_paired": {
-            "title": "Number of chimeric paired",
-            "type": "integer",
-            "minimum": 0
-        },
-        "pct_chimeric_paired": {
-            "title": "Percentage of chimeric paired",
+        "pct_0_alignments": {
+            "title": "Percentage of 0 alignments",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
         },
-        "chimeric_ambiguous": {
-            "title": "Number of chimeric ambiguous",
-            "type": "integer",
-            "minimum": 0
-        },
-        "pct_chimeric_ambiguous": {
-            "title": "Percentage of chimeric ambiguous",
+        "pct_1_alignment": {
+            "title": "Percentage of 1 alignment",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
         },
-        "unmapped_reads": {
-            "title": "Number of unmapped reads",
+        "pct_1_alignment_unique": {
+            "title": "Percentage of 1 alignment unique",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_1_alignment_duplicates": {
+            "title": "Percentage of 1 alignment duplicates",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_sequenced_1_alignment_unique": {
+            "title": "Percentage of 1 alignment unique",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_sequenced_1_alignment_duplicates": {
+            "title": "Percentage of 1 alignment duplicates",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignments": {
+            "title": "Percentage of 2 alignments",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignment_unique": {
+            "title": "Percentage of 2 alignment unique",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignment_duplicates": {
+            "title": "Percentage of 2 alignment duplicates",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignments_a_b": {
+            "title": "Percentage of 2 alignments a_b",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignments_a1_a2b_a1b2_b1a2": {
+            "title": "Percentage of 2 alignments a1_a2b_a1b2_b1a2",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_sequenced_2_alignment_unique": {
+            "title": "Percentage of 2 alignment unique",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_3_or_more_alignments": {
+            "title": "Percentage of 3 or more alignments",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_total_duplicates": {
+            "title": "Percentage of unique total duplicates",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_total_unique": {
+            "title": "Percentage of unique total unique",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "one_or_both_reads_unmapped": {
+            "title": "one_or_both_reads_unmapped",
             "type": "integer",
             "minimum": 0
         },
-        "pct_unmapped_reads": {
-            "title": "Percentage of unmapped reads",
+        "pct_one_or_both_reads_unmapped": {
+            "title": "Percentage of one or both reads unmapped",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
@@ -81,69 +212,50 @@
             "minimum": 0,
             "maximum": 100.0
         },
-        "single_alignment": {
-            "title": "Number of single alignments",
-            "type": "integer",
-            "minimum": 0
-        },
-        "pct_single_alignment": {
-            "title": "Percentage of single alignments",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100.0
-        },
         "avg_insert_size": {
             "title": "Average of the insert size",
             "type": "number",
             "minimum": 0
         },
-        "alignable_normal_and_chimeric_paired": {
-            "title": "Number of alignable paired reads",
+        "total_unique": {
+            "title": "Number of total unique",
             "type": "integer",
             "minimum": 0
         },
-        "pct_alignable_normal_and_chimeric_paired": {
-            "title": "Percentage of alignable paired reads",
+        "pct_sequenced_total_unique": {
+            "title": "Percentage of sequenced total reads",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
         },
-        "unique_reads": {
-            "title": "Number of unique reads",
-            "type": "integer",
-            "minimum": 0
-        },
-        "pct_sequenced_unique_reads": {
-            "title": "Percentage of sequenced unique reads",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100.0
-        },
-        "pct_alignable_unique_reads": {
-            "title": "Percentage of alignable unique reads",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100.0
-        },
-        "duplicates": {
-            "title": "Number of duplicates",
+        "total_duplicates": {
+            "title": "Number of total duplicates",
             "type": "integer",
             "minimum": 0
         },
         "pct_sequenced_duplicates": {
-            "title": "Percentage of sequenced duplicates",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100.0
-        },
-        "pct_alignable_duplicates": {
-            "title": "Percentage of alignable duplicates",
+            "title": "Percentage of total duplicates",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
         },
         "library_complexity_estimate": {
             "title": "Library complexity estimate",
+            "type": "integer",
+            "minimum": 0
+        },
+        "library_complexity_estimate_1_alignment": {
+            "title": "Library complexity estimate (2 alignment)",
+            "type": "integer",
+            "minimum": 0
+        },
+        "library_complexity_estimate_2_alignment": {
+            "title": "Library complexity estimate",
+            "type": "integer",
+            "minimum": 0
+        },
+        "library_complexity_estimate_1_and_2_alignments": {
+            "title": "Library complexity estimate (1 and 2 alignments)",
             "type": "integer",
             "minimum": 0
         },
