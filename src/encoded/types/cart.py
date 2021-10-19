@@ -43,11 +43,14 @@ class Cart(Item):
     STATUS_ACL = {
         'unlisted': [(Allow, 'role.owner', ['view', 'edit'])] + ALLOW_CURRENT,
         'listed': [(Allow, 'role.owner', ['view', 'edit'])] + ALLOW_CURRENT,
-        'deleted': [(Allow, 'role.owner', ['edit'])] + DELETED
+        'deleted': [(Allow, 'role.owner', ['edit'])] + DELETED,
+        'released': ALLOW_CURRENT,
+        'revoked': ALLOW_CURRENT
     }
 
     embedded = [
-        'submitted_by'
+        'submitted_by',
+        'submitted_by.lab'
     ]
 
     def __ac_local_roles__(self):
