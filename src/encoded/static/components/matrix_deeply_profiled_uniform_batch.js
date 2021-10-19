@@ -209,12 +209,7 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
     let matrixRow = 1;
     const matrixDataTable = rowCategoryData.sort((a, b) => sortByDescending(a.key, b.key)).reduce((accumulatingTable, rowCategoryBucket, rowCategoryIndex) => {
         const subCategoryData = getRowSubCategories(rowCategoryBucket);
-
-        // ensure colorIndex does not exceed the size of rowCategoryColors.
-        const rowCategoryColorsLength = rowCategoryColors.length;
-        const colorIndex = rowCategoryIndex < rowCategoryColorsLength ? rowCategoryIndex : (rowCategoryIndex % rowCategoryColorsLength);
-
-        const rowCategoryColor = rowCategoryColors[colorIndex];
+        const rowCategoryColor = rowCategoryColors[rowCategoryIndex % rowCategoryColors.length];
         const rowCategoryTextColor = isLight(rowCategoryColor) ? '#000' : '#fff';
         const expandableRowCategory = subCategoryData.length > SUB_CATEGORY_SHORT_SIZE;
         const mappedRowCategoryQuery = mapRowCategoryQueries(rowCategory, rowCategoryBucket);
