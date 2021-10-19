@@ -212,3 +212,19 @@ def fcc_posted_CRISPR_screen(testapp, lab, award, liver):
         'status': 'in progress'
     }
     return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def functional_characterization_experiment_CRISPRi_flowFISH(testapp, lab, award, ctcf, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'examined_loci': [{
+             'gene': ctcf['uuid'],
+             'expression_measurement_method': 'CRISPRi-FlowFISH'
+         }]
+    }
+    return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
