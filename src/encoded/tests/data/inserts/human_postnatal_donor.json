@@ -4,7 +4,10 @@
         "uuid": "54fd414d-6da2-4ab2-b164-403d77b988e3",
         "aliases": [
             "anna-greka:adult_human_donorB",
-            "sheng-zhong:donor1"
+            "sheng-zhong:donor1",
+            "aaron-streets:donorA",
+            "matthias-heinig:donorA",
+            "gray-camp:donorA"
         ],
         "status": "released",
         "description": "Healthy kidney donorB",
