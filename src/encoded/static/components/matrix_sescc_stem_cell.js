@@ -18,9 +18,10 @@ import drawTree from '../libs/ui/node_graph';
  */
 const formatH9HeaderTitle = (title) => (title && title.trim() !== 'H9' ? title.trim() : 'H9 Stem Cell');
 const formatPebbleNameToCssClassFriendly = (name) => (!name ? '' : name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_'));
+const formatName = (name, replacement) => name.replace(/\s/g, replacement).toLowerCase();
 
 const fullHeight = 400;
-const margin = { top: 50, left: 20, bottom: 70, right: 20 };
+const mobileLimit = 400;
 const data = require('./node_graph_data/sescc.json');
 
 const treeData = data[0];
@@ -297,7 +298,8 @@ class MatrixPresentation extends React.Component {
         this.state = {
             scrolledRight: false,
             windowWidth: 0,
-            selectedNodes: rowDataOrder.map((row) => row.replace(/\s/g, '').toLowerCase()),
+            selectedNodes: rowDataOrder.map((row) => formatName(row, '')),
+            margin: { top: 0, bottom: 0, right: 0, left: 0 },
         };
 
         this.selectAll = this.selectAll.bind(this);
@@ -319,7 +321,7 @@ class MatrixPresentation extends React.Component {
             // eslint-disable-next-line import/no-unresolved
             this.d3 = require('d3v7');
             const chartWidth = this.state.windowWidth;
-            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes);
         });
     }
 
@@ -361,8 +363,8 @@ class MatrixPresentation extends React.Component {
 
     setSelectedNodes(newNode) {
         this.setState((prevState) => {
-            const matrixSelection = newNode.replace(/\s/g, '_').toLowerCase();
-            const newSelection = newNode.replace(/\s/g, '').toLowerCase();
+            const matrixSelection = formatName(newNode, '_');
+            const newSelection = formatName(newNode, '');
             const matrixRows = document.getElementsByClassName(matrixSelection);
             if (prevState.selectedNodes.indexOf(newSelection) > -1 && prevState.selectedNodes.length > 1) {
                 for (let idx = 0; idx < matrixRows.length; idx += 1) {
@@ -398,17 +400,23 @@ class MatrixPresentation extends React.Component {
     updateWindowWidth() {
         this.setState({
             windowWidth: document.getElementsByClassName('matrix__presentation')[0].offsetWidth,
+        }, () => {
+            let margin = { top: 50, left: 3, bottom: 80, right: 3 };
+            if (this.state.windowWidth > mobileLimit) {
+                margin = { top: 50, left: 20, bottom: 70, right: 20 };
+            }
+            this.setState(margin);
         });
     }
 
     selectAll(selection) {
         if (selection === 'all') {
             this.setState({
-                selectedNodes: rowDataOrder.map((row) => row.replace(/\s/g, '').toLowerCase()),
+                selectedNodes: rowDataOrder.map((row) => formatName(row, '')),
             }, () => {
                 require.ensure(['d3v7'], () => {
                     const chartWidth = this.state.windowWidth;
-                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes);
                     this.setMatrixRows();
                 });
             });
@@ -418,7 +426,7 @@ class MatrixPresentation extends React.Component {
             }, () => {
                 require.ensure(['d3v7'], () => {
                     const chartWidth = this.state.windowWidth;
-                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes);
                     this.setMatrixRows();
                 });
             });

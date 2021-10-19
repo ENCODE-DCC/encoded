@@ -6,8 +6,8 @@ const fastAnimation = 0;
 
 const mobileLimit = 400;
 
-let offset = -40;
-let doubleOffset = -60;
+let offset = -35;
+let doubleOffset = -65;
 
 const ellipseSettings = [
     { cx: 2, cy: 2, rx: 12, ry: 9 },
@@ -19,9 +19,7 @@ const ellipseSettings = [
 ];
 
 // Standardizes node names
-function nodeKeyName(name) {
-    return name.replace(/\s/g, '').toLowerCase();
-}
+const nodeKeyName = (name) => name.replace(/\s/g, '').toLowerCase();
 
 // Creates a curved (diagonal) path from parent to the child nodes
 function diagonal(d, s) {
@@ -30,18 +28,19 @@ function diagonal(d, s) {
 }
 
 const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes) => {
-    let textWrapWidth = 115;
-    let characterLimitForWrap = 18;
-    const isMobile = fullWidth < mobileLimit;
-    if (isMobile) {
-        textWrapWidth = 80;
-        characterLimitForWrap = 15;
-        margin.top = 50;
-        margin.bottom = 80;
-        margin.left = 3;
-        margin.right = 3;
-        offset = -35;
-        doubleOffset = -65;
+    const isDesktop = fullWidth > mobileLimit;
+    let textWrapWidth = 80;
+    let characterLimitForWrap = 15;
+    margin.top = 50;
+    margin.bottom = 80;
+    margin.left = 3;
+    margin.right = 3;
+
+    if (isDesktop) {
+        textWrapWidth = 115;
+        characterLimitForWrap = 18;
+        offset = -40;
+        doubleOffset = -60;
     }
 
     const width = fullWidth - margin.left - margin.right;
@@ -61,6 +60,8 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
 
     const treemap = d3.tree().size([width, height]);
     const root = d3.hierarchy(data, (d) => d.children);
+
+    // Tree is vertical, centered along x-axis
     root.x0 = width / 2;
     root.y0 = 100;
 
