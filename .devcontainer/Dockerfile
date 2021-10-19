@@ -1,7 +1,7 @@
 FROM node:12-bullseye-slim
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
-        locales build-essential git curl sudo python3-dev python3-venv python3-pip ca-certificates \
+        locales build-essential git curl sudo python3-dev python3-venv python3-pip ca-certificates unzip openssh-client \
         default-jdk libpq-dev postgresql postgresql-client graphviz libmagic-dev ruby-dev ruby-rubygems nginx-light redis python2 \
         libjpeg-dev libtiff-dev libwebp-dev liblcms2-dev \
     && rm -rf /var/lib/apt/lists/* \
@@ -10,6 +10,10 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && dpkg -i elasticsearch-5.6.16.deb \
     && rm elasticsearch-5.6.16.deb \
     && gem install compass \
+    && curl -o awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m)-2.0.30.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf aws awscliv2.zip \
     && useradd -ms /bin/bash --groups sudo encoded \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && mkdir /app \
@@ -28,4 +32,3 @@ RUN python3 -m venv venv \
 COPY --chown=encoded package.json package-lock.json ./
 COPY --chown=encoded node_shims ./node_shims/
 RUN npm ci
-
