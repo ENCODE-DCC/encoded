@@ -4,7 +4,7 @@
     "id": "/profiles/hic_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["read_type","step_run","quality_metric_of", "award", "lab"],
+    "required": ["run_type","step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -17,19 +17,81 @@
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
     ],
+    "dependencies": {
+        "run_type": {
+            "comment": "Declaring dependencies for paired-ended and single-ended run types",
+            "oneOf": [
+                {
+                    "not": {
+                        "required": [
+                            "avg_insert_size",
+                            "below_mapq_threshold",
+                            "2_alignments_a1_a2b_a1b2_b1a2",
+                            "library_complexity_estimate",
+                            "2_alignments_a_b",
+                            "pct_2_alignments_a1_a2b_a1b2_b1a2",
+                            "pct_2_alignments_a_b",
+                            "pct_one_or_both_reads_unmapped",
+                            "sequenced_read_pairs",
+                            "one_or_both_reads_unmapped"
+                        ]
+                    },
+                    "properties": {
+                        "run_type": {
+                            "enum": [
+                                "single-ended"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "required": [
+                            "library_complexity_estimate_1_alignment",
+                            "library_complexity_estimate_2_alignment",
+                            "library_complexity_estimate_1_and_2_alignments",
+                            "2_alignment_duplicates",
+                            "2_alignment_unique",
+                            "0_alignments",
+                            "pct_0_alignments",
+                            "pct_1_alignment_unique",
+                            "pct_1_alignment_duplicates",
+                            "pct_sequenced_1_alignment_unique",
+                            "pct_sequenced_1_alignment_duplicates",
+                            "pct_sequenced_2_alignment_unique",
+                            "pct_2_alignment_duplicates",
+                            "pct_2_alignment_unique",
+                            "pct_1_alignment",
+                            "sequenced_reads",
+                            "1_alignment",
+                            "1_alignment_unique",
+                            "1_alignment_duplicates"
+                        ]
+                    },
+                    "properties": {
+                        "run_type": {
+                            "enum": [
+                                "paired-ended"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "2"
         },
-        "read_type": {
-            "title": "Read type of sequencing run",
+        "run_type": {
+            "title": "Run type of sequencing run",
             "type": "string",
             "enum": [
                 "single-ended",
                 "paired-ended"
             ]
         },
-        "sequenced_read": {
+        "sequenced_reads": {
             "title": "Number of sequenced read",
             "type": "integer",
             "minimum": 0
@@ -74,12 +136,12 @@
             "type": "integer",
             "minimum": 0
         },
-        "2_alignments_duplicates": {
+        "2_alignment_duplicates": {
             "title": "Number of 2 alignments duplicates",
             "type": "integer",
             "minimum": 0
         },
-        "2_alignments_unique": {
+        "2_alignment_unique": {
             "title": "Number of 2 alignments unique",
             "type": "integer",
             "minimum": 0
@@ -460,63 +522,6 @@
         },
         "status": {
             "title": "Status"
-        }
-    },
-    "dependencies": {
-        "read_type": {
-            "comment": "Declaring dependencies for paired-ended and single-ended read types",
-            "oneOf": [
-                {
-                    "required": [
-                        "avg_insert_size",
-                        "below_mapq_threshold",
-                        "2_alignments_a1_a2b_a1b2_b1a2",
-                        "library_complexity_estimate",
-                        "2_alignments_a_b",
-                        "pct_2_alignments_a1_a2b_a1b2_b1a2",
-                        "pct_2_alignments_a_b",
-                        "pct_one_or_both_reads_unmapped",
-                        "sequenced_read_pairs",
-                        "one_or_both_reads_unmapped"
-                    ],
-                    "properties": {
-                        "read_type": {
-                            "enum": [
-                                "paired-ended"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "required": [
-                        "library_complexity_estimate_1_alignment",
-                        "library_complexity_estimate_2_alignment",
-                        "library_complexity_estimate_1_and_2_alignments",
-                        "2_alignment_duplicates",
-                        "2_alignment_unique",
-                        "0_alignments",
-                        "pct_0_alignments",
-                        "pct_1_alignment_duplicates",
-                        "pct_sequenced_1_alignment_unique",
-                        "pct_sequenced_1_alignment_duplicates",
-                        "pct_sequenced_2_alignment_unique",
-                        "pct_2_alignment_duplicates",
-                        "pct_2_alignment_unique",
-                        "pct_1_alignment",
-                        "sequenced_reads",
-                        "1_alignment",
-                        "1_alignment_unique",
-                        "1_alignment_duplicates"
-                    ],
-                    "properties": {
-                        "read_type": {
-                            "enum": [
-                                "single-ended"
-                            ]
-                        }
-                    }
-                }
-            ]
         }
     },
     "changelog": "/profiles/changelogs/hic_quality_metric.md"
