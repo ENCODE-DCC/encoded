@@ -4846,5 +4846,107 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "93293dd5-d003-b6ba-9752-9df707bbb0d5"
+    },
+    {
+        "accession": "ENCFF890INL",
+        "aliases": [
+            "ali-mortazavi:inclusion_list"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR000LSC",
+        "file_format": "txt",
+        "file_size": 2400,
+        "lab": "ali-mortazavi",
+        "md5sum": "e63f46f6476b0d5add051d735bb31bd4",
+        "output_type": "inclusion list",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "9329bb31-d003-b6ba-e63f-9d9d46fbb0d5"
+    },
+    {
+        "accession": "ENCFF543SGA",
+        "aliases": [
+            "ali-mortazavi:sparse_gene_count_matrix_of_all_reads"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR000LSC",
+        "file_format": "tar",
+        "file_size": 6000000,
+        "lab": "ali-mortazavi",
+        "md5sum": "2bb311d7476b0d5ad6e41653517c6bd4",
+        "output_type": "sparse gene count matrix of all reads",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "9bb31dd5-d003-b6ba-9752-9df707bbb0d5"
+    },
+    {
+        "accession": "ENCFF543SGU",
+        "aliases": [
+            "ali-mortazavi:sparse_gene_count_matrix_of_unique_reads"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR000LSC",
+        "file_format": "tar",
+        "file_size": 6000000,
+        "lab": "ali-mortazavi",
+        "md5sum": "238a0a96476b0d051d741653517c6bd4",
+        "output_type": "sparse gene count matrix of unique reads",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "9329d46f-e63f-b6ba-9752-9df7bb31b0d5"
+    },
+    {
+        "accession": "ENCFF543USA",
+        "aliases": [
+            "ali-mortazavi:unfiltered_sparse_gene_count_matrix_of_all_reads"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR000LSC",
+        "file_format": "tar",
+        "file_size": 6000000,
+        "lab": "ali-mortazavi",
+        "md5sum": "bb310a96476b0d5ad6e4165351d051d7",
+        "output_type": "unfiltered sparse gene count matrix of all reads",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "9d46fdd5-d003-b6ba-9752-bb3107bbb0d5"
+    },
+    {
+        "accession": "ENCFF543USG",
+        "aliases": [
+            "ali-mortazavi:unfiltered_sparse_gene_count_matrix_of_unique_reads"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR000LSC",
+        "file_format": "tar",
+        "file_size": 6000000,
+        "lab": "ali-mortazavi",
+        "md5sum": "d051d796476b0d5ad6e41653517c6bd4",
+        "output_type": "unfiltered sparse gene count matrix of unique reads",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "932e63f5-bb31-b6ba-9752-9df79d46f0d5"
+    },
+    {
+        "accession": "ENCFF543USJ",
+        "aliases": [
+            "ali-mortazavi:unfiltered_sparse_splice_junction_count_matrix_of_unique_reads"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR000LSC",
+        "file_format": "tar",
+        "file_size": 6000000,
+        "lab": "ali-mortazavi",
+        "md5sum": "238a0ad051d70d5ad6e41653e63f6bd4",
+        "output_type": "unfiltered sparse splice junction count matrix of unique reads",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "93bb31d5-d003-b6ba-e63f-99d46fbbb0d5"
     }
 ]
