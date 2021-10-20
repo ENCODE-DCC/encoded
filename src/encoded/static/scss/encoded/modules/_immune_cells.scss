@@ -1,0 +1,238 @@
+$bubbleSize: 13px;
+
+$mesoderm: #008000;
+$ectoderm: #800080;
+$stem: #edcf09;
+$unlabeled: #808080;
+$endoderm: blue;
+
+$mesoderm-light: #e3fae1;
+$ectoderm-light: #e4c6f7;
+$stem-light: #fafa98;
+$unlabeled-light: #d1d1d1;
+$endoderm-light: blue;
+
+$default-active: #36586d;
+$default-hover: #f2f2f2;
+
+.node--internal text {
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+.node-expander-collapser {
+    &:hover {
+        cursor: pointer;
+        font-weight: bold;
+    }
+}
+
+.vertical-node-graph {
+    svg {
+        max-width: 100%;
+        font-size: 0.7rem;
+
+        @media screen and (min-width: $screen-md-min) {
+            font-size: 1rem;
+        }
+    }
+
+    ellipse {
+        transition: all 50ms ease-in-out;
+        stroke: black;
+        stroke-width: 1px;
+        fill: white;
+    }
+
+    .cell-group {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    ellipse {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .js-cell {
+        .default {
+            &.hover-class {
+                fill: $default-hover;
+            }
+        }
+
+        &.active-cell {
+            .default {
+                fill: $default-active;
+                stroke: white;
+            }
+        }
+    }
+}
+
+.hide {
+    display: none;
+}
+
+// sescc matrix-specific colors and styles
+.matrix__row-data {
+    th {
+        &.mesoderm {
+            background-color: $mesoderm;
+
+            a {
+                color: white;
+            }
+        }
+
+        &.endoderm {
+            background-color: $ectoderm;
+
+            a {
+                color: white;
+            }
+        }
+
+        &.ectoderm {
+            background-color: $ectoderm;
+
+            a {
+                color: white;
+            }
+        }
+
+        &.unlabeled {
+            background-color: $unlabeled;
+
+            a {
+                color: white;
+            }
+        }
+
+        &.stem {
+            background-color: $stem;
+        }
+    }
+}
+
+.sescc-matrix-graph {
+    .link {
+        &.mesoderm {
+            stroke: $mesoderm;
+        }
+
+        &.endoderm {
+            stroke: $ectoderm;
+        }
+
+        &.ectoderm {
+            stroke: $ectoderm;
+        }
+    }
+
+    .js-cell {
+        .unlabeled {
+            fill: $unlabeled-light;
+        }
+
+        .mesoderm {
+            fill: $mesoderm-light;
+        }
+
+        .ectoderm {
+            fill: $ectoderm-light;
+        }
+
+        .stem {
+            fill: $stem-light;
+        }
+
+        &.active-cell {
+            ellipse {
+                stroke: white;
+            }
+
+            .unlabeled {
+                fill: $unlabeled;
+            }
+
+            .mesoderm {
+                fill: $mesoderm;
+            }
+
+            .ectoderm {
+                fill: $ectoderm;
+            }
+
+            .stem {
+                fill: $stem;
+            }
+        }
+    }
+}
+
+.sescc__matrix-graph-container {
+    position: relative;
+    min-height: 130px;
+
+    .sescc-layer-legend {
+        position: relative;
+        font-size: 0.8rem;
+
+        @media screen and (min-width: $screen-md-min) {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1rem;
+        }
+    }
+}
+
+.node-text {
+    cursor: pointer;
+
+    &:hover {
+        font-weight: bold;
+        background: #d2d2d2;
+    }
+}
+
+.layer-element {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 0;
+
+    .layer-bubble {
+        flex: 0 1 auto;
+        height: $bubbleSize;
+        width: $bubbleSize;
+        border-radius: $bubbleSize;
+        background: red;
+        margin-right: 5px;
+        border: 1px solid #d2d2d2;
+
+        &.endoderm {
+            background: $endoderm;
+        }
+
+        &.mesoderm {
+            background: $mesoderm;
+        }
+
+        &.ectoderm {
+            background: $ectoderm;
+        }
+    }
+
+    .layer-name {
+        flex: 0 1 auto;
+    }
+}

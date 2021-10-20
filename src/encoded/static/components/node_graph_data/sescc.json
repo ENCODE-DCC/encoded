@@ -1,0 +1,79 @@
+[
+    {
+        "name": "H9 Stem Cell",
+        "class": "unlabeled",
+        "linkClass": "",
+        "selectedColor": "#808080",
+        "deselectedColor": "#D1D1D1",
+        "children": [
+            {
+                "name": "Hepatocyte",
+                "class": "unlabeled",
+                "linkClass": "endoderm",
+                "selectedColor": "#808080",
+                "deselectedColor": "#D1D1D1"
+            },
+            {
+                "name": "Splanchnic Mesodermal Cell",
+                "class": "mesoderm",
+                "linkClass": "mesoderm",
+                "selectedColor": "#008000",
+                "deselectedColor": "#E3FAE1",
+                "children": [
+                    {
+                        "name": "Smooth Muscle Cell",
+                        "class": "mesoderm",
+                        "linkClass": "mesoderm",
+                        "selectedColor": "#008000",
+                        "deselectedColor": "#E3FAE1"
+                    },
+                    {
+                        "name": "Mesothelial Cell",
+                        "class": "mesoderm",
+                        "linkClass": "mesoderm",
+                        "selectedColor": "#008000",
+                        "deselectedColor": "#E3FAE1"
+                    }
+                ]
+            },
+            {
+                "name": "Lateral Mesodermal Cell",
+                "class": "mesoderm",
+                "linkClass": "mesoderm",
+                "selectedColor": "#008000",
+                "deselectedColor": "#E3FAE1"
+            },
+            {
+                "name": "Neural Crest Cell",
+                "class": "mesoderm",
+                "linkClass": "mesoderm",
+                "selectedColor": "#008000",
+                "deselectedColor": "#E3FAE1",
+                "parent": "H9 Stem Cell",
+                "children": [
+                    {
+                        "name": "Mesenchymal Stem Cell",
+                        "class": "stem",
+                        "linkClass": "endoderm",
+                        "selectedColor": "#EDCF09",
+                        "deselectedColor": "#FAFA98"
+                    }
+                ]
+            },
+            {
+                "name": "Neural Progenitor Cell",
+                "class": "ectoderm",
+                "linkClass": "endoderm",
+                "selectedColor": "#800080",
+                "deselectedColor": "#E4C6f7"
+            },
+            {
+                "name": "Ecto Neural Progenitor Cell",
+                "class": "ectoderm",
+                "linkClass": "endoderm",
+                "selectedColor": "#800080",
+                "deselectedColor": "#E4C6f7"
+            }
+        ]
+    }
+]
