@@ -667,6 +667,13 @@ const Treatment = (props) => {
                 <dt>Type</dt>
                 <dd>{treatmentDetails}</dd>
             </div>
+
+            {context.purpose ?
+                <div data-test="purpose">
+                    <dt>Purpose</dt>
+                    <dd>{context.purpose}</dd>
+                </div>
+            : null}
         </dl>
     );
 };

@@ -1097,6 +1097,9 @@
         "treatments.treatment_type_details": {
             "title": "Biosample treatment type details"
         },
+        "treatments.purpose": {
+            "title": "Biosample treatment purpose"
+        },
         "culture_harvest_date": {
             "title": "Culture harvest date"
         },
