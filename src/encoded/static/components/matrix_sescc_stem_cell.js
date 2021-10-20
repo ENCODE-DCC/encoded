@@ -302,6 +302,7 @@ class MatrixPresentation extends React.Component {
             margin: { top: 0, bottom: 0, right: 0, left: 0 },
         };
 
+        this.updateWindowWidth = this.updateWindowWidth.bind(this);
         this.selectAll = this.selectAll.bind(this);
         this.setMatrixRows = this.setMatrixRows.bind(this);
         this.setSelectedNodes = this.setSelectedNodes.bind(this);
