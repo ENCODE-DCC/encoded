@@ -327,9 +327,13 @@ class MatrixPresentation extends React.Component {
     }
 
     componentDidUpdate() {
-        // Updates only happen for scrolling on this page. Every other update causes an
-        // unmount/mount sequence.
         this.handleScrollIndicator(this.scrollElement);
+        require.ensure(['d3v7'], (require) => {
+            // eslint-disable-next-line import/no-unresolved
+            this.d3 = require('d3v7');
+            const chartWidth = this.state.windowWidth;
+            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes);
+        });
     }
 
     /**
