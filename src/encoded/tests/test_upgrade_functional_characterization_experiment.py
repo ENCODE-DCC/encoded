@@ -38,3 +38,9 @@ def test_functional_characterization_experiment_upgrade_9_to_10(upgrader, pooled
     value = upgrader.upgrade('functional_characterization_experiment', pooled_clone_sequencing_not_control, current_version='9', target_version='10')
     assert value['schema_version'] == '10'
     assert value['control_type'] == "control"
+
+
+def test_functional_characterization_experiment_upgrade_10_to_11(upgrader, functional_characterization_experiment_10):
+    value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_10, current_version='10', target_version='11')
+    assert value['schema_version'] == '11'
+    assert value['examined_loci'][1]['expression_measurement_method'] == 'unknown'

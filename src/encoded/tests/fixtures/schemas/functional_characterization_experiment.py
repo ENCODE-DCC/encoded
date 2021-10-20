@@ -61,7 +61,8 @@ def functional_characterization_experiment_5(testapp, lab, award, ctcf):
         'status': 'in progress',
         'examined_loci': [{
              'gene': ctcf['uuid'],
-             'gene_expression_percentile': 80
+             'gene_expression_percentile': 80,
+             'expression_measurement_method': 'qPCR'
          }]
     }
     return item
@@ -76,7 +77,8 @@ def functional_characterization_experiment_6(testapp, lab, award, ctcf, heart):
         'biosample_ontology': heart['uuid'],
         'status': 'in progress',
         'examined_loci': [{
-             'gene': ctcf['uuid']
+             'gene': ctcf['uuid'],
+             'expression_measurement_method': 'qPCR'
          }]
     }
     return item
@@ -212,3 +214,24 @@ def fcc_posted_CRISPR_screen(testapp, lab, award, liver):
         'status': 'in progress'
     }
     return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def functional_characterization_experiment_10(testapp, lab, award, ctcf, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'examined_loci': [
+            {
+             'gene': ctcf['uuid'],
+             'expression_measurement_method': 'HCR-FlowFish'
+            },
+            {
+             'gene': ctcf['uuid']
+            }
+         ]
+    }
+    return item

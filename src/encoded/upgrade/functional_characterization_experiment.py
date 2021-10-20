@@ -46,3 +46,11 @@ def functional_characterization_experiment_8_9(value, system):
 def functional_characterization_experiment_9_10(value, system):
     if value.get('assay_term_name', "") == "pooled clone sequencing" and "control_type" not in value:
         value['control_type'] = "control"
+
+
+@upgrade_step('functional_characterization_experiment', '10', '11')
+def functional_characterization_experiment_10_11(value, system):
+    if 'examined_loci' in value:
+        for locus in value['examined_loci']:
+            if 'expression_measurement_method' not in locus:
+                locus['expression_measurement_method'] = 'unknown'
