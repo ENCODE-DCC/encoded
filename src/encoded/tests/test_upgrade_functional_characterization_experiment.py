@@ -42,7 +42,7 @@ def test_functional_characterization_experiment_upgrade_9_to_10(upgrader, pooled
 
 def test_functional_characterization_experiment_upgrade_10_to_11(upgrader, functional_characterization_experiment_CRISPRi_flowFISH):
     for examined_locus in functional_characterization_experiment_CRISPRi_flowFISH.get('examined_loci'):
-        assert examined_locus.get('expression_measurement_method') == 'PrimeFlow'
+        assert examined_locus.get('expression_measurement_method') == 'CRISPRi-FlowFISH'
     value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_CRISPRi_flowFISH, current_version='10', target_version='11')
     assert value['schema_version'] == '11'
     for examined_locus in value.get('examined_loci'):
