@@ -5,7 +5,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 # Edit Snovault version after the `@` here, can be a branch or tag
-SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@SNO-210-read-columns-from-configs"
+SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@SNO-214-node-upgrade"
 
 INSTALL_REQUIRES = [
     "PasteDeploy==2.1.0",
