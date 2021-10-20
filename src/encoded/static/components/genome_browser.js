@@ -49,7 +49,8 @@ const colorCCREs = {
     'DNase-H3K4me3': '#ffaaaa',
     'CTCF-only': '#00b0f0',
     'DNase-only': '#06da93',
-    'Low-DNase': '#ffffff',
+    'Low-DNase': '#e1e1e1',
+    Unclassified: '#8c8c8c',
 };
 
 const colorGenome = {
