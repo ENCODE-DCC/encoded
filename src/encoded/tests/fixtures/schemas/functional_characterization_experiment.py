@@ -227,7 +227,7 @@ def functional_characterization_experiment_10(testapp, lab, award, ctcf, heart):
         'examined_loci': [
             {
              'gene': ctcf['uuid'],
-             'expression_measurement_method': 'HCR-FlowFish'
+             'expression_measurement_method': 'CRISPRi-FlowFISH'
             },
             {
              'gene': ctcf['uuid']

@@ -52,5 +52,13 @@ def functional_characterization_experiment_9_10(value, system):
 def functional_characterization_experiment_10_11(value, system):
     if 'examined_loci' in value:
         for locus in value['examined_loci']:
-            if 'expression_measurement_method' not in locus:
-                locus['expression_measurement_method'] = 'unknown'
+            if 'expression_measurement_method' in locus:
+                if locus['expression_measurement_method'] == 'CRISPRi-FlowFISH':
+                    locus['expression_measurement_method'] = 'PrimeFlow'
+            else:
+                gene = locus['gene']
+                locus['expression_measurement_method'] = 'qPCR'
+                if 'notes' in value:
+                    value['notes'] = f'{value.get("notes")} Upgraded expression_measurement_method to qPCR for examined_loci gene {gene}.'
+                else:
+                    value['notes'] = f'Upgraded expression_measurement_method to qPCR for examined_loci gene {gene}.'

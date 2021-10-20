@@ -280,27 +280,15 @@
                         "title": "Measurement method for gene expression",
                         "description": "The technique used to measure the examined_loci gene expression.",
                         "type": "string",
-                        "oneOf": [
-                            {
-                                "enum": [
-                                    "antibody Sort-seq",
-                                    "CRISPRi-FlowFISH",
-                                    "endogenous protein Sort-seq",
-                                    "fluorescence activated cell sorting",
-                                    "HCR-FlowFISH",
-                                    "magnetic separation Sort-seq",
-                                    "PrimeFlow",
-                                    "qPCR",
-                                    "RNA-seq"
-                                ]
-                            },
-                            {
-                                "comment": "Admin-only enum for upgrade purposes, not valid for new submissions.",
-                                "permission": "import_items",
-                                "enum": [
-                                    "unknown"
-                                ]
-                            }
+                        "enum": [
+                            "antibody Sort-seq",
+                            "endogenous protein Sort-seq",
+                            "fluorescence activated cell sorting",
+                            "HCR-FlowFISH",
+                            "magnetic separation Sort-seq",
+                            "PrimeFlow",
+                            "qPCR",
+                            "RNA-seq"
                         ]
                     }
                 },
