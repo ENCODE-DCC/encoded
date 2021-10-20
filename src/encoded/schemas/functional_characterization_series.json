@@ -75,7 +75,6 @@
             "title": "Assay",
             "facet_fields": [
                 "assay_title",
-                "control_type",
                 "related_datasets.perturbation_type",
                 "related_datasets.crispr_screen_readout",
                 "elements_references.crispr_screen_tiling",

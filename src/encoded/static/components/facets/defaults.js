@@ -154,8 +154,8 @@ export const DefaultExistsBinaryFacet = ({
     // So set YES-radio button to the facet-no count and set the NO-radio button to both the combined
     // facet-yes and facet-no counts
     const terms = [
-        { key: 'yes', doc_count: facetNoTerm.doc_count },
-        { key: 'no', doc_count: facetYesTerm.doc_count + facetNoTerm.doc_count },
+        { key: 'yes', doc_count: facetNoTerm?.doc_count },
+        { key: 'no', doc_count: facetNoTerm && facetYesTerm && (facetYesTerm.doc_count + facetNoTerm.doc_count) },
     ];
 
     // We have to build the new query string
@@ -226,7 +226,7 @@ export const DefaultExistsBinaryFacet = ({
                                         <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
                                         <label htmlFor={term.key}>
                                             <div className="facet__radio-label">{term.key}</div>
-                                            <div className="facet__radio-count">{term.doc_count}</div>
+                                            <div className="facet__radio-count">{term.doc_count || ''}</div>
                                         </label>
                                     </div>
                                 ))}

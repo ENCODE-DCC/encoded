@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 3
 
+* Removed *control_type* from facet_groups; unintentionally added
 * Added *LRGASP* and *ENCYCLOPEDIAv6* to the *internal_tags* enums list
 * Added *doi* property
 * Added *analyses* property

@@ -81,7 +81,10 @@ Feature: Search
         When I press "Data"
         And I click the link to "/search/?type=Experiment&control_type!=*&status=released&perturbed=false"
         And I wait for the content to load
+        And I press "facet-group-Assay-Experiment-title"
+        And I wait for 1 seconds
         And I press "facet-group-Biosample-Experiment-title"
+        And I wait for 1 seconds
         And I press "facet-expander-biosample_ontology.organ_slims"
         And I wait for 1 seconds
         And I fill in "searchOrgan" with "zzz"
