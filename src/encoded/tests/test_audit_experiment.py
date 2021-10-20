@@ -242,6 +242,10 @@ def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, b
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] != 'unreplicated experiment'
                for error in collect_audit_errors(res))
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'long read single-cell RNA-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'unreplicated experiment'
+               for error in collect_audit_errors(res))
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
     testapp.patch_json(base_experiment['@id'], {'replicates': []})
     res = testapp.get(base_experiment['@id'] + '@@index-data')

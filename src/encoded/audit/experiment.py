@@ -1501,7 +1501,8 @@ def audit_experiment_replicated(value, system, excluded_types):
     '''
     if value['assay_term_name'] in ['single-cell RNA sequencing assay',
                                     'RNA Bind-n-Seq',
-                                    'genetic modification followed by DNase-seq']:
+                                    'genetic modification followed by DNase-seq',
+                                    'long read single-cell RNA-seq']:
         return
     '''
     Excluding GTEX experiments from the replication requirement
