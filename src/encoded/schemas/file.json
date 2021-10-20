@@ -2137,7 +2137,10 @@
                 "enum": [
                     "DpnII",
                     "MboI",
-                    "HindIII"
+                    "HindIII",
+                    "NcoI",
+                    "MseI",
+                    "MboI and MseI"
                 ]
             }
 
