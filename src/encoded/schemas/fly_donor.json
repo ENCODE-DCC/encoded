@@ -89,6 +89,31 @@
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Donor",
+            "facet_fields": [
+                "organism.scientific_name",
+                "strain_background"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "organism.scientific_name": {
             "title": "Organism"

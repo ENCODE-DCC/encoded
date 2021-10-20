@@ -106,8 +106,9 @@ const FacetGroupTitle = ({ group, isExpanded, hasSelections, isNameDisplayed, ex
         <button
             type="button"
             className={`facet-group-title${isExpanded ? ' facet-group-title--open' : ''}`}
+            id={`${groupIdentifier}-title`}
             aria-expanded={isExpanded}
-            aria-controls={generateFacetGroupIdentifier(group)}
+            aria-controls={groupIdentifier}
             onClick={handleClick}
         >
             <div className="facet-group-title__title-name">

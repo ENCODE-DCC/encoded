@@ -76,6 +76,64 @@
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "related_datasets.assay_title",
+                "target.investigated_as"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "organism.scientific_name",
+                "biosample_ontology.classification",
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "related_datasets.replicates.library.biosample.life_stage",
+                "related_datasets.replicates.library.biosample.treatments.treatment_term_name"
+            ]
+        },
+        {
+            "title": "Library",
+            "facet_fields": [
+                "related_datsets.files.run_type",
+                "related_datasets.replicates.library.size_range",
+                "related_datasets.replicates.library.nucleic_acid_term_name",
+                "related_datasets.replicates.library.depleted_in_term_name",
+                "related_datasets.replicates.library.treatments.treatment_term_name"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "assembly",
+                "related_datasets.files.file_type",
+                "related_datasets.files.read_length",
+                "related_datasets.files.mapped_read_length"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title",
+                "award.project",
+                "award.rfa"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "related_datasets.assay_title": {
             "title": "Assay title"

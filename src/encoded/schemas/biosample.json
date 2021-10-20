@@ -922,6 +922,54 @@
             ]
         }
     },
+    "facet_groups": [
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "biosample_ontology.classification",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "disease_term_name",
+                "subcellular_fraction_term_name",
+                "phase",
+                "life_stage"
+            ]
+        },
+        {
+            "title": "Donor",
+            "facet_fields": [
+                "organism.scientific_name",
+                "sex"
+            ]
+        },
+        {
+            "title": "Perturbations",
+            "facet_fields": [
+                "treatments.treatment_term_name",
+                "perturbed"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title",
+                "award.project",
+                "award.rfa",
+                "source.title",
+                "nih_institutional_certification"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "organism.scientific_name": {
             "title": "Organism"

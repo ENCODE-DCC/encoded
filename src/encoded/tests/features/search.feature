@@ -38,7 +38,7 @@ Feature: Search
         And I click the link to "/search/?type=Experiment&control_type!=*&status=released&perturbed=false"
         And I wait for the content to load
         Then I should see at least 25 elements with the css selector "ul.result-table > li"
-        And I should see at least 3 elements with the css selector "div.box.facets > div.orientation > div.facet-list-wrapper > div.facet"
+        And I should see at least 3 elements with the css selector "div.box.facets > div.orientation > div.facet-list-wrapper > div.facet-group"
 
         When I click the link to "?type=Experiment&control_type!=*&status=released&perturbed=false&assay_title=TF+ChIP-seq"
         And I wait for the content to load
@@ -81,6 +81,7 @@ Feature: Search
         When I press "Data"
         And I click the link to "/search/?type=Experiment&control_type!=*&status=released&perturbed=false"
         And I wait for the content to load
+        And I press "facet-group-Biosample-Experiment-title"
         And I press "facet-expander-biosample_ontology.organ_slims"
         And I wait for 1 seconds
         And I fill in "searchOrgan" with "zzz"
