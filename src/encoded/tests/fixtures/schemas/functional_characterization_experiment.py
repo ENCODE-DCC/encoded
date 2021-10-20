@@ -215,7 +215,7 @@ def fcc_posted_CRISPR_screen(testapp, lab, award, liver):
 
 
 @pytest.fixture
-def functional_characterization_experiment_CRISPRi_flowFISH(testapp, lab, award, ctcf, heart):
+def functional_characterization_experiment_CRISPRi_flowFISH(lab, award, ctcf, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
@@ -227,4 +227,4 @@ def functional_characterization_experiment_CRISPRi_flowFISH(testapp, lab, award,
              'expression_measurement_method': 'CRISPRi-FlowFISH'
          }]
     }
-    return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
+    return item
