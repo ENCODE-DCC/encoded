@@ -4,6 +4,12 @@ clean:
 	rm -rf src/encoded/static/build/*
 	rm -rf src/encoded/static/build-server/*
 
+devcontainer: download-ontology
+	ln -sf /app/node_modules .
+	npm run build
+	pip install -e '.[dev]'
+	cp conf/pyramid/development.ini .
+
 install: download-ontology javascript
 	pip install -e '.[dev]'
 	cp conf/pyramid/development.ini .
@@ -11,7 +17,7 @@ install: download-ontology javascript
 javascript-and-download-files: download-ontology javascript
 
 download-ontology:
-	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-2021-08-26.json
+	curl -o ontology.json -z ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-2021-08-26.json
 
 javascript:
 	npm ci
