@@ -7,10 +7,10 @@ To launch a demo machine you need an access key (log into AWS console to create 
     aws_access_key_id=AKIA...
     aws_secret_access_key=abc123...
 
-In ``~/.boto`` configure your default region::
+In ``~/.aws/config`` configure your default region::
 
-    [Boto]
-    ec2_region_name = us-west-2
+    [default]
+    region=us-west-2
 
 To deploy your currently checked out branch, run::
 

@@ -4,6 +4,7 @@ Encoded Application AWS Deployment Helper
 import argparse
 import getpass
 import io
+import os.path
 import re
 import subprocess
 import sys
@@ -267,6 +268,8 @@ def _write_str_to_file(filepath, str_data):
 
 
 def _read_ssh_key(identity_file):
+    if not os.path.exists(identity_file):
+        return None
     ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
     finger_id = subprocess.check_output(
         ssh_keygen_args
