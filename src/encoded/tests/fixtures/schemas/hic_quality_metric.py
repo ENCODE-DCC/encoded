@@ -10,7 +10,7 @@ def hic_quality_metric_single_ended_1(analysis_step_run, file, award, lab):
         'quality_metric_of': [file['uuid']],
         'run_type': 'single-ended',
         "library_complexity_estimate_1_alignment": 323232,
-        "library_complexity_estimate_2_alignment": 4534534,
+        "library_complexity_estimate_2_alignments": 4534534,
         "library_complexity_estimate_1_and_2_alignments": 382948,
         "2_alignment_duplicates": 332433,
         "2_alignment_unique": 1123,

@@ -26,14 +26,6 @@
                 }
             }
         },
-        "below_mapq_threshold": {
-            "required": ["run_type"],
-            "properties": {
-                "run_type": {
-                    "enum": ["paired-ended"]
-                }
-            }
-        },
         "2_alignments_a1_a2b_a1b2_b1a2": {
             "required": ["run_type"],
             "properties": {
@@ -106,7 +98,7 @@
                 }
             }
         },
-        "library_complexity_estimate_2_alignment": {
+        "library_complexity_estimate_2_alignments": {
             "required": ["run_type"],
             "properties": {
                 "run_type": {
@@ -187,6 +179,14 @@
             }
         },
         "pct_sequenced_2_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_sequenced_2_alignment_duplicates": {
             "required": ["run_type"],
             "properties": {
                 "run_type": {
@@ -406,6 +406,12 @@
             "minimum": 0,
             "maximum": 100.0
         },
+        "pct_sequenced_2_alignment_duplicates": {
+            "title": "Percentage of 2 alignment duplicates",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
         "pct_3_or_more_alignments": {
             "title": "Percentage of 3 or more alignments",
             "type": "number",
@@ -467,7 +473,7 @@
             "type": "integer",
             "minimum": 0
         },
-        "pct_sequenced_duplicates": {
+        "pct_sequenced_total_duplicates": {
             "title": "Percentage of total duplicates",
             "type": "number",
             "minimum": 0,
@@ -483,7 +489,7 @@
             "type": "integer",
             "minimum": 0
         },
-        "library_complexity_estimate_2_alignment": {
+        "library_complexity_estimate_2_alignments": {
             "title": "Library complexity estimate (2 alignment)",
             "type": "integer",
             "minimum": 0
