@@ -355,6 +355,28 @@ class Experiment(Dataset,
             'label': 'Term Name',
         },
     }
+    
+    deeply_profiled_uniform_batch_matrix = {
+        'y': {
+            'group_by': ['replicates.library.biosample.biosample_ontology.term_name', 'replicates.library.biosample.origin_batch'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'replicates.library.biosample.biosample_ontology.term_name', '@id'],
+            'label': 'Assay',
+        },
+    }
+    
+    deeply_profiled_matrix = {
+        'y': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': 'assay_title',
+            'label': 'Assay',
+        },
+    }
 
     summary_matrix = {
         'x': {

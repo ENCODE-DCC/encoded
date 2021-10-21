@@ -313,6 +313,31 @@ export const biosampleTypeList = [
     'technical sample',
 ];
 
+const deeplyProfiledCellLines = [
+    'A549',
+    'A673',
+    'Caco-2',
+    'Calu3',
+    'endothelial cell of umbilical vein',
+    'GM12878',
+    'GM23338',
+    'H1',
+    'H9',
+    'HCT116',
+    'HepG2',
+    'HFFc6',
+    'IMR-90',
+    'K562',
+    'mammary epithelial cell',
+    'MCF-7',
+    'MCF 10A',
+    'OCI-LY7',
+    'PC-9',
+    'PC-3',
+    'Panc1',
+    'WTC11',
+];
+
 export const replicateTypeList = [
     'unreplicated',
     'isogenic',
@@ -324,6 +349,7 @@ export const replicateTypeList = [
 export const projectColors = new DataColors(projectList);
 export const biosampleTypeColors = new DataColors(biosampleTypeList);
 export const replicateTypeColors = new DataColors(replicateTypeList);
+export const DeeplyProfiledCellLineListColors = new DataColors(deeplyProfiledCellLines);
 
 
 // Map view icons to svg icons.
