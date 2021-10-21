@@ -429,7 +429,7 @@ const RegionSearch = (props, context) => {
     React.useEffect(() => {
         const newGBrowserFiles = (props.context.gbrowser || []).filter((file) => selectedFileTypes.indexOf(file.file_format) > -1);
         setGBrowserFiles(newGBrowserFiles);
-    }, [selectedFileTypes]);
+    }, [selectedFileTypes, props.context.gbrowser]);
 
     const onFilter = (e) => {
         if (props.onChange) {
