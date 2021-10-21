@@ -1,5 +1,9 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Schema version 11
+* An *expression_measurement_method* selection is now required for all *examined_loci* entries
+* The *CRISPRi-FlowFISH* enum in *expression_measurement_method* has been removed, *PrimeFlow* is to be used instead
+
 ### Minor changes since schema version 10
 * Added *Deeply Profiled* to the *internal_tags* enum
 * Added *bio_replicate_count* and *tech_replicate_count* for the respective counts of the embedded replicates as a calculated property

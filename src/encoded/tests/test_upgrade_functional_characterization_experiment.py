@@ -38,3 +38,11 @@ def test_functional_characterization_experiment_upgrade_9_to_10(upgrader, pooled
     value = upgrader.upgrade('functional_characterization_experiment', pooled_clone_sequencing_not_control, current_version='9', target_version='10')
     assert value['schema_version'] == '10'
     assert value['control_type'] == "control"
+
+
+def test_functional_characterization_experiment_upgrade_10_to_11(upgrader, functional_characterization_experiment_10):
+    value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_10, current_version='10', target_version='11')
+    assert value['schema_version'] == '11'
+    assert value['examined_loci'][0]['expression_measurement_method'] == 'PrimeFlow'
+    assert value['examined_loci'][1]['expression_measurement_method'] == 'qPCR'
+    assert value['notes'] == 'Upgraded expression_measurement_method to qPCR for examined_loci gene a9288b44-6ef4-460e-a3d6-464fd625b103.'

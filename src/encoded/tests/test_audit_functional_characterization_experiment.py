@@ -378,18 +378,6 @@ def test_audit_experiment_mixed_expression_measurement_methods(
         error['category'] == 'mixed expression_measurement_method'
         for error in collect_audit_errors(res)
     )
-    # an entry lacking expression_measurement_method is also considered mixed
-    testapp.patch_json(
-        functional_characterization_experiment_disruption_screen['@id'],
-        {'examined_loci': [
-            {'gene': ctcf['uuid'], 'expression_percentile': 100},
-            {'gene': ctcf['uuid'], 'expression_percentile': 10, 'expression_measurement_method': 'PrimeFlow'}
-        ]})
-    res = testapp.get(functional_characterization_experiment_disruption_screen['@id'] + '@@index-data')
-    assert any(
-        error['category'] == 'mixed expression_measurement_method'
-        for error in collect_audit_errors(res)
-    )
 
 
 def test_audit_CRISPR_not_in_series(
