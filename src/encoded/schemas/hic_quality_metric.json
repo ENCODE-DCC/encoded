@@ -18,65 +18,237 @@
         { "$ref": "mixins.json#/assay" }
     ],
     "dependencies": {
-        "run_type": {
-            "comment": "Declaring dependencies for paired-ended and single-ended run types",
-            "oneOf": [
-                {
-                    "not": {
-                        "required": [
-                            "avg_insert_size",
-                            "below_mapq_threshold",
-                            "2_alignments_a1_a2b_a1b2_b1a2",
-                            "library_complexity_estimate",
-                            "2_alignments_a_b",
-                            "pct_2_alignments_a1_a2b_a1b2_b1a2",
-                            "pct_2_alignments_a_b",
-                            "pct_one_or_both_reads_unmapped",
-                            "sequenced_read_pairs",
-                            "one_or_both_reads_unmapped"
-                        ]
-                    },
-                    "properties": {
-                        "run_type": {
-                            "enum": [
-                                "single-ended"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "required": [
-                            "library_complexity_estimate_1_alignment",
-                            "library_complexity_estimate_2_alignment",
-                            "library_complexity_estimate_1_and_2_alignments",
-                            "2_alignment_duplicates",
-                            "2_alignment_unique",
-                            "0_alignments",
-                            "pct_0_alignments",
-                            "pct_1_alignment_unique",
-                            "pct_1_alignment_duplicates",
-                            "pct_sequenced_1_alignment_unique",
-                            "pct_sequenced_1_alignment_duplicates",
-                            "pct_sequenced_2_alignment_unique",
-                            "pct_2_alignment_duplicates",
-                            "pct_2_alignment_unique",
-                            "pct_1_alignment",
-                            "sequenced_reads",
-                            "1_alignment",
-                            "1_alignment_unique",
-                            "1_alignment_duplicates"
-                        ]
-                    },
-                    "properties": {
-                        "run_type": {
-                            "enum": [
-                                "paired-ended"
-                            ]
-                        }
-                    }
+        "avg_insert_size": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
                 }
-            ]
+            }
+        },
+        "below_mapq_threshold": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "2_alignments_a1_a2b_a1b2_b1a2": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "library_complexity_estimate": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "2_alignments_a_b": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "pct_2_alignments_a1_a2b_a1b2_b1a2": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "pct_2_alignments_a_b": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "pct_one_or_both_reads_unmapped": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "sequenced_read_pairs": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "one_or_both_reads_unmapped": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "library_complexity_estimate_1_alignment": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "library_complexity_estimate_2_alignment": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "library_complexity_estimate_1_and_2_alignments": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "2_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "2_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "0_alignments": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_0_alignments": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_1_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_1_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_sequenced_1_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_sequenced_1_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_sequenced_2_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_2_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_2_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_1_alignment": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "sequenced_reads": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "1_alignment": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "1_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "1_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
         }
     },
     "properties": {
@@ -307,12 +479,12 @@
             "minimum": 0
         },
         "library_complexity_estimate_1_alignment": {
-            "title": "Library complexity estimate (2 alignment)",
+            "title": "Library complexity estimate (1 alignment)",
             "type": "integer",
             "minimum": 0
         },
         "library_complexity_estimate_2_alignment": {
-            "title": "Library complexity estimate",
+            "title": "Library complexity estimate (2 alignment)",
             "type": "integer",
             "minimum": 0
         },
