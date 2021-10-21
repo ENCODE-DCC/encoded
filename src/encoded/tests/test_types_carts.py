@@ -30,15 +30,11 @@ def test_not_owner_cannot_add_element_to_cart(cart_submitter_testapp, testapp, o
 
 def test_other_can_see_cart(cart_submitter_testapp, other_cart, remc_member):
     res = cart_submitter_testapp.get(other_cart['@id'])
-    assert res.json['submitted_by'] == remc_member['@id']
+    assert res.json['submitted_by']['@id'] == remc_member['@id']
 
 
 def test_submitter_cant_see_deleted_cart(cart_submitter_testapp, deleted_cart, submitter):
     cart_submitter_testapp.get(deleted_cart['@id'], status=403)
-
-
-def test_other_cant_see_autosave_cart(other_cart_submitter_testapp, autosave_cart, remc_member):
-    other_cart_submitter_testapp.get(autosave_cart['@id'], status=403)
 
 
 def test_submitter_can_see_autosave_cart(cart_submitter_testapp, autosave_cart, submitter):
@@ -81,7 +77,7 @@ def test_get_or_create_cart_by_user(cart_submitter_testapp, submitter):
     carts = res.json['@graph']
     assert carts and '/carts/' in carts[0]
     created_cart = cart_submitter_testapp.get(carts[0])
-    assert created_cart.json['submitted_by'] == submitter['@id']
+    assert created_cart.json['submitted_by']['@id'] == submitter['@id']
     # Cart should exist
     retrieved_cart = cart_submitter_testapp.get('/carts/@@get-cart').json['@graph'][0]
     assert created_cart.json['@id'] == retrieved_cart

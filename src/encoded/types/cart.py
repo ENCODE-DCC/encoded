@@ -41,10 +41,17 @@ class Cart(Item):
     name_key = 'identifier'
 
     STATUS_ACL = {
-        'current': [(Allow, 'role.owner', ['view', 'edit'])] + ALLOW_CURRENT,
+        'unlisted': [(Allow, 'role.owner', ['view', 'edit'])] + ALLOW_CURRENT,
+        'listed': [(Allow, 'role.owner', ['view', 'edit'])] + ALLOW_CURRENT,
         'deleted': [(Allow, 'role.owner', ['edit'])] + DELETED,
-        'disabled': [(Allow, 'role.owner', ['view', 'edit'])] + ONLY_ADMIN_VIEW,
+        'released': ALLOW_CURRENT,
+        'revoked': ALLOW_CURRENT
     }
+
+    embedded = [
+        'submitted_by',
+        'submitted_by.lab'
+    ]
 
     def __ac_local_roles__(self):
         owner = 'userid.%s' % self.properties['submitted_by']
@@ -62,7 +69,7 @@ def _create_cart(request, user, name=None, identifier=None, status=None):
     cart_name = name or 'Default Cart'
     initial_cart = {
         'submitted_by': str(user.uuid),
-        'status': status or 'current',
+        'status': status or 'unlisted',
         'name': cart_name,
         'locked': False,
         'elements': [],
@@ -93,7 +100,7 @@ def get_or_create_cart_by_user(context, request):
     carts = get_cart_objects_by_user(
         request,
         userid,
-        blocked_statuses=['disabled', 'deleted']
+        blocked_statuses=['deleted']
     )
     carts = [cart['@id'] for cart in carts]
     if not carts:
@@ -117,24 +124,23 @@ def create_cart_by_user(context, request):
     cart_status = request.json.get('status')
     cart_name = request.json.get('name', '').strip()
     # User writing a new cart; check for cart overflow and naming conflicts
-    if cart_status != 'disabled':
-        countable_carts = [
-            cart
-            for cart in carts
-            if cart['status'] not in ['disabled', 'deleted']
-        ]
-        if len(countable_carts) >= cart_max_count:
-            msg = 'Users cannot have more than {} carts'.format(cart_max_count)
-            raise HTTPBadRequest(explanation=msg)
-        conflicting_names = [
-            cart
-            for cart in carts
-            if (cart['status'] not in ['deleted', 'disabled'] and
-                cart['name'].strip().upper() == cart_name.upper())
-        ]
-        if conflicting_names:
-            msg = 'A cart with the name "{}" already exists'.format(cart_name)
-            raise HTTPBadRequest(explanation=msg)
+    countable_carts = [
+        cart
+        for cart in carts
+        if cart['status'] not in ['deleted']
+    ]
+    if len(countable_carts) >= cart_max_count:
+        msg = 'Users cannot have more than {} carts'.format(cart_max_count)
+        raise HTTPBadRequest(explanation=msg)
+    conflicting_names = [
+        cart
+        for cart in carts
+        if (cart['status'] not in ['deleted'] and
+            cart['name'].strip().upper() == cart_name.upper())
+    ]
+    if conflicting_names:
+        msg = 'A cart with the name "{}" already exists'.format(cart_name)
+        raise HTTPBadRequest(explanation=msg)
     cart_identifier = request.json.get('identifier')
     cart = _create_cart(
         request,
