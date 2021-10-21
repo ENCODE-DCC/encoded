@@ -1,5 +1,9 @@
 ## Changelog for library.json
 
+### Schema version 20
+* Added *construction_method* enum *capped RNA enrichment*, *uncapped RNA enrichment*, and *PCR-free*. The property is now also submittable as an array.
+* Added *Streptavidin magnetic beads* enum to the *library_size_selection_method* property.
+
 ### Schema version 19
 * Modified regex pattern for *lot_id* and *product_id* to disallow blank strings.
 

@@ -334,3 +334,12 @@ def library_schema_17(lab, award):
         'nucleic_acid_starting_quantity': '9.2',
         'nucleic_acid_starting_quantity_units': 'ng'
     }
+
+
+@pytest.fixture
+def library_schema_19(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'construction_method': 'Nanopore Direct RNA Kit'
+    }
