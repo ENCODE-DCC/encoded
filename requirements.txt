@@ -34,7 +34,7 @@ parse==1.19.0
 parse-type==0.5.2
 passlib==1.7.2
 PasteDeploy==2.1.0
-Pillow==7.0.0
+Pillow==8.3.2
 plaster==1.0
 plaster-pastedeploy==0.7
 pluggy==0.13.1
