@@ -19,7 +19,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "with_itself": {
             "title": "Number of reads with itself & mate mapped passing QC",
@@ -56,8 +56,8 @@
             "type": "integer",
             "minimum": 0
         },
-        "pct_properly_paired_reads": {
-            "title": "Percentage of properly paired reads passing QC",
+        "frac_properly_paired_reads": {
+            "title": "Fraction of properly paired reads passing QC",
             "type": "number",
             "minimum": 0,
             "maximum": 1
@@ -72,8 +72,8 @@
             "type": "integer",
             "minimum": 0
         },
-        "pct_mapped_reads": {
-            "title": "Percentage of mapped reads passing QC",
+        "frac_mapped_reads": {
+            "title": "Fraction of mapped reads passing QC",
             "type": "number",
             "minimum": 0,
             "maximum": 1
@@ -128,8 +128,8 @@
             "type": "integer",
             "minimum": 0
         },
-        "pct_singletons": {
-            "title": "Percentage of singletons passing QC",
+        "frac_singletons": {
+            "title": "Fraction of singletons passing QC",
             "type": "number",
             "minimum": 0,
             "maximum": 1

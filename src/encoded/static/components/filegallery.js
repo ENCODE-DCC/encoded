@@ -1886,6 +1886,7 @@ function qcAbbr(qc) {
         ScAtacMultipletQualityMetric: 'MQ',
         ScAtacLibraryComplexityQualityMetric: 'LC',
         ScAtacAnalysisQualityMetric: 'AQ',
+        ScAtacCountsSummaryQualityMetric: 'CS',
     };
 
     let abbr = qcAbbrMap[qc['@type'][0]];

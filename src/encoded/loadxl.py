@@ -119,6 +119,7 @@ ORDER = [
     'sc_atac_multiplet_quality_metric',
     'sc_atac_library_complexity_quality_metric',
     'sc_atac_analysis_quality_metric',
+    'sc_atac_counts_summary_quality_metric',
     'quality_standard',
     'analysis',
     'image',
