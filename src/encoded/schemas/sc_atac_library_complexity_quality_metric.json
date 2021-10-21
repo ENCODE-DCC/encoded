@@ -19,7 +19,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "NRF": {
             "title": "Non-redundant fraction",
@@ -62,8 +62,8 @@
             "type": "integer",
             "minimum": 0
         },
-        "pct_duplicate_reads": {
-            "title": "Percentage of duplicate reads",
+        "frac_duplicate_reads": {
+            "title": "Fraction of duplicate reads",
             "type": "number",
             "minimum": 0,
             "maximum": 1

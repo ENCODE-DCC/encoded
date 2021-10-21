@@ -624,3 +624,13 @@ class ScAtacLibraryComplexityQualityMetric(QualityMetric, CalculatedAssayTermID)
 class ScAtacAnalysisQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'sc_atac_analysis_quality_metric'
     schema = load_schema('encoded:schemas/sc_atac_analysis_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-counts-summary-quality-metric',
+    properties={
+        'title': "scATAC Counts Summary Quality Metrics",
+    })
+class ScAtacCountsSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_counts_summary_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_counts_summary_quality_metric.json')
