@@ -168,26 +168,6 @@
             "title": "Project"
         }
     },
-    "columns": {
-        "accession": {
-            "title": "Accession"
-        },
-        "description": {
-            "title": "Description"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "boost_values": {
         "accession": 20.0,
         "alternate_accessions": 1.0,
