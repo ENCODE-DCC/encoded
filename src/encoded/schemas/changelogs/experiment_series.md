@@ -8,6 +8,7 @@
 * Added *assay_slims* calculated property
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *Deeply Profiled* to the *internal_tags* enum
+* Removed *control_type* calculated property
 
 ### Schema version 3
 
