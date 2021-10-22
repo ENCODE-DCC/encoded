@@ -2555,7 +2555,6 @@ def test_audit_experiment_chip_seq_control_target_failures(
     testapp,
     base_experiment,
     experiment,
-    treatment_time_series,
     file_fastq_3,
     file_bam_1_1,
     file_tsv_1_2,
@@ -2564,14 +2563,10 @@ def test_audit_experiment_chip_seq_control_target_failures(
     target_H3K9me3,
 ):
     testapp.patch_json(
-        treatment_time_series['@id'],
-        {'related_datasets': [experiment['@id']]}
-    )
-    testapp.patch_json(
         base_experiment['@id'],
         {
             'target': target_H3K9me3['@id'],
-            'possible_controls': [treatment_time_series['@id']],
+            'possible_controls': [experiment['@id']],
             'assay_term_name': 'ChIP-seq',
         }
     )
@@ -2589,7 +2584,7 @@ def test_audit_experiment_chip_seq_control_target_failures(
         file_bam_1_1['@id'],
         {
             'step_run': analysis_step_run_bam['@id'],
-            'dataset': treatment_time_series['@id'],
+            'dataset': experiment['@id'],
             'derived_from': [file_fastq_3['@id']]
         }
     )
