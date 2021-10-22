@@ -74,6 +74,22 @@ Feature: Cart
         Then I should see 7 elements with the css selector ".result-item"
         And I should see "4 files selected"
 
+    Scenario: Cart description
+        When I press "edit-description"
+        Then I should see an element with id "description-editor"
+        And I should see an element with id "text-editing-area"
+        When I press "Close without saving"
+        Then I should not see an element with id "description-editor"
+
+    Scenario: Cart listing
+        When I press "Listing"
+        Then I should see an element with id "description-editor"
+        When I fill in "cart-description-text-area" with "This is a description."
+        And I press "Save description"
+        And I press "Close"
+        Then I should not see an element with id "description-editor"
+        And I should see "This is a description."
+
     Scenario: Clearing the cart 
         When I press "clear-cart-actuator"
         Then I should see an element with the css selector ".modal"

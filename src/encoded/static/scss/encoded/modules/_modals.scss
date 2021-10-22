@@ -70,20 +70,41 @@
     outline: none;
 }
 
+// Modal widths at the bootstrap breakpoint widths
+$modal-width-sm: 600px;
+$modal-width-md: 800px;
+$modal-width-lg: 960px;
+
 .modal-dialog {
     width: 95%;
     margin: 30px auto;
 
     @media screen and (min-width: $screen-sm-min) {
-        width: 600px;
+        width: $modal-width-sm;
     }
 
     @media screen and (min-width: $screen-md-min) {
-        width: 800px;
+        width: $modal-width-md;
     }
 
     @media screen and (min-width: $screen-lg-min) {
-        width: 960px;
+        width: $modal-width-lg;
+    }
+
+    &.modal-dialog--sm {
+        @media screen and (min-width: $screen-md-min) {
+            width: $modal-width-sm;
+        }
+
+        @media screen and (min-width: $screen-lg-min) {
+            width: $modal-width-sm;
+        }
+    }
+
+    &.modal-dialog--md {
+        @media screen and (min-width: $screen-lg-min) {
+            width: $modal-width-md;
+        }
     }
 }
 

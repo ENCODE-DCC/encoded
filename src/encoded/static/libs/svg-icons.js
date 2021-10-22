@@ -202,6 +202,15 @@ const mars = (style) => (
     </svg>
 );
 
+const edit = (style) => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" style={style} className="svg-icon svg-icon-edit">
+        <path d="M78.7,160c-1.7,5.7,3.6,11,9.3,9.3l45.8-13.3l86.4-86.4l-41.8-41.8L92,114.2L78.7,160z M204.7,1.5l-13.3,13.3l41.8,41.8
+            l13.3-13.3c5.3-5.3,5.3-13.9,0-19.2L223.9,1.5C218.6-3.8,210-3.8,204.7,1.5z"
+        />
+        <polygon points="171.7,164.1 171.7,223.8 26.4,223.8 26.4,78.5 86,78.5 112,52.5 0.4,52.5 0.4,249.8 197.7,249.8 197.7,138.1" />
+    </svg>
+);
+
 const icons = {
     disclosure: (style) => <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style={style} className="svg-icon svg-icon-disclosure"><circle cx="240" cy="240" r="240" /><polyline points="401.79 175.66 240 304.34 78.21 175.66" /></svg>,
     table,
@@ -232,6 +241,7 @@ const icons = {
     cellGroup,
     venus,
     mars,
+    edit,
 };
 
 /**

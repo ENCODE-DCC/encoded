@@ -290,6 +290,7 @@ const ModalElement = ({
     modalChildren,
     descriptionId,
     addClasses,
+    widthClass,
     focusId,
     labelId,
 }) => {
@@ -362,7 +363,7 @@ const ModalElement = ({
     return ReactDOM.createPortal(
         <div>
             <div className="modal" style={{ display: 'block' }}>
-                <div className={`modal-dialog${addClasses ? ` ${addClasses}` : ''}`} role="alertdialog" aria-modal="true" aria-labelledby={labelId} aria-describedby={descriptionId}>
+                <div className={`modal-dialog${widthClass ? ` modal-dialog--${widthClass}` : ''}${addClasses ? ` ${addClasses}` : ''}`} role="alertdialog" aria-modal="true" aria-labelledby={labelId} aria-describedby={descriptionId}>
                     <div className="modal-content">
                         {modalChildren}
                     </div>
@@ -381,6 +382,8 @@ ModalElement.propTypes = {
     descriptionId: PropTypes.string,
     /** CSS classes to add to the default */
     addClasses: PropTypes.string,
+    /** Specifies maximum bootstrap breakpoint modal width; "lg" is default */
+    widthClass: PropTypes.oneOf(['', 'sm', 'md']),
     /** id of first focusable element */
     focusId: PropTypes.string,
     /** id of modal label element */
@@ -390,6 +393,7 @@ ModalElement.propTypes = {
 ModalElement.defaultProps = {
     descriptionId: '',
     addClasses: '',
+    widthClass: '',
     focusId: '',
     labelId: '',
 };
@@ -403,6 +407,7 @@ export const Modal = ({
     submitModal,
     closeModal,
     addClasses,
+    widthClass,
     children,
 }) => {
     // True if modal is visible. Ignored if no actuator given.
@@ -469,6 +474,7 @@ export const Modal = ({
                     modalChildren={modalChildren}
                     descriptionId={descriptionId}
                     addClasses={addClasses}
+                    widthClass={widthClass}
                     labelId={labelId}
                     focusId={focusId}
                 />
@@ -486,6 +492,8 @@ Modal.propTypes = {
     submitModal: PropTypes.func,
     /** CSS classes to add to the default */
     addClasses: PropTypes.string,
+    /** Specifies maximum bootstrap breakpoint modal width; "lg" is default */
+    widthClass: PropTypes.oneOf(['', 'sm', 'md']),
     /** id of modal label element */
     labelId: PropTypes.string,
     /** id of modal description element */
@@ -500,6 +508,7 @@ Modal.defaultProps = {
     closeModal: null,
     submitModal: null,
     addClasses: '',
+    widthClass: '',
     labelId: '',
     descriptionId: '',
     focusId: '',

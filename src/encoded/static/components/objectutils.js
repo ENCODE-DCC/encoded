@@ -1178,3 +1178,26 @@ export const collectDatasetBiosamples = (dataset) => {
     }
     return [];
 };
+
+
+/**
+ * Display the current and maximum character counter for a <textarea>.
+ */
+export const TextAreaCounter = ({ value, maxLength, css }) => (
+    <div className={`textarea-counter${css && ` ${css}`}`}>
+        {value.length} / {maxLength}
+    </div>
+);
+
+TextAreaCounter.propTypes = {
+    /** Value (current text) of a <textarea> */
+    value: PropTypes.string.isRequired,
+    /** Maximum character length allowed in the <textarea> */
+    maxLength: PropTypes.number.isRequired,
+    /** Additional CSS classes for the wrapper <div> */
+    css: PropTypes.string,
+};
+
+TextAreaCounter.defaultProps = {
+    css: '',
+};

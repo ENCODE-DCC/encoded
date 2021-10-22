@@ -26,6 +26,7 @@ import CartBatchDownload from './batch_download';
 import CartClearButton from './clear';
 import * as constants from './constants';
 import CartViewContext from './context';
+import CartDescription from './description';
 import {
     assembleFileFacets,
     assembleDatasetFacets,
@@ -44,7 +45,8 @@ import { CartSearchResults } from './search_results';
 import Status from '../status';
 import CartRemoveElements from './remove_multiple';
 import { ManageSeriesModal, useSeriesManager } from './series';
-import { allowedDatasetTypes, calcTotalPageCount, DEFAULT_FILE_VIEW_NAME } from './util';
+import { CartListingAgentActuator, CartStatus } from './status';
+import { allowedDatasetTypes, calcTotalPageCount, DEFAULT_FILE_VIEW_NAME, getReadOnlyState } from './util';
 
 
 /**
@@ -161,6 +163,7 @@ CartBrowser.propTypes = {
  * Display the list of files selected by the current cart facet selections.
  */
 const CartFiles = ({
+    cart,
     files,
     selectedFilesInFileView,
     isFileViewOnly,
@@ -173,6 +176,7 @@ const CartFiles = ({
         const pageStartIndex = currentPage * constants.PAGE_FILE_COUNT;
         const currentPageFiles = files.slice(pageStartIndex, pageStartIndex + constants.PAGE_ELEMENT_COUNT);
         const pseudoDefaultFiles = files.filter((file) => file.pseudo_default);
+        const readOnlyState = getReadOnlyState(cart);
         return (
             <div className="cart-list cart-list--file">
                 {defaultOnly && pseudoDefaultFiles.length > 0
@@ -194,7 +198,7 @@ const CartFiles = ({
                                     file={file}
                                     fileViewName={DEFAULT_FILE_VIEW_NAME}
                                     selected={selectedFilesInFileView.includes(file['@id'])}
-                                    disabled={cartType !== 'ACTIVE'}
+                                    disabled={cartType !== 'ACTIVE' || readOnlyState.any}
                                 />
                             : null}
                             <a href={file['@id']} className="cart-list-link">
@@ -254,6 +258,8 @@ const CartFiles = ({
 };
 
 CartFiles.propTypes = {
+    /** Cart object being displayed */
+    cart: PropTypes.object.isRequired,
     /** Array of files from datasets in the cart */
     files: PropTypes.array.isRequired,
     /** Array of selected files in the file view; null to not display selection controls */
@@ -325,24 +331,11 @@ const requestDatasets = (elements, fetch, session) => {
  * Display a button that links to a report page showing the datasets in the currently displayed
  * cart.
  */
-const CartDatasetReport = ({ savedCartObj, sharedCartObj, usedDatasetTypes, cartType }) => {
-    /** Cart that this button links to for search results */
-    const linkedCart = React.useRef(null);
-
-    // Get the object for the cart to link to search results.
-    if (cartType === 'ACTIVE') {
-        linkedCart.current = savedCartObj;
-    } else if (cartType === 'OBJECT') {
-        linkedCart.current = sharedCartObj;
-    } else {
-        // Shouldn't happen but just in case.
-        return null;
-    }
-
+const CartDatasetReport = ({ cart, usedDatasetTypes }) => {
     // Only display the Dataset Report button if we have at least one experiment in the cart. This
     // button drops down a menu allowing the user to select the data type to view which links to
     // that report view.
-    if (linkedCart.current && linkedCart.current.elements && linkedCart.current.elements.length > 0) {
+    if (cart && cart.elements && cart.elements.length > 0) {
         return (
             <DropdownButton.Immediate
                 label={<>Dataset report {svgIcon('chevronDown')}</>}
@@ -350,7 +343,7 @@ const CartDatasetReport = ({ savedCartObj, sharedCartObj, usedDatasetTypes, cart
                 css="cart-dataset-report"
             >
                 {usedDatasetTypes.map((type) => (
-                    <a key={type} href={`/cart-report/?type=${allowedDatasetTypes[type].type}&cart=${linkedCart.current['@id']}`} className={`cart-dataset-option cart-dataset-option--${type}`}>
+                    <a key={type} href={`/cart-report/?type=${allowedDatasetTypes[type].type}&cart=${cart['@id']}`} className={`cart-dataset-option cart-dataset-option--${type}`}>
                         {allowedDatasetTypes[type].title}
                     </a>
                 ))}
@@ -361,39 +354,41 @@ const CartDatasetReport = ({ savedCartObj, sharedCartObj, usedDatasetTypes, cart
 };
 
 CartDatasetReport.propTypes = {
-    /** Active cart */
-    savedCartObj: PropTypes.object.isRequired,
-    /** Shared cart */
-    sharedCartObj: PropTypes.object.isRequired,
+    /** Cart as it exists in the database */
+    cart: PropTypes.object,
     /** Dataset types of objects that exist in cart */
     usedDatasetTypes: PropTypes.array.isRequired,
-    /** Type of cart to link to the button */
-    cartType: PropTypes.string.isRequired,
+};
+
+CartDatasetReport.defaultProps = {
+    cart: null,
 };
 
 
 /**
  * Display header accessories specific for carts.
  */
-const CartAccessories = ({ savedCartObj, viewableDatasets, sharedCart, cartType, inProgress }) => (
-    <div className="cart-accessories">
-        {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableDatasets={viewableDatasets} /> : null}
-        {cartType === 'ACTIVE' ?
-            <>
-                <CartLockTrigger savedCartObj={savedCartObj} inProgress={inProgress} />
-                <CartClearButton />
-            </>
-        : null}
-    </div>
-);
+const CartAccessories = ({ cart, viewableDatasets, cartType, inProgress }) => {
+    const readOnlyStatus = getReadOnlyState(cart);
+    return (
+        <div className="cart-accessories">
+            {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={cart} viewableDatasets={viewableDatasets} /> : null}
+            {cartType === 'ACTIVE' ?
+                <>
+                    <CartLockTrigger cart={cart} inProgress={inProgress} />
+                    <CartClearButton isCartReadOnly={readOnlyStatus.any} />
+                    <CartListingAgentActuator cart={cart} inProgress={inProgress} disabled={readOnlyStatus.any} />
+                </>
+            : null}
+        </div>
+    );
+};
 
 CartAccessories.propTypes = {
     /** Cart as it exists in the database */
-    savedCartObj: PropTypes.object,
+    cart: PropTypes.object,
     /** Viewable cart element @ids */
     viewableDatasets: PropTypes.array,
-    /** Elements in the shared cart, if that's being displayed */
-    sharedCart: PropTypes.object,
     /** Type of cart: ACTIVE, OBJECT */
     cartType: PropTypes.string.isRequired,
     /** True if cart operation in progress */
@@ -401,9 +396,8 @@ CartAccessories.propTypes = {
 };
 
 CartAccessories.defaultProps = {
-    savedCartObj: null,
+    cart: null,
     viewableDatasets: null,
-    sharedCart: null,
 };
 
 
@@ -412,14 +406,12 @@ CartAccessories.defaultProps = {
  * in the resulting files.txt.
  */
 const CartTools = ({
+    cart,
     elements,
     selectedFileTerms,
     selectedDatasetTerms,
     selectedDatasetType,
     facetFields,
-    savedCartObj,
-    cartType,
-    sharedCart,
     visualizable,
     isFileViewOnly,
 }) => {
@@ -434,21 +426,17 @@ const CartTools = ({
         <div className="cart-tools">
             {elements.length > 0 ?
                 <CartBatchDownload
-                    cartType={cartType}
+                    cart={cart}
                     selectedFileTerms={selectedFileTerms}
                     selectedDatasetTerms={selectedDatasetTerms}
                     selectedDatasetType={selectedDatasetType}
                     facetFields={facetFields}
-                    savedCartObj={savedCartObj}
-                    sharedCart={sharedCart}
                     visualizable={visualizable}
                     isFileViewOnly={isFileViewOnly}
                 />
             : null}
             <CartDatasetReport
-                savedCartObj={savedCartObj}
-                sharedCartObj={sharedCart}
-                cartType={cartType}
+                cart={cart}
                 usedDatasetTypes={[...usedDatasetTypes]}
             />
         </div>
@@ -456,6 +444,7 @@ const CartTools = ({
 };
 
 CartTools.propTypes = {
+    cart: PropTypes.object,
     /** Cart elements */
     elements: PropTypes.array,
     /** Selected file facet terms */
@@ -466,12 +455,6 @@ CartTools.propTypes = {
     selectedDatasetType: PropTypes.string.isRequired,
     /** Currently used facet field definitions */
     facetFields: PropTypes.array.isRequired,
-    /** Cart as it exists in the database; use JSON payload method if none */
-    savedCartObj: PropTypes.object,
-    /** Type of cart: ACTIVE, OBJECT */
-    cartType: PropTypes.string.isRequired,
-    /** Elements in the shared cart, if that's being displayed */
-    sharedCart: PropTypes.object,
     /** True if only visualizable files should be downloaded */
     visualizable: PropTypes.bool,
     /** True if user has "File view" checked */
@@ -479,11 +462,10 @@ CartTools.propTypes = {
 };
 
 CartTools.defaultProps = {
+    cart: null,
     elements: [],
     selectedFileTerms: null,
     selectedDatasetTerms: null,
-    savedCartObj: null,
-    sharedCart: null,
     visualizable: false,
 };
 
@@ -515,6 +497,7 @@ CartPager.propTypes = {
  * Displays controls at the top of search results within the tab content areas.
  */
 const CartSearchResultsControls = ({
+    cart,
     currentTab,
     elements,
     currentPage,
@@ -530,6 +513,7 @@ const CartSearchResultsControls = ({
         fileViewControlsEnabled,
         isFileViewOnly,
     } = fileViewOptions;
+    const readOnlyStatus = getReadOnlyState(cart);
     const pager = totalPageCount > 1 && (
         <CartPager
             currentPage={currentPage}
@@ -545,7 +529,7 @@ const CartSearchResultsControls = ({
                 fileViewName={fileViewName}
                 fileViewControlsEnabled={fileViewControlsEnabled}
                 isFileViewOnly={isFileViewOnly}
-                disabled={cartType !== 'ACTIVE'}
+                disabled={cartType !== 'ACTIVE' || readOnlyStatus.any}
             />;
 
     return (controls || pager) && (
@@ -557,6 +541,8 @@ const CartSearchResultsControls = ({
 };
 
 CartSearchResultsControls.propTypes = {
+    /** Cart being displayed */
+    cart: PropTypes.object.isRequired,
     /** Key of the currently selected tab */
     currentTab: PropTypes.string.isRequired,
     /** Array of currently displayed cart items */
@@ -730,26 +716,30 @@ CounterTab.defaultProps = {
  *
  * @return {object} -
  * {
+ *      {object} cart - Cart object from Redux for active carts or from context for object carts
  *      {string} cartType - Cart type: OBJECT, ACTIVE; '' if undetermined
  *      {string} cartName - Name of cart
  *      {array} cartDatasets - @ids of all datasets in cart
  * }
  */
 const getCartInfo = (context, savedCartObj) => {
+    let cart = null;
     let cartType = '';
     let cartName = '';
     let cartDatasets = [];
     if (context['@type'][0] === 'cart-view' && savedCartObj && Object.keys(savedCartObj).length > 0) {
+        cart = savedCartObj;
         cartType = 'ACTIVE';
         cartName = savedCartObj.name;
         cartDatasets = savedCartObj.elements;
     } else if (context['@type'][0] === 'Cart') {
         // Viewing a saved cart at its unique path.
+        cart = context;
         cartType = 'OBJECT';
         cartName = context.name;
         cartDatasets = context.elements;
     }
-    return { cartType, cartName, cartDatasets };
+    return { cart, cartType, cartName, cartDatasets };
 };
 
 
@@ -1098,11 +1088,12 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
 
     // Retrieve current unfiltered cart information regardless of its source (object or active).
     // Determine if the cart contents have changed.
-    const { cartType, cartName, cartDatasets } = getCartInfo(context, savedCartObj);
+    const { cart, cartType, cartName, cartDatasets } = getCartInfo(context, savedCartObj);
     const isCartDatasetsChanged = !_.isEqual(cartDatasetsRef.current, cartDatasets);
     if (isCartDatasetsChanged) {
         cartDatasetsRef.current = cartDatasets;
     }
+    const readOnlyState = getReadOnlyState(cart);
 
     // Filter out conditional facets.
     const usedFileFacetFields = React.useMemo(() => {
@@ -1386,19 +1377,25 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
             <div className={itemClass(context, 'view-item')}>
                 <header>
                     <h1>{cartName}</h1>
-                    <CartAccessories
-                        savedCartObj={savedCartObj}
-                        viewableDatasets={viewableDatasets}
-                        sharedCart={context}
-                        cartType={cartType}
-                        inProgress={inProgress}
-                    />
-                    {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
+                    <CartStatus cart={savedCartObj} />
+                    {(cartDatasets.length > 0 || allSeries.length > 0) &&
+                        <>
+                            <CartDescription cart={cart} cartType={cartType} isCartReadOnly={readOnlyState.any} />
+                            <CartAccessories
+                                cart={cart}
+                                viewableDatasets={viewableDatasets}
+                                inProgress={inProgress}
+                                cartType={cartType}
+                            />
+                            {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
+                        </>
+                    }
                 </header>
                 <Panel addClasses="cart__result-table">
                     {selectedDatasets.length > 0 ?
                         <PanelHeading addClasses="cart__header">
                             <CartTools
+                                cart={cart}
                                 elements={viewableDatasets}
                                 selectedFileTerms={selectedFileTerms}
                                 selectedDatasetTerms={selectedDatasetTerms}
@@ -1511,6 +1508,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                                 elements={allSeries}
                                                 currentPage={pageNumbers.series}
                                                 cartControls={cartType !== 'OBJECT'}
+                                                isReadOnly={readOnlyState.any}
                                                 loading={facetProgress !== -1}
                                             />
                                         </TabPanelPane>
@@ -1518,6 +1516,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                     {!isFileViewOnly ?
                                         <TabPanelPane key="datasets">
                                             <CartSearchResultsControls
+                                                cart={cart}
                                                 currentTab={displayedTab}
                                                 elements={selectedDatasets}
                                                 currentPage={pageNumbers.datasets}
@@ -1530,12 +1529,14 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                                 elements={selectedDatasets}
                                                 currentPage={pageNumbers.datasets}
                                                 cartControls={cartType !== 'OBJECT'}
+                                                isReadOnly={readOnlyState.any}
                                                 loading={facetProgress !== -1}
                                             />
                                         </TabPanelPane>
                                     : null}
                                     <TabPanelPane key="browser">
                                         <CartSearchResultsControls
+                                            cart={cart}
                                             currentTab={displayedTab}
                                             elements={selectedDatasets}
                                             currentPage={pageNumbers.browser}
@@ -1548,6 +1549,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                     </TabPanelPane>
                                     <TabPanelPane key="processeddata">
                                         <CartSearchResultsControls
+                                            cart={cart}
                                             currentTab={displayedTab}
                                             elements={selectedDatasets}
                                             currentPage={pageNumbers.processeddata}
@@ -1563,6 +1565,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                             loading={facetProgress !== -1}
                                         />
                                         <CartFiles
+                                            cart={cart}
                                             files={selectedProcessedFiles}
                                             isFileViewOnly={isFileViewOnly}
                                             selectedFilesInFileView={selectedFilesInFileView}
@@ -1575,6 +1578,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                     {!isFileViewOnly ?
                                         <TabPanelPane key="rawdata">
                                             <CartSearchResultsControls
+                                                cart={cart}
                                                 currentTab={displayedTab}
                                                 elements={selectedDatasets}
                                                 currentPage={pageNumbers.rawdata}
@@ -1583,7 +1587,13 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                                                 cartType={cartType}
                                                 loading={facetProgress !== -1}
                                             />
-                                            <CartFiles files={rawdataFiles} currentPage={pageNumbers.rawdata} cartType={cartType} loading={facetProgress !== -1} />
+                                            <CartFiles
+                                                cart={cart}
+                                                files={rawdataFiles}
+                                                currentPage={pageNumbers.rawdata}
+                                                cartType={cartType}
+                                                loading={facetProgress !== -1}
+                                            />
                                         </TabPanelPane>
                                     : null}
                                 </TabPanel>
@@ -1596,6 +1606,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                 {seriesManager.isSeriesManagerOpen && (
                     <ManageSeriesModal
                         series={seriesManager.managedSeries}
+                        cartControls={seriesManager.cartControls}
                         onCloseModalClick={() => seriesManager.setManagedSeries(null)}
                     />
                 )}

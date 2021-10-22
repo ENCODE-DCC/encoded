@@ -12,6 +12,7 @@ import {
     REMOVE_MULTIPLE_FROM_CART,
     CACHE_SAVED_CART,
     CART_OPERATION_IN_PROGRESS,
+    SET_STATUS,
 } from '../cart/actions';
 import { isAllowedElementsPossible } from '../cart/util';
 import { processPseudoDefaultFiles } from '../cart/cart';
@@ -91,6 +92,12 @@ describe('Cart actions', () => {
             const newState = cartModule(state, { type: REMOVE_MULTIPLE_FROM_CART, elementAtIds: ['/experiment/ENCSR000AAA/', '/experiment/ENCSR002AAA/'] });
             expect(newState.elements).toHaveLength(1);
             expect(newState.elements[0]).toEqual('/experiment/ENCSR001AAA/');
+            expect(newState).not.toEqual(state);
+        });
+
+        test('SET_STATUS works and does not mutate state', () => {
+            const newState = cartModule(state, { type: SET_STATUS, status: 'listed' });
+            expect(newState.status).toEqual('listed');
             expect(newState).not.toEqual(state);
         });
     });

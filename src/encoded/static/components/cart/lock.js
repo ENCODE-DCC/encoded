@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { svgIcon } from '../../libs/svg-icons';
 import { setCartLockAndSave } from './actions';
+import { getReadOnlyState } from './util';
 
 
 /**
@@ -9,39 +10,25 @@ import { setCartLockAndSave } from './actions';
  * involves setting the `locked` flag in the cart object, though all other processing of this flag
  * happens in the front end.
  */
-const CartLockTriggerComponent = ({ savedCartObj, inProgress, onLock }) => {
+const CartLockTriggerComponent = ({ cart, inProgress, onLock }) => {
+    const readOnlyState = getReadOnlyState(cart);
+
     // Called when the user clicks the lock/unlock button.
     const handleLockClick = () => {
-        onLock(!savedCartObj.locked);
+        onLock(!cart.locked);
     };
 
-    // Determine the tooltip text.
-    let disabledTooltip = '';
-    if (savedCartObj.status === 'deleted') {
-        disabledTooltip = 'Cannot lock a deleted cart';
-    } else if (savedCartObj.status === 'disabled') {
-        disabledTooltip = 'Cannot share the auto-save cart';
-    } else if (inProgress) {
-        disabledTooltip = 'Cart operation in progress';
-    }
-
     return (
-        <div className="cart-manager-table__tooltip-group cart-tools-extras__button">
-            {disabledTooltip ?
-                <div
-                    className="cart-manager-table__button-overlay"
-                    title={disabledTooltip}
-                />
-            : null}
+        <div className="cart-tools-extras__button">
             <button
                 type="button"
                 onClick={handleLockClick}
                 className="btn btn-sm btn-warning btn-inline cart-lock-trigger"
-                disabled={inProgress || savedCartObj.status === 'deleted' || savedCartObj.status === 'disabled'}
-                aria-label={`${savedCartObj.locked ? 'Unlock' : 'Lock'} cart`}
+                disabled={inProgress || readOnlyState.released}
+                aria-label={`${cart.locked ? 'Unlock' : 'Lock'} cart`}
             >
-                {svgIcon(savedCartObj.locked ? 'lockClosed' : 'lockOpen', { width: 13, marginRight: 4 })}
-                {savedCartObj.locked ? <span>Unlock</span> : <span>Lock</span>}
+                {svgIcon(cart.locked ? 'lockClosed' : 'lockOpen', { width: 13, marginRight: 4 })}
+                {cart.locked ? <span>Unlock</span> : <span>Lock</span>}
             </button>
         </div>
     );
@@ -49,7 +36,7 @@ const CartLockTriggerComponent = ({ savedCartObj, inProgress, onLock }) => {
 
 CartLockTriggerComponent.propTypes = {
     /** Cart as it exists in the database */
-    savedCartObj: PropTypes.object.isRequired,
+    cart: PropTypes.object.isRequired,
     /** True if cart operation in progress */
     inProgress: PropTypes.bool.isRequired,
     /** Redux function called to lock/unlock cart */
@@ -57,7 +44,7 @@ CartLockTriggerComponent.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onLock: (locked) => dispatch(setCartLockAndSave(locked, ownProps.savedCartObj, ownProps.sessionProperties && ownProps.sessionProperties.user, ownProps.fetch)),
+    onLock: (locked) => dispatch(setCartLockAndSave(locked, ownProps.cart, ownProps.sessionProperties && ownProps.sessionProperties.user, ownProps.fetch)),
 });
 
 const CartLockTriggerInternal = connect(null, mapDispatchToProps)(CartLockTriggerComponent);

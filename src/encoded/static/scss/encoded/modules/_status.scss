@@ -12,6 +12,8 @@ $status-colors: (
     exempt-from-standards: #fff712,
     archived: #a0a0a0,
     revoked: $brand-danger,
+    listed: #63326e,
+    unlisted: $brand-info,
 
     // Consortium
     in-progress: $brand-info,
