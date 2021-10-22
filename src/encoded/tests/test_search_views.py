@@ -1157,3 +1157,14 @@ def test_search_views_top_hits_view(index_workbook, testapp):
         '/top-hits/'
     )
     assert r.json['@type'] == ['TopHitsSearch']
+
+
+def test_search_views_search_config_registry(index_workbook, testapp):
+    r = testapp.get(
+        '/search-config-registry/'
+    )
+    assert len(r.json) > 300
+    assert 'Experiment' in r.json
+    assert 'ExperimentFacets' in r.json
+    assert 'ExperimentColumns' in r.json
+    assert 'ExperimentFacetGroups' in r.json
