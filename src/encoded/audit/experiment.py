@@ -242,6 +242,8 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
     control = control_objects.get(control_id)
     if not control:
         return
+    if not control.get('@type')[0] == 'Experiment':
+        return
     target_failures = []
     if not control.get('control_type'):
         detail = 'Control {} file {} has no control_type specified.'.format(
@@ -2281,7 +2283,8 @@ def audit_experiment_ChIP_control(value, system, files_structure):
 
     for control_dataset in value['possible_controls']:
         control_type = control_dataset.get('control_type')
-        if not control_type:
+        control_dataset_type = control_dataset.get('@type')[0]
+        if not control_type and control_dataset_type == 'Experiment':
             detail = (
                 'Experiment {} is ChIP-seq but its control {} does not '
                 'have a valid "control_type".'.format(
