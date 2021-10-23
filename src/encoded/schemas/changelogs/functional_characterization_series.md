@@ -11,6 +11,7 @@
 * Added *biosample_summary* calculated property
 * Added *Deeply Profiled* to the *internal_tags* enum
 * Added a calculated boolean property *datapoint* 
+* Modified *assay_title* calculated properties to not include Controls, unless the Series contains only Control experiments
 * Removed *control_type* calculated property
 
 ### Schema version 3
