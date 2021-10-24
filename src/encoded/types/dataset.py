@@ -1030,15 +1030,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                     combined_assembly.add(assembly_from_related_dataset)
         return list(combined_assembly)
 
-    @calculated_property(define=True, schema={
-        "title": "Control types",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def control_type(self, request, related_datasets):
-        return request.select_distinct_values('control_type', *related_datasets)
 
     @calculated_property(schema={
         "title": "Biosample summary",
