@@ -1060,25 +1060,6 @@ def rnaget_report(context, request):
     return cfr.render()
 
 
-@view_config(route_name='rnaget-quick', request_method='GET', permission='search')
-def rnaget_quick(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            BasicSearchResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                reserved_keys=RESERVED_KEYS,
-            )
-        ]
-    )
-    return fr.render()
-
-
 @view_config(route_name='search-config-registry', request_method='GET', permission='config')
 def search_config_registry(context, request):
     registry = request.registry[SEARCH_CONFIG]
