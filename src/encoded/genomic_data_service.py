@@ -21,6 +21,19 @@ def includeme(config):
     )
 
 
+def remote_get(url, **kwargs):
+    return requests.get(
+        url,
+        **kwargs,
+    )
+
+
+def set_status_and_parse_json(response_field, results):
+    status_code = results.status_code
+    response_field.get_request().response.status_code = status_code
+    return results.json()
+
+
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
 RNA_GET_FACETS = [
     'assayType',

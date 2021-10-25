@@ -3,6 +3,8 @@ from pyramid.view import view_config
 
 from encoded.cart_view import CartWithElements
 from encoded.genomic_data_service import GenomicDataService
+from encoded.genomic_data_service import remote_get
+from encoded.genomic_data_service import set_status_and_parse_json
 from encoded.searches.caches import cached_fielded_response_factory
 from encoded.searches.caches import get_redis_lru_cache
 from encoded.searches.caches import make_key_from_request
@@ -17,6 +19,7 @@ from encoded.searches.fields import CartReportWithFacetsResponseField
 from encoded.searches.fields import CartMatrixWithFacetsResponseField
 from encoded.searches.fields import CartFiltersResponseField
 from encoded.searches.fields import ClearFiltersResponseFieldWithCarts
+from encoded.searches.fields import RemoteResponseField
 from encoded.searches.fields import TypeOnlyClearFiltersResponseFieldWithCarts
 from encoded.searches.interfaces import RNA_CLIENT
 from encoded.searches.interfaces import RNA_EXPRESSION
