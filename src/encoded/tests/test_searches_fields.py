@@ -234,3 +234,215 @@ def test_searches_fields_type_only_clear_filter_response_field_with_carts_get_se
         ('cart', 'abc'),
         ('cart', '/carts/1234/')
     ]
+
+
+def test_searches_fields_remote_response_field(dummy_parent_and_dummy_request):
+    from encoded.searches.fields import RemoteResponseField
+    dummy_parent, dummy_request = dummy_parent_and_dummy_request
+    rrf = RemoteResponseField(
+        how='x',
+        where='y',
+        then='t',
+    )
+    assert isinstance(rrf, RemoteResponseField)
+    assert rrf.how == 'x'
+    assert rrf.where == 'y'
+    assert rrf.then == 't'
+    assert rrf.use_query_string is True
+    rrf = RemoteResponseField(
+        how='x',
+        where='y',
+        use_query_string=False,
+    )
+    assert isinstance(rrf, RemoteResponseField)
+    assert rrf.how == 'x'
+    assert rrf.where == 'y'
+    assert rrf.then is None
+    assert rrf.use_query_string is False
+
+
+def test_searches_fields_remote_response_field_get_query_string_from_request(dummy_parent_and_dummy_request):
+    from encoded.searches.fields import RemoteResponseField
+    dummy_parent, dummy_request = dummy_parent_and_dummy_request
+    dummy_parent._meta['params_parser']._request.environ['QUERY_STRING'] = (
+        'type=RNAExpression&assay_title=RNAseq&award.project=Roadmap'
+        '&frame=embedded&restricted!=*&searchTerm=pomc'
+    )
+    rrf = RemoteResponseField(
+        how=lambda x: {'result': '123'},
+        where='https://rnaget.encodeproject.org/',
+        then=lambda x: x,
+    )
+    rrf.parent = dummy_parent
+    assert rrf._get_query_string_from_request() == (
+        'type=RNAExpression&assay_title=RNAseq'
+        '&award.project=Roadmap&frame=embedded'
+        '&restricted%21=%2A&searchTerm=pomc'
+    )
+
+
+def test_searches_fields_remote_response_field_get_key_with_query_string(dummy_parent_and_dummy_request):
+    from encoded.searches.fields import RemoteResponseField
+    dummy_parent, dummy_request = dummy_parent_and_dummy_request
+    dummy_parent._meta['params_parser']._request.environ['QUERY_STRING'] = (
+        'type=RNAExpression&assay_title=RNAseq&award.project=Roadmap'
+        '&frame=embedded&restricted!=*&searchTerm=pomc'
+    )
+    rrf = RemoteResponseField(
+        how=lambda x: {
+            'result': '123',
+            'input': x,
+        },
+        where='https://rnaget.encodeproject.org/',
+        then=lambda x: x,
+    )
+    rrf.parent = dummy_parent
+    assert rrf._get_key_with_query_string() == (
+        'https://rnaget.encodeproject.org/'
+        '?type=RNAExpression&assay_title=RNAseq'
+        '&award.project=Roadmap&frame=embedded'
+        '&restricted%21=%2A&searchTerm=pomc'
+    )
+
+
+def test_searches_fields_remote_response_field_make_key(dummy_parent_and_dummy_request):
+    from encoded.searches.fields import RemoteResponseField
+    dummy_parent, dummy_request = dummy_parent_and_dummy_request
+    dummy_parent._meta['params_parser']._request.environ['QUERY_STRING'] = (
+        'type=RNAExpression&assay_title=RNAseq&award.project=Roadmap'
+        '&frame=embedded&restricted!=*&searchTerm=pomc'
+    )
+    rrf = RemoteResponseField(
+        how=lambda x: {
+            'result': '123',
+            'input': x,
+        },
+        where='https://rnaget.encodeproject.org/',
+        then=lambda x: x,
+    )
+    rrf.parent = dummy_parent
+    assert rrf._make_key() == (
+        'https://rnaget.encodeproject.org/'
+        '?type=RNAExpression&assay_title=RNAseq'
+        '&award.project=Roadmap&frame=embedded'
+        '&restricted%21=%2A&searchTerm=pomc'
+    )
+    rrf = RemoteResponseField(
+        how=lambda x: {
+            'result': '123',
+            'input': x,
+        },
+        where='https://rnaget.encodeproject.org/',
+        then=lambda x: x,
+        use_query_string=False,
+    )
+    rrf.parent = dummy_parent
+    assert rrf._make_key() == (
+        'https://rnaget.encodeproject.org/'
+    )
+
+
+def test_searches_fields_remote_response_field_make_remote_calls(dummy_parent_and_dummy_request):
+    from encoded.searches.fields import RemoteResponseField
+    dummy_parent, dummy_request = dummy_parent_and_dummy_request
+    dummy_parent._meta['params_parser']._request.environ['QUERY_STRING'] = (
+        'type=RNAExpression&assay_title=RNAseq&award.project=Roadmap'
+        '&frame=embedded&restricted!=*&searchTerm=pomc'
+    )
+    rrf = RemoteResponseField(
+        how=lambda x: {
+            'result': '123',
+            'input': x,
+        },
+        where='https://rnaget.encodeproject.org/',
+        then=lambda x: x,
+    )
+    rrf.parent = dummy_parent
+    assert rrf._make_remote_call() == {
+        'result': '123',
+        'input': (
+            'https://rnaget.encodeproject.org/'
+            '?type=RNAExpression&assay_title=RNAseq'
+            '&award.project=Roadmap&frame=embedded'
+            '&restricted%21=%2A&searchTerm=pomc'
+        )
+    }
+    def remote_call(where, **kwargs):
+        return {
+            'where': where,
+            'kwargs': kwargs
+        }
+    rrf = RemoteResponseField(
+        how=remote_call,
+        where='https://rnaget.encodeproject.org/',
+        then=lambda x: x,
+        use_query_string=False,
+        stream=True,
+        some_other_thing='abc',
+    )
+    rrf.parent = dummy_parent
+    assert rrf._make_remote_call() == {
+        'where': 'https://rnaget.encodeproject.org/',
+        'kwargs': {
+            'stream': True,
+            'some_other_thing': 'abc'
+        }
+    }
+
+
+def test_searches_fields_remote_response_field_get_results(dummy_parent_and_dummy_request):
+    from encoded.searches.fields import RemoteResponseField
+    dummy_parent, dummy_request = dummy_parent_and_dummy_request
+    dummy_parent._meta['params_parser']._request.environ['QUERY_STRING'] = (
+        'type=RNAExpression&assay_title=RNAseq&award.project=Roadmap'
+        '&frame=embedded&restricted!=*&searchTerm=pomc'
+    )
+    rrf = RemoteResponseField(
+        how=lambda x: {
+            'result': '123',
+            'input': x,
+        },
+        where='https://rnaget.encodeproject.org/',
+    )
+    rrf.parent = dummy_parent
+    assert rrf._get_results() == {
+        'result': '123',
+        'input': (
+            'https://rnaget.encodeproject.org/'
+            '?type=RNAExpression&assay_title=RNAseq'
+            '&award.project=Roadmap&frame=embedded'
+            '&restricted%21=%2A&searchTerm=pomc'
+        )
+    }
+    rrf = RemoteResponseField(
+        how=lambda x: {
+            'result': '123',
+            'input': x,
+        },
+        where='https://rnaget.encodeproject.org/',
+        then=lambda x: x['result']
+    )
+    rrf.parent = dummy_parent
+    assert rrf._get_results() == '123'
+
+
+def test_searches_fields_remote_response_field_render(dummy_parent_and_dummy_request):
+    from encoded.searches.fields import RemoteResponseField
+    dummy_parent, dummy_request = dummy_parent_and_dummy_request
+    dummy_parent._meta['params_parser']._request.environ['QUERY_STRING'] = (
+        'type=RNAExpression&assay_title=RNAseq&award.project=Roadmap'
+        '&frame=embedded&restricted!=*&searchTerm=pomc'
+    )
+    rrf = RemoteResponseField(
+        how=lambda x: {
+            'result': {'x': 'y'},
+        },
+        where='https://rnaget.encodeproject.org/',
+    )
+    assert rrf.render(
+        parent=dummy_parent
+    ) == {
+        'result': {
+            'x': 'y'
+        }
+    }

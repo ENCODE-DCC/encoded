@@ -4,6 +4,7 @@ from encoded.searches.queries import CartSearchQueryFactory
 from encoded.searches.queries import CartSearchQueryFactoryWithFacets
 from encoded.searches.queries import CartMatrixQueryFactoryWithFacets
 from encoded.searches.queries import CartReportQueryFactoryWithFacets
+from snosearch.fields import ResponseField
 from snosearch.fields import BasicSearchResponseField
 from snosearch.fields import BasicSearchWithFacetsResponseField
 from snosearch.fields import BasicMatrixWithFacetsResponseField
@@ -110,3 +111,40 @@ class TypeOnlyClearFiltersResponseFieldWithCarts(TypeOnlyClearFiltersResponseFie
             super()._get_search_term_or_types_from_query_string()
             + self.get_params_parser().get_cart()
         )
+
+
+class RemoteResponseField(ResponseField):
+
+    def __init__(self, *args, **kwargs):
+        self.how = kwargs.pop('how')
+        self.where = kwargs.pop('where')
+        self.then = kwargs.pop('then', None)
+        self.use_query_string = kwargs.pop('use_query_string', True)
+        super().__init__(*args, **kwargs)
+
+    def _get_query_string_from_request(self):
+        return self.get_params_parser().get_query_string()
+
+    def _get_key_with_query_string(self):
+        return f'{self.where}?{self._get_query_string_from_request()}'
+
+    def _make_key(self):
+        if self.use_query_string:
+            return self._get_key_with_query_string()
+        return self.where
+
+    def _make_remote_call(self):
+        return self.how(
+            self._make_key(),
+            **self.kwargs,
+        )
+
+    def _get_results(self):
+        results = self._make_remote_call()
+        if self.then is not None:
+            return self.then(results)
+        return results
+
+    def render(self, *args, **kwargs):
+        self.parent = kwargs.get('parent')
+        return self._get_results()
