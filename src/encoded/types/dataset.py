@@ -1415,7 +1415,12 @@ class FunctionalCharacterizationSeries(Series):
         },
     })
     def assay_title(self, request, related_datasets):
-        return request.select_distinct_values('assay_title', *related_datasets)
+        titles = request.select_distinct_values('assay_title', *related_datasets)
+        not_controls = [title for title in titles if not title.startswith('Control')]
+        if not_controls:
+            return not_controls
+        else:
+            return titles
     
     @calculated_property(schema={
         "title": "Datapoint",
