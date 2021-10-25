@@ -4,6 +4,8 @@ from pyramid.view import view_config
 from encoded.cart_view import CartWithElements
 from encoded.genomic_data_service import remote_get
 from encoded.genomic_data_service import set_status_and_parse_json
+from encoded.genomic_data_service import RNAGET_REPORT_URL
+from encoded.genomic_data_service import RNAGET_SEARCH_URL
 from encoded.searches.caches import cached_fielded_response_factory
 from encoded.searches.caches import get_redis_lru_cache
 from encoded.searches.caches import make_key_from_request
@@ -338,26 +340,16 @@ def cart_search_generator(request):
 
 
 def rna_expression_search_generator(request):
-    '''
-    For internal use (no view). Like search_quick but returns raw generator
-    of search hits in @graph field.
-    '''
-    rna_client = request.registry[RNA_CLIENT]
-    fgr = FieldedGeneratorResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
+    fr = FieldedResponse(
         response_fields=[
-            BasicSearchResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                reserved_keys=RESERVED_KEYS,
+            RemoteResponseField(
+                how=remote_get,
+                where=RNAGET_SEARCH_URL,
+                then=set_status_and_parse_json,
             )
         ]
     )
-    return fgr.render()
+    return fr.render()
 
 
 @view_config(route_name='report', request_method='GET', permission='search')
@@ -944,17 +936,7 @@ def top_hits(context, request):
     key=partial(make_key_from_request, 'rnaget-search'),
 )
 def rnaget_search(context, request):
-    url = 'https://rnaget.encodeproject.org/rnaget-search/'
-    fr = FieldedResponse(
-        response_fields=[
-            RemoteResponseField(
-                how=remote_get,
-                where=url,
-                then=set_status_and_parse_json,
-            )
-        ]
-    )
-    return fr.render()
+    return rna_expression_search_generator(request)
 
 
 @view_config(route_name='rnaget-report', request_method='GET', permission='search')
@@ -964,12 +946,11 @@ def rnaget_search(context, request):
     key=partial(make_key_from_request, 'rnaget-report'),
 )
 def rnaget_report(context, request):
-    url = 'https://rnaget.encodeproject.org/rnaget-report/'
     fr = FieldedResponse(
         response_fields=[
             RemoteResponseField(
                 how=remote_get,
-                where=url,
+                where=RNAGET_REPORT_URL,
                 then=set_status_and_parse_json,
             )
         ]

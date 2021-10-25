@@ -8,17 +8,8 @@ from snovault.elasticsearch import TimedUrllib3HttpConnection
 from snovault.json_renderer import json_renderer
 
 
-def includeme(config):
-    rna_host = config.registry.settings.get(
-        'rna_expression_elasticsearch_server'
-    )
-    config.registry[RNA_CLIENT] =  Elasticsearch(
-        rna_host,
-        serializer=PyramidJSONSerializer(json_renderer),
-        connection_class=TimedUrllib3HttpConnection,
-        timeout=200,
-        retry_on_timeout=True,
-    )
+RNAGET_SEARCH_URL = 'https://rnaget.encodeproject.org/rnaget-search/'
+RNAGET_REPORT_URL = 'https://rnaget.encodeproject.org/rnaget-report/'
 
 
 def remote_get(url, **kwargs):
