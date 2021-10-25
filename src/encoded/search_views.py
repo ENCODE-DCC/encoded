@@ -960,51 +960,17 @@ def rnaget_autocomplete(context, request):
     key=partial(make_key_from_request, 'rnaget-search'),
 )
 def rnaget_search(context, request):
-    # Note the order of rendering matters for some fields, e.g. AllResponseField and
-    # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
-    rna_client = request.registry[RNA_CLIENT]
-    CachedFieldedResponse = cached_fielded_response_factory(
-        context,
-        request,
-    )
-    cfr = CachedFieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
+    url = 'https://rnaget.encodeproject.org/rnaget-search/'
+    fr = FieldedResponse(
         response_fields=[
-            TitleResponseField(
-                title=SEARCH_TITLE
-            ),
-            TypeResponseField(
-                at_type=[SEARCH_TITLE]
-            ),
-            IDResponseField(),
-            ContextResponseField(),
-            CachedFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                reserved_keys=RESERVED_KEYS,
-            ),
-            BasicSearchWithoutFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                default_sort=DEFAULT_RNA_EXPRESSION_SORT,
-                reserved_keys=RESERVED_KEYS,
-            ),
-            AllResponseField(),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            ClearFiltersResponseField(),
-            ColumnsResponseField(),
-            SortResponseField(),
-            DebugQueryResponseField()
+            RemoteResponseField(
+                how=remote_get,
+                where=url,
+                then=set_status_and_parse_json,
+            )
         ]
     )
-    return cfr.render()
+    return fr.render()
 
 
 @view_config(route_name='rnaget-report', request_method='GET', permission='search')
@@ -1014,50 +980,17 @@ def rnaget_search(context, request):
     key=partial(make_key_from_request, 'rnaget-report'),
 )
 def rnaget_report(context, request):
-    rna_client = request.registry[RNA_CLIENT]
-    CachedFieldedResponse = cached_fielded_response_factory(
-        context,
-        request,
-    )
-    cfr = CachedFieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
+    url = 'https://rnaget.encodeproject.org/rnaget-report/'
+    fr = FieldedResponse(
         response_fields=[
-            TitleResponseField(
-                title=REPORT_TITLE
-            ),
-            TypeResponseField(
-                at_type=[REPORT_TITLE]
-            ),
-            IDResponseField(),
-            ContextResponseField(),
-            CachedFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                reserved_keys=RESERVED_KEYS,
-            ),
-            BasicReportWithoutFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                default_sort=DEFAULT_RNA_EXPRESSION_SORT,
-                reserved_keys=RESERVED_KEYS,
-            ),
-            AllResponseField(),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            ColumnsResponseField(),
-            NonSortableResponseField(),
-            SortResponseField(),
-            DebugQueryResponseField()
+            RemoteResponseField(
+                how=remote_get,
+                where=url,
+                then=set_status_and_parse_json,
+            )
         ]
     )
-    return cfr.render()
+    return fr.render()
 
 
 @view_config(route_name='search-config-registry', request_method='GET', permission='config')
