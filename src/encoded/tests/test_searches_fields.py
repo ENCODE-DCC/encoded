@@ -420,7 +420,7 @@ def test_searches_fields_remote_response_field_get_results(dummy_parent_and_dumm
             'input': x,
         },
         where='https://rnaget.encodeproject.org/',
-        then=lambda x: x['result']
+        then=lambda r, x: x['result']
     )
     rrf.parent = dummy_parent
     assert rrf._get_results() == '123'

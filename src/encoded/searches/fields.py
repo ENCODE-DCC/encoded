@@ -142,7 +142,7 @@ class RemoteResponseField(ResponseField):
     def _get_results(self):
         results = self._make_remote_call()
         if self.then is not None:
-            return self.then(results)
+            return self.then(self, results)
         return results
 
     def render(self, *args, **kwargs):
