@@ -59,6 +59,8 @@ from snosearch.parsers import ParamsParser
 from snosearch.responses import FieldedGeneratorResponse
 from snosearch.responses import FieldedResponse
 
+from snovault.elasticsearch.searches.interfaces import SEARCH_CONFIG
+
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
@@ -93,6 +95,7 @@ def includeme(config):
     config.add_route('rnaget-search', '/rnaget-search{slash:/?}')
     config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
     config.add_route('rnaget-quick', '/rnaget-quick{slash:/?}')
+    config.add_route('search-config-registry', '/search-config-registry{slash:/?}')
     config.scan(__name__)
 
 
@@ -1071,3 +1074,9 @@ def rnaget_quick(context, request):
         ]
     )
     return fr.render()
+
+
+@view_config(route_name='search-config-registry', request_method='GET', permission='config')
+def search_config_registry(context, request):
+    registry = request.registry[SEARCH_CONFIG]
+    return dict(sorted(registry.as_dict().items()))
