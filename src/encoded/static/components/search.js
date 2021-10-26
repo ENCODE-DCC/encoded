@@ -2043,4 +2043,3 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
-globals.contentViews.register(Search, 'RNAExpressionSearch');

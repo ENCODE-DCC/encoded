@@ -349,7 +349,10 @@ def rna_expression_search_generator(request):
                 how=remote_get,
                 where=RNAGET_SEARCH_URL,
                 then=set_status_and_parse_json,
-            )
+            ),
+            TypeResponseField(
+                at_type=[SEARCH_TITLE]
+            ),
         ]
     )
     return fr.render()
@@ -958,7 +961,10 @@ def rnaget_report(context, request):
                 how=remote_get,
                 where=RNAGET_REPORT_URL,
                 then=set_status_and_parse_json,
-            )
+            ),
+            TypeResponseField(
+                at_type=[REPORT_TITLE]
+            ),
         ]
     )
     return fr.render()

@@ -922,4 +922,3 @@ Report.contextTypes = {
 };
 
 globals.contentViews.register(Report, 'Report');
-globals.contentViews.register(Report, 'RNAExpressionReport');
