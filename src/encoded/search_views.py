@@ -965,6 +965,7 @@ def rnaget_report(context, request):
             TypeResponseField(
                 at_type=[REPORT_TITLE]
             ),
+            NonSortableResponseField(),
         ]
     )
     return fr.render()
