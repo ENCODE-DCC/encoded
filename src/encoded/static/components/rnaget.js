@@ -443,7 +443,7 @@ RNAGetHeader.defaultProps = {
 const RNAGetData = ({ context, visibleFields, type }) => (
     <tbody>
         {context['@graph'].map((item) => (
-            <tr key={item['@id']}>
+            <tr key={item['expression_id']}>
                 {visibleFields.map((field) => {
                     // Get the value of the property in `item` and see if the current field and
                     // type have a registered renderer.
@@ -976,4 +976,4 @@ RNAGet.contextTypes = {
     navigate: PropTypes.func,
 };
 
-globals.contentViews.register(RNAGet, 'rnaseq');
+globals.contentViews.register(RNAGet, 'RNAExpressionReport');
