@@ -924,6 +924,136 @@ table.matrix th.group-all-groups-cell {
     @extend .group-more-cell__button;
 }
 
+// Specific to grid-matrix
+.grid-matrix {
+    display: grid;
+    $border-color: #f0f0f0;
+    $first-column-width: 320px;
+    $row-data-item-width: 40px;
+
+    &__header {
+        display: grid;
+        grid-auto-flow: column;
+        min-width: auto;
+        max-width: fit-content;
+        border-bottom: 1px solid $border-color;
+
+        &__text {
+            position: absolute;
+            bottom: 1px;
+            font-weight: bold;
+
+            &--gender {
+                text-align: center;
+            }
+        }
+
+        > *:first-child {
+            width: $first-column-width;
+            left: 0;
+            position: sticky;
+            z-index: 1;
+            background-color: white;
+
+            &::after {
+                content: '';
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: -1px;
+                left: 100%;
+                width: 6px;
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), transparent);
+            }
+        }
+
+        * :not(:first-child) {
+            width: $row-data-item-width;
+        }
+
+        a {
+            display: block;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            height: 200px;
+            width: $row-data-item-width;
+            line-height: 40px;
+            font-weight: 400;
+            text-decoration: none;
+            text-align: left;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            writing-mode: vertical-rl;
+            writing-mode: tb-rl;
+            transform: rotate(180deg);
+            color: #000;
+        }
+    }
+
+    &__category {
+        display: grid;
+        grid-auto-flow: column;
+        min-width: auto;
+        max-width: fit-content;
+
+        > * {
+            border-bottom: 1px solid $border-color;
+            border-left: 1px solid $border-color;
+            text-align: center;
+        }
+
+        // https://stackoverflow.com/a/39368105/178550
+        > *:first-child {
+            width: $first-column-width;
+            border: 1px solid white;
+            font-weight: bold;
+            position: sticky;
+            left: 0;
+            text-align: left;
+            border-left: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #000 !important;
+        }
+
+        :not(:first-child) {
+            width: $row-data-item-width;
+        }
+    }
+
+    &__row-data {
+        display: grid;
+        grid-auto-flow: column;
+        min-width: auto;
+        max-width: fit-content;
+
+        :first-child {
+            width: $first-column-width;
+            text-align: right;
+            padding-right: 10px;
+            border-bottom: 1px solid $border-color;
+            border-left: 1px solid $border-color;
+
+            ::after {
+                content: "";
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: -1px;
+                left: 100%;
+                width: 6px;
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), transparent);
+            }
+        }
+
+        :not(:first-child) {
+            border-bottom: 1px solid $border-color;
+            border-left: 1px solid $border-color;
+            width: $row-data-item-width;
+        }
+    }
+}
+
 /**
  * Styles specific to the reference-epigenome matrix.
  */
@@ -2126,5 +2256,174 @@ $rnaseq-term-name-colors:
 
     to {
         transform: rotate(1turn);
+    }
+}
+
+/* Styles specific to Human Donor */
+.matrix-header__search-controls--human-donor {
+    flex: 0 1 100%;
+}
+
+.radio-btn {
+    & input[type="radio"] {
+        display: none;
+
+        &:checked + label {
+            background: #20b8be;
+            border-radius: 4px;
+        }
+    }
+
+    & label {
+        cursor: pointer;
+        z-index: 90;
+        line-height: 1.8em;
+    }
+}
+
+.disease-shape {
+    height: 12px !important;
+    width: 12px !important;
+    border-style: solid;
+    display: inline-block;
+    border: 1px solid #000;
+    vertical-align: middle;
+    margin-left: 1px;
+}
+
+.multiple-sclerosis-symbol {
+    @extend .disease-shape;
+
+    background-color: red;
+}
+
+.alzheimers-disease-symbol {
+    @extend .disease-shape;
+
+    background-color: orange;
+}
+
+.mild-cognitive-impairment-symbol {
+    @extend .disease-shape;
+
+    background-color: yellow;
+}
+
+.cognitive-impairment-symbol {
+    @extend .disease-shape;
+
+    background-color: green;
+}
+
+.bamyotrophic-lateral-sclerosis-symbol {
+    @extend .disease-shape;
+
+    background-color: purple;
+}
+
+.nonobstructive-coronary-artery-symbol {
+    @extend .disease-shape;
+
+    background-color: brown;
+}
+
+.basal-cell-carcinoma-symbol {
+    @extend .disease-shape;
+
+    background-color: blue;
+}
+
+.squamous-cell-carcinoma-symbol {
+    @extend .disease-shape;
+
+    background-color: gray;
+}
+
+.matrix__content-human-donor {
+    @extend .matrix__content;
+
+    .human-donor-facets {
+        display: flex;
+        flex-direction: column;
+        flex: 0 1 25%;
+    }
+
+    .gender-symbol {
+        width: 0.9rem !important;
+        display: inline-block;
+        line-height: 5px;
+        vertical-align: middle;
+
+        .svg-icon {
+            fill: #000;
+        }
+    }
+
+    .search-results__facets {
+        width: 250px;
+    }
+
+    .fetched-data-region {
+        display: inline;
+        font-weight: 500;
+    }
+}
+
+.matrix__legend-region-human-donor {
+    display: flex;
+    flex-direction: column;
+
+    .human-donor-legend {
+        &--title {
+            margin-bottom: 0;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        &--disease-symbol {
+            font-size: 1.5rem;
+        }
+
+        &--disease-text {
+            font-size: 1rem;
+        }
+
+        &__body {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: 15px;
+        }
+    }
+
+    .human-donor-biosample {
+        margin-bottom: 20px;
+
+        &__title {
+            margin-bottom: 0;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        &__body {
+            margin-left: 20px;
+
+            &__area {
+                display: flex;
+                height: 25px;
+            }
+
+            &__options {
+                display: flex;
+                margin-left: 15px;
+
+                label {
+                    font-size: 1rem;
+                }
+            }
+        }
     }
 }
