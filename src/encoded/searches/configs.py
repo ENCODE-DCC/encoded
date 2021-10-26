@@ -44,6 +44,26 @@ def custom_search_config():
 
 
 @search_config(
+    name='immune'
+)
+def immune_search_config():
+    return {
+        'facets': {
+            "replicates.library.biosample.disease_term_name": {
+                "title": "Disease",
+                "open_on_load": True
+            },
+            "biosample_ontology.term_name" : {
+                "title": "Biosample",
+                "type": "typeahead",
+                "length": "long",
+                "open_on_load": True
+            },
+        },
+    }
+
+
+@search_config(
     name='custom-matrix'
 )
 def custom_matrix_config():

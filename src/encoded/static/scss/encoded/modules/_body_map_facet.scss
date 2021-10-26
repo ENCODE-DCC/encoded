@@ -553,6 +553,11 @@
         top: 120px;
         margin: auto;
 
+        &.immune-cells-graph {
+            max-width: 95%;
+            min-width: 1300px;
+        }
+
         /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-sm-min) {
             width: 95%;
@@ -740,7 +745,7 @@
     /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         padding: 5px 0 5px 25px;
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     /* stylelint-disable-next-line media-feature-name-disallowed-list */

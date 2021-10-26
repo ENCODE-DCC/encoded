@@ -62,6 +62,12 @@ export function shadeOverflowOnScroll(e) {
     }
 }
 
+// Hide facets that we don't want to display
+export const filterFacet = (facets, keepFacets) => {
+    const filteredFacets = facets.filter((facet) => (keepFacets.indexOf(facet.field) > -1));
+    return filteredFacets;
+};
+
 
 // Display a summary sentence for a single treatment.
 export function singleTreatment(treatment) {

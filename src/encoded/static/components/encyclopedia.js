@@ -12,6 +12,7 @@ import {
 import { svgIcon } from '../libs/svg-icons';
 import QueryString from '../libs/query_string';
 import { BodyMapThumbnailAndModal } from './body_map';
+import { filterFacet } from './objectutils';
 
 // Generate tabs for available organisms
 const organismTabs = {};
@@ -54,12 +55,6 @@ const defaultAssemblyByOrganism = {
     'Mus musculus': 'mm10',
 };
 
-// Hide facets that we don't want to display
-const filterFacet = (facets) => {
-    const filteredFacets = facets.filter((facet) => (keepFacets.indexOf(facet.field) > -1));
-    return filteredFacets;
-};
-
 // The encyclopedia page displays a table of results corresponding to a selected annotation type
 const Encyclopedia = (props, context) => {
     const annotation = props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term).length > 0 ? props.context.filters.filter((f) => f.field === 'annotation_type').map((f) => f.term) : 'candidate Cis-Regulatory Elements';
@@ -82,7 +77,7 @@ const Encyclopedia = (props, context) => {
     browserQuery.deleteKeyValue('file_format');
     const browserController = new SearchBatchDownloadController('Annotation', browserQuery);
 
-    const newFacets = filterFacet(props.context.facets.filter((facet) => facet.field !== 'assembly'));
+    const newFacets = filterFacet(props.context.facets.filter((facet) => facet.field !== 'assembly'), keepFacets);
 
     const annotationCounts = {};
     annotationTypes.forEach((type) => {
