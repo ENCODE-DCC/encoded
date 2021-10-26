@@ -55,3 +55,4 @@ RUN python3 -m venv venv \
 COPY --chown=encoded package.json package-lock.json ./
 COPY --chown=encoded node_shims ./node_shims/
 RUN npm ci
+ENV PATH=${PATH}:/home/encoded/.local/bin
