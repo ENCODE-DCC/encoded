@@ -1,5 +1,7 @@
 $bubbleSize: 13px;
 
+$unclickable: #a1a1a1;
+
 $mesoderm: #008000;
 $ectoderm: #800080;
 $stem: #edcf09;
@@ -14,6 +16,19 @@ $endoderm-light: blue;
 
 $default-active: #36586d;
 $default-hover: #f2f2f2;
+
+.vertical-node-graph {
+    .unclickable {
+        pointer-events: none;
+        fill: $unclickable;
+        stroke-width: 1px;
+
+        ellipse {
+            stroke: $unclickable;
+            fill: white;
+        }
+    }
+}
 
 .node--internal text {
     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
@@ -82,7 +97,61 @@ $default-hover: #f2f2f2;
 }
 
 // sescc matrix-specific colors and styles
+.matrix__row-data {
+    th {
+        &.mesoderm {
+            background-color: $mesoderm;
+
+            a {
+                color: white;
+            }
+        }
+
+        &.endoderm {
+            background-color: $ectoderm;
+
+            a {
+                color: white;
+            }
+        }
+
+        &.ectoderm {
+            background-color: $ectoderm;
+
+            a {
+                color: white;
+            }
+        }
+
+        &.unlabeled {
+            background-color: $unlabeled;
+
+            a {
+                color: white;
+            }
+        }
+
+        &.stem {
+            background-color: $stem;
+        }
+    }
+}
+
 .sescc-matrix-graph {
+    .link {
+        &.mesoderm {
+            stroke: $mesoderm;
+        }
+
+        &.endoderm {
+            stroke: $ectoderm;
+        }
+
+        &.ectoderm {
+            stroke: $ectoderm;
+        }
+    }
+
     .js-cell {
         .unlabeled {
             fill: $unlabeled-light;

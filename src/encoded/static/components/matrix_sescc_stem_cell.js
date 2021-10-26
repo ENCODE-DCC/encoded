@@ -318,7 +318,7 @@ class MatrixPresentation extends React.Component {
         require.ensure(['d3'], (require) => {
             this.d3 = require('d3');
             const chartWidth = this.state.windowWidth;
-            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes, false);
         });
     }
 

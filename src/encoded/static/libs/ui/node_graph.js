@@ -6,8 +6,8 @@ const fastAnimation = 0;
 
 const mobileLimit = 400;
 
-let offset = -40;
-let doubleOffset = -60;
+let offset = -35;
+let doubleOffset = -65;
 
 const ellipseSettings = [
     { cx: 2, cy: 2, rx: 12, ry: 9 },
@@ -19,9 +19,7 @@ const ellipseSettings = [
 ];
 
 // Standardizes node names
-function nodeKeyName(name) {
-    return name.replace(/\s/g, '').toLowerCase();
-}
+const nodeKeyName = (name) => name.replace(/\s/g, '').toLowerCase();
 
 // Creates a curved (diagonal) path from parent to the child nodes
 function diagonal(d, s) {
@@ -29,19 +27,16 @@ function diagonal(d, s) {
     return path;
 }
 
-const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes) => {
-    let textWrapWidth = 115;
-    let characterLimitForWrap = 18;
-    const isMobile = fullWidth < mobileLimit;
-    if (isMobile) {
-        textWrapWidth = 80;
-        characterLimitForWrap = 15;
-        margin.top = 50;
-        margin.bottom = 80;
-        margin.left = 3;
-        margin.right = 3;
-        offset = -35;
-        doubleOffset = -65;
+const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes, nodeMapping) => {
+    const isDesktop = fullWidth > mobileLimit;
+    let textWrapWidth = 80;
+    let characterLimitForWrap = 15;
+
+    if (isDesktop) {
+        textWrapWidth = 115;
+        characterLimitForWrap = 18;
+        offset = -40;
+        doubleOffset = -60;
     }
 
     const width = fullWidth - margin.left - margin.right;
@@ -61,6 +56,10 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
 
     const treemap = d3.tree().size([width, height]);
     const root = d3.hierarchy(data, (d) => d.children);
+
+    // console.log(d3.merge([data]));
+
+    // Tree is vertical, centered along x-axis
     root.x0 = width / 2;
     root.y0 = 100;
 
@@ -123,7 +122,7 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
             .data(nodes, (d) => d.id);
 
         const nodeEnter = node.enter().append('g')
-            .attr('class', (d) => `node ${d.data.class} ${d.data.name}`)
+            .attr('class', (d) => `node ${d.data.class ? d.data.class : ''} ${d.data.name} `)
             .attr('transform', `translate(${source.x0},${source.y0})`)
             .on('click', (e, d) => {
                 setSelectedNodes(d.data.name);
@@ -141,14 +140,20 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
             });
 
         const nodeGroup = nodeEnter.append('g')
-            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`)
-            .on('mouseover', () => {
-                d3.select(this).selectAll('ellipse').style('transform', 'scale(1.2)');
-                d3.select(this).selectAll('ellipse').attr('class', (d) => `hover-class ${d.data.class ? d.data.class : 'default'}`);
+            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''} ${(nodeMapping && d.data.search && nodeMapping[d.data.search]) ? 'clickable' : !(nodeMapping) ? 'clickable' : 'unclickable'}`)
+            .on('mouseover', (e, d) => {
+                // add hover styles on node
+                d3.select(`.js-cell-${nodeKeyName(d.data.name)}`).selectAll('ellipse').style('transform', 'scale(1.2)');
+                d3.select(`.js-cell-${nodeKeyName(d.data.name)}`).selectAll('ellipse').attr('class', `hover-class ${d.data.class ? d.data.class : 'default'}`);
+                // highlight corresponding matrix row
+                d3.select(`.${d.data.name.replace(/\s/g, '_').toLowerCase()}`).selectAll('th').attr('class', d.data.class);
             })
-            .on('mouseout', () => {
-                d3.select(this).selectAll('ellipse').style('transform', 'scale(1)');
-                d3.select(this).selectAll('ellipse').attr('class', (d) => (d.data.class ? d.data.class : 'default'));
+            .on('mouseout', (e, d) => {
+                // remove hover styles from node
+                d3.select(`.js-cell-${nodeKeyName(d.data.name)}`).selectAll('ellipse').style('transform', 'scale(1)');
+                d3.select(`.js-cell-${nodeKeyName(d.data.name)}`).selectAll('ellipse').attr('class', (d.data.class ? d.data.class : 'default'));
+                // remove highlight from corresponding matrix row
+                d3.select(`.${d.data.name.replace(/\s/g, '_').toLowerCase()}`).selectAll('th').attr('class', '');
             });
 
         ellipseSettings.forEach((ellipseSetting) => {
@@ -167,14 +172,14 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
             .attr('y', (d) => ((d.children && (d.data.name.length < characterLimitForWrap || d.data.name.split(' ').length === 1)) ? offset : d.children ? doubleOffset : 30))
             .style('text-anchor', 'middle')
             .text((d) => d.data.name)
-            .attr('class', 'node-text');
+            .attr('class', (d) => `node-text ${(nodeMapping && d.data.search && nodeMapping[d.data.search]) ? 'clickable' : !(nodeMapping) ? 'clickable' : 'unclickable'}`);
 
         nodeEnter.selectAll('text')
             .call(wrap, textWrapWidth);
 
         nodeEnter.append('text')
             .attr('class', (d) => `node-expander-collapser clicker-${nodeKeyName(d.data.name)}`)
-            .text((d) => ((d.children || d._children) ? circlePlus : d.children ? circleMinus : ''))
+            .text((d) => (d._children ? circlePlus : d.children ? circleMinus : ''))
             .attr('y', '-10px')
             .attr('x', '-10px')
             .style('font-size', '28px')
@@ -196,7 +201,7 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
             .attr('transform', (d) => `translate(${d.x},${d.y})`);
 
         nodeUpdate.select('g.js-cell')
-            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''}`);
+            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''} ${(nodeMapping && d.data.search && nodeMapping[d.data.search]) ? 'clickable' : !(nodeMapping) ? 'clickable' : 'unclickable'}`);
 
         const nodeExit = node.exit().transition()
             .duration(animationDuration)
@@ -210,7 +215,7 @@ const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNo
             .data(links, (d) => d.id);
 
         const linkEnter = link.enter().insert('path', 'g')
-            .attr('class', 'link')
+            .attr('class', (d) => `link ${d.data.linkClass ? d.data.linkClass : ''}`)
             .attr('d', () => {
                 const o = {
                     x: source.x0,

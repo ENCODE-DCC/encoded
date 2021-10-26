@@ -1,14 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
+import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixBadges } from './objectutils';
-import { SearchControls } from './search';
+import { SearchControls, ResultTableList } from './search';
+import QueryString from '../libs/query_string';
 import * as globals from './globals';
 import drawTree from '../libs/ui/node_graph';
 
+
 const fullHeight = 700;
 const margin = { top: 70, right: 0, bottom: 60, left: 0 };
+
+const nodeField = 'biosample_ontology.term_id';
+
+const nodeMapping = {
+    'CL:0001054': 'Monocyte',
+    'NTR:0000505': 'Dendritic cell',
+    'CL:0000775': 'Neutrophil',
+    'CL:0000236': 'B cell',
+    'CL:0000788': 'Naive B cell',
+    'CL:0000787': 'Memory B cell',
+    'NTR:0000636': 'Activated Memory B cell',
+};
 
 /**
  * Render the area above the matrix itself, including the page title.
@@ -63,12 +79,14 @@ class MatrixPresentation extends React.Component {
         super(props);
 
         const immuneCells = require('./node_graph_data/immune_cells.json');
+        const termIds = this.props.context.filters.filter((f) => f.field === nodeField);
 
         this.state = {
             windowWidth: 0,
-            selectedNodes: [],
+            selectedNodes: termIds.map((t) => nodeMapping[t.term].replace(/\s/g, '').toLowerCase()),
         };
 
+        this.searchMapping = _.invert(nodeMapping);
         this.immuneCells = immuneCells[0];
         this.updateWindowWidth = this.updateWindowWidth.bind(this);
         this.setSelectedNodes = this.setSelectedNodes.bind(this);
@@ -82,20 +100,30 @@ class MatrixPresentation extends React.Component {
             this.d3 = require('d3');
 
             const chartWidth = this.state.windowWidth;
-            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes);
+            drawTree(this.d3, '.vertical-node-graph', this.immuneCells, chartWidth, fullHeight, margin, this.state.selectedNodes, this.setSelectedNodes, nodeMapping);
         });
     }
 
     setSelectedNodes(newNode) {
+        const parsedUrl = url.parse(this.props.context['@id']);
+        const query = new QueryString(parsedUrl.query);
+        const newSelection = newNode.replace(/\s/g, '').replace(':', '').toLowerCase();
+        const nodeSearch = this.searchMapping[newNode];
+
         this.setState((prevState) => {
-            const newSelection = newNode.replace(/\s/g, '').toLowerCase();
             if (prevState.selectedNodes.indexOf(newSelection) > -1 && prevState.selectedNodes.length > 1) {
+                query.deleteKeyValue(nodeField, nodeSearch);
                 return { selectedNodes: prevState.selectedNodes.filter((s) => s !== newSelection) };
             }
             if (prevState.selectedNodes.indexOf(newSelection) > -1) {
+                query.deleteKeyValue(nodeField, nodeSearch);
                 return { selectedNodes: [] };
             }
+            query.addKeyValue(nodeField, nodeSearch);
             return { selectedNodes: [...prevState.selectedNodes, newSelection] };
+        }, () => {
+            const href = `?${query.format()}`;
+            this.context.navigate(href, { noscroll: true });
         });
     }
 
@@ -116,6 +144,10 @@ class MatrixPresentation extends React.Component {
     }
 }
 
+MatrixPresentation.propTypes = {
+    context: PropTypes.object.isRequired,
+};
+
 MatrixPresentation.contextTypes = {
     navigate: PropTypes.func,
     fetch: PropTypes.func,
@@ -128,6 +160,13 @@ MatrixPresentation.contextTypes = {
 const MatrixContent = ({ context }) => (
     <div className="matrix__content matrix__content--reference-epigenome">
         <MatrixPresentation context={context} />
+        {context.notification === 'Success' ?
+            <div className="search-results__result-list">
+                <ResultTableList results={context['@graph']} columns={context.columns} cartControls />
+            </div>
+        :
+            <h4>{context.notification}</h4>
+        }
     </div>
 );
 
@@ -157,6 +196,7 @@ ImmuneCells.propTypes = {
 ImmuneCells.contextTypes = {
     location_href: PropTypes.string,
     navigate: PropTypes.func,
+    fetch: PropTypes.func,
 };
 
 globals.contentViews.register(ImmuneCells, 'ImmuneCells');

@@ -64,7 +64,7 @@
               "name": "B cell",
               "children": [
                 {
-                    "name": "Naive mature B cell",
+                    "name": "Naive B cell",
                     "children": [
                       { "name": "B memory cell" }
                     ]
