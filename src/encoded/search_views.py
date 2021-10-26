@@ -341,6 +341,9 @@ def cart_search_generator(request):
 
 def rna_expression_search_generator(request):
     fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
         response_fields=[
             RemoteResponseField(
                 how=remote_get,
@@ -947,6 +950,9 @@ def rnaget_search(context, request):
 )
 def rnaget_report(context, request):
     fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
         response_fields=[
             RemoteResponseField(
                 how=remote_get,
