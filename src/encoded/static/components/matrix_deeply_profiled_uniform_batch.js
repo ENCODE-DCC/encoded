@@ -182,8 +182,7 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
         });
 
     // Set specific base urls, in different combinations
-    const query = new QueryString(context.search_base);
-    const baseLink = query.format();
+    const baseLink = context.search_base;
 
     const header = [{ header: null }].concat(colCategoryNames.map((colCategoryName) => ({
         header: <a href={`${baseLink}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
