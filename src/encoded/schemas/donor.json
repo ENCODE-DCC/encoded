@@ -63,6 +63,53 @@
             "linkTo": "Organism"
         }
     },
+    "facet_groups": [
+        {
+            "title": "Donor",
+            "facet_fields": [
+                "life_stage",
+                "sex",
+                "organism.scientific_name",
+                "strain_background"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
+    "facets": {
+        "life_stage": {
+            "title": "Life stage"
+        },
+        "sex": {
+            "title": "Sex"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "organism.scientific_name": {
+            "title": "Organism"
+        },
+        "strain_background": {
+            "title": "Strain background"
+        }
+    },
     "boost_values": {
         "external_ids": 1.0,
         "aliases": 1.0,
