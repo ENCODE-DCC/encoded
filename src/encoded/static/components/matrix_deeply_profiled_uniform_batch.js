@@ -162,8 +162,6 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
     const rowCategory = context.matrix.y.group_by[0];
     const subCategory = context.matrix.y.group_by[1];
     const columnCategoryType = context.matrix.x.group_by[0];
-    const biosampleTermId = 'replicates.library.biosample.biosample_ontology.term_id';
-
     const assayTitleSortOrder = [];
 
     assayTypeToAssayTitles.forEach((typeToTitle) => {
@@ -184,19 +182,10 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
         });
 
     // Set specific base urls, in different combinations
-    let query = new QueryString(context.search_base);
-    query.deleteKeyValue(subCategory);
-    query.deleteKeyValue(biosampleTermId); // this may be injected in the url link from Navbar
-    query.deleteKeyValue(columnCategoryType);
-    const baseUrlWithoutSubNorColCategoriesType = query.format();
-
-    query = new QueryString(context.search_base);
-    query.deleteKeyValue(columnCategoryType);
-
-    const baseUrlWithoutColCategoryType = query.format();
+    const baseLink = context.search_base;
 
     const header = [{ header: null }].concat(colCategoryNames.map((colCategoryName) => ({
-        header: <a href={`${baseUrlWithoutColCategoryType}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
+        header: <a href={`${baseLink}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
@@ -234,13 +223,6 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
             // If needed, map the current subcategory queries to a query-string component.
             const mappedSubCategoryQuery = mapSubCategoryQueries(subCategory, subCategoryBucket.key);
 
-            const biosampleQuery = new QueryString(context.search_base);
-            biosampleQuery.deleteKeyValue(subCategory);
-            biosampleQuery.deleteKeyValue(biosampleTermId); // this may be injected in the url link from Navbar
-            biosampleQuery.deleteKeyValue(columnCategoryType);
-
-            const baseUrlWithoutSubcategoryTypeBiosampleQuery = biosampleQuery.format();
-
             // Generate an array of data cells for a single subCategory row's data.
             cells.fill(null);
             subCategoryBucket[columnCategoryType].buckets.forEach((cellData) => {
@@ -259,7 +241,7 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${baseUrlWithoutSubNorColCategoriesType}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}&${rowCategory}=${rowCategoryBucket.key}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${baseLink}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}&${rowCategory}=${rowCategoryBucket.key}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -272,7 +254,7 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
             matrixRow += 1;
             return {
                 rowContent: [
-                    { header: <a href={`${baseUrlWithoutSubcategoryTypeBiosampleQuery}${mappedSubCategoryQuery ? `&${mappedSubCategoryQuery}` : ''}`}>{subCategoryBucket.key.replace('/biosamples/', '').replace('/', '')}</a> },
+                    { header: <a href={`${baseLink}${mappedSubCategoryQuery ? `&${mappedSubCategoryQuery}` : ''}`}>{subCategoryBucket.key.replace('/biosamples/', '').replace('/', '')}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -283,15 +265,6 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
         // button.
         matrixRowKeys[matrixRow] = `${rowCategoryBucket.key}-spacer`;
         matrixRow += 1;
-
-        const rowHeaderQuery = new QueryString(context['@id']);
-        rowHeaderQuery.deleteKeyValue(biosampleTermId);
-        const rowHeaderUrl = rowHeaderQuery.format();
-
-        const rowHeaderCountQuery = new QueryString(context.search_base);
-        rowHeaderCountQuery.deleteKeyValue(columnCategoryType);
-        rowHeaderCountQuery.deleteKeyValue(biosampleTermId); // this may be injected in the url link from Navbar
-        const baseUrlWithoutColCategoryTypeForQueryCount = rowHeaderCountQuery.format();
 
         return accumulatingTable.concat(
             [
@@ -308,7 +281,7 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
                                         expanderClickHandler={expanderClickHandler}
                                     />
                                 : null}
-                                <a href={`${rowHeaderUrl}&${mappedRowCategoryQuery}`} style={{ color: rowCategoryTextColor }} id={categoryNameQuery}>{rowCategoryNames[rowCategoryBucket.key]}</a>
+                                <a href={`${baseLink}&${mappedRowCategoryQuery}`} style={{ color: rowCategoryTextColor }} id={categoryNameQuery}>{rowCategoryNames[rowCategoryBucket.key]}</a>
                             </div>
                         ),
                     }].concat(colCategoryNames.map((col) => {
@@ -319,7 +292,7 @@ const convertDeeplyProfileDatatToDataTable = (context, getRowCategories, getRowS
                         return {
                             content: (
                                 docCount > 0 ?
-                                    <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${baseUrlWithoutColCategoryTypeForQueryCount}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(col)}`}>
+                                    <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${baseLink}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(col)}`}>
                                         {docCount}
                                     </a>
                                 :
