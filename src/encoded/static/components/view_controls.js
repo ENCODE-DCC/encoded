@@ -38,11 +38,17 @@ ViewControlButton.propTypes = {
 /**
  * Renders the view type button for the search page.
  */
-const SearchViewButton = ({ viewType, query }) => (
-    <ViewControlButton viewType={viewType} queryString={query.format()}>
-        {viewType.title}
-    </ViewControlButton>
-);
+const SearchViewButton = ({ viewType, query }) => {
+    // In case the user goes to the search page from the report page with columns specified, strip
+    // the "field" query-string elements.
+    const searchQuery = query.clone();
+    searchQuery.deleteKeyValue('field');
+    return (
+        <ViewControlButton viewType={viewType} queryString={searchQuery.format()}>
+            {viewType.title}
+        </ViewControlButton>
+    );
+};
 
 SearchViewButton.propTypes = {
     /** Single relevant entry from `viewTypeMap` */
@@ -119,11 +125,15 @@ const matrixTypes = ['Experiment', 'Annotation'];
  * label.
  */
 const MatrixViewButton = ({ viewType, query }) => {
-    const typeValues = query.getKeyValues('type');
+    // In case the user goes to the matrix page from the report page with columns specified, strip
+    // the "field" query-string elements.
+    const matrixQuery = query.clone();
+    matrixQuery.deleteKeyValue('field');
+    const typeValues = matrixQuery.getKeyValues('type');
 
     return (
         (typeValues.length === 1 && matrixTypes.includes(typeValues[0])) &&
-            <ViewControlButton viewType={viewType} queryString={query.format()}>
+            <ViewControlButton viewType={viewType} queryString={matrixQuery.format()}>
                 {`${typeValues[0]} ${viewType.title}`}
             </ViewControlButton>
     );
