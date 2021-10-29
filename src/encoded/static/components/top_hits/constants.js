@@ -71,13 +71,13 @@ export const COLLECTIONS = [
     {
         title: 'Functional characterization',
         searchUrl: (
-            '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries'
-            '&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false'
+            '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries' +
+            '&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false' +
             '&control_type!=*&limit=0&format=json'
         ),
         '@id': (
-            '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries'
-            '&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false'
+            '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries' +
+            '&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false' +
             '&control_type!=*'
         ),
         '@type': ['DataCollection'],
@@ -85,7 +85,7 @@ export const COLLECTIONS = [
     {
         title: 'Encyclopedia of DNA Elements',
         searchUrl: (
-            '/?type=File&annotation_type=candidate+Cis-Regulatory+Elements&file_format=bigBed'
+            '/?type=File&annotation_type=candidate+Cis-Regulatory+Elements&file_format=bigBed' +
             '&file_format=bigWig&encyclopedia_version=current&limit=0&format=json'
         ),
         '@id': '/encyclopedia/',
@@ -142,55 +142,55 @@ export const COLLECTIONS = [
     {
         title: 'Deeply-profiled cell lines',
         searchUrl: (
-            '/deeply-profiled-uniform-batch-matrix/?type=Experiment&control_type!=*&status=released'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002106'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001203'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0006711'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002713'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002847'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002074'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001200'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0009747'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002824'
-            '&replicates.library.biosample.biosample_ontology.term_id=CL:0002327'
-            '&replicates.library.biosample.biosample_ontology.term_id=CL:0002618'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002784'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001196'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001187'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002067'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001099'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002819'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0009318'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001086'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0007950'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0003045'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0003042'
+            '/deeply-profiled-uniform-batch-matrix/?type=Experiment&control_type!=*&status=released' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002106' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001203' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0006711' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002713' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002847' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002074' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001200' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0009747' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002824' +
+            '&replicates.library.biosample.biosample_ontology.term_id=CL:0002327' +
+            '&replicates.library.biosample.biosample_ontology.term_id=CL:0002618' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002784' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001196' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001187' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002067' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001099' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002819' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0009318' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001086' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0007950' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0003045' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0003042' +
             '&replicates.library.biosample.internal_tags=Deeply Profiled&limit=0&format=json'
         ),
         '@id': (
-            '/deeply-profiled-uniform-batch-matrix/?type=Experiment&control_type!=*&status=released'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002106'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001203'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0006711'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002713'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002847'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002074'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001200'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0009747'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002824'
-            '&replicates.library.biosample.biosample_ontology.term_id=CL:0002327'
-            '&replicates.library.biosample.biosample_ontology.term_id=CL:0002618'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002784'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001196'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001187'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002067'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001099'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002819'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0009318'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001086'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0007950'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0003045'
-            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0003042'
+            '/deeply-profiled-uniform-batch-matrix/?type=Experiment&control_type!=*&status=released' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002106' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001203' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0006711' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002713' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002847' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002074' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001200' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0009747' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002824' +
+            '&replicates.library.biosample.biosample_ontology.term_id=CL:0002327' +
+            '&replicates.library.biosample.biosample_ontology.term_id=CL:0002618' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002784' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001196' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001187' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002067' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001099' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002819' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0009318' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001086' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0007950' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0003045' +
+            '&replicates.library.biosample.biosample_ontology.term_id=EFO:0003042' +
             '&replicates.library.biosample.internal_tags=Deeply Profiled'
         ),
         '@type': ['DataCollection'],
@@ -204,11 +204,11 @@ export const COLLECTIONS = [
     {
         title: 'ChIP-seq matrix',
         searchUrl: (
-            '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens'
+            '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens' +
             '&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released&limit=0&format=json'
         ),
         '@id': (
-            '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens'
+            '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens' +
             '&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released'
         ),
         '@type': ['DataCollection'],
@@ -216,7 +216,7 @@ export const COLLECTIONS = [
     {
         title: 'Functional genomic series',
         searchUrl: (
-            '/search/?type=OrganismDevelopmentSeries&type=TreatmentTimeSeries&type=TreatmentConcentrationSeries'
+            '/search/?type=OrganismDevelopmentSeries&type=TreatmentTimeSeries&type=TreatmentConcentrationSeries' +
             '&type=ReplicationTimingSeries&type=GeneSilencingSeries&type=DifferentiationSeries'
         ),
         '@id': '/series-search/',
