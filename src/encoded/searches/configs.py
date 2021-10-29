@@ -100,6 +100,5 @@ ALIASES = {
 
 
 DEFAULTS = {
-    'Donor': ['DonorSubtypes'],
     ('Experiment', 'FunctionalCharacterizationExperiment'): ['Experiment'],
 }
