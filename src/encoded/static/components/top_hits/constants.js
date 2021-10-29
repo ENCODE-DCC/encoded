@@ -217,7 +217,7 @@ export const COLLECTIONS = [
         title: 'Functional genomic series',
         searchUrl: (
             '/search/?type=OrganismDevelopmentSeries&type=TreatmentTimeSeries&type=TreatmentConcentrationSeries' +
-            '&type=ReplicationTimingSeries&type=GeneSilencingSeries&type=DifferentiationSeries'
+            '&type=ReplicationTimingSeries&type=GeneSilencingSeries&type=DifferentiationSeries&limit=0&format=json'
         ),
         '@id': '/series-search/',
         '@type': ['DataCollection'],
