@@ -234,7 +234,6 @@ export const COLLECTIONS = [
         '@id': '/search/?type=Annotation&encyclopedia_version=ENCODE+v5&annotation_type=imputation',
         '@type': ['DataCollection'],
     },
-]
-
+];
 
 export const COLLECTIONS_KEY = 'DataCollection';
