@@ -144,6 +144,14 @@
             }
         }
     },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "submitted_by.lab.title": {
+            "title": "Lab"
+        }
+    },
     "columns": {
         "schema_version": {
             "title": "Schema version"
@@ -154,11 +162,14 @@
         "name": {
             "title": "Name"
         },
+        "description": {
+            "title": "Description"
+        },
         "status": {
             "title": "Status"
         },
-        "submitted_by": {
-            "title": "Submitted by"
+        "submitted_by.lab.title": {
+            "title": "Lab"
         },
         "uuid": {
             "title": "UUID"

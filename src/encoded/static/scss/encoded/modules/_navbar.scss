@@ -295,6 +295,7 @@ $navbar-bg-color:            #0a253d;
     }
 
     .disabled-menu-item {
+        display: flex;
         pointer-events: none;
         font-weight: 400;
         position: relative;

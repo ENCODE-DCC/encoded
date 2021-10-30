@@ -1311,6 +1311,11 @@ $file-view-checkbox-size: 14px;
     }
 }
 
+.cart-menu-status {
+    line-height: 0;
+    margin-right: 5px;
+}
+
 // Cart-accessories buttons.
 .cart-accessories {
     display: flex;
@@ -1660,9 +1665,144 @@ $file-view-checkbox-size: 14px;
     margin-bottom: 10px;
 }
 
+.search-results-description {
+    word-break: normal;
+}
+
 .remove-multiple-control {
     .remove-multiple-control__note {
         font-size: 0.9rem;
         color: #606060;
+    }
+}
+
+.cart-description {
+    position: relative;
+    word-break: normal;
+
+    // Description text styles
+    h1, h2, h3, h4, h5, h6 {
+        font-family: $site-font;
+        border-bottom: none;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        + p {
+            margin-top: 0;
+        }
+    }
+
+    h1 {
+        margin: 1.3rem 0 0.3rem;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    h2 {
+        margin: 1.2rem 0 0.2rem;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    h3 {
+        margin: 1.2rem 0 0.2rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    h4 {
+        margin: 1.1rem 0 0.2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    h5 {
+        margin: 1.1rem 0 0.1rem;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    h6 {
+        font-size: 1rem;
+        margin: 1.1rem 0 0.1rem;
+        font-weight: 500;
+    }
+
+    p {
+        margin: 0.9rem 0;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    ul, ol {
+        margin: 0.3em;
+        padding-left: 20px;
+        list-style-position: outside;
+
+        li {
+            display: list-item;
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+    }
+
+    ul {
+        li {
+            list-style-type: disc;
+        }
+    }
+
+    ol {
+        li {
+            list-style-type: decimal;
+        }
+    }
+
+    ul ul, ol ul {
+        list-style-type: circle;
+        list-style-position: outside;
+        margin-left: 15px;
+    }
+
+    ol ol, ul ol {
+        list-style-type: lower-latin;
+        list-style-position: outside;
+        margin-left: 15px;
+    }
+
+    &.cart-description--search-results {
+        overflow: hidden;
+    }
+
+    .cart-description__overflow-indicator {
+        position: absolute;
+        height: 30px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        background: linear-gradient(rgba(255, 255, 255, 0), 50%, rgba(255, 255, 255, 1));
+    }
+}
+
+.btn.cart-description-expander {
+    background: none;
+    border: 1px solid #e0e0e0;
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: #404040;
+
+    .svg-icon {
+        fill: #404040;
+        margin-left: 5px;
+        width: 13px;
     }
 }

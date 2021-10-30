@@ -14,7 +14,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import _ from 'underscore';
-import { contentViews } from '../globals';
+import { contentViews, listingViews } from '../globals';
 import {
     ADD_TO_CART,
     ADD_MULTIPLE_TO_CART,
@@ -52,6 +52,7 @@ import cartSave, { cartCreateAutosave, cartRetrieve } from './database';
 import CartManager from './manager';
 import cartSetCurrent from './set_current';
 import CartSearchControls from './search_controls';
+import CartSearchListing from './search_listing';
 import { cartGetSettings, cartSetSettingsCurrent } from './settings';
 import CartShare from './share';
 import CartStatus from './status';
@@ -317,3 +318,4 @@ export {
 contentViews.register(Cart, 'cart-view'); // /cart-view/ URI
 contentViews.register(Cart, 'Cart'); // /carts/<uuid> URI
 contentViews.register(CartManager, 'cart-manager'); // /cart-manager/ URI
+listingViews.register(CartSearchListing, 'Cart');

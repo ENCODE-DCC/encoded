@@ -431,6 +431,9 @@ class App extends React.Component {
             }
         });
 
+        // Indicate cart operation no longer in progress when page loads while logged out.
+        cartSetOperationInProgress(false, cartStore.dispatch);
+
         // Initialize browser history mechanism
         if (this.constructor.historyEnabled()) {
             const data = this.props.context;

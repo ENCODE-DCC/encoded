@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuSep } from '../../libs/ui/dropdown-menu';
 import { NavItem } from '../../libs/ui/navbar';
 import { svgIcon } from '../../libs/svg-icons';
 import { truncateString } from '../globals';
+import Status from '../status';
 import { CartClearModal } from './clear';
 import CartShare from './share';
 
@@ -50,98 +51,97 @@ CartNavTitle.propTypes = {
 /**
  * Navigation bar item for the cart menu.
  */
-class CartStatusComponent extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            /** True if Share Cart modal is visible */
-            shareModalOpen: false,
-            clearModalOpen: false,
-        };
-        this.shareCartClick = this.shareCartClick.bind(this);
-        this.closeShareCart = this.closeShareCart.bind(this);
-        this.clearCartClick = this.clearCartClick.bind(this);
-        this.closeClearCart = this.closeClearCart.bind(this);
-    }
+const CartStatusComponent = ({ elements, savedCartObj, inProgress, openDropdown, dropdownClick, loggedIn }) => {
+    /** True if the modal to share a cart is open */
+    const [shareModalOpen, setSharedModalOpen] = React.useState(false);
+    /** True if the modal to clear a cart is open */
+    const [clearModalOpen, setClearModalOpen] = React.useState(false);
 
     /**
      * Called when the Share Cart menu item is clicked.
      */
-    shareCartClick() {
-        this.setState({ shareModalOpen: true });
-    }
+    const shareCartClick = () => {
+        setSharedModalOpen(true);
+    };
 
     /**
      * Called when the Share Cart modal close buttons are clicked.
      */
-    closeShareCart() {
-        this.setState({ shareModalOpen: false });
-    }
+    const closeShareCart = () => {
+        setSharedModalOpen(false);
+    };
 
     /**
-     * Called when the Share Cart menu item is clicked.
+     * Called when the Clear Cart menu item is clicked.
      */
-    clearCartClick() {
-        this.setState({ clearModalOpen: true });
-    }
+    const clearCartClick = () => {
+        setClearModalOpen(true);
+    };
 
     /**
-     * Called when the Share Cart modal close buttons are clicked.
+     * Called when the Clear Cart modal close buttons are clicked.
      */
-    closeClearCart() {
-        this.setState({ clearModalOpen: false });
-    }
+    const closeClearCart = () => {
+        setClearModalOpen(false);
+    };
 
-    render() {
-        const { elements, savedCartObj, inProgress, openDropdown, dropdownClick, loggedIn } = this.props;
-        const locked = !!(savedCartObj && savedCartObj.locked);
+    // Define the menu items for the Cart Status menu.
+    const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
+    const clearCartItem = !savedCartObj.locked && <button type="button" key="clear" onClick={clearCartClick}>Clear cart</button>;
+    const menuItems = [];
+    if (loggedIn) {
+        // Build the disabled cart name and lock status.
+        const cartName = (savedCartObj && savedCartObj.name) && truncateString(savedCartObj.name, 22);
+        const lockIcon = cartName && <div className="cart-nav-lock">{svgIcon(savedCartObj.locked ? 'lockClosed' : 'lockOpen')}</div>;
+        const statusIcon = savedCartObj && savedCartObj.status && <Status item={savedCartObj} css="cart-menu-status" badgeSize="small" noLabel inline />;
+        menuItems.push(
+            <span key="name" className="disabled-menu-item">
+                {statusIcon}{`Current: ${cartName}`}{lockIcon}
+            </span>,
+            <DropdownMenuSep key="sep-1" />
+        );
 
-        if (loggedIn) {
-            // Define the menu items for the Cart Status menu.
-            const cartName = (savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
-            const menuItems = [];
-            const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
-            const clearCartItem = !locked ? <button type="button" key="clear" onClick={this.clearCartClick}>Clear cart</button> : null;
-            const lockIcon = cartName ? <div className="cart-nav-lock">{svgIcon(locked ? 'lockClosed' : 'lockOpen')}</div> : null;
-
-            // The href is just to quiet ESLint for the bad href. This code shouldn't do this
-            // but the CSS looks difficult to fix after the tooltip updates.
+        // Menu items for carts containing items.
+        if (elements.length > 0) {
             menuItems.push(
-                <span key="name" className="disabled-menu-item">
-                    {`Current: ${cartName}`}{lockIcon}
-                </span>,
-                <DropdownMenuSep key="sep-1" />
-            );
-            if (elements.length > 0) {
-                menuItems.push(
-                    viewCartItem,
-                    <button type="button" key="share" onClick={this.shareCartClick}>Share cart</button>,
-                    clearCartItem,
-                    <DropdownMenuSep key="sep-2" />
-                );
-            }
-            menuItems.push(<a key="manage" href="/cart-manager/">Cart manager</a>);
-
-            return (
-                <NavItem
-                    dropdownId="cart-control"
-                    dropdownTitle={<CartNavTitle elements={elements} locked={locked} inProgress={inProgress} />}
-                    openDropdown={openDropdown}
-                    dropdownClick={dropdownClick}
-                    label={`${locked ? 'locked' : ''} cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
-                    buttonCss="cart__nav-button"
-                >
-                    <DropdownMenu label="cart-control">
-                        {menuItems}
-                    </DropdownMenu>
-                    {this.state.shareModalOpen ? <CartShare userCart={savedCartObj} closeShareCart={this.closeShareCart} /> : null}
-                    {this.state.clearModalOpen ? <CartClearModal closeClickHandler={this.closeClearCart} /> : null}
-                </NavItem>
+                viewCartItem,
+                <button type="button" key="share" onClick={shareCartClick}>Share cart</button>,
+                clearCartItem,
+                <DropdownMenuSep key="sep-2" />
             );
         }
-        return null;
+
+        // Menu item for the cart manager and cart list.
+        menuItems.push(<a key="manager" href="/cart-manager/">Cart manager</a>);
+    } else {
+        // Menu item to offer to log in
+        menuItems.push(
+            <button key="signin" type="button" data-trigger="login">
+                Sign in / Create account
+            </button>
+        );
     }
-}
+
+    // Menu item for cart listing always visible.
+    menuItems.push(<a key="search" href="/search/?type=Cart&status=listed&status=released">Listed carts</a>);
+
+    return (
+        <NavItem
+            dropdownId="cart-control"
+            dropdownTitle={<CartNavTitle elements={elements} locked={savedCartObj.locked || false} inProgress={inProgress} />}
+            openDropdown={openDropdown}
+            dropdownClick={dropdownClick}
+            label={`${savedCartObj.locked ? 'locked' : ''} cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
+            buttonCss="cart__nav-button"
+        >
+            <DropdownMenu label="cart-control">
+                {menuItems}
+            </DropdownMenu>
+            {shareModalOpen ? <CartShare userCart={savedCartObj} closeShareCart={closeShareCart} /> : null}
+            {clearModalOpen ? <CartClearModal closeClickHandler={closeClearCart} /> : null}
+        </NavItem>
+    );
+};
 
 CartStatusComponent.propTypes = {
     /** Cart contents as array of @ids */
