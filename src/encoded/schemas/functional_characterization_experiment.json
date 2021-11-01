@@ -77,6 +77,9 @@
                             "enum": [
                                 "CRISPR screen",
                                 "MPRA",
+                                "proliferation CRISPR screen",
+                                "Sort-seq CRISPR screen",
+                                "Flow-FISH CRISPR screen",
                                 "perturbation followed by scRNA-seq",
                                 "perturbation followed by snATAC-seq",
                                 "STARR-seq"
@@ -105,7 +108,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "assay_term_name": {
             "title": "Assay name",
@@ -114,6 +117,9 @@
             "enum": [
                 "CRISPR screen",
                 "MPRA",
+                "proliferation CRISPR screen",
+                "Sort-seq CRISPR screen",
+                "Flow-FISH CRISPR screen",
                 "perturbation followed by scRNA-seq",
                 "perturbation followed by snATAC-seq",
                 "pooled clone sequencing",
@@ -382,6 +388,10 @@
         }
     ],
     "facets": {
+        "assay_slims": {
+            "title": "Assay type",
+            "open_on_load": false
+        },
         "assay_title": {
             "title": "Assay title",
             "open_on_load": true

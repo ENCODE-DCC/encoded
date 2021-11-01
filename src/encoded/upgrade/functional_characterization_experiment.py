@@ -62,3 +62,34 @@ def functional_characterization_experiment_10_11(value, system):
                     value['notes'] = f'{value.get("notes")} Upgraded expression_measurement_method to qPCR for examined_loci gene {gene}.'
                 else:
                     value['notes'] = f'Upgraded expression_measurement_method to qPCR for examined_loci gene {gene}.'
+
+
+@upgrade_step('functional_characterization_experiment', '11', '12')
+def functional_characterization_experiment_11_12(value, system):
+    convert_name = {
+        'HCR-FlowFISH': 'FlowFISH CRISPR screen',
+        'PrimeFlow': 'FlowFISH CRISPR screen',
+        'antibody Sort-seq': 'Sort-seq CRISPR screen',
+        'endogenous protein Sort-seq': 'Sort-seq CRISPR screen',
+        'magnetic separation Sort-seq': 'Sort-seq CRISPR screen',
+        'fluorescence activated cell sorting': '??',
+        'qPCR': '??',
+        'RNA-seq': '??'
+    }
+    convert_id = {
+        'Sort-seq CRISPR screen': 'NTR:0000658',
+        'FlowFISH CRISPR screen': 'NTR:0000659'
+    }
+    if value.get('assay_term_name', "") == 'CRISPR screen':
+        if value.get('examined_loci', "") == None:
+            value['assay_term_name'] = 'proliferation CRISPR screen'
+            value['assay_term_id'] = 'NTR:0000657'
+        else:
+            methods = []
+            for locus in value['examined_loci']:
+                if 'expression_measurement_method' in locus:
+                    methods.append(locus['expression_measurement_method'])
+            if len(set(methods)) == 1 and (str(methods[0]) in convert_name):
+                    value['assay_term_name'] = convert_name[str(methods[0])]
+                    value['assay_term_id'] = convert_id[value['assay_term_name']]
+
