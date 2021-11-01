@@ -235,3 +235,15 @@ def functional_characterization_experiment_10(testapp, lab, award, ctcf, heart):
          ]
     }
     return item
+
+@pytest.fixture
+def functional_characterization_experiment_11(testapp, lab, award, ctcf, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'examined_loci': []
+    }
+    return item

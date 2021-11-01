@@ -81,7 +81,7 @@ def functional_characterization_experiment_11_12(value, system):
         'FlowFISH CRISPR screen': 'NTR:0000659'
     }
     if value.get('assay_term_name', "") == 'CRISPR screen':
-        if value.get('examined_loci', "") == None:
+        if value.get('examined_loci') == None  or value.get('examined_loci') == []:
             value['assay_term_name'] = 'proliferation CRISPR screen'
             value['assay_term_id'] = 'NTR:0000657'
         else:
@@ -92,4 +92,3 @@ def functional_characterization_experiment_11_12(value, system):
             if len(set(methods)) == 1 and (str(methods[0]) in convert_name):
                     value['assay_term_name'] = convert_name[str(methods[0])]
                     value['assay_term_id'] = convert_id[value['assay_term_name']]
-
