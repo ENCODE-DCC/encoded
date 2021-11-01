@@ -46,3 +46,16 @@ def test_functional_characterization_experiment_upgrade_10_to_11(upgrader, funct
     assert value['examined_loci'][0]['expression_measurement_method'] == 'PrimeFlow'
     assert value['examined_loci'][1]['expression_measurement_method'] == 'qPCR'
     assert value['notes'] == 'Upgraded expression_measurement_method to qPCR for examined_loci gene a9288b44-6ef4-460e-a3d6-464fd625b103.'
+
+
+def test_functional_characterization_experiment_upgrade_11_to_12(upgrader, functional_characterization_experiment_11):
+    value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_11, current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value['assay_term_name'] == 'proliferation CRISPR screen'
+    assert value['assay_term_id'] == 'NTR:0000657'
+
+def test_functional_characterization_experiment_upgrade_11_to_12_pt2(upgrader, functional_characterization_experiment_7):
+    value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_7, current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value['assay_term_name'] == 'FlowFISH CRISPR screen'
+    assert value['assay_term_id'] == 'NTR:0000659'
