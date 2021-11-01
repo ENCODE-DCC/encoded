@@ -187,6 +187,10 @@ assay_slims = {
     'OBI:0000615': 'Proteomics',
     'OBI:0000626': 'DNA sequencing',
     'OBI:0000845': 'RNA structure',
+    'OBI:0002082': 'Reporter assay', # 'Reporter gene assay'
+    'OBI:0002675': 'Massively parallel reporter assay', 
+    'NTR:0000520': 'CRISPR Screen',
+    'OBI:0000711': 'Library preparation',
     'NTR:0000516': 'Functional characterization'
 }
 
