@@ -194,39 +194,7 @@
                 }
             }
         },
-        "pct_2_alignment_duplicates": {
-            "required": ["run_type"],
-            "properties": {
-                "run_type": {
-                    "enum": ["single-ended"]
-                }
-            }
-        },
-        "pct_2_alignment_unique": {
-            "required": ["run_type"],
-            "properties": {
-                "run_type": {
-                    "enum": ["single-ended"]
-                }
-            }
-        },
-        "pct_1_alignment": {
-            "required": ["run_type"],
-            "properties": {
-                "run_type": {
-                    "enum": ["single-ended"]
-                }
-            }
-        },
         "sequenced_reads": {
-            "required": ["run_type"],
-            "properties": {
-                "run_type": {
-                    "enum": ["single-ended"]
-                }
-            }
-        },
-        "1_alignment": {
             "required": ["run_type"],
             "properties": {
                 "run_type": {
