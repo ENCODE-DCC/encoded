@@ -193,11 +193,33 @@ const getSearchPageType = (context) => {
 
 
 /**
+ * Determine whether the given search results is for a rnaget search or not.
+ * @param {object} context Search-results object
+ *
+ * @return {boolean} True if search results are for a rnaget search.
+ */
+const getIsRNAGetSearch = (context) => (
+    url.parse(context['@id']).pathname === '/rnaget-report/'
+);
+
+
+/**
+* Check conditions for rendering view control buttons.
+* @param {object} context Search-results object
+*
+* @return {boolean} True if should show view controls for search.
+*/
+const shouldShowViewControls = (context) => (
+    !getIsCartSearch(context) && !getIsRNAGetSearch(context)
+);
+
+
+/**
  * Displays view control buttons appropriate for the given search results.
  */
 export const ViewControls = ({ results, additionalFilters }) => {
     // Don't render view controls for cart searches.
-    if (!getIsCartSearch(results)) {
+    if (shouldShowViewControls(results)) {
         const searchPageType = getSearchPageType(results);
         const parsedUrl = url.parse(results['@id']);
         const query = new QueryString(parsedUrl.query);
