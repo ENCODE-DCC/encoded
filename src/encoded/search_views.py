@@ -950,9 +950,6 @@ def rnaget_report(context, request):
                 where=RNAGET_REPORT_URL,
                 then=set_status_and_parse_json,
             ),
-            TypeResponseField(
-                at_type=[REPORT_TITLE]
-            ),
             NonSortableResponseField(),
         ]
     )
