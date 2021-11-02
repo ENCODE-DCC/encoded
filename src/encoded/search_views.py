@@ -5,6 +5,7 @@ from encoded.cart_view import CartWithElements
 from encoded.genomic_data_service import remote_get
 from encoded.genomic_data_service import set_status_and_parse_json
 from encoded.genomic_data_service import RNAGET_REPORT_URL
+from encoded.genomic_data_service import RNAGET_SEARCH_URL
 from encoded.searches.caches import cached_fielded_response_factory
 from encoded.searches.caches import get_redis_lru_cache
 from encoded.searches.caches import make_key_from_request

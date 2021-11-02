@@ -4,6 +4,7 @@ import requests
 REGISTRY_DATA_SERVICE = 'genomic_data_service'
 REGION_SEARCH = '/region-search'
 
+RNAGET_SEARCH_URL = 'https://rnaget.encodeproject.org/rnaget-search/'
 RNAGET_REPORT_URL = 'https://rnaget.encodeproject.org/rnaget-report/'
 
 
