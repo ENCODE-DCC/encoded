@@ -94,7 +94,6 @@ def includeme(config):
     config.add_route('cart-matrix', '/cart-matrix{slash:/?}')
     config.add_route('top-hits-raw', '/top-hits-raw{slash:/?}')
     config.add_route('top-hits', '/top-hits{slash:/?}')
-    config.add_route('rnaget-search', '/rnaget-search{slash:/?}')
     config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
     config.add_route('search-config-registry', '/search-config-registry{slash:/?}')
     config.scan(__name__)
@@ -933,16 +932,6 @@ def top_hits(context, request):
         ]
     )
     return fr.render()
-
-
-@view_config(route_name='rnaget-search', request_method='GET', permission='search')
-@conditional_cache(
-    cache=get_redis_lru_cache(),
-    condition=should_cache_search_results,
-    key=partial(make_key_from_request, 'rnaget-search'),
-)
-def rnaget_search(context, request):
-    return rna_expression_search_generator(request)
 
 
 @view_config(route_name='rnaget-report', request_method='GET', permission='search')
