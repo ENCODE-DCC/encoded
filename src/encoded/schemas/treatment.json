@@ -71,6 +71,11 @@
                 "μM"
             ]
         },
+        "frequency": {
+            "title": "Frequency",
+            "description": "The rate of application of the treatment identified in the Treatment term name.",
+            "type": "string"
+        },
         "duration": {
             "title": "Duration",
             "description": "The duration of application of the treatment identified in the Treatment term name.",

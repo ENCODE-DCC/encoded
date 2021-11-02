@@ -32,6 +32,7 @@
         "status": "released",
         "treatment_term_name": "epidermal growth factor",
         "treatment_type": "protein",
-        "purpose": "stimulation"
+        "purpose": "stimulation",
+        "frequency": "once daily"
     }
 ]
