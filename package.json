@@ -81,7 +81,7 @@
     "form-serialize": "^0.6.0",
     "genome-visualizer": "git://github.com/ENCODE-DCC/valis-hpgv.git#1.3.0",
     "google-analytics": "file:node_shims/google-analytics",
-    "graphlib": "git://github.com/ENCODE-DCC/graphlib.git#v1.0.8",
+    "graphlib": "git+https://github.com/ENCODE-DCC/graphlib.git#v1.0.8",
     "immutable": "^3.7.5",
     "install": "^0.13.0",
     "js-cookie": "^2.2.1",

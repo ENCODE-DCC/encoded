@@ -15,8 +15,7 @@ def processed_matrix_file_base(testapp, dataset_base, raw_matrix_file_base):
                 'normalized': False,
                 'value_scale': 'linear',
                 'value_units': 'RPKM',
-                'label': 'raw',
-                'is_primary_data': False
+                'label': 'raw'
             }
         ]
     }

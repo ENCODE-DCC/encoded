@@ -177,6 +177,15 @@
                 ]
             }
         },
+        "author_columns": {
+            "title": "Author columns",
+            "description": "A list of column labels in the matrix that should be retained when transferring the data to cellxgene.",
+            "type": "array",
+            "items": {
+                "title": "Author column",
+                "type": "string"
+            }
+        },
         "default_visualization": {
             "title": "Default field",
             "description": "The name of the field that should be set as default for color coordinated display on cellxgene, which should correspond to a column in 'obs'.",
@@ -268,6 +277,8 @@
                         "type": "string",
                         "enum": [
                             "linear",
+                            "log",
+                            "log1p",
                             "log, base e",
                             "log, base 10",
                             "log, base 2",
@@ -306,19 +317,7 @@
                     "normalization_method": {
                         "title": "Normalization method",
                         "description": "The transformation method used to make expression values comparable across libraries.",
-                        "type": "string",
-                        "enum": [
-                            "LogNormalize",
-                            "scTransform",
-                            "cellranger aggr read depth normalization",
-                            "TF-IDF"
-                        ]
-                    },
-                    "is_primary_data": {
-                        "title": "Is primary data",
-                        "description": "If true, this will be the primary representation of the cells within the matrix at cellxgene.",
-                        "comment": "Each cell should be primary exactly once at cellxgene.",
-                        "type": "boolean"
+                        "type": "string"
                     },
                     "filtering_cutoffs": {
                         "title": "Filtering cutoffs",

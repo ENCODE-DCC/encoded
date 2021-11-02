@@ -8,15 +8,15 @@ Ontologies used
 
 | Ontology |  File used | Version in use | Version reference |
 |:--|:--|:--|:--|
-| [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON releases] | 2021-02-12 | [UBERON releases] |
-| [Cell Ontology (CL)] | `cl.ow` from [CL] | 2021-06-21 | [CL releases] |
-| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-06-15 (3.31.0) | [EFO releases] |
-| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-06-01 | [MONDO release] |
+| [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON releases] | 2021-10-01 | [UBERON releases] |
+| [Cell Ontology (CL)] | `cl.ow` from [CL] | 2021-09-09 | [CL releases] |
+| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2021-10-18 (3.35.0) | [EFO releases] |
+| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2021-11-01 | [MONDO release] |
 | [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [HANCESTRO] | 2021-01-04 (2.5) | [HANCESTRO releases] |
 | [Human Developmental Stage Ontology (HsapDv)] | `hsapdv.owl` from [HsapDv] | 2020-03-10 | [OLS HsapDv] (confirm versionIRI in .owl) |
 | [Mouse Developmental Stage Ontology (MmusDv)] | `mmusdv.owl` from [MmusDv] | 2020-03-10 | [OLS MmusDv] (confirm versionIRI in .owl) |
 
-**Current ontology.json:** `ontology-2021-06-25.json`
+**Current ontology.json:** `ontology-2021-11-01.json`
 
 How to update the ontology versions
 ---------------- 

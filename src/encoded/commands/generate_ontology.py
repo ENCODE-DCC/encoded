@@ -418,6 +418,9 @@ def main():
 
         terms[term]['ancestors'].append(term)
 
+        if term in slim_shims:
+            terms[term]['ancestors'].extend(slim_shims[term])
+
     for term in terms:
         del terms[term]['parents'], terms[term]['derives_from']
         del terms[term]['part_of'], terms[term]['id'], terms[term]['data']

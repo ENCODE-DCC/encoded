@@ -10,7 +10,8 @@
             "anindita-basu:suspension_A"
         ],
         "aliases": [
-            "lattice:pooled_lib"
+            "lattice:pooled_lib",
+            "charlotte-scott:test_lib"
         ]
     },
     {

@@ -1,5 +1,8 @@
 ## Changelog for processed_matrix_file.json
 
+### Schema version 7
+* Removed *is_primary_data* from *layers*
+
 ### Schema version 6
 * Moved *is_primary_data* outside of *layers* so each object has only 1 value
 
