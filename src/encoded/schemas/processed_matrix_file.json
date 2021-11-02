@@ -277,6 +277,8 @@
                         "type": "string",
                         "enum": [
                             "linear",
+                            "log",
+                            "log1p",
                             "log, base e",
                             "log, base 10",
                             "log, base 2",
