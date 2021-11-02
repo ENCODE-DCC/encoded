@@ -15,7 +15,15 @@ def test_processed_matrix_file_upgrade_4_5(upgrader, processed_matrix_file_base)
 
 
 def test_processed_matrix_file_upgrade_5_6(upgrader, processed_matrix_file_base):
+	processed_matrix_file_base['layers'][0]['is_primary_data'] = 'False'
 	del processed_matrix_file_base['is_primary_data']
 	value = upgrader.upgrade('processed_matrix_file', processed_matrix_file_base, current_version='5', target_version='6')
 	assert value['schema_version'] == '6'
 	assert value['is_primary_data'] == 'False'
+
+
+def test_processed_matrix_file_upgrade_6_7(upgrader, processed_matrix_file_base):
+	processed_matrix_file_base['layers'][0]['is_primary_data'] = 'True'
+	value = upgrader.upgrade('processed_matrix_file', processed_matrix_file_base, current_version='6', target_version='7')
+	assert value['schema_version'] == '7'
+	assert 'is_primary_data' not in value['layers'][0]

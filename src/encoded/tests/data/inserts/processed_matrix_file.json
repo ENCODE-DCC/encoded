@@ -183,10 +183,10 @@
                         "feature_count": 22357
                     }
                 ],
-                "value_scale": "log1p, base e",
+                "value_scale": "log1p",
                 "value_units": "UMI",
                 "normalized": true,
-                "normalization_method": "scTransform",
+                "normalization_method": "scTransform, custom params",
                 "filtering_cutoffs": [
                     {
                         "cutoff_value": 20000,
@@ -263,7 +263,7 @@
                         "feature_count": 50
                     }
                 ],
-                "value_scale": "log, base e",
+                "value_scale": "log",
                 "value_units": "UMI",
                 "normalized": true,
                 "scaled": true,

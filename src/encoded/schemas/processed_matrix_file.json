@@ -317,19 +317,7 @@
                     "normalization_method": {
                         "title": "Normalization method",
                         "description": "The transformation method used to make expression values comparable across libraries.",
-                        "type": "string",
-                        "enum": [
-                            "LogNormalize",
-                            "scTransform",
-                            "cellranger aggr read depth normalization",
-                            "TF-IDF"
-                        ]
-                    },
-                    "is_primary_data": {
-                        "title": "Is primary data",
-                        "description": "If true, this will be the primary representation of the cells within the matrix at cellxgene.",
-                        "comment": "Each cell should be primary exactly once at cellxgene.",
-                        "type": "boolean"
+                        "type": "string"
                     },
                     "filtering_cutoffs": {
                         "title": "Filtering cutoffs",
