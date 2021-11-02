@@ -31,6 +31,10 @@
                 "value_units": "UMI",
                 "value_scale": "log, base 10"
             }
+        ],
+        "author_columns": [
+            "my_cell_labels",
+            "my_other_cell_labels"
         ]
     },
     {

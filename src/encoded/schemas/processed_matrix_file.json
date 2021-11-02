@@ -177,6 +177,15 @@
                 ]
             }
         },
+        "author_columns": {
+            "title": "Author columns",
+            "description": "A list of column labels in the matrix that should be retained when transferring the data to cellxgene.",
+            "type": "array",
+            "items": {
+                "title": "Author column",
+                "type": "string"
+            }
+        },
         "default_visualization": {
             "title": "Default field",
             "description": "The name of the field that should be set as default for color coordinated display on cellxgene, which should correspond to a column in 'obs'.",
