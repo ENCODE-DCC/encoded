@@ -82,9 +82,9 @@
     "domready": "^1.0.8",
     "form-serialize": "^0.6.0",
     "framer-motion": "^4.1.17",
-    "genome-visualizer": "git://github.com/ENCODE-DCC/valis-hpgv.git#1.8.0",
+    "genome-visualizer": "github:ENCODE-DCC/valis-hpgv#1.8.0",
     "google-analytics": "file:node_shims/google-analytics",
-    "graphlib": "git://github.com/ENCODE-DCC/graphlib.git#v1.0.8",
+    "graphlib": "github:ENCODE-DCC/graphlib#v1.0.8",
     "immutable": "^3.7.5",
     "install": "^0.13.0",
     "js-cookie": "^2.2.1",
@@ -104,6 +104,6 @@
     "subprocess-middleware": "^0.1.0",
     "terser-webpack-plugin": "^2.1.2",
     "underscore": "^1.8.3",
-    "whatwg-fetch": "git+https://github.com/ENCODE-DCC/fetch.git"
+    "whatwg-fetch": "github:ENCODE-DCC/fetch"
   }
 }
