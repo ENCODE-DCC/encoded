@@ -8,6 +8,8 @@ REGION_SEARCH = '/region-search'
 RNAGET_SEARCH_STREAM_URL = 'https://rnaget.encodeproject.org/rnaget-search-stream/'
 RNAGET_REPORT_URL = 'https://rnaget.encodeproject.org/rnaget-report/'
 
+CHUNK_SIZE = 1024 * 1024
+
 
 def remote_get(url, **kwargs):
     return requests.get(
@@ -33,7 +35,10 @@ def set_status_and_parse_json(response_field, results):
 def parse_ndjson(results):
     return (
         json.loads(line)
-        for line in results.iter_lines(decode_unicode=True)
+        for line in results.iter_lines(
+                chunk_size=CHUNK_SIZE,
+                decode_unicode=True
+        )
         if line
     )
 
