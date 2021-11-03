@@ -73,8 +73,6 @@ def functional_characterization_experiment_11_12(value, system):
         'endogenous protein Sort-seq': 'Sort-seq CRISPR screen',
         'magnetic separation Sort-seq': 'Sort-seq CRISPR screen',
         'fluorescence activated cell sorting': '??',
-        'qPCR': '??',
-        'RNA-seq': '??'
     }
     convert_id = {
         'Sort-seq CRISPR screen': 'NTR:0000658',

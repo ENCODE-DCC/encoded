@@ -291,9 +291,7 @@
                             "fluorescence activated cell sorting",
                             "HCR-FlowFISH",
                             "magnetic separation Sort-seq",
-                            "PrimeFlow",
-                            "qPCR",
-                            "RNA-seq"
+                            "PrimeFlow"
                         ]
                     }
                 },
