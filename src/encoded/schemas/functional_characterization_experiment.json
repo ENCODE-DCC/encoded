@@ -122,7 +122,8 @@
                 "perturbation followed by scRNA-seq",
                 "perturbation followed by snATAC-seq",
                 "pooled clone sequencing",
-                "STARR-seq"
+                "STARR-seq",
+                "CRISPR Screen"
             ]
         },
         "date_submitted": {
