@@ -3,9 +3,11 @@ from pyramid.view import view_config
 
 from encoded.cart_view import CartWithElements
 from encoded.genomic_data_service import remote_get
+from encoded.genomic_data_service import remote_stream_get
 from encoded.genomic_data_service import set_status_and_parse_json
+from encoded.genomic_data_service import set_status_and_parse_ndjson
 from encoded.genomic_data_service import RNAGET_REPORT_URL
-from encoded.genomic_data_service import RNAGET_SEARCH_URL
+from encoded.genomic_data_service import RNAGET_SEARCH_STREAM_URL
 from encoded.searches.caches import cached_fielded_response_factory
 from encoded.searches.caches import get_redis_lru_cache
 from encoded.searches.caches import make_key_from_request
@@ -339,18 +341,19 @@ def cart_search_generator(request):
 
 
 def rna_expression_search_generator(request):
-    fr = FieldedResponse(
+    '''
+    For internal use (no view). Returns generator of newline-delmited JSON
+    results in @graph field.
+    '''
+    fr = FieldedGeneratorResponse(
         _meta={
             'params_parser': ParamsParser(request)
         },
         response_fields=[
             RemoteResponseField(
-                how=remote_get,
-                where=RNAGET_SEARCH_URL,
-                then=set_status_and_parse_json,
-            ),
-            TypeResponseField(
-                at_type=[SEARCH_TITLE]
+                how=remote_stream_get,
+                where=RNAGET_SEARCH_STREAM_URL,
+                then=set_status_and_parse_ndjson,
             ),
         ]
     )
