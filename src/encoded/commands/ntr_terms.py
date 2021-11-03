@@ -182,19 +182,6 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000551": {
-        "assay": ['Reporter assay'],
-        "category": [],
-        "developmental": [],
-        "name": "transgenic enhancer assay",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0000562": {
         "assay": ['3D chromatin structure'],
         "category": [],

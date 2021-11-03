@@ -33,8 +33,8 @@ slim_shims = {
         'OBI:0002160': ['DNA binding'], # Mint-ChIP-seq
         'OBI:0003033': ['DNA binding'], # CUT&RUN
         'OBI:0003034': ['DNA binding'], # CUT&Tag
-        'OBI:0002675': ['Massively parallel reporter assay', 'Reporter assay'], # MPRA
-        'OBI:0002041': ['Massively parallel reporter assay', 'Reporter assay'], # STARR-seq
+        'OBI:0002675': ['Massively parallel reporter assay'], # MPRA
+        'OBI:0002041': ['Massively parallel reporter assay'], # STARR-seq
         'OBI:2100402': ['Library preparation'], # pooled clone sequencing
         'OBI:0002762': ['Single cell', 'DNA accessibility'],  # snATAC-seq,
         'OBI:0002631': ['Single cell', 'Transcription']  # scRNA-seq

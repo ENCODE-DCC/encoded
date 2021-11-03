@@ -190,8 +190,7 @@ assay_slims = {
     'OBI:0002082': 'Reporter assay', # 'Reporter gene assay'
     'OBI:0002675': 'Massively parallel reporter assay', 
     'NTR:0000520': 'CRISPR Screen',
-    'OBI:0000711': 'Library preparation',
-    'NTR:0000516': 'Functional characterization'
+    'OBI:0000711': 'Library preparation'
 }
 
 preferred_name = {
@@ -219,6 +218,7 @@ preferred_name = {
     "OBI:0002572": "polyA minus RNA-seq",
     "OBI:0002631": "scRNA-seq",
     "OBI:0002112": "small RNA-seq",
+    "OBI:0002083": "enhancer reporter assay",
     "OBI:0002762": "snATAC-seq",
     "OBI:0002764": "scATAC-seq",
     "OBI:0002038": "Ribo-seq",
