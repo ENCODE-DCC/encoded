@@ -1263,8 +1263,46 @@ class FunctionalCharacterizationSeries(Series):
         "notSubmittable": True,
     })
     def replicates(self, request, related_datasets):
-        x = request.select_distinct_values('replicates', *related_datasets)
-        return [{"a": "b"},{"c", "d"}]
+        replicates = request.select_distinct_values('replicates', *related_datasets)
+        to_return = []
+        for replicate in replicates:
+            properties = {'replicate': replicate}
+            path = Path('replicate', include=['library'])
+            path.expand(request, properties)
+            rep_library = properties.get('replicate', {}).get('library')
+
+
+            properties = {'library': rep_library}
+            path = Path('library', include=['biosample'])
+            path.expand(request, properties)
+            rep_biosample = properties.get('library', {}).get('biosample')
+
+
+            biosample = request.embed(rep_biosample, '@@object')
+
+            genetic_modifications = biosample.get('applied_modifications')
+            modifications = []
+            if genetic_modifications:
+                for gm in genetic_modifications:
+                    gm_object = request.embed(gm, '@@object?skip_calculated=true')
+                    modifications.append(gm_object)
+            
+            biosample_treatments = biosample.get('treatments')
+            treatments = []
+            if biosample_treatments:
+                for t in biosample_treatments:
+                    treatment_object = request.embed(t, '@@object?skip_calculated=true')
+                    treatments.append(treatment_object)
+            library_dict = {
+                "biosample": {
+                    "applied_modifications": modifications,
+                    "treatments": treatments,
+                }
+            }
+            
+            to_return.append({"library": library_dict})
+                  
+        return to_return
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Elements references",
