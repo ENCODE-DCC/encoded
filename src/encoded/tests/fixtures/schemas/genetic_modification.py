@@ -173,6 +173,18 @@ def mutagen(lab, award):
 
 
 @pytest.fixture
+def tale_replacement(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'replacement',
+        'purpose': 'characterization',
+        'method': 'TALEN',
+        'zygosity': 'heterozygous'
+    }
+
+
+@pytest.fixture
 def mpra(lab, award):
     return {
         'lab': lab['@id'],
