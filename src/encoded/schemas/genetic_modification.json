@@ -385,7 +385,7 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["CRISPRi", "CRISPRa", "CRISPR cutting", "knockout", "CRISPR cutting"]
+                            "enum": ["CRISPRi", "CRISPRa", "CRISPR cutting", "knockout"]
                         },
                         "method": {
                             "enum": ["CRISPR"]
