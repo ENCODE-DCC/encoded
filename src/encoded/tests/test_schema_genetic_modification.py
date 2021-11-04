@@ -207,17 +207,6 @@ def test_mutagen_properties(testapp, mutagen, target, treatment_5, document):
     assert res.status_code == 201
 
 
-def test_tale_replacement_properties(testapp, tale_replacement, source):
-    # Replacement modifications need to include introduced_sequence
-    tale_replacement.update({'modified_site_by_sequence': 'ATTTTAGGCAGGTAGGATTACGAGGACCCAGGTACGATCAGGT',
-                             'reagents': [{'source': source['@id'], 'identifier': 'addgene:12345'}]})
-    res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
-    assert res.status_code == 422
-    tale_replacement.update({'introduced_sequence': 'TTATCGATCGATTTGAGCATAGAAATGGCCGATTTATATGCCCGA'})
-    res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
-    assert res.status_code == 201
-
-
 def test_mpra_properties(testapp, mpra):
     # introduced_elements combined with modified_site_nonspecific can satisfy insertion dependency
     res = testapp.post_json('/genetic_modification', mpra, expect_errors=True)
