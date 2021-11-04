@@ -304,3 +304,30 @@ def genetic_modification_10_11(value, system):
         if 'guide_type' not in value:
             value['guide_type'] = 'sgRNA'
             value['notes'] = (notes + ' guide_type on this GM was defaulted to sgRNA in an upgrade.').strip()
+
+
+@upgrade_step('genetic_modification', '11', '12')
+def genetic_modification_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6216
+    notes = value.get('notes', '')
+    if value.get('category') == 'transgene insertion':
+        value['category'] = 'insertion'
+    elif value.get('category') in ['replacement', 'inhibition']:
+        value['category'] = 'mutagenesis'
+        value['purpose'] = 'non-specific target control'
+        value['treatments'] = '/treatments/467f7c9b-2d09-4242-b1db-266aa0c9154f/'
+        value['notes'] = (
+            f'{notes}{" " if notes != "" else ""}'
+            f'The category of this GM was formerly "{value.get("category")}" '
+            f'but was upgraded to "mutagenesis" in v125.'
+        )
+    elif value.get('category') == 'activation':
+        value['category'] = 'CRISPRa'
+    elif value.get('category') == 'disruption':
+        value['category'] = 'CRISPR cutting'
+    elif value.get('category') == 'binding':
+        value['category'] = 'CRISPR dCas'
+    elif value.get('category') == 'deletion' and value.get('method') == 'CRISPR':
+        value['category'] = 'CRISPR cutting'
+    elif value.get('category') == 'interference' and value.get('method') == 'CRISPR':
+        value['category'] = 'CRISPRi'

@@ -140,7 +140,7 @@
                             "enum": ["characterization"]
                         },
                         "category": {
-                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
+                            "enum": ["CRISPRi", "CRISPRa", "CRISPR cutting", "knockout"]
                         },
                         "method": {
                             "enum": ["CRISPR"]
@@ -204,7 +204,7 @@
                             "enum": ["in vivo enhancer characterization"]
                         },
                         "category": {
-                            "enum": ["transgene insertion"]
+                            "enum": ["insertion"]
                         }
                     },
                     "required": [
@@ -232,18 +232,25 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["binding"]
+                            "enum": ["CRISPR dCas"]
                         }
                     }
                 }
             ]
         },
         "category": {
-            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at either modified_site_nonspecific or specifying gRNAs and CRISPR machinery. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified (unless the purpose is characterization and method is CRISPR) and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
+            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at either modified_site_nonspecific or specifying gRNAs and CRISPR machinery. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
             "oneOf": [
                 {
                     "oneOf": [
                         {
+                            "not": {
+                                "properties":{
+                                    "purpose": {
+                                        "enum": ["in vivo enhancer characterization"]
+                                    }
+                                }
+                            },
                             "anyOf": [
                                 {
                                     "required": ["introduced_tags"],
@@ -302,16 +309,7 @@
                                 }
                             }
                         }
-
                     ]
-                },
-                {
-                    "required": ["introduced_sequence"],
-                    "properties": {
-                        "category": {
-                            "enum": ["replacement"]
-                        }
-                    }
                 },
                 {
                     "oneOf": [
@@ -361,7 +359,7 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["deletion", "interference"]
+                            "enum": ["CRISPR cutting", "interference", "CRISPRi"]
                         },
                         "method": {
                             "enum": ["CRISPR", "RNAi"]
@@ -374,7 +372,20 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
+                            "enum": ["CRISPR cutting"]
+                        },
+                        "method": {
+                            "enum": ["CRISPR"]
+                        },
+                        "purpose": {
+                            "enum": ["repression"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["CRISPRi", "CRISPRa", "CRISPR cutting", "knockout", "CRISPR cutting"]
                         },
                         "method": {
                             "enum": ["CRISPR"]
@@ -471,7 +482,7 @@
                     "required": ["introduced_sequence", "nucleic_acid_delivery_method"],
                     "properties": {
                         "category": {
-                            "enum": ["transgene insertion"]
+                            "enum": ["insertion"]
                         },
                         "purpose": {
                             "enum": ["in vivo enhancer characterization"]
@@ -481,7 +492,7 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["binding"]
+                            "enum": ["CRISPR dCas"]
                         }
                     }
                 }
@@ -685,20 +696,23 @@
             }
         },
         "introduced_sequence": {
-            "comment": "Introduced sequences apply only to category = insertion, replacement, or transgene insertion.",
+            "comment": "Introduced sequences apply only to category = insertion.",
             "oneOf": [
                 {
                     "properties": {
                         "category": {
-                            "enum": ["insertion", "replacement"]
+                            "enum": ["insertion"]
                         }
+                    },
+                    "not": {
+                        "required": ["nucleic_acid_delivery_method"]
                     }
                 },
                 {
                     "required": ["nucleic_acid_delivery_method"],
                     "properties": {
                         "category": {
-                            "enum": ["transgene insertion"]
+                            "enum": ["insertion"]
                         },
                         "purpose": {
                             "enum": ["in vivo enhancer characterization"]
@@ -789,17 +803,42 @@
         },
         "guide_type": {
             "comment": "Design of the guide types should be described in a GeneticModification that describes delivery of the guides to the sample.",
-            "required": ["introduced_elements"],
+             "anyOf": [
+                {
+                    "properties": {
+                        "introduced_elements": {
+                            "enum": ["gRNAs and CRISPR machinery"]
+                        }
+                    },
+                    "not": {
+                        "properties": {
+                            "method": {
+                                "enum": ["CRISPR"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "method": {
+                            "enum": ["CRISPR"]
+                        }
+                    }
+                }
+            ]
+        },
+        "CRISPR_system": {
+            "comment": "CRISPR_system can only be specified for Genetic Modifications that have method of CRISPR.",
             "properties": {
-                "introduced_elements": {
-                    "enum": ["gRNAs and CRISPR machinery"]
+                "method": {
+                    "enum": ["CRISPR"]
                 }
             }
         }
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "accession": {
             "accessionType": "GM"
@@ -849,14 +888,12 @@
                 "interference",
                 "insertion",
                 "mutagenesis",
-                "replacement",
                 "episome",
-                "activation",
+                "CRISPRa",
                 "knockout",
-                "disruption",
-                "inhibition",
-                "binding",
-                "transgene insertion"
+                "CRISPR cutting",
+                "CRISPR dCas",
+                "CRISPRi"
             ]
         },
         "purpose":{
@@ -1023,7 +1060,7 @@
         },
         "introduced_sequence": {
             "title": "Introduced sequence",
-            "description": "If category = insertion or replacement, the newly introduced sequence via the modification.",
+            "description": "If category = insertion, the newly introduced sequence via the modification.",
         	"type": "string",
             "pattern": "^[ACTG]+$"
 		},
@@ -1214,6 +1251,40 @@
                 "comment": "See document.json for available identifiers.",
                 "linkTo": "Document"
             }
+        },
+        "CRISPR_system": {
+            "title": "CRISPR system",
+            "description": "The Cas system used for a CRISPR modification.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "CRISPR system",
+                "type": "string",
+                "enum":[
+                    "dCas9",
+                    "Cas9",
+                    "dCas9-KRAB",
+                    "dCas9-VPR",
+                    "dCas13a",
+                    "Cas13a",
+                    "dCas13a-KRAB",
+                    "dCas13a-VPR",
+                    "Cas13d",
+                    "dCas13d",
+                    "dCas13d-KRAB",
+                    "dCas13d-VPR",
+                    "dCas9-KRAB_ZNF705",
+                    "dCas9-KRAB_WSR7EEE",
+                    "dCas9-RYBP",
+                    "dCas9-KRAB_WSR7EEE-MGA1-MGA2"
+                ]
+            }
+        },
+        "cas_species": {
+            "title": "Cas species",
+            "description": "Organism of the Cas protein.",
+            "type": "string",
+            "linkTo": "Organism"
         }
     },
     "columns": {

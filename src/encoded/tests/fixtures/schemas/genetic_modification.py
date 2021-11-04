@@ -585,7 +585,7 @@ def disruption_genetic_modification(testapp, lab, award):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'category': 'disruption',
+        'category': 'CRISPR cutting',
         'purpose': 'characterization',
         'method': 'CRISPR'
     }
@@ -597,7 +597,7 @@ def activation_genetic_modification(testapp, lab, award):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'category': 'activation',
+        'category': 'CRISPRa',
         'purpose': 'characterization',
         'method': 'CRISPR'
     }
@@ -656,7 +656,7 @@ def transgene_insertion(testapp, lab, award, ctcf):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'category': 'transgene insertion',
+        'category': 'insertion',
         'purpose': 'in vivo enhancer characterization',
         'nucleic_acid_delivery_method': ['mouse pronuclear microinjection'],
         'modified_site_by_gene_id': ctcf['@id'],
@@ -689,4 +689,50 @@ def genetic_modification_10(lab, award):
         'purpose': 'expression',
         'nucleic_acid_delivery_method': ['transduction'],
         'introduced_elements': 'gRNAs and CRISPR machinery',
+    }
+
+
+@pytest.fixture
+def genetic_modification_11(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'disruption',
+        'purpose': 'characterization',
+        'method': 'CRISPR'
+    }
+
+
+@pytest.fixture
+def transgene_insertion_2(testapp, lab, award, ctcf):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'transgene insertion',
+        'purpose': 'in vivo enhancer characterization',
+        'nucleic_acid_delivery_method': ['mouse pronuclear microinjection'],
+        'modified_site_by_gene_id': ctcf['@id'],
+        'introduced_sequence': 'ATCGTA'
+    }
+
+
+@pytest.fixture
+def activation_genetic_modification_2(testapp, lab, award):
+    return{
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'activation',
+        'purpose': 'characterization',
+        'method': 'CRISPR'
+    }
+
+
+@pytest.fixture
+def binding_genetic_modification_2(testapp, lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'binding',
+        'purpose': 'characterization',
+        'method': 'CRISPR'
     }
