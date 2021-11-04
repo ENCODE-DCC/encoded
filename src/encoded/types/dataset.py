@@ -1264,45 +1264,50 @@ class FunctionalCharacterizationSeries(Series):
     })
     def replicates(self, request, related_datasets):
         replicates = request.select_distinct_values('replicates', *related_datasets)
-        to_return = []
-        for replicate in replicates:
-            properties = {'replicate': replicate}
-            path = Path('replicate', include=['library'])
-            path.expand(request, properties)
-            rep_library = properties.get('replicate', {}).get('library')
+        properties = {'replicates': replicates}
+        path = Path(
+            'replicates.library.biosample', 
+            include=[
+                '@id',
+                '@type',
+                'library',
+                'biosample',
+                'donor',
+                'treatments',
+                'applied_modifications',
+                'life_stage',
+                'disease_term_name',
+                ]
+            )
+        path.expand(request, properties)
+        path = Path(
+            'replicates.library.biosample.applied_modifications.reagents', 
+            include=[
+                'MOI',
+                'guide_type',
+                'reagents',
+                'promoter_details',
+            ]
+        )
+        path.expand(request, properties)
+        path = Path(
+            'replicates.library.biosample.donor.organism', 
+            include=[
+                'organism',
+                'scientific_name',
+            ]
+        )
+        path.expand(request, properties)
+        path = Path(
+            'replicates.library.biosample.treatments', 
+            include=[
+                'treatment_term_name',
+            ]
+        )
+        path.expand(request, properties)
 
+        return properties['replicates']
 
-            properties = {'library': rep_library}
-            path = Path('library', include=['biosample'])
-            path.expand(request, properties)
-            rep_biosample = properties.get('library', {}).get('biosample')
-
-
-            biosample = request.embed(rep_biosample, '@@object')
-
-            genetic_modifications = biosample.get('applied_modifications')
-            modifications = []
-            if genetic_modifications:
-                for gm in genetic_modifications:
-                    gm_object = request.embed(gm, '@@object?skip_calculated=true')
-                    modifications.append(gm_object)
-            
-            biosample_treatments = biosample.get('treatments')
-            treatments = []
-            if biosample_treatments:
-                for t in biosample_treatments:
-                    treatment_object = request.embed(t, '@@object?skip_calculated=true')
-                    treatments.append(treatment_object)
-            library_dict = {
-                "biosample": {
-                    "applied_modifications": modifications,
-                    "treatments": treatments,
-                }
-            }
-            
-            to_return.append({"library": library_dict})
-                  
-        return to_return
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Elements references",
