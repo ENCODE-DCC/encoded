@@ -67,16 +67,17 @@ def functional_characterization_experiment_10_11(value, system):
 @upgrade_step('functional_characterization_experiment', '11', '12')
 def functional_characterization_experiment_11_12(value, system):
     convert_name = {
-        'HCR-FlowFISH': 'FlowFISH CRISPR screen',
-        'PrimeFlow': 'FlowFISH CRISPR screen',
-        'antibody Sort-seq': 'Sort-seq CRISPR screen',
-        'endogenous protein Sort-seq': 'Sort-seq CRISPR screen',
-        'magnetic separation Sort-seq': 'Sort-seq CRISPR screen',
-        'fluorescence activated cell sorting': '??',
+        'HCR-FlowFISH': 'Flow-FISH CRISPR screen',
+        'PrimeFlow': 'FlowF-ISH CRISPR screen',
+        'antibody Sort-seq': 'FACS CRISPR screen',
+        'endogenous protein Sort-seq': 'FACS CRISPR screen',
+        'magnetic separation Sort-seq': 'FACS CRISPR screen',
+        'fluorescence activated cell sorting': 'FACS CRISPR screen',
+        'qPCR': 'FACS CRISPR screen'
     }
     convert_id = {
-        'Sort-seq CRISPR screen': 'NTR:0000658',
-        'FlowFISH CRISPR screen': 'NTR:0000659'
+        'FACS CRISPR screen': 'NTR:0000658',
+        'Flow-FISH CRISPR screen': 'NTR:0000659'
     }
     if value.get('assay_term_name', "") == 'CRISPR screen':
         if value.get('examined_loci') == None  or value.get('examined_loci') == []:

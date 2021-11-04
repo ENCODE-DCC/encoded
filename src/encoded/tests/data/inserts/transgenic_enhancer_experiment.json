@@ -2,7 +2,7 @@
     {
         "_test": "mouse transgenic enhancer control",
         "accession": "ENCSR928TEA",
-        "assay_term_name": "transgenic enhancer assay",
+        "assay_term_name": "enhancer reporter assay",
         "award": "U54HG007004",
         "biosample_ontology": "whole_organisms_UBERON_0000468",
         "biosamples": [
@@ -29,7 +29,7 @@
     {
         "_test": "mouse transgenic enhancer1 assay",
         "accession": "ENCSR507TEA",
-        "assay_term_name": "transgenic enhancer assay",
+        "assay_term_name": "enhancer reporter assay",
         "award": "U54HG007004",
         "biosample_ontology": "whole_organisms_UBERON_0000468",
         "biosamples": [
@@ -57,7 +57,7 @@
     {
         "_test": "mouse transgenic enhancer2 assay",
         "accession": "ENCSR514TEA",
-        "assay_term_name": "transgenic enhancer assay",
+        "assay_term_name": "enhancer reporter assay",
         "award": "U54HG007004",
         "biosample_ontology": "whole_organisms_UBERON_0000468",
         "biosamples": [

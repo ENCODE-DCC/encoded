@@ -51,11 +51,22 @@ def test_functional_characterization_experiment_upgrade_10_to_11(upgrader, funct
 def test_functional_characterization_experiment_upgrade_11_to_12(upgrader, functional_characterization_experiment_11):
     value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_11, current_version='11', target_version='12')
     assert value['schema_version'] == '12'
+    assert value['assay_term_name'] == 'Flow-FISH CRISPR screen'
+    assert value['assay_term_id'] == 'NTR:0000659'
+    
+    functional_characterization_experiment_11['assay_term_name'] = 'CRISPR screen'
+    functional_characterization_experiment_11['schema_version'] == '11'
+    functional_characterization_experiment_11['examined_loci'][0]['expression_measurement_method'] = 'endogenous protein Sort-seq'
+    value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_11, current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value['assay_term_name'] == 'FACS CRISPR screen'
+    assert value['assay_term_id'] == 'NTR:0000658'
+
+    functional_characterization_experiment_11['assay_term_name'] = 'CRISPR screen'
+    functional_characterization_experiment_11['schema_version'] == '11'
+    functional_characterization_experiment_11['examined_loci'] = []
+    value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_11, current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
     assert value['assay_term_name'] == 'proliferation CRISPR screen'
     assert value['assay_term_id'] == 'NTR:0000657'
-
-def test_functional_characterization_experiment_upgrade_11_to_12_pt2(upgrader, functional_characterization_experiment_7):
-    value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_7, current_version='11', target_version='12')
-    assert value['schema_version'] == '12'
-    assert value['assay_term_name'] == 'FlowFISH CRISPR screen'
-    assert value['assay_term_id'] == 'NTR:0000659'
+    

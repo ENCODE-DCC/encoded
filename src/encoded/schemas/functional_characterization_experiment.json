@@ -75,10 +75,10 @@
                     "properties": {
                         "assay_term_name": {
                             "enum": [
-                                "CRISPR screen",
                                 "MPRA",
+                                "CRISPR screen",
                                 "proliferation CRISPR screen",
-                                "Sort-seq CRISPR screen",
+                                "FACS CRISPR screen",
                                 "Flow-FISH CRISPR screen",
                                 "perturbation followed by scRNA-seq",
                                 "perturbation followed by snATAC-seq",
@@ -116,14 +116,14 @@
             "type": "string",
             "enum": [
                 "MPRA",
+                "CRISPR screen",
                 "proliferation CRISPR screen",
-                "Sort-seq CRISPR screen",
+                "FACS CRISPR screen",
                 "Flow-FISH CRISPR screen",
                 "perturbation followed by scRNA-seq",
                 "perturbation followed by snATAC-seq",
                 "pooled clone sequencing",
-                "STARR-seq",
-                "CRISPR Screen"
+                "STARR-seq"
             ]
         },
         "date_submitted": {
@@ -292,7 +292,8 @@
                             "fluorescence activated cell sorting",
                             "HCR-FlowFISH",
                             "magnetic separation Sort-seq",
-                            "PrimeFlow"
+                            "PrimeFlow",
+                            "qPCR"
                         ]
                     }
                 },

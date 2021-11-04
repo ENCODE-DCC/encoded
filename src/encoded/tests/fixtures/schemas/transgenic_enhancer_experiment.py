@@ -6,7 +6,7 @@ def transgenic_enhancer_experiment(testapp, lab, award, whole_organism, mouse_wh
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'transgenic enhancer assay',
+        'assay_term_name': 'enhancer reporter assay',
         'biosample_ontology': whole_organism['uuid'],
         'status': 'in progress',
         'biosamples': [mouse_whole_organism_biosample['@id']]
