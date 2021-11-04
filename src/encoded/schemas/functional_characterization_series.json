@@ -74,13 +74,13 @@
         {
             "title": "Assay",
             "facet_fields": [
+                "assay_slims",
                 "assay_title",
-                "related_datasets.perturbation_type",
-                "related_datasets.crispr_screen_readout",
+                "control_type",
                 "elements_references.crispr_screen_tiling",
-                "related_datasets.replicates.library.biosample.applied_modifications.MOI",
-                "related_datasets.replicates.library.biosample.applied_modifications.guide_type",
-                "related_datasets.replicates.library.nucleic_acid_term_name"
+                "replicates.library.biosample.applied_modifications.guide_type",
+                "replicates.library.biosample.applied_modifications.MOI",
+                "replicates.library.biosample.applied_modifications.reagents.promoter_details"
             ]
         },
         {
