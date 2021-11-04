@@ -130,7 +130,7 @@ def audit_experiment_mixed_expression_measurement_methods(value, system, exclude
     if value['status'] in excluded_types:
         return
     if value['assay_term_name'] not in ['proliferation CRISPR screen',
-                'Sort-seq CRISPR screen',
+                'FACS CRISPR screen',
                 'Flow-FISH CRISPR screen']:
         return
     if 'examined_loci' not in value:
@@ -157,7 +157,7 @@ def audit_CRISPR_screen_not_in_series(value, system, excluded_types):
         return
     if value['assay_term_name'] not in ['proliferation CRISPR screen',
                 'Sort-seq CRISPR screen',
-                'Flow-FISH CRISPR screen',]:
+                'FACS CRISPR screen',]:
         return
     related_series = value.get('related_series', [])
     if related_series == []:
