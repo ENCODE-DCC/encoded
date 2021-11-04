@@ -598,7 +598,7 @@ def binding_genetic_modification(testapp, lab, award):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'category': 'binding',
+        'category': 'CRISPR dCas',
         'purpose': 'characterization',
         'method': 'CRISPR'
     }

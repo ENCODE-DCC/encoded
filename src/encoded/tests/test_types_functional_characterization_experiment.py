@@ -22,7 +22,7 @@ def test_fcc_crispr_assay_perturbation(testapp, functional_characterization_expe
     testapp.patch_json(replicate_1_fce['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_fce['@id'], {'library': library_2['@id']})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
-    assert res.json['object']['perturbation_type'] == 'disruption'
+    assert res.json['object']['perturbation_type'] == 'CRISPR cutting'
     # more than one CRISPR characterization genetic modification
     testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [disruption_genetic_modification['@id']]})
     testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [disruption_genetic_modification['@id'], activation_genetic_modification['@id']]})
@@ -32,7 +32,7 @@ def test_fcc_crispr_assay_perturbation(testapp, functional_characterization_expe
     testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [binding_genetic_modification['@id']]})
     testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [binding_genetic_modification['@id']]})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
-    assert res.json['object']['perturbation_type'] == 'binding'
+    assert res.json['object']['perturbation_type'] == 'CRISPR dCas'
 
 
 def test_fcc_crispr_assay_readout_method(testapp, functional_characterization_experiment_disruption_screen, biosample_1, biosample_2, library_1, library_2, replicate_1_fce, replicate_2_fce, disruption_genetic_modification, activation_genetic_modification, binding_genetic_modification, ctcf):
