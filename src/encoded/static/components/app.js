@@ -307,7 +307,6 @@ class App extends React.Component {
             session_properties: {},
             session_cookie: '',
             profilesTitles: {},
-            contextRequest: null,
             unsavedChanges: [],
             promisePending: false,
             eulaModalVisibility: false,
@@ -322,8 +321,10 @@ class App extends React.Component {
             logout: 'triggerLogout',
         };
 
+        this.href = props.href;
         this.domain = 'encode.auth0.com';
         this.clientId = 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH';
+        this.contextRequest = null;
 
         // Bind this to non-React methods.
         this.fetch = this.fetch.bind(this);
@@ -357,7 +358,7 @@ class App extends React.Component {
         return {
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
-            location_href: this.state.href,
+            location_href: this.href,
             portal,
             fetch: this.fetch,
             fetchSessionProperties: this.fetchSessionProperties,
@@ -380,16 +381,17 @@ class App extends React.Component {
         }
         this.fetchProfilesTitles();
         this.setState({
-            href: window.location.href,
             session_cookie: sessionCookie,
             session,
         });
+
+        this.href = window.location.href;
 
         // Set browser features in the <html> CSS class.
         BrowserFeat.setHtmlFeatClass();
 
         // Make a URL for the logo.
-        const hrefInfo = url.parse(this.state.href);
+        const hrefInfo = url.parse(this.href);
         const logoHrefInfo = {
             hostname: hrefInfo.hostname,
             port: hrefInfo.port,
@@ -447,7 +449,7 @@ class App extends React.Component {
             // If it looks like an anchor target link, scroll to it, plus an offset for the fixed navbar
             // Hints from https://dev.opera.com/articles/fixing-the-scrolltop-bug/
             if (window.location.href) {
-                const splitHref = this.state.href.split('#');
+                const splitHref = this.href.split('#');
                 if (splitHref.length >= 2 && splitHref[1][0] !== '!') {
                     // URL has hash tag, but not the '#!edit' type
                     const hashTarget = splitHref[1];
@@ -511,7 +513,7 @@ class App extends React.Component {
             });
         }
 
-        const xhr = this.state.contextRequest;
+        const xhr = this.contextRequest;
         if (!xhr || !xhr.xhr_end || xhr.browser_stats) {
             return;
         }
@@ -717,7 +719,7 @@ class App extends React.Component {
         }
 
         const options = {};
-        const actionUrl = url.parse(url.resolve(this.state.href, target.action));
+        const actionUrl = url.parse(url.resolve(this.href, target.action));
         let search = serialize(target);
         if (target.getAttribute('data-removeempty')) {
             search = search.split('&').filter((item) => item.slice(-1) !== '=').join('&');
@@ -739,14 +741,14 @@ class App extends React.Component {
             return;
         }
         if (!this.confirmNavigation()) {
-            window.history.pushState(window.state, '', this.state.href);
+            window.history.pushState(window.state, '', this.href);
             return;
         }
         if (!this.constructor.historyEnabled) {
             window.location.reload();
             return;
         }
-        const request = this.state.contextRequest;
+        const request = this.contextRequest;
         const { href } = window.location;
         if (event.state) {
             // Abort inflight xhr before setProps
@@ -757,8 +759,8 @@ class App extends React.Component {
                 this.requestAborted = true;
                 this.requestCurrent = false;
             }
+            this.href = href;
             this.setState({
-                href, // href should be consistent with context
                 context: event.state,
             });
         }
@@ -776,7 +778,7 @@ class App extends React.Component {
 
     onHashChange() {
         // IE8/9
-        this.setState({ href: window.location.href });
+        this.href = window.location.href;
     }
 
     // Handle http requests to the server, using the given URL and options.
@@ -996,7 +998,7 @@ class App extends React.Component {
         // options.replace only used handleSubmit, handlePopState, handleAuth0Login
         // options.noscroll to prevent scrolling to the top of the page after navigating
         // options.reload to force reloading the URL
-        let mutatableHref = url.resolve(this.state.href, href);
+        let mutatableHref = url.resolve(this.href, href);
 
         // Strip url fragment.
         let fragment = '';
@@ -1020,12 +1022,10 @@ class App extends React.Component {
             return null;
         }
 
-        const { contextRequest } = this.state;
-
-        if (contextRequest && this.requestCurrent) {
+        if (this.contextRequest && this.requestCurrent) {
             // Abort the current request, then remember we've aborted the request so that we
             // don't render the Network Request Error page.
-            contextRequest.abort();
+            this.contextRequest.abort();
             this.requestAborted = true;
             this.requestCurrent = false;
         }
@@ -1036,7 +1036,7 @@ class App extends React.Component {
             } else {
                 window.history.pushState(window.state, '', mutatableHref + fragment);
             }
-            this.setState({ href: mutatableHref + fragment });
+            this.href = mutatableHref + fragment;
             return null;
         }
 
@@ -1072,9 +1072,7 @@ class App extends React.Component {
             } else {
                 window.history.pushState(null, '', responseUrl);
             }
-            this.setState({
-                href: responseUrl,
-            });
+            this.href = responseUrl;
             if (!response.ok) {
                 throw response;
             }
@@ -1086,9 +1084,6 @@ class App extends React.Component {
             promise.then(this.constructor.scrollTo);
         }
 
-        this.setState({
-            contextRequest: request,
-        });
         return request;
     }
 
@@ -1165,7 +1160,7 @@ class App extends React.Component {
     }
 
     currentAction() {
-        const hrefUrl = url.parse(this.state.href);
+        const hrefUrl = url.parse(this.href);
         const hash = hrefUrl.hash || '';
         let name = '';
         if (hash.slice(0, 2) === '#!') {
@@ -1178,7 +1173,7 @@ class App extends React.Component {
         console.log('render app');
         let content;
         let { context } = this.state;
-        const hrefUrl = url.parse(this.state.href);
+        const hrefUrl = url.parse(this.href);
 
         // Determine conditions to unmount the entire page and rerender from scratch. Any paths
         // included in `fullPageReloadPaths` rerender the entire page on navigation. Other paths
@@ -1213,7 +1208,7 @@ class App extends React.Component {
             title = portal.portal_title;
         }
 
-        let canonical = this.state.href;
+        let canonical = this.href;
         if (context.canonical_uri) {
             if (hrefUrl.host) {
                 canonical = `${hrefUrl.protocol || ''}//${hrefUrl.host + context.canonical_uri}`;
