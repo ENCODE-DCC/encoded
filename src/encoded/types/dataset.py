@@ -1253,29 +1253,18 @@ class FunctionalCharacterizationSeries(Series):
         'elements_references.examined_loci',
         'elements_references.files',
     ]
-    embedded_with_frame = [
-        Path(
-            'replicates',
-            include=[
-                '@id',
-                '@type',
-                'uuid',
-                'status',
-                'library'
-            ],
-        ),
-    ]    
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Replicates",
         "type": "array",
         "items": {
-            "type": "string",
-            "linkTo": ["Replicate"]
-        }
+            "type": "object",
+        },
+        "notSubmittable": True,
     })
     def replicates(self, request, related_datasets):
-        return request.select_distinct_values('replicates', *related_datasets)
+        x = request.select_distinct_values('replicates', *related_datasets)
+        return [{"a": "b"},{"c", "d"}]
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Elements references",
