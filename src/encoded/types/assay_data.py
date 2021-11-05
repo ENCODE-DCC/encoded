@@ -79,5 +79,8 @@ assay_terms = {
       'perturbation followed by snATAC-seq': 'NTR:0000644',
       'Ribo-seq': 'OBI:0002038',
       'LC/MS label-free quantitative proteomics': 'NTR:0000649',
-      'LC-MS/MS isobaric label quantitative proteomics': 'NTR:0000650'
+      'LC-MS/MS isobaric label quantitative proteomics': 'NTR:0000650',
+      'proliferation CRISPR screen': 'NTR:0000657',
+      'FACS CRISPR screen': 'NTR:0000658',
+      'Flow-FISH CRISPR screen': 'NTR:0000659',
 }
