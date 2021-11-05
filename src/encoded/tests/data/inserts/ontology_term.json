@@ -313,5 +313,11 @@
         "status": "released",
         "term_id": "CL:2000001",
         "term_name": "peripheral blood mononuclear cell"
+    },
+    {
+        "uuid": "3906a0fd-c6ee-46f7-a8c5-72a21c84ddf4",
+        "status": "released",
+        "term_id": "NCIT:C54166",
+        "term_name": "variable"
     }
 ]

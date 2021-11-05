@@ -27,7 +27,31 @@
         "preservation_time_units": "week",
         "fixed": false,
         "starting_quantity": "50",
-        "starting_quantity_units": "g"
+        "starting_quantity_units": "g",
+        "age_at_collection": "46",
+        "age_at_collection_units": "year",
+        "development_ontology_at_collection": "HsapDv_0000087"
+    },
+    {
+        "accession": "LATBS433DDD",
+        "aliases": [
+            "anna-greka:human_tissue_donorA2"
+        ],
+        "status": "released",
+        "description": "adult human tissue donorA",
+        "uuid": "772133c0-abd7-44df-bb2b-313692b5bb8a",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:adult_human_donorA"
+        ],
+        "derivation_process": [
+            "percutaneous biopsy",
+            "cryosection"
+        ],
+        "biosample_ontology": "UBERON_0001225",
+        "age_at_collection": "45",
+        "age_at_collection_units": "year",
+        "development_ontology_at_collection": "HsapDv_0000087"
     },
     {
         "accession": "LATBS855DDD",

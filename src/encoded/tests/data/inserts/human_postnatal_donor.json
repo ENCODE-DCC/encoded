@@ -54,9 +54,8 @@
         "sex": "female",
         "menopausal_status": "premenopausal",
         "risk_score_tyrer_cuzick_lifetime": 21,
-        "age": "45-50",
-        "age_units": "year",
-        "development_ontology": "HsapDv_0000087",
+        "age": "variable",
+        "development_ontology": "NCIT_C54166",
         "times_pregnant": 2,
         "living_at_sample_collection": true,
         "family_members_history_breast_cancer": [
