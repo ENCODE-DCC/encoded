@@ -156,7 +156,7 @@ def audit_CRISPR_screen_not_in_series(value, system, excluded_types):
     if value['status'] in excluded_types:
         return
     if value['assay_term_name'] not in ['proliferation CRISPR screen',
-                'Sort-seq CRISPR screen',
+                'Flow-FISH CRISPR screen',
                 'FACS CRISPR screen',]:
         return
     related_series = value.get('related_series', [])
