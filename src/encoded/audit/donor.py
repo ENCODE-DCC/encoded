@@ -22,7 +22,7 @@ def audit_donor_age(value, system):
     else:
         age = value['conceptional_age']
 
-    if value['status'] in ['deleted'] or age in ['unknown', '>89']:
+    if value['status'] in ['deleted'] or age in ['unknown', 'variable', '>89']:
         return
 
     if '-' in age:
@@ -63,7 +63,14 @@ def audit_donor_dev_stage(value, system):
     post_term_end_yr = '-year-old human stage'
     pre_term_end_wk = ' week post-fertilization human stage'
 
-    if value['age_display'] == 'unknown' or '-' in value.get('age','') or '-' in value.get('conceptional_age',''):
+    if dev == 'variable' and value['age_display'] != 'variable':
+        detail = ('Donor {} of development_ontology variable expected age variable.'.format(
+            audit_link(value['accession'], value['@id'])
+            )
+        )
+        yield AuditFailure('inconsistent age, development', detail, level='ERROR')
+        return
+    elif value['age_display'] == 'unknown' or '-' in value.get('age','') or '-' in value.get('conceptional_age',''):
         if dev.endswith(post_term_end_yr) or dev.endswith(pre_term_end_wk):
             detail = ('Donor {} of age {} not expected age-specific development_ontology ({}).'.format(
                 audit_link(value['accession'], value['@id']),
@@ -113,6 +120,8 @@ def audit_donor_dev_stage(value, system):
         else:
             years = int(value['age'])//12
             expected = str(years) + post_term_end_yr
+    elif value['age_display'] == 'variable':
+        expected = 'variable'
 
     if dev != expected:
         detail = ('Donor {} of age {} expected development_ontology {}, not {}.'.format(
