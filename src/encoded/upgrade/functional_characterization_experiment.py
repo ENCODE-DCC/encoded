@@ -68,7 +68,7 @@ def functional_characterization_experiment_10_11(value, system):
 def functional_characterization_experiment_11_12(value, system):
     convert_name = {
         'HCR-FlowFISH': 'Flow-FISH CRISPR screen',
-        'PrimeFlow': 'FlowF-ISH CRISPR screen',
+        'PrimeFlow': 'Flow-FISH CRISPR screen',
         'antibody Sort-seq': 'FACS CRISPR screen',
         'endogenous protein Sort-seq': 'FACS CRISPR screen',
         'magnetic separation Sort-seq': 'FACS CRISPR screen',
