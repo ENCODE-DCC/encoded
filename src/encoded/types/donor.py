@@ -46,6 +46,8 @@ class Donor(Item, CalculatedTreatmentSummary):
     def age_display(self, request, age=None, age_units=None, conceptional_age=None, conceptional_age_units=None):
         if age == 'unknown' or conceptional_age == 'unknown':
             return 'unknown'
+        elif age == 'variable':
+            return 'variable'
         elif age != None:
             return u'{}'.format(pluralize(age, age_units))
         elif conceptional_age != None:
