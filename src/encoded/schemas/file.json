@@ -715,7 +715,8 @@
                                     "unfiltered sparse gene count matrix of unique reads",
                                     "unfiltered sparse splice junction count matrix of unique reads",
                                     "sparse gene count matrix of all reads",
-                                    "sparse gene count matrix of unique reads"
+                                    "sparse gene count matrix of unique reads",
+                                    "training set"
                                 ]
                             }
                         }
