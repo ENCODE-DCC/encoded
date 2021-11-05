@@ -685,6 +685,16 @@
                     }
                 },
                 {
+                    "properties": {
+                        "file_format": {
+                            "enum": ["bed"]
+                        },
+                        "output_type": {
+                            "enum": ["training set"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
@@ -1105,7 +1115,8 @@
                                         "raw data",
                                         "reporter code counts",
                                         "nanopore signal",
-                                        "repeat elements annotation"
+                                        "repeat elements annotation",
+                                        "kmer weights"
                                     ]
                                 }
                             }
@@ -1824,6 +1835,7 @@
                         "intensity values",
                         "IDR ranked peaks",
                         "IDR thresholded peaks",
+                        "kmer weights",
                         "library fraction",
                         "long range chromatin interactions",
                         "male genome index",
@@ -1913,6 +1925,7 @@
                         "subreads",
                         "TF binding prediction model",
                         "topologically associated domains",
+                        "training set",
                         "transcribed region quantifications",
                         "transcript quantifications",
                         "transcription start sites",
@@ -2440,6 +2453,7 @@
         "perturbation signal": "signal",
         "element gene interactions signal": "signal",
         "element gene interactions p-value": "signal",
+        "training set": "signal",
 
         "bias model": "quantification",
         "enrichment": "quantification",
@@ -2484,6 +2498,7 @@
         "unfiltered sparse splice junction count matrix of unique reads": "quantification",
         "sparse gene count matrix of all reads": "quantification",
         "sparse gene count matrix of unique reads": "quantification",
+        "kmer weights": "quantification",
 
         "hotspots": "annotation",
         "footprints": "annotation",
