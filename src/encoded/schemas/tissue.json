@@ -59,6 +59,9 @@
                 }
             ]
         },
+        "development_ontology_at_collection": ["age_at_collection"],
+        "age_at_collection": ["age_at_collection_units", "development_ontology_at_collection"],
+        "age_at_collection_units": ["age_at_collection"],
         "ischemic_temperature_units": ["ischemic_temperature"],
         "death_to_preservation_interval": ["death_to_preservation_interval_units"],
         "death_to_preservation_interval_units": ["death_to_preservation_interval"],
@@ -123,6 +126,32 @@
             "comment": "Only used if the tissue is preserved prior to dissociation",
             "type": "string",
             "pattern": "(^[<>]?[0-9]+(.[0-9]+)?$)|(^[0-9]+(.[0-9]+)-[0-9]+(.[0-9]+)$)"
+        },
+        "age_at_collection": {
+            "title": "Age at collection",
+            "description": "The age or age range of the donor when biological material was sampled.",
+            "comment": "Only submit when the Donor age is 'variable'. For privacy purposes, any age 90 years or above is listed as '>89'.",
+            "type": "string",
+            "pattern": "^(((\\d+)(\\-(\\d+))?)|(>89))$"
+        },
+        "age_at_collection_units": {
+            "title": "Age at collection units",
+            "description": "The unit used to measure the age of the donor when biological material was sampled.",
+            "comment": "Only submit when the Donor age is 'variable'.",
+            "type": "string",
+            "enum": [
+                "day",
+                "week",
+                "month",
+                "year"
+            ]
+        },
+        "development_ontology_at_collection": {
+            "title": "Development ontology at collection",
+            "description": "A link to the most accurate ontology term for the developmental stage of the donor when biological material was sampled.",
+            "comment": "Only submit when the Donor age is 'variable'.",
+            "type": "string",
+            "linkTo": "OntologyTerm"
         },
         "death_to_preservation_interval_units": {
             "title": "Death to preservation interval units",
