@@ -217,3 +217,30 @@ def audit_fcc_experiment(value, system):
         yield from function_dispatcher_without_files[function_name](
             value, system, excluded_types
         )
+
+
+def audit_crispr_screens_have_matching_readouts(value, system, excluded_types):
+    '''CRISPR screen experiments are expected to have a coresponding readout'''
+    expected_term = {
+        'proliferation': 'proliferation CRISPR screen',
+        'HCR-FlowFISH': 'Flow-FISH CRISPR screen',
+        'PrimeFlow': 'Flow-FISH CRISPR screen',
+        'antibody Sort-seq': 'FACS CRISPR screen',
+        'endogenous protein Sort-seq': 'FACS CRISPR screen',
+        'magnetic separation Sort-seq': 'FACS CRISPR screen',
+        'fluorescence activated cell sorting': 'FACS CRISPR screen',
+        'qPCR': 'CRISPR screen'
+    }
+    if value['status'] in excluded_types:
+        return
+    if 'CRISPR screen' not in value['assay_slims']:
+        return
+    if value['assay_term_name'] != expected_term[value['crispr_screen_readout']]:
+        detail = (
+            'This experiment ({}) has an assay_term_name of {} with a crispr_screen_readout of {}'.format(
+                audit_link(path_to_text(value["@id"]),value["@id"]),
+                value['assay_term_name'],
+                value['crispr_screen_readout']
+            )
+        )
+        yield AuditFailure('mismatched readout', detail, level='ERROR')
