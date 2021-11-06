@@ -1255,6 +1255,24 @@ class FunctionalCharacterizationSeries(Series):
     ]
 
     @calculated_property(condition='related_datasets', schema={
+        "title": "Examined loci",
+        "type": "array",
+        "items": {
+            "type": "object",
+        },
+        "notSubmittable": True,
+    })
+    def examined_loci(self, request, related_datasets=None):
+        if related_datasets is not None:
+            examined_loci = []
+            for related_dataset in related_datasets:
+                related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
+                dataset_examined_loci = related_datasetObject.get('examined_loci')
+                if dataset_examined_loci:
+                    examined_loci.extend(dataset_examined_loci)
+            return examined_loci
+
+    @calculated_property(condition='related_datasets', schema={
         "title": "Replicates",
         "type": "array",
         "items": {
@@ -1283,6 +1301,8 @@ class FunctionalCharacterizationSeries(Series):
         path = Path(
             'replicates.library.biosample.applied_modifications.reagents', 
             include=[
+                '@id',
+                '@type',
                 'MOI',
                 'guide_type',
                 'reagents',
@@ -1293,6 +1313,8 @@ class FunctionalCharacterizationSeries(Series):
         path = Path(
             'replicates.library.biosample.donor.organism', 
             include=[
+                '@id',
+                '@type',
                 'organism',
                 'scientific_name',
             ]
@@ -1301,6 +1323,8 @@ class FunctionalCharacterizationSeries(Series):
         path = Path(
             'replicates.library.biosample.treatments', 
             include=[
+                '@id',
+                '@type',
                 'treatment_term_name',
             ]
         )
