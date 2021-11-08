@@ -11,7 +11,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal'
 import Status from '../status';
 // local
 import { setCartStatusAndSave, setDescriptionAndSave } from './actions';
-import { CartDescriptionDisplay, CartDescriptionEditorContent, sanitizeDescription, useCartDescription } from './description';
+import { CartDescriptionDisplay, CartDescriptionEditorContent, sanitizeDescription, getCartDescriptionInfo } from './description';
 import { getReadOnlyState } from './util';
 
 
@@ -112,7 +112,7 @@ export const CartListingConfigContent = ({ cart, editedDescription, onChangeDesc
         descriptionSaveButtonLabel,
         isDescriptionSaveButtonDisabled,
         isDescriptionEdited,
-    } = useCartDescription(cart, editedDescription);
+    } = getCartDescriptionInfo(cart, editedDescription);
     const readOnlyState = getReadOnlyState(cart);
 
     return (
