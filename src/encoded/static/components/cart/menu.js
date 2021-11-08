@@ -52,6 +52,10 @@ CartNavTitle.defaultProps = {
 };
 
 
+/** Maximum number of cart name characters to display before truncating */
+const MAX_NAME_DISPLAY_LENGTH = 22;
+
+
 /**
  * Navigation bar item for the cart menu.
  */
@@ -95,7 +99,7 @@ const CartMenuComponent = ({ elements, savedCartObj, inProgress, openDropdown, d
     const menuItems = [];
     if (loggedIn) {
         // Build the disabled cart name and lock status.
-        const cartName = (savedCartObj && savedCartObj.name) && truncateString(savedCartObj.name, 22);
+        const cartName = (savedCartObj && savedCartObj.name) && truncateString(savedCartObj.name, MAX_NAME_DISPLAY_LENGTH);
         const lockIcon = cartName && <div className="cart-nav-lock">{svgIcon(savedCartObj.locked ? 'lockClosed' : 'lockOpen')}</div>;
         const statusIcon = savedCartObj && savedCartObj.status && <Status item={savedCartObj} css="cart-menu-status" badgeSize="small" noLabel inline />;
         menuItems.push(

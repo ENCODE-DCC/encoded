@@ -27,7 +27,7 @@ const descriptionVariants = {
 
 /**
  * Display the description of a cart in the cart search results. Include a control to collapse and
- * expand the description when the description has more text than would fit in the allowed vertial
+ * expand the description when the description has more text than would fit in the allowed vertical
  * space.
  */
 const CartDescriptionForSearch = ({ cart, description }) => {

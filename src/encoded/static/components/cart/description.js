@@ -29,13 +29,13 @@ export const sanitizeDescription = (description) => sanitize(description).trim()
 
 
 /**
- * Custom React hook to calculate the enabled/disabled state of the button to save a description
- * and the label that should appear in the button given the current saved state of the description.
+ * Calculates the enabled/disabled state of the button to save a description and the label that
+ * should appear in the button given the current saved state of the description.
  * @param {object} cart Saved cart object
  * @param {string} editedDescription Description as entered by the user before sanitizing
  * @returns See return statement
  */
-export const useCartDescription = (cart, editedDescription) => {
+export const getCartDescriptionInfo = (cart, editedDescription) => {
     const isDescriptionEdited = editedDescription !== (cart.description || '');
     const descriptionSaveButtonLabel = isDescriptionEdited ? 'Save description' : 'Saved';
     const isDescriptionEmpty = sanitizeDescription(editedDescription) === '';
@@ -140,7 +140,7 @@ const CartDescriptionEditor = ({ cart, savedDescription, onSetDescription, onClo
     /** Holds current edited description */
     const [editedDescription, setEditedDescription] = React.useState(savedDescription);
     /** Current states of the Save Description button */
-    const { descriptionSaveButtonLabel, isDescriptionSaveButtonDisabled, isDescriptionEdited } = useCartDescription(cart, editedDescription);
+    const { descriptionSaveButtonLabel, isDescriptionSaveButtonDisabled, isDescriptionEdited } = getCartDescriptionInfo(cart, editedDescription);
     const readOnlyState = getReadOnlyState(cart);
 
     /**

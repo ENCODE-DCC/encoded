@@ -335,7 +335,7 @@ const CartDatasetReport = ({ cart, usedDatasetTypes }) => {
     // Only display the Dataset Report button if we have at least one experiment in the cart. This
     // button drops down a menu allowing the user to select the data type to view which links to
     // that report view.
-    if (cart && cart.elements && cart.elements.length > 0) {
+    if (cart?.elements?.length > 0) {
         return (
             <DropdownButton.Immediate
                 label={<>Dataset report {svgIcon('chevronDown')}</>}
@@ -541,7 +541,7 @@ const CartSearchResultsControls = ({
 };
 
 CartSearchResultsControls.propTypes = {
-    /** Cart being displayed */
+    /** Object for the current cart */
     cart: PropTypes.object.isRequired,
     /** Key of the currently selected tab */
     currentTab: PropTypes.string.isRequired,

@@ -464,7 +464,7 @@ const NameCartButton = connect(NameCartButtonComponent.mapStateToProps, NameCart
  * Component to display a button to delete a cart, with a warning that lets them back out.
  */
 const DeleteCartButtonComponent = ({ cart, setInProgress, inProgress, fetch, updateCartManager }) => {
-    /** True if modal to confirm cart deletion open */
+    /** True if modal to confirm cart deletion is open */
     const [modalOpen, setModalOpen] = React.useState(false);
     const readOnlyState = getReadOnlyState(cart);
 
