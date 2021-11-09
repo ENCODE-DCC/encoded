@@ -45,9 +45,22 @@ slim_shims = {
         'CL:0000049': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
         'CL:0000050': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
         'CL:0000051': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
+        'CL:0000545': ['CD4+ T cell'],
+        'CL:0000546': ['CD4+ T cell'],
         'CL:0000553': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
         'CL:0000557': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
+        'CL:0000623': ['natural killer cell'],
+        'CL:0000624': ['CD4+ T cell'],
+        'CL:0000625': ['CD8+ T cell'],
+        'CL:0000792': ['CD4+ T cell'],
+        'CL:0000815': ['CD4+ T cell'],
+        'CL:0000823': ['natural killer cell'],
         'CL:0000837': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
+        'CL:0000895': ['CD4+ T cell'],
+        'CL:0000897': ['CD4+ T cell'],
+        'CL:0000899': ['CD4+ T cell'],
+        'CL:0000909': ['CD8+ T cell'],
+        'CL:0000913': ['CD8+ T cell'],
         'CL:0001059': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
         'CL:0002351': ['progenitor cell'],
         'CL:0011020': ['progenitor cell'],

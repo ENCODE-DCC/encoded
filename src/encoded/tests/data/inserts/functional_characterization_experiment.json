@@ -208,5 +208,21 @@
         "elements_references": ["ENCSR001REF"],
         "submitted_by": "felis.senectus@hymenaeos.nibh",
         "uuid": "dca5442b-2246-407f-9634-e62734363971"
+    },
+        {
+        "accession": "ENCSR222PRF",
+        "assay_term_name": "proliferation CRISPR screen",
+        "award": "U54HG006997",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "Test submission for proliferation CRISPR screen experiment",
+        "elements_mappings": ["ENCSR212POL"],
+        "elements_cloning": "ENCSR127PCE",
+        "elements_references": ["ENCSR580ZYI", "ENCSR580REG"],
+        "lab": "bing-ren",
+        "status": "in progress",
+        "submitted_by": "tristique.sem@faucibus.semper",
+        "target": "FTO-human",
+        "target_expression_percentile": 90,
+        "uuid": "bbd32130-4f13-4c45-9117-3cdebe0ad40a"
     }
 ]

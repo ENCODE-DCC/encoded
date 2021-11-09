@@ -1,5 +1,8 @@
 ## Changelog for pipeline.json
 
+### Minor changes since schema version 14
+* Added *proliferation CRISPR screen* to *assay_term_names* enum
+
 ### Schema version 14
 
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_names* enum. *assay_term_names* enum *Capture Hi-C* was changed to *capture Hi-C*

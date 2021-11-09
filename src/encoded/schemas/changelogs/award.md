@@ -1,5 +1,8 @@
 ## Changelog for award.json
 
+### Minor changes since schema version 11
+* Added *proliferation CRISPR screen* to *milestones.assay_term_name* enum
+
 ### Schema version 11
 
 * Added *LC/MS label-free quantitative proteomics* and *LC-MS/MS isobaric label quantitative proteomics* to *milestones.assay_term_name* enum. *milestones.assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*

@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 34
+* Added *proliferation CRISPR screen* to *assay_term_name* enum
+
 ### Schema version 34
 * Updated the *annotation_type* enum from *gkmSVM-model* to *gkm-SVM-model*
 * Changed *encyclopedia_version* to an array and updated the enums as follows:
