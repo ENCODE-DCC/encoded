@@ -28,7 +28,8 @@ def test_fcc_series_titles(testapp, base_functional_characterization_series, poo
         {'related_datasets': [
             fcc_posted_CRISPR_screen['@id'],
             pooled_clone_sequencing['@id'],
-        ]
+            ]
+        }
     )
     res = testapp.get(base_functional_characterization_series['@id'] + '@@index-data') 
     assert res.json['object']['assay_title'] == [fcc_posted_CRISPR_screen.get('assay_title')]
