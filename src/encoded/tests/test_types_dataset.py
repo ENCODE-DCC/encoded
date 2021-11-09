@@ -20,3 +20,15 @@ def test_transgenic_enhancer_experiment_datapoint(testapp, transgenic_enhancer_e
     # https://encodedcc.atlassian.net/browse/ENCD-6195
     res = testapp.get(transgenic_enhancer_experiment['@id'] + '@@index-data')
     assert res.json['object']['datapoint'] is False
+
+
+def test_fcc_series_titles(testapp, base_functional_characterization_series, pooled_clone_sequencing, fcc_posted_CRISPR_screen):
+    # https://encodedcc.atlassian.net/browse/ENCD-6232
+    testapp.patch_json(base_functional_characterization_series['@id'], 
+        {'related_datasets': [
+            fcc_posted_CRISPR_screen['@id'],
+            pooled_clone_sequencing['@id'],
+        ]
+    )
+    res = testapp.get(base_functional_characterization_series['@id'] + '@@index-data') 
+    assert res.json['object']['assay_title'] == [fcc_posted_CRISPR_screen.get('assay_title')]
