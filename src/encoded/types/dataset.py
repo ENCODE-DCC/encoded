@@ -1270,7 +1270,8 @@ class FunctionalCharacterizationSeries(Series):
                 dataset_examined_loci = related_datasetObject.get('examined_loci')
                 if dataset_examined_loci:
                     examined_loci.extend(dataset_examined_loci)
-            return examined_loci
+            if examined_loci:
+                return examined_loci
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Replicates",
