@@ -182,7 +182,7 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
             {
                 file_format: 'vgenes-dir',
                 href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vgenes-dir',
-                title: 'GENCODE V29',
+                title: 'GENCODE V19',
             },
         ];
         contig = 'chr21';
