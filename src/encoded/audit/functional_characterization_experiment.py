@@ -233,7 +233,11 @@ def audit_crispr_screens_have_matching_readouts(value, system, excluded_types):
     }
     if value['status'] in excluded_types:
         return
-    if 'CRISPR screen' not in value['assay_slims']:
+    if value.get('assay_term_name') not in ['proliferation CRISPR screen',
+            'FACS CRISPR screen',
+            'Flow-FISH CRISPR screen']:
+        return
+    if 'crispr_screen_readout' not in value:
         return
     if value['assay_term_name'] != expected_term[value['crispr_screen_readout']]:
         detail = (

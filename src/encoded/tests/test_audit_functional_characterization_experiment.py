@@ -403,18 +403,18 @@ def test_audit_crispr_screens_have_matching_readouts(
     testapp, fcc_posted_CRISPR_screen_2
 ):
     
-    # test existing correct fixture does not trigger error
+    # test existing incorrect fixture does not trigger error
     res = testapp.get(fcc_posted_CRISPR_screen_2['@id'] + '@@index-data')
-    assert all(
-        error['category'] != 'mismatched readout'
+    assert any(
+        error['category'] == 'mismatched readout'
         for error in collect_audit_errors(res)
     )
 
-    # test modified incorrect fixture does trigger error
-    #testapp.patch_json(fcc_posted_CRISPR_screen_2['@id'], {
-    #    'assay_term_name': 'Flow-FISH CRISPR screen'}
-    #)
-    #res = testapp.get(fcc_posted_CRISPR_screen_2['@id'] + '@@index-data')
+    # test modified correct fixture does trigger error
+    testapp.patch_json(fcc_posted_CRISPR_screen_2['@id'], {
+        'assay_term_name': 'FACS CRISPR screen'}
+    )
+    res = testapp.get(fcc_posted_CRISPR_screen_2['@id'] + '@@index-data')
     #assert any(
     #    error['category'] == 'mismatched readout'
     #    for error in collect_audit_errors(res)

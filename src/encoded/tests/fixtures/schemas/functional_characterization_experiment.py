@@ -221,7 +221,7 @@ def fcc_posted_CRISPR_screen_2(testapp, lab, award, ctcf, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'FACS CRISPR screen',
+        'assay_term_name': 'Flow-FISH CRISPR screen',
         'biosample_ontology': heart['uuid'],
         'status': 'in progress',
         'examined_loci': [
