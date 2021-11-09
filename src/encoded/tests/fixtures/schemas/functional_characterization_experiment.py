@@ -274,23 +274,3 @@ def functional_characterization_experiment_11(testapp, lab, award, ctcf, heart):
     }
     return item
 
-
-@pytest.fixture
-def fcc_posted_CRISPR_screen_2(testapp, lab, award, ctcf, heart):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assay_term_name': 'FACS CRISPR screen',
-        'biosample_ontology': heart['uuid'],
-        'status': 'in progress',
-        'examined_loci': [
-            {
-             'gene': ctcf['uuid'],
-             'expression_measurement_method': 'endogenous protein Sort-seq'
-            },
-            {
-             'gene': ctcf['uuid']
-            }
-        ]
-    }
-    return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
