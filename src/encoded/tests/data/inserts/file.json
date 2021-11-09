@@ -4948,5 +4948,41 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "93bb31d5-d003-b6ba-e63f-99d46fbbb0d5"
+    },
+    {
+        "accession": "ENCFF292KWT",
+        "aliases": [
+            "ali-mortazavi:kmer_weights"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR831GKM",
+        "file_format": "tsv",
+        "file_size": 300000,
+        "lab": "j-michael-cherry",
+        "md5sum": "b809e3f5625bf66456b316d5bd946d9b",
+        "output_type": "kmer weights",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d946d1d5-6d93-b809-e63f-99d465bf60d5"
+    },
+    {
+        "accession": "ENCFF575TRS",
+        "aliases": [
+            "ali-mortazavi:training_set"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR831GKM",
+        "file_format": "bed",
+        "file_size": 300000,
+        "lab": "j-michael-cherry",
+        "md5sum": "2809e3d056d90d5ad6e416f5663f6bd4",
+        "output_type": "training set",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "9b8091d5-d003-b6ba-5bf6-809e3fbb6d95",
+        "file_format_type": "narrowPeak",
+        "assembly": "GRCh38"
     }
 ]

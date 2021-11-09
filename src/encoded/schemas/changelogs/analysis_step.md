@@ -21,6 +21,7 @@
 * Added *TF binding prediction model*, *enhancer prediction model* and *promoter prediction model* to the enum lists for *input_file_types* and *output_file_types*
 * Added *filtered reads* and *archr project* to the enum lists for *input_file_types* and *output_file_types*
 * Added *inclusion list*, *sparse gene count matrix of all reads*, *sparse gene count matrix of unique reads*, *unfiltered sparse gene count matrix of all reads*, *unfiltered sparse gene count matrix of unique reads*, and *unfiltered sparse splice junction count matrix of unique reads* to the enum lists for *input_file_types* and *output_file_types*
+* Added *kmer weights* and *training set* to the enum lists for *input_file_types* and *output_file_types*
 
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
