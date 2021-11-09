@@ -359,10 +359,23 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["CRISPR cutting", "interference", "CRISPRi"]
+                            "enum": ["CRISPR cutting", "CRISPRi"]
                         },
                         "method": {
-                            "enum": ["CRISPR", "RNAi"]
+                            "enum": ["CRISPR"]
+                        },
+                        "purpose": {
+                            "enum": ["non-specific target control"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["interference"]
+                        },
+                        "method": {
+                            "enum": ["RNAi"]
                         },
                         "purpose": {
                             "enum": ["non-specific target control"]
