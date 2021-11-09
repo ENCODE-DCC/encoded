@@ -298,7 +298,6 @@ class App extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            href: props.href, // Current URL bar
             slow: false, // `true` if we expect response from server, but it seems slow
             errors: [],
             assayTermNameColors: null,
