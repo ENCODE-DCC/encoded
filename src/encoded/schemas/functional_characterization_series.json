@@ -135,8 +135,15 @@
         }
     ],
     "facets": {
+        "assay_slims": {
+            "title": "Assay type"
+        },
         "assay_title": {
             "title": "Assay title"
+        },
+        "control_type": {
+            "type": "exists",
+            "title": "Hide control experiments"
         },
         "status": {
             "title": "Status"
@@ -169,10 +176,10 @@
         "related_datasets.perturbation_type": {
             "title": "Perturbation type"
         },
-        "related_datasets.replicates.library.biosample.applied_modifications.guide_type": {
+        "replicates.library.biosample.applied_modifications.guide_type": {
             "title": "Guide type"
         },
-        "related_datasets.replicates.library.biosample.applied_modifications.MOI": {
+        "replicates.library.biosample.applied_modifications.MOI": {
             "title": "Multiplicity of infection"
         },
         "treatment_term_name": {
@@ -180,6 +187,9 @@
         },
         "related_datasets.files.file_type": {
             "title": "Available file types"
+        },
+        "replicates.library.biosample.applied_modifications.reagents.promoter_details": {
+            "title": "Promoter details"
         },
         "related_datasets.replicates.library.nucleic_acid_term_name": {
             "title": "Library material"
