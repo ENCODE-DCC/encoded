@@ -1016,7 +1016,6 @@ ntr_biosamples = {
         "synonyms": [],
         "systems": ["immune system"],
         "types": [],
-
     },
     "NTR:0000661": {
         "category": [],
@@ -1166,6 +1165,19 @@ ntr_biosamples = {
         "cells": ["hematopoietic cell", "leukocyte", "T cell", "CD4+ T cell"],
         "developmental": [],
         "name": "activated T-helper 17 cell",
+        "objectives": [],
+        "organs": ["blood", "bodily fluid"],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": ["immune system"],
+        "types": [],
+    },
+    "NTR:0000670": {
+        "category": [],
+        "cells": ["hematopoietic cell", "leukocyte", "T cell", "CD4+ T cell"],
+        "developmental": [],
+        "name": "activated CD4-positive naive resting alpha-beta T cell",
         "objectives": [],
         "organs": ["blood", "bodily fluid"],
         "preferred_name": "",

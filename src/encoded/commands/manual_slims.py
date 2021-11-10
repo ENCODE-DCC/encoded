@@ -59,6 +59,7 @@ slim_shims = {
         'CL:0000895': ['CD4+ T cell'],
         'CL:0000897': ['CD4+ T cell'],
         'CL:0000899': ['CD4+ T cell'],
+        'CL:0000900': ['CD8+ T cell'],
         'CL:0000909': ['CD8+ T cell'],
         'CL:0000913': ['CD8+ T cell'],
         'CL:0001059': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
