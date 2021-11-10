@@ -179,7 +179,7 @@ def functional_characterization_data_view():
             },
             'files.file_type': {
                 'title': 'Available file types'
-            }
+            },
             'date_released': {
                 'title': 'Date released'
             },
