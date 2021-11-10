@@ -123,8 +123,9 @@ const CartToggleComponent = ({
                     if (hasType(targetElement, 'Series')) {
                         // Extract allowed child datasets from the series and add them to the cart.
                         const relatedDatasetPaths = targetElement.related_datasets
-                            .map((relatedDataset) => relatedDataset['@id'])
-                            .filter((path) => allowedDatasetTypes[atIdToType(path)]);
+                            ?.map((relatedDataset) => relatedDataset['@id'])
+                            .filter((path) => allowedDatasetTypes[atIdToType(path)])
+                            || [];
                         const seriesAndRelatedDatasetPaths = [targetElement['@id']].concat(relatedDatasetPaths);
                         addSeriesDatasets(seriesAndRelatedDatasetPaths);
                     }
