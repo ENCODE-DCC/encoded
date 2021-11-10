@@ -272,7 +272,7 @@ const CartListingAgentActuatorComponent = ({
     return (
         <div className="listing-agent-actuator">
             <button type="button" className="btn btn-info btn-sm btn-inline" disabled={inProgress || disabled} onClick={onClickManageListing}>
-                Listing
+                {`${cart.status === 'unlisted' ? 'List' : 'Unlist'} cart`}
             </button>
             {listingConfigVisible &&
                 <ListingConfigModal cart={cart} onSetDescription={onSetDescription} onClose={onClose} />
