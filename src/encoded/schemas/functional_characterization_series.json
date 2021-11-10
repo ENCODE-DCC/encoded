@@ -93,14 +93,17 @@
         },
         {
             "title": "Biosample",
-            "facet_fields": [
-                "organism.scientific_name",
+            "facet_fields": [              
+                "replicates.library.biosample.donor.organism.scientific_name",
                 "biosample_ontology.term_name",
                 "biosample_ontology.classification",
-                "replicates.library.biosample.life_stage",
                 "biosample_ontology.organ_slims",
                 "biosample_ontology.cell_slims",
-                "treatment_term_name"
+                "replicates.library.biosample.life_stage",
+                "replicates.library.biosample.treatments.treatment_term_name",
+                "replicates.library.biosample.disease_term_name",
+                "replicates.library.nucleic_acid_term_name"
+
             ]
         },
         {
