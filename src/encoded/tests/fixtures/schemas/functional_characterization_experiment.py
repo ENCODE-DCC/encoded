@@ -11,7 +11,7 @@ def functional_characterization_experiment_item(testapp, lab, award, cell_free):
         'status': 'in progress'
     }
     return item
-
+ 
 
 @pytest.fixture
 def functional_characterization_experiment_screen(testapp, lab, award, heart, target):
@@ -101,7 +101,7 @@ def functional_characterization_experiment_disruption_screen(testapp, lab, award
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'proliferation CRISPR screen',
+        'assay_term_name': 'Flow-FISH CRISPR screen',
         'biosample_ontology': liver['uuid'],
         'status': 'in progress'
     }
