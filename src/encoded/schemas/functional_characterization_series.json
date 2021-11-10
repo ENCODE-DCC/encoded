@@ -154,7 +154,7 @@
         "elements_references.crispr_screen_tiling": {
             "title": "CRISPR screen tiling"
         },
-        "organism.scientific_name": {
+        "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism"
         },
         "biosample_ontology.classification": {
@@ -185,13 +185,16 @@
         "treatment_term_name": {
             "title": "Biosample treatment"
         },
-        "related_datasets.files.file_type": {
+        "replicates.library.biosample.disease_term_name": {
+            "title": "Disease"
+        },
+        "files.file_type": {
             "title": "Available file types"
         },
         "replicates.library.biosample.applied_modifications.reagents.promoter_details": {
             "title": "Promoter details"
         },
-        "related_datasets.replicates.library.nucleic_acid_term_name": {
+        "replicates.library.nucleic_acid_term_name": {
             "title": "Library material"
         },
         "date_released": {
@@ -277,7 +280,7 @@
             "title": "Linked antibody",
             "type": "string"
         },
-        "related_datasets.replicates.library.biosample.life_stage": {
+        "replicates.library.biosample.life_stage": {
             "title": "Life stage",
             "type": "array"
         },
