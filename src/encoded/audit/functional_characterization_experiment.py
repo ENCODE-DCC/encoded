@@ -183,8 +183,16 @@ def audit_crispr_screens_have_matching_readouts(value, system, excluded_types):
             'FACS CRISPR screen',
             'Flow-FISH CRISPR screen']:
         return
+    
     if 'crispr_screen_readout' not in value:
-        return
+        detail = (
+            'This experiment ({}) has an assay_term_name of {} with no crispr_screen_readout.'.format(
+                audit_link(path_to_text(value["@id"]),value["@id"]),
+                value['assay_term_name']
+            )
+        )
+        yield AuditFailure('mismatched readout', detail, level='ERROR')
+
     if value['assay_term_name'] != expected_term[value['crispr_screen_readout']]:
         detail = (
             'This experiment ({}) has an assay_term_name of {} with a crispr_screen_readout of {}'.format(
