@@ -82,7 +82,7 @@ Feature: Cart
         Then I should not see an element with id "description-editor"
 
     Scenario: Cart listing
-        When I press "Listing"
+        When I press "List cart"
         Then I should see an element with id "description-editor"
         When I fill in "cart-description-text-area" with "This is a description."
         And I press "Save description"
