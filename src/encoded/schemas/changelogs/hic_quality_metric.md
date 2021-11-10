@@ -3,7 +3,6 @@
 ### Minor changes since schema version 2
 
 * Removed the dependencies on *run_type* for *1_alignment*, *pct_1_alignment*, *pct_2_alignment_duplicates*, and *pct_2_alignment_unique*
-* Added *proliferation CRISPR screen* to *assay_term_name* enum
 
 ### Schema version 2
 

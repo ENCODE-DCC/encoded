@@ -6,7 +6,6 @@
 * Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
 * Added *Deeply Profiled* to the *internal_tags* enum
 * Added *related_annotations* calculated property
-* Added *proliferation CRISPR screen* to *assay_term_name* enum
 
 ### Schema version 36
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
