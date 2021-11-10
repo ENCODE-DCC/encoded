@@ -129,9 +129,7 @@ def audit_experiment_replicate_with_no_files(value, system, excluded_statuses):
 def audit_experiment_mixed_expression_measurement_methods(value, system, excluded_types):
     if value['status'] in excluded_types:
         return
-    if value['assay_term_name'] not in ['proliferation CRISPR screen',
-                'FACS CRISPR screen',
-                'Flow-FISH CRISPR screen']:
+    if value['assay_term_name'] not in ['FACS CRISPR screen','Flow-FISH CRISPR screen']:
         return
     if 'examined_loci' not in value:
         return
