@@ -1377,7 +1377,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
             <div className={itemClass(context, 'view-item')}>
                 <header>
                     <h1>{cartName}</h1>
-                    <CartStatus cart={savedCartObj} />
+                    <CartStatus cart={cart} />
                     {(cartDatasets.length > 0 || allSeries.length > 0) &&
                         <>
                             <CartDescription cart={cart} cartType={cartType} isCartReadOnly={readOnlyState.any} />
