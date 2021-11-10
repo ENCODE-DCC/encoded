@@ -159,6 +159,9 @@
         "elements": {
             "title": "Cart elements"
         },
+        "file_views": {
+            "title": "Cart file views"
+        },
         "name": {
             "title": "Name"
         },

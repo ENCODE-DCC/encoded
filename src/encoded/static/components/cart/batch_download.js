@@ -1,3 +1,6 @@
+import React from 'react';
+
+
 /**
  * Display the batch download modal on the cart page, and with the user confirming the modal,
  * initiate the batch download.
@@ -5,7 +8,12 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import QueryString from '../../libs/query_string';
-import { BatchDownloadActuator, CartBatchDownloadController, DefaultBatchDownloadContent } from '../batch_download';
+import {
+    BatchDownloadActuator,
+    CartBatchDownloadController,
+    CartStaticBatchDownloadController,
+    DefaultBatchDownloadContent,
+} from '../batch_download';
 
 
 /** Maximum number of elements in cart that generates warning in download dialog */
@@ -175,7 +183,7 @@ CartBatchDownloadComponent.defaultProps = {
     isFileViewOnly: false,
 };
 
-const mapStateToProps = (state, ownProps) => ({
+CartBatchDownloadComponent.mapStateToProps = (state, ownProps) => ({
     cart: ownProps.cart,
     cartInProgress: state.inProgress,
     elements: ownProps.elements,
@@ -184,7 +192,7 @@ const mapStateToProps = (state, ownProps) => ({
     fetch: ownProps.fetch,
 });
 
-const CartBatchDownloadInternal = connect(mapStateToProps)(CartBatchDownloadComponent);
+const CartBatchDownloadInternal = connect(CartBatchDownloadComponent.mapStateToProps)(CartBatchDownloadComponent);
 
 
 /**
@@ -200,3 +208,147 @@ CartBatchDownload.contextTypes = {
 };
 
 export default CartBatchDownload;
+
+
+/**
+ * Displays the dropdown that allows the user to select a dataset type to download.
+ */
+const StaticBatchDownloadDatasetTypeSelector = ({
+    datasetTypes,
+    selectedDatasetType,
+    setSelectedDatasetType,
+}, reactContext) => {
+    const onChange = (event) => {
+        setSelectedDatasetType(event.target.value);
+    };
+
+    return (
+        <div className="cart__batch-download-dataset-type-selector">
+            <>Select download dataset type</>
+            <select value={selectedDatasetType} onChange={onChange}>
+                {datasetTypes.map((datasetType) => (
+                    <option key={datasetType} value={datasetType}>
+                        {reactContext.profilesTitles ? reactContext.profilesTitles[datasetType] : datasetType}
+                    </option>
+                ))}
+            </select>
+        </div>
+    );
+};
+
+StaticBatchDownloadDatasetTypeSelector.propTypes = {
+    /** List of possible dataset types the user can choose from */
+    datasetTypes: PropTypes.array.isRequired,
+    /** Currently selected dataset type; member of `datasetTypes` */
+    selectedDatasetType: PropTypes.string.isRequired,
+    /** Called when the user changes the selected dataset type */
+    setSelectedDatasetType: PropTypes.func.isRequired,
+};
+
+StaticBatchDownloadDatasetTypeSelector.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+
+/**
+ * Displays batch download button for downloading files from experiments in carts. For shared carts
+ * or logged-in users.
+ */
+const CartStaticBatchDownloadComponent = ({ cart, assembly, datasetTypes, isFileViewActive, cartInProgress }) => {
+    /** Selected dataset type from modal dropdown */
+    const [selectedDatasetType, setSelectedDatasetType] = React.useState(datasetTypes[0]);
+
+    React.useEffect(() => {
+        setSelectedDatasetType(datasetTypes[0]);
+    }, [datasetTypes]);
+
+    if (cart && selectedDatasetType) {
+        // Build the static cart batch-download controller from the user selections.
+        const cartQuery = buildQueryFromTerms({}, {}, selectedDatasetType, false, []);
+        const cartController = new CartStaticBatchDownloadController(cart['@id'], selectedDatasetType, assembly, isFileViewActive, cartQuery);
+
+        // Add a dropdown to let the user select a dataset type to download. It also displays a
+        // note about carts with file views downloading more than the visible files, and a warning
+        // if a large number of elements are in the cart.
+        const modalContent = (
+            <>
+                <DefaultBatchDownloadContent />
+                {isFileViewActive &&
+                    <p className="cart__batch-download-note">
+                        This cart displays files included in its file view which has manually
+                        selected files. In addition to these files, other processed files with the
+                        <> {assembly}</> assembly will download.
+                    </p>
+                }
+                <StaticBatchDownloadDatasetTypeSelector
+                    datasetTypes={datasetTypes}
+                    selectedDatasetType={selectedDatasetType}
+                    setSelectedDatasetType={setSelectedDatasetType}
+                />
+                {cart.elements.length >= ELEMENT_WARNING_LENGTH_MIN
+                    ? (
+                        <p className="cart__batch-download-warning">
+                            The &ldquo;files.txt&rdquo; file can take a very long time to generate
+                            with {cart.elements.length} experiments in your cart. Cart operations will be
+                            unavailable until this file completes downloading.
+                        </p>
+                    ) : null
+                }
+            </>
+        );
+
+        return (
+            <BatchDownloadActuator
+                controller={cartController}
+                modalContent={modalContent}
+                actuator={
+                    <CartBatchDownloadButton title="Download" disabled={cartInProgress} />
+                }
+            />
+        );
+    }
+    return null;
+};
+
+CartStaticBatchDownloadComponent.propTypes = {
+    /** Cart object as it exists in the database */
+    cart: PropTypes.object,
+    /** Currently selected assembly */
+    assembly: PropTypes.string,
+    /** All dataset types from cart elements; don't include series types */
+    datasetTypes: PropTypes.arrayOf(PropTypes.string),
+    /** True if cart has an active file view */
+    isFileViewActive: PropTypes.bool.isRequired,
+    /** True if cart operation in progress */
+    cartInProgress: PropTypes.bool,
+};
+
+CartStaticBatchDownloadComponent.defaultProps = {
+    cart: null,
+    assembly: '',
+    datasetTypes: [],
+    cartInProgress: false,
+};
+
+CartStaticBatchDownloadComponent.mapStateToProps = (state, ownProps) => ({
+    cart: ownProps.cart,
+    assembly: ownProps.assembly,
+    datasetTypes: ownProps.datasetTypes,
+    isFileViewActive: ownProps.isFileViewActive,
+    cartInProgress: state.inProgress,
+});
+
+const CartStaticBatchDownloadInternal = connect(CartStaticBatchDownloadComponent.mapStateToProps)(CartStaticBatchDownloadComponent);
+
+
+/**
+ * Wrapper to receive React <App> context and pass them to CartStaticBatchDownloadInternal as
+ * regular props.
+ */
+export const CartStaticBatchDownload = (props, reactContext) => (
+    <CartStaticBatchDownloadInternal {...props} fetch={reactContext.fetch} />
+);
+
+CartStaticBatchDownload.contextTypes = {
+    fetch: PropTypes.func,
+};
