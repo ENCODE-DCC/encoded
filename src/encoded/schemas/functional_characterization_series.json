@@ -86,8 +86,9 @@
         {
             "title": "Elements",
             "facet_fields": [
-                "related_datasets.examined_loci.gene.symbol",
-                "target.investigated_as"
+                "elements_references.examined_loci.symbol",
+                "examined_loci.gene.symbol",
+                "elements_references.elements_selection_method"
             ]
         },
         {
