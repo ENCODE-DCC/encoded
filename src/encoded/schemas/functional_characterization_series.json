@@ -110,8 +110,7 @@
             "title": "Analysis",
             "facet_fields": [
                 "assembly",
-                "related_datasets.files.file_type",
-                "related_datasets.files.run_type"
+                "files.file_type"
             ]
         },
         {
@@ -128,8 +127,6 @@
             "title": "Quality",
             "facet_fields": [
                 "status",
-                "related_datasets.files.read_length",
-                "related_datasets.replicates.library.size_range",
                 "audit.ERROR.category",
                 "audit.NOT_COMPLIANT.category",
                 "audit.WARNING.category",
