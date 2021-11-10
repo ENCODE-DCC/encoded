@@ -999,6 +999,11 @@ class App extends React.Component {
         // options.reload to force reloading the URL
         let mutatableHref = url.resolve(this.href, href);
 
+        // trick to page to reload if user is making an edit/addition
+        if (href.includes('/#!')) {
+            options.reload = true;
+        }
+
         // Strip url fragment.
         let fragment = '';
         const hrefHashPos = mutatableHref.indexOf('#');
