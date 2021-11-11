@@ -116,10 +116,10 @@ export const COLLECTIONS = [
         '@type': ['DataCollection'],
     },
     {
-        title: 'Human reference epigenomes',
+        title: 'Reference epigenomes',
         searchUrl: (
             '/search/?type=Experiment&related_series.@type=ReferenceEpigenome' +
-            '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&limit=0&format=json'
+            '&limit=0&format=json'
         ),
         '@id': (
             '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome' +
