@@ -269,7 +269,7 @@
             "title": "Linked antibody",
             "type": "string"
         },
-        "replicates.library.biosample.life_stage": {
+        "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage",
             "type": "array"
         },
