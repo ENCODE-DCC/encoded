@@ -329,5 +329,7 @@ def genetic_modification_11_12(value, system):
         value['category'] = 'CRISPR dCas'
     elif value.get('category') == 'deletion' and value.get('method') == 'CRISPR':
         value['category'] = 'CRISPR cutting'
-    elif value.get('category') == 'interference' and value.get('method') == 'CRISPR':
+    elif value.get('category') == 'interference' and value.get('method') == 'CRISPR' and value.get('purpose') != 'repression':
         value['category'] = 'CRISPRi'
+    elif value.get('category') == 'interference' and value.get('nucleic_acid_delivery_method') == 'transduction' and value.get('purpose') == 'characterization':
+        value['method'] = 'CRISPR'
