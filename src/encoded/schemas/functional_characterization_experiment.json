@@ -20,6 +20,7 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_ontology" },
+        { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
