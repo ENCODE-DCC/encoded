@@ -93,6 +93,8 @@ AtIdRenderer.propTypes = {
 
 ReportDataRegistry.register({ field: '@id' }, AtIdRenderer);
 ReportDataRegistry.register({ field: 'dataset', type: 'File' }, AtIdRenderer);
+ReportDataRegistry.register({ field: 'file.@id', type: 'RNAExpression' }, AtIdRenderer);
+ReportDataRegistry.register({ field: 'dataset.@id', type: 'RNAExpression' }, AtIdRenderer);
 
 
 /**
@@ -187,6 +189,19 @@ ExperimentFilesRenderer.propTypes = {
 };
 
 ReportDataRegistry.register({ field: 'files.@id', type: 'Experiment' }, ExperimentFilesRenderer);
+
+
+/**
+ * Display RNAExpression @id without link.
+ */
+const ExpressionIdRenderer = ({ value }) => value;
+
+ExpressionIdRenderer.propTypes = {
+    /** @id value to render */
+    value: PropTypes.any.isRequired,
+};
+
+ReportDataRegistry.register({ field: '@id', type: 'RNAExpression' }, ExpressionIdRenderer);
 
 
 /**
@@ -922,3 +937,4 @@ Report.contextTypes = {
 };
 
 globals.contentViews.register(Report, 'Report');
+globals.contentViews.register(Report, 'RNAExpressionReport');

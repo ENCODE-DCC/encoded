@@ -2,7 +2,12 @@ from functools import partial
 from pyramid.view import view_config
 
 from encoded.cart_view import CartWithElements
-from encoded.genomic_data_service import GenomicDataService
+from encoded.genomic_data_service import remote_get
+from encoded.genomic_data_service import remote_stream_get
+from encoded.genomic_data_service import set_status_and_parse_json
+from encoded.genomic_data_service import set_status_and_parse_ndjson
+from encoded.genomic_data_service import RNAGET_REPORT_URL
+from encoded.genomic_data_service import RNAGET_SEARCH_STREAM_URL
 from encoded.searches.caches import cached_fielded_response_factory
 from encoded.searches.caches import get_redis_lru_cache
 from encoded.searches.caches import make_key_from_request
@@ -17,6 +22,7 @@ from encoded.searches.fields import CartReportWithFacetsResponseField
 from encoded.searches.fields import CartMatrixWithFacetsResponseField
 from encoded.searches.fields import CartFiltersResponseField
 from encoded.searches.fields import ClearFiltersResponseFieldWithCarts
+from encoded.searches.fields import RemoteResponseField
 from encoded.searches.fields import TypeOnlyClearFiltersResponseFieldWithCarts
 from encoded.searches.interfaces import RNA_CLIENT
 from encoded.searches.interfaces import RNA_EXPRESSION
@@ -90,11 +96,7 @@ def includeme(config):
     config.add_route('cart-matrix', '/cart-matrix{slash:/?}')
     config.add_route('top-hits-raw', '/top-hits-raw{slash:/?}')
     config.add_route('top-hits', '/top-hits{slash:/?}')
-    config.add_route('rnaget', '/rnaget{slash:/?}')
-    config.add_route('rnaget-autocomplete', '/rnaget-autocomplete{slash:/?}')
-    config.add_route('rnaget-search', '/rnaget-search{slash:/?}')
     config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
-    config.add_route('rnaget-quick', '/rnaget-quick{slash:/?}')
     config.add_route('search-config-registry', '/search-config-registry{slash:/?}')
     config.scan(__name__)
 
@@ -340,25 +342,22 @@ def cart_search_generator(request):
 
 def rna_expression_search_generator(request):
     '''
-    For internal use (no view). Like search_quick but returns raw generator
-    of search hits in @graph field.
+    For internal use (no view). Returns generator of newline-delmited JSON
+    results in @graph field.
     '''
-    rna_client = request.registry[RNA_CLIENT]
-    fgr = FieldedGeneratorResponse(
+    fr = FieldedGeneratorResponse(
         _meta={
             'params_parser': ParamsParser(request)
         },
         response_fields=[
-            BasicSearchResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                reserved_keys=RESERVED_KEYS,
-            )
+            RemoteResponseField(
+                how=remote_stream_get,
+                where=RNAGET_SEARCH_STREAM_URL,
+                then=set_status_and_parse_ndjson,
+            ),
         ]
     )
-    return fgr.render()
+    return fr.render()
 
 
 @view_config(route_name='report', request_method='GET', permission='search')
@@ -938,72 +937,6 @@ def top_hits(context, request):
     return fr.render()
 
 
-@view_config(route_name='rnaget', request_method='GET', permission='search')
-def rnaget(context, request):
-    data_service = GenomicDataService(context.registry, request)
-    return data_service.rna_get()
-
-
-@view_config(route_name='rnaget-autocomplete', request_method='GET', permission='search')
-def rnaget_autocomplete(context, request):
-    data_service = GenomicDataService(context.registry, request)
-    return data_service.rna_get_autocomplete()
-
-
-@view_config(route_name='rnaget-search', request_method='GET', permission='search')
-@conditional_cache(
-    cache=get_redis_lru_cache(),
-    condition=should_cache_search_results,
-    key=partial(make_key_from_request, 'rnaget-search'),
-)
-def rnaget_search(context, request):
-    # Note the order of rendering matters for some fields, e.g. AllResponseField and
-    # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
-    rna_client = request.registry[RNA_CLIENT]
-    CachedFieldedResponse = cached_fielded_response_factory(
-        context,
-        request,
-    )
-    cfr = CachedFieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title=SEARCH_TITLE
-            ),
-            TypeResponseField(
-                at_type=[SEARCH_TITLE]
-            ),
-            IDResponseField(),
-            ContextResponseField(),
-            CachedFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                reserved_keys=RESERVED_KEYS,
-            ),
-            BasicSearchWithoutFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                default_sort=DEFAULT_RNA_EXPRESSION_SORT,
-                reserved_keys=RESERVED_KEYS,
-            ),
-            AllResponseField(),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            ClearFiltersResponseField(),
-            ColumnsResponseField(),
-            SortResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return cfr.render()
-
-
 @view_config(route_name='rnaget-report', request_method='GET', permission='search')
 @conditional_cache(
     cache=get_redis_lru_cache(),
@@ -1011,66 +944,17 @@ def rnaget_search(context, request):
     key=partial(make_key_from_request, 'rnaget-report'),
 )
 def rnaget_report(context, request):
-    rna_client = request.registry[RNA_CLIENT]
-    CachedFieldedResponse = cached_fielded_response_factory(
-        context,
-        request,
-    )
-    cfr = CachedFieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title=REPORT_TITLE
-            ),
-            TypeResponseField(
-                at_type=[REPORT_TITLE]
-            ),
-            IDResponseField(),
-            ContextResponseField(),
-            CachedFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                reserved_keys=RESERVED_KEYS,
-            ),
-            BasicReportWithoutFacetsResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                default_sort=DEFAULT_RNA_EXPRESSION_SORT,
-                reserved_keys=RESERVED_KEYS,
-            ),
-            AllResponseField(),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            ColumnsResponseField(),
-            NonSortableResponseField(),
-            SortResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return cfr.render()
-
-
-@view_config(route_name='rnaget-quick', request_method='GET', permission='search')
-def rnaget_quick(context, request):
     fr = FieldedResponse(
         _meta={
             'params_parser': ParamsParser(request)
         },
         response_fields=[
-            BasicSearchResponseField(
-                client=rna_client,
-                default_item_types=[
-                    RNA_EXPRESSION
-                ],
-                reserved_keys=RESERVED_KEYS,
-            )
+            RemoteResponseField(
+                how=remote_get,
+                where=RNAGET_REPORT_URL,
+                then=set_status_and_parse_json,
+            ),
+            NonSortableResponseField(),
         ]
     )
     return fr.render()
