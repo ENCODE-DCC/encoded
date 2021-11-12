@@ -190,6 +190,7 @@ def audit_crispr_screens_have_matching_readouts(value, system, excluded_types):
             )
         )
         yield AuditFailure('mismatched readout', detail, level='ERROR')
+        return
 
     if value['assay_term_name'] != expected_term[value['crispr_screen_readout']]:
         detail = (
