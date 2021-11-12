@@ -847,6 +847,14 @@
                     "enum": ["CRISPR"]
                 }
             }
+        },
+        "cas_species": {
+            "comment": "cas_species can only be specified for Genetic Modifications that have method of CRISPR.",
+            "properties": {
+                "method": {
+                    "enum": ["CRISPR"]
+                }
+            }
         }
     },
     "properties": {
