@@ -1185,5 +1185,18 @@ ntr_biosamples = {
         "synonyms": [],
         "systems": ["immune system"],
         "types": [],
+    },
+    "NTR:0000671": {
+        "category": [],
+        "cells": ["hematopoietic cell", "leukocyte", "NK cell"],
+        "developmental": [],
+        "name": "stimulated natural killer cell",
+        "objectives": [],
+        "organs": ["blood", "bodily fluid"],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": ["immune system"],
+        "types": [],
     }
 }
