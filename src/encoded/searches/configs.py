@@ -21,7 +21,7 @@ def custom_search_config():
             },
             'status': {
                 'title': 'Status',
-                "open_on_load": True
+                'open_on_load': True
             },
             'target.label': {
                 'title': 'Target of assay',
@@ -33,7 +33,7 @@ def custom_search_config():
                 'title': 'Biosample term name',
                 'type': 'typeahead',
                 'length': 'long',
-                "open_on_load": True
+                'open_on_load': True
             },
         },
         'columns': {},
@@ -98,8 +98,8 @@ def custom_columns_config():
 def functional_characterization_data_view():
     return {
         'facets': {
-            "assay_slims": {
-                "title": "Assay type"
+            'assay_slims': {
+                'title': 'Assay type'
             },
             'assay_title': {
                 'title': 'Assay title',
@@ -138,8 +138,8 @@ def functional_characterization_data_view():
                 'title': 'Organism',
                 'open_on_load': True
             },
-            "replicates.library.biosample.life_stage": {
-                "title": "Life stage"
+            'replicates.library.biosample.life_stage': {
+                'title': 'Life stage'
             },
             'biosample_ontology.classification': {
                 'title': 'Biosample classification'
@@ -171,8 +171,8 @@ def functional_characterization_data_view():
             'award.project': {
                 'title': 'Project'
             },
-            "award.rfa": {
-                "title": "RFA"
+            'award.rfa': {
+                'title': 'RFA'
             },
             'assembly': {
                 'title': 'Genome assembly'
@@ -190,70 +190,69 @@ def functional_characterization_data_view():
                 'title': 'Lab'
             }
         },
-        "facet_groups": [
+        'facet_groups': [
             {
-                "title": "Assay",
-                "facet_fields": [
-                    "assay_slims",
-                    "assay_title",
-                    "control_type",
-                    "elements_references.crispr_screen_tiling",
-                    "replicates.library.biosample.applied_modifications.guide_type",
-                    "replicates.library.biosample.applied_modifications.MOI",
-                    "replicates.library.biosample.applied_modifications.reagents.promoter_details"
+                'title': 'Assay',
+                'facet_fields': [
+                    'assay_slims',
+                    'assay_title',
+                    'control_type',
+                    'elements_references.crispr_screen_tiling',
+                    'replicates.library.biosample.applied_modifications.guide_type',
+                    'replicates.library.biosample.applied_modifications.MOI',
+                    'replicates.library.biosample.applied_modifications.reagents.promoter_details'
                 ]
             },
             {
-                "title": "Elements",
-                "facet_fields": [
-                    "elements_references.examined_loci.symbol",
-                    "examined_loci.gene.symbol",
-                    "elements_references.elements_selection_method"
+                'title': 'Elements',
+                'facet_fields': [
+                    'elements_references.examined_loci.symbol',
+                    'examined_loci.gene.symbol',
+                    'elements_references.elements_selection_method'
                 ]
             },
             {
-                "title": "Biosample",
-                "facet_fields": [
-                    "replicates.library.biosample.donor.organism.scientific_name",
-                    "biosample_ontology.term_name",
-                    "biosample_ontology.classification",
-                    "biosample_ontology.organ_slims",
-                    "biosample_ontology.cell_slims",
-                    "replicates.library.biosample.life_stage",
-                    "replicates.library.biosample.treatments.treatment_term_name",
-                    "replicates.library.biosample.disease_term_name"
+                'title': 'Biosample',
+                'facet_fields': [
+                    'replicates.library.biosample.donor.organism.scientific_name',
+                    'biosample_ontology.term_name',
+                    'biosample_ontology.classification',
+                    'biosample_ontology.organ_slims',
+                    'biosample_ontology.cell_slims',
+                    'replicates.library.biosample.life_stage',
+                    'replicates.library.biosample.treatments.treatment_term_name',
+                    'replicates.library.biosample.disease_term_name'
                 ]
             },
             {
-                "title": "Analysis",
-                "facet_fields": [
-                    "assembly",
-                    "files.file_type"
+                'title': 'Analysis',
+                'facet_fields': [
+                    'assembly',
+                    'files.file_type'
                 ]
             },
             {
-                "title": "Provenance",
-                "facet_fields": [
-                    "award.project",
-                    "award.rfa",
-                    "lab.title",
-                    "date_submitted",
-                    "date_released"
+                'title': 'Provenance',
+                'facet_fields': [
+                    'award.project',
+                    'award.rfa',
+                    'lab.title',
+                    'date_submitted',
+                    'date_released'
                 ]
             },
             {
-                "title": "Quality",
-                "facet_fields": [
-                    "status",
-                    "audit.ERROR.category",
-                    "audit.NOT_COMPLIANT.category",
-                    "audit.WARNING.category",
-                    "audit.INTERNAL_ACTION.category"
+                'title': 'Quality',
+                'facet_fields': [
+                    'status',
+                    'audit.ERROR.category',
+                    'audit.NOT_COMPLIANT.category',
+                    'audit.WARNING.category',
+                    'audit.INTERNAL_ACTION.category'
                 ]
             }
         ]
     }
-
 
 
 ALIASES = {

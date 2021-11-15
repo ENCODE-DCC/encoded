@@ -1262,16 +1262,15 @@ class FunctionalCharacterizationSeries(Series):
         },
         "notSubmittable": True,
     })
-    def examined_loci(self, request, related_datasets=None):
-        if related_datasets is not None:
-            examined_loci = []
-            for related_dataset in related_datasets:
-                related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
-                dataset_examined_loci = related_datasetObject.get('examined_loci')
-                if dataset_examined_loci:
-                    examined_loci.extend(dataset_examined_loci)
-            if examined_loci:
-                return examined_loci
+    def examined_loci(self, request, related_datasets):
+        examined_loci = []
+        for related_dataset in related_datasets:
+            related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
+            dataset_examined_loci = related_datasetObject.get('examined_loci')
+            if dataset_examined_loci:
+                examined_loci.extend(dataset_examined_loci)
+        if examined_loci:
+            return examined_loci
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Replicates",
@@ -1296,8 +1295,8 @@ class FunctionalCharacterizationSeries(Series):
                 'applied_modifications',
                 'life_stage',
                 'disease_term_name',
-                ]
-            )
+            ]
+        )
         path.expand(request, properties)
         path = Path(
             'replicates.library.biosample.applied_modifications.reagents', 
