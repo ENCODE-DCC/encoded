@@ -1254,6 +1254,14 @@ class FunctionalCharacterizationSeries(Series):
         'elements_references.files',
     ]
 
+    def calculate_examined_locus_id(dataset_examined_loci):
+        gene = dataset_examined_loci.get("gene", "")
+        expression_percentile = dataset_examined_loci.get("expression_percentile", "")
+        expression_range_minimum = dataset_examined_loci.get("expression_range_minimum", "")
+        expression_range_maximum = dataset_examined_loci.get("expression_range_maximum", "")
+        expression_measurement_method = dataset_examined_loci.get("expression_measurement_method", "")
+        return f'{gene}:{expression_percentile}:{expression_range_minimum}:{expression_range_maximum}:{expression_measurement_method}'
+
     @calculated_property(condition='related_datasets', schema={
         "title": "Examined loci",
         "type": "array",
@@ -1264,11 +1272,16 @@ class FunctionalCharacterizationSeries(Series):
     })
     def examined_loci(self, request, related_datasets):
         examined_loci = []
+        examined_loci_identifiers = []
+
         for related_dataset in related_datasets:
             related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
-            dataset_examined_loci = related_datasetObject.get('examined_loci')
-            if dataset_examined_loci:
-                examined_loci.extend(dataset_examined_loci)
+            dataset_examined_loci = related_datasetObject.get('examined_loci', [])
+            for examined_locus in dataset_examined_loci
+                examined_loci_identifier = calculate_examined_locus_id(examined_locus)
+                if examined_loci_identifier not in examined_loci_identifiers:
+                    examined_loci_identifiers.append(examined_loci_identifier)
+                    examined_loci.append(dataset_examined_loci)
         if examined_loci:
             return examined_loci
 
