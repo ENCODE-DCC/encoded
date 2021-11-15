@@ -1277,7 +1277,7 @@ class FunctionalCharacterizationSeries(Series):
         for related_dataset in related_datasets:
             related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
             dataset_examined_loci = related_datasetObject.get('examined_loci', [])
-            for examined_locus in dataset_examined_loci
+            for examined_locus in dataset_examined_loci:
                 examined_loci_identifier = calculate_examined_locus_id(examined_locus)
                 if examined_loci_identifier not in examined_loci_identifiers:
                     examined_loci_identifiers.append(examined_loci_identifier)
