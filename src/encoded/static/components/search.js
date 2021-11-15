@@ -497,7 +497,7 @@ const ExperimentComponent = (props, reactContext) => {
                                 {`${result.perturbation_type} `}
                             </span>
                         : null}
-                        { (result.assay_title && result.assay_title.includes('CRISPR') && result.perturbation_type && result.perturbation_type.includes('CRISPR')) ?
+                        { (result.assay_title && (result.assay_title === 'CRISPR screen' || result.assay_title === 'Control CRISPR screen') && result.perturbation_type && result.perturbation_type.includes('CRISPR')) ?
                             <span>{result.assay_title.replace('CRISPR ', '')}</span>
                         :
                             (result.assay_title) ?
