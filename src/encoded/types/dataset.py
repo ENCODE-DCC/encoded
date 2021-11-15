@@ -1254,14 +1254,6 @@ class FunctionalCharacterizationSeries(Series):
         'elements_references.files',
     ]
 
-    def calculate_examined_locus_id(dataset_examined_loci):
-        gene = dataset_examined_loci.get("gene", "")
-        expression_percentile = dataset_examined_loci.get("expression_percentile", "")
-        expression_range_minimum = dataset_examined_loci.get("expression_range_minimum", "")
-        expression_range_maximum = dataset_examined_loci.get("expression_range_maximum", "")
-        expression_measurement_method = dataset_examined_loci.get("expression_measurement_method", "")
-        return f'{gene}:{expression_percentile}:{expression_range_minimum}:{expression_range_maximum}:{expression_measurement_method}'
-
     @calculated_property(condition='related_datasets', schema={
         "title": "Examined loci",
         "type": "array",
@@ -1395,6 +1387,15 @@ class FunctionalCharacterizationSeries(Series):
     })
     def datapoint(self, request):
         return False
+
+
+def calculate_examined_locus_id(dataset_examined_loci):
+    gene = dataset_examined_loci.get("gene", "")
+    expression_percentile = dataset_examined_loci.get("expression_percentile", "")
+    expression_range_minimum = dataset_examined_loci.get("expression_range_minimum", "")
+    expression_range_maximum = dataset_examined_loci.get("expression_range_maximum", "")
+    expression_measurement_method = dataset_examined_loci.get("expression_measurement_method", "")
+    return f'{gene}:{expression_percentile}:{expression_range_minimum}:{expression_range_maximum}:{expression_measurement_method}'
 
 
 @collection(
