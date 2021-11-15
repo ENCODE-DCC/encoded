@@ -681,7 +681,7 @@ ntr_biosamples = {
     },
     "NTR:0000505": {
         "category": [],
-        "cells": ["hematopoietic cell", "leukocyte", "dendritic cell"],
+        "cells": ["hematopoietic cell", "leukocyte", "dendritic cell", "myeloid cell"],
         "developmental": [],
         "name": "dendritic cell",
         "objectives": [],
