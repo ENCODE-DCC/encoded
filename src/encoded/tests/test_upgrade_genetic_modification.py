@@ -140,10 +140,12 @@ def test_genetic_modification_upgrade_11_12(
                              current_version='11', target_version='12')
     assert value['schema_version'] == '12'
     assert value.get('category') == 'CRISPRa'
+    crispr_deletion['purpose'] = 'characterization'
     value = upgrader.upgrade('genetic_modification', crispr_deletion,
                              current_version='11', target_version='12')
     assert value['schema_version'] == '12'
     assert value.get('category') == 'CRISPR cutting'
+    crispri['purpose'] = 'characterization'
     value = upgrader.upgrade('genetic_modification', crispri,
                              current_version='11', target_version='12')
     assert value['schema_version'] == '12'
