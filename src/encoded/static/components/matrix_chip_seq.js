@@ -12,7 +12,7 @@ import * as globals from './globals';
 import { useMount } from './hooks';
 import { MatrixBadges, DisplayAsJson } from './objectutils';
 import { SearchFilter } from './matrix';
-import { TextFilter, FacetList, ClearFilters } from './search';
+import { FacetList, ClearFilters } from './search';
 import { DivTable } from './datatable';
 
 
@@ -350,12 +350,15 @@ Spinner.defaultProps = {
  * @class ChIPSeqMatrixTextFilter
  * @extends {TextFilter}
  */
-class ChIPSeqMatrixTextFilter extends TextFilter {
+class ChIPSeqMatrixTextFilter extends React.Component {
     constructor() {
         super();
 
         this.handleChange = this.handleChange.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
+        this.getValue = this.getValue.bind(this);
         this.clearSearch = this.clearSearch.bind(this);
+        this.performSearch = this.performSearch.bind(this);
 
         this.state = { searchOption: 'biosample' };
         this.searchBox = React.createRef();
@@ -369,10 +372,8 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
         PubSub.unsubscribe(this.clearSearchPubSub);
     }
 
-    clearSearch() {
-        if (this.searchBox && this.searchBox.current) {
-            this.searchBox.current.value = '';
-        }
+    handleChange(e) {
+        this.setState({ searchOption: e.target.value });
     }
 
     onKeyDown(e) {
@@ -385,8 +386,30 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
         }
     }
 
-    handleChange(e) {
-        this.setState({ searchOption: e.target.value });
+    getValue() {
+        const filter = this.props.filters.filter((f) => f.field === 'searchTerm');
+        return filter.length > 0 ? filter[0].term : '';
+    }
+
+    clearSearch() {
+        if (this.searchBox && this.searchBox.current) {
+            this.searchBox.current.value = '';
+        }
+    }
+
+    performSearch(e) {
+        let searchStr = this.props.searchBase.replace(/&?searchTerm=[^&]*/, '');
+        const { value } = e.target;
+        if (value) {
+            searchStr += `searchTerm=${e.target.value}`;
+        } else {
+            searchStr = searchStr.substring(0, searchStr.length - 1);
+        }
+        this.props.onChange(searchStr);
+    }
+
+    shouldUpdateComponent(nextProps) {
+        return (this.getValue(this.props) !== this.getValue(nextProps));
     }
 
     render() {
@@ -413,6 +436,13 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
         );
     }
 }
+
+ChIPSeqMatrixTextFilter.propTypes = {
+    filters: PropTypes.array.isRequired,
+    searchBase: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+};
+
 
 /**
  * Hold code and markup for search
@@ -454,9 +484,13 @@ const ChIPSeqMatrixHeader = (props) => {
 
     return (
         <div className="matrix-header">
-            <div className="matrix-header__title">
+            <div className="matrix-header__banner">
+                <div className="matrix-header__title">
+                    <div className="matrix-title-badge">
+                        <h1>{context.title}</h1>
+                    </div>
+                </div>
                 <div className="matrix-title-badge">
-                    <h1>{context.title}</h1>
                     <MatrixBadges context={context} type="ChIPseq" />
                 </div>
             </div>

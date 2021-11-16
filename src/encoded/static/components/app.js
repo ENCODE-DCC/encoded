@@ -22,7 +22,6 @@ import cartStore, {
 import * as globals from './globals';
 import Navigation from './navigation';
 import Footer from './footer';
-import Home from './home';
 import jsonldFormatter from '../libs/jsonld';
 import newsHead from './page';
 import {
@@ -361,6 +360,7 @@ class App extends React.Component {
             currentResource: this.currentResource,
             location_href: this.href,
             portal,
+            isHomePage: this.state.context && this.state.context?.['@type']?.[0] === 'Portal',
             fetch: this.fetch,
             fetchSessionProperties: this.fetchSessionProperties,
             navigate: this.navigate,
@@ -1187,18 +1187,12 @@ class App extends React.Component {
         const key = fullPageReloadPaths.includes(hrefUrl.pathname) ? context['@id'] : hrefUrl.pathname;
 
         const currentAction = this.currentAction();
-        const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
-        if (isHomePage) {
+        if (!currentAction && context.default_page) {
             context = context.default_page;
-            content = <Home context={context} />;
-        } else {
-            if (!currentAction && context.default_page) {
-                context = context.default_page;
-            }
-            if (context) {
-                const ContentView = globals.contentViews.lookup(context, currentAction);
-                content = <ContentView context={context} />;
-            }
+        }
+        if (context) {
+            const ContentView = globals.contentViews.lookup(context, currentAction);
+            content = <ContentView context={context} />;
         }
         const errors = this.state.errors.map((i) => <div key={i} className="alert alert-error" />);
 
@@ -1231,6 +1225,9 @@ class App extends React.Component {
             this.constructor.historyEnabled = false;
         }
 
+        const hasSpecialHashTag = hrefUrl.hash?.length > 2 && hrefUrl.hash?.startsWith('#!');
+        const isHomePage = context['@type']?.[0] === 'Portal' && !hasSpecialHashTag;
+
         /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
         return (
             <html lang="en" ref={this.props.domReader ? (node) => this.props.domReader(node) : null}>
@@ -1262,7 +1259,7 @@ class App extends React.Component {
                     : null
                     }
                 </head>
-                <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
+                <body onClick={this.handleClick} onSubmit={this.handleSubmit} className={isHomePage ? 'body-portal' : null}>
                     <script
                         data-prop-name="context"
                         type="application/json"
@@ -1275,7 +1272,7 @@ class App extends React.Component {
                             <div className="loading-spinner" />
                             <Provider store={cartStore}>
                                 <div id="layout">
-                                    <Navigation isHomePage={isHomePage} />
+                                    <Navigation />
                                     <div id="content" className={context['@type'] ? `container ${context['@type'].join(' ')}` : 'container'} key={key}>
                                         {content}
                                     </div>
@@ -1334,6 +1331,7 @@ App.childContextTypes = {
     fetchSessionProperties: PropTypes.func,
     navigate: PropTypes.func,
     portal: PropTypes.object,
+    isHomePage: PropTypes.bool,
     projectColors: PropTypes.object,
     biosampleTypeColors: PropTypes.object,
     adviseUnsavedChanges: PropTypes.func,

@@ -2,7 +2,7 @@
 Feature: Portal pages
 
     Scenario: Render page layout
-        When I visit "/pages/homepage/"
+        When I visit "/pages/testpage/"
         And I wait for the content to load
         Then I should see an element with the css selector "div.layout__block--33"
 

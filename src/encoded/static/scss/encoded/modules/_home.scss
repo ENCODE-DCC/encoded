@@ -1,11 +1,446 @@
-// Makes background color gray
-.whole-page {
-    background-color: #e8ecef;
+.body-portal {
+    background-image: url(/static/img/home-page-background.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
 }
 
-.twitter-widget {
-    padding-right: 20px;
-    border-left: 1px solid #a0a0a0;
+/** Width of gap between cards in pixels. Keep in sync with the same const in home.js. */
+$CARD_GAP_WIDTH: 10px;
+
+/** Card corner radius */
+$CARD_CORNER_RADIUS: 20px;
+
+/** Color of matching-card highlight */
+$CARD_HIGHLIGHT_COLOR: #ffea00;
+
+.home-search-section {
+    position: relative;
+    margin: 10px 0;
+    text-align: center;
+
+    .home-search-section__title {
+        position: relative;
+        height: 25px;
+
+        label {
+            display: flex;
+            position: absolute;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            border-bottom: none;
+            font-family: $site-font;
+            font-size: 1.2rem;
+        }
+    }
+
+    @media screen and (min-width: $screen-sm-min) {
+        margin: 80px auto 160px;
+        width: 60%;
+    }
+
+    // Contains the search field and selectors.
+    .home-search-section__box {
+        margin-bottom: 20px;
+        padding: 10px 10px 5px;
+        border-radius: 10px;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            padding: 10px;
+            gap: 10px;
+            border-radius: 50px;
+        }
+
+        &.home-search-section__box--native {
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: background-color 200ms linear;
+
+            .home-search-section__selector {
+                > button {
+                    color: #fff;
+                }
+            }
+        }
+
+        &.home-search-section__box--screen {
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: background-color 200ms linear;
+
+            .home-search-section__selector {
+                > button {
+                    color: #000;
+                }
+            }
+        }
+    }
+
+    // Toggle switch to choose between ENCODE and SCREEN searches.
+    .home-search-section__selector {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .boolean-toggle {
+            margin-bottom: 0;
+        }
+
+        > button {
+            padding: 0;
+            border: none;
+            background: none;
+            font-weight: 600;
+        }
+    }
+
+    .home-search-section__supplement {
+        margin: 0 auto;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        padding: 10px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            position: absolute;
+            top: 90px;
+            left: 20px;
+            right: 20px;
+        }
+    }
+
+    .home-search-section__supplement--screen {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        background-color: rgba(255, 255, 255, 0.5);
+
+        .svg-icon-magnifying-glass {
+            margin-left: 5px;
+            width: 13px;
+        }
+    }
+
+    .home-search-section__supplement--native {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        background-color: rgba(0, 0, 0, 0.7);
+
+        .btn {
+            border: none;
+        }
+    }
+}
+
+.native-top-hit {
+    display: flex;
+    gap: 2px;
+
+    .native-top-hit__count {
+        padding: 0 5px;
+        border-radius: 40px;
+        color: #000;
+        font-family: $site-font, sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        background-color: $CARD_HIGHLIGHT_COLOR;
+    }
+}
+
+.home-search-input {
+    display: flex;
+    flex-grow: 1;
+    position: relative;
+    align-items: center;
+    order: 0;
+
+    input {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 2rem;
+        padding: 5px 30px 5px 10px;
+        border-radius: 30px;
+    }
+
+    button {
+        display: flex;
+        align-items: center;
+        margin-left: -29px;
+        background: none;
+        border: none;
+        z-index: 1;
+
+        .svg-icon {
+            width: 15px;
+            fill: #000;
+        }
+    }
+
+    // Spinner that appears during server requests
+    .home-search-input__spinner {
+        margin-left: -26px;
+        width: 20px;
+        height: 20px;
+        background-color: transparent;
+        border-radius: 1.4rem;
+        animation: rotating 600ms linear infinite;
+    }
+}
+
+/** Rotation animation for in-progress spinner */
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.home-screen-suggestions {
+    .dropdown__menu {
+        position: absolute;
+        top: 78px;
+        left: 28px;
+        right: 28px;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+        z-index: 1;
+
+        > li {
+            white-space: nowrap;
+
+            > button {
+                width: 100%;
+                max-width: 100%;
+                padding: 2px 10px 2px 15px;
+                text-align: left;
+                font-size: 1rem;
+                font-weight: 400;
+                line-height: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: #000;
+            }
+        }
+    }
+}
+
+// Contains the cards for each section.
+.home-section {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: rgba(64, 64, 64, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: $CARD_CORNER_RADIUS * 1.5;
+    border: 1px solid #707070;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        justify-content: space-between;
+        flex-grow: 1;
+        flex-wrap: wrap;
+        gap: $CARD_GAP_WIDTH;
+    }
+}
+
+.card {
+    display: block;
+    position: relative;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: $CARD_CORNER_RADIUS;
+    border: 1px solid;
+    transition: all 0.2s ease-in-out;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    // Using hover/shadow animation using the technique from:
+    // https://tobiasahlin.com/blog/how-to-animate-box-shadow/
+    &::after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        border-radius: $CARD_CORNER_RADIUS;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    &:hover {
+        text-decoration: none;
+        transform: scale(1.02, 1.02);
+    }
+
+    &:hover::after {
+        opacity: 1;
+    }
+
+    // Highlight to show the card matches the search term.
+    &.card--highlighted {
+        &::before {
+            content: " ";
+            position: absolute;
+            z-index: 1;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            border: 3px solid $CARD_HIGHLIGHT_COLOR;
+            border-radius: $CARD_CORNER_RADIUS * 0.85;
+        }
+    }
+
+    .card__title {
+        margin-top: 10px;
+        font-family: Oswald, sans-serif;
+        font-size: 1.4rem;
+        font-weight: 300;
+        text-align: center;
+        line-height: 1.1;
+        order: 0;
+    }
+
+    .card__icon {
+        margin: 0 auto;
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media screen and (min-width: $screen-sm-min) {
+    .card {
+        margin: 0;
+
+        &.card--format-horizontal {
+            display: flex;
+            margin: 0;
+            flex-grow: 1;
+            flex-basis: 0;
+            align-items: center;
+            justify-content: space-between;
+
+            .card__title {
+                margin-top: 0;
+                text-align: left;
+            }
+
+            .card__icon {
+                flex: 0 0 80px;
+                height: 80px;
+                width: 80px;
+                margin: 0 0 0 20px;
+                order: 1;
+            }
+        }
+    }
+}
+
+$help-icon-size: 16px;
+
+// Card help trigger, to make a card's help text visible.
+.card-help {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+
+    .card-help__trigger {
+        width: $help-icon-size;
+        height: $help-icon-size;
+        padding: 0;
+        border: none;
+        background: none;
+
+        .svg-icon {
+            width: $help-icon-size;
+            fill: #fff;
+            opacity: 0.5;
+        }
+    }
+}
+
+// Card overlay to display the card's help text.
+.card-help-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    border-radius: $CARD_CORNER_RADIUS;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2;
+
+    .card-help-overlay__close {
+        float: left;
+        margin: 3px 10px 0 3px;
+        padding: 0;
+        border: none;
+        background: none;
+        font-size: 0;
+
+        .svg-icon {
+            width: 12px;
+            height: 12px;
+            fill: #fff;
+        }
+    }
+}
+
+// Displays the search-results count in the corner of each highlighted card.
+.card-count {
+    position: absolute;
+    top: 10px;
+    left: 30px;
+    padding: 1px 5px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #000;
+    border-radius: 8px;
+    background-color: $CARD_HIGHLIGHT_COLOR;
+}
+
+.home-search-mode-icon {
+    display: none;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: block;
+
+        > img {
+            display: block;
+        }
+    }
 }
 
 // Positions overall classic with pic and rectangles
@@ -25,14 +460,6 @@
             font-size: 2.5rem;
         }
     }
-}
-
-// Overrride styling within the Twitter widget iframe. Hopefully Twitter never changes the name of
-// this class. Weird styles here prevent the Twitter widget from overflowing on the right side on
-// iOS Safari.
-#twitter-widget-0 {
-    width: 1px !important;
-    min-width: 100% !important;
 }
 
 .site-banner {
@@ -88,430 +515,5 @@
     hr {
         margin: 20px 0;
         border-top: 1px solid #e0e0e0;
-    }
-}
-
-.getting-started-button {
-    text-align: center;
-
-    @media screen and (min-width: $screen-md-min) {
-        flex: 0 1 auto;
-        align-self: flex-end;
-    }
-}
-
-// Positions rectangles for classic pic
-.classic-svg {
-    visibility: visible;
-    display: block;
-    position: relative;
-    padding-bottom: 0;
-    max-width: 100%;
-    z-index: 2;
-
-    /* stylelint-disable-next-line selector-class-pattern */
-    .uaTrident & {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: auto;
-    }
-}
-
-// Adds blue outline to rectangles
-.rectangle-box {
-    stroke-width: 6px;
-    stroke: #00e;
-    fill: #00e;
-    fill-opacity: 0;
-
-    &:hover {
-        fill-opacity: 0.1;
-        cursor: pointer;
-    }
-
-    &.selected {
-        fill-opacity: 0.4;
-    }
-}
-
-// Links overlaid on the classic image.
-.classic-img-link {
-    &:hover > .classic-img-link__underline {
-        visibility: visible;
-    }
-
-    // Rectangle over promoters/enhancers.
-    @at-root #{&}__rect {
-        @extend .rectangle-box;
-    }
-
-    // Text describing promoters/enhancers.
-    @at-root #{&}__text {
-        opacity: 0;
-    }
-
-    // Rectangle defining link underline of text above.
-    @at-root #{&}__underline {
-        fill: $std-href-color;
-        visibility: hidden;
-    }
-}
-
-// Graph titles
-.title {
-    width: 100%;
-    padding-top: 10px;
-    text-align: center;
-    color: #808080;
-    font-size: 1.6rem;
-    font-weight: normal;
-}
-
-// Positions tabs with padding, hovering, and changing color if selected
-.organism-selector {
-    display: flex;
-    flex-wrap: nonwrap;
-    padding: 5px 2px;
-    justify-content: flex-start;
-    align-items: flex-start;
-    border-top: 1px solid #a0a0a0;
-    background-color: #f0f0f0;
-
-    @at-root #{&}__tab {
-        display: block;
-        margin: 0 2px;
-        padding: 5px !important;
-        flex: 1 1 auto;
-        font-size: 0.9rem;
-        font-weight: normal;
-        text-decoration: none;
-        color: #404040;
-        background-color: #c0beff;
-        border: 1px solid #0001ee;
-        text-transform: uppercase;
-
-        @media screen and (min-width: $screen-sm-min) {
-            flex: 0 1 auto;
-            padding: 5px 20px !important;
-        }
-
-        &:hover {
-            background-color: #adabf8;
-        }
-    }
-
-    #{&}--selected {
-        color: #000;
-        background-color: #7575f7;
-
-        &:hover {
-            background-color: #7575f7;
-        }
-    }
-}
-
-// Gives graphs white background color
-.graphs {
-    background-color: white;
-}
-
-.chart-gallery {
-    display: block;
-    padding: 20px;
-
-    @media screen and (min-width: $screen-md-min) {
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: stretch;
-    }
-}
-
-.chart-single {
-    @media screen and (min-width: $screen-md-min) {
-        width: 33.33333%;
-        flex: 1 1 auto;
-    }
-
-    .title {
-        hr {
-            border-top: 1px solid #f0f0f0;
-        }
-    }
-}
-
-.chart-container {
-    height: 180px;
-}
-
-.chart-container-assaycat {
-    height: 280px;
-}
-
-.chart-no-data {
-    font-size: 1.2rem;
-    text-align: center;
-    color: #808080;
-    font-style: italic;
-}
-
-// Positions legends
-.chart-legend {
-    margin-top: 20px;
-
-    ul {
-        margin: 0;
-        list-style: none;
-    }
-
-    .chart-legend__chip {
-        display: inline-block;
-        width: 32px;
-        height: 100%;
-        margin-right: 5px;
-        vertical-align: top;
-    }
-
-    .chart-legend__label {
-        display: inline-block;
-        position: relative;
-        top: -3px;
-    }
-
-    a {
-        display: block;
-        height: 18px;
-        margin: 0;
-        padding: 3px;
-        color: black;
-        text-decoration: none;
-
-        &:hover {
-            background-color: #e0e0e0;
-        }
-    }
-}
-
-// Positions error message when charts empty
-.empty-chart {
-    width: 100%;
-    height: 183px;
-    text-align: center;
-    color: black;
-    padding-top: 60px;
-    font-size: 30px;
-    font-weight: 100;
-}
-
-.getting-started-image-wrapper {
-    position: relative;
-}
-
-.getting-started {
-    position: relative;
-    padding: 15px;
-}
-
-// Positions getting started pic
-.getting-started-image {
-    padding-top: 0;
-    background-color: #e8ecef;
-    height: auto;
-    max-width: 100%;
-    z-index: 0;
-}
-
-// Positions View All
-.view-all {
-    display: flex;
-    justify-content: center;
-}
-
-.social {
-    border-top: 1px solid #a0a0a0;
-
-    @media screen and (min-width: $screen-md-min) {
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        align-items: stretch;
-        align-content: stretch;
-    }
-
-    h2 {
-        margin-top: 0;
-        font-weight: normal;
-        font-size: 2.5rem;
-    }
-}
-
-.social-news {
-    @media screen and (min-width: $screen-md-min) {
-        flex: 0 1 70%;
-        order: 1;
-        border-left: 1px solid #a0a0a0;
-    }
-}
-
-.social-twitter {
-    @media screen and (min-width: $screen-md-min) {
-        flex: 0 1 30%;
-        order: 0;
-    }
-}
-
-.twitter-header {
-    padding: 10px 10px 0 10px;
-}
-
-.twitter-ref {
-    display: inline;
-    font-size: 1rem;
-}
-
-.news-header {
-    @extend .twitter-header;
-}
-
-.site-search {
-    width: 100%;
-
-    @at-root #{&}__input {
-        input[type="text"] {
-            display: block;
-            width: 100%;
-            margin-top: 5px;
-        }
-
-        label {
-            color: #000;
-            font-weight: 600;
-            line-height: 1;
-            padding: 10px 0 0;
-        }
-
-        .icon {
-            font-size: 1.2rem;
-        }
-    }
-
-    // Contains buttons for the home page buttons leading to other pages.
-    @at-root #{&}__reference {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        margin: 0 -3px;
-
-        .btn {
-            flex: 1 1 auto;
-            margin: 3px;
-        }
-    }
-
-    @at-root #{&}__submit {
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 10px;
-        margin-right: -3px;
-        margin-left: -3px;
-
-        a {
-            flex: 1 1 auto;
-            margin: 3px;
-        }
-
-        &-element {
-            flex: 1 1 auto;
-            margin: 3px;
-
-            .icon {
-                margin-left: 5px;
-            }
-        }
-    }
-
-    @at-root #{&}__screen {
-        a {
-            margin: 5px 5px 0 0;
-
-            &::after {
-                content: "" !important;
-            }
-        }
-    }
-
-    @at-root #{&}__suggested-results {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 100%;
-        z-index: 2;
-        background-color: white;
-        border: 1px solid #a0a0a0;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        margin: 0;
-        padding: 0;
-        list-style: none;
-
-        li {
-            margin: 0;
-            padding: 0;
-
-            button {
-                display: block;
-                width: 100%;
-                font-size: 1rem;
-                text-align: left;
-                background: none;
-                border: none;
-
-                &.site-search__suggested-results--selected {
-                    background-color: #0a253d;
-                    color: #fff;
-                }
-            }
-        }
-    }
-
-    @at-root #{&}__link {
-        font-size: 0.9rem;
-        margin-top: 10px;
-        font-style: italic;
-
-        i {
-            margin-right: 5px;
-        }
-    }
-
-    @at-root #{&}__input-field {
-        position: relative;
-    }
-
-    @at-root #{&}__note {
-        font-size: 0.9rem;
-        font-weight: normal;
-        font-style: italic;
-    }
-}
-
-.home-banner {
-    img {
-        width: 100%;
-    }
-
-    .home-banner--desktop {
-        display: none;
-
-        @media screen and (min-width: $screen-sm-min) {
-            display: block;
-        }
-    }
-
-    .home-banner--mobile {
-        @media screen and (min-width: $screen-sm-min) {
-            display: none;
-        }
     }
 }

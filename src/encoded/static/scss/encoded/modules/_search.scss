@@ -508,3 +508,30 @@ $form-bg: #f3f3f3;
         display: block;
     }
 }
+
+// Buttons to clear searchTerm query parameters.
+.clear-search-terms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+
+    .clear-search-term__control {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0 5px;
+        border-radius: 3px;
+        font-size: 0.9rem;
+        background-color: scale-color(#4183c4, $lightness: 70%);
+        color: #000;
+
+        .svg-icon {
+            width: 7px;
+            fill: #000;
+        }
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}

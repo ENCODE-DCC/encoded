@@ -288,13 +288,10 @@ def test_page_nested_in_progress(workbook, anontestapp):
     return anontestapp.get('/test-section/subpage-in-progress/', status=403)
 
 
-def test_page_homepage(workbook, anontestapp):
-    res = anontestapp.get('/pages/homepage/', status=200)
-    assert res.json['canonical_uri'] == '/'
-
+def test_page_homepage(workbook, anontestapp, testapp):
     res = anontestapp.get('/', status=200)
-    assert 'default_page' in res.json
-    assert res.json['default_page']['@id'] == '/pages/homepage/'
+    assert 'portal_title' in res.json
+    assert res.json['@id'] == '/'
 
 
 def test_page_collection_default(workbook, anontestapp):

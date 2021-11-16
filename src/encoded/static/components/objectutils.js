@@ -146,6 +146,27 @@ export const requestUri = (queryUri) => (
 
 
 /**
+ * Sends a POST request to the specified server URL with the given payload.
+ * @param {string} queryUri - URI to request from the server
+ * @param {object} payload - Payload to send to the server
+ * @returns {Promise} - Contains request response
+ */
+export const postUri = (queryUri, payload) => (
+    fetch(queryUri, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+    }).then((response) => (
+        // If we get an error response from the SCREEN server, just don't display a suggestions
+        // drop down.
+        response.ok ? response.json() : null
+    )).then((responseJson) => responseJson || {})
+);
+
+
+/**
  * Do a search of an arbitrary query string passed in the `query` parameter, and return a promise.
  * If, for whatever reason, no results could be had, an empty object gets returned from the
  * promise.

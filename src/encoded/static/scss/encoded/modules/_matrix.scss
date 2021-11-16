@@ -773,8 +773,17 @@ $tab-color: #a8a8a8;
     margin-bottom: 10px;
     border-bottom: 1px solid #ccc;
 
-    @at-root #{&}__title {
+    .matrix-header__banner {
         margin-bottom: 20px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    .matrix-header__details {
+        flex-basis: 40%;
     }
 
     @at-root #{&}__title-sescc-spacing {
@@ -837,7 +846,7 @@ $tab-color: #a8a8a8;
 .matrix-title-badge {
     @media screen and (min-width: $screen-sm-min) {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
     }
 
     .badge-image {
@@ -847,10 +856,9 @@ $tab-color: #a8a8a8;
 }
 
 .matrix-description {
-    @media screen and (min-width: $screen-sm-min) {
-        display: flex;
-        justify-content: flex-end;
+    margin: 10px 0;
 
+    @media screen and (min-width: $screen-sm-min) {
         @at-root #{&}__text {
             flex-basis: 40%;
             text-align: right;

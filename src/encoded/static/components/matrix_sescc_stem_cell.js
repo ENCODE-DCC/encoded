@@ -6,7 +6,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { DataTable } from './datatable';
 import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixBadges } from './objectutils';
-import { SearchControls } from './search';
+import { ClearSearchTerm, SearchControls } from './search';
 import * as globals from './globals';
 import { drawTree } from '../libs/ui/node_graph';
 
@@ -252,14 +252,19 @@ const MatrixHeader = ({ context }) => {
 
     return (
         <div className="matrix-header">
-            <div className="matrix-header__title">
-                <div className="matrix-title-badge">
+            <div className="matrix-header__banner">
+                <div className="matrix-header__title">
                     <h1>{context.title}</h1>
-                    <MatrixBadges context={context} />
+                    <ClearSearchTerm searchUri={context['@id']} />
                 </div>
-                <div className="matrix-description">
-                    <div className="matrix-description__text">
-                        Project data of the epigenomic profiles of cell types differentiated from the H9 cell line provided by the Southeast Stem Cell Consortium (SESCC).
+                <div className="matrix-header__details">
+                    <div className="matrix-title-badge">
+                        <MatrixBadges context={context} />
+                    </div>
+                    <div className="matrix-description">
+                        <div className="matrix-description__text">
+                            Project data of the epigenomic profiles of cell types differentiated from the H9 cell line provided by the Southeast Stem Cell Consortium (SESCC).
+                        </div>
                     </div>
                 </div>
             </div>

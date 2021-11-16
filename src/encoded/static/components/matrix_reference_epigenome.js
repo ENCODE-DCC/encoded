@@ -381,16 +381,20 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
 
     return (
         <div className="matrix-header">
-            <div className="matrix-header__title">
-                <div className="matrix-title-badge">
+            <div className="matrix-header__banner">
+                <div className="matrix-header__title">
                     <h1>{context.title}</h1>
-                    {organism ? <MatrixBadges context={context} type={`ReferenceEpigenome-${organism}`} /> : null}
                 </div>
-                {matrixDescription ?
-                    <div className="matrix-description">
-                        <div className="matrix-description__text">{matrixDescription}</div>
+                <div className="matrix-header__details">
+                    <div className="matrix-title-badge">
+                        {organism && <MatrixBadges context={context} type={`ReferenceEpigenome-${organism}`} />}
                     </div>
-                : null}
+                    <div className="matrix-description">
+                        {matrixDescription &&
+                            <div className="matrix-description__text">{matrixDescription}</div>
+                        }
+                    </div>
+                </div>
             </div>
             {showProjects ?
                 <div className="test-project-selector">

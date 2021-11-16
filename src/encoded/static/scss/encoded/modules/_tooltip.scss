@@ -48,6 +48,15 @@ $tooltip-color: #000;
     height: 16px;
     line-height: 1;
     vertical-align: baseline;
+
+    .tooltip-container__trigger {
+        font-size: 0;
+
+        .svg-icon-question-circle {
+            width: 16px;
+            fill: #606060;
+        }
+    }
 }
 
 // Series tooltip on experiment pages
