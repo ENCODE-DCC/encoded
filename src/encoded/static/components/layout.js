@@ -304,6 +304,7 @@ class LayoutToolbar extends React.Component {
 
         // Bind this to non-React methods.
         this.scrollspy = this.scrollspy.bind(this);
+        this.cancel = this.cancel.bind(this);
     }
 
     componentDidMount() {

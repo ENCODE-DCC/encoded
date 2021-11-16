@@ -35,6 +35,7 @@ class EditForm extends React.Component {
         // Bind `this` to non-React methods.
         this.setupEditor = this.setupEditor.bind(this);
         this.hasErrors = this.hasErrors.bind(this);
+        this.cancel = this.cancel.bind(this);
         this.save = this.save.bind(this);
         this.receive = this.receive.bind(this);
     }

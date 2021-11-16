@@ -793,6 +793,7 @@ export class Form extends React.Component {
         this.validate = this.validate.bind(this);
         this.update = this.update.bind(this);
         this.canSave = this.canSave.bind(this);
+        this.cancel = this.cancel.bind(this);
         this.save = this.save.bind(this);
         this.receive = this.receive.bind(this);
         this.showErrors = this.showErrors.bind(this);
