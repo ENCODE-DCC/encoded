@@ -942,6 +942,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
         assays = _.uniq(result.assay_term_name);
     }
     if (assays.length > 0) {
+        assays = assays.filter((item) => item !== 'pooled clone sequencing');
         assays = _.uniq(assays);
     }
 

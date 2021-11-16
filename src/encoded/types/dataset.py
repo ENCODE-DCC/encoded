@@ -1284,7 +1284,12 @@ class FunctionalCharacterizationSeries(Series):
     })
     def assay_title(self, request, related_datasets):
         titles = request.select_distinct_values('assay_title', *related_datasets)
-        not_controls = [title for title in titles if not title.startswith('Control')]
+        not_controls = [title for title in titles if (
+            (not title.startswith('Control')) 
+            and 
+            (not title == 'pooled clone sequencing')
+            )
+        ]
         if not_controls:
             return not_controls
         else:
