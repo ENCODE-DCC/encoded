@@ -1,5 +1,11 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Schema version 12
+* The assay_term_names are now more specific for CRISPR screens based on the readout. All of these assays will slim to CRISPR screen in the field assay_slims
+** proliferation CRISPR screen
+** FlowFISH CRISPR screen
+** FACS CRISPR screen
+
 ### Schema version 11
 * An *expression_measurement_method* selection is now required for all *examined_loci* entries
 * The *CRISPRi-FlowFISH* enum in *expression_measurement_method* has been removed, *PrimeFlow* is to be used instead

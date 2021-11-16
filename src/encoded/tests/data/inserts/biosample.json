@@ -170,6 +170,7 @@
         "model_organism_sex": "unknown",
         "organism": "mouse",
         "source": "sherman-weissman",
+        "status": "in progress",
         "submitted_by": "semper.habitant@ut.venenatis",
         "uuid": "41fe3518-3d27-4b71-bee5-0bf85e0d584f"
     },
@@ -549,6 +550,7 @@
         "model_organism_age": "14.5",
         "model_organism_age_units": "day",
         "model_organism_sex": "mixed",
+        "status": "in progress",
         "submitted_by": "ipsum.mi@torquent.eleifend",
         "uuid": "20d8e4b0-0fa6-4679-b25c-71e9293d9272"
     },

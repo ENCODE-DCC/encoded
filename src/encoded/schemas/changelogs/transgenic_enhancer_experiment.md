@@ -1,5 +1,10 @@
 ## Changelog for transgenic_enhancer_experiment.json
 
+### Schema Version 2
+
+* The NTR term 'transgenic enhancer assay' was replaced with the OBI term 'enhancer reporter assay' (OBI:0002083)
+
+
 ### Minor changes since schema version 1
 
 * Added *unidentified tissue* to the enum list for *tissue_with_enhancer_activity*.

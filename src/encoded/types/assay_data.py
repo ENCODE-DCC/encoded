@@ -66,7 +66,6 @@ assay_terms = {
       'icLASER': 'NTR:0000538',
       'SPRITE': 'NTR:0000544',
       'SPRITE-IP': 'NTR:0000562',
-      'transgenic enhancer assay': 'NTR:0000551',
       'polyA plus RNA-seq': 'OBI:0002571',
       'polyA minus RNA-seq': 'OBI:0002572',
       'CUT&RUN': 'OBI:0003033',
@@ -79,5 +78,9 @@ assay_terms = {
       'perturbation followed by snATAC-seq': 'NTR:0000644',
       'Ribo-seq': 'OBI:0002038',
       'LC/MS label-free quantitative proteomics': 'NTR:0000649',
-      'LC-MS/MS isobaric label quantitative proteomics': 'NTR:0000650'
+      'LC-MS/MS isobaric label quantitative proteomics': 'NTR:0000650',
+      'proliferation CRISPR screen': 'NTR:0000657',
+      'FACS CRISPR screen': 'NTR:0000658',
+      'Flow-FISH CRISPR screen': 'NTR:0000659',
+      'enhancer reporter assay': 'OBI:0002083',
 }

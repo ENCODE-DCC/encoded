@@ -62,3 +62,26 @@ def functional_characterization_experiment_10_11(value, system):
                     value['notes'] = f'{value.get("notes")} Upgraded expression_measurement_method to qPCR for examined_loci gene {gene}.'
                 else:
                     value['notes'] = f'Upgraded expression_measurement_method to qPCR for examined_loci gene {gene}.'
+
+
+@upgrade_step('functional_characterization_experiment', '11', '12')
+def functional_characterization_experiment_11_12(value, system):
+    convert_name = {
+        'HCR-FlowFISH': 'Flow-FISH CRISPR screen',
+        'PrimeFlow': 'Flow-FISH CRISPR screen',
+        'antibody Sort-seq': 'FACS CRISPR screen',
+        'endogenous protein Sort-seq': 'FACS CRISPR screen',
+        'magnetic separation Sort-seq': 'FACS CRISPR screen',
+        'fluorescence activated cell sorting': 'FACS CRISPR screen',
+        'qPCR': 'FACS CRISPR screen'
+    }
+    if value.get('assay_term_name', "") == 'CRISPR screen':
+        if value.get('examined_loci') == None  or value.get('examined_loci') == []:
+            value['assay_term_name'] = 'proliferation CRISPR screen'
+        else:
+            methods = []
+            for locus in value['examined_loci']:
+                if 'expression_measurement_method' in locus:
+                    methods.append(locus['expression_measurement_method'])
+            if len(set(methods)) == 1 and (str(methods[0]) in convert_name):
+                    value['assay_term_name'] = convert_name[str(methods[0])]

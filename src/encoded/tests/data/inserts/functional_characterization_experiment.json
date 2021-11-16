@@ -47,7 +47,7 @@
         "biosample_ontology": "cell_line_EFO_0009747",
         "award": "U54HG007010",
         "description": "CRISPR screen experiment description",
-        "assay_term_name": "CRISPR screen",
+        "assay_term_name": "proliferation CRISPR screen",
         "lab": "/labs/gregory-crawford/",
         "date_released": "2017-12-31",
         "accession": "ENCSR759STU",
@@ -126,7 +126,7 @@
     },
     {
         "accession": "ENCSR112TRG",
-        "assay_term_name": "CRISPR screen",
+        "assay_term_name": "proliferation CRISPR screen",
         "award": "U54HG006997",
         "biosample_ontology": "cell_line_EFO_0002067",
         "description": "Test submission for CRISPR screen experiment",
@@ -141,7 +141,7 @@
     },
     {
         "accession": "ENCSR113TRG",
-        "assay_term_name": "CRISPR screen",
+        "assay_term_name": "Flow-FISH CRISPR screen",
         "award": "U54HG006997",
         "biosample_ontology": "cell_line_EFO_0002067",
         "description": "Test submission for CRISPR screen experiment",
@@ -157,7 +157,7 @@
     },
     {
         "accession": "ENCSR114CEL",
-        "assay_term_name": "CRISPR screen",
+        "assay_term_name": "FACS CRISPR screen",
         "award": "U54HG006997",
         "biosample_ontology": "cell_line_EFO_0002067",
         "description": "Test submission for CRISPR screen with examined loci",

@@ -144,7 +144,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0000520": {
-        "assay": ['Functional characterization'],
+        "assay": ['CRISPR screen'],
         "category": [],
         "developmental": [],
         "name": "CRISPR screen",
@@ -169,7 +169,7 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-        "NTR:0000544": {
+    "NTR:0000544": {
         "assay": ['3D chromatin structure'],
         "category": [],
         "developmental": [],
@@ -177,19 +177,6 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "SPRITE",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-        "NTR:0000551": {
-        "assay": ['Functional characterization'],
-        "category": [],
-        "developmental": [],
-        "name": "transgenic enhancer assay",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -248,7 +235,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0000643": {
-        "assay": ['Single cell', 'Functional characterization'],
+        "assay": ['Single cell'],
         "category": [],
         "developmental": [],
         "name": "perturbation followed by scRNA-seq",
@@ -260,8 +247,8 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-        "NTR:0000644": {
-        "assay": ['Single cell', 'Functional characterization'],
+    "NTR:0000644": {
+        "assay": ['Single cell'],
         "category": [],
         "developmental": [],
         "name": "perturbation followed by snATAC-seq",
@@ -294,6 +281,45 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "LC-MS/MS isobaric label quantitative proteomics",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000657": {
+        "assay": ['CRISPR screen'],
+        "category": [],
+        "developmental": [],
+        "name": "proliferation CRISPR screen",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "proliferation CRISPR screen",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000658": {
+        "assay": ['CRISPR screen'],
+        "category": [],
+        "developmental": [],
+        "name": "FACS CRISPR screen",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "FACS CRISPR screen",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000659": {
+        "assay": ['CRISPR screen'],
+        "category": [],
+        "developmental": [],
+        "name": "Flow-FISH CRISPR screen",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "Flow-FISH CRISPR screen",
         "slims": [],
         "synonyms": [],
         "systems": [],

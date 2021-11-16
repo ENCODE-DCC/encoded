@@ -129,7 +129,7 @@ def audit_experiment_replicate_with_no_files(value, system, excluded_statuses):
 def audit_experiment_mixed_expression_measurement_methods(value, system, excluded_types):
     if value['status'] in excluded_types:
         return
-    if value['assay_term_name'] != 'CRISPR screen':
+    if value['assay_term_name'] not in ['FACS CRISPR screen','Flow-FISH CRISPR screen']:
         return
     if 'examined_loci' not in value:
         return
@@ -153,13 +153,55 @@ def audit_CRISPR_screen_not_in_series(value, system, excluded_types):
     '''CRISPR screen experiments are expected to belong to a series'''
     if value['status'] in excluded_types:
         return
-    if value['assay_term_name'] != 'CRISPR screen':
+    if value['assay_term_name'] not in ['proliferation CRISPR screen',
+                'Flow-FISH CRISPR screen',
+                'FACS CRISPR screen',]:
         return
     related_series = value.get('related_series', [])
     if related_series == []:
         detail = f'CRISPR screen {audit_link(path_to_text(value["@id"]),value["@id"])} is not part of a series.'
         yield AuditFailure('missing related_series', detail, level='INTERNAL_ACTION')
 
+
+def audit_crispr_screens_have_matching_readouts(value, system, excluded_types):
+    '''CRISPR screen experiments are expected to have a coresponding readout'''
+    expected_term = {
+        'proliferation': 'proliferation CRISPR screen',
+        'HCR-FlowFISH': 'Flow-FISH CRISPR screen',
+        'PrimeFlow': 'Flow-FISH CRISPR screen',
+        'antibody Sort-seq': 'FACS CRISPR screen',
+        'endogenous protein Sort-seq': 'FACS CRISPR screen',
+        'magnetic separation Sort-seq': 'FACS CRISPR screen',
+        'fluorescence activated cell sorting': 'FACS CRISPR screen',
+        'qPCR': 'CRISPR screen'
+    }
+    if value['status'] in excluded_types:
+        return
+    if value.get('assay_term_name') not in ['proliferation CRISPR screen',
+            'FACS CRISPR screen',
+            'Flow-FISH CRISPR screen']:
+        return
+    
+    if 'crispr_screen_readout' not in value:
+        detail = (
+            'This experiment ({}) has an assay_term_name of {} with no crispr_screen_readout.'.format(
+                audit_link(path_to_text(value["@id"]),value["@id"]),
+                value['assay_term_name']
+            )
+        )
+        yield AuditFailure('mismatched readout', detail, level='ERROR')
+        return
+
+    if value['assay_term_name'] != expected_term[value['crispr_screen_readout']]:
+        detail = (
+            'This experiment ({}) has an assay_term_name of {} with a crispr_screen_readout of {}'.format(
+                audit_link(path_to_text(value["@id"]),value["@id"]),
+                value['assay_term_name'],
+                value['crispr_screen_readout']
+            )
+        )
+        yield AuditFailure('mismatched readout', detail, level='ERROR')
+ 
 
 function_dispatcher_without_files = {
     'audit_biosample': audit_experiment_biosample,
@@ -173,6 +215,7 @@ function_dispatcher_without_files = {
     'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
     'audit_experiment_mixed_expression_measurement_methods': audit_experiment_mixed_expression_measurement_methods,
     'audit_CRISPR_screen_not_in_series': audit_CRISPR_screen_not_in_series,
+    'audit_crispr_screens_have_matching_readouts': audit_crispr_screens_have_matching_readouts
 }
 function_dispatcher_with_files = {
     'audit_no_processed_data': audit_experiment_no_processed_data,
@@ -213,3 +256,6 @@ def audit_fcc_experiment(value, system):
         yield from function_dispatcher_without_files[function_name](
             value, system, excluded_types
         )
+
+
+

@@ -11,14 +11,14 @@ def functional_characterization_experiment_item(testapp, lab, award, cell_free):
         'status': 'in progress'
     }
     return item
-
+ 
 
 @pytest.fixture
 def functional_characterization_experiment_screen(testapp, lab, award, heart, target):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'CRISPR screen',
+        'assay_term_name': 'Flow-FISH CRISPR screen',
         'biosample_ontology': heart['uuid'],
         'status': 'in progress',
         'target': target['uuid']
@@ -44,7 +44,7 @@ def functional_characterization_experiment_4(testapp, lab, award, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'CRISPR screen',
+        'assay_term_name': 'FACS CRISPR screen',
         'status': 'in progress',
         'target_expression_percentile': 70,
         'biosample_ontology': heart['uuid']
@@ -73,12 +73,12 @@ def functional_characterization_experiment_6(testapp, lab, award, ctcf, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'CRISPR screen',
+        'assay_term_name': 'Flow-FISH CRISPR screen',
         'biosample_ontology': heart['uuid'],
         'status': 'in progress',
         'examined_loci': [{
              'gene': ctcf['uuid'],
-             'expression_measurement_method': 'qPCR'
+             'expression_measurement_method': 'HCR-FlowFISH'
          }]
     }
     return item
@@ -101,7 +101,7 @@ def functional_characterization_experiment_disruption_screen(testapp, lab, award
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'CRISPR screen',
+        'assay_term_name': 'Flow-FISH CRISPR screen',
         'biosample_ontology': liver['uuid'],
         'status': 'in progress'
     }
@@ -209,9 +209,27 @@ def fcc_posted_CRISPR_screen(testapp, lab, award, liver):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'CRISPR screen',
+        'assay_term_name': 'proliferation CRISPR screen',
         'biosample_ontology': liver['uuid'],
         'status': 'in progress'
+    }
+    return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def fcc_posted_CRISPR_screen_2(testapp, lab, award, ctcf, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'Flow-FISH CRISPR screen',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'examined_loci': [
+            {
+             'gene': ctcf['uuid'],
+             'expression_measurement_method': 'endogenous protein Sort-seq'
+            }
+        ]
     }
     return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
 
@@ -235,3 +253,24 @@ def functional_characterization_experiment_10(testapp, lab, award, ctcf, heart):
          ]
     }
     return item
+
+@pytest.fixture
+def functional_characterization_experiment_11(testapp, lab, award, ctcf, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'examined_loci': [
+            {
+             'gene': ctcf['uuid'],
+             'expression_measurement_method': 'HCR-FlowFISH'
+            },
+            {
+             'gene': ctcf['uuid']
+            }
+        ]
+    }
+    return item
+

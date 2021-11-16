@@ -57,14 +57,14 @@
     "properties": {
         "schema_version": {
 
-            "default": "1"
+            "default": "2"
         },
         "assay_term_name": {
             "title": "Assay name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "type": "string",
             "enum": [
-                "transgenic enhancer assay"
+                "enhancer reporter assay"
             ]
         },
         "date_submitted": {
