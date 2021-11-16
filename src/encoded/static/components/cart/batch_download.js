@@ -94,62 +94,62 @@ CartBatchDownloadButton.defaultProps = {
  */
 const CartBatchDownloadComponent = (
     {
-        cartType,
+        cart,
         selectedFileTerms,
         selectedDatasetTerms,
         selectedDatasetType,
         facetFields,
-        savedCartObj,
-        sharedCart,
         cartInProgress,
         visualizable,
         isFileViewOnly,
     }
 ) => {
-    const disabled = !selectedDatasetType || cartInProgress || isFileViewOnly;
-    let actuatorTitle;
-    if (isFileViewOnly) {
-        actuatorTitle = 'Turn off file view to download';
-    } else {
-        actuatorTitle = selectedDatasetType ? 'Download' : 'Select single dataset type to download';
+    if (cart) {
+        const disabled = !selectedDatasetType || cartInProgress || isFileViewOnly;
+        let actuatorTitle;
+        if (isFileViewOnly) {
+            actuatorTitle = 'Turn off file view to download';
+        } else {
+            actuatorTitle = selectedDatasetType ? 'Download' : 'Select single dataset type to download';
+        }
+
+        // Build the cart batch-download controller from the user selections.
+        const selectedAssemblies = selectedFileTerms.assembly;
+        const cartQuery = buildQueryFromTerms(selectedDatasetTerms, selectedFileTerms, selectedDatasetType, visualizable, facetFields);
+        const cartController = new CartBatchDownloadController(cart['@id'], selectedDatasetType, selectedAssemblies, cartQuery);
+
+        // Display a warning message in the modal if we have more than a threshold number of datasets
+        // in the cart.
+        const modalContent = (
+            <>
+                <DefaultBatchDownloadContent />
+                {cart.elements.length >= ELEMENT_WARNING_LENGTH_MIN
+                    ? (
+                        <p className="cart__batch-download-warning">
+                            The &ldquo;files.txt&rdquo; file can take a very long time to generate
+                            with {cart.elements.length} experiments in your cart. Cart operations will be
+                            unavailable until this file completes downloading.
+                        </p>
+                    ) : null}
+            </>
+        );
+
+        return (
+            <BatchDownloadActuator
+                controller={cartController}
+                modalContent={modalContent}
+                actuator={
+                    <CartBatchDownloadButton title={actuatorTitle} disabled={disabled} />
+                }
+            />
+        );
     }
-
-    // Build the cart batch-download controller from the user selections.
-    const cart = cartType === 'ACTIVE' ? savedCartObj : sharedCart;
-    const selectedAssemblies = selectedFileTerms.assembly;
-    const cartQuery = buildQueryFromTerms(selectedDatasetTerms, selectedFileTerms, selectedDatasetType, visualizable, facetFields);
-    const cartController = new CartBatchDownloadController(cart['@id'], selectedDatasetType, selectedAssemblies, cartQuery);
-
-    // Display a warning message in the modal if we have more than a threshold number of datasets
-    // in the cart.
-    const modalContent = (
-        <>
-            <DefaultBatchDownloadContent />
-            {cart.elements.length >= ELEMENT_WARNING_LENGTH_MIN
-                ? (
-                    <p className="cart__batch-download-warning">
-                        The &ldquo;files.txt&rdquo; file can take a very long time to generate
-                        with {cart.elements.length} experiments in your cart. Cart operations will be
-                        unavailable until this file completes downloading.
-                    </p>
-                ) : null}
-        </>
-    );
-
-    return (
-        <BatchDownloadActuator
-            controller={cartController}
-            modalContent={modalContent}
-            actuator={
-                <CartBatchDownloadButton title={actuatorTitle} disabled={disabled} />
-            }
-        />
-    );
+    return null;
 };
 
 CartBatchDownloadComponent.propTypes = {
-    /** Type of cart: ACTIVE, OBJECT */
-    cartType: PropTypes.string.isRequired,
+    /** Cart object as it exists in the database */
+    cart: PropTypes.object,
     /** Selected file facet terms */
     selectedFileTerms: PropTypes.object,
     /** Currently selected dataset type */
@@ -158,10 +158,6 @@ CartBatchDownloadComponent.propTypes = {
     facetFields: PropTypes.array.isRequired,
     /** Selected dataset facet terms */
     selectedDatasetTerms: PropTypes.object,
-    /** Cart as it exists in the database; use JSON payload method if none */
-    savedCartObj: PropTypes.object,
-    /** Shared cart object */
-    sharedCart: PropTypes.object,
     /** True if cart operation in progress */
     cartInProgress: PropTypes.bool,
     /** True to download only visualizable files */
@@ -171,20 +167,19 @@ CartBatchDownloadComponent.propTypes = {
 };
 
 CartBatchDownloadComponent.defaultProps = {
+    cart: null,
     selectedFileTerms: null,
     selectedDatasetTerms: null,
-    savedCartObj: null,
-    sharedCart: null,
     cartInProgress: false,
     visualizable: false,
     isFileViewOnly: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
+    cart: ownProps.cart,
     cartInProgress: state.inProgress,
     elements: ownProps.elements,
     analyses: ownProps.analyses,
-    savedCartObj: ownProps.savedCartObj,
     fileCounts: ownProps.fileCounts,
     fetch: ownProps.fetch,
 });

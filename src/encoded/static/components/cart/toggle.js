@@ -16,7 +16,7 @@ import {
 } from './actions';
 import CartLoggedOutWarning, { useLoggedOutWarning } from './loggedout_warning';
 import CartMaxElementsWarning from './max_elements_warning';
-import { allowedDatasetTypes, CART_MAX_ELEMENTS, DEFAULT_FILE_VIEW_NAME } from './util';
+import { allowedDatasetTypes, CART_MAX_ELEMENTS, DEFAULT_FILE_VIEW_NAME, getReadOnlyState } from './util';
 import { atIdToType, hasType, truncateString } from '../globals';
 
 
@@ -151,22 +151,29 @@ const CartToggleComponent = ({
 
     const inCart = elements.indexOf(targetElement['@id']) > -1;
     const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
-    const inCartToolTip = `${inCart ? 'Remove item from cart' : 'Add item to cart'}${cartName ? ` ${uc.ldquo}${cartName}${uc.rdquo}` : ''}`;
-    const inProgressToolTip = inProgress ? 'Cart operation in progress' : '';
-    const locked = savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.locked : false;
-    const lockedToolTip = locked ? `Cart ${uc.ldquo}${cartName}${uc.rdquo} locked` : '';
+    let toolTip = `${inCart ? 'Remove item from cart' : 'Add item to cart'}${cartName ? ` ${uc.ldquo}${cartName}${uc.rdquo}` : ''}`;
+    if (inProgress) {
+        toolTip = 'Cart operation in progress';
+    }
+    const readOnlyState = getReadOnlyState(savedCartObj);
+    if (readOnlyState.locked) {
+        toolTip = `Cart ${uc.ldquo}${cartName}${uc.rdquo} locked`;
+    } else if (readOnlyState.released) {
+        toolTip = `Cart ${uc.ldquo}${cartName}${uc.rdquo} released`;
+    }
 
     // Determine if the target element is in the cart and belongs to a series that is also in the
     // cart.
     let isTargetADatasetWithRelatedSeries = false;
-    let relatedSeriesTooltip = '';
     if (isTargetElementInCart && targetElement.related_series?.length > 0) {
         isTargetADatasetWithRelatedSeries = targetElement.related_series.some((relatedSeries) => elements.includes(typeof relatedSeries === 'string' ? relatedSeries : relatedSeries['@id']));
-        relatedSeriesTooltip = isTargetADatasetWithRelatedSeries && `Part of a series in the current cart. Remove from the current cart through ${uc.ldquo}View cart${uc.rdquo} in the cart menu`;
+        if (isTargetADatasetWithRelatedSeries) {
+            toolTip = `Part of a series in the current cart. Remove from the current cart through ${uc.ldquo}View cart${uc.rdquo} in the cart menu`;
+        }
     }
 
     // "name" attribute needed for BDD test targeting.
-    const toggleDisabled = inProgress || locked || isTargetADatasetWithRelatedSeries;
+    const toggleDisabled = inProgress || readOnlyState.locked || isTargetADatasetWithRelatedSeries || readOnlyState.released;
     return (
         <div className={`cart-toggle${inCart ? ' cart-toggle--in-cart' : ''}${css ? ` ${css}` : ''}`}>
             {displayName && savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
@@ -174,9 +181,9 @@ const CartToggleComponent = ({
                 type="button"
                 onClick={handleClick}
                 disabled={toggleDisabled}
-                title={inProgressToolTip || lockedToolTip || relatedSeriesTooltip || inCartToolTip}
+                title={toolTip}
                 aria-pressed={inCart}
-                aria-label={inProgressToolTip || lockedToolTip || relatedSeriesTooltip || inCartToolTip}
+                aria-label={toolTip}
                 name={targetElement['@id']}
             >
                 {svgIcon('cart', toggleDisabled ? { fill: '#a0a0a0', stroke: '#a0a0a0' } : null)}

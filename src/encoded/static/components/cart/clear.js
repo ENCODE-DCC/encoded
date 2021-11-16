@@ -89,67 +89,61 @@ CartClearModal.contextTypes = {
 /**
  * Display an actuator button to clear the current cart, and handle the resulting warning modal.
  */
-class CartClearButtonComponent extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            /** True if modal about clearing the cart is visible */
-            modalOpen: false,
-        };
-        this.handleClearCartClick = this.handleClearCartClick.bind(this);
-        this.handleCloseClick = this.handleCloseClick.bind(this);
-    }
+const CartClearButtonComponent = ({ elements, inProgress, isCartReadOnly }) => {
+    const [modalOpen, setModalOpen] = React.useState(false);
 
     /**
      * Handle a click in the Clear Cart button by showing the confirmation modal.
      */
-    handleClearCartClick() {
-        this.setState({ modalOpen: true });
-    }
+    const handleClearCartClick = () => {
+        setModalOpen(true);
+    };
 
     /**
      * Handle a click for closing the modal without doing anything.
      */
-    handleCloseClick() {
-        this.setState({ modalOpen: false });
-    }
+    const handleCloseClick = () => {
+        setModalOpen(false);
+    };
 
-    render() {
-        const { elements, inProgress } = this.props;
-        if (elements.length > 0 && !this.props.locked) {
-            return (
-                <div className="cart-tools-extras__button">
-                    <button type="button" disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-danger btn-sm btn-inline">Clear cart</button>
-                    {this.state.modalOpen ?
-                        <CartClearModal closeClickHandler={this.handleCloseClick} />
-                    : null}
-                </div>
-            );
-        }
-        return null;
+    if (elements.length > 0) {
+        return (
+            <div className="cart-tools-extras__button">
+                <button
+                    type="button"
+                    disabled={inProgress || isCartReadOnly}
+                    onClick={handleClearCartClick}
+                    id="clear-cart-actuator"
+                    className="btn btn-danger btn-sm btn-inline"
+                >
+                    Clear cart
+                </button>
+                {modalOpen && <CartClearModal closeClickHandler={handleCloseClick} />}
+            </div>
+        );
     }
-}
+    return null;
+};
 
 CartClearButtonComponent.propTypes = {
     /** Current contents of cart */
     elements: PropTypes.array,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool,
-    /** True if cart is locked */
-    locked: PropTypes.bool,
+    /** True if cart is read only */
+    isCartReadOnly: PropTypes.bool.isRequired,
 };
 
 CartClearButtonComponent.defaultProps = {
     elements: [],
     inProgress: false,
-    locked: false,
 };
 
 CartClearButtonComponent.mapStateToProps = (state) => ({
     elements: state.elements,
     inProgress: state.inProgress,
-    locked: state.locked,
 });
+
 const CartClearButton = connect(CartClearButtonComponent.mapStateToProps)(CartClearButtonComponent);
 
 export default CartClearButton;

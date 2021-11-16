@@ -38,7 +38,7 @@ export const CartResultTableList = ({ results, cartControls }) => {
                             {(isSeries || isSeriesDataset) && (
                                 <>
                                     {seriesOfDataset.map((singleSeriesOfDataset) => (
-                                        <SeriesManagerActuator key={singleSeriesOfDataset['@id']} singleSeries={singleSeriesOfDataset} />
+                                        <SeriesManagerActuator key={singleSeriesOfDataset['@id']} singleSeries={singleSeriesOfDataset} cartControls={cartControls} />
                                     ))}
                                 </>
                             )}

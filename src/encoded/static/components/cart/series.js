@@ -60,7 +60,7 @@ CartSeriesConfirmation.propTypes = {
 /**
  * Displays the modal unconditionally that lets you manage a series object in the cart.
  */
-const ManageSeriesModalComponent = ({ series, onCloseModalClick, setCartInProgress }) => {
+const ManageSeriesModalComponent = ({ series, cartControls, onCloseModalClick, setCartInProgress }) => {
     /** True if the user has requested removing a series object, but not yet confirmed */
     const [isRemoveRequested, setIsRemoveRequested] = React.useState(false);
     /** True if the user has confirmed removing the series object from the cart */
@@ -145,7 +145,7 @@ const ManageSeriesModalComponent = ({ series, onCloseModalClick, setCartInProgre
                     <li className="result-item__wrapper">
                         {Listing({
                             context: series,
-                            cartControls: true,
+                            cartControls,
                             mode: 'cart-view',
                             removeConfirmation: {
                                 requestRemove,
@@ -175,7 +175,7 @@ const ManageSeriesModalComponent = ({ series, onCloseModalClick, setCartInProgre
                                 <li key={dataset['@id']} className="result-item__wrapper">
                                     {Listing({
                                         context: dataset,
-                                        cartControls: !isObligateSeries(series),
+                                        cartControls: !isObligateSeries(series) && cartControls,
                                         mode: 'cart-view',
                                         removeConfirmation: {
                                             requestRemove,
@@ -214,6 +214,8 @@ const ManageSeriesModalComponent = ({ series, onCloseModalClick, setCartInProgre
 ManageSeriesModalComponent.propTypes = {
     /** Series that contains the given datasets */
     series: PropTypes.object.isRequired,
+    /** True if cart controls should appear (current cart) */
+    cartControls: PropTypes.bool.isRequired,
     /** Called when the user closes the modal */
     onCloseModalClick: PropTypes.func.isRequired,
     /** Called to set the in-progress state of the cart when confirming removing the series */
@@ -230,12 +232,14 @@ export const ManageSeriesModal = connect(null, ManageSeriesModalComponent.mapDis
 export const useSeriesManager = () => {
     // Series currently appearing in series manager modal.
     const [singleSeries, setSingleSeries] = React.useState(null);
+    const [cartControls, setCartControls] = React.useState(false);
 
     /**
      * Sets the series and its datasets to manage within the modal that appears when these values get set.
      */
-    const setManagedSeries = (series) => {
+    const setManagedSeries = (series, seriesCartControls) => {
         setSingleSeries(series);
+        setCartControls(seriesCartControls);
     };
 
     /**
@@ -247,6 +251,7 @@ export const useSeriesManager = () => {
         // States
         isSeriesManagerOpen,
         managedSeries: singleSeries,
+        cartControls,
         // Actions
         setManagedSeries,
     };
@@ -256,13 +261,13 @@ export const useSeriesManager = () => {
 /**
  * Renders the button that triggers the display of the series management modal.
  */
-const SeriesManagerActuator = ({ singleSeries }) => {
+const SeriesManagerActuator = ({ singleSeries, cartControls }) => {
     const { setManagedSeries } = React.useContext(CartViewContext);
 
     return (
         <div className="result-item__controls">
-            <button type="button" className="btn btn-info btn-xs" onClick={() => setManagedSeries(singleSeries)}>
-                {`Remove series datasets for ${singleSeries.accession}`}
+            <button type="button" className="btn btn-info btn-xs" onClick={() => setManagedSeries(singleSeries, cartControls)}>
+                {`${cartControls ? 'Remove series' : 'Series'} datasets for ${singleSeries.accession}`}
             </button>
         </div>
     );
@@ -271,6 +276,8 @@ const SeriesManagerActuator = ({ singleSeries }) => {
 SeriesManagerActuator.propTypes = {
     /** Series that contains the given datasets */
     singleSeries: PropTypes.object.isRequired,
+    /** True if items should display with cart controls */
+    cartControls: PropTypes.bool.isRequired,
 };
 
 export default SeriesManagerActuator;

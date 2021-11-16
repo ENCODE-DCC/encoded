@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 import { removeMultipleFromCartAndSave } from './actions';
-import { DEFAULT_FILE_VIEW_NAME } from './util';
+import { DEFAULT_FILE_VIEW_NAME, getReadOnlyState } from './util';
 
 
 /**
@@ -104,6 +104,7 @@ const CartRemoveElementsComponent = ({
 }) => {
     /** True if the alert modal is visible */
     const [isModalVisible, setIsModalVisible] = React.useState(false);
+    const readOnlyState = getReadOnlyState(savedCartObj);
 
     // Filter the given elements so we only remove datasets not within a series.
     const nonSeriesDatasets = elements.filter((element) => !element._relatedSeries);
@@ -126,7 +127,7 @@ const CartRemoveElementsComponent = ({
         <div className="remove-multiple-control">
             <button
                 type="button"
-                disabled={nonSeriesDatasets.length === 0 || loading || inProgress || (savedCartObj && savedCartObj.locked)}
+                disabled={nonSeriesDatasets.length === 0 || loading || inProgress || readOnlyState.any}
                 className="btn btn-info btn-sm"
                 onClick={handleOpenClick}
             >

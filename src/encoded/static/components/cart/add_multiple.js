@@ -16,6 +16,7 @@ import {
     cartGetAllowedObjectPathTypes,
     CART_MAX_ELEMENTS,
     mergeCarts,
+    getReadOnlyState,
 } from './util';
 
 /**
@@ -32,6 +33,7 @@ const CartAddAllSearchComponent = ({
 }) => {
     /** Get hooks for the logged-out warning modal */
     const [loggedOutWarningStates, loggedOutWarningActions] = useLoggedOutWarning(false);
+    const readOnlyState = getReadOnlyState(savedCartObj);
 
     /**
      * Handle a click in the Add All button by doing a search of elements allowed in carts to get
@@ -91,7 +93,7 @@ const CartAddAllSearchComponent = ({
                 {savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
                 <button
                     type="button"
-                    disabled={inProgress || savedCartObj.locked}
+                    disabled={inProgress || readOnlyState.any}
                     className="btn btn-info btn-sm"
                     onClick={handleClick}
                     title={`Add all datasets in search results to cart${cartName ? `: ${cartName}` : ''}`}
@@ -201,12 +203,13 @@ const CartAddAllElementsComponent = ({
     };
 
     const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
+    const readOnlyState = getReadOnlyState(savedCartObj);
     return (
         <div className="cart-add-all">
             {savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
             <button
                 type="button"
-                disabled={inProgress || (savedCartObj && savedCartObj.locked)}
+                disabled={inProgress || readOnlyState.any}
                 className="btn btn-info btn-sm"
                 onClick={handleClick}
                 title={`Add all related experiments to cart${cartName ? `: ${cartName}` : ''}`}

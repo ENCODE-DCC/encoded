@@ -1,211 +1,324 @@
-/**
- * Components to display the status of the cart in the navigation bar, and to navigate to cart
- * pages.
- */
+// node_modules
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { DropdownMenu, DropdownMenuSep } from '../../libs/ui/dropdown-menu';
-import { NavItem } from '../../libs/ui/navbar';
-import { svgIcon } from '../../libs/svg-icons';
-import { truncateString } from '../globals';
-import { CartClearModal } from './clear';
-import CartShare from './share';
+// libs
+import { uc } from '../../libs/constants';
+// libs/ui
+import BooleanToggle from '../../libs/ui/boolean-toggle';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
+// components
+import Status from '../status';
+// local
+import { setCartStatusAndSave, setDescriptionAndSave } from './actions';
+import { CartDescriptionDisplay, CartDescriptionEditorContent, sanitizeDescription, getCartDescriptionInfo } from './description';
+import { getReadOnlyState } from './util';
 
 
 /**
- * Renders the cart icon menu and count or in-progress spinner in the nav bar.
+ *  Display the displayed cart's status property.
  */
-const CartNavTitle = ({ elements, inProgress, locked }) => {
-    let status;
-    let iconClass = '';
-
-    if (inProgress) {
-        status = svgIcon('spinner');
-        iconClass = 'cart__nav-spinner';
-    } else if (elements.length > 0) {
-        status = elements.length;
-        iconClass = 'cart__nav-count';
-    }
-    return (
-        <div className="cart__nav">
-            <div className={`cart__nav-icon${status ? '' : ' cart__nav-icon--empty'}`}>
-                {svgIcon('cart', { fill: locked ? '#e59545' : '#fff' })}
+export const CartStatus = ({ cart }) => (
+    cart && cart.status
+        ?
+            <div className="cart-title-status">
+                <Status item={cart} badgeSize="small" />
             </div>
-            {status ? <div className={iconClass}>{status}</div> : null}
+        : null
+);
+
+CartStatus.propTypes = {
+    /** Cart whose status we display */
+    cart: PropTypes.object,
+};
+
+CartStatus.defaultProps = {
+    cart: {},
+};
+
+
+/**
+ * Displays the toggle switch that allows the user to choose whether the cart has the 'listed' or
+ * 'unlisted' status.
+ */
+const CartListingToggleComponent = ({ cart, setStatus }) => {
+    /**
+     * Called when the user clicks the listing toggle switch.
+     */
+    const onSwitchListed = () => {
+        setStatus(cart.status === 'listed' ? 'unlisted' : 'listed', cart);
+    };
+
+    return (
+        <div className="listing-toggle">
+            <BooleanToggle
+                id="listing-toggle"
+                state={cart.status === 'listed'}
+                title="Listed"
+                voice="Listed on cart listing"
+                disabled={!cart.description}
+                triggerHandler={onSwitchListed}
+                options={{
+                    cssSwitch: 'listing-toggle__switch',
+                    cssTitle: 'listing-toggle__title',
+                }}
+            />
         </div>
     );
 };
 
-CartNavTitle.propTypes = {
-    /** Array of cart contents */
-    elements: PropTypes.array.isRequired,
-    /** True if global cart operation in progress */
-    inProgress: PropTypes.bool.isRequired,
-    /** True if cart is locked */
-    locked: PropTypes.bool.isRequired,
+CartListingToggleComponent.propTypes = {
+    /** Cart whose listing status gets changed */
+    cart: PropTypes.object.isRequired,
+    /** Called when the user changes the listed status of a cart */
+    setStatus: PropTypes.func.isRequired,
 };
 
-
-/**
- * Navigation bar item for the cart menu.
- */
-class CartStatusComponent extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            /** True if Share Cart modal is visible */
-            shareModalOpen: false,
-            clearModalOpen: false,
-        };
-        this.shareCartClick = this.shareCartClick.bind(this);
-        this.closeShareCart = this.closeShareCart.bind(this);
-        this.clearCartClick = this.clearCartClick.bind(this);
-        this.closeClearCart = this.closeClearCart.bind(this);
-    }
-
-    /**
-     * Called when the Share Cart menu item is clicked.
-     */
-    shareCartClick() {
-        this.setState({ shareModalOpen: true });
-    }
-
-    /**
-     * Called when the Share Cart modal close buttons are clicked.
-     */
-    closeShareCart() {
-        this.setState({ shareModalOpen: false });
-    }
-
-    /**
-     * Called when the Share Cart menu item is clicked.
-     */
-    clearCartClick() {
-        this.setState({ clearModalOpen: true });
-    }
-
-    /**
-     * Called when the Share Cart modal close buttons are clicked.
-     */
-    closeClearCart() {
-        this.setState({ clearModalOpen: false });
-    }
-
-    render() {
-        const { elements, savedCartObj, inProgress, openDropdown, dropdownClick, loggedIn } = this.props;
-        const locked = !!(savedCartObj && savedCartObj.locked);
-
-        if (loggedIn) {
-            // Define the menu items for the Cart Status menu.
-            const cartName = (savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
-            const menuItems = [];
-            const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
-            const clearCartItem = !locked ? <button type="button" key="clear" onClick={this.clearCartClick}>Clear cart</button> : null;
-            const lockIcon = cartName ? <div className="cart-nav-lock">{svgIcon(locked ? 'lockClosed' : 'lockOpen')}</div> : null;
-
-            // The href is just to quiet ESLint for the bad href. This code shouldn't do this
-            // but the CSS looks difficult to fix after the tooltip updates.
-            menuItems.push(
-                <span key="name" className="disabled-menu-item">
-                    {`Current: ${cartName}`}{lockIcon}
-                </span>,
-                <DropdownMenuSep key="sep-1" />
-            );
-            if (elements.length > 0) {
-                menuItems.push(
-                    viewCartItem,
-                    <button type="button" key="share" onClick={this.shareCartClick}>Share cart</button>,
-                    clearCartItem,
-                    <DropdownMenuSep key="sep-2" />
-                );
-            }
-            menuItems.push(<a key="manage" href="/cart-manager/">Cart manager</a>);
-
-            return (
-                <NavItem
-                    dropdownId="cart-control"
-                    dropdownTitle={<CartNavTitle elements={elements} locked={locked} inProgress={inProgress} />}
-                    openDropdown={openDropdown}
-                    dropdownClick={dropdownClick}
-                    label={`${locked ? 'locked' : ''} cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
-                    buttonCss="cart__nav-button"
-                >
-                    <DropdownMenu label="cart-control">
-                        {menuItems}
-                    </DropdownMenu>
-                    {this.state.shareModalOpen ? <CartShare userCart={savedCartObj} closeShareCart={this.closeShareCart} /> : null}
-                    {this.state.clearModalOpen ? <CartClearModal closeClickHandler={this.closeClearCart} /> : null}
-                </NavItem>
-            );
-        }
-        return null;
-    }
-}
-
-CartStatusComponent.propTypes = {
-    /** Cart contents as array of @ids */
-    elements: PropTypes.array,
-    /** Cached saved cart object */
-    savedCartObj: PropTypes.object,
-    /** True if global cart operation in progress */
-    inProgress: PropTypes.bool.isRequired,
-    /** ID of nav dropdown currently visible */
-    openDropdown: PropTypes.string,
-    /** Function to call when dropdown clicked */
-    dropdownClick: PropTypes.func,
-    /** True if user has logged in */
-    loggedIn: PropTypes.bool,
-};
-
-CartStatusComponent.defaultProps = {
-    elements: [],
-    savedCartObj: null,
-    openDropdown: '',
-    dropdownClick: null,
-    loggedIn: false,
-};
-
-
-const mapStateToProps = (state, ownProps) => ({
-    elements: state.elements,
-    savedCartObj: state.savedCartObj || null,
-    inProgress: state.inProgress,
-    openDropdown: ownProps.openDropdown,
-    dropdownClick: ownProps.dropdownClick,
-    loggedIn: !!(ownProps.session && ownProps.session['auth.userid']),
+CartListingToggleComponent.mapDispatchToProps = (dispatch, ownProps) => ({
+    setStatus: (status, cart) => dispatch(
+        setCartStatusAndSave(
+            status,
+            cart,
+            ownProps.sessionProperties && ownProps.sessionProperties.user,
+            ownProps.fetch
+        )
+    ),
 });
 
-const CartStatusInternal = connect(mapStateToProps)(CartStatusComponent);
+const CartListingToggleInternal = connect(null, CartListingToggleComponent.mapDispatchToProps)(CartListingToggleComponent);
+
+const CartListingToggle = ({ cart }, reactContext) => (
+    <CartListingToggleInternal cart={cart} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
+);
+
+CartListingToggle.propTypes = {
+    /** Cart object as it exists in the database */
+    cart: PropTypes.object.isRequired,
+};
+
+CartListingToggle.contextTypes = {
+    session_properties: PropTypes.object,
+    fetch: PropTypes.func,
+};
 
 
 /**
- * Public Redux component to display the cart menu in the navigation bar. This is a <Navbar> child
- * so it gets its properties automatically imported from <Navbar>.
+ * Contains the content to manage the listing of a cart, including the listing toggle switch and
+ * cart description.
  */
-const CartStatus = ({ openDropdown, dropdownClick }, reactContext) => (
-    <CartStatusInternal
-        openDropdown={openDropdown}
-        dropdownClick={dropdownClick}
-        session={reactContext.session}
-    />
+export const CartListingConfigContent = ({ cart, editedDescription, onChangeDescription, onSaveDescriptionClick }) => {
+    /** Current states of the Save Description button */
+    const {
+        descriptionSaveButtonLabel,
+        isDescriptionSaveButtonDisabled,
+        isDescriptionEdited,
+    } = getCartDescriptionInfo(cart, editedDescription);
+    const readOnlyState = getReadOnlyState(cart);
+
+    return (
+        <>
+            {readOnlyState.any
+                ? <CartDescriptionDisplay description={editedDescription} />
+                : (
+                    <>
+                        <p id="listing-description">
+                            Your cart appears on the public <strong>Listed carts</strong> page by enabling
+                            the <strong>Listed</strong> switch below. You must supply a description for
+                            your cart to list it. This description also appears with this cart on
+                            the <strong>Listed carts</strong> page. You can format the text with Markdown
+                            syntax.
+                        </p>
+                        <CartDescriptionEditorContent
+                            editedDescription={editedDescription}
+                            savedDescription={cart.description || ''}
+                            isDescriptionEdited={isDescriptionEdited}
+                            onChangeDescription={onChangeDescription}
+                        />
+                        <div className="listing-config-description-save">
+                            <button
+                                type="button"
+                                disabled={isDescriptionSaveButtonDisabled}
+                                className="btn btn-info btn-sm"
+                                onClick={onSaveDescriptionClick}
+                            >
+                                {descriptionSaveButtonLabel}
+                            </button>
+                        </div>
+                        <CartListingToggle cart={cart} />
+                    </>
+                )
+            }
+        </>
+    );
+};
+
+CartListingConfigContent.propTypes = {
+    /** Cart object whose listing state we alter */
+    cart: PropTypes.object.isRequired,
+    /** Current contents of the description text area */
+    editedDescription: PropTypes.string.isRequired,
+    /** Called when the user changes the contents of the description text area */
+    onChangeDescription: PropTypes.func.isRequired,
+    /** Called when the user clicks the Save Description button */
+    onSaveDescriptionClick: PropTypes.func.isRequired,
+};
+
+
+/**
+ * Displays the modal so the user can choose to list a cart or not, and to update the description
+ * of the cart.
+ */
+const ListingConfigModal = ({ cart, onSetDescription, onClose }) => {
+    /** Current contents of the description text area */
+    const [editedDescription, setEditedDescription] = React.useState(cart.description || '');
+    const isDescriptionEdited = editedDescription !== cart.description;
+
+    // Compose the note next to the modal Close button.
+    let note = '';
+    let isNoteError = false;
+    if (!cart.description) {
+        note = 'Cart must have a saved description to list it';
+        isNoteError = true;
+    } else {
+        note = cart.status === 'listed' ? `Cart listed as ${uc.ldquo}${cart.name}${uc.rdquo}` : 'Cart unlisted';
+        isNoteError = false;
+    }
+
+    /**
+     * Called when the user changes the contents of the description text area.
+     * @param {string} value Contents of description text area
+     */
+    const onChangeDescription = (value) => {
+        setEditedDescription(value);
+    };
+
+    /**
+     * Called when the user clicks the Save Description button.
+     */
+    const onSaveDescriptionClick = () => {
+        // Strip the description of anything dangerous, save it to the cart object in the database
+        // and then update the edit field with the sanitized description.
+        const descriptionToSave = sanitizeDescription(editedDescription);
+        onSetDescription(descriptionToSave);
+        setEditedDescription(descriptionToSave);
+    };
+
+    return (
+        <Modal labelId="description-editor" descriptionId="description-editor-description" focusId="text-editing-area" closeModal={onClose} widthClass="sm">
+            <ModalHeader labelId="description-editor" closeModal={onClose} title={`Edit cart description: ${cart.name}`} />
+            <ModalBody addCss="cart-description-editor">
+                <CartListingConfigContent
+                    cart={cart}
+                    editedDescription={editedDescription}
+                    onChangeDescription={onChangeDescription}
+                    onSaveDescriptionClick={onSaveDescriptionClick}
+                />
+            </ModalBody>
+            <ModalFooter>
+                <div className={`listing-note${isNoteError ? ' listing-note--error' : ''}`}>
+                    {note}
+                </div>
+                <button type="button" className="btn btn-default" onClick={onClose}>Close{isDescriptionEdited ? ' without saving description' : ''}</button>
+            </ModalFooter>
+        </Modal>
+    );
+};
+
+ListingConfigModal.propTypes = {
+    /** Cart object whose listing state we alter */
+    cart: PropTypes.object.isRequired,
+    /** Called when the user chooses to save the new description */
+    onSetDescription: PropTypes.func.isRequired,
+    /** Called when the user closes the modal */
+    onClose: PropTypes.func.isRequired,
+};
+
+
+/**
+ * Renders a toggle to make the cart status 'listed' or 'unlisted'.
+ */
+const CartListingAgentActuatorComponent = ({
+    cart,
+    inProgress,
+    disabled,
+    setDescription,
+}) => {
+    /** True if listing agent modal visible */
+    const [listingConfigVisible, setListingConfigVisible] = React.useState(false);
+
+    /**
+     * Called when the user clicks the button to view the listing configuration modal.
+     */
+    const onClickManageListing = () => {
+        setListingConfigVisible(true);
+    };
+
+    /**
+     * Called when the user closes the modal.
+     */
+    const onClose = () => {
+        setListingConfigVisible(false);
+    };
+
+    /**
+     * Called when the user saves the edited description. This closes the editor modal and
+     * sanitizes the Markdown before saving it to the cart object.
+     * @param {string} description Edited description.
+     */
+    const onSetDescription = (description) => {
+        setDescription(sanitizeDescription(description), cart);
+    };
+
+    return (
+        <div className="listing-agent-actuator">
+            <button type="button" className="btn btn-info btn-sm btn-inline" disabled={inProgress || disabled} onClick={onClickManageListing}>
+                {`${cart.status === 'unlisted' ? 'List' : 'Unlist'} cart`}
+            </button>
+            {listingConfigVisible &&
+                <ListingConfigModal cart={cart} onSetDescription={onSetDescription} onClose={onClose} />
+            }
+        </div>
+    );
+};
+
+CartListingAgentActuatorComponent.propTypes = {
+    /** Cart as it exists in the database */
+    cart: PropTypes.object.isRequired,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
+    /** True if the listing agent actuator should be disabled */
+    disabled: PropTypes.bool.isRequired,
+    /** Called to set an edited description */
+    setDescription: PropTypes.func.isRequired,
+};
+
+CartListingAgentActuatorComponent.mapDispatchToProps = (dispatch, ownProps) => ({
+    setDescription: (description, cart) => dispatch(
+        setDescriptionAndSave(
+            description,
+            cart,
+            ownProps.sessionProperties && ownProps.sessionProperties.user,
+            ownProps.fetch,
+        )
+    ),
+});
+
+const CartListingAgentActuatorInternal = connect(null, CartListingAgentActuatorComponent.mapDispatchToProps)(CartListingAgentActuatorComponent);
+
+export const CartListingAgentActuator = ({ cart, inProgress, disabled }, reactContext) => (
+    <CartListingAgentActuatorInternal cart={cart} inProgress={inProgress} disabled={disabled} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
 );
 
-CartStatus.propTypes = {
-    /** ID of nav dropdown currently visible; copied from <Navbar> props */
-    openDropdown: PropTypes.string,
-    /** Function to call when dropdown clicked; copied from <Navbar> props */
-    /** Note: Required, but props from React.cloneElement fail isRequired validation */
-    dropdownClick: PropTypes.func,
+CartListingAgentActuator.propTypes = {
+    /** Cart as it exists in the database */
+    cart: PropTypes.object.isRequired,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
+    /** True if the listing agent actuator should be disabled */
+    disabled: PropTypes.bool.isRequired,
 };
 
-CartStatus.defaultProps = {
-    openDropdown: '',
-    dropdownClick: null,
+CartListingAgentActuator.contextTypes = {
+    fetch: PropTypes.func,
+    session_properties: PropTypes.object,
 };
-
-CartStatus.contextTypes = {
-    session: PropTypes.object,
-};
-
-export default CartStatus;

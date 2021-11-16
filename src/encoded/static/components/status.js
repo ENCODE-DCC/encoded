@@ -98,7 +98,17 @@ const defaultObjectStatuses = {
     Award: sharedStatuses,
     BiosampleCharacterization: standardStatuses,
     Biosample: accessionedStatuses,
-    Cart: sharedStatuses,
+    Cart: {
+        external: [
+            'released',
+            'listed',
+            'unlisted',
+            'revoked',
+        ],
+        administrator: [
+            'deleted',
+        ],
+    },
     Characterization: standardStatuses,
     Dataset: datasetStatuses,
     Document: standardStatuses,
@@ -197,6 +207,8 @@ const iconDefinitions = {
     waiting: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,0a8,8,0,1,0,8,8A8,8,0,0,0,8,0ZM8,14.17A6.17,6.17,0,1,1,14.17,8,6.17,6.17,0,0,1,8,14.17ZM9.5,6.5v-3h-3v3h-3v3h3v3h3v-3h3v-3Z" /></svg>,
     unusuable: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,0a8,8,0,1,0,8,8A8,8,0,0,0,8,0ZM8,14.17A6.17,6.17,0,1,1,14.17,8,6.17,6.17,0,0,1,8,14.17ZM3.5,6.5v3h9v-3Z" /></svg>,
     uploading: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0,0V16H16V0ZM14.17,14.17H8V1.83h6.17Z" /></svg>,
+    listed: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect x="2.6" y="2.6" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3137 8)" width="10.9" height="10.9" /></svg>,
+    unlisted: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8,4.6L11.4,8L8,11.4L4.6,8L8,4.6 M8,0.3L0.3,8L8,15.7L15.7,8L8,0.3L8,0.3z" /></svg>,
 };
 
 // Maps each status to the SVG icon displayed for that status.
@@ -211,6 +223,8 @@ const statusIcons = {
     'exempt-from-standards': iconDefinitions.exempt,
     archived: iconDefinitions.archived,
     revoked: iconDefinitions.error,
+    listed: iconDefinitions.listed,
+    unlisted: iconDefinitions.unlisted,
 
     // Consortium
     'in-progress': iconDefinitions.inProgress,

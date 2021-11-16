@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Navbar, Nav, NavItem } from '../libs/ui/navbar';
 import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
-import { CartStatus } from './cart';
+import { CartMenu } from './cart';
 import { isProductionHost } from './globals';
 import Tooltip from '../libs/ui/tooltip';
 import { BrowserFeat } from './browserfeat';
@@ -250,7 +250,7 @@ const GlobalSections = (props, context) => {
                 </DropdownMenu>
             : null}
         </NavItem>
-    )).concat(<CartStatus key="cart-control" openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} />);
+    )).concat(<CartMenu key="cart-control" openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} />);
     return <Nav>{actions}</Nav>;
 };
 

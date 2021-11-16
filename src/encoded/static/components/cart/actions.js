@@ -22,6 +22,7 @@ export const SET_NAME = 'SET_NAME';
 export const SET_IDENTIFIER = 'SET_IDENTIFIER';
 export const SET_LOCKED = 'SET_LOCKED';
 export const SET_STATUS = 'SET_STATUS';
+export const SET_DESCRIPTION = 'SET_DESCRIPTION';
 export const ADD_FILE_VIEW = 'ADD_FILE_VIEW';
 export const REMOVE_FILE_VIEW = 'REMOVE_FILE_VIEW';
 export const ADD_TO_FILE_VIEW = 'ADD_TO_FILE_VIEW';
@@ -280,6 +281,15 @@ export const setCartStatus = (status) => (
 
 
 /**
+ * Redux action creator to set the cart description.
+ * @param {string} description Description of cart
+ */
+export const setDescription = (description) => (
+    { type: SET_DESCRIPTION, description }
+);
+
+
+/**
  * Redux action creator to add a new file view.
  * @param {string} title Name of the new file view
  * @returns {object} Redux action object
@@ -511,6 +521,60 @@ export const setCartLockAndSave = (locked, cart, user, fetch) => (
             const currentCartAtId = cartGetSettings(user).current;
             if (updatedSavedCartObj['@id'] === currentCartAtId) {
                 dispatch(setCartLocked(updatedSavedCartObj.locked));
+                dispatch(cacheSavedCart(updatedSavedCartObj));
+            }
+        });
+    }
+);
+
+
+/**
+ * Redux thunk action creator to set the status of a cart both in the Redux store and the cart's
+ * database object.
+ * @param {string} locked New status of the cart
+ * @param {object} cart Cart object being updated
+ * @param {object} user Current user object, often from `session` React context variable
+ * @param {func} fetch System fetch function
+ * @return {Promise} Resolves to the updated cart object
+ */
+export const setCartStatusAndSave = (status, cart, user, fetch) => (
+    (dispatch) => {
+        cartSetOperationInProgress(true, dispatch);
+        return cartUpdate(cart['@id'], { status }, {}, fetch).then((updatedSavedCartObj) => {
+            cartSetOperationInProgress(false, dispatch);
+
+            // If we updated the current cart, set the new status in the in-memory cart
+            // object and re-cache the cart object.
+            const currentCartAtId = cartGetSettings(user).current;
+            if (updatedSavedCartObj['@id'] === currentCartAtId) {
+                dispatch(setCartStatus(updatedSavedCartObj.status));
+                dispatch(cacheSavedCart(updatedSavedCartObj));
+            }
+        });
+    }
+);
+
+
+/**
+ * Redux thunk action creator to set the description of the specified cart both in the Redux store
+ * and the cart's database object.
+ * @param {string} description Description of cart to save in the specified cart
+ * @param {object} cart Cart object being updated
+ * @param {object} user Current user object, often from `session` React context variable
+ * @param {function} fetch System fetch function
+ * @returns {Promise} Resolves to the updated cart object
+ */
+export const setDescriptionAndSave = (description, cart, user, fetch) => (
+    (dispatch) => {
+        cartSetOperationInProgress(true, dispatch);
+        return cartUpdate(cart['@id'], { description }, {}, fetch).then((updatedSavedCartObj) => {
+            cartSetOperationInProgress(false, dispatch);
+
+            // If we updated the current cart, set the new description in the in-memory cart
+            // object and re-cache the cart object.
+            const currentCartAtId = cartGetSettings(user).current;
+            if (updatedSavedCartObj['@id'] === currentCartAtId) {
+                dispatch(setDescription(updatedSavedCartObj.description));
                 dispatch(cacheSavedCart(updatedSavedCartObj));
             }
         });

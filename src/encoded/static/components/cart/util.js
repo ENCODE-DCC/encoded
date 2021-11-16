@@ -2,8 +2,10 @@
  * Small, general components and functions needed by other cart modules.
  */
 
+// node_modules
 import _ from 'underscore';
 import url from 'url';
+// local
 import { obligateSeriesTypes } from './constants';
 
 
@@ -205,3 +207,23 @@ export const getSeriesDatasets = (series, allDatasetsInCart) => (
  * @return {number} Number of pages to contain all items
  */
 export const calcTotalPageCount = (itemCount, maxCount) => Math.floor(itemCount / maxCount) + (itemCount % maxCount !== 0 ? 1 : 0);
+
+
+/**
+ * Returns various aspects about the given cart that determines whether the cart can be modified
+ * by their submitters.
+ * @param {object} cart Cart from database or context
+ * @returns {object} shape: {
+ *     locked - cart is locked by the submitter to prevent unintended modifications
+ *     released - cart is released by DCC
+ *     any - any of the above reasons apply
+ */
+export const getReadOnlyState = (cart) => {
+    const readOnlyState = {};
+    if (cart) {
+        readOnlyState.locked = cart.locked;
+        readOnlyState.released = cart.status === 'released';
+    }
+    readOnlyState.any = Object.keys(readOnlyState).some((key) => readOnlyState[key]);
+    return readOnlyState;
+};
