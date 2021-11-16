@@ -57,6 +57,7 @@ slim_shims = {
         'CL:0000815': ['CD4+ T cell'],
         'CL:0000823': ['natural killer cell'],
         'CL:0000837': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
+        'CL:0000842': ['mononuclear cell'],
         'CL:0000895': ['CD4+ T cell'],
         'CL:0000896': ['CD4+ T cell'],
         'CL:0000897': ['CD4+ T cell'],
@@ -70,6 +71,7 @@ slim_shims = {
         'CL:0002351': ['progenitor cell'],
         'CL:0002399': ['dendritic cell', 'myeloid cell'],
         'CL:0011020': ['progenitor cell'],
+        'CL:2000001': ['mononuclear cell'],
         'CLO:0007123': ['cancer cell'],
         'CLO:0007052': ['cancer cell'],
         'CLO:0003771': ['epithelial cell'],
