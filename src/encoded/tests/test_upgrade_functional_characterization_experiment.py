@@ -52,7 +52,6 @@ def test_functional_characterization_experiment_upgrade_11_to_12(upgrader, funct
     value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_11, current_version='11', target_version='12')
     assert value['schema_version'] == '12'
     assert value['assay_term_name'] == 'Flow-FISH CRISPR screen'
-    assert value['assay_term_id'] == 'NTR:0000659'
     
     functional_characterization_experiment_11['assay_term_name'] = 'CRISPR screen'
     functional_characterization_experiment_11['schema_version'] == '11'
@@ -60,7 +59,6 @@ def test_functional_characterization_experiment_upgrade_11_to_12(upgrader, funct
     value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_11, current_version='11', target_version='12')
     assert value['schema_version'] == '12'
     assert value['assay_term_name'] == 'FACS CRISPR screen'
-    assert value['assay_term_id'] == 'NTR:0000658'
 
     functional_characterization_experiment_11['assay_term_name'] = 'CRISPR screen'
     functional_characterization_experiment_11['schema_version'] == '11'
@@ -68,5 +66,4 @@ def test_functional_characterization_experiment_upgrade_11_to_12(upgrader, funct
     value = upgrader.upgrade('functional_characterization_experiment', functional_characterization_experiment_11, current_version='11', target_version='12')
     assert value['schema_version'] == '12'
     assert value['assay_term_name'] == 'proliferation CRISPR screen'
-    assert value['assay_term_id'] == 'NTR:0000657'
     
