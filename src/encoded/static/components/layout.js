@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import url from 'url';
 import FallbackBlockEdit from './blocks/fallback';
 import closest from '../libs/closest';
 import offset from '../libs/offset';
@@ -318,6 +319,11 @@ class LayoutToolbar extends React.Component {
         this.setState({ fixed: window.pageYOffset > this.origTop });
     }
 
+    cancel() {
+        const link = url.parse(this.context.location_href, true);
+        this.context.navigate(`${link.pathname}/#!`, { reload: true });
+    }
+
     render() {
         /* eslint-disable jsx-a11y/anchor-is-valid */
         const blocks = globals.blocks.getAll();
@@ -330,7 +336,7 @@ class LayoutToolbar extends React.Component {
                     })}
                 </div>
                 <div className="layout-toolbar__controls">
-                    <a href="" className="btn btn-default navbar-btn">Cancel</a>
+                    <button type="button" className="btn btn-default" onClick={() => this.cancel()}>Cancel</button>
                     {' '}
                     <button type="button" onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
                 </div>
@@ -354,6 +360,8 @@ class LayoutToolbar extends React.Component {
 LayoutToolbar.contextTypes = {
     canSave: PropTypes.func,
     onTriggerSave: PropTypes.func,
+    location_href: PropTypes.string,
+    navigate: PropTypes.func,
 };
 
 

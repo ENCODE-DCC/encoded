@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import url from 'url';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 
@@ -72,11 +73,16 @@ class EditForm extends React.Component {
         this.setState({ editor_error: hasError });
     }
 
+    cancel() {
+        const link = url.parse(this.context.location_href, true);
+        this.context.navigate(`${link.pathname}/#!`, { reload: true });
+    }
+
     save(e) {
         e.preventDefault();
         const value = this.state.editor.getValue();
-        const url = this.props.context['@id'];
-        const request = this.context.fetch(url, {
+        const link = this.props.context['@id'];
+        const request = this.context.fetch(link, {
             method: 'PUT',
             headers: {
                 'If-Match': this.props.etag,
@@ -123,7 +129,7 @@ class EditForm extends React.Component {
                     }}
                 />
                 <div className="form-edit__save-controls">
-                    <a href="" className="btn btn-default">Cancel</a>
+                    <button type="button" className="btn btn-default" onClick={() => this.cancel()}>Cancel</button>
                     {' '}
                     <button type="button" onClick={this.save} className="btn btn-info" disabled={this.communicating || this.state.editor_error}>Save</button>
                 </div>
@@ -153,6 +159,7 @@ EditForm.defaultProps = {
 EditForm.contextTypes = {
     fetch: PropTypes.func,
     navigate: PropTypes.func,
+    location_href: PropTypes.string,
 };
 
 
@@ -160,14 +167,14 @@ const ItemEdit = (props) => {
     const { context } = props;
     const itemClass = globals.itemClass(context, 'view-item');
     const title = globals.listingTitles.lookup(context)({ context });
-    const url = `${context['@id']}?frame=edit`;
+    const link = `${context['@id']}?frame=edit`;
     return (
         <div className={itemClass}>
             <header>
                 <h2>Edit {title}</h2>
             </header>
             <FetchedData>
-                <Param name="data" url={url} etagName="etag" />
+                <Param name="data" url={link} etagName="etag" />
                 <EditForm {...props} />
             </FetchedData>
         </div>
