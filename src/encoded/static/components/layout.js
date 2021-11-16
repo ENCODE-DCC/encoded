@@ -321,7 +321,9 @@ class LayoutToolbar extends React.Component {
 
     cancel() {
         const link = url.parse(this.context.location_href, true);
-        this.context.navigate(`${link.pathname}/#!`, { reload: true });
+
+        // the last '/' is a hack to reload the page. In app.js, fallbackNavigate() did not without it.
+        this.context.navigate(`${link.pathname}/`, { reload: true });
     }
 
     render() {
