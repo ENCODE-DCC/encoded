@@ -76,6 +76,8 @@ def functional_characterization_experiment_11_12(value, system):
         'qPCR': 'FACS CRISPR screen'
     }
     if value.get('assay_term_name', "") == 'CRISPR screen':
+        if value.get('control_type'):
+           value['assay_term_name'] = 'Control CRISPR screen' 
         if value.get('examined_loci') == None  or value.get('examined_loci') == []:
             value['assay_term_name'] = 'proliferation CRISPR screen'
         else:
