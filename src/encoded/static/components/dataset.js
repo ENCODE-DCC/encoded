@@ -2233,7 +2233,7 @@ const computeExpressedGenes = (dataset) => {
     );
 };
 
-ElementsReferences.propTypes = {
+computeExpressedGenes.propTypes = {
     reference: PropTypes.object.isRequired,
 };
 
