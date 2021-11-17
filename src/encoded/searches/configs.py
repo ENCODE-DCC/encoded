@@ -109,7 +109,7 @@ def functional_characterization_data_view():
                 'title': 'Status',
                 'open_on_load': True
             },
-            'elements_references.examined_loci.symbol': {
+            'elements_references.examined_loci.gene.symbol': {
                 'title': 'Targeted loci',
                 'type': 'typeahead',
                 'open_on_load': True
@@ -206,7 +206,7 @@ def functional_characterization_data_view():
             {
                 'title': 'Elements',
                 'facet_fields': [
-                    'elements_references.examined_loci.symbol',
+                    'elements_references.examined_loci.gene.symbol',
                     'examined_loci.gene.symbol',
                     'elements_references.elements_selection_method'
                 ]
@@ -235,7 +235,6 @@ def functional_characterization_data_view():
                 'title': 'Provenance',
                 'facet_fields': [
                     'award.project',
-                    'award.rfa',
                     'lab.title',
                     'date_submitted',
                     'date_released'

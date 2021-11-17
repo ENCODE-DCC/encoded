@@ -1273,7 +1273,8 @@ class FunctionalCharacterizationSeries(Series):
                 examined_loci_identifier = calculate_examined_locus_id(examined_locus)
                 if examined_loci_identifier not in examined_loci_identifiers:
                     examined_loci_identifiers.append(examined_loci_identifier)
-                    examined_loci.append(dataset_examined_loci)
+                    examined_locus['gene'] = request.embed(examined_locus.get('gene'), '@@object?skip_calculated=true')
+                    examined_loci.append(examined_locus)
         if examined_loci:
             return examined_loci
 
