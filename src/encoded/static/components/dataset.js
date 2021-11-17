@@ -2233,10 +2233,6 @@ const computeExpressedGenes = (dataset) => {
     );
 };
 
-computeExpressedGenes.propTypes = {
-    reference: PropTypes.object.isRequired,
-};
-
 
 const differentialAccessibilitySeriesTableColumns = {
     accession: {
