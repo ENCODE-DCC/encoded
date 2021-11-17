@@ -372,6 +372,19 @@
                 {
                     "properties": {
                         "category": {
+                            "enum": ["deletion", "interference"]
+                        },
+                        "method": {
+                            "enum": ["CRISPR"]
+                        },
+                        "purpose": {
+                            "enum": ["non-specific target control"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
                             "enum": ["interference"]
                         },
                         "method": {
