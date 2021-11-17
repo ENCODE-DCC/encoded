@@ -83,7 +83,6 @@
                                 "Flow-FISH CRISPR screen",
                                 "perturbation followed by scRNA-seq",
                                 "perturbation followed by snATAC-seq",
-                                "proliferation CRISPR screen",
                                 "STARR-seq"
                             ]
                         }
@@ -125,7 +124,6 @@
                 "perturbation followed by scRNA-seq",
                 "perturbation followed by snATAC-seq",
                 "pooled clone sequencing",
-                "proliferation CRISPR screen",
                 "STARR-seq"
             ]
         },
