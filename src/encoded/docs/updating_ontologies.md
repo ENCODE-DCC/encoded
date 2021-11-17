@@ -48,7 +48,7 @@ curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/
     ontology.json file: ontology-2021-08-26.json
     [UBERON release date]: 2021-10-01
     [OBI release date]: 2021-08-18
-    [EFO release date]: 2021-10-18
+    [EFO release date]: 2021-11-15
     [CLO release date]: 2019-02-10
     [DOID release date]: 2021-06-08
 
