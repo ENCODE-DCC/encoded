@@ -1,9 +1,9 @@
 ## Changelog for software.json
 
-### Minor changes since chema version 10
+### Minor changes since schema version 10
 
 * Added *utility*, *proteomics*, *statistics*, *visualization*, *machine learning*, *integrated analysis*, *genetics* to software_type.  Deprecated but did not remove *purpose*.
-* Added *proliferation CRISPR screen* to *purpose* enum
+* Added *proliferation CRISPR screen*, *FACS CRISPR screen*, and *FlowFISH CRISPR screen* to *purpose* enum
 
 ### Schema version 10
 

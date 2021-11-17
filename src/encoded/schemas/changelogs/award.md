@@ -1,7 +1,7 @@
 ## Changelog for award.json
 
 ### Minor changes since schema version 11
-* Added *proliferation CRISPR screen* to *milestones.assay_term_name* enum
+* Added *proliferation CRISPR screen*, *FACS CRISPR screen*, and *FlowFISH CRISPR screen* to *milestones.assay_term_name* enum
 
 ### Schema version 11
 
