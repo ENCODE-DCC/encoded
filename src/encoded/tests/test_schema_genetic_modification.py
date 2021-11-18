@@ -207,17 +207,6 @@ def test_mutagen_properties(testapp, mutagen, target, treatment_5, document):
     assert res.status_code == 201
 
 
-def test_tale_replacement_properties(testapp, tale_replacement, source):
-    # Replacement modifications need to include introduced_sequence
-    tale_replacement.update({'modified_site_by_sequence': 'ATTTTAGGCAGGTAGGATTACGAGGACCCAGGTACGATCAGGT',
-                             'reagents': [{'source': source['@id'], 'identifier': 'addgene:12345'}]})
-    res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
-    assert res.status_code == 422
-    tale_replacement.update({'introduced_sequence': 'TTATCGATCGATTTGAGCATAGAAATGGCCGATTTATATGCCCGA'})
-    res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
-    assert res.status_code == 201
-
-
 def test_mpra_properties(testapp, mpra):
     # introduced_elements combined with modified_site_nonspecific can satisfy insertion dependency
     res = testapp.post_json('/genetic_modification', mpra, expect_errors=True)
@@ -252,11 +241,9 @@ def test_introduced_elements_properties(testapp, introduced_elements, mouse_dono
 def test_crispr_knockout(testapp, crispr_knockout):
     # Category of CRISPR characterization GMs must be one of ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
     testapp.post_json('/genetic_modification', crispr_knockout, status=201)
-    crispr_knockout.update({'category': 'disruption'})
+    crispr_knockout.update({'category': 'CRISPR cutting'})
     testapp.post_json('/genetic_modification', crispr_knockout, status=201)
-    crispr_knockout.update({'category': 'inhibition'})
-    testapp.post_json('/genetic_modification', crispr_knockout, status=201)
-    crispr_knockout.update({'category': 'deletion'})
+    crispr_knockout.update({'category': 'CRISPR cutting'})
     testapp.post_json('/genetic_modification', crispr_knockout, status=201)
     crispr_knockout.update({'category': 'expression'})
     testapp.post_json('/genetic_modification', crispr_knockout, status=422)

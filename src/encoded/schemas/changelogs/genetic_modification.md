@@ -1,5 +1,8 @@
 ## Changelog for genetic_modification.json
 
+### Schema version 12
+* Removed *replacement* and *inhibition* enums from *category* property, and upgraded *transgene insertion* to *insertion*, *activation* to *CRISPRa*, *disruption* to *CRISPR cutting*, *binding* to *CRISPR dCas*. For Genetic Modfifications with a *method* of *CRISPR*, upgraded *interference* to *CRISPRi* and *deletion* to *CRISPR cutting*.
+
 ### Minor changes since schema version 11
 
 * Updated *identifier* regular expression in the *reagents* property to include the following pattern: 'thermo-fisher:\\d{8})', e.g. thermo-fisher:12345678

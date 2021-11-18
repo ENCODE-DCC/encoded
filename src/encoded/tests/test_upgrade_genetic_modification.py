@@ -108,3 +108,45 @@ def test_genetic_modification_upgrade_10_11(upgrader, genetic_modification_10):
     assert value['schema_version'] == '11'
     assert value.get('guide_type') == 'sgRNA'
     assert value['notes'] == 'guide_type on this GM was defaulted to sgRNA in an upgrade.'
+
+
+def test_genetic_modification_upgrade_11_12(
+    upgrader,
+    genetic_modification_11,
+    binding_genetic_modification_2,
+    transgene_insertion_2,
+    tale_replacement,
+    activation_genetic_modification_2,
+    crispr_deletion,
+    crispri
+):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_11,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPR cutting'
+    value = upgrader.upgrade('genetic_modification', binding_genetic_modification_2,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPR dCas'
+    value = upgrader.upgrade('genetic_modification', transgene_insertion_2,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'insertion'
+    value = upgrader.upgrade('genetic_modification', tale_replacement,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'mutagenesis'
+    value = upgrader.upgrade('genetic_modification', activation_genetic_modification_2,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPRa'
+    crispr_deletion['purpose'] = 'characterization'
+    value = upgrader.upgrade('genetic_modification', crispr_deletion,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPR cutting'
+    crispri['purpose'] = 'characterization'
+    value = upgrader.upgrade('genetic_modification', crispri,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPRi'

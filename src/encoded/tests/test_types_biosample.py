@@ -210,7 +210,7 @@ def test_biosample_summary_construct_3(
                                   activation_genetic_modification['@id']]})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
-        'Homo sapiens female child (1 month) liver tissue genetically modified (activation) using '
+        'Homo sapiens female child (1 month) liver tissue genetically modified (CRISPRa) using '
         'CRISPR (sgRNA), genetically modified (insertion) using transduction (high MOI)')
 
 
