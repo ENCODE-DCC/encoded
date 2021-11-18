@@ -22,48 +22,38 @@ import { getReadOnlyState } from './util';
  * Renders and handles events in the radio button for each row of the cart manager that displays
  * the status of and sets the current cart.
  */
-class CurrentCartButtonComponent extends React.Component {
-    constructor() {
-        super();
-        this.handleRadioButtonChange = this.handleRadioButtonChange.bind(this);
-    }
-
+const CurrentCartButtonComponent = ({ cart, inProgress, user, onCurrentCartClick }, reactContext) => {
     /**
-     * Called when the user clicks a radio button to set the current cart. Does nothing if the
+     * Called when the user clicks the button to set and view the current cart. Does nothing if the
      * current user in session_properties hasn't yet been set.
      */
-    handleRadioButtonChange() {
-        const { cart, user, onCurrentCartClick } = this.props;
+    const onClick = () => {
         if (user) {
             // Set the browser's localstorage cart settings to remember this button's cart as the
             // current cart, and update the cart store for the current cart.
             cartSetSettingsCurrent(user, cart['@id']);
-            onCurrentCartClick();
+            onCurrentCartClick().then(() => {
+                reactContext.navigate('/cart-view/');
+            });
         }
-    }
+    };
 
-    render() {
-        const { cart, current, inProgress } = this.props;
-        const selected = cart['@id'] === current;
-        return (
-            <input
-                type="radio"
-                value={cart['@id']}
-                onChange={this.handleRadioButtonChange}
-                checked={selected}
-                aria-label="Current cart"
-                className="cart-manager-table__current-button"
-                disabled={cart.status === 'deleted' || cart.status === 'disabled' || inProgress}
-            />
-        );
-    }
-}
+    return (
+        <button
+            type="button"
+            className="btn btn-sm cart-set-current"
+            onClick={onClick}
+            aria-label={`Set ${cart.name} as current cart and view it`}
+            disabled={cart.status === 'deleted' || inProgress}
+        >
+            {cart.name}
+        </button>
+    );
+};
 
 CurrentCartButtonComponent.propTypes = {
     /** The radio button represents this cart */
     cart: PropTypes.object.isRequired,
-    /** @id of the current cart */
-    current: PropTypes.string.isRequired,
     /** True if cart operation in progress */
     inProgress: PropTypes.bool.isRequired,
     /** Current user object from session_properties */
@@ -74,6 +64,10 @@ CurrentCartButtonComponent.propTypes = {
 
 CurrentCartButtonComponent.defaultProps = {
     user: null,
+};
+
+CurrentCartButtonComponent.contextTypes = {
+    navigate: PropTypes.func,
 };
 
 CurrentCartButtonComponent.mapStateToProps = (state, ownProps) => ({
@@ -463,10 +457,16 @@ const NameCartButton = connect(NameCartButtonComponent.mapStateToProps, NameCart
 /**
  * Component to display a button to delete a cart, with a warning that lets them back out.
  */
-const DeleteCartButtonComponent = ({ cart, setInProgress, inProgress, fetch, updateCartManager }) => {
+const DeleteCartButtonComponent = ({ cart, current, setInProgress, inProgress, fetch, updateCartManager }) => {
     /** True if modal to confirm cart deletion is open */
     const [modalOpen, setModalOpen] = React.useState(false);
     const readOnlyState = getReadOnlyState(cart);
+
+    // Determine whether to disable the Delete button.
+    const isDisabled = (cart['@id'] === current)
+        || (cart.status === 'deleted')
+        || inProgress
+        || readOnlyState.any;
 
     /**
      * Called when the user clicks the Delete button in the warning modal to confirm they want to
@@ -496,7 +496,7 @@ const DeleteCartButtonComponent = ({ cart, setInProgress, inProgress, fetch, upd
 
     return (
         <>
-            <button type="button" className="btn btn-danger btn-sm btn-inline" onClick={handleDeleteClick} disabled={inProgress || readOnlyState.any}>
+            <button type="button" className="btn btn-danger btn-sm btn-inline" onClick={handleDeleteClick} disabled={isDisabled}>
                 <i className="icon icon-trash-o" />&nbsp;Delete
             </button>
             {modalOpen ?
@@ -519,6 +519,8 @@ const DeleteCartButtonComponent = ({ cart, setInProgress, inProgress, fetch, upd
 DeleteCartButtonComponent.propTypes = {
     /** Cart this delete button is for */
     cart: PropTypes.object.isRequired,
+    /** Current cart @id */
+    current: PropTypes.string.isRequired,
     /** True if cart operation in progress */
     inProgress: PropTypes.bool.isRequired,
     /** Function to call to set the in-progress state of the cart */
@@ -531,6 +533,7 @@ DeleteCartButtonComponent.propTypes = {
 
 DeleteCartButtonComponent.mapStateToProps = (state, ownProps) => ({
     cart: ownProps.cart,
+    current: ownProps.current,
     inProgress: state.inProgress,
     setInProgress: ownProps.setInProgress,
     updateCartManager: ownProps.updateCartManager,
@@ -632,12 +635,19 @@ const cartTableColumns = {
     name: {
         title: 'Name',
         headerCss: 'cart-manager-table__name-header',
-        display: (item) => <a href={item['@id']} className="cart-manager-table__text-wrap">{item.name}</a>,
+        display: (item, meta) => (
+            <CurrentCartButton
+                cart={item}
+                operationInProgress={meta.operationInProgress}
+                user={meta.user}
+                fetch={meta.fetch}
+            />
+        ),
     },
     identifier: {
         title: 'Identifier',
         headerCss: 'cart-manager-table__name-header',
-        display: (item) => (item.identifier ? <a href={item['@id']} className="cart-manager-table__text-wrap">{item.identifier}</a> : null),
+        display: (item) => item.identifier,
     },
     element_count: {
         title: 'Items',
@@ -662,26 +672,11 @@ const cartTableColumns = {
                         updateCartManager={meta.updateCartManager}
                     />
                     <ShareCartButton cart={item} />
-                    <DeleteCartButton cartManager={meta.cartManager} cart={item} updateCartManager={meta.updateCartManager} />
+                    <DeleteCartButton cartManager={meta.cartManager} cart={item} current={meta.current} updateCartManager={meta.updateCartManager} />
                     <CartLockTrigger cart={item} inProgress={meta.operationInProgress} />
                 </div>
             );
         },
-        sorter: false,
-    },
-    current: {
-        title: 'Current',
-        display: (item, meta) => (
-            <CurrentCartButton
-                cart={item}
-                current={meta.current}
-                operationInProgress={meta.operationInProgress}
-                user={meta.user}
-                fetch={meta.fetch}
-                onSwitchCartStart={meta.onSwitchCartStart}
-                onSwitchCartComplete={meta.onSwitchCartComplete}
-            />
-        ),
         sorter: false,
     },
 };
@@ -717,7 +712,11 @@ const CartManagerFooter = ({ adminUser, isDeletedVisible, deletedVisibleChangeHa
                 </>
             : null}
         </div>
-        <div className="cart-manager-table__footer-item" />
+        <div className="cart-manager-table__footer-item">
+            <div className="cart-manager-table__legend">
+                <div className="cart-manager-table__legend-item"><div className="cart-manager-table__chip--current" />Current</div>
+            </div>
+        </div>
     </div>
 );
 
@@ -800,6 +799,7 @@ class CartManagerComponent extends React.Component {
                     list={cartList}
                     rowKeys={cartContext['@graph'].map((cart) => cart['@id'])}
                     columns={cartTableColumns}
+                    css="cart-manager-table"
                     meta={{
                         cartManager: cartContext,
                         current: currentCart,
