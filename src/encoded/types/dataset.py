@@ -1379,7 +1379,28 @@ class FunctionalCharacterizationSeries(Series):
             return not_controls
         else:
             return titles
-    
+
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Assay name",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_term_name(self, request, related_datasets):
+        terms = set()
+        control_terms = set()
+        for related_dataset in related_datasets:
+            related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
+            if related_dataset.get('control_type', None):
+                control_terms.add(related_dataset.get('assay_term_name', None))
+            else:
+                terms.add(related_dataset.get('assay_term_name', None))
+        if len(terms) > 0:
+            return list(terms)
+        else:
+            return list(control_terms)
+
     @calculated_property(schema={
         "title": "Datapoint",
         "description": "A flag to indicate whether the FC Series is a datapoint that should not be displayed on it's own.",
