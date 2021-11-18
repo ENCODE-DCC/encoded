@@ -3532,7 +3532,7 @@ const PulseChaseTimeSeries = ({ context }, reactContext) => {
             title={seriesTitle}
             tableColumns={pulseChaseTimeSeriesTableColumns}
             sortColumn="pulseDuration"
-            breadcrumbs={composeFunctionalGenomicsSeriesBreadcrumbs(context, seriesTitle)}
+            breadcrumbs={composeSeriesBreadcrumbs(context, seriesTitle)}
             options={options}
         />
     );
