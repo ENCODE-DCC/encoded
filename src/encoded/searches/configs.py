@@ -171,9 +171,6 @@ def functional_characterization_data_view():
             'award.project': {
                 'title': 'Project'
             },
-            'award.rfa': {
-                'title': 'RFA'
-            },
             'assembly': {
                 'title': 'Genome assembly'
             },
