@@ -1391,11 +1391,11 @@ class FunctionalCharacterizationSeries(Series):
         terms = set()
         control_terms = set()
         for related_dataset in related_datasets:
-            related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
-            if related_dataset.get('control_type', None):
-                control_terms.add(related_dataset.get('assay_term_name', None))
+            related_dataset_object = request.embed(related_dataset, '@@object?skip_calculated=true')
+            if related_dataset_object.get('control_type', None):
+                control_terms.add(related_dataset_object.get('assay_term_name', None))
             else:
-                terms.add(related_dataset.get('assay_term_name', None))
+                terms.add(related_dataset_object.get('assay_term_name', None))
         if len(terms) > 0:
             return list(terms)
         else:
