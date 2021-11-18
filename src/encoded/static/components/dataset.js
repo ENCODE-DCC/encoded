@@ -28,6 +28,7 @@ import { FileGallery } from './filegallery';
 import sortMouseArray from './matrix_mouse_development';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
+import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
 /**
  * All Series types allowed to have a download button. Keep in sync with the same variable in
@@ -36,6 +37,7 @@ import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged
 const METADATA_SERIES_TYPES = [
     'AggregateSeries',
     'CollectionSeries',
+    'DifferentialAccessibilitySeries',
     'DifferentiationSeries',
     'DiseaseSeries',
     'FunctionalCharacterizationSeries',
@@ -2201,6 +2203,78 @@ const functionalCharacterizationSeriesTableColumns = {
     },
 };
 
+
+/**
+ * Generate a comma-separated string of expressed_genes from the given experiment's biosamples.
+ */
+const computeExpressedGenes = (dataset) => {
+    // Render all expressed_genes as links.
+    const biosamples = collectDatasetBiosamples(dataset);
+    let geneList = [];
+    biosamples.forEach((biosample) => {
+        if (biosample.expressed_genes) {
+            geneList = [...geneList, ...biosample.expressed_genes];
+        }
+    });
+    geneList = _.uniq(geneList, (gene) => `${gene.gene.geneid}-${gene.expression_percentile}-${gene.expression_range_maximum}-${gene.expression_range_minimum}`);
+
+    return (
+        geneList.map((gene, geneIdx) => (
+            <span key={`${gene.uuid}`}>
+                {gene.gene.symbol}
+                {gene.expression_percentile || gene.expression_percentile === 0 ?
+                    <span> ({getNumberWithOrdinal(gene.expression_percentile)} percentile){((geneIdx + 1) < geneList.length && geneList.length > 1) ? ', ' : ''}</span>
+                : null}
+                {(gene.expression_range_maximum && gene.expression_range_minimum) || (gene.expression_range_maximum === 0 || gene.expression_range_minimum === 0) ?
+                    <span> ({gene.expression_range_minimum}-{gene.expression_range_maximum}%){((geneIdx + 1) < geneList.length && geneList.length > 1) ? ', ' : ''}</span>
+                : null}
+            </span>
+        ))
+    );
+};
+
+
+const differentialAccessibilitySeriesTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) => (
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>
+        ),
+    },
+
+    expressed_genes: {
+        title: 'Sorted gene expression',
+        getValue: (experiment) => computeExpressedGenes(experiment),
+    },
+
+    biosample_summary: {
+        title: 'Biosample summary',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: (experiment) => (experiment.lab ? experiment.lab.title : null),
+    },
+
+    status: {
+        title: 'Status',
+        display: (experiment) => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: (experiment) => <CartToggle element={experiment} />,
+        sorter: false,
+    },
+};
+
+
 /**
  * Collect released analyses from all the related datasets in the given Series object.
  * @param {object} context Series object
@@ -2471,6 +2545,19 @@ export const SeriesComponent = ({
     // Calculate the donor diversity.
     const diversity = options.suppressDonorDiversity ? null : donorDiversity(context);
 
+    // Calculate expressed genes
+    let genes = [];
+    context.related_datasets.forEach((dataset) => {
+        if (dataset.replicates) {
+            dataset.replicates.forEach((replicate) => {
+                if (replicate && replicate.library && replicate.library.biosample && replicate.library.biosample.expressed_genes) {
+                    genes.push(...replicate.library.biosample.expressed_genes);
+                }
+            });
+        }
+    });
+    genes = _.uniq(genes, (gene) => gene.gene.geneid);
+
     // Collect CRISPR screen tiling modality for FunctionalCharacterizationExperiment only.
     let tilingModality = [];
     if (seriesType === 'FunctionalCharacterizationSeries') {
@@ -2576,6 +2663,20 @@ export const SeriesComponent = ({
                                 <dt>Disease{diseases && diseases.length !== 1 ? 's' : ''}</dt>
                                 <dd>{diseases && diseases.length > 0 ? diseases.join(', ') : 'Not reported'}</dd>
                             </div>
+
+                            {genes && genes.length > 0 ?
+                                <div data-test="geneexpression">
+                                    <dt>Sorted gene expression</dt>
+                                    <dd>
+                                        {genes.map((gene, geneIdx) => (
+                                            <span>
+                                                <a href={gene.gene['@id']}>{gene.gene.symbol}</a>
+                                                {genes.length > 1 && (geneIdx + 1) < genes.length ? ', ' : ''}
+                                            </span>
+                                        ))}
+                                    </dd>
+                                </div>
+                            : null}
 
                             {context.treatment_term_name && context.treatment_term_name.length > 0 ?
                                 <div data-test="treatmenttermname">
@@ -3382,3 +3483,35 @@ PulseChaseTimeSeries.contextTypes = {
 };
 
 globals.contentViews.register(PulseChaseTimeSeries, 'PulseChaseTimeSeries');
+
+
+/**
+ * Wrapper component for differential accessibility series pages.
+ */
+const DifferentialAccessibilitySeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            tableColumns={differentialAccessibilitySeriesTableColumns}
+            breadcrumbs={composeSeriesBreadcrumbs(context, seriesTitle)}
+            options={{
+                suppressDonorDiversity: true,
+            }}
+        />
+    );
+};
+
+DifferentialAccessibilitySeries.propTypes = {
+    /** Differential accessibility series object */
+    context: PropTypes.object.isRequired,
+};
+
+DifferentialAccessibilitySeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(DifferentialAccessibilitySeries, 'DifferentialAccessibilitySeries');
