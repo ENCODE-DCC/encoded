@@ -4,6 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import jsonschema from 'jsonschema';
 import _ from 'underscore';
+import url from 'url';
 import offset from '../libs/offset';
 import { FetchedData, Param } from './fetched';
 import { parseAndLogError, listingTitles, getRoles } from './globals';
@@ -397,12 +398,12 @@ class ChildObject extends React.Component {
 
         const { value } = this.props;
         const error = context.errors[this.props.path];
-        const url = typeof value === 'string' ? value : null;
+        const link = typeof value === 'string' ? value : null;
         this.state = {
-            url,
+            url: link,
             // Start collapsed for existing children,
             // expanded when adding a new one or if there are errors
-            collapsed: url && !error,
+            collapsed: link && !error,
         };
 
         // Bind `this` to non-React methods.
@@ -792,6 +793,7 @@ export class Form extends React.Component {
         this.validate = this.validate.bind(this);
         this.update = this.update.bind(this);
         this.canSave = this.canSave.bind(this);
+        this.cancel = this.cancel.bind(this);
         this.save = this.save.bind(this);
         this.receive = this.receive.bind(this);
         this.showErrors = this.showErrors.bind(this);
@@ -888,6 +890,13 @@ export class Form extends React.Component {
         // It is enabled if the form has been edited, the value is valid
         // according to the schema, and the form submission is not in progress.
         return this.state.isDirty && this.state.isValid && !this.state.editor_error && !this.communicating;
+    }
+
+    cancel() {
+        const link = url.parse(this.context.location_href, true);
+
+        // the last '/' is a hack to reload the page. In app.js, fallbackNavigate() did not without it.
+        this.context.navigate(`${link.pathname}/`, { reload: true });
     }
 
     save(e) {
@@ -1023,7 +1032,7 @@ export class Form extends React.Component {
                     updateChild={this.update}
                 />
                 <div className="form-edit__save-controls">
-                    <a href="" className="btn btn-default">Cancel</a>
+                    <button type="button" className="btn btn-default" onClick={() => this.cancel()}>Cancel</button>
                     <button
                         type="button"
                         className="btn btn-success"
@@ -1079,6 +1088,8 @@ Form.defaultProps = {
 Form.contextTypes = {
     adviseUnsavedChanges: PropTypes.func,
     fetch: PropTypes.func,
+    location_href: PropTypes.string,
+    navigate: PropTypes.func,
 };
 
 Form.childContextTypes = {
