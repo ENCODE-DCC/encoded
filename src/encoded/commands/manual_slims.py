@@ -49,13 +49,13 @@ slim_shims = {
         'CL:0000546': ['T cell', 'hematopoietic cell', 'leukocyte', 'CD4+ T cell'],
         'CL:0000553': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
         'CL:0000557': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
-        'CL:0000623': ['hematopoietic cell', 'leukocyte', 'natural killer cell'],
+        'CL:0000623': ['hematopoietic cell', 'leukocyte', 'NK cell'],
         'CL:0000624': ['T cell', 'hematopoietic cell', 'leukocyte', 'CD4+ T cell'],
         'CL:0000625': ['T cell', 'hematopoietic cell', 'leukocyte', 'CD8+ T cell'],
         'CL:0000765': ['hematopoietic cell', 'myeloid cell'],
         'CL:0000792': ['T cell', 'hematopoietic cell', 'leukocyte', 'CD4+ T cell'],
         'CL:0000815': ['T cell', 'hematopoietic cell', 'leukocyte', 'CD4+ T cell'],
-        'CL:0000823': ['hematopoietic cell', 'leukocyte', 'natural killer cell'],
+        'CL:0000823': ['hematopoietic cell', 'leukocyte', 'NK cell'],
         'CL:0000837': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
         'CL:0000842': ['hematopoietic cell', 'leukocyte', 'mononuclear cell'],
         'CL:0000895': ['T cell', 'hematopoietic cell', 'leukocyte', 'CD4+ T cell'],
