@@ -36,17 +36,19 @@ $ cp ontology.json ontology-YYYY-MM-DD.json
 ```
 $ aws s3 cp ontology-YYYY-MM-DD.json s3://encoded-build/ontology/
 ```
+Locate the file on S3 and change the permissions so that "Read" permission is granted to "Everybody (public access)."
+
 5.  Update the ontology version in the [Makefile]:
 ```
 curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-YYYY-MM-DD.json
 ```
 6.  Update the following information
     
-    Site release version: 122
-    ontology.json file: ontology-2021-08-26.json
-    [UBERON release date]: 2021-07-27
+    Site release version: 125
+    ontology.json file: ontology-2021-11-18.json
+    [UBERON release date]: 2021-10-01
     [OBI release date]: 2021-08-18
-    [EFO release date]: 2021-08-16
+    [EFO release date]: 2021-11-15
     [CLO release date]: 2019-02-10
     [DOID release date]: 2021-06-08
 
