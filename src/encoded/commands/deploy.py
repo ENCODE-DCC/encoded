@@ -1153,6 +1153,9 @@ def _parse_args():
     # arm arch only available on demo
     if not args.role == 'demo' and args.arm_image_id:
         raise ValueError('Arm architecture is only available on demos')
+    # For AWS_* env vars to work use None instead of 'default'
+    if args.profile_name == 'default':
+        args.profile_name = None
     return args
 
 
