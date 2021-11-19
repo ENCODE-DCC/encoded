@@ -1257,6 +1257,91 @@ class FunctionalCharacterizationSeries(Series):
     ]
 
     @calculated_property(condition='related_datasets', schema={
+        "title": "Examined loci",
+        "type": "array",
+        "items": {
+            "type": "object",
+        },
+        "notSubmittable": True,
+    })
+    def examined_loci(self, request, related_datasets):
+        examined_loci = []
+        examined_loci_identifiers = []
+
+        for related_dataset in related_datasets:
+            related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
+            dataset_examined_loci = related_datasetObject.get('examined_loci', [])
+            for examined_locus in dataset_examined_loci:
+                examined_loci_identifier = calculate_examined_locus_id(examined_locus)
+                if examined_loci_identifier not in examined_loci_identifiers:
+                    examined_loci_identifiers.append(examined_loci_identifier)
+                    examined_locus['gene'] = request.embed(examined_locus.get('gene'), '@@object?skip_calculated=true')
+                    examined_loci.append(examined_locus)
+        if examined_loci:
+            return examined_loci
+
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Replicates",
+        "type": "array",
+        "items": {
+            "type": "object",
+        },
+        "notSubmittable": True,
+    })
+    def replicates(self, request, related_datasets):
+        replicates = request.select_distinct_values('replicates', *related_datasets)
+        properties = {'replicates': replicates}
+        path = Path(
+            'replicates.library.biosample', 
+            include=[
+                '@id',
+                '@type',
+                'library',
+                'biosample',
+                'donor',
+                'treatments',
+                'applied_modifications',
+                'life_stage',
+                'disease_term_name',
+            ]
+        )
+        path.expand(request, properties)
+        path = Path(
+            'replicates.library.biosample.applied_modifications.reagents', 
+            include=[
+                '@id',
+                '@type',
+                'MOI',
+                'guide_type',
+                'reagents',
+                'promoter_details',
+            ]
+        )
+        path.expand(request, properties)
+        path = Path(
+            'replicates.library.biosample.donor.organism', 
+            include=[
+                '@id',
+                '@type',
+                'organism',
+                'scientific_name',
+            ]
+        )
+        path.expand(request, properties)
+        path = Path(
+            'replicates.library.biosample.treatments', 
+            include=[
+                '@id',
+                '@type',
+                'treatment_term_name',
+            ]
+        )
+        path.expand(request, properties)
+
+        return properties['replicates']
+
+
+    @calculated_property(condition='related_datasets', schema={
         "title": "Elements references",
         "type": "array",
         "items": {
@@ -1296,7 +1381,28 @@ class FunctionalCharacterizationSeries(Series):
             return not_controls
         else:
             return titles
-    
+
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Assay name",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_term_name(self, request, related_datasets):
+        terms = set()
+        control_terms = set()
+        for related_dataset in related_datasets:
+            related_dataset_object = request.embed(related_dataset, '@@object?skip_calculated=true')
+            if related_dataset_object.get('control_type', None):
+                control_terms.add(related_dataset_object.get('assay_term_name', None))
+            else:
+                terms.add(related_dataset_object.get('assay_term_name', None))
+        if len(terms) > 0:
+            return list(terms)
+        else:
+            return list(control_terms)
+
     @calculated_property(schema={
         "title": "Datapoint",
         "description": "A flag to indicate whether the FC Series is a datapoint that should not be displayed on it's own.",
@@ -1305,6 +1411,15 @@ class FunctionalCharacterizationSeries(Series):
     })
     def datapoint(self, request):
         return False
+
+
+def calculate_examined_locus_id(dataset_examined_loci):
+    gene = dataset_examined_loci.get("gene", "")
+    expression_percentile = dataset_examined_loci.get("expression_percentile", "")
+    expression_range_minimum = dataset_examined_loci.get("expression_range_minimum", "")
+    expression_range_maximum = dataset_examined_loci.get("expression_range_maximum", "")
+    expression_measurement_method = dataset_examined_loci.get("expression_measurement_method", "")
+    return f'{gene}:{expression_percentile}:{expression_range_minimum}:{expression_range_maximum}:{expression_measurement_method}'
 
 
 @collection(

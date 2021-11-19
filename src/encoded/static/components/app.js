@@ -49,7 +49,7 @@ const portal = {
                 { id: 'single-cell', title: 'Single-cell experiments', url: '/single-cell/?type=Experiment&assay_slims=Single+cell&status!=replaced', tag: 'collection' },
                 { id: 'sep-mm-0' },
                 { id: 'functional-characterization', title: 'Functional Characterization data' },
-                { id: 'functional-char-assays', title: 'High-throughput assays', url: '/search/?type=FunctionalCharacterizationExperiment&control_type!=*&audit.WARNING.category!=lacking+processed+data', tag: 'collection' },
+                { id: 'functional-char-assays', title: 'High-throughput assays', url: '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries&config=FunctionalCharacterization&datapoint=false&control_type!=*', tag: 'collection' },
                 { id: 'transgenic-enhancer-assays', title: 'In vivo validation assays', url: '/search/?type=TransgenicEnhancerExperiment', tag: 'collection' },
                 { id: 'sep-mm-1' },
                 { id: 'cloud', title: 'Cloud Resources' },
