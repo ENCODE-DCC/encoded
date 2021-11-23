@@ -192,7 +192,7 @@ class Tissue(Biosample):
                     if 'age_units' in d_obj:
                         age_units = d_obj['age_units']
 
-                if age != 'unknown' and '-' not in age and '>' not in age:
+                if age not in ['unknown','variable'] and '-' not in age and '>' not in age:
                     if age_units == 'year':
                         return True
                     elif age_units == 'month' and int(age) > 24:
