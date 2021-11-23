@@ -155,11 +155,6 @@
                 "type":  "string"
             }
         },
-        "intronic_reads_counted": {
-            "title": "Intronic reads counted",
-            "description": "True if reads mapped to intronic regions were used for gene quantifications.",
-            "type": "boolean"
-        },
         "feature_keys": {
             "title": "Feature keys",
             "description": "The category of identifiers used as the key for the features of the matrix.",
@@ -185,11 +180,6 @@
                 "title": "Author column",
                 "type": "string"
             }
-        },
-        "default_visualization": {
-            "title": "Default field",
-            "description": "The name of the field that should be set as default for color coordinated display on cellxgene, which should correspond to a column in 'obs'.",
-            "type": "string"
         },
         "default_embedding": {
             "title": "Default embedding",

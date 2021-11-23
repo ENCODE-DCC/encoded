@@ -172,7 +172,6 @@
                 "label": "-5"
             }
         ],
-        "default_visualization": "author_celltype",
         "default_embedding": "X_umap",
         "layers": [
             {
