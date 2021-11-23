@@ -234,6 +234,7 @@
     {
         "first_name": "Erica",
         "lab": "/labs/j-michael-cherry/",
+        "email": "emruther@stanford.edu",
         "groups": [
             "admin",
             "verified"
