@@ -56,6 +56,7 @@ class Dataset(Item):
         'files',
         'files.derived_from',
         'libraries',
+        'libraries.donors',
         'libraries.derived_from'
     ]
 
