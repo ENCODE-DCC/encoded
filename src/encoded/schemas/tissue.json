@@ -117,6 +117,7 @@
                 "μg",
                 "cm",
                 "sq cm",
+                "cu mm",
                 "ml"
             ]
         },
@@ -225,7 +226,7 @@
         "donors.organism.scientific_name": {
             "title": "Organism"
         },
-        "donors.development_ontology.development_slims": {
+        "summary_development_ontology_at_collection.development_slims": {
             "title": "Donor life stage"
         },
         "donors.sex": {
@@ -268,7 +269,7 @@
         "donors.organism.scientific_name": {
             "title": "Organism"
         },
-        "donors.development_ontology.development_slims": {
+        "summary_development_ontology_at_collection.development_slims": {
             "title": "Donor life stage"
         },
         "donors.sex": {
