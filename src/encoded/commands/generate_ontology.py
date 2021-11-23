@@ -2,7 +2,7 @@ from rdflib import ConjunctiveGraph, exceptions, Namespace
 from rdflib import RDFS, RDF, BNode
 from rdflib.collection import Collection
 from .ntr_terms import (
-    ntr_biosamples
+    ntrs
 )
 from .manual_slims import slim_shims
 import json
@@ -425,7 +425,7 @@ def main():
         del terms[term]['parents'], terms[term]['derives_from']
         del terms[term]['part_of'], terms[term]['id'], terms[term]['data']
 
-    for ntr in ntr_biosamples:
+    for ntr in ntrs:
         ancestors = set()
         for parent in ntr.get('child_of'):
             ancestors.update(terms[parent]['ancestors'])
