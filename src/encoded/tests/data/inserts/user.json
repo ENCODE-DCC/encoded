@@ -1180,5 +1180,21 @@
             "ENCORE"
         ],
         "uuid": "85c75ed3-269b-4273-b4ba-e269ee350dd6"
+    },
+    {
+        "email": "mingjiel@stanford.edu",
+        "first_name": "Mingjie",
+        "groups": [
+            "admin",
+            "verified"
+        ],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Li",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "uuid": "6674945a-27a2-422a-92f5-d30a0a6aea20"
     }
 ]
