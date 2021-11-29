@@ -855,6 +855,7 @@
         },
         "CRISPR_system": {
             "comment": "CRISPR_system can only be specified for Genetic Modifications that have method of CRISPR.",
+            "required": ["method"],
             "properties": {
                 "method": {
                     "enum": ["CRISPR"]
@@ -863,6 +864,7 @@
         },
         "cas_species": {
             "comment": "cas_species can only be specified for Genetic Modifications that have method of CRISPR.",
+            "required": ["method"],
             "properties": {
                 "method": {
                     "enum": ["CRISPR"]
