@@ -172,7 +172,7 @@ class FunctionalCharacterizationExperiment(
     def perturbation_type(self, request, assay_term_name, replicates=None):
         # https://encodedcc.atlassian.net/browse/ENCD-5911
         perturbation_type = None
-        if assay_term_name in ['proliferation CRISPR screen', 'FACS CRISPR screen', 'Flow-FISH CRISPR screen']:
+        if assay_term_name in ['proliferation CRISPR screen', 'FACS CRISPR screen', 'Flow-FISH CRISPR screen', 'CRISPR screen']:
             if replicates is not None:
                 CRISPR_gms = set()
                 for rep in replicates:
@@ -205,7 +205,7 @@ class FunctionalCharacterizationExperiment(
     })
     def crispr_screen_readout(self, request, assay_term_name, examined_loci=None, control_type=None):
         crispr_screen_readout = None
-        if assay_term_name in ['proliferation CRISPR screen', 'FACS CRISPR screen', 'Flow-FISH CRISPR screen']:
+        if assay_term_name in ['proliferation CRISPR screen', 'FACS CRISPR screen', 'Flow-FISH CRISPR screen', 'CRISPR screen']:
             # Return a specific CRISPR screen readout if there is only one method used in examined_loci, no examined_loci at all indicates a growth screen
             if control_type == 'control':
                 return
