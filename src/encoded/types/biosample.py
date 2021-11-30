@@ -1144,6 +1144,10 @@ def generate_modification_summary(method, modification):
             modification_summary += ' ' + ', '.join(map(str, list(set(tags_list)))).strip()
         else:
             modification_summary += ' ' + target
+    elif method in ['CRISPR (sgRNA)', 'CRISPR (pgRNA)'] and \
+            modification.get('category') in ['CRISPRa', 'CRISPR cutting', 'CRISPR dCas', 'CRISPRi']:
+        (crispr, guides) = method.split(' ')
+        modification_summary = f'genetically modified using {modification.get("category")} {guides}'
     else:
         modification_summary = \
             'genetically modified (' + modification.get('category') + ') using ' + method
