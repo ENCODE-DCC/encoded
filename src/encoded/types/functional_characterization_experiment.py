@@ -205,19 +205,14 @@ class FunctionalCharacterizationExperiment(
     })
     def crispr_screen_readout(self, request, assay_term_name, examined_loci=None, control_type=None):
         crispr_screen_readout = None
-        if assay_term_name in ['proliferation CRISPR screen', 'FACS CRISPR screen', 'Flow-FISH CRISPR screen', 'CRISPR screen']:
-            # Return a specific CRISPR screen readout if there is only one method used in examined_loci, no examined_loci at all indicates a growth screen
-            if control_type == 'control':
-                return
-            if examined_loci == None:
-                crispr_screen_readout = 'proliferation'
-            else:
-                methods = []
-                for locus in examined_loci:
-                    if 'expression_measurement_method' in locus:
-                        methods.append(locus['expression_measurement_method'])
-                if len(set(methods)) == 1:
-                    crispr_screen_readout = str(methods[0])
+        if assay_term_name in ['FACS CRISPR screen', 'Flow-FISH CRISPR screen']:
+            # Return a specific CRISPR screen readout if there is only one method used in examined_loci
+            methods = []
+            for locus in examined_loci:
+                if 'expression_measurement_method' in locus:
+                    methods.append(locus['expression_measurement_method'])
+            if len(set(methods)) == 1:
+                crispr_screen_readout = str(methods[0])
             return crispr_screen_readout
 
     @calculated_property(schema={
