@@ -1,0 +1,1 @@
+## Changelog for star_solo_quality_metric.json
