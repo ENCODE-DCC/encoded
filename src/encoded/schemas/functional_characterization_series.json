@@ -217,6 +217,10 @@
             "title": "Description",
             "type": "string"
         },
+        "biosample_summary": {
+            "title": "Biosample summary",
+            "type": "string"
+        },
         "biosample_ontology.classification": {
             "title": "Biosample classification",
             "type": "string"

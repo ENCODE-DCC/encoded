@@ -506,23 +506,28 @@ const ExperimentComponent = (props, reactContext) => {
                             <span>{result.assay_term_name}</span>
                         }
                         {(isFunctionalExperiment && referenceLoci.length > 0) ?
-                            <span>{referenceLoci.length === 1 ? ` of ${referenceLoci[0].symbol}` : ' of multiple loci'}</span>
+                            <span>{referenceLoci.length === 1 ? ` of ${referenceLoci[0].symbol} locus` : ' of multiple loci'}</span>
                         : null}
                         {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` in ${result.biosample_ontology.term_name}`}</span> : null}
-                        {(isFunctionalExperiment && examinedLoci.length > 0) ?
-                            <span>
-                                {` with readout of ${examinedLoci.join(', ')}`}
-                            </span>
-                        : null}
                         {(isFunctionalExperiment && result.crispr_screen_readout) ?
                             <span>
-                                {` (${result.crispr_screen_readout})`}
+                                {` with ${result.crispr_screen_readout}`}
+                            </span>
+                        : null}
+                        {(isFunctionalExperiment && examinedLoci.length > 0) ?
+                            <span>
+                                {` readout of ${examinedLoci.join(', ')}`}
                             </span>
                         : null}
                     </a>
-                    {result.biosample_summary ?
+                    {!isFunctionalExperiment && result.biosample_summary ?
                         <div className="result-item__highlight-row">
                             {result.biosample_summary ? <div><BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} /> </div> : null}
+                        </div>
+                    : null}
+                    {isFunctionalExperiment && (result.description || result.biosample_summary) ?
+                        <div className="result-item__highlight-row">
+                            {result.description ? <div>{result.description}</div> : result.biosample_summary ? <div><BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} /> </div> : null}
                         </div>
                     : null}
                     <div className="result-item__data-row">
@@ -770,6 +775,7 @@ globals.listingViews.register(Dataset, 'Dataset');
  */
 const SeriesComponent = ({ context: result, cartControls, removeConfirmation, auditDetail, auditIndicators }, reactContext) => {
     let assays = [];
+    let assaysTitle = [];
     let organism;
     let crisprReadout = [];
     let examineLociGene = [];
@@ -811,9 +817,11 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
     }
 
     // Collect crispr_screen_tiling, examined_loci, and elements_selection_method for each dataset elements_references in FunctionalCharacterizationSeries
+    // Collect organism scientific names for Functional Characterization Series
     let tilingModality = [];
     let referenceLoci = [];
     let elementsSelectionMethod = [];
+    let organismName = [];
     if (fccSeries) {
         if (result.elements_references && result.elements_references.length > 0) {
             result.elements_references.forEach((er) => {
@@ -822,9 +830,15 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                 elementsSelectionMethod = er.elements_selection_method ? elementsSelectionMethod.concat(er.elements_selection_method) : elementsSelectionMethod;
             });
         }
+        if (result.organism && result.organism.length > 0) {
+            result.organism.forEach((o) => {
+                organismName.push(o.scientific_name);
+            });
+        }
         tilingModality = _.uniq(tilingModality);
         referenceLoci = _.uniq(referenceLoci, (locus) => locus['@id']);
         elementsSelectionMethod = _.uniq(elementsSelectionMethod);
+        organismName = _.uniq(organismName);
     }
 
     // Dig through the biosample life stages and ages
@@ -961,6 +975,11 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
     }
     if (assays.length > 0) {
         assays = assays.filter((item) => item !== 'pooled clone sequencing');
+        if (perturbationType?.length === 0) {
+            assaysTitle = _.uniq(assays);
+        } else if (perturbationType?.length > 0) {
+            assaysTitle = [...new Set(assaysTitle = assays?.map((a) => a.replace('CRISPR ', '')))];
+        }
         assays = _.uniq(assays);
     }
 
@@ -986,13 +1005,13 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                                             {`${perturbationType.join(', ')}`}
                                         </span>
                                     : null}
-                                    {assays.length > 0 ?
+                                    {assaysTitle.length > 0 ?
                                         <span>
-                                            {` ${assays.join(', ')} series`}
+                                            {` ${assaysTitle.join(', ')}`}
                                         </span>
                                     : null}
                                     {referenceLoci.length > 0 ?
-                                        <span>{referenceLoci.length === 1 ? ` of ${referenceLoci[0].symbol}` : ' of multiple loci'}</span>
+                                        <span>{referenceLoci.length === 1 ? ` of ${referenceLoci[0].symbol} locus` : ' of multiple loci'}</span>
                                     : null}
                                 </>
                             )
@@ -1002,20 +1021,20 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         {fccSeries
                             ? (
                                 <>
-                                    {examineLociGene.length > 0 ?
-                                        <span>
-                                            {` with readout of ${examineLociGene.join(', ')}`}
-                                        </span>
-                                    : null}
                                     {crisprReadout.length > 0 ?
                                         <span>
-                                            {` (${crisprReadout.join(', ')})`}
+                                            {` with ${crisprReadout.join(', ')}`}
+                                        </span>
+                                    : null}
+                                    {examineLociGene.length > 0 ?
+                                        <span>
+                                            {` readout of ${examineLociGene.join(', ')}`}
                                         </span>
                                     : null}
                                 </>
                             )
                         : null}
-                        {(!fccSeries && (organism || lifeSpec.length > 0)) || (fccSeries && biosampleclassifications !== 'cell line' && (organism || lifeSpec.length > 0)) ?
+                        {(!fccSeries && (organism || lifeSpec.length > 0)) ?
                             <span>
                                 {' ('}
                                 {organism ? <i>{organism}</i> : null}
@@ -1024,6 +1043,11 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                             </span>
                         : null}
                     </a>
+                    {fccSeries && (result.description || result.biosample_summary) ?
+                        <div className="result-item__highlight-row">
+                            {result.description ? <div>{result.description}</div> : result.biosample_summary ? <BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismName} /> : null}
+                        </div>
+                    : null}
                     <div className="result-item__data-row">
                         {result.dataset_type ?
                             <div><span className="result-item__property-title">Dataset type: </span>{result.dataset_type}</div>
