@@ -1073,7 +1073,7 @@ def generate_summary_dictionary(
             if len(dict_of_phrases['treatments']) > 1:
                 dict_of_phrases[
                     'treatments_phrase'] += 'treated with ' + \
-                                            ', '.join(map(str, dict_of_phrases['treatments']))
+                                            ', '.join(map(lambda x: str(x).strip(), dict_of_phrases['treatments']))
 
     if part_of_object is not None:
         dict_of_phrases['part_of'] = 'separated from biosample '+part_of_object['accession']
