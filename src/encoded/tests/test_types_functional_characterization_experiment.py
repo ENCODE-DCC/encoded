@@ -42,8 +42,6 @@ def test_fcc_crispr_assay_readout_method(testapp, functional_characterization_ex
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_fce['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_fce['@id'], {'library': library_2['@id']})
-    res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
-    assert res.json['object']['crispr_screen_readout'] == 'proliferation'
     # expression_measurement_method in examined_loci
     testapp.patch_json(functional_characterization_experiment_disruption_screen['@id'], {'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 100, 'expression_measurement_method': 'HCR-FlowFISH'}]})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
