@@ -92,6 +92,10 @@ const qcAttachmentProperties = {
         { archr_doublet_summary_text: 'ArchR doublet data' },
         { archr_pre_filter_metadata: 'ArchR pre-filter metadata' },
     ],
+    StarSoloQualityMetric: [
+        { barcode_rank_plot: 'Barcode rank plot' },
+        { sequencing_saturation_plot: 'Sequencing saturation plot'}
+    ]
 };
 
 
