@@ -1,0 +1,13 @@
+[
+    {
+        "status": "released",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "60ec3b4b-6068-488a-8384-07ccf74c9943",
+        "assay_term_name": "single-cell RNA sequencing assay",
+        "quality_metric_of": ["ENCFF789ARC"],
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "award": "/awards/U54HG007010/",
+        "total_counts_vs_pct_mitochondria": "generic_from_mad_plot.png",
+        "total_counts_vs_genes_by_count": "generic_from_mad_plot.png"
+    }
+]

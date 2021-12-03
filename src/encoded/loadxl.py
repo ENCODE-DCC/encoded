@@ -122,6 +122,7 @@ ORDER = [
     'sc_atac_analysis_quality_metric',
     'sc_atac_counts_summary_quality_metric',
     'star_solo_quality_metric',
+    'scrna_seq_counts_summary_quality_metric',
     'quality_standard',
     'analysis',
     'image',
@@ -174,7 +175,9 @@ IS_ATTACHMENT = [
     'barcode_pairs_expanded',
     'multiplet_threshold_plot',
     'barcode_rank_plot',
-    'sequencing_saturation_plot'
+    'sequencing_saturation_plot',
+    'total_counts_vs_pct_mitochondria',
+    'total_counts_vs_genes_by_count'
 ]
 
 

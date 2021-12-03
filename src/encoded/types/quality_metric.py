@@ -643,3 +643,12 @@ class ScAtacCountsSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
 class StarSoloQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'star_solo_quality_metric'
     schema = load_schema('encoded:schemas/star_solo_quality_metric.json')
+
+@collection(
+    name='scrna-seq-counts-summary-quality-metric',
+    properties={
+        'title': "scRNA-seq Counts Summary Quality Metric",
+    })
+class ScrnaSeqCountsSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'scrna_seq_counts_summary_quality_metric'
+    schema = load_schema('encoded:schemas/scrna_seq_counts_summary_quality_metric.json')
