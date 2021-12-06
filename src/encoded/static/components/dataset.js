@@ -2511,10 +2511,13 @@ SeriesDatasetTableSection.defaultProps = {
  */
 const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sortColumn, adminUser, accessLevel }) => {
     if (experiments.length > 0) {
-        // Get all the control experiments from the given experiments' `possible_controls`. Then
+        // Get all the control experiments from the given experiments' `possible_controls`, `elements_mappings` and `elements_cloning`. Then
         // filter those out of the given experiments.
         const controls = _.uniq(experiments.reduce((accControls, experiment) => (experiment.possible_controls ? accControls.concat(experiment.possible_controls) : accControls), []), (control) => control['@id']);
-        const experimentsWithoutControls = experiments.filter((experiment) => !controls.find((control) => control['@id'] === experiment['@id']));
+        const elementsMappings = _.uniq(experiments.reduce((accMappings, experiment) => (experiment.elements_mappings ? accMappings.concat(experiment.elements_mappings) : accMappings), []), (mappings) => mappings['@id']);
+        const elementsCloning = _.uniq(experiments.reduce((accCloning, experiment) => (experiment.elements_cloning ? accCloning.concat(experiment.elements_cloning) : accCloning), []), (cloning) => cloning['@id']);
+        const combinedControls = [...controls, ...elementsMappings, ...elementsCloning];
+        const experimentsWithoutControls = experiments.filter((experiment) => !combinedControls.find((control) => control['@id'] === experiment['@id']));
 
         return (
             <SortTablePanel
@@ -2532,10 +2535,10 @@ const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sort
                     adminUser={adminUser}
                     accessLevel={accessLevel}
                 />
-                {controls.length > 0 ?
+                {combinedControls.length > 0 ?
                     <SeriesDatasetTableSection
                         title="Control experiment"
-                        datasets={controls}
+                        datasets={combinedControls}
                         tableColumns={controlTableColumns}
                         adminUser={adminUser}
                         accessLevel={accessLevel}
