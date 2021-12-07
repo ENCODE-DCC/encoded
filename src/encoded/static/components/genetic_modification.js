@@ -818,7 +818,7 @@ const CharacterizationDocuments = (props) => {
     const docs = props.docs.filter((doc) => !!doc);
     return (
         <dd>
-            {docs.map((doc, i) => {
+            {docs.map((doc) => {
                 if (doc && doc.attachment) {
                     const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
                     const docName = (doc.aliases && doc.aliases.length > 0) ? doc.aliases[0] :
