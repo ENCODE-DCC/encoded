@@ -92,6 +92,13 @@ const qcAttachmentProperties = {
         { archr_doublet_summary_text: 'ArchR doublet data' },
         { archr_pre_filter_metadata: 'ArchR pre-filter metadata' },
     ],
+    SegwayQualityMetric: [
+        { trackname_assay: 'Trackname assay' },
+        { feature_aggregation_tab: 'Feature aggregation tab' },
+        { signal_distribution_tab: 'Signal distribution tab' },
+        { segment_sizes_tab: 'Segment sizes tab' },
+        { length_distribution_tab: 'Length distribution tab' },
+    ],
 };
 
 
