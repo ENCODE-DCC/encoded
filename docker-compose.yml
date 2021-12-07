@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  postgres:
+    build:
+      context: ./docker_compose/postgres/
+    image: app-postgres
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+  pyramid:
+    build:
+      context: .
+      dockerfile: ./docker_compose/pyramid/Dockerfile
+    image: app-pyramid
+    command: echo "hi" #python src/encoded/devs.py development.ini --app-name app --load
+    volumes:
+      - ".:/pyramid"
+    depends_on:
+      - postgres
+  frontend:
+    image: app-pyramid
+    command: pserve development.ini
+    volumes:
+      - ".:/pyramid"
+    depends_on:
+      - pyramid
+    ports:
+      - "6543:6543"
+      
