@@ -3582,11 +3582,8 @@ class FileGalleryRendererComponent extends React.Component {
         if (Object.keys(this.state.fileFilters).length > 1) {
             highlightedFiles = this.filterForInclusion(this.props.data);
             Object.keys(this.state.fileFilters).forEach((fileFilter) => {
-                
-                highlightedFiles = filterItems(highlightedFiles, fileFilter, this.state.fileFilters[fileFilter]);
-                
-            });
-           
+                highlightedFiles = filterItems(highlightedFiles, fileFilter, this.state.fileFilters[fileFilter]);   
+            });  
         }
         const isSeries = isSeriesType(context);
         const seriesFiles = getSeriesFiles(context) || [];
