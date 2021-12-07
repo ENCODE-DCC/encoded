@@ -1,0 +1,16 @@
+[
+    {
+        "status": "released",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "acc84eb7-1f30-4052-bec4-b052451691df",
+        "assay_term_name": "ChIP-seq",
+        "quality_metric_of": [ "956cba28-ccff-4cbd-b1c8-39db4e3de572" ],
+        "trackname_assay": "bedMethyl.txt",
+        "feature_aggregation_tab": "rna_qc_attachment.txt",
+        "signal_distribution_tab": "diffProtB_6hr_protocol.txt",
+        "segment_sizes_tab": "generic_from_star_final_out.txt",
+        "length_distribution_tab": "Heart_STL003_excision_protocol.txt"
+    }
+]
