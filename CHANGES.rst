@@ -1,5 +1,26 @@
 Changes
 =======
+125.0 (released) snovault 1.0.62
+--------------------------------
+1.	ENCD-6252-circleci-js-memory (#4205)
+2.	ENCD-6250 audit readout (#4201)
+3.	ENCD-6247 adding control back (#4196)
+4.	ENCD-6246-add-missing-slims (#4195)
+5.	ENCD-6244 CRISPR Method Dependency (#4194)
+6.	ENCD-6227-immune-slims (#4188)
+7.	ENDC-6230 FCC calculated properties (#4178)
+8.	ENCD-5890-adjust-pulse-chase-time-series-page (#4189)
+9.	ENCD-6216-gm-updates (#4180)
+10.	ENCD-6088-Series-type-and-expression-property-for-sorted-ATAC-datasets (#4185)
+11.	ENCD-6225 valis track not refreshed (#4181)
+12.	ENCD-6232 assay title (#4186)
+13.	ENCD-6114 new assay slims (#4179)
+14.	ENCD-6191-listed-carts (#4184)
+15.	ENCD-6210-point-to-new-rnaget-endpoints (#4183)
+16.	ENCD-5821-genome-browser-mislabels-hg19 (#4166)
+17.	ENCD-6222-gkm-outputs (#4182)
+18.	ENCD-6226-remove-git-protocol (#4176)
+
 124.0 (released) snovault 1.0.62
 --------------------------------
 1. ENCD-6224-fix-hicqualitymetric-dependencies (#4174)
@@ -15,7 +36,7 @@ Changes
 11. ENCD-6179-fcc-menu (#4157)
 12. ENCD-6183-hic-scatac-qc (#4149)
 13. ENCD-6197-devcontainer (#4137)
-14 ENCD-6207-remove-columns-from-dataset-schema (#4156)
+14. ENCD-6207-remove-columns-from-dataset-schema (#4156)
 15. ENCD-6202-add-enums-for-restriction-enzymes (#4153)
 16. ENCD-6205-fix-browser-track-in-region-search (#4152)
 17. ENCD-6192-cart-schema-updates (#4135)
