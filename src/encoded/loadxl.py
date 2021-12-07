@@ -121,6 +121,7 @@ ORDER = [
     'sc_atac_library_complexity_quality_metric',
     'sc_atac_analysis_quality_metric',
     'sc_atac_counts_summary_quality_metric',
+    'segway_quality_metric',
     'quality_standard',
     'analysis',
     'image',
@@ -171,7 +172,12 @@ IS_ATTACHMENT = [
     'barcodes_status',
     'barcode_pairs_multiplets',
     'barcode_pairs_expanded',
-    'multiplet_threshold_plot'
+    'multiplet_threshold_plot',
+    'trackname_assay',
+    'feature_aggregation_tab',
+    'signal_distribution_tab',
+    'segment_sizes_tab',
+    'length_distribution_tab',
 ]
 
 
