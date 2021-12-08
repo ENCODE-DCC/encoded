@@ -25,3 +25,13 @@ def test_annotation_with_subtype(
         annotation_dataset['@id'],
         {'annotation_subtype': 'all'},
         status=422)
+
+def test_annotation_fine_mapped(
+    testapp,
+    submitter_testapp,
+    annotation_fine_mapped
+):
+    res = testapp.post_json('/annotation', annotation_fine_mapped, status=201)
+    submitter_testapp.patch_json(
+        res.json['@graph'][0]['@id'],
+        {'annotation_type': 'other'}, status=422)

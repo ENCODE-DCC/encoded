@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 34
+* Added *trait* property that is allowed only for *annotation_type* enum *fine-mapped variants*
+
 ### Schema version 34
 * Updated the *annotation_type* enum from *gkmSVM-model* to *gkm-SVM-model*
 * Changed *encyclopedia_version* to an array and updated the enums as follows:
