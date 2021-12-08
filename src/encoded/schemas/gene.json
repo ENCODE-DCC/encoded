@@ -91,6 +91,21 @@
                             ]
                         }
                     }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "organism": {
+                                "linkTo": "Organism",
+                                "linkEnum": [
+                                    "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20",
+                                    "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
+                                    "3413218c-3d86-498b-a0a2-9a406638e786",
+                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                                ]
+                            }
+                        }
+                    }
                 }
             ]
         }
