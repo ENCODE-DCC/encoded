@@ -94,12 +94,12 @@ const qcAttachmentProperties = {
     ],
     StarSoloQualityMetric: [
         { barcode_rank_plot: 'Barcode rank plot' },
-        { sequencing_saturation_plot: 'Sequencing saturation plot'}
+        { sequencing_saturation_plot: 'Sequencing saturation plot' },
     ],
     ScrnaSeqCountsSummaryQualityMetric: [
         { total_counts_vs_pct_mitochondria: 'Total counts vs pct mitochondria' },
-        { total_counts_vs_genes_by_count: 'Total counts vs genes by count'}
-    ]
+        { total_counts_vs_genes_by_count: 'Total counts vs genes by count' },
+    ],
 };
 
 
