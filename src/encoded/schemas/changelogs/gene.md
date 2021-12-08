@@ -1,5 +1,9 @@
 ## Changelog for gene.json
 
+### Schema version 3
+
+* *locations* was set to have a minimum of 1, and is not an empty list by default
+
 ### Minor changes since schema version 2
 
 * Added *locations*, which specifies the chromosome and genomic coordinates of the gene using a 1-based, closed coordinate system.

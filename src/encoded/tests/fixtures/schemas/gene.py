@@ -99,6 +99,13 @@ def gene_1(gene):
     })
     return item
 
+@pytest.fixture
+def gene_2(gene):
+    item = gene.copy()
+    item.update({
+        'locations': [],
+    })
+    return item
 
 @pytest.fixture
 def atf5(testapp, human):
