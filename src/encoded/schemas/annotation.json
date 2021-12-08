@@ -433,7 +433,8 @@
                 "biosample_ontology.term_name",
                 "biosample_ontology.organ_slims",
                 "biosample_ontology.cell_slims",
-                "relevant_life_stage"
+                "relevant_life_stage",
+                "trait"
             ]
         },
         {
@@ -522,6 +523,9 @@
         },
         "relevant_life_stage": {
             "title": "Life stage"
+        },
+        "trait": {
+            "title": "Trait" 
         },
         "software_used.software.name": {
             "title": "Software used"
