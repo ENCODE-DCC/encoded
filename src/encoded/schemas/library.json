@@ -740,6 +740,13 @@
                     "uncapped RNA enrichment"
                 ]
             }
+        },
+        "inclusion_list": {
+            "title": "Reference containing inclusion list used",
+            "description": "The reference dataset containing the inclusion list of barcodes in the library preparation.",
+            "type": "string",
+            "linkTo": "Reference",
+            "comment": "See reference.json for available identifiers."
         }
     },
     "columns": {

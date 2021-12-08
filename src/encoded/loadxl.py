@@ -643,7 +643,7 @@ PHASE1_PIPELINES = {
         remove_keys('derived_from', 'pooled_from', 'part_of', 'host'),
     ],
     'library': [
-        remove_keys('spikeins_used', 'adapters'),
+        remove_keys('spikeins_used', 'adapters', 'inclusion_list'),
     ],
     'experiment': [
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
@@ -765,7 +765,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of', 'host'),
     ],
     'library': [
-        skip_rows_missing_all_keys('spikeins_used', 'adapters'),
+        skip_rows_missing_all_keys('spikeins_used', 'adapters', 'inclusion_list'),
     ],
     'experiment': [
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses'),
