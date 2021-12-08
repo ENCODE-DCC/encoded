@@ -560,7 +560,7 @@
     "geneid": "24252",
     "name": "CCAAT/enhancer binding protein alpha",
     "ncbi_entrez_status": "live",
-    "organism": "3aa8d64b-dc44-48b5-926d-60ad2befebe7",
+    "organism": "rat",
     "status": "released",
     "symbol": "Cebpa",
     "dbxrefs": [
@@ -570,6 +570,5 @@
     "synonyms": [
         "DBPCEP"
     ],
-    "title": "Cebpa (Rattus norvegicus)",
     "uuid": "56344e18-3def-4724-acf3-6faec15091ea"
 }]
