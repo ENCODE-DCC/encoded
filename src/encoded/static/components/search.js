@@ -1349,6 +1349,7 @@ TextFilter.propTypes = {
  */
 const Facet = ({
     facet,
+    type,
     expandedFacets,
     results,
     mode,
@@ -1371,9 +1372,9 @@ const Facet = ({
     // display of a facet.
     let FacetRenderer;
     if (facet.specialFieldName) {
-        FacetRenderer = SpecialFacetRegistry.Facet.lookup(facet.field);
+        FacetRenderer = SpecialFacetRegistry.Facet.lookup(facet.field, type);
     } else {
-        FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
+        FacetRenderer = FacetRegistry.Facet.lookup(facet.field, type);
     }
     const isExpanded = expandedFacets.has(facet.field);
     return FacetRenderer && <FacetRenderer
@@ -1396,6 +1397,8 @@ const Facet = ({
 Facet.propTypes = {
     /** Facet to render from search results */
     facet: PropTypes.object.isRequired,
+    /** @type of current page */
+    type: PropTypes.string.isRequired,
     /** List of facets that are expanded */
     expandedFacets: PropTypes.object.isRequired,
     /** Entire search results object */
@@ -1657,6 +1660,7 @@ export const FacetList = (props) => {
                                                                 <Facet
                                                                     key={facet.specialFieldName || facet.field}
                                                                     facet={facet}
+                                                                    type={context['@type'][0]}
                                                                     expandedFacets={expandedFacets}
                                                                     results={context}
                                                                     mode={mode}
@@ -1689,6 +1693,7 @@ export const FacetList = (props) => {
                                             {topLevelFacets.map((facet) => (
                                                 <Facet
                                                     key={facet.specialFieldName || facet.field}
+                                                    type={context['@type'][0]}
                                                     facet={facet}
                                                     expandedFacets={expandedFacets}
                                                     results={context}

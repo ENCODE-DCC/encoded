@@ -6,6 +6,11 @@
  * <AssayTitleFacet>, use this to register this component for that field value:
  *
  * FacetRegistry.register('assay_title', AssayTitleFacet);
+ *
+ * If you want to limit this component to a single page (specified by the page's top @type), add a
+ * third parameter with the top @type of the page to limit the component to.
+ *
+ * FacetRegistry.register('assay_title', AssayTitleFacet, 'Matrix');
  */
 
 class FacetRegistryCore {
@@ -25,10 +30,14 @@ class FacetRegistryCore {
     /**
      * Register a React component to render a facet with the field value matching `field`.
      * @param {string} field facet.field value to register
-     * @param {array} component Rendering component to call for this field value
+     * @param {object} component Rendering component to call for this field value
+     * @param {string} type @type of page to activate this component for; defaults to all
      */
-    register(field, component) {
-        this._registry[field] = component;
+    register(field, component, type = '*') {
+        if (!this._registry[field]) {
+            this._registry[field] = {};
+        }
+        this._registry[field][type] = component;
     }
 
     /**
@@ -36,18 +45,24 @@ class FacetRegistryCore {
      * registered, an array of the default types gets returned. Mostly this gets used internally
      * but available for external use if needed.
      * @param {string} resultType `type` property of search result `filters` property.
-     *
+     * @param {string} type @type of page to activate this component for, if registered for type.
      * @return {array} Array of available/registered views for the given type.
      */
-    lookup(field) {
+    lookup(field, type) {
         if (this._registry[field]) {
-            // Registered search result type. Sort and return saved views for that type.
-            return this._registry[field];
+            if (this._registry[field][type]) {
+                // Registered search result type. Sort and return saved views for that type.
+                return this._registry[field][type];
+            }
+            if (this._registry[field]['*']) {
+                // Registered default type. Sort and return saved views for that type.
+                return this._registry[field]['*'];
+            }
         }
 
         // Return the default facet if field is unregistered, or null for null facets which
         // suppresses facet display if needed.
-        return this._registry[field] === null ? null : this._defaultComponent;
+        return this._registry[field] && (this._registry[field][type] === null) ? null : this._defaultComponent;
     }
 }
 

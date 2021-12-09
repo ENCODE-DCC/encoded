@@ -931,7 +931,7 @@ export const DefaultTerm = ({
     allowNegation,
     forceReload,
 }) => {
-    const TermNameComponent = FacetRegistry.TermName.lookup(facet.field);
+    const TermNameComponent = FacetRegistry.TermName.lookup(facet.field, results['@type'][0]);
     let href;
     let negHref;
     let negated = false;
@@ -1086,8 +1086,8 @@ Typeahead.propTypes = {
 /**
  * Renders one element in the list of filter selections used to clear selected terms.
  */
-const SelectedFilterElement = ({ facet, filter, preventScrollOnTermClick, alternate }) => {
-    const SelectedTermNameComponent = FacetRegistry.SelectedTermName.lookup(facet.field);
+const SelectedFilterElement = ({ facet, type, filter, preventScrollOnTermClick, alternate }) => {
+    const SelectedTermNameComponent = FacetRegistry.SelectedTermName.lookup(facet.field, type);
     const isNegativeTerm = filter?.field.indexOf('!') > -1;
     const isAlternateTerm = Object.keys(alternate).length > 0;
 
@@ -1108,6 +1108,8 @@ const SelectedFilterElement = ({ facet, filter, preventScrollOnTermClick, altern
 SelectedFilterElement.propTypes = {
     /** Relevant `facet` object from `facets` array in `results` */
     facet: PropTypes.object.isRequired,
+    /** @type of the current page */
+    type: PropTypes.string.isRequired,
     /** Filter that this selection link uses to form its link */
     filter: PropTypes.object,
     /** True if clicking this element should prevent the page from scrolling to the top */
@@ -1131,7 +1133,7 @@ SelectedFilterElement.defaultProps = {
  * Display links to clear the terms currently selected in the facet. Display nothing if no terms
  * have been selected.
  */
-const SelectedFilters = ({ facet, selectedTerms, searchUri, options }) => {
+const SelectedFilters = ({ facet, type, selectedTerms, searchUri, options }) => {
     let clearAllInFacet = null;
     if (selectedTerms.length > 1) {
         // Build a URL and element for an "All" button to clear all terms within the current facet.
@@ -1148,6 +1150,7 @@ const SelectedFilters = ({ facet, selectedTerms, searchUri, options }) => {
             <SelectedFilterElement
                 key="all"
                 facet={facet}
+                type={type}
                 preventScrollOnTermClick={options.preventScrollOnTermClick}
                 alternate={{ title: 'All', uri: `?${searchQuery.format()}` }}
             />
@@ -1162,6 +1165,7 @@ const SelectedFilters = ({ facet, selectedTerms, searchUri, options }) => {
                         <SelectedFilterElement
                             key={filter.term}
                             facet={facet}
+                            type={type}
                             filter={filter}
                             preventScrollOnTermClick={options.preventScrollOnTermClick}
                         />
@@ -1175,6 +1179,8 @@ const SelectedFilters = ({ facet, selectedTerms, searchUri, options }) => {
 SelectedFilters.propTypes = {
     /** Relevant `facet` object from `facets` array in `results` */
     facet: PropTypes.object.isRequired,
+    /** @type of the current page */
+    type: PropTypes.string.isRequired,
     /** Search-result filters relevant to the facet */
     selectedTerms: PropTypes.array.isRequired,
     /** Complete search URI for the current page of results */
@@ -1194,7 +1200,7 @@ SelectedFilters.propTypes = {
  */
 const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname, queryString, filteredTerms, onFilter, allowNegation }) => {
     const options = React.useContext(FacetContext);
-    const TermComponent = FacetRegistry.Term.lookup(facet.field);
+    const TermComponent = FacetRegistry.Term.lookup(facet.field, results['@type'][0]);
     const facetTitle = facet.title.replace(/\s+/g, '');
     return (
         <div className={`facet__term-list search${facetTitle}`}>
@@ -1257,7 +1263,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     const scrollingElement = React.useRef(null);
 
     // Retrieve reference to the registered facet title component for this facet.
-    const TitleComponent = FacetRegistry.Title.lookup(facet.field);
+    const TitleComponent = FacetRegistry.Title.lookup(facet.field, results['@type'][0]);
 
     // Filter out terms with a zero doc_count, as seen in region-search results.
     const significantTerms = !facet.appended ? facet.terms.filter((term) => term.doc_count > 0) : facet.terms;
@@ -1407,7 +1413,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                     </motion.div>
                 )}
             </AnimatePresence>
-            <SelectedFilters facet={facet} selectedTerms={relevantFilters} searchUri={results['@id']} options={{ preventScrollOnTermClick }} />
+            <SelectedFilters facet={facet} type={results['@type'][0]} selectedTerms={relevantFilters} searchUri={results['@id']} options={{ preventScrollOnTermClick }} />
         </div>
     );
 };
