@@ -203,12 +203,6 @@
                     "description": "Person from the reviewing lab who reviewed the data.",
                     "type": "string",
                     "linkTo": "User"
-                },
-                "reviewer_comment": {
-                    "title": "Reviewer comment",
-                    "description": "Additional information specified by the reviewer.",            
-                    "type": "string",
-                    "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
                 }
             }
         }
