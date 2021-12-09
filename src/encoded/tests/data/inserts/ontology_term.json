@@ -1,7 +1,7 @@
 [
     {
         "uuid": "e99862c3-4bd8-4f77-a944-e8febdafef02",
-        "term_name": "10x 3' v2 sequencing",
+        "term_name": "10x 3' v2",
         "term_id": "EFO:0009899",
         "status": "released"
     },
@@ -13,7 +13,7 @@
     },
     {
         "uuid": "147d4022-0af5-4243-877a-caffb5ec3115",
-        "term_name": "10x 3' v3 sequencing",
+        "term_name": "10x 3' v3",
         "term_id": "EFO:0009922",
         "status": "released"
     },
@@ -319,5 +319,23 @@
         "status": "released",
         "term_id": "NCIT:C54166",
         "term_name": "variable"
+    },
+    {
+        "uuid": "448da572-f974-4ff0-abf4-3f5873b60c3b",
+        "status": "released",
+        "term_id": "CL:0000842",
+        "term_name": "mononuclear cell"
+    },
+    {
+        "uuid": "da14be15-6c48-4b31-87b3-5b6a3dce0e01",
+        "status": "released",
+        "term_id": "CL:0000236",
+        "term_name": "B cell"
+    },
+    {
+        "uuid": "1f575b49-7c2b-40b9-b38e-e56aa343bec0",
+        "status": "released",
+        "term_id": "CL:0000084",
+        "term_name": "T cell"
     }
 ]
