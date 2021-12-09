@@ -1289,5 +1289,18 @@ ntr_biosamples = {
         "synonyms": [],
         "systems": ["immune system"],
         "types": [],
+    },
+    "NTR:0000636": {
+        "category": [],
+        "cells": ["hematopoietic cell", "leukocyte", "B cell"],
+        "developmental": ["mesoderm", "endoderm"],
+        "name": "activated memory B cell",
+        "objectives": [],
+        "organs": ["blood", "bodily fluid"],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": ["immune system"],
+        "types": [],
     }
 }
