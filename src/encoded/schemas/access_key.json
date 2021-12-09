@@ -8,7 +8,6 @@
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/schema_version"},
-        {"$ref": "mixins.json#/description"},
         {"$ref": "mixins.json#/uuid"}
     ],
     "properties": {
@@ -49,7 +48,11 @@
             "permission": "import_items"
         },
         "description": {
-            "default": ""
+            "title": "Description",
+            "description": "A plain text description of the object.",
+            "type": "string",
+            "default": "",
+            "formInput": "textarea"
         }
     }
 }
