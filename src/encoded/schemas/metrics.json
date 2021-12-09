@@ -1,0 +1,64 @@
+{
+    "title": "Metrics",
+    "description": "Schema for submitting metadata for various processing metrics.",
+    "id": "/profiles/metrics.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "mean_reads_per_cell": {
+            "title": "Mean reads per cell",
+            "description": "Total number of reads divided by estimated number of cells.",
+            "type": "number",
+            "minimum": 0
+        },
+        "number_of_reads": {
+            "title": "Number of reads",
+            "description": "Total number of sequenced reads.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "percent_valid_barcodes": {
+            "title": "Percent valid barcodes",
+            "description": "Percentage of reads with cell barcodes that match the whitelist.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "percent_sequencing_saturation": {
+            "title": "Percent sequencing saturation",
+            "description": "Percentage of reads originating from an already-observed UMI.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "percent_q30_bases_in_barcode": {
+            "title": "Percent Q30 bases in barcode",
+            "description": "Percentage of bases with Q-score of at least 30 in the cell barcode sequences.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "percent_q30_bases_in_sample_index": {
+            "title": "Percent Q30 bases in sample index",
+            "description": "Percentage of bases with Q-score of at least 30 in the sample index sequences.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "percent_q30_bases_in_umi": {
+            "title": "Percent Q30 bases in umi",
+            "description": "Percentage of bases with Q-score of at least 30 in the UMI sequences.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "percent_reads_in_cells": {
+            "title": "Percent reads in cells",
+            "description": "Percentage of cell-barcoded, confidently mapped reasds with cell-associated barcodes.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        }
+    }
+}
