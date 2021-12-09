@@ -296,20 +296,10 @@ def getTermStructure():
 
 
 def main():
-    ''' Downloads UBERON and EFO ontologies and create a JSON file '''
+    ''' Downloads various ontologies and create a JSON file '''
 
-    import argparse
-    parser = argparse.ArgumentParser(
-        description="Get all of the ontologies and generate the JSON file", epilog=EPILOG,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    parser.add_argument('--uberon-version', help="Uberon version URL")
-    parser.add_argument('--efo-version', help="EFO version URL")
-    args = parser.parse_args()
-
-    uberon_url = 'https://github.com/obophenotype/uberon/releases/download/v{}/composite-vertebrate.owl'.format(args.uberon_version)
-    efo_url = 'https://github.com/EBISPOT/efo/releases/download/v{}/efo-base.owl'.format(args.efo_version)
-
+    efo_url = 'http://www.ebi.ac.uk/efo/efo.owl'
+    uberon_url = 'http://purl.obolibrary.org/obo/uberon.owl'
     mondo_url = 'http://purl.obolibrary.org/obo/mondo.owl'
     hancestro_url = 'http://purl.obolibrary.org/obo/hancestro.owl'
     cl_url = 'http://purl.obolibrary.org/obo/cl.owl'
