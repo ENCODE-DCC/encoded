@@ -30,7 +30,7 @@
         "collection_to_dissociation_interval": "30.2",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1-10",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -80,7 +80,7 @@
         "death_to_dissociation_interval": "30.0-30.5",
         "death_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -125,7 +125,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -163,7 +163,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -196,7 +196,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -229,7 +229,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -262,7 +262,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -295,7 +295,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -329,7 +329,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -362,7 +362,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -398,7 +398,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -431,7 +431,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -467,7 +467,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -508,7 +508,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -553,7 +553,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -598,7 +598,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -643,7 +643,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -688,7 +688,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -726,7 +726,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -764,7 +764,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -802,7 +802,7 @@
         "collection_to_dissociation_interval": "30",
         "collection_to_dissociation_interval_units": "minute",
         "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
+        "dissociation_time": "1",
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
@@ -945,7 +945,7 @@
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": "8",
         "collection_to_dissociation_interval_units": "hour",
-        "dissociation_time": 30,
+        "dissociation_time": "30",
         "dissociation_time_units": "minute"
     },
     {
@@ -972,7 +972,7 @@
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": "8",
         "collection_to_dissociation_interval_units": "hour",
-        "dissociation_time": 30,
+        "dissociation_time": "30",
         "dissociation_time_units": "minute"
     },
     {
@@ -999,7 +999,7 @@
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": "8",
         "collection_to_dissociation_interval_units": "hour",
-        "dissociation_time": 30,
+        "dissociation_time": "30",
         "dissociation_time_units": "minute"
     },
     {
@@ -1026,7 +1026,7 @@
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": "8",
         "collection_to_dissociation_interval_units": "hour",
-        "dissociation_time": 30,
+        "dissociation_time": "30",
         "dissociation_time_units": "minute"
     },
     {
@@ -1053,7 +1053,7 @@
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": "8",
         "collection_to_dissociation_interval_units": "hour",
-        "dissociation_time": 30,
+        "dissociation_time": "30",
         "dissociation_time_units": "minute"
     },
     {
