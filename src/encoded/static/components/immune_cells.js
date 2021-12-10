@@ -1027,7 +1027,7 @@ class ImmuneCells extends React.Component {
                                 <button type="button" className="show-hide-facets" onClick={this.toggleFacets}>
                                     <i className={`${this.state.facetsOpen ? 'icon icon-chevron-left' : 'icon icon-chevron-right'}`} />
                                 </button>
-                                {this.state.facetsOpen ?
+                                {(this.state.facetsOpen && newFacets.length > 0) ?
                                     <FacetList
                                         context={this.state.pageContext}
                                         facets={newFacets}
@@ -1039,6 +1039,8 @@ class ImmuneCells extends React.Component {
                                         }
                                         key={this.state.availableNodes.length}
                                     />
+                                : (this.state.facetsOpen) ?
+                                    <MatrixGraph context={this.state.pageContext} setFilters={this.setNodeFilters} availableNodes={this.state.availableNodes} key={this.state.nodes.length} selectedNodes={this.state.nodes} />
                                 : null}
                             </div>
                             {!emptyNodeSelections ?

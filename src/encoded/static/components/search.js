@@ -1464,14 +1464,6 @@ export const FacetList = (props) => {
         }
     }, [context.facet_groups, prevFacetGroups]);
 
-    if (props.context.title === 'Immune Cells' && facets.length === 0) {
-        return (
-            <>
-                {props.additionalFacet}
-            </>
-        );
-    }
-
     if (facets.length === 0 && mode !== 'picker') {
         return <div />;
     }
