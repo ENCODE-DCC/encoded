@@ -68,6 +68,7 @@ def changelogs(config):
 def configure_engine(settings):
     settings = copy.deepcopy(settings)
     engine_url = os.environ.get("SQLALCHEMY_URL") or settings['sqlalchemy.url']
+
     settings["sqlalchemy.url"] = engine_url
     engine_opts = {}
     if engine_url.startswith('postgresql'):
@@ -82,6 +83,7 @@ def configure_engine(settings):
             json_serializer=json_renderer.dumps,
             connect_args={'application_name': application_name}
         )
+
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'postgresql':
         timeout = settings.get('postgresql.statement_timeout')
@@ -110,6 +112,7 @@ def set_postgresql_statement_timeout(engine, timeout=20 * 1000):
 
 
 def configure_dbsession(config):
+
     from snovault import DBSESSION
     settings = config.registry.settings
     DBSession = settings.pop(DBSESSION, None)

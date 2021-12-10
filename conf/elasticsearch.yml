@@ -1,3 +1,8 @@
 cluster.name: elasticsearch_test_fixture
 discovery.type: single-node
 indices.query.bool.max_clause_count: 8192
+bootstrap.system_call_filter: false
+bootstrap.memory_lock: true
+network.host: 0.0.0.0
+http.port: 9201
+xpack.security.enabled: false

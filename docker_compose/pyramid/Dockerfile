@@ -1,5 +1,9 @@
 FROM python:3.8.12-buster
 
+ENV PYTHONDONTWRITEBYTECODE 1
+
+ENV PYTHONUNBUFFERED 1
+
 ENV VIRTUAL_ENV=/opt/venv
 
 RUN apt-get update
