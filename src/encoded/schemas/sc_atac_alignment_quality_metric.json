@@ -180,7 +180,7 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "text/plain"
+                        "text/tab-separated-values"
                     ]
                 },
                 "size": {
