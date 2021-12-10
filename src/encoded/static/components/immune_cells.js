@@ -5,7 +5,6 @@ import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
-import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
 import { MatrixBadges, filterFacet } from './objectutils';
@@ -13,7 +12,6 @@ import { SearchControls, FacetList } from './search';
 import QueryString from '../libs/query_string';
 import * as globals from './globals';
 import { drawTree, drawThumbnail, nodeKeyName } from '../libs/ui/node_graph';
-import getNavbarHeight from './matrix_deeply_profiled';
 import getSeriesData from './series_search.js';
 
 const colorLegend = ['T cell', 'B cell', 'NK cell'];
@@ -208,7 +206,7 @@ const generateColMap = (context) => {
     return { colMap, targetAssays };
 };
 
-const convertExperimentToDataTable = (context, expandedRowCategories, expanderClickHandler, clearClassifications) => {
+const convertExperimentToDataTable = (context) => {
     const colCategory = context.matrix.x.group_by[0];
     const colSubcategory = context.matrix.x.group_by[1];
     const rowCategory = context.matrix.y.group_by[0];
@@ -217,16 +215,17 @@ const convertExperimentToDataTable = (context, expandedRowCategories, expanderCl
     const headerRows = [];
 
     const colQuery = new QueryString(context.search_base.replace('&config=immune', ''));
-    colQuery.deleteKeyValue('biosample_ontology.cell_slims');
-    colQuery.deleteKeyValue('biosample_ontology.classification');
-    colQuery.deleteKeyValue('biosample_ontology.system_slims');
+    const query = colQuery.clone();
+
+    colQuery.deleteKeyValue('biosample_ontology.cell_slims')
+        .deleteKeyValue('biosample_ontology.classification')
+        .deleteKeyValue('biosample_ontology.system_slims');
     const colSearchBase = `${colQuery.format()}`;
 
-    const query = new QueryString(context.search_base.replace('&config=immune', ''));
-    query.deleteKeyValue('biosample_ontology.cell_slims');
-    query.deleteKeyValue('biosample_ontology.classification');
-    query.deleteKeyValue('biosample_ontology.system_slims');
-    query.deleteKeyValue(nodeField);
+    query.deleteKeyValue('biosample_ontology.cell_slims')
+        .deleteKeyValue('biosample_ontology.classification')
+        .deleteKeyValue('biosample_ontology.system_slims')
+        .deleteKeyValue(nodeField);
     const searchBase = `${query.format()}`;
 
     // Generate the mapping of column categories and subcategories.
@@ -285,13 +284,7 @@ const convertExperimentToDataTable = (context, expandedRowCategories, expanderCl
     const dividerCss = [];
     const header = [
         {
-            header: (
-                clearClassifications ?
-                    <div className="matrix__clear-classifications">
-                        <a href={clearClassifications}><i className="icon icon-times-circle" /> Clear classifications</a>
-                    </div>
-                : null
-            ),
+            header: null,
         },
     ].concat(sortedCols.map((colInfo) => {
         // Determine the CSS classes for the dividers in the columns of assay and target labels.
@@ -363,10 +356,8 @@ const convertExperimentToDataTable = (context, expandedRowCategories, expanderCl
         rowKeys[matrixRow] = rowCategoryBucket.key;
         matrixRow += 1;
 
-        // Get the list of subcategory names, or the first items of the list if the category isn't
-        // expanded.
-        const categoryExpanded = expandedRowCategories.indexOf(rowCategoryBucket.key) !== -1;
-        const visibleRowSubcategoryBuckets = categoryExpanded ? rowSubcategoryBuckets : rowSubcategoryBuckets.slice(0, SUB_CATEGORY_SHORT_SIZE);
+        // No rows are hidden
+        const visibleRowSubcategoryBuckets = rowSubcategoryBuckets;
 
         const cells = Array(colCount);
         const subcategoryRows = visibleRowSubcategoryBuckets.map((rowSubcategoryBucket, rowSubcategoryIndex) => {
@@ -464,20 +455,7 @@ const convertExperimentToDataTable = (context, expandedRowCategories, expanderCl
                     rowContent: [{
                         header: (
                             <div id={categoryId} style={{ backgroundColor: rowCategoryColor }}>
-                                {expandableRowCategory ?
-                                    <RowCategoryExpander
-                                        categoryId={categoryId}
-                                        categoryName={rowCategoryBucket.key}
-                                        expanderColor={rowCategoryTextColor}
-                                        expanded={categoryExpanded}
-                                        expanderClickHandler={expanderClickHandler}
-                                    />
-                                : null}
-                                {clearClassifications ?
-                                    <div style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</div>
-                                :
-                                    <a href={`${context['@id']}&${rowCategoryQuery}`} style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</a>
-                                }
+                                <a href={`${context['@id']}&${rowCategoryQuery}`} style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</a>
                             </div>
                         ),
                     },
@@ -490,18 +468,7 @@ const convertExperimentToDataTable = (context, expandedRowCategories, expanderCl
                 {
                     rowContent: [
                         {
-                            content: (
-                                expandableRowCategory ?
-                                    <RowCategoryExpander
-                                        categoryId={categoryId}
-                                        categoryName={rowCategoryBucket.key}
-                                        expanded={categoryExpanded}
-                                        expanderClickHandler={expanderClickHandler}
-                                        expanderColor={rowCategoryTextColor}
-                                        expanderBgColor={rowCategoryColor}
-                                    />
-                                : null
-                            ),
+                            content: null,
                         },
                         {
                             content: null,
@@ -516,30 +483,26 @@ const convertExperimentToDataTable = (context, expandedRowCategories, expanderCl
     return { dataTable, rowKeys };
 };
 
-const MatrixHeader = ({ context }) => {
-    const visualizeDisabledTitle = context.total > MATRIX_VISUALIZE_LIMIT ? `Filter to ${MATRIX_VISUALIZE_LIMIT} to visualize` : '';
-
-    return (
-        <div className="matrix-header">
-            <div className="matrix-header__title">
-                <div className="matrix-title-badge">
-                    <h1>{context.title}</h1>
-                    <MatrixBadges context={context} />
-                </div>
-                <div className="matrix-description">
-                    <div className="matrix-description__text">
-                        Epigenomic profiling of human immune cells at different cellular fates and states, including activation, stimulation, and disease (MS)
-                    </div>
-                </div>
+const MatrixHeader = ({ context }) => (
+    <div className="matrix-header">
+        <div className="matrix-header__title">
+            <div className="matrix-title-badge">
+                <h1>{context.title}</h1>
+                <MatrixBadges context={context} />
             </div>
-            <div className="matrix-header__controls">
-                <div className="matrix-header__search-controls-sescc">
-                    <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} hideBrowserSelector showDownloadButton={false} />
+            <div className="matrix-description">
+                <div className="matrix-description__text">
+                    Epigenomic profiling of human immune cells at different cellular fates and states, including activation, stimulation, and disease (MS)
                 </div>
             </div>
         </div>
-    );
-};
+        <div className="matrix-header__controls">
+            <div className="matrix-header__search-controls-sescc">
+                <SearchControls context={context} visualizeDisabledTitle="" hideBrowserSelector showDownloadButton={false} />
+            </div>
+        </div>
+    </div>
+);
 
 MatrixHeader.propTypes = {
     /** Matrix search result object */
@@ -557,12 +520,9 @@ class MatrixPresentation extends React.Component {
         super(props);
 
         this.state = {
-            /** Categories the user has expanded */
-            expandedRowCategories: [],
             /** True if matrix scrolled all the way to the right; used for flashing arrow */
             scrolledRight: false,
         };
-        this.expanderClickHandler = this.expanderClickHandler.bind(this);
         this.handleOnScroll = this.handleOnScroll.bind(this);
         this.handleScrollIndicator = this.handleScrollIndicator.bind(this);
         this.getClearClassificationsLink = this.getClearClassificationsLink.bind(this);
@@ -578,7 +538,6 @@ class MatrixPresentation extends React.Component {
         // in a huge increase in displayed data. Also update the scroll indicator if needed.
         if (prevProps.context['@id'] !== this.props.context['@id']) {
             this.handleScrollIndicator(this.scrollElement);
-            this.setState({ expandedRowCategories: [] });
         }
     }
     /* eslint-enable react/no-did-update-set-state */
@@ -622,43 +581,13 @@ class MatrixPresentation extends React.Component {
         return null;
     }
 
-    /**
-     * Called when the user clicks on the expander button on a category to collapse or expand it.
-     * @param {string} category Key for the category
-     */
-    expanderClickHandler(category) {
-        this.setState((prevState) => {
-            const matchingCategoryIndex = prevState.expandedRowCategories.indexOf(category);
-            if (matchingCategoryIndex === -1) {
-                // Category doesn't exist in array, so add it.
-                return { expandedRowCategories: prevState.expandedRowCategories.concat(category) };
-            }
-
-            // Category does exist in array
-            // Move close to header
-            const header = document.querySelector(`#${globals.sanitizeId(category)}`);
-            const headerToPageTopDistance = header ? header.getBoundingClientRect().top : 0;
-            const buffer = 20; // extra space between navbar and header
-            const top = headerToPageTopDistance - (getNavbarHeight() + buffer);
-            window.scrollBy({
-                top,
-                left: 0,
-                behavior: 'smooth',
-            });
-
-            // Remove category.
-            const expandedCategories = prevState.expandedRowCategories;
-            return { expandedRowCategories: [...expandedCategories.slice(0, matchingCategoryIndex), ...expandedCategories.slice(matchingCategoryIndex + 1)] };
-        });
-    }
-
     render() {
         const { context } = this.props;
         const { scrolledRight } = this.state;
         const clearClassifications = this.getClearClassificationsLink();
 
         // Convert encode matrix data to a DataTable object.
-        const { dataTable, rowKeys } = convertExperimentToDataTable(context, this.state.expandedRowCategories, this.expanderClickHandler, clearClassifications);
+        const { dataTable, rowKeys } = convertExperimentToDataTable(context, clearClassifications);
         const matrixConfig = {
             rows: dataTable,
             rowKeys,
