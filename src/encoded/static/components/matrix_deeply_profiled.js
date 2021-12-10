@@ -575,5 +575,3 @@ DeeplyProfiledMatrix.contextTypes = {
 };
 
 globals.contentViews.register(DeeplyProfiledMatrix, 'DeeplyProfiledMatrix');
-
-export default getNavbarHeight;
