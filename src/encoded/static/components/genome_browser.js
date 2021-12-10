@@ -606,12 +606,12 @@ const TrackLabel = ({ file, label, supplementalShortLabel, long }) => {
         <>
             {(label === 'cart') ?
                 <ul className="gb-info">
-                    {cartShortLabel}
+                    {cartShortLabel !== '' ? cartShortLabel : <span>{file.output_type}</span>}
                     {long ?
                         <>
                             <li><a href={file.dataset} className="gb-accession">{datasetName}<span className="sr-only">{`Details for dataset ${datasetName}`}</span></a></li>
                             <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
-                            <li>{file.output_type}</li>
+                            {cartShortLabel !== '' ? <li>{file.output_type}</li> : null}
                             {file.origin_batches ? <li>{originBatchesList}</li> : null}
                             {file.simple_biosample_summary ? <li>{file.simple_biosample_summary}</li> : null}
                             {biologicalReplicates ? <li>{`rep ${biologicalReplicates}`}</li> : null}
