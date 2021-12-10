@@ -32,7 +32,7 @@ INSTALL_REQUIRES = [
     "pyramid==1.10.4",
     "python-magic==0.4.15",
     "pytz==2019.3",
-    "rdflib-jsonld==0.4.0",
+    "rdflib-jsonld==0.6.0",
     "rdflib==4.2.2",
     "repoze.debug==1.1",
     "rfc3987==1.3.8",
