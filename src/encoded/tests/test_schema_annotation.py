@@ -28,10 +28,14 @@ def test_annotation_with_subtype(
 
 def test_annotation_fine_mapped(
     testapp,
-    submitter_testapp,
-    annotation_fine_mapped
+    annotation_dataset
 ):
-    res = testapp.post_json('/annotation', annotation_fine_mapped, status=201)
-    submitter_testapp.patch_json(
-        res.json['@graph'][0]['@id'],
-        {'annotation_type': 'other'}, status=422)
+    testapp.patch_json(
+        annotation_dataset['@id'],
+        {'trait': 'Insomnia'}, status=422)
+    testapp.patch_json(
+        annotation_dataset['@id'],
+        {'annotation_type': 'fine-mapped variants'}, status=200)
+    testapp.patch_json(
+        annotation_dataset['@id'],
+        {'trait': 'Insomnia'}, status=200)

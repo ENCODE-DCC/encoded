@@ -219,13 +219,3 @@ def annotation_33(award, lab):
         'schema_version': '33',
         'annotation_type': 'gkmSVM-model',
     }
-
-@pytest.fixture
-def annotation_fine_mapped(award, lab):
-    return {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'schema_version': '33',
-        'annotation_type': 'fine-mapped variants',
-        'trait': 'Insomnia',
-    }

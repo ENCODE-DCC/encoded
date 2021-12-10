@@ -77,10 +77,12 @@
         },
         "annotation_subtype": {
             "properties": {
-                "annotation_type": {"enum": [
-                    "candidate Cis-Regulatory Elements",
-                    "representative DNase hypersensitivity sites"
-                ]}
+                "annotation_type": {
+                    "enum": [
+                        "candidate Cis-Regulatory Elements",
+                        "representative DNase hypersensitivity sites"
+                    ]
+                }
             }
         }
     },
