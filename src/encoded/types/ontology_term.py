@@ -85,6 +85,7 @@ organ_slims = {
     'UBERON:0001103': 'diaphragm',
     'UBERON:0001690': 'ear',
     'UBERON:0000922': 'embryo',
+    'UBERON:0003889': 'fallopian tube',
     'UBERON:0002110': 'gall bladder',
     'UBERON:0000948': 'heart',
     'UBERON:0002113': 'kidney',

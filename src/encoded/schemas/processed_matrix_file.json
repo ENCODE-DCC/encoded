@@ -185,11 +185,7 @@
             "title": "Default embedding",
             "description": "The name of the cell embedding that will be used as default for display on cellxgene, which should correspond to a key in ‘obsm’..",
             "type": "string",
-            "enum": [
-                "X_umap",
-                "X_tsne",
-                "X_spatial"
-            ]
+            "pattern": "^(X_)"
         },
         "experimental_variable_disease": {
             "title": "Experimental variable disease",
