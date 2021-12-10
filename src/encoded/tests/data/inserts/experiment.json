@@ -486,7 +486,7 @@
         "status": "released",
         "date_submitted": "2015-02-20",
         "date_released": "2016-01-01",
-        "aliases": ["charles-lee:experiment_RB884_80_1"],
+        "aliases": ["robert-waterston:experiment_RB884_80_1", "charles-lee:namespace_test"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "25ee48a4-d372-42a8-9366-33a8ca387daf"
     },
