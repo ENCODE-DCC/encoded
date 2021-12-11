@@ -3,8 +3,6 @@ clean:
 	rm -rf .sass-cache
 	rm -rf src/encoded/static/build/*
 	rm -rf src/encoded/static/build-server/*
-	rm -rf esdata/*
-	rm -rf pgdata/*
 
 devcontainer: download-ontology
 	ln -sf /app/node_modules .

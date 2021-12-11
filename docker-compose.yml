@@ -9,8 +9,6 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     expose:
       - "5432"
-    profiles:
-      - storage
   elasticsearch:
     build:
       context: ./docker_compose/elasticsearch/
@@ -31,8 +29,17 @@ services:
       - "./conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
       - "./conf/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties"
       - "./conf/jvm.options:/usr/share/elasticsearch/config/jvm.options"
-    profiles:
-      - esstorage
+    depends_on:
+      - postgres
+  loader:
+    build:
+      context: .
+      dockerfile: ./docker_compose/pyramid/Dockerfile
+    image: app-pyramid
+    command: python src/encoded/devs.py development.ini --app-name app --init --load
+    depends_on:
+      - postgres
+      - elasticsearch
   pyramid:
     build:
       context: .
