@@ -79,13 +79,15 @@ def main():
     logging.getLogger('snovault').setLevel(logging.INFO)
     import os
 
-    if args.init:
-        app = get_app(args.config_uri, args.app_name)
-        create_mapping.run(app)
+    app = get_app(args.config_uri, args.app_name)
 
     if args.load:
         from encoded.loadxl import load_test_data
         load_test_data(app)
+
+    if args.init:
+        create_mapping.run(app)
+
 
 
 if __name__ == '__main__':

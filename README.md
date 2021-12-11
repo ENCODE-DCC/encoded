@@ -102,3 +102,11 @@ concrete INI file.
 
 [Snovault OSX System Installation]: https://github.com/ENCODE-DCC/snovault/blob/dev/README.rst#system-installation-osx-catlina-10152
 [Snovault OSX App Installation]: https://github.com/ENCODE-DCC/snovault/blob/dev/README.rst#application-installation
+
+
+## Docker compose
+
+`docker compose --profile storing up --remove-orphans`
+`docker compose --profile loading up --remove-orphans`
+`docker compose --profile serving up --remove-orphans`
+`docker compose --profile proxying up --remove-orphans`
