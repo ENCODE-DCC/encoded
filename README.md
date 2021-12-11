@@ -112,3 +112,6 @@ concrete INI file.
 
 Browse at localhost:8000.
 
+Stop and clean up:
+
+`docker compose down --remove-orphans -v`
