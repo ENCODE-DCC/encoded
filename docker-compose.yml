@@ -37,9 +37,6 @@ services:
       dockerfile: ./docker_compose/pyramid/Dockerfile
     image: app-pyramid
     command: python src/encoded/devs.py development.ini --app-name app --init --load
-    depends_on:
-      - postgres
-      - elasticsearch
   pyramid:
     build:
       context: .

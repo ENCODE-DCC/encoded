@@ -6,3 +6,7 @@ bootstrap.memory_lock: true
 network.host: 0.0.0.0
 http.port: 9201
 xpack.security.enabled: false
+xpack.monitoring.enabled: false
+xpack.ml.enabled: false
+xpack.graph.enabled: false
+xpack.watcher.enabled: false
