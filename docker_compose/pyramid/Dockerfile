@@ -38,5 +38,3 @@ RUN pip install -r requirements.txt
 COPY . .
 
 RUN make clean && make install
-
-ENTRYPOINT /bin/bash
