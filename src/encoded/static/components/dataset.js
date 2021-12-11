@@ -476,9 +476,18 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
         return null;
     }
 
+    function contribList(values) {
+        if (values && values.length > 0) {
+            return Array.from(new Set(values.map(function(value) { return value['title'] }))).join(", ");
+        }
+        return null;
+    }
+
     const library_types  = libraryList(context.libraries, 'assay');
     const library_titles = libraryProtocolList(context.libraries, 'title');
     const biosample_classification = libraryListList(context.libraries, 'biosample_classification');
+    const corresponding_contributors = contribList(context.corresponding_contributors);
+    const contributors = contribList(context.contributors);
 
     return (
         <div className={itemClass}>
@@ -502,6 +511,13 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                     <Status item={context} css="dd-status" title="Dataset status" inline />
                                 </dd>
                             </div>
+
+                            {context.dataset_title ?
+                                <div data-test="dataset_title">
+                                    <dt>Title</dt>
+                                    <dd>{context.dataset_title}</dd>
+                                </div>
+                            : null}
 
                             {context.description ?
                                 <div data-test="description">
@@ -551,6 +567,27 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                 <dt>Award</dt>
                                 <dd><a href={context.award['@id']}>{context.award.name}</a></dd>
                             </div>
+
+                            {context.corresponding_contributors ?
+                                <div data-test="corresponding_contributors">
+                                    <dt>Corresponding Contributors</dt>
+                                    <dd>{corresponding_contributors}</dd>
+                                </div>
+                            : null}
+
+                            {context.contributors ?
+                                <div data-test="contributors">
+                                    <dt>Contributors</dt>
+                                    <dd>{contributors}</dd>
+                                </div>
+                            : null}
+
+                            {context.funding_organizations ?
+                                <div data-test="funding_organizations">
+                                    <dt>Funding organizations</dt>
+                                    <dd>{context.funding_organizations.join(', ')}</dd>
+                                </div>
+                            : null}
 
                             {context.dbxrefs ?
                                 <div data-test="external-resources">
