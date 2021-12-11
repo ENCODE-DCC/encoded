@@ -23,8 +23,20 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN python -m pip install --upgrade pip
 
-WORKDIR /pyramid
+WORKDIR /encoded
+
+COPY package*.json .
+
+COPY node_shims ./node_shims/
+
+RUN npm ci
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN pip install -e .[dev]
+RUN make clean && make install
+
+ENTRYPOINT /bin/bash
