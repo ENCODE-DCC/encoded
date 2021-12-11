@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 2
 
-* Updated the attachment *mito_stats* mime type to be TSV
+* Updated the attachment *mito_stats* mime type to allow both TXT and TSV
 
 ### Schema version 2
 
