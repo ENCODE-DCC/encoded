@@ -530,11 +530,11 @@
         }
     },
     "columns": {
-        "title": {
-            "title": "Title"
-        },
         "accession": {
             "title": "Accession"
+        },
+        "aliases": {
+            "title": "Aliases"
         },
         "dataset": {
             "title": "Dataset"
@@ -548,14 +548,14 @@
         "file_format": {
             "title": "File Format"
         },
-        "file_size": {
-            "title": "File size"
+        "is_primary_data": {
+            "title": "Is primary data"
         },
-        "href": {
-            "title": "Download URL"
+        "feature_keys": {
+            "title": "Feature keys"
         },
-        "derived_from": {
-            "title": "Derived from"
+        "s3_uri": {
+            "title": "S3 URI"
         },
         "output_types": {
             "title": "Output types"

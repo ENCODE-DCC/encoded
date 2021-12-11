@@ -341,8 +341,8 @@
         "accession": {
             "title": "Accession"
         },
-        "description": {
-            "title": "Description"
+        "aliases": {
+            "title": "Aliases"
         },
         "biosample_summary": {
             "title": "Biosample summary"

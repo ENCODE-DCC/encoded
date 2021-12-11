@@ -391,6 +391,9 @@
         "accession": {
             "title": "Accession"
         },
+        "aliases": {
+            "title": "Aliases"
+        },
         "age_display": {
             "title": "Age"
         },

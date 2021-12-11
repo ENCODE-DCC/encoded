@@ -105,6 +105,9 @@
         "accession": {
             "title": "Accession"
         },
+        "aliases": {
+            "title": "Aliases"
+        },
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
@@ -122,9 +125,6 @@
         },
         "donors.sex": {
             "title": "Donor sex"
-        },
-        "biosample_ontology.system_slims": {
-            "title": "System"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
