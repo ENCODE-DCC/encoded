@@ -107,6 +107,7 @@ concrete INI file.
 ## Docker compose
 
 `docker compose up`
+
 `docker compose --profile serving up`
 
 Browse at localhost:8000.
