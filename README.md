@@ -106,7 +106,8 @@ concrete INI file.
 
 ## Docker compose
 
-`docker compose --profile storing up --remove-orphans`
-`docker compose --profile loading up --remove-orphans`
-`docker compose --profile serving up --remove-orphans`
-`docker compose --profile proxying up --remove-orphans`
+`docker compose up`
+`docker compose --profile serving up`
+
+Browse at localhost:8000.
+
