@@ -57,5 +57,7 @@ services:
     command: nginx -c /etc/nginx/nginx.conf -g 'daemon off; pid /dev/null;'
     ports:
       - "8000:8000"
+    depends_on:
+      - pyramid
     profiles:
-      - proxying
+      - serving
