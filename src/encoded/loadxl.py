@@ -177,7 +177,8 @@ IS_ATTACHMENT = [
     'barcode_rank_plot',
     'sequencing_saturation_plot',
     'total_counts_vs_pct_mitochondria',
-    'total_counts_vs_genes_by_count'
+    'total_counts_vs_genes_by_count',
+    'counts_violin_plot'
 ]
 
 

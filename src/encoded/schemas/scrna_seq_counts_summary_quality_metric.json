@@ -108,6 +108,50 @@
                     "minimum": 0
                 }
             }
+        },
+        "counts_violin_plot": {
+            "title": "Counts violin plot",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "image/png"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
         }
     },
     "facets": {

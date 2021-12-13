@@ -8,6 +8,7 @@
         "lab": "/labs/john-stamatoyannopoulos/",
         "award": "/awards/U54HG007010/",
         "total_counts_vs_pct_mitochondria": "generic_from_mad_plot.png",
-        "total_counts_vs_genes_by_count": "generic_from_mad_plot.png"
+        "total_counts_vs_genes_by_count": "generic_from_mad_plot.png",
+        "counts_violin_plot": "generic_from_mad_plot.png"
     }
 ]
