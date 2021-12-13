@@ -10,6 +10,14 @@ devcontainer: download-ontology
 	pip install -e '.[dev]'
 	cp conf/pyramid/development.ini .
 
+dockerinstall: download-ontology
+	pip install -e .[dev]
+
+compose: download-ontology
+	ln -sf /install/node_modules .
+	pip install -e '.[dev]'
+	cp conf/pyramid/development.ini .
+
 install: download-ontology javascript
 	pip install -e '.[dev]'
 	cp conf/pyramid/development.ini .
