@@ -1,5 +1,14 @@
 version: "3.8"
 
+x-common:
+  &common
+  build:
+    context: .
+    dockerfile: ./docker_compose/pyramid/Dockerfile
+  image: app-pyramid
+  volumes:
+    - ".:/encoded:cached"
+
 services:
 
   postgres:
@@ -10,6 +19,8 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     expose:
       - "5432"
+    profiles:
+      - loading
 
   elasticsearch:
     build:
@@ -33,22 +44,21 @@ services:
       - "./conf/jvm.options:/usr/share/elasticsearch/config/jvm.options"
     depends_on:
       - postgres
+    profiles:
+      - loading
 
   loader:
-    build:
-      context: .
-      dockerfile: ./docker_compose/pyramid/Dockerfile
-    image: app-pyramid
+    <<: *common
     command: python src/encoded/devs.py development.ini --app-name app --init --load
+    depends_on:
+      - postgres
+      - elasticsearch
     profiles:
       - loading
 
   pyramid:
-    build:
-      context: .
-      dockerfile: ./docker_compose/pyramid/Dockerfile
-    image: app-pyramid
-    command: pserve development.ini
+    << : *common
+    command: pserve development.ini --reload
     ports:
       - "6543:6543"
     profiles:

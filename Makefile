@@ -10,11 +10,25 @@ devcontainer: download-ontology
 	pip install -e '.[dev]'
 	cp conf/pyramid/development.ini .
 
-dockerinstall: download-ontology
-	pip install -e .[dev]
+init: stop
+	docker compose --profile loading up
 
-compose: download-ontology
+
+serve: download-ontology
+	docker compose --profile serving up
+
+stop:
+	docker compose down -v --remove-orphans
+
+connect:
+	docker exec -it encoded-pyramid-1 /bin/bash
+
+docker-link:
 	ln -sf /install/node_modules .
+	ln -sf /install/build1 src/encoded/static/build1
+	ln -sf /install/build-server1 src/encoded/static/build-server1
+
+compose: docker-link
 	pip install -e '.[dev]'
 	cp conf/pyramid/development.ini .
 
