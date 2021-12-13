@@ -171,6 +171,11 @@ development_slims = {
     "MmusDv:0000110": "mature stage"
 }
 
+qa_slims = {
+    "CL:0000000": "cell",
+    "EFO:0010183": "single cell library construction"
+}
+
 
 @collection(
     name='ontology-terms',
@@ -280,6 +285,19 @@ class OntologyTerm(SharedItem):
     })
     def development_slims(self, registry, term_id):
         return self._get_ontology_slims(registry, term_id, development_slims)
+
+
+    @calculated_property(condition='term_id', schema={
+        "title": "QA slims",
+        "description": "The quality assurance-related slims that this term is an ontological descendent of.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def qa_slims(self, registry, term_id):
+        return self._get_ontology_slims(registry, term_id, qa_slims)
 
 
     @calculated_property(condition='term_id', schema={
