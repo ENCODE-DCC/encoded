@@ -27,7 +27,6 @@
 /src/encoded/static/css/
 /src/encoded/static/scss/_variables.original.scss
 
-
 *.DS_Store
 *.egg-info
 *.pyc

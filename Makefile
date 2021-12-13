@@ -13,7 +13,6 @@ devcontainer: download-ontology
 init: stop
 	docker compose --profile loading up
 
-
 serve: download-ontology
 	docker compose --profile serving up
 
