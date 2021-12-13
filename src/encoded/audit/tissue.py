@@ -34,12 +34,54 @@ def audit_age_collection(value, system):
             return
 
 
+def ontology_check_bio(value, system):
+    field = 'biosample_ontology'
+    dbs = ['UBERON','NTR']
+
+    term = value[field]['term_id']
+    ont_db = term.split(':')[0]
+    if ont_db not in dbs:
+        detail = ('Tissue {} {} {} not from {}.'.format(
+            audit_link(value['accession'], value['@id']),
+            field,
+            term,
+            ','.join(dbs)
+            )
+        )
+        yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
+
+def ontology_check_dev(value, system):
+    field = 'development_ontology_at_collection'
+    dbs = ['HsapDv']
+
+    ontobj = value.get(field)
+    if ontobj:
+        term = ontobj['term_id']
+        ont_db = term.split(':')[0]
+        if ont_db not in dbs:
+            detail = ('Tissue {} {} {} not from {}.'.format(
+                audit_link(value['accession'], value['@id']),
+                field,
+                term,
+                ','.join(dbs)
+                )
+            )
+            yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
+
 function_dispatcher = {
-    'audit_age_collection': audit_age_collection
+    'audit_age_collection': audit_age_collection,
+    'ontology_check_bio': ontology_check_bio,
+    'ontology_check_dev': ontology_check_dev
 }
 
 @audit_checker('Tissue',
-               frame=['donors'])
+               frame=[
+                'donors',
+                'biosample_ontology',
+                'development_ontology_at_collection'
+                ])
 def audit_tissue(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):

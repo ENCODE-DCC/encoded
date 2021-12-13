@@ -7,6 +7,7 @@ from .formatter import (
     path_to_text,
 )
 
+
 def audit_term(value, system):
     '''
     The term_id should be in the ontology.

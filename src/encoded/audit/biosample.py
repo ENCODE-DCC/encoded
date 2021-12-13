@@ -47,13 +47,39 @@ def audit_death_prop_living_donor(value, system):
             return
 
 
+def ontology_check_dis(value, system):
+    field = 'diseases'
+    dbs = ['MONDO']
+
+    invalid  = []
+    for d in value.get(field, []):
+        term = d['term_id']
+        ont_db = term.split(':')[0]
+        if ont_db not in dbs:
+            invalid.append(term)
+
+    if invalid:
+        detail = ('Biosample {} {} {} not from {}.'.format(
+            audit_link(value['accession'], value['@id']),
+            field,
+            ','.join(invalid),
+            ','.join(dbs)
+            )
+        )
+        yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
+
 function_dispatcher = {
     'audit_donor': audit_biosample_donor,
-    'audit_death_prop_living_donor': audit_death_prop_living_donor
+    'audit_death_prop_living_donor': audit_death_prop_living_donor,
+    'ontology_check_dis': ontology_check_dis
 }
 
 @audit_checker('Biosample',
-               frame=['donors'])
+               frame=[
+                'donors',
+                'diseases'
+                ])
 def audit_biosample(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):

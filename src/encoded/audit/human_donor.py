@@ -135,13 +135,104 @@ def audit_donor_dev_stage(value, system):
         return
 
 
+def ontology_check_dev(value, system):
+    field = 'development_ontology'
+    dbs = ['HsapDv']
+    terms = ['NCIT:C17998','NCIT:C54166']
+
+    term = value[field]['term_id']
+    ont_db = term.split(':')[0]
+    if ont_db not in dbs and term not in terms:
+        detail = ('Donor {} {} {} not from {} or {}.'.format(
+            audit_link(value['accession'], value['@id']),
+            field,
+            term,
+            ','.join(dbs),
+            ','.join(terms)
+            )
+        )
+        yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
+
+def ontology_check_eth(value, system):
+    field = 'ethnicity'
+    dbs = ['HANCESTRO']
+    terms = ['NCIT:C17998']
+
+    term = value[field]['term_id']
+    ont_db = term.split(':')[0]
+    if ont_db not in dbs and term not in terms:
+        detail = ('Donor {} {} {} not from {} or {}.'.format(
+            audit_link(value['accession'], value['@id']),
+            field,
+            term,
+            ','.join(dbs),
+            ','.join(terms)
+            )
+        )
+        yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
+
+def ontology_check_dis(value, system):
+    field = 'diseases'
+    dbs = ['MONDO']
+
+    invalid  = []
+    for d in value.get(field, []):
+        term = d['term_id']
+        ont_db = term.split(':')[0]
+        if ont_db not in dbs:
+            invalid.append(term)
+
+    if invalid:
+        detail = ('Donor {} {} {} not from {}.'.format(
+            audit_link(value['accession'], value['@id']),
+            field,
+            ','.join(invalid),
+            ','.join(dbs)
+            )
+        )
+        yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
+
+def ontology_check_anc(value, system):
+    field = 'ancestry'
+    dbs = ['HANCESTRO', 'NTR']
+
+    invalid = []
+    for d in value.get(field, []):
+        term = d['ancestry_group']['term_id']
+        ont_db = term.split(':')[0]
+        if ont_db not in dbs:
+            invalid.append(term)
+
+    if invalid:
+        detail = ('Donor {} {} {} not from {}.'.format(
+            audit_link(value['accession'], value['@id']),
+            field,
+            ','.join(invalid),
+            ','.join(dbs)
+            )
+        )
+        yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
+
 function_dispatcher = {
     'audit_donor_age': audit_donor_age,
-    'audit_donor_dev_stage': audit_donor_dev_stage
+    'audit_donor_dev_stage': audit_donor_dev_stage,
+    'ontology_check_dev': ontology_check_dev,
+    'ontology_check_eth': ontology_check_eth,
+    'ontology_check_dis': ontology_check_dis,
+    'ontology_check_anc': ontology_check_anc
 }
 
 @audit_checker('HumanDonor',
-               frame=['development_ontology'])
+               frame=[
+                'development_ontology',
+                'ethnicity',
+                'ancestry.ancestry_group',
+                'diseases'
+                ])
 def audit_donor(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
