@@ -26,6 +26,17 @@ def ontology_check_assay(value, system):
             )
             yield AuditFailure('incorrect ontology term', detail, 'ERROR')
 
+        req_anc = 'single cell library construction [EFO:0010183]'
+        if req_anc.split(' [')[0] not in value[field].get('qa_slims',[]):
+            detail = ('LibraryProtocol {} {} {} not a descendent of {}.'.format(
+                audit_link(value['@id'], value['@id']),
+                field,
+                term,
+                req_anc
+                )
+            )
+            yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
 
 function_dispatcher = {
     'ontology_check_assay': ontology_check_assay
