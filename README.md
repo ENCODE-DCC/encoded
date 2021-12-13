@@ -104,14 +104,20 @@ concrete INI file.
 [Snovault OSX App Installation]: https://github.com/ENCODE-DCC/snovault/blob/dev/README.rst#application-installation
 
 
-## Docker compose
+## Docker compose on M1 Mac
 
-`docker compose up`
+Make sure Docker is running.
 
-`docker compose --profile serving up`
+In first terminal start Postgres and Elasticsearch and load data:
+
+`make init`
+
+In another terminal start Pyramid (backend changes are automatically reloaded), indexers, Node, and Nginx:
+
+`make serve`
 
 Browse at localhost:8000.
 
-Stop and clean up:
+To automatically pick up frontend changes use `make watch` in new terminal window (starts `npm run dev` on app service). 
 
-`docker compose down --remove-orphans -v`
+Use `make stop` to stop services and clean up any lingering data volumes. (Can use `docker stats` to see running containers.)

@@ -111,7 +111,7 @@ def search(context, request):
         },
         response_fields=[
             TitleResponseField(
-                title="not anymore"
+                title=SEARCH_TITLE
             ),
             TypeResponseField(
                 at_type=[SEARCH_TITLE]

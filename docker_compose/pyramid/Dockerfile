@@ -31,8 +31,6 @@ COPY node_shims ./node_shims/
 
 RUN npm ci
 
-RUN mkdir build build-server
-
 WORKDIR /encoded
 
 COPY requirements.txt .
