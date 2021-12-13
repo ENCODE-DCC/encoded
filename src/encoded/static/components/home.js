@@ -786,7 +786,7 @@ const AssayClicking = ({ assayCategory, handleAssayCategoryClick }) => {
     return (
         <div>
             <div className="overall-classic">
-                <h1>FCODEDDDDsssssss: Encyclopedia of DNA Elements</h1>
+                <h1>ENCODE: Encyclopedia of DNA Elements</h1>
                 <div className="site-banner">
                     <div className="site-banner-img">
                         <img src="static/img/classic-image-5290.jpg" alt="ENCODE representational diagram with embedded assay selection buttons" />

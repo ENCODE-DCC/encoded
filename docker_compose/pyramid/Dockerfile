@@ -31,7 +31,7 @@ COPY node_shims ./node_shims/
 
 RUN npm ci
 
-RUN mkdir build1 build-server1 && touch build1/a.txt build-server1/b.txt
+RUN mkdir build build-server
 
 WORKDIR /encoded
 

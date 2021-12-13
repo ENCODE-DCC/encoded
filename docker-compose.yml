@@ -8,6 +8,8 @@ x-common:
   image: app-pyramid
   volumes:
     - ".:/encoded:cached"
+    - /encoded/src/encoded/static/build/
+    - /encoded/src/encoded/static/build-server/
 
 services:
 
