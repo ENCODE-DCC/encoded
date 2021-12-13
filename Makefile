@@ -23,14 +23,19 @@ stop:
 connect:
 	docker exec -it encoded-pyramid-1 /bin/bash
 
+watch:
+	docker exec -it encoded-pyramid-1 npm run dev
+
 docker-link:
 	ln -sf /install/node_modules .
-	ln -sf /install/build /encoded/src/encoded/static/build
-	ln -sf /install/build-server /encoded/src/encoded/static/build-server
 
 compose: docker-link
 	pip install -e '.[dev]'
 	cp conf/pyramid/development.ini .
+
+app:
+	npm run build
+	pserve development.ini --reload
 
 install: download-ontology javascript
 	pip install -e '.[dev]'
