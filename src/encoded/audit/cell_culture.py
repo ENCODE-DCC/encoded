@@ -24,6 +24,18 @@ def ontology_check_bio(value, system):
         )
         yield AuditFailure('incorrect ontology term', detail, 'ERROR')
 
+    req_anc = 'cell [CL:0000000]'
+    if ont_db == 'EFO':
+        if req_anc.split(' [')[0] not in value[field].get('qa_slims',[]):
+            detail = ('CellCulture {} {} {} not a descendent of {}.'.format(
+                audit_link(value['accession'], value['@id']),
+                field,
+                term,
+                req_anc
+                )
+            )
+            yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
 
 function_dispatcher = {
     'ontology_check_bio': ontology_check_bio
