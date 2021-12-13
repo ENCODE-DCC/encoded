@@ -47,13 +47,63 @@ def audit_death_prop_living_donor(value, system):
             return
 
 
+def ontology_check_enr(value, system):
+    field = 'enriched_cell_types'
+    dbs = ['CL']
+
+    invalid = []
+    for e in value.get(field, []):
+        term = e['term_id']
+        ont_db = term.split(':')[0]
+        if ont_db not in dbs:
+            invalid.append(term)
+
+    if invalid:
+        detail = ('Suspension {} {} {} not from {}.'.format(
+            audit_link(value['accession'], value['@id']),
+            field,
+            ','.join(invalid),
+            ','.join(dbs)
+            )
+        )
+        yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
+
+def ontology_check_dep(value, system):
+    field = 'depleted_cell_types'
+    dbs = ['CL']
+
+    invalid = []
+    for e in value.get(field, []):
+        term = e['term_id']
+        ont_db = term.split(':')[0]
+        if ont_db not in dbs:
+            invalid.append(term)
+
+    if invalid:
+        detail = ('Suspension {} {} {} not from {}.'.format(
+            audit_link(value['accession'], value['@id']),
+            field,
+            ','.join(invalid),
+            ','.join(dbs)
+            )
+        )
+        yield AuditFailure('incorrect ontology term', detail, 'ERROR')
+
+
 function_dispatcher = {
     'audit_donor': audit_suspension_donor,
-    'audit_death_prop_living_donor': audit_death_prop_living_donor
+    'audit_death_prop_living_donor': audit_death_prop_living_donor,
+    'ontology_check_enr': ontology_check_enr,
+    'ontology_check_dep': ontology_check_dep
 }
 
 @audit_checker('Suspension',
-               frame=['donors'])
+               frame=[
+                'donors',
+                'enriched_cell_types',
+                'depleted_cell_types'
+                ])
 def audit_suspension(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
