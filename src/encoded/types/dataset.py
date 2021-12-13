@@ -55,9 +55,11 @@ class Dataset(Item):
     audit_inherit = [
         'files',
         'files.derived_from',
+        'files.cell_annotations',
         'libraries',
         'libraries.donors',
-        'libraries.derived_from'
+        'libraries.derived_from',
+        'libraries.protocol'
     ]
 
 
