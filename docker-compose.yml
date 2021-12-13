@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+
   postgres:
     build:
       context: ./docker_compose/postgres/
@@ -9,6 +10,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     expose:
       - "5432"
+
   elasticsearch:
     build:
       context: ./docker_compose/elasticsearch/
@@ -31,12 +33,16 @@ services:
       - "./conf/jvm.options:/usr/share/elasticsearch/config/jvm.options"
     depends_on:
       - postgres
+
   loader:
     build:
       context: .
       dockerfile: ./docker_compose/pyramid/Dockerfile
     image: app-pyramid
     command: python src/encoded/devs.py development.ini --app-name app --init --load
+    profiles:
+      - loading
+
   pyramid:
     build:
       context: .
@@ -47,6 +53,7 @@ services:
       - "6543:6543"
     profiles:
       - serving
+
   nginx:
     image: nginx:1.21.4
     volumes:

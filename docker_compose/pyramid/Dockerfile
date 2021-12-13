@@ -23,7 +23,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN python -m pip install --upgrade pip
 
-WORKDIR /encoded
+WORKDIR /install
 
 COPY package*.json .
 
@@ -31,10 +31,8 @@ COPY node_shims ./node_shims/
 
 RUN npm ci
 
-COPY requirements.txt .
-
-RUN pip install -r requirements.txt
+WORKDIR /encoded
 
 COPY . .
 
-RUN make clean && make install
+RUN make dockerinstall
