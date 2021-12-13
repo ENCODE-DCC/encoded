@@ -18,7 +18,6 @@
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/accessioned_status"},
-        {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "donor.json#/properties"},
