@@ -106,7 +106,7 @@ concrete INI file.
 
 ## Docker compose on M1 Mac
 
-Make sure Docker is running.
+Make sure Docker is running (and give it enough CPU/RAM).
 
 In first terminal start Postgres and Elasticsearch and load data:
 
