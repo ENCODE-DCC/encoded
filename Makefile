@@ -25,8 +25,8 @@ connect:
 
 docker-link:
 	ln -sf /install/node_modules .
-	ln -sf /install/build1 src/encoded/static/build1
-	ln -sf /install/build-server1 src/encoded/static/build-server1
+	ln -sf /install/build /encoded/src/encoded/static/build
+	ln -sf /install/build-server /encoded/src/encoded/static/build-server
 
 compose: docker-link
 	pip install -e '.[dev]'
