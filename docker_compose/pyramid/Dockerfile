@@ -31,8 +31,22 @@ COPY node_shims ./node_shims/
 
 RUN npm ci
 
+RUN mkdir build1 build-server1 && touch build1/a.txt build-server1/b.txt
+
 WORKDIR /encoded
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN make dockerinstall
+RUN pip install -e .[dev]
+
+RUN rm -rf /encoded/*
+
+COPY ./docker_compose/pyramid/entrypoint.sh /install
+
+RUN chmod +x /install/entrypoint.sh
+
+ENTRYPOINT ["/install/entrypoint.sh"]
