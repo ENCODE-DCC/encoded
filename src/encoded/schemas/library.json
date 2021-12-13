@@ -280,6 +280,9 @@
         "accession": {
             "title": "Accession"
         },
+        "aliases": {
+            "title": "Aliases"
+        },
         "dataset": {
             "title": "Dataset"
         },
@@ -294,9 +297,6 @@
         },
         "read_count": {
             "title": "Read count"
-        },
-        "donors.organism.scientific_name": {
-            "title": "Donor organism"
         },
         "donors.age_display": {
             "title": "Donor age"
@@ -321,9 +321,6 @@
         },
         "biosample_ontologies.term_name": {
             "title": "Biosample term name"
-        },
-        "biosample_ontologies.system_slims": {
-            "title": "Biosample system"
         },
         "biosample_ontologies.organ_slims": {
             "title": "Biosample organ"

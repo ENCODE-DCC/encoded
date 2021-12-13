@@ -258,23 +258,20 @@
         }
     },
     "columns": {
-        "title": {
-            "title": "Title"
-        },
         "accession": {
             "title": "Accession"
+        },
+        "aliases": {
+            "title": "Aliases"
         },
         "dataset": {
             "title": "Dataset"
         },
-        "assembly": {
-            "title": "Genome assembly"
-        },
         "file_format": {
             "title": "File Format"
         },
-        "file_size": {
-            "title": "File size"
+        "observation_count": {
+            "title": "Observation count"
         },
         "feature_counts.feature_count": {
             "title": "Feature count"
@@ -282,11 +279,14 @@
         "background_barcodes_included": {
             "title": "Background barcodes included"
         },
-        "href": {
-            "title": "Download URL"
+        "s3_uri": {
+            "title": "S3 URI"
         },
-        "derived_from": {
-            "title": "Derived from"
+        "validated": {
+            "title": "Validated"
+        },
+        "assembly": {
+            "title": "Genome assembly"
         },
         "genome_annotation": {
             "title": "Genome annotation"

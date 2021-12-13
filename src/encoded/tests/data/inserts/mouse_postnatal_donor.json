@@ -18,9 +18,6 @@
         "strain_term_id": "EFO:0000602",
         "documents": [
             "anna-greka:mouse.wgEncodeSydhHist"
-        ],
-        "dbxrefs": [
-            "BioSample:SAMN043324"
         ]
     },
         {
@@ -42,9 +39,6 @@
         "strain_term_id": "EFO:0000602",
         "documents": [
             "anna-greka:mouse.wgEncodeSydhHist"
-        ],
-        "dbxrefs": [
-            "BioSample:SAMN043323"
         ]
     }
 ]

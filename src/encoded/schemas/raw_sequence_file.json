@@ -232,8 +232,11 @@
         }
     },
     "columns": {
-        "title": {
-            "title": "Title"
+        "accession": {
+            "title": "Accession"
+        },
+        "aliases": {
+            "title": "Aliases"
         },
         "dataset": {
             "title": "Dataset"
@@ -250,14 +253,14 @@
         "file_format": {
             "title": "File Format"
         },
-        "file_size": {
-            "title": "File size"
-        },
-        "href": {
-            "title": "Download URL"
+        "s3_uri": {
+            "title": "S3 URI"
         },
         "derived_from": {
             "title": "Sequencing run"
+        },
+        "read_count": {
+            "title": "Read count"
         },
         "read_length": {
             "title": "Read length"
