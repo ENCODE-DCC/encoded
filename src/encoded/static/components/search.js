@@ -525,9 +525,9 @@ const ExperimentComponent = (props, reactContext) => {
                             {result.biosample_summary ? <div><BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} /> </div> : null}
                         </div>
                     : null}
-                    {isFunctionalExperiment && (result.description || result.biosample_summary) ?
+                    {isFunctionalExperiment ?
                         <div className="result-item__highlight-row">
-                            {result.description ? <div>{result.description}</div> : result.biosample_summary ? <div><BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} /> </div> : null}
+                            {(result.description && <div>{result.description}</div>) || (result.biosample_summary && <BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} />)}
                         </div>
                     : null}
                     <div className="result-item__data-row">
@@ -809,7 +809,6 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
     const differentiationSeries = result['@type'].indexOf('DifferentiationSeries') >= 0;
 
     const biosampleTerm = result.biosample_ontology ? result.biosample_ontology[0].term_name : '';
-    const biosampleclassifications = result.biosample_ontology ? result.biosample_ontology[0].classification : '';
 
     let biosamples;
     if (differentiationSeries && result.biosample_ontology && Object.keys(result.biosample_ontology).length > 1) {
@@ -975,10 +974,10 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
     }
     if (assays.length > 0) {
         assays = assays.filter((item) => item !== 'pooled clone sequencing');
-        if (perturbationType?.length === 0) {
-            assaysTitle = _.uniq(assays);
-        } else if (perturbationType?.length > 0) {
-            assaysTitle = [...new Set(assaysTitle = assays?.map((a) => a.replace('CRISPR ', '')))];
+        if (perturbationType.length === 0) {
+            assaysTitle = [...new Set(assays)];
+        } else {
+            assaysTitle = [...new Set(assays.map((a) => a.replace('CRISPR ', '')))];
         }
         assays = _.uniq(assays);
     }
@@ -1043,9 +1042,9 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                             </span>
                         : null}
                     </a>
-                    {fccSeries && (result.description || result.biosample_summary) ?
+                    {fccSeries ?
                         <div className="result-item__highlight-row">
-                            {result.description ? <div>{result.description}</div> : result.biosample_summary ? <BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismName} /> : null}
+                            {(result.description && <div>{result.description}</div>) || (result.biosample_summary && <BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismName} />)}
                         </div>
                     : null}
                     <div className="result-item__data-row">
