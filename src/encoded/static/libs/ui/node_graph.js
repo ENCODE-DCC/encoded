@@ -26,14 +26,16 @@ export const nodeKeyName = (name) => name.replace(/\s/g, '').replace(/[\W_]+/g, 
 export const mapTermToNode = (term) => term;
 
 // Shortened node graph labels
-const nodeLabel = (name) => name.replace('activated', 'ϟ')
-    .replace('stimulated', '☆')
-    .replace('alpha', 'α')
-    .replace('beta', 'β')
-    .replace('delta', 'δ')
-    .replace('gamma', 'γ')
-    .replace('-positive,', '+')
-    .replace('-negative,', '-');
+const nodeLabel = (name) => name.replaceAll('activated', 'ϟ')
+    .replaceAll('stimulated', '☆')
+    .replaceAll('alpha', 'α')
+    .replaceAll('beta', 'β')
+    .replaceAll('delta', 'δ')
+    .replaceAll('gamma', 'γ')
+    .replaceAll('-positive,', '+')
+    .replaceAll('-negative,', '-')
+    .replaceAll('-positive', '+')
+    .replaceAll('-negative', '-');
 
 // Map node name to color name
 const colorCode = (node) => {
