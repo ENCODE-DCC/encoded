@@ -6,8 +6,15 @@
  * Custom facet-renderer modules all need to be imported anonymously here so that they can register
  * themselves on page load.
  */
-import FacetRegistry, { SpecialFacetRegistry } from './registry';
-import { DefaultFacet, DefaultTitle, DefaultTerm, DefaultTermName, DefaultSelectedTermName } from './defaults';
+import FacetRegistry, { SpecialFacetRegistry, FacetFunctionRegistry } from './registry';
+import {
+    DefaultFacet,
+    DefaultTitle,
+    DefaultTerm,
+    DefaultTermName,
+    DefaultSelectedTermName,
+    defaultSortTerms,
+} from './defaults';
 import {
     FacetGroup,
     filterTopLevelFacets,
@@ -50,6 +57,11 @@ SpecialFacetRegistry.TermName._setDefaultComponent(DefaultTermName);
 SpecialFacetRegistry.Facet._setDefaultComponent(DefaultFacet);
 SpecialFacetRegistry.SelectedTermName._setDefaultComponent(DefaultSelectedTermName);
 
+
+/**
+ * Set the default facet functions.
+ */
+FacetFunctionRegistry.sortTerms._setDefaultFunction(defaultSortTerms);
 
 /**
  * All usage of the facet registry external to this directory should only use what gets exported

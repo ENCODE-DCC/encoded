@@ -8,7 +8,7 @@ import QueryString from '../../libs/query_string';
 import { svgIcon } from '../../libs/svg-icons';
 import { sanitizedString } from '../globals';
 import { FacetContext } from '../search';
-import FacetRegistry from './registry';
+import FacetRegistry, { FacetFunctionRegistry } from './registry';
 
 
 /**
@@ -18,11 +18,24 @@ export const standardAnimationTransition = { duration: 0.2, ease: 'easeInOut' };
 
 
 /**
- * All the default facet rendering components reside in this file, including ones that aren't
- * technically default in that they don't get registered as a default component, but other custom
- * components can use them. Default facet components get exported so that custom components that
- * simply alter the appearance of default components can call the default components.
+ * All the default facet rendering components and functions reside in this file, including ones
+ * that aren't technically default in that they don't get registered as a default component, but
+ * other custom components can use them. Default facet components and functions get exported so
+ * that custom components and functions that simply alter the appearance or functionality of
+ * default components and functionality can call the default components or functions.
  */
+
+
+/**
+ * Default facet-term sorting function. Only sorts if all terms are numeric, which might mean has
+ * the actual 'number' type, or are strings that all contain pure numbers.
+ * @param {array} terms Terms to sort
+ * @returns {array} new sorted array of terms
+ */
+export const defaultSortTerms = (terms) => {
+    const numericalTest = (term) => !Number.isNaN(Number(term.key));
+    return terms.every((term) => numericalTest(term)) ? _(terms).sortBy((term) => term.key) : terms;
+};
 
 
 /**
@@ -1262,12 +1275,9 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     // Filter out terms with a zero doc_count, as seen in region-search results.
     const significantTerms = !facet.appended ? facet.terms.filter((term) => term.doc_count > 0) : facet.terms;
 
-    // Sort numerical terms by value not by frequency
-    // This should ultimately be accomplished in the back end, but the front end fix is much simpler so we are starting with that
-    // We have to check the full list for now (until schema change) because some lists contain both numerical and string terms ('Encyclopedia version' under Annotations) and we do not want to sort those by value
-    const numericalTest = (a) => !Number.isNaN(Number(a.key));
-    // For straightforward numerical facets, just sort by value
-    const processedTerms = significantTerms.every(numericalTest) ? _.sortBy(significantTerms, (obj) => obj.key) : significantTerms;
+    // Sort the facet terms using the registered sort function for the facet field and page @type.
+    const sortTermsFunction = FacetFunctionRegistry.sortTerms.lookup(facet.field, results['@type'][0]);
+    const processedTerms = sortTermsFunction ? sortTermsFunction(significantTerms) : significantTerms;
 
     // Prevent scrolling if facet groups exist.
     const preventScrollOnTermClick = results.facet_groups && results.facet_groups.length > 0;
