@@ -888,8 +888,8 @@ class ImmuneCells extends React.Component {
         const clickedLink = e.target.closest('a');
         const isCollapseButton = findElement(e.target, 'collapse-body-map', 'classList');
         e.preventDefault();
-        if (clickedLink && clickedLink.href && clickedLink.href.indexOf('/search/') > -1) {
-            this.context.navigate(clickedLink.href);
+        if (clickedLink && clickedLink.href && ((clickedLink.href.indexOf('/search/') > -1) || (clickedLink.href.indexOf('/report/') > -1))) {
+            this.context.navigate(clickedLink.href.replace('&config=immune', ''));
         } else if (clickedLink && clickedLink.href) {
             getSeriesData(clickedLink.href, this.context.fetch).then((response) => {
                 const termIds = response.filters.filter((f) => f.field === 'biosample_ontology.term_name');
