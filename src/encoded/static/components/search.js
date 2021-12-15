@@ -1790,7 +1790,7 @@ ClearFilters.defaultProps = {
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, additionalFilters, showDownloadButton }, reactContext) => {
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, additionalFilters, showDownloadButton, dropConfig }, reactContext) => {
     const results = context['@graph'];
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
@@ -1841,7 +1841,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
     return (
         <div className="results-table-control">
             <div className="results-table-control__main">
-                <ViewControls results={context} additionalFilters={additionalFilters} />
+                <ViewControls results={context} additionalFilters={additionalFilters} dropConfig={dropConfig} />
                 {resultsToggle}
                 {showDownloadButton
                     ? <BatchDownloadControls results={context} additionalFilters={additionalFilters} modalText={modalText} canDownload={canDownload} />
@@ -1882,6 +1882,8 @@ SearchControls.propTypes = {
     additionalFilters: PropTypes.array,
     /** Determines whether or not download button is displayed */
     showDownloadButton: PropTypes.bool,
+    /** Flag to drop config parameter if needed */
+    dropConfig: PropTypes.bool,
 };
 
 SearchControls.defaultProps = {
@@ -1891,6 +1893,7 @@ SearchControls.defaultProps = {
     hideBrowserSelector: false,
     additionalFilters: [],
     showDownloadButton: true,
+    dropConfig: false,
 };
 
 SearchControls.contextTypes = {

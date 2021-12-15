@@ -498,7 +498,7 @@ const MatrixHeader = ({ context }) => (
         </div>
         <div className="matrix-header__controls">
             <div className="matrix-header__search-controls-sescc">
-                <SearchControls context={context} visualizeDisabledTitle="" hideBrowserSelector showDownloadButton={false} />
+                <SearchControls context={context} visualizeDisabledTitle="" hideBrowserSelector showDownloadButton={false} dropConfig />
             </div>
         </div>
     </div>

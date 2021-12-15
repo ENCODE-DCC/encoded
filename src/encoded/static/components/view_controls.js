@@ -217,7 +217,7 @@ const shouldShowViewControls = (context) => (
 /**
  * Displays view control buttons appropriate for the given search results.
  */
-export const ViewControls = ({ results, additionalFilters }) => {
+export const ViewControls = ({ results, additionalFilters, dropConfig }) => {
     // Don't render view controls for cart searches.
     if (shouldShowViewControls(results)) {
         const searchPageType = getSearchPageType(results);
@@ -229,6 +229,9 @@ export const ViewControls = ({ results, additionalFilters }) => {
         additionalFilters.forEach((filter) => {
             query.addKeyValue(filter.field, filter.term);
         });
+        if (dropConfig) {
+            query.deleteKeyValue('config');
+        }
 
         // Only render these buttons if at least one 'type=' is in the query string.
         return (query.getKeyValues('type').length > 0 &&
@@ -258,10 +261,13 @@ ViewControls.propTypes = {
     results: PropTypes.object.isRequired,
     /** Filters to add to `results.filters` for views that filter without modifying query string */
     additionalFilters: PropTypes.array,
+    /** Flag to drop config parameter if needed */
+    dropConfig: PropTypes.bool,
 };
 
 ViewControls.defaultProps = {
     additionalFilters: [],
+    dropConfig: false,
 };
 
 
