@@ -711,12 +711,15 @@ $deleted-bg: #ffe0e0;
 
             background-color: $current-bg;
         }
+    }
 
-        @at-root #{&}--autosave {
-            @extend %cart-manager-table-chip;
-
-            background-color: $autosave-bg;
-        }
+    .cart-set-current {
+        width: 100%;
+        white-space: break-spaces;
+        height: auto;
+        padding: 5px 10px;
+        text-align: left;
+        justify-content: left;
     }
 }
 

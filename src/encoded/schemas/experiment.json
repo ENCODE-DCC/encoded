@@ -224,6 +224,7 @@
                 "biosample_ontology.organ_slims",
                 "biosample_ontology.cell_slims",
                 "biosample_ontology.system_slims",
+                "replicates.library.biosample.sex",
                 "replicates.library.biosample.life_stage",
                 "replicates.library.biosample.disease_term_name",
                 "replicates.library.biosample.treatments.treatment_term_name",
@@ -327,6 +328,9 @@
         },
         "replicates.library.biosample.life_stage": {
             "title": "Life stage"
+        },
+        "replicates.library.biosample.sex": {
+            "title": "Sex"
         },
         "control_type": {
             "type": "exists",

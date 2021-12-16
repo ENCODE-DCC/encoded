@@ -311,7 +311,7 @@ describe('Cart manager while logged in as submitter', () => {
         const tableHeaderRows = cartManager.find('.table.table__sortable thead tr');
         expect(tableHeaderRows).toHaveLength(2);
         const tableHeaderCells = tableHeaderRows.at(1).find('th');
-        expect(tableHeaderCells).toHaveLength(5);
+        expect(tableHeaderCells).toHaveLength(4);
     });
 
     test('the row count is correct', () => {
@@ -431,7 +431,7 @@ describe('Cart manager while logged in as admin', () => {
         const tableHeaderRows = cartManager.find('.table.table__sortable thead tr');
         expect(tableHeaderRows).toHaveLength(2);
         const tableHeaderCells = tableHeaderRows.at(1).find('th');
-        expect(tableHeaderCells).toHaveLength(6);
+        expect(tableHeaderCells).toHaveLength(5);
     });
 
     test('the row count is correct', () => {

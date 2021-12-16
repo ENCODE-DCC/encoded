@@ -48,6 +48,7 @@ const displayedLibraryProperties = [
     { property: 'construction_method', title: 'Library construction method', test: 'libraryconstructionmethod' },
     { property: 'strand_specificity', title: 'Strand specificity', test: 'strandspecificity' },
     { property: 'spikeins_used', title: 'Spike-ins datasets', test: 'spikeins' },
+    { property: 'inclusion_list', title: 'Inclusion list reference', test: 'inclusion' },
 ];
 
 
@@ -125,6 +126,19 @@ const libraryPropertyExtractors = {
                         <a href={spikeinsAtId}>{globals.atIdToAccession(spikeinsAtId)}</a>
                     </span>
                 ))
+            );
+        }
+        return { libraryPropertyString, libraryPropertyComponent };
+    },
+
+    inclusion_list: (library) => {
+        const inclusion = library.inclusion_list;
+        let libraryPropertyString = null;
+        let libraryPropertyComponent = null;
+        if (inclusion && inclusion.length > 0) {
+            libraryPropertyString = inclusion;
+            libraryPropertyComponent = (
+                <a href={inclusion}>{globals.atIdToAccession(inclusion)}</a>
             );
         }
         return { libraryPropertyString, libraryPropertyComponent };

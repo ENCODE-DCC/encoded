@@ -11,3 +11,4 @@
 * Removed *single-cell ATAC-seq* from *assay.assay_term_name* enum and remapped to *single-nucleus ATAC-seq*
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
 * Removed *reviewer_comment from *review properties
+* Added *charles-lee* to *aliases.aliases.items* pattern

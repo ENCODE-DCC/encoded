@@ -128,7 +128,7 @@ const LotComponent = (props, reactContext) => {
 
     // ENCD-4608 ENCODE4 tag antibodies rely on linked biosample
     // characterizations and antibody characterizations are ignored.
-    const isENCODE4tagAb = context.award.rfa === 'ENCODE4' && context.targets.some((target) => target.investigated_as.includes('tag') || target.investigated_as.includes('synthetic tag'));
+    const isENCODE4tagAb = context.award.rfa === 'ENCODE4' && context.targets !== undefined && context.targets.some((target) => target.investigated_as.includes('tag') || target.investigated_as.includes('synthetic tag'));
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
