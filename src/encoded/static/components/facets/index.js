@@ -33,6 +33,7 @@ import './exists';
 import './internal_status';
 import './organism';
 import './perturbed';
+import './sort_desc';
 import './status';
 import './supressed';
 import './type';
