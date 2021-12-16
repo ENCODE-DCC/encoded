@@ -148,7 +148,7 @@ const AnnotationComponent = (props, reactContext) => {
                             {context.assay_term_name ?
                                 <div data-test="assaytermname">
                                     <dt>Assay</dt>
-                                    <dd>{context.assay_term_name}</dd>
+                                    <dd>{context.assay_term_name.join(', ')}</dd>
                                 </div>
                             : null}
 

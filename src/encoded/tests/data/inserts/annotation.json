@@ -41,6 +41,7 @@
         "accession": "ENCSR122HHF",
         "award": "U54HG007004",
         "annotation_type": "overlap",
+        "assay_term_name": ["DNase-seq", "FAIRE-seq", "ChIP-seq"],
         "description": "DNaseI/FAIRE/ChIP synthesis for K562",
         "lab": "gregory-crawford",
         "status": "released",

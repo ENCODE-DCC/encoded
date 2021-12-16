@@ -159,6 +159,7 @@
                     "fold change over control",
                     "footprints",
                     "fragments",
+                    "functional conservation mapping",
                     "functional conservation quantifications",
                     "gene alignments",
                     "gene quantifications",
@@ -299,7 +300,8 @@
                     "unfiltered sparse splice junction count matrix of unique reads",
                     "unidirectional peaks",
                     "UV enriched segment quantifications",
-                    "variant calls"
+                    "variant calls",
+                    "3D structure"
                 ]
             }
         },
@@ -365,6 +367,7 @@
                     "fold change over control",
                     "footprints",
                     "fragments",
+                    "functional conservation mapping",
                     "functional conservation quantifications",
                     "gene alignments",
                     "gene quantifications",
@@ -502,7 +505,8 @@
                     "unfiltered sparse splice junction count matrix of unique reads",
                     "unidirectional peaks",
                     "UV enriched segment quantifications",
-                    "variant calls"
+                    "variant calls",
+                    "3D structure"
                 ]
             }
         },

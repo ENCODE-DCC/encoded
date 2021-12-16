@@ -540,3 +540,11 @@ def test_upgrade_annotation_33_to_34(upgrader, annotation_33, annotation_ccre_2)
     value = upgrader.upgrade('annotation', annotation_ccre_2, current_version='33', target_version='34')
     assert value['schema_version'] == '34'
     assert value['encyclopedia_version'] == ['ENCODE v2', 'current']
+
+
+def test_upgrade_annotation_34_to_35(upgrader, annotation_34):
+    value = upgrader.upgrade(
+        'annotation', annotation_34, current_version='34', target_version='35'
+    )
+    assert value['schema_version'] == '35'
+    assert value['assay_term_name'] == ['DNase-seq']

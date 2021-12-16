@@ -4984,5 +4984,37 @@
         "uuid": "9b8091d5-d003-b6ba-5bf6-809e3fbb6d95",
         "file_format_type": "narrowPeak",
         "assembly": "GRCh38"
+    },
+    {
+        "accession": "ENCFF003DEE",
+        "aliases": [
+            "ali-mortazavi:3D structure file"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR606VJQ",
+        "file_format": "tsv",
+        "file_size": 9000000,
+        "lab": "ali-mortazavi",
+        "md5sum": "2ab07af6120ee3ad4b0629ae81bf08cd",
+        "output_type": "3D structure",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "c81fee60-3d8a-4505-888e-6a66aa75e78a"
+    },
+    {
+        "accession": "ENCFF001FXN",
+        "aliases": [
+            "ali-mortazavi:functional conservation mapping file"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR606VJQ",
+        "file_format": "txt",
+        "file_size": 9000000,
+        "lab": "ali-mortazavi",
+        "md5sum": "ca6fbfaeefbfb060574a9b7422a4d483",
+        "output_type": "functional conservation mapping",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "1af9b9f9-8d10-4792-bedb-38eebf4d8686"
     }
 ]

@@ -783,3 +783,11 @@ def annotation_33_34(value, system):
             value['encyclopedia_version'] = ['ENCODE v3']
         elif value['encyclopedia_version'] == 'Roadmap':
             value['encyclopedia_version'] = ['Roadmap']
+
+
+@upgrade_step('annotation', '34', '35')
+def annotation_34_35(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6260
+    assay_term_name = value.get('assay_term_name', None)
+    if assay_term_name:
+        value['assay_term_name'] = [assay_term_name]

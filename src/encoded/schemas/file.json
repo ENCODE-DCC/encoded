@@ -1117,7 +1117,8 @@
                                         "reporter code counts",
                                         "nanopore signal",
                                         "repeat elements annotation",
-                                        "kmer weights"
+                                        "kmer weights",
+                                        "3D structure"
                                     ]
                                 }
                             }
@@ -1219,7 +1220,9 @@
                                         "TF binding prediction model",
                                         "enhancer prediction model",
                                         "promoter prediction model",
-                                        "inclusion list"
+                                        "inclusion list",
+                                        "functional conservation mapping",
+                                        "3D structure"
                                     ]
                                 }
                             }
@@ -1813,6 +1816,7 @@
                         "fine-mapped variants",
                         "fold change over control",
                         "footprints",
+                        "functional conservation mapping",
                         "functional conservation quantifications",
                         "fragments",
                         "gene alignments",
@@ -1942,7 +1946,8 @@
                         "unfiltered sparse splice junction count matrix of unique reads",
                         "unidirectional peaks",
                         "UV enriched segment quantifications",
-                        "variant calls"
+                        "variant calls",
+                        "3D structure"
                     ]
                 },
                 {
@@ -2571,12 +2576,14 @@
         "novel peptides": "annotation",
         "unidirectional peaks": "annotation",
         "polyA sites": "annotation",
+        "functional conservation mapping": "annotation",
         "functional conservation quantifications": "annotation",
         "regulatory elements prediction model": "annotation",
         "TF binding prediction model": "annotation",
         "enhancer prediction model": "annotation",
         "promoter prediction model": "annotation",
         "inclusion list": "annotation",
+        "3D structure": "annotation",
 
         "genome subcompartments": "annotation",
         "chromatin stripes": "annotation",
