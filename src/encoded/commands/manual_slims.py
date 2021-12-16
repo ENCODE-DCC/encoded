@@ -70,6 +70,7 @@ slim_shims = {
         'CL:0000939': ['hematopoietic cell', 'leukocyte', 'NK cell'],
         'CL:0001054': ['hematopoietic cell', 'leukocyte', 'monocyte', 'myeloid cell'],
         'CL:0001059': ['hematopoietic cell', 'progenitor cell', 'myeloid cell'],  # 'hematopoietic cell' is ontology-based
+        'CL:0002061': ['T cell', 'hematopoietic cell', 'leukocyte', 'CD4+ T cell'],
         'CL:0002351': ['progenitor cell'],
         'CL:0002399': ['hematopoietic cell', 'leukocyte', 'dendritic cell', 'myeloid cell'],
         'CL:0011020': ['progenitor cell'],

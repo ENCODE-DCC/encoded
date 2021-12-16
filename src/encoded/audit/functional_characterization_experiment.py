@@ -166,20 +166,16 @@ def audit_CRISPR_screen_not_in_series(value, system, excluded_types):
 def audit_crispr_screens_have_matching_readouts(value, system, excluded_types):
     '''CRISPR screen experiments are expected to have a coresponding readout'''
     expected_term = {
-        'proliferation': 'proliferation CRISPR screen',
         'HCR-FlowFISH': 'Flow-FISH CRISPR screen',
         'PrimeFlow': 'Flow-FISH CRISPR screen',
         'antibody Sort-seq': 'FACS CRISPR screen',
         'endogenous protein Sort-seq': 'FACS CRISPR screen',
         'magnetic separation Sort-seq': 'FACS CRISPR screen',
-        'fluorescence activated cell sorting': 'FACS CRISPR screen',
-        'qPCR': 'CRISPR screen'
+        'fluorescence activated cell sorting': 'FACS CRISPR screen'
     }
     if value['status'] in excluded_types:
         return
-    if value.get('assay_term_name') not in ['proliferation CRISPR screen',
-            'FACS CRISPR screen',
-            'Flow-FISH CRISPR screen']:
+    if value.get('assay_term_name') not in ['FACS CRISPR screen', 'Flow-FISH CRISPR screen']:
         return
     
     if 'crispr_screen_readout' not in value:

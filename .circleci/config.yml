@@ -140,7 +140,7 @@ jobs:
           path: test-results
   not-bdd-non-indexing:
     executor: encoded-executor
-    resource_class: medium
+    resource_class: medium+
     steps:
       - install-jsonnet
       - install-app
@@ -155,7 +155,7 @@ jobs:
           path: test-results
   npm:
     executor: node
-    resource_class: medium
+    resource_class: medium+
     steps:
       - checkout
       - run:

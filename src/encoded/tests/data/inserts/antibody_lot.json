@@ -397,5 +397,21 @@
         "uuid": "d19e14dd-4ae9-4439-9825-0ccb53578562",
         "targets": ["/targets/eGFP-avictoria"],
         "status": "in progress"
+    },
+    {
+        "_test": "No targets and award.rfa is ENCODE4",
+        "accession": "ENCAB764AFX",
+        "antigen_description": "Raised against a.a. 1-300 mapping at the N-terminus of EBF of human origin.",
+        "award": "UM1HG009442",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG",
+        "lab": "richard-myers",
+        "lot_id": "J0598",
+        "product_id": "sc-137065",
+        "source": "santa-cruz-biotech",
+        "status": "released",
+        "control_type": "isotype control",
+        "uuid": "3656e2b2-0ca5-437c-967a-6d2ac38f857b"
     }
 ]
