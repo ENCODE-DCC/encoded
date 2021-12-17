@@ -73,6 +73,11 @@
             "type": "integer",
             "minimum": 0
         },
+        "positions_with_two_reads": {
+            "title": "Number of positions with two reads",
+            "type": "integer",
+            "minimum": 0
+        },
         "total_fragments": {
             "title": "Total number of fragments",
             "type": "integer",
