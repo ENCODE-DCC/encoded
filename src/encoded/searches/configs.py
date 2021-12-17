@@ -306,6 +306,9 @@ def human_donor_data_view():
                 'title': 'Cell',
                 'type': 'typeahead'
             },
+            "biosample_ontology.system_slims": {
+                "title": "Systems"
+            },
             'replicates.library.biosample.life_stage': {
                 'title': 'Life stage'
             },
