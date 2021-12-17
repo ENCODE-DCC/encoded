@@ -97,7 +97,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "geneid": {
             "title": "NCBI Entrez GeneID",
@@ -167,7 +167,7 @@
             "title": "Gene locations",
             "description": "Gene locations specified using 1-based, closed coordinates for different versions of reference genome assemblies.",
             "type": "array",
-            "default": [],
+            "minItems": 1,
             "uniqueItems": true,
             "items": {
                 "title": "Gene location",
