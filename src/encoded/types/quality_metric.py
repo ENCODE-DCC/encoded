@@ -634,3 +634,13 @@ class ScAtacAnalysisQualityMetric(QualityMetric, CalculatedAssayTermID):
 class ScAtacCountsSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'sc_atac_counts_summary_quality_metric'
     schema = load_schema('encoded:schemas/sc_atac_counts_summary_quality_metric.json')
+
+@collection(
+    name='segway-quality-metric',
+    properties={
+        'title': "Segway Quality Metrics",
+    })
+class SegwayQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'segway_quality_metric'
+    schema = load_schema('encoded:schemas/segway_quality_metric.json')
+    
