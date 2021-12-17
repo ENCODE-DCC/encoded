@@ -113,7 +113,7 @@ def audit_biosample_culture_date(value, system):
         return
 
     if value['culture_harvest_date'] < value['culture_start_date']:
-        detail = ('Biosample {} has a culture_harvest_date {}'
+        detail = ('Biosample {} has a culture_harvest_date {} '
             'which precedes the culture_start_date {}'.format(
                 audit_link(path_to_text(value['@id']), value['@id']),
                 value['culture_harvest_date'],
