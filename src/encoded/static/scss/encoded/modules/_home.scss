@@ -32,6 +32,11 @@ $CARD_HIGHLIGHT_COLOR: #ffea00;
             border-bottom: none;
             font-family: $site-font;
             font-size: 1.2rem;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff;
+        }
+
+        .tooltip-container__trigger {
+            display: block;
         }
     }
 
@@ -170,8 +175,9 @@ $CARD_HIGHLIGHT_COLOR: #ffea00;
 
     button {
         display: flex;
+        padding: 0;
         align-items: center;
-        margin-left: -29px;
+        margin-left: -25px;
         background: none;
         border: none;
         z-index: 1;

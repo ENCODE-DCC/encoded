@@ -360,7 +360,7 @@ class App extends React.Component {
             currentResource: this.currentResource,
             location_href: this.href,
             portal,
-            isHomePage: this.state.context && this.state.context?.['@type']?.[0] === 'Portal',
+            isHomePage: this.state.context?.['@type']?.[0] === 'Portal',
             fetch: this.fetch,
             fetchSessionProperties: this.fetchSessionProperties,
             navigate: this.navigate,

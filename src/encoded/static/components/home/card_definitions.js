@@ -1,7 +1,7 @@
 /**
- * CARD DEFNIITIONS
+ * CARD DEFINITIONS
  *
- * Each of the following objects defines the cards that appear in each section of the home page.
+ * Each of the following objects define the cards that appear in each section of the home page.
  * The `Home` component at the bottom of index.js contains `<CardSection>` components, each of which
  * refers to one of these objects to render the cards in that section.
  *
