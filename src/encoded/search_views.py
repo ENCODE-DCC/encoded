@@ -72,6 +72,7 @@ def includeme(config):
     config.add_route('search', '/search{slash:/?}')
     config.add_route('series_search', '/series-search{slash:/?}')
     config.add_route('single_cell', '/single-cell{slash:/?}')
+    config.add_route('immune-cells', '/immune-cells{slash:/?}')
     config.add_route('encyclopedia', '/encyclopedia{slash:/?}')
     config.add_route('encode_software', '/encode-software{slash:/?}')
     config.add_route('searchv2_raw', '/searchv2_raw{slash:/?}')
@@ -470,6 +471,37 @@ def sescc_stem_cell_matrix(context, request):
     return fr.render()
 
 
+@view_config(route_name='immune-cells', request_method='GET', permission='search')
+def immune_cells(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Immune Cells'
+            ),
+            TypeResponseField(
+                at_type=['ImmuneCells']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            MissingMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='immune_cells',
+                reserved_keys=RESERVED_KEYS,
+            ),
+            FacetGroupsResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
 @view_config(route_name='chip-seq-matrix', request_method='GET', permission='search')
 def chip_seq_matrix(context, request):
     fr = FieldedResponse(
@@ -621,6 +653,7 @@ def entex_matrix(context, request):
         ]
     )
     return fr.render()
+
 
 @view_config(route_name='brain-matrix', request_method='GET', permission='search')
 def brain_matrix(context, request):

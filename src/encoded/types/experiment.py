@@ -344,6 +344,17 @@ class Experiment(Dataset,
         },
     }
 
+    immune_cells = {
+        'y': {
+            'group_by': ['biosample_ontology.cell_slims', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
+            'label': 'Assay',
+        },
+    }
+
     chip_seq_matrix = {
         'y': {
             'group_by': [
@@ -357,7 +368,7 @@ class Experiment(Dataset,
             'label': 'Term Name',
         },
     }
-    
+
     deeply_profiled_uniform_batch_matrix = {
         'y': {
             'group_by': ['replicates.library.biosample.biosample_ontology.term_name', 'replicates.library.biosample.origin_batch'],
@@ -368,7 +379,7 @@ class Experiment(Dataset,
             'label': 'Assay',
         },
     }
-    
+
     deeply_profiled_matrix = {
         'y': {
             'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],

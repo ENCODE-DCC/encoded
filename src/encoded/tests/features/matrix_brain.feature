@@ -6,7 +6,7 @@ Feature: Matrix
         Then the title should contain the text "ENCODE"
 
         When I press "Data"
-        And I click the link with text that contains "Rush Alzheimer’s Disease Study"
+        And I click the link with text that contains "Rush Alzheimer’s disease study"
         And I wait for the content to load
         Then the title should contain the text "Rush Alzheimer’s Disease Study – ENCODE"
         And I should see at least 2 elements with the css selector "tbody > tr"
