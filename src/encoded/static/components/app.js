@@ -278,7 +278,6 @@ const fullPageReloadPaths = [
     '/summary/',
     '/encyclopedia/',
     '/immune-cells/',
-    /human-donor-matrix/,
 ];
 
 

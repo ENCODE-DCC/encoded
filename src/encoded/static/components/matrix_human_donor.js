@@ -19,7 +19,7 @@ const excludedAttributes = ['', 'n/a', 'unknown', undefined, null];
 /** life stages to display on UI */
 const includedLifeStage = ['child', 'embryonic', 'newborn'];
 
-/** Roman mythhology equivalent represening gender */
+/** Roman mythology equivalent representing gender */
 const getGenderMythology = (genderType) => {
     if (genderType === 'male') {
         return 'mars';
@@ -36,7 +36,7 @@ const getGenderMythology = (genderType) => {
 const removedQueryKeys = ['@id', 'search_base'];
 
 /**
- *  Key/value pairs mapping dseases to css classes
+ *  Key/value pairs mapping diseases to css classes
  */
 const diseaseCode = {
     'multiple sclerosis': 'multiple-sclerosis-symbol',
@@ -60,14 +60,14 @@ const addExtraRowHeaderDataToMatrix = (data, matrixUpdateCallBack) => {
 
         if (g.age) {
             const ageText = `${[g.age].filter((a) => !excludedAttributes.includes(a)).join(', ')}`;
-            const formattedAge = `${(ageText || '').replace(' or above', '+')} ${ageText ? g.age_units : ''}${ageText === 1 || ageText === '' ? '' : 's'}`.trim('');
+            const formattedAge = `${(ageText || '').replace(' or above', '+')} ${ageText ? g.age_units : ''}${ageText === 1 || ageText === '' ? '' : 's'}`.trim();
             const lifeStageText = g.lifeStage ? ` (${g.lifeStage})` : '';
 
             age = `${formattedAge}${lifeStageText}`;
         }
 
         return {
-            accession: g['@id']?.replace('/human-donors/', '')?.replace('/', ''),
+            accession: globals.atIdToAccession(g['@id']),
             age,
             genderMythology: getGenderMythology(g.sex),
             genderType: g.sex,
@@ -181,8 +181,8 @@ const convertToMatrixData = (dataTableData, baseUrl, searchBaseUrl, graph) => {
 
         // change grid matrix default values
         const rowHeaderFirstColStyle = {
-            color: `${accessionTextColor}`,
-            backgroundColor: `${rowColor}`,
+            color: accessionTextColor,
+            backgroundColor: rowColor,
             width: firstColumnWidth,
         };
 
@@ -265,7 +265,7 @@ const getExtraRowHeaderData = (context, reactContext, matrixUpdateCallBack) => {
 };
 
 /**
- * This provides a subtrate for building a matrix using css Grid. It receives an array of array where each subarray is a row
+ * This provides a substrate for building a matrix using css Grid. It receives an array of array where each subarray is a row
  * and uses that to build the array. For example, matrixData can be -
  * [
  *     {
@@ -281,7 +281,7 @@ const getExtraRowHeaderData = (context, reactContext, matrixUpdateCallBack) => {
  *          itemKey: 'data-key',
  *          items: [
  *              { content: ['a data point'], itemKey: 'a-data-key' }
- *              { content: ['another daya point'], itemKey: 'yet-another-key' }
+ *              { content: ['another data point'], itemKey: 'yet-another-key' }
  *          ]
  *     }
  *
