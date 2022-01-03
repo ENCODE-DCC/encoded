@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
 import { Panel, PanelHeading, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
+import UserRoles from '../libs/user_roles';
 import { collapseIcon } from '../libs/svg-icons';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
@@ -541,9 +542,8 @@ const SchemaPanel = (props, reactContext) => {
 
     // Determine whether we should display an "Add" button or not depending on the user's logged-in
     // state.
-    const roles = globals.getRoles(reactContext.session_properties);
-    const isAuthorized = ['admin', 'submitter'].some((role) => roles.includes(role));
-    const decoration = isAuthorized ? <a href={`/${schemaName}/#!add`} className="btn btn-info">Add</a> : null;
+    const userRoles = new UserRoles(reactContext.session_properties);
+    const decoration = userRoles.isPrivileged && <a href={`/${schemaName}/#!add`} className="btn btn-info">Add</a>;
 
     return (
         <Panel>

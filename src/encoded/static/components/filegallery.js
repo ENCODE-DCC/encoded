@@ -4,6 +4,7 @@ import _ from 'underscore';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import QueryString from '../libs/query_string';
+import UserRoles from '../libs/user_roles';
 import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { collapseIcon } from '../libs/svg-icons';
@@ -405,9 +406,8 @@ export class FileTable extends React.Component {
             options,
         } = this.props;
         const sessionProperties = this.context.session_properties;
-        const loggedIn = !!(session && session['auth.userid']);
-        const roles = globals.getRoles(sessionProperties);
-        const isAuthorized = ['admin', 'submitter'].some((role) => roles.includes(role));
+        const userRoles = new UserRoles(sessionProperties);
+        const loggedIn = userRoles.isLoggedIn;
 
         // Establish the selected assembly and annotation for the tabs
         const selectedAssembly = null;
@@ -523,7 +523,7 @@ export class FileTable extends React.Component {
                                 graphedFiles,
                                 session,
                                 loggedIn,
-                                isAuthorized,
+                                isAuthorized: userRoles.isPrivileged,
                                 adminUser,
                             }}
                         />
@@ -542,7 +542,7 @@ export class FileTable extends React.Component {
                                 graphedFiles,
                                 session,
                                 loggedIn,
-                                isAuthorized,
+                                isAuthorized: userRoles.isPrivileged,
                                 adminUser,
                             }}
                         />
@@ -606,7 +606,7 @@ export class FileTable extends React.Component {
                                     graphedFiles,
                                     browserOptions,
                                     loggedIn,
-                                    isAuthorized,
+                                    isAuthorized: userRoles.isPrivileged,
                                     adminUser,
                                 }}
                             />);
@@ -637,7 +637,7 @@ export class FileTable extends React.Component {
                                 fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
                                 graphedFiles,
                                 loggedIn,
-                                isAuthorized,
+                                isAuthorized: userRoles.isPrivileged,
                                 adminUser,
                             }}
                         />

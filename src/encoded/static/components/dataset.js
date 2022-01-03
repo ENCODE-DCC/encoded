@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import UserRoles from '../libs/user_roles';
 import * as Pager from '../libs/ui/pager';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import DropdownButton from '../libs/ui/button';
@@ -88,7 +89,7 @@ function breakSetName(name) {
 const AnnotationComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
+    const userRoles = new UserRoles(reactContext.session_properties);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
     const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references.accession=${context.accession}`;
 
@@ -242,7 +243,7 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            <AwardRef context={context} adminUser={adminUser} />
+                            <AwardRef context={context} adminUser={userRoles.isAdmin} />
 
                             {context.aliases.length > 0 ?
                                 <div data-test="aliases">
@@ -309,7 +310,7 @@ globals.contentViews.register(Annotation, 'Annotation');
 // Display PublicationData page, a subtype of Dataset.
 const PublicationDataComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
+    const userRoles = new UserRoles(reactContext.session_properties);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
     // Build up array of documents attached to this dataset
@@ -385,7 +386,7 @@ const PublicationDataComponent = ({ context, auditIndicators, auditDetail }, rea
                                 </div>
                             : null}
 
-                            <AwardRef context={context} adminUser={adminUser} />
+                            <AwardRef context={context} adminUser={userRoles.isAdmin} />
 
                             <div data-test="externalresources">
                                 <dt>External resources</dt>
@@ -476,7 +477,7 @@ const fileCols = {
 const ComputationalModelComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
+    const userRoles = new UserRoles(reactContext.session_properties);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
     const fileCountDisplay = <div className="table-paged__count">{`${context.files.length} file${context.files.length === 1 ? '' : 's'}`}</div>;
 
@@ -567,7 +568,7 @@ const ComputationalModelComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            <AwardRef context={context} adminUser={adminUser} />
+                            <AwardRef context={context} adminUser={userRoles.isAdmin} />
 
                             <div data-test="externalresources">
                                 <dt>External resources</dt>
@@ -631,7 +632,7 @@ globals.contentViews.register(ComputationalModel, 'ComputationalModel');
 const ReferenceComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
+    const userRoles = new UserRoles(reactContext.session_properties);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
     const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references.accession=${context.accession}`;
 
@@ -787,7 +788,7 @@ const ReferenceComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            <AwardRef context={context} adminUser={adminUser} />
+                            <AwardRef context={context} adminUser={userRoles.isAdmin} />
 
                             {context.aliases.length > 0 ?
                                 <div data-test="aliases">
@@ -855,7 +856,7 @@ globals.contentViews.register(Reference, 'Reference');
 const ProjectComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
+    const userRoles = new UserRoles(reactContext.session_properties);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
     // Build up array of documents attached to this dataset
@@ -969,7 +970,7 @@ const ProjectComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            <AwardRef context={context} adminUser={adminUser} />
+                            <AwardRef context={context} adminUser={userRoles.isAdmin} />
 
                             {context.aliases.length > 0 ?
                                 <div data-test="aliases">
@@ -1035,7 +1036,7 @@ globals.contentViews.register(Project, 'Project');
 const UcscBrowserCompositeComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
+    const userRoles = new UserRoles(reactContext.session_properties);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
     // Build up array of documents attached to this dataset
@@ -1135,7 +1136,7 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            <AwardRef context={context} adminUser={adminUser} />
+                            <AwardRef context={context} adminUser={userRoles.isAdmin} />
 
                             {context.aliases.length > 0 ?
                                 <div data-test="aliases">
@@ -1257,7 +1258,7 @@ const basicTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1298,7 +1299,7 @@ const controlTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1357,7 +1358,7 @@ const diseaseSeriesColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1434,7 +1435,7 @@ const referenceEpigenomeColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1550,7 +1551,7 @@ const geneSilencingSeriesTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1607,7 +1608,7 @@ const timeSeriesTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1660,7 +1661,7 @@ const treatmentSeriesTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1711,7 +1712,7 @@ const replicationTimingSeriesTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1780,7 +1781,7 @@ const differentiationTableColumnsWithTime = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1845,7 +1846,7 @@ const differentiationTableColumnsWithoutTime = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -1994,7 +1995,7 @@ const organismDevelopmentSeriesTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -2098,7 +2099,7 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -2163,7 +2164,7 @@ const functionalCharacterizationSeriesTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -2239,7 +2240,7 @@ const differentialAccessibilitySeriesTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -2299,7 +2300,7 @@ const pulseChaseTimeSeriesTableColumns = {
         title: 'Accession',
         display: (experiment, meta) => (
             <span>
-                {meta.adminUser || publicDataset(experiment) ?
+                {meta.isPrivileged || publicDataset(experiment) ?
                     <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
                 :
                     <span>{experiment.accession}</span>
@@ -2437,7 +2438,7 @@ const PAGE_DATASET_COUNT = 25;
  * Display one of the two sections (experiments or control experiments) of the dataset table on the
  * Series pages.
  */
-const SeriesDatasetTableSection = ({ title, datasets, tableColumns, sortColumn, adminUser, accessLevel }) => {
+const SeriesDatasetTableSection = ({ title, datasets, tableColumns, sortColumn, isPrivileged, accessLevel }) => {
     /** The current page of datasets if more than the max number of displayable datasets exist */
     const [currentDatasetPage, setCurrentDatasetPage] = React.useState(0);
 
@@ -2477,7 +2478,7 @@ const SeriesDatasetTableSection = ({ title, datasets, tableColumns, sortColumn, 
             <SortTable
                 list={visibleDatasets}
                 columns={tableColumns}
-                meta={{ adminUser, accessLevel }}
+                meta={{ isPrivileged, accessLevel }}
                 sortColumn={sortColumn}
             />
         </>
@@ -2493,8 +2494,8 @@ SeriesDatasetTableSection.propTypes = {
     tableColumns: PropTypes.object.isRequired,
     /** ID of column to sort by; undefined/null for default */
     sortColumn: PropTypes.string,
-    /** True if the user is an admin user */
-    adminUser: PropTypes.bool.isRequired,
+    /** True if the user is a submitter or admin user */
+    isPrivileged: PropTypes.bool.isRequired,
     /** User's access level */
     accessLevel: PropTypes.string.isRequired,
 };
@@ -2509,7 +2510,7 @@ SeriesDatasetTableSection.defaultProps = {
  * sections; one containing related datasets and the other containing control experiments from the
  * related datasets.
  */
-const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sortColumn, adminUser, accessLevel }) => {
+const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sortColumn, isPrivileged, accessLevel }) => {
     if (experiments.length > 0) {
         // Get all the control experiments from the given experiments' `possible_controls`. Then
         // filter those out of the given experiments.
@@ -2529,7 +2530,7 @@ const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sort
                     datasets={experimentsWithoutControls}
                     tableColumns={tableColumns}
                     sortColumn={sortColumn}
-                    adminUser={adminUser}
+                    isPrivileged={isPrivileged}
                     accessLevel={accessLevel}
                 />
                 {controls.length > 0 ?
@@ -2537,7 +2538,7 @@ const SeriesExperimentTable = ({ context, experiments, title, tableColumns, sort
                         title="Control experiment"
                         datasets={controls}
                         tableColumns={controlTableColumns}
-                        adminUser={adminUser}
+                        isPrivileged={isPrivileged}
                         accessLevel={accessLevel}
                     />
                 : null}
@@ -2558,8 +2559,8 @@ SeriesExperimentTable.propTypes = {
     tableColumns: PropTypes.object.isRequired,
     /** ID of column to sort by; undefined/null for default */
     sortColumn: PropTypes.string,
-    /** True if the user is an admin user */
-    adminUser: PropTypes.bool.isRequired,
+    /** True if the user is a submitter or admin user */
+    isPrivileged: PropTypes.bool.isRequired,
     /** User's access level */
     accessLevel: PropTypes.string.isRequired,
 };
@@ -2584,9 +2585,9 @@ export const SeriesComponent = ({
     auditDetail,
 }, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
     const seriesType = context['@type'][0];
+    const userRoles = new UserRoles(reactContext.session_properties);
     const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
 
     // Collect all the default files from all the related datasets of the given Series object,
@@ -2787,7 +2788,7 @@ export const SeriesComponent = ({
                                 <dd>{context.lab.title}</dd>
                             </div>
 
-                            <AwardRef context={context} adminUser={adminUser} />
+                            <AwardRef context={context} adminUser={userRoles.isAdmin} />
 
                             <div data-test="project">
                                 <dt>Project</dt>
@@ -2841,7 +2842,7 @@ export const SeriesComponent = ({
                     title={title}
                     tableColumns={tableColumns}
                     sortColumn={sortColumn}
-                    adminUser={adminUser}
+                    isPrivileged={userRoles.isPrivileged}
                     accessLevel={accessLevel}
                 />
             )}
@@ -2998,7 +2999,7 @@ globals.contentViews.register(FunctionalGenomicsSeries, 'ReplicationTimingSeries
  * sections; one containing experiments without disease and the other containing experiments with
  * one or more diseases.
  */
-const DiseaseExperimentTable = ({ datasetsByDisease, title, accession, adminUser }) => {
+const DiseaseExperimentTable = ({ datasetsByDisease, title, accession, isPrivileged }) => {
     // Combine all datasets with biosamples that have disease terms into one array.
     const diseaseTerms = Object.keys(datasetsByDisease).filter((term) => term !== 'None');
     const diseaseDatasets = diseaseTerms.reduce((allDiseaseDatasets, term) => (
@@ -3036,7 +3037,7 @@ const DiseaseExperimentTable = ({ datasetsByDisease, title, accession, adminUser
                         <SortTable
                             list={diseaseDatasets}
                             columns={diseaseSeriesColumns}
-                            meta={{ adminUser }}
+                            meta={{ isPrivileged }}
                         />
                     </>
                 : null}
@@ -3049,7 +3050,7 @@ const DiseaseExperimentTable = ({ datasetsByDisease, title, accession, adminUser
                         <SortTable
                             list={noDiseaseDatasets}
                             columns={basicTableColumns}
-                            meta={{ adminUser }}
+                            meta={{ isPrivileged }}
                         />
                     </>
                 : null}
@@ -3066,8 +3067,8 @@ DiseaseExperimentTable.propTypes = {
     title: PropTypes.string.isRequired,
     /** Accession of series object */
     accession: PropTypes.string.isRequired,
-    /** True if logged-in user has admin privileges */
-    adminUser: PropTypes.bool.isRequired,
+    /** True if logged-in user is a submitter or admin */
+    isPrivileged: PropTypes.bool.isRequired,
 };
 
 
@@ -3115,7 +3116,7 @@ const groupDatasetsByDisease = (datasets) => (
 const DiseaseSeries = ({ context }, reactContext) => {
     const seriesType = context['@type'][0];
     const seriesTitle = reactContext.profilesTitles[seriesType] || '';
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
+    const userRoles = new UserRoles(reactContext.session_properties);
 
     // Group the datasets that include at least one biosample with `disease_term_name` by disease.
     const datasetsByDisease = groupDatasetsByDisease(context.related_datasets);
@@ -3131,7 +3132,7 @@ const DiseaseSeries = ({ context }, reactContext) => {
                         datasetsByDisease={datasetsByDisease}
                         title={seriesTitle}
                         accession={context.accession}
-                        adminUser={adminUser}
+                        isPrivileged={userRoles.isPrivileged}
                     />
                 ),
                 getSupplementalShortLabel: (dataset) => computeDiseases(dataset),
