@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import UserRoles from '../libs/user_roles';
 import { Panel, PanelHeading, PanelBody, PanelFooter } from '../libs/ui/panel';
 import Tooltip from '../libs/ui/tooltip';
 import { CartAddAllElements, CartToggle } from './cart';
@@ -597,8 +598,7 @@ class ExperimentSeriesComponent extends React.Component {
     render() {
         const { context, auditDetail, auditIndicators } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
-        const roles = globals.getRoles(this.context.session_properties);
-        const isAuthorized = ['admin', 'submitter'].some((role) => roles.includes(role));
+        const userRoles = new UserRoles(this.context.session_properties);
 
         // Set up the breadcrumbs.
         const datasetType = context['@type'][1];
@@ -700,7 +700,7 @@ class ExperimentSeriesComponent extends React.Component {
                 const rowCount = bioRepNums.length;
                 const datasetRows = [];
                 bioRepNums.sort((a, b) => a - b).forEach((num, i) => {
-                    const cellMeta = { bioRepNum: num, isAuthorized, rowCount };
+                    const cellMeta = { bioRepNum: num, isAuthorized: userRoles.isPrivileged, rowCount };
                     datasetRows.push(
                         <tr key={viewableDatasets[datasetAtId]['@id'].concat('_', num)}>
                             {Object.keys(columns).map((columnId) => {
