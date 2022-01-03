@@ -60,7 +60,7 @@ def _tag_ec2_instance(
         cluster_name,
         image_id,
         role='demo',
-        profile_name=None,
+        profile_name='default',
         dry_run=False,
         arm_arch=False,
         cluster_master=False,
@@ -92,7 +92,7 @@ def _tag_ec2_instance(
         'detailB': 'notused',
         'detailC': 'notused',
     }
-    if profile_name != "production": 
+    if profile_name == 'default': 
         if role == 'rc':
             tags_dict['Role'] += '-new-rc'
             tags_dict['section'] += '-rc'
@@ -116,7 +116,7 @@ def _tag_ec2_instance(
             if cluster_name:
                 tags_dict['Role'] += '-cluster'
                 tags_dict['section'] += '-cluster'
-    else:
+    elif profile_name == 'production':
         tags_dict['account'] = 'encode-prod'
         if role == 'candidate':
             tags_dict['Role'] += '-new-prod'
@@ -860,10 +860,10 @@ def main():
                 if main_args.build_ami and main_args.es_wait:
                     print(
                         'After it builds, create the ami: '
-                        "python ./cloud-config/create-ami.py {} es-wait-node {}{}".format(
+                        "python ./cloud-config/create-ami.py {} es-wait-node {} --profile-name {}".format(
                             instances_tag_data['username'],
                             node_info['instance_id'],
-                            ' --profile-name ' + main_args.profile_name if main_args.profile_name is not None else '',
+                            main_args.profile_name,
                         )
                     )
                 print('Run the following command to view this es node deployment log.')
@@ -1021,7 +1021,7 @@ def _parse_args():
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production-pg11')
 
     # AWS
-    parser.add_argument('--profile-name', default=None, choices=("production",), help="AWS creds profile")
+    parser.add_argument('--profile-name', default='default', choices=("default", "production"), help="AWS creds profile")
     parser.add_argument('--iam-role', default='encoded-instance', help="Frontend AWS iam role")
     parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="ES AWS iam role")
     parser.add_argument(
@@ -1074,10 +1074,10 @@ def _parse_args():
     args = parser.parse_args()
     # If needed, get ami. Only allowed values for the arg are default and production.
     if not args.image_id:
-        if args.profile_name != "production":
+        if args.profile_name == "default":
             print("Fetching development AMI.")
             current_ami_id = _fetch_ami_id()
-        else:
+        if args.profile_name == "production":
             print("Fetching production AMI.")
             current_ami_id = _fetch_ami_id(key="ami-id/production/current_ami_id.txt")
         args.image_id = current_ami_id

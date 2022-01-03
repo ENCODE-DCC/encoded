@@ -161,7 +161,7 @@ def _parse_args():
     parser.add_argument('created_by', help='Your name')
     parser.add_argument('deployment_type', help='deployment type')
     parser.add_argument('instance_id', help='instance id')
-    parser.add_argument('--profile-name', default=None, help="AWS creds profile")
+    parser.add_argument('--profile-name', default='default', help="AWS creds profile")
     args = parser.parse_args()
     return args
 
