@@ -227,7 +227,7 @@ export const CARDS_FOR_OTHER_DATA = {
         {
             id: 'reference-epigenome',
             title: 'Reference epigenome',
-            help: 'Data generated for tissues, cell lines, primary cells, and in vitro differentiated cells organized as reference epigenomes following guidelines set out by the International Human Epigenome Consortium',
+            help: 'Data generated for tissues, cell lines, primary cells, and in vitro differentiated cells organized as reference epigenomes following guidelines set out by the International Human Epigenome Consortium.',
             icon: icons.referenceEpigenome,
             link: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens',
             color: CARD_COLORS.others,
