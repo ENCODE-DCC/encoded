@@ -11,6 +11,7 @@ import * as globals from './globals';
 import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { FacetList, SearchControls } from './search';
 import { BodyMapThumbnailAndModal } from './body_map';
+import FacetRegistry from './facets/registry';
 
 
 /** General collection of attributes to exclude in some scenarios */
@@ -165,11 +166,14 @@ const convertToMatrixData = (dataTableData, baseUrl, searchBaseUrl, graph) => {
             ),
             itemKey: 'matrix-header-key-titles',
         }].concat(dataTableData.x.header.map((xData) => {
-            const assayTitleText = `assay_title=${xData}`;
-            const assayTitle = baseUrl.includes(assayTitleText) ? `&${assayTitleText}` : '';
+            const baseUrlQuery = new QueryString(baseUrl);
+            baseUrlQuery.deleteKeyValue('assay_title');
+            baseUrlQuery.addKeyValue('assay_title', xData);
+
+            const assayTitleLink = baseUrlQuery.format();
 
             return {
-                content: <a href={`${baseUrl.replace('/human-donor-matrix/?type', '/search/?type')}${assayTitle}`}>{xData}</a>,
+                content: <a href={`${assayTitleLink.replace('/human-donor-matrix/?type', '/search/?type')}`}>{xData}</a>,
                 itemKey: xData.replace(/\s+/g, ''),
             };
         })),
@@ -233,13 +237,18 @@ const convertToMatrixData = (dataTableData, baseUrl, searchBaseUrl, graph) => {
                     const itemKey = `${accession}-${assayCountIndex}`;
                     const assayTitle = x.header[assayCountIndex];
 
+                    const searchBaseUrlQuery = new QueryString(searchBaseUrl);
+                    searchBaseUrlQuery.deleteKeyValue('assay_title');
+                    searchBaseUrlQuery.addKeyValue('assay_title', assayTitle);
+                    const searchBaseLink = searchBaseUrlQuery.format();
+
                     return assayTotal === 0
                         ? {
                             content: <span style={{ backgroundColor: '#fff' }} title={assayTitle}> {' '} </span>,
                             itemKey,
                         }
                         : {
-                            content: <a href={`${searchBaseUrl}&replicates.library.biosample.donor.accession=${accession}&assay_title=${assayTitle}`} style={{ color: `${assayCountTextColor}`, backgroundColor: `${cellColor}` }} title={assayTitle}>{assayTotal}</a>,
+                            content: <a href={`${searchBaseLink}&replicates.library.biosample.donor.accession=${accession}`} style={{ color: `${assayCountTextColor}`, backgroundColor: `${cellColor}` }} title={assayTitle}>{assayTotal}</a>,
                             itemKey,
                         };
                 })
@@ -747,3 +756,13 @@ HumanDonorMatrix.contextTypes = {
 };
 
 globals.contentViews.register(HumanDonorMatrix, 'HumanDonorMatrix');
+
+
+/**
+ * Used for all facets that need suppression unconditionally.
+ */
+const SuppressedFacet = () => null;
+
+FacetRegistry.Facet.register('audit.ERROR.category', SuppressedFacet, 'HumanDonorMatrix');
+FacetRegistry.Facet.register('audit.NOT_COMPLIANT.category', SuppressedFacet, 'HumanDonorMatrix');
+FacetRegistry.Facet.register('audit.WARNING.category', SuppressedFacet, 'HumanDonorMatrix');
