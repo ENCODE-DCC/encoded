@@ -65,12 +65,24 @@
                 }
             ]
         },
+        "trait": {
+            "comment": "Only fine-mapped variants annotations can have trait specified.",
+            "properties": {
+                "annotation_type": {
+                    "enum": [
+                        "fine-mapped variants"
+                    ]
+                }
+            }
+        },
         "annotation_subtype": {
             "properties": {
-                "annotation_type": {"enum": [
-                    "candidate Cis-Regulatory Elements",
-                    "representative DNase hypersensitivity sites"
-                ]}
+                "annotation_type": {
+                    "enum": [
+                        "candidate Cis-Regulatory Elements",
+                        "representative DNase hypersensitivity sites"
+                    ]
+                }
             }
         }
     },
@@ -238,6 +250,132 @@
                 "linkTo": "Target"
             }
         },
+        "trait": {
+            "title": "Trait",
+            "description": "The trait associated with the fine-mapped variants.",
+            "type": "string",
+            "enum": [
+                "Morning person",
+                "Insomnia",
+                "Migraine",
+                "Mood swings",
+                "Miserableness",
+                "Irritability",
+                "Sensitivity",
+                "Fed-up feelings",
+                "Nervous feelings",
+                "Worrier",
+                "Tense",
+                "Worry too long",
+                "Suffer from nerves",
+                "Smoking",
+                "Neuroticism",
+                "Loneliness",
+                "Guilty feelings",
+                "Risk taking",
+                "Depression",
+                "BMI",
+                "Body weight",
+                "Body fat percentage",
+                "Serum creatinine",
+                "Age at menarche",
+                "White blood cell count",
+                "Red blood cell count",
+                "Hemoglobin",
+                "Hematocrit percentage",
+                "Mean corpuscular volume",
+                "Mean corpuscular hemoglobin count",
+                "Mean corpuscular hemoglobin",
+                "Platelet count",
+                "Lymphocyte count",
+                "Monocyte count",
+                "Neutrophil count",
+                "Eosinophil count",
+                "Basophil count",
+                "Albumin",
+                "Alkaline phosphatase",
+                "Alanine aminotransferase",
+                "Apolipoprotein A",
+                "Apolipoprotein B",
+                "Aspartate aminotransferase",
+                "Urea",
+                "Calcium",
+                "Total cholesterol",
+                "C-reactive protein",
+                "Gamma-glutamyl transferase",
+                "Glucose concentration",
+                "Glycated hemoglobin",
+                "High-density lipoprotein cholesterol",
+                "IGF-1",
+                "Low-density lipoprotein cholesterol",
+                "Lipoprotein A concentration",
+                "Phosphate concentration",
+                "Sex hormone-binding globulin",
+                "Total bilirubin",
+                "Testosterone (females)",
+                "Testosterone (males)",
+                "Total protein",
+                "Triglyceride concentration",
+                "Uric acid concentration",
+                "Vitamin D concentration",
+                "Age at menopause",
+                "Diastolic blood pressure",
+                "Systolic blood pressure",
+                "Adult height",
+                "College completion",
+                "Years of education",
+                "Blood clot (lung)",
+                "Blood clot (leg)",
+                "Colorectal cancer",
+                "Lung cancer",
+                "Skin cancer",
+                "Breast cancer",
+                "Prostate cancer",
+                "Uterine fibroids",
+                "Hypothyroidism",
+                "Type 1 diabetes",
+                "Type 2 diabetes",
+                "Carpal tunnel syndrome",
+                "Cataract",
+                "Coronary artery disease",
+                "Myocardial infarction",
+                "Atrial fibrillation",
+                "Ischemic stroke",
+                "Varicose veins",
+                "Asthma",
+                "Chronic obstructive pulmonary disease",
+                "Inguinal hernia",
+                "Inflammatory bowel disease",
+                "Crohn's disease",
+                "Diverticulosis",
+                "Cirrhosis",
+                "Cholelithiasis",
+                "Urolithiasis",
+                "Rheumatoid arthritis",
+                "Coxarthrosis",
+                "Atopic dermatitis",
+                "Benign neoplasms",
+                "Cancer",
+                "Fibroblastic disorders",
+                "Alzheimer",
+                "Waist-to-hip ratio",
+                "Tiffeneau-Pinelli index",
+                "Balding (type 4)",
+                "Albumin/Globulin ratio",
+                "Mean arterial pressure",
+                "eGFR (cystatin C)",
+                "eGFR (creatinine)",
+                "Mean heel bone mineral density",
+                "Pulse pressure",
+                "Non-albumin protein level",
+                "Multi-site chronic pain",
+                "Cigarettes smoked per day",
+                "Age-related macular degeneration",
+                "Glaucoma",
+                "Autoimmune disease",
+                "Loss of Y chromosome"
+            ]
+        },
         "software_used": {
             "title": "Software used",
             "description": "A list of software used to derive the annotation calls.",
@@ -297,7 +435,8 @@
                 "biosample_ontology.term_name",
                 "biosample_ontology.organ_slims",
                 "biosample_ontology.cell_slims",
-                "relevant_life_stage"
+                "relevant_life_stage",
+                "trait"
             ]
         },
         {
@@ -386,6 +525,9 @@
         },
         "relevant_life_stage": {
             "title": "Life stage"
+        },
+        "trait": {
+            "title": "Trait" 
         },
         "software_used.software.name": {
             "title": "Software used"
