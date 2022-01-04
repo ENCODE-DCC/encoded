@@ -100,6 +100,7 @@ const qcAttachmentProperties = {
         { total_counts_vs_pct_mitochondria: 'Total counts vs pct mitochondria' },
         { total_counts_vs_genes_by_count: 'Total counts vs genes by count' },
         { counts_violin_plot: 'Counts violin plot' },
+    ],
     SegwayQualityMetric: [
         { trackname_assay: 'Trackname assay' },
         { feature_aggregation_tab: 'Feature aggregation tab' },
