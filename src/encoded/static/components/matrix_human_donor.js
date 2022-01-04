@@ -164,10 +164,15 @@ const convertToMatrixData = (dataTableData, baseUrl, searchBaseUrl, graph) => {
                 </div>
             ),
             itemKey: 'matrix-header-key-titles',
-        }].concat(dataTableData.x.header.map((xData) => ({
-            content: <a href={`${baseUrl.replace('/human-donor-matrix/?type', '/search/?type')}&assay_title=${xData}`}>{xData}</a>,
-            itemKey: xData.replace(/\s+/g, ''),
-        }))),
+        }].concat(dataTableData.x.header.map((xData) => {
+            const assayTitleText = `assay_title=${xData}`;
+            const assayTitle = baseUrl.includes(assayTitleText) ? `&${assayTitleText}` : '';
+
+            return {
+                content: <a href={`${baseUrl.replace('/human-donor-matrix/?type', '/search/?type')}${assayTitle}`}>{xData}</a>,
+                itemKey: xData.replace(/\s+/g, ''),
+            };
+        })),
     };
 
     matrixData.push(header);
