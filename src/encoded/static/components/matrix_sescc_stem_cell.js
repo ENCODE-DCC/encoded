@@ -8,7 +8,7 @@ import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';
 import * as globals from './globals';
-import drawTree from '../libs/ui/node_graph';
+import { drawTree } from '../libs/ui/node_graph';
 
 
 /**
@@ -299,7 +299,7 @@ class MatrixPresentation extends React.Component {
             scrolledRight: false,
             windowWidth: 0,
             selectedNodes: rowDataOrder.map((row) => formatName(row, '')),
-            margin: { top: 0, bottom: 0, right: 0, left: 0 },
+            margin: { top: 50, bottom: 70, right: 0, left: 0 },
         };
 
         this.updateWindowWidth = this.updateWindowWidth.bind(this);
@@ -322,7 +322,7 @@ class MatrixPresentation extends React.Component {
             // eslint-disable-next-line import/no-unresolved
             this.d3 = require('d3v7');
             const chartWidth = this.state.windowWidth;
-            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes);
+            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes, null, 'sescc');
         });
     }
 
@@ -332,7 +332,7 @@ class MatrixPresentation extends React.Component {
             // eslint-disable-next-line import/no-unresolved
             this.d3 = require('d3v7');
             const chartWidth = this.state.windowWidth;
-            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes);
+            drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes, null, 'sescc');
         });
     }
 
@@ -421,7 +421,7 @@ class MatrixPresentation extends React.Component {
             }, () => {
                 require.ensure(['d3v7'], () => {
                     const chartWidth = this.state.windowWidth;
-                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes);
+                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes, false, 'sescc');
                     this.setMatrixRows();
                 });
             });
@@ -431,7 +431,7 @@ class MatrixPresentation extends React.Component {
             }, () => {
                 require.ensure(['d3v7'], () => {
                     const chartWidth = this.state.windowWidth;
-                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes);
+                    drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes, false, 'sescc');
                     this.setMatrixRows();
                 });
             });

@@ -6,6 +6,6 @@ Feature: Title
         And I wait for the content to load
         Then the title should contain the text "ENCODE"
         When I press "Data"
-        And I click the link with text that contains "Deeply Profiled Cell Lines"
+        And I click the link with text that contains "Deeply profiled cell lines"
         And I wait for the content to load
         Then the title should contain the text "Deeply Profiled Cell Lines – ENCODE"

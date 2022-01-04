@@ -25,3 +25,17 @@ def test_annotation_with_subtype(
         annotation_dataset['@id'],
         {'annotation_subtype': 'all'},
         status=422)
+
+def test_annotation_fine_mapped(
+    testapp,
+    annotation_dataset
+):
+    testapp.patch_json(
+        annotation_dataset['@id'],
+        {'trait': 'Insomnia'}, status=422)
+    testapp.patch_json(
+        annotation_dataset['@id'],
+        {'annotation_type': 'fine-mapped variants'}, status=200)
+    testapp.patch_json(
+        annotation_dataset['@id'],
+        {'trait': 'Insomnia'}, status=200)

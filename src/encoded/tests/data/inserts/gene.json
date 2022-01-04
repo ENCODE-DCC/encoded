@@ -555,4 +555,20 @@
     }],
     "organism": "human",
     "uuid": "13082204-d87e-4564-a49a-215b6f07fc31"
+},
+{
+    "geneid": "24252",
+    "name": "CCAAT/enhancer binding protein alpha",
+    "ncbi_entrez_status": "live",
+    "organism": "rat",
+    "status": "released",
+    "symbol": "Cebpa",
+    "dbxrefs": [
+        "UniProtKB:P05554",
+        "ENSEMBL:ENSRNOG00000010918"
+    ],
+    "synonyms": [
+        "DBPCEP"
+    ],
+    "uuid": "56344e18-3def-4724-acf3-6faec15091ea"
 }]

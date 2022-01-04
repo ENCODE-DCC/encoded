@@ -123,6 +123,7 @@ ORDER = [
     'sc_atac_counts_summary_quality_metric',
     'star_solo_quality_metric',
     'scrna_seq_counts_summary_quality_metric',
+    'segway_quality_metric',
     'quality_standard',
     'analysis',
     'image',
@@ -178,7 +179,12 @@ IS_ATTACHMENT = [
     'sequencing_saturation_plot',
     'total_counts_vs_pct_mitochondria',
     'total_counts_vs_genes_by_count',
-    'counts_violin_plot'
+    'counts_violin_plot',
+    'trackname_assay',
+    'feature_aggregation_tab',
+    'signal_distribution_tab',
+    'segment_sizes_tab',
+    'length_distribution_tab',
 ]
 
 

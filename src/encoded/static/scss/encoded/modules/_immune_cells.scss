@@ -1,10 +1,18 @@
 $bubbleSize: 13px;
 
+$unclickable: #a1a1a1;
+
 $mesoderm: #008000;
 $ectoderm: #800080;
 $stem: #edcf09;
 $unlabeled: #808080;
 $endoderm: blue;
+
+$bcell: #2794bf;
+$tcell: #2c9659;
+$nkcell: #986ea4;
+$default: #959595;
+$cd4: #71c7c6;
 
 $mesoderm-light: #e3fae1;
 $ectoderm-light: #e4c6f7;
@@ -15,8 +23,180 @@ $endoderm-light: blue;
 $default-active: #36586d;
 $default-hover: #f2f2f2;
 
+.immune-cells-matrix {
+    .file-gallery-facets {
+        .show-hide-facets {
+            top: 40px;
+        }
+
+        &.expanded {
+            padding: 5px 10px;
+            flex: 0 1 10px;
+        }
+
+        &.collapsed {
+            flex: 0 1 10px;
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-md-min) {
+            border-right: 0;
+        }
+    }
+}
+
+.immune-cells-legend, .immune-cells-buttons {
+    position: absolute;
+    top: 60px;
+    padding: 10px;
+    font-size: 0.8rem;
+
+    @media screen and (min-width: $screen-md-min) {
+        font-size: 1rem;
+    }
+
+    .layer-bubble {
+        &.cd4 {
+            background: $cd4;
+        }
+
+        &.tcell {
+            background: $tcell;
+        }
+
+        &.bcell {
+            background: $bcell;
+        }
+
+        &.nkcell {
+            background: $nkcell;
+        }
+
+        &.stem {
+            background: $stem;
+        }
+
+        &.default {
+            background: $default-active;
+        }
+    }
+}
+
+.immune-cells-buttons {
+    left: 20px;
+
+    button {
+        display: inline-block;
+        margin-right: 3px;
+    }
+}
+
+.immune-cells-legend {
+    width: 120px;
+    right: 20px;
+    border: 1px solid #d2d2d2;
+}
+
+.vertical-node-graph {
+    .unclickable {
+        pointer-events: none;
+        fill: $unclickable;
+        stroke-width: 1px;
+
+        ellipse {
+            fill: $unclickable;
+            stroke: #f3f3f3;
+        }
+    }
+
+    .clickable {
+        &.active-cell {
+            .default {
+                fill: $default-active;
+                stroke: white;
+
+                &.ellipse0 {
+                    fill: lighten($default-active, 15%);
+                }
+            }
+
+            .cd4 {
+                fill: $bcell;
+
+                &.ellipse0 {
+                    fill: lighten($cd4, 15%);
+                }
+            }
+
+            .bcell {
+                fill: $bcell;
+
+                &.ellipse0 {
+                    fill: lighten($bcell, 15%);
+                }
+            }
+
+            .tcell {
+                fill: $tcell;
+
+                &.ellipse0 {
+                    fill: lighten($tcell, 15%);
+                }
+            }
+
+            .nkcell {
+                fill: $nkcell;
+
+                &.ellipse0 {
+                    fill: lighten($nkcell, 15%);
+                }
+            }
+        }
+    }
+}
+
+.vertical-node-graph-thumbnail {
+    min-height: 100px;
+
+    svg {
+        pointer-events: none;
+    }
+}
+
+.immune-cells-error-message {
+    padding: 30px;
+}
+
 .node--internal text {
     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.immune-cells-graph {
+    .expand-arrows {
+        top: 47px;
+    }
+}
+
+.immune-cells-matrix {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+
+    .matrix__presentation {
+        @media screen and (min-width: $screen-md-min) {
+            padding-left: 30px;
+        }
+    }
+
+    .search-header-control {
+        display: none;
+    }
+}
+
+.matrix__row-data {
+    &.hide {
+        visibility: hidden;
+    }
 }
 
 .link {
@@ -35,7 +215,7 @@ $default-hover: #f2f2f2;
 .vertical-node-graph {
     svg {
         max-width: 100%;
-        font-size: 0.7rem;
+        font-size: 0.8rem;
 
         @media screen and (min-width: $screen-md-min) {
             font-size: 1rem;
@@ -60,25 +240,6 @@ $default-hover: #f2f2f2;
             cursor: pointer;
         }
     }
-
-    .js-cell {
-        .default {
-            &.hover-class {
-                fill: $default-hover;
-            }
-        }
-
-        &.active-cell {
-            .default {
-                fill: $default-active;
-                stroke: white;
-            }
-        }
-    }
-}
-
-.hide {
-    display: none;
 }
 
 // sescc matrix-specific colors and styles

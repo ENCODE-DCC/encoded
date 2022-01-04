@@ -34,7 +34,7 @@
         "non_mito_reads": 200,
         "mito_reads": 2000,
         "frac_mito_reads": 0.3,
-        "mito_stats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
+        "mito_stats": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
         "samstats": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt"
     }
 ]
