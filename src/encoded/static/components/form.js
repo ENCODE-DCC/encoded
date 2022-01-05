@@ -6,8 +6,9 @@ import jsonschema from 'jsonschema';
 import _ from 'underscore';
 import url from 'url';
 import offset from '../libs/offset';
+import UserRoles from '../libs/user_roles';
 import { FetchedData, Param } from './fetched';
-import { parseAndLogError, listingTitles, getRoles } from './globals';
+import { parseAndLogError, listingTitles } from './globals';
 import { FileInput, ItemPreview, ObjectPicker } from './inputs';
 import Layout from './layout';
 import DropdownButton from '../libs/ui/button';
@@ -601,9 +602,7 @@ export class Field extends UpdateChildMixin(React.Component) {
         const isValid = !errors[path];
         const type = schema.type || 'string';
         const sessionProperties = this.context.session_properties;
-        const roles = getRoles(sessionProperties);
-        // check if user is not admin nor submitter
-        const notAuthorized = !['admin', 'submitter'].some((role) => roles.includes(role));
+        const userRoles = new UserRoles(sessionProperties);
 
         let classBase = 'rf-Field';
         if (type === 'object') {
@@ -679,7 +678,7 @@ export class Field extends UpdateChildMixin(React.Component) {
                 options = [<option key="_null_" value={null}>&nbsp;</option>].concat(options);
             }
             // special case where Status is disabled for unpriviledged users
-            const isDisabled = notAuthorized && schema.title === 'Status';
+            const isDisabled = !userRoles.isPrivileged && schema.title === 'Status';
             input = <select className="form-control" {...inputProps} disabled={isDisabled}>{options}</select>;
         } else if (schema.linkTo) {
             // Restrict ObjectPicker to finding the specified type

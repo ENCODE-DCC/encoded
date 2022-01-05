@@ -221,35 +221,6 @@ export function parseAndLogError(cause, response) {
     return promise;
 }
 
-export function getRoles(sessionProperties) {
-    // handles {}, null and other signs of lacks of content
-    if (_.isEmpty(sessionProperties)) {
-        return [];
-    }
-
-    const roles = [];
-
-    // non-empty auth.userid-object shows user is logged at least, so has unprivileged rights
-    if (sessionProperties['auth.userid']) {
-        roles.push('unprivileged');
-    }
-
-    if (sessionProperties.admin) {
-        roles.push('admin');
-    }
-
-    const userSessionProperties = sessionProperties.user;
-
-    if (userSessionProperties &&
-            userSessionProperties.lab &&
-            userSessionProperties.lab.status === 'current' &&
-            userSessionProperties.submits_for &&
-            userSessionProperties.submits_for.length > 0) {
-        roles.push('submitter');
-    }
-
-    return roles;
-}
 
 /**
  * Sort an array of documents first by attachment download name, and then by @id.
