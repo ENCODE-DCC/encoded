@@ -578,14 +578,6 @@
                     }
                 },
                 {
-                    "required": ["replicate"],
-                    "properties": {
-                        "output_type": {
-                            "enum": ["reads"]
-                        }
-                    }
-                },
-                {
                     "required": ["hotspots_prefix"],
                     "properties": {
                         "output_type": {
@@ -866,13 +858,14 @@
                         },
                         {
                             "required": [
-                              
+                                
                                 "platform"
                             ],
                             "properties": {
                                 "file_format": {
                                     "enum": [
                                         "fastq"
+                                        
                                     ]
                                 }
                             },
@@ -908,6 +901,7 @@
                             "properties": {
                                 "file_format": {
                                     "enum": [
+                                       
                                         "sra"
                                     ]
                                 }
@@ -938,7 +932,7 @@
                         },
                         {
                             "required": [
-                               
+                              
                                 "platform",
                                 "run_type"
                             ],
@@ -946,7 +940,7 @@
                                 "file_format": {
                                     "enum": [
                                         "fastq"
-                                      
+                                        
                                     ]
                                 }
                             },
@@ -985,7 +979,7 @@
                             "properties": {
                                 "file_format": {
                                     "enum": [
-                                       
+                                     
                                         "sra"
                                     ]
                                 }
