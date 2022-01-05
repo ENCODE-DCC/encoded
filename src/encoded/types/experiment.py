@@ -332,6 +332,20 @@ class Experiment(Dataset,
             'label': 'Assay',
         },
     }
+    
+    human_donor_matrix = {
+        'y': {    
+            'group_by': ['replicates.library.biosample.donor.accession'],
+            'label': 'Donor',
+         },
+        'x': {
+            'group_by': [
+                ('assay_title', 'n/a'),
+                'replicates.library.biosample.disease_term_name',     
+            ],
+            'label': 'Assay',
+         },
+    }
 
     sescc_stem_cell_matrix = {
         'y': {

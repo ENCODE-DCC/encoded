@@ -269,6 +269,64 @@ def functional_characterization_data_view():
             }
         ]
     }
+    
+
+@search_config(
+    name='HumanDonorMatrix'
+)
+def human_donor_data_view():
+    return {
+        'facets': {
+            'assay_title': {
+                'title': 'Assay title',
+                'type': 'typeahead',
+                'open_on_load': True
+            },
+            'status': {
+                'title': 'Status',
+                'open_on_load': True
+            },
+            'target.label': {
+                'title': 'Target of assay',
+                'type': 'typeahead',
+                'length': 'long',
+                'open_on_load': True
+            },
+            'biosample_ontology.term_name' : {
+                'title': 'Biosample',
+                'type': 'typeahead',
+                'length': 'long',
+                'open_on_load': True
+            },
+            'biosample_ontology.organ_slims': {
+                'title': 'Organ',
+                'type': 'typeahead'
+            },
+            'biosample_ontology.cell_slims': {
+                'title': 'Cell',
+                'type': 'typeahead'
+            },
+            "biosample_ontology.system_slims": {
+                "title": "Systems"
+            },
+            'replicates.library.biosample.life_stage': {
+                'title': 'Life stage'
+            },
+            'replicates.library.biosample.disease_term_name': {
+                'title': 'Disease'
+            },
+            'award.project': {
+                'title': 'Project'
+            },
+            'lab.title': {
+                'title': 'Lab'
+            },
+        },
+        'columns': {},
+        'matrix': {},
+        'boost_values': {},
+        'fields': {},
+    }
 
 
 ALIASES = {
