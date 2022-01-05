@@ -636,6 +636,23 @@ class ScAtacCountsSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
     schema = load_schema('encoded:schemas/sc_atac_counts_summary_quality_metric.json')
 
 @collection(
+    name='star-solo-quality-metric',
+    properties={
+        'title': "STARsolo Quality Metric",
+    })
+class StarSoloQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'star_solo_quality_metric'
+    schema = load_schema('encoded:schemas/star_solo_quality_metric.json')
+
+@collection(
+    name='scrna-seq-counts-summary-quality-metric',
+    properties={
+        'title': "scRNA-seq Counts Summary Quality Metric",
+    })
+class ScrnaSeqCountsSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'scrna_seq_counts_summary_quality_metric'
+    schema = load_schema('encoded:schemas/scrna_seq_counts_summary_quality_metric.json')
+@collection(
     name='segway-quality-metric',
     properties={
         'title': "Segway Quality Metrics",
@@ -643,4 +660,4 @@ class ScAtacCountsSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
 class SegwayQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'segway_quality_metric'
     schema = load_schema('encoded:schemas/segway_quality_metric.json')
-    
+

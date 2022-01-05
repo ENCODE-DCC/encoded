@@ -92,6 +92,15 @@ const qcAttachmentProperties = {
         { archr_doublet_summary_text: 'ArchR doublet data' },
         { archr_pre_filter_metadata: 'ArchR pre-filter metadata' },
     ],
+    StarSoloQualityMetric: [
+        { barcode_rank_plot: 'Barcode rank plot' },
+        { sequencing_saturation_plot: 'Sequencing saturation plot' },
+    ],
+    ScrnaSeqCountsSummaryQualityMetric: [
+        { total_counts_vs_pct_mitochondria: 'Total counts vs pct mitochondria' },
+        { total_counts_vs_genes_by_count: 'Total counts vs genes by count' },
+        { counts_violin_plot: 'Counts violin plot' },
+    ],
     SegwayQualityMetric: [
         { trackname_assay: 'Trackname assay' },
         { feature_aggregation_tab: 'Feature aggregation tab' },
