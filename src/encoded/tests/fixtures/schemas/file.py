@@ -117,7 +117,6 @@ def file_fastq_no_read_length(testapp, lab, award, experiment, replicate_1_1, pl
     }
     return testapp.post_json('/file', item).json['@graph'][0]
 
-
 @pytest.fixture
 def file_bam_1_1(testapp, encode_lab, award, base_experiment, file_fastq_3):
     item = {
@@ -1309,6 +1308,11 @@ def fastq(fastq_no_replicate, replicate_url):
     item['replicate'] = replicate_url['@id']
     return item
 
+@pytest.fixture
+def filtered_fastq(fastq_no_replicate, replicate_url):
+    item = fastq_no_replicate.copy()
+    item['output_type'] = 'filtered reads'
+    return item
 
 @pytest.fixture
 def fastq_pair_1(fastq):
