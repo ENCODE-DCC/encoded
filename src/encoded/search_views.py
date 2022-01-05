@@ -14,6 +14,7 @@ from encoded.searches.caches import make_key_from_request
 from encoded.searches.caches import should_cache_search_results
 from encoded.searches.defaults import DEFAULT_ITEM_TYPES
 from encoded.searches.defaults import DEFAULT_RNA_EXPRESSION_SORT
+from encoded.searches.defaults import HOMEPAGE_SEARCH_FACETS
 from encoded.searches.defaults import RESERVED_KEYS
 from encoded.searches.defaults import TOP_HITS_ITEM_TYPES
 from encoded.searches.fields import CartSearchResponseField
@@ -26,7 +27,6 @@ from encoded.searches.fields import RemoteResponseField
 from encoded.searches.fields import TypeOnlyClearFiltersResponseFieldWithCarts
 from encoded.searches.interfaces import RNA_CLIENT
 from encoded.searches.interfaces import RNA_EXPRESSION
-
 from snosearch.decorators import conditional_cache
 from snosearch.interfaces import AUDIT_TITLE
 from snosearch.interfaces import MATRIX_TITLE
@@ -99,6 +99,7 @@ def includeme(config):
     config.add_route('top-hits', '/top-hits{slash:/?}')
     config.add_route('rnaget-report', '/rnaget-report{slash:/?}')
     config.add_route('search-config-registry', '/search-config-registry{slash:/?}')
+    config.add_route('homepage-search', '/homepage-search{slash:/?}')
     config.scan(__name__)
 
 
@@ -997,3 +998,36 @@ def rnaget_report(context, request):
 def search_config_registry(context, request):
     registry = request.registry[SEARCH_CONFIG]
     return dict(sorted(registry.as_dict().items()))
+
+
+@view_config(route_name='homepage-search', request_method='GET', permission='search')
+def homepage_search(context, request):
+    # Searches over top hit item types and calculates one @type facet.
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title=SEARCH_TITLE
+            ),
+            TypeResponseField(
+                at_type=['HomePageSearch']
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            BasicSearchWithFacetsResponseField(
+                default_item_types=TOP_HITS_ITEM_TYPES,
+                reserved_keys=RESERVED_KEYS,
+                facets=HOMEPAGE_SEARCH_FACETS,
+            ),
+            AllResponseField(),
+            FacetGroupsResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            ClearFiltersResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()

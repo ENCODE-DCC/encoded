@@ -183,12 +183,14 @@ export const formatCollections = (collections) => {
 /**
 * Get results from all of the data collections for a given search term, filter collections
 * with no results, and format the collections in a way that can be rendered by dropdown.
+* You can optionally override the standard set of collections to search.
 * @param {string} searchTerm - The user search term.
+* @param {array[object]} alternateCollections - Alternate collections to search.
 * @return {array[object]} Formatted collection results.
 */
-export const getHitsFromCollections = (searchTerm) => (
+export const getHitsFromCollections = (searchTerm, alternateCollections) => (
     Promise.all(
-        COLLECTIONS.map(
+        (alternateCollections || COLLECTIONS).map(
             (collection) => fetchTotalResultsFromCollection(collection, searchTerm)
         )
     ).then(

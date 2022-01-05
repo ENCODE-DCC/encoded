@@ -6,7 +6,7 @@ import { Panel, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
 import { DataTable } from './datatable';
 import { MatrixBadges } from './objectutils';
-import { SearchControls } from './search';
+import { ClearSearchTerm, SearchControls } from './search';
 
 /**
  * All assay columns not included in matrix.
@@ -498,14 +498,19 @@ const MatrixHeader = ({ context }) => {
 
     return (
         <div className="matrix-header">
-            <div className="matrix-header__title">
-                <div className="matrix-title-badge">
+            <div className="matrix-header__banner">
+                <div className="matrix-header__title">
                     <h1>{context.title}</h1>
-                    <MatrixBadges context={context} />
+                    <ClearSearchTerm searchUri={context['@id']} />
                 </div>
-                <div className="matrix-description">
-                    <div className="matrix-description__text">
-                        Human brain samples collection page that includes data from multiple brain regions collected from individuals with various levels of cognitive impairment.
+                <div className="matrix-header__details">
+                    <div className="matrix-title-badge">
+                        <MatrixBadges context={context} />
+                    </div>
+                    <div className="matrix-description">
+                        <div className="matrix-description__text">
+                            Human brain samples collection page that includes data from multiple brain regions collected from individuals with various levels of cognitive impairment.
+                        </div>
                     </div>
                 </div>
             </div>

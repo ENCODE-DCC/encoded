@@ -9,6 +9,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { DataTable } from './datatable';
 import * as globals from './globals';
 import { MatrixBadges } from './objectutils';
+import { ClearSearchTerm } from './search';
 
 
 /**
@@ -318,14 +319,19 @@ TargetFilter.defaultProps = {
  */
 const MatrixHeader = ({ context, targetFilterText, textChangeHandler }) => (
     <div className="matrix-header">
-        <div className="matrix-header__title">
-            <div className="matrix-title-badge">
+        <div className="matrix-header__banner">
+            <div className="matrix-header__title">
                 <h1>{context.title}</h1>
-                <MatrixBadges context={context} />
+                <ClearSearchTerm searchUri={context['@id']} />
             </div>
-            <div className="matrix-description">
-                <div className="matrix-description__text">
-                    The ENCORE project aims to study protein-RNA interactions by creating a map of RNA binding proteins (RBPs) encoded in the human genome and identifying the RNA elements that the RBPs bind to.
+            <div className="matrix-header__details">
+                <div className="matrix-title-badge">
+                    <MatrixBadges context={context} />
+                </div>
+                <div className="matrix-description">
+                    <div className="matrix-description__text">
+                        The ENCORE project aims to study protein-RNA interactions by creating a map of RNA binding proteins (RBPs) encoded in the human genome and identifying the RNA elements that the RBPs bind to.
+                    </div>
                 </div>
             </div>
         </div>

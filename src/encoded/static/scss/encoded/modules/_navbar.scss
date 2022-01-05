@@ -143,6 +143,7 @@ $navbar-bg-color:            #0a253d;
 .navbar__nav {
     margin: 0;
     padding: 0;
+    height: 100%;
     list-style: none;
 
     @media screen and (min-width: $screen-md-min) {
@@ -160,6 +161,7 @@ $navbar-bg-color:            #0a253d;
 
     .dropdown {
         position: relative;
+        height: 100%;
 
         .dropdown__toggle {
             @include nav-title;
@@ -181,6 +183,15 @@ $navbar-bg-color:            #0a253d;
             .dropdown__menu {
                 display: block;
             }
+        }
+    }
+
+    #user-actions-footer {
+        .dropdown__toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 15px;
         }
     }
 }
@@ -501,5 +512,21 @@ $navbar-bg-color:            #0a253d;
         @media screen and (min-width: $screen-md-min) {
             padding-bottom: 0;
         }
+    }
+}
+
+a[data-trigger="login"] {
+    .svg-icon-user {
+        width: 16px;
+    }
+}
+
+.navbar-twitter {
+    display: flex;
+    align-items: center;
+
+    .svg-icon-twitter {
+        width: 16px;
+        fill: #1d9cf0;
     }
 }

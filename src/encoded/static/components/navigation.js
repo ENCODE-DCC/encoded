@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import { svgIcon } from '../libs/svg-icons';
 import { Navbar, Nav, NavItem } from '../libs/ui/navbar';
 import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
 import { CartMenu } from './cart';
@@ -172,7 +173,7 @@ export default class Navigation extends React.Component {
                     navClasses="navbar-main"
                 >
                     <GlobalSections />
-                    <SecondarySections isHomePage={this.props.isHomePage} />
+                    <SecondarySections />
                 </Navbar>
                 {this.state.testWarning ?
                     <div className="test-warning">
@@ -189,14 +190,6 @@ export default class Navigation extends React.Component {
         );
     }
 }
-
-Navigation.propTypes = {
-    isHomePage: PropTypes.bool, // True if current page is home page
-};
-
-Navigation.defaultProps = {
-    isHomePage: false,
-};
 
 Navigation.contextTypes = {
     location_href: PropTypes.string,
@@ -271,25 +264,35 @@ GlobalSections.contextTypes = {
 };
 
 
-const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }, context) => {
-    const { session } = context;
-    const disabled = !session;
-    const userActionRender = !(session && session['auth.userid']) ?
-        <a href="#!" className="dropdown__toggle" data-trigger="login" disabled={disabled}>Sign in / Create account</a> :
+const SecondarySections = ({ openDropdown, dropdownClick }, reactContext) => {
+    const disabled = !reactContext.session;
+    const userActionRender = !(reactContext.session && reactContext.session['auth.userid']) ?
+        <a href="#!" className="dropdown__toggle" data-trigger="login" disabled={disabled}>{svgIcon('user')}</a> :
         null;
 
     return (
         <Nav>
-            <NavBarMultiSearch />
-            {isHomePage ? null : <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />}
+            {!reactContext.isHomePage &&
+                <>
+                    <NavBarMultiSearch />
+                    <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
+                </>
+            }
             <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
             <li className="dropdown" id="user-actions-footer">{userActionRender}</li>
+            <a
+                href="https://twitter.com/EncodeDCC"
+                className="navbar-twitter"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="ENCODE Twitter feed"
+            >
+                {svgIcon('twitter')}
+            </a>
         </Nav>);
 };
 
 SecondarySections.propTypes = {
-    /** True if current page is home page */
-    isHomePage: PropTypes.bool,
     /** ID of the dropdown currently visible */
     openDropdown: PropTypes.string,
     /** Function to call when dropdown clicked */
@@ -297,11 +300,13 @@ SecondarySections.propTypes = {
 };
 
 SecondarySections.contextTypes = {
-    session: PropTypes.object, // Login session information
+    /** Login session information */
+    session: PropTypes.object,
+    /** True if currently displaying home page */
+    isHomePage: PropTypes.bool,
 };
 
 SecondarySections.defaultProps = {
-    isHomePage: false,
     openDropdown: '',
     dropdownClick: null,
 };

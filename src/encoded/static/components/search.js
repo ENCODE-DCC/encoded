@@ -31,6 +31,7 @@ import { BiosampleSummaryDisplay, BiosampleOrganismNames, GeneticModificationOrg
 import { BatchDownloadControls, ViewControls } from './view_controls';
 import { BrowserSelector } from './vis_defines';
 import { BodyMapThumbnailAndModal } from './body_map';
+import { keyCode } from '../libs/constants';
 
 
 // Should really be singular...
@@ -1260,39 +1261,45 @@ export const FacetContext = React.createContext({});
 
 
 /**
+ * Trim the leading ? and trailing & from a query string, if present.
+ * @param {string} searchBase - Base URL for search that might start with a ? and end with a &
+ * @returns {string} - Same URL but with leading ? and trailing & removed
+ */
+const trimSearchBase = (searchBase) => {
+    let searchQuery = searchBase;
+    if (searchQuery[0] === '?') {
+        searchQuery = searchQuery.substr(1);
+    }
+    if (searchQuery.slice(-1) === '&') {
+        searchQuery = searchQuery.slice(0, -1);
+    }
+    return searchQuery;
+};
+
+
+/**
+ * Extract the first `searchTerm` value from the query string if any exist.
+ * @param {string} query Query string to parse
+ * @returns {string} `searchTerm` value from query string if present
+ */
+const extractSearchTerm = (query) => {
+    const queryString = new QueryString(query);
+    const searchTerms = queryString.getKeyValues('searchTerm');
+    return searchTerms.length > 0 ? searchTerms[0] : '';
+};
+
+
+/**
  * Entry field for filtering the results list when search results appear in edit forms.
  *
  * @export
  * @class TextFilter
  * @extends {React.Component}
  */
-export class TextFilter extends React.Component {
-    constructor() {
-        super();
-
-        // Bind `this` to non-React component methods.
-        this.performSearch = this.performSearch.bind(this);
-        this.onKeyDown = this.onKeyDown.bind(this);
-    }
-
-    /**
-    * Keydown event handler
-    *
-    * @param {object} e Key down event
-    * @memberof TextFilter
-    * @private
-    */
-    onKeyDown(e) {
-        if (e.keyCode === 13) {
-            this.performSearch(e);
-            e.preventDefault();
-        }
-    }
-
-    getValue() {
-        const filter = this.props.filters.filter((f) => f.field === 'searchTerm');
-        return filter.length > 0 ? filter[0].term : '';
-    }
+export const TextFilter = ({ searchBase, onChange }) => {
+    const [searchTerm, setSearchTerm] = React.useState(() => (
+        extractSearchTerm(trimSearchBase(searchBase))
+    ));
 
     /**
     * Makes call to do search
@@ -1301,20 +1308,38 @@ export class TextFilter extends React.Component {
     * @memberof TextFilter
     * @private
     */
-    performSearch(e) {
-        let searchStr = this.props.searchBase.replace(/&?searchTerm=[^&]*/, '');
-        const { value } = e.target;
-        if (value) {
-            searchStr += `searchTerm=${e.target.value}`;
+    const performSearch = () => {
+        const queryString = new QueryString(trimSearchBase(searchBase));
+        if (searchTerm) {
+            queryString.replaceKeyValue('searchTerm', searchTerm);
         } else {
-            searchStr = searchStr.substring(0, searchStr.length - 1);
+            queryString.deleteKeyValue('searchTerm');
         }
-        this.props.onChange(searchStr);
-    }
+        onChange(`?${queryString.format()}`);
+    };
 
-    shouldUpdateComponent(nextProps) {
-        return (this.getValue(this.props) !== this.getValue(nextProps));
-    }
+    const onKeyDown = (e) => {
+        if (e.keyCode === keyCode.RETURN) {
+            e.preventDefault();
+            performSearch(e);
+        }
+    };
+
+    /**
+    * Called when the user changes the contents of the search input box. Sets the current input box
+    * contents, or initiates a new search if the user hits the ENTER key.
+    * @param {object} e input change event
+    * @memberof TextFilter
+    * @private
+    */
+    const onInputChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    React.useEffect(() => {
+        const query = trimSearchBase(searchBase);
+        setSearchTerm(extractSearchTerm(query));
+    }, [searchBase]);
 
     /**
     * Provides view for @see {@link TextFilter}
@@ -1323,22 +1348,20 @@ export class TextFilter extends React.Component {
     * @memberof TextFilter
     * @public
     */
-    render() {
-        return (
-            <input
-                type="search"
-                className="search-query"
-                placeholder="Enter search term(s)"
-                defaultValue={this.getValue(this.props)}
-                onKeyDown={this.onKeyDown}
-                data-test="filter-search-box"
-            />
-        );
-    }
-}
+    return (
+        <input
+            type="search"
+            className="search-query"
+            placeholder="Enter search term(s)"
+            value={searchTerm}
+            onChange={onInputChange}
+            onKeyDown={onKeyDown}
+            data-test="filter-search-box"
+        />
+    );
+};
 
 TextFilter.propTypes = {
-    filters: PropTypes.array.isRequired,
     searchBase: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
@@ -1614,6 +1637,7 @@ export const FacetList = (props) => {
                                 {!(hideDocType) ?
                                     <DocTypeTitle searchResults={context} wrapper={(children) => <h1>{children} {docTypeTitleSuffix}</h1>} />
                                 : null}
+                                <ClearSearchTerm searchUri={context['@id']} />
                                 {context.clear_filters ?
                                     <ClearFilters clearUri={context.clear_filters} searchUri={context['@id']} enableDisplay={clearButton} />
                                 : null}
@@ -1806,6 +1830,48 @@ ClearFilters.propTypes = {
 
 ClearFilters.defaultProps = {
     enableDisplay: true,
+};
+
+
+/**
+ * Display "Filter by <searchTerm>" buttons if the current search page includes `searchTerm` queries
+ * parameter.
+ */
+export const ClearSearchTerm = ({ searchUri }) => {
+    // Extract the searchTerm elements from the query string.
+    const parsedSearchUri = url.parse(searchUri);
+    const queryString = new QueryString(parsedSearchUri.query);
+    const searchTerms = queryString.getKeyValues('searchTerm');
+    if (searchTerms.length > 0) {
+        return (
+            <div className="clear-search-terms">
+                <div className="clear-search-term__title">Filtering by:</div>
+                {_.uniq(searchTerms).map((searchTerm) => {
+                    // For each searchTerm parameter, create a link to remove it from the search
+                    // URI.
+                    const mutableQuery = queryString.clone();
+                    mutableQuery.deleteKeyValue('searchTerm', searchTerm);
+                    return (
+                        <a
+                            key={searchTerm}
+                            href={`?${mutableQuery.format()}`}
+                            className="clear-search-term__control"
+                            aria-label={`Clear search term: ${searchTerm}`}
+                        >
+                            {searchTerm}
+                            {svgIcon('multiplication')}
+                        </a>
+                    );
+                })}
+            </div>
+        );
+    }
+    return null;
+};
+
+ClearSearchTerm.propTypes = {
+    /** Current search page's URI */
+    searchUri: PropTypes.string.isRequired,
 };
 
 

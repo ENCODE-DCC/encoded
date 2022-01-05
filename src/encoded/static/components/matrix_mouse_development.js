@@ -552,14 +552,18 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
  */
 const MatrixHeader = ({ context }) => (
     <div className="matrix-header">
-        <div className="matrix-header__title">
-            <div className="matrix-title-badge">
+        <div className="matrix-header__banner">
+            <div className="matrix-header__title">
                 <h1>{context.title}</h1>
-                <MatrixBadges context={context} type="MouseDevelopment" />
             </div>
-            <div className="matrix-description">
-                <div className="matrix-description__text">
-                    The mouse development matrix displays embryonic to postnatal mouse developmental time course data across several tissues organized as reference epigenomes.
+            <div className="matrix-header__details">
+                <div className="matrix-title-badge">
+                    <MatrixBadges context={context} type="MouseDevelopment" />
+                </div>
+                <div className="matrix-description">
+                    <div className="matrix-description__text">
+                        The mouse development matrix displays embryonic to postnatal mouse developmental time course data across several tissues organized as reference epigenomes.
+                    </div>
                 </div>
             </div>
         </div>

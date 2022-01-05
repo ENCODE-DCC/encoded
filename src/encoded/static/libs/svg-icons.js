@@ -211,6 +211,44 @@ const edit = (style) => (
     </svg>
 );
 
+const magnifyingGlass = (style) => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style={style} className="svg-icon svg-icon-magnifying-glass">
+        <path d="M505,442.7L405.3,343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3,44-79.7,44-128C416,93.1,322.9,0,208,0S0,93.1,0,208
+            s93.1,208,208,208c48.3,0,92.7-16.4,128-44v16.3c0,6.4,2.5,12.5,7,17l99.7,99.7c9.4,9.4,24.6,9.4,33.9,0l28.3-28.3
+            C514.3,467.3,514.3,452.1,505,442.7z M208,336c-70.7,0-128-57.2-128-128c0-70.7,57.2-128,128-128c70.7,0,128,57.2,128,128
+            C336,278.7,278.8,336,208,336z"
+        />
+    </svg>
+);
+
+const questionCircle = (style) => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style={style} className="svg-icon svg-icon-question-circle">
+        <path d="M504,256c0,137-111,248-248,248S8,393,8,256C8,119.1,119,8,256,8S504,119.1,504,256z M262.7,90c-54.5,0-89.3,23-116.5,63.8
+            c-3.5,5.3-2.4,12.4,2.7,16.3l34.7,26.3c5.2,3.9,12.6,3,16.7-2.1c17.9-22.7,30.1-35.8,57.3-35.8c20.4,0,45.7,13.1,45.7,33
+            c0,15-12.4,22.7-32.5,34C247.1,238.5,216,254.9,216,296v4c0,6.6,5.4,12,12,12h56c6.6,0,12-5.4,12-12v-1.3
+            c0-28.5,83.2-29.6,83.2-106.7C379.2,134,319,90,262.7,90z M256,338c-25.4,0-46,20.6-46,46c0,25.4,20.6,46,46,46s46-20.6,46-46
+            C302,358.6,281.4,338,256,338z"
+        />
+    </svg>
+);
+
+const user = (style) => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={style} className="svg-icon svg-icon-user">
+        <path d="M224,256c70.7,0,128-57.3,128-128S294.7,0,224,0S96,57.3,96,128S153.3,256,224,256z M134.4,288C85,297,0,348.2,0,422.4V464
+            c0,26.5,0,48,48,48h352c48,0,48-21.5,48-48v-41.6c0-74.2-92.8-125.4-134.4-134.4S183.8,279,134.4,288z"
+        />
+    </svg>
+);
+
+const twitter = (style) => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style={style} className="svg-icon svg-icon-twitter">
+        <path d="M24,4.6c-0.9,0.4-1.8,0.7-2.8,0.8c1-0.6,1.8-1.6,2.2-2.7c-1,0.6-2,1-3.1,1.2c-0.9-1-2.2-1.6-3.6-1.6c-3.2,0-5.5,3-4.8,6
+            C7.7,8.1,4.1,6.1,1.7,3.1C0.4,5.4,1,8.3,3.2,9.7C2.4,9.7,1.6,9.5,1,9.1c-0.1,2.3,1.6,4.4,3.9,4.9c-0.7,0.2-1.5,0.2-2.2,0.1
+            c0.6,2,2.4,3.4,4.6,3.4c-2.1,1.6-4.7,2.3-7.3,2c2.2,1.4,4.8,2.2,7.5,2.2c9.1,0,14.3-7.7,14-14.6C22.5,6.4,23.3,5.5,24,4.6z"
+        />
+    </svg>
+);
+
 const icons = {
     disclosure: (style) => <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style={style} className="svg-icon svg-icon-disclosure"><circle cx="240" cy="240" r="240" /><polyline points="401.79 175.66 240 304.34 78.21 175.66" /></svg>,
     table,
@@ -242,6 +280,10 @@ const icons = {
     venus,
     mars,
     edit,
+    magnifyingGlass,
+    questionCircle,
+    user,
+    twitter,
 };
 
 /**
@@ -252,9 +294,11 @@ const icons = {
  */
 export const svgIcon = (icon, style) => icons[icon](style);
 
-// Render the icon used to collapse a panel from the title bar.
-//   collapsed: T if the icon should be rendered for the collapsed state
-//   handlecollapse: function to call when the icon is clicked
+/**
+ * Render the icon used to collapse a panel from the title bar.
+ * @param {boolean} collapsed - True if the icon should be rendered for the collapsed state
+ * @param {string} addClasses - CSS classes to add to <SVG> icon element
+ */
 export const collapseIcon = (collapsed, addClasses) => (
     <svg className={`collapsing-title-control${addClasses ? ` ${addClasses}` : ''}`} data-name="Collapse Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
         {collapsed ?

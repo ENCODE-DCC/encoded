@@ -85,3 +85,23 @@ DEFAULT_RNA_EXPRESSION_SORT = [
     '-expression.tpm',
     'gene.symbol',
 ]
+
+ABSTRACT_TYPES = [
+    'Item',
+    'Dataset',
+    'FileSet',
+    'Series',
+    'Donor',
+    'QualityMetric',
+    'Characterization',
+]
+
+HOMEPAGE_SEARCH_FACETS = [
+    (
+        'type',
+        {
+            'title': 'Data Type',
+            'exclude': ABSTRACT_TYPES,
+        }
+    ),
+]

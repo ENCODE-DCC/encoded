@@ -8,7 +8,7 @@ import { DataTable } from './datatable';
 import * as globals from './globals';
 import { MATRIX_VISUALIZE_LIMIT, SearchFilter } from './matrix';
 import { MatrixBadges } from './objectutils';
-import { SearchControls } from './search';
+import { ClearSearchTerm, SearchControls } from './search';
 
 
 /**
@@ -471,14 +471,19 @@ const MatrixHeader = ({ context }) => {
 
     return (
         <div className="matrix-header">
-            <div className="matrix-header__title">
-                <div className="matrix-title-badge">
+            <div className="matrix-header__banner">
+                <div className="matrix-header__title">
                     <h1>{context.title}</h1>
-                    <MatrixBadges context={context} />
+                    <ClearSearchTerm searchUri={context['@id']} />
                 </div>
-                <div className="matrix-description">
-                    <div className="matrix-description__text">
-                        ENTEx is a collaboration with the GTEx Consortium to profile approximately 30 overlapping tissues from four donors.
+                <div className="matrix-header__details">
+                    <div className="matrix-title-badge">
+                        <MatrixBadges context={context} />
+                    </div>
+                    <div className="matrix-description">
+                        <div className="matrix-description__text">
+                            ENTEx is a collaboration with the GTEx Consortium to profile approximately 30 overlapping tissues from four donors.
+                        </div>
                     </div>
                 </div>
             </div>

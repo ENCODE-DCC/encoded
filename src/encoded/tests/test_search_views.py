@@ -1168,3 +1168,30 @@ def test_search_views_search_config_registry(index_workbook, testapp):
     assert 'ExperimentFacets' in r.json
     assert 'ExperimentColumns' in r.json
     assert 'ExperimentFacetGroups' in r.json
+
+
+def test_search_views_homepage_search_view(index_workbook, testapp):
+    r = testapp.get(
+        '/homepage-search/?searchTerm=b&limit=0'
+    )
+    assert len(r.json['@graph']) == 0
+    assert len(r.json['facets']) == 1
+    assert len(r.json['facets'][0]['terms']) > 20
+    type_keys = [
+        f['key']
+        for f in r.json['facets'][0]['terms']
+    ]
+    assert 'Experiment' in type_keys
+    assert 'File' in type_keys
+    assert 'Dataset' not in type_keys
+    assert 'Donor' not in type_keys
+    assert 'Series' not in type_keys
+    assert r.json['total'] > 500
+    assert r.json['title'] == 'Search'
+    assert r.json['@id'] == '/homepage-search/?searchTerm=b&limit=0'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['HomePageSearch']
+    assert r.json['notification'] == 'Success'
+    assert r.status_code == 200
+    assert 'debug' not in r.json
+    assert 'columns' not in r.json

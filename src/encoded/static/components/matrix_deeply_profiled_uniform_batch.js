@@ -9,7 +9,7 @@ import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
 import * as globals from './globals';
 import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT } from './matrix';
-import { FacetList, SearchControls } from './search';
+import { ClearSearchTerm, FacetList, SearchControls } from './search';
 import { CartAddAllElements } from './cart';
 
 
@@ -342,12 +342,15 @@ const MatrixHeader = ({ context }, reactContext) => {
 
     return (
         <div className="matrix-header">
-            <div className="matrix-header__title">
-                <div className="matrix-title-badge">
+            <div className="matrix-header__banner">
+                <div className="matrix-header__title">
                     <h1>{context.title}</h1>
+                    <ClearSearchTerm searchUri={context['@id']} />
                 </div>
-                <div className="matrix-description">
-                    <div className="matrix-description__text">{matrixDescription}</div>
+                <div className="matrix-header__details">
+                    <div className="matrix-description">
+                        <div className="matrix-description__text">{matrixDescription}</div>
+                    </div>
                 </div>
             </div>
             <div className="matrix-header__controls">

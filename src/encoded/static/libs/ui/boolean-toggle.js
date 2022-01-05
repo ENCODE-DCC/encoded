@@ -10,6 +10,8 @@ import PropTypes from 'prop-types';
  */
 const DEFAULT_SWITCH_HEIGHT = 22;
 const DEFAULT_SWITCH_WIDTH = DEFAULT_SWITCH_HEIGHT * 1.6;
+const DEFAULT_SWITCH_BACKGROUND_COLOR_ON = '#4183c4';
+const DEFAULT_SWITCH_BACKGROUND_COLOR_OFF = '#e9e9eb';
 const BooleanToggle = ({
     id,
     state,
@@ -24,6 +26,7 @@ const BooleanToggle = ({
         cssTitle,
         cssFrame,
         cssActuator,
+        switchBackgroundColor,
     },
 }) => {
     // True if checkbox input has focus.
@@ -51,7 +54,9 @@ const BooleanToggle = ({
         width: switchWidth,
         height: switchHeight,
         borderRadius: switchHeight / 2,
-        backgroundColor: state ? '#4183c4' : '#e9e9eb',
+        backgroundColor: state
+            ? switchBackgroundColor?.on || DEFAULT_SWITCH_BACKGROUND_COLOR_ON
+            : switchBackgroundColor?.off || DEFAULT_SWITCH_BACKGROUND_COLOR_OFF,
     };
     const actuatorStyles = {
         width: triggerSize,
@@ -104,6 +109,13 @@ BooleanToggle.propTypes = {
         cssFrame: PropTypes.string,
         /** CSS class to add to the switch actuator */
         cssActuator: PropTypes.string,
+        /** Switch background color */
+        switchBackgroundColor: PropTypes.exact({
+            /** Switch background color when on */
+            on: PropTypes.string,
+            /** Switch background color when off */
+            off: PropTypes.string,
+        }),
     }),
 };
 
