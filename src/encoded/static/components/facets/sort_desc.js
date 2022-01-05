@@ -12,6 +12,4 @@ SortDecs.propTypes = {
     terms: PropTypes.object.isRequired,
 };
 
-
 FacetFunctionRegistry.sortTerms.register('publication_year', SortDecs);
-
