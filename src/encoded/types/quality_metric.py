@@ -661,3 +661,13 @@ class SegwayQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'segway_quality_metric'
     schema = load_schema('encoded:schemas/segway_quality_metric.json')
 
+
+@collection(
+    name='bru-library-quality-metrics',
+    properties={
+        'title': "Bru assay library quality metrics",
+        'description': 'A set of library quality metrics for Bru assays',
+    })
+class BruLibraryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'bru_library_quality_metric'
+    schema = load_schema('encoded:schemas/bru_library_quality_metric.json')
