@@ -19,7 +19,7 @@
 * Added *inclusion list*, *sparse gene count matrix of all reads*, *sparse gene count matrix of unique reads*, *unfiltered sparse gene count matrix of all reads*, *unfiltered sparse gene count matrix of unique reads*, and *unfiltered sparse splice junction count matrix of unique reads* to the enum list for *output_type*
 * Added *NcoI*, *MseI*, *MboI and MseI* to the enum list for *restriction_enzymes*
 * Added *kmer weights* and *training set* to the enum list for *output_type*
-* Added *functional conservation mapping* and *3D structure* to the enum list for *output_type*
+* Added *functional conservation mapping* to the enum list for *output_type*
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.

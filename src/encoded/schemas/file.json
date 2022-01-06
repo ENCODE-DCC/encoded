@@ -1117,8 +1117,7 @@
                                         "reporter code counts",
                                         "nanopore signal",
                                         "repeat elements annotation",
-                                        "kmer weights",
-                                        "3D structure"
+                                        "kmer weights"
                                     ]
                                 }
                             }
@@ -1221,8 +1220,7 @@
                                         "enhancer prediction model",
                                         "promoter prediction model",
                                         "inclusion list",
-                                        "functional conservation mapping",
-                                        "3D structure"
+                                        "functional conservation mapping"
                                     ]
                                 }
                             }
@@ -1946,8 +1944,7 @@
                         "unfiltered sparse splice junction count matrix of unique reads",
                         "unidirectional peaks",
                         "UV enriched segment quantifications",
-                        "variant calls",
-                        "3D structure"
+                        "variant calls"
                     ]
                 },
                 {
@@ -2583,8 +2580,6 @@
         "enhancer prediction model": "annotation",
         "promoter prediction model": "annotation",
         "inclusion list": "annotation",
-        "3D structure": "annotation",
-
         "genome subcompartments": "annotation",
         "chromatin stripes": "annotation",
 

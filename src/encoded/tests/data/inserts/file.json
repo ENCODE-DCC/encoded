@@ -4986,22 +4986,6 @@
         "assembly": "GRCh38"
     },
     {
-        "accession": "ENCFF003DEE",
-        "aliases": [
-            "ali-mortazavi:3D structure file"
-        ],
-        "award": "U54HG006998",
-        "dataset": "ENCSR606VJQ",
-        "file_format": "tsv",
-        "file_size": 9000000,
-        "lab": "ali-mortazavi",
-        "md5sum": "2ab07af6120ee3ad4b0629ae81bf08cd",
-        "output_type": "3D structure",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "c81fee60-3d8a-4505-888e-6a66aa75e78a"
-    },
-    {
         "accession": "ENCFF001FXN",
         "aliases": [
             "ali-mortazavi:functional conservation mapping file"

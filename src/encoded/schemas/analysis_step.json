@@ -300,8 +300,7 @@
                     "unfiltered sparse splice junction count matrix of unique reads",
                     "unidirectional peaks",
                     "UV enriched segment quantifications",
-                    "variant calls",
-                    "3D structure"
+                    "variant calls"
                 ]
             }
         },
@@ -505,8 +504,7 @@
                     "unfiltered sparse splice junction count matrix of unique reads",
                     "unidirectional peaks",
                     "UV enriched segment quantifications",
-                    "variant calls",
-                    "3D structure"
+                    "variant calls"
                 ]
             }
         },
