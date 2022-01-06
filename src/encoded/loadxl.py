@@ -83,6 +83,7 @@ ORDER = [
     'atac_library_complexity_quality_metric',
     'atac_peak_enrichment_quality_metric',
     'atac_replication_quality_metric',
+    'bru_library_quality_metric',
     'chia_pet_alignment_quality_metric',
     'chia_pet_chr_interactions_quality_metric',
     'chia_pet_peak_enrichment_quality_metric',
