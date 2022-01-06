@@ -325,6 +325,19 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
+    "NTR:0000675": {
+        "assay": ['Ribosome activity'],
+        "category": [],
+        "developmental": [],
+        "name": "Ribosome activity",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "Ribosome activity",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
 }
 
 ntr_biosamples = {

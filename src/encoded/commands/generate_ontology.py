@@ -190,7 +190,8 @@ assay_slims = {
     'OBI:0002082': 'Reporter assay', # 'Reporter gene assay'
     'OBI:0002675': 'Massively parallel reporter assay', 
     'NTR:0000520': 'CRISPR screen',
-    'OBI:0000711': 'Library preparation'
+    'OBI:0000711': 'Library preparation',
+    'NTR:0000675': 'Ribosome activity'
 }
 
 preferred_name = {
