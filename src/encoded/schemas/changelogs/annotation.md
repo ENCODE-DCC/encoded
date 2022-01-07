@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Schema version 35
+* The *assay_term_name* property is now submittable as an array.
+
 ### Minor changes since schema version 34
 * Added *trait* property that is allowed only for *annotation_type* enum *fine-mapped variants*
 

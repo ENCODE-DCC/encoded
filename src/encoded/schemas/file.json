@@ -1219,7 +1219,8 @@
                                         "TF binding prediction model",
                                         "enhancer prediction model",
                                         "promoter prediction model",
-                                        "inclusion list"
+                                        "inclusion list",
+                                        "functional conservation mapping"
                                     ]
                                 }
                             }
@@ -1813,6 +1814,7 @@
                         "fine-mapped variants",
                         "fold change over control",
                         "footprints",
+                        "functional conservation mapping",
                         "functional conservation quantifications",
                         "fragments",
                         "gene alignments",
@@ -2571,13 +2573,13 @@
         "novel peptides": "annotation",
         "unidirectional peaks": "annotation",
         "polyA sites": "annotation",
+        "functional conservation mapping": "annotation",
         "functional conservation quantifications": "annotation",
         "regulatory elements prediction model": "annotation",
         "TF binding prediction model": "annotation",
         "enhancer prediction model": "annotation",
         "promoter prediction model": "annotation",
         "inclusion list": "annotation",
-
         "genome subcompartments": "annotation",
         "chromatin stripes": "annotation",
 
