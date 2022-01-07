@@ -270,6 +270,7 @@ $CARD_HIGHLIGHT_COLOR: #ffea00;
 
 .card {
     display: block;
+    flex-grow: 1;
     position: relative;
     margin: 10px 0;
     padding: 10px;

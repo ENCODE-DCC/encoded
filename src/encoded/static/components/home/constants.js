@@ -170,4 +170,10 @@ export const HOME_COLLECTIONS = [
         '@id': '/search/?type=Annotation&encyclopedia_version=ENCODE+v5&annotation_type=imputation',
         '@type': ['DataCollection'],
     },
+    {
+        title: 'Human donors',
+        searchUrl: '/search/?type=Experiment&control_type!=*&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&biosample_ontology.classification=tissue&status=released&limit=0&format=json',
+        '@id': '/human-donor-matrix/?type=Experiment&control_type!=*&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&biosample_ontology.classification=tissue&status=released&config=HumanDonorMatrix',
+        '@type': ['DataCollection'],
+    },
 ];
