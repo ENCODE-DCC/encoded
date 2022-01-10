@@ -126,7 +126,7 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
                     sorted(list(fragmentation_methods_for_experiment))
                 )
             )
-            yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')       
+            yield AuditFailure('inconsistent fragmentation method', detail, level='WARNING')       
 
 
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
