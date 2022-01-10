@@ -606,7 +606,7 @@ def audit_file_index_of(value, system):
                 f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
                 f'specifies that it is index_of only one paired-end fastq file.'
             )
-            yield AuditFailure('inconsistent index file', detail, level='ERROR')
+            yield AuditFailure('inconsistent index file', detail, level='WARNING')
 
         if incorrect_pairings > 0 and run_type == {'paired-ended'}:
             detail = (
