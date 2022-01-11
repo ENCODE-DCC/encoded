@@ -167,7 +167,7 @@ export const HOME_COLLECTIONS = [
     {
         title: 'Imputation',
         searchUrl: '/search/?type=Annotation&encyclopedia_version=current&annotation_type=imputation&limit=0&format=json',
-        '@id': '/search/?type=Annotation&encyclopedia_version=ENCODE+v5&annotation_type=imputation',
+        '@id': '/search/?type=Annotation&encyclopedia_version=current&annotation_type=imputation',
         '@type': ['DataCollection'],
     },
     {
