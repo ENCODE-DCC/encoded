@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import { svgIcon } from '../libs/svg-icons';
 import UserRoles from '../libs/user_roles';
 import { Panel, PanelHeading, PanelBody, PanelFooter } from '../libs/ui/panel';
 import Tooltip from '../libs/ui/tooltip';
@@ -140,7 +141,7 @@ const experimentTableColumns = {
     },
 
     readDepthChip: {
-        title: <div>Read depth<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Number of mapped reads passing quality control filtering. Minimum read depth is 5M. For broad histone marks, acceptable read depth is &gt;35M and recommended read depth is &gt;45M. For other targets, acceptable read depth is &gt;10M and recommended read depth is &gt;20M.</Tooltip></div>,
+        title: <div>Read depth<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">Number of mapped reads passing quality control filtering. Minimum read depth is 5M. For broad histone marks, acceptable read depth is &gt;35M and recommended read depth is &gt;45M. For other targets, acceptable read depth is &gt;10M and recommended read depth is &gt;20M.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -163,7 +164,7 @@ const experimentTableColumns = {
     },
 
     readDepthDnase: {
-        title: <div>Read depth<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Number of mapped reads passing quality control filtering. For DNase-seq, minimum read depth is 20M and recommended read depth is &gt;50M.</Tooltip></div>,
+        title: <div>Read depth<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">Number of mapped reads passing quality control filtering. For DNase-seq, minimum read depth is 20M and recommended read depth is &gt;50M.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -186,7 +187,7 @@ const experimentTableColumns = {
     },
 
     NRF: {
-        title: <div>NRF<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Non-redundant fraction (indicates library complexity). Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads. Acceptable NRF is &gt;0.5 and recommended NRF is &gt;0.8.</Tooltip></div>,
+        title: <div>NRF<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">Non-redundant fraction (indicates library complexity). Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads. Acceptable NRF is &gt;0.5 and recommended NRF is &gt;0.8.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -209,7 +210,7 @@ const experimentTableColumns = {
     },
 
     NSC: {
-        title: <div>NSC<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts. Acceptable NSC is &gt;1.05 and recommended NSC is &gt;1.1.</Tooltip></div>,
+        title: <div>NSC<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts. Acceptable NSC is &gt;1.05 and recommended NSC is &gt;1.1.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -232,7 +233,7 @@ const experimentTableColumns = {
     },
 
     PBC1: {
-        title: <div>PBC1<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely. Acceptable PBC1 is &gt;0.5 and recommended PBC1 is &gt;0.9.</Tooltip></div>,
+        title: <div>PBC1<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely. Acceptable PBC1 is &gt;0.5 and recommended PBC1 is &gt;0.9.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -255,7 +256,7 @@ const experimentTableColumns = {
     },
 
     PBC2: {
-        title: <div>PBC2<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely. Acceptable PBC2 is &gt;1 and recommended PBC2 &gt;10.</Tooltip></div>,
+        title: <div>PBC2<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely. Acceptable PBC2 is &gt;1 and recommended PBC2 &gt;10.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -278,7 +279,7 @@ const experimentTableColumns = {
     },
 
     rescueRatio: {
-        title: <div>Rescue ratio<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The rescue ratio measures consistency between datasets when the replicates within a single experiment are not comparable.</Tooltip></div>,
+        title: <div>Rescue ratio<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">The rescue ratio measures consistency between datasets when the replicates within a single experiment are not comparable.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -300,7 +301,7 @@ const experimentTableColumns = {
     },
 
     selfConsistencyRatio: {
-        title: <div>Self-consistency ratio<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The self-consistency ratio measures consistency within a single dataset</Tooltip></div>,
+        title: <div>Self-consistency ratio<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">The self-consistency ratio measures consistency within a single dataset</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -322,7 +323,7 @@ const experimentTableColumns = {
     },
 
     IDR: {
-        title: <div>IDR<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Irreproducible discovery rate is determined by the self-consistency ratio and the rescue ratio. The self-consistency ratio measures consistency within a single dataset. The rescue ratio measures consistency between datasets when the replicates within a single experiment are not comparable. The IDR test fails if both ratios are &lt;2, and passes if both ratios are &gt;2. Otherwise, IDR is borderline.</Tooltip></div>,
+        title: <div>IDR<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">Irreproducible discovery rate is determined by the self-consistency ratio and the rescue ratio. The self-consistency ratio measures consistency within a single dataset. The rescue ratio measures consistency between datasets when the replicates within a single experiment are not comparable. The IDR test fails if both ratios are &lt;2, and passes if both ratios are &gt;2. Otherwise, IDR is borderline.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -340,7 +341,7 @@ const experimentTableColumns = {
     },
 
     peakCount: {
-        title: <div>Replicated Peak count<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The replicated peak count reported here is for replicated experiments only. It is the peak count of either optimal IDR thresholded peaks for TF ChIP or replicated peaks for histone ChIP. Please note that higher peak count does NOT necessarily mean higher quality data.</Tooltip></div>,
+        title: <div>Replicated Peak count<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">The replicated peak count reported here is for replicated experiments only. It is the peak count of either optimal IDR thresholded peaks for TF ChIP or replicated peaks for histone ChIP. Please note that higher peak count does NOT necessarily mean higher quality data.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -358,7 +359,7 @@ const experimentTableColumns = {
     },
 
     frip: {
-        title: <div>FRiP<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Fraction of all mapped reads that fall into the called peak regions, i.e. usable reads in significantly enriched peaks divided by all usable reads. In general, FRiP scores correlate positively with the number of regions. (Landt et al, Genome Research Sept. 2012, 22(9): 1813–1831)</Tooltip></div>,
+        title: <div>FRiP<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-nrf" css="tooltip-home-info">Fraction of all mapped reads that fall into the called peak regions, i.e. usable reads in significantly enriched peaks divided by all usable reads. In general, FRiP scores correlate positively with the number of regions. (Landt et al, Genome Research Sept. 2012, 22(9): 1813–1831)</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -380,7 +381,7 @@ const experimentTableColumns = {
     },
 
     spotSCORE: {
-        title: <div>SPOT score<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-spot-score" css="tooltip-home-info">Signal Portion of Tags (SPOT) is a measure of enrichment, analogous to the commonly used fraction of reads in peaks metric. Acceptable SPOT score is &gt;0.25 and recommended NSC is &gt;0.4.</Tooltip></div>,
+        title: <div>SPOT score<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-spot-score" css="tooltip-home-info">Signal Portion of Tags (SPOT) is a measure of enrichment, analogous to the commonly used fraction of reads in peaks metric. Acceptable SPOT score is &gt;0.25 and recommended NSC is &gt;0.4.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(
@@ -403,7 +404,7 @@ const experimentTableColumns = {
     },
 
     pearsonCorrelation: {
-        title: <div>Pearson Correlation<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-pearson" css="tooltip-home-info">Pearson correlation between signal quantification of the replicates measures replicate concordance. Recommended Pearson correlation is &gt;0.9.</Tooltip></div>,
+        title: <div>Pearson Correlation<Tooltip trigger={svgIcon('questionCircle')} tooltipId="qc-report-pearson" css="tooltip-home-info">Pearson correlation between signal quantification of the replicates measures replicate concordance. Recommended Pearson correlation is &gt;0.9.</Tooltip></div>,
         display: (experiment, meta) => {
             if (experiment.selectedAnalysis && experiment.selectedAnalysis.quality_metrics_report) {
                 const metricObj = getQualityMetricsByReplicate(

@@ -385,7 +385,7 @@ const SearchSection = ({ onReceiveCollectionTitles }) => {
                                 <Tooltip
                                     trigger={svgIcon('questionCircle')}
                                     tooltipId="search-encode"
-                                    css="tooltip-home-info"
+                                    css="tooltip-container--home-search"
                                 >
                                     Search the entire ENCODE portal by using terms like
                                     &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or

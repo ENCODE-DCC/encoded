@@ -525,6 +525,23 @@ $help-icon-size: 16px;
     }
 }
 
+.tooltip-container {
+    &.tooltip-container--home-search {
+        display: block;
+
+        .tooltip-container__trigger {
+            margin-left: 5px;
+            height: 16px;
+
+            .svg-icon {
+                width: 16px;
+                height: 16px;
+                fill: #606060;
+            }
+        }
+    }
+}
+
 // Positions tabs with padding, hovering, and changing color if selected
 .organism-selector {
     display: flex;
