@@ -221,6 +221,10 @@
             "title": "Biosample summary",
             "type": "string"
         },
+        "datapoint": {
+            "title": "Datapoint",
+            "type": "boolean"
+        },
         "biosample_ontology.classification": {
             "title": "Biosample classification",
             "type": "string"
