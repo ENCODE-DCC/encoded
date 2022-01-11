@@ -726,10 +726,21 @@
                     }
                 },
                 {
-                    "required": ["index_of"],
+                    "required": ["index_of", "replicate"],
                     "properties": {
                         "output_type": {
                             "enum": ["index reads"]
+                        }
+                    }
+                },
+                {
+                    "required": ["replicate"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["rejected reads"]
+                        },
+                        "file_format": {
+                            "enum": ["fastq"]
                         }
                     }
                 },
@@ -848,7 +859,8 @@
                                     "unfiltered sparse splice junction count matrix of unique reads",
                                     "sparse gene count matrix of all reads",
                                     "sparse gene count matrix of unique reads",
-                                    "training set"
+                                    "training set",
+                                    "rejected reads"
                                 ]
                             }
                         }
