@@ -1,5 +1,36 @@
 Changes
 =======
+126.0 (released) snovault 1.0.62
+--------------------------------
+1. ENCD-6261 nolookups to jvm options (#4223)
+2. ENCD-6266-add-immune-cells-and-human-donors-to-home-page (#4231)
+3. ENCD-6260-output-type-functional-conservation-mapping (#4225)
+4. ENCD-6263 Add slim for Ribo-seq (#4227)
+5. ENCD-6265-add-BruLibraryQualityMetric-object (#4229)
+6. ENCD-6104-series-table (#4226)
+7. ENCD-6070-human-donor-matrix (#4167)
+8. ENCD-6213-redesigned-home-page (#4220)
+9. ENCD-6248 qc for sc rna processing (#4207)
+10. ENCD-6235-adjust-fcs-table (#4202)
+11. ENCD-6249 ukbb (#4214)
+12. ENCD-6234-add-description-fcs-search (#4199)
+13. ENCD-6255-culture-date-audit (#4216)
+14. ENCD-6239 segway QC (#4222)
+15. ENCD-6253-more-immune-slims (#4215)
+16. ENCD-5946 immune cells rebased (#4211)
+17. ENCD-6228 gene dependency update (#4209)
+18. ENCD-6256-scatac (#4213)
+19. ENCD-6258 add -Dlog4j2.formatMsgNoLookups=true to jvm.options (#4219)
+20. ENCD-6211 add-inclusion-list-reference-property-to-library (#4210)
+21. ENCD-6229 fix unnamed Valis tracks (#4217)
+22. ENCD-6251 add aliases for charles-lee namespace (#4208)
+23. ENCD-6242 For AWS_* env vars use None instead of 'default' (#4192)
+24. ENCD-6245 add user (#4193)
+25. ENCD-6233-experiment-sex-facet (#4198)
+26. ENCD-6152-cart-current (#4191)
+27. ENCD-6240 antibody page not rendering (#4197)
+28. ENCD-6237-fix-search-title-biosample-summary (#4200)
+
 125.0 (released) snovault 1.0.62
 --------------------------------
 1.	ENCD-6252-circleci-js-memory (#4205)
