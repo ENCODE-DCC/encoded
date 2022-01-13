@@ -60,7 +60,7 @@ export const HOME_COLLECTIONS = [
         title: 'Functional characterization',
         searchUrl: (
             '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries' +
-            '&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false' +
+            '&config=FunctionalCharacterization&datapoint=false' +
             '&control_type!=*&limit=0&format=json'
         ),
         '@id': (
@@ -73,7 +73,7 @@ export const HOME_COLLECTIONS = [
     {
         title: 'Encyclopedia of DNA Elements',
         searchUrl: (
-            '/search/?type=Annotation&encyclopedia_version=current&annotation_type=candidate+Cis-Regulatory+Elements&annotation_type=chromatin+state&annotation_type=representative+DNase+hypersensitivity+sites&format=json'
+            '/search/?type=Annotation&encyclopedia_version=current&annotation_type=candidate+Cis-Regulatory+Elements&annotation_type=chromatin+state&annotation_type=representative+DNase+hypersensitivity+sites&limit=0&format=json'
         ),
         '@id': '/encyclopedia/',
         '@type': ['DataCollection'],
@@ -105,7 +105,7 @@ export const HOME_COLLECTIONS = [
     {
         title: 'Deeply-profiled cell lines',
         searchUrl: (
-            '/deeply-profiled-uniform-batch-matrix/?type=Experiment&control_type!=*&status=released' +
+            '/search/?type=Experiment&control_type!=*&status=released' +
             '&replicates.library.biosample.biosample_ontology.term_id=EFO:0002106' +
             '&replicates.library.biosample.biosample_ontology.term_id=EFO:0001203' +
             '&replicates.library.biosample.biosample_ontology.term_id=EFO:0006711' +
@@ -167,7 +167,13 @@ export const HOME_COLLECTIONS = [
     {
         title: 'Imputation',
         searchUrl: '/search/?type=Annotation&encyclopedia_version=current&annotation_type=imputation&limit=0&format=json',
-        '@id': '/search/?type=Annotation&encyclopedia_version=ENCODE+v5&annotation_type=imputation',
+        '@id': '/search/?type=Annotation&encyclopedia_version=current&annotation_type=imputation',
+        '@type': ['DataCollection'],
+    },
+    {
+        title: 'Human donors',
+        searchUrl: '/search/?type=Experiment&control_type!=*&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&biosample_ontology.classification=tissue&status=released&limit=0&format=json',
+        '@id': '/human-donor-matrix/?type=Experiment&control_type!=*&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&biosample_ontology.classification=tissue&status=released&config=HumanDonorMatrix',
         '@type': ['DataCollection'],
     },
 ];

@@ -270,6 +270,7 @@ $CARD_HIGHLIGHT_COLOR: #ffea00;
 
 .card {
     display: block;
+    flex-grow: 1;
     position: relative;
     margin: 10px 0;
     padding: 10px;
@@ -521,5 +522,65 @@ $help-icon-size: 16px;
     hr {
         margin: 20px 0;
         border-top: 1px solid #e0e0e0;
+    }
+}
+
+.tooltip-container {
+    &.tooltip-container--home-search {
+        display: block;
+
+        .tooltip-container__trigger {
+            margin-left: 5px;
+            height: 16px;
+
+            .svg-icon {
+                width: 16px;
+                height: 16px;
+                fill: #606060;
+            }
+        }
+    }
+}
+
+// Positions tabs with padding, hovering, and changing color if selected
+.organism-selector {
+    display: flex;
+    flex-wrap: nonwrap;
+    padding: 5px 2px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-top: 1px solid #a0a0a0;
+    background-color: #f0f0f0;
+
+    @at-root #{&}__tab {
+        display: block;
+        margin: 0 2px;
+        padding: 5px !important;
+        flex: 1 1 auto;
+        font-size: 0.9rem;
+        font-weight: normal;
+        text-decoration: none;
+        color: #404040;
+        background-color: #c0beff;
+        border: 1px solid #0001ee;
+        text-transform: uppercase;
+
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 auto;
+            padding: 5px 20px !important;
+        }
+
+        &:hover {
+            background-color: #adabf8;
+        }
+    }
+
+    #{&}--selected {
+        color: #000;
+        background-color: #7575f7;
+
+        &:hover {
+            background-color: #7575f7;
+        }
     }
 }

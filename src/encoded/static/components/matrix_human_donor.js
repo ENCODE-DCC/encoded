@@ -9,7 +9,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import * as globals from './globals';
 import { MATRIX_VISUALIZE_LIMIT } from './matrix';
-import { FacetList, SearchControls } from './search';
+import { ClearSearchTerm, FacetList, SearchControls } from './search';
 import { BodyMapThumbnailAndModal } from './body_map';
 import FacetRegistry from './facets/registry';
 
@@ -376,15 +376,18 @@ const MatrixHeader = ({ context }) => {
 
     return (
         <div className="matrix-header">
-            <div className="matrix-header__title">
-                <div className="matrix-title-badge">
+            <div className="matrix-header__banner">
+                <div className="matrix-header__title">
                     <h1>{type ? `${type} ` : ''}{context.title}</h1>
+                    <ClearSearchTerm searchUri={context['@id']} />
                 </div>
-                {matrixDescription ?
+                <div className="matrix-header__details">
                     <div className="matrix-description">
-                        <div className="matrix-description__text">{matrixDescription}</div>
+                        {matrixDescription &&
+                            <div className="matrix-description__text">{matrixDescription}</div>
+                        }
                     </div>
-                : null}
+                </div>
             </div>
             <div className="matrix-header__controls">
                 <div className="matrix-header__search-controls--human-donor">

@@ -385,7 +385,7 @@ const SearchSection = ({ onReceiveCollectionTitles }) => {
                                 <Tooltip
                                     trigger={svgIcon('questionCircle')}
                                     tooltipId="search-encode"
-                                    css="tooltip-home-info"
+                                    css="tooltip-container--home-search"
                                 >
                                     Search the entire ENCODE portal by using terms like
                                     &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or
@@ -407,7 +407,7 @@ const SearchSection = ({ onReceiveCollectionTitles }) => {
                                 <Tooltip
                                     trigger={svgIcon('questionCircle')}
                                     tooltipId="search-encode"
-                                    css="tooltip-home-info"
+                                    css="tooltip-container--home-search"
                                 >
                                     Search for candidate Cis-Regulatory Elements by entering a gene name or
                                     alias, SNP rsID, ccRE accession, or genomic region in the form

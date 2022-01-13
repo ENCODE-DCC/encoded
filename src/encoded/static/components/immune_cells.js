@@ -485,14 +485,18 @@ const convertExperimentToDataTable = (context) => {
 
 const MatrixHeader = ({ context }) => (
     <div className="matrix-header">
-        <div className="matrix-header__title">
-            <div className="matrix-title-badge">
+        <div className="matrix-header__banner">
+            <div className="matrix-header__title">
                 <h1>{context.title}</h1>
-                <MatrixBadges context={context} />
             </div>
-            <div className="matrix-description">
-                <div className="matrix-description__text">
-                    Epigenomic profiling of human immune cells at different cellular fates and states, including activation, stimulation, and disease (MS)
+            <div className="matrix-header__details">
+                <div className="matrix-title-badge">
+                    <MatrixBadges context={context} />
+                </div>
+                <div className="matrix-description">
+                    <div className="matrix-description__text">
+                        Epigenomic profiling of human immune cells at different cellular fates and states, including activation, stimulation, and disease (MS)
+                    </div>
                 </div>
             </div>
         </div>
