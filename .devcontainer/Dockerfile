@@ -43,6 +43,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && chown encoded /app \
     # Workaround for https://bugs.launchpad.net/ubuntu/+source/nginx/+bug/1899164
     && chown -R encoded /var/log/nginx /var/lib/nginx
+RUN echo "-Dlog4j2.formatMsgNoLookups=true" | sudo tee -a /etc/elasticsearch/jvm.options
 
 WORKDIR /app
 USER encoded
