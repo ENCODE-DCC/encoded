@@ -97,7 +97,7 @@ const readGenomeBrowserLabelCoordinates = () => {
  * @param {boolean} [ignoreCache=false] True to not look into cache, false to use cache
  * @returns Default coordinates
  */
-const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
+const getDefaultCoordinates = (defaultLocation, assembly, annotation, ignoreCache = false) => {
     // Files to be displayed on all genome browser results
     let pinnedFiles = [];
     let contig = null;
@@ -296,6 +296,13 @@ const getDefaultCoordinates = (assembly, annotation, ignoreCache = false) => {
         x0 = 232475;
         x1 = 237997;
     }
+
+    if (defaultLocation) {
+        contig = defaultLocation.chromosome;
+        x0 = defaultLocation.start;
+        x1 = defaultLocation.end;
+    }
+
     window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, assembly);
     window.sessionStorage.setItem(GV_COORDINATES_ANNOTATION, annotation);
 
@@ -756,7 +763,7 @@ class GenomeBrowser extends React.Component {
     }
 
     setBrowserDefaults(assembly, annotation, resolve) {
-        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assembly, annotation);
+        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(this.props.defaultLocation, assembly, annotation);
 
         this.setState({ contig, x0, x1, pinnedFiles }, () => {
             if (resolve) {
@@ -1022,6 +1029,9 @@ class GenomeBrowser extends React.Component {
                 const opened = openedOutputTypes.includes(file.output_type);
                 trackObj.name = <TrackLabel file={file} label={label} long={opened} />;
                 trackObj.heightPx = opened ? 95 : trackObj.heightPx;
+            } else if (file.output_type && file.output_type === 'guide locations') {
+                trackObj.name = <TrackLabel file={file} label={label} long />;
+                trackObj.heightPx = 95;
             }
             return trackObj;
         });
@@ -1059,7 +1069,7 @@ class GenomeBrowser extends React.Component {
     }
 
     resetLocation() {
-        const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, this.state.annotation, true);
+        const { contig, x0, x1 } = getDefaultCoordinates(this.props.defaultLocation, this.state.genome, this.state.annotation, true);
         this.state.visualizer.setLocation({ contig, x0, x1 });
     }
 
@@ -1116,6 +1126,7 @@ GenomeBrowser.propTypes = {
     maxCharPerLine: PropTypes.number,
     /** File's dataset @id map to supplemental label for that dataset */
     supplementalShortLabels: PropTypes.object,
+    defaultLocation: PropTypes.object,
 };
 
 GenomeBrowser.defaultProps = {
@@ -1124,6 +1135,7 @@ GenomeBrowser.defaultProps = {
     displaySort: false, // Determines if sort buttons should be displayed
     maxCharPerLine: null,
     supplementalShortLabels: {},
+    defaultLocation: null,
 };
 
 GenomeBrowser.contextTypes = {
