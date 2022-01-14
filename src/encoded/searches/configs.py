@@ -298,6 +298,10 @@ def human_donor_data_view():
                 'length': 'long',
                 'open_on_load': True
             },
+            'replicates.library.biosample.sex': {
+                'title': 'Sex',
+                'type': 'typeahead'
+            },
             'biosample_ontology.organ_slims': {
                 'title': 'Organ',
                 'type': 'typeahead'
