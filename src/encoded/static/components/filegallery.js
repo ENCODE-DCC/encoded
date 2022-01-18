@@ -3580,7 +3580,10 @@ class FileGalleryRendererComponent extends React.Component {
         // If filters other than assembly are chosen, we want to highlight the filtered files
         let highlightedFiles = [];
         if (Object.keys(this.state.fileFilters).length > 1) {
-            highlightedFiles = this.filterForInclusion(this.state.files);
+            highlightedFiles = this.filterForInclusion(this.props.data);
+            Object.keys(this.state.fileFilters).forEach((fileFilter) => {
+                highlightedFiles = filterItems(highlightedFiles, fileFilter, this.state.fileFilters[fileFilter]);
+            });
         }
         const isSeries = isSeriesType(context);
         const seriesFiles = getSeriesFiles(context) || [];
