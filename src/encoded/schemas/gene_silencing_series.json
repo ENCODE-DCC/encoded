@@ -67,6 +67,7 @@
                 "biosample_ontology.term_name",
                 "biosample_ontology.organ_slims",
                 "biosample_ontology.cell_slims",
+                "related_datasets.replicates.library.biosample.sex",
                 "related_datasets.replicates.library.biosample.life_stage",
                 "treatment_term_name"
             ]
@@ -127,6 +128,9 @@
         },
         "biosample_ontology.cell_slims": {
             "title": "Cell"
+        },
+        "related_datasets.replicates.library.biosample.sex": {
+            "title": "Sex"
         },
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage"
