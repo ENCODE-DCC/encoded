@@ -200,6 +200,13 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.trait ?
+                                <div data-test="trait">
+                                    <dt>Trait</dt>
+                                    <dd>{context.trait}</dd>
+                                </div>
+                            : null}
+
                             {context.annotation_type === 'gkm-SVM-model' && context.experimental_input ?
                                 <div data-test="experimentalinput">
                                     <dt>Experimental input</dt>
