@@ -158,6 +158,10 @@ def functional_characterization_data_view():
                 'title': 'Organism',
                 'open_on_load': True
             },
+            'replicates.library.biosample.sex': {
+                'title': 'Sex',
+                'type': 'typeahead'
+            },
             'replicates.library.biosample.life_stage': {
                 'title': 'Life stage'
             },
@@ -236,6 +240,7 @@ def functional_characterization_data_view():
                     'biosample_ontology.classification',
                     'biosample_ontology.organ_slims',
                     'biosample_ontology.cell_slims',
+                    'replicates.library.biosample.sex',
                     'replicates.library.biosample.life_stage',
                     'replicates.library.biosample.treatments.treatment_term_name',
                     'replicates.library.biosample.disease_term_name'

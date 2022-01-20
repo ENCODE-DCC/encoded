@@ -96,6 +96,7 @@
                 "organism.scientific_name",
                 "biosample_ontology.term_name",
                 "biosample_ontology.classification",
+                "related_datasets.replicates.library.biosample.sex",
                 "related_datasets.replicates.library.biosample.life_stage",
                 "biosample_ontology.organ_slims",
                 "biosample_ontology.cell_slims",
