@@ -339,3 +339,34 @@ class FunctionalCharacterizationExperiment(
 
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
+
+    @calculated_property(condition='replicates', schema={
+        "title": "Biosamples",
+        "type": "array",
+        "items": {
+            "type": "object",
+        },
+        "notSubmittable": True,
+    })
+    def biosamples(self, request, replicates):
+        biosample_ids = set()
+        biosmples = []
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object?skip_calculated=true')
+                if replicateObject['status'] in ('deleted', 'revoked'):
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                    if libraryObject['status'] in ('deleted', 'revoked'):
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@embedded')
+                        if biosampleObject['status'] in ('deleted', 'revoked'):
+                            continue
+                        else:
+                            if biosampleObject['@id'] not in biosample_ids:
+                                biosample_ids.add(biosampleObject['@id'])
+                                biosmples.append(biosampleObject)
+        return biosmples
+                        

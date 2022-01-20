@@ -49,6 +49,7 @@ class TransgenicEnhancerExperiment(
         'biosamples.biosample_ontology',
         'biosamples.organism',
         'biosamples.characterizations',
+        'biosamples.treatments',
         'related_series',
         'possible_controls',
     ]
