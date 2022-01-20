@@ -1366,7 +1366,7 @@ class FunctionalCharacterizationSeries(Series):
                 if 'library' in replicateObject:
                     libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
                     if 'biosample' in libraryObject:
-                        biosampleObject = request.embed(libraryObject['biosample'], '@@embedded')
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
                         if biosampleObject['@id'] not in biosample_identifiers:
                             biosample_identifiers.append(biosampleObject['@id'])
                             biosmples.append(biosampleObject)
