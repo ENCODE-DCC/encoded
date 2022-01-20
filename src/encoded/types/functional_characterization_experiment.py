@@ -234,6 +234,28 @@ class FunctionalCharacterizationExperiment(
                 return True 
         return False
 
+    @calculated_property(condition='replicates', schema={
+        "title": "Biosamples",
+        "type": "array",
+        "items": {
+            "type": "object",
+        },
+        "notSubmittable": True,
+    })
+    def biosamples(self, request, replicates):
+        biosamples = []
+        biosample_identifiers = []
+        for rep in replicates:
+            replicateObject = request.embed(rep, '@@object?skip_calculated=true')
+            if 'library' in replicateObject:
+                libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                if 'biosample' in libraryObject:
+                    biosampleObject = request.embed(libraryObject['biosample'], '@@embedded')
+                    if biosampleObject['@id'] not in biosample_identifiers:
+                        biosample_identifiers.append(biosampleObject['@id'])
+                        biosamples.append(biosampleObject)
+        return biosamples
+
     @calculated_property(schema={
         "title": "Biosample summary",
         "type": "string",

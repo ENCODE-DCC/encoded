@@ -1356,22 +1356,19 @@ class FunctionalCharacterizationSeries(Series):
     def biosamples(self, request, related_datasets):
         biosamples = []
         biosample_identifiers = []
-
         for related_dataset in related_datasets:
-            related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
-            replicates = related_datasetObject.get('replicates', [])
-            
+            related_datasetObject = request.embed(related_dataset, '@@object')
+            replicates = related_datasetObject.get('replicates', [])            
             for rep in replicates:
                 replicateObject = request.embed(rep, '@@object?skip_calculated=true')
                 if 'library' in replicateObject:
                     libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
                     if 'biosample' in libraryObject:
-                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@embedded')
                         if biosampleObject['@id'] not in biosample_identifiers:
                             biosample_identifiers.append(biosampleObject['@id'])
-                            biosmples.append(biosampleObject)
-        if biosamples:
-            return biosamples
+                            biosamples.append(biosampleObject)
+        return biosamples
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Elements references",
