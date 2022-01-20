@@ -1344,6 +1344,7 @@ class FunctionalCharacterizationSeries(Series):
 
         return properties['replicates']
 
+
     @calculated_property(condition='related_datasets', schema={
         "title": "Biosamples",
         "type": "array",
@@ -1353,29 +1354,24 @@ class FunctionalCharacterizationSeries(Series):
         "notSubmittable": True,
     })
     def biosamples(self, request, related_datasets):
-        biosample_ids = set()
-        biosmples = []
-        if related_datasets is not None:
-            for dataset in related_datasets:
-                datasetObject = request.embed(dataset, '@@object?skip_calculated=true')
-                if 'replicates' in datasetObject:
-                    for rep in datasetObject['replicates']:
-                        replicateObject = request.embed(rep, '@@object?skip_calculated=true')
-                        if replicateObject['status'] in ('deleted', 'revoked'):
-                            continue
-                        if 'library' in replicateObject:
-                            libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
-                            if libraryObject['status'] in ('deleted', 'revoked'):
-                                continue
-                            if 'biosample' in libraryObject:
-                                biosampleObject = request.embed(libraryObject['biosample'], '@@embedded')
-                                if biosampleObject['status'] in ('deleted', 'revoked'):
-                                    continue
-                                else:
-                                    if biosampleObject['@id'] not in biosample_ids:
-                                        biosample_ids.add(biosampleObject['@id'])
-                                        biosmples.append(biosampleObject)
-        return biosmples
+        biosamples = []
+        biosample_identifiers = []
+
+        for related_dataset in related_datasets:
+            related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
+            replicates = related_datasetObject.get('replicates', [])
+            
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object?skip_calculated=true')
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@embedded')
+                        if biosampleObject['@id'] not in biosample_identifiers:
+                            biosample_identifiers.append(biosampleObject['@id'])
+                            biosmples.append(biosampleObject)
+        if biosamples:
+            return biosamples
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Elements references",
