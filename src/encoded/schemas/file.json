@@ -431,9 +431,141 @@
             "comment": "Files with output_type reads or filtered reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio, Nanopore, or Ultima platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
             "oneOf":[
                 {
+                    "required": ["replicate"],
                     "properties": {
                         "output_type": {
-                            "enum": ["reads", "filtered reads"]
+                            "enum": ["reads"]
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "6c275b37-018d-4bf8-85f6-6e3b830524a9"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "25acccbd-cb36-463b-ac96-adbac11227e6"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["read_length"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "csfasta", "csqual", "sra"]
+                                },
+                                "not": {
+                                    "platform": {
+                                        "linkTo": "Platform",
+                                        "linkEnum": [
+                                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                            "25acccbd-cb36-463b-ac96-adbac11227e6"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "properties": {
+                        "output_type": {
+                            "enum": ["filtered reads"]
                         }
                     },
                     "oneOf": [
@@ -594,10 +726,21 @@
                     }
                 },
                 {
-                    "required": ["index_of"],
+                    "required": ["index_of", "replicate"],
                     "properties": {
                         "output_type": {
                             "enum": ["index reads"]
+                        }
+                    }
+                },
+                {
+                    "required": ["replicate"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["rejected reads"]
+                        },
+                        "file_format": {
+                            "enum": ["fastq"]
                         }
                     }
                 },
@@ -716,7 +859,8 @@
                                     "unfiltered sparse splice junction count matrix of unique reads",
                                     "sparse gene count matrix of all reads",
                                     "sparse gene count matrix of unique reads",
-                                    "training set"
+                                    "training set",
+                                    "rejected reads"
                                 ]
                             }
                         }
@@ -857,16 +1001,10 @@
                             }
                         },
                         {
-                            "required": [
-                                "replicate",
-                                "platform"
-                            ],
+                            "required": ["platform"],
                             "properties": {
                                 "file_format": {
-                                    "enum": [
-                                        "fastq",
-                                        "sra"
-                                    ]
+                                    "enum": ["fastq"]
                                 }
                             },
                             "anyOf":[
@@ -896,15 +1034,86 @@
                         {
                             "required": [
                                 "replicate",
+                                "platform"
+                            ],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["sra"]
+                                }
+                            },
+                            "anyOf":[
+                                {
+                                    "properties": {
+                                        "platform": {
+                                            "linkTo": "Platform",
+                                            "linkEnum": [
+                                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                                "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                                "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "output_type": {
+                                            "enum": ["index reads", "R2C2 subreads"]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "required": [
+                              
                                 "platform",
                                 "run_type"
                             ],
                             "properties": {
                                 "file_format": {
                                     "enum": [
-                                        "fastq",
-                                        "sra"
+                                        "fastq"
+                                        
                                     ]
+                                }
+                            },
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "properties": {
+                                            "platform": {
+                                                "linkTo": "Platform",
+                                                "linkEnum": [
+                                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "output_type": {
+                                                "enum": ["index reads", "R2C2 subreads"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "replicate",
+                                "platform",
+                                "run_type"
+                            ],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [ "sra"]
                                 }
                             },
                             "not": {

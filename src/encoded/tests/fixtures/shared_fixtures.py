@@ -23,17 +23,17 @@ def gm_characterization(testapp, award, lab, construct_genetic_modification_N, a
 
 
 @pytest.fixture
-def fastq_no_replicate(award, experiment, lab, platform1):
+def fastq_no_replicate(award, experiment, lab, platform5):
     return {
         'award': award['@id'],
         'dataset': experiment['@id'],
         'lab': lab['@id'],
         'file_format': 'fastq',
-        'platform': platform1['@id'],
+        'platform': platform5['@id'],
         'file_size': 23242,
         'run_type': 'paired-ended',
         'paired_end': '1',
         'md5sum': '0123456789abcdef0123456789abcdef',
-        'output_type': 'raw data',
+        'output_type': 'reads',
         'status': 'in progress',
     }

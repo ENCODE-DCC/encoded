@@ -1014,7 +1014,7 @@
         "flowcell_details": [],
         "file_size": 8856340790,
         "lab":"j-michael-cherry",
-        "output_type": "reads",
+        "output_type": "female genome reference",
         "read_length": 50,
         "aliases": []
     },

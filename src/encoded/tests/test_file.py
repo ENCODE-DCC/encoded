@@ -18,6 +18,9 @@ def test_file_post_fastq_no_replicate(testapp, fastq_no_replicate):
 def test_file_post_fastq_with_replicate(testapp, fastq):
     testapp.post_json('/file', fastq, status=201)
 
+def test_file_post_filtered_fastq_no_replicate(testapp, filtered_fastq):
+    testapp.post_json('/file', filtered_fastq, status=201)
+
 
 def test_file_post_mapped_run_type_on_fastq(testapp, mapped_run_type_on_fastq):
     testapp.post_json('/file', mapped_run_type_on_fastq, status=422)
