@@ -517,7 +517,7 @@ export class CategoryChart extends React.Component {
 
         return (
             <div className="award-charts__chart">
-                <div className="title">
+                <div className="award-charts__title">
                     {title}
                 </div>
                 {this.relevantData.length > 0 ?
