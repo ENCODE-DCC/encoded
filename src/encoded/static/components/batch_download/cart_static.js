@@ -136,7 +136,7 @@ export default class CartStaticBatchDownloadController extends BatchDownloadCont
             );
         }
 
-        // Build the index of all of all the download options.
+        // Build the index of all the download options.
         this._downloadOptionsIndex = buildDownloadOptionsIndex(this._downloadOptions);
     }
 }

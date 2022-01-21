@@ -217,24 +217,18 @@ const StaticBatchDownloadDatasetTypeSelector = ({
     datasetTypes,
     selectedDatasetType,
     setSelectedDatasetType,
-}, reactContext) => {
-    const onChange = (event) => {
-        setSelectedDatasetType(event.target.value);
-    };
-
-    return (
-        <div className="cart__batch-download-dataset-type-selector">
-            <>Select download dataset type</>
-            <select value={selectedDatasetType} onChange={onChange}>
-                {datasetTypes.map((datasetType) => (
-                    <option key={datasetType} value={datasetType}>
-                        {reactContext.profilesTitles ? reactContext.profilesTitles[datasetType] : datasetType}
-                    </option>
-                ))}
-            </select>
-        </div>
-    );
-};
+}, reactContext) => (
+    <div className="cart__batch-download-dataset-type-selector">
+        <>Select download dataset type</>
+        <select value={selectedDatasetType} onChange={(e) => setSelectedDatasetType(e.target.value)}>
+            {datasetTypes.map((datasetType) => (
+                <option key={datasetType} value={datasetType}>
+                    {reactContext.profilesTitles ? reactContext.profilesTitles[datasetType] : datasetType}
+                </option>
+            ))}
+        </select>
+    </div>
+);
 
 StaticBatchDownloadDatasetTypeSelector.propTypes = {
     /** List of possible dataset types the user can choose from */

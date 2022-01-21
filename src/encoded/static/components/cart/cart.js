@@ -1699,25 +1699,15 @@ export default Cart;
 /**
  * Allows the user to select a single assembly for the genome browser.
  */
-const CartAssemblySelector = ({ selectedAssembly, assemblies, onChangeAssembly }) => {
-    /**
-     * Called when the user makes an assembly selection.
-     * @param {object} event Synthetic even for user's selection
-     */
-    const onChange = (event) => {
-        onChangeAssembly(event.target.value);
-    };
-
-    return (
-        <>
-            <select value={selectedAssembly} onChange={onChange}>
-                {assemblies.map((assembly) => (
-                    <option key={assembly} value={assembly}>{assembly}</option>
-                ))}
-            </select>
-        </>
-    );
-};
+const CartAssemblySelector = ({ selectedAssembly, assemblies, onChangeAssembly }) => (
+    <>
+        <select value={selectedAssembly} onChange={(e) => onChangeAssembly(e.target.value)}>
+            {assemblies.map((assembly) => (
+                <option key={assembly} value={assembly}>{assembly}</option>
+            ))}
+        </select>
+    </>
+);
 
 CartAssemblySelector.propTypes = {
     /** Currently selected assembly */
@@ -1811,7 +1801,7 @@ const CartStaticDisplay = ({ cart }, reactContext) => {
     const [displayedTab, setDisplayedTab] = React.useState('browser');
     /** Currently selected assembly */
     const [selectedAssembly, setSelectedAssembly] = React.useState('');
-    /** Currently displayed page number for each tab panes; for pagers. */
+    /** Currently displayed page number for each tab pane; for pagers. */
     const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { browser: 0, processeddata: 0 });
     /** Total number of displayed pages for each tab pane; for pagers. */
     const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { browser: 0, processeddata: 0 });
