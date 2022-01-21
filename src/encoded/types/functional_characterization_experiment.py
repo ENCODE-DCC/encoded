@@ -243,18 +243,65 @@ class FunctionalCharacterizationExperiment(
         "notSubmittable": True,
     })
     def biosamples(self, request, replicates):
+        properties = {'replicates': replicates}
+        path = Path(
+            'replicates.library.biosample', 
+            include=[
+                '@id',
+                '@type',
+                'library',
+                'biosample',
+                'donor',
+                'treatments',
+                'applied_modifications',
+                'life_stage',
+                'disease_term_name',
+            ]
+        )
+        path.expand(request, properties)
+        path = Path(
+            'replicates.library.biosample.applied_modifications.reagents', 
+            include=[
+                '@id',
+                '@type',
+                'MOI',
+                'guide_type',
+                'reagents',
+                'promoter_details',
+            ]
+        )
+        path.expand(request, properties)
+        path = Path(
+            'replicates.library.biosample.donor.organism', 
+            include=[
+                '@id',
+                '@type',
+                'organism',
+                'scientific_name',
+            ]
+        )
+        path.expand(request, properties)
+        path = Path(
+            'replicates.library.biosample.treatments', 
+            include=[
+                '@id',
+                '@type',
+                'treatment_term_name',
+            ]
+        )
+        path.expand(request, properties)
+
         biosamples = []
         biosample_identifiers = []
-        for rep in replicates:
-            replicateObject = request.embed(rep, '@@object?skip_calculated=true')
-            if 'library' in replicateObject:
-                libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
-                if 'biosample' in libraryObject:
-                    biosampleObject = request.embed(libraryObject['biosample'], '@@embedded')
-                    if biosampleObject['@id'] not in biosample_identifiers:
-                        biosample_identifiers.append(biosampleObject['@id'])
-                        biosamples.append(biosampleObject)
-        return biosamples
+        if properties['replicates']:
+            for rep in properties['replicates']:
+                if 'library' in rep and 'biosample' in rep['library']:
+                        biosampleObject = rep['library']['biosample']
+                        if biosampleObject['@id'] not in biosample_identifiers:
+                            biosample_identifiers.append(biosampleObject['@id'])
+                            biosamples.append(biosampleObject)
+        if biosamples:
+            return biosamples
 
     @calculated_property(schema={
         "title": "Biosample summary",
