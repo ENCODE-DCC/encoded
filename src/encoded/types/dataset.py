@@ -865,7 +865,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                 'pipeline_version',
                 'title',
             ],
-        ),
+        )
     ]
 
     @calculated_property(schema={
@@ -1259,6 +1259,37 @@ class FunctionalCharacterizationSeries(Series):
         'elements_references.examined_loci',
         'elements_references.files',
     ]
+    
+    @calculated_property(schema={
+        "title": "Biosamples",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Biosample",
+        },
+        "notSubmittable": True,
+    })
+    def biosamples(self, request, related_datasets=None):
+        biosamples = set()
+        if related_datasets:
+            replicates = request.select_distinct_values('replicates', *related_datasets)
+            properties = {'replicates': replicates}
+            path = Path(
+                'replicates.library.biosample', 
+                include=[
+                    '@id',
+                    'library',
+                    'biosample',
+                ]
+            )
+            path.expand(request, properties)
+            
+            if properties['replicates']:
+                for rep in properties['replicates']:
+                    if 'library' in rep and 'biosample' in rep['library']:
+                        biosamples.add(rep['library']['biosample']['@id'])
+
+        return list(biosamples)
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Examined loci",

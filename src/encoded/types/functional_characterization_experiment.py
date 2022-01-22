@@ -85,7 +85,6 @@ class FunctionalCharacterizationExperiment(
         'target.genes',
         'target.organism',
     ]
-
     audit_inherit = [
         'original_files',
         'original_files.replicate',
@@ -261,7 +260,7 @@ class FunctionalCharacterizationExperiment(
             if properties['replicates']:
                 for rep in properties['replicates']:
                     if 'library' in rep and 'biosample' in rep['library']:
-                            biosamples.add(rep['library']['biosample']['@id'])
+                        biosamples.add(rep['library']['biosample']['@id'])
         
         return list(biosamples)
 
