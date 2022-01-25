@@ -13,6 +13,7 @@
 * Added a calculated boolean property *datapoint* 
 * Modified *assay_title* calculated properties to not include Controls, unless the Series contains only Control experiments
 * Removed *control_type* calculated property
+* Added *biosamples* calculated property and removed *replicates* calculated property
 
 ### Schema version 3
 

@@ -1378,66 +1378,6 @@ class FunctionalCharacterizationSeries(Series):
             return examined_loci
 
     @calculated_property(condition='related_datasets', schema={
-        "title": "Replicates",
-        "type": "array",
-        "items": {
-            "type": "object",
-        },
-        "notSubmittable": True,
-    })
-    def replicates(self, request, related_datasets):
-        replicates = request.select_distinct_values('replicates', *related_datasets)
-        properties = {'replicates': replicates}
-        path = Path(
-            'replicates.library.biosample', 
-            include=[
-                '@id',
-                '@type',
-                'library',
-                'biosample',
-                'donor',
-                'treatments',
-                'applied_modifications',
-                'life_stage',
-                'disease_term_name',
-            ]
-        )
-        path.expand(request, properties)
-        path = Path(
-            'replicates.library.biosample.applied_modifications.reagents', 
-            include=[
-                '@id',
-                '@type',
-                'MOI',
-                'guide_type',
-                'reagents',
-                'promoter_details',
-            ]
-        )
-        path.expand(request, properties)
-        path = Path(
-            'replicates.library.biosample.donor.organism', 
-            include=[
-                '@id',
-                '@type',
-                'organism',
-                'scientific_name',
-            ]
-        )
-        path.expand(request, properties)
-        path = Path(
-            'replicates.library.biosample.treatments', 
-            include=[
-                '@id',
-                '@type',
-                'treatment_term_name',
-            ]
-        )
-        path.expand(request, properties)
-
-        return properties['replicates']
-
-    @calculated_property(condition='related_datasets', schema={
         "title": "Elements references",
         "type": "array",
         "items": {
