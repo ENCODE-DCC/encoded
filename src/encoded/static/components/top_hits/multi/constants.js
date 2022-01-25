@@ -1,8 +1,5 @@
-import TopHitsQuery, {
-    CollectionsQuery,
-} from '../query';
+import TopHitsQuery from '../query';
 import TopHitsResults from '../results';
-import CollectionsResults from './results';
 
 
 /**
