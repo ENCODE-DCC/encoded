@@ -838,10 +838,25 @@
                     }
                 },
                 {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "nucle3d"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "3D structure"
+                            ]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
                                 "enum": [
+                                    "3D structure",
                                     "archr project",
                                     "reads",
                                     "filtered reads",
@@ -1378,6 +1393,7 @@
                                         "h5ad",
                                         "hdf5",
                                         "hic",
+                                        "nucle3d",
                                         "pairs",
                                         "PWM",
                                         "sam",
@@ -1636,6 +1652,7 @@
                         "hdf5",
                         "hic",
                         "idat",
+                        "nucle3d",
                         "PWM",
                         "rcc",
                         "sam",
@@ -1973,6 +1990,7 @@
             "oneOf": [
                 {
                     "enum": [
+                        "3D structure",
                         "alignments",
                         "allele-specific chromatin interactions",
                         "allele-specific variants",
@@ -2712,6 +2730,7 @@
         "sparse gene count matrix of unique reads": "quantification",
         "kmer weights": "quantification",
 
+        "3D structure": "annotation",
         "hotspots": "annotation",
         "footprints": "annotation",
         "long range chromatin interactions": "annotation",
@@ -2875,7 +2894,8 @@
         "sam": ".sam.gz",
         "txt": ".txt.gz",
         "pairs": ".pairs.gz",
-        "starch": ".starch"
+        "starch": ".starch",
+        "nucle3d": ".nucle3d"
     },
      "boost_values": {
          "accession": 20.0,
