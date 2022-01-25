@@ -145,6 +145,9 @@ def functional_characterization_data_view():
                 'type': 'typeahead',
                 'open_on_load': True
             },
+            'tissue_with_enhancer_activity': {
+                'title': 'Element activity location'
+            },
             'biosamples.applied_modifications.guide_type': {
                 'title': 'Guide type'
             },
@@ -230,7 +233,8 @@ def functional_characterization_data_view():
                 'facet_fields': [
                     'elements_references.examined_loci.symbol',
                     'examined_loci.gene.symbol',
-                    'elements_references.elements_selection_method'
+                    'elements_references.elements_selection_method',
+                    'tissue_with_enhancer_activity'
                 ]
             },
             {
