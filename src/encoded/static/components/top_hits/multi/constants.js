@@ -16,7 +16,6 @@ import CollectionsResults from './results';
 * ]
 */
 const QUERIES = [
-    ['dataCollections', CollectionsQuery, CollectionsResults, 'Data collections'],
     ['topHits', TopHitsQuery, TopHitsResults, 'Top results by type'],
 ];
 
