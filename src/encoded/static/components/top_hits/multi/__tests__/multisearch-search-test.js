@@ -294,10 +294,10 @@ describe('NavBarMultiSearch', () => {
             jest.advanceTimersByTime(525);
         });
         search.update();
-        // Top hits and data collection results should show.
-        expect(search.find('Results')).toHaveLength(2);
-        expect(search.find('Section')).toHaveLength(3);
-        expect(search.find('Item')).toHaveLength(6);
+        // Top hits result should show.
+        expect(search.find('Results')).toHaveLength(1);
+        expect(search.find('Section')).toHaveLength(2);
+        expect(search.find('Item')).toHaveLength(5);
         expect(search.find('i')).toHaveLength(1);
     });
     test('Multisearch ignores results from stale H request', async () => {
@@ -341,10 +341,10 @@ describe('NavBarMultiSearch', () => {
             jest.runAllTimers();
         });
         search.update();
-        // HBB top hits and data collection results should show.
-        expect(search.find('Results')).toHaveLength(2);
-        expect(search.find('Section')).toHaveLength(2);
-        expect(search.find('Item')).toHaveLength(2);
+        // HBB top hits result should show.
+        expect(search.find('Results')).toHaveLength(1);
+        expect(search.find('Section')).toHaveLength(1);
+        expect(search.find('Item')).toHaveLength(1);
         expect(search.find('i')).toHaveLength(1);
     });
 });
