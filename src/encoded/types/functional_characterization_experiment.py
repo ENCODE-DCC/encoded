@@ -85,6 +85,69 @@ class FunctionalCharacterizationExperiment(
         'target.genes',
         'target.organism',
     ]
+    embedded_with_frame = Dataset.embedded_with_frame + [
+        Path(
+            'biosamples',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'disease_term_name',
+                'life_stage',
+                'donor',
+                'treatments',
+                'applied_modifications',
+
+            ]
+        ),
+        Path(
+            'biosamples.treatments',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'treatment_term_name',
+            ]
+        ),
+        Path(
+            'biosamples.applied_modifications',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'reagents',
+                'guide_type',
+                'MOI',
+            ]
+        ),
+        Path(
+            'biosamples.applied_modifications.reagents',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'treatment_terpromoter_details',
+            ]
+        ),
+        Path(
+            'biosamples.donor',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'organism',
+            ]
+        ),
+        Path(
+            'biosamples.donor.organism',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'scientific_name',
+            ]
+        ),
+    ]
     audit_inherit = [
         'original_files',
         'original_files.replicate',
