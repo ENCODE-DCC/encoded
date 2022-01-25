@@ -208,5 +208,17 @@
         "elements_references": ["ENCSR001REF"],
         "submitted_by": "felis.senectus@hymenaeos.nibh",
         "uuid": "dca5442b-2246-407f-9634-e62734363971"
+    },
+    {
+        "accession": "ENCSR555PCR",
+        "assay_term_name": "genomic perturbation followed by RT-qPCR",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "Example of validation by genomic perturbation followed by RT-qPCR",
+        "lab": "kevin-white",
+        "status": "in progress",
+        "elements_references": ["ENCSR001REF"],
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "759d0fdc-2246-97b9-9634-e62721ae3775"
     }
 ]

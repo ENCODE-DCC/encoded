@@ -435,6 +435,7 @@
                 "eCLIP",
                 "FAIRE-seq",
                 "genetic modification followed by DNase-seq",
+                "genomic perturbation followed by RT-qPCR",
                 "genotype phasing by HiC",
                 "GRO-cap",
                 "GRO-seq",

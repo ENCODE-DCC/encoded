@@ -44,13 +44,13 @@ curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/
 ```
 6.  Update the following information
     
-    Site release version: 126
-    ontology.json file: ontology-2022-01-04.json
+    Site release version: 127
+    ontology.json file: ontology-2022-01-24.json
     [UBERON release date]: 2021-10-01
-    [OBI release date]: 2021-08-18
-    [EFO release date]: 2021-12-15
+    [OBI release date]: 2022-01-03
+    [EFO release date]: 2022-01-17
     [CLO release date]: 2019-02-10
-    [DOID release date]: 2021-06-08
+    [DOID release date]: 2021-12-15
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
 [Cell Ontology (CL)]: http://cellontology.org/
