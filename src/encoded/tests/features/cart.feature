@@ -14,8 +14,7 @@ Feature: Cart
         Then I should see 3 elements with the css selector ".cart-toggle--in-cart"
         And I should see an element with the css selector ".cart__nav-button"
 
-        When I press "Data"
-        And I click the link with text that contains "High-throughput assays"
+        When I visit "/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries&config=FunctionalCharacterization&datapoint=false&control_type!=*"
         And I wait for the content to load
         Then I should see 4 elements with the css selector ".result-item__cart-control"
 
