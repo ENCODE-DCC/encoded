@@ -346,6 +346,7 @@
                 "biosample_ontology.classification",
                 "biosample_ontology.organ_slims",
                 "biosample_ontology.cell_slims",
+                "replicates.library.biosample.sex",
                 "replicates.library.biosample.life_stage",
                 "replicates.library.biosample.treatments.treatment_term_name",
                 "replicates.library.biosample.disease_term_name",
