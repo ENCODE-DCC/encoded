@@ -107,6 +107,7 @@
                 "description": "A file type used as input for the analysis.",
                 "type": "string",
                 "enum": [
+                    "3D structure",
                     "alignments",
                     "allele-specific chromatin interactions",
                     "allele-specific variants",
@@ -314,6 +315,7 @@
                 "description": "A file type generated as output for the analysis.",
                 "type": "string",
                 "enum": [
+                    "3D structure",
                     "alignments",
                     "allele-specific chromatin interactions",
                     "allele-specific variants",
