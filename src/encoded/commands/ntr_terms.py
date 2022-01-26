@@ -351,7 +351,7 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000676": {
+    "NTR:0000677": {
         "assay": ['element activity validation'],
         "category": [],
         "developmental": [],
