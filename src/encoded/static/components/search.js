@@ -1996,7 +1996,7 @@ SearchControls.contextTypes = {
 
 
 // Maximum number of selected items that can be visualized.
-const VISUALIZE_LIMIT = 100;
+const VISUALIZE_LIMIT = 200;
 
 
 export class ResultTable extends React.Component {

@@ -10,7 +10,7 @@ import { TextFilter } from './search';
  * Maximum number of selected items that can be visualized.
  * @constant
  */
-export const MATRIX_VISUALIZE_LIMIT = 500;
+export const MATRIX_VISUALIZE_LIMIT = 200;
 
 
 /**
