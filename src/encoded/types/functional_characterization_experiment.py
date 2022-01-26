@@ -432,4 +432,4 @@ class FunctionalCharacterizationExperiment(
 
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
-                        
+                
