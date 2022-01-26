@@ -45,7 +45,7 @@ curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/
 6.  Update the following information
     
     Site release version: 127
-    ontology.json file: ontology-2022-01-24.json
+    ontology.json file: ontology-2022-01-25.json
     [UBERON release date]: 2021-10-01
     [OBI release date]: 2022-01-03
     [EFO release date]: 2022-01-17
