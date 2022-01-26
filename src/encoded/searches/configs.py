@@ -161,12 +161,11 @@ def functional_characterization_data_view():
                 'title': 'Organism',
                 'open_on_load': True
             },
-            'biosamples.life_stage': {
-            'replicates.library.biosample.sex': {
+            'biosamples.sex': {
                 'title': 'Sex',
                 'type': 'typeahead'
             },
-            'replicates.library.biosample.life_stage': {
+            'biosamples.life_stage': {
                 'title': 'Life stage'
             },
             'biosample_ontology.classification': {
@@ -248,10 +247,7 @@ def functional_characterization_data_view():
                     'biosamples.life_stage',
                     'biosamples.treatments.treatment_term_name',
                     'biosamples.disease_term_name'
-                    'replicates.library.biosample.sex',
-                    'replicates.library.biosample.life_stage',
-                    'replicates.library.biosample.treatments.treatment_term_name',
-                    'replicates.library.biosample.disease_term_name'
+                    'biosamples.sex'
                 ]
             },
             {

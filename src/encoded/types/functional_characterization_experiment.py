@@ -97,7 +97,7 @@ class FunctionalCharacterizationExperiment(
                 'donor',
                 'treatments',
                 'applied_modifications',
-
+                'sex',
             ]
         ),
         Path(

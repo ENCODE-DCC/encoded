@@ -1271,7 +1271,7 @@ class FunctionalCharacterizationSeries(Series):
                 'donor',
                 'treatments',
                 'applied_modifications',
-
+                'sex',
             ]
         ),
         Path(
