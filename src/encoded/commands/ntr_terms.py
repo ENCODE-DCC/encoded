@@ -339,13 +339,26 @@ ntr_assays = {
         "types": []
     },
     "NTR:0000676": {
-        "assay": ['Transcription'],
+        "assay": ['element activity validation'],
         "category": [],
         "developmental": [],
         "name": "genomic perturbation followed by RT-qPCR",
         "objectives": [],
         "organs": [],
         "preferred_name": "genomic perturbation followed by RT-qPCR",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000676": {
+        "assay": ['element activity validation'],
+        "category": [],
+        "developmental": [],
+        "name": "element activity validation",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "element activity validation",
         "slims": [],
         "synonyms": [],
         "systems": [],
