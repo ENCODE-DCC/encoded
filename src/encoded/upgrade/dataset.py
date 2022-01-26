@@ -796,3 +796,5 @@ def annotation_34_35(value, system):
 @upgrade_step('functional_characterization_series', '3', '4')
 def functional_characterization_series_3_4(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-6147
+    return
+
