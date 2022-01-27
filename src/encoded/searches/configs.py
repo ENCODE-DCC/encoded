@@ -246,7 +246,7 @@ def functional_characterization_data_view():
                     'biosample_ontology.cell_slims',
                     'biosamples.life_stage',
                     'biosamples.treatments.treatment_term_name',
-                    'biosamples.disease_term_name'
+                    'biosamples.disease_term_name',
                     'biosamples.sex'
                 ]
             },
