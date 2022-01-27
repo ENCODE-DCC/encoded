@@ -5016,5 +5016,23 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "c81fee60-3d8a-4505-888e-6a66aa75e78a"
+    },
+    {
+        "accession": "ENCFF033HOE",
+        "aliases": [
+            "ali-mortazavi:dna_accessibility_raw_signal"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "bigWig",
+        "file_size": 341248,
+        "lab": "ali-mortazavi",
+        "md5sum": "948eb9fb99359612b63371a122780a27",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "output_type": "DNA accessibility raw signal",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "94771218-7f07-11ec-a8a3-0242ac120002"
     }
 ]
