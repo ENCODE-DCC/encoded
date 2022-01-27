@@ -63,7 +63,7 @@ const datasetsColumns = {
         display: (dataset) => {
             const allowedTypes = cartGetAllowedTypes();
             if (allowedTypes.includes(dataset['@type'][0])) {
-                return <CartToggle element={dataset} />;
+                return <CartToggle element={dataset} removeConfirmation={{ immediate: true }} />;
             }
             return null;
         },
