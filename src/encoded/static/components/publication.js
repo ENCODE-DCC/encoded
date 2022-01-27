@@ -172,7 +172,7 @@ const DatasetTable = ({ datasets }) => {
             const pageStartIndex = currentPage * PAGE_DATASET_COUNT;
             const visibleDatasetIds = totalDatasets.slice(pageStartIndex, pageStartIndex + PAGE_DATASET_COUNT);
             if (visibleDatasetIds.length > 0) {
-                requestObjects(visibleDatasetIds, '/search/?type=Dataset&limit=all&status!=deleted&status!=revoked&status!=replaced').then((requestedDatasets) => {
+                requestObjects(visibleDatasetIds.map((dataset) => dataset['@id']), '/search/?type=Dataset&limit=all&status!=deleted&status!=revoked&status!=replaced').then((requestedDatasets) => {
                     // Datasets referring to this publication have loaded. Only display those without a
                     // `datapoint` property and those where `datapoint` is false.
                     setVisibleDatasets(requestedDatasets);
@@ -186,10 +186,10 @@ const DatasetTable = ({ datasets }) => {
         // To filter out datasets that have a `datapoint` property value of true, we need to
         // retrieve all dataset objects in the publication, requesting just that property, and
         // filter to those that qualify for display.
-        requestObjects(datasets, '/search/?type=Dataset&limit=all&status!=deleted&status!=revoked&status!=replaced&field=datapoint').then((requestedDatasets) => {
+        requestObjects(datasets, '/search/?type=Dataset&limit=all&status!=deleted&status!=revoked&status!=replaced&field=datapoint&field=related_datasets.@type&field=related_datasets.@id').then((requestedDatasets) => {
             if (requestedDatasets) {
                 const filteredDatasets = requestedDatasets.filter((dataset) => !dataset.datapoint);
-                setTotalDatasets(filteredDatasets.map((dataset) => dataset['@id']));
+                setTotalDatasets(filteredDatasets);
             }
 
             // If the user logs in while viewing the page, clear the cache to avoid showing stale
