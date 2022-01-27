@@ -17,7 +17,7 @@ import CartAlert from './cart_alert';
 import { CartAddAllSearch, CartAddAllElements } from './add_multiple';
 import cartCacheSaved from './cache_saved';
 import CartBatchDownload from './batch_download';
-import Cart from './cart';
+import Cart, { CartStaticDisplayList } from './cart';
 import CartClear from './clear';
 import CartFileViewToggleComponent from './file_view';
 import cartSetOperationInProgress from './in_progress';
@@ -77,6 +77,7 @@ export {
     cartCacheSaved,
     CartClear,
     cartCreateAutosave,
+    CartStaticDisplayList,
     CartFileViewToggleComponent,
     cartGetSettings,
     CartListedSwitch,

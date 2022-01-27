@@ -6,6 +6,7 @@ import { BatchDownloadActuator, DefaultBatchDownloadContent } from './base';
  */
 import AnalysisBatchDownloadController from './analysis';
 import CartBatchDownloadController from './cart';
+import CartStaticBatchDownloadController from './cart_static';
 import DatasetBatchDownloadController from './dataset';
 import RawSequencingBatchDownloadController from './raw_sequencing';
 import ReferenceBatchDownloadController from './reference';
@@ -20,6 +21,7 @@ export {
     // Batch-download controllers
     AnalysisBatchDownloadController,
     CartBatchDownloadController,
+    CartStaticBatchDownloadController,
     DatasetBatchDownloadController,
     RawSequencingBatchDownloadController,
     ReferenceBatchDownloadController,

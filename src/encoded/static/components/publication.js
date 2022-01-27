@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import Cache from '../libs/cache';
 import * as Pager from '../libs/ui/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
-import { CartAddAllElements, CartToggle, cartGetAllowedTypes } from './cart';
+import { CartAddAllElements, CartStaticDisplayList, CartToggle, cartGetAllowedTypes } from './cart';
 import { auditDecor } from './audit';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
+import Layout from './layout';
 import { PickerActions, resultItemClass } from './search';
 import Status from './status';
 import { ItemAccessories, requestObjects, TopAccessories } from './objectutils';
@@ -261,6 +262,14 @@ const PublicationComponent = (props, reactContext) => {
                     </PanelBody>
                 </Panel>
             : null}
+
+            {context.publication_page &&
+                <Panel>
+                    <Layout value={context.publication_page.layout} />
+                </Panel>
+            }
+
+            {context.carts?.length > 0 && <CartStaticDisplayList cartPaths={context.carts} />}
 
             {context.publication_data.length > 0 ?
                 <PublicationDataTable publicationDataIds={context.publication_data} />

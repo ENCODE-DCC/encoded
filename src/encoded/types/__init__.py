@@ -202,6 +202,7 @@ class Library(Item):
 class Publication(Item):
     item_type = 'publication'
     schema = load_schema('encoded:schemas/publication.json')
+    embedded = ['publication_page']
     rev = {
         'publication_data': ('PublicationData', 'references'),
         'datasets': ('Dataset', 'references')
