@@ -1,5 +1,6 @@
 from collections import defaultdict
 from collections import OrderedDict
+from itertools import chain
 from encoded.cart_view import CartWithElements
 from encoded.reports.constants import ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
@@ -7,6 +8,7 @@ from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
 from encoded.reports.constants import PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
+from encoded.reports.constants import NEW_SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_SERIES_TYPES
 from encoded.reports.csv import CSVGenerator
 from encoded.reports.decorators import allowed_types
@@ -520,6 +522,53 @@ class SeriesMetadataReport(MetadataReport):
                     )
 
 
+class NewSeriesMetadataReport():
+
+    _multireports = [
+        SeriesMetadataReport,
+        MetadataReport,
+    ]
+
+    def __init__(self, request):
+        self.request = request
+
+    def _get_column_to_fields_mapping(self):
+        return NEW_SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
+
+    def _bind_custom_methods(self, instance):
+        # Use common headers/columns for all reports.
+        instance._get_column_to_fields_mapping = self._get_column_to_fields_mapping
+        return instance
+
+    def _skip_header(self, generator):
+        next(generator)
+        yield from generator
+
+    def _skip_headers(self, reports):
+        # Use header line from first report, skip the rest.
+        for i, report in enumerate(reports):
+            if i != 0:
+                yield self._skip_header(report)
+            else:
+                yield report
+
+    def generate(self):
+        reports = (
+            self._skip_header(
+                self._bind_custom_methods(
+                    report(self.request)
+                ).generate()
+            )
+            for report in self._multireports
+        )
+        responses = self._skip_headers(reports)
+        return Response(
+             content_type=self._multireports[0].CONTENT_TYPE,
+             app_iter=chain(*responses),
+             content_disposition=self._multireports[0].CONTENT_DISPOSITION,
+        )
+
+
 def _get_metadata(context, request):
     metadata_report = MetadataReport(request)
     return metadata_report.generate()
@@ -536,8 +585,8 @@ def _get_publication_data_metadata(context, request):
 
 
 def _get_series_metadata(context, request):
-    series_metadata_report = SeriesMetadataReport(request)
-    return series_metadata_report.generate()
+    new_series_metadata_report = NewSeriesMetadataReport(request)
+    return new_series_metadata_report.generate()
 
 
 def metadata_report_factory(context, request):

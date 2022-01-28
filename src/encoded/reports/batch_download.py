@@ -1,10 +1,12 @@
 from encoded.reports.constants import BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
+from encoded.reports.constants import NEW_SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_LINK
 from encoded.reports.constants import AT_IDS_AS_JSON_DATA_LINK
 from encoded.reports.metadata import MetadataReport
 from encoded.reports.metadata import PublicationDataMetadataReport
 from encoded.reports.metadata import SeriesMetadataReport
+from encoded.reports.metadata import NewSeriesMetadataReport
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_SERIES_TYPES
 from encoded.reports.decorators import allowed_types
@@ -85,6 +87,7 @@ class BatchDownload(BatchDownloadMixin, MetadataReport):
                     self._output_sorted_row({}, file_data)
                 )
 
+
 class SeriesBatchDownload(BatchDownloadMixin, SeriesMetadataReport):
 
     DEFAULT_PARAMS = [
@@ -116,6 +119,17 @@ class SeriesBatchDownload(BatchDownloadMixin, SeriesMetadataReport):
                     yield self.csv.writerow(
                         self._output_sorted_row({}, file_data)
                     )
+
+
+class NewSeriesBatchDownload(NewSeriesMetadataReport):
+
+    _multireports = [
+        SeriesBatchDownload,
+        BatchDownload,
+    ]
+
+    def _get_column_to_fields_mapping(self):
+        return NEW_SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
 
 
 class PublicationDataBatchDownload(BatchDownloadMixin, PublicationDataMetadataReport):
@@ -151,8 +165,8 @@ def _get_publication_data_batch_download(context, request):
 
 
 def _get_series_batch_download(context, request):
-    series_batch_download = SeriesBatchDownload(request)
-    return series_batch_download.generate()
+    new_series_batch_download = NewSeriesBatchDownload(request)
+    return new_series_batch_download.generate()
 
 
 def batch_download_factory(context, request):
