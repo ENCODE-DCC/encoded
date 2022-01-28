@@ -1485,16 +1485,11 @@ export const FileGallery = ({
     React.useEffect(() => {
         const elementsReferenceFiles = getElementReferencesFiles(context.elements_references);
 
-        if (files) {
-            // Array of files provided, so set without a request to the server.
-            setData([...files, ...elementsReferenceFiles]);
-        } else {
-            // Request files from the server.
-            const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}`;
-            requestSearch(query).then((requestedData) => {
-                setData([...requestedData['@graph'], ...elementsReferenceFiles]);
-            });
-        }
+        // Request files from the server.
+        const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}`;
+        requestSearch(query).then((requestedData) => {
+            setData([...requestedData['@graph'], ...files, ...elementsReferenceFiles]);
+        });
     }, [fileQuery, files]);
 
     useMount(() => {
