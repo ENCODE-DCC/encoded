@@ -1015,10 +1015,11 @@ const retrieveDatasetsFiles = (datasetsIds, facetProgressHandler, fetch, session
         facetProgressHandler(-1);
 
         // Mutate the files or datasets for their calculated properties.
-        processFilesAnalyses(datasetFiles, datasetAnalyses);
+        const uniqueFiles = _(datasetFiles).uniq((file) => file['@id']);
+        processFilesAnalyses(uniqueFiles, datasetAnalyses);
         processDatasetTargetList(datasets);
         processSeriesDatasets(series, datasets);
-        return { datasetFiles, datasets, series, datasetAnalyses: sortDatasetAnalyses(datasetAnalyses) };
+        return { datasetFiles: uniqueFiles, datasets, series, datasetAnalyses: sortDatasetAnalyses(datasetAnalyses) };
     });
 };
 
