@@ -954,7 +954,7 @@ class ImmuneCells extends React.Component {
             return (
                 <Panel addClasses={itemClass} onClick={(e) => this.redirectClick(e)}>
                     <PanelBody>
-                        <MatrixHeader context={context} />
+                        <MatrixHeader context={this.state.pageContext} />
                         <div className="immune-cells-matrix matrix__content">
                             <div className={`file-gallery-facets ${this.state.facetsOpen ? 'expanded' : 'collapsed'}`}>
                                 <button type="button" className="show-hide-facets" onClick={this.toggleFacets}>

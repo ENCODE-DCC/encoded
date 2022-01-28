@@ -15,10 +15,7 @@ const triCell = [
     { cx: 10, cy: 10, rx: 6.5, ry: 5 },
 ];
 
-const doubleEllipse = [
-    { cx: 6, cy: 6, rx: 12, ry: 12 },
-    { cx: 8, cy: 3, rx: 6, ry: 6 },
-];
+const iconFileMapping = {};
 
 // Standardizes node names
 export const nodeKeyName = (name) => name.replace(/\s/g, '').replace(/[\W_]+/g, '').toLowerCase();
@@ -48,7 +45,36 @@ const colorCode = (node) => {
     if (node.data.name.indexOf('natural killer') > -1) {
         return 'nkcell';
     }
-    return null;
+    return 'default';
+};
+
+const iconLookup = (name) => {
+    let iconName = '/static/img/immune-cells/t_cell.svg';
+    if (['basophil', 'eosinophil', 'neutrophil', 'erythrocytes', 'platelets', 'megakaryocyte'].includes(name)) {
+        iconName = `/static/img/immune-cells/${name}.svg`;
+    }
+    if (name.includes('natural killer')) {
+        iconName = '/static/img/immune-cells/nk_cell.svg';
+    }
+    if (name.includes('progenitor')) {
+        iconName = '/static/img/immune-cells/progenitor_cell.svg';
+    }
+    if (name.includes('monocyte')) {
+        iconName = '/static/img/immune-cells/monocyte.svg';
+    }
+    if (name.includes('macrophage')) {
+        iconName = '/static/img/immune-cells/macrophage.svg';
+    }
+    if (name.includes('Hematopoietic')) {
+        iconName = '/static/img/immune-cells/hematopoetic_cell.svg';
+    }
+    if (name.includes('dendritic')) {
+        iconName = '/static/img/immune-cells/dendritic_cell.svg';
+    }
+    if (name.includes('B')) {
+        iconName = '/static/img/immune-cells/b_cell.svg';
+    }
+    return iconName;
 };
 
 // Creates a curved (diagonal) path from parent to the child nodes
@@ -69,19 +95,30 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
         textWrapWidth = 50;
     }
 
-    let ellipseSettings;
-    if (treeName === 'sescc') {
-        ellipseSettings = triCell;
-    } else if (treeName === 'immune') {
-        ellipseSettings = doubleEllipse;
-    }
-
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
 
     d3.select(targetDiv).select('svg').remove();
 
     let internalSelectedNodes = selectedNodes;
+
+    const traverseTree = (d, activeBool) => {
+        const children = d.children || d._children;
+        if (children) {
+            children.forEach((child) => {
+                const clickedName = nodeKeyName(child.data.name);
+                setSelectedNodes(child.data.name);
+                if (activeBool) {
+                    d3.selectAll(`.js-cell-${nodeKeyName(child.data.name)}`).classed('active-cell', false);
+                    internalSelectedNodes = internalSelectedNodes.filter((s) => s !== clickedName);
+                } else {
+                    d3.selectAll(`.js-cell-${nodeKeyName(child.data.name)}`).classed('active-cell', true);
+                    internalSelectedNodes = [...internalSelectedNodes, clickedName];
+                }
+                traverseTree(child, activeBool);
+            });
+        }
+    };
 
     const svg = d3.select(targetDiv).append('svg')
         .attr('width', fullWidth)
@@ -152,6 +189,15 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
             }
         });
 
+        // If "hide all" has been selected and no nodes are active, the internal selected nodes need to be cleared
+        if (document.querySelectorAll('.active-cell').length === 0 && targetDiv.indexOf('thumbnail') === -1) {
+            internalSelectedNodes = [];
+        }
+        // If "show all" has been selected and all nodes are active, the internal selected nodes need to be added
+        if (document.querySelectorAll('.active-cell').length > 0 && internalSelectedNodes.length === 0 && targetDiv.indexOf('thumbnail') === -1) {
+            internalSelectedNodes = selectedNodes;
+        }
+
         const node = svg.selectAll('g.node')
             .data(nodes, (d) => d.id);
 
@@ -172,11 +218,16 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
                     d3.selectAll(`.js-cell-${nodeKeyName(d.data.name)}`).classed('active-cell', true);
                     internalSelectedNodes = [...internalSelectedNodes, clickedName];
                 }
+                // If the shift key is pressed, children nodes are not selected/deselected on click
+                // If the shift key is not pressed, the children nodes are traversed to be selected/deselected along with clicked node
+                if (!e.shiftKey) {
+                    traverseTree(d, activeBool);
+                }
                 e.stopPropagation();
             });
 
         const nodeGroup = nodeEnter.append('g')
-            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''} ${(searchMapping && searchMapping.includes(mapTermToNode(d.data.name))) ? 'clickable' : !(searchMapping) ? 'clickable' : 'unclickable'}`)
+            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell-${nodeKeyName(d.data.name)}-${(targetDiv.indexOf('thumbnail') > -1) ? 'thumbnail' : 'full'} js-cell ${colorCode(d)} ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''} ${(searchMapping && searchMapping.includes(mapTermToNode(d.data.name))) ? 'clickable' : !(searchMapping) ? 'clickable' : 'unclickable'}`)
             .on('mouseover', (e, d) => {
                 // add hover styles on node
                 d3.select(`.js-cell-${nodeKeyName(d.data.name)}`).selectAll('ellipse').style('transform', 'scale(1.2)');
@@ -190,16 +241,38 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
                 d3.select(`.${d.data.name.replace(/\s/g, '_').toLowerCase()}`).selectAll('th').attr('class', '');
             });
 
-        ellipseSettings.forEach((ellipseSetting, idx) => {
-            nodeGroup.append('ellipse')
-                .attr('cx', ellipseSetting.cx)
-                .attr('cy', ellipseSetting.cy)
-                .attr('rx', ellipseSetting.rx)
-                .attr('ry', ellipseSetting.ry)
-                .style('stroke', ellipseSetting.stroke)
-                .style('stroke-width', 1)
-                .attr('class', (d) => (d.data.class ? `${d.data.class} ellipse${idx}` : colorCode(d) ? `${colorCode(d)} ellipse${idx}` : `default ellipse${idx}`));
-        });
+        if (treeName === 'sescc') {
+            triCell.forEach((ellipseSetting, idx) => {
+                nodeGroup.append('ellipse')
+                    .attr('cx', ellipseSetting.cx)
+                    .attr('cy', ellipseSetting.cy)
+                    .attr('rx', ellipseSetting.rx)
+                    .attr('ry', ellipseSetting.ry)
+                    .style('stroke', ellipseSetting.stroke)
+                    .style('stroke-width', 1)
+                    .attr('class', (d) => (d.data.class ? `${d.data.class} ellipse${idx}` : colorCode(d) ? `${colorCode(d)} ellipse${idx}` : `default ellipse${idx}`));
+            });
+        } else {
+            require('d3-fetch');
+            nodes.forEach((d) => {
+                const iconFile = iconLookup(d.data.name);
+                if (iconFileMapping[iconFile]) {
+                    iconFileMapping[iconFile].push(`.js-cell-${nodeKeyName(d.data.name)}-${(targetDiv.indexOf('thumbnail') > -1) ? 'thumbnail' : 'full'}`);
+                } else {
+                    iconFileMapping[iconFile] = [`.js-cell-${nodeKeyName(d.data.name)}-${(targetDiv.indexOf('thumbnail') > -1) ? 'thumbnail' : 'full'}`];
+                }
+            });
+            Object.keys(iconFileMapping).forEach((iconFile) => {
+                d3.xml(iconFile)
+                    .then((svgXml) => {
+                        let newSvg;
+                        iconFileMapping[iconFile].forEach((n) => {
+                            newSvg = svgXml.documentElement.cloneNode(true);
+                            d3.select(n).node().append(newSvg);
+                        });
+                    });
+            });
+        }
 
         if (targetDiv.indexOf('thumbnail') === -1) {
             nodeEnter.append('text')
@@ -251,7 +324,7 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
             .attr('transform', (d) => `translate(${d.x},${d.y})`);
 
         nodeUpdate.select('g.js-cell')
-            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''} ${(searchMapping && searchMapping.includes(mapTermToNode(d.data.name))) ? 'clickable' : !(searchMapping) ? 'clickable' : 'unclickable'}`);
+            .attr('class', (d) => `js-cell-${nodeKeyName(d.data.name)} js-cell-${nodeKeyName(d.data.name)}-${(targetDiv.indexOf('thumbnail') > -1) ? 'thumbnail' : 'full'} js-cell ${colorCode(d)} ${internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? 'active-cell' : ''} ${d._children ? 'parent-cell' : ''} ${(searchMapping && searchMapping.includes(mapTermToNode(d.data.name))) ? 'clickable' : !(searchMapping) ? 'clickable' : 'unclickable'}`);
 
         const nodeExit = node.exit().transition()
             .duration(animationDuration)

@@ -98,57 +98,98 @@ $default-hover: #f2f2f2;
 }
 
 .vertical-node-graph {
+    svg {
+        max-width: 100%;
+        font-size: 0.8rem;
+
+        @media screen and (min-width: $screen-md-min) {
+            font-size: 1rem;
+        }
+    }
+
+    .cell-group {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
     .unclickable {
         pointer-events: none;
         fill: $unclickable;
         stroke-width: 1px;
 
-        ellipse {
+        ellipse, circle, line, path {
             fill: $unclickable;
             stroke: #f3f3f3;
         }
     }
 
     .clickable {
+        pointer-events: all;
+
+        ellipse, circle, line, path {
+            fill: white;
+            stroke: black;
+            stroke-width: 1px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
         &.active-cell {
-            .default {
-                fill: $default-active;
-                stroke: white;
+            &.default {
+                ellipse, circle, line, path {
+                    fill: $default-active;
+                    stroke: black;
 
-                &.ellipse0 {
-                    fill: lighten($default-active, 15%);
+                    &.st0 {
+                        fill: lighten($default-active, 20%);
+                    }
                 }
             }
 
-            .cd4 {
-                fill: $bcell;
+            &.cd4 {
+                ellipse, circle, line, path {
+                    fill: $bcell;
+                    stroke: black;
 
-                &.ellipse0 {
-                    fill: lighten($cd4, 15%);
+                    &.st0 {
+                        fill: lighten($cd4, 15%);
+                    }
                 }
             }
 
-            .bcell {
-                fill: $bcell;
+            &.bcell {
+                ellipse, circle, line, path {
+                    fill: $bcell;
+                    stroke: black;
 
-                &.ellipse0 {
-                    fill: lighten($bcell, 15%);
+                    &.st0 {
+                        fill: lighten($bcell, 15%);
+                    }
                 }
             }
 
-            .tcell {
-                fill: $tcell;
+            &.tcell {
+                ellipse, circle, line, path {
+                    fill: $tcell;
+                    stroke: black;
 
-                &.ellipse0 {
-                    fill: lighten($tcell, 15%);
+                    &.st0 {
+                        fill: lighten($tcell, 15%);
+                    }
                 }
             }
 
-            .nkcell {
-                fill: $nkcell;
+            &.nkcell {
+                ellipse, circle, line, path {
+                    fill: $nkcell;
+                    stroke: black;
 
-                &.ellipse0 {
-                    fill: lighten($nkcell, 15%);
+                    &.ellipse0 {
+                        fill: lighten($nkcell, 15%);
+                    }
                 }
             }
         }
@@ -209,36 +250,6 @@ $default-hover: #f2f2f2;
     &:hover {
         cursor: pointer;
         font-weight: bold;
-    }
-}
-
-.vertical-node-graph {
-    svg {
-        max-width: 100%;
-        font-size: 0.8rem;
-
-        @media screen and (min-width: $screen-md-min) {
-            font-size: 1rem;
-        }
-    }
-
-    ellipse {
-        transition: all 50ms ease-in-out;
-        stroke: black;
-        stroke-width: 1px;
-        fill: white;
-    }
-
-    .cell-group {
-        &:hover {
-            cursor: pointer;
-        }
-    }
-
-    ellipse {
-        &:hover {
-            cursor: pointer;
-        }
     }
 }
 
@@ -316,7 +327,7 @@ $default-hover: #f2f2f2;
         }
 
         &.active-cell {
-            ellipse {
+            ellipse, circle, line, path {
                 stroke: white;
             }
 
