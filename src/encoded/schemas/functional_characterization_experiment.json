@@ -543,6 +543,9 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
+        "datapoint": {
+            "title": "Datapoint"
+        },
         "description": {
             "title": "Description"
         },

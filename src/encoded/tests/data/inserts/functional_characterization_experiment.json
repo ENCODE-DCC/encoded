@@ -12,6 +12,9 @@
         "date_released": "2016-01-01",
         "elements_mappings": ["ENCSR212POL", "ENCSR051STU"],
         "elements_references": ["ENCSR001REF"],
+        "references": [
+            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
+        ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "5a6d5a51-e62d-44b9-a1bd-5d1915247348",
         "examined_loci": [{
@@ -68,6 +71,9 @@
         "lab": "/labs/gregory-crawford/",
         "date_released": "2019-04-10",
         "accession": "ENCSR051STU",
+        "references": [
+            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
+        ],
         "uuid": "b9e400e4-70ee-11e9-a923-1681be663d3e",
         "plasmids_library_type": "elements mapping"
     },
@@ -116,6 +122,9 @@
         "date_released": "2016-01-01",
         "elements_mappings": ["ENCSR212POL"],
         "elements_references": ["ENCSR848CFY"],
+        "references": [
+            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
+        ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "392ac214-317b-11ea-aec2-2e728ce88125",
         "examined_loci": [{

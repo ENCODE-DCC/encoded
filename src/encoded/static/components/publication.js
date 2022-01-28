@@ -64,7 +64,7 @@ const datasetsColumns = {
         display: (dataset) => {
             const allowedTypes = cartGetAllowedTypes();
             if (allowedTypes.includes(dataset['@type'][0])) {
-                return <CartToggle element={dataset} />;
+                return <CartToggle element={dataset} removeConfirmation={{ immediate: true }} />;
             }
             return null;
         },
@@ -134,6 +134,8 @@ const DatasetTable = ({ datasets }) => {
     const [currentPage, setCurrentPage] = React.useState(0);
     // Dataset objects displayed on the currently displayed page.
     const [visibleDatasets, setVisibleDatasets] = React.useState([]);
+    // Paths of all datasets for the publication that qualify for display.
+    const [totalDatasets, setTotalDatasets] = React.useState([]);
     // Caches past-viewed pages of datasets.
     const pageCache = React.useRef(null);
 
@@ -156,7 +158,9 @@ const DatasetTable = ({ datasets }) => {
 
     // Calculate the total number of pages based on the total number of datasets and the number of
     // datasets per page.
-    const totalPageCount = React.useMemo(() => Math.floor(datasets.length / PAGE_DATASET_COUNT) + (datasets.length % PAGE_DATASET_COUNT !== 0 ? 1 : 0), [datasets]);
+    const totalPageCount = React.useMemo(() => (
+        Math.floor(totalDatasets.length / PAGE_DATASET_COUNT) + (totalDatasets.length % PAGE_DATASET_COUNT !== 0 ? 1 : 0)
+    ), [totalDatasets]);
 
     React.useEffect(() => {
         const cachedDatasets = getPageCache().read(currentPage);
@@ -167,25 +171,46 @@ const DatasetTable = ({ datasets }) => {
         } else {
             // Page not found in the cache. Request the datasets for the currently displayed page.
             const pageStartIndex = currentPage * PAGE_DATASET_COUNT;
-            const visibleDatasetIds = datasets.slice(pageStartIndex, pageStartIndex + PAGE_DATASET_COUNT);
-            requestObjects(visibleDatasetIds, '/search/?type=Dataset&limit=all&status!=deleted&status!=revoked&status!=replaced').then((requestedDatasets) => {
-                setVisibleDatasets(requestedDatasets);
-                getPageCache().write(currentPage, requestedDatasets);
-            });
+            const visibleDatasetIds = totalDatasets.slice(pageStartIndex, pageStartIndex + PAGE_DATASET_COUNT);
+            if (visibleDatasetIds.length > 0) {
+                requestObjects(visibleDatasetIds.map((dataset) => dataset['@id']), '/search/?type=Dataset&limit=all&status!=deleted&status!=revoked&status!=replaced').then((requestedDatasets) => {
+                    // Datasets referring to this publication have loaded. Only display those without a
+                    // `datapoint` property and those where `datapoint` is false.
+                    setVisibleDatasets(requestedDatasets);
+                    getPageCache().write(currentPage, requestedDatasets);
+                });
+            }
         }
-    }, [datasets, currentPage]);
+    }, [totalDatasets, currentPage]);
+
+    React.useEffect(() => {
+        // To filter out datasets that have a `datapoint` property value of true, we need to
+        // retrieve all dataset objects in the publication, requesting just that property, and
+        // filter to those that qualify for display.
+        requestObjects(datasets, '/search/?type=Dataset&limit=all&status!=deleted&status!=revoked&status!=replaced&field=datapoint&field=related_datasets.@type&field=related_datasets.@id').then((requestedDatasets) => {
+            if (requestedDatasets) {
+                const filteredDatasets = requestedDatasets.filter((dataset) => !dataset.datapoint);
+                setTotalDatasets(filteredDatasets);
+            }
+
+            // If the user logs in while viewing the page, clear the cache to avoid showing stale
+            // data and go back to viewing the first page.
+            getPageCache().clear();
+            setCurrentPage(0);
+        });
+    }, [datasets]);
 
     return (
         <>
-            {visibleDatasets.length > 0 ?
+            {totalDatasets.length > 0 &&
                 <SortTablePanel
-                    header={<DatasetTableHeader title="Datasets" elements={datasets} currentPage={currentPage} totalPageCount={totalPageCount} updateCurrentPage={updateCurrentPage} />}
-                    subheader={<div className="table-paged__count">{`${datasets.length} dataset${datasets.length === 1 ? '' : 's'}`}</div>}
+                    header={<DatasetTableHeader title="Datasets" elements={totalDatasets} currentPage={currentPage} totalPageCount={totalPageCount} updateCurrentPage={updateCurrentPage} />}
+                    subheader={<div className="table-paged__count">{`${totalDatasets.length} dataset${totalDatasets.length === 1 ? '' : 's'}`}</div>}
                     css="table-paged"
                 >
                     <SortTable list={visibleDatasets} columns={datasetsColumns} />
                 </SortTablePanel>
-            : null}
+            }
         </>
     );
 };

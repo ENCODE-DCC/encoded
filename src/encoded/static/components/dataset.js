@@ -2466,7 +2466,7 @@ const SeriesDatasetTableSection = ({ title, datasets, tableColumns, sortColumn, 
             <div className="experiment-table__subheader">
                 <>{title}s</>
                 <div className="experiment-table__subheader-controls">
-                    <CartAddAllElements elements={datasets.map((dataset) => dataset['@id'])} />
+                    <CartAddAllElements elements={datasets} />
                     {totalDatasetPageCount > 1
                         ? (
                             <Pager.Simple
@@ -3042,7 +3042,7 @@ const DiseaseExperimentTable = ({ datasetsByDisease, title, accession, isPrivile
                     <>
                         <div className="experiment-table__subheader">
                             {`${diseaseTerm.uppercaseFirstChar()} samples in series`}
-                            <CartAddAllElements elements={diseaseDatasets.map((experiment) => experiment['@id'])} />
+                            <CartAddAllElements elements={diseaseDatasets} />
                         </div>
                         <SortTable
                             list={diseaseDatasets}
@@ -3055,7 +3055,7 @@ const DiseaseExperimentTable = ({ datasetsByDisease, title, accession, isPrivile
                     <>
                         <div className="experiment-table__subheader">
                             Non-diseased experiments in series
-                            <CartAddAllElements elements={noDiseaseDatasets.map((experiment) => experiment['@id'])} />
+                            <CartAddAllElements elements={noDiseaseDatasets} />
                         </div>
                         <SortTable
                             list={noDiseaseDatasets}

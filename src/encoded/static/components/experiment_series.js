@@ -647,7 +647,7 @@ class ExperimentSeriesComponent extends React.Component {
         const { viewableDatasets } = this.state;
         if (Object.keys(viewableDatasets).length > 0) {
             // Add the "Add all to cart" button and internal tags from all related datasets.
-            const experimentIds = Object.values(viewableDatasets).map((experiment) => experiment['@id']);
+            const experiments = Object.values(viewableDatasets);
             const hubUrl = `http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=${window.location.origin}/batch_hub/type=Experiment%26accession=${
                 Object.values(viewableDatasets).map((experiment) => experiment.accession).join('%26accession=')
             }/hub.txt&db=hg38`;
@@ -655,7 +655,7 @@ class ExperimentSeriesComponent extends React.Component {
                 <div className="experiment-table__header">
                     <h4 className="experiment-table__title">{`Experiments in experiment series ${context.accession}`}</h4>
                     <div className="experiment-table__header-controls">
-                        <CartAddAllElements elements={experimentIds} />
+                        <CartAddAllElements elements={experiments} />
                         <a className="btn btn-info btn-sm" href={hubUrl} type="button" target="_blank" rel="noopener noreferrer">Visualize</a>
                     </div>
                 </div>

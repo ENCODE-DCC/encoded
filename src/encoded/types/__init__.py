@@ -251,9 +251,13 @@ class Publication(Item):
         },
     })
     def datasets(self, request, datasets):
-        allowed_dataset_types = ["/experiments/",
-                                 "/functional-characterization-experiments/",
-                                 "/annotations/", "/references/"]
+        allowed_dataset_types = [
+            "/experiments/",
+            "/functional-characterization-experiments/",
+            "/functional-characterization-series/",
+            "/annotations/",
+            "/references/"
+        ]
         filtered = set()
         for d in datasets:
             if d.startswith(tuple(allowed_dataset_types)):

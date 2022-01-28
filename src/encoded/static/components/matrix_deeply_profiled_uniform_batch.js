@@ -393,8 +393,8 @@ const MatrixAddCart = ({ context, fetch, pageName }) => {
             }
             return [];
         }).then((data) => {
-            const experimentIds = data['@graph']?.map((experiment) => experiment['@id']);
-            setExperimentData(experimentIds || []);
+            const experiments = data['@graph'];
+            setExperimentData(experiments || []);
         });
     }, [context]);
 
