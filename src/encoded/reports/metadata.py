@@ -549,7 +549,7 @@ class MultipleSeriesMetadataReport():
         (
             SeriesMetadataReportForFiles,
             [
-                'related_dataset.files.'
+                'related_datasets.files.',
             ]
         ),
     ]
