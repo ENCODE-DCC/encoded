@@ -1565,8 +1565,8 @@ FileGallery.propTypes = {
 
 FileGallery.defaultProps = {
     fileQuery: '',
-    files: null,
-    analyses: null,
+    files: [],
+    analyses: [],
     fileQueryKey: 'files',
     supplementalShortLabels: {},
     hideGraph: false,
@@ -3468,7 +3468,7 @@ class FileGalleryRendererComponent extends React.Component {
                         // Assembly is required for browser / graph and available assemblies may be different for graph and browser
                         // Do not reset if a particular assembly has already been chosen and it is an available option
                         this.setState({ compiledAnalyses: [] });
-                        const currentAssembly = this.state.fileFilters.assembly[0];
+                        const currentAssembly = this.state.fileFilters.assembly?.[0] || '';
                         let newAssembly;
                         if (currentAssembly === 'All assemblies' || !(assemblyList[currentAssembly])) {
                             // We want to get the assembly with the highest assembly number (but not 'All assemblies')

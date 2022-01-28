@@ -607,8 +607,7 @@ CartSearchResultsControls.defaultProps = {
 const addToAccumulatingDatasets = (datasets, currentResults) => {
     if (currentResults['@graph'] && currentResults['@graph'].length > 0) {
         // Filter out series datasets; only consider individual datasets.
-        const individualDatasets = currentResults['@graph'].filter((dataset) => !hasType(dataset, 'Series'));
-        individualDatasets.forEach((dataset) => {
+        currentResults['@graph'].forEach((dataset) => {
             // Mutate the datasets for those properties that need their values altered from how
             // they appear in search results.
             requestedFacetFields.forEach((facetField) => {
@@ -620,7 +619,7 @@ const addToAccumulatingDatasets = (datasets, currentResults) => {
 
         // Return a new array combining the existing individual datasets with the datasets from
         // the given search results.
-        return datasets.concat(individualDatasets);
+        return datasets.concat(currentResults['@graph']);
     }
 
     // No search results; just return unchanged list of datasets.
