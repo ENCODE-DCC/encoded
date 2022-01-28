@@ -139,7 +139,7 @@ class MultipleSeriesBatchDownload(MultipleSeriesMetadataReport):
         (
             SeriesBatchDownloadForFiles,
             [
-                'related_dataset.files.'
+                'related_datasets.files.'
             ]
         ),
     ]
