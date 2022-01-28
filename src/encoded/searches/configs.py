@@ -145,24 +145,27 @@ def functional_characterization_data_view():
                 'type': 'typeahead',
                 'open_on_load': True
             },
-            'replicates.library.biosample.applied_modifications.guide_type': {
+            'tissue_with_enhancer_activity': {
+                'title': 'Element activity location'
+            },
+            'biosamples.applied_modifications.guide_type': {
                 'title': 'Guide type'
             },
-            'replicates.library.biosample.applied_modifications.reagents.promoter_details': {
+            'biosamples.applied_modifications.reagents.promoter_details': {
                 'title': 'Promoter details'
             },
-            'replicates.library.biosample.applied_modifications.MOI': {
+            'biosamples.applied_modifications.MOI': {
                 'title': 'Multiplicity of infection'
             },
-            'replicates.library.biosample.donor.organism.scientific_name': {
+            'biosamples.donor.organism.scientific_name': {
                 'title': 'Organism',
                 'open_on_load': True
             },
-            'replicates.library.biosample.sex': {
+            'biosamples.sex': {
                 'title': 'Sex',
                 'type': 'typeahead'
             },
-            'replicates.library.biosample.life_stage': {
+            'biosamples.life_stage': {
                 'title': 'Life stage'
             },
             'biosample_ontology.classification': {
@@ -182,10 +185,10 @@ def functional_characterization_data_view():
                 'title': 'Cell',
                 'type': 'typeahead'
             },
-            'replicates.library.biosample.disease_term_name': {
+            'biosamples.disease_term_name': {
                 'title': 'Disease'
             },
-            'replicates.library.biosample.treatments.treatment_term_name': {
+            'biosamples.treatments.treatment_term_name': {
                 'title': 'Biosample treatment'
             },
             'control_type': {
@@ -219,9 +222,9 @@ def functional_characterization_data_view():
                     'assay_title',
                     'control_type',
                     'elements_references.crispr_screen_tiling',
-                    'replicates.library.biosample.applied_modifications.guide_type',
-                    'replicates.library.biosample.applied_modifications.MOI',
-                    'replicates.library.biosample.applied_modifications.reagents.promoter_details'
+                    'biosamples.applied_modifications.guide_type',
+                    'biosamples.applied_modifications.MOI',
+                    'biosamples.applied_modifications.reagents.promoter_details'
                 ]
             },
             {
@@ -229,21 +232,22 @@ def functional_characterization_data_view():
                 'facet_fields': [
                     'elements_references.examined_loci.symbol',
                     'examined_loci.gene.symbol',
-                    'elements_references.elements_selection_method'
+                    'elements_references.elements_selection_method',
+                    'tissue_with_enhancer_activity'
                 ]
             },
             {
                 'title': 'Biosample',
                 'facet_fields': [
-                    'replicates.library.biosample.donor.organism.scientific_name',
+                    'biosamples.donor.organism.scientific_name',
                     'biosample_ontology.term_name',
                     'biosample_ontology.classification',
                     'biosample_ontology.organ_slims',
                     'biosample_ontology.cell_slims',
-                    'replicates.library.biosample.sex',
-                    'replicates.library.biosample.life_stage',
-                    'replicates.library.biosample.treatments.treatment_term_name',
-                    'replicates.library.biosample.disease_term_name'
+                    'biosamples.life_stage',
+                    'biosamples.treatments.treatment_term_name',
+                    'biosamples.disease_term_name',
+                    'biosamples.sex'
                 ]
             },
             {

@@ -1,5 +1,8 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Minor changes since schema version 12
+* Added *biosamples* calculated property
+
 ### Schema version 12
 * The assay_term_names are now more specific for CRISPR screens based on the readout. All of these assays will slim to CRISPR screen in the field assay_slims
 ** proliferation CRISPR screen

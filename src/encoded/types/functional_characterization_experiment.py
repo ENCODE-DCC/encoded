@@ -85,6 +85,69 @@ class FunctionalCharacterizationExperiment(
         'target.genes',
         'target.organism',
     ]
+    embedded_with_frame = Dataset.embedded_with_frame + [
+        Path(
+            'biosamples',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'disease_term_name',
+                'life_stage',
+                'donor',
+                'treatments',
+                'applied_modifications',
+                'sex',
+            ]
+        ),
+        Path(
+            'biosamples.treatments',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'treatment_term_name',
+            ]
+        ),
+        Path(
+            'biosamples.applied_modifications',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'reagents',
+                'guide_type',
+                'MOI',
+            ]
+        ),
+        Path(
+            'biosamples.applied_modifications.reagents',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'treatment_terpromoter_details',
+            ]
+        ),
+        Path(
+            'biosamples.donor',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'organism',
+            ]
+        ),
+        Path(
+            'biosamples.donor.organism',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'scientific_name',
+            ]
+        ),
+    ]
     audit_inherit = [
         'original_files',
         'original_files.replicate',
@@ -233,6 +296,36 @@ class FunctionalCharacterizationExperiment(
             if "FunctionalCharacterizationSeries" in types:
                 return True 
         return False
+
+    @calculated_property(schema={
+        "title": "Biosamples",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Biosample",
+        },
+        "notSubmittable": True,
+    })
+    def biosamples(self, request, replicates=None):
+        biosamples = set()
+        if replicates:
+            properties = {'replicates': replicates}
+            path = Path(
+                'replicates.library.biosample', 
+                include=[
+                    '@id',
+                    'library',
+                    'biosample',
+                ]
+            )
+            path.expand(request, properties)
+            
+            if properties['replicates']:
+                for rep in properties['replicates']:
+                    if 'library' in rep and 'biosample' in rep['library']:
+                        biosamples.add(rep['library']['biosample']['@id'])
+        
+        return list(biosamples)
 
     @calculated_property(schema={
         "title": "Biosample summary",

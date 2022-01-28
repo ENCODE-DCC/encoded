@@ -791,3 +791,10 @@ def annotation_34_35(value, system):
     assay_term_name = value.get('assay_term_name', None)
     if assay_term_name:
         value['assay_term_name'] = [assay_term_name]
+
+
+@upgrade_step('functional_characterization_series', '3', '4')
+def functional_characterization_series_3_4(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6147
+    return
+

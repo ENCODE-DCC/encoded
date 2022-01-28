@@ -865,7 +865,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                 'pipeline_version',
                 'title',
             ],
-        ),
+        )
     ]
 
     @calculated_property(schema={
@@ -1259,6 +1259,99 @@ class FunctionalCharacterizationSeries(Series):
         'elements_references.examined_loci',
         'elements_references.files',
     ]
+    embedded_with_frame = Series.embedded_with_frame + [
+        Path(
+            'biosamples',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'disease_term_name',
+                'life_stage',
+                'donor',
+                'treatments',
+                'applied_modifications',
+                'sex',
+            ]
+        ),
+        Path(
+            'biosamples.treatments',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'treatment_term_name',
+            ]
+        ),
+        Path(
+            'biosamples.applied_modifications',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'reagents',
+                'guide_type',
+                'MOI',
+            ]
+        ),
+        Path(
+            'biosamples.applied_modifications.reagents',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'treatment_terpromoter_details',
+            ]
+        ),
+        Path(
+            'biosamples.donor',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'organism',
+            ]
+        ),
+        Path(
+            'biosamples.donor.organism',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'scientific_name',
+            ]
+        ),
+    ]
+    @calculated_property(schema={
+        "title": "Biosamples",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Biosample",
+        },
+        "notSubmittable": True,
+    })
+    def biosamples(self, request, related_datasets=None):
+        biosamples = set()
+        if related_datasets:
+            replicates = request.select_distinct_values('replicates', *related_datasets)
+            properties = {'replicates': replicates}
+            path = Path(
+                'replicates.library.biosample', 
+                include=[
+                    '@id',
+                    'library',
+                    'biosample',
+                ]
+            )
+            path.expand(request, properties)
+            
+            if properties['replicates']:
+                for rep in properties['replicates']:
+                    if 'library' in rep and 'biosample' in rep['library']:
+                        biosamples.add(rep['library']['biosample']['@id'])
+
+        return list(biosamples)
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Examined loci",
@@ -1283,67 +1376,6 @@ class FunctionalCharacterizationSeries(Series):
                     examined_loci.append(examined_locus)
         if examined_loci:
             return examined_loci
-
-    @calculated_property(condition='related_datasets', schema={
-        "title": "Replicates",
-        "type": "array",
-        "items": {
-            "type": "object",
-        },
-        "notSubmittable": True,
-    })
-    def replicates(self, request, related_datasets):
-        replicates = request.select_distinct_values('replicates', *related_datasets)
-        properties = {'replicates': replicates}
-        path = Path(
-            'replicates.library.biosample', 
-            include=[
-                '@id',
-                '@type',
-                'library',
-                'biosample',
-                'donor',
-                'treatments',
-                'applied_modifications',
-                'life_stage',
-                'disease_term_name',
-            ]
-        )
-        path.expand(request, properties)
-        path = Path(
-            'replicates.library.biosample.applied_modifications.reagents', 
-            include=[
-                '@id',
-                '@type',
-                'MOI',
-                'guide_type',
-                'reagents',
-                'promoter_details',
-            ]
-        )
-        path.expand(request, properties)
-        path = Path(
-            'replicates.library.biosample.donor.organism', 
-            include=[
-                '@id',
-                '@type',
-                'organism',
-                'scientific_name',
-            ]
-        )
-        path.expand(request, properties)
-        path = Path(
-            'replicates.library.biosample.treatments', 
-            include=[
-                '@id',
-                '@type',
-                'treatment_term_name',
-            ]
-        )
-        path.expand(request, properties)
-
-        return properties['replicates']
-
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Elements references",
