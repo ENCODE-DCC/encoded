@@ -1,5 +1,6 @@
 from collections import defaultdict
 from collections import OrderedDict
+from functools import partial
 from itertools import chain
 from encoded.cart_view import CartWithElements
 from encoded.reports.constants import ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
@@ -528,11 +529,29 @@ class SeriesMetadataReportForFiles(MetadataReport):
         return SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING_FOR_FILES
 
 
+
+def filter_startswith(prefixes, key, value):
+    for prefix in prefixes:
+        if key.startswith(prefix):
+            return True
+    return False
+
+
 class MultipleSeriesMetadataReport():
 
     _multireports = [
-        SeriesMetadataReport,
-        SeriesMetadataReportForFiles,
+        (
+            SeriesMetadataReport,
+            [
+                'files.'
+            ]
+        ),
+        (
+            SeriesMetadataReportForFiles,
+            [
+                'related_dataset.files.'
+            ]
+        ),
     ]
 
     def __init__(self, request):
@@ -550,10 +569,29 @@ class MultipleSeriesMetadataReport():
             else:
                 yield report
 
+    def _get_filtered_request(self, exclude_prefixes):
+        qs = QueryString(self.request)
+        condition = partial(
+            filter_startswith(
+                prefixes=exclude_prefixes
+            )
+        )
+        filters_to_remove = qs.get_filters_by_condition(
+            key_and_value_condition=condition,
+        )
+        for filter_to_remove in filters_to_remove:
+            qs.drop(filter_to_remove)
+        return qs.get_request_with_new_query_string()
+
+
     def generate(self):
         reports = (
-            report(self.request).generate().app_iter
-            for report in self._multireports
+            report(
+                self._get_filtered_request(
+                    exclude_prefixes
+                )
+            ).generate().app_iter
+            for report, exclude_prefixes in self._multireports
         )
         responses = self._skip_headers(reports)
         return Response(

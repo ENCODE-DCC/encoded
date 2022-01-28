@@ -130,8 +130,18 @@ class SeriesBatchDownloadForFiles(BatchDownload):
 class MultipleSeriesBatchDownload(MultipleSeriesMetadataReport):
 
     _multireports = [
-        SeriesBatchDownload,
-        SeriesBatchDownloadForFiles,
+        (
+            SeriesBatchDownload,
+            [
+                'files.',
+            ]
+        ),
+        (
+            SeriesBatchDownloadForFiles,
+            [
+                'related_dataset.files.'
+            ]
+        ),
     ]
 
 
