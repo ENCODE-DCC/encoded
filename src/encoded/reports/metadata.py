@@ -557,7 +557,7 @@ class NewSeriesMetadataReport():
             self._skip_header(
                 self._bind_custom_methods(
                     report(self.request)
-                ).generate()
+                ).generate().app_iter
             )
             for report in self._multireports
         )
