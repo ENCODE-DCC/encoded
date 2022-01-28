@@ -554,11 +554,9 @@ class NewSeriesMetadataReport():
 
     def generate(self):
         reports = (
-            self._skip_header(
-                self._bind_custom_methods(
-                    report(self.request)
-                ).generate().app_iter
-            )
+            self._bind_custom_methods(
+                report(self.request)
+            ).generate().app_iter
             for report in self._multireports
         )
         responses = self._skip_headers(reports)
