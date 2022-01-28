@@ -2864,7 +2864,6 @@ export const SeriesComponent = ({
                     context={context}
                     files={files}
                     analyses={analyses}
-                    fileQueryKey="related_datasets.files"
                     supplementalShortLabels={supplementalShortLabels}
                     showReplicateNumber={false}
                     hideControls={!METADATA_SERIES_TYPES.includes(context['@type'][0])}

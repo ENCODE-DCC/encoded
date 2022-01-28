@@ -484,18 +484,18 @@ class SeriesMetadataReport(MetadataReport):
 
     DEFAULT_PARAMS = [
         ('limit', 'all'),
-        ('field', 'related_datasets.files.@id'),
-        ('field', 'related_datasets.files.href'),
-        ('field', 'related_datasets.files.restricted'),
-        ('field', 'related_datasets.files.no_file_available'),
-        ('field', 'related_datasets.files.file_format'),
-        ('field', 'related_datasets.files.file_format_type'),
-        ('field', 'related_datasets.files.preferred_default'),
-        ('field', 'related_datasets.files.status'),
-        ('field', 'related_datasets.files.assembly'),
-        ('field', 'related_datasets.files.related_datasets'),
+        ('field', 'files.@id'),
+        ('field', 'files.href'),
+        ('field', 'files.restricted'),
+        ('field', 'files.no_file_available'),
+        ('field', 'files.file_format'),
+        ('field', 'files.file_format_type'),
+        ('field', 'files.preferred_default'),
+        ('field', 'files.status'),
+        ('field', 'files.assembly'),
+        ('field', 'files.related_datasets'),
     ]
-    FILES_PREFIX = 'related_datasets.files.'
+    FILES_PREFIX = 'files.'
 
     def _get_column_to_fields_mapping(self):
         return SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
@@ -503,21 +503,14 @@ class SeriesMetadataReport(MetadataReport):
     def _generate_rows(self):
         yield self.csv.writerow(self.header)
         for series in self._get_search_results_generator():
-            related_datasets = series.get('related_datasets', [])
-            if not related_datasets:
-                continue
             series_data = self._get_experiment_data(series)
-            for related_dataset in related_datasets:
-                files = related_dataset.get('files', [])
-                if not files:
+            for file_ in series.get('files', []):
+                if self._should_not_report_file(file_):
                     continue
-                for file_ in files:
-                    if self._should_not_report_file(file_):
-                        continue
-                    file_data = self._get_file_data(file_)
-                    yield self.csv.writerow(
-                        self._output_sorted_row(series_data, file_data)
-                    )
+                file_data = self._get_file_data(file_)
+                yield self.csv.writerow(
+                    self._output_sorted_row(series_data, file_data)
+                )
 
 
 def _get_metadata(context, request):
