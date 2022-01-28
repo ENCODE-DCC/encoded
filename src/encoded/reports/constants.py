@@ -237,14 +237,14 @@ SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
 )
 
 
-NEW_SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
+SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING_FOR_FILES = OrderedDict(
     [
-        ('File accession', ['related_datasets.files.title', 'files.title']),
-        ('File format', ['related_datasets.files.file_type', 'files.file_type']),
-        ('File type', ['related_datasets.files.file_format', 'files.file_format']),
-        ('File format type', ['related_datasets.files.file_format_type', 'files.file_format_type']),
-        ('Output type', ['related_datasets.files.output_type', 'files.output_type']),
-        ('File assembly', ['related_datasets.files.assembly', 'files.assembly']),
+        ('File accession', ['files.title']),
+        ('File format', ['files.file_type']),
+        ('File type', ['files.file_format']),
+        ('File format type', ['files.file_format_type']),
+        ('Output type', ['files.output_type']),
+        ('File assembly', ['files.assembly']),
         ('Series accession', ['accession']),
         ('Biosample term id', ['biosample_ontology.term_id']),
         ('Biosample term name', ['biosample_ontology.term_name']),
@@ -252,29 +252,29 @@ NEW_SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('Experiment target', ['target.name']),
         ('Series date released', ['date_released']),
         ('Project', ['award.project']),
-        ('Biological replicate(s)', ['related_datasets.files.biological_replicates', 'files.biological_replicates']),
-        ('Technical replicate(s)', ['related_datasets.files.technical_replicates', 'files.technical_replicates']),
-        ('Read length', ['related_datasets.files.read_length', 'files.read_length']),
-        ('Mapped read length', ['related_datasets.files.mapped_read_length', 'files.mapped_read_length']),
-        ('Run type', ['related_datasets.files.run_type', 'files.run_type']),
-        ('Paired end', ['related_datasets.files.paired_end', 'files.paired_end']),
-        ('Paired with', ['related_datasets.files.paired_with', 'files.paired_with']),
-        ('Index of', ['related_datasets.files.index_of', 'files.index_of']),
-        ('Derived from', ['related_datasets.files.derived_from', 'files.derived_from']),
-        ('Size', ['related_datasets.files.file_size', 'files.file_size']),
-        ('Lab', ['related_datasets.files.lab.title', 'files.lab.title']),
-        ('md5sum', ['related_datasets.files.md5sum', 'files.md5sum']),
-        ('dbxrefs', ['related_datasets.files.dbxrefs', 'files.dbxrefs']),
-        ('File download URL', ['related_datasets.files.href', 'files.href']),
-        ('Genome annotation', ['related_datasets.files.genome_annotation', 'files.genome_annotation']),
-        ('Platform', ['related_datasets.files.platform.title', 'files.platform.title']),
-        ('Controlled by', ['related_datasets.files.controlled_by', 'files.controlled_by']),
-        ('File Status', ['related_datasets.files.status', 'files.status']),
-        ('No File Available', ['related_datasets.files.no_file_available', 'files.no_file_available']),
-        ('Restricted', ['related_datasets.files.restricted', 'files.restricted']),
-        ('s3_uri', ['related_datasets.files.s3_uri', 'files.s3_uri']),
-        ('File analysis title', ['related_datasets.files.analyses.title', 'files.analyses.title']),
-        ('File analysis status', ['related_datasets.files.analyses.status', 'files.analyses.status']),
+        ('Biological replicate(s)', ['files.biological_replicates']),
+        ('Technical replicate(s)', ['files.technical_replicates']),
+        ('Read length', ['files.read_length']),
+        ('Mapped read length', ['files.mapped_read_length']),
+        ('Run type', ['files.run_type']),
+        ('Paired end', ['files.paired_end']),
+        ('Paired with', ['files.paired_with']),
+        ('Index of', ['files.index_of']),
+        ('Derived from', ['files.derived_from']),
+        ('Size', ['files.file_size']),
+        ('Lab', ['files.lab.title']),
+        ('md5sum', ['files.md5sum']),
+        ('dbxrefs', ['files.dbxrefs']),
+        ('File download URL', ['files.href']),
+        ('Genome annotation', ['files.genome_annotation']),
+        ('Platform', ['files.platform.title']),
+        ('Controlled by', ['files.controlled_by']),
+        ('File Status', ['files.status']),
+        ('No File Available', ['files.no_file_available']),
+        ('Restricted', ['files.restricted']),
+        ('s3_uri', ['files.s3_uri']),
+        ('File analysis title', ['files.analyses.title']),
+        ('File analysis status', ['files.analyses.status']),
     ]
 )
 
@@ -293,15 +293,9 @@ SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
 )
 
 
-NEW_SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
+SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING_FOR_FILES = OrderedDict(
     [
-        (
-            'File download URL',
-            [
-                'files.href',
-                'related_datasets.files.href'
-            ]
-        ),
+        ('File download URL', ['files.href']),
     ]
 )
 

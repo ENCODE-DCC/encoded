@@ -8,7 +8,7 @@ from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
 from encoded.reports.constants import PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
-from encoded.reports.constants import NEW_SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
+from encoded.reports.constants import SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING_FOR_FILES
 from encoded.reports.constants import METADATA_SERIES_TYPES
 from encoded.reports.csv import CSVGenerator
 from encoded.reports.decorators import allowed_types
@@ -522,23 +522,21 @@ class SeriesMetadataReport(MetadataReport):
                     )
 
 
-class NewSeriesMetadataReport():
+class SeriesMetadataReportForFiles(MetadataReport):
+
+    def _get_column_to_fields_mapping(self):
+        return SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING_FOR_FILES
+
+
+class MultipleSeriesMetadataReport():
 
     _multireports = [
         SeriesMetadataReport,
-        MetadataReport,
+        SeriesMetadataReportForFiles,
     ]
 
     def __init__(self, request):
         self.request = request
-
-    def _get_column_to_fields_mapping(self):
-        return NEW_SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
-
-    def _bind_custom_methods(self, instance):
-        # Use common headers/columns for all reports.
-        instance._get_column_to_fields_mapping = self._get_column_to_fields_mapping
-        return instance
 
     def _skip_header(self, generator):
         next(generator)
@@ -554,9 +552,7 @@ class NewSeriesMetadataReport():
 
     def generate(self):
         reports = (
-            self._bind_custom_methods(
-                report(self.request)
-            ).generate().app_iter
+            report(self.request).generate().app_iter
             for report in self._multireports
         )
         responses = self._skip_headers(reports)
@@ -583,8 +579,8 @@ def _get_publication_data_metadata(context, request):
 
 
 def _get_series_metadata(context, request):
-    new_series_metadata_report = NewSeriesMetadataReport(request)
-    return new_series_metadata_report.generate()
+    multiple_series_metadata_report = MultipleSeriesMetadataReport(request)
+    return multiple_series_metadata_report.generate()
 
 
 def metadata_report_factory(context, request):
