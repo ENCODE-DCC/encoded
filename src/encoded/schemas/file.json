@@ -852,6 +852,20 @@
                     }
                 },
                 {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "bigWig"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "DNA accessibility raw signal"
+                            ]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
@@ -875,7 +889,8 @@
                                     "sparse gene count matrix of all reads",
                                     "sparse gene count matrix of unique reads",
                                     "training set",
-                                    "rejected reads"
+                                    "rejected reads",
+                                    "DNA accessibility raw signal"
                                 ]
                             }
                         }
@@ -2014,6 +2029,7 @@
                         "CpG sites coverage",
                         "DHS peaks",
                         "DHS regions reference",
+                        "DNA accessibility raw signal",
                         "differential expression quantifications",
                         "differential splicing quantifications",
                         "diploid personal genome alignments",
@@ -2684,6 +2700,7 @@
         "element gene interactions signal": "signal",
         "element gene interactions p-value": "signal",
         "training set": "signal",
+        "DNA accessibility raw signal": "signal",
 
         "bias model": "quantification",
         "enrichment": "quantification",
