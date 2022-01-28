@@ -595,9 +595,9 @@ class MultipleSeriesMetadataReport():
         )
         responses = self._skip_headers(reports)
         return Response(
-             content_type=self._multireports[0].CONTENT_TYPE,
+             content_type=self._multireports[0][0].CONTENT_TYPE,
              app_iter=chain(*responses),
-             content_disposition=self._multireports[0].CONTENT_DISPOSITION,
+             content_disposition=self._multireports[0][0].CONTENT_DISPOSITION,
         )
 
 
