@@ -573,7 +573,7 @@ class MultipleSeriesMetadataReport():
         qs = QueryString(self.request)
         condition = partial(
             filter_startswith,
-            prefixes=exclude_prefixes,
+            exclude_prefixes,
         )
         filters_to_remove = qs.get_filters_by_condition(
             key_and_value_condition=condition,
