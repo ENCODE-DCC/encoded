@@ -865,7 +865,48 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                 'pipeline_version',
                 'title',
             ],
-        )
+        ),
+        Path(
+            'series_files',
+            include=[
+                '@id',
+                '@type',
+                'title',
+                'file_type',
+                'file_format',
+                'file_format_type',
+                'output_type',
+                'assembly',
+                'biological_replicates',
+                'technical_replicates',
+                'read_length',
+                'mapped_read_length',
+                'run_type',
+                'paired_end',
+                'paired_with',
+                'index_of',
+                'derived_from',
+                'file_size',
+                'lab',
+                'md5sum',
+                'dbxrefs',
+                'href',
+                'genome_annotation',
+                'platform',
+                'controlled_by',
+                'status',
+                'no_file_available',
+                'restricted',
+                's3_uri',
+                'analyses',
+                'preferred_default',
+                'processed',
+                'output_category',
+            ],
+        ),
+        Path('series_files.lab', include=['@id', '@type', 'title']),
+        Path('series_files.platform', include=['@id', '@type', 'title']),
+        Path('series_files.analyses', include=['@id', '@type', 'title', 'status']),
     ]
 
     @calculated_property(schema={
@@ -1007,6 +1048,37 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                     return all_terms
         if all_ontologies and not all_summaries:
             return all_terms
+
+    @calculated_property(schema={
+        "title": "Files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "File",
+        },
+    })
+    def series_files(self, request, original_files, related_datasets, status):
+        related_datasets_paths = paths_filtered_by_status(request, related_datasets)
+        original_related_datasets_files = []
+        for path in related_datasets_paths:
+            related_dataset = request.embed(
+                path,
+                '@@object_with_select_calculated_properties'
+                '?field=@id'
+                '&field=original_files'
+            )
+            original_related_datasets_files.extend(related_dataset.get('original_files', []))
+
+        if status in ('released', 'archived'):
+            return paths_filtered_by_status(
+                request, original_files + original_related_datasets_files,
+                include=('released', 'archived'),
+            )
+        else:
+            return paths_filtered_by_status(
+                request, original_files + original_related_datasets_files,
+                exclude=('revoked', 'deleted', 'replaced'),
+            )
 
 
 @collection(

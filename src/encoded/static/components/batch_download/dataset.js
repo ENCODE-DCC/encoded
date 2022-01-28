@@ -93,6 +93,15 @@ export default class DatasetBatchDownloadController extends BatchDownloadControl
     }
 
     /**
+     * Format the raw-file download query string.
+     */
+    formatRawQuery() {
+        const query = this.buildBasicQuery()
+            .addKeyValue(`${this._fileQueryKey}.output_category`, 'raw data');
+        this._rawQueryString = query.format();
+    }
+
+    /**
      * Build query strings based on the query object, in addition to the base class query strings.
      */
     addQueryStrings() {

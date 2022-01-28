@@ -85,37 +85,36 @@ class BatchDownload(BatchDownloadMixin, MetadataReport):
                     self._output_sorted_row({}, file_data)
                 )
 
+
 class SeriesBatchDownload(BatchDownloadMixin, SeriesMetadataReport):
 
     DEFAULT_PARAMS = [
-        ('field', 'related_datasets.files.@id'),
-        ('field', 'related_datasets.files.href'),
-        ('field', 'related_datasets.files.restricted'),
-        ('field', 'related_datasets.files.no_file_available'),
-        ('field', 'related_datasets.files.file_format'),
-        ('field', 'related_datasets.files.file_format_type'),
-        ('field', 'related_datasets.files.preferred_default'),
-        ('field', 'related_datasets.files.status'),
-        ('field', 'related_datasets.files.assembly'),
-        ('field', 'related_datasets.files.related_datasets'),
+        ('field', 'series_files.@id'),
+        ('field', 'series_files.href'),
+        ('field', 'series_files.restricted'),
+        ('field', 'series_files.no_file_available'),
+        ('field', 'series_files.file_format'),
+        ('field', 'series_files.file_format_type'),
+        ('field', 'series_files.preferred_default'),
+        ('field', 'series_files.status'),
+        ('field', 'series_files.assembly'),
         ('limit', 'all'),
     ]
-    FILES_PREFIX = 'related_datasets.files.'
+    FILES_PREFIX = 'series_files.'
 
     def _get_column_to_fields_mapping(self):
         return SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
 
     def _generate_rows(self):
         yield self._get_encoded_metadata_link_with_newline()
-        for series in self._get_search_results_generator():
-            for related_dataset in series.get('related_datasets', []):
-                for file_ in related_dataset.get('files', []):
-                    if self._should_not_report_file(file_):
-                        continue
-                    file_data = self._get_file_data(file_)
-                    yield self.csv.writerow(
-                        self._output_sorted_row({}, file_data)
-                    )
+        for experiment in self._get_search_results_generator():
+            for file_ in experiment.get('series_files', []):
+                if self._should_not_report_file(file_):
+                    continue
+                file_data = self._get_file_data(file_)
+                yield self.csv.writerow(
+                    self._output_sorted_row({}, file_data)
+                )
 
 
 class PublicationDataBatchDownload(BatchDownloadMixin, PublicationDataMetadataReport):
