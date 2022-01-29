@@ -129,7 +129,7 @@ class MetadataReport:
                 self.header.append(column)
         for audit, column in METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING:
             self.header.append(column)
-        
+
     def _split_column_and_fields_by_experiment_and_file(self):
         for column, fields in self._get_column_to_fields_mapping().items():
             if fields[0].startswith(self.FILES_PREFIX):
@@ -482,35 +482,8 @@ class PublicationDataMetadataReport(MetadataReport):
 
 class SeriesMetadataReport(MetadataReport):
 
-    DEFAULT_PARAMS = [
-        ('limit', 'all'),
-        ('field', 'files.@id'),
-        ('field', 'files.href'),
-        ('field', 'files.restricted'),
-        ('field', 'files.no_file_available'),
-        ('field', 'files.file_format'),
-        ('field', 'files.file_format_type'),
-        ('field', 'files.preferred_default'),
-        ('field', 'files.status'),
-        ('field', 'files.assembly'),
-        ('field', 'files.related_datasets'),
-    ]
-    FILES_PREFIX = 'files.'
-
     def _get_column_to_fields_mapping(self):
         return SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING
-
-    def _generate_rows(self):
-        yield self.csv.writerow(self.header)
-        for series in self._get_search_results_generator():
-            series_data = self._get_experiment_data(series)
-            for file_ in series.get('files', []):
-                if self._should_not_report_file(file_):
-                    continue
-                file_data = self._get_file_data(file_)
-                yield self.csv.writerow(
-                    self._output_sorted_row(series_data, file_data)
-                )
 
 
 def _get_metadata(context, request):

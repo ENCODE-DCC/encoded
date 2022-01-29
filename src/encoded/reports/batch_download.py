@@ -85,36 +85,11 @@ class BatchDownload(BatchDownloadMixin, MetadataReport):
                     self._output_sorted_row({}, file_data)
                 )
 
-class SeriesBatchDownload(BatchDownloadMixin, SeriesMetadataReport):
 
-    DEFAULT_PARAMS = [
-        ('field', 'files.@id'),
-        ('field', 'files.href'),
-        ('field', 'files.restricted'),
-        ('field', 'files.no_file_available'),
-        ('field', 'files.file_format'),
-        ('field', 'files.file_format_type'),
-        ('field', 'files.preferred_default'),
-        ('field', 'files.status'),
-        ('field', 'files.assembly'),
-        ('field', 'files.related_datasets'),
-        ('limit', 'all'),
-    ]
-    FILES_PREFIX = 'files.'
+class SeriesBatchDownload(BatchDownloadMixin, SeriesMetadataReport):
 
     def _get_column_to_fields_mapping(self):
         return SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
-
-    def _generate_rows(self):
-        yield self._get_encoded_metadata_link_with_newline()
-        for series in self._get_search_results_generator():
-            for file_ in series.get('files', []):
-                if self._should_not_report_file(file_):
-                    continue
-                file_data = self._get_file_data(file_)
-                yield self.csv.writerow(
-                    self._output_sorted_row({}, file_data)
-                )
 
 
 class PublicationDataBatchDownload(BatchDownloadMixin, PublicationDataMetadataReport):
