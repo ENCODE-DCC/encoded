@@ -20,5 +20,5 @@ Feature: Cart
         When I click the link with text that contains "Test cart"
         And I wait for the content to load
         Then I should see "billions upon billions upon billions"
-        And I should see 3 elements with the css selector ".result-item__controls"
+        And I should see 4 elements with the css selector ".result-item__controls"
         And I should not see "Remove series datasets"
