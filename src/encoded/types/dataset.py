@@ -1039,39 +1039,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
         if all_ontologies and not all_summaries:
             return all_terms
 
-    @calculated_property(schema={
-        "title": "Files",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "File",
-        },
-    })
-    def files(self, request, original_files, related_datasets, status):
-        related_datasets_paths = paths_filtered_by_status(request, related_datasets)
-        original_related_datasets_files = []
-        for path in related_datasets_paths:
-            related_dataset = request.embed(
-                path,
-                '@@object_with_select_calculated_properties'
-                '?field=@id'
-                '&field=original_files'
-            )
-            original_related_datasets_files.extend(related_dataset.get('original_files', []))
-
-        if status in ('released', 'archived'):
-            return paths_filtered_by_status(
-                request, original_files + original_related_datasets_files,
-                include=('released', 'archived'),
-            )
-        else:
-            return paths_filtered_by_status(
-                request, original_files + original_related_datasets_files,
-                exclude=('revoked', 'deleted', 'replaced'),
-            )
-
-
-
 
 @collection(
     name='matched-sets',
