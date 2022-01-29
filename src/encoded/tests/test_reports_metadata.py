@@ -2306,7 +2306,7 @@ def test_metadata_series_metadata_report_generate_rows(index_workbook, dummy_req
     dummy_request.environ['QUERY_STRING'] = (
         'type=ReferenceEpigenome'
         '&@id=/reference-epigenomes/ENCSR284DRW/'
-        '&related_datasets.files.preferred_default=true'
+        '&files.preferred_default=true'
     )
     pdmr = SeriesMetadataReport(dummy_request)
     pdmr._initialize_report()
