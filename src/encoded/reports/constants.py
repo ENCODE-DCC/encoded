@@ -246,7 +246,7 @@ BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
 
 SERIES_BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
     [
-        ('File download URL', ['related_datasets.files.href']),
+        ('File download URL', ['files.href']),
     ]
 )
 
