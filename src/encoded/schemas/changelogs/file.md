@@ -20,6 +20,8 @@
 * Added *NcoI*, *MseI*, *MboI and MseI* to the enum list for *restriction_enzymes*
 * Added *kmer weights* and *training set* to the enum list for *output_type*
 * Added *functional conservation mapping* to the enum list for *output_type*
+* Added *3D structure* to the enum list for *output_type*, to be used with the new *file_format* *nucle3d*
+* Added *DNA accessibility raw signal* to enum list for *output_type*.
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.

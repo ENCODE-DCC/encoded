@@ -5,6 +5,7 @@ module.exports = {
     authors: 'ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M',
     journal: 'Nature',
     datasets: [],
+    carts: [],
     date_created: '2014-07-21T21:35:11.179429+00:00',
     date_published: '2012 Sep',
     method_summary: 'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.',

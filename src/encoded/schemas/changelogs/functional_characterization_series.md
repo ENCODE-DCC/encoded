@@ -1,5 +1,9 @@
 ## Changelog for functional_characterization_series.json
 
+### Schema version 4
+
+* Added *biosamples* calculated property and removed *replicates* calculated property
+
 ### Minor changes since schema version 3
 
 * Removed *control_type* from facet_groups; unintentionally added
@@ -13,6 +17,7 @@
 * Added a calculated boolean property *datapoint* 
 * Modified *assay_title* calculated properties to not include Controls, unless the Series contains only Control experiments
 * Removed *control_type* calculated property
+
 
 ### Schema version 3
 

@@ -181,19 +181,31 @@ const CartAddAllElementsComponent = ({
             // Filter the added elements to those allowed in carts.
             const allowedPathTypes = cartGetAllowedObjectPathTypes();
             const allowedElements = elements.filter((element) => (
-                allowedPathTypes.includes(atIdToType(element))
+                allowedPathTypes.includes(atIdToType(element['@id']))
             ));
 
             // Add the allowed elements to the cart.
             if (allowedElements.length > 0) {
+                // For any elements with related datasets, also add those to the cart.
+                const elementsForCart = allowedElements.reduce((accSeriesAndDatasets, element) => {
+                    if (hasType(element, 'Series')) {
+                        const allowedTypes = cartGetAllowedTypes();
+
+                        // Extract all child datasets from the series and add them to the cart.
+                        const allowedRelatedDatasets = element.related_datasets.filter((dataset) => allowedTypes.includes(dataset['@type'][0]));
+                        return accSeriesAndDatasets.concat(allowedRelatedDatasets);
+                    }
+                    return accSeriesAndDatasets;
+                }, allowedElements).map((element) => element['@id']);
+
                 // Check whether the final cart would have more elements than allowed by doing a
                 // trial merge. If the merged cart fits under the limit, add the new elements to
                 // the cart.
-                const mergedElements = mergeCarts(savedCartObj.elements, allowedElements);
+                const mergedElements = mergeCarts(savedCartObj.elements, elementsForCart);
                 if (mergedElements.length > CART_MAX_ELEMENTS) {
                     showMaxElementsWarning();
                 } else {
-                    addAllResults(allowedElements);
+                    addAllResults(elementsForCart);
                 }
             }
         } else {

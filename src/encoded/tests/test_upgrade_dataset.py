@@ -548,3 +548,8 @@ def test_upgrade_annotation_34_to_35(upgrader, annotation_34):
     )
     assert value['schema_version'] == '35'
     assert value['assay_term_name'] == ['DNase-seq']
+
+
+def test_upgrade_functional_characterization_series_3_to_4(upgrader, functional_characterization_series_3):
+    value = upgrader.upgrade('functional_characterization_series', functional_characterization_series_3, current_version='3', target_version='4')
+    assert value['schema_version'] == '4'

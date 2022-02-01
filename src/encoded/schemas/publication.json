@@ -205,6 +205,12 @@
                 "type": "string",
                 "linkTo": "Cart"
             }
+        },
+        "publication_page": {
+            "title": "Publication page",
+            "description": "Submitter-editable narrative that describes the publication.",
+            "type": "string",
+            "linkTo": "Page"
         }
     },
     "facets": {

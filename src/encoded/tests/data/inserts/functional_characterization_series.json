@@ -1,12 +1,15 @@
 [
 	{
         "_test": "functional characterization series",
-				"accession": "ENCSR000FCS",
+        "accession": "ENCSR000FCS",
         "award": "ENCODE2",
         "description": "MPRA experiments series.",
         "lab": "thomas-gingeras",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "references": [
+            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
+        ],
         "related_datasets": [
             "/experiments/ENCSR222MPR",
             "/experiments/ENCSR333MPR"

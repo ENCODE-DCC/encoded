@@ -60,7 +60,7 @@ export const HOME_COLLECTIONS = [
         title: 'Functional characterization',
         searchUrl: (
             '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries' +
-            '&config=FunctionalCharacterization&datapoint=false' +
+            '&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false' +
             '&control_type!=*&limit=0&format=json'
         ),
         '@id': (

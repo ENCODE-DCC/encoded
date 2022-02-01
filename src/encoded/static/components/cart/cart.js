@@ -1,17 +1,22 @@
 /**
  * Components for rendering the /carts/ and /cart-view/ page.
  */
+// node_modules
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import url from 'url';
+// libs
 import { svgIcon } from '../../libs/svg-icons';
+// libs/ui
 import * as DropdownButton from '../../libs/ui/button';
 import * as Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
+// components
 import GenomeBrowser, { annotationTypeMap } from '../genome_browser';
 import { itemClass, atIdToType, hasType } from '../globals';
+import { useMount } from '../hooks';
 import {
     ItemAccessories,
     computeAssemblyAnnotationValue,
@@ -20,9 +25,11 @@ import {
     filterForDatasetFiles,
     filterForReleasedAnalyses,
     isFileVisualizable,
+    requestObjects,
 } from '../objectutils';
+// local
 import { compileDatasetAnalyses, sortDatasetAnalyses } from './analysis';
-import CartBatchDownload from './batch_download';
+import CartBatchDownload, { CartStaticBatchDownload } from './batch_download';
 import CartClearButton from './clear';
 import * as constants from './constants';
 import CartViewContext from './context';
@@ -124,6 +131,10 @@ const CartBrowser = ({ files, assemblies, pageNumber, loading }) => {
         return <div className="cart__empty-message">Page currently loading&hellip;</div>;
     }
 
+    if (assemblies.length === 0) {
+        return <div className="cart__empty-message">No files to visualize</div>;
+    }
+
     if (assemblies.length !== 1) {
         return <div className="cart__empty-message">Select single assembly to view genome browser</div>;
     }
@@ -151,11 +162,15 @@ CartBrowser.propTypes = {
     /** Files of all visualizable tracks, not just on the displayed page */
     files: PropTypes.array.isRequired,
     /** Assembly to display; only one entry results in browser display */
-    assemblies: PropTypes.array.isRequired,
+    assemblies: PropTypes.array,
     /** Page of files to display */
     pageNumber: PropTypes.number.isRequired,
     /** True if the page is currently loading */
     loading: PropTypes.bool.isRequired,
+};
+
+CartBrowser.defaultProps = {
+    assemblies: [],
 };
 
 
@@ -171,6 +186,7 @@ const CartFiles = ({
     defaultOnly,
     cartType,
     loading,
+    options,
 }) => {
     if (files.length > 0) {
         const pageStartIndex = currentPage * constants.PAGE_FILE_COUNT;
@@ -179,7 +195,7 @@ const CartFiles = ({
         const readOnlyState = getReadOnlyState(cart);
         return (
             <div className="cart-list cart-list--file">
-                {defaultOnly && pseudoDefaultFiles.length > 0
+                {defaultOnly && pseudoDefaultFiles.length > 0 && !options.suppressFileViewToggle
                     ? (
                         <div className="cart-list__no-dl">
                             Uncheck &ldquo;Show default data only&rdquo; to download gray files.
@@ -193,7 +209,7 @@ const CartFiles = ({
                     }
                     return (
                         <div key={file['@id']} className={`cart-list-item${defaultOnly && file.pseudo_default && !isFileViewOnly ? ' cart-list-item--no-dl' : ''}`}>
-                            {selectedFilesInFileView && isFileVisualizable(file) ?
+                            {!options.suppressFileViewToggle && selectedFilesInFileView && isFileVisualizable(file) ?
                                 <CartFileViewToggle
                                     file={file}
                                     fileViewName={DEFAULT_FILE_VIEW_NAME}
@@ -274,12 +290,18 @@ CartFiles.propTypes = {
     cartType: PropTypes.string.isRequired,
     /** True if page currently loading */
     loading: PropTypes.bool.isRequired,
+    /** Display options */
+    options: PropTypes.exact({
+        /** True to suppress file view toggle */
+        suppressFileViewToggle: PropTypes.bool,
+    }),
 };
 
 CartFiles.defaultProps = {
     selectedFilesInFileView: null,
     isFileViewOnly: false,
     defaultOnly: false,
+    options: {},
 };
 
 
@@ -523,7 +545,7 @@ const CartSearchResultsControls = ({
     );
     const controls = currentTab === 'datasets' && cartType === 'ACTIVE'
         ? <CartRemoveElements elements={elements} loading={loading} />
-        : currentTab === 'processeddata' &&
+        : currentTab === 'processeddata' && filesToAddToFileView?.length > 0 &&
             <FileViewControl
                 files={filesToAddToFileView}
                 fileViewName={fileViewName}
@@ -546,7 +568,7 @@ CartSearchResultsControls.propTypes = {
     /** Key of the currently selected tab */
     currentTab: PropTypes.string.isRequired,
     /** Array of currently displayed cart items */
-    elements: PropTypes.array.isRequired,
+    elements: PropTypes.array,
     /** Zero-based current page to display */
     currentPage: PropTypes.number.isRequired,
     /** Total number of pages */
@@ -571,6 +593,7 @@ CartSearchResultsControls.propTypes = {
 };
 
 CartSearchResultsControls.defaultProps = {
+    elements: [],
     fileViewOptions: {},
 };
 
@@ -1671,3 +1694,331 @@ Cart.contextTypes = {
 };
 
 export default Cart;
+
+
+/**
+ * Allows the user to select a single assembly for the genome browser.
+ */
+const CartAssemblySelector = ({ selectedAssembly, assemblies, onChangeAssembly }) => (
+    <>
+        <select value={selectedAssembly} onChange={(e) => onChangeAssembly(e.target.value)}>
+            {assemblies.map((assembly) => (
+                <option key={assembly} value={assembly}>{assembly}</option>
+            ))}
+        </select>
+    </>
+);
+
+CartAssemblySelector.propTypes = {
+    /** Currently selected assembly */
+    selectedAssembly: PropTypes.string.isRequired,
+    /** List of available assemblies */
+    assemblies: PropTypes.arrayOf(PropTypes.string).isRequired,
+    /** Called when the user selects an assembly */
+    onChangeAssembly: PropTypes.func.isRequired,
+};
+
+
+/**
+ * Display controls used for the static cart display.
+ */
+const CartStaticControls = ({
+    selectedAssembly,
+    batchDownloadProps: {
+        cart,
+        datasetTypes,
+        isFileViewActive,
+    },
+    assemblyProps: {
+        assemblies,
+        onChangeAssembly,
+    },
+}) => (
+    <div className="cart-static-controls">
+        {selectedAssembly &&
+            <CartAssemblySelector
+                assemblies={assemblies}
+                selectedAssembly={selectedAssembly}
+                onChangeAssembly={onChangeAssembly}
+            />
+        }
+        <CartStaticBatchDownload
+            cart={cart}
+            assembly={selectedAssembly}
+            datasetTypes={datasetTypes}
+            isFileViewActive={isFileViewActive}
+        />
+    </div>
+);
+
+CartStaticControls.propTypes = {
+    selectedAssembly: PropTypes.string,
+    batchDownloadProps: PropTypes.exact({
+        cart: PropTypes.object.isRequired,
+        datasetTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+        isFileViewActive: PropTypes.bool.isRequired,
+    }).isRequired,
+    assemblyProps: PropTypes.exact({
+        assemblies: PropTypes.arrayOf(PropTypes.string).isRequired,
+        onChangeAssembly: PropTypes.func.isRequired,
+    }).isRequired,
+};
+
+CartStaticControls.defaultProps = {
+    selectedAssembly: '',
+};
+
+
+/**
+ * Displays the static cart status line.
+ */
+const CartStaticStatus = ({ isFileViewActive }) => (
+    <div className="cart-static-status">
+        <>Displaying </>
+        {isFileViewActive ? <>file view</> : <>default files</>}
+    </div>
+);
+
+CartStaticStatus.propTypes = {
+    /** True if a file view is active */
+    isFileViewActive: PropTypes.bool.isRequired,
+};
+
+
+/**
+ * Displays a single static cart.
+ */
+const CartStaticDisplay = ({ cart }, reactContext) => {
+    /** Dataset loading progres; -1=done */
+    const [facetProgress, setFacetProgress] = React.useState(null);
+    /** File objects from datasets in cart */
+    const [processedFiles, setProcessedFiles] = React.useState([]);
+    /** Compiled analyses applicable to the current datasets */
+    const [analyses, setAnalyses] = React.useState([]);
+    /** All types from cart datasets, for downloads */
+    const [datasetTypes, setDatasetTypes] = React.useState([]);
+    /** Current tab's ID */
+    const [displayedTab, setDisplayedTab] = React.useState('browser');
+    /** Currently selected assembly */
+    const [selectedAssembly, setSelectedAssembly] = React.useState('');
+    /** Currently displayed page number for each tab pane; for pagers. */
+    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { browser: 0, processeddata: 0 });
+    /** Total number of displayed pages for each tab pane; for pagers. */
+    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { browser: 0, processeddata: 0 });
+
+    // Find the selected file view, if any.
+    const selectedFileView = cart.file_views?.find((view) => view.title === DEFAULT_FILE_VIEW_NAME);
+    const isFileViewActive = selectedFileView?.files.length > 0;
+
+    // Collect files, filtered for default files and file-view files, but including files from all
+    // assemblies.
+    const allAssemblyFiles = React.useMemo(() => {
+        if (isFileViewActive) {
+            // Non-empty file view in the cart, so use the files from the view.
+            return filterForFileView(processedFiles, selectedFileView.files);
+        }
+
+        // No file view in the cart, so use the default files.
+        const defaultFiles = filterForDefaultFiles(processedFiles);
+        const analysisFilteredFiles = filterForReleasedAnalyses(defaultFiles, analyses);
+        return analysisFilteredFiles.length > 0 ? analysisFilteredFiles : defaultFiles;
+    }, [processedFiles, analyses, cart.file_views]);
+
+    // Collect all assemblies in all filtered files.
+    const assemblies = React.useMemo(() => {
+        const assembliesSet = [...allAssemblyFiles.reduce((accumulatedAssemblies, file) => (
+            file.assembly ? accumulatedAssemblies.add(file.assembly) : accumulatedAssemblies
+        ), new Set())];
+        return sortAssemblies([...assembliesSet]);
+    }, [allAssemblyFiles]);
+
+    // Filter files by the selected assembly.
+    const selectedFiles = React.useMemo(() => (
+        selectedAssembly ? allAssemblyFiles.filter((file) => file.assembly === selectedAssembly) : allAssemblyFiles
+    ), [allAssemblyFiles, selectedAssembly]);
+
+    // Filter files from the selected assembly to the visualizable ones.
+    const selectedVisualizableFiles = React.useMemo(() => (
+        filterForVisualizableFiles(selectedFiles)
+    ), [selectedFiles]);
+
+    /**
+     * Called when the user clicks a tab to make its panel visible.
+     * @param {string} newTab ID of clicked tab
+     */
+    const handleTabClick = (newTab) => {
+        setDisplayedTab(newTab);
+    };
+
+    // Called when the user selects a new page of items to view using the pager.
+    const updateDisplayedPage = (newDisplayedPage) => {
+        // Set the new page number for the currently-displayed tab pane.
+        dispatchPageNumbers({ tab: displayedTab, pageNumber: newDisplayedPage });
+    };
+
+    // Set the selected assembly to the first one in the sorted list if no assembly has been
+    // selected yet.
+    React.useEffect(() => {
+        setSelectedAssembly(assemblies[0]);
+    }, [assemblies]);
+
+    // Data changes or initial load need a total-page-count calculation.
+    React.useEffect(() => {
+        const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, constants.PAGE_TRACK_COUNT);
+        const processedDataPageCount = calcTotalPageCount(selectedFiles.length, constants.PAGE_FILE_COUNT);
+        dispatchTotalPageCounts({ tab: 'browser', totalPageCount: browserPageCount });
+        dispatchTotalPageCounts({ tab: 'processeddata', totalPageCount: processedDataPageCount });
+
+        // Go to first page if current page number goes out of range of new page count.
+        if (pageNumbers.browser >= browserPageCount) {
+            dispatchPageNumbers({ tab: 'browser', pageNumber: 0 });
+        }
+        if (pageNumbers.processeddata >= processedDataPageCount) {
+            dispatchPageNumbers({ tab: 'processeddata', pageNumber: 0 });
+        }
+    }, [selectedVisualizableFiles, selectedFiles]);
+
+    useMount(() => {
+        // Load the files associated with the cart's datasets.
+        retrieveDatasetsFiles(cart.elements, setFacetProgress, reactContext.fetch, reactContext.session).then(({ datasets, datasetFiles, datasetAnalyses }) => {
+            // Only track processed files with static carts.
+            const processedDatasetFiles = datasetFiles.filter((file) => file.processed);
+
+            // De-embed any embedded datasets.files.dataset to reduce memory usage.
+            processedDatasetFiles.forEach((file) => {
+                // De-embed any embedded datasets.files.dataset.
+                if (typeof file.dataset === 'object') {
+                    file.dataset = file.dataset['@id'];
+                }
+            });
+
+            // Collect all types of all datasets. Don't count series because we already have their
+            // related datasets here too.
+            const types = new Set(datasets.map((dataset) => dataset['@type'][0]));
+
+            setProcessedFiles(processedDatasetFiles);
+            setAnalyses(datasetAnalyses);
+            setDatasetTypes([...types]);
+        });
+    });
+
+    return (
+        <Panel addClasses="cart-static-display">
+            <PanelHeading>
+                <h4>{cart.name}</h4>
+            </PanelHeading>
+            <CartStaticStatus isFileViewActive={isFileViewActive} />
+            {facetProgress === -1
+                ?
+                    <div className="cart__display">
+                        <TabPanel
+                            tabPanelCss="cart__display-content cart__display-content--static"
+                            tabs={{
+                                browser: 'Genome browser',
+                                processeddata: 'Processed',
+                            }}
+                            tabDisplay={{
+                                browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} icon="file" voice="visualizable tracks" />,
+                                processeddata: <CounterTab title="Processed" count={selectedFiles.length} icon="file" voice="processed data files" />,
+                            }}
+                            decoration={
+                                <CartStaticControls
+                                    selectedAssembly={selectedAssembly}
+                                    batchDownloadProps={{
+                                        cart,
+                                        datasetTypes,
+                                        isFileViewActive,
+                                    }}
+                                    assemblyProps={{
+                                        assemblies,
+                                        onChangeAssembly: setSelectedAssembly,
+                                    }}
+                                />
+                            }
+                            decorationClasses="cart-assembly-selector"
+                            selectedTab={displayedTab}
+                            handleTabClick={handleTabClick}
+                        >
+                            <TabPanelPane key="browser">
+                                <CartSearchResultsControls
+                                    cart={cart}
+                                    currentTab={displayedTab}
+                                    currentPage={pageNumbers.browser}
+                                    totalPageCount={totalPageCount.browser}
+                                    updateCurrentPage={updateDisplayedPage}
+                                    cartType="OBJECT"
+                                    loading={facetProgress !== -1}
+                                />
+                                <CartBrowser files={selectedVisualizableFiles} assemblies={selectedAssembly ? [selectedAssembly] : []} pageNumber={pageNumbers.browser} loading={facetProgress !== -1} />
+                            </TabPanelPane>
+                            <TabPanelPane key="processeddata">
+                                <CartSearchResultsControls
+                                    cart={cart}
+                                    currentTab={displayedTab}
+                                    currentPage={pageNumbers.processeddata}
+                                    totalPageCount={totalPageCount.processeddata}
+                                    updateCurrentPage={updateDisplayedPage}
+                                    cartType="OBJECT"
+                                    loading={facetProgress !== -1}
+                                />
+                                <CartFiles
+                                    cart={cart}
+                                    files={selectedFiles}
+                                    isFileViewOnly={false}
+                                    selectedFilesInFileView={selectedFiles}
+                                    currentPage={pageNumbers.processeddata}
+                                    defaultOnly={!isFileViewActive}
+                                    cartType="OBJECT"
+                                    loading={facetProgress !== -1}
+                                    options={{ suppressFileViewToggle: true }}
+                                />
+                            </TabPanelPane>
+                        </TabPanel>
+                    </div>
+                :
+                    <p className="cart__empty-message">Loading&hellip;</p>
+            }
+        </Panel>
+    );
+};
+
+CartStaticDisplay.propTypes = {
+    /** Cart object to display */
+    cart: PropTypes.object.isRequired,
+};
+
+CartStaticDisplay.contextTypes = {
+    session: PropTypes.object,
+    fetch: PropTypes.func,
+};
+
+
+/**
+ * Display a list of static carts that have few controls and no facets. Intended for embedding on
+ * other pages.
+ */
+export const CartStaticDisplayList = ({ cartPaths }) => {
+    const [carts, setCarts] = React.useState([]);
+
+    useMount(() => {
+        // When the static cart mounts, request the publication's cart objects from the server.
+        if (cartPaths.length > 0) {
+            requestObjects(cartPaths, '/search/?type=Cart&limit=all&status!=deleted').then((publicationCarts) => {
+                setCarts(publicationCarts);
+            });
+        }
+    });
+
+    return (
+        <div className="cart-display">
+            {carts.length > 0 &&
+                carts.map((cart) => <CartStaticDisplay key={cart['@id']} cart={cart} />)
+            }
+        </div>
+    );
+};
+
+CartStaticDisplayList.propTypes = {
+    /** Carts to display */
+    cartPaths: PropTypes.arrayOf(PropTypes.string).isRequired,
+};

@@ -3678,6 +3678,13 @@ class FileGalleryRendererComponent extends React.Component {
             meta = globals.graphDetail.lookup(this.state.infoNode)(this.state.infoNode, this.handleNodeClick, auditIndicators, auditDetail, this.context.session, this.context.sessionProperties);
         }
 
+        let defaultLocation = null;
+        if (context.examined_regions) {
+            defaultLocation = context.examined_regions[0];
+        } else if (context.examined_loci && context.examined_loci[0].gene && context.examined_loci[0].gene.locations) {
+            defaultLocation = context.examined_loci[0].gene.locations[0];
+        }
+
         // Prepare to display the file information modal.
         const modalTypeMap = {
             File: 'file',
@@ -3750,6 +3757,7 @@ class FileGalleryRendererComponent extends React.Component {
                                 assembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : ''}
                                 annotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : ''}
                                 displaySort
+                                defaultLocation={defaultLocation}
                             />
                         </TabPanelPane>
                         {!hideGraph
