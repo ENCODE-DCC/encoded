@@ -4,6 +4,7 @@ import url from 'url';
 import QueryString from '../libs/query_string';
 import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
+import Tooltip from '../libs/ui/tooltip';
 import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
@@ -360,6 +361,15 @@ const MatrixHeader = ({ context }, reactContext) => {
                         <label htmlFor="allDeeplyProfiled2">All</label> &nbsp; &nbsp;
                         <input type="radio" id="deeplyProfiled" name="data-selection" value="DeeplyProfiled" checked={!isAllDeeplyMatrix(pageUrl)} onChange={() => switchDeeplyProfilePageType(false, pageUrl, reactContext.navigate)} />
                         <label htmlFor="deeplyProfiled">Uniform batch growth</label>
+                        <Tooltip
+                            trigger={svgIcon('questionCircle')}
+                            tooltipId="qc-report-nrf"
+                            css="tooltip-home-info"
+                        >
+                            This unique sample collection of 16 cell lines were grown as two
+                            replicate batches in one lab to minimize batch effects and then
+                            distributed to the ENCODE labs to perform different bioassays.
+                        </Tooltip>
                     </div>
                 </div>
                 <div className="matrix-header__search-controls">
