@@ -404,6 +404,13 @@ class FileComponent extends React.Component {
                                     </div>
                                 : null}
 
+                                {context.pseudo_haplotype ?
+                                    <div data-test="pseudohaplotype">
+                                        <dt>Pseudo haplotype</dt>
+                                        <dd>{context.pseudo_haplotype}</dd>
+                                    </div>
+                                : null}
+
                                 <div className="file-download-section">
                                     <RestrictedDownloadButton file={context} adminUser={adminUser} downloadComponent={<FileDownloadButton />} />
                                 </div>
