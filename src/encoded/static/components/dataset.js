@@ -2376,6 +2376,7 @@ const collectSeriesAnalyses = (context) => (
  */
 const collectSeriesFiles = (context, analyses) => {
     const analysesFilePaths = analyses.reduce((paths, analysis) => paths.concat(analysis.files), []);
+    const isFunctionalCharacterizationSeries = globals.hasType(context, 'FunctionalCharacterizationSeries');
     const files = context.related_datasets
         ? (
             context.related_datasets.reduce(
@@ -2384,7 +2385,7 @@ const collectSeriesFiles = (context, analyses) => {
                         dataset.files.filter(
                             // If the analysis array has zero length, include all default files.
                             // Otherwise, include default files included in the given analyses.
-                            (file) => file.preferred_default && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
+                            (file) => (isFunctionalCharacterizationSeries || file.preferred_default) && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
                         )
                     )
                 ), []
