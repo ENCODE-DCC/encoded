@@ -83,4 +83,6 @@ assay_terms = {
       'FACS CRISPR screen': 'NTR:0000658',
       'Flow-FISH CRISPR screen': 'NTR:0000659',
       'enhancer reporter assay': 'OBI:0002083',
+      'genomic perturbation followed by RT-qPCR': 'NTR:0000676',
+      'element activity validation': 'NTR:0000677',
 }

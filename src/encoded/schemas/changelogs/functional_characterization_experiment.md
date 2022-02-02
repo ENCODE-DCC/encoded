@@ -1,6 +1,7 @@
 ## Changelog for functional_characterization_experiment.json
 
 ### Minor changes since schema version 12
+* Added *genomic perturbation followed by RT-qPCR* enum to *assay_term_name*
 * Added *biosamples* calculated property
 
 ### Schema version 12

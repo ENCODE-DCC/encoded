@@ -83,6 +83,7 @@
                             "FAIRE-seq",
                             "FlowFISH CRISPR screen",
                             "genetic modification followed by DNase-seq",
+                            "genomic perturbation followed by RT-qPCR",
                             "genotype phasing by HiC",
                             "GRO-cap",
                             "GRO-seq",

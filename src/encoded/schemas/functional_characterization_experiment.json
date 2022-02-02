@@ -81,6 +81,7 @@
                                 "proliferation CRISPR screen",
                                 "FACS CRISPR screen",
                                 "Flow-FISH CRISPR screen",
+                                "genomic perturbation followed by RT-qPCR",
                                 "perturbation followed by scRNA-seq",
                                 "perturbation followed by snATAC-seq",
                                 "STARR-seq"
@@ -121,6 +122,7 @@
                 "proliferation CRISPR screen",
                 "FACS CRISPR screen",
                 "Flow-FISH CRISPR screen",
+                "genomic perturbation followed by RT-qPCR",
                 "perturbation followed by scRNA-seq",
                 "perturbation followed by snATAC-seq",
                 "pooled clone sequencing",
