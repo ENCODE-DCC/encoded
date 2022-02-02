@@ -1059,7 +1059,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
     })
     def series_files(self, request, original_files, related_datasets, status):  
         elements_cloning_datasets = request.select_distinct_values('elements_cloning', *related_datasets)
-        elements_mapping_datasets = request.select_distinct_values('elements_mapping', *related_datasets)
+        elements_mapping_datasets = request.select_distinct_values('elements_mappings', *related_datasets)
         related_datasets_paths = paths_filtered_by_status(
             request, 
             related_datasets + elements_cloning_datasets + elements_mapping_datasets
