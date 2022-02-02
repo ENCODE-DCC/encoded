@@ -42,3 +42,10 @@
         @extend .btn-sm;
     }
 }
+
+// For notes in the batch download modal.
+.batch-download-note {
+    margin: 15px 0 0;
+    padding: 5px 10px;
+    background-color: #e0e0e0;
+}

@@ -1,3 +1,4 @@
+import { PropTypes } from 'prop-types';
 import { BatchDownloadActuator, DefaultBatchDownloadContent } from './base';
 
 /**
@@ -14,9 +15,25 @@ import RawSequencingBatchDownloadController from './raw_sequencing';
 import ReferenceBatchDownloadController from './reference';
 import SearchBatchDownloadController from './search';
 
+
+/**
+ * Display a note (as opposed to a warning) within the batch-download modal.
+ */
+const BatchDownloadModalContentNote = ({ children }) => (
+    <div className="batch-download-note">
+        {children}
+    </div>
+);
+
+BatchDownloadModalContentNote.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
+
 export {
     // Common batch-download components
     BatchDownloadActuator,
+    BatchDownloadModalContentNote,
     DefaultBatchDownloadContent,
 
     // Batch-download controllers

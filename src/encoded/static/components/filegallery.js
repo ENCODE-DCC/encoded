@@ -12,8 +12,10 @@ import { auditDecor, auditsDisplayed } from './audit';
 import {
     AnalysisBatchDownloadController,
     BatchDownloadActuator,
+    BatchDownloadModalContentNote,
     CloningMappingsBatchDownloadController,
     DatasetBatchDownloadController,
+    DefaultBatchDownloadContent,
     ElementsReferencesDownloadController,
     RawSequencingBatchDownloadController,
     ReferenceBatchDownloadController,
@@ -2082,6 +2084,7 @@ class FilterControls extends React.Component {
             browserChangeHandler,
             visualizeHandler,
             inclusionOn,
+            hasCloningOrMappingsFiles,
         } = this.props;
         const contextFiles = (files).filter((file) => (inclusionOn ? file : inclusionStatuses.indexOf(file.status) === -1));
 
@@ -2109,11 +2112,23 @@ class FilterControls extends React.Component {
         const query = convertFiltersToQuery(filters, fileQueryKey, inclusionOn);
         const batchDownloadController = new DatasetBatchDownloadController(context, query, fileQueryKey);
 
+        const modalContent = hasCloningOrMappingsFiles
+            ?
+                <>
+                    <DefaultBatchDownloadContent />
+                    <BatchDownloadModalContentNote>
+                        This series contains cloning or mappings experiments with files. You can
+                        download these files from their respective sections below.
+                    </BatchDownloadModalContentNote>
+                </>
+            : null;
+
         return (
             <div className="file-gallery-controls">
                 {visualizerControls}
                 <BatchDownloadActuator
                     controller={batchDownloadController}
+                    modalContent={modalContent}
                     actuator={
                         <button className="btn btn-info file-gallery-controls__download" type="button">
                             Download
@@ -2150,6 +2165,8 @@ FilterControls.propTypes = {
     visualizeHandler: PropTypes.func.isRequired,
     /** include-deprecated check box checked status */
     inclusionOn: PropTypes.bool,
+    /** True if dataset has elements_cloning or elements_mapping files */
+    hasCloningOrMappingsFiles: PropTypes.bool,
 };
 
 FilterControls.defaultProps = {
@@ -2158,6 +2175,7 @@ FilterControls.defaultProps = {
     currentBrowser: '',
     filters: [],
     inclusionOn: false,
+    hasCloningOrMappingsFiles: false,
 };
 
 FilterControls.contextTypes = {
@@ -4039,6 +4057,7 @@ class FileGalleryRendererComponent extends React.Component {
                     filters={this.state.fileFilters}
                     fileQueryKey={fileQueryKey}
                     inclusionOn={this.state.inclusionOn}
+                    hasCloningOrMappingsFiles={cloningMappingsFiles.cloning || cloningMappingsFiles.mappings}
                     browsers={browsers}
                     currentBrowser={this.state.currentBrowser}
                     selectedBrowserFiles={this.state.selectedBrowserFiles}
