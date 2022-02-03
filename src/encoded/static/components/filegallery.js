@@ -1756,14 +1756,67 @@ DatasetFiles.defaultProps = {
  * @returns {array} Files to display on Series pages
  */
 const filterSeriesFiles = (files, analyses) => {
-    const analysesFilePaths = analyses.reduce((paths, analysis) => paths.concat(analysis.files), []);
-    return files.filter(
-        // If the analysis array has zero length, include all default files.
-        // Otherwise, include default files included in the given analyses.
-        (file) => file.preferred_default && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
-    );
+    if (analyses?.length > 0) {
+        const analysesFilePaths = analyses.reduce((paths, analysis) => paths.concat(analysis.files), []);
+        return files.filter(
+            // If the analysis array has zero length, include all default files.
+            // Otherwise, include default files included in the given analyses.
+            (file) => file.preferred_default && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
+        );
+    }
+    return files;
 };
 
+
+const FILE_COLUMNS = [
+    'title',
+    'accession',
+    'dataset',
+    'assembly',
+    'technical_replicates',
+    'biological_replicates',
+    'file_format',
+    'file_type',
+    'file_format_type',
+    'file_format_type',
+    'file_size',
+    'assay_term_name',
+    'biosample_ontology.term_name',
+    'biosample_ontology.organ_slims',
+    'simple_biosample_summary',
+    'origin_batches',
+    'target.label',
+    'href',
+    'derived_from',
+    'genome_annotation',
+    'replicate.library.accession',
+    'paired_end',
+    'paired_with',
+    'preferred_default',
+    'run_type',
+    'read_length',
+    'mapped_read_length',
+    'cropped_read_length',
+    'cropped_read_length_tolerance',
+    'mapped_run_type',
+    'read_length_units',
+    'output_category',
+    'output_type',
+    'index_of',
+    'quality_metrics',
+    'lab.title',
+    'award.project',
+    'step_run',
+    'date_created',
+    'analysis_step_version',
+    'restricted',
+    'submitter_comment',
+    'status',
+    'annotation_type',
+    'annotation_subtype',
+    'biochemical_inputs',
+    'encyclopedia_version',
+];
 
 /**
  * File display widget, showing a facet list, Valis, a table, and a graph. This component only
@@ -1808,7 +1861,8 @@ export const FileGallery = ({
         const elementsReferenceFiles = getElementReferencesFiles(context.elements_references);
 
         // Request files from the server.
-        const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}`;
+        const fileFields = FILE_COLUMNS.map((column) => `field=${column}`).join('&');
+        const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}&${fileFields}`;
         requestSearch(query).then((requestedData) => {
             const isSeries = globals.hasType(context, 'Series');
             const isFunctionalCharacterizationSeries = globals.hasType(context, 'FunctionalCharacterizationSeries');
