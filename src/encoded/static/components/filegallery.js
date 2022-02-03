@@ -1813,7 +1813,8 @@ export const FileGallery = ({
         const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}`;
         requestSearch(query).then((requestedData) => {
             const isSeries = globals.hasType(context, 'Series');
-            const datasetFiles = isSeries ? filterSeriesFiles(requestedData['@graph'], usedAnalyses) : requestedData['@graph'];
+            const isFunctionalCharacterizationSeries = globals.hasType(context, 'FunctionalCharacterizationSeries');
+            const datasetFiles = (isSeries && !isFunctionalCharacterizationSeries) ? filterSeriesFiles(requestedData['@graph'], usedAnalyses) : requestedData['@graph'];
             setData([...datasetFiles, ...files, ...elementsReferenceFiles]);
         });
     }, [fileQuery, files]);

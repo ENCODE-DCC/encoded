@@ -2926,7 +2926,7 @@ SeriesComponent.defaultProps = {
     tableColumns: null,
     sortColumn: null,
     breadcrumbs: null,
-    options: { extraFiles: [] },
+    options: {},
 };
 
 SeriesComponent.contextTypes = {
