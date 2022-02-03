@@ -24,6 +24,7 @@
 * Added *kmer weights* and *training set* to the enum lists for *input_file_types* and *output_file_types*
 * Added *functional conservation mapping* to the enum lists for *input_file_types* and *output_file_types*
 * Added *3D structure* and *DNA accessibility raw signal* to the enum lists for *input_file_types* and *output_file_types*
+* Added *variants chromatin interactions*, *haplotype-specific chromatin interactions*, *haplotype-specific DNA accessibility raw signal*, *haplotype-specific DNA accessibility corrected signal* to enum list for *input_file_types* and *output_file_types*.
 
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 

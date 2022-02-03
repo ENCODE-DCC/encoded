@@ -5053,5 +5053,77 @@
         "submitted_file_name": "/tgc/TGCore_User_Data/ENCODE/ENCODE_DATA/summary_upToSet39/GC-correction/salmon_cqn_DESeq2_MTfix_BatchNorm_v7/result/HepG2/AARS-BGHLV17-HepG2_DESeq2_output.txt",
         "submitter_comment": "TEST: Batch normalized DESeq2 result after GC-bias correction by Salmon and CQN. SampleA: Control experiment; SampleB: Knockdown / Knockout experiment.",
         "uuid": "358573cb-ad35-42ad-9c4e-be0ced09067d"
+    },
+    {
+        "accession": "ENCFF033HOA",
+        "aliases": [
+            "ali-mortazavi:variants_chromatin_interactions"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "hic",
+        "file_size": 341248,
+        "lab": "ali-mortazavi",
+        "md5sum": "649780c2d41afc0a781e3dc88c051695",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "output_type": "variants chromatin interactions",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d0d63ed8-83a2-11ec-a8a3-0242ac120002"
+    },
+    {
+        "accession": "ENCFF033HOB",
+        "aliases": [
+            "ali-mortazavi:haplotype-specific_chromatin_interactions"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "hic",
+        "file_size": 341248,
+        "lab": "ali-mortazavi",
+        "md5sum": "93921bed3089ca42ce5ba6607b98f64e",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "output_type": "haplotype-specific chromatin interactions",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d0d6411c-83a2-11ec-a8a3-0242ac120002"
+    },
+    {
+        "accession": "ENCFF033HOC",
+        "aliases": [
+            "ali-mortazavi:haplotype-specific_DNA_accessibility_raw_signal"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "bigWig",
+        "file_size": 341248,
+        "lab": "ali-mortazavi",
+        "md5sum": "39d2f766d121a5a8bcad16a3051a47fd",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "output_type": "haplotype-specific DNA accessibility raw signal",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d0d64266-83a2-11ec-a8a3-0242ac120002"
+    },
+    {
+        "accession": "ENCFF033HOD",
+        "aliases": [
+            "ali-mortazavi:haplotype-specific_DNA_accessibilit_corrected_signal"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "bigWig",
+        "file_size": 341248,
+        "lab": "ali-mortazavi",
+        "md5sum": "c5a002f15d54bb54a6568c1e22812104",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "output_type": "haplotype-specific DNA accessibility corrected signal",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d0d6437e-83a2-11ec-a8a3-0242ac120002"
     }
 ]

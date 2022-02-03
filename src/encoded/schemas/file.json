@@ -860,7 +860,24 @@
                         },
                         "output_type": {
                             "enum": [
-                                "DNA accessibility raw signal"
+                                "DNA accessibility raw signal",
+                                "haplotype-specific DNA accessibility raw signal",
+                                "haplotype-specific DNA accessibility corrected signal"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "hic"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "variants chromatin interactions",
+                                "haplotype-specific chromatin interactions"
                             ]
                         }
                     }
@@ -890,7 +907,11 @@
                                     "sparse gene count matrix of unique reads",
                                     "training set",
                                     "rejected reads",
-                                    "DNA accessibility raw signal"
+                                    "DNA accessibility raw signal",
+                                    "haplotype-specific DNA accessibility raw signal",
+                                    "haplotype-specific DNA accessibility corrected signal",
+                                    "haplotype-specific chromatin interactions",
+                                    "variants chromatin interactions"
                                 ]
                             }
                         }
@@ -1591,6 +1612,22 @@
         "filter_value": {
             "comment": "Filter type and value must be specified together.",
             "required": ["filter_type"]
+        },
+        "pseudo_haplotype":{
+            "comment": "Pseudo haplotype must be only used with haplotype-specific signal or interaction files.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "output_type": {
+                            "enum": [
+                                "haplotype-specific chromatin interactions",
+                                "haplotype-specific DNA accessibility raw signal",
+                                "haplotype-specific DNA accessibility corrected signal"
+                            ]
+                        }
+                    }
+                }
+            ]
         }
     },
     "properties": {
@@ -2071,6 +2108,9 @@
                         "guide locations",
                         "guide quantifications",
                         "haplotype-specific alignments",
+                        "haplotype-specific chromatin interactions",
+                        "haplotype-specific DNA accessibility raw signal",
+                        "haplotype-specific DNA accessibility corrected signal",
                         "hotspots",
                         "hotspots1 reference",
                         "hotspots2 reference",
@@ -2187,7 +2227,8 @@
                         "unfiltered sparse splice junction count matrix of unique reads",
                         "unidirectional peaks",
                         "UV enriched segment quantifications",
-                        "variant calls"
+                        "variant calls",
+                        "variants chromatin interactions"
                     ]
                 },
                 {
@@ -2501,6 +2542,16 @@
             "description": "Numerical value representing the threshold used to filter the processed data.",
             "comment": "The filter_value property requires specification of filter_type property.",
             "type": "number"
+        },
+        "pseudo_haplotype": {
+            "title": "Pseudo haplotype",
+            "description": "Pseudo haplotype of 1 or 2 for haplotype-specific accessibility and interaction files.",
+            "comment": "The pseudo_haplotype property will be allowed only for haplotype-specific accessibility and interactions files",
+            "type": "string",
+            "enum": [
+                "1",
+                "2"
+            ]
         }
     },
     "columns": {
@@ -2701,6 +2752,8 @@
         "element gene interactions p-value": "signal",
         "training set": "signal",
         "DNA accessibility raw signal": "signal",
+        "haplotype-specific DNA accessibility raw signal": "signal",
+        "haplotype-specific DNA accessibility corrected signal": "signal",
 
         "bias model": "quantification",
         "enrichment": "quantification",
@@ -2827,6 +2880,8 @@
         "inclusion list": "annotation",
         "genome subcompartments": "annotation",
         "chromatin stripes": "annotation",
+        "variants chromatin interactions": "annotation",
+        "haplotype-specific chromatin interactions": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
