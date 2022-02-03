@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import pluralize from 'pluralize';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
+import Tooltip from '../libs/ui/tooltip';
 import { TextFilter } from './search';
 
 
@@ -116,3 +117,20 @@ SearchFilter.contextTypes = {
     navigate: PropTypes.func,
     location_href: PropTypes.string,
 };
+
+
+/**
+ * Displays a hover-over tooltip for the Uniform Batch Growth radio button on the deeply profiled
+ * matrix page.
+ */
+export const UniformBatchGrowthTooltip = () => (
+    <Tooltip
+        trigger={svgIcon('questionCircle')}
+        tooltipId="matrix-deeply-profiled"
+        css="tooltip-home-info"
+    >
+        This unique sample collection of 16 cell lines were grown as two
+        replicate batches in one lab to minimize batch effects and then
+        distributed to the ENCODE labs to perform different bioassays.
+    </Tooltip>
+);

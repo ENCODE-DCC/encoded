@@ -8,7 +8,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
 import * as globals from './globals';
-import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT } from './matrix';
+import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT, UniformBatchGrowthTooltip } from './matrix';
 import { ClearSearchTerm, FacetList, SearchControls } from './search';
 import { CartAddAllElements } from './cart';
 
@@ -360,6 +360,7 @@ const MatrixHeader = ({ context }, reactContext) => {
                         <label htmlFor="allDeeplyProfiled2">All</label> &nbsp; &nbsp;
                         <input type="radio" id="deeplyProfiled" name="data-selection" value="DeeplyProfiled" checked={!isAllDeeplyMatrix(pageUrl)} onChange={() => switchDeeplyProfilePageType(false, pageUrl, reactContext.navigate)} />
                         <label htmlFor="deeplyProfiled">Uniform batch growth</label>
+                        <UniformBatchGrowthTooltip />
                     </div>
                 </div>
                 <div className="matrix-header__search-controls">
