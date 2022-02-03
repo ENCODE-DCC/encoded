@@ -1445,6 +1445,22 @@ DatasetFiles.defaultProps = {
 
 
 /**
+ * Filter the given files to those to display on Series pages.
+ * @param {array} files Files included in Series
+ * @param {array} analyses Analyses included in Series
+ * @returns {array} Files to display on Series pages
+ */
+const filterSeriesFiles = (files, analyses) => {
+    const analysesFilePaths = analyses.reduce((paths, analysis) => paths.concat(analysis.files), []);
+    return files.filter(
+        // If the analysis array has zero length, include all default files.
+        // Otherwise, include default files included in the given analyses.
+        (file) => file.preferred_default && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
+    );
+};
+
+
+/**
  * File display widget, showing a facet list, Valis, a table, and a graph. This component only
  * triggers the data retrieval, which is done with a search for files associated with the given
  * experiment (in `context`). The source of files gets specified either by `fileQuery` or
@@ -1485,16 +1501,13 @@ export const FileGallery = ({
     React.useEffect(() => {
         const elementsReferenceFiles = getElementReferencesFiles(context.elements_references);
 
-        if (files) {
-            // Array of files provided, so set without a request to the server.
-            setData([...files, ...elementsReferenceFiles]);
-        } else {
-            // Request files from the server.
-            const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}`;
-            requestSearch(query).then((requestedData) => {
-                setData([...requestedData['@graph'], ...elementsReferenceFiles]);
-            });
-        }
+        // Request files from the server.
+        const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}`;
+        requestSearch(query).then((requestedData) => {
+            const isSeries = globals.hasType(context, 'Series');
+            const datasetFiles = isSeries ? filterSeriesFiles(requestedData['@graph'], usedAnalyses) : requestedData['@graph'];
+            setData([...datasetFiles, ...files, ...elementsReferenceFiles]);
+        });
     }, [fileQuery, files]);
 
     useMount(() => {
@@ -1570,8 +1583,8 @@ FileGallery.propTypes = {
 
 FileGallery.defaultProps = {
     fileQuery: '',
-    files: null,
-    analyses: null,
+    files: [],
+    analyses: [],
     fileQueryKey: 'files',
     supplementalShortLabels: {},
     hideGraph: false,
@@ -3473,7 +3486,7 @@ class FileGalleryRendererComponent extends React.Component {
                         // Assembly is required for browser / graph and available assemblies may be different for graph and browser
                         // Do not reset if a particular assembly has already been chosen and it is an available option
                         this.setState({ compiledAnalyses: [] });
-                        const currentAssembly = this.state.fileFilters.assembly[0];
+                        const currentAssembly = this.state.fileFilters.assembly?.[0] || '';
                         let newAssembly;
                         if (currentAssembly === 'All assemblies' || !(assemblyList[currentAssembly])) {
                             // We want to get the assembly with the highest assembly number (but not 'All assemblies')

@@ -5034,5 +5034,24 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "94771218-7f07-11ec-a8a3-0242ac120002"
+    },
+    {
+        "accession": "ENCFF510SOS",
+        "assembly": "GRCh38",
+        "award": "UM1HG009390",
+        "dataset": "ENCSR001GSS",
+        "file_format": "tsv",
+        "file_size": 1766324,
+        "genome_annotation": "V29",
+        "lab": "tim-reddy",
+        "md5sum": "0239ea4f540b23804dcceb081e8b1f0b",
+        "no_file_available": false,
+        "output_type": "differential expression quantifications",
+        "preferred_default": true,
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "submitted_file_name": "/tgc/TGCore_User_Data/ENCODE/ENCODE_DATA/summary_upToSet39/GC-correction/salmon_cqn_DESeq2_MTfix_BatchNorm_v7/result/HepG2/AARS-BGHLV17-HepG2_DESeq2_output.txt",
+        "submitter_comment": "TEST: Batch normalized DESeq2 result after GC-bias correction by Salmon and CQN. SampleA: Control experiment; SampleB: Knockdown / Knockout experiment.",
+        "uuid": "358573cb-ad35-42ad-9c4e-be0ced09067d"
     }
 ]

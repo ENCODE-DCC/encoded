@@ -1,10 +1,15 @@
 /**
  * Displays a button to remove a specific set of datasets from the cart.
  */
+// node_modules
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+// libs/ui
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
+// components
+import { hasType } from '../globals';
+// local
 import { removeMultipleFromCartAndSave } from './actions';
 import { DEFAULT_FILE_VIEW_NAME, getReadOnlyState } from './util';
 
@@ -106,8 +111,11 @@ const CartRemoveElementsComponent = ({
     const [isModalVisible, setIsModalVisible] = React.useState(false);
     const readOnlyState = getReadOnlyState(savedCartObj);
 
-    // Filter the given elements so we only remove datasets not within a series.
-    const nonSeriesDatasets = elements.filter((element) => !element._relatedSeries);
+    // Filter the given elements so we only remove non-series datasets not themselves within a
+    // series.
+    const nonSeriesDatasets = elements.filter((element) => (
+        !element._relatedSeries && !hasType(element, 'Series')
+    ));
 
     /**
      * Handle a click in the actuator button to open the alert modal.
