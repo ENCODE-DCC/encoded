@@ -1808,6 +1808,7 @@ const FILE_COLUMNS = [
     'award.project',
     'step_run',
     'date_created',
+    'analyses',
     'analysis_step_version',
     'restricted',
     'submitter_comment',
