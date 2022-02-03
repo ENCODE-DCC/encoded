@@ -1795,7 +1795,7 @@ export const FileGallery = ({
     // Holds analysis audit objects loaded by server request, keyed by analysis @id.
     const [analysisAudits, setAnalysisAudits] = React.useState({});
 
-    const usedAnalyses = analyses || context.analyses;
+    const usedAnalyses = analyses.length > 0 ? analyses : context.analyses;
 
     useMount(() => {
         // Retrieve schemas for file graph.
