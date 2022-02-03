@@ -7,7 +7,7 @@ from snovault.crud_views import collection_add
 from snovault.schema_utils import validate_request
 from pyramid.authentication import CallbackAuthenticationPolicy
 from encoded.types.user import User
-from jsonschema_serialize_fork.exceptions import ValidationError
+from jsonschema.exceptions import ValidationError
 from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPInternalServerError,

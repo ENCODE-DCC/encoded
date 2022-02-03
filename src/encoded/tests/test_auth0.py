@@ -3,7 +3,7 @@ import requests
 from unittest import mock
 from snovault import COLLECTIONS		
 import encoded.auth0 as auth0
-from jsonschema_serialize_fork.exceptions import ValidationError
+from jsonschema.exceptions import ValidationError
 from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPInternalServerError,
