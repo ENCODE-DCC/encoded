@@ -766,7 +766,9 @@ export class FileTable extends React.Component {
             });
 
             // Get unique analyses for series object
-            this.analysesSeries = files.series ? [...new Set(files.series.map((a) => (a.analyses && a.analyses.length > 0 ? a.analyses[0]['@id'] : '')).filter((a) => a !== ''))] : [];
+            this.analysesSeries = files.series
+                ? [...new Set(files.series.map((a) => (a.analyses && a.analyses.length > 0 ? (typeof a.analyses[0] === 'string' ? a.analyses[0] : a.analyses[0]['@id']) : '')).filter((a) => a !== ''))]
+                : [];
 
             // showReplicateNumber matches with show-functionality. It has to
             // be NOT (!)-ed to match with hide-functionality
