@@ -217,7 +217,10 @@ def test_put_object_child_validation(content_with_child, testapp):
         }]
     }
     res = testapp.put_json(content_with_child['@id'], edit, status=422)
-    assert res.json['errors'][0]['name'] == [u'reverse', 0, u'target']
+    assert ['reverse', 0, 'target'] in [
+        x['name']
+        for x in res.json['errors']
+    ]
 
 
 def test_put_object_validates_child_references(content_with_child, testapp):
