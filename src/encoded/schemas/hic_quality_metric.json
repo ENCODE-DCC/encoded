@@ -17,7 +17,7 @@
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "avg_insert_size": {
             "required": ["run_type"],
             "properties": {

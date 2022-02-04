@@ -284,7 +284,7 @@
             }
         }
     },
-    "dependencies": {
+    "dependentSchemas": {
         "mean_gene_per_cell": {
             "required": ["mode"],
             "properties": {

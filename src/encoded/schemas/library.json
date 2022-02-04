@@ -27,13 +27,15 @@
             "title": "Status"
         }
     },
-    "dependencies": {
-        "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
-        "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
-        "fragmentation_duration_time_units": ["fragmentation_duration_time", "fragmentation_methods"],
-        "fragmentation_duration_time": ["fragmentation_duration_time_units", "fragmentation_methods"],
-        "product_id": ["source"],
-        "lot_id": ["source", "product_id"],
+    "dependentRequired": {
+	"nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
+	"nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
+	"fragmentation_duration_time_units": ["fragmentation_duration_time", "fragmentation_methods"],
+	"fragmentation_duration_time": ["fragmentation_duration_time_units", "fragmentation_methods"],
+	"product_id": ["source"],
+	"lot_id": ["source", "product_id"]
+    },
+    "dependentSchemas": {
         "average_fragment_size": {"not": {"required": ["size_range"]}},
         "size_range": {"not": {"required": ["average_fragment_size"]}},
         "fragment_length_CV": {"not": {"required": ["fragment_length_SD"]}},

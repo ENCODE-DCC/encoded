@@ -23,7 +23,7 @@
         { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {
@@ -300,9 +300,11 @@
                         ]
                     }
                 },
-                "dependencies": {
-                    "expression_range_minimum": ["expression_range_maximum"],
-                    "expression_range_maximum": ["expression_range_minimum"],
+		"dependentRequired": {
+		    "expression_range_minimum": ["expression_range_maximum"],
+		    "expression_range_maximum": ["expression_range_minimum"]
+		},
+                "dependentSchemas": {
                     "expression_percentile": {
                         "not": {
                             "anyOf": [

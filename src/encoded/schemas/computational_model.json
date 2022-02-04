@@ -20,7 +20,7 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "file_set.json#/properties" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {

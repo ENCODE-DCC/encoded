@@ -168,7 +168,7 @@
             "title": "Encyclopedia version"
         }
     },
-    "dependencies": {
+    "dependentSchemas": {
         "no_file_available":{
             "comment": "md5sum is required for all files unless the file is not available from the portal. file_size is required for files present on portal and have one of the statuses: in progress, revoked, archived or released.",
             "oneOf": [

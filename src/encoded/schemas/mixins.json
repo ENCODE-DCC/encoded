@@ -140,7 +140,7 @@
             "description": "Review of the characterization results by an independent reviewer.",
             "type": "object",
             "additionalProperties": false,
-            "dependencies": {
+            "dependentSchemas": {
                 "status": {
                     "oneOf": [
                          {

@@ -1,4 +1,4 @@
- {
+{
     "title": "Antibody characterization",
     "description": "Schema for submitting antibody characterization data.",
     "$id": "/profiles/antibody_characterization.json",
@@ -20,8 +20,10 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
-    "dependencies": {
-        "characterization_reviews": ["primary_characterization_method"],
+    "dependentRequired": {
+	"characterization_reviews": ["primary_characterization_method"]
+    },
+    "dependentSchemas": {
         "primary_characterization_method": {
             "oneOf": [
                 {

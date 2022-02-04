@@ -23,7 +23,7 @@
         { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "internal_tags": {
             "comment": "If internal_tags list is initiated, it must contain at least one value.",
             "properties": {

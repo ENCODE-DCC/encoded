@@ -21,7 +21,11 @@
         { "$ref": "dataset.json#/properties" },
         { "$ref": "file_set.json#/properties" }
     ],
-    "dependencies": {
+    "dependentRequired": {
+	"relevant_timepoint": ["relevant_timepoint_units"],
+	"relevant_timepoint_units": ["relevant_timepoint"]
+    },
+    "dependentSchemas": {
         "biosample_ontology": {
             "not": {
                 "properties": {
@@ -41,8 +45,6 @@
                 }
             }
         },
-        "relevant_timepoint": ["relevant_timepoint_units"],
-        "relevant_timepoint_units": ["relevant_timepoint"],
         "status": {
             "oneOf": [
                 {

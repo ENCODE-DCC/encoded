@@ -27,7 +27,7 @@
         { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "parent_strains": {
             "comment": "Parent strains list can contain up to two entries, of strains of the same organism.",
             "properties":{

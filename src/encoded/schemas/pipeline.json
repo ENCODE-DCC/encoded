@@ -19,7 +19,7 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "assay_term_names": {
              "minItems": 1
         }

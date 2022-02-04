@@ -22,7 +22,7 @@
         { "$ref": "mixins.json#/biosample_ontology" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {

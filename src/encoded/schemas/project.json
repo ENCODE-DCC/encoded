@@ -20,7 +20,7 @@
         { "$ref": "dataset.json#/properties" },
         { "$ref": "file_set.json#/properties" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {

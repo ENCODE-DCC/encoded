@@ -18,7 +18,7 @@
         { "$ref": "mixins.json#/product_id"},
         { "$ref": "mixins.json#/source"}
     ],
-    "dependencies": {
+    "dependentRequired": {
         "temperature": ["temperature_units"],
         "temperature_units": ["temperature"],
         "amount": ["amount_units"],

@@ -14,7 +14,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
     ],
-    "dependencies": {
+    "dependentRequired": {
         "rbns_protein_concentration": ["rbns_protein_concentration_units"],
         "rbns_protein_concentration_units": ["rbns_protein_concentration"]
     },

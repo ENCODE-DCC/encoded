@@ -83,7 +83,7 @@
             }
         }
     ],
-    "dependencies": {
+    "dependentRequired": {
         "modifications": ["genes"]
     },
     "tag_modifications": {

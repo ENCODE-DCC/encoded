@@ -30,7 +30,7 @@
             "$ref": "mixins.json#/attribution"
         }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "news": {
             "oneOf": [
                 {

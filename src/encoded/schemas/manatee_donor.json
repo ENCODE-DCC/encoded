@@ -26,7 +26,7 @@
         { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "age_units":  {
             "comment":"Age units is required if age is specified as anything but unknown.",
             "required": ["age"],

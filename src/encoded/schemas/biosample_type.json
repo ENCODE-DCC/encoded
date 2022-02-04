@@ -16,7 +16,7 @@
         {"$ref": "mixins.json#/standard_status"},
         {"$ref": "mixins.json#/uuid"}
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "term_id":{
             "oneOf": [
                 { 

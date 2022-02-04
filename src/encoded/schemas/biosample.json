@@ -27,7 +27,7 @@
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/uuid"}
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "biosample_ontology": {
             "not": {
                 "properties": {
@@ -976,9 +976,11 @@
                         "maximum": 100
                     }
                 },
-                "dependencies": {
-                    "expression_range_minimum": ["expression_range_maximum"],
-                    "expression_range_maximum": ["expression_range_minimum"],
+		"dependentRequired": {
+		    "expression_range_minimum": ["expression_range_maximum"],
+		    "expression_range_maximum": ["expression_range_minimum"]
+		},
+                "dependentSchemas": {
                     "expression_percentile": {
                         "not": {
                             "anyOf": [

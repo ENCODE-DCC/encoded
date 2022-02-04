@@ -13,7 +13,7 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/standard_status" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "locations": {
             "oneOf": [
                 {
