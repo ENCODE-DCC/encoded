@@ -5125,5 +5125,101 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "d0d6437e-83a2-11ec-a8a3-0242ac120002"
+    },
+    {
+        "accession": "ENCFF066TVN",
+        "aliases": [
+            "will-greenleaf:CRISPR-screen.tiling.Plasmid.fastq.gz"
+        ],
+        "alternate_accessions": [],
+        "award": "U54HG006997",
+        "content_md5sum": "d07f830381964c8a9c7bef8e03e58cb9",
+        "dataset": "ENCSR114CEL",
+        "fastq_signature": [
+            "HJTWJAFXX:1:1:CATTTT:",
+            "HJTWJAFXX:2:1:CATTTT:",
+            "HJTWJAFXX:3:1:CATTTT:",
+            "HJTWJAFXX:4:1:CATTTT:"
+        ],
+        "file_format": "fastq",
+        "file_size": 189080128,
+        "flowcell_details": [],
+        "lab": "bing-ren",
+        "md5sum": "efaa01b54ce751e08b95aacc07baec5f",
+        "no_file_available": false,
+        "output_type": "reads",
+        "platform": "27e58bd7-0943-4b5a-9473-30d571eb89ff",
+        "preferred_default": true,
+        "read_count": 9056130,
+        "read_length": 21,
+        "replicate": "0f45174f-3ded-4ab4-a826-872241b0bf11",
+        "run_type": "single-ended",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "39f0e8c7-1ffa-4ccc-bde1-5dee450f8fe7"
+    },
+    {
+        "accession": "ENCFF148OPN",
+        "aliases": [
+            "ryan-tewhey:mpra-OL13-fads-plasmid-r1-l1_t1-f2r1"
+        ],
+        "award": "U54HG006997",
+        "content_md5sum": "fc32a6a27e1566883ecd41c5bbf9a14f",
+        "dataset": "ENCSR212POL",
+        "fastq_signature": [
+            "HFGVJBGXB:2:1:CCAGTTAGGCTAACTA:"
+        ],
+        "file_format": "fastq",
+        "file_size": 199207217,
+        "lab": "bing-ren",
+        "md5sum": "379c962b46dbf3631d9545e4a8e4e2c0",
+        "no_file_available": false,
+        "output_type": "reads",
+        "platform": "27e58bd7-0943-4b5a-9473-30d571eb89ff",
+        "preferred_default": true,
+        "read_count": 8884691,
+        "read_length": 30,
+        "replicate": "452f0ba6-dc57-4e0e-aae0-3b12b30f998b",
+        "run_type": "single-ended",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "submitted_file_name": "/projects/tewhey-lab/sequencing/20190526_FADS_NextSeq_Broad/OL13_FADS_plasmid_rep1.L002.EN.1.fastq.gz"
+    },
+    {
+        "accession": "ENCFF227AAG",
+        "assembly": "GRCh38",
+        "award": "U54HG007004",
+        "dataset": "ENCSR476KHP",
+        "file_format": "tsv",
+        "file_format_type": "guide quantifications",
+        "file_size": 3972151,
+        "lab": "thomas-gingeras",
+        "md5sum": "8856041cf4e8b061a8bea4ffa5626300",
+        "no_file_available": false,
+        "output_type": "guide quantifications",
+        "preferred_default": true,
+        "replicate": "dc14112d-23bb-44bc-a1cd-f7923fb2ff20",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "submitted_file_name": "/home/unix/amackays/sabeti/ENCODE_uploads/HEME/MYB_rep2_HS_ENCODE_guideQuant.tsv",
+        "uuid": "3eed1db0-7533-414d-8cde-7d0e6f857be5"
+    },
+    {
+        "accession": "ENCFF207KDX",
+        "assembly": "GRCh38",
+        "award": "U54HG007004",
+        "dataset": "ENCSR212POL",
+        "file_format": "bigBed",
+        "file_format_type": "bed6",
+        "file_size": 322595,
+        "lab": "thomas-gingeras",
+        "md5sum": "66c1b09dd75b03c7af67cc8471e033e9",
+        "no_file_available": false,
+        "output_type": "guide locations",
+        "preferred_default": true,
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "submitted_file_name": "/home/unix/amackays/sabeti/ENCODE_uploads/HEME/HEME_guides.bb",
+        "uuid": "6429e57d-c6a1-4aaf-9e3f-6169fb5b2f7a"
     }
 ]
