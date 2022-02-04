@@ -766,7 +766,6 @@ export class FileTable extends React.Component {
             });
 
             // Get unique analyses for series object
-            this.analysesSeries = [];
             if (files.series) {
                 files.series.forEach((file) => {
                     file.analyses = file.analyses.map((analysis) => (typeof analysis === 'string' ? analysis : analysis['@id']));
