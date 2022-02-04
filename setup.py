@@ -21,7 +21,7 @@ INSTALL_REQUIRES = [
     "elasticsearch==5.4.0",
     "future==0.18.2",
     "humanfriendly==6.1",
-    "jsonschema==4.4.0",
+    "jsonschema[format]==4.4.0",
     "loremipsum==1.0.5",
     "passlib==1.7.2",
     "psutil==5.6.7",
