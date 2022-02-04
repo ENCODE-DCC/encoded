@@ -2,7 +2,7 @@
     "title": "Multiomics series",
     "description": "Experimental data investigating biosamples via multiple genomics assays.",
     "$id": "/profiles/multiomics_series.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],

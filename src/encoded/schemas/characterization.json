@@ -2,7 +2,7 @@
     "title": "Base characterization",
     "description": "Schema for submitting a characterization of an object.",
     "$id": "/profiles/characterization.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "characterizes", "attachment"],
     "additionalProperties": false,

@@ -2,7 +2,7 @@
     "title": "Software version",
     "description": "Schema for submitting version of software.",
     "$id": "/profiles/software_version.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["software"],
     "additionalProperties": false,

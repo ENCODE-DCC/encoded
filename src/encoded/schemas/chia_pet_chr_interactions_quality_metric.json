@@ -2,7 +2,7 @@
     "title": "ChIA-PET chromatin interactions quality metric",
     "description": "Schema for reporting ChIA-PET chromatin interactions quality metric",
     "$id": "/profiles/chia_pet_chr_interactions_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run", "award", "lab", "quality_metric_of"],
     "additionalProperties": false,

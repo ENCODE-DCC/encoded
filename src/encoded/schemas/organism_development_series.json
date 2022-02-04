@@ -2,7 +2,7 @@
     "title": "Organism development series",
     "description": "Experimental data investigating organisms at different developmental stages.",
     "$id": "/profiles/organism_development_series.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],

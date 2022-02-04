@@ -2,7 +2,7 @@
     "title": "gemBS alignment quality metric",
     "description": "Schema for gemBS alignment quality metrics",
     "$id": "/profiles/gembs_alignment_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,

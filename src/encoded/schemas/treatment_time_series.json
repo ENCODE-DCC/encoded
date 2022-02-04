@@ -2,7 +2,7 @@
     "title": "Treatment time series",
     "description": "Experimental data investigating the effects of treatment application at varying durations.",
     "$id": "/profiles/treatment_time_series.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],

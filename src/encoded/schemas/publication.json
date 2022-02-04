@@ -2,7 +2,7 @@
     "title": "Publication",
     "description": "Schema for a publication page.",
     "$id": "/profiles/publication.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "title", "award", "lab" ],
     "identifyingProperties": ["uuid", "title"],

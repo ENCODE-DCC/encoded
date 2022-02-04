@@ -3,7 +3,7 @@
     "description": "Schema for grouping files into one analysis.",
     "comment": "An analysis is typically performed on one experiments and is initially designed to group only files from a single experiment.",
     "$id": "/profiles/analysis.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["files"],
     "identifyingProperties": ["uuid", "accession", "aliases"],

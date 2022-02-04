@@ -2,7 +2,7 @@
     "title": "Page",
     "description": "Schema for a portal page.",
     "$id": "/profiles/page.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [
         "name",

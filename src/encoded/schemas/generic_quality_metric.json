@@ -2,7 +2,7 @@
     "title": "Quality metric",
     "description": "Schema for reporting generic quality metric",
     "$id": "/profiles/generic_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run", "quality_metric_of", "name", "award", "lab"],
     "additionalProperties": false,

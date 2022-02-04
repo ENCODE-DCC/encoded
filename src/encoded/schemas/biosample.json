@@ -3,7 +3,7 @@
     "description": "Schema for submitting a biosample.",
     "comment": "For cultured samples this object represents unique growths or culture harvests.",
     "$id": "/profiles/biosample.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "source", "organism", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession", "aliases"],

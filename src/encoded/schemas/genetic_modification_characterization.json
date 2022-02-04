@@ -2,7 +2,7 @@
     "title": "Genetic modification characterization",
     "description": "Schema for submitting genetic modification characterization data.",
     "$id": "/profiles/genetic_modification_characterization.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "characterizes", "attachment"],
     "identifyingProperties": ["uuid", "aliases"],

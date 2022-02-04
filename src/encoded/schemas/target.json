@@ -2,7 +2,7 @@
     "title": "Target",
     "description": "Schema for submitting a target gene.",
     "$id": "/profiles/target.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["label", "investigated_as"],
     "identifyingProperties": ["uuid", "label-organism.name", "aliases"],

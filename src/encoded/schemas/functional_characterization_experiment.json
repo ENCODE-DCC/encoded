@@ -3,7 +3,7 @@
     "description": "Schema for submitting metadata for a functional characterization assay.",
     "comment": "A functional characterization experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
     "$id": "/profiles/functional_characterization_experiment.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],

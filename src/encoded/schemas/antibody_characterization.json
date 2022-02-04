@@ -2,7 +2,7 @@
     "title": "Antibody characterization",
     "description": "Schema for submitting antibody characterization data.",
     "$id": "/profiles/antibody_characterization.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "characterizes", "target", "attachment"],
     "identifyingProperties": ["uuid", "aliases"],

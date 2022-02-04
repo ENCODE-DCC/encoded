@@ -2,7 +2,7 @@
     "title": "Quality report and standard",
     "description": "Guidelines for quality reporting and quality standards",
     "$id": "/profiles/quality_standard.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["name", "definitions"],
     "additionalProperties": false,

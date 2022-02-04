@@ -2,7 +2,7 @@
     "title": "Document",
     "description": "Schema for submitting a document file.",
     "$id": "/profiles/document.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "document_type", "lab", "award"],
     "identifyingProperties": ["uuid","aliases"],

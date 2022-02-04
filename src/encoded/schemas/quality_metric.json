@@ -2,7 +2,7 @@
     "title": "Quality metric properties",
     "description": "Schema for reporting the specific calculation of an quality metrics",
     "$id": "/profiles/quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run", "award", "lab"],
     "additionalProperties": false,

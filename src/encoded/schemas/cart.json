@@ -3,7 +3,7 @@
     "description": "Cart of objects aka shopping cart.",
     "comment": "This object gets connected with user objects.",
     "$id": "/profiles/cart.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["name"],
     "identifyingProperties": ["uuid", "identifier"],

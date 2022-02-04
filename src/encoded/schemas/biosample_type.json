@@ -3,7 +3,7 @@
     "description": "Schema for describing the type of a specific biosample.",
     "comment": "This object collects common properties of a group of similar biosamples to help reduce ambiguity and duplications. Do not submit. DCC personnel is responsible for creating and maintaining these objects",
     "$id": "/profiles/biosample_type.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["classification", "term_id", "term_name"],
     "identifyingProperties": ["aliases", "uuid"],

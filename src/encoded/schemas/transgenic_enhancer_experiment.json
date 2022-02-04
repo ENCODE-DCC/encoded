@@ -3,7 +3,7 @@
     "description": "Schema for submitting metadata for a transgenic enhancer experiment.",
     "comment": "An transgenic enhancer experiment is a special case of dataset. It includes assay metadata.",
     "$id": "/profiles/transgenic_enhancer_experiment.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],

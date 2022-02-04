@@ -2,7 +2,7 @@
     "title": "scATAC-seq multiplet quality metric",
     "description": "Schema for scATAC-seq multiplet quality metrics",
     "$id": "/profiles/sc_atac_multiplet_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,

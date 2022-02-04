@@ -2,7 +2,7 @@
     "title": "Gene silencing series",
     "description": "Experimental data investigating the effects of knockout or knockdown of genes.",
     "$id": "/profiles/gene_silencing_series.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],

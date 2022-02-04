@@ -2,7 +2,7 @@
     "title": "Mean absolute deviation (MAD) quality metric",
     "description": "Schema for reporting Replicate Concordance Metric using Mean Absolute Deviation (MAD)",
     "$id": "/profiles/mad_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
