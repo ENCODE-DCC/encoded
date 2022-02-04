@@ -37,6 +37,6 @@ def test_antibody_characterization_exemption_no_explanation(testapp,
                                                               "biosample_ontology": k562['uuid'],
                                                               "lane_status":
                                                               "exempt from standards"}]
-    antibody_characterization['documents'] = [document]
+    antibody_characterization['documents'] = [document['@id']]
     antibody_characterization['reviewed_by'] = '81a6cc12-2847-4e2e-8f2c-f566699eb29e'
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
