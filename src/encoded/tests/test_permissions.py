@@ -102,7 +102,7 @@ def test_submitter_patch_date_created(submitter_testapp, lab, award, cell_free):
     submitter_testapp.patch_json(
         location,
         {'date_created': '2022-02-04T04:05:41.045578+00:00'},
-        status=403
+        status=422
     )
 
 
