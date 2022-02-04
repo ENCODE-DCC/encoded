@@ -1,5 +1,20 @@
 [
     {
+        "accession": "ENCSR476KHP",
+        "analyses": [
+            "ENCAN672HZP"
+        ],
+        "assay_term_name": "Flow-FISH CRISPR screen",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "date_released": "2021-10-18",
+        "date_submitted": "2021-09-23",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "fae140ad-c8d8-4674-b934-87826a7c0ebb"
+    },
+    {
         "_test": "mpra",
         "accession": "ENCSR222MPR",
         "assay_term_name": "MPRA",
@@ -10,6 +25,7 @@
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
+        "elements_cloning": "ENCSR476KHP",
         "elements_mappings": ["ENCSR212POL", "ENCSR051STU"],
         "elements_references": ["ENCSR001REF"],
         "references": [
@@ -61,7 +77,7 @@
     {
         "_test": "pooled clone sequencing test",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "archived",
+        "status": "released",
         "date_submitted": "2015-04-20",
         "biosample_ontology": "cell_line_EFO_0009747",
         "award": "U54HG007010",
@@ -110,6 +126,34 @@
         "uuid": "5a1d5a51-e62d-48b9-a1bd-1d1915247341"
     },
     {
+        "accession": "ENCSR114CEL",
+        "assay_term_name": "FACS CRISPR screen",
+        "award": "U54HG006997",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "date_released": "2019-08-10",
+        "date_submitted": "2015-04-20",
+        "description": "Test submission for CRISPR screen with examined loci",
+        "elements_mappings": ["ENCSR212POL"],
+        "elements_cloning": "ENCSR127PCE",
+        "lab": "bing-ren",
+        "status": "released",
+        "submitted_by": "tristique.sem@faucibus.semper",
+        "uuid": "f4455f2b-8dd3-462b-aa00-4d0ea471714a",
+        "examined_loci": [{
+            "gene": "/genes/912/",
+            "expression_percentile": 80,
+            "expression_measurement_method": "PrimeFlow"
+        }, {"gene": "/genes/2995/",
+            "expression_range_minimum": 2,
+            "expression_range_maximum": 70,
+            "expression_measurement_method": "PrimeFlow"
+        }, {"gene": "/genes/6482/",
+            "expression_measurement_method": "fluorescence activated cell sorting"
+        }, {"gene": "/genes/15077/",
+            "expression_measurement_method": "PrimeFlow"
+        }]
+    },
+    {
         "_test": "mpra",
         "accession": "ENCSR333MPR",
         "assay_term_name": "MPRA",
@@ -120,6 +164,7 @@
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
+        "elements_cloning": "ENCSR114CEL",
         "elements_mappings": ["ENCSR212POL"],
         "elements_references": ["ENCSR848CFY"],
         "references": [
@@ -163,32 +208,6 @@
         "target": "FTO-human",
         "target_expression_percentile": 90,
         "uuid": "bbd32130-4f13-4c45-9117-3cdebe0ad40a"
-    },
-    {
-        "accession": "ENCSR114CEL",
-        "assay_term_name": "FACS CRISPR screen",
-        "award": "U54HG006997",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "Test submission for CRISPR screen with examined loci",
-        "elements_mappings": ["ENCSR212POL"],
-        "elements_cloning": "ENCSR127PCE",
-        "lab": "bing-ren",
-        "status": "in progress",
-        "submitted_by": "tristique.sem@faucibus.semper",
-        "uuid": "f4455f2b-8dd3-462b-aa00-4d0ea471714a",
-        "examined_loci": [{
-            "gene": "/genes/912/",
-            "expression_percentile": 80,
-            "expression_measurement_method": "PrimeFlow"
-        }, {"gene": "/genes/2995/",
-            "expression_range_minimum": 2,
-            "expression_range_maximum": 70,
-            "expression_measurement_method": "PrimeFlow"
-        }, {"gene": "/genes/6482/",
-            "expression_measurement_method": "fluorescence activated cell sorting"
-        }, {"gene": "/genes/15077/",
-            "expression_measurement_method": "PrimeFlow"
-        }]
     },
     {
         "accession": "ENCSR928SVL",

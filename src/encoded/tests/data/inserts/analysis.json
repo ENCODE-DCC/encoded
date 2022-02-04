@@ -51,5 +51,16 @@
         "files": ["ENCFF762DWI"],
         "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
         "status": "released"
+    },
+    {
+        "accession": "ENCAN672HZP",
+        "award": "U54HG007004",
+        "files": [
+            "ENCFF227AAG"
+        ],
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "22d08c01-0289-4a8d-aeb5-1fb22291fda8"
     }
 ]
