@@ -7,11 +7,13 @@ import { BatchDownloadActuator, DefaultBatchDownloadContent } from './base';
 import AnalysisBatchDownloadController from './analysis';
 import CartBatchDownloadController from './cart';
 import CartStaticBatchDownloadController from './cart_static';
+import CloningMappingsBatchDownloadController from './cloning_mappings';
 import DatasetBatchDownloadController from './dataset';
+import ElementsReferencesDownloadController from './elementsReferences';
 import RawSequencingBatchDownloadController from './raw_sequencing';
 import ReferenceBatchDownloadController from './reference';
 import SearchBatchDownloadController from './search';
-import ElementsReferencesDownloadController from './elementsReferences';
+
 
 export {
     // Common batch-download components
@@ -22,6 +24,7 @@ export {
     AnalysisBatchDownloadController,
     CartBatchDownloadController,
     CartStaticBatchDownloadController,
+    CloningMappingsBatchDownloadController,
     DatasetBatchDownloadController,
     RawSequencingBatchDownloadController,
     ReferenceBatchDownloadController,

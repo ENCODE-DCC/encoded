@@ -16,6 +16,7 @@ import {
     computeExaminedLoci,
     donorDiversity,
     publicDataset,
+    requestObjects,
     AlternateAccession,
     ItemAccessories,
     InternalTags,
@@ -30,6 +31,7 @@ import sortMouseArray from './matrix_mouse_development';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
 import getNumberWithOrdinal from '../libs/ordinal_suffix';
+import { useMount } from './hooks';
 
 /**
  * All Series types allowed to have a download button. Keep in sync with the same variable in
@@ -2374,6 +2376,7 @@ const collectSeriesAnalyses = (context) => (
  */
 const collectSeriesFiles = (context, analyses) => {
     const analysesFilePaths = analyses.reduce((paths, analysis) => paths.concat(analysis.files), []);
+    const isFunctionalCharacterizationSeries = globals.hasType(context, 'FunctionalCharacterizationSeries');
     const files = context.related_datasets
         ? (
             context.related_datasets.reduce(
@@ -2382,7 +2385,7 @@ const collectSeriesFiles = (context, analyses) => {
                         dataset.files.filter(
                             // If the analysis array has zero length, include all default files.
                             // Otherwise, include default files included in the given analyses.
-                            (file) => file.preferred_default && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
+                            (file) => (isFunctionalCharacterizationSeries || file.preferred_default) && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
                         )
                     )
                 ), []
@@ -2868,12 +2871,15 @@ export const SeriesComponent = ({
                     supplementalShortLabels={supplementalShortLabels}
                     showReplicateNumber={false}
                     hideControls={!METADATA_SERIES_TYPES.includes(context['@type'][0])}
-                    collapseNone
                     hideGraph={seriesType !== 'FunctionalCharacterizationSeries'}
                     showDetailedTracks
                     hideAnalysisSelector
                     defaultOnly
                     relatedDatasets={experimentList}
+                    cloningMappingsFiles={{
+                        cloning: options.seriesCloningDatasetsAndFiles,
+                        mappings: options.seriesMappingsDatasetsAndFiles,
+                    }}
                 />
             : null}
 
@@ -2901,6 +2907,10 @@ SeriesComponent.propTypes = {
         Treatments: PropTypes.node,
         /** React component to display the experiment table, overriding the default */
         ExperimentTable: PropTypes.node,
+        /** elements_cloning files and assemblies organized by dataset */
+        seriesCloningDatasetsAndFiles: PropTypes.arrayOf(PropTypes.object),
+        /** elements_mappings files organized by dataset */
+        seriesMappingsDatasetsAndFiles: PropTypes.arrayOf(PropTypes.object),
         /** True to suppress the calculation and display of donor diversity */
         suppressDonorDiversity: PropTypes.bool,
         /** Retrieves short label from an experiment */
@@ -3165,11 +3175,117 @@ globals.contentViews.register(DiseaseSeries, 'DiseaseSeries');
 
 
 /**
+ * The given array of cloning or mappings datasets get mapped to an array of each of these datasets
+ * along with their assemblies and default files. Datasets with analyses restrict the files to
+ * those they contain.
+ * @param {array} datasets Cloning or mappings datasets to map to their files and assemblies
+ * @param {array} allFiles File objects from all cloning and mappings datasets
+ * @returns {array} Objects with given datasets and corresponding assemblies and files
+ */
+const collectCloningAndMappings = (datasets, allFiles) => (
+    datasets.map((dataset) => {
+        let assemblies = dataset.assembly || [];
+        let files = [];
+        if (dataset.analyses?.length > 0) {
+            // Get the file objects for the dataset's analyses' files.
+            const analysisFilesPaths = dataset.analyses.reduce((accFiles, analysis) => accFiles.concat(analysis.files), []);
+            const cloningAndAnalysisFilePaths = _.intersection(dataset.files, analysisFilesPaths);
+            files = cloningAndAnalysisFilePaths
+                .map((filePath) => allFiles.find((file) => file['@id'] === filePath))
+                .filter((file) => file);
+
+            // Get the cloning dataset's analyses' assemblies.
+            assemblies = dataset.analyses.reduce((accAssemblies, analysis) => (analysis.assembly ? accAssemblies.concat(analysis.assembly) : accAssemblies), []);
+        } else {
+            // No analyses, so get all the dataset's file objects.
+            files = dataset.files
+                .map((filePath) => allFiles.find((file) => file['@id'] === filePath))
+                .filter((file) => file);
+        }
+
+        // Add to an array of these objects with the cloning or mappings dataset, its assemblies,
+        // and its file objects.
+        return {
+            dataset,
+            assemblies,
+            files,
+        };
+    })
+);
+
+
+/**
+ * Retrieve all `elements_cloning` and `elements_mappings` files from all `related_datasets` in the
+ * given `context`.
+ * @param {object} series Series object for the current page
+ * @returns {object} cloning and mappings dataset @ids and their respective file objects
+ */
+const retrieveCloningAndMappingsFiles = async (series) => {
+    // Collect all the `elements_cloning` datasets from the series' `related_datasets`.
+    let cloningDatasets = series.related_datasets.reduce((accRelatedDatasets, relatedDataset) => (
+        relatedDataset.elements_cloning
+            ? accRelatedDatasets.concat(relatedDataset.elements_cloning)
+            : accRelatedDatasets
+    ), []);
+    cloningDatasets = _(cloningDatasets).uniq((dataset) => dataset['@id']);
+
+    // Collect all the `elements_mappings` datasets from the series' `related_datasets`.
+    let mappingsDatasets = series.related_datasets.reduce((accRelatedDatasets, relatedDataset) => (
+        relatedDataset.elements_mappings
+            ? accRelatedDatasets.concat(relatedDataset.elements_mappings)
+            : accRelatedDatasets
+    ), []);
+    mappingsDatasets = _(mappingsDatasets).uniq((dataset) => dataset['@id']);
+
+    // Get the paths of all `elements_cloning` files.
+    let allFilePaths = cloningDatasets.reduce((filePaths, cloningDataset) => (
+        new Set([...filePaths, ...cloningDataset.files])
+    ), new Set());
+
+    // Add to these all the `elements_mappings` files.
+    allFilePaths = mappingsDatasets.reduce((filePaths, mappingsDataset) => (
+        new Set([...filePaths, ...mappingsDataset.files])
+    ), allFilePaths);
+
+    // Retrieve all default file objects collected above from the server.
+    let allFiles = [];
+    if (allFilePaths) {
+        allFiles = await requestObjects(
+            [...allFilePaths], '/search/?type=File&limit=all&status!=deleted&status!=revoked&status!=replaced'
+        );
+    }
+
+    // Make an array of objects containing each `elements_cloning` dataset, its assemblies, and its
+    // default files included in the dataset's analyses, or all its default files if the dataset
+    // has no analyses. We don't have to de-duplicate the file paths because we just use them to
+    // check for inclusion.
+    const cloningDatasetsAndFiles = collectCloningAndMappings(cloningDatasets, allFiles);
+    const mappingsDatasetsAndFiles = collectCloningAndMappings(mappingsDatasets, allFiles);
+
+    return { cloningDatasetsAndFiles, mappingsDatasetsAndFiles };
+};
+
+
+/**
  * Wrapper component for functional characterization series pages.
  */
 const FunctionalCharacterizationSeries = ({ context }, reactContext) => {
+    /** elements_cloning files organized by their dataset */
+    const [seriesCloningDatasetsAndFiles, setSeriesCloningDatasetsAndFiles] = React.useState(null);
+    /** elements_mappings files organized by their dataset */
+    const [seriesMappingsDatasetsAndFiles, setSeriesMappingsDatasetsAndFiles] = React.useState(null);
+
     const seriesType = context['@type'][0];
     const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    useMount(() => {
+        // Retrieve all `elements_cloning` and `elements_mappings` files from all related datasets
+        // and set their respective states once they arrive from the server.
+        retrieveCloningAndMappingsFiles(context).then(({ cloningDatasetsAndFiles, mappingsDatasetsAndFiles }) => {
+            setSeriesCloningDatasetsAndFiles(cloningDatasetsAndFiles);
+            setSeriesMappingsDatasetsAndFiles(mappingsDatasetsAndFiles);
+        });
+    });
 
     return (
         <Series
@@ -3180,6 +3296,8 @@ const FunctionalCharacterizationSeries = ({ context }, reactContext) => {
             breadcrumbs={composeSeriesBreadcrumbs(context, seriesTitle)}
             options={{
                 getSupplementalShortLabel: (dataset) => computeExaminedLoci(dataset),
+                seriesCloningDatasetsAndFiles,
+                seriesMappingsDatasetsAndFiles,
             }}
         />
     );

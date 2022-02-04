@@ -12,10 +12,11 @@ import { auditDecor, auditsDisplayed } from './audit';
 import {
     AnalysisBatchDownloadController,
     BatchDownloadActuator,
+    CloningMappingsBatchDownloadController,
     DatasetBatchDownloadController,
+    ElementsReferencesDownloadController,
     RawSequencingBatchDownloadController,
     ReferenceBatchDownloadController,
-    ElementsReferencesDownloadController,
 } from './batch_download';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
@@ -315,6 +316,198 @@ const getElementReferencesFiles = (elementsReferences) => {
     return elementsReferenceFiles;
 };
 
+
+/**
+ * Generate a key for the collapsing title for `elements_cloning` or `elements_mappings` file table
+ * panel.
+ * @param {string} datasetPath Path of the dataset displayed in a collapsing file-table panel
+ * @returns {string} Key for the collapsing title
+ */
+const cloningMappingsCollapseKey = (datasetPath) => (
+    `cloning-mappings-${datasetPath}`
+);
+
+
+/**
+ * Columns for the "Elements cloning" and "Elements mappings" tables.
+ */
+const cloningMappingsColumns = {
+    accession: {
+        title: 'Accession',
+        display: (item, meta) => {
+            const { loggedIn, adminUser } = meta;
+            const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[item['@id']]);
+            return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />;
+        },
+        objSorter: (a, b) => fileAccessionSort(a, b),
+    },
+    default: {
+        title: 'Default',
+        display: (item) => item.preferred_default && <span className="tcell-center">{'\u2B50'}</span>,
+        sorter: false,
+    },
+    file_type: { title: 'File type' },
+    output_type: { title: 'Output type' },
+    mapped_read_length: {
+        title: 'Mapped read length',
+        hide: (list) => _(list).all((file) => file.mapped_read_length === undefined),
+    },
+    assembly: { title: 'Mapping assembly' },
+    genome_annotation: {
+        title: 'Genome annotation',
+        hide: (list) => _(list).all((item) => !item.genome_annotation),
+    },
+    title: {
+        title: 'Lab',
+        getValue: (item) => (item.lab && item.lab.title ? item.lab.title : null),
+    },
+    date_created: {
+        title: 'Date added',
+        getValue: (item) => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
+        sorter: (a, b) => {
+            if (a && b) {
+                return Date.parse(a) - Date.parse(b);
+            }
+            const bTest = b ? 1 : 0;
+            return a ? -1 : bTest;
+        },
+    },
+    file_size: {
+        title: 'File size',
+        display: (item) => <span>{globals.humanFileSize(item.file_size)}</span>,
+    },
+    status: {
+        title: 'File status',
+        display: (item) => <Status item={item} badgeSize="small" css="status__table-cell" />,
+    },
+};
+
+
+/**
+ * Display a single dataset's files for both the "Elements cloning" and "Elements mappings" tables.
+ */
+const SingleCloningMappingsTable = ({
+    files,
+    dataset,
+    tableType,
+    isCollapsed,
+    handleCollapse,
+}, reactContext) => {
+    // Get the logged-in state of the user.
+    const userRoles = new UserRoles(reactContext.session_properties);
+
+    return (
+        <SortTable
+            key={dataset['@id']}
+            title={
+                <CollapsingTitle
+                    title={`${dataset.accession} Elements ${tableType} ${dataset.assembly?.join(', ')}`}
+                    collapsed={isCollapsed}
+                    fileQueryKey=""
+                    handleCollapse={() => { handleCollapse(dataset['@id']); }}
+                    context={dataset}
+                    totalFiles={files.length}
+                    isCloningOrMappings
+                />
+            }
+            collapsed={isCollapsed}
+            list={files}
+            columns={cloningMappingsColumns}
+            meta={{
+                replicationType: dataset.replication_type,
+                loggedIn: userRoles.isLoggedIn,
+                isAuthorized: userRoles.isPrivileged,
+                adminUser: userRoles.isAdmin,
+            }}
+        />
+    );
+};
+
+SingleCloningMappingsTable.propTypes = {
+    /** Elements cloning/mappings files displayed within this table */
+    files: PropTypes.arrayOf(PropTypes.object).isRequired,
+    /** Elements cloning/mappings dataset displayed in this table */
+    dataset: PropTypes.object.isRequired,
+    /** Specifies cloning or mappings title text */
+    tableType: PropTypes.oneOf(['cloning', 'mappings']).isRequired,
+    /** True if panel is collapsed */
+    isCollapsed: PropTypes.bool,
+    /** Called when the user collapses/expands this panel */
+    handleCollapse: PropTypes.func.isRequired,
+};
+
+SingleCloningMappingsTable.defaultProps = {
+    isCollapsed: false,
+};
+
+SingleCloningMappingsTable.contextTypes = {
+    session_properties: PropTypes.object,
+};
+
+
+/**
+ * Display both the elements_cloning and elements_mappings tables for the given series object.
+ */
+const CloningMappingsTables = ({ cloning, mappings, filteredFiles, collapsed, handleCollapse }) => {
+    const filteredFilePaths = filteredFiles.map((file) => file['@id']);
+    return (
+        <>
+            {cloning?.map((singleCloning) => {
+                const filteredCloningFiles = singleCloning.files.filter((file) => filteredFilePaths.includes(file['@id']));
+                if (filteredCloningFiles.length > 0) {
+                    return (
+                        <SingleCloningMappingsTable
+                            key={singleCloning.dataset['@id']}
+                            files={singleCloning.files}
+                            dataset={singleCloning.dataset}
+                            tableType="cloning"
+                            isCollapsed={collapsed[cloningMappingsCollapseKey(singleCloning.dataset['@id'])]}
+                            handleCollapse={handleCollapse}
+                        />
+                    );
+                }
+                return null;
+            })}
+
+            {mappings?.map((singleMappings) => {
+                const filteredMappingsFiles = singleMappings.files.filter((file) => filteredFilePaths.includes(file['@id']));
+                if (filteredMappingsFiles.length > 0) {
+                    return (
+                        <SingleCloningMappingsTable
+                            key={singleMappings.dataset['@id']}
+                            files={singleMappings.files}
+                            dataset={singleMappings.dataset}
+                            tableType="mappings"
+                            isCollapsed={collapsed[cloningMappingsCollapseKey(singleMappings.dataset['@id'])]}
+                            handleCollapse={handleCollapse}
+                        />
+                    );
+                }
+                return null;
+            })}
+        </>
+    );
+};
+
+CloningMappingsTables.propTypes = {
+    /** All `elements_cloning` files in all `context.related_datasets` */
+    cloning: PropTypes.arrayOf(PropTypes.object),
+    /** All `elements_mappings` files in all `context.related_datasets` */
+    mappings: PropTypes.arrayOf(PropTypes.object),
+    /** Files to restrict displayed files to; determined by facets */
+    filteredFiles: PropTypes.arrayOf(PropTypes.object).isRequired,
+    /** File panel collapsed states */
+    collapsed: PropTypes.object.isRequired,
+    /** Called when the user collapses/expands a file-table panel */
+    handleCollapse: PropTypes.func.isRequired,
+};
+
+CloningMappingsTables.defaultProps = {
+    cloning: null,
+    mappings: null,
+};
+
+
 export class FileTable extends React.Component {
     static rowClasses() {
         return '';
@@ -323,19 +516,28 @@ export class FileTable extends React.Component {
     constructor(props) {
         super(props);
 
-        const analysisObjects = {};
-        (props.analyses || []).forEach((analysisObject) => {
-            analysisObjects[analysisObject.accession] = analysisObject.status !== 'released';
-        });
+        // If cloning and mappings files are available at mount time (meaning the user probably
+        // switched to the file tab from another tab), then initialize their panels to collapsed.
+        const cloningMappingsCollapsed = {};
+        if (this.props.cloningMappingsFiles.cloning || this.props.cloningMappingsFiles.mappings) {
+            this.props.cloningMappingsFiles.cloning?.forEach((file) => {
+                cloningMappingsCollapsed[cloningMappingsCollapseKey(file.dataset['@id'])] = true;
+            });
+            this.props.cloningMappingsFiles.mappings?.forEach((file) => {
+                cloningMappingsCollapsed[cloningMappingsCollapseKey(file.dataset['@id'])] = true;
+            });
+        }
 
         // Initialize component state.
         this.state = {
             collapsed: {
                 // Keeps track of which tables are collapsed
-                ref: false,
+                ref: true,
+                raw: true,
+                rawSeq: true,
                 Other: !props.options.collapseNone,
                 series: true,
-                ...analysisObjects,
+                ...cloningMappingsCollapsed,
             },
         };
 
@@ -345,11 +547,75 @@ export class FileTable extends React.Component {
             maxWidthNode: null, // DOM node of table with this.state.maxWidth width
         };
 
+        this.analysesSeries = [];
+        this.analysisObjectKeys = [];
+
         this.fileClick = this.fileClick.bind(this);
         this.handleCollapse = this.handleCollapse.bind(this);
         this.handleCollapseProc = this.handleCollapseProc.bind(this);
         this.handleCollapseRef = this.handleCollapseRef.bind(this);
         this.hoverDL = this.hoverDL.bind(this);
+        this.isCloningOrMappingsFile = this.isCloningOrMappingsFile.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.analysesSeries.length > 0) {
+            // We have at least one analysis series panel, so open them and close the analysis
+            // object panels. Everything else is closed by default.
+            if (this.analysisObjectKeys.length > 0) {
+                this.setState((prevState) => {
+                    const newState = { ...prevState };
+                    this.analysisObjectKeys.forEach((key) => {
+                        newState.collapsed[key] = true;
+                    });
+
+                    // Open all the analysis series panels.
+                    this.analysesSeries.forEach((key) => {
+                        newState.collapsed[key] = false;
+                    });
+                    return newState;
+                });
+            }
+        } else {
+            // No analysis series panels exist, so open everything.
+            this.setState((prevState) => {
+                const newState = { ...prevState };
+
+                // Open all the panels set in the constructor.
+                Object.keys(newState.collapsed).forEach((key) => {
+                    newState.collapsed[key] = false;
+                });
+
+                // Open all the analysis object panels.
+                if (this.analysisObjectKeys.length > 0) {
+                    this.analysisObjectKeys.forEach((key) => {
+                        newState.collapsed[key] = false;
+                    });
+                }
+                return newState;
+            });
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (
+            (this.props.cloningMappingsFiles.cloning && !prevProps.cloningMappingsFiles.cloning)
+            || (this.props.cloningMappingsFiles.mappings && !prevProps.cloningMappingsFiles.mappings)
+        ) {
+            // Cloning and/or mappings files have been added, so collapse them if we have an
+            // analysis series panel, otherwise open them.
+            this.setState((prevState) => {
+                const newState = { ...prevState };
+                const initialCollapsed = this.analysesSeries.length > 0;
+                this.props.cloningMappingsFiles.cloning?.forEach((file) => {
+                    newState.collapsed[cloningMappingsCollapseKey(file.dataset['@id'])] = initialCollapsed;
+                });
+                this.props.cloningMappingsFiles.mappings?.forEach((file) => {
+                    newState.collapsed[cloningMappingsCollapseKey(file.dataset['@id'])] = initialCollapsed;
+                });
+                return newState;
+            });
+        }
     }
 
     handleCollapse(table) {
@@ -387,6 +653,25 @@ export class FileTable extends React.Component {
         this.setState({ restrictedTip: hovering ? fileUuid : '' });
     }
 
+    /**
+     * Test if a given file is an `elements_cloning` or `elements_mappings` file.
+     * @param {object} file File to test
+     * @returns True if file is either a cloning or mappings file
+     */
+    isCloningOrMappingsFile(file) {
+        const { cloning, mappings } = this.props.cloningMappingsFiles;
+
+        // If we discover that the file is a cloning file, then we don't need to check if it's a
+        // mappings file.
+        const isCloningFile = cloning?.find((cloningItem) => (
+            cloningItem.files?.find((cloningFile) => cloningFile['@id'] === file['@id'])
+        ));
+        const isMappingsFile = isCloningFile || mappings?.find((mappingsItem) => (
+            mappingsItem.files?.find((mappingsFile) => mappingsFile['@id'] === file['@id'])
+        ));
+        return isCloningFile || isMappingsFile;
+    }
+
     render() {
         const {
             context,
@@ -404,6 +689,7 @@ export class FileTable extends React.Component {
             filters,
             adminUser,
             options,
+            cloningMappingsFiles,
         } = this.props;
         const sessionProperties = this.context.session_properties;
         const userRoles = new UserRoles(sessionProperties);
@@ -453,6 +739,9 @@ export class FileTable extends React.Component {
 
             // Extract any of the four kinds of file arrays, or files belonging to an analysis.
             const files = _(datasetFiles).groupBy((file) => {
+                if (this.isCloningOrMappingsFile(file)) {
+                    return 'cloningMappings';
+                }
                 if (seriesAnalysesFilesIds.includes(file['@id'])) {
                     return 'series';
                 }
@@ -477,7 +766,12 @@ export class FileTable extends React.Component {
             });
 
             // Get unique analyses for series object
-            const analysesSeries = files.series ? [...new Set(files.series.map((a) => (a.analyses && a.analyses.length > 0 ? a.analyses[0] : '')).filter((a) => a !== ''))] : [];
+            if (files.series) {
+                files.series.forEach((file) => {
+                    file.analyses = file.analyses.map((analysis) => (typeof analysis === 'string' ? analysis : analysis['@id']));
+                });
+            }
+            this.analysesSeries = files.series ? [...new Set(files.series.map((a) => (a.analyses && a.analyses.length > 0 ? a.analyses[0] : '')).filter((a) => a !== ''))] : [];
 
             // showReplicateNumber matches with show-functionality. It has to
             // be NOT (!)-ed to match with hide-functionality
@@ -485,7 +779,7 @@ export class FileTable extends React.Component {
             // (2) move showReplicateNumber to meta
             FileTable.procTableColumns.biological_replicates.hide = () => !options.showReplicateNumber;
 
-            const analysisObjectKeys = Object.keys(files).filter((file) => file.includes('ENCAN') || file.includes('TSTAN'));
+            this.analysisObjectKeys = Object.keys(files).filter((file) => file.includes('ENCAN') || file.includes('TSTAN'));
             const otherKeys = Object.keys(files).filter((file) => file === nonAnalysisObjectPrefix); // all files not parts of an analysis object
 
             // compiled analysis excluding those with mixed assemblies
@@ -517,6 +811,8 @@ export class FileTable extends React.Component {
                             fileQueryKey={fileQueryKey}
                             inclusionOn={options.inclusionOn}
                             isDownloadable={!options.hideDownload}
+                            isCollapsed={this.state.collapsed.rawSeq}
+                            handleCollapse={() => { this.handleCollapse('rawSeq'); }}
                             meta={{
                                 replicationType: context.replication_type,
                                 fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
@@ -536,6 +832,8 @@ export class FileTable extends React.Component {
                             fileQueryKey={fileQueryKey}
                             inclusionOn={options.inclusionOn}
                             isDownloadable={!options.hideDownload}
+                            isCollapsed={this.state.collapsed.raw}
+                            handleCollapse={() => { this.handleCollapse('raw'); }}
                             meta={{
                                 replicationType: context.replication_type,
                                 fileClick: (setInfoNodeId && setInfoNodeVisible) ? this.fileClick : null,
@@ -546,12 +844,12 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
-                        {[...analysisObjectKeys, ...analysesSeries, ...otherKeys].map((key) => {
+                        {[...this.analysesSeries, ...this.analysisObjectKeys, ...otherKeys].map((key) => {
                             let titleSuffix = '';
                             let tableData = [];
 
                             // This is the special case for series
-                            if (analysesSeries.includes(key)) {
+                            if (this.analysesSeries.includes(key)) {
                                 const analysis = context.analyses.find((a) => a['@id'] === key) || {};
                                 titleSuffix = `${analysis.title} (${analysis.accession})`;
                                 tableData = (files.series || []).filter((t) => t.analyses[0] === key) || [];
@@ -641,6 +939,19 @@ export class FileTable extends React.Component {
                                 adminUser,
                             }}
                         />
+                        {files.cloningMappings?.length > 0 &&
+                            <CloningMappingsTables
+                                cloning={cloningMappingsFiles.cloning}
+                                mappings={cloningMappingsFiles.mappings}
+                                filteredFiles={files.cloningMappings}
+                                collapsed={this.state.collapsed}
+                                handleCollapse={
+                                    (datasetPath) => {
+                                        this.handleCollapse(cloningMappingsCollapseKey(datasetPath));
+                                    }
+                                }
+                            />
+                        }
                     </SortTablePanel>
                 </div>
             );
@@ -696,6 +1007,13 @@ FileTable.propTypes = {
         /** True to have no file tables appear collapsed when selecting File Details tab */
         collapseNone: PropTypes.bool,
     }),
+    /** All `elements_cloning` and `elements_mappings` files in all `context.related_datasets` */
+    cloningMappingsFiles: PropTypes.exact({
+        /** All `elements_cloning` files in all `context.related_datasets` */
+        cloning: PropTypes.arrayOf(PropTypes.object),
+        /** All `elements_mappings` files in all `context.related_datasets` */
+        mappings: PropTypes.arrayOf(PropTypes.object),
+    }),
     filters: PropTypes.object, // filters user selected
 };
 
@@ -721,6 +1039,7 @@ FileTable.defaultProps = {
         hideDownload: false,
         collapseNone: false,
     },
+    cloningMappingsFiles: { cloning: null, mappings: null },
     filters: {},
 };
 
@@ -900,19 +1219,8 @@ class RawSequencingTable extends React.Component {
     constructor() {
         super();
 
-        // Initialize React state variables.
-        this.state = {
-            collapsed: false, // Collapsed/uncollapsed state of table
-        };
-
         // Bind `this` to non-React methods.
         this.findIndexFile = this.findIndexFile.bind(this);
-        this.handleCollapse = this.handleCollapse.bind(this);
-    }
-
-    handleCollapse() {
-        // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
-        this.setState((state) => ({ collapsed: !state.collapsed }));
     }
 
     /**
@@ -941,6 +1249,8 @@ class RawSequencingTable extends React.Component {
             outputType,
             inclusionOn,
             isDownloadable,
+            isCollapsed,
+            handleCollapse,
         } = this.props;
         const { loggedIn, adminUser } = meta;
 
@@ -1062,8 +1372,8 @@ class RawSequencingTable extends React.Component {
                             <th colSpan="12">
                                 <CollapsingTitle
                                     title="Raw sequencing data"
-                                    collapsed={this.state.collapsed}
-                                    handleCollapse={this.handleCollapse}
+                                    collapsed={isCollapsed}
+                                    handleCollapse={handleCollapse}
                                     fileQueryKey={fileQueryKey}
                                     context={context}
                                     outputCategory={outputCategory}
@@ -1076,7 +1386,7 @@ class RawSequencingTable extends React.Component {
                             </th>
                         </tr>
 
-                        {!this.state.collapsed ?
+                        {!isCollapsed ?
                             <tr>
                                 {showReplicateNumber ? <th>{replicationDisplay(meta.replicationType)}</th> : null}
                                 <th>Library</th>
@@ -1093,7 +1403,7 @@ class RawSequencingTable extends React.Component {
                         : null}
                     </thead>
 
-                    {!this.state.collapsed ?
+                    {!isCollapsed ?
                         <tbody>
                             {pairedRepKeys.map((pairedRepKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
@@ -1195,7 +1505,7 @@ class RawSequencingTable extends React.Component {
 
                     <tfoot>
                         <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="12" />
+                            <td className={`file-table-footer${isCollapsed ? ' hiding' : ''}`} colSpan="12" />
                         </tr>
                     </tfoot>
                 </table>
@@ -1219,6 +1529,10 @@ RawSequencingTable.propTypes = {
     filters: PropTypes.object, // user selected filters
     inclusionOn: PropTypes.bool.isRequired, // whether or not inclusion on is checked
     isDownloadable: PropTypes.bool.isRequired, // True to include download button in table header
+    /** True if table is collapsed */
+    isCollapsed: PropTypes.bool.isRequired,
+    /** Called when the user collapses/expands the table */
+    handleCollapse: PropTypes.func.isRequired,
 };
 
 RawSequencingTable.defaultProps = {
@@ -1230,179 +1544,171 @@ RawSequencingTable.defaultProps = {
     filters: {},
 };
 
-class RawFileTable extends React.Component {
-    constructor() {
-        super();
+const RawFileTable = ({
+    files,
+    meta,
+    showReplicateNumber,
+    context,
+    filters,
+    fileQueryKey,
+    outputCategory,
+    inclusionOn,
+    isDownloadable,
+    isCollapsed,
+    handleCollapse,
+}) => {
+    const { loggedIn, adminUser } = meta;
 
-        // Initialize React state variables.
-        this.state = {
-            collapsed: false, // Collapsed/uncollapsed state of table
-        };
+    if (files && files.length > 0) {
+        // Group all files by their library accessions. Any files without replicates or
+        // libraries get grouped under library 'Z' so they get sorted at the end.
+        const libGroups = _(files).groupBy((file) => {
+            // Groups have a 4-digit zero-filled biological replicate number concatenated with
+            // the library accession, e.g. 0002ENCLB158ZZZ.
+            const bioRep = file.biological_replicates ? globals.zeroFill(file.biological_replicates[0], 4) : '';
+            return bioRep + (file.replicate && file.replicate.library && file.replicate.library.accession ? file.replicate.library.accession : 'Z');
+        });
 
-        // Bind `this` to non-React methods.
-        this.handleCollapse = this.handleCollapse.bind(this);
-    }
+        // Split library/file groups into paired and non-paired library/file groups.
+        const grouped = {};
+        const nonGrouped = [];
+        Object.keys(libGroups).forEach((libGroupKey) => {
+            if (libGroups[libGroupKey].length > 1) {
+                grouped[libGroupKey] = libGroups[libGroupKey];
+            } else {
+                nonGrouped.push(libGroups[libGroupKey][0]);
+            }
+        });
+        const groupKeys = Object.keys(grouped).sort();
 
-    handleCollapse() {
-        // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
-        this.setState((state) => ({ collapsed: !state.collapsed }));
-    }
+        return (
+            <table className="table table__sortable table-raw">
+                <thead>
+                    <tr className="table-section">
+                        <th colSpan="11">
+                            <CollapsingTitle
+                                title="Raw data"
+                                collapsed={isCollapsed}
+                                handleCollapse={handleCollapse}
+                                context={context}
+                                outputCategory={outputCategory}
+                                filters={filters}
+                                fileQueryKey={fileQueryKey}
+                                totalFiles={files.length}
+                                inclusionOn={inclusionOn}
+                                isDownloadable={isDownloadable && filterDownloadableFilesByStatus(context, files).length > 0}
+                            />
+                        </th>
+                    </tr>
 
-    render() {
-        const { files, meta, showReplicateNumber, context, filters, fileQueryKey, outputCategory, inclusionOn, isDownloadable } = this.props;
-        const { loggedIn, adminUser } = meta;
-
-        if (files && files.length > 0) {
-            // Group all files by their library accessions. Any files without replicates or
-            // libraries get grouped under library 'Z' so they get sorted at the end.
-            const libGroups = _(files).groupBy((file) => {
-                // Groups have a 4-digit zero-filled biological replicate number concatenated with
-                // the library accession, e.g. 0002ENCLB158ZZZ.
-                const bioRep = file.biological_replicates ? globals.zeroFill(file.biological_replicates[0], 4) : '';
-                return bioRep + (file.replicate && file.replicate.library && file.replicate.library.accession ? file.replicate.library.accession : 'Z');
-            });
-
-            // Split library/file groups into paired and non-paired library/file groups.
-            const grouped = {};
-            const nonGrouped = [];
-            Object.keys(libGroups).forEach((libGroupKey) => {
-                if (libGroups[libGroupKey].length > 1) {
-                    grouped[libGroupKey] = libGroups[libGroupKey];
-                } else {
-                    nonGrouped.push(libGroups[libGroupKey][0]);
-                }
-            });
-            const groupKeys = Object.keys(grouped).sort();
-
-            return (
-                <table className="table table__sortable table-raw">
-                    <thead>
-                        <tr className="table-section">
-                            <th colSpan="11">
-                                <CollapsingTitle
-                                    title="Raw data"
-                                    collapsed={this.state.collapsed}
-                                    handleCollapse={this.handleCollapse}
-                                    context={context}
-                                    outputCategory={outputCategory}
-                                    filters={filters}
-                                    fileQueryKey={fileQueryKey}
-                                    totalFiles={files.length}
-                                    inclusionOn={inclusionOn}
-                                    isDownloadable={isDownloadable && filterDownloadableFilesByStatus(context, files).length > 0}
-                                />
-                            </th>
+                    {!isCollapsed ?
+                        <tr>
+                            {showReplicateNumber ?
+                                <th>{replicationDisplay(meta.replicationType)}</th> :
+                            null}
+                            <th>Library</th>
+                            <th>Accession</th>
+                            <th>File type</th>
+                            <th>Output type</th>
+                            <th>Mapping assembly</th>
+                            <th>Lab</th>
+                            <th>Date added</th>
+                            <th>File size</th>
+                            <th>File status</th>
                         </tr>
+                    : null}
+                </thead>
 
-                        {!this.state.collapsed ?
-                            <tr>
-                                {showReplicateNumber ?
-                                    <th>{replicationDisplay(meta.replicationType)}</th> :
-                                null}
-                                <th>Library</th>
-                                <th>Accession</th>
-                                <th>File type</th>
-                                <th>Output type</th>
-                                <th>Mapping assembly</th>
-                                <th>Lab</th>
-                                <th>Date added</th>
-                                <th>File size</th>
-                                <th>File status</th>
-                            </tr>
-                        : null}
-                    </thead>
+                {!isCollapsed ?
+                    <tbody>
+                        {groupKeys.map((groupKey, j) => {
+                            // groupFiles is an array of files under a bioreplicate/library.
+                            // Determine whether to draw a bottom border based on whether this
+                            // is the last group displayed (don't draw) or not (do draw).
+                            const groupFiles = grouped[groupKey];
+                            const groupBottom = j < groupKeys.length - 1 ? 'group-bottom' : '';
 
-                    {!this.state.collapsed ?
-                        <tbody>
-                            {groupKeys.map((groupKey, j) => {
-                                // groupFiles is an array of files under a bioreplicate/library.
-                                // Determine whether to draw a bottom border based on whether this
-                                // is the last group displayed (don't draw) or not (do draw).
-                                const groupFiles = grouped[groupKey];
-                                const groupBottom = j < groupKeys.length - 1 ? 'group-bottom' : '';
+                            // Render each file's row, with the biological replicate and library
+                            // cells only on the first row.
+                            return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
+                                // Determine whether to draw a bottom border based on whether
+                                // this is the last file in a group (do draw) or not (don't
+                                // draw) and it's not within the last group (don't draw).
+                                const fileBottom = (i === groupFiles.length - 1 && groupBottom) ? 'group-bottom' : '';
 
-                                // Render each file's row, with the biological replicate and library
-                                // cells only on the first row.
-                                return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
-                                    // Determine whether to draw a bottom border based on whether
-                                    // this is the last file in a group (do draw) or not (don't
-                                    // draw) and it's not within the last group (don't draw).
-                                    const fileBottom = (i === groupFiles.length - 1 && groupBottom) ? 'group-bottom' : '';
-
-                                    // Determine if the accession should be a button or not.
-                                    const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
-
-                                    // Prepare for run_type display
-                                    return (
-                                        <tr key={file['@id']}>
-                                            {showReplicateNumber && i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${groupBottom} merge-right table-raw-merged table-raw-biorep`}>
-                                                    {groupFiles[0].biological_replicates.length > 0 ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
-                                                </td>
-                                            : null}
-                                            {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${groupBottom} merge-right table-raw-merged`}>
-                                                    {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
-                                                </td>
-                                            : null}
-                                            <td className={fileBottom}>
-                                                <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
-                                            </td>
-                                            <td className={fileBottom}>{file.file_type}</td>
-                                            <td className={fileBottom}>{file.output_type}</td>
-                                            <td className={fileBottom}>{file.assembly}</td>
-                                            <td className={fileBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                            <td className={fileBottom}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={fileBottom}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={fileBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
-                                        </tr>
-                                    );
-                                });
-                            })}
-                            {nonGrouped.sort(sortBioReps).map((file, i) => {
-                                // Prepare for run_type display
-                                const rowClasses = [
-                                    groupKeys.length > 0 && i === 0 ? 'table-raw-separator' : null,
-                                ];
-
-                                // Determine if accession should be a button or not.
+                                // Determine if the accession should be a button or not.
                                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
+                                // Prepare for run_type display
                                 return (
-                                    <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        {showReplicateNumber ?
-                                            <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length > 0) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
-                                        null}
-                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
-                                        <td>
+                                    <tr key={file['@id']}>
+                                        {showReplicateNumber && i === 0 ?
+                                            <td rowSpan={groupFiles.length} className={`${groupBottom} merge-right table-raw-merged table-raw-biorep`}>
+                                                {groupFiles[0].biological_replicates.length > 0 ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
+                                            </td>
+                                        : null}
+                                        {i === 0 ?
+                                            <td rowSpan={groupFiles.length} className={`${groupBottom} merge-right table-raw-merged`}>
+                                                {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
+                                            </td>
+                                        : null}
+                                        <td className={fileBottom}>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
-                                        <td>{file.file_type}</td>
-                                        <td>{file.output_type}</td>
-                                        <td>{file.assembly}</td>
-                                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                        <td>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                        <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
+                                        <td className={fileBottom}>{file.file_type}</td>
+                                        <td className={fileBottom}>{file.output_type}</td>
+                                        <td className={fileBottom}>{file.assembly}</td>
+                                        <td className={fileBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                        <td className={fileBottom}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                        <td className={fileBottom}>{globals.humanFileSize(file.file_size)}</td>
+                                        <td className={fileBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
-                            })}
-                        </tbody>
-                    : null}
+                            });
+                        })}
+                        {nonGrouped.sort(sortBioReps).map((file, i) => {
+                            // Prepare for run_type display
+                            const rowClasses = [
+                                groupKeys.length > 0 && i === 0 ? 'table-raw-separator' : null,
+                            ];
 
-                    <tfoot>
-                        <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="11" />
-                        </tr>
-                    </tfoot>
-                </table>
-            );
-        }
+                            // Determine if accession should be a button or not.
+                            const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
-        // No files to display
-        return null;
+                            return (
+                                <tr key={file['@id']} className={rowClasses.join(' ')}>
+                                    {showReplicateNumber ?
+                                        <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length > 0) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
+                                    null}
+                                    <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
+                                    <td>
+                                        <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
+                                    </td>
+                                    <td>{file.file_type}</td>
+                                    <td>{file.output_type}</td>
+                                    <td>{file.assembly}</td>
+                                    <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                    <td>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                    <td>{globals.humanFileSize(file.file_size)}</td>
+                                    <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                : null}
+
+                <tfoot>
+                    <tr>
+                        <td className={`file-table-footer${isCollapsed ? ' hiding' : ''}`} colSpan="11" />
+                    </tr>
+                </tfoot>
+            </table>
+        );
     }
-}
+
+    // No files to display
+    return null;
+};
 
 RawFileTable.propTypes = {
     files: PropTypes.array, // Raw sequencing files to display
@@ -1414,6 +1720,10 @@ RawFileTable.propTypes = {
     fileQueryKey: PropTypes.string.isRequired, // File query string prefix
     inclusionOn: PropTypes.bool.isRequired, // whether or not inclusion on is checked
     isDownloadable: PropTypes.bool.isRequired, // True to include download button in table header
+    /** True if table is collapsed */
+    isCollapsed: PropTypes.bool.isRequired,
+    /** Called when the user collapses/expands the table */
+    handleCollapse: PropTypes.func.isRequired,
 };
 
 RawFileTable.defaultProps = {
@@ -1451,14 +1761,68 @@ DatasetFiles.defaultProps = {
  * @returns {array} Files to display on Series pages
  */
 const filterSeriesFiles = (files, analyses) => {
-    const analysesFilePaths = analyses.reduce((paths, analysis) => paths.concat(analysis.files), []);
-    return files.filter(
-        // If the analysis array has zero length, include all default files.
-        // Otherwise, include default files included in the given analyses.
-        (file) => file.preferred_default && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
-    );
+    if (analyses?.length > 0) {
+        const analysesFilePaths = analyses.reduce((paths, analysis) => paths.concat(analysis.files), []);
+        return files.filter(
+            // If the analysis array has zero length, include all default files.
+            // Otherwise, include default files included in the given analyses.
+            (file) => file.preferred_default && (analysesFilePaths.length === 0 || analysesFilePaths.includes(file['@id']))
+        );
+    }
+    return files;
 };
 
+
+const FILE_COLUMNS = [
+    'title',
+    'accession',
+    'dataset',
+    'assembly',
+    'technical_replicates',
+    'biological_replicates',
+    'file_format',
+    'file_type',
+    'file_format_type',
+    'file_format_type',
+    'file_size',
+    'assay_term_name',
+    'biosample_ontology.term_name',
+    'biosample_ontology.organ_slims',
+    'simple_biosample_summary',
+    'origin_batches',
+    'target.label',
+    'href',
+    'derived_from',
+    'genome_annotation',
+    'replicate.library.accession',
+    'paired_end',
+    'paired_with',
+    'preferred_default',
+    'run_type',
+    'read_length',
+    'mapped_read_length',
+    'cropped_read_length',
+    'cropped_read_length_tolerance',
+    'mapped_run_type',
+    'read_length_units',
+    'output_category',
+    'output_type',
+    'index_of',
+    'quality_metrics',
+    'lab.title',
+    'award.project',
+    'step_run',
+    'date_created',
+    'analyses',
+    'analysis_step_version',
+    'restricted',
+    'submitter_comment',
+    'status',
+    'annotation_type',
+    'annotation_subtype',
+    'biochemical_inputs',
+    'encyclopedia_version',
+];
 
 /**
  * File display widget, showing a facet list, Valis, a table, and a graph. This component only
@@ -1481,6 +1845,7 @@ export const FileGallery = ({
     showDetailedTracks,
     hideAnalysisSelector,
     defaultOnly,
+    cloningMappingsFiles,
 }, reactContext) => {
     // Holds all schemas loaded from a request; used by the file graph.
     const [schemas, setSchemas] = React.useState(null);
@@ -1489,7 +1854,7 @@ export const FileGallery = ({
     // Holds analysis audit objects loaded by server request, keyed by analysis @id.
     const [analysisAudits, setAnalysisAudits] = React.useState({});
 
-    const usedAnalyses = analyses || context.analyses;
+    const usedAnalyses = analyses.length > 0 ? analyses : context.analyses;
 
     useMount(() => {
         // Retrieve schemas for file graph.
@@ -1502,10 +1867,17 @@ export const FileGallery = ({
         const elementsReferenceFiles = getElementReferencesFiles(context.elements_references);
 
         // Request files from the server.
-        const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}`;
+        const fileFields = FILE_COLUMNS.map((column) => `field=${column}`).join('&');
+        const query = fileQuery || `limit=all&type=File&dataset=${context['@id']}&${fileFields}`;
         requestSearch(query).then((requestedData) => {
             const isSeries = globals.hasType(context, 'Series');
-            const datasetFiles = isSeries ? filterSeriesFiles(requestedData['@graph'], usedAnalyses) : requestedData['@graph'];
+            const isFunctionalCharacterizationSeries = globals.hasType(context, 'FunctionalCharacterizationSeries');
+            let datasetFiles = [];
+            if (requestedData['@graph']) {
+                datasetFiles = (isSeries && !isFunctionalCharacterizationSeries)
+                    ? filterSeriesFiles(requestedData['@graph'], usedAnalyses)
+                    : requestedData['@graph'];
+            }
             setData([...datasetFiles, ...files, ...elementsReferenceFiles]);
         });
     }, [fileQuery, files]);
@@ -1544,6 +1916,7 @@ export const FileGallery = ({
             showDetailedTracks={showDetailedTracks}
             hideAnalysisSelector={hideAnalysisSelector}
             defaultOnly={defaultOnly}
+            cloningMappingsFiles={cloningMappingsFiles}
         />
     );
 };
@@ -1579,6 +1952,13 @@ FileGallery.propTypes = {
     showDetailedTracks: PropTypes.bool, // True to show more detailed tracks in browser
     defaultOnly: PropTypes.bool, // True to batch download preferred_default files only
     hideAnalysisSelector: PropTypes.bool, // True to hide analysis selector dropdown
+    /** All `elements_cloning` and `elements_mappings` files in all `context.related_datasets` */
+    cloningMappingsFiles: PropTypes.exact({
+        /** All `elements_cloning` files in all `context.related_datasets` */
+        cloning: PropTypes.arrayOf(PropTypes.object),
+        /** All `elements_mappings` files in all `context.related_datasets` */
+        mappings: PropTypes.arrayOf(PropTypes.object),
+    }),
 };
 
 FileGallery.defaultProps = {
@@ -1593,6 +1973,7 @@ FileGallery.defaultProps = {
     showReplicateNumber: true,
     showDetailedTracks: false,
     hideAnalysisSelector: false,
+    cloningMappingsFiles: { cloning: null, mappings: null },
     defaultOnly: false,
 };
 
@@ -3380,7 +3761,7 @@ class FileGalleryRendererComponent extends React.Component {
      * combined files so we can choose a visualization browser.
      */
     updateFiles(prevLoggedIn, updateAssembly) {
-        const { context, data, analyses, hideAnalysisSelector } = this.props;
+        const { context, data, analyses, hideAnalysisSelector, cloningMappingsFiles } = this.props;
         const { session } = this.context;
         const { currentTab } = this.state;
         const loggedIn = !!(session && session['auth.userid']);
@@ -3401,8 +3782,12 @@ class FileGalleryRendererComponent extends React.Component {
         // Whether we have related_files or not, get all files' assemblies and annotations, and
         // the first genome browser for them.
         relatedPromise.then((relatedFiles) => {
+            // Extract all cloning and mapping files from the related datasets.
+            const cloningFiles = cloningMappingsFiles?.cloning?.reduce((accFiles, cloning) => accFiles.concat(cloning.files), []) || [];
+            const mappingsFiles = cloningMappingsFiles?.mappings?.reduce((accFiles, mappings) => accFiles.concat(mappings.files), []) || [];
+
             this.prevRelatedFiles = relatedFiles;
-            let allFiles = datasetFiles.concat(relatedFiles);
+            let allFiles = datasetFiles.concat(relatedFiles).concat(cloningFiles).concat(mappingsFiles);
             allFiles = this.filterForInclusion(allFiles);
 
             const dropdown = this.analysisSelectorRef.current;
@@ -3585,6 +3970,7 @@ class FileGalleryRendererComponent extends React.Component {
             showDetailedTracks,
             hideAnalysisSelector,
             defaultOnly,
+            cloningMappingsFiles,
             auditIndicators,
             auditDetail,
         } = this.props;
@@ -3682,6 +4068,7 @@ class FileGalleryRendererComponent extends React.Component {
                     hideDownload: hideControls,
                     collapseNone,
                 }}
+                cloningMappingsFiles={cloningMappingsFiles}
                 adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
                 schemas={schemas}
             />
@@ -3846,6 +4233,13 @@ FileGalleryRendererComponent.propTypes = {
     hideAnalysisSelector: PropTypes.bool,
     /** True to select only preferred_default files for download */
     defaultOnly: PropTypes.bool,
+    /** All `elements_cloning` and `elements_mappings` files in all `context.related_datasets` */
+    cloningMappingsFiles: PropTypes.exact({
+        /** All `elements_cloning` files in all `context.related_datasets` */
+        cloning: PropTypes.arrayOf(PropTypes.object),
+        /** All `elements_mappings` files in all `context.related_datasets` */
+        mappings: PropTypes.arrayOf(PropTypes.object),
+    }),
     /** Inherited from auditDecor HOC */
     auditIndicators: PropTypes.func.isRequired,
     /** Inherited from auditDecor HOC */
@@ -3868,6 +4262,7 @@ FileGalleryRendererComponent.defaultProps = {
     showDetailedTracks: false,
     hideAnalysisSelector: false,
     defaultOnly: false,
+    cloningMappingsFiles: { cloning: null, mappings: null },
     showReplicateNumber: true,
     session: null,
 };
@@ -4229,6 +4624,7 @@ const CollapsingTitleComponent = ({
     outputType,
     fileQueryKey,
     totalFiles,
+    isCloningOrMappings,
     isDownloadable,
     auditIndicators,
     auditDetail,
@@ -4255,6 +4651,8 @@ const CollapsingTitleComponent = ({
     const isFCEorFCS = atType.includes('FunctionalCharacterizationExperiment') || atType.includes('FunctionalCharacterizationSeries');
     if (analysis) {
         batchDownloadController = new AnalysisBatchDownloadController(context, analysis['@id'], query, fileQueryKey);
+    } else if (isCloningOrMappings) {
+        batchDownloadController = new CloningMappingsBatchDownloadController(context);
     } else if (isFCEorFCS) {
         batchDownloadController = new ElementsReferencesDownloadController(context, query);
     } else if (outputCategory === 'reference') {
@@ -4291,19 +4689,34 @@ const CollapsingTitleComponent = ({
 };
 
 CollapsingTitleComponent.propTypes = {
-    context: PropTypes.object.isRequired, // context
+    /** Dataset object for the displayed page */
+    context: PropTypes.object.isRequired,
+    /** Analysis objects from context or collected separately */
     analyses: PropTypes.array,
-    analysisAudits: PropTypes.object, // Map of analysis @ids to the audits they contain
-    title: PropTypes.string.isRequired, // Title to display in the title bar
-    handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
-    collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
-    filters: PropTypes.object, // filters
-    analysisObjectKey: PropTypes.string, // Accession of analysis this title applies to
-    outputCategory: PropTypes.string, // output category object
-    outputType: PropTypes.string, // output type to display in title
-    fileQueryKey: PropTypes.string.isRequired, // File query-string parameter prefix
-    totalFiles: PropTypes.number, // total file count
-    isDownloadable: PropTypes.bool, // whether or not the section can have it's files downloaded
+    /** Map of analysis @ids to the audits they contain */
+    analysisAudits: PropTypes.object,
+    /** Title to display in the title bar */
+    title: PropTypes.string.isRequired,
+    /** Function to call to handle click in collapse button */
+    handleCollapse: PropTypes.func.isRequired,
+    /** T if the panel this is over has been collapsed */
+    collapsed: PropTypes.bool,
+    /** Facets the user selected */
+    filters: PropTypes.object,
+    /** Accession of analysis this title applies to */
+    analysisObjectKey: PropTypes.string,
+    /** output category object */
+    outputCategory: PropTypes.string,
+    /** output type to display in title */
+    outputType: PropTypes.string,
+    /** File query-string parameter prefix */
+    fileQueryKey: PropTypes.string.isRequired,
+    /** total file count */
+    totalFiles: PropTypes.number,
+    /** True if cloning/mappings file table */
+    isCloningOrMappings: PropTypes.bool,
+    /** whether or not the section can have it's files downloaded */
+    isDownloadable: PropTypes.bool,
     /** Audit HOC decorator function to show button that triggers the audit details */
     auditIndicators: PropTypes.func.isRequired,
     /** Audit HOD decorator to close the audit detail */
@@ -4316,11 +4729,12 @@ CollapsingTitleComponent.defaultProps = {
     analyses: null,
     analysisAudits: null,
     collapsed: false,
-    filters: [],
+    filters: {},
     analysisObjectKey: '',
     outputCategory: null,
     outputType: null,
     totalFiles: 0,
+    isCloningOrMappings: false,
     isDownloadable: true,
 };
 
