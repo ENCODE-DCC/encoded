@@ -32,11 +32,12 @@ def test_no_attachment(testapp, antibody_characterization):
 def test_antibody_characterization_exemption_no_explanation(testapp,
                                                             antibody_characterization,
                                                             document,
+                                                            wrangler,
                                                             k562):
     antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2,
                                                               "biosample_ontology": k562['uuid'],
                                                               "lane_status":
                                                               "exempt from standards"}]
     antibody_characterization['documents'] = [document['@id']]
-    antibody_characterization['reviewed_by'] = '81a6cc12-2847-4e2e-8f2c-f566699eb29e'
+    antibody_characterization['reviewed_by'] = wrangler['@id']
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
