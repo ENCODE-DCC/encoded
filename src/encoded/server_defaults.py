@@ -36,7 +36,6 @@ def userid(instance, subschema):
 
 @server_default
 def now(instance, subschema):
-    # from jsonschema_serialize_fork date-time format requires a timezone
     return datetime.utcnow().isoformat() + '+00:00'
 
 
