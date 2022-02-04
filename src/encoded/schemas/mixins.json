@@ -7,7 +7,7 @@
             "comment":  "Do not submit. The version used to validate the object is set by the server. The default should be set to the current version.",
             "type": "string",
             "pattern": "^\\d+(\\.\\d+)*$",
-            "requestMethod": ["POST", "PATCH", "PUT"]
+            "requestMethod": []
         }
     },
     "uuid": {
@@ -19,7 +19,7 @@
             "format": "uuid",
             "serverDefault": "uuid4",
             "permission": "import_items",
-            "requestMethod": ["POST", "PATCH", "PUT"]
+            "requestMethod": ["POST"]
         }
     },
     "accession": {
