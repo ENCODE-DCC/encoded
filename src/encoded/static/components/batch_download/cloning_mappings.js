@@ -24,7 +24,7 @@ export default class CloningMappingsBatchDownloadController extends BatchDownloa
                 id: 'all-files',
                 label: 'Download files',
                 title: `All experiment${this._hasAnalyses ? `${uc.rsquo}s analyses` : ''} files`,
-                description: `Downloads all files within the experiment${this._hasAnalyses ? `${uc.rsquo}s analyses` : ''}.`,
+                description: `Downloads all files within all experiment${this._hasAnalyses ? `${uc.rsquo}s analyses` : ''}.`,
                 query: '',
             },
         ];
