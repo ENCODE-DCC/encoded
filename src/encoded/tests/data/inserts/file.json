@@ -2,13 +2,15 @@
     {
         "accession": "ENCFF000LSP",
         "assembly": "hg19",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ACY",
         "date_created": "2013-03-23T16:46:18.670068+00:00",
         "file_format": "bigBed",
         "file_format_type": "bedMethyl",
-        "file_format_specifications": ["encode:bedMethyl.as"],
-        "lab":"j-michael-cherry",
+        "file_format_specifications": [
+            "encode:bedMethyl.as"
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "91be74b6e11515393507f4ebfa66d78d",
         "output_type": "sequence alignability",
         "platform": "bdfd8a33-4f14-4242-b6d5-ad198d4225f8",
@@ -25,12 +27,12 @@
         "accession": "ENCFF000LSQ",
         "assembly": "hg19",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ACY",
         "date_created": "2013-03-23T16:46:18.670068+00:00",
         "file_format": "bigBed",
         "file_format_type": "bedMethyl",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "92be74b6e11515393507f4ebfa66d78d",
         "output_type": "peaks",
         "replicate": "6e85c807-684a-46e3-b4b9-1f7990e85720",
@@ -43,11 +45,11 @@
         "accession": "ENCFF001MXE",
         "assembly": "mm9",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bam",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "cropped_read_length": 44,
         "cropped_read_length_tolerance": 2,
         "md5sum": "93be74b6e11515393507f4ebfa66d78d",
@@ -63,14 +65,14 @@
     {
         "accession": "ENCFF001MXG",
         "assembly": "mm9",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
             "9558830f-154f-449f-814b-fd3435417edf"
         ],
         "file_format": "bigWig",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "94be74b6e11515393507f4ebfa66d78d",
         "output_type": "signal of all reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
@@ -85,18 +87,19 @@
     {
         "_test": "has mismatched read length with the file it controls",
         "accession": "ENCFF001MYM",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "95be74b6e11515393507f4ebfa66d78d",
         "content_md5sum": "96be74b6e11515393507f4ebfa66d78d",
         "output_type": "reads",
@@ -111,18 +114,19 @@
     },
     {
         "accession": "ENCFF002MYM",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "97be74b6e11515393507f4ebfa66d78d",
         "content_md5sum": "98be74b6e11515393507f4ebfa66d78d",
         "output_type": "reads",
@@ -139,12 +143,12 @@
     {
         "accession": "ENCFF001MWZ",
         "assembly": "mm9",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bam",
         "file_size": 20,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "99be74b6e11515393507f4ebfa66d78d",
         "output_type": "alignments",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
@@ -157,11 +161,11 @@
     {
         "accession": "ENCFF002MWZ",
         "assembly": "mm9",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR001ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bam",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "file_size": 20,
         "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
         "output_type": "alignments",
@@ -175,12 +179,12 @@
     {
         "accession": "ENCFF001MXA",
         "assembly": "mm10",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_size": 20,
         "file_format": "bam",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "92ae74b6e11515393507f4ebfa66d78d",
         "output_type": "alignments",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
@@ -193,15 +197,17 @@
     {
         "_test": "bad md5 sum",
         "accession": "ENCFF001MXB",
-        "aliases":["encode:badmd5"],
+        "aliases": [
+            "encode:badmd5"
+        ],
         "assembly": "mm9",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bigBed",
         "file_format_type": "narrowPeak",
         "file_size": 20,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "92ce74b6e11515393507f4ebfa66d78d",
         "output_type": "peaks",
         "status": "revoked",
@@ -212,19 +218,20 @@
     {
         "accession": "ENCFF001MXD",
         "assembly": "mm9",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_size": 20,
         "file_format": "bigWig",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "93de74b6e11515393507f4ebfa66d78d",
         "output_type": "signal of all reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "derived_from": [
-            "ENCFF001MWZ", "ENCFF001MXA"
+            "ENCFF001MWZ",
+            "ENCFF001MXA"
         ],
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleSig.bigWig",
         "uuid": "1050b698-f505-4ce5-96e5-6909e3a2acc7"
@@ -232,12 +239,12 @@
     {
         "accession": "ENCFF002MXD",
         "assembly": "mm9",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_size": 20,
         "file_format": "bigWig",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "91be74b6e22515393507f4ebfa66d78d",
         "output_type": "signal of all reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
@@ -249,17 +256,19 @@
     {
         "accession": "ENCFF003MXD",
         "assembly": "mm9",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_size": 20,
         "file_format": "bigWig",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "91be74b6e23515393507f4ebfa66d78d",
         "output_type": "signal of all reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "status": "released",
-        "derived_from": [ "ENCFF001MXA" ],
+        "derived_from": [
+            "ENCFF001MXA"
+        ],
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleSigIII.bigWig",
         "uuid": "8af32b39-f97f-4979-9c21-728b0b8a2112"
@@ -268,44 +277,48 @@
         "_test": "has run read length and controlled_by",
         "accession": "ENCFF001MXF",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "run_type":"single-ended",
+        "run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "91be74b6e24515393507f4ebfa66d78d",
         "output_type": "reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "replicate": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f",
         "status": "released",
         "read_length": 36,
-        "controlled_by": ["ENCFF001MYM"],
+        "controlled_by": [
+            "ENCFF001MYM"
+        ],
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep1.fastq.gz",
         "uuid": "a3cbec37-f186-4ef7-aa14-6ad0e2022ebc"
     },
     {
         "accession": "ENCFF002MXF",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR001ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
         "run_type": "single-ended",
         "file_size": 20,
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "91be74b6e25515393507f4ebfa66d78d",
         "output_type": "reads",
         "read_length": 50,
@@ -319,18 +332,19 @@
     {
         "accession": "ENCFF001MXH",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2010-05-12T16:46:18.670068+00:00",
-        "run_type":"single-ended",
+        "run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "91be74b6e11615393507f4ebfa66d78d",
         "output_type": "reads",
         "read_length": 50,
@@ -344,19 +358,20 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001RDZ",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_size": 20,
-        "run_type":"single-ended",
+        "run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "91be74b6e11715393507f4ebfa66d78d",
         "output_type": "reads",
         "read_length": 50,
@@ -370,19 +385,20 @@
     {
         "_project": "encode3",
         "accession": "ENCFF002RDZ",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR001ADI",
         "file_size": 20,
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_format": "fastq",
         "run_type": "single-ended",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "3a35713488522b0ea8a4d9635b5afa41",
         "output_type": "reads",
         "read_length": 50,
@@ -397,18 +413,19 @@
         "_project": "encode3",
         "accession": "ENCFF001RED",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
-        "run_type":"single-ended",
+        "run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "0e88b38c8d48806ee98929a5bad06fc4",
         "output_type": "reads",
         "read_length": 50,
@@ -422,19 +439,20 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001REF",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
-        "run_type":"single-ended",
+        "run_type": "single-ended",
         "file_size": 20,
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "5dd317654eb81f577a0f78745a3c8e66",
         "output_type": "rejected reads",
         "read_length": 50,
@@ -449,18 +467,19 @@
         "_project": "encode3",
         "accession": "ENCFF001REG",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
-        "run_type":"single-ended",
+        "run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "4c646fa9b822b7f52f9c2c5a9da0f5e3",
         "output_type": "rejected reads",
         "read_length": 50,
@@ -474,18 +493,19 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001RDB",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "a8879e9e78f17c37fdcfe1a8b572ac1f",
         "output_type": "reads",
         "read_length": 50,
@@ -502,18 +522,19 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001RDC",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
         "file_size": 20,
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "97b452ae74c7d279706c88141155a00c",
         "output_type": "reads",
         "read_length": 50,
@@ -530,17 +551,18 @@
         "_project": "encode3",
         "accession": "ENCFF001RCT",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "3ced82e44cea82a4784493c2f640ba12",
         "output_type": "reads",
         "read_length": 50,
@@ -562,7 +584,7 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-07-19T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "7ced82e74cea82a4787493c2f640ba82",
         "output_type": "index reads",
         "read_length": 58,
@@ -580,7 +602,7 @@
         "_project": "encode3",
         "accession": "ENCFF001RCU",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -614,7 +636,7 @@
                 "chunk": "HIJKLM"
             }
         ],
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "3541f1a048453b65ab01a673b743a573",
         "output_type": "reads",
         "read_length": 50,
@@ -632,7 +654,7 @@
         "_project": "encode3",
         "accession": "ENCFF001RCV",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "assembly": "hg19",
         "genome_annotation": "V19",
@@ -642,7 +664,7 @@
             "aab79812-71d8-41d1-bd72-1bf5dbcae381"
         ],
         "file_format": "bam",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "cdf6c42afc135f1f95971e415b8d5fdd",
         "output_type": "alignments",
         "status": "released",
@@ -654,14 +676,14 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001XCV",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "assembly": "GRCh38",
         "genome_annotation": "V19",
         "file_size": 20,
         "file_format": "bam",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "cef6c42afc135f1f95971e415b8d5fdd",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
         "output_type": "alignments",
@@ -673,7 +695,7 @@
     {
         "_project": "encode3",
         "accession": "ENCFF002XCV",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "assembly": "GRCh38",
@@ -681,7 +703,7 @@
         "file_format": "bam",
         "mapped_read_length": 36,
         "file_size": 20,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "cff6c42afc135f1f95971e415b8d5fdd",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
         "output_type": "alignments",
@@ -693,14 +715,14 @@
     {
         "_project": "encode3",
         "accession": "ENCFF003XCV",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
         "assembly": "GRCh38-minimal",
         "genome_annotation": "V10",
         "file_format": "bam",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "cff6c42afc135f1f95971e315b8d5fdd",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
         "output_type": "alignments",
@@ -708,11 +730,11 @@
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate1.bam",
         "uuid": "09a19f43-445c-41af-81d5-9c7bdf2720c0"
-   },
-   {
+    },
+    {
         "_project": "encode3",
         "accession": "ENCFF001RCW",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AEN",
         "assembly": "hg19",
@@ -723,7 +745,7 @@
             "aab79812-71d8-41d1-bd72-1bf5dbcae381"
         ],
         "file_format": "bam",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "ecff397bffc54f01319eb41c6194379b",
         "output_type": "alignments",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
@@ -732,11 +754,11 @@
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bam",
         "uuid": "895fef10-52ed-11e4-916c-0800200c9a66"
-   },
-   {
+    },
+    {
         "_project": "encode3",
         "accession": "ENCFF001RCY",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
@@ -747,7 +769,7 @@
         "file_format": "bigWig",
         "assembly": "GRCh38",
         "genome_annotation": "V19",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "0fa8f5fdd8eebe55eebf1875e5ac5a3c",
         "output_type": "signal of all reads",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
@@ -756,11 +778,11 @@
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate1.bigWig",
         "uuid": "a182ace0-52ed-11e4-916c-0800200c9a66"
-   },
-   {
+    },
+    {
         "_project": "encode3",
         "accession": "ENCFF001RCZ",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "file_size": 20,
         "date_created": "2013-05-19T16:46:18.670068+00:00",
@@ -768,7 +790,7 @@
             "895fef10-52ed-11e4-916c-0800200c9a66"
         ],
         "file_format": "bigWig",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "assembly": "hg19",
         "genome_annotation": "V19",
         "md5sum": "3f68ceaa13a380990ca16d8dcaeffd0b",
@@ -779,23 +801,24 @@
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bigWig",
         "uuid": "c7794da0-52ed-11e4-916c-0800200c9a66"
-   },
-   {
+    },
+    {
         "_project": "encode3",
         "accession": "ENCFF666MOO",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "run_type":"single-ended",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "run_type": "single-ended",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "8cd1f9a1fbf709cb0a58e427b0448dbc",
         "output_type": "reads",
         "read_length": 50,
@@ -810,17 +833,18 @@
         "_project": "encode3",
         "accession": "ENCFF001RDX",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "689e73dd026e24ed347378b6ec578521",
         "output_type": "reads",
         "read_length": 50,
@@ -838,17 +862,18 @@
         "file_size": 20,
         "_project": "encode3",
         "accession": "ENCFF001RES",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "10dfc1816893a76a48c645c5294ad74c",
         "output_type": "reads",
         "read_length": 50,
@@ -866,18 +891,19 @@
         "_test": "not in edw test",
         "_project": "encode3",
         "accession": "ENCFF001RET",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "f73b8010630a28fe9ac1f93155a46e8b",
         "output_type": "reads",
         "run_type": "paired-ended",
@@ -894,19 +920,20 @@
         "_test": "not in edw test",
         "_project": "encode3",
         "accession": "ENCFF001REL",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "run_type":"single-ended",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "run_type": "single-ended",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "md5sum": "8c46ce8ffd6a281a10672352ba9c9514",
         "output_type": "reads",
@@ -920,19 +947,20 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001REQ",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_format": "fastq",
         "run_type": "single-ended",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
-        "lab":"j-michael-cherry",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "lab": "j-michael-cherry",
         "md5sum": "de9e05ad88fea5664f1c5d90815df360",
         "output_type": "reads",
         "read_length": 50,
@@ -948,12 +976,12 @@
         "_test": "test patch user",
         "accession": "ENCFF001RIC",
         "assembly": "hg19",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ACT",
         "date_created": "2014-01-21T16:46:18.670068+00:00",
         "file_format": "idat",
         "file_size": 20,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "864cda72c95d776e696b1af69554e5ec",
         "output_type": "idat red channel",
         "platform": "bdfd8a33-4f14-4242-b6d5-ad198d4225f8",
@@ -968,12 +996,12 @@
         "_project": "encode3",
         "accession": "ENCFF001RID",
         "assembly": "hg19",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR000ACT",
         "date_created": "2014-01-21T16:46:18.670068+00:00",
         "file_format": "idat",
         "restricted": true,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "f42f32235d27104036737e4d33b6e13f",
         "output_type": "idat green channel",
         "platform": "bdfd8a33-4f14-4242-b6d5-ad198d4225f8",
@@ -989,11 +1017,11 @@
         "accession": "ENCFF000ZWE",
         "assembly": "hg19",
         "file_size": 20,
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR704RSS",
         "date_created": "2013-04-17T16:46:18.670068+00:00",
         "file_format": "tsv",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "d151fab2c55504980fc432e1def8dd5f",
         "output_type": "spike-ins",
         "status": "revoked",
@@ -1013,7 +1041,7 @@
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "file_size": 8856340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome reference",
         "read_length": 50,
         "aliases": []
@@ -1029,12 +1057,17 @@
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
-        "alternate_accessions": ["ENCFF020HBG", "ENCFF021HBG"],
+        "alternate_accessions": [
+            "ENCFF020HBG",
+            "ENCFF021HBG"
+        ],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "status": "in progress",
@@ -1048,7 +1081,7 @@
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "file_size": 583336340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "transcriptome index"
     },
     {
@@ -1064,10 +1097,12 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "status": "replaced",
@@ -1082,10 +1117,12 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "status": "released",
@@ -1100,10 +1137,12 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "status": "released",
@@ -1118,10 +1157,12 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "status": "released",
@@ -1136,10 +1177,12 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "status": "released",
@@ -1154,10 +1197,12 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "status": "released",
@@ -1172,10 +1217,12 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "status": "released",
@@ -1190,10 +1237,12 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "female genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "status": "in progress",
@@ -1207,10 +1256,12 @@
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "file_size": 6252517704,
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "output_type": "male genome index",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "derived_from": ["ENCFF019HGN"]
+        "derived_from": [
+            "ENCFF019HGN"
+        ]
     },
     {
         "paired_end": "1",
@@ -1300,7 +1351,7 @@
         "uuid": "7acdc827-3806-448e-b0d4-2d463a42179f",
         "file_format": "fastq",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "run_type":"paired-ended",
+        "run_type": "paired-ended",
         "flowcell_details": [],
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -1328,7 +1379,14 @@
         "lab": "/labs/richard-myers/",
         "output_type": "alignments",
         "assembly": "hg19",
-        "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI", "ENCFF019HBG", "ENCFF022HBG"],
+        "derived_from": [
+            "ENCFF431TKZ",
+            "ENCFF504RKH",
+            "ENCFF958GWJ",
+            "ENCFF360FSI",
+            "ENCFF019HBG",
+            "ENCFF022HBG"
+        ],
         "aliases": [],
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b"
     },
@@ -1348,7 +1406,19 @@
         "lab": "/labs/richard-myers/",
         "output_type": "alignments",
         "assembly": "hg19",
-        "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI", "ENCFF021HBG", "ENCFF022HBG", "ENCFF023HBG", "ENCFF024HBG", "ENCFF025HBG", "ENCFF026HBG", "ENCFF027HBG"],
+        "derived_from": [
+            "ENCFF431TKZ",
+            "ENCFF504RKH",
+            "ENCFF958GWJ",
+            "ENCFF360FSI",
+            "ENCFF021HBG",
+            "ENCFF022HBG",
+            "ENCFF023HBG",
+            "ENCFF024HBG",
+            "ENCFF025HBG",
+            "ENCFF026HBG",
+            "ENCFF027HBG"
+        ],
         "aliases": [],
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b"
     },
@@ -1369,10 +1439,11 @@
         "file_size": 370148294,
         "output_type": "methylation state at CpG",
         "lab": "/labs/richard-myers/",
-        "derived_from": ["ENCFF434GXF"],
+        "derived_from": [
+            "ENCFF434GXF"
+        ],
         "aliases": [],
         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
-
     },
     {
         "status": "in progress",
@@ -1391,7 +1462,9 @@
         "file_size": 1544154147,
         "lab": "/labs/richard-myers/",
         "output_type": "methylation state at CHH",
-        "derived_from": ["ENCFF434GXF"],
+        "derived_from": [
+            "ENCFF434GXF"
+        ],
         "aliases": [],
         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
     },
@@ -1413,7 +1486,9 @@
         "lab": "/labs/richard-myers/",
         "output_type": "methylation state at CHG",
         "aliases": [],
-        "derived_from": ["ENCFF434GXF"],
+        "derived_from": [
+            "ENCFF434GXF"
+        ],
         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
     },
     {
@@ -1625,7 +1700,6 @@
         "submitted_file_name": "K562_RAD21_2.1.interactions.pairs.gz"
     },
     {
-
         "_test": "original file for an annotation analysis set 1",
         "accession": "ENCFF762DWI",
         "assembly": "hg19",
@@ -1781,7 +1855,9 @@
         "output_type": "reads",
         "lab": "/labs/robert-waterston/",
         "run_type": "single-ended",
-        "aliases": ["robert-waterston:fastq1_MiSeq_RB884_880_1_1_1"],
+        "aliases": [
+            "robert-waterston:fastq1_MiSeq_RB884_880_1_1_1"
+        ],
         "file_size": 27265559,
         "platform": "/platforms/OBI%3A0002003/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -2419,7 +2495,9 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "5333a3e1-2e33-47f3-b01e-c5925e9b95b0",
-        "derived_from": ["ENCFF203KVL"]
+        "derived_from": [
+            "ENCFF203KVL"
+        ]
     },
     {
         "accession": "ENCFF217EOB",
@@ -2459,7 +2537,9 @@
         "step_run": "8479e383-3492-4ffc-b2ea-10fb65589cde",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "107cd650-9401-4f83-9a40-ab2356314c42",
-        "derived_from": ["ENCFF217EOB"]
+        "derived_from": [
+            "ENCFF217EOB"
+        ]
     },
     {
         "accession": "ENCFF203KVL",
@@ -2479,7 +2559,9 @@
         "step_run": "8479e383-3492-4ffc-b2ea-10fb65589cde",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "876855ad-7fd9-4ae8-93b0-62f9e4c7e343",
-        "derived_from": ["ENCFF217EOB"]
+        "derived_from": [
+            "ENCFF217EOB"
+        ]
     },
     {
         "accession": "ENCFF928TLJ",
@@ -2499,7 +2581,9 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "1871bce2-16b3-4ad3-8c0e-7a51512516ce",
-        "derived_from": ["ENCFF811ACC"]
+        "derived_from": [
+            "ENCFF811ACC"
+        ]
     },
     {
         "accession": "ENCFF812THZ",
@@ -2600,7 +2684,7 @@
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "12ce74b6e11515393507f4ebfa66d78d",
         "output_type": "reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
@@ -2619,7 +2703,7 @@
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "93be74b6e11123493507f4ebfa66d78d",
         "output_type": "reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
@@ -2719,14 +2803,14 @@
     {
         "_project": "encode3",
         "accession": "ENCFF101RCZ",
-        "award":"U41HG006992",
+        "award": "U41HG006992",
         "dataset": "ENCSR123MRN",
         "file_size": 20,
         "derived_from": [
             "895fef10-52ed-11e4-916c-0800200c9a66"
         ],
         "file_format": "bigWig",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "assembly": "hg19",
         "md5sum": "3f78ceaa13a380990ca16d8dcaeffd0b",
         "output_type": "signal of all reads",
@@ -2762,7 +2846,7 @@
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "12ce74b6e12215393507f4ebfa66d78d",
         "output_type": "reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
@@ -2773,7 +2857,9 @@
         "uuid": "3412830f-154f-129f-814b-fd3435417edf",
         "run_type": "single-ended",
         "read_length": 76,
-        "derived_from": ["ENCFF333SBR"]
+        "derived_from": [
+            "ENCFF333SBR"
+        ]
     },
     {
         "accession": "ENCFF002ISO",
@@ -2782,7 +2868,7 @@
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "lab":"j-michael-cherry",
+        "lab": "j-michael-cherry",
         "md5sum": "93be74b6e11123493511f4ebfa77d78d",
         "output_type": "reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
@@ -3066,7 +3152,9 @@
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "f310dcda5400928744b1ca967c9e4ea5",
-        "derived_from": ["ENCFF164JWT"]
+        "derived_from": [
+            "ENCFF164JWT"
+        ]
     },
     {
         "_test": "ATAC-seq rep1 pseudoreplicated peaks",
@@ -3083,7 +3171,9 @@
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "61111f06df8446c9cee45ed6e1961d54",
-        "derived_from": ["ENCFF032OJW"]
+        "derived_from": [
+            "ENCFF032OJW"
+        ]
     },
     {
         "_test": "microRNA miRNA annotations",
@@ -3290,10 +3380,16 @@
         "award": "UM1HG009442",
         "content_md5sum": "b36a0f27cf432a5b9352f491728dc00e",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["HKYCWDSXX:4:1:mixed:"],
+        "fastq_signature": [
+            "HKYCWDSXX:4:1:mixed:"
+        ],
         "file_format": "fastq",
         "file_size": 2006258583,
-        "flowcell_details": [{"lane": "4"}],
+        "flowcell_details": [
+            {
+                "lane": "4"
+            }
+        ],
         "lab": "michael-snyder",
         "md5sum": "75278ae2907ad0311b5698363d2331e4",
         "no_file_available": false,
@@ -3315,10 +3411,16 @@
         "award": "UM1HG009442",
         "content_md5sum": "620d9b9e542ce40e1810baf79ef8bcde",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["HKYCWDSXX:4:3:mixed:"],
+        "fastq_signature": [
+            "HKYCWDSXX:4:3:mixed:"
+        ],
         "file_format": "fastq",
         "file_size": 2038795269,
-        "flowcell_details": [{"lane": "4"}],
+        "flowcell_details": [
+            {
+                "lane": "4"
+            }
+        ],
         "lab": "michael-snyder",
         "md5sum": "5ccac2fc1c73e602f5e6df63e3bb5451",
         "no_file_available": false,
@@ -3341,10 +3443,16 @@
         "award": "UM1HG009442",
         "content_md5sum": "75254a13688d7d7ba1125f8ce5e7ecfa",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["HKYCWDSXX:4:2:mixed:"],
+        "fastq_signature": [
+            "HKYCWDSXX:4:2:mixed:"
+        ],
         "file_format": "fastq",
         "file_size": 659621681,
-        "flowcell_details": [{"lane": "4"}],
+        "flowcell_details": [
+            {
+                "lane": "4"
+            }
+        ],
         "index_of": [
             "ENCFF644ZJJ/",
             "ENCFF026WBI"
@@ -3368,10 +3476,16 @@
         "award": "UM1HG009442",
         "content_md5sum": "c6c9d434932660f98b186673cc5da677",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["HMGLLDSXX:2:1:mixed:"],
+        "fastq_signature": [
+            "HMGLLDSXX:2:1:mixed:"
+        ],
         "file_format": "fastq",
         "file_size": 2247253176,
-        "flowcell_details": [{"lane": "2"}],
+        "flowcell_details": [
+            {
+                "lane": "2"
+            }
+        ],
         "lab": "michael-snyder",
         "md5sum": "9475973cecf914f664305408da858650",
         "no_file_available": false,
@@ -3393,10 +3507,16 @@
         "award": "UM1HG009442",
         "content_md5sum": "aa9ca1ef8492b66cdfbcd05a1779af35",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["HMGLLDSXX:2:3:mixed:"],
+        "fastq_signature": [
+            "HMGLLDSXX:2:3:mixed:"
+        ],
         "file_format": "fastq",
         "file_size": 2307663353,
-        "flowcell_details": [{"lane": "2"}],
+        "flowcell_details": [
+            {
+                "lane": "2"
+            }
+        ],
         "lab": "michael-snyder",
         "md5sum": "eb471b705b63e77d6567728cd76eb086",
         "no_file_available": false,
@@ -3419,10 +3539,16 @@
         "award": "UM1HG009442",
         "content_md5sum": "62f09e9a5d90bc4c29caeb7c24035f18",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["HMGLLDSXX:2:2:mixed:"],
+        "fastq_signature": [
+            "HMGLLDSXX:2:2:mixed:"
+        ],
         "file_format": "fastq",
         "file_size": 757976972,
-        "flowcell_details": [{"lane": "2"}],
+        "flowcell_details": [
+            {
+                "lane": "2"
+            }
+        ],
         "index_of": [
             "ENCFF487KBV",
             "ENCFF122JNG"
@@ -3443,14 +3569,18 @@
         "award": "UM1HG009442",
         "content_md5sum": "efd5ec7e1235843817de6cfac798f6f2",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["FC64DAG:1:1::"],
+        "fastq_signature": [
+            "FC64DAG:1:1::"
+        ],
         "file_format": "fastq",
         "file_size": 723373582,
-        "flowcell_details": [{
-            "machine": "MAGNUM",
-            "flowcell": "FC64DAG",
-            "lane": "1"
-        }],
+        "flowcell_details": [
+            {
+                "machine": "MAGNUM",
+                "flowcell": "FC64DAG",
+                "lane": "1"
+            }
+        ],
         "lab": "michael-snyder",
         "md5sum": "bfcfc6361dc8d995da6edb5dceb2ee3c",
         "no_file_available": false,
@@ -3474,7 +3604,11 @@
         "dataset": "ENCSR606VJQ",
         "file_format": "fastq",
         "file_size": 669366062,
-        "flowcell_details": [{"lane": "2"}],
+        "flowcell_details": [
+            {
+                "lane": "2"
+            }
+        ],
         "index_of": [
             "ENCFF002EXD"
         ],
@@ -3492,11 +3626,15 @@
     },
     {
         "accession": "ENCFF938QWH",
-        "aliases": ["michael-snyder:101014_KOJAK_00014_FC62LT9_L7_ACGT_pf"],
+        "aliases": [
+            "michael-snyder:101014_KOJAK_00014_FC62LT9_L7_ACGT_pf"
+        ],
         "award": "UM1HG009442",
         "content_md5sum": "3c3c646ad6a8dc19029a9de1f59820b7",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["KOJAK:7:1::@KOJAK:7:114:2224:1434#0/1"],
+        "fastq_signature": [
+            "KOJAK:7:1::@KOJAK:7:114:2224:1434#0/1"
+        ],
         "file_format": "fastq",
         "file_size": 41202359,
         "lab": "michael-snyder",
@@ -3514,11 +3652,15 @@
     },
     {
         "accession": "ENCFF095ASX",
-        "aliases": ["michael-snyder:110124_KOJAK_00029_FC633WB_L8_ACGT_pf"],
+        "aliases": [
+            "michael-snyder:110124_KOJAK_00029_FC633WB_L8_ACGT_pf"
+        ],
         "award": "UM1HG009442",
         "content_md5sum": "6cb2982c01f4019bc89427899d6884ca",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["KOJAK:8:1::@KOJAK:8:1:10048:1112#0/1"],
+        "fastq_signature": [
+            "KOJAK:8:1::@KOJAK:8:1:10048:1112#0/1"
+        ],
         "file_format": "fastq",
         "file_size": 26974137,
         "lab": "michael-snyder",
@@ -3542,7 +3684,9 @@
         "award": "UM1HG009442",
         "content_md5sum": "a0114d0edb3a252b133d06817c18eff1",
         "dataset": "ENCSR606VJQ",
-        "fastq_signature": ["HKYLHDSXX:3:2:mixed:"],
+        "fastq_signature": [
+            "HKYLHDSXX:3:2:mixed:"
+        ],
         "file_format": "fastq",
         "file_size": 1285885027,
         "index_of": [
@@ -3851,7 +3995,9 @@
         "file_size": 145214,
         "assembly": "GRCh38",
         "md5sum": "eabe445821ad629815edc9875994f256",
-        "derived_from": ["ENCFF127ACM"]
+        "derived_from": [
+            "ENCFF127ACM"
+        ]
     },
     {
         "_test": "DNase-seq rep1 footprints",
@@ -3868,7 +4014,9 @@
         "file_size": 18390,
         "assembly": "GRCh38",
         "md5sum": "d53c4aee0153037136cab8c35d2bb6ca",
-        "derived_from": ["ENCFF718LJW"]
+        "derived_from": [
+            "ENCFF718LJW"
+        ]
     },
     {
         "_test": "chromosome sizes",
@@ -3955,7 +4103,9 @@
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "f310dcda5400928744b1ca967c9e4ea5",
-        "derived_from": ["ENCFF324ATA"],
+        "derived_from": [
+            "ENCFF324ATA"
+        ],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     },
     {
@@ -3972,7 +4122,9 @@
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "cd0409a096a762c7d96023e31ff8d7ee",
-        "derived_from": ["ENCFF324ATA"],
+        "derived_from": [
+            "ENCFF324ATA"
+        ],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     },
     {
@@ -3989,7 +4141,9 @@
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "fd54819a0ab9043f44f1c86cae774df3",
-        "derived_from": ["ENCFF324ATA"],
+        "derived_from": [
+            "ENCFF324ATA"
+        ],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     },
     {
@@ -4006,7 +4160,9 @@
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "9fc21565b23e202e0560c79756199801",
-        "derived_from": ["ENCFF324ATA"],
+        "derived_from": [
+            "ENCFF324ATA"
+        ],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     },
     {
@@ -4023,7 +4179,9 @@
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "9fc21bc5b23e202e0560c79756180801",
-        "derived_from": ["ENCFF324ATA"],
+        "derived_from": [
+            "ENCFF324ATA"
+        ],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     },
     {
@@ -4040,7 +4198,9 @@
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "9fc56215b23e202e0560c79756199801",
-        "derived_from": ["ENCFF324ATA"],
+        "derived_from": [
+            "ENCFF324ATA"
+        ],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     },
     {
@@ -4057,7 +4217,9 @@
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "8ab21565b23e202e0560c79756199801",
-        "derived_from": ["ENCFF324ATA"],
+        "derived_from": [
+            "ENCFF324ATA"
+        ],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     },
     {
@@ -4092,7 +4254,9 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "submitted_file_name": "/Users/cCREfilefromrDHS.bed.gz",
         "uuid": "02ec6382-9f34-4d5a-ac6c-6920b4c16696",
-        "derived_from": ["ENCFF880RDH"]
+        "derived_from": [
+            "ENCFF880RDH"
+        ]
     },
     {
         "dataset": "ENCSR129RHS",
@@ -4111,14 +4275,14 @@
     {
         "_project": "encode3",
         "accession": "ENCFF129DNA",
-        "award":"U54HG007010",
+        "award": "U54HG007010",
         "dataset": "ENCSR751YPU",
         "file_size": 200,
         "derived_from": [
             "e3f3eedd-3bf7-48a8-a54f-d5019f157794"
         ],
         "file_format": "bigWig",
-        "lab":"/labs/john-stamatoyannopoulos/",
+        "lab": "/labs/john-stamatoyannopoulos/",
         "assembly": "hg19",
         "md5sum": "4b78ceaa13a380990ca16d8dcaeffd0b",
         "output_type": "signal of all reads",
@@ -4131,14 +4295,16 @@
     {
         "_project": "encode4",
         "accession": "ENCFF129CVS",
-        "award":"U54HG007004",
+        "award": "U54HG007004",
         "dataset": "ENCSR129CCR",
         "file_size": 200,
         "derived_from": [
-            "ENCFF002COS", "ENCFF129CRE", "ENCFF129DNA"
+            "ENCFF002COS",
+            "ENCFF129CRE",
+            "ENCFF129DNA"
         ],
         "file_format": "bigWig",
-        "lab":"/labs/john-stamatoyannopoulos/",
+        "lab": "/labs/john-stamatoyannopoulos/",
         "assembly": "hg19",
         "md5sum": "5c78ceaa13a380990ca16d8dcaeffd0b",
         "output_type": "candidate Cis-Regulatory Elements",
@@ -4161,7 +4327,9 @@
         "file_size": 100,
         "assembly": "GRCh38",
         "md5sum": "6f1ed002ab5595859014ebf0951522d9",
-        "derived_from": ["ENCFF324ATA"],
+        "derived_from": [
+            "ENCFF324ATA"
+        ],
         "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882"
     },
     {
@@ -4181,7 +4349,6 @@
         "output_type": "plus strand methylation state at CpG",
         "lab": "/labs/richard-myers/",
         "aliases": []
-
     },
     {
         "status": "in progress",
@@ -4200,7 +4367,6 @@
         "output_type": "minus strand methylation state at CpG",
         "lab": "/labs/richard-myers/",
         "aliases": []
-
     },
     {
         "status": "in progress",
@@ -4219,7 +4385,6 @@
         "output_type": "CpG sites coverage",
         "lab": "/labs/richard-myers/",
         "aliases": []
-
     },
     {
         "status": "in progress",
@@ -4237,7 +4402,9 @@
         "file_size": 370148294,
         "output_type": "sparse gene count matrix",
         "lab": "/labs/barbara-wold/",
-        "aliases": ["encode:hdf5-sparse-count-matrix"]
+        "aliases": [
+            "encode:hdf5-sparse-count-matrix"
+        ]
     },
     {
         "status": "released",
@@ -4284,7 +4451,9 @@
         "file_size": 100,
         "assembly": "GRCh38",
         "md5sum": "6a204bd89f3c8348afd5c77c717a097a",
-        "derived_from": ["ENCFF324ATA"],
+        "derived_from": [
+            "ENCFF324ATA"
+        ],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     },
     {
@@ -4302,7 +4471,9 @@
         "file_size": 1000,
         "assembly": "GRCh38",
         "md5sum": "912ec803b2ce49e4a541068d495ab570",
-        "derived_from": ["ENCFF324ATA"]
+        "derived_from": [
+            "ENCFF324ATA"
+        ]
     },
     {
         "_test": "capture targets",
@@ -4755,7 +4926,9 @@
         "file_size": 370148294,
         "output_type": "functional conservation quantifications",
         "lab": "/labs/richard-myers/",
-        "aliases": ["hongkai-ji:human_elements_scored_file"]
+        "aliases": [
+            "hongkai-ji:human_elements_scored_file"
+        ]
     },
     {
         "_test": "TF binding prediction model annotation",
@@ -5055,75 +5228,99 @@
         "uuid": "358573cb-ad35-42ad-9c4e-be0ced09067d"
     },
     {
-        "accession": "ENCFF033HOA",
+        "accession": "ENCFF066TVN",
         "aliases": [
-            "ali-mortazavi:variants_chromatin_interactions"
+            "will-greenleaf:CRISPR-screen.tiling.Plasmid.fastq.gz"
         ],
-        "assembly": "GRCh38",
-        "award": "U54HG006998",
-        "dataset": "ENCSR000AJK",
-        "file_format": "hic",
-        "file_size": 341248,
-        "lab": "ali-mortazavi",
-        "md5sum": "649780c2d41afc0a781e3dc88c051695",
-        "replicate": "380dc621-8574-498e-a133-9fc162464007",
-        "output_type": "variants chromatin interactions",
+        "alternate_accessions": [],
+        "award": "U54HG006997",
+        "content_md5sum": "d07f830381964c8a9c7bef8e03e58cb9",
+        "dataset": "ENCSR114CEL",
+        "fastq_signature": [
+            "HJTWJAFXX:1:1:CATTTT:",
+            "HJTWJAFXX:2:1:CATTTT:",
+            "HJTWJAFXX:3:1:CATTTT:",
+            "HJTWJAFXX:4:1:CATTTT:"
+        ],
+        "file_format": "fastq",
+        "file_size": 189080128,
+        "flowcell_details": [],
+        "lab": "bing-ren",
+        "md5sum": "efaa01b54ce751e08b95aacc07baec5f",
+        "no_file_available": false,
+        "output_type": "reads",
+        "platform": "27e58bd7-0943-4b5a-9473-30d571eb89ff",
+        "preferred_default": true,
+        "read_count": 9056130,
+        "read_length": 21,
+        "replicate": "0f45174f-3ded-4ab4-a826-872241b0bf11",
+        "run_type": "single-ended",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "d0d63ed8-83a2-11ec-a8a3-0242ac120002"
+        "uuid": "39f0e8c7-1ffa-4ccc-bde1-5dee450f8fe7"
     },
     {
-        "accession": "ENCFF033HOB",
+        "accession": "ENCFF148OPN",
         "aliases": [
-            "ali-mortazavi:haplotype-specific_chromatin_interactions"
+            "ryan-tewhey:mpra-OL13-fads-plasmid-r1-l1_t1-f2r1"
         ],
-        "assembly": "GRCh38",
-        "award": "U54HG006998",
-        "dataset": "ENCSR000AJK",
-        "file_format": "hic",
-        "file_size": 341248,
-        "lab": "ali-mortazavi",
-        "md5sum": "93921bed3089ca42ce5ba6607b98f64e",
-        "replicate": "380dc621-8574-498e-a133-9fc162464007",
-        "output_type": "haplotype-specific chromatin interactions",
+        "award": "U54HG006997",
+        "content_md5sum": "fc32a6a27e1566883ecd41c5bbf9a14f",
+        "dataset": "ENCSR212POL",
+        "fastq_signature": [
+            "HFGVJBGXB:2:1:CCAGTTAGGCTAACTA:"
+        ],
+        "file_format": "fastq",
+        "file_size": 199207217,
+        "lab": "bing-ren",
+        "md5sum": "379c962b46dbf3631d9545e4a8e4e2c0",
+        "no_file_available": false,
+        "output_type": "reads",
+        "platform": "27e58bd7-0943-4b5a-9473-30d571eb89ff",
+        "preferred_default": true,
+        "read_count": 8884691,
+        "read_length": 30,
+        "replicate": "452f0ba6-dc57-4e0e-aae0-3b12b30f998b",
+        "run_type": "single-ended",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "d0d6411c-83a2-11ec-a8a3-0242ac120002"
+        "submitted_file_name": "/projects/tewhey-lab/sequencing/20190526_FADS_NextSeq_Broad/OL13_FADS_plasmid_rep1.L002.EN.1.fastq.gz"
     },
     {
-        "accession": "ENCFF033HOC",
-        "aliases": [
-            "ali-mortazavi:haplotype-specific_DNA_accessibility_raw_signal"
-        ],
+        "accession": "ENCFF227AAG",
         "assembly": "GRCh38",
-        "award": "U54HG006998",
-        "dataset": "ENCSR000AJK",
-        "file_format": "bigWig",
-        "file_size": 341248,
-        "lab": "ali-mortazavi",
-        "md5sum": "39d2f766d121a5a8bcad16a3051a47fd",
-        "replicate": "380dc621-8574-498e-a133-9fc162464007",
-        "output_type": "haplotype-specific DNA accessibility raw signal",
+        "award": "U54HG007004",
+        "dataset": "ENCSR476KHP",
+        "file_format": "tsv",
+        "file_format_type": "guide quantifications",
+        "file_size": 3972151,
+        "lab": "thomas-gingeras",
+        "md5sum": "8856041cf4e8b061a8bea4ffa5626300",
+        "no_file_available": false,
+        "output_type": "guide quantifications",
+        "preferred_default": true,
+        "replicate": "dc14112d-23bb-44bc-a1cd-f7923fb2ff20",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "d0d64266-83a2-11ec-a8a3-0242ac120002"
+        "submitted_file_name": "/home/unix/amackays/sabeti/ENCODE_uploads/HEME/MYB_rep2_HS_ENCODE_guideQuant.tsv",
+        "uuid": "3eed1db0-7533-414d-8cde-7d0e6f857be5"
     },
     {
-        "accession": "ENCFF033HOD",
-        "aliases": [
-            "ali-mortazavi:haplotype-specific_DNA_accessibilit_corrected_signal"
-        ],
+        "accession": "ENCFF207KDX",
         "assembly": "GRCh38",
-        "award": "U54HG006998",
-        "dataset": "ENCSR000AJK",
-        "file_format": "bigWig",
-        "file_size": 341248,
-        "lab": "ali-mortazavi",
-        "md5sum": "c5a002f15d54bb54a6568c1e22812104",
-        "replicate": "380dc621-8574-498e-a133-9fc162464007",
-        "output_type": "haplotype-specific DNA accessibility corrected signal",
+        "award": "U54HG007004",
+        "dataset": "ENCSR212POL",
+        "file_format": "bigBed",
+        "file_format_type": "bed6",
+        "file_size": 322595,
+        "lab": "thomas-gingeras",
+        "md5sum": "66c1b09dd75b03c7af67cc8471e033e9",
+        "no_file_available": false,
+        "output_type": "guide locations",
+        "preferred_default": true,
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "d0d6437e-83a2-11ec-a8a3-0242ac120002"
+        "submitted_file_name": "/home/unix/amackays/sabeti/ENCODE_uploads/HEME/HEME_guides.bb",
+        "uuid": "6429e57d-c6a1-4aaf-9e3f-6169fb5b2f7a"
     }
 ]
