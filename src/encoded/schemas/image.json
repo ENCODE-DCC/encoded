@@ -1,7 +1,7 @@
 {
     "title": "Image",
     "description": "Schema for images embedded in portal pages",
-    "id": "/profiles/image.json",
+    "$id": "/profiles/image.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "attachment" ],

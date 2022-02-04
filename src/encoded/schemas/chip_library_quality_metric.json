@@ -1,7 +1,7 @@
 {
     "title": "ChIP-seq library quality metric",
     "description": "Schema for reporting ChIP-seq library quality metrics",
-    "id": "/profiles/chip_library_quality_metric.json",
+    "$id": "/profiles/chip_library_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],

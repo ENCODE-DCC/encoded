@@ -1,7 +1,7 @@
 {
     "title": "microRNA quantification quality metric",
     "description": "Schema for reporting microRNA pipeline quantification quality metric",
-    "id": "/profiles/micro_rna_quantification_quality_metric.json",
+    "$id": "/profiles/micro_rna_quantification_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run", "award", "lab", "quality_metric_of", "expressed_mirnas"],

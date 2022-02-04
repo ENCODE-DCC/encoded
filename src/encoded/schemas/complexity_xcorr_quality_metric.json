@@ -1,7 +1,7 @@
 {
     "title": "Library complexity and cross-correlation quality metric",
     "description": "Schema for reporting library complexity and cross-correlation ('PCR bottleneck coefficient' and 'phantumpeakqualtools run_spp.R') quality metric",
-    "id": "/profiles/complexity_xcorr_quality_metric.json",
+    "$id": "/profiles/complexity_xcorr_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run", "quality_metric_of", "award", "lab"],

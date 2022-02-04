@@ -1,6 +1,6 @@
 {
     "title": "Organism",
-    "id": "/profiles/organism.json",
+    "$id": "/profiles/organism.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["name", "taxon_id", "scientific_name"],

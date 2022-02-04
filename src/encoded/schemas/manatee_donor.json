@@ -2,7 +2,7 @@
     "title": "Manatee donor",
     "description": "Schema for submitting a manatee individual.",
     "comment": "The manatee donor object is meant to represent an individual manatee organism.",
-    "id": "/profiles/manatee_donor.json",
+    "$id": "/profiles/manatee_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "organism"],

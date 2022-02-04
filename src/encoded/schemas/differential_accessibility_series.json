@@ -1,7 +1,7 @@
 {
     "title": "Differential accessibility series",
     "description": "Chromatin accessibility data investigating cells sorted based on expression of specific genes.",
-    "id": "/profiles/differential_accessibility_series.json",
+    "$id": "/profiles/differential_accessibility_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

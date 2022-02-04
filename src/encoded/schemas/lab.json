@@ -1,6 +1,6 @@
 {
     "title": "Lab",
-    "id": "/profiles/lab.json",
+    "$id": "/profiles/lab.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["name", "title"],

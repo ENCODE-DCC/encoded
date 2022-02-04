@@ -1,7 +1,7 @@
 {
     "title": "Reference",
     "description": "Schema for submitting metadata for a reference set.",
-    "id": "/profiles/reference.json",
+    "$id": "/profiles/reference.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

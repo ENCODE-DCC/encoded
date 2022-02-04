@@ -1,7 +1,7 @@
 {
     "title": "Annotation",
     "description": "Schema for submitting metadata for an annotation set.",
-    "id": "/profiles/annotation.json",
+    "$id": "/profiles/annotation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "annotation_type"],

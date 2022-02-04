@@ -2,7 +2,7 @@
 {
     "title": "long-read RNA-seq mapping quality metric",
     "description": "Schema for reporting long-read RNA-seq pipeline mapping quality metric",
-    "id": "/profiles/long_read_rna_mapping_quality_metric.json",
+    "$id": "/profiles/long_read_rna_mapping_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run", "award", "lab", "quality_metric_of", "full_length_non_chimeric_read_count", "mapping_rate"],

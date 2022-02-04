@@ -1,7 +1,7 @@
 {
     "title": "Platform",
     "description": "Schema for submitting a measurement device.",
-    "id": "/profiles/platform.json",
+    "$id": "/profiles/platform.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["term_id"],

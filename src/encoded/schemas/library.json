@@ -1,7 +1,7 @@
 {
     "title": "Library",
     "description": "Schema for submitting a molecular library.",
-    "id": "/profiles/library.json",
+    "$id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "nucleic_acid_term_name"],

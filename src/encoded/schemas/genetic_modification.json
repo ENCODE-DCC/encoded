@@ -1,7 +1,7 @@
 {
     "title": "Genetic Modification",
     "description": "Schema for submitting information on genetic modification.",
-    "id": "/profiles/genetic_modification.json",
+    "$id": "/profiles/genetic_modification.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "anyOf": [

@@ -1,7 +1,7 @@
 {
     "title": "RNA-seq gene quantification quality metric",
     "description": "Schema for reporting number of genes detected in RNA-seq",
-    "id": "/profiles/gene_quantification_quality_metric.json",
+    "$id": "/profiles/gene_quantification_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],

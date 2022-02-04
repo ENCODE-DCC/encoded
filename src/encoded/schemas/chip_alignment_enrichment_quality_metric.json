@@ -1,7 +1,7 @@
 {
     "title": "ChIP-seq alignment enrichment quality metric",
     "description": "Schema for ChIP-seq alignment enrichment quality metrics",
-    "id": "/profiles/chip_alignment_enrichment_quality_metric.json",
+    "$id": "/profiles/chip_alignment_enrichment_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],

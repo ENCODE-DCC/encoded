@@ -2,7 +2,7 @@
     "title": "Donor",
     "description": "Base schema for donors or strains.",
     "comment": "Human donors and model organism strains derive from this base object.",
-    "id": "/profiles/donor.json",
+    "$id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "organism"],

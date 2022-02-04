@@ -1,7 +1,7 @@
 {
     "title": "Disease series",
     "description": "Experimental data investigating samples grouping guided by an identified disease.",
-    "id": "/profiles/disease_series.json",
+    "$id": "/profiles/disease_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

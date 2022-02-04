@@ -2,7 +2,7 @@
     "title": "Worm donor",
     "description": "Schema for submitting a worm strain.",
     "comment": "The worm donor object is meant to represent a strain not an individual worm.",
-    "id": "/profiles/worm_donor.json",
+    "$id": "/profiles/worm_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "organism"],

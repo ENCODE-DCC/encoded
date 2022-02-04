@@ -1,7 +1,7 @@
 {
     "title": "GENCODE category quality metric",
     "description": "Schema for reporting bulk RNA-seq pipeline GENCODE comprehensive unique category counts",
-    "id": "/profiles/gencode_category_quality_metric.json",
+    "$id": "/profiles/gencode_category_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run", "award", "lab", "quality_metric_of"],

@@ -1,7 +1,7 @@
 {
     "title": "RNA-seq gene type quantification quality metric",
     "description": "Schema for reporting number of reads per gene category in RNA-seq. https://www.gencodegenes.org/pages/biotypes.html",
-    "id": "/profiles/gene_type_quantification_quality_metric.json",
+    "$id": "/profiles/gene_type_quantification_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],

@@ -1,7 +1,7 @@
 {
     "title": "UCSC browser composite",
     "description": "Schema for submitting metadata for a composite as defined by the UCSC Genome Browser.",
-    "id": "/profiles/ucsc_browser_composite.json",
+    "$id": "/profiles/ucsc_browser_composite.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

@@ -1,7 +1,7 @@
 {
     "title": "Pulse-chase time series",
     "description": "Experimental data investigating biosamples using pulse-chase analysis.",
-    "id": "/profiles/pulse_chase_time_series.json",
+    "$id": "/profiles/pulse_chase_time_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

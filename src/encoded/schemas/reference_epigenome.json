@@ -1,7 +1,7 @@
 {
     "title": "Reference epigenome",
     "description": "Schema for submitting metadata for a IHEC-defined reference epigenome.",
-    "id": "/profiles/reference_epigenome.json",
+    "$id": "/profiles/reference_epigenome.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

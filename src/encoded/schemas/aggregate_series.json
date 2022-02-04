@@ -1,7 +1,7 @@
 {
     "title": "Aggregate series",
     "description": "Schema for submitting metadata for an aggregate series.",
-    "id": "/profiles/aggregate_series.json",
+    "$id": "/profiles/aggregate_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

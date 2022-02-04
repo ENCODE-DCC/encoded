@@ -1,7 +1,7 @@
 {
     "title": "scATAC-seq library complexity quality metric",
     "description": "Schema for scATAC-seq library complexity quality metrics",
-    "id": "/profiles/sc_atac_library_complexity_quality_metric.json",
+    "$id": "/profiles/sc_atac_library_complexity_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],

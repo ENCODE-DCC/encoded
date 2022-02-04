@@ -1,7 +1,7 @@
 {
     "title": "Differentiation series",
     "description": "Experimental data investigating biosamples along a differentiation trajectory.",
-    "id": "/profiles/differentiation_series.json",
+    "$id": "/profiles/differentiation_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

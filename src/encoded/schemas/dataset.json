@@ -1,7 +1,7 @@
 {
     "title": "Dataset",
     "description": "Schema for submitting metadata for a dataset.",
-    "id": "/profiles/dataset.json",
+    "$id": "/profiles/dataset.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

@@ -1,7 +1,7 @@
 {
     "title": "Target",
     "description": "Schema for submitting a target gene.",
-    "id": "/profiles/target.json",
+    "$id": "/profiles/target.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["label", "investigated_as"],

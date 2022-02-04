@@ -1,6 +1,6 @@
 {
     "title": "Grant",
-    "id": "/profiles/award.json",
+    "$id": "/profiles/award.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "required": [ "name", "project", "rfa", "title"],
     "identifyingProperties": ["uuid", "name", "title"],

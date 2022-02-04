@@ -2,7 +2,7 @@
     "title": "Cart",
     "description": "Cart of objects aka shopping cart.",
     "comment": "This object gets connected with user objects.",
-    "id": "/profiles/cart.json",
+    "$id": "/profiles/cart.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["name"],

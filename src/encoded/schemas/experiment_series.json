@@ -1,7 +1,7 @@
 {
     "title": "Experiment series",
     "description": "Schema for submitting metadata for a group of experiments which are applying the same assay on the same type of biosample.",
-    "id": "/profiles/experiment_series.json",
+    "$id": "/profiles/experiment_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab", "related_datasets"],

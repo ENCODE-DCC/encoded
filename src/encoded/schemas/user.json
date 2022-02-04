@@ -1,6 +1,6 @@
 {
     "title": "User",
-    "id": "/profiles/user.json",
+    "$id": "/profiles/user.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "email", "first_name", "last_name"],
