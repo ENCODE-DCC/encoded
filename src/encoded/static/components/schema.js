@@ -588,7 +588,7 @@ const SchemaPage = (props) => {
     const { title } = context;
 
     // The schema id is a path to the schema's JSON. Convert that to just the schema name.
-    const schemaName = schemaIdToName(context['$id']);
+    const schemaName = schemaIdToName(context.$id);
 
     // Set up the "breadcrumbs" (sneer quotes because it's really just a link to /profiles/).
     // If schemaName happened to be null (which it realistically can't), <BreadCrumbs> would
@@ -674,8 +674,8 @@ const AllSchemasPage = (props, reactContext) => {
                             // `objectName` is the @type of each objects e.g. GeneticModification
                             // `schemaName` is the system name of the objects e.g. genetic_modification
                             // `schemaPath` is the schema page path e.g. /profiles/genetic_modification
-                            const schemaName = schemaIdToName(context[objectName]['$id']);
-                            const schemaPath = schemaIdToPage(context[objectName]['$id']);
+                            const schemaName = schemaIdToName(context[objectName].$id);
+                            const schemaPath = schemaIdToPage(context[objectName].$id);
 
                             return (
                                 <div className="schema-list__item" key={objectName}>
