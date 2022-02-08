@@ -97,7 +97,7 @@ $default-hover: #f2f2f2;
     border: 1px solid #d2d2d2;
 }
 
-.vertical-node-graph {
+.immune-cells-graph {
     svg {
         max-width: 100%;
         font-size: 0.8rem;
@@ -236,7 +236,7 @@ $default-hover: #f2f2f2;
 
 .matrix__row-data {
     &.hide {
-        visibility: hidden;
+        display: none;
     }
 }
 
@@ -312,18 +312,22 @@ $default-hover: #f2f2f2;
     .js-cell {
         .unlabeled {
             fill: $unlabeled-light;
+            stroke: #000;
         }
 
         .mesoderm {
             fill: $mesoderm-light;
+            stroke: #000;
         }
 
         .ectoderm {
             fill: $ectoderm-light;
+            stroke: #000;
         }
 
         .stem {
             fill: $stem-light;
+            stroke: #000;
         }
 
         &.active-cell {
