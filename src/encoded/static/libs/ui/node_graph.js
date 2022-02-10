@@ -206,6 +206,7 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
             .attr('transform', `translate(${source.x0},${source.y0})`)
             .on('click', (e, d) => {
                 const clickedName = nodeKeyName(d.data.name);
+                // 'activeBool' represents if a clicked node is currently selected or de-selected so that that state can be toggled (and its children changed to that toggle value if shift is not pressed)
                 const activeBool = d3.select(`.js-cell-${nodeKeyName(d.data.name)}`).classed('active-cell');
                 setSelectedNodes(d.data.name, activeBool);
                 if (document.querySelectorAll('.active-cell').length === 0) {
