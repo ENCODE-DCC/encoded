@@ -58,7 +58,7 @@
     "jsdom": "^8.4.0",
     "json-loader": "^0.5.4",
     "mini-css-extract-plugin": "^0.8.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "redux-mock-store": "^1.5.1",
     "sass-loader": "^8.0.0",
