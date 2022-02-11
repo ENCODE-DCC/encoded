@@ -661,15 +661,13 @@ class MatrixGraph extends React.Component {
         });
     }
 
-    setSelectedNodes(newNode) {
-        const nodeClass = document.getElementsByClassName(`js-cell-${nodeKeyName(newNode)}`)[0].classList;
-
+    setSelectedNodes(newNode, activeBool) {
         this.setState((prevState) => {
             let tempNodes = [];
             if (document.getElementsByClassName('active-cell').length > 0) {
                 tempNodes = prevState.selectedNodes;
             }
-            if ([...nodeClass].indexOf('active-cell') > -1) {
+            if (activeBool) {
                 return { selectedNodes: tempNodes.filter((s) => s !== newNode) };
             }
             return { selectedNodes: [...tempNodes, newNode] };
@@ -724,7 +722,7 @@ class MatrixGraph extends React.Component {
                 >
                     <div className="body-map-expander">Filter results by cell lineage</div>
                     {svgIcon('expandArrows')}
-                    <div className="vertical-node-graph vertical-node-graph-thumbnail" />
+                    <div className="vertical-node-graph vertical-node-graph-thumbnail immune-cells-graph" />
                 </button>
                 {this.state.isThumbnailExpanded ?
                     <div className="modal" style={{ display: 'block' }}>

@@ -107,7 +107,7 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
         if (children) {
             children.forEach((child) => {
                 const clickedName = nodeKeyName(child.data.name);
-                setSelectedNodes(child.data.name);
+                setSelectedNodes(child.data.name, activeBool);
                 if (activeBool) {
                     d3.selectAll(`.js-cell-${nodeKeyName(child.data.name)}`).classed('active-cell', false);
                     internalSelectedNodes = internalSelectedNodes.filter((s) => s !== clickedName);
@@ -190,11 +190,11 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
         });
 
         // If "hide all" has been selected and no nodes are active, the internal selected nodes need to be cleared
-        if (document.querySelectorAll('.active-cell').length === 0 && targetDiv.indexOf('thumbnail') === -1) {
+        if (document.querySelectorAll('.active-cell').length === 0 && targetDiv.indexOf('thumbnail') === -1 && treeName === 'immune') {
             internalSelectedNodes = [];
         }
         // If "show all" has been selected and all nodes are active, the internal selected nodes need to be added
-        if (document.querySelectorAll('.active-cell').length > 0 && internalSelectedNodes.length === 0 && targetDiv.indexOf('thumbnail') === -1) {
+        if (document.querySelectorAll('.active-cell').length > 0 && internalSelectedNodes.length === 0 && targetDiv.indexOf('thumbnail') === -1 && treeName === 'immune') {
             internalSelectedNodes = selectedNodes;
         }
 
@@ -205,9 +205,10 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
             .attr('class', (d) => `node ${d.data.class ? d.data.class : ''} ${nodeKeyName(d.data.name)}`)
             .attr('transform', `translate(${source.x0},${source.y0})`)
             .on('click', (e, d) => {
-                setSelectedNodes(d.data.name);
                 const clickedName = nodeKeyName(d.data.name);
+                // 'activeBool' represents if a clicked node is currently selected or de-selected so that that state can be toggled (and its children changed to that toggle value if shift is not pressed)
                 const activeBool = d3.select(`.js-cell-${nodeKeyName(d.data.name)}`).classed('active-cell');
+                setSelectedNodes(d.data.name, activeBool);
                 if (document.querySelectorAll('.active-cell').length === 0) {
                     internalSelectedNodes = [];
                 }
@@ -267,8 +268,10 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
                     .then((svgXml) => {
                         let newSvg;
                         iconFileMapping[iconFile].forEach((n) => {
-                            newSvg = svgXml.documentElement.cloneNode(true);
-                            d3.select(n).node().append(newSvg);
+                            if (d3.select(n) && d3.select(n).node()) {
+                                newSvg = svgXml.documentElement.cloneNode(true);
+                                d3.select(n).node().append(newSvg);
+                            }
                         });
                     });
             });
