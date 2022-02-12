@@ -1,5 +1,33 @@
 Changes
 =======
+127.0 (released) snovault 1.0.62
+--------------------------------
+1.	ENCD-6284 sescc bug fix (#4259)
+2.	ENCD-5411 reverse sort publication by year(#4221)
+3.	ENCD-6277-update-valis-version-1.9 (#4256)
+4.	ENCD-6262-elements-cloning-and-elements-mappings-display (#4250)
+5.	ENCD-6281-add-output-type-hic (#4253)
+6.	ENCD-6282-add-help-text-to-uniform-batch-growth-checkbox (#4254)
+7.	ENCD-6280-series-files (#4252)
+8.	ENCD-6274-rtqpcr (#4247)
+9.	ENCD-6279-add-output-type-accessibility (#4249)
+10.	ENCD-6147 biosample calc (#4246)
+11.	ENCD-6267-fcc-publication-filters-out-datapoint-experiments (#4244)
+12.	ENCD-6259 improve immune cells page (#4251)
+13.	ENCD-5983-page-and-carts-on-publication-pages (#4239)
+14.	ENCD-6231-hic-fragmentation (#4232)
+15.	ENCD-6214-remove-data-collections (#4248)
+16.	ENCD-6278-qc-calculation (#4243)
+17.	ENCD-6268 sex facet on donar matrix page (#4240)
+18.	ENCD-6241-add-3D-structure-output-type (#4245)
+19.	ENCD-6098 update visualize limit for matrix and search (#4234)
+20.	ENCD-6269 pin Valis summary page location (#4241)
+21.	ENCD-6264-display-annotation-trait (#4242)
+22.	ENCD-6270-indexed-reads (#4233)
+23.	ENCD-6271-award-labels (#4238)
+24.	ENCD-6257 fastq dependency fix (#4230)
+25.	ENCD-6016 fix bad filters (#4224)
+
 126.0 (released) snovault 1.0.62
 --------------------------------
 1. ENCD-6261 nolookups to jvm options (#4223)
