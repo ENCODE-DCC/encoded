@@ -1229,6 +1229,8 @@ class App extends React.Component {
         const hasSpecialHashTag = hrefUrl.hash?.length > 2 && hrefUrl.hash?.startsWith('#!');
         const isHomePage = context['@type']?.[0] === 'Portal' && !hasSpecialHashTag;
 
+	const hostWithScheme = `${hrefUrl.protocol}//${hrefUrl.host}`;
+
         /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
         return (
             <html lang="en" ref={this.props.domReader ? (node) => this.props.domReader(node) : null}>
@@ -1253,7 +1255,7 @@ class App extends React.Component {
                         <script
                             type="application/ld+json"
                             dangerouslySetInnerHTML={{
-                                __html: `\n\n${jsonScriptEscape(JSON.stringify(jsonldFormatter(this.state.context, hrefUrl.host)))}\n\n`,
+                                __html: `\n\n${jsonScriptEscape(JSON.stringify(jsonldFormatter(this.state.context, hostWithScheme)))}\n\n`,
                             }}
                         />
                     : null
