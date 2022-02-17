@@ -1251,7 +1251,6 @@ class App extends React.Component {
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
                     {this.state.context && this.state.context['@type'] && this.state.context['@type'].some((type) => ['experiment', 'functionalcharacterizationexperiment', 'annotation'].includes(type.toLowerCase())) ?
                         <script
-                            data-prop-name="context"
                             type="application/ld+json"
                             dangerouslySetInnerHTML={{
                                 __html: `\n\n${jsonScriptEscape(JSON.stringify(jsonldFormatter(this.state.context, hrefUrl.host)))}\n\n`,
