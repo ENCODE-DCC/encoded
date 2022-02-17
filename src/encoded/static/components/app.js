@@ -1263,7 +1263,7 @@ class App extends React.Component {
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit} className={isHomePage ? 'body-portal' : null}>
                     <script
                         data-prop-name="context"
-                        type="application/json"
+                        type="application/ld+json"
                         dangerouslySetInnerHTML={{
                             __html: `\n\n${jsonScriptEscape(JSON.stringify((this.state.context)))}\n\n`,
                         }}
