@@ -1,8 +1,8 @@
 {
     "title": "Genetic Modification",
     "description": "Schema for submitting information on genetic modification.",
-    "id": "/profiles/genetic_modification.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/genetic_modification.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "anyOf": [
         {
@@ -37,7 +37,7 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "purpose": {
             "comment": "Modifications for tagging purposes need to include the introduced_tag property in combination with a target. Modifications for other purposes also need either the site and/or target specified.",
             "oneOf": [

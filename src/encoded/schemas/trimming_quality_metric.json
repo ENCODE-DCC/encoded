@@ -1,8 +1,8 @@
 {
     "title": "trim-adapters-illumina quality metric",
     "description": "Schema for reporting trimming from 'trim-adapters-illumina' as a quality metric",
-    "id": "/profiles/trimming_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/trimming_quality_metric.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,

@@ -2,8 +2,8 @@
     "title": "Manatee donor",
     "description": "Schema for submitting a manatee individual.",
     "comment": "The manatee donor object is meant to represent an individual manatee organism.",
-    "id": "/profiles/manatee_donor.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/manatee_donor.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "organism"],
     "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
@@ -26,7 +26,7 @@
         { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "age_units":  {
             "comment":"Age units is required if age is specified as anything but unknown.",
             "required": ["age"],

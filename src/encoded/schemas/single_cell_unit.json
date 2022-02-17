@@ -2,8 +2,8 @@
     "title": "Single Cell Unit",
     "description": "Schema for submitting metadata for a single cell unit.",
     "comment": "A single cell unit is a special case of dataset. It includes assay metadata, replicate information and data files.",
-    "id": "/profiles/single_cell_unit.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/single_cell_unit.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
@@ -22,7 +22,7 @@
         { "$ref": "mixins.json#/biosample_ontology" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {

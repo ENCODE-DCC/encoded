@@ -1,8 +1,8 @@
 {
     "title": "Annotation",
     "description": "Schema for submitting metadata for an annotation set.",
-    "id": "/profiles/annotation.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/annotation.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "annotation_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
@@ -21,7 +21,11 @@
         { "$ref": "dataset.json#/properties" },
         { "$ref": "file_set.json#/properties" }
     ],
-    "dependencies": {
+    "dependentRequired": {
+	"relevant_timepoint": ["relevant_timepoint_units"],
+	"relevant_timepoint_units": ["relevant_timepoint"]
+    },
+    "dependentSchemas": {
         "biosample_ontology": {
             "not": {
                 "properties": {
@@ -41,8 +45,6 @@
                 }
             }
         },
-        "relevant_timepoint": ["relevant_timepoint_units"],
-        "relevant_timepoint_units": ["relevant_timepoint"],
         "status": {
             "oneOf": [
                 {

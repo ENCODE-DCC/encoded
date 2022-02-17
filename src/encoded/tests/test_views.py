@@ -323,9 +323,9 @@ def test_index_data_workbook(workbook, testapp, indexer_testapp, item_type):
 
 @pytest.mark.parametrize('item_type', TYPE_LENGTH)
 def test_profiles(testapp, item_type):
-    from jsonschema_serialize_fork import Draft4Validator
+    from jsonschema import Draft202012Validator
     res = testapp.get('/profiles/%s.json' % item_type).maybe_follow(status=200)
-    errors = Draft4Validator.check_schema(res.json)
+    errors = Draft202012Validator.check_schema(res.json)
     assert not errors
 
 

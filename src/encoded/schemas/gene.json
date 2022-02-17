@@ -1,8 +1,8 @@
 {
     "title": "Gene",
     "description": "Schema for submitting a gene.",
-    "id": "/profiles/gene.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/gene.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["geneid", "ncbi_entrez_status", "symbol", "dbxrefs", "organism"],
     "identifyingProperties": ["uuid", "geneid"],
@@ -13,7 +13,7 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/standard_status" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "locations": {
             "oneOf": [
                 {

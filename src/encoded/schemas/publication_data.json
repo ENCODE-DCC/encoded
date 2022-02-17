@@ -1,8 +1,8 @@
 {
     "title": "Publication data",
     "description": "Schema for submitting metadata for publication data.",
-    "id": "/profiles/publication_data.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/publication_data.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "references"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
@@ -19,7 +19,7 @@
         { "$ref": "dataset.json#/properties" },
         { "$ref": "file_set.json#/properties" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {

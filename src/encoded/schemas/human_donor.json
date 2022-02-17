@@ -2,8 +2,8 @@
     "title": "Human donor",
     "description": "Schema for submitting a human donor.",
     "comment":"This object is meant to be one to one with an individual human.",
-    "id": "/profiles/human_donor.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/human_donor.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "organism"],
     "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
@@ -23,7 +23,7 @@
         { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "internal_tags": {
             "comment": "If internal_tags list is initiated, it must contain at least one value.",
             "properties": {

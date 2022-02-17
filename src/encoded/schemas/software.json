@@ -1,8 +1,8 @@
 {
     "title": "Software",
     "description": "Schema for submitting analysis software.",
-    "id": "/profiles/software.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/software.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["name", "description", "title", "award", "lab"],
     "additionalProperties": false,

@@ -1,8 +1,8 @@
 {
     "title": "STAR solo quality metric",
     "description": "Schema for reporting the STAR solo quality metric",
-    "id": "/profiles/star_solo_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/star_solo_quality_metric.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab", "mode"],
     "additionalProperties": false,
@@ -284,7 +284,7 @@
             }
         }
     },
-    "dependencies": {
+    "dependentSchemas": {
         "mean_gene_per_cell": {
             "required": ["mode"],
             "properties": {

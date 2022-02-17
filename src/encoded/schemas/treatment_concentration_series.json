@@ -1,8 +1,8 @@
 {
     "title": "Treatment concentration series",
     "description": "Experimental data investigating the effects of treatment application at various concentrations.",
-    "id": "/profiles/treatment_concentration_series.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/treatment_concentration_series.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
@@ -21,7 +21,7 @@
         { "$ref": "series.json#/properties" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {

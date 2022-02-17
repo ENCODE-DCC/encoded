@@ -1,7 +1,7 @@
 {
     "title": "Treatment",
-    "id": "/profiles/treatment.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/treatment.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["treatment_term_name", "treatment_type"],
     "identifyingProperties": ["uuid","aliases"],
@@ -18,7 +18,7 @@
         { "$ref": "mixins.json#/product_id"},
         { "$ref": "mixins.json#/source"}
     ],
-    "dependencies": {
+    "dependentRequired": {
         "temperature": ["temperature_units"],
         "temperature_units": ["temperature"],
         "amount": ["amount_units"],

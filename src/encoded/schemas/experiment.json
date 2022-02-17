@@ -2,8 +2,8 @@
     "title": "Experiment",
     "description": "Schema for submitting metadata for an assay with 1 or more replicates.",
     "comment": "An experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
-    "id": "/profiles/experiment.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/experiment.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
@@ -23,7 +23,7 @@
         { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {

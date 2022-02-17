@@ -1,8 +1,8 @@
 {
     "title": "HiC quality metric",
     "description": "HiC quality metrics",
-    "id": "/profiles/hic_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/hic_quality_metric.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
@@ -17,7 +17,7 @@
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "avg_insert_size": {
             "required": ["run_type"],
             "properties": {

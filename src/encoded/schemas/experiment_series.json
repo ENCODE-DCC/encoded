@@ -1,8 +1,8 @@
 {
     "title": "Experiment series",
     "description": "Schema for submitting metadata for a group of experiments which are applying the same assay on the same type of biosample.",
-    "id": "/profiles/experiment_series.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/experiment_series.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["award", "lab", "related_datasets"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
@@ -18,7 +18,7 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {

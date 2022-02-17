@@ -1,8 +1,8 @@
 {
     "title": "Library",
     "description": "Schema for submitting a molecular library.",
-    "id": "/profiles/library.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/library.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "nucleic_acid_term_name"],
     "identifyingProperties": ["uuid","accession", "aliases"],
@@ -27,13 +27,15 @@
             "title": "Status"
         }
     },
-    "dependencies": {
-        "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
-        "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
-        "fragmentation_duration_time_units": ["fragmentation_duration_time", "fragmentation_methods"],
-        "fragmentation_duration_time": ["fragmentation_duration_time_units", "fragmentation_methods"],
-        "product_id": ["source"],
-        "lot_id": ["source", "product_id"],
+    "dependentRequired": {
+	"nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
+	"nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
+	"fragmentation_duration_time_units": ["fragmentation_duration_time", "fragmentation_methods"],
+	"fragmentation_duration_time": ["fragmentation_duration_time_units", "fragmentation_methods"],
+	"product_id": ["source"],
+	"lot_id": ["source", "product_id"]
+    },
+    "dependentSchemas": {
         "average_fragment_size": {"not": {"required": ["size_range"]}},
         "size_range": {"not": {"required": ["average_fragment_size"]}},
         "fragment_length_CV": {"not": {"required": ["fragment_length_SD"]}},

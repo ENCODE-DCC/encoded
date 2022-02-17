@@ -1,8 +1,8 @@
 {
     "title": "Antibody lot",
     "description": "Schema for submitting an antibody lot (not including target or characterization information).",
-    "id": "/profiles/antibody_lot.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/antibody_lot.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism"],
     "identifyingProperties": ["uuid","accession","aliases"],

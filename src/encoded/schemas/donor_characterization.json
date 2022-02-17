@@ -1,8 +1,8 @@
 {
     "title": "Donor characterization",
     "description": "Schema for submitting model organism donor (strain) characterization data",
-    "id": "/profiles/donor_characterization.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/donor_characterization.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "characterizes", "attachment"],
     "identifyingProperties": ["uuid", "aliases"],

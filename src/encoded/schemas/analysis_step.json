@@ -1,8 +1,8 @@
 { 
     "title": "Analysis step",
     "description": "Schema for submitting a computational analysis steps as a subobject of pipeline that transforms input files to output files.",
-    "id": "/profiles/analysis_step.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/analysis_step.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_label", "title", "analysis_step_types", "input_file_types", "major_version"],
     "additionalProperties": false,

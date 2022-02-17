@@ -2,8 +2,8 @@
     "title": "Mouse donor",
     "description": "Schema for submitting a mouse strain.",
     "comment": "The mouse donor object is meant to represent a strain not an individual mouse.",
-    "id": "/profiles/mouse_donor.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/mouse_donor.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab", "organism"],
     "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
@@ -27,7 +27,7 @@
         { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "parent_strains": {
             "comment": "Parent strains list can contain up to two entries, of strains of the same organism.",
             "properties":{

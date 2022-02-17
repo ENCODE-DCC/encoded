@@ -144,7 +144,7 @@ def test_library_biosample_and_mixed_biosample(testapp, library, biosample_1, bi
     testapp.post_json('/library', library, status=201)
     library.update({'mixed_biosamples': [biosample_1['@id'], biosample_2['@id']]})
     testapp.post_json('/library', library, status=201)
-    library.update({'biosample': biosample_2})
+    library.update({'biosample': biosample_2['@id']})
     testapp.post_json('/library', library, status=422)
 
 

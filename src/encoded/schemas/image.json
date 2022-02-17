@@ -1,8 +1,8 @@
 {
     "title": "Image",
     "description": "Schema for images embedded in portal pages",
-    "id": "/profiles/image.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/image.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "attachment" ],
     "identifyingProperties": ["uuid"],

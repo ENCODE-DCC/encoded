@@ -1,8 +1,8 @@
 {
     "title": "edwbamstats quality metric",
     "description": "Schema for reporting 'edwBamStats' output as a quality metric",
-    "id": "/profiles/edwbamstats_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/edwbamstats_quality_metric.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,

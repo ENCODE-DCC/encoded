@@ -1,8 +1,8 @@
 {
     "title": "Reference",
     "description": "Schema for submitting metadata for a reference set.",
-    "id": "/profiles/reference.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/reference.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
@@ -20,7 +20,7 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "file_set.json#/properties" }
     ],
-    "dependencies": {
+    "dependentSchemas": {
         "status": {
             "oneOf": [
                 {

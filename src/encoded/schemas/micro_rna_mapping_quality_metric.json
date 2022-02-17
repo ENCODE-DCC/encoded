@@ -1,8 +1,8 @@
 {
     "title": "microRNA mapping quality metric",
     "description": "Schema for reporting microRNA pipeline mapping quality metric",
-    "id": "/profiles/micro_rna_mapping_quality_metric.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/micro_rna_mapping_quality_metric.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["step_run", "award", "lab", "quality_metric_of", "aligned_reads"],
     "additionalProperties": false,

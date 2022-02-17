@@ -1,8 +1,8 @@
 {
     "title": "Series",
     "description": "Schema for submitting metadata for a series.",
-    "id": "/profiles/series.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/series.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],

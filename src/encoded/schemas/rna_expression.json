@@ -1,8 +1,8 @@
 {
     "title": "RNAExpression",
     "description": "Schema for RNA-seq expression",
-    "id": "/profiles/rna_expression.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/rna_expression.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": [],
     "additionalProperties": false,

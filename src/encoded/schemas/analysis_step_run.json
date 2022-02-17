@@ -1,8 +1,8 @@
 {
     "title": "Analysis step run",
     "description": "Schema for reporting the specific calculation of an analysis_step",
-    "id": "/profiles/analysis_step_run.json",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "/profiles/analysis_step_run.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "required": ["analysis_step_version"],
     "additionalProperties": false,

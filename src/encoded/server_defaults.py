@@ -1,5 +1,5 @@
 from datetime import datetime
-from jsonschema_serialize_fork import NO_DEFAULT
+from snovault.schema_validation import NO_DEFAULT
 from pyramid.threadlocal import get_current_request
 from string import (
     digits,
@@ -36,7 +36,6 @@ def userid(instance, subschema):
 
 @server_default
 def now(instance, subschema):
-    # from jsonschema_serialize_fork date-time format requires a timezone
     return datetime.utcnow().isoformat() + '+00:00'
 
 

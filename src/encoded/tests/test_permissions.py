@@ -71,6 +71,81 @@ def test_submitter_post_update_experiment(submitter_testapp, lab, award, cell_fr
     submitter_testapp.patch_json(location, {'description': 'My experiment'}, status=200)
 
 
+def test_submitter_put_update_experiment(submitter_testapp, lab, award, cell_free):
+    experiment = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'ChIA-PET',
+        'biosample_ontology': cell_free['uuid']
+    }
+    res = submitter_testapp.post_json('/experiment', experiment, status=201)
+    location = res.location
+    created_experiment = submitter_testapp.get(location).json
+    experiment['assay_term_name'] = 'RNA-seq'
+    experiment['accession'] = created_experiment['accession']
+    submitter_testapp.put_json(location, experiment, status=200)
+    updated_experiment = submitter_testapp.get(location).json
+    for key in ['uuid', 'accession', 'submitted_by']:
+        assert created_experiment[key] == updated_experiment[key], f'{key} does not match after update'
+
+
+def test_submitter_patch_date_created(submitter_testapp, lab, award, cell_free):
+    experiment = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'ChIA-PET',
+        'biosample_ontology': cell_free['uuid']
+    }
+    res = submitter_testapp.post_json('/experiment', experiment, status=201)
+    location = res.location
+    created_experiment = submitter_testapp.get(location).json
+    submitter_testapp.patch_json(
+        location,
+        {'date_created': '2022-02-04T04:05:41.045578+00:00'},
+        status=422
+    )
+
+
+def test_submitter_put_date_created(submitter_testapp, lab, award, cell_free):
+    experiment = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'ChIA-PET',
+        'biosample_ontology': cell_free['uuid']
+    }
+    res = submitter_testapp.post_json('/experiment', experiment, status=201)
+    location = res.location
+    created_experiment = submitter_testapp.get(location).json
+    experiment['uuid'] = created_experiment['uuid']
+    experiment['accession'] = created_experiment['accession']
+    experiment['date_created'] = '2022-02-04T04:05:41.045578+00:00'
+    submitter_testapp.put_json(
+        location,
+        experiment,
+        status=422
+    )
+
+
+def test_submitter_patch_update_experiment(submitter_testapp, testapp, lab, award, cell_free):
+    experiment = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'ChIA-PET',
+        'biosample_ontology': cell_free['uuid']
+    }
+    res = submitter_testapp.post_json('/experiment', experiment, status=201)
+    location = res.location
+    created_experiment = submitter_testapp.get(location).json
+    submitter_testapp.patch_json(location, {'assay_term_name': 'RNA-seq'}, status=200)
+    updated_experiment = submitter_testapp.get(location).json
+    for key in ['uuid', 'accession', 'date_created', 'submitted_by']:
+        assert created_experiment[key] == updated_experiment[key], f'{key} does not match after update'
+    testapp.patch_json(location, {'assay_term_name': 'ChIA-PET'}, status=200)
+    updated_experiment = testapp.get(location).json
+    for key in ['uuid', 'accession', 'date_created', 'submitted_by']:
+        assert created_experiment[key] == updated_experiment[key], f'{key} does not match after update'
+
+
 def test_submitter_post_other_lab(submitter_testapp, other_lab, award, cell_free):
     experiment = {'lab': other_lab['@id'],
                   'award': award['@id'],
