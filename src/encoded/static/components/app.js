@@ -1229,7 +1229,7 @@ class App extends React.Component {
         const hasSpecialHashTag = hrefUrl.hash?.length > 2 && hrefUrl.hash?.startsWith('#!');
         const isHomePage = context['@type']?.[0] === 'Portal' && !hasSpecialHashTag;
 
-	const hostWithScheme = `${hrefUrl.protocol}//${hrefUrl.host}`;
+        const hostWithScheme = `${hrefUrl.protocol}//${hrefUrl.host}`;
 
         /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
         return (
