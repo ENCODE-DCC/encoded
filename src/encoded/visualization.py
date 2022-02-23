@@ -659,6 +659,8 @@ class VisDataset(object):
                     view["type"] = "bigNarrowPeak"
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
+                elif format_type == 'bed3+':
+                    view["type"] = "bigBed 3 +"
             #log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
             for a_file in self.dataset.get("files", []):
                 if a_file['status'] not in self.vis_defines.visible_file_statuses():
@@ -756,6 +758,8 @@ class VisDataset(object):
                     view["type"] = "bigNarrowPeak"
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
+                elif format_type == 'bed3+':
+                    view["type"] = "bigBed 3 +"
                 track["type"] = view["type"]
                 track["bigDataUrl"] = a_file.get("cloud_metadata", {}).get(
                     "url", "%s?proxy=true" % a_file["href"]
