@@ -11,7 +11,7 @@
         "Views":  {
             "tag": "view",
             "group_order": [ "Candidate enhancers", "Candidate promoters",  "Chromatin state",
-                             "HMM predicted chromatin state", "Peaks" ],
+                             "HMM predicted chromatin state", "Peaks", "Candidate Cis-Regulatory Elements" ],
             "groups": {
                 "Candidate enhancers": {
                     "tag": "aENHAN",
@@ -44,6 +44,12 @@
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
                     "output_type": [ "peaks" ]
+                },
+                "Candidate Cis-Regulatory Elements": {
+                    "tag": "cCRE",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "output_type": [ "candidate Cis-Regulatory Elements" ]
                 }
             }
         },
