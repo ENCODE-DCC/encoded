@@ -47,7 +47,7 @@
                 },
                 "Candidate Cis-Regulatory Elements": {
                     "tag": "cCRE",
-                    "visibility": "hide",
+                    "visibility": "dense",
                     "type": "bigBed",
                     "output_type": [ "candidate Cis-Regulatory Elements" ]
                 }
