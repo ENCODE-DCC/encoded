@@ -129,14 +129,14 @@ const getDefaultCoordinates = (defaultLocation, assembly, annotation, ignoreCach
             },
             {
                 file_format: 'bigBed',
-                href: '/files/ENCFF088UEJ/@@download/ENCFF088UEJ.bigBed',
-                dataset: '/annotations/ENCSR169HLH/',
+                href: '/files/ENCFF998GAH/@@download/ENCFF998GAH.bigBed',
+                dataset: '/annotations/ENCSR890YQQ/',
                 title: 'representative DNase hypersensitivity sites',
             },
             {
                 file_format: 'bigBed',
-                href: '/files/ENCFF389ZVZ/@@download/ENCFF389ZVZ.bigBed',
-                dataset: '/annotations/ENCSR439EAZ/',
+                href: '/files/ENCFF081NFZ/@@download/ENCFF081NFZ.bigBed',
+                dataset: '/annotations/ENCSR487PRC/',
                 title: 'cCRE, all',
             },
         ];
@@ -158,14 +158,14 @@ const getDefaultCoordinates = (defaultLocation, assembly, annotation, ignoreCach
                 },
                 {
                     file_format: 'bigBed',
-                    href: '/files/ENCFF088UEJ/@@download/ENCFF088UEJ.bigBed',
-                    dataset: '/annotations/ENCSR169HLH/',
+                    href: '/files/ENCFF998GAH/@@download/ENCFF998GAH.bigBed',
+                    dataset: '/annotations/ENCSR890YQQ/',
                     title: 'representative DNase hypersensitivity sites',
                 },
                 {
                     file_format: 'bigBed',
-                    href: '/files/ENCFF389ZVZ/@@download/ENCFF389ZVZ.bigBed',
-                    dataset: '/annotations/ENCSR439EAZ/',
+                    href: '/files/ENCFF081NFZ/@@download/ENCFF081NFZ.bigBed',
+                    dataset: '/annotations/ENCSR487PRC/',
                     title: 'cCRE, all',
                 },
             ];
@@ -216,14 +216,14 @@ const getDefaultCoordinates = (defaultLocation, assembly, annotation, ignoreCach
             },
             {
                 file_format: 'bigBed',
-                href: '/files/ENCFF278QAH/@@download/ENCFF278QAH.bigBed',
-                dataset: '/annotations/ENCSR672RVL/',
+                href: '/files/ENCFF846RAN/@@download/ENCFF846RAN.bigBed',
+                dataset: '/annotations/ENCSR127YRL/',
                 title: 'representative DNase hypersensitivity sites',
             },
             {
                 file_format: 'bigBed',
-                href: '/files/ENCFF228JRO/@@download/ENCFF228JRO.bigBed',
-                dataset: '/annotations/ENCSR394RWS/',
+                href: '/files/ENCFF074AWA/@@download/ENCFF074AWA.bigBed',
+                dataset: '/annotations/ENCSR906ZUZ/',
                 title: 'cCRE, all',
             },
         ];
