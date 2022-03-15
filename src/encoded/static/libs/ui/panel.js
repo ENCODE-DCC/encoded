@@ -204,7 +204,7 @@ const TabPanel = ({
                 {tabFlange ? <div className="tab-flange" /> : null}
                 <div className="tab-border" />
             </div>
-            <div className="tab-content">
+            <div className={`tab-content tab-content-${getCurrentTab() ? getCurrentTab().replace(/\s/g, '').toLowerCase() : ''}`}>
                 {childrenCopy}
             </div>
         </div>

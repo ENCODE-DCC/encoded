@@ -173,15 +173,17 @@
 // Button to clear body map selections
 .clear-organs {
     font-family: Mada;
+    font-size: 0.8rem;
     border: 0;
     padding: 3px 10px;
-    font-size: 1rem;
     color: $Homo-sapiens;
     border-radius: 3px;
     background: #e0e0e0;
-    position: absolute;
-    bottom: -50px;
     right: 10px;
+    position: absolute;
+    top: 10px;
+    bottom: unset;
+    left: 10px;
 
     .icon {
         margin-right: 3px;
@@ -191,6 +193,18 @@
         cursor: pointer;
         background-color: lighten($Homo-sapiens, 45%);
     }
+
+    @media screen and (min-width: $screen-sm-min) {
+        font-size: 1rem;
+        left: unset;
+    }
+}
+
+.clear-organs-with-systems {
+    position: absolute;
+    bottom: -50px;
+    right: 10px;
+    top: unset;
 
     /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
@@ -268,6 +282,7 @@
 // Special styles for the pop-up modal version of the body map component
 .body-map-thumbnail-and-modal {
     max-width: min-content;
+    margin: 10px 15px 10px;
 
     .body-list {
         .body-list-element {
@@ -450,6 +465,8 @@
 }
 
 .body-facet-container {
+    position: relative;
+
     &.mus-musculus {
         .body-facet {
             padding: 0;

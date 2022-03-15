@@ -45,7 +45,7 @@ const portal = {
                 { id: 'chip', title: 'ChIP-seq matrix', url: '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released', tag: 'collection' },
                 { id: 'bodymap', title: 'Human body map', url: '/summary/?type=Experiment&control_type!=*&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', tag: 'collection' },
                 { id: 'series', title: 'Functional genomics series', url: '/series-search/?type=OrganismDevelopmentSeries', tag: 'collection' },
-                { id: 'single-cell', title: 'Single-cell experiments', url: '/single-cell/?type=Experiment&assay_slims=Single+cell&status!=replaced', tag: 'collection' },
+                { id: 'single-cell', title: 'Single-cell experiments', url: '/single-cell/?type=Experiment&assay_slims=Single+cell&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens', tag: 'collection' },
                 { id: 'sep-mm-0' },
                 { id: 'functional-characterization', title: 'Functional Characterization data' },
                 { id: 'functional-char-assays', title: 'Experiment search', url: '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false&control_type!=*', tag: 'collection' },
