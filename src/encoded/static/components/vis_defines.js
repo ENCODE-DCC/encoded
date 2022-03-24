@@ -5,10 +5,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import { StringUtils } from 'igv-utils';
 import * as encoding from '../libs/query_encoding';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import * as globals from './globals';
-import { StringUtils } from 'igv-utils';
 
 
 /**
@@ -118,13 +118,13 @@ export const visOpenBrowser = (dataset, browser, assembly, files, datasetUrl) =>
         delete parsedUrl.search;
         delete parsedUrl.query;
         const juiceboxSessionJsonString = JSON.stringify({
-            "browsers": files.map((file) => {
+            browsers: files.map((file) => {
                 parsedUrl.pathname = file.href;
                 return {
-                    "name": file.biological_replicates && file.biological_replicates.length > 0 ? `${dataset.accession} / ${file.title}, Replicate ${file.biological_replicates.join(',')}` : '',
-                    "url": url.format(parsedUrl),
-                }
-            })
+                    name: file.biological_replicates && file.biological_replicates.length > 0 ? `${dataset.accession} / ${file.title}, Replicate ${file.biological_replicates.join(',')}` : '',
+                    url: url.format(parsedUrl),
+                };
+            }),
         });
         href = `http://aidenlab.org/juicebox/?session=blob:${StringUtils.compressString(juiceboxSessionJsonString)}`;
         break;
