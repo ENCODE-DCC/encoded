@@ -135,7 +135,7 @@ const SingleCell = (props, context) => {
                         >
                             <div className="tab-body">
                                 <div className="tab-description">{descriptionData}</div>
-                                {(selectedSeries === 'highThroughput') ?
+                                {(selectedSeries === 'highThroughput' && organismTabs) ?
                                     <TabPanel
                                         tabs={organismTabs}
                                         selectedTab={selectedOrganism}

@@ -794,12 +794,11 @@ class BodyMap extends React.Component {
                             </button>
                         </ul>
                     </div>
-                :
-                    <button type="button" className="clear-organs" onClick={this.clearOrgans}>
-                        <i className="icon icon-times-circle" />
-                        Clear body map selections
-                    </button>
-                }
+                : null}
+                <button type="button" className={`clear-organs ${this.props.displaySystems ? 'clear-organs-with-systems' : ''}`} onClick={this.clearOrgans}>
+                    <i className="icon icon-times-circle" />
+                    Clear body map selections
+                </button>
                 <div className="body-facet">
                     <div className="body-image-container">
                         {this.props.organism === 'Homo sapiens' ?
@@ -889,11 +888,11 @@ class BodyMap extends React.Component {
 BodyMap.propTypes = {
     context: PropTypes.object.isRequired,
     organism: PropTypes.string.isRequired,
-    displaySystems: PropTypes.bool,
+    displaySystems: PropTypes.bool, // Can be used to suppress list of systems slims
 };
 
 BodyMap.defaultProps = {
-    displaySystems: true,
+    displaySystems: true, // By default, systems slims are displayed
 };
 
 BodyMap.contextTypes = {
@@ -992,11 +991,11 @@ BodyMapModal.propTypes = {
     toggleThumbnail: PropTypes.func.isRequired,
     context: PropTypes.object.isRequired,
     organism: PropTypes.string.isRequired,
-    displaySystems: PropTypes.bool,
+    displaySystems: PropTypes.bool, // Can be used to suppress list of systems slims
 };
 
 BodyMapModal.defaultProps = {
-    displaySystems: true,
+    displaySystems: true, // By default, system slims are displayed
 };
 
 // Combining the body map thumbnail and the body map modal into one component
@@ -1061,11 +1060,11 @@ BodyMapThumbnailAndModal.propTypes = {
     context: PropTypes.object.isRequired,
     location: PropTypes.string.isRequired, // Should be context.location_href from parent
     organism: PropTypes.string.isRequired,
-    displaySystems: PropTypes.bool,
+    displaySystems: PropTypes.bool, // Can be used to suppress list of systems slims
 };
 
 BodyMapThumbnailAndModal.defaultProps = {
-    displaySystems: true,
+    displaySystems: true, // By default, system slims are displayed
 };
 
 export default BodyMap;
