@@ -264,7 +264,7 @@ def after_transform(request, response):
 # So we just manually check the resource usage after each transform.
 
 rss_limit = 256 * (1024 ** 2)  # MB
-
+MAX_OLD_SPACE_FLAG = f'--max-old-space-size={rss_limit}'
 
 def reload_process(process):
     return psutil.Process(process.pid).memory_info().rss > rss_limit
@@ -276,7 +276,7 @@ page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
     reload_process=reload_process,
-    args=['node', resource_filename(__name__, 'static/build-server/renderer.js')],
+    args=['node', MAX_OLD_SPACE_FLAG, resource_filename(__name__, 'static/build-server/renderer.js')],
     env=node_env,
 )
 
@@ -285,6 +285,6 @@ debug_page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
     reload_process=reload_process,
-    args=['node', resource_filename(__name__, 'static/server.js')],
+    args=['node', MAX_OLD_SPACE_FLAG, resource_filename(__name__, 'static/server.js')],
     env=node_env,
 )
