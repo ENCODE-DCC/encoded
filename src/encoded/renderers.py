@@ -264,7 +264,8 @@ def after_transform(request, response):
 # So we just manually check the resource usage after each transform.
 
 rss_limit = 256 * (1024 ** 2)  # MB
-MAX_OLD_SPACE_FLAG = f'--max-old-space-size={rss_limit}'
+max_old_space_limit = 3 * rss_limit
+MAX_OLD_SPACE_FLAG = f'--max-old-space-size={max_old_space_limit}'
 
 def reload_process(process):
     return psutil.Process(process.pid).memory_info().rss > rss_limit
