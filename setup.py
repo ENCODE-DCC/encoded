@@ -37,7 +37,7 @@ INSTALL_REQUIRES = [
     "repoze.debug==1.1",
     "rfc3987==1.3.8",
     "rutter==0.2",
-    "subprocess_middleware==0.3",
+    "subprocess_middleware @ git+https//github.com/ottojolanki/subprocess_middleware@master",
     "transaction==3.0.0",
     "waitress==1.4.3",
     "xlrd==1.2.0",
