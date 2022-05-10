@@ -263,9 +263,9 @@ def after_transform(request, response):
 # tricky to enforce (we would need to create one cgroup per process.)
 # So we just manually check the resource usage after each transform.
 
-rss_limit = 256 * (1024 ** 2)  # MB
-max_old_space_limit = 3 * rss_limit
-MAX_OLD_SPACE_FLAG = f'--max-old-space-size={max_old_space_limit}'
+rss_limit = 256 * (1024 ** 2) # MB
+process_size_limit  = 3 * rss_limit
+process_size_limit_string = f'MemoryMax={process_size_limit}M'
 
 def reload_process(process):
     return psutil.Process(process.pid).memory_info().rss > rss_limit
@@ -277,7 +277,7 @@ page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
     reload_process=reload_process,
-    args=['node', MAX_OLD_SPACE_FLAG, resource_filename(__name__, 'static/build-server/renderer.js')],
+    args=['systemd-run', '--scope', '-p', process_size_limit_string, '--user', 'node', resource_filename(__name__, 'static/build-server/renderer.js')],
     env=node_env,
 )
 
@@ -286,6 +286,6 @@ debug_page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
     reload_process=reload_process,
-    args=['node', MAX_OLD_SPACE_FLAG, resource_filename(__name__, 'static/server.js')],
+    args=['systemd-run', '--scope', '-p', process_size_limit_string, '--user', 'node', resource_filename(__name__, 'static/server.js')],
     env=node_env,
 )
