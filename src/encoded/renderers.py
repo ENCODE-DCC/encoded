@@ -272,12 +272,13 @@ def reload_process(process):
 
 node_env = os.environ.copy()
 node_env['NODE_PATH'] = ''
+node_env['XDG_RUNTIME_DIR'] = '/run/user/$UID'
 
 page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
     reload_process=reload_process,
-    args=['XDG_RUNTIME_DIR="/run/user/$UID"', 'systemd-run', '--scope', '-p', process_size_limit_string, '--user', 'node', resource_filename(__name__, 'static/build-server/renderer.js')],
+    args=['systemd-run', '--scope', '-p', process_size_limit_string, '--user', 'node', resource_filename(__name__, 'static/build-server/renderer.js')],
     env=node_env,
 )
 
@@ -286,6 +287,6 @@ debug_page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
     reload_process=reload_process,
-    args=['XDG_RUNTIME_DIR="/run/user/$UID"', 'systemd-run', '--scope', '-p', process_size_limit_string, '--user', 'node', resource_filename(__name__, 'static/server.js')],
+    args=['systemd-run', '--scope', '-p', process_size_limit_string, '--user', 'node', resource_filename(__name__, 'static/server.js')],
     env=node_env,
 )
