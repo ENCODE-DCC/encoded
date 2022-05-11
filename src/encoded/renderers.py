@@ -271,8 +271,9 @@ def reload_process(process):
     return psutil.Process(process.pid).memory_info().rss > rss_limit
 
 node_env = os.environ.copy()
+uid = os.getuid()
 node_env['NODE_PATH'] = ''
-node_env['XDG_RUNTIME_DIR'] = '/run/user/$UID'
+node_env['XDG_RUNTIME_DIR'] = f'/run/user/{uid}'
 
 page_or_json = SubprocessTween(
     should_transform=should_transform,
