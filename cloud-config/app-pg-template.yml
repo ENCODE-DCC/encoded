@@ -18,3 +18,4 @@ write_files:
 %(vimrc)s
 %(env)s
 %(upgrades)s
+%(logind)s
