@@ -1,6 +1,6 @@
 - cloud-init-per once conf-encd-pem-s3 sudo -u ubuntu aws s3 cp --region=us-west-2 s3://encoded-conf-prod/encd-pems/encoded-demos.pem /home/ubuntu/.ssh/encoded-demos.pem
 - cloud-init-per once conf-encd-pem-chmod sudo -u ubuntu chmod 0600 /home/ubuntu/.ssh/encoded-demos.pem
-- cloud-init-per once encd-enable-linger /bin/su -c "loginctl enable-linger encoded" - ubuntu
+- cloud-init-per once encd-enable-linger /bin/su -c "loginctl --no-ask-password enable-linger encoded" - ubuntu
 - cloud-init-per once conf-encd-cfg-s3 sudo -u ubuntu aws s3 cp --region=us-west-2 s3://encoded-conf-prod/encd-pems/config /home/ubuntu/.ssh/config
 - cloud-init-per once conf-encd-cfg-chmod sudo -u ubuntu chmod 0600 /home/ubuntu/.ssh/config
 
