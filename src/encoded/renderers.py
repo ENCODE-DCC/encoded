@@ -263,8 +263,8 @@ def after_transform(request, response):
 # tricky to enforce (we would need to create one cgroup per process.)
 # So we just manually check the resource usage after each transform.
 
-rss_limit = 256 * (1024 ** 2) # MB
-process_size_limit  = 3 * rss_limit
+rss_limit = 256 * (1024 ** 2) # Bytes
+process_size_limit  = 6000 # limit to 6G
 process_size_limit_string = f'MemoryMax={process_size_limit}M'
 
 def reload_process(process):
