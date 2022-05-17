@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Schema version 36
+* Added *donor* property, linking to Donor objects.
+* Changed *experimental_input* property to an array.
+
 ### Schema version 35
 * The *assay_term_name* property is now submittable as an array.
 

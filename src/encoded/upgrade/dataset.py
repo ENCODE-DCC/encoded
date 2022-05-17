@@ -798,3 +798,10 @@ def functional_characterization_series_3_4(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-6147
     return
 
+
+@upgrade_step('annotation', '35', '36')
+def annotation_35_36(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-41
+    experimental_input = value.get('experimental_input', None)
+    if experimental_input:
+        value['experimental_input'] = [experimental_input]
