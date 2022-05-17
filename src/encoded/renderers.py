@@ -217,6 +217,10 @@ def should_transform(request, response):
     if response.content_type != 'application/json':
         return False
 
+    limit = request.params.get('limit')
+    if limit == 'all':
+        return False
+
     format = request.params.get('format')
     if format is None:
         original_vary = response.vary or ()
