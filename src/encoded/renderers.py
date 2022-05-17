@@ -211,14 +211,14 @@ def canonical_redirect(event):
 
 
 def should_transform(request, response):
+    limit = request.params.get('limit')
+    if limit == 'all':
+        return False
+
     if request.method not in ('GET', 'HEAD'):
         return False
 
     if response.content_type != 'application/json':
-        return False
-
-    limit = request.params.get('limit')
-    if limit == 'all':
         return False
 
     format = request.params.get('format')
