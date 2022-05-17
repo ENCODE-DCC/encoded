@@ -23,6 +23,7 @@
         },
         "total_counts_vs_pct_mitochondria": {
             "title": "Total counts vs pct mitochondria",
+            "description": "scanpy scatter plot comparing total_counts to percent count mitochondria",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -67,6 +68,7 @@
         },
         "total_counts_vs_genes_by_count": {
             "title": "Total counts vs genes by count",
+            "description": "scanpy scatter plot comparing total counts to number of genes by count",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -111,6 +113,7 @@
         },
         "counts_violin_plot": {
             "title": "Counts violin plot",
+            "description": "scanpy scatter plot comparing: the number of genes expressed in the count matrix; the total counts per cell; the percentage of counts in mitochondrial genes",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
