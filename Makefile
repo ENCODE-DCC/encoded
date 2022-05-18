@@ -20,7 +20,6 @@ download-ontology:
 	curl -o ontology.json -z ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-2022-01-26.json
 
 javascript:
-	mkdir node_modules
 	npm ci
 	npm run build
 

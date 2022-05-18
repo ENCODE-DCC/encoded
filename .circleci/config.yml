@@ -162,7 +162,10 @@ jobs:
       - checkout
       - run:
           name: Install Javascript packages and build
-          command: make javascript
+          command: |
+            git config --global url."https://github.com/".insteadOf git@github.com:
+            git config --global url."https://".insteadOf git://
+            make javascript
       - run:
           name: npm tests
           command: |
