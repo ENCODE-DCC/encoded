@@ -31,6 +31,10 @@ commands:
       - checkout
       # Do not use caching for now to avoid potential conflicts/bugs
       - run:
+          name: configure git
+          command: |
+            sudo git config --local url."https://".insteadOf git://
+      - run:
           name: Add apt repositories
           command: |
             sudo apt-get update && sudo apt-get install apt-transport-https ca-certificates software-properties-common
