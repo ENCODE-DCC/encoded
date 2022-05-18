@@ -504,17 +504,20 @@
         "hic_contacts": {
             "title": "Number of hic contacts",
             "type": "integer",
+            "description": "Number of Hi-C contacts",
             "minimum": 0
         },
         "pct_sequenced_hic_contacts": {
             "title": "Percentage of sequenced reads in hic contacts",
             "type": "number",
+            "description": "Percent of Hi-C contacts",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_hic_contacts": {
             "title": "Percentage of unique reads in hic contacts",
             "type": "number",
+            "description": "Percent of unique Hi-C contacts",
             "minimum": 0,
             "maximum": 100.0
         },
@@ -538,126 +541,148 @@
         "pct_left_pair_type": {
             "title": "Left pair type percentage",
             "type": "number",
+            "description": "Percentage of Hi-C contacts with left pair type",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_right_pair_type": {
             "title": "Right pair type percentage",
             "type": "number",
+            "description": "Percentage of Hi-C contacts with right pair type",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_inner_pair_type": {
             "title": "Inner pair type percentage",
             "type": "number",
+            "description": "Percentage of Hi-C contacts with inner pair type",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_outer_pair_type": {
             "title": "Outer pair type percentage",
             "type": "number",
+            "description": "Percentage of Hi-C contacts with outer pair type",
             "minimum": 0,
             "maximum": 100.0
         },
         "inter_chromosomal": {
             "title": "Number of inter chromosomal contacts",
             "type": "integer",
+            "description": "Number of inter-chromosomal Hi-C contacts",
             "minimum": 0
         },
         "pct_sequenced_inter_chromosomal": {
             "title": "Percentage of sequenced reads in inter chromosomal contacts",
             "type": "number",
+            "description": "Percent of inter-chromosomal Hi-C contacts",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_inter_chromosomal": {
             "title": "Percentage of unique reads in inter chromosomal contacts",
             "type": "number",
+            "description": "Percent of unique inter-chromosomal Hi-C contacts",
             "minimum": 0,
             "maximum": 100.0
         },
         "intra_chromosomal": {
             "title": "Number of intra chromosomal contacts",
             "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts",
             "minimum": 0
         },
         "pct_sequenced_intra_chromosomal": {
             "title": "Percentage of sequenced reads in intra chromosomal contacts",
             "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_intra_chromosomal": {
             "title": "Percentage of unique reads in intra chromosomal contacts",
             "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts",
             "minimum": 0,
             "maximum": 100.0
         },
         "short_range_less_than_500bp": {
             "title": "Number of short range (<500bp) contacts",
             "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts with loci less than 500 basepairs apart",
             "minimum": 0
         },
         "pct_sequenced_short_range_less_than_500bp": {
             "title": "Percentage of sequenced reads in short range (<500bp) contacts",
             "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts with loci less than 500 basepairs apart",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_short_range_less_than_500bp": {
             "title": "Percentage of unique reads in short range (<500bp) contacts",
             "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts with loci less than 500 basepairs apart",
             "minimum": 0,
             "maximum": 100.0
         },
         "short_range_500bp_to_5kb": {
             "title": "Number of short range (500bp-5kb) contacts",
             "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts with loci between 500 basepairs and 5 kilobases apart",
             "minimum": 0
         },
         "pct_sequenced_short_range_500bp_to_5kb": {
             "title": "Percentage of sequenced reads in short range (500bp-5kb) contacts",
             "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts with loci between 500 basepairs and 5 kilobases apart",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_short_range_500bp_to_5kb": {
             "title": "Percentage of unique reads in short range (500bp-5kb) contacts",
             "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts with loci between 500 basepairs and 5 kilobases apart",
             "minimum": 0,
             "maximum": 100.0
         },
         "short_range_5kb_to_20kb": {
             "title": "Number of short range (5kb-20kb) contacts",
             "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts with loci between 5 and 20 kilobases apart",
             "minimum": 0
         },
         "pct_sequenced_short_range_5kb_to_20kb": {
             "title": "Percentage of sequenced reads in short range (5kb-20kb) contacts",
             "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts with loci between 5 and 20 kilobases apart",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_short_range_5kb_to_20kb": {
             "title": "Percentage of unique reads in short range (5kb-20kb) contacts",
             "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts with loci between 5 and 20 kilobases apart",
             "minimum": 0,
             "maximum": 100.0
         },
         "long_range_greater_than_20kb": {
             "title": "Number of long range (>20kb) contacts",
             "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts with loci greater than 20 kilobases apart",
             "minimum": 0
         },
         "pct_sequenced_long_range_greater_than_20kb": {
             "title": "Percentage of sequenced reads in long range (>20kb) contacts",
             "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts with loci greater than 20 kilobases apart",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_long_range_greater_than_20kb": {
             "title": "Percentage of unique reads in long range (>20kb) contacts",
             "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts with loci greater than 20 kilobases apart",
             "minimum": 0,
             "maximum": 100.0
         }
