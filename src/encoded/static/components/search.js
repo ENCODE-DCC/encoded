@@ -1909,7 +1909,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                 <a
                     rel="nofollow"
                     className="btn btn-info btn-sm"
-                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                    href={searchBase ? `/report/${searchBase}&limit=all` : '/report/?limit=all'}
                     onClick={onFilter}
                 >
                     View All
