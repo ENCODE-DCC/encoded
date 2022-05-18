@@ -67,6 +67,8 @@ commands:
       - run:
           name: Install application
           command: |
+            git config --global url."https://github.com/".insteadOf git@github.com:
+            git config --global url."https://".insteadOf git://
             sudo pip3 install --upgrade pip
             make install
   install-jsonnet:
