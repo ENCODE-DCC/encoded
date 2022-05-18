@@ -67,7 +67,6 @@ commands:
       - run:
           name: Install application
           command: |
-            sudo git config --local url."https://".insteadOf git://
             sudo pip3 install --upgrade pip
             make install
   install-jsonnet:
