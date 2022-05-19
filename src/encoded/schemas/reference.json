@@ -226,6 +226,17 @@
                 "peak tiling",
                 "sparse peak"
             ]
+        },
+        "experimental_input": {
+            "title": "Experimental input" ,
+            "description": "The experiment(s) that this reference was derived from.",
+            "comment": "See Experiment.json for a list of available identifiers.",
+            "type": "array",
+            "uniqueItems": true,
+            "items":{
+                "type": "string",
+                "linkTo": "Experiment"
+            }
         }
     },
     "facets": {
