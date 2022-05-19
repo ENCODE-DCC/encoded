@@ -43,7 +43,6 @@ const SearchViewButton = ({ viewType, query }) => {
     // the "field" query-string elements.
     const searchQuery = query.clone();
     searchQuery.deleteKeyValue('field');
-    searchQuery.deleteKeyValue('limit');
     return (
         <ViewControlButton viewType={viewType} queryString={searchQuery.format()}>
             {viewType.title}

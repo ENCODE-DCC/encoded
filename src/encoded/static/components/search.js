@@ -6,6 +6,7 @@ import { Panel, PanelBody } from '../libs/ui/panel';
 import QueryString from '../libs/query_string';
 import { svgIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
+import PageLimitSelector from './report';
 import { CartToggle, CartSearchControls, cartGetAllowedTypes } from './cart';
 import {
     FacetRegistry,
@@ -33,6 +34,7 @@ import { BrowserSelector } from './vis_defines';
 import { BodyMapThumbnailAndModal } from './body_map';
 import { keyCode } from '../libs/constants';
 
+const DEFAULT_PAGE_LIMIT = 25;
 
 // Should really be singular...
 const types = {
@@ -1884,10 +1886,7 @@ ClearSearchTerm.propTypes = {
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, additionalFilters, showDownloadButton, dropConfig }, reactContext) => {
-    const results = context['@graph'];
-    const searchBase = url.parse(reactContext.location_href).search || '';
-    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, hideBrowserSelector, additionalFilters, showDownloadButton, dropConfig }) => {
     const canDownload = context.total <= MAX_DOWNLOADABLE_RESULT;
     const modalText = canDownload
         ? null
@@ -1903,51 +1902,48 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
         );
 
     let resultsToggle = null;
+    const parsedUrl = React.useMemo(() => url.parse(context['@id']), [context]);
+    const query = React.useMemo(() => new QueryString(parsedUrl.query), [parsedUrl]);
+    // Get the current value of the "limit=x" query string parameter. No "limit=x" means the
+    // default value applies. The back end allows exactly zero or one "limit=x" parameter.
+    const pageLimit = React.useMemo(() => {
+        const limitValues = query.getKeyValues('limit');
+        return limitValues.length === 1 ? Number(limitValues[0]) || DEFAULT_PAGE_LIMIT : DEFAULT_PAGE_LIMIT;
+    }, [query]);
+    const pageLimitOptions = [25, 50, 100, 200];
+
     if (showResultsToggle) {
-        if (context.total > results.length && searchBase.indexOf('limit=all') === -1) {
-            resultsToggle = (
-                <a
-                    rel="nofollow"
-                    className="btn btn-info btn-sm"
-                    href={searchBase ? `/report/${searchBase}&limit=all` : '/report/?limit=all'}
-                    onClick={onFilter}
-                >
-                    View All
-                </a>
-            );
-        } else {
-            resultsToggle = (
-                <span>
-                    {results.length > 25 ?
-                        <a
-                            className="btn btn-info btn-sm"
-                            href={trimmedSearchBase || '/search/'}
-                            onClick={onFilter}
-                        >
-                            View 25
-                        </a>
-                    : null}
-                </span>
-            );
-        }
+        resultsToggle = (
+            <PageLimitSelector
+                pageLimit={pageLimit}
+                query={query}
+                pageLimitOptions={pageLimitOptions}
+                displayText="Number of displayed results"
+                ariaLabel="results"
+            />
+        );
     }
 
     return (
-        <div className="results-table-control">
-            <div className="results-table-control__main">
-                <ViewControls results={context} additionalFilters={additionalFilters} dropConfig={dropConfig} />
-                {resultsToggle}
-                {showDownloadButton
-                    ? <BatchDownloadControls results={context} additionalFilters={additionalFilters} modalText={modalText} canDownload={canDownload} />
+        <>
+            <div className="results-table-control">
+                <div className="results-table-control__main">
+                    <ViewControls results={context} additionalFilters={additionalFilters} dropConfig={dropConfig} />
+                    {showDownloadButton
+                        ? <BatchDownloadControls results={context} additionalFilters={additionalFilters} modalText={modalText} canDownload={canDownload} />
+                        : null}
+                    {!hideBrowserSelector ?
+                        <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} additionalFilters={additionalFilters} />
                     : null}
-                {!hideBrowserSelector ?
-                    <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} additionalFilters={additionalFilters} />
-                : null}
+                </div>
+                <div className="results-table-control__json">
+                    <DisplayAsJson />
+                </div>
             </div>
-            <div className="results-table-control__json">
-                <DisplayAsJson />
+            <div className="search-page-limit-selector">
+                {resultsToggle}
             </div>
-        </div>
+        </>
     );
 };
 
@@ -1959,13 +1955,6 @@ SearchControls.propTypes = {
     /** True to show View All/View 25 control */
     showResultsToggle: (props, propName, componentName) => {
         if (props[propName] && typeof props.onFilter !== 'function') {
-            return new Error(`"onFilter" prop to ${componentName} required if "showResultsToggle" is true`);
-        }
-        return null;
-    },
-    /** Function to handle clicks in links to toggle between viewing all and limited */
-    onFilter: (props, propName, componentName) => {
-        if (props.showResultsToggle && typeof props[propName] !== 'function') {
             return new Error(`"onFilter" prop to ${componentName} required if "showResultsToggle" is true`);
         }
         return null;
@@ -1983,7 +1972,6 @@ SearchControls.propTypes = {
 SearchControls.defaultProps = {
     visualizeDisabledTitle: '',
     showResultsToggle: false,
-    onFilter: null,
     hideBrowserSelector: false,
     additionalFilters: [],
     showDownloadButton: true,

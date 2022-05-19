@@ -710,10 +710,11 @@ const generateColumns = (context, schema) => {
 /**
  * Displays a control allowing the user to select the maximum number of items to display on one page.
  */
-const pageLimitOptions = [25, 50, 100, 200];
-const PageLimitSelector = ({ pageLimit, query }) => (
+const PageLimitSelector = ({ pageLimit, query, pageLimitOptions, displayText, ariaLabel }) => (
     <div className="page-limit-selector">
-        <div className="page-limit-selector__label">Items per page:</div>
+        {displayText ?
+            <div className="page-limit-selector__label">{displayText}:</div>
+        : null}
         <div className="page-limit-selector__options">
             {pageLimitOptions.map((limit) => {
                 // When changing the number of items per page, also go back to the first page by
@@ -731,7 +732,7 @@ const PageLimitSelector = ({ pageLimit, query }) => (
                         key={limit}
                         href={`?${limitQuery.format()}`}
                         className={`page-limit-selector__option${limit === pageLimit ? ' page-limit-selector__option--selected' : ''}`}
-                        aria-label={`Show ${limit} items per page`}
+                        aria-label={`Show ${limit} ${ariaLabel}`}
                     >
                         {limit}
                     </a>
@@ -741,11 +742,26 @@ const PageLimitSelector = ({ pageLimit, query }) => (
     </div>
 );
 
+PageLimitSelector.defaultProps = {
+    /** Page limit options */
+    pageLimitOptions: [25, 50, 100, 200],
+    /** Display text */
+    displayText: 'Items per page',
+    /** Aria-label text */
+    ariaLabel: 'items per page',
+};
+
 PageLimitSelector.propTypes = {
     /** New page limit to display */
     pageLimit: PropTypes.number.isRequired,
     /** Current page's QueryString query */
     query: PropTypes.object.isRequired,
+    /** Page limit options */
+    pageLimitOptions: PropTypes.array,
+    /** Display text */
+    displayText: PropTypes.string,
+    /** Aria-label text */
+    ariaLabel: PropTypes.string,
 };
 
 
@@ -935,6 +951,8 @@ Report.propTypes = {
 Report.contextTypes = {
     navigate: PropTypes.func,
 };
+
+export default PageLimitSelector;
 
 globals.contentViews.register(Report, 'Report');
 globals.contentViews.register(Report, 'RNAExpressionReport');
