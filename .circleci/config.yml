@@ -71,7 +71,6 @@ commands:
             git config --global url."https://".insteadOf git://
             sudo pip3 install --upgrade pip
             make install
-          no_output_timeout: 20m
   install-jsonnet:
     description: Install Jsonnet including formatter jsonnetfmt
     steps:
