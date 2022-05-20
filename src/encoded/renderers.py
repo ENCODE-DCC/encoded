@@ -213,7 +213,7 @@ def canonical_redirect(event):
 
 def should_transform(request, response):
     limit = request.params.get('limit')
-    if limit is not None and (limit == 'all' or limit > MAX_NUMBER_OF_RENDERED_RESULTS):
+    if limit is not None and (limit == 'all' or int(limit) > MAX_NUMBER_OF_RENDERED_RESULTS):
         return False
 
     if request.method not in ('GET', 'HEAD'):
