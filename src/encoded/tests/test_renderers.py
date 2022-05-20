@@ -20,3 +20,9 @@ def test_should_transform_limit_all_returns_false():
     request = mock.Mock()
     request.params = {'limit': 'all'}
     assert should_transform(request, response) == False
+
+def test_should_transform_limit_1001_returns_false():
+    response = mock.Mock()
+    request = mock.Mock()
+    request.params = {'limit': 1001}
+    assert should_transform(request, response) == False

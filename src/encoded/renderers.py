@@ -32,6 +32,7 @@ import time
 
 log = logging.getLogger(__name__)
 
+MAX_NUMBER_OF_RENDERED_RESULTS = 1000
 
 def includeme(config):
     config.add_tween(
@@ -212,7 +213,7 @@ def canonical_redirect(event):
 
 def should_transform(request, response):
     limit = request.params.get('limit')
-    if limit == 'all':
+    if limit is not None and (limit == 'all' or limit > MAX_NUMBER_OF_RENDERED_RESULTS):
         return False
 
     if request.method not in ('GET', 'HEAD'):
