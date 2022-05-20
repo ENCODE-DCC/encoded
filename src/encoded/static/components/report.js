@@ -6,6 +6,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { encodedURIComponent } from '../libs/query_encoding';
 import * as Pager from '../libs/ui/pager';
 import QueryString from '../libs/query_string';
+import LimitSelector from '../libs/ui/limit-selector';
 import * as globals from './globals';
 import { TableItemCount } from './objectutils';
 import { FacetList } from './search';
@@ -708,64 +709,6 @@ const generateColumns = (context, schema) => {
 
 
 /**
- * Displays a control allowing the user to select the maximum number of items to display on one page.
- */
-const PageLimitSelector = ({ pageLimit, query, pageLimitOptions, displayText, ariaLabel }) => (
-    <div className="page-limit-selector">
-        {displayText ?
-            <div className="page-limit-selector__label">{displayText}:</div>
-        : null}
-        <div className="page-limit-selector__options">
-            {pageLimitOptions.map((limit) => {
-                // When changing the number of items per page, also go back to the first page by
-                // removing the "from=x" query-string parameter.
-                const limitQuery = query.clone();
-                limitQuery.deleteKeyValue('from');
-                if (limit === DEFAULT_PAGE_LIMIT) {
-                    limitQuery.deleteKeyValue('limit');
-                } else {
-                    limitQuery.replaceKeyValue('limit', limit);
-                }
-
-                return (
-                    <a
-                        key={limit}
-                        href={`?${limitQuery.format()}`}
-                        className={`page-limit-selector__option${limit === pageLimit ? ' page-limit-selector__option--selected' : ''}`}
-                        aria-label={`Show ${limit} ${ariaLabel}`}
-                    >
-                        {limit}
-                    </a>
-                );
-            })}
-        </div>
-    </div>
-);
-
-PageLimitSelector.defaultProps = {
-    /** Page limit options */
-    pageLimitOptions: [25, 50, 100, 200],
-    /** Display text */
-    displayText: 'Items per page',
-    /** Aria-label text */
-    ariaLabel: 'items per page',
-};
-
-PageLimitSelector.propTypes = {
-    /** New page limit to display */
-    pageLimit: PropTypes.number.isRequired,
-    /** Current page's QueryString query */
-    query: PropTypes.object.isRequired,
-    /** Page limit options */
-    pageLimitOptions: PropTypes.array,
-    /** Display text */
-    displayText: PropTypes.string,
-    /** Aria-label text */
-    ariaLabel: PropTypes.string,
-};
-
-
-/**
  * Renderer for the entire /report/ page.
  */
 const Report = ({ context }, reactContext) => {
@@ -913,7 +856,7 @@ const Report = ({ context }, reactContext) => {
                         </div>
                     </div>
                     <div className="results-table-control__pager">
-                        <PageLimitSelector pageLimit={pageLimit} query={query} />
+                        <LimitSelector pageLimit={pageLimit} query={query} />
                         {totalPages > 1 ?
                             <Pager.Multi currentPage={currentPage} total={totalPages} clickHandler={handlePagerClick} />
                         : null}
@@ -951,8 +894,6 @@ Report.propTypes = {
 Report.contextTypes = {
     navigate: PropTypes.func,
 };
-
-export default PageLimitSelector;
 
 globals.contentViews.register(Report, 'Report');
 globals.contentViews.register(Report, 'RNAExpressionReport');

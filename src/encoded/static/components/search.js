@@ -6,7 +6,7 @@ import { Panel, PanelBody } from '../libs/ui/panel';
 import QueryString from '../libs/query_string';
 import { svgIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
-import PageLimitSelector from './report';
+import LimitSelector from '../libs/ui/limit-selector';
 import { CartToggle, CartSearchControls, cartGetAllowedTypes } from './cart';
 import {
     FacetRegistry,
@@ -1902,19 +1902,17 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
         );
 
     let resultsToggle = null;
-    const parsedUrl = React.useMemo(() => url.parse(context['@id']), [context]);
-    const query = React.useMemo(() => new QueryString(parsedUrl.query), [parsedUrl]);
+    const parsedUrl = url.parse(context['@id']);
+    const query = new QueryString(parsedUrl.query);
     // Get the current value of the "limit=x" query string parameter. No "limit=x" means the
     // default value applies. The back end allows exactly zero or one "limit=x" parameter.
-    const pageLimit = React.useMemo(() => {
-        const limitValues = query.getKeyValues('limit');
-        return limitValues.length === 1 ? Number(limitValues[0]) || DEFAULT_PAGE_LIMIT : DEFAULT_PAGE_LIMIT;
-    }, [query]);
+    const limitValues = query.getKeyValues('limit');
+    const pageLimit = limitValues.length === 1 ? Number(limitValues[0]) || DEFAULT_PAGE_LIMIT : DEFAULT_PAGE_LIMIT;
     const pageLimitOptions = [25, 50, 100, 200];
 
     if (showResultsToggle) {
         resultsToggle = (
-            <PageLimitSelector
+            <LimitSelector
                 pageLimit={pageLimit}
                 query={query}
                 pageLimitOptions={pageLimitOptions}
