@@ -37,4 +37,4 @@ def test_too_many_results_to_render_1000():
     assert too_many_results_to_render('1000') == False
 
 def test_too_many_results_to_render_1001():
-    assert too_many_results_to_render('1001') == True
+    assert too_many_results_to_render('1001')
