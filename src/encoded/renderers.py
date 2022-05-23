@@ -210,10 +210,16 @@ def canonical_redirect(event):
     location = canonical_path + ('?' if qs else '') + qs
     raise HTTPMovedPermanently(location=location)
 
+def too_many_results_to_render(limit):
+    try:
+        return int(limit) > MAX_NUMBER_OF_RENDERED_RESULTS
+    except ValueError:
+        return limit == 'all'
+
 
 def should_transform(request, response):
     limit = request.params.get('limit')
-    if limit is not None and (limit == 'all' or int(limit) > MAX_NUMBER_OF_RENDERED_RESULTS):
+    if limit is not None and too_many_results_to_render(limit):
         return False
 
     if request.method not in ('GET', 'HEAD'):
