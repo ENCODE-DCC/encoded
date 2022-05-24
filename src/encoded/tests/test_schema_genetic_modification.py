@@ -298,7 +298,7 @@ def test_transduction_MOI(testapp, CRISPR_introduction):
     testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
 
 
-def test_reagent_identifier_dharmacon_fect(testapp, crispri, source):
-    res = testapp.patch_json(crispri['@id'], {'reagents': [{'source': source['@id'], 'identifier': 'dharmacon:T-2005-01'}]},
-                                              expect_errors=True)
+def test_reagent_identifier_dharmacon_fect(testapp, genetic_modification_source, source):
+    res = testapp.patch_json(genetic_modification_source['@id'], {'reagents': [{'source': source['@id'], 'identifier': 'dharmacon:T-2005-01'}]})
     assert res.status_code == 200
+    
