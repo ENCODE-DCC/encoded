@@ -87,6 +87,11 @@
                 "type":  "string",
                 "pattern": "^(((BDSC|DSSC|VDRC|Harvard|NIG-FLY):.+)|(FlyBase:FBst\\d+)|(GEO:SAMN\\d+))$"
             }
+        },
+        "supersedes": {
+            "items": {
+                "linkTo": "FlyDonor"
+            }
         }
     },
     "facet_groups": [

@@ -98,6 +98,11 @@
                 "type":  "string",
                 "pattern": "^(((CGC|WormBase):.+)|(GEO:SAMN\\d+))$"
             }
+        },
+        "supersedes": {
+            "items": {
+                "linkTo": "WormDonor"
+            }
         }
     },
     "facet_groups": [

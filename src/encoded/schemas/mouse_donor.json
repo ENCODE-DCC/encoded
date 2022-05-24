@@ -78,6 +78,11 @@
                 "type":  "string",
                 "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
+        },
+        "supersedes": {
+            "items": {
+                "linkTo": "MouseDonor"
+            }
         }
     },
     "facet_groups": [

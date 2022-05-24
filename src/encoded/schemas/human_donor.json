@@ -243,6 +243,11 @@
                 "type":  "string",
                 "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(NIH:NIHhESC-[\\d]{2}-[\\d]{4})|(GEO:SAMN\\d+))$"
             }
+        },
+        "supersedes": {
+            "items": {
+                "linkTo": "HumanDonor"
+            }
         }
     },
     "facet_groups": [
