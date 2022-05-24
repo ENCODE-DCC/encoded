@@ -41,7 +41,8 @@ class Donor(Item):
     set_status_down = []
     name_key = 'accession'
     rev = {
-        'characterizations': ('DonorCharacterization', 'characterizes')
+        'characterizations': ('DonorCharacterization', 'characterizes'),
+        'superseded_by': ('Donor', 'supersedes')   
     }
 
     def unique_keys(self, properties):
@@ -62,6 +63,19 @@ class Donor(Item):
     def characterizations(self, request, characterizations):
         return paths_filtered_by_status(request, characterizations)
 
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The donor(s) that supersede this donor (i.e. are more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of a donor that supersedes.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Donor.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 @collection(
     name='mouse-donors',
