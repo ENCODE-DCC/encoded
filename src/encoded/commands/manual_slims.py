@@ -40,6 +40,7 @@ slim_shims = {
         'OBI:0002762': ['Single cell', 'DNA accessibility'],  # snATAC-seq,
         'OBI:0002631': ['Single cell', 'Transcription'],  # scRNA-seq,
         'OBI:0002038': ['Ribosome activity'], # Ribo-seq
+        'OBI:0003106': ['Single cell'],  # seqFISH
     },
     'cell': {
         'CL:0000038': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based

@@ -5221,5 +5221,39 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "submitted_file_name": "/home/unix/amackays/sabeti/ENCODE_uploads/HEME/HEME_guides.bb",
         "uuid": "6429e57d-c6a1-4aaf-9e3f-6169fb5b2f7a"
+    },
+    {
+        "accession": "ENCFF033HOE",
+        "aliases": [
+            "ali-mortazavi:seqFISH_cell_coordinates"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR539FSH",
+        "file_format": "csv",
+        "file_size": 20000,
+        "lab": "ali-mortazavi",
+        "md5sum": "944467fb99650e12b6fd3ca122780a27",
+        "replicate": "0f45174f-3ded-4ab4-a826-872241b0bf11",
+        "output_type": "cell coordinates",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "7f228be4-f734-11ec-a8a3-650eac124f44"
+    },
+        {
+        "accession": "ENCFF033HOE",
+        "aliases": [
+            "ali-mortazavi:seqFISH_cell_type_annotations"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR539FSH",
+        "file_format": "csv",
+        "file_size": 15000,
+        "lab": "ali-mortazavi",
+        "md5sum": "47f228be99359612b63650e1ffd3fd3c",
+        "replicate": "0f45174f-3ded-4ab4-a826-872241b0bf11",
+        "output_type": "cell type annotations",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "7650e1af-7f07-d3c3-3c3a-0242ac123ac5"
     }
 ]

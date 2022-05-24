@@ -11,6 +11,7 @@
 * Added property *usable_fragments* calculated from the number of reads reported in *mapped*.
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
 * Added *genomic perturbation followed by RT-qPCR* to *assay_term_name* enum.
+* Added *seqFISH* to *assay_term_name* enum.
 
 ### Schema version 8
 

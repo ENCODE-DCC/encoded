@@ -4,6 +4,7 @@
 
 * Added a property *positions_with_two_reads*
 * Added *genomic perturbation followed by RT-qPCR* to *assay_term_name* enum.
+* Added *seqFISH* to *assay_term_name* enum.
 
 ### Schema version 2
 

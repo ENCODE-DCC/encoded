@@ -1338,5 +1338,16 @@
         "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "dfe321c3-31a0-4562-b678-3084a1139fe2"
+    },
+    {
+        "_test": "spatial transcriptomics seqFISH assay",
+        "uuid": "fd3c3ac5-be4f-46b3-7347-a6cb4467650e",
+        "accession": "ENCSR539FSH",
+        "assay_term_name": "seqFISH",
+        "award": "U54HG006991",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "lab": "ali-mortazavi",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra"
     }
 ]

@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 36
+* Added *seqFISH* to *assay_term_name* enum.
+
 ### Schema version 36
 * Added *donor* property, linking to Donor objects.
 * Changed *experimental_input* property to an array.
