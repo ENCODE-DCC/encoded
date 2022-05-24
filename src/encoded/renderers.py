@@ -213,7 +213,7 @@ def canonical_redirect(event):
 def too_many_results_to_render(limit):
     try:
         return int(limit) > MAX_NUMBER_OF_RENDERED_RESULTS
-    except ValueError, TypeError:
+    except (ValueError, TypeError):
         return limit == 'all'
 
 
