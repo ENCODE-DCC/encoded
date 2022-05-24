@@ -535,3 +535,11 @@ $form-bg: #f3f3f3;
         }
     }
 }
+
+.search-page-limit-selector {
+    margin-bottom: 10px;
+
+    @media screen and (min-width: $screen-lg-min) {
+        margin-bottom: 20px;
+    }
+}
