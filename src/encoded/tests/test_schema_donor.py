@@ -26,3 +26,11 @@ def test_donor_manatee_incomplete_age(testapp, manatee_donor):
     testapp.patch_json(manatee_donor['@id'], {'age_units': 'year'}, status=422)
     testapp.patch_json(manatee_donor['@id'], {'age': 'unknown'}, status=200)
     testapp.patch_json(manatee_donor['@id'], {'age': '12', 'age_units': 'year'}, status=200)
+
+
+def test_donor_supersedes_type(testapp, mouse_donor_to_test, manatee_donor):
+    res = testapp.post_json('/mouse_donor', mouse_donor_to_test, status=200)
+    assert res.status_code == 200
+    mouse_donor_to_test['supersedes'] = [manatee_donor['@id']]
+    res = testapp.post_json('/mouse_donor', mouse_donor_to_test, status=422)
+    assert res.status_code == 422
