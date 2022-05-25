@@ -5223,7 +5223,24 @@
         "uuid": "6429e57d-c6a1-4aaf-9e3f-6169fb5b2f7a"
     },
     {
-        "accession": "ENCFF033HOE",
+        "accession": "ENCFF888RIS",
+        "aliases": [
+            "ali-mortazavi:seqFISH_raw_imaging_signal"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR539FSH",
+        "file_format": "tar",
+        "file_size": 100000,
+        "lab": "ali-mortazavi",
+        "md5sum": "15eded78e20d1512b63650e1fad3a175",
+        "replicate": "78e20d15-d3c3-4e0e-aae0-3b12b30fa175",
+        "output_type": "raw imaging signal",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "78e20d15-f4b7-d3c3-a175-06515c125efc"
+    },
+    {
+        "accession": "ENCFF888CCR",
         "aliases": [
             "ali-mortazavi:seqFISH_cell_coordinates"
         ],
@@ -5233,14 +5250,15 @@
         "file_size": 20000,
         "lab": "ali-mortazavi",
         "md5sum": "944467fb99650e12b6fd3ca122780a27",
-        "replicate": "0f45174f-3ded-4ab4-a826-872241b0bf11",
+        "replicate": "78e20d15-d3c3-4e0e-aae0-3b12b30fa175",
         "output_type": "cell coordinates",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "7f228be4-f734-11ec-a8a3-650eac124f44"
+        "uuid": "7f228be4-f734-11ec-a8a3-650eac124f44",
+        "derived_from": "ENCFF888RIS"
     },
-        {
-        "accession": "ENCFF033HOE",
+    {
+        "accession": "ENCFF888CTA",
         "aliases": [
             "ali-mortazavi:seqFISH_cell_type_annotations"
         ],
@@ -5250,10 +5268,11 @@
         "file_size": 15000,
         "lab": "ali-mortazavi",
         "md5sum": "47f228be99359612b63650e1ffd3fd3c",
-        "replicate": "0f45174f-3ded-4ab4-a826-872241b0bf11",
+        "replicate": "78e20d15-d3c3-4e0e-aae0-3b12b30fa175",
         "output_type": "cell type annotations",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "7650e1af-7f07-d3c3-3c3a-0242ac123ac5"
+        "uuid": "7650e1af-7f07-d3c3-3c3a-0242ac123ac5",
+        "derived_from": "ENCFF888RIS"
     }
 ]
