@@ -84,6 +84,7 @@ class MouseDonor(Donor):
         Path('references', exclude=['datasets', 'publication_data']),
     ]
     rev = {
+        'characterizations': ('DonorCharacterization', 'characterizes'),
         'superseded_by': ('MouseDonor', 'supersedes')
     }
     set_status_up = [
@@ -130,6 +131,7 @@ class FlyDonor(Donor):
                                  'genetic_modifications.treatments', 
                                  'characterizations']
     rev = {
+        'characterizations': ('DonorCharacterization', 'characterizes'),
         'superseded_by': ('FlyDonor', 'supersedes')
     }
     set_status_up = [
@@ -171,6 +173,7 @@ class WormDonor(Donor):
                                  'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments']
     rev = {
+        'characterizations': ('DonorCharacterization', 'characterizes'),
         'superseded_by': ('WormDonor', 'supersedes')
     }
     set_status_up = [
@@ -262,6 +265,7 @@ class ManateeDonor(Donor):
                                  'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments']
     rev = {
+        'characterizations': ('DonorCharacterization', 'characterizes'),
         'superseded_by': ('ManateeDonor', 'supersedes')
     }
     set_status_up = [
