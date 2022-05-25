@@ -41,8 +41,7 @@ class Donor(Item):
     set_status_down = []
     name_key = 'accession'
     rev = {
-        'characterizations': ('DonorCharacterization', 'characterizes'),
-        'superseded_by': ('Donor', 'supersedes')   
+        'characterizations': ('DonorCharacterization', 'characterizes'), 
     }
 
     def unique_keys(self, properties):
@@ -63,19 +62,6 @@ class Donor(Item):
     def characterizations(self, request, characterizations):
         return paths_filtered_by_status(request, characterizations)
 
-    @calculated_property(schema={
-        "title": "Superseded by",
-        "description": "The donor(s) that supersede this donor (i.e. are more preferable to use).",
-        "comment": "Do not submit. Values in the list are reverse links of a donor that supersedes.",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Donor.supersedes",
-        },
-        "notSubmittable": True,
-    })
-    def superseded_by(self, request, superseded_by):
-        return paths_filtered_by_status(request, superseded_by)
 
 @collection(
     name='mouse-donors',
@@ -97,6 +83,9 @@ class MouseDonor(Donor):
     embedded_with_frame = [
         Path('references', exclude=['datasets', 'publication_data']),
     ]
+    rev = {
+        'superseded_by': ('MouseDonor', 'supersedes')
+    }
     set_status_up = [
         'characterizations',
         'source',
@@ -110,6 +99,19 @@ class MouseDonor(Donor):
         # Disallow lab submitter edits
         return {Authenticated: 'role.viewing_group_member'}
 
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The mouse donor(s) that supersede this mouse donor (i.e. are more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of a mouse donors that supersede.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "MouseDonor.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 @collection(
     name='fly-donors',
@@ -127,6 +129,9 @@ class FlyDonor(Donor):
                                  'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments', 
                                  'characterizations']
+    rev = {
+        'superseded_by': ('FlyDonor', 'supersedes')
+    }
     set_status_up = [
         'characterizations',
         'source',
@@ -136,6 +141,19 @@ class FlyDonor(Donor):
     ]
     set_status_down = []
 
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The fly donor(s) that supersede this fly donor (i.e. are more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of a fly donors that supersede.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "FlyDonor.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 @collection(
     name='worm-donors',
@@ -152,6 +170,9 @@ class WormDonor(Donor):
                                  'genetic_modifications.modified_site_by_target_id',
                                  'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments']
+    rev = {
+        'superseded_by': ('WormDonor', 'supersedes')
+    }
     set_status_up = [
         'characterizations',
         'source',
@@ -160,6 +181,20 @@ class WormDonor(Donor):
         'documents',
     ]
     set_status_down = []
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The worm donor(s) that supersede this worm donor (i.e. are more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of a worm donors that supersede.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "WormDonor.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 
 @collection(
@@ -178,7 +213,8 @@ class HumanDonor(Donor):
     ]
     rev = {
         'children': ('HumanDonor', 'parents'),
-        'characterizations': ('DonorCharacterization', 'characterizes')
+        'characterizations': ('DonorCharacterization', 'characterizes'),
+        'superseded_by': ('HumanDonor', 'supersedes')
     }
 
     @calculated_property(schema={
@@ -194,7 +230,21 @@ class HumanDonor(Donor):
     })
     def children(self, request, children):
         return paths_filtered_by_status(request, children)
-
+    
+    
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The human donor(s) that supersede this human donor (i.e. are more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of a human donors that supersede.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "HumanDonor.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 @collection(
     name='manatee-donors',
