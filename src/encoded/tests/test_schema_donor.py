@@ -29,8 +29,8 @@ def test_donor_manatee_incomplete_age(testapp, manatee_donor):
 
 
 def test_donor_supersedes_type(testapp, mouse_donor_to_test, manatee_donor):
-    res = testapp.post_json('/mouse_donor', mouse_donor_to_test, status=200)
-    assert res.status_code == 200
+    res = testapp.post_json('/mouse_donor', mouse_donor_to_test, status=201)
+    assert res.status_code == 201
     mouse_donor_to_test['supersedes'] = [manatee_donor['@id']]
     res = testapp.post_json('/mouse_donor', mouse_donor_to_test, status=422)
     assert res.status_code == 422
