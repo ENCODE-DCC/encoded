@@ -261,6 +261,9 @@ class ManateeDonor(Donor):
                                  'genetic_modifications.modified_site_by_target_id',
                                  'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments']
+    rev = {
+        'superseded_by': ('ManateeDonor', 'supersedes')
+    }
     set_status_up = [
         'characterizations',
         'source',
@@ -268,3 +271,17 @@ class ManateeDonor(Donor):
         'documents',
     ]
     set_status_down = []
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The manatee donor(s) that supersede this manatee donor (i.e. are more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of a manatee donors that supersede.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "ManateeDonor.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)

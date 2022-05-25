@@ -61,18 +61,6 @@
             "description": "Organism of the donor.",
             "type": "string",
             "linkTo": "Organism"
-        },
-        "supersedes": {
-            "title": "Supersedes" ,
-            "description": "The donor(s) that this donor supersedes.",
-            "comment": "The donor(s) in this list should be obsolete and the superseeding donoe object should be used instead.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "comment": "The donor(s) in this list should be archived or revoked.",
-                "type": "string",
-                "linkTo": "Donor"
-            }
         }
     },
     "facet_groups": [
