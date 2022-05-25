@@ -41,7 +41,7 @@ class Donor(Item):
     set_status_down = []
     name_key = 'accession'
     rev = {
-        'characterizations': ('DonorCharacterization', 'characterizes'), 
+        'characterizations': ('DonorCharacterization', 'characterizes')
     }
 
     def unique_keys(self, properties):
