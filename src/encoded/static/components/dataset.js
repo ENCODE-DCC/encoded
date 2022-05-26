@@ -761,6 +761,23 @@ const ReferenceComponent = (props, reactContext) => {
                             </div>
                             : null}
 
+                            {context.experimental_input?.length > 0 ?
+                                <div data-test="experimentalinput">
+                                    <dt>Experimental input</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.experimental_input.map((input) => (
+                                                <li key={input}>
+                                                    <a href={input}>
+                                                        {globals.atIdToAccession(input)}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+                            
                             {context.related_pipelines && context.related_pipelines.length > 0 ?
                                 <div data-test="relatedpipelines">
                                     <dt>Related Pipelines</dt>
