@@ -23,6 +23,7 @@
         },
         "Mt_rRNA": {
             "title": "Number of reads in mitochondrial rRNA",
+            "description": "Number of reads assigned to transcripts from the \"Mt_rRNA\" GENCODE biotype; mitochondrial rRNAs",
             "type": "integer",
             "minimum": 0
         },
@@ -34,6 +35,7 @@
         },
         "miRNA": {
             "title": "Number of reads in microRNA",
+            "description": "Number of reads assigned to transcripts from the \"miRNA\" GENCODE biotype; microRNAs",
             "type": "integer",
             "minimum": 0
         },
@@ -45,26 +47,31 @@
         },
         "protein_coding": {
             "title": "Number of reads in protein coding gene",
+            "description": "Number of reads assigned to transcripts from the \"protein_coding\" GENCODE biotype; contain ORFs",
             "type": "integer",
             "minimum": 0
         },
         "rRNA": {
             "title": "Number of reads in rRNA",
+            "description": "Number of reads assigned to transcripts from the \"rRNA\" GENCODE biotype; encode for rRNAs",
             "type": "integer",
             "minimum": 0
         },
         "ribozyme": {
             "title": "Number of reads in ribozyme gene",
+            "description": "Number of reads assigned to transcripts from the \"ribozyme\" GENCODE biotype; encode for ribozymes",
             "type": "integer",
             "minimum": 0
         },
         "sRNA": {
             "title": "Number of reads in small RNA",
+            "description": "Number of reads assigned to transcripts from the \"sRNA\" GENCODE biotype; encode for sRNAs",
             "type": "integer",
             "minimum": 0
         },
         "scaRNA": {
             "title": "Number of reads in small Cajal body-specific RNAs (scaRNAs)",
+            "description": "Number of reads assigned to transcripts from the \"scaRNA\" GENCODE biotype; encode for scaRNAs",
             "type": "integer",
             "minimum": 0
         },
@@ -82,16 +89,19 @@
         },
         "snRNA": {
             "title": "Number of reads in small nuclear RNA",
+            "description": "Number of reads assigned to transcripts from the \"snRNA\" GENCODE biotype; encode for snRNAs",
             "type": "integer",
             "minimum": 0
         },
         "snoRNA": {
             "title": "Number of reads in small nucleolar RNA",
+            "description": "Number of reads assigned to transcripts from the \"snoRNA\" GENCODE biotype; encode for snoRNAs",
             "type": "integer",
             "minimum": 0
         },
         "spikein": {
             "title": "Number of reads mapped to RNA spike-in",
+            "description": "Number of reads assigned to transcripts from the spike ins",
             "type": "integer",
             "minimum": 0
         }

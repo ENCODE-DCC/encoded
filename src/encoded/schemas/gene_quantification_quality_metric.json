@@ -23,6 +23,7 @@
         },
         "number_of_genes_detected": {
             "title": "Number of genes detected",
+            "description": "Total number of genes detected",
             "type": "integer",
             "minimum": 0
         }

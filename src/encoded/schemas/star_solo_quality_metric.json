@@ -122,81 +122,99 @@
         },
         "reads_mapped_to_gene_unique_gene": {
             "title": "Reads mapped to Gene: unique Gene",
+            "description": "STARsolo read fraction mapped uniquely to gene exons",
             "type": "number"
         },
         "reads_mapped_to_genefull_unique_genefull": {
             "title": "Reads mapped to GeneFull: unique GeneFull",
+            "description": "STARsolo read fraction mapped uniquely to genes including introns",
             "type": "number"
         },
         "reads_mapped_to_genefull_ex50pas_unique_genefull_ex50pas": {
             "title": "Reads mapped to GeneFull_Ex50pAS: unique GeneFull_Ex50pAS",
+            "description": "STARsolo read fraction mapped uniquely to gene exons but allowing up to 50% of the read to not overlap the exon",
             "type": "number"
         },
         "reads_mapped_to_gene_unique_and_multiple_gene": {
             "title": "Reads mapped to Gene: unique and multiple Gene",
+            "description": "STARsolo read fraction mapped both multiply and uniquely to gene exons",
             "type": "number"
         },
         "reads_mapped_to_genefull_unique_and_multiple_genefull": {
             "title": "Reads mapped to GeneFull unique and multiple GeneFull",
+            "description": "STARsolo read fraction mapped both multiply and uniquely  to genes including introns",
             "type": "number"
         },
         "reads_mapped_to_genefull_ex50pas_unique_and_multiple_gene_ex50pas": {
             "title": "Reads mapped to Gene_Ex50pAS: unique and multiple Gene_Ex50pAS",
+            "description": "STARsolo read fraction mapped both multiply and uniquely  to gene exons but allowing up to 50% of the read to not overlap the exon",
             "type": "number"
         },
         "reads_mapped_to_genome_unique": {
             "title": "Reads mapped to genome: unique",
+            "description": "STARsolo read fraction unique reads mapped to genome",
             "type": "number"
         },
         "reads_mapped_to_genome_unique_and_multiple": {
             "title": "Reads mapped to genome: unique and multiple",
+            "description": "STARsolo read fraction multiply and uniquely mapped to genome",
             "type": "number"
         },
         "reads_with_valid_barcodes": {
             "title": "Reads with valid barcodes",
+            "description": "STARsolo count of reads with a valid cell barcode",
             "type": "number"
         },
         "sequencing_saturation": {
             "title": "Sequencing saturation",
+            "description": "STARsolo measure of library complexity",
             "type": "number"
         },
         "total_gene_detected": {
             "title": "Total Gene detected",
+            "description": "STARsolo count of total genes detected",
             "type": "integer",
             "minimum": 0
         },
         "total_genefull_detected": {
             "title": "Total GeneFull detected",
+            "description": "STARsolo count of total genes detected including introns",
             "type": "integer",
             "minimum": 0
         },
         "total_genefull_ex50pas_detected": {
             "title": "Total GeneFull_Ex50pAS detected",
+            "description": "STARsolo count of total genes detected allowing for up to 50% of the read not to overlap the exon",
             "type": "integer",
             "minimum": 0
         },
         "umis_in_cells": {
             "title": "UMIs in cells",
+            "description": "STARsolo total number of UMIs found in cells",
             "type": "integer",
             "minimum": 0
         },
         "unique_reads_in_cells_mapped_to_gene": {
             "title": "Unique reads in cells mapped to Gene",
+            "description": "STARsolo total number of reads in cells that were mapped to the gene exons",
             "type": "integer",
             "minimum": 0
         },
         "unique_reads_in_cells_mapped_to_genefull": {
             "title": "Unique reads in cells mapped to GeneFull",
+            "description": "STARsolo total number of reads in cells that were mapped to the gene exons",
             "type": "integer",
             "minimum": 0
         },
         "unique_reads_in_cells_mapped_to_genefull_ex50pas": {
             "title": "Unique reads in cells mapped to GeneFull_Ex50pAS",
+            "description": "STARsolo total number of reads in cells that were mapped to the gene exons if the read overlapped an exon by at least 50%",
             "type": "integer",
             "minimum": 0
         },
         "barcode_rank_plot": {
             "title": "Barcode rank plot",
+            "description": "STARsolo report of UMIs per cell",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -241,6 +259,7 @@
         },
         "sequencing_saturation_plot": {
             "title": "Sequencing saturation plot",
+            "comment": "This property was intended to record sequencing saturation plots, but is not currently used.",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
