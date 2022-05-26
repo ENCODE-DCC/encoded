@@ -5255,7 +5255,7 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "7f228be4-f734-11ec-a8a3-650eac124f44",
-        "derived_from": "ENCFF888RIS"
+        "derived_from": ["ENCFF888RIS"]
     },
     {
         "accession": "ENCFF888CTA",
@@ -5273,6 +5273,6 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "7650e1af-7f07-d3c3-3c3a-0242ac123ac5",
-        "derived_from": "ENCFF888RIS"
+        "derived_from": ["ENCFF888RIS"]
     }
 ]
