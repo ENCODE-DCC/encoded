@@ -777,7 +777,7 @@ const ReferenceComponent = (props, reactContext) => {
                                     </dd>
                                 </div>
                             : null}
-                            
+
                             {context.related_pipelines && context.related_pipelines.length > 0 ?
                                 <div data-test="relatedpipelines">
                                     <dt>Related Pipelines</dt>
