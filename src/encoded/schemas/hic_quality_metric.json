@@ -234,270 +234,319 @@
         "sequenced_reads": {
             "title": "Number of sequenced read",
             "type": "integer",
+            "description": "Number of total reads sequenced for library",
             "minimum": 0
         },
         "sequenced_read_pairs": {
             "title": "Number of sequenced read pairs",
             "type": "integer",
+            "description": "Number of total read pairs sequenced for library",
             "minimum": 0
         },
         "no_chimera_found": {
             "title": "Number of no chimera found",
             "type": "integer",
+            "description": "Number of reads where no chimera was found",
             "minimum": 0
         },
         "0_alignments": {
             "title": "Number of 0 alignments",
             "type": "integer",
+            "description": "Number of reads that did not align to the reference genome",
             "minimum": 0
         },
         "1_alignment": {
             "title": "Number of 1 alignment",
             "type": "integer",
+            "description": "Number of reads that align to one position in the reference genome",
             "minimum": 0
         },
         "1_alignment_unique": {
             "title": "Number of 1 alignment unique",
             "type": "integer",
+            "description": "Number of unique reads that align to one position in the reference genome",
             "minimum": 0
         },
         "1_alignment_duplicates": {
             "title": "Number of 1 alignment duplicates",
             "type": "integer",
+            "description": "Number of duplicate reads that align to one position in the reference genome",
             "minimum": 0
         },
         "2_alignments": {
             "title": "Number of 2 alignments",
             "type": "integer",
+            "description": "Number of reads that align to two positions in the reference genome",
             "minimum": 0
         },
         "2_alignments_a_b": {
             "title": "Number of 2 alignments (A...B)",
             "type": "integer",
+            "description": "Number of reads that align to two positions in the reference genome of the type A...B",
             "minimum": 0
         },
         "2_alignment_duplicates": {
             "title": "Number of 2 alignments duplicates",
             "type": "integer",
+            "description": "Number of duplicate reads that align to two positions in the reference genome",
             "minimum": 0
         },
         "2_alignment_unique": {
             "title": "Number of 2 alignments unique",
             "type": "integer",
+            "description": "Number of unique reads that align to two positions in the reference genome",
             "minimum": 0
         },
         "2_alignments_a1_a2b_a1b2_b1a2": {
             "title": "Number of 2 alignments (A1...A2B; A1B2...B1A2)",
             "type": "integer",
+            "description": "Number of reads that align to two positions in the reference genome of the type A1...A2B; A1B2...B1A2",
             "minimum": 0
         },
         "3_or_more_alignments": {
             "title": "Number of 3 or more alignments",
             "type": "integer",
+            "description": "Number of reads that align to three or more positions in the reference genome",
             "minimum": 0
         },
         "pct_no_chimera_found": {
             "title": "Percentage of no chimera found",
             "type": "number",
+            "description": "Percent of reads where no chimera was found",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_0_alignments": {
             "title": "Percentage of 0 alignments",
             "type": "number",
+            "description": "Percent of reads that did not align to the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_1_alignment": {
             "title": "Percentage of 1 alignment",
             "type": "number",
+            "description": "Percent of reads that align to one position in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_1_alignment_unique": {
             "title": "Percentage of 1 alignment unique",
             "type": "number",
+            "description": "Percent of unique reads that align to one position in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_1_alignment_duplicates": {
             "title": "Percentage of 1 alignment duplicates",
             "type": "number",
+            "description": "Percent of duplicate reads that align to one position in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_sequenced_1_alignment_unique": {
             "title": "Percentage of 1 alignment unique",
             "type": "number",
+            "description": "Percent of unique reads that align to one position in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_sequenced_1_alignment_duplicates": {
             "title": "Percentage of 1 alignment duplicates",
             "type": "number",
+            "description": "Percent of duplicate reads that align to one position in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_2_alignments": {
             "title": "Percentage of 2 alignments",
             "type": "number",
+            "description": "Percent of reads that align to two positions in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_2_alignment_unique": {
             "title": "Percentage of 2 alignment unique",
             "type": "number",
+            "description": "Percent of unique reads that align to two positions in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_2_alignment_duplicates": {
             "title": "Percentage of 2 alignment duplicates",
             "type": "number",
+            "description": "Percent of duplicate reads that align to two positions in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_2_alignments_a_b": {
             "title": "Percentage of 2 alignments a_b",
             "type": "number",
+            "description": "Percent of reads that align to two positions in the reference genome of the type A...B",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_2_alignments_a1_a2b_a1b2_b1a2": {
             "title": "Percentage of 2 alignments a1_a2b_a1b2_b1a2",
             "type": "number",
+            "description": "Percent of reads that align to two positions in the reference genome of the type A1...A2B; A1B2...B1A2",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_sequenced_2_alignment_unique": {
             "title": "Percentage of 2 alignment unique",
             "type": "number",
+            "description": "Percent of unique reads that align to two positions in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_sequenced_2_alignment_duplicates": {
             "title": "Percentage of 2 alignment duplicates",
             "type": "number",
+            "description": "Percent of duplicate reads that align to two positions in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_3_or_more_alignments": {
             "title": "Percentage of 3 or more alignments",
             "type": "number",
+            "description": "Percent of reads that align to three or more positions in the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_total_duplicates": {
             "title": "Percentage of unique total duplicates",
             "type": "number",
+            "description": "Percent of duplicate reads that align to the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_total_unique": {
             "title": "Percentage of unique total unique",
             "type": "number",
+            "description": "Percent of unique reads that align to the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "one_or_both_reads_unmapped": {
             "title": "one_or_both_reads_unmapped",
             "type": "integer",
+            "description": "Number of read pairs where one or both reads is unmapped",
             "minimum": 0
         },
         "pct_one_or_both_reads_unmapped": {
             "title": "Percentage of one or both reads unmapped",
             "type": "number",
+            "description": "Percent of read pairs where one or both reads is unmapped",
             "minimum": 0,
             "maximum": 100.0
         },
         "ligation_motif_present": {
             "title": "Number of reads with ligation motif present",
             "type": "integer",
+            "description": "Number of reads containing a ligation motif",
             "minimum": 0
         },
         "pct_ligation_motif_present": {
             "title": "Percentage of reads with ligation motif present",
             "type": "number",
+            "description": "Percent of reads containing a ligation motif",
             "minimum": 0,
             "maximum": 100.0
         },
         "avg_insert_size": {
             "title": "Average of the insert size",
             "type": "number",
+            "description": "Average insert size",
             "minimum": 0
         },
         "total_unique": {
             "title": "Number of total unique",
             "type": "integer",
+            "description": "Number of unique reads that align to the reference genome",
             "minimum": 0
         },
         "pct_sequenced_total_unique": {
             "title": "Percentage of sequenced total reads",
             "type": "number",
+            "description": "Percent of unique reads that align to the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "total_duplicates": {
             "title": "Number of total duplicates",
             "type": "integer",
+            "description": "Number of duplicate reads that align to the reference genome",
             "minimum": 0
         },
         "pct_sequenced_total_duplicates": {
             "title": "Percentage of total duplicates",
             "type": "number",
+            "description": "Percent of duplicate reads that align to the reference genome",
             "minimum": 0,
             "maximum": 100.0
         },
         "library_complexity_estimate": {
             "title": "Library complexity estimate",
             "type": "integer",
+            "description": "Estimate of Library Complexity",
             "minimum": 0
         },
         "library_complexity_estimate_1_alignment": {
             "title": "Library complexity estimate (1 alignment)",
             "type": "integer",
+            "description": "Estimate of Library Complexity (for reads with one alignment)",
             "minimum": 0
         },
         "library_complexity_estimate_2_alignments": {
             "title": "Library complexity estimate (2 alignment)",
             "type": "integer",
+            "description": "Estimate of Library Complexity (for reads with two alignments)",
             "minimum": 0
         },
         "library_complexity_estimate_1_and_2_alignments": {
             "title": "Library complexity estimate (1 and 2 alignments)",
             "type": "integer",
+            "description": "Estimate of Library Complexity (for reads with one and two alignments)",
             "minimum": 0
         },
         "intra_fragment_reads": {
             "title": "Number of intra fragment reads",
             "type": "integer",
+            "description": "Number of intra-fragment reads",
             "minimum": 0
         },
         "pct_sequenced_intra_fragment_reads": {
             "title": "Percentage of sequenced intra fragment reads",
             "type": "number",
+            "description": "Percent of intra-fragment reads",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_intra_fragment_reads": {
             "title": "Percentage of unique intra fragment reads",
             "type": "number",
+            "description": "Percent of unique intra-fragment reads",
             "minimum": 0,
             "maximum": 100.0
         },
         "below_mapq_threshold": {
             "title": "Number of reads below mapq threshold",
             "type": "integer",
+            "description": "Number of reads below the mapQ threshold",
             "minimum": 0
         },
         "pct_sequenced_below_mapq_threshold": {
             "title": "Percentage of sequenced reads below mapq threshold",
             "type": "number",
+            "description": "Percent of reads below the mapQ threshold",
             "minimum": 0,
             "maximum": 100.0
         },
         "pct_unique_below_mapq_threshold": {
             "title": "Percentage of unique reads below mapq threshold",
             "type": "number",
+            "description": "Percent of unique reads below the mapQ threshold",
             "minimum": 0,
             "maximum": 100.0
         },
@@ -536,6 +585,7 @@
         "lior_convergence": {
             "title": "L-I-O-R (Left Inner Outer Right) convergence",
             "type": "integer",
+            "description": "Distance in basepairs at which left, right, inner, and outer pair types converge",
             "minimum": 0
         },
         "pct_left_pair_type": {
