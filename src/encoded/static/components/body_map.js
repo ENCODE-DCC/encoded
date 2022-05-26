@@ -768,31 +768,37 @@ class BodyMap extends React.Component {
     render() {
         return (
             <div className={`body-facet-container ${this.props.organism.toLowerCase().replace(/\s/g, '-')}`}>
-                <div className="body-list body-list-top">
-                    <ul className="body-list-inner">
-                        {Object.keys(this.SystemsList).map((b) => (
-                            <li key={b}>
-                                <span
-                                    id={b}
-                                    className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
-                                    role="button"
-                                    tabIndex="0"
-                                    onClick={(e) => this.chooseOrgan(e)}
-                                    onKeyPress={(e) => this.chooseOrgan(e)}
-                                    onMouseEnter={(e) => highlightOrgan(e, this.BodyList, this.CellsList, this.SystemsList)}
-                                    onMouseLeave={unHighlightOrgan}
-                                    disabled={this.state.systemFacets.indexOf(b) === -1}
-                                >
-                                    {b}
-                                </span>
-                            </li>
-                        ))}
-                        <button type="button" className="clear-organs" onClick={this.clearOrgans}>
-                            <i className="icon icon-times-circle" />
-                            Clear body map selections
-                        </button>
-                    </ul>
-                </div>
+                {this.props.displaySystems ?
+                    <div className="body-list body-list-top">
+                        <ul className="body-list-inner">
+                            {Object.keys(this.SystemsList).map((b) => (
+                                <li key={b}>
+                                    <span
+                                        id={b}
+                                        className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
+                                        role="button"
+                                        tabIndex="0"
+                                        onClick={(e) => this.chooseOrgan(e)}
+                                        onKeyPress={(e) => this.chooseOrgan(e)}
+                                        onMouseEnter={(e) => highlightOrgan(e, this.BodyList, this.CellsList, this.SystemsList)}
+                                        onMouseLeave={unHighlightOrgan}
+                                        disabled={this.state.systemFacets.indexOf(b) === -1}
+                                    >
+                                        {b}
+                                    </span>
+                                </li>
+                            ))}
+                            <button type="button" className="clear-organs clear-organs-with-systems" onClick={this.clearOrgans}>
+                                <i className="icon icon-times-circle" />
+                                Clear body map selections
+                            </button>
+                        </ul>
+                    </div>
+                : null}
+                <button type="button" className={`clear-organs ${this.props.displaySystems ? 'clear-organs-with-systems' : ''}`} onClick={this.clearOrgans}>
+                    <i className="icon icon-times-circle" />
+                    Clear body map selections
+                </button>
                 <div className="body-facet">
                     <div className="body-image-container">
                         {this.props.organism === 'Homo sapiens' ?
@@ -882,6 +888,11 @@ class BodyMap extends React.Component {
 BodyMap.propTypes = {
     context: PropTypes.object.isRequired,
     organism: PropTypes.string.isRequired,
+    displaySystems: PropTypes.bool, // Can be used to suppress list of systems slims
+};
+
+BodyMap.defaultProps = {
+    displaySystems: true, // By default, systems slims are displayed
 };
 
 BodyMap.contextTypes = {
@@ -953,7 +964,7 @@ ClickableThumbnail.propTypes = {
 // Displayed when you click on <ClickableThumbnail>
 // Allows you to select organ / system filters
 export const BodyMapModal = (props) => {
-    const { context, isThumbnailExpanded, toggleThumbnail, organism } = props;
+    const { context, isThumbnailExpanded, toggleThumbnail, organism, displaySystems } = props;
     return (
         <div className="modal" style={{ display: 'block' }}>
             <div className={`body-map-container-pop-up ${isThumbnailExpanded ? 'expanded' : 'collapsed'}`}>
@@ -965,6 +976,7 @@ export const BodyMapModal = (props) => {
                     <BodyMap
                         context={context}
                         organism={organism}
+                        displaySystems={displaySystems}
                     />
                 </div>
                 <div className="spacer" />
@@ -979,6 +991,11 @@ BodyMapModal.propTypes = {
     toggleThumbnail: PropTypes.func.isRequired,
     context: PropTypes.object.isRequired,
     organism: PropTypes.string.isRequired,
+    displaySystems: PropTypes.bool, // Can be used to suppress list of systems slims
+};
+
+BodyMapModal.defaultProps = {
+    displaySystems: true, // By default, system slims are displayed
 };
 
 // Combining the body map thumbnail and the body map modal into one component
@@ -1032,6 +1049,7 @@ export const BodyMapThumbnailAndModal = (props) => {
                     toggleThumbnail={toggleThumbnail}
                     context={props.context}
                     organism={props.organism}
+                    displaySystems={props.displaySystems}
                 />
             : null}
         </div>
@@ -1042,6 +1060,11 @@ BodyMapThumbnailAndModal.propTypes = {
     context: PropTypes.object.isRequired,
     location: PropTypes.string.isRequired, // Should be context.location_href from parent
     organism: PropTypes.string.isRequired,
+    displaySystems: PropTypes.bool, // Can be used to suppress list of systems slims
+};
+
+BodyMapThumbnailAndModal.defaultProps = {
+    displaySystems: true, // By default, system slims are displayed
 };
 
 export default BodyMap;

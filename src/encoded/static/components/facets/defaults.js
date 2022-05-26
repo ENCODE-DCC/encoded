@@ -1368,7 +1368,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     };
 
     return (
-        <div className="facet">
+        <div className={`facet ${facet.title.toLowerCase()}__facet`}>
             <button
                 className="facet-expander"
                 type="button"

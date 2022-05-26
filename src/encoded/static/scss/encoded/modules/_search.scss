@@ -501,6 +501,16 @@ $form-bg: #f3f3f3;
     .clear-filters-control {
         display: none;
     }
+
+    .organ__facet, .systems__facet {
+        display: none;
+    }
+
+    .tab-content-homosapiens, .tab-content-musmusculus {
+        .organism__facet {
+            display: none;
+        }
+    }
 }
 
 .region-search {

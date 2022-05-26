@@ -1466,6 +1466,10 @@ export const FacetList = (props) => {
         isExpandable,
         hideDocType,
         options,
+        bodyMap,
+        organism,
+        bodyMapLocation,
+        displaySystems,
     } = props;
 
     const [expandedFacets, setExpandFacets] = React.useState(new Set());
@@ -1652,11 +1656,12 @@ export const FacetList = (props) => {
                         {facetGroups.length > 0
                             ? (
                                 <div className="facet-list-wrapper facet-list-wrapper--facet-group">
-                                    {props.bodyMap ?
+                                    {bodyMap ?
                                         <BodyMapThumbnailAndModal
                                             context={context}
-                                            location={context['@id']}
-                                            organism="Homo sapiens"
+                                            location={bodyMapLocation}
+                                            organism={organism || 'Homo sapiens'}
+                                            displaySystems={displaySystems}
                                         />
                                     : null}
                                     {props.additionalFacet ?
@@ -1762,6 +1767,9 @@ FacetList.propTypes = {
     /** True if the collapsible, false otherwise  */
     isExpandable: PropTypes.bool,
     bodyMap: PropTypes.bool,
+    organism: PropTypes.string,
+    bodyMapLocation: PropTypes.string,
+    displaySystems: PropTypes.bool,
     additionalFacet: PropTypes.object,
     /** Options to pass to facet components in FacetContext */
     options: PropTypes.object,
@@ -1778,6 +1786,9 @@ FacetList.defaultProps = {
     onFilter: null,
     isExpandable: true,
     bodyMap: false,
+    organism: 'Homo sapiens',
+    bodyMapLocation: '',
+    displaySystems: true,
     additionalFacet: null,
     options: {},
 };
@@ -2007,7 +2018,7 @@ export class ResultTable extends React.Component {
     }
 
     render() {
-        const { context, searchBase, actions, hideDocType, bodyMap } = this.props;
+        const { context, searchBase, actions, hideDocType, bodyMap, organism, bodyMapLocation, displaySystems } = this.props;
         const { facets, total, columns, filters } = context;
         const results = context['@graph'];
         const label = 'results';
@@ -2023,6 +2034,9 @@ export class ResultTable extends React.Component {
                     onFilter={this.onFilter}
                     hideDocType={hideDocType}
                     bodyMap={bodyMap}
+                    organism={organism}
+                    bodyMapLocation={bodyMapLocation}
+                    displaySystems={displaySystems}
                 />
                 {context.notification === 'Success' ?
                     <div className="search-results__result-list">
@@ -2049,6 +2063,9 @@ ResultTable.propTypes = {
     currentRegion: PropTypes.func,
     hideDocType: PropTypes.bool,
     bodyMap: PropTypes.bool,
+    organism: PropTypes.string,
+    bodyMapLocation: PropTypes.string,
+    displaySystems: PropTypes.bool,
 };
 
 ResultTable.defaultProps = {
@@ -2057,6 +2074,9 @@ ResultTable.defaultProps = {
     currentRegion: null,
     hideDocType: false,
     bodyMap: false,
+    organism: 'Homo sapiens',
+    bodyMapLocation: '',
+    displaySystems: true,
 };
 
 ResultTable.childContextTypes = {
