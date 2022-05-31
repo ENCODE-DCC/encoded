@@ -82,7 +82,7 @@
         "supersedes": {
             "title": "Supersedes" ,
             "description": "The donor(s) that this donor supersedes.",
-            "comment": "The donor(s) in this list should be obsolete and the superseeding donor object should be used instead.",
+            "comment": "The donor(s) in this list should be obsolete and the superseding donor object should be used instead.",
             "type": "array",
             "uniqueItems": true,
             "items": {
