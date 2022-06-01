@@ -14,7 +14,7 @@ import pubReferenceList from './reference';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleTable, ExperimentTable } from './typeutils';
+import { ReplacementAccessions, BiosampleTable, ExperimentTable } from './typeutils';
 import formatMeasurement from '../libs/formatMeasurement';
 
 
