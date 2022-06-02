@@ -512,23 +512,35 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             'Transcription factor ChIP-seq 2',
             'Transcription factor ChIP-seq 2 (unreplicated)']
             for pipeline in value['pipelines']):
-        yield from check_analysis_chip_seq_standards(
-            value,
-            files_structure,
-            [
-                'ChIP-seq read mapping',
-                'Raw mapping with no filtration',
-                'Pool and subsample alignments',
-                'Histone ChIP-seq',
-                'Histone ChIP-seq (unreplicated)',
-                'Transcription factor ChIP-seq',
-                'Transcription factor ChIP-seq (unreplicated)',
-                'Histone ChIP-seq 2',
-                'Histone ChIP-seq 2 (unreplicated)',
-                'Transcription factor ChIP-seq 2',
-                'Transcription factor ChIP-seq 2 (unreplicated)',
-            ],
-            '/data-standards/chip-seq/')
+        if value['assembly'] in ['GRCh38', 'hg19', 'mm10', 'mm9']:
+            yield from check_analysis_chip_seq_standards(
+                value,
+                files_structure,
+                [
+                    'ChIP-seq read mapping',
+                    'Raw mapping with no filtration',
+                    'Pool and subsample alignments',
+                    'Histone ChIP-seq',
+                    'Histone ChIP-seq (unreplicated)',
+                    'Transcription factor ChIP-seq',
+                    'Transcription factor ChIP-seq (unreplicated)',
+                    'Histone ChIP-seq 2',
+                    'Histone ChIP-seq 2 (unreplicated)',
+                    'Transcription factor ChIP-seq 2',
+                    'Transcription factor ChIP-seq 2 (unreplicated)',
+                ],
+                '/data-standards/chip-seq/')
+        elif value['assembly'] in ['ce11', 'ce10', 'dm3', 'dm6']:
+            yield from check_analysis_modERN_chip_seq_standards(
+                value,
+                files_structure,
+                [
+                    'Histone ChIP-seq 2',
+                    'Histone ChIP-seq 2 (unreplicated)',
+                    'Transcription factor ChIP-seq 2',
+                    'Transcription factor ChIP-seq 2 (unreplicated)'
+                ],
+                '/')
 
     if any(pipeline['title'] == 'Transcription factor ChIP-seq pipeline (modERN)' for pipeline in value['pipelines']):
         yield from check_analysis_modERN_chip_seq_standards(
