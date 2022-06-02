@@ -32,7 +32,7 @@
             "title": "Number of read pairs with bridge linker",
             "type":  "integer",
             "description": "Read pairs with linker",
-            "comment": "We used 20bp our bridge-linker sequence, and allow 2bp mismatch to detect a linker sequence",
+            "comment": "We used 20bp bridge-linker sequence, and allowed 2bp mismatch to detect a linker sequence",
             "minimum": 0
         },
         "frp_bl": {
@@ -66,7 +66,7 @@
         "pet_red": {
             "title": "PET redundancy",
             "description": "Ratio of redundant PET to uniquely mapped PET",
-            "comment": "If PCR duplicated reads are high, then reads are highly redundant, and pet_red is closed to 1. If PCR duplicated reads are low, then the value decreases",
+            "comment": "If PCR duplicated reads are high, then reads are highly redundant, and pet_red is close to 1. If PCR duplicated reads are low, then the value decreases",
             "type": "number",
             "minimum": 0,
             "maximum": 1
