@@ -9,7 +9,7 @@ import { DocumentsPanel, DocumentsSubpanels } from './doc';
 import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
-import { requestObjects, AlternateAccession, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
+import { requestObjects, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
