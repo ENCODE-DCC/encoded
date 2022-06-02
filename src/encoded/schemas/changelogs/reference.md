@@ -1,5 +1,8 @@
 ## Changelog for reference.json
 
+### Minor changes since schema version 21
+* Added *experimental_input* property.
+
 ### Schema version 21
 * Renamed the *ATAC-seq*, *DNase-seq*, *transcription factors*, and *GRO-cap* enum of *elements_selection_method* to be *accessible genome regions*, *DNase hypersensitive sites*, *TF binding sites* and *transcription start sites* respectively.
 * Renamed both *point mutations* and *single nucleotide polymorphisms* enum of *elements_selection_method* to be *sequence variants*.

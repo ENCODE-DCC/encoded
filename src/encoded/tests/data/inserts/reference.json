@@ -188,6 +188,7 @@
         "date_released": "2016-01-01",
         "accession": "ENCSR063INC",
         "description": "10X Genomics inclusion or permit list of barcodes for RNA Chromium V1 chemistry",
-        "uuid": "b27bb01c-8f27-4373-96a8-6c503928bd25"
+        "uuid": "b27bb01c-8f27-4373-96a8-6c503928bd25",
+        "experimental_input": ["ENCSR123AAA"]
     }
 ]
