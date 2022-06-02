@@ -843,6 +843,14 @@ def test_audit_analysis_chip_encode4(
     assert any(error['category'] ==
                'borderline replicate concordance' for error in res.json['audit'].get('WARNING', []))
 
+    # Check that modERN audit is triggered for non-human/mouse assembly
+    testapp.patch_json(file_bam_1_chip['@id'], {'assembly': 'dm6'})
+    testapp.patch_json(file_bam_2_chip['@id'], {'assembly': 'dm6'})
+    testapp.patch_json(file_bed_narrowPeak_chip_peaks['@id'], {'assembly': 'dm6'})
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    assert any(error['category'] ==
+        'insufficient read depth' for error in res.json['audit'].get('NOT_COMPLIANT', []))
+
 
 def test_audit_analysis_chip_modern(
     testapp,
