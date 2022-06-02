@@ -23,11 +23,13 @@
         },
         "footprint_count": {
             "title": "Footprint count",
+            "description": "Total number of DNaseI footprints",
             "type":  "integer",
             "minimum": 0
         },
         "dispersion_model": {
             "title": "Dispersion model",
+            "description": "Lack of fit indicates over-dispersion",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
