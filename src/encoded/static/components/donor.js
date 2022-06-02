@@ -657,9 +657,7 @@ class DonorComponent extends React.Component {
                 <header>
                     <TopAccessories context={context} crumbs={crumbs} />
                     <h1>{context.accession}</h1>
-                    <div className="replacement-accessions">
-                        <AlternateAccession altAcc={context.alternate_accessions} />
-                    </div>
+                    <ReplacementAccessions context={context} />
                     <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'experiment-audit', except: context['@id'] }} />
                     {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
                 </header>
