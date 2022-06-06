@@ -87,7 +87,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "35"
+            "default": "36"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -489,9 +489,19 @@
         "experimental_input": {
             "title": "Experimental input" ,
             "description": "The experiment that this annotation was derived from.",
-            "comment": "See Experiment.json for a list of available identifiers.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See Experiment.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "Experiment"
+            }
+        },
+        "donor": {
+            "title": "Donor",
+            "comment": "See donor.json for available identifiers.",
             "type": "string",
-            "linkTo": "Experiment"
+            "linkTo": "Donor"
         }
     },
     "facet_groups": [

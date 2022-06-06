@@ -192,6 +192,13 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.donor ?
+                                <div data-test="donor">
+                                    <dt>Donor</dt>
+                                    <dd><a href={context.donor}>{globals.atIdToAccession(context.donor)}</a></dd>
+                                </div>
+                            : null}
+
                             {context.annotation_type ?
                                 <div data-test="type">
                                     <dt>Annotation type</dt>
@@ -209,10 +216,20 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {context.annotation_type === 'gkm-SVM-model' && context.experimental_input ?
+                            {context.experimental_input?.length > 0 ?
                                 <div data-test="experimentalinput">
                                     <dt>Experimental input</dt>
-                                    <dd><a href={context.experimental_input}>{globals.atIdToAccession(context.experimental_input)}</a></dd>
+                                    <dd>
+                                        <ul>
+                                            {context.experimental_input.map((input) => (
+                                                <li key={input}>
+                                                    <a href={input}>
+                                                        {globals.atIdToAccession(input)}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
                                 </div>
                             : null}
 

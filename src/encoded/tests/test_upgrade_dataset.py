@@ -553,3 +553,11 @@ def test_upgrade_annotation_34_to_35(upgrader, annotation_34):
 def test_upgrade_functional_characterization_series_3_to_4(upgrader, functional_characterization_series_3):
     value = upgrader.upgrade('functional_characterization_series', functional_characterization_series_3, current_version='3', target_version='4')
     assert value['schema_version'] == '4'
+
+
+def test_upgrade_annotation_35_to_36(upgrader, annotation_35_experimental_input_array, experiment_chip_H3K4me3):
+    value = upgrader.upgrade(
+        'annotation', annotation_35_experimental_input_array, current_version='35', target_version='36'
+    )
+    assert value['schema_version'] == '36'
+    assert value['experimental_input'] == [experiment_chip_H3K4me3['@id']]
