@@ -4,6 +4,7 @@
 
 * Removed the dependencies on *run_type* for *1_alignment*, *pct_1_alignment*, *pct_2_alignment_duplicates*, and *pct_2_alignment_unique*
 * Added *genomic perturbation followed by RT-qPCR* to *assay_term_name* enum.
+* Added descriptions for *pct_left_pair_type*, *pct_right_pair_type*, *pct_inner_pair_type*, *pct_outer_pair_type*, *inter_chromosomal*,*pct_sequenced_inter_chromosomal*, *pct_unique_inter_chromosomal*, *intra_chromosomal*, *pct_sequenced_intra_chromosomal*, *pct_unique_intra_chromosomal*, *short_range_less_than_500bp*, *pct_sequenced_short_range_less_than_500bp*, *pct_unique_short_range_less_than_500bp*, *short_range_500bp_to_5kb*, *pct_sequenced_short_range_500bp_to_5kb*, *pct_unique_short_range_500bp_to_5kb*, *short_range_5kb_to_20kb*, *pct_sequenced_short_range_5kb_to_20kb*, *pct_unique_short_range_5kb_to_20kb*, *long_range_greater_than_20kb*, *pct_sequenced_long_range_greater_than_20kb*, *pct_unique_long_range_greater_than_20kb*, *hic_contacts*, *pct_sequenced_hic_contacts*, *pct_unique_hic_contacts*
 
 ### Schema version 2
 
