@@ -24,25 +24,25 @@
         "intra_inter_pet_ratio": {
             "title": "Ratio of intra/inter-chr PET",
             "description": "Ratio of intrachromsomal PET to interchromosomal PET",
-            "type":  "number",
+            "type": "number",
             "minimum": 0
         },
         "intra_inter_clust_pet2_ratio": {
             "title": "Ratio of intra/inter-chr PET clusters (>=2)",
             "description": "Ratio of intrachromosomal PET clusters to interchromosomal PET clusters with PET >=2",
-            "type":  "number",
+            "type": "number",
             "minimum": 0
         },
         "intra_inter_clust_pet5_ratio": {
             "title": "Ratio of intra/inter-chr PET clusters (>=5)",
             "description": "Ratio of intrachromosomal PET clusters to interchromosomal PET clusters with PET >=5",
-            "type":  "number",
+            "type": "number",
             "minimum": 0
         },
         "intra_inter_clust_pet10_ratio": {
             "title": "Ratio of intra/inter-chr PET clusters (>=10)",
             "description": "Ratio of intrachromosomal PET clusters to interchromosomal PET clusters with PET >=10",
-            "type":  "number",
+            "type": "number",
             "minimum": 0
         }
     },

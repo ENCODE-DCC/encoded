@@ -23,39 +23,51 @@
         },
         "total_rp": {
             "title": "Number of total read pairs in raw data",
-            "type":  "integer",
+            "type": "integer",
+            "description": "Total read pairs",
+            "comment": "It is number of read pairs from fastq files",
             "minimum": 0
         },
         "rp_bl": {
             "title": "Number of read pairs with bridge linker",
             "type":  "integer",
+            "description": "Read pairs with linker",
+            "comment": "We used 20bp bridge-linker sequence, and allowed 2bp mismatch to detect a linker sequence",
             "minimum": 0
         },
         "frp_bl": {
             "title": "Fraction of read pairs with bridge linker",
             "type":  "number",
+            "description": "Fraction read pairs with linker",
             "minimum": 0,
             "maximum": 1
         },
         "pet": {
             "title": "Number of PET",
             "type":  "integer",
+            "description": "Read pairs count containg a linker",
+            "comment": "It excluded no linker reads and single linker single read (one DNA fragment with a linker on one side). It counts single linker paired read",
             "minimum": 0
         },
         "um_pet": {
             "title": "Number of uniquely mapped PET",
             "type":  "integer",
+            "description": "Uniquely mapped PET",
+            "comment": "Unique read pairs count containg a linker",
             "minimum": 0
         },
         "nr_pet": {
             "title": "Number of non-redundant PET",
-            "type":  "integer",
+            "description": "Non-redundant read pairs count containing a linker",
+            "comment": "PET count, after removing PCR duplicates from um_pet",
+            "type": "integer",
             "minimum": 0
         },
         "pet_red": {
             "title": "PET redundancy",
             "description": "Ratio of redundant PET to uniquely mapped PET",
-            "type":  "number",
+            "comment": "If PCR duplicated reads are high, then reads are highly redundant, and pet_red is close to 1. If PCR duplicated reads are low, then the value decreases",
+            "type": "number",
             "minimum": 0,
             "maximum": 1
         }

@@ -23,7 +23,8 @@
         },
         "binding_peaks": {
             "title": "Number of protein factor binding peaks",
-            "type":  "integer",
+            "description": "Number of identified protein binding peaks",
+            "type": "integer",
             "minimum": 0
         }
     },
