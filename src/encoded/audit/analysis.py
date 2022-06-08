@@ -872,15 +872,18 @@ def check_analysis_modERN_chip_seq_standards(
     expected_pipeline_titles,
     link_to_standards
 ):
-    if len(value['datasets']) != 1 or len(value['pipelines']) != 1:
+    if len(value['datasets']) != 1:
         return
     else:
         assay_term_name = value['datasets'][0]['assay_term_name']
         target = get_target(value['datasets'][0])
         control_type = get_control_type(value['datasets'][0])
 
-    pipeline_title = value['pipelines'][0]['title']
-    if pipeline_title not in expected_pipeline_titles:
+    pipeline_titles = [pipeline['title'] for pipeline in value['pipelines']]
+    if any(
+        title not in expected_pipeline_titles
+        for title in pipeline_titles
+    ):
         return
 
     alignment_files = files_structure.get('alignments').values()
