@@ -78,6 +78,18 @@
                 "type":  "string",
                 "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
+        },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The donor(s) that this donor supersedes.",
+            "comment": "The donor(s) in this list should be obsolete and the superseding donor object should be used instead.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "comment": "The donor(s) in this list should be archived or revoked.",
+                "type": "string",
+                "linkTo": "MouseDonor"
+            }
         }
     },
     "facet_groups": [

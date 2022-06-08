@@ -1,5 +1,9 @@
 ## Changelog for human_donor.json
 
+### Minor changes since schema version 13
+
+* *supersedes* list property was added along with the calculated list property *superseded_by*
+
 ### Schema version 13
 
 * *ethnicity* enum *Caucasian* was changed to *European*

@@ -9,12 +9,12 @@ import { DocumentsPanel, DocumentsSubpanels } from './doc';
 import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
-import { requestObjects, AlternateAccession, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
+import { requestObjects, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleTable, ExperimentTable } from './typeutils';
+import { ReplacementAccessions, BiosampleTable, ExperimentTable } from './typeutils';
 import formatMeasurement from '../libs/formatMeasurement';
 
 
@@ -657,9 +657,7 @@ class DonorComponent extends React.Component {
                 <header>
                     <TopAccessories context={context} crumbs={crumbs} />
                     <h1>{context.accession}</h1>
-                    <div className="replacement-accessions">
-                        <AlternateAccession altAcc={context.alternate_accessions} />
-                    </div>
+                    <ReplacementAccessions context={context} />
                     <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'experiment-audit', except: context['@id'] }} />
                     {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
                 </header>
