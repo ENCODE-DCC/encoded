@@ -23,47 +23,56 @@
         },
         "unpaired_reads": {
             "title": "Unpaired reads",
+            "description": "",
             "type": "integer",
             "minimum": 0
         },
         "paired_reads": {
             "title": "Paired reads",
+            "description": "Number of paired reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "unmapped_reads": {
             "title": "Unmapped reads",
+            "description": "Number of unmapped reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "unpaired_duplicate_reads": {
             "title": "Unpaired duplicates",
+            "description": "Number of unpaired duplicates before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "paired_duplicate_reads": {
             "title": "Paired duplicates",
+            "description": "Number of paired duplicates before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "paired_optical_duplicate_reads": {
             "title": "Paired optical duplicates",
+            "description": "Number of paired optical duplicates before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "pct_duplicate_reads": {
             "title": "Percentage of duplicate reads",
+            "description": "Percent of paired duplicates before duplicate filtering",
             "type": "number",
             "minimum": 0,
             "maximum": 100.0
         },
         "total_fragments": {
             "title": "Total fragments",
+            "description": "Number of fragments before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "distinct_fragments": {
             "title": "Distinct fragments",
+            "description": "Number of distinct fragments",
             "type": "integer",
             "minimum": 0
         },
@@ -96,6 +105,7 @@
         },
         "fragment_length_distribution_plot": {
             "title": "Fragment length distribution plot",
+            "description": "Histogram depicting the distribution of fragment lengths",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

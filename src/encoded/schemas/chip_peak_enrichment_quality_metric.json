@@ -30,31 +30,37 @@
         },
         "min_size": {
             "title": "Minimum peak size",
+            "description": "Smallest peak width",
             "type": "integer",
             "minimum": 0
         },
         "25_pct": {
             "title": "25 percentile of peak size",
+            "description": "25th percentile of peak widths",
             "type": "integer",
             "minimum": 0
         },
         "50_pct": {
             "title": "50 percentile of peak size",
+            "description": "Median of peak widths",
             "type": "integer",
             "minimum": 0
         },
         "75_pct": {
             "title": "75 percentile of peak size",
+            "description": "75th percentile of peak widths",
             "type": "integer",
             "minimum": 0
         },
         "max_size": {
             "title": "Maximum peak size",
+            "description": "Largest peak width",
             "type": "integer",
             "minimum": 0
         },
         "mean": {
             "title": "Average peak size",
+            "description": "Mean peak width",
             "type": "number",
             "minimum": 0
         }

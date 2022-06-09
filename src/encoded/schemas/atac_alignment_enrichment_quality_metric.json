@@ -23,6 +23,7 @@
         },
         "subsampled_reads": {
             "title": "Number of subsampled reads",
+            "description": "",
             "type": "integer",
             "category": "Cross-correlation",
             "minimum": 0
@@ -37,6 +38,7 @@
         },
         "fri_exclusion_list": {
             "title": "Fraction of reads in regions from exclusion list",
+            "description": "",
             "type": "number",
             "category": "Fraction of reads",
             "minimum": 0,
@@ -44,6 +46,7 @@
         },
         "fri_prom": {
             "title": "Fraction of reads in promoter regions",
+            "description": "Fraction of reads in promoter regions",
             "type": "number",
             "category": "Fraction of reads",
             "minimum": 0,
@@ -51,6 +54,7 @@
         },
         "fri_enh": {
             "title": "Fraction of reads in enhancer regions",
+            "description": "Fraction of reads in enhancer regions",
             "type": "number",
             "category": "Fraction of reads",
             "minimum": 0,
@@ -73,11 +77,13 @@
         },
         "phantom_peak": {
             "title": "Phantom peak strand shift",
+            "description": "",
             "type": "integer",
             "category": "Cross-correlation"
         },
         "corr_phantom_peak": {
             "title": "Correlation at phantom peak",
+            "description": "Value of cross-correlation function at length corresponding to phantom peak",
             "type": "number",
             "category": "Cross-correlation",
             "minimum": 0,
@@ -85,6 +91,7 @@
         },
         "argmin_corr": {
             "title": "Strand shift with minimum correlation",
+            "description": "",
             "type": "integer",
             "category": "Cross-correlation"
         },
@@ -110,6 +117,7 @@
         },
         "cross_correlation_plot": {
             "title": "Cross-correlation plot",
+            "description": "",
             "type": "object",
             "category": "Cross-correlation",
             "additionalProperties": false,
@@ -242,6 +250,7 @@
         },
         "jsd_plot": {
             "title": "Jensen-Shannon distance plot",
+            "description": "",
             "type": "object",
             "category": "DeepTools enrichment",
             "additionalProperties": false,
@@ -288,6 +297,7 @@
         },
         "gc_bias_plot": {
             "title": "GC bias plot",
+            "description": "",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -333,10 +343,12 @@
         },
         "tss_enrichment": {
             "title": "Transcription start site (TSS) enrichment",
+            "description": "Enrichment in TSS",
             "type": "number"
         },
         "tss_enrichment_plot": {
             "title": "Transcription start site (TSS) enrichment plot",
+            "description": "Individual and cumulative signal at TSSs",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
