@@ -23,7 +23,7 @@
         },
         "subsampled_reads": {
             "title": "Number of subsampled reads",
-            "description": "",
+            "description": "Number of reads subsampled from the sample for calculation of all cross-correlation metrics",
             "type": "integer",
             "category": "Cross-correlation",
             "minimum": 0
@@ -32,12 +32,12 @@
             "title": "Estimated fragment length",
             "type": "number",
             "category": "Cross-correlation",
-            "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand shift cross-correlation analysis",
+            "description": "This is the estimated fragment length based on the strand shift for which cross-correlation between stranded 5' ChIP-seq coverage tracks is maximized. Occasionally, this value is manually overridden if there are artifacts in the cross-correlation.",
             "minimum": 0
         },
         "corr_estimated_fragment_len": {
             "title": "Correlation at estimated fragment length",
-            "description": "Value of correlation function at estimated fragment length.",
+            "description": "Value of cross-correlation function at estimated_fragment_length.",
             "type": "number",
             "category": "Cross-correlation",
             "minimum": 0,
@@ -45,13 +45,13 @@
         },
         "phantom_peak": {
             "title": "Phantom peak strand shift",
-            "description": "",
+            "description": "Strand shift value at which the phantom (false) peak in cross-correlation is observed. This is typically the read length.",
             "type": "integer",
             "category": "Cross-correlation"
         },
         "corr_phantom_peak": {
             "title": "Correlation at phantom peak",
-            "description": "Value of cross-correlation function at length corresponding to phantom peak",
+            "description": "Value of cross-correlation function at strand shift corresponding to phantom_peak (which is typically the read length)",
             "type": "number",
             "category": "Cross-correlation",
             "minimum": 0,
@@ -59,7 +59,7 @@
         },
         "argmin_corr": {
             "title": "Strand shift with minimum correlation",
-            "description": "",
+            "description": "Strand shift corresponding to the minimum value of cross-correlation (min_corr)",
             "type": "integer",
             "category": "Cross-correlation"
         },
@@ -75,17 +75,17 @@
             "title": "Normalized strand cross-correlation",
             "type": "number",
             "category": "Cross-correlation",
-            "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
+            "description": "Normalized strand cross-correlation = corr_estimated_fragment_len / min_corr. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
         },
         "RSC": {
             "title": "Relative strand cross-correlation coefficient",
             "type": "number",
             "category": "Cross-correlation",
-            "description": "Relative cross-correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length"
+            "description": "Relative cross-correlation coefficient. = (corr_estimated_fragment_len - min_corr) / (corr_phantom_peak - min_corr). Ratio of difference between strand cross-correlation at fragment length and minimum cross-correlation over all shifts against difference between read length cross-correlation and minimum cross-correlation over all shifts."
         },
         "cross_correlation_plot": {
             "title": "Cross-correlation plot",
-            "description": "",
+            "description": "A plot of the cross-correlation between stranded 5' ChIP-seq coverage tracks (correlation between strand coverage as a function of strand-shift)",
             "type": "object",
             "category": "Cross-correlation",
             "additionalProperties": false,
@@ -132,7 +132,7 @@
         },
         "auc": {
             "title": "AUC of the plot",
-            "description": "The “area under the curve”, with a maximum value of 0.5. Lower values generally indicate higher and more focal enrichment.",
+            "description": "DeepTools fingerprint enrichment QC metric. The “area under the fingerplot plot (jsd_plot) curve”, with a maximum value of 0.5. Lower values generally indicate higher and more focal enrichment. Should be compared to syn_auc as the expected baseline.",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0,
@@ -140,7 +140,7 @@
         },
         "syn_auc": {
             "title": "Synthetic AUC",
-            "description": "The expected area under the curve of a perfectly behaved input sample having the same mean sequencing depth of a given sample. This is useful to put the observed AUC into perspective.",
+            "description": "DeepTools fingerprint enrichment QC metric. The expected area under the curve of a perfectly behaved input control sample having the same mean sequencing depth of a given ChIP sample. This should be used as a baseline to compare the observed AUC (auc).",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0,
@@ -148,7 +148,7 @@
         },
         "x_intercept": {
             "title": "X-intercept",
-            "description": "The point (on the X-axis) at which the curve is 0. This is approximately the percentage of the genome that was not sequenced in a particular sample.",
+            "description": "DeepTools fingerprint enrichment QC metric. The point (on the X-axis) at which the curve is 0. This is approximately the percentage of the genome that was not sequenced in a particular sample.",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0,
@@ -156,7 +156,7 @@
         },
         "syn_x_intercept": {
             "title": "Synthetic X-intercept",
-            "description": "The expected X-intercept of a perfectly behaved input sample having the same mean sequencing depth of a given sample. This is useful to put the observed X-intercept into perspective.",
+            "description": "DeepTools fingerprint enrichment QC metric. The expected X-intercept of a perfectly behaved input sample having the same mean sequencing depth of a given sample. This is useful to put the observed X-intercept into perspective.",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0,
@@ -164,7 +164,7 @@
         },
         "elbow_pt": {
             "title": "Elbow point",
-            "description": "The elbow point attempts to measure the position at which the line turns upward. In practice, this is the point at which the plotted line is furthest from the line from the lower-left to the upper-right corner of the graph (equivalent to a perfect input sample with infinite coverage). The point returned is the position on the X-axis of this elbow point and higher values indicate more enrichment.",
+            "description": "DeepTools fingerprint enrichment QC metric. The elbow point attempts to measure the position at which the line turns upward. In practice, this is the point at which the plotted line is furthest from the line from the lower-left to the upper-right corner of the graph (equivalent to a perfect input sample with infinite coverage). The point returned is the position on the X-axis of this elbow point and higher values indicate more enrichment.",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0,
@@ -172,7 +172,7 @@
         },
         "syn_elbow_pt": {
             "title": "Synthetic elbow point",
-            "description": "The expected elbow point of a perfectly behaved input sample having the same mean sequencing depth of a given sample. This is useful to put the observed elbow point into perspective.",
+            "description": "DeepTools fingerprint enrichment QC metric. The expected elbow point of a perfectly behaved input sample having the same mean sequencing depth of a given sample. This is useful to put the observed elbow point into perspective.",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0,
@@ -180,7 +180,7 @@
         },
         "jsd": {
             "title": "JS distance",
-            "description": "The Jensen-Shannon distance between the replicate and the control.",
+            "description": "DeepTools fingerprint enrichment QC metric. The Jensen-Shannon distance between the ChIP sample and its matched control.",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0,
@@ -188,7 +188,7 @@
         },
         "syn_jsd": {
             "title": "Synthetic JS distance",
-            "description": "The Jensen-Shannon distance between a given sample and a perfect input sample with the same coverage depth (i.e., the plot generated from the Poisson probability mass function with lambda equal to the mean coverage in the sample).",
+            "description": "DeepTools fingerprint enrichment QC metric. The Jensen-Shannon distance between a given ChIP sample and a perfect input control sample with the same coverage depth (i.e., the plot generated from the Poisson probability mass function with lambda equal to the mean coverage in the sample).",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0,
@@ -196,7 +196,7 @@
         },
         "pct_genome_enrich": {
             "title": "Percentage of genome enriched",
-            "description": "The approximate percentage of the genome enriched in signal (e.g., bound by a transcription factor or having a certain histone modification).",
+            "description": "DeepTools fingerprint enrichment QC metric. The approximate percentage of the genome enriched in signal (e.g., bound by a transcription factor or having a certain histone modification).",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0,
@@ -204,21 +204,21 @@
         },
         "diff_enrich": {
             "title": "Differential enrichment",
-            "description": "The differential enrichment between a given sample and that indicated by --JSDsample at the elbow point.",
+            "description": "DeepTools fingerprint enrichment QC metric. The differential enrichment between a given sample and that indicated by --JSDsample at the elbow point.",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0
         },
         "ch_div": {
             "title": "CHANCE divergence",
-            "description": "The CHANCE divergence between the replicate and the control.",
+            "description": "DeepTools fingerprint enrichment QC metric. The CHANCE divergence between the ChIP sample and the control.",
             "type": "number",
             "category": "DeepTools enrichment",
             "minimum": 0
         },
         "jsd_plot": {
             "title": "Jensen-Shannon distance plot",
-            "description": "",
+            "description": "DeepTools enrichment fingerprint plot. Genome regions (bins) of a specified length are randomly sampled and total coverage is calculated from BAM files in each region. Coverage values are then sorted according to their rank and the cumulative sum of read counts is plotted. An ideal input DNA control sample with perfect uniform distribution of reads along the genome and infinite sequencing coverage should generate a straight diagonal line. A very specific and strong ChIP enrichment will be indicated by a prominent and steep rise of the cumulative sum towards the highest rank. This means that a big chunk of reads from the ChIP sample is located in few bins which corresponds to high, narrow enrichments.",
             "type": "object",
             "category": "DeepTools enrichment",
             "additionalProperties": false,
@@ -265,7 +265,7 @@
         },
         "gc_bias_plot": {
             "title": "GC bias plot",
-            "description": "",
+            "description": "A plot summarizing GC bias properties of the sample obtained from PICARD CollectGcBiasMetrics. The percentage of WINDOWS corresponding to each GC bin of the reference sequence, the mean base quality of the reads that correspond to a specific GC content distribution window (MEAN_BASE_QUALITY) and NORMALIZED_COVERAGE is a relative measure of sequence coverage by the reads at a particular GC content.",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

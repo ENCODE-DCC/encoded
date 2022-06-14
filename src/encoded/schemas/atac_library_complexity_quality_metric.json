@@ -23,7 +23,7 @@
         },
         "unpaired_reads": {
             "title": "Unpaired reads",
-            "description": "",
+            "description": "Number of unpaired reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },

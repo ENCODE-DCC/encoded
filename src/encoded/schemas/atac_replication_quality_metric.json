@@ -29,7 +29,7 @@
         },
         "idr_cutoff":{
             "title": "IDR cutoff",
-            "description": "",
+            "description": "Irreproducible Discovery Rate (IDR) threshold used to define reproducible peaks",
             "type": "number",
             "minimum": 0,
             "maximum": 1
@@ -58,7 +58,7 @@
         },
         "idr_dispersion_plot": {
             "title": "IDR dispersion plot",
-            "description": "",
+            "description": "Rank consistency plots from the IDR framework. Upper Left: Replicate 1 peak ranks versus replicate 2 peak ranks - peaks that do not pass the specified idr threshold are colered red. Upper Right: Replicate 1 log10 peak scores versus replicate 2 log10 peak scores - peaks that do not pass the specified idr threshold are colered red. Bottom Row: Peaks rank versus idr scores are plotted in black. The overlayed boxplots display the distribution of idr values in each 5% quantile. The idr values are thresholded at the optimization precision - 1e-6 by default.",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -104,7 +104,7 @@
         },
         "idr_parameters": {
             "title": "IDR run parameters",
-            "description": "",
+            "description": "Parameters used for IDR reproducibility analysis",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

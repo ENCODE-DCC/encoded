@@ -75,7 +75,7 @@
         },
         "paired_reads": {
             "title": "Number of paired reads passing QC",
-            "description": "",
+            "description": "Number of paired reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
@@ -185,7 +185,7 @@
         },
         "frac_mito_reads": {
             "title": "Fraction of mitochondrial reads",
-            "description": "",
+            "description": "Fraction of mitochondrial reads",
             "type": "number",
             "minimum": 0,
             "maximum": 1
