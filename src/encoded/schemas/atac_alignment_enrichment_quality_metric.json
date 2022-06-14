@@ -38,7 +38,7 @@
         },
         "fri_exclusion_list": {
             "title": "Fraction of reads in regions from exclusion list",
-            "description": "",
+            "description": "Fraction of reads in regions from exclusion list",
             "type": "number",
             "category": "Fraction of reads",
             "minimum": 0,
