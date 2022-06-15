@@ -158,20 +158,33 @@ def test_audit_biosample_part_of_consistency_ontology_part_of_multicellular_orga
     assert all(error['category'] != 'inconsistent BiosampleType term' for error in errors_list)
 
 
-def test_audit_biosample_part_of_consistency_ontology_part_of(testapp,
-                                                              base_biosample,
-                                                              biosample_1,
-                                                              biosample_2,
-                                                              whole_organism,
-                                                              mouse,
-                                                              cerebellum,
-                                                              purkinje_cell):
+def test_audit_biosample_part_of_consistency_ontology_part_of(
+    testapp,
+    base_biosample,
+    biosample_1,
+    biosample_2,
+    whole_organism,
+    mouse,
+    cerebellum,
+    purkinje_cell,
+    epidermis,
+    skin_of_body
+):
     testapp.patch_json(biosample_1['@id'], {'biosample_ontology': whole_organism['uuid'],
                                             'organism': mouse['uuid']})
     testapp.patch_json(biosample_2['@id'], {'biosample_ontology': cerebellum['uuid'],
                                             'part_of': biosample_1['@id']})
     testapp.patch_json(base_biosample['@id'], {'biosample_ontology': purkinje_cell['uuid'],
                                                'part_of': biosample_2['@id']})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent BiosampleType term' for error in errors_list)
+
+    testapp.patch_json(biosample_2['@id'], {'biosample_ontology': skin_of_body['uuid']})
+    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': epidermis['uuid']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
