@@ -863,7 +863,11 @@
                             "enum": [
                                 "DNA accessibility raw signal",
                                 "haplotype-specific DNA accessibility raw signal",
-                                "haplotype-specific DNA accessibility corrected signal"
+                                "haplotype-specific DNA accessibility corrected signal",
+                                "minus strand end position signal",
+                                "minus strand normalized end position signal",
+                                "plus strand end position signal",
+                                "plus strand normalized end position signal"
                             ]
                         }
                     }
@@ -913,7 +917,11 @@
                                     "haplotype-specific DNA accessibility corrected signal",
                                     "haplotype-specific chromatin interactions",
                                     "variants chromatin interactions",
-                                    "raw imaging signal"
+                                    "raw imaging signal",
+                                    "minus strand end position signal",
+                                    "minus strand normalized end position signal",
+                                    "plus strand end position signal",
+                                    "plus strand normalized end position signal"
                                 ]
                             }
                         }
@@ -2140,7 +2148,9 @@
                         "methylation state at CpG",
                         "microRNA quantifications",
                         "miRNA annotations",
+                        "minus strand end position signal",
                         "minus strand methylation state at CpG",
+                        "minus strand normalized end position signal",
                         "minus strand signal of all reads",
                         "minus strand signal of unique reads",
                         "mitochondrial exclusion list regions",
@@ -2165,7 +2175,9 @@
                         "perturbation signal",
                         "phased mapping",
                         "phased variant calls",
+                        "plus strand end position signal",
                         "plus strand methylation state at CpG",
+                        "plus strand normalized end position signal",
                         "plus strand signal of all reads",
                         "plus strand signal of unique reads",
                         "polyA sites",
@@ -2762,6 +2774,10 @@
         "DNA accessibility raw signal": "signal",
         "haplotype-specific DNA accessibility raw signal": "signal",
         "haplotype-specific DNA accessibility corrected signal": "signal",
+        "plus strand end position signal": "signal",
+        "minus strand end position signal": "signal",
+        "plus strand normalized end position signal": "signal",
+        "minus strand normalized end position signal": "signal",
 
         "bias model": "quantification",
         "enrichment": "quantification",
