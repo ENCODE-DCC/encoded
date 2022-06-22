@@ -4,6 +4,7 @@
 
 * Added *utility*, *proteomics*, *statistics*, *visualization*, *machine learning*, *integrated analysis*, *genetics* to software_type.  Deprecated but did not remove *purpose*.
 * Added *proliferation CRISPR screen*, *FACS CRISPR screen*, and *FlowFISH CRISPR screen* to *purpose* enum
+* Added *seqFISH* to *purpose* enum
 
 ### Schema version 10
 

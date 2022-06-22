@@ -247,3 +247,13 @@ def epidermis(testapp):
         'classification': 'tissue',
     }
     return testapp.post_json('/biosample_type', item).json['@graph'][0]
+
+
+@pytest.fixture
+def skin_of_body(testapp):
+    item = {
+        'term_id': 'UBERON:0002097',
+        'term_name': 'skin of body',
+        'classification': 'tissue',
+    }
+    return testapp.post_json('/biosample_type', item).json['@graph'][0]

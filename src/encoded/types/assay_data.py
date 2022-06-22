@@ -85,4 +85,5 @@ assay_terms = {
       'enhancer reporter assay': 'OBI:0002083',
       'genomic perturbation followed by RT-qPCR': 'NTR:0000676',
       'element activity validation': 'NTR:0000677',
+      'seqFISH': 'OBI:0003106'
 }

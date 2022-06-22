@@ -800,6 +800,7 @@
                         "output_type": {
                             "enum": [
                                 "archr project",
+                                "raw imaging signal",
                                 "unfiltered sparse gene count matrix of all reads",
                                 "unfiltered sparse gene count matrix of unique reads",
                                 "unfiltered sparse splice junction count matrix of unique reads",
@@ -911,7 +912,8 @@
                                     "haplotype-specific DNA accessibility raw signal",
                                     "haplotype-specific DNA accessibility corrected signal",
                                     "haplotype-specific chromatin interactions",
-                                    "variants chromatin interactions"
+                                    "variants chromatin interactions",
+                                    "raw imaging signal"
                                 ]
                             }
                         }
@@ -1374,6 +1376,7 @@
                                         "index reads",
                                         "rejected reads",
                                         "raw data",
+                                        "raw imaging signal",
                                         "reporter code counts",
                                         "nanopore signal",
                                         "repeat elements annotation",
@@ -1453,6 +1456,7 @@
                                             "reads",
                                             "rejected reads",
                                             "raw data",
+                                            "raw imaging signal",
                                             "reporter code counts",
                                             "restriction enzyme site locations",
                                             "nanopore signal",
@@ -2053,6 +2057,8 @@
                         "candidate enhancers",
                         "candidate promoters",
                         "capture targets",
+                        "cell coordinates",
+                        "cell type annotations",
                         "chromatin interactions",
                         "chromatin stripes",
                         "chromosomes reference",
@@ -2173,6 +2179,7 @@
                         "pseudoreplicated IDR thresholded peaks",
                         "PWMs",
                         "R2C2 subreads",
+                        "raw imaging signal",
                         "raw minus strand signal",
                         "raw normalized signal",
                         "raw plus strand signal",
@@ -2707,6 +2714,7 @@
         "subreads": "raw data",
         "R2C2 subreads": "raw data",
         "filtered reads": "raw data",
+        "raw imaging signal": "raw data",
 
         "alignments": "alignment",
         "diploid personal genome alignments": "alignment",
@@ -2882,6 +2890,8 @@
         "chromatin stripes": "annotation",
         "variants chromatin interactions": "annotation",
         "haplotype-specific chromatin interactions": "annotation",
+        "cell coordinates": "annotation",
+        "cell type annotations": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",

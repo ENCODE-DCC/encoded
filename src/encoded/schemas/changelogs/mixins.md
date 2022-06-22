@@ -12,3 +12,4 @@
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
 * Added *charles-lee* to *aliases.aliases.items* pattern
 * Added *genomic perturbation followed by RT-qPCR* to *assay.assay_term_name* enum
+* Added *seqFISH* to *assay.assay_term_name* enum

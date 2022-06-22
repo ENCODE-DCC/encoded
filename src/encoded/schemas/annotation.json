@@ -211,6 +211,7 @@
                     "RNA-PET",
                     "RNA-seq",
                     "RRBS",
+                    "seqFISH",
                     "shRNA knockdown followed by RNA-seq",
                     "single-cell RNA sequencing assay",
                     "single-nucleus ATAC-seq",

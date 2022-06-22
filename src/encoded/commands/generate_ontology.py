@@ -225,7 +225,8 @@ preferred_name = {
     "OBI:0002038": "Ribo-seq",
     "OBI:0002984": "capture Hi-C",
     "OBI:0003033": "CUT&RUN",
-    "OBI:0003034": "CUT&Tag"
+    "OBI:0003034": "CUT&Tag",
+    "OBI:0003106": "seqFISH"
 }
 
 category_slims = {
