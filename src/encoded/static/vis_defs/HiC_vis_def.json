@@ -10,7 +10,7 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views": {
             "tag": "view",
-            "group_order": [ "Topologically associated domains", "Nested TADs", "Genome compartments" ],
+            "group_order": [ "Topologically associated domains", "Nested TADs", "Genome compartments", "HiC" ],
             "groups": {
                 "Topologically associated domains": {
                     "tag": "aTADS",
@@ -34,6 +34,12 @@
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "genome compartments" ]
+                },
+                "HiC": {
+                    "tag": "dHIC",
+                    "visibility": "dense",
+                    "type": "hic",
+                    "output_type": [ "chromatin interactions" ]
                 }
             }
         },

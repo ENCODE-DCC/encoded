@@ -125,7 +125,7 @@ ASSEMBLY_DETAILS = {
 }
 
 BROWSER_FILE_TYPES = {
-    'ucsc': {'bigWig', 'bigBed', 'bigInteract'},
+    'ucsc': {'bigWig', 'bigBed', 'bigInteract', 'hic'},
     'ensembl': {'bigWig', 'bigBed'},
     'quickview': {'bigWig', 'bigBed'},
     'hic': {'hic'},

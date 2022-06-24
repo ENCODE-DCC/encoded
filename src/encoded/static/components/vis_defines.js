@@ -5,6 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import { StringUtils } from 'igv-utils';
 import * as encoding from '../libs/query_encoding';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import * as globals from './globals';
@@ -116,12 +117,16 @@ export const visOpenBrowser = (dataset, browser, assembly, files, datasetUrl) =>
         delete parsedUrl.path;
         delete parsedUrl.search;
         delete parsedUrl.query;
-        const fileQueries = files.map((file) => {
-            parsedUrl.pathname = file.href;
-            const name = file.biological_replicates && file.biological_replicates.length > 0 ? `&name=${dataset.accession} / ${file.title}, Replicate ${file.biological_replicates.join(',')}` : '';
-            return encoding.encodedURIComponentOLD(`{hicUrl=${url.format(parsedUrl)}${name}}`, { encodeEquals: true });
+        const juiceboxSessionJsonString = JSON.stringify({
+            browsers: files.map((file) => {
+                parsedUrl.pathname = file.href;
+                return {
+                    name: file.biological_replicates && file.biological_replicates.length > 0 ? `${dataset.accession} / ${file.title}, Replicate ${file.biological_replicates.join(',')}` : '',
+                    url: url.format(parsedUrl),
+                };
+            }),
         });
-        href = `http://aidenlab.org/juicebox/?juicebox=${fileQueries.join(',')}`;
+        href = `http://aidenlab.org/juicebox/?session=blob:${StringUtils.compressString(juiceboxSessionJsonString)}`;
         break;
     }
     case 'Ensembl': {
