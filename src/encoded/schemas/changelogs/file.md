@@ -27,6 +27,33 @@
 * Added *cell coordinates*, *cell type annotations*, and *raw imaging signal* to enum list for *output_type*.
 * Added *plus strand end position signal*, *minus strand end position signal*, *plus strand normalized end position signal*, and *minus strand normalized end position signal* to enum list for *output_type*.
 * Added *DNN-MPRA contribution scores*, *DNN-MPRA predicted signal*, *element gene links*, and *thresholded element gene links* to enum list for *output_type*.
+* Added the following enums to enum list for *output_type*:
+  * *bias-corrected predicted signal profile*
+  * *counts sequence contribution scores*
+  * *model performance metrics*
+  * *models*
+  * *observed bias profile*
+  * *observed control profile (minus strand)*
+  * *observed control profile (plus strand)*
+  * *observed signal profile*
+  * *observed signal profile (minus strand)*
+  * *observed signal profile (plus strand)*
+  * *predicted bias profile*
+  * *predicted profile*
+  * *predicted signal profile (minus strand)*
+  * *predicted signal profile (plus strand)*
+  * *profile sequence contribution scores*
+  * *selected regions for bias-corrected predicted signal profile*
+  * *selected regions for count sequence contribution scores*
+  * *selected regions for predicted signal profile*
+  * *selected regions for predicted bias profile*
+  * *selected regions for predicted signal profile (minus strand)*
+  * *selected regions for predicted signal profile (plus strand)*
+  * *selected regions for profile sequence contribution scores*
+  * *sequence motifs*
+  * *sequence motifs report*
+  * *sequence motifs instances*
+  * *training and test regions*
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.

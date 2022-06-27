@@ -802,12 +802,17 @@
                         "output_type": {
                             "enum": [
                                 "archr project",
+                                "model performance metrics",
+                                "models",
                                 "raw imaging signal",
                                 "unfiltered sparse gene count matrix of all reads",
                                 "unfiltered sparse gene count matrix of unique reads",
                                 "unfiltered sparse splice junction count matrix of unique reads",
+                                "sequence motifs",
+                                "sequence motifs report",
                                 "sparse gene count matrix of all reads",
-                                "sparse gene count matrix of unique reads"
+                                "sparse gene count matrix of unique reads",
+                                "training and test regions"
                             ]
                         }
                     }
@@ -929,7 +934,12 @@
                                     "DNN-MPRA predicted signal",
                                     "DNN-MPRA contribution scores",
                                     "element gene links",
-                                    "thresholded element gene links"
+                                    "thresholded element gene links",
+                                    "model performance metrics",
+                                    "models",
+                                    "sequence motifs",
+                                    "sequence motifs report",
+                                    "training and test regions"
                                 ]
                             }
                         }
@@ -1396,7 +1406,12 @@
                                         "reporter code counts",
                                         "nanopore signal",
                                         "repeat elements annotation",
-                                        "kmer weights"
+                                        "kmer weights",
+                                        "training and test regions",
+                                        "model performance metrics",
+                                        "models",
+                                        "sequence motifs",
+                                        "sequence motifs report"
                                     ]
                                 }
                             }
@@ -1476,7 +1491,12 @@
                                             "reporter code counts",
                                             "restriction enzyme site locations",
                                             "nanopore signal",
-                                            "R2C2 subreads"
+                                            "R2C2 subreads",
+                                            "training and test regions",
+                                            "model performance metrics",
+                                            "models",
+                                            "sequence motifs",
+                                            "sequence motifs report"
                                         ]
                                     }
                                 }
@@ -2068,6 +2088,7 @@
                         "allele-specific variants",
                         "archr project",
                         "bias model",
+                        "bias-corrected predicted signal profile",
                         "bidirectional peaks",
                         "candidate Cis-Regulatory Elements",
                         "candidate enhancers",
@@ -2085,6 +2106,7 @@
                         "mapping quality thresholded chromatin interactions",
                         "conservative IDR thresholded peaks",
                         "control normalized signal",
+                        "counts sequence contribution scores",
                         "CpG sites coverage",
                         "DHS peaks",
                         "DHS regions reference",
@@ -2167,6 +2189,8 @@
                         "mitochondrial exclusion list regions",
                         "mitochondrial genome index",
                         "mitochondrial genome reference",
+                        "model performance metrics",
+                        "models",
                         "motif model",
                         "nanopore signal",
                         "negative control regions",
@@ -2174,6 +2198,12 @@
                         "non-targeting gRNAs",
                         "normalized signal of all reads",
                         "novel peptides",
+                        "observed bias profile",
+                        "observed control profile (minus strand)",
+                        "observed control profile (plus strand)",
+                        "observed signal profile",
+                        "observed signal profile (minus strand)",
+                        "observed signal profile (plus strand)",
                         "open chromatin regions",
                         "optimal IDR thresholded peaks",
                         "pairs",
@@ -2193,8 +2223,13 @@
                         "plus strand signal of unique reads",
                         "polyA sites",
                         "positive control regions",
+                        "predicted bias profile",
                         "predicted enhancers",
+                        "predicted profile",
+                        "predicted signal profile (minus strand)",
+                        "predicted signal profile (plus strand)",
                         "preprocessed alignments",
+                        "profile sequence contribution scores",
                         "promoter prediction model",
                         "promoters reference",
                         "protein expression quantifications",
@@ -2223,9 +2258,19 @@
                         "RNA-binding protein associated mRNAs",
                         "rRNA reference",
                         "safe-targeting gRNAs",
+                        "selected regions for bias-corrected predicted signal profile",
+                        "selected regions for count sequence contribution scores",
+                        "selected regions for predicted bias profile",
+                        "selected regions for predicted signal profile",
+                        "selected regions for predicted signal profile (minus strand)",
+                        "selected regions for predicted signal profile (plus strand)",
+                        "selected regions for profile sequence contribution scores",
                         "semi-automated genome annotation",
                         "sequence adapters",
                         "sequence barcodes",
+                        "sequence motifs report",
+                        "sequence motifs",
+                        "sequence motifs instances",
                         "signal of all reads",
                         "signal of unique reads",
                         "signal p-value",
@@ -2242,6 +2287,7 @@
                         "TF binding prediction model",
                         "thresholded element gene links",
                         "topologically associated domains",
+                        "training and test regions",
                         "training set",
                         "transcribed region quantifications",
                         "transcript quantifications",
@@ -2790,6 +2836,17 @@
         "minus strand end position signal": "signal",
         "plus strand normalized end position signal": "signal",
         "minus strand normalized end position signal": "signal",
+        "bias-corrected predicted signal profile": "signal",
+        "observed bias profile": "signal",
+        "observed control profile (minus strand)": "signal",
+        "observed control profile (plus strand)": "signal",
+        "observed signal profile": "signal",
+        "observed signal profile (minus strand)": "signal",
+        "observed signal profile (plus strand)": "signal",
+        "predicted bias profile": "signal",
+        "predicted profile": "signal",
+        "predicted signal profile (minus strand)": "signal",
+        "predicted signal profile (plus strand)": "signal",
 
         "bias model": "quantification",
         "enrichment": "quantification",
@@ -2924,6 +2981,20 @@
         "thresholded element gene links": "annotation",
         "DNN-MPRA predicted signal": "annotation",
         "DNN-MPRA contribution scores": "annotation",
+        "model performance metrics": "annotation",
+        "models": "annotation",
+        "counts sequence contribution scores": "annotation",
+        "profile sequence contribution scores": "annotation",
+        "selected regions for bias-corrected predicted signal profile": "annotation",
+        "selected regions for count sequence contribution scores": "annotation",
+        "selected regions for predicted signal profile": "annotation",
+        "selected regions for predicted bias profile": "annotation",
+        "selected regions for predicted signal profile (minus strand)": "annotation",
+        "selected regions for predicted signal profile (plus strand)": "annotation",
+        "selected regions for profile sequence contribution scores": "annotation",
+        "sequence motifs": "annotation",
+        "sequence motifs report": "annotation",
+        "sequence motifs instances": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -2960,6 +3031,7 @@
         "DHS regions reference": "reference",
         "element barcode mapping": "reference",
         "guide locations": "reference",
+        "training and test regions": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",

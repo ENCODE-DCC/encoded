@@ -3,6 +3,7 @@
 ### Minor changes since schema version 36
 * Added *seqFISH* to *assay_term_name* enum.
 * Added *element gene link predictions* enum to *annotation_type* property
+* Added *ChromBPnet-model* and *BPnet-model* to *annotation_type* enum.
 
 ### Schema version 36
 * Added *donor* property, linking to Donor objects.

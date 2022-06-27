@@ -95,6 +95,7 @@
             "type": "string",
             "enum": [
                 "binding sites",
+                "BPNet-model",
                 "curated SNVs",
                 "dsQTLs",
                 "element gene link predictions",
@@ -102,6 +103,7 @@
                 "exclusion list",
                 "candidate Cis-Regulatory Elements",
                 "chromatin state",
+                "ChromBPNet-model",
                 "consensus DNase hypersensitivity sites",
                 "cross-species functional conservation",
                 "enhancer predictions",
