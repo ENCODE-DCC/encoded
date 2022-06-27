@@ -2241,6 +2241,7 @@ function qcAbbr(qc) {
         AtacReplicationQualityMetric: 'RP',
         BigwigcorrelateQualityMetric: 'BC',
         BismarkQualityMetric: 'BK',
+        BpnetQualityMetric: 'BP',
         ChipAlignmentQualityMetric: 'AL',
         ChipAlignmentEnrichmentQualityMetric: 'AE',
         ChipLibraryQualityMetric: 'LB',
