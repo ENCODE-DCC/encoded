@@ -65,6 +65,7 @@
         },
         "barcode_matching_stats": {
             "title": "Barcode matching QC",
+            "description": "Matcha program log file, including number of exact and inexact barcode matches",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -99,6 +100,7 @@
         },
         "adapter_trimming_stats": {
             "title": "Adapter trimming QC",
+            "description": "FASTP program log file, including total reads and total bases trimmed during adapter trimming",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -133,6 +135,7 @@
         },
         "barcode_revcomp_stats": {
             "title": "Barcode reverse complement detection QC",
+            "description": "Barcode reverse complement detection log file, showing estimated exact match rate for forward complement and reverse complement barcode whitelists",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

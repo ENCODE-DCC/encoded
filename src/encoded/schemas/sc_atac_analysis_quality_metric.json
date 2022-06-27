@@ -35,6 +35,7 @@
         },
         "archr_doublet_summary_figure": {
             "title": "ArchR doublet summary",
+            "description": "Pre-filtering ArchR doublet summary figure",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -69,6 +70,7 @@
         },
         "archr_fragment_size_distribution": {
             "title": "ArchR fragment size distribution",
+            "description": "Pre-filtering ArchR fragment size distribution plot",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -103,6 +105,7 @@
         },
         "archr_tss_by_unique_frags": {
             "title": "ArchR TSS-by-fragment plot",
+            "description": "Pre-filtering ArchR TSS-by-fragment plot",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -136,11 +139,12 @@
             }
         },
         "archr_doublet_summary_text": {
-            "title": "ArchR doublet data",
+            "title": "Pre-filtering ArchR doublet data",
+            "description": "Pre-filtering ArchR doublet data",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
-            "formInput": "file",
+            "formInput ": "file",
             "properties": {
                 "download": {
                     "title": "File Name",
@@ -171,6 +175,7 @@
         },
         "archr_pre_filter_metadata": {
             "title": "ArchR pre-filter metadata",
+            "description": "Prefiltering ArchR pre-filter metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

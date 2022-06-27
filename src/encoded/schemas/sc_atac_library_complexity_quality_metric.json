@@ -23,83 +23,95 @@
         },
         "NRF": {
             "title": "Non-redundant fraction",
-            "type": "number",
             "description": "Non-redundant fraction (indicates library complexity).  Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads",
+            "type": "number",
             "minimum": 0,
             "maximum": 1
         },
         "PBC1": {
             "title": "PCR bottlenecking coefficient 1",
-            "type": "number",
             "description": "PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely",
+            "type": "number",
             "minimum": 0,
             "maximum": 1
         },
         "PBC2": {
             "title": "PCR bottlenecking coefficient 2",
+            "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely",
             "type": ["number", "string"],
             "minimum":0,
-            "pattern": "^Infinity$",
-            "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely"
+            "pattern": "^Infinity$"
         },
         "distinct_fragments": {
             "title": "Distinct fragments",
+            "description": "Number of distinct fragments",
             "type": "integer",
             "minimum": 0
         },
         "paired_duplicate_reads": {
             "title": "Paired duplicate reads",
+            "description": "Number of paired duplicate reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "paired_optical_duplicate_reads": {
             "title": "Paired optical duplicate reads",
+            "description": "Number of paired optical duplicates before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "paired_reads": {
-            "title": "Paired reads",
+            "title": "Number of paired reads before duplicate filtering",
+            "description": "Number of paired reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "frac_duplicate_reads": {
             "title": "Fraction of duplicate reads",
+            "description": "Fraction of duplicate reads before duplicate filtering",
             "type": "number",
             "minimum": 0,
             "maximum": 1
         },
         "positions_with_one_read": {
             "title": "Number of positions with one read",
+            "description": "Locations with one mapped read before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "positions_with_two_reads": {
             "title": "Number of positions with two reads",
+            "description": "Locations with two mapped reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "total_fragments": {
             "title": "Total number of fragments",
+            "description": "Number of fragments before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "unpaired_duplicate_reads": {
             "title": "Unpaired duplicate reads",
+            "description": "Number of unpaired duplicates before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "unpaired_reads": {
             "title": "Unpaired reads",
+            "description": "Number of unpaired reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "unmapped_reads": {
             "title": "Unmapped reads",
+            "description": "Number of unmapped reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
         },
         "picard_markdup_stats": {
             "title": "Picard MarkDup statistics",
+            "description": "Original Picard MarkDup statistics file",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -134,6 +146,7 @@
         },
         "pbc_stats": {
             "title": "PBC statistics",
+            "description": "Original PBC statistics file",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

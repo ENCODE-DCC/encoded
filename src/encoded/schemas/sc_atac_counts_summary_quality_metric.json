@@ -23,26 +23,31 @@
         },
         "reads_original": {
             "title": "Read count of raw FASTQ",
+            "description": "Read count of raw FASTQ",
             "type": "integer",
             "minimum": 0
         },
         "reads_barcode_matched": {
             "title": "Read count after barcode matching",
+            "description": "Read count after barcode matching",
             "type": "integer",
             "minimum": 0
         },
         "reads_mapped": {
             "title": "Read count after mapping",
+            "description": "Read count after mapping",
             "type": "integer",
             "minimum": 0
         },
         "reads_non_mito": {
             "title": "Read count after mitochondrial filtering",
+            "description": "Read count after mitochondrial filtering",
             "type": "integer",
             "minimum": 0
         },
         "reads_primary_align": {
             "title": "Read count after multimapper alignment filtering and fixmate",
+            "description": "Read count after multimapper alignment filtering and fixmate",
             "type": "integer",
             "minimum": 0
         },
@@ -54,16 +59,19 @@
         },
         "barcodes_fragments": {
             "title": "Barcode count of fragments",
+            "description": "Barcode count of fragments",
             "type": "integer",
             "minimum": 0
         },
         "barcodes_non_multiplet": {
             "title": "Hypothetical barcode count after multiplet filtering",
+            "description": "Hypothetical barcode count after multiplet filtering",
             "type": "integer",
             "minimum": 0
         },
         "barcodes_archr": {
             "title": "Barcode count after ArchR filtering",
+            "description": "Barcode count after ArchR filtering",
             "type": "integer",
             "minimum": 0
         }

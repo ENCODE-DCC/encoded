@@ -23,6 +23,7 @@
         },
         "original_barcode_count": {
             "title": "Number of barcodes before multiplet filtering",
+            "description": "Number of barcodes before multiplet filtering",
             "type": "integer",
             "minimum": 0
         },
@@ -60,6 +61,7 @@
         },
         "multiplet_stats": {
             "title": "Multiplet detection statistics file",
+            "description": "Original multiplet detection statistics file",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -94,6 +96,7 @@
         },
         "barcodes_status": {
             "title": "Per-barcode multiplet status",
+            "description": "For each barcode, the 'IsMultiplet' field is 'True' if barcode belongs to a multiplet, 'False' if not, and 'Indeterminate' if the barcode has an insufficient fragment count (less than 500). If the barcode belongs to a multiplet, the 'PrimaryBarcode' field specifies the highest-count barcode of the multiplet ",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -128,6 +131,7 @@
         },
         "barcode_pairs_multiplets": {
             "title": "Multiplet barcode pair statistics",
+            "description": "Statistics for each barcode pair in a multiplet. The 'PrimaryBarcode' field specifies the highest-count barcode of the multiplet ",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -162,6 +166,7 @@
         },
         "barcode_pairs_expanded": {
             "title": "Total barcode pair statistics",
+            "description": "Statistics for each barcode pair in a multiplet. The 'PrimaryBarcode' field specifies the highest-count barcode of the multiplet",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -197,6 +202,7 @@
         },
         "multiplet_threshold_plot": {
             "title": "Plot illustrating multiplet Jaccard distance threshold",
+            "description": "The blue (sample) distribution represents the Jaccard distances of the closest neighbor of each barcode. The gray (null) distribution represents the Jaccard distances of the seventh closest neighbor of each barcode. The green curve is the non-monotonized q-value for each sample, calculated with the Benjamini–Hochberg procedure. The red vertical line is the determined Jaccard distance cutoff.",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
