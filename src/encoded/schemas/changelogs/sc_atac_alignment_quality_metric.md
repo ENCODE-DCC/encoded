@@ -1,5 +1,8 @@
 ## Changelog for sc_atac_alignment_quality_metric.json
 
+### Schema version 3
+* removed usable_fragment property
+
 ### Minor changes since schema version 2
 
 * Updated the attachment *mito_stats* mime type to allow both TXT and TSV

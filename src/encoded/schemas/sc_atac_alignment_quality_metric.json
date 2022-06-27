@@ -33,11 +33,6 @@
             "type": "integer",
             "minimum": 0
         },
-        "usable_fragments": {
-            "title": "Number usable fragments",
-            "type": "integer",
-            "minimum": 0
-        },
         "properly_paired_reads": {
             "title": "Number of properly paired reads passing QC",
             "description": "Number of properly paired reads passing QC",
