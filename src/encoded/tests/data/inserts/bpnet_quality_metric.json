@@ -7,7 +7,6 @@
         "uuid": "a7eaa2a0-f631-11ec-b939-0242ac120002",
         "assay_term_name": "ChIP-seq",
         "quality_metric_of": [ "ENCFF000VUQ" ],
-
         "count_spearman_peaks": 23,
         "count_spearman_allregions": 102,
         "count_pearson_peaks": 1024,
