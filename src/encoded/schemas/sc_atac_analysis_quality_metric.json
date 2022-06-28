@@ -139,12 +139,12 @@
             }
         },
         "archr_doublet_summary_text": {
-            "title": "Pre-filtering ArchR doublet data",
+            "title": "ArchR doublet data",
             "description": "Pre-filtering ArchR doublet data",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
-            "formInput ": "file",
+            "formInput": "file",
             "properties": {
                 "download": {
                     "title": "File Name",

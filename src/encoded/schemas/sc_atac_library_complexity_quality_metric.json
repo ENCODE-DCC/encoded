@@ -61,7 +61,7 @@
             "minimum": 0
         },
         "paired_reads": {
-            "title": "Number of paired reads before duplicate filtering",
+            "title": "Paired reads",
             "description": "Number of paired reads before duplicate filtering",
             "type": "integer",
             "minimum": 0
