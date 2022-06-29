@@ -259,7 +259,7 @@ def test_audit_biosample_depleted_in_term_name(testapp, base_biosample, s2r_plus
                for error in error_cat)
 
 
-def test_audit_biosample_post_differentiation(testapp, base_biosample):
+def test_audit_biosample_post_differentiation(testapp, base_biosample, a549):
     target_err_cat = 'invalid post_differentiation_time details'
     testapp.patch_json(
         base_biosample['@id'],
@@ -267,6 +267,14 @@ def test_audit_biosample_post_differentiation(testapp, base_biosample):
     )
     errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
     assert any(error['category'] == target_err_cat
+               for error_cat in errors.values()
+               for error in error_cat)
+    testapp.patch_json(
+        base_biosample['@id'],
+        {'biosample_ontology': a549['uuid']}
+    )
+    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    assert any(error['category'] != target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
@@ -313,4 +321,3 @@ def test_audit_biosample_CRISPR_modifications(
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'multiple CRISPR characterization genetic modifications' for error in errors_list)
-
