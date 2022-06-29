@@ -37,7 +37,7 @@
             "type": "number"
         },
         "count_pearson_allregions":{
-            "title": "Pearson correlation across all regions in test test",
+            "title": "Pearson correlation across all regions in test set",
             "description": "Median over all test folds of the Pearson rank correlation between observed and predicted log(total counts) across all regions",
             "type": "number"
         },
