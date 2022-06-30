@@ -26,6 +26,7 @@
 * Added *variants chromatin interactions*, *haplotype-specific chromatin interactions*, *haplotype-specific DNA accessibility raw signal*, *haplotype-specific DNA accessibility corrected signal* to enum list for *output_type*.
 * Added *cell coordinates*, *cell type annotations*, and *raw imaging signal* to enum list for *output_type*.
 * Added *plus strand end position signal*, *minus strand end position signal*, *plus strand normalized end position signal*, and *minus strand normalized end position signal* to enum list for *output_type*.
+* Added *DNN-MPRA contribution scores*, *DNN-MPRA predicted signal*, *element gene links*, and *thresholded element gene links* to enum list for *output_type*.
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.

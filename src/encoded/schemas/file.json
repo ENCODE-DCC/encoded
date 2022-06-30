@@ -771,7 +771,9 @@
                         },
                         "output_type": {
                             "enum": [
-                                "guide locations"
+                                "guide locations",
+                                "element gene links",
+                                "thresholded element gene links"
                             ]
                         }
                     }
@@ -867,7 +869,9 @@
                                 "minus strand end position signal",
                                 "minus strand normalized end position signal",
                                 "plus strand end position signal",
-                                "plus strand normalized end position signal"
+                                "plus strand normalized end position signal",
+                                "DNN-MPRA predicted signal",
+                                "DNN-MPRA contribution scores"
                             ]
                         }
                     }
@@ -921,7 +925,11 @@
                                     "minus strand end position signal",
                                     "minus strand normalized end position signal",
                                     "plus strand end position signal",
-                                    "plus strand normalized end position signal"
+                                    "plus strand normalized end position signal",
+                                    "DNN-MPRA predicted signal",
+                                    "DNN-MPRA contribution scores",
+                                    "element gene links",
+                                    "thresholded element gene links"
                                 ]
                             }
                         }
@@ -2084,11 +2092,14 @@
                         "differential expression quantifications",
                         "differential splicing quantifications",
                         "diploid personal genome alignments",
+                        "DNN-MPRA contribution scores",
+                        "DNN-MPRA predicted signal",
                         "dsQTLs",
                         "element barcode mapping",
                         "elements reference",
                         "element gene interactions p-value",
                         "element gene interactions signal",
+                        "element gene links",
                         "element quantifications",
                         "enhancer prediction model",
                         "enhancer validation",
@@ -2229,6 +2240,7 @@
                         "splice junctions",
                         "subreads",
                         "TF binding prediction model",
+                        "thresholded element gene links",
                         "topologically associated domains",
                         "training set",
                         "transcribed region quantifications",
@@ -2908,6 +2920,10 @@
         "haplotype-specific chromatin interactions": "annotation",
         "cell coordinates": "annotation",
         "cell type annotations": "annotation",
+        "element gene links": "annotation",
+        "thresholded element gene links": "annotation",
+        "DNN-MPRA predicted signal": "annotation",
+        "DNN-MPRA contribution scores": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
