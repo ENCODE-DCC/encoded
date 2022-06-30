@@ -1,0 +1,69 @@
+{
+    "title": "BPNet quality metric",
+    "description": "Schema for reporting BPNet quality metric",
+    "id": "/profiles/bpnet_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run", "award", "lab", "quality_metric_of"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "count_spearman_peaks":{
+            "title": "Spearman correlation across peak regions in test set",
+            "description": "Median over all test folds of the Spearman rank correlation between observed and predicted log(total counts) across peak regions",
+            "type": "number"
+        },
+        "count_spearman_allregions":{
+            "title": "Spearman correlation across all regions in test set",
+            "description": "Median over all test folds of the Spearman rank correlation between observed and predicted log(total counts) across all regions",
+            "type": "number"
+        },
+        "count_pearson_peaks":{
+            "title": "Pearson correlation across peak regions in test set",
+            "description": "Median over all test folds of the Pearson rank correlation between observed and predicted log(total counts) across peak regions",
+            "type": "number"
+        },
+        "count_pearson_allregions":{
+            "title": "Pearson correlation across all regions in test set",
+            "description": "Median over all test folds of the Pearson rank correlation between observed and predicted log(total counts) across all regions",
+            "type": "number"
+        },
+        "profile_normjsd_peaks":{
+            "title": "Profile concordance (normalized Jensen-Shannon distance) across peak regions in test set",
+            "description": "Median over all test folds of the median min-max normalized Jensen Shannon distance between observed and predicted profiles across peak regions",
+            "type": "number"
+        },
+        "auprc":{
+            "title": "Area under precision recall curve classifying peaks against background regions in test set",
+            "description": "Median over all test folds of the Area under the precision recall curve (computed as average precision) for classifying peak regions against background regions",
+            "type": "number"
+        },
+        "auroc":{
+            "title": "Area under receiver operating curve classifying peaks against background regions in test set",
+            "description": "Median over all test folds of the Area under the receiver operating curve for classifying peak regions against background regions",
+            "type": "number"
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/bpnet_quality_metric.md"
+}
