@@ -96,7 +96,7 @@
         },
         "barcodes_status": {
             "title": "Per-barcode multiplet status",
-            "description": "For each barcode, the 'IsMultiplet' field is 'True' if barcode belongs to a multiplet, 'False' if not, and 'Indeterminate' if the barcode has an insufficient fragment count (less than 500). If the barcode belongs to a multiplet, the 'PrimaryBarcode' field specifies the highest-count barcode of the multiplet ",
+            "description": "For each barcode, the 'IsMultiplet' field is 'True' if barcode belongs to a multiplet, 'False' if not, and 'Indeterminate' if the barcode has an insufficient fragment count (less than 500). If the barcode belongs to a multiplet, the 'PrimaryBarcode' field specifies the highest-count barcode of the multiplet",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -131,7 +131,7 @@
         },
         "barcode_pairs_multiplets": {
             "title": "Multiplet barcode pair statistics",
-            "description": "Statistics for each barcode pair in a multiplet. The 'PrimaryBarcode' field specifies the highest-count barcode of the multiplet ",
+            "description": "Statistics for each barcode pair in a multiplet. The 'PrimaryBarcode' field specifies the highest-count barcode of the multiplet",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
