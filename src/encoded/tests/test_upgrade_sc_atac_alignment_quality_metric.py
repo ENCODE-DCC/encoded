@@ -11,3 +11,8 @@ def test_sc_atac_alignment_quality_metric_1_2(upgrader, sc_atac_alignment_qualit
     value = upgrader.upgrade('sc_atac_alignment_quality_metric', sc_atac_alignment_quality_metric_1, current_version='1', target_version='2')
     assert 'pct_singletons' not in value
     assert 'frac_singletons' in value
+
+
+def test_sc_atac_alignment_quality_metric_2_3(upgrader, sc_atac_alignment_quality_metric_2):
+    value = upgrader.upgrade('sc_atac_alignment_quality_metric', sc_atac_alignment_quality_metric_2, current_version='2', target_version='3')
+    assert 'usable_fragments' not in value

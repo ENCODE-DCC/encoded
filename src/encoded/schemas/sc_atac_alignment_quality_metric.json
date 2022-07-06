@@ -23,146 +23,167 @@
         },
         "with_itself": {
             "title": "Number of reads with itself & mate mapped passing QC",
+            "description": "Number of reads with both itself & mate mapped passing QC",
             "type": "integer",
             "minimum": 0
         },
         "with_itself_qc_failed": {
             "title": "Number of reads with itself & mate mapped failing QC",
-            "type": "integer",
-            "minimum": 0
-        },
-        "usable_fragments": {
-            "title": "Number usable fragments",
+            "description": "Number of reads with both itself & mate mapped failing QC",
             "type": "integer",
             "minimum": 0
         },
         "properly_paired_reads": {
             "title": "Number of properly paired reads passing QC",
+            "description": "Number of properly paired reads passing QC",
             "type": "integer",
             "minimum": 0
         },
         "properly_paired_reads_qc_failed": {
             "title": "Number of properly paired reads failing QC",
+            "description": "Number of properly paired reads failing QC",
             "type": "integer",
             "minimum": 0
         },
         "paired_reads": {
             "title": "Number of paired reads passing QC",
+            "description": "Number of paired reads passing QC",
             "type": "integer",
             "minimum": 0
         },
         "paired_reads_qc_failed": {
             "title": "Number of paired reads failing QC",
+            "description": "Number of paired reads failing QC",
             "type": "integer",
             "minimum": 0
         },
         "frac_properly_paired_reads": {
             "title": "Fraction of properly paired reads passing QC",
+            "description": "Fraction of properly paired reads passing QC",
             "type": "number",
             "minimum": 0,
             "maximum": 1
         },
         "mapped_reads": {
             "title": "Number of mapped reads passing QC",
+            "description": "Number of mapped reads passing QC",
             "type": "integer",
             "minimum": 0
         },
         "mapped_reads_qc_failed": {
             "title": "Number of mapped reads failing QC",
+            "description": "Number of mapped reads failing QC",
             "type": "integer",
             "minimum": 0
         },
         "frac_mapped_reads": {
             "title": "Fraction of mapped reads passing QC",
+            "description": "Fraction of mapped reads passing QC",
             "type": "number",
             "minimum": 0,
             "maximum": 1
         },
         "singletons": {
             "title": "Number of singletons passing QC",
+            "description": "Number of singletons (unpaired reads) passing QC",
             "type": "integer",
             "minimum": 0
         },
         "singletons_qc_failed": {
             "title": "Number of singletons failing QC",
+            "description": "Number of singletons (unpaired reads) failing QC",
             "type": "integer",
             "minimum": 0
         },
         "read1": {
             "title": "Number of read1 reads passing QC",
+            "description": "Number of read1 reads passing QC",
             "type": "integer",
             "minimum": 0
         },
         "read1_qc_failed": {
             "title": "Number of read1 reads failing QC",
+            "description": "Number of read1 reads failing QC",
             "type": "integer",
             "minimum": 0
         },
         "read2": {
             "title": "Number of read2 reads passing QC",
+            "description": "Number of read2 reads passing QC",
             "type": "integer",
             "minimum": 0
         },
         "read2_qc_failed": {
             "title": "Number of read2 reads failing QC",
+            "description": "Number of read2 reads failing QC",
             "type": "integer",
             "minimum": 0
         },
         "total_reads": {
             "title": "Number of total reads passing QC",
+            "description": "Number of total reads passing QC",
             "type": "integer",
             "minimum": 0
         },
         "total_reads_qc_failed": {
             "title": "Number of total reads failing QC",
+            "description": "Number of total reads failing QC",
             "type": "integer",
             "minimum": 0
         },
         "duplicate_reads": {
             "title": "Number of reads with duplicates passing QC",
+            "description": "Number of reads with duplicates passing QC",
             "type": "integer",
             "minimum": 0
         },
         "duplicate_reads_qc_failed": {
             "title": "Number of reads with duplicates failing QC",
+            "description": "Number of reads with duplicates failing QC",
             "type": "integer",
             "minimum": 0
         },
         "frac_singletons": {
             "title": "Fraction of singletons passing QC",
+            "description": "Fraction of singletons (unpaired reads) passing QC",
             "type": "number",
             "minimum": 0,
             "maximum": 1
         },        
         "diff_chroms": {
             "title": "Number of reads with mate mapped to different chromosomes passing QC",
+            "description": "Number of reads with mate mapped to different chromosomes passing QC",
             "type": "integer",
             "minimum": 0
         },
         "diff_chroms_qc_failed": {
             "title": "Number of reads with mate mapped to different chromosomes failing QC",
+            "description": "Number of reads with mate mapped to different chromosomes failing QC",
             "type": "integer",
             "minimum": 0
         },
-        
         "non_mito_reads": {
             "title": "Number of non-mitochondrial reads",
+            "description": "Number of non-mitochondrial reads",
             "type": "integer",
             "minimum": 0
         },
         "mito_reads": {
             "title": "Number of mitochondrial reads",
+            "description": "Number of mitochondrial reads",
             "type": "integer",
             "minimum": 0
         },
         "frac_mito_reads": {
             "title": "Fraction of mitochondrial reads",
+            "description": "Fraction of mitochondrial reads",
             "type": "number",
             "minimum": 0,
             "maximum": 1
         },
         "mito_stats": {
             "title": "Mitochondrial read statistics",
+            "description": "Original mitochondrial read statistics file",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -198,6 +219,7 @@
         },
         "samstats": {
             "title": "SAMstats QC",
+            "description": "Original SAMstats QC file",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

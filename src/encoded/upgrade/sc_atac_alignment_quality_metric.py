@@ -10,3 +10,9 @@ def sc_atac_alignment_quality_metric_1_2(value, system):
         value['frac_mapped_reads'] = value.pop('pct_mapped_reads')
     if 'pct_singletons' in value:
         value['frac_singletons'] = value.pop('pct_singletons')
+
+@upgrade_step('sc_atac_alignment_quality_metric', '2', '3')
+def sc_atac_alignment_quality_metric_2_3(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-58
+    if 'usable_fragments' in value:
+        del value['usable_fragments']
