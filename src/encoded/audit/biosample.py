@@ -306,11 +306,11 @@ def is_part_of(term_id, part_of_term_id, ontology, parent_term_id=None):
 
 def audit_biosample_post_differentiation_time(value, system):
     biosample_type = value['biosample_ontology']['classification']
-    if biosample_type not in ['organoid', 'in vitro differentiated cells']:
+    if biosample_type not in ['organoid', 'in vitro differentiated cells', 'cell line']:
         if value.get('post_differentiation_time') or value.get('post_differentiation_time_units'):
             detail = ('Biosample {} of type {} has post_differentiation_time and/or '
                 'post_differentiation_time_units specified, properties which are '
-                'restricted to biosamples of type organoid or in vitro differentiated cells.'.format(
+                'restricted to biosamples of type organoid, in vitro differentiated cells, or cell line.'.format(
                     audit_link(path_to_text(value['@id']), value['@id']),
                     biosample_type
                 )
