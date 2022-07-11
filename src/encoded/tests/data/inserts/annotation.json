@@ -219,5 +219,19 @@
         "organism": "human",
         "uuid": "85baa91b-0f64-4416-b627-9acbeec3ad2a",
         "date_released": "2020-06-13"
+    },
+    {
+        "_test": "Encyclopedia version V4",
+        "accession": "ENCSR831GKA",
+        "award": "U54HG007004",
+        "annotation_type": "gkm-SVM-model",
+        "description": "gkmSVM-model for A549",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "encyclopedia_version": ["ENCODE v4", "ENCODE v5"],
+        "uuid": "a6f4d999-8198-4626-b17a-d5af83905220",
+        "date_released": "2020-06-13"
     }
 ]
