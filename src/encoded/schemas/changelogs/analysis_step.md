@@ -28,6 +28,8 @@
 * Added *cell coordinates*, *cell type annotations*, and *raw imaging signal* to enum list for *input_file_types* and *output_file_types*.
 * Added *plus strand end position signal*, *minus strand end position signal*, *plus strand normalized end position signal*, and *minus strand normalized end position signal* to enum list for *input_file_types* and *output_file_types*.
 * Added *cell type annotation* to the enum list for *analysis_step_types*.
+* Added *DNN-MPRA contribution scores*, *DNN-MPRA predicted signal*, *element gene links*, and *thresholded element gene links* to enum list for *input_file_types* and *output_file_types*.
+* Added *element gene link prediction* and *selection* to the enum list for *analysis_step_types*.
 
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 

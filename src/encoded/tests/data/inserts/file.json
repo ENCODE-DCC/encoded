@@ -5338,5 +5338,77 @@
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "long_read_RNA_LAPA_coverage_file_4.bigWig",
         "uuid": "b6efb29b-f505-4ce5-1ffa-971cdbee25be"
+    },
+    {
+        "status": "released",
+        "submitted_file_name": "thresholded_element_gene_links.bed.gz",
+        "uuid": "8e20b44f-24f4-4ba2-a8b4-e44aae0a32cc",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "3904fa99de87d37fc36bfdccec349cdb",
+        "accession": "ENCFF629EGL",
+        "file_format": "bed",
+        "file_format_type": "bed9",
+        "award": "/awards/U54HG006998/",
+        "assembly": "GRCh38",
+        "genome_annotation": "V29",
+        "dataset": "/experiments/ENCSR000CFC/",
+        "file_size": 2000000,
+        "output_type": "element gene links",
+        "lab": "/labs/richard-myers/",
+        "aliases": ["hongkai-ji:element_gene_links"]
+    },
+    {
+        "status": "released",
+        "submitted_file_name": "element_gene_links.bed.gz",
+        "uuid": "fd0ba18c-c29f-4ba2-e468-e5aaae0ab50d",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "80ceca99de87d37fc36bfa282c34fab4",
+        "accession": "ENCFF629TGL",
+        "file_format": "bed",
+        "file_format_type": "bed9",
+        "award": "/awards/U54HG006998/",
+        "assembly": "GRCh38",
+        "genome_annotation": "V29",
+        "dataset": "/experiments/ENCSR000CFC/",
+        "file_size": 2000000,
+        "output_type": "thresholded element gene links",
+        "lab": "/labs/richard-myers/",
+        "aliases": ["hongkai-ji:thresholded_element_gene_links"]
+    },
+    {
+        "accession": "ENCFF629DPS",
+        "aliases": [
+            "ali-mortazavi:DNN_MPRA_predicted_signal"
+        ],
+        "assembly": "mm10",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 3000000,
+        "genome_annotation": "M21",
+        "lab": "ali-mortazavi",
+        "md5sum": "b6c34f2c2ff4c1df48d8865ea129650e",
+        "output_type": "DNN-MPRA predicted signal",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "c97128be-440a-4f68-a2b0-bc80853ac1c5"
+    },
+    {
+        "accession": "ENCFF629DCS",
+        "aliases": [
+            "ali-mortazavi:DNN_MPRA_contribution_score"
+        ],
+        "assembly": "mm10",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 3000000,
+        "genome_annotation": "M21",
+        "lab": "ali-mortazavi",
+        "md5sum": "a99d532c2ff4c1df48d81e03a129c36b",
+        "output_type": "DNN-MPRA contribution scores",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "12b33f40-6515-4f68-4ba2-bc80859e3fc5"
     }
 ]
