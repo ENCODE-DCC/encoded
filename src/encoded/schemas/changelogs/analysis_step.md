@@ -30,6 +30,34 @@
 * Added *cell type annotation* to the enum list for *analysis_step_types*.
 * Added *DNN-MPRA contribution scores*, *DNN-MPRA predicted signal*, *element gene links*, and *thresholded element gene links* to enum list for *input_file_types* and *output_file_types*.
 * Added *element gene link prediction* and *selection* to the enum list for *analysis_step_types*.
+* Added *contribution score calculation*, *model generation*, and *sequence motif prediction* to the enum list for *analysis_step_types*
+* Added the following enums to enum list for *input_file_types* and *output_file_types*:
+  * *bias-corrected predicted signal profile*
+  * *counts sequence contribution scores*
+  * *model performance metrics*
+  * *models*
+  * *observed bias profile*
+  * *observed control profile (minus strand)*
+  * *observed control profile (plus strand)*
+  * *observed signal profile*
+  * *observed signal profile (minus strand)*
+  * *observed signal profile (plus strand)*
+  * *predicted bias profile*
+  * *predicted profile*
+  * *predicted signal profile (minus strand)*
+  * *predicted signal profile (plus strand)*
+  * *profile sequence contribution scores*
+  * *selected regions for bias-corrected predicted signal profile*
+  * *selected regions for count sequence contribution scores*
+  * *selected regions for predicted signal profile*
+  * *selected regions for predicted bias profile*
+  * *selected regions for predicted signal profile (minus strand)*
+  * *selected regions for predicted signal profile (plus strand)*
+  * *selected regions for profile sequence contribution scores*
+  * *sequence motifs*
+  * *sequence motifs report*
+  * *sequence motifs instances*
+  * *training and test regions*
 
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
