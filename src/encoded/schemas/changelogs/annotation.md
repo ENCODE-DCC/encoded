@@ -5,6 +5,7 @@
 * Added *ChromBPnet-model* and *BPnet-model* to *annotation_type* enum.
 * Added *element gene link predictions* enum to *annotation_type* property.
 * Added *ENCODE v4* and *ENCODE v5* to *encyclopedia_version* enum.
+* Added *genotyping* to annotation_type enum.
 
 ### Schema version 36
 * Added *donor* property, linking to Donor objects.

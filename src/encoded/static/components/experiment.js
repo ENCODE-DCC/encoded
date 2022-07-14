@@ -591,6 +591,21 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         );
     }
 
+    // Get a list of related annotations, filtering them by annotation_type of interest.
+    let genotypingAnnotations = [];
+    let gkmsvmAnnotations = [];
+    if (context.related_annotations && context.related_annotations.length > 0) {
+        context.related_annotations.forEach((annotation) => {
+            if (annotation.annotation_type === 'genotyping') {
+                genotypingAnnotations.push(annotation);
+            } else if (annotation.annotation_type === 'gkm-SVM-model') {
+                gkmsvmAnnotations.push(annotation);
+            }
+        });
+        genotypingAnnotations = _.uniq(genotypingAnnotations);
+        gkmsvmAnnotations = _.uniq(gkmsvmAnnotations);
+    }
+
     // Set up the breadcrumbs.
     const assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
     const assayName = context[assayTerm];
@@ -992,6 +1007,40 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     </dd>
                                 </div>
                             ))}
+
+                            {genotypingAnnotations.length > 0 ?
+                                <div data-test="genotypingannotations">
+                                    <dt>Annotation (genotyping)</dt>
+                                    <dd>
+                                        <ul>
+                                            {genotypingAnnotations.map((genotyping) => (
+                                                <li key={genotyping['@id']} className="multi-comma">
+                                                    <a href={genotyping['@id']}>
+                                                        {genotyping.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {gkmsvmAnnotations.length > 0 ?
+                                <div data-test="gkmsvmannotations">
+                                    <dt>Annotation (gkmsvm-model)</dt>
+                                    <dd>
+                                        <ul>
+                                            {gkmsvmAnnotations.map((gkmsvm) => (
+                                                <li key={gkmsvm['@id']} className="multi-comma">
+                                                    <a href={gkmsvm['@id']}>
+                                                        {gkmsvm.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
 
                             {context.submitter_comment ?
                                 <div data-test="submittercomment">

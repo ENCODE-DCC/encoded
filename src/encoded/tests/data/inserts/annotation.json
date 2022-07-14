@@ -226,12 +226,27 @@
         "award": "U54HG007004",
         "annotation_type": "gkm-SVM-model",
         "description": "gkmSVM-model for A549",
+        "encyclopedia_version": ["ENCODE v4", "ENCODE v5"],
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "organism": "human",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "a6f4d999-8198-4626-b17a-d5af83905220",
+        "date_released": "2020-06-13"
+    },
+    {
+        "_test": "annotation_type genotyping",
+        "accession": "ENCSR848CFC",
+        "award": "U54HG007004",
+        "annotation_type": "genotyping",
+        "description": "Test for annotation_type genotyping",
+        "encyclopedia_version": ["ENCODE v0.3"],
         "lab": "j-michael-cherry",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "organism": "human",
-        "encyclopedia_version": ["ENCODE v4", "ENCODE v5"],
-        "uuid": "a6f4d999-8198-4626-b17a-d5af83905220",
-        "date_released": "2020-06-13"
+        "uuid": "3167df30-50d7-4b18-87f8-4c9f153f0b31",
+        "related_files": ["ENCFF000LSP", "ENCFF000LSQ"],
+        "date_released": "2019-05-20"
     }
 ]
