@@ -379,7 +379,7 @@ class CalculatedAssayTitle:
         "type": "string",
     })
     def assay_title(self, request, registry, assay_term_name,
-                    control_type=None, target=None):
+                    control_type=None, target=None, replicates=None):
         # This is the preferred name in generate_ontology.py if exists
         assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
@@ -396,6 +396,28 @@ class CalculatedAssayTitle:
                         preferred_name = 'Histone ChIP-seq'
                     else:
                         preferred_name = 'TF ChIP-seq'
+            elif preferred_name == 'HiC':
+                for rep in replicates:
+                    replicateObject = request.embed(rep, '@@object')
+                    if replicateObject['status'] == 'deleted':
+                        continue
+                    if 'experiment' in replicateObject:
+                        experimentObject = request.embed(replicateObject['experiment'], '@@object')
+                        if 'original_files' in experimentObject:
+                            files = experimentObject['original_files']
+                            for file in files:
+                                fileObject = request.embed(file, '@@object')
+                                if fileObject['status'] == 'deleted':
+                                    continue
+                                if fileObject['file_format'] == 'fastq':
+                                    if fileObject['run_type'] == 'single-ended':
+                                        return 'intact'
+                                    elif fileObject['run_type'] == 'paired-ended':
+                                        return 'in situ'
+                        else:
+                            return None
+                    else:
+                        return None
             elif control_type and assay_term_name in ['eCLIP', 'MPRA', 'proliferation CRISPR screen', 'Flow-FISH CRISPR screen', 'FACS CRISPR screen', 'CRISPR screen', 'STARR-seq', 'Mint-ChIP-seq']:
                 preferred_name = 'Control {}'.format(assay_term_name)
             return preferred_name or assay_term_name
@@ -482,17 +504,8 @@ class CalculatedReplicationType:
                     )
                     biosample_type = biosampleTypeObject.get('classification')
                 else:
-                    # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
-                    # untill we change our mind
-                    if assay_term_name == 'RNA Bind-n-Seq':
-                        return 'unreplicated'
-                    # If I have a library without a biosample,
-                    # I cannot make a call about replicate structure
                     return None
             else:
-                # REPLICATES WITH NO LIBRARIES WILL BE CAUGHT BY AUDIT (TICKET 3268)
-                # If I have a replicate without a library,
-                # I cannot make a call about the replicate structure
                 return None
 
         #  exclude ENCODE2
