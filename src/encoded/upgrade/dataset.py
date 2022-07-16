@@ -806,10 +806,10 @@ def annotation_35_36(value, system):
     if experimental_input:
         value['experimental_input'] = [experimental_input]
 
+
 @upgrade_step('annotation', '36', '37')
-def test_upgrade_annotation_36_to_37(upgrader, annotation_36):
-    value = upgrader.upgrade(
-        'annotation', annotation_36, current_version='36', target_version='37'
-    )
-    assert value['schema_version'] == '37'
-    assert value['annotation_type'] == 'dsQTL'
+def annotation_36_37(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-30
+    annotation_type = value.get('annotation_type', None)
+    if annotation_type == "dsQTL":
+        value['annotation_type'] = 'caQTL
