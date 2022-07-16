@@ -251,7 +251,7 @@
     },
     {
         "_test": "annotation_type caQTL",
-        "accession": "ENCSR849CFC",
+        "accession": "ENCSR475KPG",
         "award": "U54HG007004",
         "annotation_type": "caQTL",
         "description": "Test for annotation_type caQTL",
@@ -260,6 +260,6 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "organism": "human",
         "uuid": "fbc87042-0495-11ed-b939-0242ac120002",
-        "date_released": "2022-07-15"
+        "date_released": "2022-06-15"
     }
 ]
