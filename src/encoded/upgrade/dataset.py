@@ -805,3 +805,11 @@ def annotation_35_36(value, system):
     experimental_input = value.get('experimental_input', None)
     if experimental_input:
         value['experimental_input'] = [experimental_input]
+
+@upgrade_step('annotation', '36', '37')
+def test_upgrade_annotation_36_to_37(upgrader, annotation_36):
+    value = upgrader.upgrade(
+        'annotation', annotation_36, current_version='36', target_version='37'
+    )
+    assert value['schema_version'] == '37'
+    assert value['annotation_type'] == 'dsQTL'

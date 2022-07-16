@@ -87,7 +87,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "36"
+            "default": "37"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -97,7 +97,7 @@
                 "binding sites",
                 "BPNet-model",
                 "curated SNVs",
-                "dsQTLs",
+                "caQTLs",
                 "element gene link predictions",
                 "eQTLs",
                 "exclusion list",
