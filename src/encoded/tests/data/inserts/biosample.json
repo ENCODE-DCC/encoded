@@ -5,7 +5,8 @@
         "aliases": [
             "richard-myers:MCF-7 rep 3",
             "rob-spitale:biosample 1",
-            "andrew-fire:biosample 1"
+            "andrew-fire:biosample 1",
+            "altius:biosample AAA"
         ],
         "award": "ENCODE2",
         "biosample_ontology": "cell_line_EFO_0001203",
