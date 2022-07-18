@@ -250,7 +250,7 @@
         "date_released": "2019-05-20"
     },
     {
-        "_test": "annotation_type caQTL",
+        "_test": "annotation_type caQTLs",
         "accession": "ENCSR475KPG",
         "award": "U54HG007004",
         "annotation_type": "caQTLs",
