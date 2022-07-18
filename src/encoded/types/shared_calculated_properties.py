@@ -396,7 +396,7 @@ class CalculatedAssayTitle:
                         preferred_name = 'Histone ChIP-seq'
                     else:
                         preferred_name = 'TF ChIP-seq'
-            elif preferred_name == 'HiC':
+            elif preferred_name == 'Hi-C':
                 for rep in replicates:
                     replicateObject = request.embed(rep, '@@object')
                     if replicateObject['status'] == 'deleted':
@@ -411,9 +411,9 @@ class CalculatedAssayTitle:
                                     continue
                                 if fileObject['file_format'] == 'fastq':
                                     if fileObject['run_type'] == 'single-ended':
-                                        return 'intact'
+                                        return 'intact Hi-C'
                                     elif fileObject['run_type'] == 'paired-ended':
-                                        return 'in situ'
+                                        return 'in situ Hi-C'
                         else:
                             return None
                     else:
