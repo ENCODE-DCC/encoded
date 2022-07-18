@@ -1,7 +1,7 @@
 ## Changelog for annotation.json
 
 ### Schema version 37
-* Changed enum *dsQTL* to *caQTL* in the *annotation_type* enum list.
+* Changed enum *dsQTLs* to *caQTLs* in the *annotation_type* enum list.
 
 ### Minor changes since schema version 36
 * Added *seqFISH* to *assay_term_name* enum.
