@@ -299,7 +299,8 @@ class Analysis(Item):
         "type": "array",
         "notSubmittable": True,
         "items": {
-            "type": "object"
+            "type": "object",
+            "linkTo": "QualityMetric"
         }
     })
     def quality_metrics(self, request, files):
