@@ -396,7 +396,7 @@ class CalculatedAssayTitle:
                         preferred_name = 'Histone ChIP-seq'
                     else:
                         preferred_name = 'TF ChIP-seq'
-            elif preferred_name == 'Hi-C':
+            elif preferred_name == 'HiC':
                 for rep in replicates:
                     replicateObject = request.embed(rep, '@@object')
                     if replicateObject['status'] == 'deleted':
