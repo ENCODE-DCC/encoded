@@ -253,7 +253,7 @@
         "_test": "annotation_type caQTL",
         "accession": "ENCSR475KPG",
         "award": "U54HG007004",
-        "annotation_type": "caQTL",
+        "annotation_type": "caQTLs",
         "description": "Test for annotation_type caQTL",
         "lab": "j-michael-cherry",
         "status": "released",

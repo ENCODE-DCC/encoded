@@ -567,4 +567,4 @@ def test_upgrade_annotation_36_to_37(upgrader, annotation_36):
         'annotation', annotation_36, current_version='36', target_version='37'
     )
     assert value['schema_version'] == '37'
-    assert value['annotation_type'] == 'caQTL'
+    assert value['annotation_type'] == 'caQTLs'

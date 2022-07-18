@@ -246,5 +246,5 @@ def annotation_36(award, lab):
         'award': award['@id'],
         'lab': lab['@id'],
         'schema_version': '36',
-        'annotation_type': 'dsQTL',
+        'annotation_type': 'dsQTLs',
     }

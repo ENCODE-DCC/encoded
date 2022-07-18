@@ -811,5 +811,5 @@ def annotation_35_36(value, system):
 def annotation_36_37(value, system):
     # https://igvf.atlassian.net/browse/ENCM-30
     annotation_type = value.get('annotation_type', None)
-    if annotation_type == "dsQTL":
-        value['annotation_type'] = 'caQTL'
+    if annotation_type == "dsQTLs":
+        value['annotation_type'] = 'caQTLs'
