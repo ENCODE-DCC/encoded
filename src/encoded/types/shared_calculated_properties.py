@@ -379,7 +379,7 @@ class CalculatedAssayTitle:
         "type": "string",
     })
     def assay_title(self, request, registry, assay_term_name,
-                    control_type=None, target=None, replicates=None):
+                    control_type=None, target=None, original_files=None):
         # This is the preferred name in generate_ontology.py if exists
         assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
@@ -397,27 +397,16 @@ class CalculatedAssayTitle:
                     else:
                         preferred_name = 'TF ChIP-seq'
             elif preferred_name == 'HiC':
-                for rep in replicates:
-                    replicateObject = request.embed(rep, '@@object')
-                    if replicateObject['status'] == 'deleted':
-                        continue
-                    if 'experiment' in replicateObject:
-                        experimentObject = request.embed(replicateObject['experiment'], '@@object')
-                        if 'original_files' in experimentObject:
-                            files = experimentObject['original_files']
-                            for file in files:
-                                fileObject = request.embed(file, '@@object')
-                                if fileObject['status'] == 'deleted':
-                                    continue
-                                if fileObject['file_format'] == 'fastq':
-                                    if fileObject['run_type'] == 'single-ended':
-                                        return 'intact Hi-C'
-                                    elif fileObject['run_type'] == 'paired-ended':
-                                        return 'in situ Hi-C'
-                        else:
-                            return None
-                    else:
-                        return None
+                if original_files is not None:
+                    for file in original_files:
+                        fileObject = request.embed(file, '@@object')
+                        if fileObject['status'] == 'deleted':
+                            continue
+                        if fileObject['file_format'] == 'fastq':
+                            if fileObject['run_type'] == 'single-ended':
+                                preferred_name = 'intact Hi-C'
+                            elif fileObject['run_type'] == 'paired-ended':
+                                preferred_name = 'in situ Hi-C'
             elif control_type and assay_term_name in ['eCLIP', 'MPRA', 'proliferation CRISPR screen', 'Flow-FISH CRISPR screen', 'FACS CRISPR screen', 'CRISPR screen', 'STARR-seq', 'Mint-ChIP-seq']:
                 preferred_name = 'Control {}'.format(assay_term_name)
             return preferred_name or assay_term_name
