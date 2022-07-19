@@ -500,8 +500,17 @@ class CalculatedReplicationType:
                     )
                     biosample_type = biosampleTypeObject.get('classification')
                 else:
+                    # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
+                    # untill we change our mind
+                    if assay_term_name == 'RNA Bind-n-Seq':
+                        return 'unreplicated'
+                    # If I have a library without a biosample,
+                    # I cannot make a call about replicate structure
                     return None
             else:
+                # REPLICATES WITH NO LIBRARIES WILL BE CAUGHT BY AUDIT (TICKET 3268)
+                # If I have a replicate without a library,
+                # I cannot make a call about the replicate structure
                 return None
 
         #  exclude ENCODE2
