@@ -293,7 +293,7 @@ def test_experiment_mint_chip_control(testapp, experiment_28):
     assert res.json['object']['assay_title'] == 'Control eCLIP'
 
 def test_experiment_hic_assay_title(testapp, base_experiment, file_fastq_3):
-    testapp.patch_json(base_experiment['@id'], {'original_files': file_fastq_3['@id']})
+    testapp.patch_json(base_experiment['@id'], {'original_files': [file_fastq_3['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'in situ Hi-C'
     testapp.patch_json(file_fastq_3['@id'], {'run_type': 'single-ended'})
