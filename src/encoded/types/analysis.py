@@ -300,7 +300,25 @@ class Analysis(Item):
         "notSubmittable": True,
         "items": {
             "type": "object",
-            "linkTo": "QualityMetric"
+            "properties": {
+                "biological_replicates":{
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                    }
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "linkTo": "File"
+                    }
+                },
+                "quality_metric": {
+                    "type": "object",
+                    "linkTo": "QualityMetric"
+                }
+            }            
         }
     })
     def quality_metrics(self, request, files):
