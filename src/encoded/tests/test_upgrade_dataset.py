@@ -561,3 +561,10 @@ def test_upgrade_annotation_35_to_36(upgrader, annotation_35_experimental_input_
     )
     assert value['schema_version'] == '36'
     assert value['experimental_input'] == [experiment_chip_H3K4me3['@id']]
+
+def test_upgrade_annotation_36_to_37(upgrader, annotation_36):
+    value = upgrader.upgrade(
+        'annotation', annotation_36, current_version='36', target_version='37'
+    )
+    assert value['schema_version'] == '37'
+    assert value['annotation_type'] == 'caQTLs'

@@ -805,3 +805,11 @@ def annotation_35_36(value, system):
     experimental_input = value.get('experimental_input', None)
     if experimental_input:
         value['experimental_input'] = [experimental_input]
+
+
+@upgrade_step('annotation', '36', '37')
+def annotation_36_37(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-30
+    annotation_type = value.get('annotation_type', None)
+    if annotation_type == "dsQTLs":
+        value['annotation_type'] = 'caQTLs'

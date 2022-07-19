@@ -248,5 +248,18 @@
         "uuid": "3167df30-50d7-4b18-87f8-4c9f153f0b31",
         "related_files": ["ENCFF000LSP", "ENCFF000LSQ"],
         "date_released": "2019-05-20"
+    },
+    {
+        "_test": "annotation_type caQTLs",
+        "accession": "ENCSR475KPG",
+        "award": "U54HG007004",
+        "annotation_type": "caQTLs",
+        "description": "Test for annotation_type caQTLs",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "fbc87042-0495-11ed-b939-0242ac120002",
+        "date_released": "2022-06-15"
     }
 ]

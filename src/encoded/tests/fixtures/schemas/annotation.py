@@ -239,3 +239,12 @@ def annotation_35_experimental_input_array(award, lab, experiment_chip_H3K4me3):
         'assay_term_name': 'DNase-seq',
         'experimental_input': experiment_chip_H3K4me3['@id']
     }
+
+@pytest.fixture
+def annotation_36(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '36',
+        'annotation_type': 'dsQTLs',
+    }
