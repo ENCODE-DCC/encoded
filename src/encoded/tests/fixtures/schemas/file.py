@@ -2201,3 +2201,22 @@ def archr_project_file(testapp, experiment, award, lab):
         "status": "in progress"
     }
     return item
+
+
+@pytest.fixture
+def hic_chromatin_int(testapp, intact_hic_experiment, encode4_award, encode_lab, analysis_step_run_hic_chromatin_interactions):
+    item = {
+        'dataset': intact_hic_experiment['@id'],
+        'lab': encode_lab['@id'],
+        'award': encode4_award['@id'],
+        'file_format': 'hic',
+        'file_size': 14653403584,
+        'assembly': 'GRCh38',
+        'md5sum': '78f05b7a9fa61088c90b29e578a3cb4a',
+        'output_type': 'chromatin interactions',
+        'filter_type': 'mapping quality',
+        'filter_value': 1,
+        'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run_hic_chromatin_interactions['@id']
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]

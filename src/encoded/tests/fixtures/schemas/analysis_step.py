@@ -319,3 +319,16 @@ def analysis_step_chia_interaction_calling(testapp):
         'major_version': 1
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_hic_chromatin_interactions(testapp):
+    item = {
+        'step_label': 'hic-chromatin-interactions-step',
+        'title': 'Hi-C chromatin interactions step',
+        'input_file_types': ['alignments'],
+        'output_file_types': ['chromatin interactions'],
+        'analysis_step_types': ['interaction calling', 'file format conversion'],
+        'major_version': 1
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]

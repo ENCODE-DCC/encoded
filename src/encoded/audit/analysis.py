@@ -593,11 +593,24 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     '''
     ChIA-PET analyses
     '''
+
     if any(pipeline['title'] == 'Ruan Lab ChIA-PIPE Pipeline' for pipeline in value['pipelines']):
         yield from check_analysis_chiapet_encode4_qc_standards(
             value,
             files_structure,
             ['Ruan Lab ChIA-PIPE Pipeline'],
+            '/')
+        return
+
+    '''
+    Hi-C analyses
+    '''
+
+    if any(pipeline['title'] == 'Hi-C pipeline' for pipeline in value['pipelines']):
+        yield from check_analysis_hic_encode4_qc_standards(
+            value,
+            files_structure,
+            ['Hi-C pipeline'],
             '/')
         return
 
@@ -2245,6 +2258,169 @@ def check_analysis_chiapet_encode4_qc_standards(
                 )
                 if int_ratio < 1:
                     yield AuditFailure('low intra/inter-chr PET ratio', detail, level='WARNING')
+
+
+'''
+Hi-C audits
+'''
+
+
+def check_analysis_hic_encode4_qc_standards(
+    value,
+    files_structure,
+    expected_pipeline_titles,
+    link_to_standards
+):
+    if value['assembly'] not in ['GRCh38', 'mm10']:
+        return
+    if len(value['datasets']) != 1 or len(value['pipelines']) != 1:
+        return
+
+    assay_title = value['datasets'][0]['assay_title']
+    pipeline_titles = [pipeline['title'] for pipeline in value['pipelines']]
+    if any(
+        title not in expected_pipeline_titles
+        for title in pipeline_titles
+    ):
+        return
+
+    chr_int_files = files_structure.get('chromatin_interaction_files').values()
+
+    hic_metrics = get_metrics(chr_int_files, 'HicQualityMetric')
+
+    # Checks in HicQualityMetric
+    if hic_metrics is not None and len(hic_metrics) > 0:
+        for metric in hic_metrics:
+            chr_int_file = files_structure.get('chromatin_interaction_files')[metric['quality_metric_of'][0]]
+            if assay_title == 'intact Hi-C' or value['datasets'][0]['assay_term_name'] == 'HiC': # Change this statement after rebase
+                yield from check_intact_hic_standards(metric, chr_int_file, assay_title, value)
+            if assay_title == 'in situ Hi-C' or value['datasets'][0]['assay_term_name'] == 'HiC': # Change this statement after rebase
+                yield from check_in_situ_hic_standards(metric, chr_int_file, assay_title, value)
+
+
+def check_intact_hic_standards(
+    hic_metric,
+    file,
+    assay_title,
+    value
+):
+    if 'total_unique' in hic_metric and 'quality_metric_of' in hic_metric:
+        detail = (
+            f"Chromatin interactions file "
+            f"{audit_link(path_to_text(file['@id']),file['@id'])} "
+            f"processed by {assay_title} {value['title']} pipeline "
+            f"has a total unique read count of {hic_metric['total_unique']}. "
+            f"According to ENCODE4 standards, Hi-C assays performed with "
+            f"the intact protocol require a minimum of 2 billion total reads."
+        )
+        if hic_metric['total_unique'] < 2000000000:
+            yield AuditFailure('extremely low total_unique reads', detail, level='NOT_COMPLIANT')
+
+    if 'pct_unique_hic_contacts' in hic_metric and 'quality_metric_of' in hic_metric:
+        detail = (
+            f"Chromatin interactions file "
+            f"{audit_link(path_to_text(file['@id']),file['@id'])} "
+            f"processed by {assay_title} {value['title']} pipeline "
+            f"has {hic_metric['pct_unique_hic_contacts']}% of unique "
+            f"reads in Hi-C contacts. According to ENCODE4 standards, "
+            f"Hi-C assays performed with the intact protocol require "
+            f"a minimum 50% of unique reads in Hi-C contacts, and "
+            f"ideally have a percentage over 60%. A low percentage "
+            f"of unique reads in Hi-C contacts indicates a failure "
+            f"in the restriction, fill-in, or ligation steps of "
+            f"the protocol."
+        )
+        if hic_metric['pct_unique_hic_contacts'] < 60 and hic_metric['pct_unique_hic_contacts'] > 50:
+            yield AuditFailure('low pct_unique_hic_contacts', detail, level='WARNING')
+        elif hic_metric['pct_unique_hic_contacts'] < 50:
+            yield AuditFailure('extremely low pct_unique_hic_contacts', detail, level='NOT_COMPLIANT')
+
+    if 'pct_unique_long_range_greater_than_20kb' in hic_metric and 'quality_metric_of' in hic_metric:
+        detail = (
+            f"Chromatin interactions file "
+            f"{audit_link(path_to_text(file['@id']),file['@id'])} "
+            f"processed by {assay_title} {value['title']} pipeline has "
+            f"{hic_metric['pct_unique_long_range_greater_than_20kb']}% "
+            f"of unique reads in long range (>20kb) contacts. According "
+            f"to ENCODE4 standards, Hi-C assays performed with the "
+            f"intact protocol require a minimum 15% of unique reads "
+            f"in long range contacts."
+        )
+        if hic_metric['pct_unique_long_range_greater_than_20kb'] < 15:
+            yield AuditFailure('extremely low pct_unique_long_range_greater_than_20kb', detail, level='NOT_COMPLIANT')
+
+def check_in_situ_hic_standards(
+    hic_metric,
+    file,
+    assay_title,
+    value
+):
+    if 'pct_unique_total_duplicates' in hic_metric and 'quality_metric_of' in hic_metric:
+        detail = (
+            f"Chromatin interactions file "
+            f"{audit_link(path_to_text(file['@id']),file['@id'])} "
+            f"processed by {assay_title} {value['title']} pipeline "
+            f"has {hic_metric['pct_unique_total_duplicates']}% of "
+            f"unique total duplicates. According to ENCODE4 standards, "
+            f"Hi-C assays performed with the in situ protocol ideally "
+            f"have a maximum of 40% of unique total duplicates. A "
+            f"high percentage of unique total duplicates indicates "
+            f"low molecular complexity."
+        )
+        if hic_metric['pct_unique_total_duplicates'] > 40:
+            yield AuditFailure('high pct_unique_total_duplicates', detail, level='WARNING')
+
+    if 'pct_unique_hic_contacts' in hic_metric and 'quality_metric_of' in hic_metric:
+        detail = (
+            f"Chromatin interactions file "
+            f"{audit_link(path_to_text(file['@id']),file['@id'])} "
+            f"processed by {assay_title} {value['title']} pipeline "
+            f"has {hic_metric['pct_unique_hic_contacts']}% of "
+            f"unique reads in Hi-C contacts. According to ENCODE4 "
+            f"standards, Hi-C assays performed with the in situ "
+            f"protocol require a minimum 20% of unique reads in "
+            f"Hi-C contacts, and ideally have a percentage over "
+            f"50%. A low percentage of unique reads in Hi-C "
+            f"contacts indicates a failure in the restriction, "
+            f"fill-in, or ligation steps of the protocol."
+        )
+        if hic_metric['pct_unique_hic_contacts'] < 50 and \
+                hic_metric['pct_unique_hic_contacts'] > 20:
+            yield AuditFailure('low pct_unique_hic_contacts', detail, level='WARNING')
+        elif hic_metric['pct_unique_hic_contacts'] < 20:
+            yield AuditFailure('extremely low pct_unique_hic_contacts', detail, level='NOT_COMPLIANT')
+
+    if 'pct_ligation_motif_present' in hic_metric and 'quality_metric_of' in hic_metric:
+        detail = (
+            f"Chromatin interactions file "
+            f"{audit_link(path_to_text(file['@id']),file['@id'])} "
+            f"processed by {assay_title} {value['title']} pipeline "
+            f"has {hic_metric['pct_ligation_motif_present']}% of "
+            f"reads with ligation motif present. According to "
+            f"ENCODE4 standards, Hi-C assays performed with the in "
+            f"situ protocol require a minimum 15% of reads with "
+            f"ligation motif present. A low percentage of reads with "
+            f"ligation motif present indicates a failure in ligation."
+        )
+        if hic_metric['pct_ligation_motif_present'] < 15:
+            yield AuditFailure('extremely low pct_ligation_motif_present', detail, level='NOT_COMPLIANT')
+
+    if 'pct_unique_long_range_greater_than_20kb' in hic_metric and 'quality_metric_of' in hic_metric:
+        detail = (
+            f"Chromatin interactions file "
+            f"{audit_link(path_to_text(file['@id']),file['@id'])} "
+            f"processed by {assay_title} {value['title']} pipeline has "
+            f"{hic_metric['pct_unique_long_range_greater_than_20kb']}% "
+            f"of unique reads in long range (>20kb) contacts. According "
+            f"to ENCODE4 standards, Hi-C assays performed with the in "
+            f"situ protocol require a minimum 20% of unique reads in long "
+            f"range contacts, and ideally have a percentage over 35%."
+        )
+        if hic_metric['pct_unique_long_range_greater_than_20kb'] < 35 and \
+                hic_metric['pct_unique_long_range_greater_than_20kb'] > 20:
+            yield AuditFailure('low pct_unique_long_range_greater_than_20kb', detail, level='WARNING')
+        elif hic_metric['pct_unique_long_range_greater_than_20kb'] < 20 :
+            yield AuditFailure('extremely low pct_unique_long_range_greater_than_20kb', detail, level='NOT_COMPLIANT')
 
 
 '''
