@@ -13,3 +13,4 @@
 * Added *charles-lee* to *aliases.aliases.items* pattern
 * Added *genomic perturbation followed by RT-qPCR* to *assay.assay_term_name* enum
 * Added *seqFISH* to *assay.assay_term_name* enum
+* Added *altius* to *aliases.aliases.items* pattern
