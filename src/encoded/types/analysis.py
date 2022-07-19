@@ -98,6 +98,8 @@ class Analysis(Item):
         'files',
         'files.quality_metrics',
         'pipeline_labs',
+        'quality_metrics',
+        'quality_metrics.quality_metric'
     ]
 
     rev = {
