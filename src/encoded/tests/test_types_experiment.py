@@ -298,7 +298,7 @@ def test_experiment_hic_assay_title(testapp, base_experiment, file_fastq_3):
     assert res.json['object']['assay_title'] == 'in situ Hi-C'
     testapp.patch_json(file_fastq_3['@id'], {'run_type': 'single-ended'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert res.json['object']['assay_title'] == 'in situ Hi-C'
+    assert res.json['object']['assay_title'] == 'intact Hi-C'
 
 def test_experiment_life_stage_age(testapp, base_experiment, donor_1, donor_2,biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1):
     testapp.patch_json(donor_1['@id'], {'age_units': 'year', 'age': '25', 'life_stage': 'adult' })
