@@ -317,10 +317,10 @@ class Analysis(Item):
                     }
                 },
                 "quality_metric": {
-                    "type": "object",
+                    "type": "string",
                     "linkTo": "QualityMetric"
                 }
-            }            
+            }
         }
     })
     def quality_metrics(self, request, files):
