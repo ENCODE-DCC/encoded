@@ -878,3 +878,13 @@ def experiment_35(root, experiment):
         'assay_term_name': 'Capture Hi-C'
     })
     return properties
+
+@pytest.fixture
+def HiC_experiment(testapp, lab, award, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'HiC',
+        'biosample_ontology': heart['uuid']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
