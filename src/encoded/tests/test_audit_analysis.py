@@ -1440,6 +1440,7 @@ def test_audit_analysis_hic_encode4(
         {'analyses': [base_analysis['@id']]}
     )
 
+    # Test intact audits
     res = testapp.get(base_analysis['@id'] + '@@index-data')
     audit_errors = res.json['audit']
     assert any(error['category'] == 'extremely low total_unique reads' for error in audit_errors.get('NOT_COMPLIANT', []))
@@ -1457,6 +1458,7 @@ def test_audit_analysis_hic_encode4(
     )
     res = testapp.get(base_analysis['@id'] + '@@index-data')
     audit_errors = res.json['audit']
+    assert any(error['category'] == 'extremely low sequenced_read_pairs' for error in audit_errors.get('NOT_COMPLIANT', []))
     assert any(error['category'] == 'high pct_unique_total_duplicates' for error in audit_errors.get('WARNING', []))
     assert any(error['category'] == 'low pct_unique_hic_contacts' for error in audit_errors.get('WARNING', []))
     assert any(error['category'] == 'extremely low pct_ligation_motif_present' for error in audit_errors.get('NOT_COMPLIANT', []))

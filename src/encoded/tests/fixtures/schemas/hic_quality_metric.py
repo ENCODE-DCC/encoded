@@ -71,6 +71,7 @@ def hic_quality_metric_single_ended_2(testapp, analysis_step_run, file, award, l
         'lab': lab['uuid'],
         'step_run': analysis_step_run['uuid'],
         'quality_metric_of': [hic_chromatin_int['@id']],
+        'run_type': 'single-ended',
         'total_unique': 10000,
         'pct_unique_hic_contacts': 55,
         'pct_unique_long_range_greater_than_20kb': 10
@@ -85,6 +86,8 @@ def hic_quality_metric_paired_ended_3(testapp, analysis_step_run, file, award, l
         'lab': lab['uuid'],
         'step_run': analysis_step_run['uuid'],
         'quality_metric_of': [hic_chromatin_int['@id']],
+        'run_type': 'paired-ended',
+        'sequenced_read_pairs': 9000,
         'pct_unique_total_duplicates': 80,
         'pct_unique_hic_contacts': 30,
         'pct_ligation_motif_present': 3,
