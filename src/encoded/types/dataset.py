@@ -73,6 +73,7 @@ class Dataset(Item):
     schema = load_schema('encoded:schemas/dataset.json')
     embedded = [
         'analyses',
+        'analyses.quality_metrics.quality_metric',
         'files',
         'files.replicate',
         'files.replicate.experiment',
@@ -1098,6 +1099,7 @@ class MatchedSet(Series):
     schema = load_schema('encoded:schemas/matched_set.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1113,6 +1115,7 @@ class AggregateSeries(Series):
     schema = load_schema('encoded:schemas/aggregate_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1128,6 +1131,7 @@ class TreatmentTimeSeries(Series):
     schema = load_schema('encoded:schemas/treatment_time_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1143,6 +1147,7 @@ class TreatmentConcentrationSeries(Series):
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1158,6 +1163,7 @@ class OrganismDevelopmentSeries(Series):
     schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1173,6 +1179,7 @@ class ReplicationTimingSeries(Series):
     schema = load_schema('encoded:schemas/replication_timing_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1188,6 +1195,7 @@ class ReferenceEpigenome(Series):
     schema = load_schema('encoded:schemas/reference_epigenome.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
     rev = Dataset.rev.copy()
@@ -1225,6 +1233,7 @@ class ExperimentSeries(Series):
         'contributors',
         'organism',
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
         'related_datasets.award',
         'related_datasets.lab',
         'related_datasets.replicates.library.biosample',
@@ -1324,13 +1333,16 @@ class FunctionalCharacterizationSeries(Series):
     schema = load_schema('encoded:schemas/functional_characterization_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
         'related_datasets.examined_loci',
         'related_datasets.examined_loci.gene',
         'related_datasets.elements_mappings',
         'related_datasets.elements_mappings.analyses',
+        'related_datasets.elements_mappings.analyses.quality_metrics.quality_metric',
         'related_datasets.elements_mappings.lab',
         'related_datasets.elements_cloning',
         'related_datasets.elements_cloning.analyses',
+        'related_datasets.elements_cloning.analyses.quality_metrics.quality_metric',
         'related_datasets.elements_cloning.lab',
         'related_datasets.elements_references',
         'related_datasets.elements_references.examined_loci',
@@ -1549,6 +1561,7 @@ class GeneSilencingSeries(Series):
     schema = load_schema('encoded:schemas/gene_silencing_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1564,6 +1577,7 @@ class DifferentiationSeries(Series):
     schema = load_schema('encoded:schemas/differentiation_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1579,6 +1593,7 @@ class PulseChaseTimeSeries(Series):
     schema = load_schema('encoded:schemas/pulse_chase_time_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1594,6 +1609,7 @@ class DiseaseSeries(Series):
     schema = load_schema('encoded:schemas/disease_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
     
     rev = Dataset.rev.copy()
@@ -1626,6 +1642,7 @@ class MultiomicsSeries(Series):
     schema = load_schema('encoded:schemas/multiomics_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
     rev = Dataset.rev.copy()
@@ -1658,6 +1675,7 @@ class CollectionSeries(Series):
     schema = load_schema('encoded:schemas/collection_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
 
@@ -1673,6 +1691,7 @@ class DifferentialAccessibilitySeries(Series):
     schema = load_schema('encoded:schemas/differential_accessibility_series.json')
     embedded = Series.embedded + [
         'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
         'related_datasets.replicates',
         'related_datasets.replicates.library',
         'related_datasets.replicates.library.biosample',
