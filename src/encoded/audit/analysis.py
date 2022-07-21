@@ -2292,9 +2292,9 @@ def check_analysis_hic_encode4_qc_standards(
     if hic_metrics is not None and len(hic_metrics) > 0:
         for metric in hic_metrics:
             chr_int_file = files_structure.get('chromatin_interaction_files')[metric['quality_metric_of'][0]]
-            if assay_title == 'intact Hi-C' or value['datasets'][0]['assay_term_name'] == 'HiC': # Change this statement after rebase
+            if assay_title == 'intact Hi-C':
                 yield from check_intact_hic_standards(metric, chr_int_file, assay_title, value)
-            if assay_title == 'in situ Hi-C' or value['datasets'][0]['assay_term_name'] == 'HiC': # Change this statement after rebase
+            if assay_title == 'in situ Hi-C':
                 yield from check_in_situ_hic_standards(metric, chr_int_file, assay_title, value)
 
 

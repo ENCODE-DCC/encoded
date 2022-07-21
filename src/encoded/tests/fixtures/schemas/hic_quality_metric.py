@@ -73,7 +73,7 @@ def hic_quality_metric_single_ended_2(testapp, analysis_step_run, file, award, l
         'quality_metric_of': [hic_chromatin_int['@id']],
         'run_type': 'single-ended',
         'total_unique': 10000,
-        'pct_unique_hic_contacts': 55,
+        'pct_unique_hic_contacts': 45,
         'pct_unique_long_range_greater_than_20kb': 10
     }
     return testapp.post_json('/hic_quality_metric', item).json['@graph'][0]
