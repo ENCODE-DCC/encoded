@@ -335,17 +335,16 @@ class Analysis(Item):
         quality_metrics = []
         for file_object in file_objects:
             for qm in file_object.get('quality_metrics', []):
-                qm_obj = request.embed(qm, '@@object')
-                if qm_obj['@id'] not in quality_metrics_dict:
-                    quality_metrics_dict[qm_obj['@id']] = {
+                if qm not in quality_metrics_dict:
+                    quality_metrics_dict[qm] = {
                             'files': [file_object['@id']],
                             'biological_replicates': set(file_object.get('biological_replicates')),
-                            'quality_metric': qm_obj,
+                            'quality_metric': qm,
                         }
                 else:
-                    quality_metrics_dict[qm_obj['@id']]['files'].append(file_object['@id'])
+                    quality_metrics_dict[qm]['files'].append(file_object['@id'])
                     for bio_rep in file_object.get('biological_replicates'):
-                        quality_metrics_dict[qm_obj['@id']]['biological_replicates'].add(bio_rep)
+                        quality_metrics_dict[qm]['biological_replicates'].add(bio_rep)
         for key in quality_metrics_dict.keys():
             quality_metrics.append(quality_metrics_dict[key])
         if quality_metrics:
