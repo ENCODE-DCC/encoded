@@ -2312,11 +2312,11 @@ def check_intact_hic_standards(
             f"processed by {assay_title} {value['title']} pipeline "
             f"has a total unique read count of {hic_metric['total_unique']}. "
             f"According to ENCODE4 standards, Hi-C assays performed with "
-            f"the intact protocol require a minimum of 2 billion total reads. "
+            f"the intact protocol ideally have over 2 billion total reads. "
             f"(See {audit_link('ENCODE Hi-C data standards', link_to_standards)})"
         )
         if hic_metric['total_unique'] < 2000000000:
-            yield AuditFailure('extremely low total_unique reads', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('low total_unique reads', detail, level='WARNING')
 
     if 'pct_unique_hic_contacts' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
@@ -2368,12 +2368,12 @@ def check_in_situ_hic_standards(
             f"processed by {assay_title} {value['title']} pipeline "
             f"has {hic_metric['sequenced_read_pairs']} total read pairs "
             f"sequenced for library. According to ENCODE4 standards, "
-            f"Hi-C assays performed with the in situ protocol require a "
-            f"minimum of 2 billion sequenced read pairs. "
+            f"Hi-C assays performed with the in situ protocol ideally "
+            f"have over 2 billion sequenced read pairs. "
             f"(See {audit_link('ENCODE Hi-C data standards', link_to_standards)})"
         )
         if hic_metric['sequenced_read_pairs'] < 2000000000:
-            yield AuditFailure('extremely low sequenced_read_pairs', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('low sequenced_read_pairs', detail, level='WARNING')
     if 'pct_unique_total_duplicates' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
             f"Chromatin interactions file "
