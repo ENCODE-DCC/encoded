@@ -53,7 +53,7 @@ def test_types_analysis_quality_metrics(
     testapp.patch_json(chip_align_enrich_quality_metric['@id'], {'quality_metric_of': [file_bam_1_chip['@id']]})
     testapp.patch_json(analysis_released['@id'], {'files': [file_bam_1_chip['@id']]})
     res = testapp.get(analysis_released['@id'] + '@@index-data')
-    quality_metric = res.json['object']['quality_metrics'][0]
+    quality_metric = res.json['embedded']['quality_metrics'][0]
     file_res = testapp.get(file_bam_1_chip['@id'] + '@@index-data')
     file_obj = file_res.json['object']
     assert quality_metric['files'][0] == file_obj['@id']
