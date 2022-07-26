@@ -203,3 +203,12 @@ def analysis_step_run_chia_interaction_calling(testapp, analysis_step_version_ch
         'status': 'released'
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_hic_chromatin_interactions(testapp, analysis_step_version_hic_chromatin_interactions):
+    item = {
+        'analysis_step_version': analysis_step_version_hic_chromatin_interactions['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]

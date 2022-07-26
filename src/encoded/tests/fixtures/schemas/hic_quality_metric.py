@@ -62,3 +62,35 @@ def hic_quality_metric_paired_ended_2(analysis_step_run, file, award, lab):
         'quality_metric_of': [file['uuid']],
         'chimeric_ambiguous': 234,
     }
+
+
+@pytest.fixture
+def hic_quality_metric_single_ended_2(testapp, analysis_step_run, file, award, lab, hic_chromatin_int):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'step_run': analysis_step_run['uuid'],
+        'quality_metric_of': [hic_chromatin_int['@id']],
+        'run_type': 'single-ended',
+        'total_unique': 10000,
+        'pct_unique_hic_contacts': 45,
+        'pct_unique_long_range_greater_than_20kb': 10
+    }
+    return testapp.post_json('/hic_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
+def hic_quality_metric_paired_ended_3(testapp, analysis_step_run, file, award, lab, hic_chromatin_int):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'step_run': analysis_step_run['uuid'],
+        'quality_metric_of': [hic_chromatin_int['@id']],
+        'run_type': 'paired-ended',
+        'sequenced_read_pairs': 9000,
+        'pct_unique_total_duplicates': 80,
+        'pct_unique_hic_contacts': 30,
+        'pct_ligation_motif_present': 3,
+        'pct_unique_long_range_greater_than_20kb': 10
+    }
+    return testapp.post_json('/hic_quality_metric', item).json['@graph'][0]

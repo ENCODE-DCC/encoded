@@ -1407,6 +1407,64 @@ def test_audit_analysis_chia_pet_encode4(
     assert any(error['category'] == 'low intra/inter-chr PET ratio' for error in audit_errors.get('WARNING', []))
 
 
+def test_audit_analysis_hic_encode4(
+    testapp,
+    base_analysis,
+    encode4_award,
+    file_fastq_2,
+    file1_2,
+    hic_chromatin_int,
+    intact_hic_experiment,
+    insitu_hic_experiment,
+    hic_quality_metric_single_ended_2,
+    hic_quality_metric_paired_ended_3,
+    analysis_step_run_hic_chromatin_interactions,
+    analysis_step_version_hic_chromatin_interactions,
+    analysis_step_hic_chromatin_interactions,
+    hic_pipeline
+):
+    testapp.patch_json(
+        file1_2['@id'], # Add SE fastq to intact Hi-C dataset
+        {'dataset': intact_hic_experiment['@id']}
+    )
+    testapp.patch_json(
+        file_fastq_2['@id'], # Add PE fastq to in situ Hi-C dataset
+        {'dataset': insitu_hic_experiment['@id']}
+    )
+    testapp.patch_json(
+        base_analysis['@id'],
+        {'files': [hic_chromatin_int['@id']]}
+    )
+    testapp.patch_json(
+        intact_hic_experiment['@id'],
+        {'analyses': [base_analysis['@id']]}
+    )
+
+    # Test intact audits
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    audit_errors = res.json['audit']
+    assert any(error['category'] == 'low total_unique reads' for error in audit_errors.get('WARNING', []))
+    assert any(error['category'] == 'low pct_unique_hic_contacts' for error in audit_errors.get('WARNING', []))
+    assert any(error['category'] == 'extremely low pct_unique_long_range_greater_than_20kb' for error in audit_errors.get('NOT_COMPLIANT', []))
+
+    # Test in situ audits
+    testapp.patch_json(
+        hic_chromatin_int['@id'],
+        {'dataset': insitu_hic_experiment['@id']}
+    )
+    testapp.patch_json(
+        insitu_hic_experiment['@id'],
+        {'analyses': [base_analysis['@id']]}
+    )
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    audit_errors = res.json['audit']
+    assert any(error['category'] == 'low sequenced_read_pairs' for error in audit_errors.get('WARNING', []))
+    assert any(error['category'] == 'high pct_unique_total_duplicates' for error in audit_errors.get('WARNING', []))
+    assert any(error['category'] == 'low pct_unique_hic_contacts' for error in audit_errors.get('WARNING', []))
+    assert any(error['category'] == 'extremely low pct_ligation_motif_present' for error in audit_errors.get('NOT_COMPLIANT', []))
+    assert any(error['category'] == 'extremely low pct_unique_long_range_greater_than_20kb' for error in audit_errors.get('NOT_COMPLIANT', []))
+
+
 def test_audit_analysis_multiple_rfas(
     testapp,
     base_analysis,

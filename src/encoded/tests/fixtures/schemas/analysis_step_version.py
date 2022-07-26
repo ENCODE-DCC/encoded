@@ -146,3 +146,15 @@ def analysis_step_version_chia_interaction_calling(testapp, analysis_step_chia_i
         ],
     }
     return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_version_hic_chromatin_interactions(testapp, analysis_step_hic_chromatin_interactions, software_version):
+    item = {
+        'analysis_step': analysis_step_hic_chromatin_interactions['@id'],
+        'minor_version': 0,
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]

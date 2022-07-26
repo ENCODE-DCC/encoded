@@ -166,3 +166,20 @@ def ChIA_PIPE_pipeline(
         'analysis_steps': [analysis_step_chia_alignment['@id']]
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
+def hic_pipeline(
+    testapp,
+    encode_lab,
+    encode4_award,
+    analysis_step_hic_chromatin_interactions
+):
+    item = {
+        'award': encode4_award['uuid'],
+        'lab': encode_lab['uuid'],
+        'title': 'Hi-C pipeline',
+        'assay_term_names': ['HiC'],
+        'analysis_steps': [analysis_step_hic_chromatin_interactions['@id']]
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]

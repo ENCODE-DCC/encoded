@@ -879,11 +879,34 @@ def experiment_35(root, experiment):
     })
     return properties
 
+
 @pytest.fixture
 def HiC_experiment(testapp, lab, award, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
+        'assay_term_name': 'HiC',
+        'biosample_ontology': heart['uuid']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def intact_hic_experiment(testapp, lab, encode4_award, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': encode4_award['@id'],
+        'assay_term_name': 'HiC',
+        'biosample_ontology': heart['uuid']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def insitu_hic_experiment(testapp, lab, encode4_award, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': encode4_award['@id'],
         'assay_term_name': 'HiC',
         'biosample_ontology': heart['uuid']
     }
