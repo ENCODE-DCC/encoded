@@ -2426,7 +2426,7 @@ def check_in_situ_hic_standards(
             f"(See {audit_link('ENCODE Hi-C data standards', link_to_standards)})"
         )
         if hic_metric['pct_ligation_motif_present'] < 25 and \
-                hic_metric['pct_ligation_motif_present'] > 15:
+                hic_metric['pct_ligation_motif_present'] > 5:
             yield AuditFailure('low pct_ligation_motif_present', detail, level='WARNING')
         elif hic_metric['pct_ligation_motif_present'] < 5:
             yield AuditFailure('extremely low pct_ligation_motif_present', detail, level='NOT_COMPLIANT')
