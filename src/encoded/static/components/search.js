@@ -1949,9 +1949,11 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                     <DisplayAsJson />
                 </div>
             </div>
-            <div className="search-page-limit-selector">
-                {resultsToggle}
-            </div>
+            {showResultsToggle && (
+                <div className="search-page-limit-selector">
+                    {resultsToggle}
+                </div>
+            )}
         </>
     );
 };
