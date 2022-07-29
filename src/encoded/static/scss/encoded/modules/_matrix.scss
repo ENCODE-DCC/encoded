@@ -35,6 +35,10 @@ $tab-color: #a8a8a8;
         .matrix__presentation {
             flex: 0 1 auto;
         }
+
+        > .body-map-thumbnail-and-modal {
+            margin: 0;
+        }
     }
 
     .test-project-selector {
