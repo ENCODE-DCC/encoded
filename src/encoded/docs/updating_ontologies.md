@@ -26,7 +26,7 @@ How to update the ontology versions
 
 2. Run generate-ontology, an example is: 
 ```
-$ generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/vYYYY-MM-DD/composite-metazoan.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/v#.##.#/efo.owl --obi-url=http://purl.obolibrary.org/obo/obi.owl --clo-url=http://purl.obolibrary.org/obo/clo.owl --doid-url=http://purl.obolibrary.org/obo/doid.owl
+$ generate-ontology --uberon-url=https://github.com/obophenotype/uberon/releases/download/vYYYY-MM-DD/composite-metazoan.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/v#.##.#/efo.owl --obi-url=http://purl.obolibrary.org/obo/obi.owl --clo-url=http://purl.obolibrary.org/obo/clo.owl --doid-url=http://purl.obolibrary.org/obo/doid.owl --cl-url=https://github.com/obophenotype/cell-ontology/raw/master/cl-full.owl
 ```
 3. Rename the ```ontology.json``` to one with the date that it was generated:
 ```
@@ -45,12 +45,12 @@ curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/
 6.  Update the following information
     
     Site release version: 128
-    ontology.json file: ontology-2022-06-15.json
-    [UBERON release date]: 2022-05-27
-    [OBI release date]: 2022-01-03
-    [EFO release date]: 2022-05-16
-    [CLO release date]: 2019-02-10
-    [DOID release date]: 2022-06-07
+    ontology.json file: ontology-2022-08-01.json
+    [UBERON release date]: 2022-06-30
+    [OBI release date]: 2022-07-11
+    [EFO release date]: 2022-07-18
+    [CLO release date]: 2022-03-20
+    [DOID release date]: 2022-07-27
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
 [Cell Ontology (CL)]: http://cellontology.org/
