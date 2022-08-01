@@ -47,6 +47,7 @@ curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/
     Site release version: 128
     ontology.json file: ontology-2022-08-01.json
     [UBERON release date]: 2022-06-30
+    [CL release date]: 2022-06-18
     [OBI release date]: 2022-07-11
     [EFO release date]: 2022-07-18
     [CLO release date]: 2022-03-20
@@ -65,6 +66,7 @@ curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/
 [DOID download]: http://www.ontobee.org/ontology/DOID
 [Makefile]: ../../../Makefile
 [UBERON release date]: https://github.com/obophenotype/uberon/releases
+[CL release date]: https://github.com/obophenotype/cell-ontology/releases
 [OBI release date]: https://github.com/obi-ontology/obi/releases
 [EFO release date]: https://github.com/EBISPOT/efo/blob/master/ExFactor%20Ontology%20release%20notes.txt
 [CLO release date]: http://www.ontobee.org/ontology/CLO
