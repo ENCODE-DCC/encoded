@@ -604,6 +604,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--uberon-url', help="Uberon version URL")
+    parser.add_argument('--cl-url', help="CL version URL")
     parser.add_argument('--efo-url', help="EFO version URL")
     parser.add_argument('--obi-url', help="OBI version URL")
     parser.add_argument('--clo-url', help="CLO version URL")
@@ -611,11 +612,12 @@ def main():
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
+    cl_url = args.cl_url
     efo_url = args.efo_url
     obi_url = args.obi_url
     clo_url = args.clo_url
     doid_url = args.doid_url
-    whitelist = [uberon_url, efo_url, obi_url, doid_url]
+    whitelist = [uberon_url, efo_url, obi_url, doid_url, cl_url]
 
     terms = {}
     # Run on ontologies defined in whitelist
