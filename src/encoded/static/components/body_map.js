@@ -794,11 +794,12 @@ class BodyMap extends React.Component {
                             </button>
                         </ul>
                     </div>
-                : null}
-                <button type="button" className={`clear-organs ${this.props.displaySystems ? 'clear-organs-with-systems' : ''}`} onClick={this.clearOrgans}>
-                    <i className="icon icon-times-circle" />
-                    Clear body map selections
-                </button>
+                : (
+                    <button type="button" className={`clear-organs ${this.props.displaySystems ? 'clear-organs-with-systems' : ''}`} onClick={this.clearOrgans}>
+                        <i className="icon icon-times-circle" />
+                        Clear body map selections
+                    </button>
+                )}
                 <div className="body-facet">
                     <div className="body-image-container">
                         {this.props.organism === 'Homo sapiens' ?
