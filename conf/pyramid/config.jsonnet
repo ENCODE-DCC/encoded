@@ -8,10 +8,10 @@ local sections = import 'sections.libsonnet';
 
 {
   // Output INI files
-  'demo.ini': std.manifestIni(rc_and_demo_ini),
-  'demo_frontend.ini': std.manifestIni(rc_and_demo_frontend_ini),
-  'rc.ini': std.manifestIni(rc_and_demo_ini),
-  'rc_frontend.ini': std.manifestIni(rc_and_demo_frontend_ini),
+  'demo.ini': std.manifestIni(demo_ini),
+  'demo_frontend.ini': std.manifestIni(demo_frontend_ini),
+  'rc.ini': std.manifestIni(rc_ini),
+  'rc_frontend.ini': std.manifestIni(rc_frontend_ini),
   'smalldb.ini': std.manifestIni({
     sections:
       sections.App(development=false, use_small_db=true) +
@@ -100,13 +100,25 @@ local sections = import 'sections.libsonnet';
     pds_private_bucket='encode-private',
     pds_public_bucket='encode-public',
   ),
-  local rc_and_demo_ini = {
+  local demo_ini = {
     sections:
       sections.App(development=false) +
       sections.Indexer() +
       shared_non_development_ini_sections,
   },
-  local rc_and_demo_frontend_ini = {
+  local demo_frontend_ini = {
+    sections:
+      sections.App(development=false) +
+      sections.Indexer(queue_worker_processes=8) +
+      shared_non_development_ini_sections,
+  },
+  local rc_ini = {
+    sections:
+      sections.App(development=false) +
+      sections.Indexer() +
+      shared_non_development_ini_sections,
+  },
+  local rc_frontend_ini = {
     sections:
       sections.App(development=false) +
       sections.Indexer(queue_worker_processes=8) +
