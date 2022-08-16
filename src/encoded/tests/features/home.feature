@@ -33,8 +33,8 @@ Feature: Home page
     Scenario: Collection search
         When I fill in "search-input-native" with "human"
         And I wait for 3 seconds
-        Then I should see 8 elements with the css selector ".card--highlighted"
-        And I should see 3 elements with the css selector ".card-count"
+        Then I should see 7 elements with the css selector ".card--highlighted"
+        And I should see 2 elements with the css selector ".card-count"
         And I should see an element with the css selector ".home-search-section__supplement.home-search-section__supplement--native"
         And I should see at least 8 elements with the css selector ".native-top-hit"
 
@@ -46,10 +46,10 @@ Feature: Home page
         And I wait for the content to load
         And I wait for 3 seconds
         Then field "search-input-native" should have the value "human"
-        Then I should see 8 elements with the css selector ".card--highlighted"
-        And I should see 3 elements with the css selector ".card-count"
+        Then I should see 7 elements with the css selector ".card--highlighted"
+        And I should see 2 elements with the css selector ".card-count"
         And I should see an element with the css selector ".home-search-section__supplement.home-search-section__supplement--native"
-        And I should see at least 8 elements with the css selector ".native-top-hit"
+        And I should see at least 7 elements with the css selector ".native-top-hit"
 
     Scenario: SCREEN search
         When I press "search-mode-select-screen"
