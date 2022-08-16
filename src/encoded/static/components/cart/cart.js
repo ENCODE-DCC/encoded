@@ -1406,7 +1406,7 @@ const CartComponent = ({ context, savedCartObj, inProgress, fetch, session, loca
                             <CartDescription cart={cart} cartType={cartType} isCartReadOnly={readOnlyState.any} />
                             <CartAccessories
                                 cart={cart}
-                                viewableDatasets={viewableDatasets}
+                                viewableDatasets={viewableDatasets.map((dataset) => dataset['@id'])}
                                 inProgress={inProgress}
                                 cartType={cartType}
                             />
