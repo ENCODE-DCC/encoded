@@ -103,7 +103,7 @@ local sections = import 'sections.libsonnet';
   local demo_ini = {
     sections:
       sections.App(development=false) +
-      sections.Indexer() +
+      sections.Indexer(queue_worker_processes=20) +
       shared_non_development_ini_sections,
   },
   local demo_frontend_ini = {
