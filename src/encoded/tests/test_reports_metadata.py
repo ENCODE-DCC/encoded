@@ -721,6 +721,7 @@ def test_metadata_metadata_report_build_header(dummy_request):
         'Controlled by',
         'File Status',
         's3_uri',
+        'Azure URL',
         'File analysis title',
         'File analysis status',
         'Audit WARNING',
@@ -770,6 +771,7 @@ def test_metadata_metadata_report_split_column_and_fields_by_experiment_and_file
         'No File Available': ['no_file_available'],
         'Restricted': ['restricted'],
         's3_uri': ['s3_uri'],
+        'Azure URL': ['azure_uri'],
         'File analysis title': ['analyses.title'],
         'File analysis status': ['analyses.status']
     }
@@ -956,6 +958,7 @@ def test_metadata_metadata_report_add_fields_to_param_list(dummy_request):
         'files.no_file_available',
         'files.restricted',
         'files.s3_uri',
+        'files.azure_uri',
         'files.analyses.title',
         'files.analyses.status',
         'files.read_count',
@@ -1154,6 +1157,7 @@ def test_metadata_metadata_report_get_field_params(dummy_request):
         ('field', 'files.no_file_available'),
         ('field', 'files.restricted'),
         ('field', 'files.s3_uri'),
+        ('field', 'files.azure_uri'),
         ('field', 'files.analyses.title'),
         ('field', 'files.analyses.status'),
     ]
@@ -1263,9 +1267,9 @@ def test_metadata_metadata_report_initialize_report(dummy_request):
     )
     mr = MetadataReport(dummy_request)
     mr._initialize_report()
-    assert len(mr.header) == 58
+    assert len(mr.header) == 59
     assert len(mr.experiment_column_to_fields_mapping.keys()) == 26, f'{len(mr.experiment_column_to_fields_mapping.keys())}'
-    assert len(mr.file_column_to_fields_mapping.keys()) == 31, f'{len(mr.file_column_to_fields_mapping.keys())}'
+    assert len(mr.file_column_to_fields_mapping.keys()) == 32, f'{len(mr.file_column_to_fields_mapping.keys())}'
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&files.file_type=bigWig&files.file_type=bam'
         '&replicates.library.size_range=50-100'
@@ -1289,7 +1293,7 @@ def test_metadata_metadata_report_build_params(dummy_request):
     dummy_request.json = {'elements': ['/experiments/ENCSR123ABC/']}
     mr = MetadataReport(dummy_request)
     mr._build_params()
-    assert len(mr.param_list['field']) == 66, f'{len(mr.param_list["field"])} not expected'
+    assert len(mr.param_list['field']) == 67, f'{len(mr.param_list["field"])} not expected'
     assert len(mr.param_list['@id']) == 1
 
 
@@ -1339,7 +1343,7 @@ def test_metadata_metadata_report_build_new_request(dummy_request):
         '&field=files.read_length&field=files.mapped_read_length&field=files.run_type&field=files.paired_end'
         '&field=files.paired_with&field=files.index_of&field=files.derived_from&field=files.file_size'
         '&field=files.lab.title&field=files.md5sum&field=files.dbxrefs&field=files.href&field=files.genome_annotation'
-        '&field=files.platform.title&field=files.controlled_by&field=files.s3_uri&field=files.analyses.title'
+        '&field=files.platform.title&field=files.controlled_by&field=files.s3_uri&field=files.azure_uri&field=files.analyses.title'
         '&field=files.analyses.status&field=files.replicate.library'
         '&%40id=%2Fexperiments%2FENCSR123ABC%2F'
     )
@@ -1636,6 +1640,7 @@ def test_metadata_metadata_report_output_sorted_row(dummy_request):
         's3://encode-public/2020/07/09/dc068c0a-d1c8-461a-a208-418d35121f3b/ENCFF244PJU.bed.gz',
         '',
         '',
+        '',
         (
             'inconsistent control read length',
             'low read length',
@@ -1907,6 +1912,7 @@ def test_metadata_publication_data_metadata_report_build_header(dummy_request):
         'File status',
         'Derived from',
         'S3 URL',
+        'Azure URL',
         'Size'
     ]
 
@@ -1937,6 +1943,7 @@ def test_metadata_publication_data_metadata_report_split_column_and_fields_by_ex
         'File status': ['status'],
         'Derived from': ['derived_from'],
         'S3 URL': ['cloud_metadata.url'],
+        'Azure URL': ['azure_uri'],
         'Size': ['file_size'],
         'No File Available': ['no_file_available'],
         'Restricted': ['restricted']
@@ -2017,6 +2024,7 @@ def test_metadata_publication_data_metadata_report_add_report_file_fields_to_fil
         ('field', 'status'),
         ('field', 'derived_from'),
         ('field', 'cloud_metadata.url'),
+        ('field', 'azure_uri'),
         ('field', 'file_size'),
         ('field', 'no_file_available'),
         ('field', 'restricted')
@@ -2124,6 +2132,7 @@ def test_metadata_publication_data_metadata_report_build_file_params(dummy_reque
         ('field', 'status'),
         ('field', 'derived_from'),
         ('field', 'cloud_metadata.url'),
+        ('field', 'azure_uri'),
         ('field', 'file_size'),
         ('field', 'no_file_available'),
         ('field', 'restricted'),
@@ -2193,6 +2202,7 @@ def test_metadata_publication_data_metadata_report_build_params(dummy_request):
         ('field', 'status'),
         ('field', 'derived_from'),
         ('field', 'cloud_metadata.url'),
+        ('field', 'azure_uri'),
         ('field', 'file_size'),
         ('field', 'no_file_available'),
         ('field', 'restricted'),
@@ -2244,7 +2254,7 @@ def test_metadata_publication_data_metadata_report_build_new_file_request(dummy_
         '&field=output_type&field=assay_term_name&field=biosample_ontology.term_id'
         '&field=biosample_ontology.term_name&field=biosample_ontology.classification'
         '&field=target.label&field=lab.title&field=md5sum&field=dbxrefs&field=derived_from'
-        '&field=cloud_metadata.url&field=file_size&field=biological_replicates'
+        '&field=cloud_metadata.url&field=azure_uri&field=file_size&field=biological_replicates'
         '&file_type=bigWig&biological_replicates=2&file_type=bigBed+narrowPeak'
     )
     assert request.registry
@@ -2258,7 +2268,7 @@ def test_metadata_publication_data_metadata_report_build_new_file_request(dummy_
         '&field=output_type&field=assay_term_name&field=biosample_ontology.term_id'
         '&field=biosample_ontology.term_name&field=biosample_ontology.classification'
         '&field=target.label&field=lab.title&field=md5sum&field=dbxrefs&field=derived_from'
-        '&field=cloud_metadata.url&field=file_size&field=biological_replicates'
+        '&field=cloud_metadata.url&field=azure_uri&field=file_size&field=biological_replicates'
         '&file_type=bigWig&biological_replicates=2&file_type=bigBed+narrowPeak'
         '&%40id=%2Ffiles%2FENCFFABC123%2F&%40id=%2Ffiles%2FENCFFDEF345%2F'
     )

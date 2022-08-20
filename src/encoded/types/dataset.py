@@ -899,6 +899,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
                 'no_file_available',
                 'restricted',
                 's3_uri',
+                'azure_uri',
                 'analyses',
                 'preferred_default',
                 'processed',
