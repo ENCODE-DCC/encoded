@@ -9,7 +9,7 @@ envdir>=1.0.1
 envfile==1.0
 funcsigs==0.4
 futures==3.1.1
-gevent>=1.1.1
+gevent==20.5.2
 greenlet==0.4.14
 iso8601==0.1.11
 keystoneauth1==2.3.0
