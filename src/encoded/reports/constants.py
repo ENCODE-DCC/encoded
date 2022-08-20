@@ -116,6 +116,7 @@ METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('No File Available', ['files.no_file_available']),
         ('Restricted', ['files.restricted']),
         ('s3_uri', ['files.s3_uri']),
+        ('Azure URL', ['files.azure_uri']),
         ('File analysis title', ['files.analyses.title']),
         ('File analysis status', ['files.analyses.status']),
     ]
@@ -158,6 +159,7 @@ ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('File Status', ['files.status']),
         ('Derived from', ['files.derived_from']),
         ('S3 URL', ['files.cloud_metadata.url']),
+        ('Azure URL', ['files.azure_uri']),
         ('Size', ['files.file_size']),
         ('No File Available', ['files.no_file_available']),
         ('Restricted', ['files.restricted'])
@@ -188,6 +190,7 @@ PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('File status', ['files.status']),
         ('Derived from', ['files.derived_from']),
         ('S3 URL', ['files.cloud_metadata.url']),
+        ('Azure URL', ['files.azure_uri']),
         ('Size', ['files.file_size']),
         ('No File Available', ['files.no_file_available']),
         ('Restricted', ['files.restricted'])
@@ -231,6 +234,7 @@ SERIES_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('No File Available', ['series_files.no_file_available']),
         ('Restricted', ['series_files.restricted']),
         ('s3_uri', ['series_files.s3_uri']),
+        ('Azure URL', ['series_files.azure_uri']),
         ('File analysis title', ['series_files.analyses.title']),
         ('File analysis status', ['series_files.analyses.status']),
     ]
