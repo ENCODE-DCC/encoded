@@ -61,19 +61,19 @@ export const HOME_COLLECTIONS = [
         searchUrl: (
             '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries' +
             '&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false' +
-            '&control_type!=*&limit=0&format=json'
+            '&control_type!=*&status=released&limit=0&format=json'
         ),
         '@id': (
             '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries' +
             '&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false' +
-            '&control_type!=*'
+            '&control_type!=*&status=released'
         ),
         '@type': ['DataCollection'],
     },
     {
         title: 'Encyclopedia of DNA Elements',
         searchUrl: (
-            '/search/?type=Annotation&encyclopedia_version=current&annotation_type=candidate+Cis-Regulatory+Elements&annotation_type=chromatin+state&annotation_type=representative+DNase+hypersensitivity+sites&limit=0&format=json'
+            '/search/?type=Annotation&encyclopedia_version=current&annotation_type=candidate+Cis-Regulatory+Elements&annotation_type=chromatin+state&annotation_type=representative+DNase+hypersensitivity+sites&limit=0&status=released&format=json'
         ),
         '@id': '/encyclopedia/',
         '@type': ['DataCollection'],
@@ -92,8 +92,8 @@ export const HOME_COLLECTIONS = [
     },
     {
         title: 'Stem-cell development matrix (SESCC)',
-        searchUrl: '/search/?type=Experiment&internal_tags=SESCC&limit=0&format=json',
-        '@id': '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
+        searchUrl: '/search/?type=Experiment&internal_tags=SESCC&status=released&limit=0&format=json',
+        '@id': '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC&status=released',
         '@type': ['DataCollection'],
     },
     {
@@ -160,14 +160,14 @@ export const HOME_COLLECTIONS = [
     },
     {
         title: 'Computational and integrative products',
-        searchUrl: '/search/?type=Annotation&annotation_type!=imputation&limit=0&format=json',
-        '@id': '/matrix/?type=Annotation&encyclopedia_version=ENCODE+v5&annotation_type!=imputation',
+        searchUrl: '/search/?type=Annotation&annotation_type!=imputation&status=released&limit=0&format=json',
+        '@id': '/matrix/?type=Annotation&encyclopedia_version=ENCODE+v5&annotation_type!=imputation&status=released',
         '@type': ['DataCollection'],
     },
     {
         title: 'Imputation',
-        searchUrl: '/search/?type=Annotation&encyclopedia_version=current&annotation_type=imputation&limit=0&format=json',
-        '@id': '/search/?type=Annotation&encyclopedia_version=current&annotation_type=imputation',
+        searchUrl: '/search/?type=Annotation&encyclopedia_version=current&annotation_type=imputation&status=released&limit=0&format=json',
+        '@id': '/search/?type=Annotation&encyclopedia_version=current&annotation_type=imputation&status=released',
         '@type': ['DataCollection'],
     },
     {
