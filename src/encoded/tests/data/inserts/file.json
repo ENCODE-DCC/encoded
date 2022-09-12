@@ -5861,5 +5861,22 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "a2ea9456-0c8f-4aff-bead-71e3da5aafd5"
+    },
+    {
+        "accession": "ENCFF627SMJ",
+        "aliases": [
+            "j-michael-cherry:cell_type_data"
+        ],
+        "award": "U54HG006998",
+        "dataset": "ENCSR000LSC",
+        "file_format": "tar",
+        "file_size": 5836340791,
+        "lab": "ali-mortazavi",
+        "md5sum": "d9729feb74992cc3482b350163a1a010",
+        "output_type": "cell type data",
+        "replicate": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "405da164-1885-403d-ac97-23f80b6ad75e"
     }
 ]
