@@ -3297,8 +3297,10 @@ const TabPanelFacets = ({
     analysisSelectorRef,
     hideAnalysisSelector,
 }) => {
-    // Filter file list to make sure it includes only files that should be displayed
-    const fileList = currentTab === 'browser' ? filterForVisualizableFiles(allFiles) : allFiles;
+    // Include only files to display for the current tab, without duplicate files.
+    const fileList = _(
+        currentTab === 'browser' ? filterForVisualizableFiles(allFiles) : allFiles
+    ).uniq((file) => file['@id']);
 
     // Initialize assembly object
     const assembly = { 'All assemblies': 100 };
