@@ -802,6 +802,7 @@
                         "output_type": {
                             "enum": [
                                 "archr project",
+                                "cell type data",
                                 "model performance metrics",
                                 "models",
                                 "raw imaging signal",
@@ -903,6 +904,7 @@
                                 "enum": [
                                     "3D structure",
                                     "archr project",
+                                    "cell type data",
                                     "reads",
                                     "filtered reads",
                                     "index reads",
@@ -2095,6 +2097,7 @@
                         "candidate promoters",
                         "capture targets",
                         "cell coordinates",
+                        "cell type data",
                         "cell type annotations",
                         "chromatin interactions",
                         "chromatin stripes",
@@ -2892,6 +2895,7 @@
         "sparse gene count matrix of all reads": "quantification",
         "sparse gene count matrix of unique reads": "quantification",
         "kmer weights": "quantification",
+        "cell type data": "quantification",
 
         "3D structure": "annotation",
         "hotspots": "annotation",

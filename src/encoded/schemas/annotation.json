@@ -96,6 +96,7 @@
             "enum": [
                 "binding sites",
                 "BPNet-model",
+                "cell type annotation",
                 "curated SNVs",
                 "caQTLs",
                 "element gene link predictions",
