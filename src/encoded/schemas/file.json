@@ -782,7 +782,7 @@
                     "properties": {
                         "file_format": {
                             "enum": [
-                                "bed",
+                                "bedpe",
                                 "bigInteract"
                             ]
                         },

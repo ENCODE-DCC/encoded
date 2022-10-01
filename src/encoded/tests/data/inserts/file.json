@@ -5908,7 +5908,7 @@
         "genome_annotation": "M30",
         "award": "U54HG006998",
         "dataset": "ENCSR270OQH",
-        "file_format": "bigInteract",
+        "file_format": "bedpe",
         "file_size": 490284123,
         "lab": "ali-mortazavi",
         "md5sum": "9f6e6800cfae7749eb6c486619254b9c",
