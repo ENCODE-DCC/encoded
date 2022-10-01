@@ -782,6 +782,22 @@
                     "properties": {
                         "file_format": {
                             "enum": [
+                                "bed",
+                                "bigInteract"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "enhancer-gene links",
+                                "thresholded links"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
                                 "tar"
                             ]
                         },
@@ -935,6 +951,8 @@
                                     "plus strand normalized end position signal",
                                     "DNN-MPRA predicted signal",
                                     "DNN-MPRA contribution scores",
+                                    "enhancer-gene links",
+                                    "thresholded links",
                                     "element gene links",
                                     "thresholded element gene links",
                                     "model performance metrics",
@@ -2125,6 +2143,8 @@
                         "element gene interactions p-value",
                         "element gene interactions signal",
                         "element gene links",
+                        "enhancer-gene links",
+                        "thresholded links",
                         "element quantifications",
                         "enhancer prediction model",
                         "enhancer validation",
@@ -2439,6 +2459,8 @@
             "comment": "Applies to files created using annotations. The order of enums below reflects the priority when we consider selecting default analysis for a dataset.",
             "type": "string",
             "enum": [
+                "V41",
+                "V40",
                 "V33",
                 "V30",
                 "V29",
@@ -2449,6 +2471,8 @@
                 "V7",
                 "V3c",
                 "miRBase V21",
+                "M30",
+                "M29",
                 "M26",
                 "M21",
                 "M14",
@@ -2982,6 +3006,8 @@
         "cell coordinates": "annotation",
         "cell type annotations": "annotation",
         "element gene links": "annotation",
+        "enhancer-gene links": "annotation",
+        "thresholded links": "annotation",
         "thresholded element gene links": "annotation",
         "DNN-MPRA predicted signal": "annotation",
         "DNN-MPRA contribution scores": "annotation",

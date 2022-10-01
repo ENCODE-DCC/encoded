@@ -5878,5 +5878,45 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "405da164-1885-403d-ac97-23f80b6ad75e"
+    },
+    {
+        "accession": "ENCFF727BIG",
+        "aliases": [
+            "erez-lieberman:enhancer-gene-links_bigInteract"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "V40",
+        "award": "U54HG006998",
+        "dataset": "ENCSR270OQH",
+        "file_format": "bigInteract",
+        "file_size": 490284123,
+        "lab": "ali-mortazavi",
+        "md5sum": "3691308f2a4c2f6983f2880d32e29c84",
+        "output_type": "enhancer-gene links",
+        "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "3aaac69e-7bef-4ea4-8011-2d07dd7ddbfe",
+        "derived_from": ["ENCFF203KVL"]
+    },
+    {
+        "accession": "ENCFF727BIH",
+        "aliases": [
+            "erez-lieberman:thresholded-links_bigInteract"
+        ],
+        "assembly": "mm10",
+        "genome_annotation": "M30",
+        "award": "U54HG006998",
+        "dataset": "ENCSR270OQH",
+        "file_format": "bigInteract",
+        "file_size": 490284123,
+        "lab": "ali-mortazavi",
+        "md5sum": "9f6e6800cfae7749eb6c486619254b9c",
+        "output_type": "thresholded links",
+        "replicate": "9571a30b-799d-428e-beb9-31c412e9dda3",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "7132b6bf-bd3c-4981-8a87-b7ef0c39a507",
+        "derived_from": ["ENCFF203KVL"]
     }
 ]
