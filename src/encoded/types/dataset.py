@@ -962,6 +962,9 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, Calculat
         all_biosample_terms = []
         strain_name = ''
         treatment_names = ''
+        gm_summaries = ''
+        elements_references_summaries = ''
+
         for dataset in related_datasets:
             datasetObject = request.embed(dataset, '@@object')
             if datasetObject['status'] not in ('deleted', 'replaced'):
