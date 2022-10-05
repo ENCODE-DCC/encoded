@@ -119,7 +119,7 @@ def test_biosample_summary_from_related_datasets(testapp,
     res = testapp.get(treated_differentiation_series['@id']+'@@index-data')
     biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data').json['object']['biosample_summary']
     assert 'heart tissue treated with' and 'ethanol' and 'estradiol' and \
-        'genetically modified (deletion) using CRISPR targeting H. sapiens ATF4' in biosample_summary
+        'genetically modified (deletion) using CRISPR targeting ATF4' in biosample_summary
 
 def test_assay_collection_series(testapp, base_collection_series):
     res = testapp.get(base_collection_series['@id'] + '@@index-data')
