@@ -57,7 +57,8 @@ def test_biosample_summary_from_related_datasets(testapp,
     replicate_1_1,
     replicate_2_1,
     heart,
-    liver
+    liver,
+    crispr_deletion_1
 ):
     testapp.patch_json(
         biosample_1['@id'],
@@ -109,6 +110,16 @@ def test_biosample_summary_from_related_datasets(testapp,
     biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data').json['object']['biosample_summary']
     assert 'heart tissue treated with' and 'ethanol' and 'estradiol' in biosample_summary
 
+    testapp.patch_json(
+        biosample_2['@id'],
+        {
+            'genetic_modifications': [crispr_deletion_1['uuid']],
+        }
+    )
+    res = testapp.get(treated_differentiation_series['@id']+'@@index-data')
+    biosample_summary = testapp.get(treated_differentiation_series['@id']+'@@index-data').json['object']['biosample_summary']
+    assert 'heart tissue treated with' and 'ethanol' and 'estradiol' and \
+        'genetically modified (deletion) using CRISPR targeting H. sapiens ATF4' in biosample_summary
 
 def test_assay_collection_series(testapp, base_collection_series):
     res = testapp.get(base_collection_series['@id'] + '@@index-data')
