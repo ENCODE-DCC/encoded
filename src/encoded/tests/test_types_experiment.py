@@ -293,13 +293,18 @@ def test_experiment_mint_chip_control(testapp, experiment_28):
     assert res.json['object']['assay_title'] == 'Control eCLIP'
 
 
-def test_experiment_hic_assay_title(testapp, HiC_experiment, file_fastq_6):
-    testapp.patch_json(file_fastq_6['@id'], {'dataset': HiC_experiment['@id']})
+def test_experiment_hic_assay_title(testapp, HiC_experiment):
     res = testapp.get(HiC_experiment['@id'] + '@@index-data')
-    assert res.json['object']['assay_title'] == 'intact Hi-C'
-    testapp.patch_json(file_fastq_6['@id'], {'run_type': 'paired-ended', 'paired_end': '1'})
+    assert res.json['object']['assay_title'] == 'Hi-C'
+    testapp.patch_json(HiC_experiment['@id'], {'documents': ['/documents/45e51f3b-d18e-44f9-b126-325918114d37/']})
     res = testapp.get(HiC_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'in situ Hi-C'
+    testapp.patch_json(HiC_experiment['@id'], {'documents': ['/documents/4dfd0b02-ed3a-4461-b0f5-9ef51570af1f']})
+    res = testapp.get(HiC_experiment['@id'] + '@@index-data')
+    assert res.json['object']['assay_title'] == 'intact Hi-C'
+    testapp.patch_json(HiC_experiment['@id'], {'documents': ['/documents/94430c54-3a32-44fa-9e70-6d68b3f51544']})
+    res = testapp.get(HiC_experiment['@id'] + '@@index-data')
+    assert res.json['object']['assay_title'] == 'dilution Hi-C'
 
 
 def test_experiment_life_stage_age(testapp, base_experiment, donor_1, donor_2,biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1):

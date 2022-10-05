@@ -379,7 +379,7 @@ class CalculatedAssayTitle:
         "type": "string",
     })
     def assay_title(self, request, registry, assay_term_name,
-                    control_type=None, target=None, original_files=None):
+                    control_type=None, target=None, documents=None):
         # This is the preferred name in generate_ontology.py if exists
         assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
@@ -397,15 +397,21 @@ class CalculatedAssayTitle:
                     else:
                         preferred_name = 'TF ChIP-seq'
             elif preferred_name == 'Hi-C':
-                for file in original_files:
-                    fileObject = request.embed(file, '@@object?skip_calculated=true')
-                    if fileObject['status'] == 'deleted' or fileObject['status'] == 'replaced':
-                        continue
-                    if fileObject['file_format'] == 'fastq':
-                        if fileObject['run_type'] == 'single-ended':
+                if documents is not None:
+                    in_situ = False
+                    for document in documents:
+                        if document == '/documents/94430c54-3a32-44fa-9e70-6d68b3f51544':
+                            return 'dilution Hi-C'
+                        elif document == '/documents/4dfd0b02-ed3a-4461-b0f5-9ef51570af1f':
                             return 'intact Hi-C'
-                        elif fileObject['run_type'] == 'paired-ended':
-                            return 'in situ Hi-C'
+                        elif document in ['/documents/45e51f3b-d18e-44f9-b126-325918114d37/', '/documents/f3ec6a89-4cde-4b0d-9da4-50d35b7f023b/', '/documents/5f2a3c1d-c559-4429-a2af-e6a7dedfceeb/', '/documents/10b843a3-0f4d-4787-9e2a-e05987fc2f6c/', '/documents/ba5a077a-d87d-4e4b-9e48-c2e97daa7a29/', '/documents/4d586808-c50e-428f-81f0-19e2dfc5e6bd/', '/documents/e1ef20c9-7539-40bc-bdbf-a4deab7f72c7/', '/documents/d242af3d-f9a8-41da-aa84-21ecdb06f804/', '/documents/e968caab-1fb4-4ce6-a817-8a215744e139/', '/documents/0dd3624f-d1f9-4505-b97c-da01b90a70f4/']:
+                            in_situ = True
+                    if in_situ:
+                        return 'in situ Hi-C'
+                    else:
+                        return 'Hi-C' 
+                else:
+                    return 'Hi-C'
             elif control_type and assay_term_name in ['eCLIP', 'MPRA', 'proliferation CRISPR screen', 'Flow-FISH CRISPR screen', 'FACS CRISPR screen', 'CRISPR screen', 'STARR-seq', 'Mint-ChIP-seq']:
                 preferred_name = 'Control {}'.format(assay_term_name)
             return preferred_name or assay_term_name
