@@ -331,6 +331,9 @@ def human_donor_data_view():
             'award.project': {
                 'title': 'Project'
             },
+            'award.rfa': {
+                'title': 'RFA'
+            },
             'lab.title': {
                 'title': 'Lab'
             },
