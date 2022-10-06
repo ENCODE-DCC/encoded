@@ -375,6 +375,8 @@ def test_experiment_default_analysis(
     ]
     genome_annotation_order = list(dummy_request.registry['types']['file'].schema['properties']['genome_annotation']['enum'])
     assert genome_annotation_order == [
+        'V41',
+        'V40',
         'V33',
         'V30',
         'V29',
@@ -385,6 +387,8 @@ def test_experiment_default_analysis(
         'V7',
         'V3c',
         'miRBase V21',
+        'M30',
+        'M29',
         'M26',
         'M21',
         'M14',
