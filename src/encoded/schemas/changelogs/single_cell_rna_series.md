@@ -12,6 +12,7 @@
 * Added *Deeply Profiled* to the *internal_tags* enum
 * *related_datasets* now includes FunctionalCharacterizationExperiment.json
 * Removed *control_type* calculated property
+* Added *Degron* to *internal_tags* enums list.
 
 ### Schema version 3
 

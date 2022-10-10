@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 37
 * Added *cell type annotation* to enum list for *annotation_type*.
+* Added *Degron* to *internal_tags* enums list.
 
 ### Schema version 37
 * Changed enum *dsQTLs* to *caQTLs* in the *annotation_type* enum list.

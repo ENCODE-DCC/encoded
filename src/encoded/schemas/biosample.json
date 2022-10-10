@@ -529,6 +529,7 @@
                 "type": "string",
                 "enum": [
                     "Deeply Profiled",
+                    "Degron",
                     "DREAM",
                     "ENCORE",
                     "ENTEx",
