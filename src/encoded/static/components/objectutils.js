@@ -626,7 +626,7 @@ export const internalTagsMap = {
     'Deeply Profiled': {
         badgeFilename: 'tag-deeply-profiled.svg',
     },
-    Degron : {
+    Degron: {
         badgeFilename: 'tag-degron.svg',
     },
     DREAM: {
