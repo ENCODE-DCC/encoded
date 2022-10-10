@@ -3,6 +3,7 @@
 ### Schema version 4
 
 * Added *biosamples* calculated property and removed *replicates* calculated property
+* Added *Degron* to *internal_tags* enums list.
 
 ### Minor changes since schema version 3
 

@@ -1367,7 +1367,8 @@
         "donor": "ENCDO000HUM",
         "internal_tags": [
             "RushAD",
-            "YaleImmuneCells"
+            "YaleImmuneCells",
+            "Degron"
         ],
         "lab": "bing-ren",
         "organism": "human",

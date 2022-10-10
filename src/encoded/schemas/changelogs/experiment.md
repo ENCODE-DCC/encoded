@@ -7,6 +7,7 @@
 * Added *Deeply Profiled* to the *internal_tags* enum
 * Added *related_annotations* calculated property
 * Added *seqFISH* to *assay_term_name* enum
+* Added *Degron* to *internal_tags* enums list.
 
 ### Schema version 36
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
