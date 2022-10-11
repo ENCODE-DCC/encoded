@@ -299,10 +299,10 @@ def test_experiment_hic_assay_title(testapp, HiC_experiment):
     testapp.patch_json(HiC_experiment['@id'], {'documents': ['/documents/45e51f3b-d18e-44f9-b126-325918114d37/']})
     res = testapp.get(HiC_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'in situ Hi-C'
-    testapp.patch_json(HiC_experiment['@id'], {'documents': ['/documents/4dfd0b02-ed3a-4461-b0f5-9ef51570af1f']})
+    testapp.patch_json(HiC_experiment['@id'], {'documents': ['/documents/4dfd0b02-ed3a-4461-b0f5-9ef51570af1f/']})
     res = testapp.get(HiC_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'intact Hi-C'
-    testapp.patch_json(HiC_experiment['@id'], {'documents': ['/documents/94430c54-3a32-44fa-9e70-6d68b3f51544']})
+    testapp.patch_json(HiC_experiment['@id'], {'documents': ['/documents/94430c54-3a32-44fa-9e70-6d68b3f51544/']})
     res = testapp.get(HiC_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'dilution Hi-C'
 
