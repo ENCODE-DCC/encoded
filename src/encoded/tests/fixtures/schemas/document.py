@@ -88,3 +88,14 @@ def in_situ_protocol(testapp, lab, award):
         'document_type': 'general protocol'
     }
     return testapp.post_json('/document', item).json['@graph'][0]
+
+
+@pytest.fixture
+def dilution_protocol(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'uuid': '94430c54-3a32-44fa-9e70-6d68b3f51544',
+        'document_type': 'general protocol'
+    }
+    return testapp.post_json('/document', item).json['@graph'][0]
