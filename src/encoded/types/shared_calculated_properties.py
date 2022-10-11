@@ -409,7 +409,7 @@ class CalculatedAssayTitle:
                     if in_situ:
                         return 'in situ Hi-C'
                     else:
-                        return 'Hi-C' 
+                        return 'Hi-C'
                 else:
                     return 'Hi-C'
             elif control_type and assay_term_name in ['eCLIP', 'MPRA', 'proliferation CRISPR screen', 'Flow-FISH CRISPR screen', 'FACS CRISPR screen', 'CRISPR screen', 'STARR-seq', 'Mint-ChIP-seq']:
