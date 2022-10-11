@@ -400,9 +400,9 @@ class CalculatedAssayTitle:
                 if documents is not None:
                     in_situ = False
                     for document in documents:
-                        if document == '/documents/94430c54-3a32-44fa-9e70-6d68b3f51544':
+                        if document == '/documents/94430c54-3a32-44fa-9e70-6d68b3f51544/':
                             return 'dilution Hi-C'
-                        elif document == '/documents/4dfd0b02-ed3a-4461-b0f5-9ef51570af1f':
+                        elif document == '/documents/4dfd0b02-ed3a-4461-b0f5-9ef51570af1f/':
                             return 'intact Hi-C'
                         elif document in ['/documents/45e51f3b-d18e-44f9-b126-325918114d37/', '/documents/f3ec6a89-4cde-4b0d-9da4-50d35b7f023b/', '/documents/5f2a3c1d-c559-4429-a2af-e6a7dedfceeb/', '/documents/10b843a3-0f4d-4787-9e2a-e05987fc2f6c/', '/documents/ba5a077a-d87d-4e4b-9e48-c2e97daa7a29/', '/documents/4d586808-c50e-428f-81f0-19e2dfc5e6bd/', '/documents/e1ef20c9-7539-40bc-bdbf-a4deab7f72c7/', '/documents/d242af3d-f9a8-41da-aa84-21ecdb06f804/', '/documents/e968caab-1fb4-4ce6-a817-8a215744e139/', '/documents/0dd3624f-d1f9-4505-b97c-da01b90a70f4/']:
                             in_situ = True
