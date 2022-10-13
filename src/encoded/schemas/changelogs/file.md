@@ -55,6 +55,8 @@
   * *sequence motifs instances*
   * *training and test regions*
 * Added *cell type data* to the enum list for *output_type*.
+* Added *M29*, *M30*, *V40*, *V41* enums to *genome_annotation*.
+* Added *enhancer-gene links* and *thresholded links* enums to output_types. Added a dependency restriction where these output_types should only be allowed for bigInteract and bedpe files.
 
 ### Schema version 29
 * Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.

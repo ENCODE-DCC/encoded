@@ -59,6 +59,7 @@
   * *sequence motifs instances*
   * *training and test regions*
 * Added *cell type data* to the enum lists for *input_file_types* and *output_file_types*.
+* Added *enhancer-gene links* and *thresholded links* to the enum lists for *input_file_types* and *output_file_types*.
 
 ### Schema version 15
 * *input_file_types*, *output_file_types* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
