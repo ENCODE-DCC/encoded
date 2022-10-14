@@ -293,7 +293,7 @@ def test_experiment_mint_chip_control(testapp, experiment_28):
     assert res.json['object']['assay_title'] == 'Control eCLIP'
 
 
-def test_experiment_hic_assay_title(testapp, HiC_experiment, intact_protocol, in_situ_protocol, dilution_protocol):
+def test_experiment_hic_assay_title(testapp, HiC_experiment, intact_hic_experiment, in_situ_hic_experiment, intact_protocol, in_situ_protocol, dilution_protocol):
     res = testapp.get(HiC_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'Hi-C'
     testapp.patch_json(HiC_experiment['@id'], {'documents': [in_situ_protocol['@id']]})
@@ -305,6 +305,12 @@ def test_experiment_hic_assay_title(testapp, HiC_experiment, intact_protocol, in
     testapp.patch_json(HiC_experiment['@id'], {'documents': [dilution_protocol['@id']]})
     res = testapp.get(HiC_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'dilution Hi-C'
+    testapp.patch_json(intact_hic_experiment['@id'], {'documents': [dilution_protocol['@id'], in_situ_protocol['@id']]})
+    res = testapp.get(HiC_experiment['@id'] + '@@index-data')
+    assert res.json['object']['assay_title'] == 'dilution Hi-C'
+    testapp.patch_json(in_situ_hic_experiment['@id'], {'documents': [intact_hic_experiment['@id']]})
+    res = testapp.get(HiC_experiment['@id'] + '@@index-data')
+    assert res.json['object']['assay_title'] == 'intact Hi-C'
 
 
 def test_experiment_life_stage_age(testapp, base_experiment, donor_1, donor_2,biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1):
