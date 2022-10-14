@@ -308,7 +308,7 @@ def test_experiment_hic_assay_title(testapp, HiC_experiment, intact_hic_experime
     testapp.patch_json(intact_hic_experiment['@id'], {'documents': [dilution_protocol['@id'], in_situ_protocol['@id']]})
     res = testapp.get(HiC_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'dilution Hi-C'
-    testapp.patch_json(insitu_hic_experiment['@id'], {'documents': [intact_hic_experiment['@id']]})
+    testapp.patch_json(insitu_hic_experiment['@id'], {'documents': [intact_protocol['@id']]})
     res = testapp.get(HiC_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'intact Hi-C'
 
