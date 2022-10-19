@@ -658,16 +658,25 @@ MouseStageButton.propTypes = {
 /**
  * Displays the buttons that jump to particular tissue sections of the matrix.
  */
-const TissueJumper = ({ tissues }) => (
-    <div className="tissue-jumper">
-        <div className="tissue-jumper__title">Jump to tissue</div>
-        <div className="tissue-jumper__tissues">
-            {tissues.map((tissue) => (
-                <a key={tissue} className="btn btn-success btn-xs" href={`#${globals.sanitizeId(tissue)}`}>{tissue}</a>
-            ))}
+const TissueJumper = ({ tissues }) => {
+    const sortedTissues = _.sortBy(tissues);
+    return (
+        <div className="tissue-jumper">
+            <div className="tissue-jumper__title">Jump to tissue</div>
+            <div className="tissue-jumper__tissues">
+                {sortedTissues.map((tissue) => (
+                    <a
+                        key={tissue}
+                        className="btn btn-success btn-xs"
+                        href={`#${globals.sanitizeId(tissue)}`}
+                    >
+                        {tissue}
+                    </a>
+                ))}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 TissueJumper.propTypes = {
     /** Array of tissue names */
