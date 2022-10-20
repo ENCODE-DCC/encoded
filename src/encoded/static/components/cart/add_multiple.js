@@ -236,7 +236,7 @@ const CartAddAllElementsComponent = ({
 CartAddAllElementsComponent.propTypes = {
     /** Current cart saved object */
     savedCartObj: PropTypes.object,
-    /** New elements to add to cart as array of @ids */
+    /** New elements to add to cart as array of dataset objects */
     elements: PropTypes.array.isRequired,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool.isRequired,

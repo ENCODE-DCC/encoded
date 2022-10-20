@@ -22,6 +22,7 @@ scenarios(
     'matrix_reference_epigenome_mus_musculus.feature',
     'matrix_sescc_stem_cell.feature',
     'matrix_encore.feature',
+    'matrix_degron.feature',
     'encyclopedia.feature',
     strict_gherkin=False,
 )

@@ -1318,5 +1318,33 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "fabc7fd0-bb77-4ae1-9061-51e27d16bab4"
+    },
+    {
+        "accession": "ENCLB577ZMM",
+        "aliases": [
+            "bradley-bernstein:DNA_Lib 13312"
+        ],
+        "award": "UM1HG009390",
+        "biosample": "ENCBS088IDX",
+        "lab": "bradley-bernstein",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "200-600",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "uuid": "84da8570-a2ba-430e-a31b-7e607c0769cf"
+    },
+    {
+        "accession": "ENCLB600DTX",
+        "aliases": [
+            "bradley-bernstein:DNA_Lib 13280"
+        ],
+        "award": "UM1HG009390",
+        "biosample": "ENCBS088IDX",
+        "lab": "bradley-bernstein",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "200-600",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "uuid": "8e364aa4-695c-4f98-a69b-431a362a3067"
     }
 ]

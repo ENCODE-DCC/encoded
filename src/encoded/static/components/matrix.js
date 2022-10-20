@@ -4,6 +4,7 @@ import pluralize from 'pluralize';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
 import Tooltip from '../libs/ui/tooltip';
+import { CartAddAllElements } from './cart';
 import { TextFilter } from './search';
 
 
@@ -12,6 +13,54 @@ import { TextFilter } from './search';
  * @constant
  */
 export const MATRIX_VISUALIZE_LIMIT = 200;
+
+
+/**
+ * Render a button to add all datasets displayed on the matrix page to the current cart.
+ */
+export const MatrixAddCart = ({ context }, reactContext) => {
+    /** Receives response for all datasets represented by the matrix */
+    const [experimentData, setExperimentData] = React.useState(null);
+
+    React.useEffect(() => {
+        const link = `${context.search_base}&limit=all&field=@id&field=@type&field=related_datasets`;
+        reactContext.fetch(link, {
+            headers: { Accept: 'application/json' },
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            return [];
+        }).then((data) => {
+            const experiments = data['@graph'];
+            setExperimentData(experiments || []);
+        });
+    }, [context]);
+
+    return (
+        experimentData !== null
+            ? (
+                <>
+                    <div className="matrix-cell-line__cart-button">
+                        <CartAddAllElements elements={experimentData} />
+                    </div>
+                </>
+            )
+            : (
+                <button type="button" className="btn btn-info btn-sm deeply-profiled-matrix-spinner-label deeply-profiled-matrix-spinner--loading">
+                    Loading &nbsp;
+                </button>
+            )
+    );
+};
+
+MatrixAddCart.propTypes = {
+    context: PropTypes.object.isRequired,
+};
+
+MatrixAddCart.contextTypes = {
+    fetch: PropTypes.func,
+};
 
 
 /**
@@ -85,7 +134,7 @@ export class SearchFilter extends React.Component {
     }
 
     render() {
-        const { context } = this.props;
+        const { context, css } = this.props;
         const parsedUrl = url.parse(this.context.location_href);
         const matrixBase = parsedUrl.search || '';
         const matrixSearch = matrixBase + (matrixBase ? '&' : '?');
@@ -93,7 +142,7 @@ export class SearchFilter extends React.Component {
         const queryStringType = parsed.query.type || '';
         const type = pluralize(queryStringType.toLocaleLowerCase());
         return (
-            <div className="matrix-general-search">
+            <div className={`matrix-general-search ${css}`}>
                 <div className="general-search-entry">
                     <p>
                         <i className="icon icon-search" />
@@ -111,6 +160,12 @@ export class SearchFilter extends React.Component {
 SearchFilter.propTypes = {
     /** Matrix search results object */
     context: PropTypes.object.isRequired,
+    /** CSS class to add to the wrapper div */
+    css: PropTypes.string,
+};
+
+SearchFilter.defaultProps = {
+    css: '',
 };
 
 SearchFilter.contextTypes = {

@@ -159,6 +159,12 @@ export const HOME_COLLECTIONS = [
         '@type': ['DataCollection'],
     },
     {
+        title: 'Protein knockdown using the auxin-inducible degron',
+        searchUrl: '/search/?type=Experiment&control_type!=*&status=released&internal_tags=Degron&limit=0&format=json',
+        '@id': '/search/?type=Experiment&control_type!=*&status=released&internal_tags=Degron',
+        '@type': ['DataCollection'],
+    },
+    {
         title: 'Computational and integrative products',
         searchUrl: '/search/?type=Annotation&annotation_type!=imputation&status=released&limit=0&format=json',
         '@id': '/matrix/?type=Annotation&encyclopedia_version=ENCODE+v5&annotation_type!=imputation&status=released',

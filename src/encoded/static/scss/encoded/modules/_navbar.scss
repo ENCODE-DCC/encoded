@@ -252,17 +252,12 @@ $navbar-bg-color:            #0a253d;
             display: block;
             padding: 5px 15px 5px 25px;
             color: white;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 300;
             letter-spacing: 1px;
-            line-height: 20px;
             background-color: transparent;
             border: none;
             text-decoration: none;
-
-            @media screen and (min-width: $screen-md-min) {
-                font-size: 1.1rem;
-            }
         }
     }
 
@@ -293,7 +288,7 @@ $navbar-bg-color:            #0a253d;
     a {
         color: #696969;
         font-weight: 400;
-        font-size: 1.1em;
+        font-size: 1em;
 
         &:hover {
             text-decoration: none;
@@ -310,12 +305,12 @@ $navbar-bg-color:            #0a253d;
         pointer-events: none;
         font-weight: 400;
         position: relative;
-        padding: 2px 30px 2px 20px;
+        padding: 0 30px 0 20px;
         letter-spacing: 1px;
-        font-size: 0.9rem;
+        font-size: 1rem;
 
         @media screen and (min-width: $screen-md-min) {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #696969;
             font-weight: 400;
         }
@@ -335,7 +330,7 @@ $navbar-bg-color:            #0a253d;
                 display: block;
                 width: 100%;
                 margin: 0;
-                padding: 2px 30px 2px 20px;
+                padding: 0 30px 0 20px;
                 color: #000;
                 background-color: #fff;
                 border-top: 1px solid transparent;
@@ -376,15 +371,15 @@ $navbar-bg-color:            #0a253d;
 .disabled-menu-item {
     /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
 }
 
 .hoverable {
     font-weight: 300;
     letter-spacing: 1px;
-    font-size: 1.1rem;
-    padding: 2px 30px 2px 20px;
+    font-size: 1rem;
+    padding: 0 30px 0 20px;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
 
@@ -403,7 +398,7 @@ $navbar-bg-color:            #0a253d;
     /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
         &.sub-menu {
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         a {

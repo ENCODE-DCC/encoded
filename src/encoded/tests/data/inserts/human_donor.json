@@ -276,5 +276,27 @@
         "submitted_by": "dignissim.euismod@amet.habitant",
         "submitter_comment": "NINCDS PROB AD",
         "uuid": "ff42aea0-99e3-4b98-94fe-4b403218c9fa"
+    },
+    {
+        "accession": "ENCDO000ABE",
+        "age": "48",
+        "age_units": "year",
+        "aliases": [
+            "encode:donor of HCT-116",
+            "bradley-bernstein:Donor of HCT-116 cells"
+        ],
+        "award": "UM1HG009390",
+        "dbxrefs": [
+            "GEO:SAMN05733881"
+        ],
+        "health_status": "colorectal carcinoma",
+        "lab": "bradley-bernstein",
+        "life_stage": "adult",
+        "notes": "Donor of HCT 116. Colorectal carcinoma (PMID: 7214343)",
+        "organism": "human",
+        "sex": "male",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "uuid": "23188c58-4287-4666-be40-3216707226a1"
     }
 ]

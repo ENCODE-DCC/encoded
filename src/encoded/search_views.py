@@ -91,6 +91,7 @@ def includeme(config):
     config.add_route('mouse-development-matrix', '/mouse-development-matrix{slash:/?}')
     config.add_route('encore-matrix', '/encore-matrix{slash:/?}')
     config.add_route('encore-rna-seq-matrix', '/encore-rna-seq-matrix{slash:/?}')
+    config.add_route('degron-matrix', 'degron-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.add_route('cart-search', '/cart-search{slash:/?}')
@@ -803,6 +804,36 @@ def encore_rna_seq_matrix(context, request):
                 reserved_keys=RESERVED_KEYS,
             ),
             FacetGroupsResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='degron-matrix', request_method='GET', permission='search')
+def degron_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Protein knockdown using the auxin-inducible degron'
+            ),
+            TypeResponseField(
+                at_type=['DegronMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            MissingMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='degron_matrix',
+                reserved_keys=RESERVED_KEYS,
+            ),
             NotificationResponseField(),
             FiltersResponseField(),
             TypeOnlyClearFiltersResponseField(),

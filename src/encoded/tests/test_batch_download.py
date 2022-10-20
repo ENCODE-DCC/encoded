@@ -48,7 +48,7 @@ def test_batch_download_report_download(testapp, index_workbook, threadlocals):
         b'Biosample modification site target organism', b'Biosample modification site introduced gene organism',
         b'Replicates', b'Mixed biosamples', b'Cellular component', b'Library construction platform', b'Library construction method',
     ]
-    assert len(lines) == 92
+    assert len(lines) == 93
 
 
 def test_batch_download_report_download_with_cart(testapp, index_workbook, threadlocals):

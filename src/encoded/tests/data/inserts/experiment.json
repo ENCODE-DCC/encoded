@@ -1349,5 +1349,26 @@
         "lab": "ali-mortazavi",
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra"
+    },
+    {
+        "accession": "ENCSR160GVO",
+        "aliases": [
+            "bradley-bernstein:Project Element 7435"
+        ],
+        "assay_term_name": "ChIP-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0002824",
+        "date_released": "2022-07-21",
+        "doi": "10.17989/ENCSR160GVO",
+        "internal_status": "release ready",
+        "internal_tags": [
+            "RegulomeDB_2_1",
+            "Degron"
+        ],
+        "lab": "bradley-bernstein",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "target": "CTCF-human",
+        "uuid": "7a15992e-01f5-4598-893c-ee154129a046"
     }
 ]

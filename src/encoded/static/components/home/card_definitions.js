@@ -114,7 +114,7 @@ export const CARDS_FOR_MAIN = {
 export const CARDS_FOR_COLLECTIONS = {
     id: 'collections',
     format: CARD_FORMATS.VERTICAL,
-    columns: 4,
+    columns: 3,
     cards: [
         {
             id: 'rush-ad',
@@ -148,6 +148,17 @@ export const CARDS_FOR_COLLECTIONS = {
             useSearchTerm: true,
             displayCount: false,
             collections: ['Deeply-profiled cell lines'],
+        },
+        {
+            id: 'degron',
+            title: 'Protein knockdown (Degron)',
+            help: 'Protein knockdown (Degron)',
+            icon: icons.degron,
+            link: '/degron-matrix/?type=Experiment&control_type!=*&status=released&internal_tags=Degron',
+            color: CARD_COLORS.collections,
+            useSearchTerm: true,
+            displayCount: false,
+            collections: ['Chromatin Degron'],
         },
         {
             id: 'computational-and-integrative-products',

@@ -2267,14 +2267,9 @@ $rnaseq-term-name-colors:
     }
 }
 
-.matrix-cell-line {
-    &__cart-button {
-        float: right;
-    }
-
-    &__cart-clear {
-        clear: both;
-    }
+.matrix-cell-line__cart-button {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .deeply-profiled-matrix-spinner-label {
@@ -2469,5 +2464,72 @@ $rnaseq-term-name-colors:
                 }
             }
         }
+    }
+}
+
+.matrix-header__cart {
+    margin-top: 5px;
+    margin-bottom: -5px;
+    padding-top: 5px;
+    border-top: 1px solid #ccc;
+}
+
+.matrix__content {
+    &.matrix__content--degron {
+        display: block;
+        font-weight: normal;
+
+        .matrix__presentation {
+            flex-basis: auto;
+
+            .matrix {
+                border-collapse: collapse;
+
+                .matrix__col-category-header {
+                    > th {
+                        width: auto;
+                        height: 180px;
+
+                        a {
+                            width: auto;
+                            height: 100%;
+                            line-height: 1.8;
+                        }
+                    }
+                }
+
+                .matrix__row-data {
+                    > th {
+                        white-space: nowrap;
+                        font-weight: normal;
+                        border-left: none;
+
+                        a {
+                            line-height: 1.6;
+                        }
+                    }
+
+                    > td {
+                        border: 1px solid #f0f0f0;
+                    }
+
+                    .matrix__populated-badge {
+                        height: 100%;
+                        width: 100%;
+                        background-color: rgb(80, 100, 200);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.matrix-general-search--degron {
+    p {
+        margin: 0;
+    }
+
+    input {
+        width: 100%;
     }
 }
