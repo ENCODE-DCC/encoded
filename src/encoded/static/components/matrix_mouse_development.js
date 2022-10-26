@@ -9,7 +9,6 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
 import * as globals from './globals';
-import { RowCategoryExpander } from './matrix';
 import matrixAssaySortOrder from './matrix_reference_epigenome';
 import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';
@@ -68,7 +67,7 @@ const mouseMatrixColors = {
  */
 function updateColumnCount(value, colMap, subCategorySums) {
     let colIndex = 0;
-    if (value && value['target.label'] && value['target.label'].buckets.length > 1) {
+    if (value && value['target.label'] && value['target.label'].buckets.length >= 1) {
         value['target.label'].buckets.forEach((bucket) => {
             const newKey = `${value.key}|${bucket.key}`;
             if (bucket.key && colMap[newKey]) {
@@ -86,13 +85,13 @@ function updateColumnCount(value, colMap, subCategorySums) {
 }
 
 /**
-  * Collect column counts to display on headers
-  * Counts reflect the number of rows which contain data per column, not the number of experiments per column
-  * @param {array}    subCategoryData Array of subcategory objects, each containing an array of data
-  * @param {string}   columnCategory Column headers variable
-  * @param {object}   colMap Keyed column header information
-  * @param {number}   colCount Number of columns
-  * @param {array}   stageFilter Stage/age filters selected by user
+  * Collect column counts to display on headers. Counts reflect the number of rows which contain
+  * data per column, not the number of experiments per column.
+  * @param {array}  subCategoryData Array of subcategory objects, each containing an array of data
+  * @param {string} columnCategory Column headers variable
+  * @param {object} colMap Keyed column header information
+  * @param {number} colCount Number of columns
+  * @param {array} stageFilter Stage/age filters selected by user
   *
   * @return {array}   subCategorySums Counts per column
   */
@@ -106,9 +105,7 @@ const analyzeSubCategoryData = (subCategoryData, columnCategory, colMap, colCoun
         allowedRowDataBuckets.forEach((value) => {
             if (stageFilter) {
                 stageFilter.forEach((singleFilter) => {
-                    const filterString = singleFilter.replace('embryo', 'embryonic');
-                    const keyString = rowData.key;
-                    if (!filterString || keyString.includes(filterString)) {
+                    if (!singleFilter || rowData.key.includes(singleFilter)) {
                         subCategorySums = updateColumnCount(value, colMap, subCategorySums);
                     }
                 });
@@ -125,13 +122,13 @@ const analyzeSubCategoryData = (subCategoryData, columnCategory, colMap, colCoun
 // In the future there are likely to be additions to the data which will require updates to this function
 // For instance, ages measured by months will likely be added
 export default function sortMouseArray(a, b) {
-    const aStage = a.split(/ (.+)/)[0].replace('embryonic', 'embryo');
-    const bStage = b.split(/ (.+)/)[0].replace('embryonic', 'embryo');
+    const aStage = a.split(/ (.+)/)[0];
+    const bStage = b.split(/ (.+)/)[0];
     const aAge = a.split(/ (.+)/)[1];
     const bAge = b.split(/ (.+)/)[1];
     let aNumerical = 0;
     let bNumerical = 0;
-    if (aStage === 'embryo') {
+    if (aStage === 'embryonic') {
         aNumerical = 100;
     } else if (aStage === 'postnatal') {
         aNumerical = 1000;
@@ -143,7 +140,7 @@ export default function sortMouseArray(a, b) {
     } else if (aAge.includes('weeks')) {
         aNumerical += +aAge.split('weeks')[0] * 7;
     }
-    if (bStage === 'embryo') {
+    if (bStage === 'embryonic') {
         bNumerical = 100;
     } else if (bStage === 'postnatal') {
         bNumerical = 1000;
@@ -158,36 +155,111 @@ export default function sortMouseArray(a, b) {
     return aNumerical - bNumerical;
 }
 
-// Generate object listing all ages corresponding to a mouse stage based on rowCategoryData
+/**
+ * Convert an array of ages with units into an array of normalized ages where each array element is
+ * an object with this form:
+ * {
+ *   min: <minimum age of a range in days>,
+ *   max: <maximum age of a range in days; same as min if single value>,
+ *   original: <original age string>,
+ * }
+ * @param {array} ages Age strings with a mix of units, e.g. ['1 week', '2 weeks', '3 days', '4 days']
+ * @returns {array} Normalized age objects
+ */
+const normalizeAges = (ages) => {
+    const normalizedAges = [];
+    ages.forEach((age) => {
+        let min;
+        let max;
+        const [, value, units] = age.split(' ');
+
+        // Get numeric age or age range.
+        if (value.includes('-')) {
+            // Age range.
+            const [minString, maxString] = value.split('-');
+            min = Number(minString);
+            max = Number(maxString);
+        } else {
+            // Single age.
+            min = Number(value);
+            max = min;
+        }
+
+        // Convert age to days.
+        if (units === 'weeks') {
+            min *= 7;
+            max *= 7;
+        } else if (units === 'months') {
+            min *= 30;
+            max *= 30;
+        } else if (units === 'years') {
+            min *= 365;
+            max *= 365;
+        }
+
+        normalizedAges.push({ min, max, original: age });
+    });
+
+    return normalizedAges;
+};
+
+/**
+ * Sorting iteratee function for sorting an array of normalized age objects.
+ * @param {object} normalizedAge Normalized age object
+ * @returns {number} Sorting value for underscore
+ */
+const normalizedAgeIteratee = (normalizedAge) => {
+    if (normalizedAge.min === normalizedAge.max) {
+        return normalizedAge.min;
+    }
+
+    // Sort age ranges by emphasizing the minimum age, and adding a fractionalized maximum age as
+    // a tiebreaker.
+    return normalizedAge.min + (normalizedAge.max / 100);
+};
+
+/**
+ * Generate object listing all ages corresponding to a mouse stage based on rowCategoryData.
+ */
 const getMouseAgeObject = (rowCategoryData) => {
     const mouseAgeFullArray = [];
     rowCategoryData.forEach((datum) => {
         datum.life_stage_age.buckets.forEach((bucket) => {
-            mouseAgeFullArray.push(bucket.key.replace('embryonic', 'embryo'));
+            mouseAgeFullArray.push(bucket.key);
         });
     });
     mouseAgeFullArray.sort(sortMouseArray);
     const uniqueAgeArray = [...new Set(mouseAgeFullArray)];
-    const mouseAgeObject = {
-        embryo: uniqueAgeArray.filter((age) => age.includes('embryo')).map((age) => age.replace('embryo', '')),
-        postnatal: uniqueAgeArray.filter((age) => age.includes('postnatal')).map((age) => age.replace('postnatal', '')),
-        adult: uniqueAgeArray.filter((age) => age.includes('adult')).map((age) => age.replace('adult', '')),
+    let embryonic = uniqueAgeArray.filter((age) => age.includes('embryonic'));
+    let postnatal = uniqueAgeArray.filter((age) => age.includes('postnatal'));
+    let adult = uniqueAgeArray.filter((age) => age.includes('adult'));
+    embryonic = _(normalizeAges(embryonic)).sortBy(normalizedAgeIteratee);
+    postnatal = _(normalizeAges(postnatal)).sortBy(normalizedAgeIteratee);
+    adult = _(normalizeAges(adult)).sortBy(normalizedAgeIteratee);
+    return {
+        embryonic: embryonic.map((normalized) => normalized.original),
+        postnatal: postnatal.map((normalized) => normalized.original),
+        adult: adult.map((normalized) => normalized.original),
     };
-    return mouseAgeObject;
 };
 
-// Convert array of filters into search query
-// For life stage filters, we must append search terms for all corresponding ages
+/**
+ * Convert array of filters into search query. For life stage filters, we must append search terms
+ * for all corresponding ages.
+ * @param {array} stageFilter Array of life stage and age filters
+ * @param {object} mouseAgeObject Lists all ages corresponding to a life stage
+ * @param {string} searchQuery Search query string corresponding to selected filters
+ */
 const generateFilterQuery = (stageFilter, mouseAgeObject) => {
     let selectedFilters = '';
     if (stageFilter) {
-        stageFilter.forEach((f) => {
-            if (['adult', 'postnatal', 'embryo'].includes(f)) {
-                mouseAgeObject[f].forEach((mouseAge) => {
-                    selectedFilters += `life_stage_age=${f.replace('embryo', 'embryonic')}${mouseAge}&`;
+        stageFilter.forEach((stage) => {
+            if (['adult', 'postnatal', 'embryonic'].includes(stage)) {
+                mouseAgeObject[stage].forEach((mouseAge) => {
+                    selectedFilters += `life_stage_age=${stage}${mouseAge}&`;
                 });
             } else {
-                selectedFilters += `life_stage_age=${f.replace('embryo', 'embryonic')}&`;
+                selectedFilters += `life_stage_age=${stage}&`;
             }
         });
         selectedFilters = selectedFilters.substring(0, selectedFilters.length - 1);
@@ -367,7 +439,6 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
         const rowCategoryTextColor = isLight(rowCategoryColor) ? '#000' : '#fff';
         const zeroRowTextColor = isLight(zeroRowColor) ? '#000' : '#fff';
         const rowSubcategoryBuckets = rowCategoryBucket[rowSubcategory].buckets;
-        const expandableRowCategory = false;
         const rowCategoryQuery = `${ROW_CATEGORY}=${encoding.encodedURIComponent(rowCategoryBucket.key)}`;
 
         const subCategorySums = analyzeSubCategoryData(rowSubcategoryBuckets, COL_CATEGORY, colMap, colCount, stageFilter);
@@ -380,7 +451,6 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
 
         // Get the list of subcategory names, or the first items of the list if the category isn't
         // expanded.
-        const categoryExpanded = expandedRowCategories.indexOf(rowCategoryBucket.key) !== -1;
         const visibleRowSubcategoryBuckets = rowSubcategoryBuckets;
 
         // filter rows if needed
@@ -389,8 +459,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
             filteredRowSubcategoryBuckets = visibleRowSubcategoryBuckets.filter((bucket) => {
                 let success = null;
                 stageFilter.forEach((singleFilter) => {
-                    const filterString = singleFilter.replace('embryo', 'embryonic');
-                    if (bucket.key.includes(filterString)) {
+                    if (bucket.key.includes(singleFilter)) {
                         success = bucket;
                     }
                 });
@@ -422,11 +491,9 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                             const colIndex = colMap[colMapKey].col;
                             cells[colIndex] = {
                                 content: (
-                                    <>
-                                        <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`} style={{ color: rowCategoryTextColor }}>
-                                            <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
-                                        </a>
-                                    </>
+                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`} style={{ color: rowCategoryTextColor }}>
+                                        <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
+                                    </a>
                                 ),
                                 style: { backgroundColor: rowSubcategoryColor },
                             };
@@ -437,11 +504,9 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                         const colIndex = colMap[rowSubcategoryColCategoryBucket.key].col;
                         cells[colIndex] = {
                             content: (
-                                <>
-                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`} style={{ color: rowCategoryTextColor }}>
-                                        <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
-                                    </a>
-                                </>
+                                <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`} style={{ color: rowCategoryTextColor }}>
+                                    <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
+                                </a>
                             ),
                             style: { backgroundColor: rowSubcategoryColor },
                         };
@@ -458,7 +523,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
             // Add a single term-name row's data and left header to the matrix.
             rowKeys[matrixRow] = `${rowCategoryBucket.key}|${rowSubcategoryBucket.key}`;
             matrixRow += 1;
-            const labelStage = rowSubcategoryBucket.key.split(/ (.+)/)[0].replace('embryonic', 'embryo');
+            const labelStage = rowSubcategoryBucket.key.split(/ (.+)/)[0];
             const labelLength = rowSubcategoryBucket.key.split(/ (.+)/)[1];
             return {
                 rowContent: [
@@ -492,15 +557,6 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                     rowContent: [{
                         header: (
                             <div id={globals.sanitizeId(rowCategoryBucket.key)} style={{ backgroundColor: (rowSum > 0) ? rowCategoryColor : zeroRowColor }}>
-                                {expandableRowCategory ?
-                                    <RowCategoryExpander
-                                        categoryId={rowCategoryBucket.key}
-                                        categoryName={rowCategoryBucket.key}
-                                        expanderColor={rowCategoryTextColor}
-                                        expanded={categoryExpanded}
-                                        expanderClickHandler={expanderClickHandler}
-                                    />
-                                : null}
                                 <div style={{ color: (rowSum > 0) ? rowCategoryTextColor : zeroRowTextColor }} id={categoryNameQuery}>{rowCategoryNames[rowCategoryBucket.key]}</div>
                             </div>
                         ),
@@ -518,29 +574,6 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                 },
             ],
             subcategoryRows,
-            [{
-                rowContent: [
-                    {
-                        content: (
-                            expandableRowCategory ?
-                                <RowCategoryExpander
-                                    categoryId={colCategoriesWithSubcategories}
-                                    categoryName={rowCategoryBucket.key}
-                                    expanded={categoryExpanded}
-                                    expanderClickHandler={expanderClickHandler}
-                                    expanderColor={rowCategoryTextColor}
-                                    expanderBgColor={rowCategoryColor}
-                                />
-                            : null
-                        ),
-                    },
-                    {
-                        content: null,
-                        colSpan: 0,
-                    },
-                ],
-                css: `matrix__row-spacer${expandableRowCategory ? ' matrix__row-spacer--expander' : ''}`,
-            }]
         );
     }, [{ rowContent: header, css: 'matrix__col-category-header' }]);
     return { dataTable, rowKeys, dataTableCount };
@@ -575,28 +608,79 @@ MatrixHeader.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-const MouseStageButton = (props) => {
-    const { keyWord, idString, activeClass, onClick, buttonWidth } = props;
-    const newIdString = idString.replace(/\s+/g, '-');
+/**
+ * Displays the age, stage, and age-range selection buttons.
+ */
+const MouseStageButton = ({
+    keyWord,
+    idString,
+    stageClass,
+    isActive,
+    onClick,
+    isAgeDisplay,
+}) => {
+    let buttonLabel;
+    if (isAgeDisplay) {
+        const [, value, unit] = keyWord.split(' ');
+        buttonLabel = `${value} ${unit}`;
+    } else {
+        buttonLabel = keyWord;
+    }
+
     return (
         <button
             type="button"
-            id={newIdString}
-            className={`legend-option ${idString} ${newIdString} ${activeClass ? 'active' : ''}`}
+            id={idString.replace(/ /g, '_')}
+            className={`legend-option ${stageClass} ${isActive ? 'active' : ''}`}
             onClick={onClick}
-            style={{ width: `${buttonWidth}px` }}
         >
-            {keyWord.replace('days', 'd')}
+            {buttonLabel}
         </button>
     );
 };
 
 MouseStageButton.propTypes = {
+    // Text to display in the button
     keyWord: PropTypes.string.isRequired,
+    // Button element id
     idString: PropTypes.string.isRequired,
-    activeClass: PropTypes.bool.isRequired,
+    // CSS class to apply to the button
+    stageClass: PropTypes.string.isRequired,
+    // True if the button is selected
+    isActive: PropTypes.bool.isRequired,
+    // Called when the user clicks the button
     onClick: PropTypes.func.isRequired,
-    buttonWidth: PropTypes.number.isRequired,
+    // True if displaying age; false if displaying stage; age gets stage stripped off
+    isAgeDisplay: PropTypes.bool.isRequired,
+};
+
+
+/**
+ * Displays the buttons that jump to particular tissue sections of the matrix.
+ */
+const TissueJumper = ({ tissues }) => {
+    const sortedTissues = _.sortBy(tissues);
+    return (
+        <div className="tissue-jumper">
+            <div className="tissue-jumper__title">Jump to tissue</div>
+            <div className="tissue-jumper__tissues">
+                {sortedTissues.map((tissue) => (
+                    <a
+                        key={tissue}
+                        className="btn btn-success btn-xs"
+                        href={`#${globals.sanitizeId(tissue)}`}
+                    >
+                        {tissue}
+                    </a>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+TissueJumper.propTypes = {
+    /** Array of tissue names */
+    tissues: PropTypes.array.isRequired,
 };
 
 
@@ -626,10 +710,8 @@ class MatrixPresentation extends React.Component {
             expandedRowCategories: filteredClassifications,
             /** True if matrix scrolled all the way to the right; used for flashing arrow */
             scrolledRight: false,
-            /** User selected mouse stage or age */
-            developmentStageClick: [],
-            /** Window width, used to determine how many columns to display */
-            windowWidth: 0,
+            /** All currently selected ages or stages */
+            selectedDevelopmentStages: [],
         };
         this.expanderClickHandler = this.expanderClickHandler.bind(this);
         this.handleOnScroll = this.handleOnScroll.bind(this);
@@ -637,13 +719,10 @@ class MatrixPresentation extends React.Component {
         this.selectMouseDevelopmentStage = this.selectMouseDevelopmentStage.bind(this);
         this.hasRequestedClassifications = filteredClassifications.length > 0;
         this.clearFilters = this.clearFilters.bind(this);
-        this.updateWindowWidth = this.updateWindowWidth.bind(this);
     }
 
     componentDidMount() {
         this.handleScrollIndicator(this.scrollElement);
-        this.updateWindowWidth();
-        window.addEventListener('resize', this.updateWindowWidth);
     }
 
     /* eslint-disable react/no-did-update-set-state */
@@ -693,12 +772,6 @@ class MatrixPresentation extends React.Component {
         return this.query.getKeyValues(key);
     }
 
-    updateWindowWidth() {
-        this.setState({
-            windowWidth: Math.min(window.screen.width, window.innerWidth),
-        });
-    }
-
     /**
      * Called when the user clicks on the expander button on a category to collapse or expand it.
      * @param {string} category Key for the category
@@ -730,50 +803,50 @@ class MatrixPresentation extends React.Component {
     }
 
     selectMouseDevelopmentStage(e) {
-        const targetId = e.target.id.replace(/-/g, ' ');
+        const targetId = e.target.id.replace(/_/g, ' ');
         // selected something that was already selected so just de-select
-        if (this.state.developmentStageClick.indexOf(targetId) > -1) {
+        if (this.state.selectedDevelopmentStages.indexOf(targetId) > -1) {
             this.setState((state) => {
-                const newSelections = state.developmentStageClick.filter((stage) => stage !== targetId);
-                return { developmentStageClick: newSelections };
+                const newSelections = state.selectedDevelopmentStages.filter((stage) => stage !== targetId);
+                return { selectedDevelopmentStages: newSelections };
             });
         // selected a particular age so need to disable the stage
         } else if (targetId.split(' ').length > 1) {
             let newSelections = [];
-            if (targetId.includes('embryo')) {
-                newSelections = this.state.developmentStageClick.filter((stage) => stage !== 'embryo');
+            if (targetId.includes('embryonic')) {
+                newSelections = this.state.selectedDevelopmentStages.filter((stage) => stage !== 'embryonic');
             } else if (targetId.includes('postnatal')) {
-                newSelections = this.state.developmentStageClick.filter((stage) => stage !== 'postnatal');
+                newSelections = this.state.selectedDevelopmentStages.filter((stage) => stage !== 'postnatal');
             } else {
-                newSelections = this.state.developmentStageClick.filter((stage) => stage !== 'adult');
+                newSelections = this.state.selectedDevelopmentStages.filter((stage) => stage !== 'adult');
             }
             newSelections = [...newSelections, targetId];
-            this.setState({ developmentStageClick: newSelections });
+            this.setState({ selectedDevelopmentStages: newSelections });
         // selected a stage but there are also ages selected so disable those
-        } else if (targetId === 'embryo') {
+        } else if (targetId === 'embryonic') {
             this.setState((state) => {
-                let newSelections = state.developmentStageClick.filter((stage) => (!(stage.includes('embryo') && (stage.split(' ').length > 1))));
+                let newSelections = state.selectedDevelopmentStages.filter((stage) => (!(stage.includes('embryonic') && (stage.split(' ').length > 1))));
                 newSelections = [...newSelections, targetId];
-                return { developmentStageClick: newSelections };
+                return { selectedDevelopmentStages: newSelections };
             });
         } else if (targetId === 'postnatal') {
             this.setState((state) => {
-                let newSelections = state.developmentStageClick.filter((stage) => (!(stage.includes('postnatal') && (stage.split(' ').length > 1))));
+                let newSelections = state.selectedDevelopmentStages.filter((stage) => (!(stage.includes('postnatal') && (stage.split(' ').length > 1))));
                 newSelections = [...newSelections, targetId];
-                return { developmentStageClick: newSelections };
+                return { selectedDevelopmentStages: newSelections };
             });
         } else {
             this.setState((state) => {
-                let newSelections = state.developmentStageClick.filter((stage) => (!(stage.includes('adult') && (stage.split(' ').length > 1))));
+                let newSelections = state.selectedDevelopmentStages.filter((stage) => (!(stage.includes('adult') && (stage.split(' ').length > 1))));
                 newSelections = [...newSelections, targetId];
-                return { developmentStageClick: newSelections };
+                return { selectedDevelopmentStages: newSelections };
             });
         }
     }
 
     clearFilters() {
         // reset button selections
-        this.setState({ developmentStageClick: [] });
+        this.setState({ selectedDevelopmentStages: [] });
         const currentUrl = this.props.context['@id'];
         // if user has entered a search, refresh page with no search term
         if (currentUrl.includes('searchTerm=')) {
@@ -794,38 +867,18 @@ class MatrixPresentation extends React.Component {
 
         // Apply filter from buttons
         let stageFilter = null;
-        if (this.state.developmentStageClick.length > 0) {
-            stageFilter = this.state.developmentStageClick;
+        if (this.state.selectedDevelopmentStages.length > 0) {
+            stageFilter = this.state.selectedDevelopmentStages;
         }
 
         // Convert matrix data to a DataTable object.
         const { dataTable, rowKeys } = convertExperimentToDataTable(context, rowCategoryGetter, mapRowCategoryQueries, this.state.expandedRowCategories, this.expanderClickHandler, stageFilter);
         // If we have a wide window, split the table in two
-        let matrixConfig;
-        let matrixConfig2;
-        if (this.state.windowWidth > 1160) {
-            // Determining best index for splitting the matrix
-            const spacerRowIndices = dataTable.map((d, i) => (d.css === 'matrix__row-spacer' ? i : '')).filter(String);
-            const distanceFromCenter = spacerRowIndices.map((d) => Math.abs(d - (dataTable.length / 2)));
-            const bestCenter = spacerRowIndices[distanceFromCenter.findIndex((d) => d === Math.min(...distanceFromCenter))];
-            matrixConfig = {
-                rows: dataTable.slice(0, bestCenter),
-                rowKeys,
-                tableCss: 'matrix',
-            };
-            matrixConfig2 = {
-                rows: [dataTable[0], ...dataTable.slice(bestCenter, dataTable.length)],
-                rowKeys,
-                tableCss: 'matrix',
-            };
-        // If we have a narrow window, do not split the table into two
-        } else {
-            matrixConfig = {
-                rows: dataTable,
-                rowKeys,
-                tableCss: 'matrix',
-            };
-        }
+        const matrixConfig = {
+            rows: dataTable,
+            rowKeys,
+            tableCss: 'matrix',
+        };
 
         const parsedUrl = url.parse(context['@id'], true);
         parsedUrl.query.format = 'json';
@@ -834,45 +887,21 @@ class MatrixPresentation extends React.Component {
         const rowCategory = context.matrix.y.group_by[0];
         const rowCategoryData = context.matrix.y[rowCategory].buckets;
         const mouseAgeObject = getMouseAgeObject(rowCategoryData);
-        const embryoDefault = 50;
-        const defaultWidth = 75;
-        const embryoWidth = (mouseAgeObject.embryo.length * (embryoDefault + 2)) - 2;
-        const postnatalWidth = (mouseAgeObject.postnatal.length * (defaultWidth + 2)) - 2;
-        const adultWidth = (mouseAgeObject.adult.length * (defaultWidth + 2)) - 2;
-
-        // check if embryo width is greater than window width and if so, split in two
-        let embryoSplitRows = false;
-        let embryoFirstRowWidth = 0;
-        let embryoSecondRowWidth = 0;
-        let countEmbryoFirstRow;
-        let countEmbryoSecondRow;
-        let embryoFirstRow;
-        let embryoSecondRow;
-        // 40 is container padding
-        if ((embryoWidth + 40) > this.state.windowWidth) {
-            embryoSplitRows = true;
-            countEmbryoFirstRow = Math.floor((this.state.windowWidth - 40) / (embryoDefault + 2));
-            embryoFirstRow = mouseAgeObject.embryo.slice(0, countEmbryoFirstRow);
-            embryoFirstRowWidth = (countEmbryoFirstRow * (embryoDefault + 2)) - 2;
-            countEmbryoSecondRow = mouseAgeObject.embryo.length - countEmbryoFirstRow;
-            embryoSecondRow = mouseAgeObject.embryo.slice(countEmbryoFirstRow, mouseAgeObject.embryo.length);
-            embryoSecondRowWidth = (countEmbryoSecondRow * (embryoDefault + 2)) - 2;
-        }
 
         // Calculate additional filters for the to view control button links
         const additionalFilters = [];
-        this.state.developmentStageClick.forEach((f) => {
-            if (['adult', 'postnatal', 'embryo'].includes(f)) {
-                mouseAgeObject[f].forEach((mouseAge) => {
+        this.state.selectedDevelopmentStages.forEach((stage) => {
+            if (['adult', 'postnatal', 'embryonic'].includes(stage)) {
+                mouseAgeObject[stage].forEach((mouseAge) => {
                     additionalFilters.push({
-                        term: `${f.replace('embryo', 'embryonic')}${mouseAge}`,
+                        term: `${mouseAge}`,
                         remove: '',
                         field: 'life_stage_age',
                     });
                 });
             } else {
                 additionalFilters.push({
-                    term: f.replace('embryo', 'embryonic'),
+                    term: stage,
                     remove: '',
                     field: 'life_stage_age',
                 });
@@ -886,76 +915,104 @@ class MatrixPresentation extends React.Component {
                     <div className="matrix-header__controls">
                         <div className="matrix-header__filter-controls">
                             <div className="mouse-dev-legend">
-                                <p>Select mouse development stages to filter results:</p>
-                                <div className="outer-button-container">
-                                    {embryoSplitRows ?
-                                        <>
+                                <div className="filter-title">Stage filters</div>
+                                <div className="stage-selector">
+                                    <MouseStageButton
+                                        keyWord="embryonic"
+                                        idString="embryonic"
+                                        stageClass="embryonic"
+                                        isActive={this.state.selectedDevelopmentStages.includes('embryonic')}
+                                        onClick={this.selectMouseDevelopmentStage}
+                                    />
+                                    <MouseStageButton
+                                        keyWord="postnatal"
+                                        idString="postnatal"
+                                        stageClass="postnatal"
+                                        isActive={this.state.selectedDevelopmentStages.includes('postnatal')}
+                                        onClick={this.selectMouseDevelopmentStage}
+                                    />
+                                    <MouseStageButton
+                                        keyWord="adult"
+                                        idString="adult"
+                                        stageClass="adult"
+                                        isActive={this.state.selectedDevelopmentStages.includes('adult')}
+                                        onClick={this.selectMouseDevelopmentStage}
+                                    />
+                                </div>
+                                <div className="age-selectors">
+                                    {mouseAgeObject.embryonic?.length > 0 && (
+                                        <div>
+                                            <div className="filter-title">embryonic</div>
                                             <div className="stage-container">
-                                                <MouseStageButton
-                                                    keyWord="embryo"
-                                                    idString="embryo"
-                                                    activeClass={this.state.developmentStageClick.indexOf('embryo') > -1}
-                                                    onClick={(e) => this.selectMouseDevelopmentStage(e)}
-                                                    buttonWidth={embryoFirstRowWidth}
-                                                />
-                                                <div className="age-container">
-                                                    {embryoFirstRow.map((age) => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
-                                                </div>
+                                                {mouseAgeObject.embryonic.map((age) => (
+                                                    <MouseStageButton
+                                                        keyWord={age}
+                                                        idString={age}
+                                                        stageClass="embryonic"
+                                                        isActive={
+                                                            (this.state.selectedDevelopmentStages.includes(age))
+                                                            || (this.state.selectedDevelopmentStages.includes('embryonic'))
+                                                        }
+                                                        isAgeDisplay
+                                                        onClick={this.selectMouseDevelopmentStage}
+                                                        key={`embryonic-${age}`}
+                                                    />
+                                                ))}
                                             </div>
+                                        </div>
+                                    )}
+                                    {mouseAgeObject.postnatal?.length > 0 && (
+                                        <div>
+                                            <div className="filter-title">postnatal</div>
                                             <div className="stage-container">
-                                                <MouseStageButton
-                                                    keyWord="embryo"
-                                                    idString="embryo"
-                                                    activeClass={this.state.developmentStageClick.indexOf('embryo') > -1}
-                                                    onClick={(e) => this.selectMouseDevelopmentStage(e)}
-                                                    buttonWidth={embryoSecondRowWidth}
-                                                />
-                                                <div className="age-container">
-                                                    {embryoSecondRow.map((age) => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
-                                                </div>
-                                            </div>
-                                        </>
-                                    :
-                                        <div className="stage-container">
-                                            <MouseStageButton
-                                                keyWord="embryo"
-                                                idString="embryo"
-                                                activeClass={this.state.developmentStageClick.indexOf('embryo') > -1}
-                                                onClick={(e) => this.selectMouseDevelopmentStage(e)}
-                                                buttonWidth={embryoWidth}
-                                            />
-                                            <div className="age-container">
-                                                {mouseAgeObject.embryo.map((age) => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
+                                                {mouseAgeObject.postnatal.map((age) => (
+                                                    <MouseStageButton
+                                                        keyWord={age}
+                                                        idString={age}
+                                                        stageClass="postnatal"
+                                                        isActive={
+                                                            (this.state.selectedDevelopmentStages.includes(age))
+                                                            || (this.state.selectedDevelopmentStages.includes('postnatal'))
+                                                        }
+                                                        isAgeDisplay
+                                                        onClick={this.selectMouseDevelopmentStage}
+                                                        key={`postnatal-${age}`}
+                                                    />
+                                                ))}
                                             </div>
                                         </div>
-                                    }
-                                    <div className="stage-container">
-                                        <MouseStageButton
-                                            keyWord="postnatal"
-                                            idString="postnatal"
-                                            activeClass={this.state.developmentStageClick.indexOf('postnatal') > -1}
-                                            onClick={(e) => this.selectMouseDevelopmentStage(e)}
-                                            buttonWidth={postnatalWidth}
-                                        />
-                                        <div className="age-container">
-                                            {mouseAgeObject.postnatal.map((age) => <MouseStageButton keyWord={age} idString={`postnatal ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`postnatal${age}`) > -1) || (this.state.developmentStageClick.indexOf('postnatal') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`postnatal ${age}`} />)}
+                                    )}
+                                    {mouseAgeObject.adult?.length > 0 && (
+                                        <div>
+                                            <div className="filter-title">adult</div>
+                                            <div className="stage-container">
+                                                {mouseAgeObject.adult.map((age) => (
+                                                    <MouseStageButton
+                                                        keyWord={age}
+                                                        idString={age}
+                                                        stageClass="adult"
+                                                        isActive={
+                                                            (this.state.selectedDevelopmentStages.includes(age))
+                                                            || (this.state.selectedDevelopmentStages.includes('adult'))
+                                                        }
+                                                        isAgeDisplay
+                                                        onClick={this.selectMouseDevelopmentStage}
+                                                        key={`adult-${age}`}
+                                                    />
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="stage-container">
-                                        <MouseStageButton
-                                            keyWord="adult"
-                                            idString="adult"
-                                            activeClass={this.state.developmentStageClick.indexOf('adult') > -1}
-                                            onClick={(e) => this.selectMouseDevelopmentStage(e)}
-                                            buttonWidth={adultWidth}
-                                        />
-                                        <div className="age-container">
-                                            {mouseAgeObject.adult.map((age) => <MouseStageButton keyWord={age} idString={`adult ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`adult${age}`) > -1) || (this.state.developmentStageClick.indexOf('adult') > -1)} onClick={(e) => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`adult ${age}`} />)}
-                                        </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
-                            <button type="button" className="clear-filters" onClick={this.clearFilters}>Clear Filters <i className="icon icon-times-circle" aria-label="Clear search terms and selected mouse development stages and ages" /></button>
+                            <TissueJumper tissues={rowCategoryData.map((tissue) => tissue.key)} />
+                            <button
+                                type="button"
+                                className="clear-filters"
+                                onClick={this.clearFilters}
+                            >
+                                Clear Filters <i className="icon icon-times-circle" aria-label="Clear search terms and selected mouse development stages and ages" />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -971,13 +1028,6 @@ class MatrixPresentation extends React.Component {
                                 <DataTable tableData={matrixConfig} />
                             </div>
                         </div>
-                        {matrixConfig2 ?
-                            <div className="matrix__data-wrapper">
-                                <div className="matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
-                                    <DataTable tableData={matrixConfig2} />
-                                </div>
-                            </div>
-                        : null}
                     </div>
                 </div>
             </>

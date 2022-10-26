@@ -9,13 +9,13 @@ Feature: Matrix
         And I click the link with text that contains "Mouse development matrix"
         And I wait for the content to load
         Then I should see exactly one element with the css selector ".mouse-dev-matrix"
-        And I should see at least 9 elements with the css selector "tbody > tr"
+        And I should see at least 7 elements with the css selector "tbody > tr"
 
     Scenario: Filter by adult
         When I visit "/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries&replicates.library.biosample.organism.scientific_name=Mus+musculus"
         And I wait for the content to load
-        Then I should see an element with id "postnatal-0-days"
+        Then I should see an element with id "postnatal_0_days"
 
         When I press "postnatal"
         And I wait for the content to load
-        Then I should see at least 6 elements with the css selector "tbody > tr"
+        Then I should see at least 4 elements with the css selector "tbody > tr"

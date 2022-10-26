@@ -161,16 +161,30 @@ $tab-color: #a8a8a8;
 }
 
 .mouse-dev-legend {
-    p {
-        margin-bottom: 10px;
+    .filter-title {
+        font-size: 0.9rem;
+        font-weight: 600;
     }
 
-    .outer-button-container {
-        display: inline-block;
+    .age-selectors {
+        display: flex;
+        margin-top: 10px;
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
     .stage-container {
-        display: inline-block;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .stage-selector {
+        display: flex;
+    }
+
+    .legend-option {
+        padding-left: 5px;
+        padding-right: 5px;
     }
 
     button {
@@ -184,7 +198,7 @@ $tab-color: #a8a8a8;
         border: 2px solid #dfdfdf;
         border-radius: 3px;
 
-        &.embryo {
+        &.embryonic {
             background: lighten(#ffe9c6, 5%);
         }
 
@@ -203,20 +217,7 @@ $tab-color: #a8a8a8;
     }
 
     .active {
-        font-weight: 600;
         border: 2px solid #000;
-
-        &.embryo {
-            background: darken(#ffe9c6, 8%);
-        }
-
-        &.postnatal {
-            background: darken(#f2c782, 5%);
-        }
-
-        &.adult {
-            background: darken(#e2ae53, 8%);
-        }
     }
 }
 
@@ -346,6 +347,11 @@ $tab-color: #a8a8a8;
     .matrix__row-data > th {
         padding: 0;
     }
+
+    // Tissue jumper links scroll to below the nav bar.
+    [id] {
+        scroll-margin-top: 50px;
+    }
 }
 
 .subcategory-row-text-mouse {
@@ -369,7 +375,7 @@ $tab-color: #a8a8a8;
     }
 }
 
-.embryo {
+.embryonic {
     background-color: #fff3e0;
 }
 
@@ -379,6 +385,20 @@ $tab-color: #a8a8a8;
 
 .adult {
     background-color: #e8be76;
+}
+
+.tissue-jumper {
+    .tissue-jumper__title {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .tissue-jumper__tissues {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+    }
 }
 
 // Reusable styles for the left-most non-scrolling column.
@@ -523,7 +543,7 @@ $tab-color: #a8a8a8;
                 font-weight: 400;
                 line-height: 1.15;
 
-                &.embryo {
+                &.embryonic {
                     &:hover {
                         background-color: darken(#ffe9c6, 8%);
                     }
