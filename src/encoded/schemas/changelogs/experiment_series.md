@@ -9,6 +9,7 @@
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
 * Added *Deeply Profiled* to the *internal_tags* enum
 * Removed *control_type* calculated property
+* Added *Degron* to *internal_tags* enums list.
 
 ### Schema version 3
 

@@ -3,6 +3,7 @@
 ### Schema Version 2
 
 * The NTR term 'transgenic enhancer assay' was replaced with the OBI term 'enhancer reporter assay' (OBI:0002083)
+* Added *Degron* to *internal_tags* enums list.
 
 
 ### Minor changes since schema version 1
