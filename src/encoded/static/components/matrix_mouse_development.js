@@ -186,13 +186,13 @@ const normalizeAges = (ages) => {
         }
 
         // Convert age to days.
-        if (units === 'weeks') {
+        if (units === 'weeks' || units === 'week') {
             min *= 7;
             max *= 7;
-        } else if (units === 'months') {
+        } else if (units === 'months' || units === 'month') {
             min *= 30;
             max *= 30;
-        } else if (units === 'years') {
+        } else if (units === 'years' || units === 'year') {
             min *= 365;
             max *= 365;
         }
