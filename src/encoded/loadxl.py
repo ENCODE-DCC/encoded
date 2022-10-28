@@ -563,6 +563,7 @@ def attachment(path):
         mime_type = 'application/gzip'
     major, minor = mime_type.split('/')
     detected_type = magic.from_file(path, mime=True)
+    Image.MAX_IMAGE_PIXELS = 500000000
 
     # XXX This validation logic should move server-side.
     if not (detected_type == mime_type or
