@@ -2476,6 +2476,7 @@ function_dispatcher_with_files = {
         'files.analysis_step_version.software_versions.software',
         'pipelines',
         'datasets',
+        'datasets.@type',
         'datasets.award',
         'datasets.target',
     ])
@@ -2485,6 +2486,14 @@ def audit_analysis(value, system):
     dataset_awards = [x['award']['rfa'] for x in value['datasets']]
     if any(award in ['community', 'GGR', 'modENCODE'] for award in dataset_awards):
         return
+
+    # Analyses in a Series or FileSet should not be audited.
+    dataset_types = [x['@type'] for x in value['datasets']]
+    for dtype_list in dataset_types:
+        for schema_name in dtype_list:
+            if schema_name in ['FileSet', 'Series']:
+                return
+
     excluded_files = ['revoked', 'deleted']
     if value['status'] == 'revoked':
         excluded_files = ['deleted']
