@@ -2928,7 +2928,7 @@
         "cell type data": "quantification",
 
         "3D structure": "annotation",
-        "depth normalizaed signals matrix": "annotation",
+        "depth normalized signals matrix": "annotation",
         "hotspots": "annotation",
         "footprints": "annotation",
         "long range chromatin interactions": "annotation",
