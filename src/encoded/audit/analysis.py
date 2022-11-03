@@ -2476,7 +2476,6 @@ function_dispatcher_with_files = {
         'files.analysis_step_version.software_versions.software',
         'pipelines',
         'datasets',
-        'datasets.@type',
         'datasets.award',
         'datasets.target',
     ])
