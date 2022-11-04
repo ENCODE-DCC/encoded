@@ -47,17 +47,17 @@
         "schema_version": {
             "default": "3"
         },
-        "related_datasets": {
-            "title": "Additional datasets",
-            "description": "List of datasets to be associated with the series.",
+        "related_series": {
+            "title": "List of AggregateSeries to be associated with this dataset.",
+            "description": "List of AggregateSeries to be associated with this dataset.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                "title": "Dataset",
+                "title": "Aggregate Series",
                 "comment": "See dataset.json for available identifiers.",
                 "type": "string",
-                "linkTo": ["Experiment", "FunctionalCharacterizationExperiment", "TransgenicEnhancerExperiment", "AggregateSeries"]
+                "linkTo": ["AggregateSeries"]
             }
         }
     },
