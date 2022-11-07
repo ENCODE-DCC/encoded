@@ -18,6 +18,7 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "dataset.json#/properties" },
+        { "$ref": "series.json#/properties" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
@@ -276,6 +277,10 @@
         },
         "related_datasets.replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units",
+            "type": "string"
+        },
+        "related_series.@id": {
+            "title": "Additional datasets",
             "type": "string"
         }
     },

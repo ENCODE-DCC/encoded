@@ -2887,6 +2887,44 @@ export const SeriesComponent = ({
                                     <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                 </div>
                             : null}
+
+                            {options.relatedDatasetsInAttribution
+                                && context.related_datasets
+                                && context.related_datasets.length > 0 ?
+                                <div data-test="related_datasets">
+                                    <dt>Related datasets</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.related_datasets.map((dataset) => (
+                                                <li key={dataset['@id']} className="multi-comma">
+                                                    <a href={dataset['@id']}>
+                                                        {dataset.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {options.relatedSeriesInAttribution
+                                && context.related_series
+                                && context.related_series.length > 0 ?
+                                <div data-test="related_series">
+                                    <dt>Related series</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.related_series.map((series) => (
+                                                <li key={series} className="multi-comma">
+                                                    <a href={series}>
+                                                        {globals.atIdToAccession(series)}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
                         </dl>
                     </div>
                 </PanelBody>
@@ -2958,6 +2996,10 @@ SeriesComponent.propTypes = {
         suppressDonorDiversity: PropTypes.bool,
         /** Retrieves short label from an experiment */
         getSupplementalShortLabel: PropTypes.func,
+        /** True to suppress the calculation and display of related_datasets */
+        relatedDatasetsInAttribution: PropTypes.bool,
+        /** True to suppress the calculation and display of related_series */
+        relatedSeriesInAttribution: PropTypes.bool,
     }),
     /** Audit decorator function */
     auditIndicators: PropTypes.func.isRequired,
@@ -3006,10 +3048,38 @@ StandardSeries.contextTypes = {
     profilesTitles: PropTypes.object,
 };
 
-globals.contentViews.register(StandardSeries, 'AggregateSeries');
 globals.contentViews.register(StandardSeries, 'CollectionSeries');
 globals.contentViews.register(StandardSeries, 'MatchedSet');
 globals.contentViews.register(StandardSeries, 'MultiomicsSeries');
+
+
+/**
+ * Wrapper component for those Series objects that have the standard Series display.
+ */
+const AggregateSeries = ({ context }, reactContext) => {
+    const seriesType = context['@type'][0];
+    const seriesTitle = reactContext.profilesTitles[seriesType] || '';
+
+    return (
+        <Series
+            context={context}
+            title={seriesTitle}
+            options={{ relatedDatasetsInAttribution: true, relatedSeriesInAttribution: true }}
+            tableColumns={basicTableColumns}
+        />
+    );
+};
+
+AggregateSeries.propTypes = {
+    /** Series-derived object */
+    context: PropTypes.object.isRequired,
+};
+
+AggregateSeries.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+globals.contentViews.register(AggregateSeries, 'AggregateSeries');
 
 
 /**
