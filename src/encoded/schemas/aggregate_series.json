@@ -56,7 +56,7 @@
             "uniqueItems": true,
             "items": {
                 "title": "Aggregate Series",
-                "comment": "See dataset.json for available identifiers.",
+                "comment": "See aggregate_sereies.json for available identifiers.",
                 "type": "string",
                 "linkTo": ["AggregateSeries"]
             }

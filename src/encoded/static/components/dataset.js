@@ -3054,7 +3054,7 @@ globals.contentViews.register(StandardSeries, 'MultiomicsSeries');
 
 
 /**
- * Wrapper component for those Series objects that have the standard Series display.
+ * Wrapper component for AggregateSeries objects.
  */
 const AggregateSeries = ({ context }, reactContext) => {
     const seriesType = context['@type'][0];
