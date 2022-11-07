@@ -141,6 +141,7 @@
                     "curated binding sites",
                     "curated SNVs",
                     "CpG sites coverage",
+                    "depth normalized signals matrix",
                     "DHS peaks",
                     "DHS regions reference",
                     "DNA accessibility raw signal",
@@ -330,6 +331,7 @@
                     "splice junctions",
                     "subreads",
                     "TF binding prediction model",
+                    "TF peaks matrix",
                     "thresholded element gene links",
                     "thresholded links",
                     "topologically associated domains",
@@ -352,7 +354,8 @@
                     "unidirectional peaks",
                     "UV enriched segment quantifications",
                     "variant calls",
-                    "variants chromatin interactions"
+                    "variants chromatin interactions",
+                    "z scores matrix"
                 ]
             }
         },
@@ -394,6 +397,7 @@
                     "curated binding sites",
                     "curated SNVs",
                     "CpG sites coverage",
+                    "depth normalized signals matrix",
                     "DHS peaks",
                     "DHS regions reference",
                     "DNA accessibility raw signal",
@@ -580,6 +584,7 @@
                     "splice junctions",
                     "subreads",
                     "TF binding prediction model",
+                    "TF peaks matrix",
                     "thresholded element gene links",
                     "thresholded links",
                     "topologically associated domains",
@@ -602,7 +607,8 @@
                     "unidirectional peaks",
                     "UV enriched segment quantifications",
                     "variant calls",
-                    "variants chromatin interactions"
+                    "variants chromatin interactions",
+                    "z scores matrix"
                 ]
             }
         },

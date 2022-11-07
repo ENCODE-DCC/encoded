@@ -1541,7 +1541,10 @@
                                         "enhancer prediction model",
                                         "promoter prediction model",
                                         "inclusion list",
-                                        "functional conservation mapping"
+                                        "functional conservation mapping",
+                                        "depth normalized signals matrix",
+                                        "z scores matrix",
+                                        "TF peaks matrix"
                                     ]
                                 }
                             }
@@ -2129,6 +2132,7 @@
                         "control normalized signal",
                         "counts sequence contribution scores",
                         "CpG sites coverage",
+                        "depth normalized signals matrix",
                         "DHS peaks",
                         "DHS regions reference",
                         "DNA accessibility raw signal",
@@ -2308,6 +2312,7 @@
                         "splice junctions",
                         "subreads",
                         "TF binding prediction model",
+                        "TF peaks matrix",
                         "thresholded element gene links",
                         "topologically associated domains",
                         "training and test regions",
@@ -2328,7 +2333,8 @@
                         "unidirectional peaks",
                         "UV enriched segment quantifications",
                         "variant calls",
-                        "variants chromatin interactions"
+                        "variants chromatin interactions",
+                        "z scores matrix"
                     ]
                 },
                 {
@@ -2922,6 +2928,7 @@
         "cell type data": "quantification",
 
         "3D structure": "annotation",
+        "depth normalized signals matrix": "annotation",
         "hotspots": "annotation",
         "footprints": "annotation",
         "long range chromatin interactions": "annotation",
@@ -3025,6 +3032,8 @@
         "sequence motifs": "annotation",
         "sequence motifs report": "annotation",
         "sequence motifs instances": "annotation",
+        "TF peaks matrix": "annotation",
+        "z scores matrix": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",

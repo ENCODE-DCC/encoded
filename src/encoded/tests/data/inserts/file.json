@@ -5918,5 +5918,20 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "7132b6bf-bd3c-4981-8a87-b7ef0c39a507",
         "derived_from": ["ENCFF203KVL"]
+    },
+    {
+        "_test": "z scores matrix",
+        "status": "in progress",
+        "uuid": "bbe76ae3-c627-4d1c-858f-eddb1b65609d",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "bc4272c34649fff99352c58f30d2d6ff",
+        "accession": "ENCFF318REP",
+        "file_format": "txt",
+        "award": "/awards/U54HG006998/",
+        "assembly": "GRCh38",
+        "dataset": "/experiments/ENCSR831GKM/",
+        "file_size": 370148294,
+        "output_type": "z scores matrix",
+        "lab": "/labs/richard-myers/"
     }
 ]
