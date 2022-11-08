@@ -62,5 +62,22 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "22d08c01-0289-4a8d-aeb5-1fb22291fda8"
+    },
+    {
+        "_test": "Megamap aggregate series",
+        "accession": "ENCAN000MMP",
+        "aliases": [
+            "encode-processing-pipeline:41e8f9e5-85b9-45c3-af65-07b04b4d5eea"
+        ],
+        "award": "U24HG009397",
+        "lab": "encode-processing-pipeline",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "files": [
+            "ENCFF200MMP",
+            "ENCFF210MMP",
+            "ENCFF211MMP"
+        ],
+        "status": "in progress",
+        "uuid": "ce7f6ec3-2c9a-4bbe-8b8d-a2d75bba0f18"
     }
 ]

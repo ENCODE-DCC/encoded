@@ -5933,5 +5933,65 @@
         "file_size": 370148294,
         "output_type": "z scores matrix",
         "lab": "/labs/richard-myers/"
+    },
+    {
+        "_test": "Megamap aggregate series",
+        "accession": "ENCFF200MMP",
+        "aliases": [
+            "encode-processing-pipeline:call-add_norm-inter_30.hic"
+        ],
+        "assembly": "GRCh38",
+        "award": "U24HG009397",
+        "dataset": "ENCSR000MMP",
+        "file_format": "hic",
+        "file_size": 73650916923,
+        "lab": "encode-processing-pipeline",
+        "md5sum": "197edc24d7e4fd5982d6104b8f531e74",
+        "output_type": "mapping quality thresholded chromatin interactions",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "status": "in progress",
+        "uuid": "dfdd0586-0692-495d-8ec5-9daa7adfe75c"
+    },
+    {
+        "_test": "Megamap aggregate series",
+        "accession": "ENCFF210MMP",
+        "aliases": [
+            "encode-processing-pipeline:41e8f9e5-85b9-45c3-af65-07b04b4d5eea-encode-processing-hic-5tb-010322-caper_out-megamap-ccd0a05c-eb74-4ae2-84f2-799226ca860d-call-delta-predicted_loop_domains_merged.bedpe.gz"
+        ],
+        "assembly": "GRCh38",
+        "award": "U24HG009397",
+        "dataset": "ENCSR000MMP",
+        "derived_from": [
+            "ENCFF200MMP"
+        ],
+        "file_format": "bedpe",
+        "file_size": 23087,
+        "lab": "encode-processing-pipeline",
+        "md5sum": "4b1ee6861592e6f8e7a882d3b817bd54",
+        "output_type": "long range chromatin interactions",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "ed50fb06-a0cd-4a4e-b7bb-ca4efde5ef55"
+    },
+    {
+        "_test": "Megamap aggregate series",
+        "accession": "ENCFF211MMP",
+        "aliases": [
+            "encode-processing-pipeline:41e8f9e5-85b9-45c3-af65-07b04b4d5eea-encode-processing-hic-5tb-010322-caper_out-megamap-ccd0a05c-eb74-4ae2-84f2-799226ca860d-call-delta-predicted_domains_merged.bedpe.gz"
+        ],
+        "assembly": "GRCh38",
+        "award": "U24HG009397",
+        "dataset": "ENCSR000MMP",
+        "derived_from": [
+            "ENCFF200MMP"
+        ],
+        "file_format": "bedpe",
+        "file_size": 36516,
+        "lab": "encode-processing-pipeline",
+        "md5sum": "177bf81e2c3c82b1b3646963d3ca237c",
+        "output_type": "topologically associated domains",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "2f41d5e6-cacf-44a6-b10b-49590b725f5a"
     }
 ]

@@ -56,6 +56,15 @@ const METADATA_SERIES_TYPES = [
     'TreatmentTimeSeries',
 ];
 
+/**
+ * Series @types that have a visible file association graph. All other @type for series have
+ * hidden file association graphs.
+ */
+const SERIES_WITH_VISIBLE_FILE_GRAPHS = [
+    'FunctionalCharacterizationSeries',
+    'AggregateSeries',
+];
+
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -2905,7 +2914,7 @@ export const SeriesComponent = ({
                     supplementalShortLabels={supplementalShortLabels}
                     showReplicateNumber={false}
                     hideControls={!METADATA_SERIES_TYPES.includes(context['@type'][0])}
-                    hideGraph={seriesType !== 'FunctionalCharacterizationSeries'}
+                    hideGraph={!SERIES_WITH_VISIBLE_FILE_GRAPHS.includes(seriesType)}
                     showDetailedTracks
                     hideAnalysisSelector
                     defaultOnly
