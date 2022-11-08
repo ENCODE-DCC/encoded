@@ -1512,3 +1512,22 @@ def test_audit_analysis_multiple_datasets(
     res = testapp.get(base_analysis['@id'] + '@@index-data')
     audit_errors = res.json['audit']
     assert any(error['category'] == 'multiple datasets' for error in audit_errors.get('INTERNAL_ACTION', []))
+
+
+def test_audit_analysis_skip_analysis_of_fileset_or_series(
+    testapp,
+    base_analysis,
+    annotation_ccre,
+    treatment_time_series
+):
+    testapp.patch_json(annotation_ccre['@id'], {'analyses': [base_analysis['@id']]})
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    assert len(res.json['audit']) == 0
+
+    annotation = testapp.get(annotation_ccre['@id'] + '@@edit').json
+    annotation.pop('analyses')
+    testapp.put_json(annotation_ccre['@id'], annotation)
+
+    testapp.patch_json(treatment_time_series['@id'], {'analyses': [base_analysis['@id']]})
+    res = testapp.get(base_analysis['@id'] + '@@index-data')
+    assert len(res.json['audit']) == 0
