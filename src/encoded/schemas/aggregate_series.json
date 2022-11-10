@@ -49,8 +49,8 @@
             "default": "3"
         },
         "related_series": {
-            "title": "Additional AggregateSeries",
-            "description": "List of AggregateSeries to be associated with this dataset.",
+            "title": "Additional aggregate series",
+            "description": "List of aggregate series to be associated with this dataset.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
