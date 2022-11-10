@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 30
+* *output_type* enums *topological associated domains* *mapping quality thresholded chromatin interactions*, *chromatin interactions*, *DNA accessibility raw signal*, and *long range chromatin interactions* were replaced by *contact domains*, *mapping quality thresholded contact matrix*, *contact matrix*, *nuclease cleavage frequency* and *loops* respectively.
+
 ### Minor changes since schema version 29
 * Added *processed* boolean as a calculated property to indicate that the file does not have the *output_category* of *raw data*
 * Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
