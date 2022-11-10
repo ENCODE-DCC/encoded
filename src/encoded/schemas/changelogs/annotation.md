@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Schema version 38
+* *annotation_type* enum *long-range chromatin interactions* is replaced with *loops*.
+
 ### Minor changes since schema version 37
 * Added *cell type annotation* to enum list for *annotation_type*.
 * Added *Degron* to enum list for *internal_tags*.

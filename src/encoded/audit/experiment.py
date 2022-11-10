@@ -3471,7 +3471,7 @@ def create_files_mapping(files_list, excluded):
                     to_return['microRNA_quantifications_files'][file_object['@id']
                                                             ] = file_object
 
-                if file_output and file_output in ['chromatin interactions', 'long range chromatin interactions']:
+                if file_output and file_output in ['contact matrix', 'loops']:
                     to_return['chromatin_interaction_files'][file_object['@id']] = file_object
 
                 if file_output and file_output == 'signal of unique reads':

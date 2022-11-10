@@ -87,7 +87,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "37"
+            "default": "38"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -116,7 +116,7 @@
                 "gkm-SVM-model",
                 "imputation",
                 "in vivo enhancer evaluations",
-                "long-range chromatin interactions",
+                "loops",
                 "methylation summary",
                 "other",
                 "overlap",

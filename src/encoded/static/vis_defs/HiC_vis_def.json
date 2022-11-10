@@ -10,19 +10,19 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views": {
             "tag": "view",
-            "group_order": [ "Topologically associated domains", "Nested TADs", "Genome compartments" ],
+            "group_order": [ "Contact domains", "Nested contact domains", "Genome compartments" ],
             "groups": {
-                "Topologically associated domains": {
+                "Contact domains": {
                     "tag": "aTADS",
                     "visibility": "dense",
                     "type": "bigBed 3 +",
-                    "output_type": [ "topologically associated domains" ]
+                    "output_type": [ "contact domains" ]
                 },
-                "Nested TADs": {
+                "Nested contact domains": {
                     "tag": "bTADS",
                     "visibility": "hide",
                     "type": "bigBed 3 +",
-                    "output_type": [ "nested topologically associated domains" ]
+                    "output_type": [ "nested contact domains" ]
                 },
                 "Genome compartments": {
                     "tag": "cCOMPART",

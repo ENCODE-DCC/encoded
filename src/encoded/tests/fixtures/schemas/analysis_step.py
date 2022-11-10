@@ -314,7 +314,7 @@ def analysis_step_chia_interaction_calling(testapp):
         'step_label': 'chia-pet-interaction-calling-step',
         'title': 'ChIA-PET interaction calling step',
         'input_file_types': ['alignments'],
-        'output_file_types': ['chromatin interactions'],
+        'output_file_types': ['contact matrix'],
         'analysis_step_types': ['interaction calling', 'file format conversion'],
         'major_version': 1
     }
@@ -325,9 +325,9 @@ def analysis_step_chia_interaction_calling(testapp):
 def analysis_step_hic_chromatin_interactions(testapp):
     item = {
         'step_label': 'hic-chromatin-interactions-step',
-        'title': 'Hi-C chromatin interactions step',
+        'title': 'Hi-C contact matrix step',
         'input_file_types': ['alignments'],
-        'output_file_types': ['chromatin interactions'],
+        'output_file_types': ['contact matrix'],
         'analysis_step_types': ['interaction calling', 'file format conversion'],
         'major_version': 1
     }

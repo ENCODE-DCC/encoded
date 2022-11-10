@@ -189,7 +189,7 @@ def test_visualize(submitter_testapp, index_workbook, at_id, expected):
     "longLabel Unknown Target ChIA-PET of Unknown Biosample - ENCSR270OQH",
     "shortLabel Unknown Target ChIA-PET of cell-free sample ENCSR270OQH",
     "visibility full",
-    "subGroup1 view Views CHRINTR=Chromatin_interactions LRCI=Long_range_interactions PEAKS=Peaks SIGBL=Signal_of_unique_reads SIGBM=Signal_of_all_reads",
+    "subGroup1 view Views CHRINTR=Contact_matrix LRCI=Loops PEAKS=Peaks SIGBL=Signal_of_unique_reads SIGBM=Signal_of_all_reads",
     "subGroup2 BS Biosample cell45free_sample=cell-free_sample",
     "subGroup3 EXP Experiment ENCSR270OQH=ENCSR270OQH",
     "subGroup4 REP Replicates rep01=Replicate_1",

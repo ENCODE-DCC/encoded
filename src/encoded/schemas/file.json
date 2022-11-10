@@ -886,8 +886,8 @@
                         "output_type": {
                             "enum": [
                                 "nuclease cleavage frequency",
-                                "haplotype-specific DNA accessibility raw signal",
-                                "haplotype-specific DNA accessibility corrected signal",
+                                "haplotype-specific nuclease cleavage frequency",
+                                "haplotype-specific nuclease cleavage corrected frequency",
                                 "minus strand end position signal",
                                 "minus strand normalized end position signal",
                                 "plus strand end position signal",
@@ -907,8 +907,8 @@
                         },
                         "output_type": {
                             "enum": [
-                                "variants chromatin interactions",
-                                "haplotype-specific chromatin interactions"
+                                "variants contact matrix",
+                                "haplotype-specific contact matrix"
                             ]
                         }
                     }
@@ -940,10 +940,10 @@
                                     "training set",
                                     "rejected reads",
                                     "nuclease cleavage frequency",
-                                    "haplotype-specific DNA accessibility raw signal",
-                                    "haplotype-specific DNA accessibility corrected signal",
-                                    "haplotype-specific chromatin interactions",
-                                    "variants chromatin interactions",
+                                    "haplotype-specific nuclease cleavage frequency",
+                                    "haplotype-specific nuclease cleavage corrected frequency",
+                                    "haplotype-specific contact matrix",
+                                    "variants contact matrix",
                                     "raw imaging signal",
                                     "minus strand end position signal",
                                     "minus strand normalized end position signal",
@@ -1683,9 +1683,9 @@
                     "properties": {
                         "output_type": {
                             "enum": [
-                                "haplotype-specific chromatin interactions",
-                                "haplotype-specific DNA accessibility raw signal",
-                                "haplotype-specific DNA accessibility corrected signal"
+                                "haplotype-specific contact matrix",
+                                "haplotype-specific nuclease cleavage frequency",
+                                "haplotype-specific nuclease cleavage corrected frequency"
                             ]
                         }
                     }
@@ -1705,7 +1705,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "29"
+            "default": "30"
         },
         "accession": {
             "accessionType": "FF"
@@ -2107,7 +2107,7 @@
                     "enum": [
                         "3D structure",
                         "alignments",
-                        "allele-specific chromatin interactions",
+                        "allele-specific contact matrix",
                         "allele-specific variants",
                         "archr project",
                         "bias model",
@@ -2183,9 +2183,9 @@
                         "guide locations",
                         "guide quantifications",
                         "haplotype-specific alignments",
-                        "haplotype-specific chromatin interactions",
-                        "haplotype-specific DNA accessibility raw signal",
-                        "haplotype-specific DNA accessibility corrected signal",
+                        "haplotype-specific contact matrix",
+                        "haplotype-specific nuclease cleavage frequency",
+                        "haplotype-specific nuclease cleavage corrected frequency",
                         "hotspots",
                         "hotspots1 reference",
                         "hotspots2 reference",
@@ -2198,7 +2198,7 @@
                         "IDR thresholded peaks",
                         "kmer weights",
                         "library fraction",
-                        "long range chromatin interactions",
+                        "loops",
                         "male genome index",
                         "male genome reference",
                         "maternal haplotype mapping",
@@ -2222,7 +2222,7 @@
                         "motif model",
                         "nanopore signal",
                         "negative control regions",
-                        "nested topologically associated domains",
+                        "nested contact domains",
                         "non-targeting gRNAs",
                         "normalized signal of all reads",
                         "novel peptides",
@@ -2333,7 +2333,7 @@
                         "unidirectional peaks",
                         "UV enriched segment quantifications",
                         "variant calls",
-                        "variants chromatin interactions",
+                        "variants contact matrix",
                         "z scores matrix"
                     ]
                 },
@@ -2863,8 +2863,8 @@
         "element gene interactions p-value": "signal",
         "training set": "signal",
         "nuclease cleavage frequency": "signal",
-        "haplotype-specific DNA accessibility raw signal": "signal",
-        "haplotype-specific DNA accessibility corrected signal": "signal",
+        "haplotype-specific nuclease cleavage frequency": "signal",
+        "haplotype-specific nuclease cleavage corrected frequency": "signal",
         "plus strand end position signal": "signal",
         "minus strand end position signal": "signal",
         "plus strand normalized end position signal": "signal",
@@ -2931,11 +2931,11 @@
         "depth normalized signals matrix": "annotation",
         "hotspots": "annotation",
         "footprints": "annotation",
-        "long range chromatin interactions": "annotation",
+        "loops": "annotation",
         "contact matrix": "annotation",
         "mapping quality thresholded contact matrix": "annotation",
         "contact domains": "annotation",
-        "nested topologically associated domains": "annotation",
+        "nested contact domains": "annotation",
         "genome compartments": "annotation",
         "open chromatin regions":"annotation",
         "filtered peaks":"annotation",
@@ -2993,7 +2993,7 @@
         "read annotations": "annotation",
         "fine-mapped variants": "annotation",
         "repeat elements annotation": "annotation",
-        "allele-specific chromatin interactions": "annotation",
+        "allele-specific contact matrix": "annotation",
         "allele-specific variants": "annotation",
         "bidirectional peaks": "annotation",
         "novel peptides": "annotation",
@@ -3008,8 +3008,8 @@
         "inclusion list": "annotation",
         "genome subcompartments": "annotation",
         "chromatin stripes": "annotation",
-        "variants chromatin interactions": "annotation",
-        "haplotype-specific chromatin interactions": "annotation",
+        "variants contact matrix": "annotation",
+        "haplotype-specific contact matrix": "annotation",
         "cell coordinates": "annotation",
         "cell type annotations": "annotation",
         "element gene links": "annotation",
