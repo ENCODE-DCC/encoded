@@ -2888,6 +2888,13 @@ export const SeriesComponent = ({
                                 </div>
                             : null}
 
+                            {options.inputDataHeader
+                                && (context.related_datasets || context.related_series) ?
+                                <div className="panel__split-heading panel__split-heading--experiment">
+                                    <h4>Input Datasets</h4>
+                                </div>
+                            : null}
+
                             {options.relatedDatasetsInAttribution
                                 && context.related_datasets
                                 && context.related_datasets.length > 0 ?
@@ -3000,6 +3007,8 @@ SeriesComponent.propTypes = {
         relatedDatasetsInAttribution: PropTypes.bool,
         /** True to suppress the calculation and display of related_series */
         relatedSeriesInAttribution: PropTypes.bool,
+        /** True to supress the display of input data header */
+        inputDataHeader: PropTypes.bool,
     }),
     /** Audit decorator function */
     auditIndicators: PropTypes.func.isRequired,
@@ -3064,7 +3073,7 @@ const AggregateSeries = ({ context }, reactContext) => {
         <Series
             context={context}
             title={seriesTitle}
-            options={{ relatedDatasetsInAttribution: true, relatedSeriesInAttribution: true }}
+            options={{ relatedDatasetsInAttribution: true, relatedSeriesInAttribution: true, inputDataHeader: true }}
             tableColumns={basicTableColumns}
         />
     );
