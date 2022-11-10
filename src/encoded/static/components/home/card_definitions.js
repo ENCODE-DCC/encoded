@@ -158,7 +158,7 @@ export const CARDS_FOR_COLLECTIONS = {
             color: CARD_COLORS.collections,
             useSearchTerm: true,
             displayCount: false,
-            collections: ['Chromatin Degron'],
+            collections: ['Protein knockdown using the auxin-inducible degron'],
         },
         {
             id: 'computational-and-integrative-products',

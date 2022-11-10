@@ -2518,6 +2518,14 @@ $rnaseq-term-name-colors:
                         height: 100%;
                         width: 100%;
                         background-color: rgb(80, 100, 200);
+
+                        .matrix__populated-badge--partial {
+                            background-color: rgb(139, 149, 199);
+                        }
+
+                        .matrix__populated-badge--full {
+                            background-color: rgb(80, 100, 200);
+                        }
                     }
                 }
             }

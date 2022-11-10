@@ -231,9 +231,10 @@ const convertExperimentToDataTable = (context) => {
 
                 // Now we have a cell's data (the experiment count) as well as the column it
                 // belongs in. Place the cell data in the corresponding column.
+                const populatedClass = colSubcategoryBucket.doc_count > 1 ? 'matrix__populated-badge--full' : 'matrix__populated-badge--partial';
                 rowCells[colCategoryIndex] = {
                     content: (
-                        <a href={cellHref} className="matrix__populated-badge" aria-label={`${rowCategoryTitle} and ${colCategoryTitle}`}>
+                        <a href={cellHref} className={`matrix__populated-badge ${populatedClass}`} aria-label={`${rowCategoryTitle} and ${colCategoryTitle}`}>
                             <span className="sr-only">{colSubcategoryBucket.doc_count}</span>
                         </a>
                     ),
