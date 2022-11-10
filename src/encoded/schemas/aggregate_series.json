@@ -49,14 +49,14 @@
             "default": "3"
         },
         "related_series": {
-            "title": "List of AggregateSeries to be associated with this dataset.",
+            "title": "Additional AggregateSeries",
             "description": "List of AggregateSeries to be associated with this dataset.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Aggregate Series",
-                "comment": "See aggregate_sereies.json for available identifiers.",
+                "comment": "See aggregate_series.json for available identifiers.",
                 "type": "string",
                 "linkTo": ["AggregateSeries"]
             }
