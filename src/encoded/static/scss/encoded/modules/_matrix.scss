@@ -2491,7 +2491,7 @@ $rnaseq-term-name-colors:
                         height: 180px;
 
                         a {
-                            width: auto;
+                            width: 30px;
                             height: 100%;
                             line-height: 1.8;
                         }
@@ -2511,6 +2511,7 @@ $rnaseq-term-name-colors:
 
                     > td {
                         border: 1px solid #f0f0f0;
+                        height: 100%;
                     }
 
                     .matrix__populated-badge {
