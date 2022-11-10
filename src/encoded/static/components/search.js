@@ -784,8 +784,8 @@ globals.listingViews.register(Dataset, 'Dataset');
  * @param {string} ageDisplay Value from the `age_display` property of a biosample
  * @returns {object} Object with `age` and `age_units` properties, or null if not parseable
  */
-const ageDisplayToAgeParts = (ageDisplay) => {
-    const ageGroups = ageDisplay.match(/^(90 or above years)|(\d+) (.+)|(unknown)$/);
+export const ageDisplayToAgeParts = (ageDisplay) => {
+    const ageGroups = ageDisplay.match(/^(90 or above years)|([0-9]*\.{0,1}[0-9]*) (.+)|(unknown)$/);
     if (!ageGroups) {
         return null;
     }
