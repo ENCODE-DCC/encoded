@@ -4,9 +4,10 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import QueryString from '../libs/query_string';
+import sortAges from '../libs/sort-ages';
 import { svgIcon } from '../libs/svg-icons';
-import { auditDecor } from './audit';
 import LimitSelector from '../libs/ui/limit-selector';
+import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls, cartGetAllowedTypes } from './cart';
 import {
     FacetRegistry,
@@ -774,18 +775,44 @@ globals.listingViews.register(Dataset, 'Dataset');
 
 
 /**
+ * Convert an `age_display` property value to an object with `age` and `age_units` properties. For
+ * example, "40 years" becomes `{ age: '40', age_units: 'years' }`. If the `age_display` value
+ * contains "unknown," the `age` property is set to "unknown" and the `age_units` property is
+ * omitted. If the `age_display` value contains "90 or above years," the `age` property is set to
+ * "90 or above" and the `age_units` property is set to "years." If the `age_display` value doesn't
+ * match any of these patterns, this function returns null.
+ * @param {string} ageDisplay Value from the `age_display` property of a biosample
+ * @returns {object} Object with `age` and `age_units` properties, or null if not parseable
+ */
+export const ageDisplayToAgeParts = (ageDisplay) => {
+    const ageGroups = ageDisplay.match(/^(90 or above years)|([0-9]*\.{0,1}[0-9]*) (.+)|(unknown)$/);
+    if (!ageGroups) {
+        return null;
+    }
+    if (ageGroups[1]) {
+        return { age: '90 or above', age_units: 'years' };
+    }
+    if (ageGroups[2] && ageGroups[3]) {
+        return { age: ageGroups[2], age_units: ageGroups[3] };
+    }
+    if (ageGroups[4]) {
+        return { age: ageGroups[4] };
+    }
+    return null;
+};
+
+
+/**
  * Renders the search results of all Series dataset objects.
  */
 const SeriesComponent = ({ context: result, cartControls, removeConfirmation, auditDetail, auditIndicators }, reactContext) => {
     let assays = [];
     let assaysTitle = [];
-    let organism;
     let crisprReadout = [];
     let examineLociGene = [];
     let perturbationType = [];
     let fullStages = [];
     let ages = [];
-    let ageUnits;
     let postSynchTime = [];
     let synchronization;
     let postSynchronizationTimeUnits;
@@ -804,6 +831,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
     let cellularComponents = [];
     let expressedGenes = [];
     let pulseDurations = [];
+    const simpleBiosampleSummaries = [];
 
     const treatmentTime = result['@type'].indexOf('TreatmentTimeSeries') >= 0;
     const treatmentConcentration = result['@type'].indexOf('TreatmentConcentrationSeries') >= 0;
@@ -860,16 +888,21 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
             if (dataset.perturbation_type) {
                 perturbationType.push(dataset.perturbation_type);
             }
+            if (dataset.simple_biosample_summary) {
+                if (!simpleBiosampleSummaries.includes(dataset.simple_biosample_summary)) {
+                    simpleBiosampleSummaries.push(dataset.simple_biosample_summary);
+                }
+            }
             if (dataset.replicates && dataset.replicates.length > 0) {
                 dataset.replicates.forEach((replicate) => {
                     if (replicate.library && replicate.library.biosample) {
                         const { biosample } = replicate.library;
                         const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
                         if (biosample.life_stage !== 'unknown' && biosample.life_stage && biosample.age_display) {
+                            const ageParts = ageDisplayToAgeParts(biosample.age_display);
                             const fullStage = `${biosample.life_stage[0].toUpperCase()}${biosample.age_display.split(' ')[0]}`;
                             fullStages.push(fullStage);
-                            ages.push(biosample.age_display.split(' ')[0]);
-                            ageUnits = biosample.age_display.split(' ')[1];
+                            ages.push(ageParts);
                         }
 
                         if (biosample.disease_term_name && biosample.disease_term_name.length > 0) {
@@ -944,9 +977,6 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         }
                     }
                 });
-            }
-            // Collect library construction methods
-            if (dataset.replicates && dataset.replicates.length > 0) {
                 constructionMethods = _.uniq(dataset.replicates.reduce((accMethods, replicate) => (
                     replicate.library && replicate.library.construction_method ? accMethods.concat(replicate.library.construction_method) : accMethods
                 ), []));
@@ -954,7 +984,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
         });
         lifeStages = _.uniq(lifeStages);
         fullStages = _.uniq(fullStages);
-        ages = _.uniq(ages).sort();
+        ages = sortAges(ages);
         postSynchTime = _.uniq(postSynchTime).sort();
         postDiffTime = _.uniq(postDiffTime).sort();
         organisms = _.uniq(organisms);
@@ -1036,11 +1066,10 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                                 </>
                             )
                         : null}
-                        {(!fccSeries && (organism || lifeSpec.length > 0)) ?
+                        {(!fccSeries && lifeSpec.length > 0) ?
                             <span>
                                 {' ('}
-                                {organism ? <i>{organism}</i> : null}
-                                {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
+                                {lifeSpec.length > 0 && <span>{lifeSpec.join(', ')}</span>}
                                 )
                             </span>
                         : null}
@@ -1067,7 +1096,7 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                             <div><span className="result-item__property-title">Organism: </span>{organisms.join(', ')}</div>
                         : null}
                         {(ages.length > 0 && organismSeries && (organisms.indexOf('Homo sapiens') > -1)) ?
-                            <div><span className="result-item__property-title">Ages: </span>{ages.join(', ')} {ageUnits}</div>
+                            <div><span className="result-item__property-title">Ages: </span>{ages.join(', ')}</div>
                         : null}
                         {(fullStages.length > 0 && organismSeries && (organisms.indexOf('Mus musculus') > -1)) ?
                             <div><span className="result-item__property-title">Stages: </span>{fullStages.join(', ')}</div>
@@ -1127,6 +1156,9 @@ const SeriesComponent = ({ context: result, cartControls, removeConfirmation, au
                         {expressedGenes.length > 0 ?
                             <div><span className="result-item__property-title">Sorted gene expression: </span>{expressedGenes.join(', ')}</div>
                         : null}
+                        {simpleBiosampleSummaries.length > 0 &&
+                            <div><span className="result-item__property-title">Sample details: </span>{simpleBiosampleSummaries.join(', ')}</div>
+                        }
                     </div>
                 </div>
                 <div className="result-item__meta">

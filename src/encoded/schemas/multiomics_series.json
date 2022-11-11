@@ -204,6 +204,10 @@
             "title": "Additional datasets",
             "type": "string"
         },
+        "related_datasets.simple_biosample_summary": {
+            "title": "Simple biosample summary",
+            "type": "string"
+        },
         "related_datasets.replicates.antibody.accession": {
             "title": "Linked antibody",
             "type": "string"
