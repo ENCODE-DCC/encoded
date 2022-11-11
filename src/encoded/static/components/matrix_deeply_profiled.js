@@ -7,9 +7,18 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
 import * as globals from './globals';
-import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT, UniformBatchGrowthTooltip } from './matrix';
+import {
+    MatrixAddCart,
+    RowCategoryExpander,
+    MATRIX_VISUALIZE_LIMIT,
+    UniformBatchGrowthTooltip,
+} from './matrix';
 import { FacetList, SearchControls } from './search';
-import { matrixDescription, isAllDeeplyMatrix, switchDeeplyProfilePageType, MatrixAddCart } from './matrix_deeply_profiled_uniform_batch';
+import {
+    matrixDescription,
+    isAllDeeplyMatrix,
+    switchDeeplyProfilePageType,
+} from './matrix_deeply_profiled_uniform_batch';
 
 
 /**
@@ -18,8 +27,6 @@ import { matrixDescription, isAllDeeplyMatrix, switchDeeplyProfilePageType, Matr
  */
 const SUB_CATEGORY_SHORT_SIZE = 5;
 
-/** Page name */
-const matrixName = 'deeply-profiled-matrix';
 
 /**
  * Given one subcategory of matrix data (all the subcategory rows within a category), collect
@@ -556,7 +563,7 @@ class DeeplyProfiledMatrix extends React.Component {
                 <Panel addClasses={itemClass}>
                     <PanelBody>
                         <MatrixHeader context={context} />
-                        <MatrixAddCart context={context} fetch={this.context.fetch} pageName={matrixName} />
+                        <MatrixAddCart context={context} />
                         <MatrixContent context={context} rowCategoryGetter={this.getRowCategories} rowSubCategoryGetter={this.getRowSubCategories} mapRowCategoryQueries={mapRowCategoryQueriesExperiment} mapSubCategoryQueries={mapSubCategoryQueriesExperiment} />
                     </PanelBody>
                 </Panel>

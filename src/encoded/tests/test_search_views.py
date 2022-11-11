@@ -925,6 +925,45 @@ def test_search_views_brain_matrix_response(index_workbook, testapp):
         r.json['matrix']['y']['replicates.library.biosample.donor.accession']['buckets']
     ) > 0
 
+
+def test_search_views_degron_matrix_response(index_workbook, testapp):
+    r = testapp.get(
+        '/degron-matrix/'
+        '?type=Experiment&replicates.library.biosample.genetic_modifications.modified_site_by_target_id.name=*'
+    )
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Protein knockdown using the auxin-inducible degron'
+    assert r.json['@type'] == ['DegronMatrix']
+    assert r.json['@id'] == (
+        '/degron-matrix/'
+        '?type=Experiment&replicates.library.biosample.genetic_modifications.modified_site_by_target_id.name=*'
+    )
+    assert r.json['@context'] == '/terms/'
+    assert r.json['notification'] == 'Success'
+    assert r.json['total'] >= 3
+    assert 'filters' in r.json
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == ['assay_title', ['target.label', 'no_target']]
+    assert r.json['matrix']['x']['label'] == 'Assay'
+    assert r.json['matrix']['y']['group_by'] == [
+        'replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label',
+    ]
+    assert r.json['matrix']['y']['label'] == 'Degron target'
+    assert 'buckets' in r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']
+    assert 'key' in r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']['buckets'][0]
+    assert 'assay_title' in r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']['buckets'][0]
+    assert 'search_base' in r.json
+    assert r.json['search_base'] == '/search/?type=Experiment&replicates.library.biosample.genetic_modifications.modified_site_by_target_id.name=*'
+    assert len(
+        r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']['buckets']
+    ) > 0
+    assert len(
+        r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']['buckets'][0]['assay_title']['buckets']
+    ) > 0
+
+
 def test_search_views_cart_search_view_filters(index_workbook, testapp):
     r = testapp.get(
         '/cart-search/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'

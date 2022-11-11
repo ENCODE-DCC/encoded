@@ -1443,5 +1443,26 @@
         "uuid": "525202d7-0242-4e92-8edd-ccb26a6cb887",
         "pulse_chase_time": 6,
         "pulse_chase_time_units": "hour"
+    },
+    {
+        "accession": "ENCBS088IDX",
+        "aliases": [
+            "bradley-bernstein:BioSam 4644"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0002824",
+        "culture_harvest_date": "2021-07-01",
+        "donor": "ENCDO000ABE",
+        "genetic_modifications": [
+            "ENCGM628IQH",
+            "ENCGM628AIR"
+        ],
+        "lab": "bradley-bernstein",
+        "nih_institutional_certification": "NIC00050",
+        "organism": "human",
+        "source": "erez-aiden",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "uuid": "9f03eb47-5b1e-47db-9e9f-af750ac94b67"
     }
 ]

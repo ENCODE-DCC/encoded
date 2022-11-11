@@ -1031,5 +1031,29 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "technical_replicate_number": 1,
         "uuid": "78e20d15-d3c3-4e0e-aae0-3b12b30fa175"
+    },
+    {
+        "aliases": [
+            "bradley-bernstein:Rep_DNA_Lib 13312"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR160GVO",
+        "library": "ENCLB577ZMM",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "technical_replicate_number": 1,
+        "uuid": "2f305cf2-4a52-4fc4-a24b-54d5be9fefd4"
+    },
+    {
+        "aliases": [
+            "bradley-bernstein:Rep_DNA_Lib 13280"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR160GVO",
+        "library": "ENCLB600DTX",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "technical_replicate_number": 2,
+        "status": "released",
+        "uuid": "74baf5ef-a66f-4c14-a38c-8ffdf1bee602"
     }
 ]

@@ -8,9 +8,13 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import { DataTable } from './datatable';
 import * as globals from './globals';
-import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT, UniformBatchGrowthTooltip } from './matrix';
+import {
+    MatrixAddCart,
+    RowCategoryExpander,
+    MATRIX_VISUALIZE_LIMIT,
+    UniformBatchGrowthTooltip,
+} from './matrix';
 import { ClearSearchTerm, FacetList, SearchControls } from './search';
-import { CartAddAllElements } from './cart';
 
 
 /**
@@ -18,9 +22,6 @@ import { CartAddAllElements } from './cart';
  * @constant
  */
 const SUB_CATEGORY_SHORT_SIZE = 3;
-
-/** Page name */
-const matrixName = 'deeply-profiled-uniform-batch-matrix';
 
 /**
  * URL query string key for internal tag
@@ -381,44 +382,6 @@ MatrixHeader.contextTypes = {
     navigate: PropTypes.func,
 };
 
-const MatrixAddCart = ({ context, fetch, pageName }) => {
-    const [experimentData, setExperimentData] = React.useState(null);
-    const link = [context['@id'].replace(pageName, 'search'), '&limit=all'].join('');
-
-    React.useEffect(() => {
-        fetch(link, {
-            headers: { Accept: 'application/json' },
-        }).then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            return [];
-        }).then((data) => {
-            const experiments = data['@graph'];
-            setExperimentData(experiments || []);
-        });
-    }, [context]);
-
-    return (
-        experimentData !== null ?
-            <>
-                <div className="matrix-cell-line__cart-button">
-                    <CartAddAllElements elements={experimentData} />
-                </div>
-                <div className="matrix-cell-line__cart-clear" />
-            </> :
-            <button type="button" className="btn btn-info btn-sm deeply-profiled-matrix-spinner-label deeply-profiled-matrix-spinner--loading">
-                Loading &nbsp;
-            </button>
-    );
-};
-
-MatrixAddCart.propTypes = {
-    context: PropTypes.object.isRequired,
-    fetch: PropTypes.func.isRequired,
-    pageName: PropTypes.string.isRequired,
-};
-
 /**
  * Render the vertical facets.
  */
@@ -672,7 +635,7 @@ class DeeplyProfiledUniformBatchMatrix extends React.Component {
                 <Panel addClasses={itemClass}>
                     <PanelBody>
                         <MatrixHeader context={context} />
-                        <MatrixAddCart context={context} fetch={this.context.fetch} pageName={matrixName} />
+                        <MatrixAddCart context={context} />
                         <MatrixContent context={context} rowCategoryGetter={this.getRowCategories} rowSubCategoryGetter={this.getRowSubCategories} mapRowCategoryQueries={mapRowCategoryQueriesExperiment} mapSubCategoryQueries={mapSubCategoryQueriesExperiment} />
                     </PanelBody>
                 </Panel>
@@ -697,5 +660,4 @@ export {
     matrixDescription,
     isAllDeeplyMatrix,
     switchDeeplyProfilePageType,
-    MatrixAddCart,
 };

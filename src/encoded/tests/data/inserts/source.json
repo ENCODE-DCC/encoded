@@ -198,5 +198,16 @@
         "title": "GenBank",
         "url": "https://www.ncbi.nlm.nih.gov/genbank/",
         "uuid": "a2c6977d-64e8-41aa-b476-9bb5cc4846a3"
+    },
+    {
+        "aliases": [
+            "erez-aiden:source"
+        ],
+        "description": "The Center for Genome Architecture",
+        "name": "erez-aiden",
+        "status": "released",
+        "title": "Erez Aiden",
+        "url": "http://www.aidenlab.org/",
+        "uuid": "1255ddca-fb36-4820-9f9e-10a144106c45"
     }
 ]

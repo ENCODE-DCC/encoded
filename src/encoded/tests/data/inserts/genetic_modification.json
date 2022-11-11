@@ -398,5 +398,49 @@
         "method": "CRISPR",
         "award": "/awards/U41HG007355/",
         "uuid": "b79cb3ba-745e-5d9a-8903-4a02327a7e09"
+    },
+    {
+        "accession": "ENCGM628IQH",
+        "aliases": [
+            "erez-aiden:HCT116-CTCF-tag"
+        ],
+        "award": "UM1HG009390",
+        "category": "insertion",
+        "introduced_tags": [
+            {
+                "name": "mAID-mClover",
+                "location": "C-terminal"
+            }
+        ],
+        "lab": "bradley-bernstein",
+        "method": "CRISPR",
+        "modified_site_by_target_id": "CTCF-human",
+        "purpose": "tagging",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "uuid": "e19c6450-8dad-4194-8fcc-2adb357fa149"
+    },
+    {
+        "accession": "ENCGM628AIR",
+        "aliases": [
+            "erez-aiden:CMV-OsTIR1F74G"
+        ],
+        "award": "UM1HG009390",
+        "category": "insertion",
+        "introduced_gene": "/genes/24252/",
+        "lab": "bradley-bernstein",
+        "method": "CRISPR",
+        "modified_site_by_gene_id": "/genes/15077/",
+        "purpose": "expression",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "reagents": [
+            {
+                "source": "erez-aiden",
+                "identifier": "addgene:140536",
+                "url": "https://www.addgene.org/140536/"
+            }
+        ],
+        "uuid": "d81223da-50d3-4e39-ba82-a172e58ac62f"
     }
 ]

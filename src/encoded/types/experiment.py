@@ -72,6 +72,7 @@ class Experiment(Dataset,
         'replicates.library.biosample.organism',
         'replicates.library.biosample.donor',
         'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.genetic_modifications.modified_site_by_target_id',
         'replicates.library.biosample.part_of',
         'replicates.library.biosample.part_of.donor',
         'replicates.library.biosample.part_of.treatments',
@@ -486,6 +487,17 @@ class Experiment(Dataset,
         },
         'x': {
             'group_by': ['assay_title', 'biosample_ontology.term_name'],
+            'label': 'Assay',
+        },
+    }
+
+    degron_matrix = {
+        'y': {
+            'group_by': ['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label'],
+            'label': 'Degron target',
+        },
+        'x': {
+            'group_by': ['assay_title', ('target.label', 'no_target')],
             'label': 'Assay',
         },
     }
