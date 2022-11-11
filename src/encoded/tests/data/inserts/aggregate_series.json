@@ -26,6 +26,24 @@
         ],
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "38545a1c-fc03-4849-8eb3-3e53688356ae"
+        "uuid": "38545a1c-fc03-4849-8eb3-3e53688356ae",
+        "date_released": "2018-01-01"
+    },
+    {
+        "_test": "aggregate series related_series",
+        "accession": "ENCSR300AGH",
+        "award": "U24HG009397",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR000AJK"
+        ],
+        "related_series": [
+            "ENCSR300AGG",
+            "ENCSR000MMP"
+        ],
+        "uuid": "2b32f40b-21a8-4a46-8a0d-20501c8bab77",
+        "date_released": "2018-01-01"
     }
 ]

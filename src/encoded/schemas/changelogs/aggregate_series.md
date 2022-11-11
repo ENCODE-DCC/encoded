@@ -13,6 +13,7 @@
 * *related_datasets* now includes FunctionalCharacterizationExperiment.json and TransgenicEnhancerExperiment.json
 * Removed *control_type* calculated property
 * Added *Degron* to *internal_tags* enums list
+* Added *related_series* property
 
 ### Schema version 3
 

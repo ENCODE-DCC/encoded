@@ -47,6 +47,19 @@
     "properties": {
         "schema_version": {
             "default": "3"
+        },
+        "related_series": {
+            "title": "Additional aggregate series",
+            "description": "List of aggregate series to be associated with this dataset.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Aggregate Series",
+                "comment": "See aggregate_series.json for available identifiers.",
+                "type": "string",
+                "linkTo": ["AggregateSeries"]
+            }
         }
     },
     "facet_groups": [
@@ -264,6 +277,10 @@
         },
         "related_datasets.replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units",
+            "type": "string"
+        },
+        "related_series.@id": {
+            "title": "Additional datasets",
             "type": "string"
         }
     },
