@@ -2220,3 +2220,21 @@ def hic_chromatin_int(testapp, intact_hic_experiment, encode4_award, encode_lab,
         'step_run': analysis_step_run_hic_chromatin_interactions['@id']
     }
     return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_29(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bigBed',
+        'file_format_type': 'bed3+',
+        'md5sum': 'd9729feb74992cc3482b350163a1a010',
+        'output_type': 'chromatin interactions',
+        'assembly': 'hg19',
+        'file_size': 888328,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'schema_version': '29'
+    }
+    return item

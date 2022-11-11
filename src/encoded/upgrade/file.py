@@ -761,3 +761,24 @@ def file_28_29(value, system):
     if platform == "25acccbd-cb36-463b-ac96-adbac11227e6":
             value.pop('read_length', None)
     return
+
+
+@upgrade_step('file', '29', '30')
+def file_29_30(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-97
+    term_pairs = [
+        ('topologically associated domains', 'contact domains'),
+        ('chromatin interactions', 'contact matrix'),
+        ('DNA accessibility raw signal', 'nuclease cleavage frequency'),
+        ('long range chromatin interactions', 'loops'),
+        ('nested topologically associated domains', 'nested contact domains'),
+        ('allele-specific chromatin interactions', 'allele-specific contact domain'),
+        ('variants chromatin interactions', 'variants contact matrix'),
+        ('haplotype-specific chromatin interactions', 'haplotype-specific contact matrix'),
+        ('haplotype-specific DNA accessibility raw signal', 'haplotype-specific nuclease cleavage frequency'),
+        ('haplotype-specific DNA accessibility corrected signal', 'haplotype-specific nuclease cleavage corrected frequency')
+    ]
+    output_type = value.get('output_type', None)
+    for old_term, new_term in term_pairs:
+        if output_type == old_term:
+            value['output_type'] = new_term

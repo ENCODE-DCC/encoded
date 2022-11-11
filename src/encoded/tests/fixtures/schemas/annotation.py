@@ -248,3 +248,12 @@ def annotation_36(award, lab):
         'schema_version': '36',
         'annotation_type': 'dsQTLs',
     }
+
+@pytest.fixture
+def annotation_37(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '37',
+        'annotation_type': 'long-range chromatin interactions',
+    }

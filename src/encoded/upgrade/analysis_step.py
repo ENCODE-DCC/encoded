@@ -312,3 +312,31 @@ def analysis_step_14_15(value, system):
         if input_file_types and old_term in input_file_types:
             input_file_types.remove(old_term)
             input_file_types.append(new_term)
+
+
+@upgrade_step('analysis_step', '15', '16')
+def analysis_step_15_16(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-97
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    term_pairs = [
+        ('topologically associated domains', 'contact domains'),
+        ('chromatin interactions', 'contact matrix'),
+        ('DNA accessibility raw signal', 'nuclease cleavage frequency'),
+        ('long range chromatin interactions', 'loops'),
+        ('nested topologically associated domains', 'nested contact domains'),
+        ('allele-specific chromatin interactions', 'allele-specific contact domain'),
+        ('variants chromatin interactions', 'variants contact matrix'),
+        ('haplotype-specific chromatin interactions', 'haplotype-specific contact matrix'),
+        ('haplotype-specific DNA accessibility raw signal', 'haplotype-specific nuclease cleavage frequency'),
+        ('haplotype-specific DNA accessibility corrected signal', 'haplotype-specific nuclease cleavage corrected frequency')
+    ]
+
+    for old_term, new_term in term_pairs:
+        if output_file_types and old_term in output_file_types:
+            output_file_types.remove(old_term)
+            output_file_types.append(new_term)
+        if input_file_types and old_term in input_file_types:
+            input_file_types.remove(old_term)
+            input_file_types.append(new_term)

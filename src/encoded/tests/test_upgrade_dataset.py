@@ -568,3 +568,11 @@ def test_upgrade_annotation_36_to_37(upgrader, annotation_36):
     )
     assert value['schema_version'] == '37'
     assert value['annotation_type'] == 'caQTLs'
+
+
+def test_upgrade_annotation_37_to_38(upgrader, annotation_37):
+    value = upgrader.upgrade(
+        'annotation', annotation_37, current_version='37', target_version='38'
+    )
+    assert value['schema_version'] == '38'
+    assert value['annotation_type'] == 'loops'
