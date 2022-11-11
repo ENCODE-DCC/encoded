@@ -33,10 +33,10 @@ Feature: Home page
     Scenario: Collection search
         When I fill in "search-input-native" with "human"
         And I wait for 3 seconds
-        Then I should see 7 elements with the css selector ".card--highlighted"
+        Then I should see 8 elements with the css selector ".card--highlighted"
         And I should see 2 elements with the css selector ".card-count"
         And I should see an element with the css selector ".home-search-section__supplement.home-search-section__supplement--native"
-        And I should see at least 8 elements with the css selector ".native-top-hit"
+        And I should see 10 elements with the css selector ".native-top-hit"
 
         When I click the link with text that contains "Encyclopedia of elements"
         And I wait for the content to load
