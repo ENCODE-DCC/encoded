@@ -205,7 +205,7 @@ def test_visualize(submitter_testapp, index_workbook, at_id, expected):
     "        track ENCFF727BIF",
     "        parent ENCSR270OQH_CHRINTR_view on",
     "        bigDataUrl /files/ENCFF727BIF/@@download/ENCFF727BIF.bigInteract?proxy=true",
-    "        longLabel ChIA-PET of cell-free sample long range chromatin interactions rep1 ENCSR270OQH - ENCFF727BIF",
+    "        longLabel ChIA-PET of cell-free sample loops rep1 ENCSR270OQH - ENCFF727BIF",
     "        shortLabel rep1 lrci",
     "        type bigInteract",
     "        subGroups BS=cell45free_sample EXP=ENCSR270OQH REP=rep01 view=CHRINTR",
