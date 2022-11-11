@@ -648,7 +648,7 @@
         ],
         "major_version": 1,
         "output_file_types": [
-            "long range contact matrix",
+            "loops",
             "chromatin stripes"
         ],
         "status": "released",
