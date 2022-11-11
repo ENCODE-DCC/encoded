@@ -354,7 +354,7 @@ def analysis_step_15(testapp):
             'haplotype-specific DNA accessibility raw signal',
             'haplotype-specific DNA accessibility corrected signal'
         ],
-        'analysis_step_types': ['interaction calling'],
+        'analysis_step_types': ['topologically associated domain identification'],
         'major_version': 1
     }
     return item

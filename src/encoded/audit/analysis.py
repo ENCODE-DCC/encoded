@@ -2247,7 +2247,7 @@ def check_analysis_chiapet_encode4_qc_standards(
             if 'intra_inter_pet_ratio' in metric and 'quality_metric_of' in metric:
                 int_ratio = float(metric['intra_inter_pet_ratio'])
                 detail = (
-                    f"Contact matrix file "
+                    f"Loops file "
                     f"{audit_link(path_to_text(int_file['@id']),int_file['@id'])} "
                     f"processed by {assay_term_name} {value['title']} pipeline "
                     f"has a ratio of intra/inter-chr PET of {int_ratio:.2f}. "

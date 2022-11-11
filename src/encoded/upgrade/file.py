@@ -768,6 +768,7 @@ def file_29_30(value, system):
     # https://igvf.atlassian.net/browse/ENCM-97
     term_pairs = [
         ('topologically associated domains', 'contact domains'),
+        ('mapping quality thresholded chromatin interactions', 'mapping quality thresholded contact matrix'),
         ('chromatin interactions', 'contact matrix'),
         ('DNA accessibility raw signal', 'nuclease cleavage frequency'),
         ('long range chromatin interactions', 'loops'),

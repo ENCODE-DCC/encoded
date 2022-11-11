@@ -317,6 +317,10 @@ def analysis_step_14_15(value, system):
 @upgrade_step('analysis_step', '15', '16')
 def analysis_step_15_16(value, system):
     # https://igvf.atlassian.net/browse/ENCM-97
+    if 'topologically associated domain identification' in value.get('analysis_step_types', []):
+        value['analysis_step_types'].remove('topologically associated domain identification')
+        value['analysis_step_types'].append('contact domain identification')
+
     output_file_types = value.get('output_file_types', None)
     input_file_types = value.get('input_file_types', None)
 

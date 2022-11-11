@@ -123,3 +123,4 @@ def test_analysis_step_15_to_16(upgrader, analysis_step_15):
     assert 'haplotype-specific chromatin interactions' not in value['output_file_types']
     assert 'haplotype-specific DNA accessibility raw signal' not in value['output_file_types']
     assert 'haplotype-specific DNA accessibility corrected signal' not in value['output_file_types']
+    assert 'topologically associated domain identification' not in value['analysis_step_types']
