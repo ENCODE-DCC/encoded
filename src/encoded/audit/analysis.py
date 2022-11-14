@@ -2247,7 +2247,7 @@ def check_analysis_chiapet_encode4_qc_standards(
             if 'intra_inter_pet_ratio' in metric and 'quality_metric_of' in metric:
                 int_ratio = float(metric['intra_inter_pet_ratio'])
                 detail = (
-                    f"Processed {int_file['output_type']} file "
+                    f"{int_file['output_type'].capitalize()} file "
                     f"{audit_link(path_to_text(int_file['@id']),int_file['@id'])} "
                     f"processed by {assay_term_name} {value['title']} pipeline "
                     f"has a ratio of intra/inter-chr PET of {int_ratio:.2f}. "
@@ -2307,7 +2307,7 @@ def check_intact_hic_standards(
 ):
     if 'total_unique' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
-            f"Processed {file['output_type']} file "
+            f"{file['output_type'].capitalize()} file "
             f"{audit_link(path_to_text(file['@id']),file['@id'])} "
             f"processed by {assay_title} {value['title']} pipeline "
             f"has a total unique read count of {hic_metric['total_unique']}. "
@@ -2320,7 +2320,7 @@ def check_intact_hic_standards(
 
     if 'pct_unique_hic_contacts' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
-            f"Processed {file['output_type']} file "
+            f"{file['output_type'].capitalize()} file "
             f"{audit_link(path_to_text(file['@id']),file['@id'])} "
             f"processed by {assay_title} {value['title']} pipeline "
             f"has {hic_metric['pct_unique_hic_contacts']}% of unique "
@@ -2341,7 +2341,7 @@ def check_intact_hic_standards(
 
     if 'pct_unique_long_range_greater_than_20kb' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
-            f"Processed {file['output_type']} file "
+            f"{file['output_type'].capitalize()} file "
             f"{audit_link(path_to_text(file['@id']),file['@id'])} "
             f"processed by {assay_title} {value['title']} pipeline has "
             f"{hic_metric['pct_unique_long_range_greater_than_20kb']}% "
@@ -2363,7 +2363,7 @@ def check_in_situ_hic_standards(
 ):
     if 'sequenced_read_pairs' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
-            f"Processed {file['output_type']} file "
+            f"{file['output_type'].capitalize()} file "
             f"{audit_link(path_to_text(file['@id']),file['@id'])} "
             f"processed by {assay_title} {value['title']} pipeline "
             f"has {hic_metric['sequenced_read_pairs']} total read pairs "
@@ -2376,7 +2376,7 @@ def check_in_situ_hic_standards(
             yield AuditFailure('low sequenced_read_pairs', detail, level='WARNING')
     if 'pct_unique_total_duplicates' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
-            f"Processed {file['output_type']} file "
+            f"{['output_type'].capitalize()} file "
             f"{audit_link(path_to_text(file['@id']),file['@id'])} "
             f"processed by {assay_title} {value['title']} pipeline "
             f"has {hic_metric['pct_unique_total_duplicates']}% of "
@@ -2392,7 +2392,7 @@ def check_in_situ_hic_standards(
 
     if 'pct_unique_hic_contacts' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
-            f"Processed {file['output_type']} file "
+            f"{file['output_type'].capitalize()} file "
             f"{audit_link(path_to_text(file['@id']),file['@id'])} "
             f"processed by {assay_title} {value['title']} pipeline "
             f"has {hic_metric['pct_unique_hic_contacts']}% of "
@@ -2413,7 +2413,7 @@ def check_in_situ_hic_standards(
 
     if 'pct_ligation_motif_present' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
-            f"Processed {file['output_type']} file "
+            f"{file['output_type'].capitalize()} file "
             f"{audit_link(path_to_text(file['@id']),file['@id'])} "
             f"processed by {assay_title} {value['title']} pipeline "
             f"has {hic_metric['pct_ligation_motif_present']}% of "
@@ -2433,7 +2433,7 @@ def check_in_situ_hic_standards(
 
     if 'pct_unique_long_range_greater_than_20kb' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
-            f"Processed {file['output_type']} file "
+            f"{file['output_type'].capitalize()} file "
             f"{audit_link(path_to_text(file['@id']),file['@id'])} "
             f"processed by {assay_title} {value['title']} pipeline has "
             f"{hic_metric['pct_unique_long_range_greater_than_20kb']}% "
