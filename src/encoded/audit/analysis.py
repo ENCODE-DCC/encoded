@@ -2376,7 +2376,7 @@ def check_in_situ_hic_standards(
             yield AuditFailure('low sequenced_read_pairs', detail, level='WARNING')
     if 'pct_unique_total_duplicates' in hic_metric and 'quality_metric_of' in hic_metric:
         detail = (
-            f"{['output_type'].capitalize()} file "
+            f"{file['output_type'].capitalize()} file "
             f"{audit_link(path_to_text(file['@id']),file['@id'])} "
             f"processed by {assay_title} {value['title']} pipeline "
             f"has {hic_metric['pct_unique_total_duplicates']}% of "
