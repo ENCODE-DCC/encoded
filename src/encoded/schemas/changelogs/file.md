@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 30
+* *output_type* enums *topologically associated domains*, *mapping quality thresholded chromatin interactions*, *chromatin interactions*, *DNA accessibility raw signal*, *long range chromatin interactions*, *nested topologically associated domains*, *allele-specific chromatin interactions*, *variants chromatin interactions*, *haplotype-specific chromatin interactions*, *haplotype-specific DNA accessibility raw signal*, and *haplotype-specific DNA accessibility corrected signal* were replaced by *contact domains*, *mapping quality thresholded contact matrix*, *contact matrix*, *nuclease cleavage frequency*, *loops*, *nested contact domains*, *allele-specific contact matrix*, *variants contact matrix*, *haplotype-specific contact matrix*, *haplotype-specific nuclease cleavage frequency* and *haplotype-specific nuclease cleavage corrected frequency* respectively.
+
 ### Minor changes since schema version 29
 * Added *processed* boolean as a calculated property to indicate that the file does not have the *output_category* of *raw data*
 * Added *simple_biosample_summary* truncated version of biosample_summary as calculated property

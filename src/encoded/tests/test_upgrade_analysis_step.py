@@ -106,3 +106,21 @@ def test_analysis_step_14_15(upgrader, analysis_step_14):
     assert 'mitochondria blacklisted regions' not in value['output_file_types']
     assert 'exclusion list regions' in value['input_file_types']
     assert 'mitochondrial exclusion list regions' in value['output_file_types']
+
+
+def test_analysis_step_15_to_16(upgrader, analysis_step_15):
+    value = upgrader.upgrade(
+        'analysis_step', analysis_step_15, current_version='15', target_version='16'
+    )
+    assert value['schema_version'] == '16'
+    assert 'topologically associated domains' not in value['input_file_types']
+    assert 'chromatin interactions' not in value['input_file_types']
+    assert 'DNA accessibility raw signal' not in value['input_file_types']
+    assert 'long range chromatin interactions' not in value['input_file_types']
+    assert 'nested topologically associated domains' not in value['output_file_types']
+    assert 'allele-specific chromatin interactions' not in value['output_file_types']
+    assert 'variants chromatin interactions' not in value['output_file_types']
+    assert 'haplotype-specific chromatin interactions' not in value['output_file_types']
+    assert 'haplotype-specific DNA accessibility raw signal' not in value['output_file_types']
+    assert 'haplotype-specific DNA accessibility corrected signal' not in value['output_file_types']
+    assert 'topologically associated domain identification' not in value['analysis_step_types']

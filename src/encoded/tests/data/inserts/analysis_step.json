@@ -643,11 +643,12 @@
         ],
         "date_created": "2021-01-16T15:56:52.458705+00:00",
         "input_file_types": [
-            "alignments"
+            "alignments",
+            "mapping quality thresholded contact matrix"
         ],
         "major_version": 1,
         "output_file_types": [
-            "long range chromatin interactions",
+            "loops",
             "chromatin stripes"
         ],
         "status": "released",
@@ -660,7 +661,7 @@
             "genome compartment identification"
         ],
         "input_file_types": [
-            "chromatin interactions"
+            "contact matrix"
         ],
         "major_version": 1,
         "output_file_types": [

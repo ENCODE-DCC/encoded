@@ -206,3 +206,9 @@ def test_file_upgrade_28_to_29(upgrader, file_28):
     value = upgrader.upgrade('file', file_28, current_version='28', target_version='29')
     assert value['schema_version'] == '29'
     assert 'read_length' not in value
+
+
+def test_file_upgrade_29_to_30(upgrader, file_29):
+    value = upgrader.upgrade('file', file_29, current_version='29', target_version='30')
+    assert value['schema_version'] == '30'
+    assert value['output_type'] == 'contact matrix'

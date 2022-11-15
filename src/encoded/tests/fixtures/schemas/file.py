@@ -2016,7 +2016,7 @@ def chia_chromatin_int(testapp, ChIA_PET_experiment, chia_bam, encode4_award, en
         'file_size': 3908501,
         'assembly': 'GRCh38',
         'md5sum': '78f05b7a9fa61088c90b29e578a3cb43',
-        'output_type': 'chromatin interactions',
+        'output_type': 'contact matrix',
         'status': 'in progress',  # avoid s3 upload codepath
         'step_run': analysis_step_run_chia_interaction_calling['@id']
     }
@@ -2213,10 +2213,28 @@ def hic_chromatin_int(testapp, intact_hic_experiment, encode4_award, encode_lab,
         'file_size': 14653403584,
         'assembly': 'GRCh38',
         'md5sum': '78f05b7a9fa61088c90b29e578a3cb4a',
-        'output_type': 'chromatin interactions',
+        'output_type': 'contact matrix',
         'filter_type': 'mapping quality',
         'filter_value': 1,
         'status': 'in progress',  # avoid s3 upload codepath
         'step_run': analysis_step_run_hic_chromatin_interactions['@id']
     }
     return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_29(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bigBed',
+        'file_format_type': 'bed3+',
+        'md5sum': 'd9729feb74992cc3482b350163a1a010',
+        'output_type': 'chromatin interactions',
+        'assembly': 'hg19',
+        'file_size': 888328,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'schema_version': '29'
+    }
+    return item

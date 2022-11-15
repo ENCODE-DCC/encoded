@@ -813,3 +813,11 @@ def annotation_36_37(value, system):
     annotation_type = value.get('annotation_type', None)
     if annotation_type == "dsQTLs":
         value['annotation_type'] = 'caQTLs'
+
+
+@upgrade_step('annotation', '37', '38')
+def annotation_37_38(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-97
+    annotation_type = value.get('annotation_type', None)
+    if annotation_type == "long-range chromatin interactions":
+        value['annotation_type'] = 'loops'

@@ -152,10 +152,10 @@ export const visFilterBrowserFiles = (files, browser, limits = false) => {
     const qualifiedFileTypes = browserFileTypes[browser];
     let qualifiedFiles = files.filter((file) => qualifiedFileTypes.indexOf(file.file_format) !== -1 && file.status === 'released');
 
-    // For the hic browser, sort to prioritize "mapping quality thresholded chromatin interactions"
+    // For the hic browser, sort to prioritize "mapping quality thresholded contact matrix"
     // output_types.
     if (browser === 'hic') {
-        qualifiedFiles = qualifiedFiles.sort((file) => (file.output_type === 'mapping quality thresholded chromatin interactions' ? -1 : 0));
+        qualifiedFiles = qualifiedFiles.sort((file) => (file.output_type === 'mapping quality thresholded contact matrix' ? -1 : 0));
         if (limits) {
             qualifiedFiles = qualifiedFiles.slice(0, MAX_HIC_FILES_SELECTED);
         }

@@ -314,7 +314,7 @@ def analysis_step_chia_interaction_calling(testapp):
         'step_label': 'chia-pet-interaction-calling-step',
         'title': 'ChIA-PET interaction calling step',
         'input_file_types': ['alignments'],
-        'output_file_types': ['chromatin interactions'],
+        'output_file_types': ['contact matrix'],
         'analysis_step_types': ['interaction calling', 'file format conversion'],
         'major_version': 1
     }
@@ -325,10 +325,36 @@ def analysis_step_chia_interaction_calling(testapp):
 def analysis_step_hic_chromatin_interactions(testapp):
     item = {
         'step_label': 'hic-chromatin-interactions-step',
-        'title': 'Hi-C chromatin interactions step',
+        'title': 'Hi-C contact matrix step',
         'input_file_types': ['alignments'],
-        'output_file_types': ['chromatin interactions'],
+        'output_file_types': ['contact matrix'],
         'analysis_step_types': ['interaction calling', 'file format conversion'],
         'major_version': 1
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_15(testapp):
+    item = {
+        'schema_version': '15',
+        'step_label': 'test-hic-updated-file-step',
+        'title': 'Test hic updated file step',
+        'input_file_types': [
+            'topologically associated domains',
+            'chromatin interactions',
+            'DNA accessibility raw signal',
+            'long range chromatin interactions'
+        ],
+        'output_file_types': [
+            'nested topologically associated domains',
+            'allele-specific chromatin interactions',
+            'variants chromatin interactions',
+            'haplotype-specific chromatin interactions',
+            'haplotype-specific DNA accessibility raw signal',
+            'haplotype-specific DNA accessibility corrected signal'
+        ],
+        'analysis_step_types': ['topologically associated domain identification'],
+        'major_version': 1
+    }
+    return item
