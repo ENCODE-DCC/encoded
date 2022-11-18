@@ -27,7 +27,6 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery } from './filegallery';
-import sortMouseArray from './matrix_mouse_development';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable, DoiRef } from './typeutils';
 import getNumberWithOrdinal from '../libs/ordinal_suffix';
@@ -1952,6 +1951,48 @@ function computeAgeComparator(ageStage) {
     }
     return ageNumerical;
 }
+
+// Sort the rows of the matrix by stage (embryo -> postnatal -> adult) and then by age
+// Age can be denoted in days or weeks
+// In the future there are likely to be additions to the data which will require updates to this function
+// For instance, ages measured by months will likely be added
+const sortMouseArray = (a, b) => {
+    const aStage = a.split(/ (.+)/)[0];
+    const bStage = b.split(/ (.+)/)[0];
+    const aAge = a.split(/ (.+)/)[1];
+    const bAge = b.split(/ (.+)/)[1];
+    let aNumerical = 0;
+    let bNumerical = 0;
+    if (aStage === 'embryonic') {
+        aNumerical = 100;
+    } else if (aStage === 'postnatal') {
+        aNumerical = 1000;
+    } else if (aStage === 'adult') {
+        aNumerical = 10000;
+    }
+    if (aAge.includes('days')) {
+        aNumerical += +aAge.split('days')[0];
+    } else if (aAge.includes('weeks')) {
+        aNumerical += +aAge.split('weeks')[0] * 7;
+    }
+    if (bStage === 'embryonic') {
+        bNumerical = 100;
+    } else if (bStage === 'postnatal') {
+        bNumerical = 1000;
+    } else if (bStage === 'adult') {
+        bNumerical = 10000;
+    }
+    if (bAge.includes('days')) {
+        bNumerical += +bAge.split('days')[0];
+    } else if (bAge.includes(' weeks')) {
+        bNumerical += +bAge.split('weeks')[0] * 7;
+    } else if (bAge.includes(' months')) {
+        bNumerical += +bAge.split('months')[0] * 30;
+    } else if (bAge.includes(' years')) {
+        bNumerical += +bAge.split('years')[0] * 365;
+    }
+    return aNumerical - bNumerical;
+};
 
 // Sort the rows of the matrix by stage (embryo -> postnatal -> adult) and then by age
 function sortMouseAge(a, b) {

@@ -117,48 +117,11 @@ const analyzeSubCategoryData = (subCategoryData, columnCategory, colMap, colCoun
     return subCategorySums;
 };
 
-// Sort the rows of the matrix by stage (embryo -> postnatal -> adult) and then by age
-// Age can be denoted in days or weeks
-// In the future there are likely to be additions to the data which will require updates to this function
-// For instance, ages measured by months will likely be added
-export default function sortMouseArray(a, b) {
-    const aStage = a.split(/ (.+)/)[0];
-    const bStage = b.split(/ (.+)/)[0];
-    const aAge = a.split(/ (.+)/)[1];
-    const bAge = b.split(/ (.+)/)[1];
-    let aNumerical = 0;
-    let bNumerical = 0;
-    if (aStage === 'embryonic') {
-        aNumerical = 100;
-    } else if (aStage === 'postnatal') {
-        aNumerical = 1000;
-    } else if (aStage === 'adult') {
-        aNumerical = 10000;
-    }
-    if (aAge.includes('days')) {
-        aNumerical += +aAge.split('days')[0];
-    } else if (aAge.includes('weeks')) {
-        aNumerical += +aAge.split('weeks')[0] * 7;
-    }
-    if (bStage === 'embryonic') {
-        bNumerical = 100;
-    } else if (bStage === 'postnatal') {
-        bNumerical = 1000;
-    } else if (bStage === 'adult') {
-        bNumerical = 10000;
-    }
-    if (bAge.includes('days')) {
-        bNumerical += +bAge.split('days')[0];
-    } else if (bAge.includes(' weeks')) {
-        bNumerical += +bAge.split('weeks')[0] * 7;
-    }
-    return aNumerical - bNumerical;
-}
-
 /**
  * Convert an array of ages with units into an array of normalized ages where each array element is
  * an object with this form:
  * {
+ *   stage: life stage, one of 'embryonic', 'postnatal', 'adult'
  *   min: <minimum age of a range in days>,
  *   max: <maximum age of a range in days; same as min if single value>,
  *   original: <original age string>,
@@ -166,12 +129,11 @@ export default function sortMouseArray(a, b) {
  * @param {array} ages Age strings with a mix of units, e.g. ['1 week', '2 weeks', '3 days', '4 days']
  * @returns {array} Normalized age objects
  */
-const normalizeAges = (ages) => {
-    const normalizedAges = [];
-    ages.forEach((age) => {
+const normalizeAges = (ages) => (
+    ages.map((age) => {
         let min;
         let max;
-        const [, value, units] = age.split(' ');
+        const [stage, value, units] = age.split(' ');
 
         // Get numeric age or age range.
         if (value.includes('-')) {
@@ -197,25 +159,34 @@ const normalizeAges = (ages) => {
             max *= 365;
         }
 
-        normalizedAges.push({ min, max, original: age });
-    });
-
-    return normalizedAges;
-};
+        return {
+            stage,
+            min,
+            max,
+            original: age,
+        };
+    })
+);
 
 /**
- * Sorting iteratee function for sorting an array of normalized age objects.
+ * Sorting iteratee function for sorting an array of normalized age objects. If the age contains a
+ * range, the minimum age gets emphasized, and the maximum age gets added as a fractionalized
+ * tiebreaker.
  * @param {object} normalizedAge Normalized age object
  * @returns {number} Sorting value for underscore
  */
+const stageMap = ['embryonic', 'postnatal', 'adult'];
 const normalizedAgeIteratee = (normalizedAge) => {
+    let ageSortValue;
     if (normalizedAge.min === normalizedAge.max) {
-        return normalizedAge.min;
+        ageSortValue = normalizedAge.min;
+    } else {
+        ageSortValue = normalizedAge.min + (normalizedAge.max / 100);
     }
 
     // Sort age ranges by emphasizing the minimum age, and adding a fractionalized maximum age as
-    // a tiebreaker.
-    return normalizedAge.min + (normalizedAge.max / 100);
+    // a tiebreaker. Factor in the stage as the primary sort key.
+    return (stageMap.indexOf(normalizedAge.stage) * 10000) + ageSortValue;
 };
 
 /**
@@ -228,7 +199,6 @@ const getMouseAgeObject = (rowCategoryData) => {
             mouseAgeFullArray.push(bucket.key);
         });
     });
-    mouseAgeFullArray.sort(sortMouseArray);
     const uniqueAgeArray = [...new Set(mouseAgeFullArray)];
     let embryonic = uniqueAgeArray.filter((age) => age.includes('embryonic'));
     let postnatal = uniqueAgeArray.filter((age) => age.includes('postnatal'));
@@ -371,11 +341,15 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
     // loop through row data to sort buckets by sorted mouse stage/age
     const newRowCategoryData = JSON.parse(JSON.stringify(rowCategoryData));
     rowCategoryData.forEach((row, rowIdx) => {
-        const rowAgeArray = [];
+        let rowAgeArray = [];
         row.life_stage_age.buckets.forEach((bucket) => {
             rowAgeArray.push(bucket.key);
         });
-        rowAgeArray.sort(sortMouseArray);
+
+        // Sort rows by stage and then age, then convert back to the original age string.
+        rowAgeArray = _(normalizeAges(rowAgeArray)).sortBy(normalizedAgeIteratee);
+        rowAgeArray = rowAgeArray.map((normalizedAge) => normalizedAge.original);
+
         const newBuckets = [];
         rowAgeArray.forEach((age) => {
             row.life_stage_age.buckets.forEach((bucket, idx) => {
@@ -411,7 +385,16 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
         // Add the subcategory column links.
         const subCategoryQuery = `${COL_SUBCATEGORY}=${encoding.encodedURIComponent(colInfo.subcategory)}`;
         colInfo.query = `${categoryQuery}&${subCategoryQuery}`;
-        return { header: <a className="sub" href={`${context.search_base}&${categoryQuery}&${subCategoryQuery}&${selectedFilters}`}>{colInfo.subcategory} {colInfo.category.replace('Histone ', '')}</a> };
+        return {
+            header: (
+                <a
+                    className="sub"
+                    href={`${context.search_base}&${categoryQuery}&${subCategoryQuery}&${selectedFilters}`}
+                >
+                    {colInfo.subcategory} {colInfo.category.replace('Histone ', '')}
+                </a>
+            ),
+        };
     }));
 
     let dataTableCount = 0;
@@ -449,14 +432,10 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
 
         const mappedRowCategoryQuery = mapRowCategoryQueries(rowCategory, rowCategoryBucket);
 
-        // Get the list of subcategory names, or the first items of the list if the category isn't
-        // expanded.
-        const visibleRowSubcategoryBuckets = rowSubcategoryBuckets;
-
         // filter rows if needed
         let filteredRowSubcategoryBuckets = [];
         if (stageFilter) {
-            filteredRowSubcategoryBuckets = visibleRowSubcategoryBuckets.filter((bucket) => {
+            filteredRowSubcategoryBuckets = rowSubcategoryBuckets.filter((bucket) => {
                 let success = null;
                 stageFilter.forEach((singleFilter) => {
                     if (bucket.key.includes(singleFilter)) {
@@ -466,7 +445,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                 return success;
             });
         } else {
-            filteredRowSubcategoryBuckets = visibleRowSubcategoryBuckets;
+            filteredRowSubcategoryBuckets = rowSubcategoryBuckets;
         }
 
         const categoryNameQuery = encoding.encodedURIComponent(rowCategoryBucket.key);
@@ -491,7 +470,11 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                             const colIndex = colMap[colMapKey].col;
                             cells[colIndex] = {
                                 content: (
-                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`} style={{ color: rowCategoryTextColor }}>
+                                    <a
+                                        href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`}
+                                        style={{ color: rowCategoryTextColor }}
+                                        title={`${cellData.key} ${rowSubcategoryColCategoryBucket.key.replace('Histone ', '')}`}
+                                    >
                                         <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
                                     </a>
                                 ),
@@ -504,7 +487,11 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                         const colIndex = colMap[rowSubcategoryColCategoryBucket.key].col;
                         cells[colIndex] = {
                             content: (
-                                <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`} style={{ color: rowCategoryTextColor }}>
+                                <a
+                                    href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`}
+                                    style={{ color: rowCategoryTextColor }}
+                                    title={rowSubcategoryColCategoryBucket.key}
+                                >
                                     <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
                                 </a>
                             ),
@@ -651,9 +638,12 @@ MouseStageButton.propTypes = {
     // Called when the user clicks the button
     onClick: PropTypes.func.isRequired,
     // True if displaying age; false if displaying stage; age gets stage stripped off
-    isAgeDisplay: PropTypes.bool.isRequired,
+    isAgeDisplay: PropTypes.bool,
 };
 
+MouseStageButton.defaultProps = {
+    isAgeDisplay: false,
+};
 
 /**
  * Displays the buttons that jump to particular tissue sections of the matrix.
@@ -714,52 +704,9 @@ class MatrixPresentation extends React.Component {
             selectedDevelopmentStages: [],
         };
         this.expanderClickHandler = this.expanderClickHandler.bind(this);
-        this.handleOnScroll = this.handleOnScroll.bind(this);
-        this.handleScrollIndicator = this.handleScrollIndicator.bind(this);
         this.selectMouseDevelopmentStage = this.selectMouseDevelopmentStage.bind(this);
         this.hasRequestedClassifications = filteredClassifications.length > 0;
         this.clearFilters = this.clearFilters.bind(this);
-    }
-
-    componentDidMount() {
-        this.handleScrollIndicator(this.scrollElement);
-    }
-
-    /* eslint-disable react/no-did-update-set-state */
-    componentDidUpdate(prevProps) {
-        // If URI changed, we need close any expanded rowCategories in case the URI change results
-        // in a huge increase in displayed data. Also update the scroll indicator if needed.
-        if (prevProps.context['@id'] !== this.props.context['@id']) {
-            this.handleScrollIndicator(this.scrollElement);
-            this.setState({ expandedRowCategories: [] });
-        }
-    }
-    /* eslint-enable react/no-did-update-set-state */
-
-    /**
-     * Called when the user scrolls the matrix horizontally within its div to handle scroll
-     * indicators.
-     * @param {object} e React synthetic scroll event
-     */
-    handleOnScroll(e) {
-        this.handleScrollIndicator(e.target);
-    }
-
-    /**
-     * Show a scroll indicator depending on current scrolled position.
-     * @param {object} element DOM element to apply shading to
-     */
-    handleScrollIndicator(element) {
-        // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
-        // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
-        const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
-        if (scrollDiff < 2 && !this.state.scrolledRight) {
-            // Right edge of matrix scrolled into view.
-            this.setState({ scrolledRight: true });
-        } else if (scrollDiff >= 2 && this.state.scrolledRight) {
-            // Right edge of matrix scrolled out of view.
-            this.setState({ scrolledRight: false });
-        }
     }
 
     /**
@@ -1139,7 +1086,13 @@ class MouseDevelopmentMatrix extends React.Component {
                 <Panel addClasses={itemClass}>
                     <PanelBody>
                         <MatrixHeader context={context} />
-                        <MatrixContent context={context} rowCategoryGetter={this.getRowCategories} rowSubCategoryGetter={this.getRowSubCategories} mapRowCategoryQueries={mapRowCategoryQueriesExperiment} mapSubCategoryQueries={mapSubCategoryQueriesExperiment} />
+                        <MatrixContent
+                            context={context}
+                            rowCategoryGetter={this.getRowCategories}
+                            rowSubCategoryGetter={this.getRowSubCategories}
+                            mapRowCategoryQueries={mapRowCategoryQueriesExperiment}
+                            mapSubCategoryQueries={mapSubCategoryQueriesExperiment}
+                        />
                     </PanelBody>
                 </Panel>
             );
