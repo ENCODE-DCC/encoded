@@ -19,6 +19,60 @@ import * as queryEncoding from './query_encoding';
 
 
 class QueryString {
+    /**
+     * Find the value of the key in a parsed QueryString element. Each element (documented in
+     * `_parse`) is an object with the query-string key as the object key and the query-string
+     * value as this object key's value, as well as a `negative` boolean.
+     * @param {object} queryElement One parsed element of a QueryString object
+     * @returns {string} Value of the key in an element of a parsed QueryString object
+     */
+    static _getQueryElementKey(queryElement) {
+        return Object.keys(queryElement).find((key) => key !== 'negative');
+    }
+
+    /**
+     * Compare two `QueryString` objects to see if they represent the same query. The two query
+     * strings don't need to have their elements in the same order to consider them equal -- they
+     * simply need to have the same keys and values, and the same negations ("=" vs "!=") for each.
+     * If `isExact` is true, then the two query strings must also have the same number of elements.
+     * Otherwise, `equal()` returns true if `query1` has all the elements of `query2` even if
+     * `query2` has other elements not in `query1`. `equal()` might not return the correct value if
+     * either query string has repeated key/element values.
+     * @param {QueryString} query1 First QueryString object to compare
+     * @param {QueryString} query2 Second QueryString object to compare
+     * @param {boolean} isExact True to match all keys/values exactly; false to match key subset
+     * @returns {boolean} True if the two query strings represent the same query
+     */
+    static equal(query1, query2, isExact = true) {
+        const isSubsetMatching = query1._parsedQuery.reduce((equal, query1Element) => {
+            if (equal) {
+                // Find the key this element represents. Assume it exists; we have a bug if not.
+                const query1Key = QueryString._getQueryElementKey(query1Element);
+
+                // So far only equal elements have been found. Search query2 for an element
+                // matching an element from query1.
+                const equalElement = query2._parsedQuery.find((query2Element) => {
+                    const query2Key = QueryString._getQueryElementKey(query2Element);
+                    return (
+                        query1Key === query2Key
+                        && query1Element[query1Key] === query2Element[query2Key]
+                        && query1Element.negative === query2Element.negative
+                    );
+                });
+                return !!equalElement;
+            }
+
+            // Once we can't find an equal element, we can stop searching.
+            return false;
+        }, true);
+
+        return (
+            isExact
+                ? isSubsetMatching && query1._parsedQuery.length === query2._parsedQuery.length
+                : isSubsetMatching
+        );
+    }
+
     constructor(query) {
         this._query = query;
         this._parse();

@@ -77,7 +77,7 @@ export const COLLECTIONS = [
     {
         title: 'Stem Cell Development Matrix (SESCC)',
         searchUrl: '/search/?type=Experiment&internal_tags=SESCC&limit=0&format=json',
-        '@id': '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
+        '@id': '/stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
         '@type': ['DataCollection'],
     },
     {

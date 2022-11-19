@@ -84,7 +84,7 @@ def includeme(config):
     config.add_route('reference-epigenome-matrix', '/reference-epigenome-matrix{slash:/?}')
     config.add_route('entex-matrix', '/entex-matrix{slash:/?}')
     config.add_route('brain-matrix', '/brain-matrix{slash:/?}')
-    config.add_route('sescc-stem-cell-matrix', '/sescc-stem-cell-matrix{slash:/?}')
+    config.add_route('stem-cell-matrix', '/stem-cell-matrix{slash:/?}')
     config.add_route('chip-seq-matrix', '/chip-seq-matrix{slash:/?}')
     config.add_route('deeply-profiled-matrix', '/deeply-profiled-matrix{slash:/?}')
     config.add_route('deeply-profiled-uniform-batch-matrix', '/deeply-profiled-uniform-batch-matrix{slash:/?}')
@@ -474,7 +474,7 @@ def human_donor_matrix(context, request):
     return fr.render()
 
 
-@view_config(route_name='sescc-stem-cell-matrix', request_method='GET', permission='search')
+@view_config(route_name='stem-cell-matrix', request_method='GET', permission='search')
 def sescc_stem_cell_matrix(context, request):
     fr = FieldedResponse(
         _meta={

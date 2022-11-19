@@ -198,7 +198,7 @@ export const CARDS_FOR_COLLECTIONS = {
             title: 'Southeast Stem Cell Consortium',
             help: 'Data generated for multiple cell types differentiated from the H9 cell line provided by the Southeast Stem Cell Consortium.',
             icon: icons.southeastStemCellConsortium,
-            link: '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC&status=released',
+            link: '/stem-cell-matrix/?type=Experiment&internal_tags=SESCC&status=released',
             color: CARD_COLORS.collections,
             useSearchTerm: true,
             displayCount: false,

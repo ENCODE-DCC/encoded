@@ -83,3 +83,41 @@ describe('QueryString Class', () => {
         expect(otherKeyCount).toEqual(0);
     });
 });
+
+describe('Test query string equal() static method', () => {
+    it('detects equal query strings with terms in the same order', () => {
+        const query1 = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
+        const query2 = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
+        expect(QueryString.equal(query1, query2)).toEqual(true);
+    });
+
+    it('detects equal query strings with terms in a different order', () => {
+        const query1 = new QueryString('type=Experiment&type!=Annotation&assay_term_id=OBI:0000716');
+        const query2 = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
+        expect(QueryString.equal(query1, query2)).toEqual(true);
+    });
+
+    it('detects unequal query strings with terms in the same order', () => {
+        const query1 = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type=Annotation');
+        const query2 = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
+        expect(QueryString.equal(query1, query2)).toEqual(false);
+    });
+
+    it('detects unequal query strings with terms in a different order', () => {
+        const query1 = new QueryString('type=Experiment&type=Annotation&assay_term_id=OBI:0000716');
+        const query2 = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
+        expect(QueryString.equal(query1, query2)).toEqual(false);
+    });
+
+    it('detects mismatch if query1 contains a subset of matching elements to query2', () => {
+        const query1 = new QueryString('type=Experiment&assay_term_id=OBI:0000716');
+        const query2 = new QueryString('type=Experiment&type=Annotation&assay_term_id=OBI:0000716');
+        expect(QueryString.equal(query1, query2)).toEqual(false);
+    });
+
+    it('detects match if query1 contains a subset of matching elements to query2 with `isExact` false', () => {
+        const query1 = new QueryString('type=Experiment&assay_term_id=OBI:0000716');
+        const query2 = new QueryString('type=Experiment&type=Annotation&assay_term_id=OBI:0000716');
+        expect(QueryString.equal(query1, query2, false)).toEqual(true);
+    });
+});
