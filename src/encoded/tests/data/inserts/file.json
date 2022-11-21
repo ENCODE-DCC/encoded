@@ -5993,5 +5993,21 @@
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "2f41d5e6-cacf-44a6-b10b-49590b725f5a"
+    },
+        {
+        "accession": "ENCFF005VEQ",
+        "assembly": "GRCh38",
+        "award": "U41HG006992",
+        "dataset": "ENCSR212POL",
+        "file_format": "tsv",
+        "lab": "ali-mortazavi",
+        "md5sum": "bf4cae913799835e7faf9255adc8c9be",
+        "output_type": "variant effect quantifications",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "status": "in progress",
+        "file_size": 2526280,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "var_effect_quant.tsv",
+        "uuid": "91320c98-a6c2-4c63-8287-f7b2a54de85e"
     }
 ]
