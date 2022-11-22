@@ -1,5 +1,31 @@
 Changes
 =======
+
+129.0 (released) snovault 1.0.66
+--------------------------------
+1. ENCM-100 update snovault 1.0.66 (#4338)
+2. ENCM-97-file-output-type-update (#4337)
+3. ENCM-84 Make a matrix for Degron experiments (#4335)
+4. ENCM-96-aggregate-series-related-dataset (#4334)
+5. ENCM-81 Enhance Multiomics Series Search Results (#4336)
+6. ENCM-95-exclude-series-audit (#4333)
+7. ENCM-91-megamap-graph (#4332)
+8. ENCM-93 update ontology file (#4331)
+9. ENCM-87-annotation-output-type (#4328)
+10. ENCM-89-support-big-image-attachments (#4329)
+11. ENCM-85-add-degron-internal-tag (#4325)
+12. ENCM-83 Improve the mouse development series page (#4327)
+13. ENCM-82-hic-assay-title-fix (#4323)
+14. ENCM-35-series-summary (#4322)
+15. ENCM-80-support-v40-biginteract (#4321)
+16. ENCM-78-add-rfa-facet-human-donor (#4319)
+17. ENCM-79-facet-count (#4318)
+18. ENCM-77-cell-type-annotations (#4316)
+19. ENCM-27-show-only-released (#4315)
+20. ENCM-73-add-azure-url-to-metadata-tsv (#4313)
+21. ENCM-75-gevent-error (#4314)
+22. ENCM-72-fix-adding-to-cart (#4312)
+
 128.0 (released) snovault 1.0.65
 --------------------------------
 1. update snovault 1.0.64 (#4300)
