@@ -15,6 +15,7 @@ export class Param extends React.Component {
     }
 
     componentDidMount() {
+        console.log(this.props.url);
         this.fetch(this.props.url);
     }
 

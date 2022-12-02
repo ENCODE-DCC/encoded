@@ -262,6 +262,7 @@ const svgHighlight = (e, BodyList) => {
     // Remove existing highlights
     unHighlightOrgan();
     const svgClass = e.target.className.baseVal;
+    console.log(svgClass);
     if (svgClass) {
         e.target.className.baseVal = `${svgClass} highlight`;
         Object.keys(BodyList).forEach((b) => {
@@ -286,6 +287,7 @@ const svgHighlight = (e, BodyList) => {
 // Hovering over a system term name should highlight all associated organ terms and inset image terms and their corresponding svg elements or inset images
 const highlightOrgan = (e, BodyList, CellsList, SystemsList) => {
     const currentOrgan = e.target.id || e.target.parentNode.id;
+    console.log(`current organ is ${currentOrgan}`);
     // Check inset images mapping to see if term exists in that object
     if (Object.keys(CellsList).includes(currentOrgan)) {
         addingClass('highlight', currentOrgan.replace(' ', '-'));
@@ -650,9 +652,11 @@ class BodyMap extends React.Component {
 
     // Executes on click on SVG body map diagram
     svgClick(e) {
+        console.log(e);
         // Clicked-on body map element class name is the "svgClass"
         // Strip out "highlight" class to get primary identifier of svg element
         let svgClass = e.target.className.baseVal.replace(' highlight', '');
+        console.log(svgClass);
 
         // We have to check to make sure a class exists because the SVG background has no class and we don't want any update to execute in that case
         if (svgClass) {
@@ -706,6 +710,8 @@ class BodyMap extends React.Component {
                     }
                 }
             });
+
+            console.log(newOrgan);
 
             // Set state to be new organ and any other matches
             // We need to check if there is a new organ found because there are a very very few shapes that do not have corresponding organ_slims and in that case we do not want to add an undefined value to the state / try to navigate to undefined url
