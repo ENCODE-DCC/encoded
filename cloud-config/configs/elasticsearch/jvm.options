@@ -9,9 +9,9 @@
 # Standard default jvm.options as of 20190930
 # -Xms2g
 # -Xmx2g
--XX:+UseConcMarkSweepGC
--XX:CMSInitiatingOccupancyFraction=75
--XX:+UseCMSInitiatingOccupancyOnly
+-XX:+UseG1GC
+-XX:G1ReservePercent=25
+-XX:InitiatingHeapOccupancyPercent=30
 -XX:+AlwaysPreTouch
 -server
 -Xss1m
