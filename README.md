@@ -2,6 +2,48 @@ ENCODE Metadata Database
 ========================
 
 
+## Running application locally using Docker
+
+### Install
+
+Download and install [Docker](https://docs.docker.com/get-docker/).
+
+### Build
+
+All the following commands should be run in the root of this repository.
+
+1.
+```bash
+$ make clean
+````
+
+2. Build the docker image (first time you run this it will take up to 15 minutes):
+```bash
+$ docker build -t encoded-devcontainer:latest -f .devcontainer/Dockerfile .
+```
+3. Start the container with the appropriate ports forwarded, and this directory mounted on `/workspaces/encoded` in the container.
+```bash
+$ docker run --rm -it -p 6378:6378 -p 6543:6543 -p 8000:8000 -p 9201:9201 -v $(pwd):/workspaces/encoded --workdir /workspaces/encoded --name encode-container encoded-devcontainer:latest bash
+```
+
+4. In the shell that opens within the container you started in step 3. run the following commands:
+```bash
+$ make devcontainer
+$ dev-servers development.ini --app-name app --clear --init --load
+```
+
+5. In other terminal open a shell in the running container:
+```bash
+$ docker exec -it encode-container bash
+```
+
+6. In the shell that you opened in step 5. run:
+```bash
+$ pserve development.ini
+```
+
+7. Browse the app at `localhost:6543`
+
 ## System Installation (OSX Catlina 10.15.2)
 See [Snovault OSX System Installation][].  ENCODE installs Snovault as it is a dependency.
 The System Installation is the same for both.  However, you do not need to set up a running 
