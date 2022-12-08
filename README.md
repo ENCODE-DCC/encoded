@@ -6,13 +6,17 @@ ENCODE Metadata Database
 
 ### Install
 
-Download and install [Docker](https://docs.docker.com/get-docker/).
+1. Download and install [Docker](https://docs.docker.com/get-docker/).
+
+2. Start Docker
+
+3. Open Docker preferences, find the `Advanced` tab under `Resources`. Make sure the engine has at least 8GB of memory.
 
 ### Build
 
 All the following commands should be run in the root of this repository.
 
-1.
+1. Clean up possible previous build artifacts.
 ```bash
 $ make clean
 ````
