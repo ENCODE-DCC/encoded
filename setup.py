@@ -17,7 +17,7 @@ INSTALL_REQUIRES = [
     "alembic==1.4.0",
     "boto3==1.11.9",
     "botocore==1.14.9",
-    "certifi==2019.11.28",
+    "certifi==2022.12.7",
     "elasticsearch==5.4.0",
     "future==0.18.2",
     "humanfriendly==6.1",

@@ -5,7 +5,7 @@ bcrypt==3.1.7
 beautifulsoup4==4.10.0
 boto3==1.11.9
 botocore==1.14.9
-certifi==2019.11.28
+certifi==2022.12.7
 cffi==1.14.6
 chardet==3.0.4
 coverage==5.0.3
