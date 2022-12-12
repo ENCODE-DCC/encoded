@@ -2,7 +2,7 @@ ENCODE Metadata Database
 ========================
 
 
-## Running application locally using Docker
+## Running the application locally using Docker
 
 ### Install
 
@@ -48,7 +48,39 @@ $ pserve development.ini
 
 7. Browse the app at `localhost:6543`
 
-## System Installation (OSX Catlina 10.15.2)
+
+## Running the application in Github Codespaces
+
+1. In this repository, click the green **Code** button, choose the **Codespaces** tab and then click the **...** to create a new Codespace.
+
+2. In the options you can choose the branch (you can also check out your branch later), and the machine size (the second smallest with 4 cores and 8GB of memory is enough).
+
+3. Click **Create** **codespace**
+
+4. Building the image (and specifically the `npm ci` command) will take about 15 minutes. 
+
+5. Once the build completes you will be take to a VSCode editor running in your browser. Wait for the `postCreateCommand` to finish.
+
+6. Choose the branch you want to run the app from (if you did not do it in the step 2.)
+
+7. In the terminal run `dev-servers development.ini --app-name app --clear --init --load`
+
+8. Open a new terminal tab (the button with a **+** -symbol).
+
+9. Run `pserve development.ini`.
+
+10. You can now browse the app via the pop-up, or the address shown next to the `pserve(6543)` **Local** **Address** column in **ports** tab above the terminal window.
+
+## Deploying an AWS demo
+
+Building the application is not necessary to deploy a demo. All you need is a python virtual environment with `boto3` package installed.
+In the root of this repository run:
+```bash
+$ python src/encoded/commands/deploy.py <options>
+```
+
+
+## System Installation (Deprecated method, using Docker or Codespaces recommended)
 See [Snovault OSX System Installation][].  ENCODE installs Snovault as it is a dependency.
 The System Installation is the same for both.  However, you do not need to set up a running 
 Snovault instance yourself.
