@@ -482,7 +482,7 @@ def sescc_stem_cell_matrix(context, request):
         },
         response_fields=[
             TitleResponseField(
-                title='Stem Cell Development Matrix (SESCC)'
+                title='Stem cells development'
             ),
             TypeResponseField(
                 at_type=['SESCCStemCellMatrix']

@@ -9,7 +9,6 @@ import { Panel, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { DataTable } from './datatable';
 import { MATRIX_VISUALIZE_LIMIT } from './matrix';
-import { MatrixBadges } from './objectutils';
 import { ClearSearchTerm, SearchControls } from './search';
 import * as globals from './globals';
 
@@ -24,24 +23,32 @@ const DONOR_CELL_WIDTH = 30;
  */
 const scMap = {
     h1: {
-        // query: 'type=Experiment&status=released&replication_type=isogenic',
         query: 'type=Experiment&replicates.library.biosample.donor.accession=ENCDO000AAW&status=released&biosample_ontology.term_name!=trophoblast+cell&control_type!=*',
         title: 'H1 ESC',
+        nodes: require('./node_graph_data/H1_embryonic_stem_cell.json'),
+        badgeTitle: 'H1  Stem Cells',
+        description: 'Data generated for cell types differentiated from the H1 human embryonic stem cell line.',
     },
     h9: {
-        // query: 'type=Experiment&status=released&perturbed=true',
         query: 'type=Experiment&replicates.library.biosample.donor.accession=ENCDO222AAA&status=released&control_type!=*',
         title: 'H9 ESC',
+        nodes: require('./node_graph_data/H9_embryonic_stem_cell.json'),
+        badgeTitle: 'H9 Stem Cells',
+        description: 'Data generated for cell types differentiated from the H9 human embryonic stem cell line.',
     },
     pgp: {
-        // query: 'type=Experiment&status=released&perturbed=false',
-        query: 'type=Experiment&replicates.library.biosample.donor.accession=ENCDO336AAA&status=released&biosample_ontology.term_name!=GM23248&biosample_ontology.term_name!=GM20431&control_type!=*',
+        query: 'type=Experiment&replicates.library.biosample.donor.accession=ENCDO336AAA&status=released&control_type!=*',
         title: 'PGP iPSC',
+        nodes: require('./node_graph_data/PGP_iPSC.json'),
+        badgeTitle: 'PGP Donor',
+        description: 'Data generated for cell types differentiated from induced pluripotent stem cells derived from the PGP donor',
     },
     sescc: {
-        // query: 'type=Experiment&status=released',
         query: 'type=Experiment&internal_tags=SESCC&status=released',
         title: 'Southeastern Stem Cell Consortium',
+        nodes: require('./node_graph_data/sescc.json'),
+        badgeTitle: 'Southeast Stem Cell Consortium',
+        description: 'Project data of the epigenomic profiles of cell types differentiated from the H9 cell line provided by the Southeast Stem Cell Consortium (SESCC).',
     },
 };
 
@@ -51,56 +58,29 @@ const scMap = {
  *
  * @param {string} title
  */
-const formatH9HeaderTitle = (title) => (title && title.trim() !== 'H9' ? title.trim() : 'H9 Stem Cell');
-const formatPebbleNameToCssClassFriendly = (name) => (!name ? '' : name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_'));
-const formatName = (name, replacement) => name.replace(/\s/g, replacement).toLowerCase();
-
-const fullHeight = 400;
-const mobileLimit = 400;
-const data = require('./node_graph_data/sescc.json');
-
-const treeData = data[0];
+const formatName = (name, replacement) => {
+    if (name === 'H1') {
+        return 'h1node';
+    }
+    if (name === 'brain (30/90/180 days organoid)') {
+        return 'brain';
+    }
+    if (name === 'nephron (21/35/49 days organoid)') {
+        return 'nephron';
+    }
+    if (name === 'brain (90/180 days organoid)') {
+        return 'brain';
+    }
+    // difference between "formatName" here and "nodeKeyName" in node_graph.js is that this function does not drop underscores
+    const newName = name.replace(/\s/g, replacement).replace(')', '').replace('(', '').replace('-', '')
+        .toLowerCase();
+    return newName;
+};
 
 /**
  * All assay columns to not include in matrix.
  */
 const excludedAssays = ['Control ChIP-seq'];
-
-const headerDataOrder = [
-    'polyA plus RNA-seq',
-    'total RNA-seq',
-    'small RNA-seq',
-    'microRNA-seq',
-    'microRNA counts',
-    'RNA microarray',
-    'DNase-seq',
-    'ATAC-seq',
-    'WGBS',
-    'RRBS',
-    'MeDIP-seq',
-    'MRE-seq',
-    'Repli-chip',
-    'DNAme array',
-    'genotyping array',
-    'RAMPAGE',
-    'TF ChIP-seq',
-    'Histone ChIP-seq',
-];
-
-
-const rowDataOrder = [
-    'H9 Stem Cell',
-    'hepatocyte',
-    'splanchnic mesodermal cell',
-    'lateral mesodermal cell',
-    'neural crest cell',
-    'neural progenitor cell',
-    'ecto neural progenitor cell',
-    'smooth muscle cell',
-    'mesothelial cell',
-    'mesenchymal stem cell',
-];
-
 
 const generateColMap = (context) => {
     const colCategory = context.matrix.x.group_by[0];
@@ -324,6 +304,7 @@ const convertExperimentToDataTable = (context) => {
         // Add the subcategory column links.
         const subCategoryQuery = `${COL_SUBCATEGORY}=${encoding.encodedURIComponent(colInfo.subcategory)}`;
         colInfo.query = `${categoryQuery}&${subCategoryQuery}`;
+
         return {
             header: <a className="sub" href={`${colSearchBase}&${categoryQuery}${extraQuery}&${subCategoryQuery}`}>{colInfo.subcategory} <div className="sr-only">target for {categoryName} {context.matrix.x.label} </div></a>,
             css: `category-base${dividerCss[colInfo.col] ? ` ${dividerCss[colInfo.col]}` : ''}`,
@@ -341,7 +322,7 @@ const convertExperimentToDataTable = (context) => {
     headerRows.push({ rowContent: header, css: 'matrix__col-category-header' });
     const rowKeysInitialLength = rowKeys.length;
     const rowCategoryBuckets = context.matrix.y[rowCategory].buckets;
-    const rowCategoryColors = rowCategoryBuckets.map(() => '#ff8800');
+    const rowCategoryColors = rowCategoryBuckets.map(() => '#d1d1d1');
     const dataTable = rowCategoryBuckets.reduce((accumulatingTable, rowCategoryBucket, rowCategoryIndex) => {
         // Each loop iteration generates all the rows of the row subcategories (biosample term names)
         // under it.
@@ -350,7 +331,7 @@ const convertExperimentToDataTable = (context) => {
         rowKeys[rowCategoryIndex + rowKeysInitialLength] = rowCategoryBucket.key;
 
         const rowCategoryColor = rowCategoryColors[rowCategoryIndex];
-        const rowSubcategoryColor = '#ff8800';
+        const rowSubcategoryColor = '#d1d1d1';
         const rowCategoryTextColor = '#000';
 
         // Update the row key mechanism.
@@ -442,7 +423,7 @@ const convertExperimentToDataTable = (context) => {
                         ),
                     },
                 ].concat(cells),
-                css: 'matrix__row-data',
+                css: `matrix__row-data ${formatName(rowSubcategoryBucket.key, '_')}`,
             };
         });
 
@@ -481,8 +462,6 @@ const convertExperimentToDataTable = (context) => {
             ],
         );
     }, headerRows);
-    console.log('DATATABLE %o', dataTable);
-    console.log('ROWKEYS %o', rowKeys);
     return { dataTable, rowKeys };
 };
 
@@ -501,16 +480,6 @@ const MatrixHeader = ({ context }) => {
                 <div className="matrix-header__title">
                     <h1>{context.title}</h1>
                     <ClearSearchTerm searchUri={context['@id']} />
-                </div>
-                <div className="matrix-header__details">
-                    <div className="matrix-title-badge">
-                        <MatrixBadges context={context} />
-                    </div>
-                    <div className="matrix-description">
-                        <div className="matrix-description__text">
-                            Project data of the epigenomic profiles of cell types differentiated from the H9 cell line provided by the Southeast Stem Cell Consortium (SESCC).
-                        </div>
-                    </div>
                 </div>
             </div>
             <div className="matrix-header__controls">
@@ -560,19 +529,28 @@ const determineSelectedTab = (path) => {
 class MatrixPresentation extends React.Component {
     constructor(props) {
         super(props);
+        const biosampleFacet = props.context.facets.find((elem) => elem.field === 'biosample_ontology.term_name');
 
-        this.layers = ['Endoderm', 'Mesoderm', 'Ectoderm'];
+        const biosampleTerms = biosampleFacet ? biosampleFacet.terms : [];
+        const availableRows = biosampleTerms.length > 0 ? biosampleTerms.map((term) => formatName(term.key, '')) : [];
+
+        this.h1Layers = ['Endoderm', 'Mesoderm', 'Ectoderm', 'Stem', 'Mesoderm + Endoderm'];
+        this.h9Layers = ['Endoderm', 'Mesoderm', 'Ectoderm', 'Stem', 'Mesoderm + Ectoderm'];
+        this.pgpLayers = ['Mesoderm', 'Ectoderm'];
+        this.sesccLayers = ['Endoderm', 'Mesoderm', 'Ectoderm', 'Stem'];
 
         this.state = {
+            availableRows,
             windowWidth: 0,
-            selectedNodes: rowDataOrder.map((row) => formatName(row, '')),
-            margin: { top: 50, bottom: 70, right: 0, left: 0 },
+            selectedNodes: availableRows,
+            margin: { top: 60, bottom: 120, right: 22, left: 22 },
+            mobileLimit: 400,
         };
 
         this.handleTabClick = this.handleTabClick.bind(this);
         this.updateWindowWidth = this.updateWindowWidth.bind(this);
         this.selectOrHideAll = this.selectOrHideAll.bind(this);
-        // this.setMatrixRows = this.setMatrixRows.bind(this);
+        this.setMatrixRows = this.setMatrixRows.bind(this);
         this.setSelectedNodes = this.setSelectedNodes.bind(this);
     }
 
@@ -589,20 +567,40 @@ class MatrixPresentation extends React.Component {
             // eslint-disable-next-line import/no-unresolved
             this.d3 = require('d3v7');
             const chartWidth = this.state.windowWidth;
+            const selectedTab = determineSelectedTab(this.props.context['@id']);
+            const fullHeight = selectedTab === 'h9' ? 530 : selectedTab === 'pgp' ? 500 : 300;
+            const treeData = scMap[selectedTab].nodes[0];
             drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes, null, 'sescc');
         });
     }
 
     componentDidUpdate() {
+        const biosampleFacet = this.props.context.facets.find((elem) => elem.field === 'biosample_ontology.term_name');
+        const biosampleTerms = biosampleFacet ? biosampleFacet.terms : [];
+        const availableRows = biosampleTerms.length > 0 ? biosampleTerms.map((term) => formatName(term.key, '')) : [];
+        const selectedTab = determineSelectedTab(this.props.context['@id']);
+        const deviceWidth = document.getElementsByClassName('matrix__presentation')[0].offsetWidth;
+        const windowWidth = deviceWidth > this.state.mobileLimit ? deviceWidth : selectedTab === 'h9' ? 1300 : 700;
+        if (this.state.availableRows.length !== availableRows.length) {
+            this.setState({
+                availableRows,
+                selectedNodes: availableRows,
+                windowWidth,
+            });
+        }
+
         require.ensure(['d3v7'], (require) => {
             // eslint-disable-next-line import/no-unresolved
             this.d3 = require('d3v7');
-            const chartWidth = this.state.windowWidth;
+            const chartWidth = windowWidth;
+            const treeData = scMap[selectedTab].nodes[0];
+            const fullHeight = selectedTab === 'h9' ? 530 : selectedTab === 'pgp' ? 500 : 300;
             drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes, null, 'sescc');
         });
     }
 
     handleTabClick(tab) {
+        this.setState({ selectedNodes: [] });
         // Get the current URL and replace the query string with the one for the clicked tab in `scMap`. Then navigate to that URL.
         const currentParsedUrl = url.parse(this.props.context['@id']);
         const updatedParsedUrl = { ...currentParsedUrl, ...{ search: `?${scMap[tab].query}` } };
@@ -628,24 +626,26 @@ class MatrixPresentation extends React.Component {
         });
     }
 
-    // setMatrixRows() {
-    //     const matrixRows = document.getElementsByClassName('matrix__row-data');
-    //     for (let idx = 0; idx < matrixRows.length; idx += 1) {
-    //         const rowClass = matrixRows[idx].classList[1].replace(/_/g, '');
-    //         if (this.state.selectedNodes.indexOf(rowClass) === -1) {
-    //             matrixRows[idx].classList.add('hide');
-    //         } else {
-    //             matrixRows[idx].classList.remove('hide');
-    //         }
-    //     }
-    // }
+    setMatrixRows() {
+        const matrixRows = document.getElementsByClassName('matrix__row-data');
+        for (let idx = 0; idx < matrixRows.length; idx += 1) {
+            const rowClass = matrixRows[idx].classList[1].replace(/_/g, '');
+            if (this.state.selectedNodes.indexOf(rowClass) === -1) {
+                matrixRows[idx].classList.add('hide');
+            } else {
+                matrixRows[idx].classList.remove('hide');
+            }
+        }
+    }
 
     updateWindowWidth() {
-        this.setState({
-            windowWidth: document.getElementsByClassName('matrix__presentation')[0].offsetWidth,
-        }, () => {
+        const windowWidth = document.getElementsByClassName('matrix__presentation')[0].offsetWidth;
+        const selectedTab = determineSelectedTab(this.props.context['@id']);
+        this.setState((prevState) => ({
+            windowWidth: windowWidth > prevState.mobileLimit ? windowWidth : selectedTab === 'h9' ? 1300 : 700,
+        }), () => {
             let margin = { top: 50, left: 3, bottom: 80, right: 3 };
-            if (this.state.windowWidth > mobileLimit) {
+            if (this.state.windowWidth > this.state.mobileLimit) {
                 margin = { top: 50, left: 20, bottom: 70, right: 20 };
             }
             this.setState(margin);
@@ -654,11 +654,14 @@ class MatrixPresentation extends React.Component {
 
     selectOrHideAll(selection) {
         if (selection === 'all') {
-            this.setState({
-                selectedNodes: rowDataOrder.map((row) => formatName(row, '')),
-            }, () => {
+            this.setState((prevState) => ({
+                selectedNodes: prevState.availableRows,
+            }), () => {
                 require.ensure(['d3v7'], () => {
                     const chartWidth = this.state.windowWidth;
+                    const selectedTab = determineSelectedTab(this.props.context['@id']);
+                    const fullHeight = selectedTab === 'h9' ? 530 : selectedTab === 'pgp' ? 500 : 300;
+                    const treeData = scMap[selectedTab].nodes[0];
                     drawTree(
                         this.d3,
                         '.sescc-matrix-graph',
@@ -671,7 +674,7 @@ class MatrixPresentation extends React.Component {
                         false,
                         'sescc'
                     );
-                    // this.setMatrixRows();
+                    this.setMatrixRows();
                 });
             });
         } else {
@@ -680,6 +683,9 @@ class MatrixPresentation extends React.Component {
             }, () => {
                 require.ensure(['d3v7'], () => {
                     const chartWidth = this.state.windowWidth;
+                    const selectedTab = determineSelectedTab(this.props.context['@id']);
+                    const fullHeight = selectedTab === 'h9' ? 530 : selectedTab === 'pgp' ? 500 : 300;
+                    const treeData = scMap[selectedTab].nodes[0];
                     drawTree(
                         this.d3,
                         '.sescc-matrix-graph',
@@ -692,7 +698,7 @@ class MatrixPresentation extends React.Component {
                         false,
                         'sescc'
                     );
-                    // this.setMatrixRows();
+                    this.setMatrixRows();
                 });
             });
         }
@@ -717,74 +723,137 @@ class MatrixPresentation extends React.Component {
                     handleTabClick={this.handleTabClick}
                 >
                     <TabPanelPane key="h1">
-                        <div className="matrix__label matrix__label--horz">
-                            <span>{context.matrix.x.label}</span>
-                            {svgIcon('largeArrow')}
-                        </div>
-                        <div className="matrix__presentation-content">
-                            <div className="matrix__label matrix__label--vert">
-                                <div>
-                                    {svgIcon('largeArrow')}{context.matrix.y.label}
-                                </div>
+                        <div className="sescc__matrix-graph-container">
+                            <div className="badge-group">
+                                <div className="title">{scMap[selectedTab].badgeTitle}</div>
+                                <div className="description">{scMap[selectedTab].description}</div>
                             </div>
-                            <div className="sescc__matrix__data">
-                                <DataTable tableData={matrixConfig} />
-                            </div>
-                        </div>
-                    </TabPanelPane>
-
-                    <TabPanelPane key="h9">
-                        <div className="matrix__label matrix__label--horz">
-                            <span>{context.matrix.x.label}</span>
-                            {svgIcon('largeArrow')}
-                        </div>
-                        <div className="matrix__presentation-content">
-                            <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
-                            <div className="sescc__matrix__data">
-                                <DataTable tableData={matrixConfig} />
-                            </div>
-                        </div>
-                    </TabPanelPane>
-
-                    <TabPanelPane key="pgp">
-                        <div className="matrix__label matrix__label--horz">
-                            <span>{context.matrix.x.label}</span>
-                            {svgIcon('largeArrow')}
-                        </div>
-                        <div className="matrix__presentation-content">
-                            <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
-                            <div className="sescc__matrix__data">
-                                <DataTable tableData={matrixConfig} />
-                            </div>
-                        </div>
-                    </TabPanelPane>
-
-                    <TabPanelPane key="sescc">
-                        {/* <div className="sescc__matrix-graph-container">
                             <div className="sescc-layer-legend">
-                                {this.layers.map((layer) => (
-                                    <div className={`layer-element ${layer}`} key={layer}>
-                                        <div className={`layer-bubble ${layer.toLowerCase()}`} />
+                                {this.h1Layers.map((layer) => (
+                                    <div className={`layer-element ${layer.replace('Mesoderm + Endoderm', 'mesendoderm').replace('Mesoderm + Ectoderm', 'mesectoderm')}`} key={layer}>
+                                        <div className={`layer-bubble ${layer.replace('Mesoderm + Endoderm', 'mesendoderm').replace('Mesoderm + Ectoderm', 'mesectoderm').toLowerCase()}`} />
                                         <div className="layer-name">{layer}</div>
                                     </div>
                                 ))}
                             </div>
                             <div className="sescc-matrix-graph vertical-node-graph" />
-                        </div>
+                            <div className="sescc__matrix__show-all">
+                                <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('all')}>Show All</button>
+                                <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('none')}>Hide All</button>
+                            </div>
 
-                        <div className="sescc__matrix__show-all">
-                            <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('all')}>Show All</button>
-                            <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('none')}>Hide All</button>
-                        </div> */}
-
-                        <div className="matrix__label matrix__label--horz">
-                            <span>{context.matrix.x.label}</span>
-                            {svgIcon('largeArrow')}
+                            <div className="matrix__label matrix__label--horz">
+                                <span>{context.matrix.x.label}</span>
+                                {svgIcon('largeArrow')}
+                            </div>
+                            <div className="matrix__presentation-content">
+                                <div className="matrix__label matrix__label--vert">
+                                    <div>
+                                        {svgIcon('largeArrow')}{context.matrix.y.label}
+                                    </div>
+                                </div>
+                                <div className="sescc__matrix__data">
+                                    <DataTable tableData={matrixConfig} />
+                                </div>
+                            </div>
                         </div>
-                        <div className="matrix__presentation-content">
-                            <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
-                            <div className="sescc__matrix__data">
-                                <DataTable tableData={matrixConfig} />
+                    </TabPanelPane>
+
+                    <TabPanelPane key="h9">
+                        <div className="sescc__matrix-graph-container">
+                            <div className="badge-group">
+                                <div className="title">{scMap[selectedTab].badgeTitle}</div>
+                                <div className="description">{scMap[selectedTab].description}</div>
+                            </div>
+                            <div className="sescc-layer-legend">
+                                {this.h9Layers.map((layer) => (
+                                    <div className={`layer-element ${layer.replace('Mesoderm + Endoderm', 'mesendoderm').replace('Mesoderm + Ectoderm', 'mesectoderm')}`} key={layer}>
+                                        <div className={`layer-bubble ${layer.replace('Mesoderm + Endoderm', 'mesendoderm').replace('Mesoderm + Ectoderm', 'mesectoderm').toLowerCase()}`} />
+                                        <div className="layer-name">{layer}</div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="sescc-matrix-graph vertical-node-graph" />
+                            <div className="sescc__matrix__show-all">
+                                <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('all')}>Show All</button>
+                                <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('none')}>Hide All</button>
+                            </div>
+
+                            <div className="matrix__label matrix__label--horz">
+                                <span>{context.matrix.x.label}</span>
+                                {svgIcon('largeArrow')}
+                            </div>
+                            <div className="matrix__presentation-content">
+                                <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
+                                <div className="sescc__matrix__data">
+                                    <DataTable tableData={matrixConfig} />
+                                </div>
+                            </div>
+                        </div>
+                    </TabPanelPane>
+
+                    <TabPanelPane key="pgp">
+                        <div className="sescc__matrix-graph-container">
+                            <div className="badge-group">
+                                <div className="title">{scMap[selectedTab].badgeTitle}</div>
+                                <div className="description">{scMap[selectedTab].description}</div>
+                            </div>
+                            <div className="sescc-layer-legend">
+                                {this.pgpLayers.map((layer) => (
+                                    <div className={`layer-element ${layer.replace('Mesoderm + Endoderm', 'mesendoderm').replace('Mesoderm + Ectoderm', 'mesectoderm')}`} key={layer}>
+                                        <div className={`layer-bubble ${layer.replace('Mesoderm + Endoderm', 'mesendoderm').replace('Mesoderm + Ectoderm', 'mesectoderm').toLowerCase()}`} />
+                                        <div className="layer-name">{layer}</div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="sescc-matrix-graph vertical-node-graph" />
+                            <div className="sescc__matrix__show-all">
+                                <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('all')}>Show All</button>
+                                <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('none')}>Hide All</button>
+                            </div>
+
+                            <div className="matrix__label matrix__label--horz">
+                                <span>{context.matrix.x.label}</span>
+                                {svgIcon('largeArrow')}
+                            </div>
+                            <div className="matrix__presentation-content">
+                                <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
+                                <div className="sescc__matrix__data">
+                                    <DataTable tableData={matrixConfig} />
+                                </div>
+                            </div>
+                        </div>
+                    </TabPanelPane>
+
+                    <TabPanelPane key="sescc">
+                        <div className="sescc__matrix-graph-container">
+                            <div className="badge-group">
+                                <div className="title">{scMap[selectedTab].badgeTitle}</div>
+                                <div className="description">{scMap[selectedTab].description}</div>
+                            </div>
+                            <div className="sescc-layer-legend">
+                                {this.sesccLayers.map((layer) => (
+                                    <div className={`layer-element ${layer.replace('Mesoderm + Endoderm', 'mesendoderm').replace('Mesoderm + Ectoderm', 'mesectoderm')}`} key={layer}>
+                                        <div className={`layer-bubble ${layer.replace('Mesoderm + Endoderm', 'mesendoderm').replace('Mesoderm + Ectoderm', 'mesectoderm').toLowerCase()}`} />
+                                        <div className="layer-name">{layer}</div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="sescc-matrix-graph vertical-node-graph" />
+                            <div className="sescc__matrix__show-all">
+                                <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('all')}>Show All</button>
+                                <button type="button" className="btn btn-sm btn-info" onClick={() => this.selectOrHideAll('none')}>Hide All</button>
+                            </div>
+
+                            <div className="matrix__label matrix__label--horz">
+                                <span>{context.matrix.x.label}</span>
+                                {svgIcon('largeArrow')}
+                            </div>
+                            <div className="matrix__presentation-content">
+                                <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
+                                <div className="sescc__matrix__data">
+                                    <DataTable tableData={matrixConfig} />
+                                </div>
                             </div>
                         </div>
                     </TabPanelPane>
