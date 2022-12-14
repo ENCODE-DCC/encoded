@@ -48,6 +48,8 @@ $ pserve development.ini
 
 7. Browse the app at `localhost:6543`
 
+8. Closing both terminals will cause the container to exit. You do not need to do anything else to stop the app.
+
 
 ## Running the application in Github Codespaces
 
