@@ -2333,6 +2333,7 @@
                         "unidirectional peaks",
                         "UV enriched segment quantifications",
                         "variant calls",
+                        "variant effect quantifications",
                         "variants contact matrix",
                         "z scores matrix"
                     ]
@@ -2926,6 +2927,7 @@
         "sparse gene count matrix of unique reads": "quantification",
         "kmer weights": "quantification",
         "cell type data": "quantification",
+        "variant effect quantifications": "quantification",
 
         "3D structure": "annotation",
         "depth normalized signals matrix": "annotation",

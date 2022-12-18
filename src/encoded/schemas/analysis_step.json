@@ -355,6 +355,7 @@
                     "unidirectional peaks",
                     "UV enriched segment quantifications",
                     "variant calls",
+                    "variant effect quantifications",
                     "variants contact matrix",
                     "z scores matrix"
                 ]
@@ -609,6 +610,7 @@
                     "unidirectional peaks",
                     "UV enriched segment quantifications",
                     "variant calls",
+                    "variant effect quantifications",
                     "variants contact matrix",
                     "z scores matrix"
                 ]
