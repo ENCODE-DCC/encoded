@@ -4,6 +4,7 @@
 * *input_file_types* and *output_file_types* enums *topologically associated domains*, *chromatin interactions*, *DNA accessibility raw signal*, *long range chromatin interactions*, *nested topologically associated domains*, *allele-specific chromatin interactions*, *variants chromatin interactions*, *haplotype-specific chromatin interactions*, *haplotype-specific DNA accessibility raw signal*, and *haplotype-specific DNA accessibility corrected signal* were replaced by *contact domains*, *contact matrix*, *nuclease cleavage frequency*, *loops*, *nested contact domains*, *allele-specific contact matrix*, *variants contact matrix*, *haplotype-specific contact matrix*, *haplotype-specific nuclease cleavage frequency* and *haplotype-specific nuclease cleavage corrected frequency* respectively.
 * Added *mapping quality thresholded contact matrix*, *variant effect quantifications* to the enum list for *input_file_types* and *output_file_types*.
 * *analysis_step_types* enum *topologically associated domain identification* was replaced with *contact domain identification*
+* Added *predicted 3D structural ensembles* to the enum list for  for *input_file_types* and *output_file_types*.
 
 ### Minor changes since schema version 15
 * Added *merging* to the enum list for *analysis_step_types*

@@ -1548,6 +1548,20 @@
                                     ]
                                 }
                             }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "cndb"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "predicted 3D structural ensembles"
+                                    ]
+                                }
+                            }
                         }
                     ]
                 }
@@ -1755,6 +1769,7 @@
                         "bigBed",
                         "bigInteract",
                         "bigWig",
+                        "cndb",
                         "CEL",
                         "chain",
                         "csv",
@@ -2256,6 +2271,7 @@
                         "predicted profile",
                         "predicted signal profile (minus strand)",
                         "predicted signal profile (plus strand)",
+                        "predicted 3D structural ensembles",
                         "preprocessed alignments",
                         "profile sequence contribution scores",
                         "promoter prediction model",
@@ -2971,6 +2987,7 @@
         "candidate enhancers": "annotation",
         "candidate promoters": "annotation",
         "predicted transcription start sites": "annotation",
+        "predicted 3D structural ensembles": "annotation",
         "plus strand transcription start sites": "annotation",
         "minus strand transcription start sites": "annotation",
         "transcription start sites": "annotation",
@@ -3099,6 +3116,7 @@
         "btr": ".btr",
         "csfasta": ".csfasta.gz",
         "csqual": ".csqual.gz",
+        "cndb": ".cndb",
         "database": ".db",
         "fasta": ".fasta.gz",
         "fastq": ".fastq.gz",

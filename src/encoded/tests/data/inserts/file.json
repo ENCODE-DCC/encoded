@@ -6009,5 +6009,21 @@
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "var_effect_quant.tsv",
         "uuid": "91320c98-a6c2-4c63-8287-f7b2a54de85e"
+    },
+    {
+        "accession": "ENCFF005VER",
+        "assembly": "GRCh38",
+        "award": "U41HG006992",
+        "dataset": "ENCSR212POL",
+        "file_format": "cndb",
+        "lab": "ali-mortazavi",
+        "md5sum": "437175ba4191210ee004e1d937494d09",
+        "output_type": "predicted 3D structural ensembles",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "status": "in progress",
+        "file_size": 2526280,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "var_effect_quant.tsv",
+        "uuid": "4bacb1f0-7fab-11ed-a1eb-0242ac120002"
     }
 ]

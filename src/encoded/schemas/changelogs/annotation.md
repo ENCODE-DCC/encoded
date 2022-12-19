@@ -2,6 +2,7 @@
 
 ### Schema version 38
 * *annotation_type* enum *long-range chromatin interactions* is replaced with *loops*.
+* Added *physical modeling* to enum list for *annotation_type*
 
 ### Minor changes since schema version 37
 * Added *cell type annotation* to enum list for *annotation_type*.

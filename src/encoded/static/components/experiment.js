@@ -594,16 +594,20 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // Get a list of related annotations, filtering them by annotation_type of interest.
     let genotypingAnnotations = [];
     let gkmsvmAnnotations = [];
+    let physicalModeling = [];
     if (context.related_annotations && context.related_annotations.length > 0) {
         context.related_annotations.forEach((annotation) => {
             if (annotation.annotation_type === 'genotyping') {
                 genotypingAnnotations.push(annotation);
             } else if (annotation.annotation_type === 'gkm-SVM-model') {
                 gkmsvmAnnotations.push(annotation);
+            } else if (annotation.annotation_type === 'physical modeling') {
+                physicalModeling.push(annotation);
             }
         });
         genotypingAnnotations = _.uniq(genotypingAnnotations);
         gkmsvmAnnotations = _.uniq(gkmsvmAnnotations);
+        physicalModeling = _.uniq(physicalModeling);
     }
 
     // Set up the breadcrumbs.
@@ -1034,6 +1038,23 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                                 <li key={gkmsvm['@id']} className="multi-comma">
                                                     <a href={gkmsvm['@id']}>
                                                         {gkmsvm.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {physicalModeling.length > 0 ?
+                                <div data-test="physicalmodelingannotations">
+                                    <dt>Annotation (physical modeling)</dt>
+                                    <dd>
+                                        <ul>
+                                            {physicalModeling.map((model) => (
+                                                <li key={model['@id']} className="multi-comma">
+                                                    <a href={model['@id']}>
+                                                        {model.accession}
                                                     </a>
                                                 </li>
                                             ))}
