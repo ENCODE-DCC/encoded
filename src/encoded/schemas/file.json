@@ -1543,6 +1543,7 @@
                                         "inclusion list",
                                         "functional conservation mapping",
                                         "depth normalized signals matrix",
+                                        "fold over change matrix",
                                         "z scores matrix",
                                         "TF peaks matrix"
                                     ]
@@ -2149,6 +2150,7 @@
                         "counts sequence contribution scores",
                         "CpG sites coverage",
                         "depth normalized signals matrix",
+                        "fold over change matrix",
                         "DHS peaks",
                         "DHS regions reference",
                         "nuclease cleavage frequency",
@@ -2947,6 +2949,7 @@
 
         "3D structure": "annotation",
         "depth normalized signals matrix": "annotation",
+        "fold over change matrix": "annotation",
         "hotspots": "annotation",
         "footprints": "annotation",
         "loops": "annotation",
