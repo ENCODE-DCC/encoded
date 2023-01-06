@@ -747,6 +747,16 @@
             "type": "string",
             "linkTo": "Reference",
             "comment": "See reference.json for available identifiers."
+        },
+        "hic_construction": {
+            "title": "Hi-C construction",
+            "description": "The Hi-C approach used to create the library.",
+            "type": "string",
+            "enum": [
+                "intact",
+                "in situ",
+                "dilution"
+            ]
         }
     },
     "columns": {
