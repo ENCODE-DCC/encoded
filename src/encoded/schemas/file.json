@@ -1543,8 +1543,23 @@
                                         "inclusion list",
                                         "functional conservation mapping",
                                         "depth normalized signals matrix",
+                                        "fold over change matrix",
                                         "z scores matrix",
                                         "TF peaks matrix"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "cndb"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "predicted 3D structural ensembles"
                                     ]
                                 }
                             }
@@ -1755,6 +1770,7 @@
                         "bigBed",
                         "bigInteract",
                         "bigWig",
+                        "cndb",
                         "CEL",
                         "chain",
                         "csv",
@@ -2134,6 +2150,7 @@
                         "counts sequence contribution scores",
                         "CpG sites coverage",
                         "depth normalized signals matrix",
+                        "fold over change matrix",
                         "DHS peaks",
                         "DHS regions reference",
                         "nuclease cleavage frequency",
@@ -2256,6 +2273,7 @@
                         "predicted profile",
                         "predicted signal profile (minus strand)",
                         "predicted signal profile (plus strand)",
+                        "predicted 3D structural ensembles",
                         "preprocessed alignments",
                         "profile sequence contribution scores",
                         "promoter prediction model",
@@ -2931,6 +2949,7 @@
 
         "3D structure": "annotation",
         "depth normalized signals matrix": "annotation",
+        "fold over change matrix": "annotation",
         "hotspots": "annotation",
         "footprints": "annotation",
         "loops": "annotation",
@@ -2971,6 +2990,7 @@
         "candidate enhancers": "annotation",
         "candidate promoters": "annotation",
         "predicted transcription start sites": "annotation",
+        "predicted 3D structural ensembles": "annotation",
         "plus strand transcription start sites": "annotation",
         "minus strand transcription start sites": "annotation",
         "transcription start sites": "annotation",
@@ -3099,6 +3119,7 @@
         "btr": ".btr",
         "csfasta": ".csfasta.gz",
         "csqual": ".csqual.gz",
+        "cndb": ".cndb",
         "database": ".db",
         "fasta": ".fasta.gz",
         "fastq": ".fastq.gz",

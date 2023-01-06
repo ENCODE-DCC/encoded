@@ -6009,5 +6009,36 @@
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "var_effect_quant.tsv",
         "uuid": "91320c98-a6c2-4c63-8287-f7b2a54de85e"
+    },
+    {
+        "accession": "ENCFF005VER",
+        "assembly": "GRCh38",
+        "award": "U41HG006992",
+        "dataset": "ENCSR212POL",
+        "file_format": "cndb",
+        "lab": "ali-mortazavi",
+        "md5sum": "437175ba4191210ee004e1d937494d09",
+        "output_type": "predicted 3D structural ensembles",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "status": "in progress",
+        "file_size": 2526280,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "var_effect_quant.tsv",
+        "uuid": "4bacb1f0-7fab-11ed-a1eb-0242ac120002"
+    },
+    {
+        "_test": "fold over change matrix",
+        "status": "in progress",
+        "uuid": "e463341a-7d7c-449a-9374-0d1d4722ab1d",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "c956a00f2bdbc9e05c90ade050c5c46a",
+        "accession": "ENCFF318REQ",
+        "file_format": "txt",
+        "award": "/awards/U54HG006998/",
+        "assembly": "GRCh38",
+        "dataset": "/experiments/ENCSR831GKM/",
+        "file_size": 370148294,
+        "output_type": "fold over change matrix",
+        "lab": "/labs/richard-myers/"
     }
 ]
