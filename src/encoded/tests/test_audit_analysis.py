@@ -1470,11 +1470,7 @@ def test_audit_analysis_hic_encode4(
         hic_library['@id'],
         {'hic_construction': 'in situ'}
     )
-    testapp.patch_json(
-        hic_replicate['@id'],
-        {'experiment': insitu_hic_experiment,
-         'library': hic_library['@id']}
-    )
+
     res = testapp.get(base_analysis['@id'] + '@@index-data')
     audit_errors = res.json['audit']
     assert any(error['category'] == 'low sequenced_read_pairs' for error in audit_errors.get('WARNING', []))
