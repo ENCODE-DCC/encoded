@@ -394,6 +394,6 @@ def hic_replicate(testapp, hic_experiment, hic_library):
         'biological_replicate_number': 1,
         'technical_replicate_number': 1,
         'experiment': hic_experiment['@id'],
-        'library': hic_library['@id']
+        'library': hic_library['@id'],
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
