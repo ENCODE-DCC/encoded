@@ -293,10 +293,15 @@ def test_experiment_mint_chip_control(testapp, experiment_28):
     assert res.json['object']['assay_title'] == 'Control eCLIP'
 
 
-def test_experiment_hic_assay_title(testapp, hic_experiment, hic_library):
+def test_experiment_hic_assay_title(testapp, hic_experiment, hic_replicate, hic_library):
     res = testapp.get(hic_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'Hi-C'
     testapp.patch_json(hic_library['@id'], {'hic_construction': 'in situ'})
+    testapp.patch_json(
+        hic_replicate['@id'],
+        {'experiment': hic_experiment['@id'],
+         'library': hic_library['@id']}
+    )
     res = testapp.get(hic_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'in situ Hi-C'
     testapp.patch_json(hic_library['@id'], {'hic_construction': 'dilution'})
