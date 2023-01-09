@@ -1447,7 +1447,7 @@ def test_audit_analysis_hic_encode4(
     )
     testapp.patch_json(
         hic_replicate['@id'],
-        {'experiment': intact_hic_experiment,
+        {'experiment': intact_hic_experiment['@id'],
          'library': hic_library['@id']}
     )
     # Test intact audits
