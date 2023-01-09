@@ -293,17 +293,17 @@ def test_experiment_mint_chip_control(testapp, experiment_28):
     assert res.json['object']['assay_title'] == 'Control eCLIP'
 
 
-def test_experiment_hic_assay_title(testapp, HiC_experiment, HiC_library):
-    res = testapp.get(HiC_experiment['@id'] + '@@index-data')
+def test_experiment_hic_assay_title(testapp, hic_experiment, hic_library):
+    res = testapp.get(hic_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'Hi-C'
-    testapp.patch_json(HiC_library['@id'], {'hic_construction': 'in situ'})
-    res = testapp.get(HiC_experiment['@id'] + '@@index-data')
+    testapp.patch_json(hic_library['@id'], {'hic_construction': 'in situ'})
+    res = testapp.get(hic_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'in situ Hi-C'
-    testapp.patch_json(HiC_library['@id'], {'hic_construction': 'dilution'})
-    res = testapp.get(HiC_experiment['@id'] + '@@index-data')
+    testapp.patch_json(hic_library['@id'], {'hic_construction': 'dilution'})
+    res = testapp.get(hic_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'dilution Hi-C'
-    testapp.patch_json(HiC_library['@id'], {'hic_construction': 'intact'})
-    res = testapp.get(HiC_experiment['@id'] + '@@index-data')
+    testapp.patch_json(hic_library['@id'], {'hic_construction': 'intact'})
+    res = testapp.get(hic_experiment['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'intact Hi-C'
 
 

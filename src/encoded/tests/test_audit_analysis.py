@@ -1421,7 +1421,9 @@ def test_audit_analysis_hic_encode4(
     analysis_step_run_hic_chromatin_interactions,
     analysis_step_version_hic_chromatin_interactions,
     analysis_step_hic_chromatin_interactions,
-    hic_pipeline
+    hic_pipeline,
+    hic_replicate,
+    hic_library
 ):
     testapp.patch_json(
         file1_2['@id'], # Add SE fastq to intact Hi-C dataset
@@ -1439,7 +1441,15 @@ def test_audit_analysis_hic_encode4(
         intact_hic_experiment['@id'],
         {'analyses': [base_analysis['@id']]}
     )
-
+    testapp.patch_json(
+        hic_library['@id'],
+        {'hic_construction': 'intact'}
+    )
+    testapp.patch_json(
+        hic_replicate['@id'],
+        {'experiment': intact_hic_experiment,
+         'library': hic_library['@id']}
+    )
     # Test intact audits
     res = testapp.get(base_analysis['@id'] + '@@index-data')
     audit_errors = res.json['audit']
@@ -1455,6 +1465,15 @@ def test_audit_analysis_hic_encode4(
     testapp.patch_json(
         insitu_hic_experiment['@id'],
         {'analyses': [base_analysis['@id']]}
+    )
+    testapp.patch_json(
+        hic_library['@id'],
+        {'hic_construction': 'in situ'}
+    )
+    testapp.patch_json(
+        hic_replicate['@id'],
+        {'experiment': insitu_hic_experiment,
+         'library': hic_library['@id']}
     )
     res = testapp.get(base_analysis['@id'] + '@@index-data')
     audit_errors = res.json['audit']
