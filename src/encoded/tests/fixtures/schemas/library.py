@@ -346,7 +346,7 @@ def library_schema_19(lab, award):
 
 
 @pytest.fixture
-def HiC_library(lab, award):
+def hic_library(lab, award):
     return {
         'lab': lab['uuid'],
         'award': award['uuid'],
