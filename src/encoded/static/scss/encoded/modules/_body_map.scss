@@ -169,6 +169,11 @@
 
     .cls-21 {
         fill: #fbfbfb;
+
+        &.active {
+            stroke: #77120b;
+            stroke-width: 2px;
+        }
     }
 
     .cls-22,.cls-59 {
