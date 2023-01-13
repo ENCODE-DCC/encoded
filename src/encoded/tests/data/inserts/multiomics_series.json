@@ -1,6 +1,7 @@
 [
     {
         "_test": "multiomics series",
+        "analyses": ["ENCAN050LQR"],
         "accession": "ENCSR001MUL",
         "award": "UM1HG009390",
         "description": "Multiomics series.",
