@@ -881,7 +881,7 @@ def experiment_35(root, experiment):
 
 
 @pytest.fixture
-def HiC_experiment(testapp, lab, award, heart):
+def hic_experiment(testapp, lab, award, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],

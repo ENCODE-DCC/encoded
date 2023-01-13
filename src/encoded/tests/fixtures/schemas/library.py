@@ -343,3 +343,14 @@ def library_schema_19(lab, award):
         'lab': lab['uuid'],
         'construction_method': 'Nanopore Direct RNA Kit'
     }
+
+
+@pytest.fixture
+def hic_library(testapp, lab, award):
+    item = {
+        'lab': lab['uuid'],
+        'award': award['uuid'],
+        'nucleic_acid_term_name': 'DNA',
+        'hic_construction': 'intact',
+    }
+    return testapp.post_json('/library', item, status=201).json['@graph'][0]

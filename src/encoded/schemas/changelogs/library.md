@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 20
 * Added *inclusion_list* property which will accept a Reference object containing the inclusion list of barcodes used in library preparation.
+* Added *hic_construction* property to represent the protocol type used to derive the library.
 
 ### Schema version 20
 * Added *construction_method* enum *capped RNA enrichment*, *uncapped RNA enrichment*, and *PCR-free*. The property is now also submittable as an array.

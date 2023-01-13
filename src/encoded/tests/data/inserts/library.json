@@ -218,7 +218,8 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "835e166d-0253-41ce-add2-de67429a3612"
+        "uuid": "835e166d-0253-41ce-add2-de67429a3612",
+        "hic_construction": "in situ"
     },
     {
         "accession": "ENCLB071ZZZ",
@@ -344,7 +345,8 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
+        "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29",
+        "hic_construction": "in situ"
     },
     {
         "accession": "ENCLB209APR",

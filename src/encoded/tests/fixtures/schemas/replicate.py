@@ -386,3 +386,14 @@ def replicate_ChIA_PET(testapp, ChIA_PET_experiment, library_1):
         'technical_replicate_number': 1,
     }
     return testapp.post_json('/replicate', item).json['@graph'][0]
+
+
+@pytest.fixture
+def hic_replicate(testapp, hic_experiment, hic_library):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'experiment': hic_experiment['@id'],
+        'library': hic_library['@id'],
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
