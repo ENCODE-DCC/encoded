@@ -901,6 +901,7 @@ TopAccessories.defaultProps = {
 //                 "M3",
 //                 "M4",
 //                 "M7",
+//                 "ENSEMBL V87",
 //                 "M14",
 //                 "M21",
 // Genome hg19
@@ -933,7 +934,11 @@ export function computeAssemblyAnnotationValue(assembly, annotation) {
         const annotationNumber = +annotation.match(/[0-9]+/g)[0];
         let annotationDecimal = 0;
         // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
+        // and "ENSEMBL V87" that should be after M7 and before M14
         // We divide by 10000 because the highest annotation number (for now) is 245
+        if (+annotationNumber === 87) {
+            annotationNumber = (+annotationNumber - 79)
+        }
         if (+annotationNumber === 65) {
             annotationDecimal = (+annotationNumber / 1000000);
         } else {
