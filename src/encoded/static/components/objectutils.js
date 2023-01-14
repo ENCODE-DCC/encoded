@@ -937,9 +937,8 @@ export function computeAssemblyAnnotationValue(assembly, annotation) {
         // and "ENSEMBL V87" that should be after M7 and before M14
         // We divide by 10000 because the highest annotation number (for now) is 245
         if (+annotationNumber === 87) {
-            annotationNumber = (+annotationNumber - 79)
-        }
-        if (+annotationNumber === 65) {
+            annotationDecimal = (13 / 10000);
+        } else if (+annotationNumber === 65) {
             annotationDecimal = (+annotationNumber / 1000000);
         } else {
             annotationDecimal = (+annotationNumber / 10000);
