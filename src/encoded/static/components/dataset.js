@@ -1940,7 +1940,8 @@ const differentiationTableColumnsWithoutTime = {
 // In the future there are likely to be additions to the data which will require updates to this function
 // For instance, ages measured by months will likely be added
 function computeAgeComparator(ageStage) {
-    const splitAge = ageStage.split(/[ ,]+/);
+    const matchRegex = /(.+) ([0-9.]+(?:-\d|.+)?) (.+)/;
+    const splitAge = ageStage.match(matchRegex);
     const age = `${splitAge[splitAge.length - 2]} ${splitAge[splitAge.length - 1]}`;
     let ageNumerical = 0;
     if (age.includes('hours') && age.includes('-')) {
