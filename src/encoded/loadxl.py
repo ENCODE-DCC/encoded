@@ -707,52 +707,52 @@ PHASE1_PIPELINES = {
         remove_keys('related_files'),
     ],
     'functional_characterization_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'single_cell_rna_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'treatment_time_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'treatment_concentration_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'aggregate_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'organism_development_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'replication_timing_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'gene_silencing_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'differentiation_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'pulse_chase_time_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'multiomics_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'reference_epigenome': [
-        remove_keys('related_datasets', 'supersedes'),
+        remove_keys('related_datasets', 'supersedes', 'analyses'),
     ],
     'disease_series': [
-        remove_keys('related_datasets', 'supersedes'),
+        remove_keys('related_datasets', 'supersedes', 'analyses'),
     ],
     'collection_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'matched_set': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'differential_accessibility_series': [
-        remove_keys('related_datasets', 'supersedes'),
+        remove_keys('related_datasets', 'supersedes', 'analyses'),
     ],
     'file': [
         remove_keys('derived_from', 'controlled_by', 'supersedes')
@@ -826,52 +826,52 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'functional_characterization_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'single_cell_rna_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'treatment_time_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'aggregate_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'treatment_concentration_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'organism_development_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'replication_timing_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'gene_silencing_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'differentiation_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'pulse_chase_time_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'multiomics_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'reference_epigenome': [
-        skip_rows_missing_all_keys('related_datasets', 'supersedes'),
+        skip_rows_missing_all_keys('related_datasets', 'supersedes', 'analyses'),
     ],
     'disease_series': [
-        skip_rows_missing_all_keys('related_datasets', 'supersedes'),
+        skip_rows_missing_all_keys('related_datasets', 'supersedes', 'analyses'),
     ],
     'collection_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'matched_set': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'differential_accessibility_series': [
-        skip_rows_missing_all_keys('related_datasets', 'supersedes'),
+        skip_rows_missing_all_keys('related_datasets', 'supersedes', 'analyses'),
     ],
     'publication': [
         skip_rows_missing_all_keys('datasets'),
