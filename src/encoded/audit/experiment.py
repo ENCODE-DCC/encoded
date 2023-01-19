@@ -2711,6 +2711,7 @@ def audit_library_RNA_size_range(value, system, excluded_types):
         'transcription profiling by array assay',
         'long read RNA-seq',
         'long read single-cell RNA-seq',
+        'seqFISH'
     ]:
         return
 
