@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 30
+
+* Added *ENSEMBL V87* to *genome_annotation* enums
+
 ### Schema version 30
 * *output_type* enums *topologically associated domains*, *mapping quality thresholded chromatin interactions*, *chromatin interactions*, *DNA accessibility raw signal*, *long range chromatin interactions*, *nested topologically associated domains*, *allele-specific chromatin interactions*, *variants chromatin interactions*, *haplotype-specific chromatin interactions*, *haplotype-specific DNA accessibility raw signal*, and *haplotype-specific DNA accessibility corrected signal* were replaced by *contact domains*, *mapping quality thresholded contact matrix*, *contact matrix*, *nuclease cleavage frequency*, *loops*, *nested contact domains*, *allele-specific contact matrix*, *variants contact matrix*, *haplotype-specific contact matrix*, *haplotype-specific nuclease cleavage frequency* and *haplotype-specific nuclease cleavage corrected frequency* respectively.
 * Added *variant effect quantifications*, *predicted 3D structural ensembles*, *fold over change matrix* to the enum list for *output_type*.

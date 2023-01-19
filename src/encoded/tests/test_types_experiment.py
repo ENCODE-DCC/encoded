@@ -407,6 +407,7 @@ def test_experiment_default_analysis(
         'M26',
         'M21',
         'M14',
+        'ENSEMBL V87',
         'M7',
         'M4',
         'M3',
