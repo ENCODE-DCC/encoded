@@ -2175,10 +2175,12 @@ function computeSynchBiosample(experiment) {
     }
     if (biosamples && biosamples.length > 0) {
         synchronizationBiosample = biosamples.find((biosample) => biosample.synchronization);
-        if (synchronizationBiosample.age_display.indexOf('-') > -1) {
+        if (synchronizationBiosample && synchronizationBiosample.age_display && synchronizationBiosample.age_display.indexOf('-') > -1) {
             postSynch = synchronizationBiosample.age_display.split('-')[0];
-        } else {
+        } else if (synchronizationBiosample && synchronizationBiosample.age_display) {
             postSynch = synchronizationBiosample.age_display.split(' ')[0];
+        } else {
+            return null;
         }
     }
     return postSynch;
