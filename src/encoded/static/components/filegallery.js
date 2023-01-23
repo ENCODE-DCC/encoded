@@ -31,6 +31,7 @@ import {
     requestSearch,
     requestUri,
     requestObjects,
+    findRelatedLocation,
 } from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
@@ -4086,6 +4087,8 @@ class FileGalleryRendererComponent extends React.Component {
             defaultLocation = context.examined_regions[0];
         } else if (context.examined_loci && context.examined_loci[0].gene && context.examined_loci[0].gene.locations) {
             defaultLocation = context.examined_loci[0].gene.locations[0];
+        } else if (context.related_datasets && this.state.selectedAssembly) {
+            defaultLocation = findRelatedLocation(context, this.state.selectedAssembly);
         }
 
         // Prepare to display the file information modal.

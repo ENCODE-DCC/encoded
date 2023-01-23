@@ -40,6 +40,27 @@ DisplayAsJson.contextTypes = {
     location_href: PropTypes.string,
 };
 
+export function findRelatedLocation(context, assembly) {
+    let relatedDatasetsLocation = null;
+    if (context.related_datasets) {
+        for (let idx = 0; idx < context.related_datasets.length; idx += 1) {
+            if (context.related_datasets[idx].elements_references) {
+                for (let jdx = 0; jdx < context.related_datasets[idx].elements_references.length; jdx += 1) {
+                    if (context.related_datasets[idx].elements_references[jdx].examined_loci) {
+                        for (let kdx = 0; kdx < context.related_datasets[idx].elements_references[jdx].examined_loci.length; kdx += 1) {
+                            if (context.related_datasets[idx].elements_references[jdx].examined_loci[kdx].locations && context.related_datasets[idx].elements_references[jdx].examined_loci[kdx].locations.find((elem) => elem.assembly === assembly)) {
+                                relatedDatasetsLocation = context.related_datasets[idx].elements_references[jdx].examined_loci[kdx].locations.find((elem) => elem.assembly === assembly);
+                                return relatedDatasetsLocation;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
+
 export function shadeOverflowOnScroll(e) {
     // shading element that indicates there is further to scroll down
     const bottomShading = e.target.parentNode.getElementsByClassName('shading')[0];
