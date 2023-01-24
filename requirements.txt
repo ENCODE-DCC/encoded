@@ -13,7 +13,7 @@ cryptography==35.0.0
 docutils==0.15.2
 elasticsearch==5.4.0
 elasticsearch-dsl==5.4.0
-future==0.18.2
+future==0.18.3
 glob2==0.7
 humanfriendly==6.1
 hupper==1.10.3
