@@ -1940,9 +1940,15 @@ const differentiationTableColumnsWithoutTime = {
 // In the future there are likely to be additions to the data which will require updates to this function
 // For instance, ages measured by months will likely be added
 function computeAgeComparator(ageStage) {
-    const age = ageStage.split(/ (.+)/)[1];
+    const matchRegex = /(.+) ([0-9.]+(?:-\d|.+)?) (.+)/;
+    const splitAge = ageStage.match(matchRegex);
+    const age = `${splitAge[splitAge.length - 2]} ${splitAge[splitAge.length - 1]}`;
     let ageNumerical = 0;
-    if (age.includes('days')) {
+    if (age.includes('hours') && age.includes('-')) {
+        ageNumerical += +age.split('hours')[0].split('-')[1] / 24;
+    } else if (age.includes('hours')) {
+        ageNumerical += +age.split('hours')[0] / 24;
+    } else if (age.includes('days')) {
         ageNumerical += +age.split('days')[0];
     } else if (age.includes('weeks')) {
         ageNumerical += +age.split('weeks')[0] * 7;
@@ -1970,10 +1976,18 @@ const sortMouseArray = (a, b) => {
     } else if (aStage === 'adult') {
         aNumerical = 10000;
     }
-    if (aAge.includes('days')) {
+    if (aAge.includes('hours') && aAge.includes('-')) {
+        aNumerical += +aAge.split('hours')[0].split('-')[1] / 24;
+    } else if (aAge.includes('hours')) {
+        aNumerical += +aAge.split('hours')[0] / 24;
+    } else if (aAge.includes('days')) {
         aNumerical += +aAge.split('days')[0];
     } else if (aAge.includes('weeks')) {
         aNumerical += +aAge.split('weeks')[0] * 7;
+    } else if (aAge.includes(' months')) {
+        aNumerical += +bAge.split('months')[0] * 30;
+    } else if (aAge.includes(' years')) {
+        aNumerical += +aAge.split('years')[0] * 365;
     }
     if (bStage === 'embryonic') {
         bNumerical = 100;
@@ -1982,7 +1996,11 @@ const sortMouseArray = (a, b) => {
     } else if (bStage === 'adult') {
         bNumerical = 10000;
     }
-    if (bAge.includes('days')) {
+    if (bAge.includes('hours') && bAge.includes('-')) {
+        bNumerical += +bAge.split('hours')[0].split('-')[1] / 24;
+    } else if (bAge.includes('hours')) {
+        bNumerical += +bAge.split('hours')[0] / 24;
+    } else if (bAge.includes('days')) {
         bNumerical += +bAge.split('days')[0];
     } else if (bAge.includes(' weeks')) {
         bNumerical += +bAge.split('weeks')[0] * 7;
@@ -2157,10 +2175,12 @@ function computeSynchBiosample(experiment) {
     }
     if (biosamples && biosamples.length > 0) {
         synchronizationBiosample = biosamples.find((biosample) => biosample.synchronization);
-        if (synchronizationBiosample.age_display.indexOf('-') > -1) {
+        if (synchronizationBiosample && synchronizationBiosample.age_display && synchronizationBiosample.age_display.indexOf('-') > -1) {
             postSynch = synchronizationBiosample.age_display.split('-')[0];
-        } else {
+        } else if (synchronizationBiosample && synchronizationBiosample.age_display) {
             postSynch = synchronizationBiosample.age_display.split(' ')[0];
+        } else {
+            return null;
         }
     }
     return postSynch;
@@ -2209,7 +2229,12 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
             const synch = computeSynch(experiment);
             return <span>{synch}</span>;
         },
-        objSorter: (a, b) => sortMouseAge(a.life_stage_age, b.life_stage_age),
+        objSorter: (a, b) => {
+            if (a.life_stage_age && b.life_stage_age) {
+                return sortMouseAge(a.life_stage_age, b.life_stage_age);
+            }
+            return null;
+        },
     },
 
     postsynchtime: {
@@ -2224,9 +2249,12 @@ const organismDevelopmentSeriesWormFlyTableColumns = {
             if (biosamples && biosamples.length > 0) {
                 synchronizationBiosample = biosamples.find((biosample) => biosample.synchronization);
             }
-            return (
-                <span>{`${synchronizationBiosample.age_display}`}</span>
-            );
+            if (synchronizationBiosample) {
+                return (
+                    <span>{`${synchronizationBiosample.age_display}`}</span>
+                );
+            }
+            return null;
         },
         objSorter: (a, b) => sortPostSynch(a, b),
     },
