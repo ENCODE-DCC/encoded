@@ -42,23 +42,30 @@ DisplayAsJson.contextTypes = {
 
 export function findRelatedLocation(context, assembly) {
     let relatedDatasetsLocation = null;
-    if (context.related_datasets) {
-        for (let idx = 0; idx < context.related_datasets.length; idx += 1) {
-            if (context.related_datasets[idx].elements_references) {
-                for (let jdx = 0; jdx < context.related_datasets[idx].elements_references.length; jdx += 1) {
-                    if (context.related_datasets[idx].elements_references[jdx].examined_loci) {
-                        for (let kdx = 0; kdx < context.related_datasets[idx].elements_references[jdx].examined_loci.length; kdx += 1) {
-                            if (context.related_datasets[idx].elements_references[jdx].examined_loci[kdx].locations && context.related_datasets[idx].elements_references[jdx].examined_loci[kdx].locations.find((elem) => elem.assembly === assembly)) {
-                                relatedDatasetsLocation = context.related_datasets[idx].elements_references[jdx].examined_loci[kdx].locations.find((elem) => elem.assembly === assembly);
-                                return relatedDatasetsLocation;
+    if (context.related_datasets.length > 0) {
+        context.related_datasets.some((relatedDataset) => {
+            if (relatedDataset.elements_references?.length > 0) {
+                relatedDataset.elements_references.some((elementsReference) => {
+                    if (elementsReference.examined_loci?.length > 0) {
+                        elementsReference.examined_loci.some((examinedLoci) => {
+                            if (examinedLoci.locations?.length > 0) {
+                                relatedDatasetsLocation = examinedLoci.locations.find(
+                                    (elem) => elem.assembly === assembly
+                                );
+                                if (relatedDatasetsLocation) {
+                                    return relatedDatasetsLocation;
+                                }
                             }
-                        }
+                            return relatedDatasetsLocation;
+                        });
                     }
-                }
+                    return relatedDatasetsLocation;
+                });
             }
-        }
+            return relatedDatasetsLocation;
+        });
     }
-    return null;
+    return relatedDatasetsLocation;
 }
 
 export function shadeOverflowOnScroll(e) {
