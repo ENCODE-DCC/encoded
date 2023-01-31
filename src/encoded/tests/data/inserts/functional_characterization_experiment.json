@@ -248,5 +248,21 @@
         "elements_references": ["ENCSR001REF"],
         "submitted_by": "felis.senectus@hymenaeos.nibh",
         "uuid": "759d0fdc-2246-97b9-9634-e62721ae3775"
+    },
+    {
+        "accession": "ENCSR004TXD",
+        "aliases": [
+            "yin-shen:Low eGFP sorted cells assay_Sox2"
+        ],
+        "assay_term_name": "FACS CRISPR screen",
+        "award": "U54HG006996",
+        "biosample_ontology": "/biosample-types/tissue_UBERON_0000948/",
+        "date_released": "2020-08-07",
+        "date_submitted": "2020-07-30",
+        "doi": "10.17989/ENCSR004TXD",
+        "lab": "bing-ren",
+        "status": "released",
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "60292d01-db37-4523-a492-7cf4d6c996df"
     }
 ]

@@ -40,6 +40,7 @@ require('./matrix_deeply_profiled_uniform_batch');
 require('./matrix_deeply_profiled');
 require('./matrix_encore');
 require('./matrix_degron');
+require('./matrix_functional_characterization');
 require('./target');
 require('./publication');
 require('./pipeline');

@@ -1348,5 +1348,18 @@
         "status": "released",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "uuid": "8e364aa4-695c-4f98-a69b-431a362a3067"
+    },
+    {
+        "accession": "ENCLB885SCY",
+        "aliases": [
+            "yin-shen:library_XY036"
+        ],
+        "award": "U54HG006996",
+        "biosample": "ENCBS766NUP",
+        "lab": "bing-ren",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "c21f62fa-dc37-4734-a7f7-4ecc55b903bb"
     }
 ]

@@ -432,3 +432,14 @@ class FunctionalCharacterizationExperiment(
 
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
+
+    functional_characterization_matrix = {
+        'y': {
+            'group_by': ['biosamples.donor.organism.scientific_name', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_term_name', ('perturbation_type', 'no_perturbation')],
+            'label': 'Assay',
+        },
+    }

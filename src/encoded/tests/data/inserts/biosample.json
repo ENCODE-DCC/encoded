@@ -1464,5 +1464,24 @@
         "status": "released",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "uuid": "9f03eb47-5b1e-47db-9e9f-af750ac94b67"
+    },
+    {
+        "accession": "ENCBS766NUP",
+        "aliases": [
+            "yin-shen:mESC_Sox2_1-eGFP"
+        ],
+        "award": "U54HG006996",
+        "biosample_ontology": "/biosample-types/tissue_UBERON_0000948/",
+        "cell_isolation_method": "fluorescence activated cell sorting",
+        "culture_harvest_date": "2018-02-19",
+        "culture_start_date": "2018-02-09",
+        "donor": "ENCDO817NHY",
+        "lab": "bing-ren",
+        "organism": "mouse",
+        "passage_number": 5,
+        "source": "len-pennacchio",
+        "status": "released",
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "af987d36-1dc2-45df-8d7c-6ac9d4798b46"
     }
 ]

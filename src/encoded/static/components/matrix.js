@@ -23,7 +23,7 @@ export const MatrixAddCart = ({ context }, reactContext) => {
     const [experimentData, setExperimentData] = React.useState(null);
 
     React.useEffect(() => {
-        const link = `${context.search_base}&limit=all&field=@id&field=@type&field=related_datasets`;
+        const link = `${context.search_base}&limit=all&field=@id&field=@type&field=related_datasets.@id&field=related_datasets.@type`;
         reactContext.fetch(link, {
             headers: { Accept: 'application/json' },
         }).then((response) => {
@@ -134,19 +134,24 @@ export class SearchFilter extends React.Component {
     }
 
     render() {
-        const { context, css } = this.props;
+        const { context, type, css } = this.props;
         const parsedUrl = url.parse(this.context.location_href);
         const matrixBase = parsedUrl.search || '';
         const matrixSearch = matrixBase + (matrixBase ? '&' : '?');
-        const parsed = url.parse(matrixBase, true);
-        const queryStringType = parsed.query.type || '';
-        const type = pluralize(queryStringType.toLocaleLowerCase());
+
+        // Automatically determine the type of object being searched if not given.
+        let automaticType = '';
+        if (!type) {
+            const parsed = url.parse(matrixBase, true);
+            const queryStringType = parsed.query.type || '';
+            automaticType = pluralize(queryStringType.toLocaleLowerCase());
+        }
         return (
             <div className={`matrix-general-search ${css}`}>
                 <div className="general-search-entry">
                     <p>
                         <i className="icon icon-search" />
-                        Filter the {type} included in the matrix:
+                        Filter the {type || automaticType} included in the matrix:
                     </p>
                 </div>
                 <div className="searchform">
@@ -160,11 +165,14 @@ export class SearchFilter extends React.Component {
 SearchFilter.propTypes = {
     /** Matrix search results object */
     context: PropTypes.object.isRequired,
+    /** Explicit type; overrides automatic one calculated here */
+    type: PropTypes.string,
     /** CSS class to add to the wrapper div */
     css: PropTypes.string,
 };
 
 SearchFilter.defaultProps = {
+    type: '',
     css: '',
 };
 

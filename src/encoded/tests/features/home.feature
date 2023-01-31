@@ -8,11 +8,10 @@ Feature: Home page
         And I should see at least 4 elements with the css selector ".home-section"
 
     Scenario: Click cards
-        When I click the link with text that contains "Functional characterization"
+        When I click the link with text that contains "Functional genomic series"
         And I wait for the content to load
         Then I should not see an element with the css selector ".home-search-section"
-        And I should see at least 1 elements with the css selector ".result-item--type-FunctionalCharacterizationSeries"
-        And I should see at least 1 elements with the css selector ".result-item--type-FunctionalCharacterizationExperiment"
+        And I should see at least 1 elements with the css selector ".result-item--type-OrganismDevelopmentSeries"
 
         When I go back
         And I wait for the content to load
@@ -38,7 +37,7 @@ Feature: Home page
         And I should see an element with the css selector ".home-search-section__supplement.home-search-section__supplement--native"
         And I should see 10 elements with the css selector ".native-top-hit"
 
-        When I click the link with text that contains "Encyclopedia of elements"
+        When I click the link with text that contains "Functional characterization"
         And I wait for the content to load
         Then I should see an element with the css selector ".clear-search-term__control"
 

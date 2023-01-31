@@ -16,10 +16,10 @@ Feature: Cart
 
         When I visit "/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries&config=FunctionalCharacterization&datapoint=false&control_type!=*"
         And I wait for the content to load
-        Then I should see 6 elements with the css selector ".result-item__cart-control"
+        Then I should see at least 6 elements with the css selector ".result-item__cart-control"
 
         When I press "Add all items to cart"
-        Then I should see 6 elements with the css selector ".cart-toggle--in-cart"
+        Then I should see at least 6 elements with the css selector ".cart-toggle--in-cart"
 
         When I visit "/search/?type=FunctionalCharacterizationExperiment&accession=ENCSR127PCE"
         And I wait for the content to load
@@ -33,7 +33,7 @@ Feature: Cart
         When I press "cart-control"
         And I click the link to "/cart-view/"
         And I wait for the content to load
-        Then I should see 11 elements with the css selector ".result-item"
+        Then I should see at least 11 elements with the css selector ".result-item"
         When I press "cart-facet-term-hg19"
         Then I should see "6 files selected"
         When I press "cart-facet-term-Experiment"
@@ -70,7 +70,7 @@ Feature: Cart
         And I press "/experiments/ENCSR000INT/"
         And I wait for the content to load
         And I press "cart-facet-term-GRCh38"
-        Then I should see 10 elements with the css selector ".result-item"
+        Then I should see at least 10 elements with the css selector ".result-item"
         And I should see "5 files selected"
 
     Scenario: Cart description
