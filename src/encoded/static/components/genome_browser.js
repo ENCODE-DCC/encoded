@@ -299,8 +299,8 @@ const getDefaultCoordinates = (defaultLocation, assembly, annotation, ignoreCach
 
     if (defaultLocation) {
         contig = defaultLocation.chromosome;
-        x0 = defaultLocation.start;
-        x1 = defaultLocation.end;
+        x0 = defaultLocation.start - 5000;
+        x1 = defaultLocation.end + 5000;
     }
 
     window.sessionStorage.setItem(GV_COORDINATES_ASSEMBLY, assembly);
