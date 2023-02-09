@@ -40,6 +40,22 @@ DisplayAsJson.contextTypes = {
     location_href: PropTypes.string,
 };
 
+export function findExaminedLociLocation(context, assembly) {
+    let examinedLociLocation = null;
+    if (context.examined_loci.length > 0) {
+        context.examined_loci.some((examinedLoci) => {
+            if (examinedLoci.gene?.locations?.length > 0) {
+                examinedLociLocation = examinedLoci.gene.locations.find((elem) => elem.assembly === assembly);
+                if (examinedLociLocation) {
+                    return examinedLociLocation;
+                }
+            }
+            return examinedLociLocation;
+        });
+    }
+    return examinedLociLocation;
+}
+
 export function findRelatedLocation(context, assembly) {
     let relatedDatasetsLocation = null;
     if (context.related_datasets.length > 0) {
