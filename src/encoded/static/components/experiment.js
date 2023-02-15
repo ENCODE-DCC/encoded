@@ -595,6 +595,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     let genotypingAnnotations = [];
     let gkmsvmAnnotations = [];
     let physicalModeling = [];
+    let bpnetModel = [];
     if (context.related_annotations && context.related_annotations.length > 0) {
         context.related_annotations.forEach((annotation) => {
             if (annotation.annotation_type === 'genotyping') {
@@ -603,11 +604,14 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 gkmsvmAnnotations.push(annotation);
             } else if (annotation.annotation_type === 'physical modeling') {
                 physicalModeling.push(annotation);
+            } else if (annotation.annotation_type === 'BPNet-model') {
+                bpnetModel.push(annotation);
             }
         });
         genotypingAnnotations = _.uniq(genotypingAnnotations);
         gkmsvmAnnotations = _.uniq(gkmsvmAnnotations);
         physicalModeling = _.uniq(physicalModeling);
+        bpnetModel = _.uniq(bpnetModel);
     }
 
     // Set up the breadcrumbs.
@@ -1055,6 +1059,23 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                                 <li key={model['@id']} className="multi-comma">
                                                     <a href={model['@id']}>
                                                         {model.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {bpnetModel.length > 0 ?
+                                <div data-test="bpnetModelannotations">
+                                    <dt>Annotation (BPNet-model)</dt>
+                                    <dd>
+                                        <ul>
+                                            {bpnetModel.map((bpnet) => (
+                                                <li key={bpnet['@id']} className="multi-comma">
+                                                    <a href={bpnet['@id']}>
+                                                        {bpnet.accession}
                                                     </a>
                                                 </li>
                                             ))}
