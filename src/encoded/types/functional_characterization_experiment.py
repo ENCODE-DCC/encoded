@@ -439,7 +439,7 @@ class FunctionalCharacterizationExperiment(
             'label': 'Biosample',
         },
         'x': {
-            'group_by': ['assay_term_name', ('perturbation_type', 'no_perturbation')],
+            'group_by': ['assay_title', ('perturbation_type', 'no_perturbation')],
             'label': 'Assay',
         },
     }
