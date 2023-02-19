@@ -262,10 +262,10 @@
         "uuid": "fbc87042-0495-11ed-b939-0242ac120002",
         "date_released": "2022-06-15",
         "internal_tags": [
-            "Regulome_DB_2_2",
-            "Regulome_DB_2_3",
-            "Regulome_DB_3_0",
-            "Regulome_DB_3_1"
+            "RegulomeDB_2_2",
+            "RegulomeDB_2_3",
+            "RegulomeDB_3_0",
+            "RegulomeDB_3_1"
         ]
     }
 ]
