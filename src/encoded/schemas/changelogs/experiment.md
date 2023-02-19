@@ -1,5 +1,8 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 37
+* Added *RegulomeDB_2_2*, *RegulomeDB_2_3*, *RegulomeDB_3_0* and *RegulomeDB_3_1* to the *internal_tags* enum list.
+
 ### Minor changes since schema version 36
 * Added *bio_replicate_count* and *tech_replicate_count* for the respective counts of the embedded replicates as a calculated property
 * Added *biological_replicates* with a formatted text version of biological replicates as a calculated property

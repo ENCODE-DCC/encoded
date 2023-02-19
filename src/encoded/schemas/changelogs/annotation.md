@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 38
+* Added *RegulomeDB_2_2*, *RegulomeDB_2_3*, *RegulomeDB_3_0* and *RegulomeDB_3_1* to the *internal_tags* enum list.
+
 ### Schema version 38
 * *annotation_type* enum *long-range chromatin interactions* is replaced with *loops*.
 * Added *physical modeling* to enum list for *annotation_type*
