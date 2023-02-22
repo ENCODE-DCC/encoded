@@ -54,7 +54,7 @@ const NO_DISEASE_SECTOR_COLOR = '#fff';
 
 /** All biosamples in the Brain Matrix */
 const BIOSAMPLES = [
-    'middle frontal area 46',
+    'dorsolateral prefrontal cortex',
     'head of caudate nucleus',
     'posterior cingulate gyrus',
 ];
