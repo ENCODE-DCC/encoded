@@ -32,6 +32,10 @@ const seriesList = {
         title: 'Differentiation',
         schema: 'differentiation_series',
     },
+    DiseaseSeries: {
+        title: 'Disease',
+        schema: 'disease_series',
+    },
 };
 
 // Fetch data from href
@@ -97,14 +101,17 @@ const SeriesSearch = (props, context) => {
 
     // Select series from tab buttons
     React.useEffect(() => {
-        const seriesDescriptionHref = `/profiles/${seriesList[selectedSeries].schema}.json`;
-        getSeriesData(seriesDescriptionHref, context.fetch).then((response) => {
-            setDescriptionData(response.description);
-        });
-        if (!(query.getKeyValues('type')[0])) {
-            query.addKeyValue('type', selectedSeries);
-            const href = `?${query.format()}`;
-            context.navigate(href);
+        const seriesSchema = seriesList[selectedSeries]?.schema;
+        if (seriesSchema) {
+            const seriesDescriptionHref = `/profiles/${seriesSchema}.json`;
+            getSeriesData(seriesDescriptionHref, context.fetch).then((response) => {
+                setDescriptionData(response.description);
+            });
+            if (!(query.getKeyValues('type')[0])) {
+                query.addKeyValue('type', selectedSeries);
+                const href = `?${query.format()}`;
+                context.navigate(href);
+            }
         }
     }, [context, context.fetch, query, selectedSeries]);
 
