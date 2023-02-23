@@ -1055,5 +1055,17 @@
         "technical_replicate_number": 2,
         "status": "released",
         "uuid": "74baf5ef-a66f-4c14-a38c-8ffdf1bee602"
+    },
+    {
+        "aliases": [
+            "yin-shen:Sox2_eGFP_rep1_XY036"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR004TXD",
+        "library": "ENCLB885SCY",
+        "status": "released",
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "technical_replicate_number": 1,
+        "uuid": "e1e5bd0d-8769-4617-9774-5bc7d3e77a9e"
     }
 ]

@@ -38,6 +38,7 @@ from snosearch.fields import AuditMatrixWithFacetsResponseField
 from snosearch.fields import AllResponseField
 from snosearch.fields import BasicMatrixWithFacetsResponseField
 from snosearch.fields import MissingMatrixWithFacetsResponseField
+from snosearch.fields import MultitypeMissingMatrixWithFacetsResponseField
 from snosearch.fields import BasicSearchResponseField
 from snosearch.fields import BasicSearchWithFacetsResponseField
 from snosearch.fields import BasicSearchWithoutFacetsResponseField
@@ -92,6 +93,7 @@ def includeme(config):
     config.add_route('encore-matrix', '/encore-matrix{slash:/?}')
     config.add_route('encore-rna-seq-matrix', '/encore-rna-seq-matrix{slash:/?}')
     config.add_route('degron-matrix', 'degron-matrix{slash:/?}')
+    config.add_route('functional-characterization-matrix', '/functional-characterization-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.add_route('cart-search', '/cart-search{slash:/?}')
@@ -708,6 +710,37 @@ def brain_matrix(context, request):
             MissingMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 matrix_definition_name='brain_matrix',
+                reserved_keys=RESERVED_KEYS,
+            ),
+            FacetGroupsResponseField(),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='functional-characterization-matrix', request_method='GET', permission='search')
+def functional_characterization_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Functional characterizations'
+            ),
+            TypeResponseField(
+                at_type=['FunctionalCharacterizationMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            MultitypeMissingMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='functional_characterization_matrix',
                 reserved_keys=RESERVED_KEYS,
             ),
             FacetGroupsResponseField(),

@@ -2474,6 +2474,9 @@ $rnaseq-term-name-colors:
     border-top: 1px solid #ccc;
 }
 
+$matrix-fc-human-bg: #0198c8;
+$matrix-fc-mouse-bg: #5bb150;
+
 .matrix__content {
     &.matrix__content--degron {
         display: block;
@@ -2528,6 +2531,120 @@ $rnaseq-term-name-colors:
                     }
                 }
             }
+        }
+    }
+
+    &.matrix__content--functional-characterization {
+        display: flex;
+
+        .matrix__col-category-header {
+            > th {
+                height: 280px;
+
+                > a {
+                    height: 100%;
+                    padding-right: 5px;
+                    line-height: 1;
+
+                    .header-title__category {
+                        font-weight: 500;
+                    }
+
+                    .header-title__subcategory {
+                        font-size: 0.8rem;
+                        color: #606060;
+                    }
+                }
+            }
+        }
+
+        .matrix__row-category {
+            > th, > td {
+                color: #fff;
+                font-weight: 700;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            > th {
+                padding-left: 10px;
+                border-top-left-radius: 14px;
+
+                > a {
+                    color: #fff;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+                }
+            }
+
+            > td {
+                border-top-right-radius: 14px;
+            }
+
+            &.matrix__row-category--homo-sapiens {
+                > th, > td {
+                    background-color: $matrix-fc-human-bg;
+                }
+            }
+
+            &.matrix__row-category--mus-musculus {
+                > th, > td {
+                    background-color: $matrix-fc-mouse-bg;
+                }
+            }
+        }
+
+        .matrix__populated-badge {
+            height: 100%;
+            width: 100%;
+            background-color: rgb(80, 100, 200);
+        }
+
+        .matrix__row-data {
+            > th {
+                width: $row-data-header-width;
+                max-width: $row-data-header-width;
+                min-width: $row-data-header-width;
+                padding: 0;
+                font-weight: normal;
+
+                > a {
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    height: 100%;
+                }
+            }
+
+            > td {
+                > a {
+                    color: white;
+                    text-decoration: none;
+                }
+            }
+
+            &.matrix__row-data--homo-sapiens {
+                > td:not(:empty) {
+                    background-color: $matrix-fc-human-bg;
+                }
+            }
+
+            &.matrix__row-data--mus-musculus {
+                > td:not(:empty) {
+                    background-color: $matrix-fc-mouse-bg;
+                }
+            }
+        }
+
+        // Blank row between species sections.
+        .matrix__horizontal-divider {
+            height: 20px;
+        }
+
+        // Border for the last subcategory header in each species section.
+        .subcategory-header-last-of-section {
+            border-bottom: 1px solid #f0f0f0;
         }
     }
 }

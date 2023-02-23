@@ -70,7 +70,14 @@
             "ef12855f-5d3e-4da5-8684-3a594c60505a",
             "2f33a486-e3d9-4633-8682-a363b48ba67d"
         ]
+    },
+    {
+        "accession": "ENCDO817NHY",
+        "award": "U54HG006996",
+        "lab": "j-michael-cherry",
+        "organism": "mouse",
+        "strain_background": "unknown",
+        "status": "released",
+        "uuid": "7b4a75f3-73d3-444f-b29a-91868ecdc69c"
     }
-
-    
 ]
