@@ -40,6 +40,50 @@ DisplayAsJson.contextTypes = {
     location_href: PropTypes.string,
 };
 
+export function findExaminedLociLocation(context, assembly) {
+    let examinedLociLocation = null;
+    if (context.examined_loci.length > 0) {
+        context.examined_loci.some((examinedLoci) => {
+            if (examinedLoci.gene?.locations?.length > 0) {
+                examinedLociLocation = examinedLoci.gene.locations.find((elem) => elem.assembly === assembly);
+                if (examinedLociLocation) {
+                    return examinedLociLocation;
+                }
+            }
+            return examinedLociLocation;
+        });
+    }
+    return examinedLociLocation;
+}
+
+export function findRelatedLocation(context, assembly) {
+    let relatedDatasetsLocation = null;
+    if (context.related_datasets.length > 0) {
+        context.related_datasets.some((relatedDataset) => {
+            if (relatedDataset.elements_references?.length > 0) {
+                relatedDataset.elements_references.some((elementsReference) => {
+                    if (elementsReference.examined_loci?.length > 0) {
+                        elementsReference.examined_loci.some((examinedLoci) => {
+                            if (examinedLoci.locations?.length > 0) {
+                                relatedDatasetsLocation = examinedLoci.locations.find(
+                                    (elem) => elem.assembly === assembly
+                                );
+                                if (relatedDatasetsLocation) {
+                                    return relatedDatasetsLocation;
+                                }
+                            }
+                            return relatedDatasetsLocation;
+                        });
+                    }
+                    return relatedDatasetsLocation;
+                });
+            }
+            return relatedDatasetsLocation;
+        });
+    }
+    return relatedDatasetsLocation;
+}
+
 export function shadeOverflowOnScroll(e) {
     // shading element that indicates there is further to scroll down
     const bottomShading = e.target.parentNode.getElementsByClassName('shading')[0];
