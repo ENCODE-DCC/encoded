@@ -1247,6 +1247,15 @@ class App extends React.Component {
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     <link href="https://fonts.googleapis.com/css2?family=Mada:wght@200;400;500;600;700&family=Oswald:wght@200;300;400;500&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet" />
                     <script async src="//www.google-analytics.com/analytics.js" />
+                    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GY70FXW0SB" />
+                    <script
+                        dangerouslySetInnerHTML={{ __html: `
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'G-GY70FXW0SB');
+                        ` }}
+                    />
                     <script async src={`https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/${globals.isProductionHost(this.props.href) ? '' : 'test/'}walkme_8c7ff9322d01408798869806f9f5a132_https.js`} />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
