@@ -252,10 +252,6 @@ const convertExperimentToDataTable = (context) => {
         headerRows.push({ rowContent: targetAssayHeader, css: 'matrix__col-category-targetassay-header' });
     }
 
-    // Generate array of names of assays that have targets and don't collapse their targets, for
-    // rendering those columns as disabled.
-    // const colCategoriesWithSubcategories = Object.keys(colMap).filter((colCategoryName) => colMap[colCategoryName].hasSubcategories && !collapsedAssays.includes(colCategoryName));
-
     // Generate the hierarchical top-row sideways header label cells. The first cell is null unless
     // it contains a link to clear the currently selected classification. At the end of this loop,
     // rendering `{header}` shows this header row. The `sortedCols` array gets mutated in this loop,
@@ -568,7 +564,7 @@ class MatrixPresentation extends React.Component {
             this.d3 = require('d3v7');
             const chartWidth = this.state.windowWidth;
             const selectedTab = determineSelectedTab(this.props.context['@id']);
-            const fullHeight = selectedTab === 'h9' ? 530 : selectedTab === 'pgp' ? 500 : 300;
+            const fullHeight = (selectedTab === 'h9') ? 530 : ((selectedTab === 'pgp') ? 500 : 300);
             const treeData = scMap[selectedTab].nodes[0];
             drawTree(this.d3, '.sescc-matrix-graph', treeData, chartWidth, fullHeight, this.state.margin, this.state.selectedNodes, this.setSelectedNodes, null, 'sescc');
         });

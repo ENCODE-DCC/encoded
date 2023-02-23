@@ -21,16 +21,19 @@ const iconFileMapping = {};
 export const nodeKeyName = (name) => {
     if (name === 'H1') {
         return 'h1node';
-    } else if (name === 'brain (30/90/180 days organoid)') {
+    }
+    if (name === 'brain (30/90/180 days organoid)') {
         return 'brain';
-    } else if (name === 'nephron (21/35/49 days organoid)') {
+    }
+    if (name === 'nephron (21/35/49 days organoid)') {
         return 'nephron';
-    } else if (name === 'brain (90/180 days organoid)') {
+    }
+    if (name === 'brain (90/180 days organoid)') {
         return 'brain';
     }
     const newName = name.replace(/\s/g, '').replace(/[\W_]+/g, '').toLowerCase();
     return newName;
-}
+};
 
 export const mapTermToNode = (term) => term;
 
@@ -98,17 +101,8 @@ function diagonal(d, s) {
 export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, selectedNodes, setSelectedNodes, searchMapping, treeName) => {
     const isDesktop = fullWidth > mobileLimit;
     let textWrapWidth = 50;
-
-    if (isDesktop) {
+    if (isDesktop && treeName !== 'immune' && data.name !== 'H9') {
         textWrapWidth = 115;
-    }
-
-    if (treeName === 'immune') {
-        textWrapWidth = 50;
-    }
-
-    if (data.name === 'H9') {
-        textWrapWidth = 50;
     }
 
     const width = fullWidth - margin.left - margin.right;
@@ -268,13 +262,13 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
             nodes.forEach((d) => {
                 if (d.data.name === 'PGP donor') {
                     d3.select('.pgpdonor').append('g')
-                            .attr('class', 'icon-group')
-                            .style('transform', 'translate(-13px, -5px) scale(0.06)')
+                        .attr('class', 'icon-group')
+                        .style('transform', 'translate(-13px, -5px) scale(0.06)')
                         .append('path')
-                            .attr('d', 'M224,256c70.7,0,128-57.3,128-128S294.7,0,224,0S96,57.3,96,128S153.3,256,224,256z M134.4,288C85,297,0,348.2,0,422.4V464 c0,26.5,0,48,48,48h352c48,0,48-21.5,48-48v-41.6c0-74.2-92.8-125.4-134.4-134.4S183.8,279,134.4,288z')
-                            .attr('fill', '#eaeaea')
-                            .attr('stroke', 'black')
-                            .attr('stroke-width', '15px');
+                        .attr('d', 'M224,256c70.7,0,128-57.3,128-128S294.7,0,224,0S96,57.3,96,128S153.3,256,224,256z M134.4,288C85,297,0,348.2,0,422.4V464 c0,26.5,0,48,48,48h352c48,0,48-21.5,48-48v-41.6c0-74.2-92.8-125.4-134.4-134.4S183.8,279,134.4,288z')
+                        .attr('fill', '#eaeaea')
+                        .attr('stroke', 'black')
+                        .attr('stroke-width', '15px');
                 }
             });
             triCell.forEach((ellipseSetting, idx) => {
@@ -285,9 +279,9 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
                     .attr('ry', ellipseSetting.ry)
                     .style('stroke', ellipseSetting.stroke)
                     .style('stroke-width', 1)
-                    .style('fill', (d) => d.data.selectedColor ? internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1 ? d.data.selectedColor : d.data.deselectedColor : 'unset')
+                    .style('fill', (d) => (d.data.selectedColor ? ((internalSelectedNodes.indexOf(nodeKeyName(d.data.name)) > -1) ? d.data.selectedColor : d.data.deselectedColor) : 'unset'))
                     .style('stroke', (d) => (d.data.selectedColor ? 'black' : 'unset'))
-                    .attr('class', (d) => ((d.data.class && !(d.data.selectedColor))? `${d.data.class} ellipse${idx}` : colorCode(d) ? `${colorCode(d)} ellipse${idx}` : `default ellipse${idx}`));
+                    .attr('class', (d) => ((d.data.class && !(d.data.selectedColor)) ? `${d.data.class} ellipse${idx}` : colorCode(d) ? `${colorCode(d)} ellipse${idx}` : `default ellipse${idx}`));
             });
         } else {
             require('d3-fetch');
@@ -318,10 +312,10 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
                 .attr('dy', '.35em')
                 .attr('y', 30)
                 .style('text-anchor', 'middle')
-                .style('stroke','white')
-                .style('stroke-width','6px')
+                .style('stroke', 'white')
+                .style('stroke-width', '6px')
                 .text((d) => nodeLabel(d.data.name))
-                .attr('class', (d) => `node-text`);
+                .attr('class', 'node-text');
 
             nodeEnter.append('text')
                 .attr('dy', '.35em')
@@ -338,8 +332,7 @@ export const drawTree = (d3, targetDiv, data, fullWidth, fullHeight, margin, sel
                     let xOffset = 0;
                     if (d.data.name === 'lateral mesodermal cell') {
                         xOffset = -5;
-                    }
-                    if (d.data.name === 'mesothelial cell of epicardium') {
+                    } else if (d.data.name === 'mesothelial cell of epicardium') {
                         xOffset = 5;
                     }
                     const textNode = d3.select(`g.node.${nodeKeyName(d.data.name)} text.node-text`);
