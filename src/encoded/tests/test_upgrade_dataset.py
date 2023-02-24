@@ -580,7 +580,7 @@ def test_upgrade_annotation_37_to_38(upgrader, annotation_37):
 
 def test_upgrade_annotation_38_to_39(upgrader, annotation_38):
     value = upgrader.upgrade(
-        'annotation', annotation_37, current_version='38', target_version='39'
+        'annotation', annotation_38, current_version='38', target_version='39'
     )
     assert value['schema_version'] == '39'
     assert 'ENCYCLOPEDIAv4' not in value['internal_tags']
@@ -594,7 +594,7 @@ def test_upgrade_annotation_38_to_39(upgrader, annotation_38):
 
 def test_upgrade_experiment_36_to_37(upgrader, experiment_36):
     value = upgrader.upgrade(
-        'annotation', annotation_37, current_version='36', target_version='37'
+        'annotation', experiment_36, current_version='36', target_version='37'
     )
     assert value['schema_version'] == '37'
     assert 'ENCYCLOPEDIAv4' not in value['internal_tags']
