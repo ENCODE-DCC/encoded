@@ -16,8 +16,8 @@
             },
             {
                 "name": "mesenchymal stem cell",
-                "class": "mesoderm",
-                "linkClass": "mesoderm"
+                "class": "stem",
+                "linkClass": "stem"
             },
             {
                 "name": "neural cell",

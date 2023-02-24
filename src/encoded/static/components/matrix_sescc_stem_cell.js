@@ -17,6 +17,11 @@ const COL_CATEGORY = 'assay_title';
 const COL_SUBCATEGORY = 'target.label';
 const DONOR_CELL_WIDTH = 30;
 
+const rowCategoryOrder = [
+    'cell line',
+    'in vitro differentiated cells',
+    'organoid',
+];
 
 /**
  * Map stem cell key names to their corresponding query string values and page titles.
@@ -317,8 +322,9 @@ const convertExperimentToDataTable = (context) => {
     rowKeys.push('column-categories');
     headerRows.push({ rowContent: header, css: 'matrix__col-category-header' });
     const rowKeysInitialLength = rowKeys.length;
-    const rowCategoryBuckets = context.matrix.y[rowCategory].buckets;
-    const rowCategoryColors = rowCategoryBuckets.map(() => '#d1d1d1');
+    const unsortedRowCategoryBuckets = context.matrix.y[rowCategory].buckets;
+    const rowCategoryBuckets = unsortedRowCategoryBuckets.sort((a, b) => ((rowCategoryOrder.indexOf(a.key) > rowCategoryOrder.indexOf(b.key)) ? 1 : (rowCategoryOrder.indexOf(b.key) > rowCategoryOrder.indexOf(a.key)) ? -1 : 0));
+    const rowCategoryColors = rowCategoryBuckets.map(() => '#a7a7a7');
     const dataTable = rowCategoryBuckets.reduce((accumulatingTable, rowCategoryBucket, rowCategoryIndex) => {
         // Each loop iteration generates all the rows of the row subcategories (biosample term names)
         // under it.
