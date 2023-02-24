@@ -1363,7 +1363,11 @@
         "internal_status": "release ready",
         "internal_tags": [
             "RegulomeDB_2_1",
-            "Degron"
+            "Degron",
+            "RegulomeDB_2_2", 
+            "RegulomeDB_2_3", 
+            "RegulomeDB_3_0", 
+            "RegulomeDB_3_1"
         ],
         "lab": "bradley-bernstein",
         "status": "released",

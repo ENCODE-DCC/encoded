@@ -8,6 +8,7 @@
 * Added *related_annotations* calculated property
 * Added *seqFISH* to *assay_term_name* enum
 * Added *Degron* to *internal_tags* enums list.
+* Added *RegulomeDB_2_2*, *RegulomeDB_2_3*, *RegulomeDB_3_0* and *RegulomeDB_3_1* to the *internal_tags* enum list.
 
 ### Schema version 36
 * Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*

@@ -715,6 +715,18 @@ export const internalTagsMap = {
     RegulomeDB_2_1: {
         badgeFilename: 'tag-RegulomeDB_2_1.svg',
     },
+    RegulomeDB_2_2: {
+        badgeFilename: 'tag-RegulomeDB_2_2.svg',
+    },
+    RegulomeDB_2_3: {
+        badgeFilename: 'tag-RegulomeDB_2_3.svg',
+    },
+    RegulomeDB_3_0: {
+        badgeFilename: 'tag-RegulomeDB_3_0.svg',
+    },
+    RegulomeDB_3_1: {
+        badgeFilename: 'tag-RegulomeDB_3_1.svg',
+    },
     RushAD: {
         badgeFilename: 'tag-RushAD.svg',
     },

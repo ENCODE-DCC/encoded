@@ -132,6 +132,10 @@
                     "RegulomeDB_1_0",
                     "RegulomeDB_2_0",
                     "RegulomeDB_2_1",
+                    "RegulomeDB_2_2",
+                    "RegulomeDB_2_3",
+                    "RegulomeDB_3_0",
+                    "RegulomeDB_3_1",
                     "YaleImmuneCells"
                 ]
             }
