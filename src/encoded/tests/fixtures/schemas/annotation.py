@@ -250,10 +250,10 @@ def annotation_36(award, lab):
     }
 
 @pytest.fixture
-def annotation_37(award, lab):
+def annotation_38(award, lab):
     return {
         'award': award['@id'],
         'lab': lab['@id'],
-        'schema_version': '37',
-        'annotation_type': 'long-range chromatin interactions',
+        'schema_version': '39',
+        'internal_tags': ['ENCYCLOPEDIAv3', 'ENCYCLOPEDIAv4', 'ENCYCLOPEDIAv5', 'ENCYCLOPEDIAv6']
     }

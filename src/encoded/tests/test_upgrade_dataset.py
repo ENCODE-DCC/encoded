@@ -576,3 +576,31 @@ def test_upgrade_annotation_37_to_38(upgrader, annotation_37):
     )
     assert value['schema_version'] == '38'
     assert value['annotation_type'] == 'loops'
+
+
+def test_upgrade_annotation_38_to_39(upgrader, annotation_38):
+    value = upgrader.upgrade(
+        'annotation', annotation_37, current_version='38', target_version='39'
+    )
+    assert value['schema_version'] == '39'
+    assert 'ENCYCLOPEDIAv4' not in value['internal_tags']
+    assert 'ENCYCLOPEDIAv5' not in value['internal_tags']
+    assert 'ENCYCLOPEDIAv6' not in value['internal_tags']
+
+    expected_tags = ['ENCYCLOPEDIAv0.3', 'ENCYCLOPEDIAv1', 'ENCYCLOPEDIAv2', 'ENCYCLOPEDIAv3']
+    for tag in expected_tags:
+        assert tag in value['internal_tags']
+
+
+def test_upgrade_experiment_36_to_37(upgrader, experiment_36):
+    value = upgrader.upgrade(
+        'annotation', annotation_37, current_version='36', target_version='37'
+    )
+    assert value['schema_version'] == '37'
+    assert 'ENCYCLOPEDIAv4' not in value['internal_tags']
+    assert 'ENCYCLOPEDIAv5' not in value['internal_tags']
+    assert 'ENCYCLOPEDIAv6' not in value['internal_tags']
+
+    expected_tags = ['ENCYCLOPEDIAv0.3', 'ENCYCLOPEDIAv1', 'ENCYCLOPEDIAv2', 'ENCYCLOPEDIAv3']
+    for tag in expected_tags:
+        assert tag in value['internal_tags']
