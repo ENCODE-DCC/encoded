@@ -732,7 +732,7 @@ export const internalTagsMap = {
     },
     SESCC: {
         badgeFilename: 'tag-SESCC.svg',
-        collectionPath: '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
+        collectionPath: '/stem-cell-matrix/?type=Experiment&internal_tags=SESCC',
     },
     YaleImmuneCells: {
         badgeFilename: 'tag-YaleImmuneCells.svg',

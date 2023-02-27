@@ -195,10 +195,10 @@ export const CARDS_FOR_COLLECTIONS = {
         },
         {
             id: 'southeast-stem-cell-consortium',
-            title: 'Southeast Stem Cell Consortium',
-            help: 'Data generated for multiple cell types differentiated from the H9 cell line provided by the Southeast Stem Cell Consortium.',
+            title: 'Stem cells development',
+            help: 'Data generated for multiple cell types differentiated from a) induced pluripotent stem cells derived from the PGP donor and b) human embryonic stem cell lines such as H1 and H9.',
             icon: icons.southeastStemCellConsortium,
-            link: '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC&status=released',
+            link: '/stem-cell-matrix/?type=Experiment&replicates.library.biosample.donor.accession=ENCDO222AAA&status=released&control_type!=*',
             color: CARD_COLORS.collections,
             useSearchTerm: true,
             displayCount: false,

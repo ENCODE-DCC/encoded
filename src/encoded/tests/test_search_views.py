@@ -646,12 +646,12 @@ def test_search_views_matrix_response_no_results(index_workbook, testapp):
 
 
 def test_sescc_stem_cell_matrix(index_workbook, testapp):
-    res = testapp.get('/sescc-stem-cell-matrix/?type=Experiment').json
+    res = testapp.get('/stem-cell-matrix/?type=Experiment').json
     assert res['@type'] == ['SESCCStemCellMatrix']
-    assert res['@id'] == '/sescc-stem-cell-matrix/?type=Experiment'
+    assert res['@id'] == '/stem-cell-matrix/?type=Experiment'
     assert res['@context'] == '/terms/'
     assert res['notification'] == 'Success'
-    assert res['title'] == 'Stem Cell Development Matrix (SESCC)'
+    assert res['title'] == 'Stem cells development'
     assert res['total'] > 0
     assert 'filters' in res
     assert 'matrix' in res

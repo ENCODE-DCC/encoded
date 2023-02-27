@@ -1,0 +1,34 @@
+[
+    {
+        "name": "H1",
+        "class": "stem",
+        "linkClass": "stem",
+        "children": [
+            {
+                "name": "endodermal cell",
+                "class": "endoderm",
+                "linkClass": "endoderm"
+            },
+            {
+                "name": "mesendoderm",
+                "class": "mesendoderm",
+                "linkClass": "mesendoderm"
+            },
+            {
+                "name": "mesenchymal stem cell",
+                "class": "stem",
+                "linkClass": "stem"
+            },
+            {
+                "name": "neural cell",
+                "class": "ectoderm",
+                "linkClass": "ectoderm"
+            },
+            {
+                "name": "neuronal stem cell",
+                "class": "ectoderm",
+                "linkClass": "ectoderm"
+            }
+        ]
+    }
+]

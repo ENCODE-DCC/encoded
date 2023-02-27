@@ -1,12 +1,6 @@
-$bubbleSize: 13px;
+$bubbleSize: 15px;
 
 $unclickable: #a1a1a1;
-
-$mesoderm: #008000;
-$ectoderm: #800080;
-$stem: #edcf09;
-$unlabeled: #808080;
-$endoderm: blue;
 
 $bcell: #2794bf;
 $tcell: #2c9659;
@@ -14,11 +8,21 @@ $nkcell: #986ea4;
 $default: #959595;
 $cd4: #71c7c6;
 
-$mesoderm-light: #e3fae1;
-$ectoderm-light: #e4c6f7;
-$stem-light: #fafa98;
+$mesoderm: #7796cb;
+$ectoderm: #eb9486;
+$mesendoderm: #8e7ec9;
+$mesectoderm: #be9292;
+$stem: #f3de8a;
+$unlabeled: #a0a0a0;
+$endoderm: #b17fc1;
+
+$mesoderm-light: #bed0ef;
+$ectoderm-light: #f9e0dc;
+$mesendoderm-light: #c0b7e1;
+$mesectoderm-light: #d9bfbf;
+$stem-light: #fbf4da;
 $unlabeled-light: #d1d1d1;
-$endoderm-light: blue;
+$endoderm-light: #ddc8e4;
 
 $default-active: #36586d;
 $default-hover: #f2f2f2;
@@ -280,6 +284,22 @@ $default-hover: #f2f2f2;
             }
         }
 
+        &.mesendoderm {
+            background-color: $mesendoderm;
+
+            a {
+                color: white;
+            }
+        }
+
+        &.mesectoderm {
+            background-color: $mesectoderm;
+
+            a {
+                color: white;
+            }
+        }
+
         &.unlabeled {
             background-color: $unlabeled;
 
@@ -296,12 +316,26 @@ $default-hover: #f2f2f2;
 
 .sescc-matrix-graph {
     .link {
+        fill: none;
+
         &.mesoderm {
             stroke: $mesoderm;
         }
 
+        &.mesendoderm {
+            stroke: $mesendoderm;
+        }
+
+        &.mesectoderm {
+            stroke: $mesectoderm;
+        }
+
         &.endoderm {
-            stroke: $ectoderm;
+            stroke: $endoderm;
+        }
+
+        &.stem {
+            stroke: $stem;
         }
 
         &.ectoderm {
@@ -309,45 +343,80 @@ $default-hover: #f2f2f2;
         }
     }
 
-    .js-cell {
-        .unlabeled {
+    .clickable {
+        pointer-events: all;
+
+        ellipse, circle, line, path {
+            fill: white;
+            stroke: black;
+            stroke-width: 1px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+
+    .node {
+        &.unlabeled .js-cell {
             fill: $unlabeled-light;
             stroke: #000;
-        }
 
-        .mesoderm {
-            fill: $mesoderm-light;
-            stroke: #000;
-        }
-
-        .ectoderm {
-            fill: $ectoderm-light;
-            stroke: #000;
-        }
-
-        .stem {
-            fill: $stem-light;
-            stroke: #000;
-        }
-
-        &.active-cell {
-            ellipse, circle, line, path {
-                stroke: white;
-            }
-
-            .unlabeled {
+            &.active-cell {
                 fill: $unlabeled;
             }
+        }
 
-            .mesoderm {
+        &.mesoderm .js-cell {
+            fill: $mesoderm-light;
+            stroke: #000;
+
+            &.active-cell {
                 fill: $mesoderm;
             }
+        }
 
-            .ectoderm {
+        &.mesendoderm .js-cell {
+            fill: $mesendoderm-light;
+            stroke: #000;
+
+            &.active-cell {
+                fill: $mesendoderm;
+            }
+        }
+
+        &.mesectoderm .js-cell {
+            fill: $mesectoderm-light;
+            stroke: #000;
+
+            &.active-cell {
+                fill: $mesectoderm;
+            }
+        }
+
+        &.endoderm .js-cell {
+            fill: $endoderm-light;
+            stroke: #000;
+
+            &.active-cell {
+                fill: $endoderm;
+            }
+        }
+
+        &.ectoderm .js-cell {
+            fill: $ectoderm-light;
+            stroke: #000;
+
+            &.active-cell {
                 fill: $ectoderm;
             }
+        }
 
-            .stem {
+        &.stem .js-cell {
+            fill: $stem-light;
+            stroke: #000;
+
+            &.active-cell {
                 fill: $stem;
             }
         }
@@ -361,12 +430,45 @@ $default-hover: #f2f2f2;
     .sescc-layer-legend {
         position: relative;
         font-size: 0.8rem;
+        padding: 5px;
+        background: white;
 
         @media screen and (min-width: $screen-md-min) {
             position: absolute;
-            top: 10px;
+            top: -40px;
             left: 10px;
             font-size: 1rem;
+        }
+    }
+
+    .badge-group {
+        @media screen and (min-width: $screen-md-min) {
+            position: absolute;
+            top: -40px;
+            right: 20px;
+            width: 250px;
+            text-align: right;
+        }
+
+        .title {
+            font-family: Oswald;
+            padding-bottom: 10px;
+            font-size: 1.2rem;
+        }
+    }
+}
+
+.sescc-matrix-graph {
+    overflow: scroll;
+    margin-top: 40px;
+
+    @media screen and (min-width: $screen-md-min) {
+        overflow: hidden;
+    }
+
+    .node-text {
+        tspan {
+            font-size: 0.9rem;
         }
     }
 }
@@ -403,12 +505,28 @@ $default-hover: #f2f2f2;
             background: $mesoderm;
         }
 
+        &.mesendoderm {
+            background: $mesendoderm;
+        }
+
+        &.mesectoderm {
+            background: $mesectoderm;
+        }
+
         &.ectoderm {
             background: $ectoderm;
+        }
+
+        &.stem {
+            background: $stem;
         }
     }
 
     .layer-name {
         flex: 0 1 auto;
     }
+}
+
+.js-cell-pgpdonor-full {
+    display: none;
 }

@@ -1,78 +1,57 @@
 [
     {
-        "name": "H9 Stem Cell",
-        "class": "unlabeled",
-        "linkClass": "",
-        "selectedColor": "#808080",
-        "deselectedColor": "#D1D1D1",
+        "name": "H9",
+        "class": "stem",
+        "linkClass": "stem",
         "children": [
             {
-                "name": "Hepatocyte",
-                "class": "unlabeled",
-                "linkClass": "endoderm",
-                "selectedColor": "#808080",
-                "deselectedColor": "#D1D1D1"
+                "name": "hepatocyte",
+                "class": "endoderm",
+                "linkClass": "endoderm"
             },
             {
-                "name": "Splanchnic Mesodermal Cell",
+                "name": "splanchnic mesodermal cell",
                 "class": "mesoderm",
                 "linkClass": "mesoderm",
-                "selectedColor": "#008000",
-                "deselectedColor": "#E3FAE1",
                 "children": [
                     {
-                        "name": "Smooth Muscle Cell",
+                        "name": "mesothelial cell",
                         "class": "mesoderm",
-                        "linkClass": "mesoderm",
-                        "selectedColor": "#008000",
-                        "deselectedColor": "#E3FAE1"
-                    },
-                    {
-                        "name": "Mesothelial Cell",
-                        "class": "mesoderm",
-                        "linkClass": "mesoderm",
-                        "selectedColor": "#008000",
-                        "deselectedColor": "#E3FAE1"
+                        "linkClass": "mesoderm"
                     }
                 ]
             },
             {
-                "name": "Lateral Mesodermal Cell",
-                "class": "mesoderm",
-                "linkClass": "mesoderm",
-                "selectedColor": "#008000",
-                "deselectedColor": "#E3FAE1"
+                        "name": "smooth muscle cell",
+                        "class": "mesoderm",
+                        "linkClass": "mesoderm"
             },
             {
-                "name": "Neural Crest Cell",
+                "name": "lateral mesodermal cell",
                 "class": "mesoderm",
-                "linkClass": "mesoderm",
-                "selectedColor": "#008000",
-                "deselectedColor": "#E3FAE1",
-                "parent": "H9 Stem Cell",
+                "linkClass": "mesoderm"
+            },
+            {
+                "name": "neural crest cell",
+                "class": "ectoderm",
+                "linkClass": "ectoderm",
                 "children": [
                     {
-                        "name": "Mesenchymal Stem Cell",
+                        "name": "mesenchymal stem cell",
                         "class": "stem",
-                        "linkClass": "endoderm",
-                        "selectedColor": "#EDCF09",
-                        "deselectedColor": "#FAFA98"
+                        "linkClass": "stem"
                     }
                 ]
             },
             {
-                "name": "Neural Progenitor Cell",
+                "name": "neural progenitor cell",
                 "class": "ectoderm",
-                "linkClass": "endoderm",
-                "selectedColor": "#800080",
-                "deselectedColor": "#E4C6f7"
+                "linkClass": "ectoderm"
             },
             {
-                "name": "Ecto Neural Progenitor Cell",
+                "name": "ecto neural progenitor cell",
                 "class": "ectoderm",
-                "linkClass": "endoderm",
-                "selectedColor": "#800080",
-                "deselectedColor": "#E4C6f7"
+                "linkClass": "ectoderm"
             }
         ]
     }
