@@ -591,6 +591,8 @@ class Biosample(Item):
             modifications_list)
         # just filter this by specific dict keys
         reduced = [
+            'biosample_term_name',
+            'sample_type',
             'sex_stage_age',
             'disease_term_name',
             'treatments_phrase',
@@ -602,6 +604,7 @@ class Biosample(Item):
             'phase',
             'fractionated',
             'synchronization',
+            'post_differentiation_time',
         ]
         props_list = []
         for prop in reduced:
@@ -1019,26 +1022,28 @@ def generate_summary_dictionary(
         pulse_chase_phrase = str(pulse_chase_time) + ' ' + pulse_chase_time_units
         dict_of_phrases['pulse_chase_time'] = f'subjected to a {pulse_chase_phrase} pulse-chase'
 
-    if ('sample_type' in dict_of_phrases and
-        dict_of_phrases['sample_type'] != 'cell line') or \
-        ('sample_type' not in dict_of_phrases):
-        phrase = ''
+    if biosample_type is not None and \
+        biosample_type not in ['organoid', 'organoids']:
+        if ('sample_type' in dict_of_phrases and
+            dict_of_phrases['sample_type'] != 'cell line') or \
+            ('sample_type' not in dict_of_phrases):
+            phrase = ''
 
-        if 'sex' in dict_of_phrases:
-            if dict_of_phrases['sex'] == 'mixed':
-                phrase += dict_of_phrases['sex'] + ' sex'
-            else:
-                phrase += dict_of_phrases['sex']
+            if 'sex' in dict_of_phrases:
+                if dict_of_phrases['sex'] == 'mixed':
+                    phrase += dict_of_phrases['sex'] + ' sex'
+                else:
+                    phrase += dict_of_phrases['sex']
 
-        stage_phrase = ''
-        if 'life_stage' in dict_of_phrases:
-            stage_phrase += ' ' + dict_of_phrases['life_stage']
+            stage_phrase = ''
+            if 'life_stage' in dict_of_phrases:
+                stage_phrase += ' ' + dict_of_phrases['life_stage']
 
-        phrase += stage_phrase.replace("embryonic", "embryo")
+            phrase += stage_phrase.replace("embryonic", "embryo")
 
-        if 'age_display' in dict_of_phrases:
-            phrase += ' (' + dict_of_phrases['age_display'] + ')'
-        dict_of_phrases['sex_stage_age'] = phrase
+            if 'age_display' in dict_of_phrases:
+                phrase += ' (' + dict_of_phrases['age_display'] + ')'
+            dict_of_phrases['sex_stage_age'] = phrase
 
     if treatment_objects_list is not None and len(treatment_objects_list) > 0:
         treatments_list = []
