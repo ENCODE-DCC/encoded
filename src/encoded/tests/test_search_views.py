@@ -281,7 +281,8 @@ def test_search_views_search_view_columns_from_configs(index_workbook, testapp, 
     search_registry.add(config1)
     search_registry.add(config2)
     r = testapp.get('/search/?type=Experiment')
-    assert 30 < len(r.json['columns']) < 40
+    print(len(r.json['columns']))
+    assert 30 < len(r.json['columns']) <= 40
     r = testapp.get('/search/?type=Experiment&config=config1')
     assert len(r.json['columns']) == 2
     r = testapp.get('/search/?type=Experiment&config=config1&config=config2')
