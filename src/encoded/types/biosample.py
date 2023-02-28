@@ -591,9 +591,8 @@ class Biosample(Item):
             modifications_list)
         # just filter this by specific dict keys
         reduced = [
-            'sample_term_name',
-            'sample_type',
             'sex_stage_age',
+            'organoid_summary',
             'disease_term_name',
             'treatments_phrase',
             'genotype_strain',
@@ -604,7 +603,6 @@ class Biosample(Item):
             'phase',
             'fractionated',
             'synchronization',
-            'post_differentiation_time',
         ]
         props_list = []
         for prop in reduced:
@@ -868,6 +866,7 @@ def generate_summary_dictionary(
         'strain_background': '',
         'preservation_method': '',
         'experiment_term_phrase': '',
+        'organoid_summmary': '',
     }
 
     if organismObject is not None:
@@ -1042,6 +1041,19 @@ def generate_summary_dictionary(
         if 'age_display' in dict_of_phrases:
             phrase += ' (' + dict_of_phrases['age_display'] + ')'
         dict_of_phrases['sex_stage_age'] = phrase
+
+    if ('sample_type' in dict_of_phrases and
+        dict_of_phrases['sample_type'] == 'organoid'):
+        phrase = ''
+        if 'sample_term_name' in dict_of_phrases:
+            phrase += dict_of_phrases['sample_term_name']
+
+        if 'sample_type' in dict_of_phrases:
+            phrase += ' ' + dict_of_phrases['sample_type']
+
+        if 'post_differentiation_time' in dict_of_phrases:
+            phrase += ' ' + dict_of_phrases['post_differentiation_time']
+        dict_of_phrases['organoid_summary'] = phrase
 
     if treatment_objects_list is not None and len(treatment_objects_list) > 0:
         treatments_list = []
