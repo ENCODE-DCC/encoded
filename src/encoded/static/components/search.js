@@ -306,7 +306,7 @@ class BiosampleComponent extends React.Component {
                     <div className="result-item__data">
                         <a href={result['@id']} className="result-item__link">
                             {`${result.biosample_ontology.term_name}`}
-                            {result.biosample_ontology && result.biosample_ontology.classification == 'organoid' ? <span>{` organoid`}</span> : null}
+                            {result.biosample_ontology && result.biosample_ontology.classification === 'organoid' ? <span>{` ${result.biosample_ontology.classification}`}</span> : null}
                             <em>{` (${result.organism.scientific_name}`}</em>
                             {`${separator}${lifeStage}${ageDisplay})`}
                         </a>
@@ -514,7 +514,7 @@ const ExperimentComponent = (props, reactContext) => {
                             <span>{referenceLoci.length === 1 ? ` of ${referenceLoci[0].symbol} locus` : ' of multiple loci'}</span>
                         : null}
                         {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` in ${result.biosample_ontology.term_name}`}</span> : null}
-                        {result.biosample_ontology && result.biosample_ontology.classification == 'organoid' ? <span>{` organoid`}</span> : null}
+                        {result.biosample_ontology && result.biosample_ontology.classification === 'organoid' ? <span>{` ${result.biosample_ontology.classification}`}</span> : null}
                         {(isFunctionalExperiment && result.crispr_screen_readout) ?
                             <span>
                                 {` with ${result.crispr_screen_readout}`}

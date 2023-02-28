@@ -591,7 +591,7 @@ class Biosample(Item):
             modifications_list)
         # just filter this by specific dict keys
         reduced = [
-            'biosample_term_name',
+            'sample_term_name',
             'sample_type',
             'sex_stage_age',
             'disease_term_name',
