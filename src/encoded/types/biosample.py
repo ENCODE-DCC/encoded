@@ -1047,8 +1047,6 @@ def generate_summary_dictionary(
         phrase = ''
         if 'sample_term_name' in dict_of_phrases:
             phrase += dict_of_phrases['sample_term_name']
-
-        if 'sample_type' in dict_of_phrases:
             phrase += ' ' + dict_of_phrases['sample_type']
 
         if 'post_differentiation_time' in dict_of_phrases:
