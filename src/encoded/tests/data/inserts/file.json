@@ -6040,5 +6040,19 @@
         "file_size": 370148294,
         "output_type": "fold over change matrix",
         "lab": "/labs/richard-myers/"
+    },
+    {
+        "dataset": "ENCSR831GKM",
+        "status": "released",
+        "award": "U41HG006992",
+        "assembly": "GRCh38",
+        "md5sum": "475fb823acff51433b068f5af45a37a5",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "output_type": "representative IDR thresholded peaks",
+        "file_format": "bed",
+        "lab": "/labs/j-michael-cherry/",
+        "file_format_type": "bed3+",
+        "accession": "ENCFF880RDZ",
+        "file_size": 13224
     }
 ]
