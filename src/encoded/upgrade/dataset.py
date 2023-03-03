@@ -822,9 +822,33 @@ def annotation_37_38(value, system):
     if annotation_type == "long-range chromatin interactions":
         value['annotation_type'] = 'loops'
 
-
-@upgrade_step('experiment', '36', '37')
+@upgrade_step('aggregate_series', '3', '4')
 @upgrade_step('annotation', '38', '39')
+@upgrade_step('collection_series', '1', '2')
+@upgrade_step('computation_model', '1', '2')
+@upgrade_step('differential_accessibility_series', '1', '2')
+@upgrade_step('differentiation_series', '1', '2')
+@upgrade_step('disease_series', '1', '2')
+@upgrade_step('experiment', '36', '37')
+@upgrade_step('experiment_series', '3', '4')
+@upgrade_step('functional_characterization_experiment', '12', '13')
+@upgrade_step('functional_characterization_series', '4', '5')
+@upgrade_step('gene_silencing_series', '1', '2')
+@upgrade_step('matched_set', '17', '18')
+@upgrade_step('multiomics_series', '1', '2')
+@upgrade_step('organism_development_series', '17', '18')
+@upgrade_step('project', '17', '18')
+@upgrade_step('publication_data', '17', '18')
+@upgrade_step('pulse_chase_time_series', '1', '2')
+@upgrade_step('reference', '21', '22')
+@upgrade_step('reference_epigenome', '17', '18')
+@upgrade_step('replication_timing_series', '17', '18')
+@upgrade_step('single_cell_rna_series', '3', '4')
+@upgrade_step('single_cell_unit', '2', '3')
+@upgrade_step('transgenic_enhancer_experiment', '2', '3')
+@upgrade_step('treatment_concentration_series', '17', '18')
+@upgrade_step('treatment_time_series', '18', '19')
+@upgrade_step('ucsc_browser_composite', '17', '18')
 def dataset_31_32(value, system):
     # https://igvf.atlassian.net/browse/ENCM-131
     if 'ENCYCLOPEDIAv3' in value['internal_tags']:

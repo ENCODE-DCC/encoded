@@ -54,7 +54,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "related_datasets": {
             "title": "Additional datasets",

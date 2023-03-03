@@ -578,29 +578,73 @@ def test_upgrade_annotation_37_to_38(upgrader, annotation_37):
     assert value['annotation_type'] == 'loops'
 
 
-def test_upgrade_annotation_38_to_39(upgrader, annotation_38):
-    value = upgrader.upgrade(
-        'annotation', annotation_38, current_version='38', target_version='39'
-    )
-    assert value['schema_version'] == '39'
-    assert 'ENCYCLOPEDIAv4' not in value['internal_tags']
-    assert 'ENCYCLOPEDIAv5' not in value['internal_tags']
-    assert 'ENCYCLOPEDIAv6' not in value['internal_tags']
+def test_upgrade_dataset_31_to_32(
+    upgrader,
+    aggregate_series_3,
+    annotation_38,
+    collection_series_1,
+    computational_model_1,
+    differential_accessibility_series_1,
+    differentiation_series_1,
+    experiment_36,
+    experiment_series_3,
+    functional_characterization_experiment_12,
+    functional_characterization_series_4,
+    gene_silencing_series_1,
+    matched_set_17,
+    multiomics_series_1,
+    organism_development_series_17,
+    project_17,
+    publication_data_17,
+    pulse_chase_time_series_1,
+    reference_21,
+    reference_epigenome_17,
+    replication_timing_series_17,
+    single_cell_series_3,
+    single_cell_unit_2,
+    transgenic_enhancer_experiment_2,
+    treatment_concentration_series_17,
+    treatment_time_series_18,
+    ucsc_browser_composite_17
+):
+    upgrade_mapping = {
+        'aggregate_series': (aggregate_series_3, '3', '4'),
+        'annotation': (annotation_38, '38', '39'),
+        'collection_series': (collection_series_1, '1', '2'),
+        'computation_model': (computational_model_1, '1', '2'),
+        'differential_accessibility_series': (differential_accessibility_series_1, '1', '2'),
+        'differentiation_series': (differentiation_series_1, '1', '2'),
+        'disease_series': (disease_series_1, '1', '2'),
+        'experiment': (experiment_36, '36', '37'),
+        'experiment_series': (experiment_series_3, '3', '4'),
+        'functional_characterization_experiment': (functional_characterization_experiment_12, '12', '13'),
+        'functional_characterization_series': (functional_characterization_series_4, '4', '5'),
+        'gene_silencing_series': (gene_silencing_series_1, '1', '2'),
+        'matched_set': (matched_set_17, '17', '18'),
+        'multiomics_series': (multiomics_series_1, '1', '2'),
+        'organism_development_series': (organism_development_series_17, '17', '18'),
+        'project': (project_17, '17', '18'),
+        'publication_data': (publication_data_17, '17', '18'),
+        'pulse_chase_time_series': (pulse_chase_time_series_1, '1', '2'),
+        'reference': (reference_21, '21', '22'),
+        'reference_epigenome': (reference_epigenome_17, '17', '18'),
+        'replication_timing_series': (replication_timing_series_17, '17', '18'),
+        'single_cell_rna_series': (single_cell_series_3, '3', '4'),
+        'single_cell_unit': (single_cell_unit_2, '2', '3'),
+        'transgenic_enhancer_experiment': (transgenic_enhancer_experiment_2, '2', '3'),
+        'treatment_concentration_series': (treatment_concentration_series_17, '17', '18'),
+        'treatment_time_series': (treatment_time_series_18, '18', '19'),
+        'ucsc_browser_composite':(ucsc_browser_composite_17, '17', '18')
+    }
+    for schema in upgrade_mapping:
+        value = upgrader.upgrade(
+            schema, upgrade_mapping[schema][0], current_version=upgrade_mapping[schema][1], target_version=upgrade_mapping[schema][2]
+        )
+        assert value['schema_version'] == upgrade_mapping[schema][2]
+        assert 'ENCYCLOPEDIAv4' not in value['internal_tags']
+        assert 'ENCYCLOPEDIAv5' not in value['internal_tags']
+        assert 'ENCYCLOPEDIAv6' not in value['internal_tags']
 
-    expected_tags = ['ENCYCLOPEDIAv0.3', 'ENCYCLOPEDIAv1', 'ENCYCLOPEDIAv2', 'ENCYCLOPEDIAv3']
-    for tag in expected_tags:
-        assert tag in value['internal_tags']
-
-
-def test_upgrade_experiment_36_to_37(upgrader, experiment_36):
-    value = upgrader.upgrade(
-        'experiment', experiment_36, current_version='36', target_version='37'
-    )
-    assert value['schema_version'] == '37'
-    assert 'ENCYCLOPEDIAv4' not in value['internal_tags']
-    assert 'ENCYCLOPEDIAv5' not in value['internal_tags']
-    assert 'ENCYCLOPEDIAv6' not in value['internal_tags']
-
-    expected_tags = ['ENCYCLOPEDIAv0.3', 'ENCYCLOPEDIAv1', 'ENCYCLOPEDIAv2', 'ENCYCLOPEDIAv3']
-    for tag in expected_tags:
-        assert tag in value['internal_tags']
+        expected_tags = ['ENCYCLOPEDIAv0.3', 'ENCYCLOPEDIAv1', 'ENCYCLOPEDIAv2', 'ENCYCLOPEDIAv3']
+        for tag in expected_tags:
+            assert tag in value['internal_tags']

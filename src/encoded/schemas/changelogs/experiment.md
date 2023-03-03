@@ -1,6 +1,7 @@
 ## Changelog for experiment.json
 
 ### Schema version 37
+
 * Upgraded *internal_tags* as follows:
     * *ENCYCLOPEDIAv3* is now *ENCYCLOPEDIAv0.3*
     * *ENCYCLOPEDIAv4* is now *ENCYCLOPEDIAv1*

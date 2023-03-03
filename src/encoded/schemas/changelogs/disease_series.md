@@ -1,5 +1,13 @@
 ## Changelog for disease_series.json
 
+### Schema version 2
+
+* Upgraded *internal_tags* as follows:
+    * *ENCYCLOPEDIAv3* is now *ENCYCLOPEDIAv0.3*
+    * *ENCYCLOPEDIAv4* is now *ENCYCLOPEDIAv1*
+    * *ENCYCLOPEDIAv5* is now *ENCYCLOPEDIAv2*
+    * *ENCYCLOPEDIAv6* is now *ENCYCLOPEDIAv3*
+
 ### Minor changes since schema version 1
 * Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
 * Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum

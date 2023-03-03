@@ -1,10 +1,17 @@
 ## Changelog for transgenic_enhancer_experiment.json
 
-### Schema Version 2
+### Schema version 3
+
+* Upgraded *internal_tags* as follows:
+    * *ENCYCLOPEDIAv3* is now *ENCYCLOPEDIAv0.3*
+    * *ENCYCLOPEDIAv4* is now *ENCYCLOPEDIAv1*
+    * *ENCYCLOPEDIAv5* is now *ENCYCLOPEDIAv2*
+    * *ENCYCLOPEDIAv6* is now *ENCYCLOPEDIAv3*
+
+### Schema version 2
 
 * The NTR term 'transgenic enhancer assay' was replaced with the OBI term 'enhancer reporter assay' (OBI:0002083)
 * Added *Degron* to *internal_tags* enums list.
-
 
 ### Minor changes since schema version 1
 
