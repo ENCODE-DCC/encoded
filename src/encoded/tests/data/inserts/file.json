@@ -5895,6 +5895,23 @@
         "uuid": "642d37fd-c6a1-4aaf-9e3f-6169fb5c7e7a"
     },
     {
+        "accession": "ENCFF454SCS",
+        "assembly": "GRCh38",
+        "award": "U54HG007004",
+        "dataset": "ENCSR212POL",
+        "file_format": "bigBed",
+        "file_format_type": "bed6",
+        "file_size": 322595,
+        "lab": "thomas-gingeras",
+        "md5sum": "4951809dd75b03c7af67cc8471e003dc",
+        "no_file_available": false,
+        "output_type": "selected regions for predicted signal and sequence contribution scores",
+        "preferred_default": true,
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "c004e57d-290d-20cb-45df-6169fb5ba738"
+    },
+    {
         "accession": "ENCFF627SMN",
         "assembly": "GRCh38",
         "award": "U54HG007004",
