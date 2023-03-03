@@ -127,6 +127,7 @@
                 "PWMs",
                 "regulatory elements signal matrix",
                 "representative DNase hypersensitivity sites",
+                "representative IDR thresholded peaks",
                 "transcript expression",
                 "transcription factor motifs",
                 "transcription start sites",
