@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "16"
+            "default": "17"
         },
         "step_label": {
             "title": "Step label",
@@ -235,6 +235,13 @@
                     "nested contact domains",
                     "non-targeting gRNAs",
                     "normalized signal of all reads",
+                    "normalized observed signal profile",
+                    "normalized observed signal profile (minus strand)",
+                    "normalized observed signal profile (plus strand)",
+                    "normalized predicted bias profile",
+                    "normalized predicted signal profile",
+                    "normalized predicted signal profile (minus strand)",
+                    "normalized predicted signal profile (plus strand)",
                     "novel peptides",
                     "nuclease cleavage frequency",
                     "observed bias profile",
@@ -311,6 +318,7 @@
                     "selected regions for bias-corrected predicted signal profile",
                     "selected regions for count sequence contribution scores",
                     "selected regions for predicted bias profile",
+                    "selected regions for predicted signal and sequence contribution scores",
                     "selected regions for predicted signal profile",
                     "selected regions for predicted signal profile (minus strand)",
                     "selected regions for predicted signal profile (plus strand)",
@@ -494,6 +502,13 @@
                     "nested contact domains",
                     "non-targeting gRNAs",
                     "normalized signal of all reads",
+                    "normalized observed signal profile",
+                    "normalized observed signal profile (minus strand)",
+                    "normalized observed signal profile (plus strand)",
+                    "normalized predicted bias profile",
+                    "normalized predicted signal profile",
+                    "normalized predicted signal profile (minus strand)",
+                    "normalized predicted signal profile (plus strand)",
                     "novel peptides",
                     "nuclease cleavage frequency",
                     "observed bias profile",
@@ -569,6 +584,7 @@
                     "selected regions for bias-corrected predicted signal profile",
                     "selected regions for count sequence contribution scores",
                     "selected regions for predicted bias profile",
+                    "selected regions for predicted signal and sequence contribution scores",
                     "selected regions for predicted signal profile",
                     "selected regions for predicted signal profile (minus strand)",
                     "selected regions for predicted signal profile (plus strand)",

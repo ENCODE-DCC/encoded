@@ -95,6 +95,7 @@
             "type": "string",
             "enum": [
                 "binding sites",
+                "BPNet-control",
                 "BPNet-model",
                 "cell type annotation",
                 "curated SNVs",
@@ -105,6 +106,7 @@
                 "candidate Cis-Regulatory Elements",
                 "chromatin state",
                 "ChromBPNet-model",
+                "ChromBPNet-bias-model",
                 "consensus DNase hypersensitivity sites",
                 "cross-species functional conservation",
                 "enhancer predictions",
