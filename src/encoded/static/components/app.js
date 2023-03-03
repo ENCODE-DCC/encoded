@@ -108,7 +108,6 @@ const portal = {
             title: 'Help',
             children: [
                 { id: 'gettingstarted', title: 'Using the portal', url: '/help/getting-started/' },
-                { id: 'interactivehelp', title: 'Interactive help', url: '/?walkme=19-976547', attr: { 'data-reload': '' } },
                 { id: 'cart', title: 'Cart', url: '/help/cart/' },
                 { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
                 { id: 'citingencode', title: 'Citing ENCODE', url: '/help/citing-encode' },
@@ -1257,7 +1256,6 @@ class App extends React.Component {
                             gtag('config', 'G-GY70FXW0SB');
                         ` }}
                     />
-                    <script async src={`https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/${globals.isProductionHost(this.props.href) ? '' : 'test/'}walkme_8c7ff9322d01408798869806f9f5a132_https.js`} />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
                     {this.state.context && this.state.context['@type'] && this.state.context['@type'].some((type) => ['experiment', 'functionalcharacterizationexperiment', 'annotation'].includes(type.toLowerCase())) ?
