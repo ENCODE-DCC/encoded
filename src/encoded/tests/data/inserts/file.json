@@ -2987,15 +2987,15 @@
         "uuid": "12171a1b-23de-431c-9001-181acb0642c2"
     },
     {
-        "_test": "bias model",
+        "_test": "bias models",
         "accession": "ENCFF102BIA",
         "award": "U41HG006992",
         "dataset": "ENCSR001REF",
         "date_created": "2020-04-18T16:46:18.670068+00:00",
-        "file_format": "txt",
+        "file_format": "tar",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "2a7515b6ea573ea6f26869771fa95843",
-        "output_type": "bias model",
+        "output_type": "bias models",
         "status": "released",
         "file_size": 201332222,
         "submitted_by": "sit.duis@blandit.hendrerit",
@@ -5549,7 +5549,7 @@
         "file_size": 79562357,
         "lab": "j-michael-cherry",
         "md5sum": "24c76722c4bc063c72ea91ee075c7883",
-        "output_type": "predicted profile",
+        "output_type": "predicted signal profile",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "d2b290fb-bf67-2ea9-4d91-53d2ce3824c7"
@@ -5706,6 +5706,125 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "a50840fb-7f96-d348-4d91-53d2c5c111a6"
+    },
+    {
+        "accession": "ENCFF808NSP",
+        "aliases": [
+            "j-michael-cherry:kundaje_normalized_observed_signal_profile"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 79562357,
+        "lab": "j-michael-cherry",
+        "md5sum": "55cb778635bc063c719911ee0754cec3",
+        "output_type": "normalized observed signal profile",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d2b290fb-841d-4257-8635-53d2ce384cec"
+    },
+    {
+        "accession": "ENCFF909NSP",
+        "aliases": [
+            "j-michael-cherry:kundaje_normalized_observed_signal_profile_minus"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 79562357,
+        "lab": "j-michael-cherry",
+        "md5sum": "00bc778635bc063c719911ee0754cec3",
+        "output_type": "normalized observed signal profile (minus strand)",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d2b290fb-c7e7-20cb-8635-53d2cea738ec"
+    },
+    {
+        "accession": "ENCFF707NSP",
+        "aliases": [
+            "j-michael-cherry:kundaje_normalized_observed_signal_profile_plus"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 79562357,
+        "lab": "j-michael-cherry",
+        "md5sum": "81bb6722c4bc063c7f9681ee0724c783",
+        "output_type": "normalized observed signal profile (plus strand)",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "24c790fb-64e6-4257-2aa2-53d2ce380951"
+    },
+    {
+        "accession": "ENCFF505BIA",
+        "aliases": [
+            "j-michael-cherry:kundaje_normalized_predicted_bias_profile"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 79562357,
+        "lab": "j-michael-cherry",
+        "md5sum": "68d26f9684bc063c73be11ee075a6ba3",
+        "output_type": "normalized predicted bias profile",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d83b90d7-bf67-4257-68d2-53d2ce38a6ba"
+    },
+    {
+        "accession": "ENCFF303NPP",
+        "aliases": [
+            "j-michael-cherry:kundaje_normalized_predicted_signal_profile"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 79562357,
+        "lab": "j-michael-cherry",
+        "md5sum": "59803a6bc4bc063c719911ee075cc115",
+        "output_type": "normalized predicted signal profile",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "6bac90fb-c115-4257-a109-53d2ce385084"
+    },
+    {
+        "accession": "ENCFF919NPP",
+        "aliases": [
+            "j-michael-cherry:kundaje_normalized_predicted_signal_profile_minus"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 79562357,
+        "lab": "j-michael-cherry",
+        "md5sum": "5bba2722c404ce3c71994610075cd2b2",
+        "output_type": "normalized predicted signal profile (minus strand)",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "b24c90fb-e38b-4257-4610-53d4610804ce"
+    },
+    {
+        "accession": "ENCFF818NPP",
+        "aliases": [
+            "j-michael-cherry:kundaje_normalized_predicted_signal_profile_plus"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 79562357,
+        "lab": "j-michael-cherry",
+        "md5sum": "e0c9a622c4bc063cd345c11e075c0043",
+        "output_type": "normalized predicted signal profile (plus strand)",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "a50840fb-7f96-2c00-4d91-53d2c5c111a6"
     },
     {
         "accession": "ENCFF627SCC",
