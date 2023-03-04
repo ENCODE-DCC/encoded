@@ -586,6 +586,7 @@ def test_upgrade_dataset_31_to_32(
     computational_model_1,
     differential_accessibility_series_1,
     differentiation_series_1,
+    disease_series_1,
     experiment_36,
     experiment_series_3,
     functional_characterization_experiment_12,
