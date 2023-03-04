@@ -825,7 +825,7 @@ def annotation_37_38(value, system):
 @upgrade_step('aggregate_series', '3', '4')
 @upgrade_step('annotation', '38', '39')
 @upgrade_step('collection_series', '1', '2')
-@upgrade_step('computation_model', '1', '2')
+@upgrade_step('computational_model', '1', '2')
 @upgrade_step('differential_accessibility_series', '1', '2')
 @upgrade_step('differentiation_series', '1', '2')
 @upgrade_step('disease_series', '1', '2')
