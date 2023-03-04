@@ -20,4 +20,4 @@ def differential_accessibility_series_1(testapp, lab, base_experiment_submitted,
         'schema_version': '1',
         'internal_tags': ['ENCYCLOPEDIAv3', 'ENCYCLOPEDIAv4', 'ENCYCLOPEDIAv5', 'ENCYCLOPEDIAv6']
     }
-    return testapp.post_json('/differential_accessibility_series', item, status=201).json['@graph'][0]
+    return item
