@@ -1088,7 +1088,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                             {chromModel.length > 0 ?
+                            {chromModel.length > 0 ?
                                 <div data-test="chromModelannotations">
                                     <dt>Annotation (ChromBPNet-model)</dt>
                                     <dd>
