@@ -596,6 +596,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     let gkmsvmAnnotations = [];
     let physicalModeling = [];
     let bpnetModel = [];
+    let chromModel = [];
     if (context.related_annotations && context.related_annotations.length > 0) {
         context.related_annotations.forEach((annotation) => {
             if (annotation.annotation_type === 'genotyping') {
@@ -606,12 +607,15 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 physicalModeling.push(annotation);
             } else if (annotation.annotation_type === 'BPNet-model') {
                 bpnetModel.push(annotation);
+            } else if (annotation.annotation_type === 'ChromBPNet-model') {
+                chromModel.push(annotation);
             }
         });
         genotypingAnnotations = _.uniq(genotypingAnnotations);
         gkmsvmAnnotations = _.uniq(gkmsvmAnnotations);
         physicalModeling = _.uniq(physicalModeling);
         bpnetModel = _.uniq(bpnetModel);
+        chromModel = _.uniq(chromModel);
     }
 
     // Set up the breadcrumbs.
@@ -1076,6 +1080,23 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                                 <li key={bpnet['@id']} className="multi-comma">
                                                     <a href={bpnet['@id']}>
                                                         {bpnet.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                             {chromModel.length > 0 ?
+                                <div data-test="chromModelannotations">
+                                    <dt>Annotation (ChromBPNet-model)</dt>
+                                    <dd>
+                                        <ul>
+                                            {chromModel.map((chrombpnet) => (
+                                                <li key={chrombpnet['@id']} className="multi-comma">
+                                                    <a href={chrombpnet['@id']}>
+                                                        {chrombpnet.accession}
                                                     </a>
                                                 </li>
                                             ))}
