@@ -851,15 +851,16 @@ def annotation_37_38(value, system):
 @upgrade_step('ucsc_browser_composite', '17', '18')
 def dataset_31_32(value, system):
     # https://igvf.atlassian.net/browse/ENCM-131
-    if 'ENCYCLOPEDIAv3' in value['internal_tags']:
+    if 'internal_tags' in value:
+        if 'ENCYCLOPEDIAv3' in value['internal_tags']:
             value['internal_tags'].remove('ENCYCLOPEDIAv3')
             value['internal_tags'].append('ENCYCLOPEDIAv0.3')
-    if 'ENCYCLOPEDIAv4' in value['internal_tags']:
+        if 'ENCYCLOPEDIAv4' in value['internal_tags']:
             value['internal_tags'].remove('ENCYCLOPEDIAv4')
             value['internal_tags'].append('ENCYCLOPEDIAv1')
-    if 'ENCYCLOPEDIAv5' in value['internal_tags']:
+        if 'ENCYCLOPEDIAv5' in value['internal_tags']:
             value['internal_tags'].remove('ENCYCLOPEDIAv5')
             value['internal_tags'].append('ENCYCLOPEDIAv2')
-    if 'ENCYCLOPEDIAv6' in value['internal_tags']:
+        if 'ENCYCLOPEDIAv6' in value['internal_tags']:
             value['internal_tags'].remove('ENCYCLOPEDIAv6')
             value['internal_tags'].append('ENCYCLOPEDIAv3')
