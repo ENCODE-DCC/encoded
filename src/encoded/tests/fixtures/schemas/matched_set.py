@@ -27,3 +27,4 @@ def matched_set_17(testapp, lab, award):
         'schema_version': '17',
         'internal_tags': ['ENCYCLOPEDIAv3', 'ENCYCLOPEDIAv4', 'ENCYCLOPEDIAv5', 'ENCYCLOPEDIAv6']
     }
+    return item
