@@ -612,7 +612,7 @@ def test_upgrade_dataset_31_to_32(
         'aggregate_series': (aggregate_series_3, '3', '4'),
         'annotation': (annotation_38, '38', '39'),
         'collection_series': (collection_series_1, '1', '2'),
-        'computation_model': (computational_model_1, '1', '2'),
+        'computational_model': (computational_model_1, '1', '2'),
         'differential_accessibility_series': (differential_accessibility_series_1, '1', '2'),
         'differentiation_series': (differentiation_series_1, '1', '2'),
         'disease_series': (disease_series_1, '1', '2'),
