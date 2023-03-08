@@ -411,6 +411,9 @@
         "assay_title": {
             "title": "Assay title"
         },
+        "biosample_ontology.classification": {
+            "title": "Biosample classification"
+        },
         "target.@id": {
             "title": "Target"
         },

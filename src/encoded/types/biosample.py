@@ -592,6 +592,7 @@ class Biosample(Item):
         # just filter this by specific dict keys
         reduced = [
             'sex_stage_age',
+            'organoid_summary',
             'disease_term_name',
             'treatments_phrase',
             'genotype_strain',
@@ -865,6 +866,7 @@ def generate_summary_dictionary(
         'strain_background': '',
         'preservation_method': '',
         'experiment_term_phrase': '',
+        'organoid_summmary': '',
     }
 
     if organismObject is not None:
@@ -1020,7 +1022,7 @@ def generate_summary_dictionary(
         dict_of_phrases['pulse_chase_time'] = f'subjected to a {pulse_chase_phrase} pulse-chase'
 
     if ('sample_type' in dict_of_phrases and
-        dict_of_phrases['sample_type'] != 'cell line') or \
+        dict_of_phrases['sample_type'] not in ['cell line', 'organoid']) or \
         ('sample_type' not in dict_of_phrases):
         phrase = ''
 
@@ -1039,6 +1041,17 @@ def generate_summary_dictionary(
         if 'age_display' in dict_of_phrases:
             phrase += ' (' + dict_of_phrases['age_display'] + ')'
         dict_of_phrases['sex_stage_age'] = phrase
+
+    if ('sample_type' in dict_of_phrases and
+        dict_of_phrases['sample_type'] == 'organoid'):
+        phrase = ''
+        if 'sample_term_name' in dict_of_phrases:
+            phrase += dict_of_phrases['sample_term_name']
+            phrase += ' ' + dict_of_phrases['sample_type']
+
+        if 'post_differentiation_time' in dict_of_phrases:
+            phrase += ' ' + dict_of_phrases['post_differentiation_time']
+        dict_of_phrases['organoid_summary'] = phrase
 
     if treatment_objects_list is not None and len(treatment_objects_list) > 0:
         treatments_list = []
