@@ -135,8 +135,8 @@ const getDefaultCoordinates = (defaultLocation, assembly, annotation, ignoreCach
             },
             {
                 file_format: 'bigBed',
-                href: '/files/ENCFF081NFZ/@@download/ENCFF081NFZ.bigBed',
-                dataset: '/annotations/ENCSR487PRC/',
+                href: '/files/ENCFF217ARC/@@download/ENCFF217ARC.bigBed',
+                dataset: '/annotations/ENCSR800VNX/',
                 title: 'cCRE, all',
             },
         ];
@@ -164,8 +164,8 @@ const getDefaultCoordinates = (defaultLocation, assembly, annotation, ignoreCach
                 },
                 {
                     file_format: 'bigBed',
-                    href: '/files/ENCFF081NFZ/@@download/ENCFF081NFZ.bigBed',
-                    dataset: '/annotations/ENCSR487PRC/',
+                    href: '/files/ENCFF217ARC/@@download/ENCFF217ARC.bigBed',
+                    dataset: '/annotations/ENCSR800VNX/',
                     title: 'cCRE, all',
                 },
             ];
@@ -222,8 +222,8 @@ const getDefaultCoordinates = (defaultLocation, assembly, annotation, ignoreCach
             },
             {
                 file_format: 'bigBed',
-                href: '/files/ENCFF074AWA/@@download/ENCFF074AWA.bigBed',
-                dataset: '/annotations/ENCSR906ZUZ/',
+                href: '/files/ENCFF145RXB/@@download/ENCFF145RXB.bigBed',
+                dataset: '/annotations/ENCSR412JPD/',
                 title: 'cCRE, all',
             },
         ];
