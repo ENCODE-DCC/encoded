@@ -913,3 +913,14 @@ def insitu_hic_experiment(testapp, lab, encode4_award, heart, in_situ_protocol):
         'documents': [in_situ_protocol['@id']]
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_36(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '36',
+        'internal_tags': ['ENCYCLOPEDIAv3', 'ENCYCLOPEDIAv4', 'ENCYCLOPEDIAv5', 'ENCYCLOPEDIAv6']
+    })
+    return properties

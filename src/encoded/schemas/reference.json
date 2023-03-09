@@ -81,7 +81,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "21"
+            "default": "22"
         },
         "reference_type": {
             "title": "Reference type",

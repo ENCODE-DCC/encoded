@@ -20,3 +20,14 @@ def base_experiment_series(testapp, lab, award, experiment_1):
     }
     return testapp.post_json('/experiment-series', item, status=201).json['@graph'][0]
 
+
+@pytest.fixture
+def experiment_series_3(testapp, lab, award, base_experiment):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'related_datasets': [base_experiment['@id']],
+        'schema_version': '3',
+        'internal_tags': ['ENCYCLOPEDIAv3', 'ENCYCLOPEDIAv4', 'ENCYCLOPEDIAv5', 'ENCYCLOPEDIAv6']
+    }
+    return item

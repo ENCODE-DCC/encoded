@@ -1,5 +1,12 @@
 ## Changelog for annotation.json
 
+### Schema version 39
+* Upgraded *internal_tags* as follows:
+    * *ENCYCLOPEDIAv3* is now *ENCYCLOPEDIAv0.3*
+    * *ENCYCLOPEDIAv4* is now *ENCYCLOPEDIAv1*
+    * *ENCYCLOPEDIAv5* is now *ENCYCLOPEDIAv2*
+    * *ENCYCLOPEDIAv6* is now *ENCYCLOPEDIAv3*
+
 ### Minor changes since schema version 38
 * Added *RegulomeDB_2_2*, *RegulomeDB_2_3*, *RegulomeDB_3_0* and *RegulomeDB_3_1* to the *internal_tags* enum list.
 

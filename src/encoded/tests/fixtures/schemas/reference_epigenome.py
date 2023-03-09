@@ -28,3 +28,14 @@ def reference_epigenome_16(award, lab):
         'schema_version': '16',
         'dbxrefs': ['IHEC:IHECRE00004643.1'],
     }
+
+
+@pytest.fixture
+def reference_epigenome_17(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '17',
+        'dbxrefs': ['IHEC:IHECRE00004643.1'],
+        'internal_tags': ['ENCYCLOPEDIAv3', 'ENCYCLOPEDIAv4', 'ENCYCLOPEDIAv5', 'ENCYCLOPEDIAv6']
+    }

@@ -36,3 +36,14 @@ def computational_model_non_unique_software(computational_model,software_version
         }
     )
     return item
+
+
+@pytest.fixture
+def computational_model_1(testapp, lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'computational_model_type': 'imputation',
+        'schema_version': '1',
+        'internal_tags': ['ENCYCLOPEDIAv3', 'ENCYCLOPEDIAv4', 'ENCYCLOPEDIAv5', 'ENCYCLOPEDIAv6']
+    }

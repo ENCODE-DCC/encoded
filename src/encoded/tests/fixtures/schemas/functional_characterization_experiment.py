@@ -274,3 +274,16 @@ def functional_characterization_experiment_11(testapp, lab, award, ctcf, heart):
     }
     return item
 
+
+@pytest.fixture
+def functional_characterization_experiment_12(testapp, lab, award, heart):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'MPRA',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'schema_version': '12',
+        'internal_tags': ['ENCYCLOPEDIAv3', 'ENCYCLOPEDIAv4', 'ENCYCLOPEDIAv5', 'ENCYCLOPEDIAv6']
+    }
+    return item

@@ -23,3 +23,16 @@ def functional_characterization_series_3(testapp, lab, fcc_posted_CRISPR_screen,
             fcc_posted_CRISPR_screen['@id']
         ]
     }
+
+
+@pytest.fixture
+def functional_characterization_series_4(testapp, lab, fcc_posted_CRISPR_screen, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'schema_version': '4',
+        'related_datasets': [
+            fcc_posted_CRISPR_screen['@id']
+        ],
+        'internal_tags': ['ENCYCLOPEDIAv3', 'ENCYCLOPEDIAv4', 'ENCYCLOPEDIAv5', 'ENCYCLOPEDIAv6']
+    }

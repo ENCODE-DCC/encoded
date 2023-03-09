@@ -680,6 +680,15 @@ export const internalTagsMap = {
         badgeFilename: 'tag-ENCORE.svg',
         collectionPath: '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE',
     },
+    'ENCYCLOPEDIAv0.3': {
+        badgeFilename: 'tag-ENCYCLOPEDIAv0.3.svg',
+    },
+    ENCYCLOPEDIAv1: {
+        badgeFilename: 'tag-ENCYCLOPEDIAv1.svg',
+    },
+    ENCYCLOPEDIAv2: {
+        badgeFilename: 'tag-ENCYCLOPEDIAv2.svg',
+    },
     ENCYCLOPEDIAv3: {
         badgeFilename: 'tag-ENCYCLOPEDIAv3.svg',
     },
@@ -688,9 +697,6 @@ export const internalTagsMap = {
     },
     ENCYCLOPEDIAv5: {
         badgeFilename: 'tag-ENCYCLOPEDIAv5.svg',
-    },
-    ENCYCLOPEDIAv6: {
-        badgeFilename: 'tag-ENCYCLOPEDIAv6.svg',
     },
     ENTEx: {
         badgeFilename: 'tag-ENTEx.png',
