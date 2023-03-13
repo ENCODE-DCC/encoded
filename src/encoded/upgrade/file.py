@@ -783,3 +783,13 @@ def file_29_30(value, system):
     for old_term, new_term in term_pairs:
         if output_type == old_term:
             value['output_type'] = new_term
+
+
+@upgrade_step('file', '30', '31')
+def file_30_31(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-132
+    output_type = value.get('output_type', None)
+    if output_type == 'predicted profile':
+        value['output_type'] = 'predicted signal profile'
+    if output_type == 'bias model':
+        value['output_type'] = 'bias models'

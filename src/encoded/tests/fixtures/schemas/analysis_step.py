@@ -358,3 +358,17 @@ def analysis_step_15(testapp):
         'major_version': 1
     }
     return item
+
+
+@pytest.fixture
+def analysis_step_16(testapp):
+    item = {
+        'schema_version': '16',
+        'step_label': 'bpnet-analysis-step',
+        'title': 'BPNet analysis step',
+        'major_version': 1,
+        'analysis_step_types': ['signal normalization'],
+        'input_file_types': ['predicted profile', 'bias model'],
+        'output_file_types': ['predicted profile', 'bias model']
+    }
+    return item

@@ -1,5 +1,17 @@
 ## Changelog for file.json
 
+### Schema version 31
+* *output_type* enums *predicted profile* and *bias model* were replaced by *predicted signal profile* and *bias models* respectively.
+* Added the following enums to enum list for *output_type*:
+  * *normalized observed signal profile*
+  * *normalized predicted signal profile*
+  * *normalized predicted bias profile*
+  * *normalized observed signal profile (plus strand)*
+  * *normalized observed signal profile (minus strand)*
+  * *normalized predicted signal profile (plus strand)*
+  * *normalized predicted signal profile (minus strand)*
+  * *selected regions for predicted signal and sequence contribution scores*
+
 ### Minor changes since schema version 30
 
 * Added *ENSEMBL V87* to *genome_annotation* enums

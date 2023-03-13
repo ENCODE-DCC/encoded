@@ -344,3 +344,17 @@ def analysis_step_15_16(value, system):
         if input_file_types and old_term in input_file_types:
             input_file_types.remove(old_term)
             input_file_types.append(new_term)
+
+
+@upgrade_step('analysis_step', '16', '17')
+def analysis_step_16_17(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-132
+    output_type_map = {
+        'predicted profile': 'predicted signal profile',
+        'bias model': 'bias models'
+    }
+    for prop in ['input_file_types', 'output_file_types']:
+        for output_type in output_type_map:
+            if output_type in value.get(prop, []):
+                value[prop].remove(output_type)
+                value[prop].append(output_type_map[output_type])

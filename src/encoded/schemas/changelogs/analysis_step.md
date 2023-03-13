@@ -1,5 +1,17 @@
 ## Changelog for analysis_step.json
 
+### Schema version 17
+* *input_file_types* and *output_file_types* enums *predicted profile* and *bias model* were replaced by *predicted signal profile* and *bias models* respectively.
+* Added the following enums to enum list for *input_file_types* and *output_file_types*.
+  * *normalized observed signal profile*
+  * *normalized predicted signal profile*
+  * *normalized predicted bias profile*
+  * *normalized observed signal profile (plus strand)*
+  * *normalized observed signal profile (minus strand)*
+  * *normalized predicted signal profile (plus strand)*
+  * *normalized predicted signal profile (minus strand)*
+  * *selected regions for predicted signal and sequence contribution scores*
+
 ### Schema version 16
 * *input_file_types* and *output_file_types* enums *topologically associated domains*, *chromatin interactions*, *DNA accessibility raw signal*, *long range chromatin interactions*, *nested topologically associated domains*, *allele-specific chromatin interactions*, *variants chromatin interactions*, *haplotype-specific chromatin interactions*, *haplotype-specific DNA accessibility raw signal*, and *haplotype-specific DNA accessibility corrected signal* were replaced by *contact domains*, *contact matrix*, *nuclease cleavage frequency*, *loops*, *nested contact domains*, *allele-specific contact matrix*, *variants contact matrix*, *haplotype-specific contact matrix*, *haplotype-specific nuclease cleavage frequency* and *haplotype-specific nuclease cleavage corrected frequency* respectively.
 * Added *mapping quality thresholded contact matrix*, *variant effect quantifications* to the enum list for *input_file_types* and *output_file_types*.

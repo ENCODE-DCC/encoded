@@ -212,3 +212,13 @@ def test_file_upgrade_29_to_30(upgrader, file_29):
     value = upgrader.upgrade('file', file_29, current_version='29', target_version='30')
     assert value['schema_version'] == '30'
     assert value['output_type'] == 'contact matrix'
+
+
+def test_file_upgrade_30_to_31(upgrader, file_30_predicted_profile, file_30_bias_model):
+    value = upgrader.upgrade('file', file_30_predicted_profile, current_version='30', target_version='31')
+    assert value['schema_version'] == '31'
+    assert value['output_type'] == 'predicted signal profile'
+
+    value = upgrader.upgrade('file', file_30_bias_model, current_version='30', target_version='31')
+    assert value['schema_version'] == '31'
+    assert value['output_type'] == 'bias models'

@@ -2238,3 +2238,37 @@ def file_29(testapp, lab, award, experiment):
         'schema_version': '29'
     }
     return item
+
+
+@pytest.fixture
+def file_30_predicted_profile(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bigWig',
+        'md5sum': 'e2229feb74992cc3482b34016ba1a01c',
+        'output_type': 'predicted profile',
+        'assembly': 'hg19',
+        'file_size': 888328,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'schema_version': '30'
+    }
+    return item
+
+
+@pytest.fixture
+def file_30_bias_model(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'tar',
+        'md5sum': 'a2349feb74092cc3482b34016ba1a01f',
+        'output_type': 'bias model',
+        'assembly': 'hg19',
+        'file_size': 888328,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'schema_version': '30'
+    }
+    return item

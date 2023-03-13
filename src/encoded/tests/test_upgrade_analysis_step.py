@@ -124,3 +124,15 @@ def test_analysis_step_15_to_16(upgrader, analysis_step_15):
     assert 'haplotype-specific DNA accessibility raw signal' not in value['output_file_types']
     assert 'haplotype-specific DNA accessibility corrected signal' not in value['output_file_types']
     assert 'topologically associated domain identification' not in value['analysis_step_types']
+
+
+def test_analysis_step_16_to_17(upgrader, analysis_step_16):
+    value = upgrader.upgrade(
+        'analysis_step', analysis_step_16, current_version='16', target_version='17'
+    )
+    assert value['schema_version'] == '17'
+    for prop in ['input_file_types', 'output_file_types']:
+        for old_output_type in ['predicted profile', 'bias model']:
+            assert old_output_type not in value[prop]
+        for new_output_type in ['predicted signal profile', 'bias models']:
+            assert new_output_type in value[prop]
