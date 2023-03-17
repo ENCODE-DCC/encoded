@@ -306,7 +306,7 @@ class BiosampleComponent extends React.Component {
                     <div className="result-item__data">
                         <a href={result['@id']} className="result-item__link">
                             {`${result.biosample_ontology.term_name}`}
-                            {result.biosample_ontology && result.biosample_ontology.classification === 'organoid' ? <span>{` ${result.biosample_ontology.classification} (`}</span> : <span>{` (`}</span>}
+                            {result.biosample_ontology && result.biosample_ontology.classification === 'organoid' ? <span>{` ${result.biosample_ontology.classification} (`}</span> : <span>{' ('}</span>}
                             <em>{`${result.organism.scientific_name}`}</em>
                             {`${separator}${lifeStage}${ageDisplay})`}
                         </a>
