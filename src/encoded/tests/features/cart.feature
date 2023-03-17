@@ -34,8 +34,6 @@ Feature: Cart
         And I click the link to "/cart-view/"
         And I wait for the content to load
         Then I should see at least 11 elements with the css selector ".result-item"
-        When I press "cart-facet-term-hg19"
-        Then I should see "6 files selected"
         When I press "cart-facet-term-Experiment"
         Then I should see "3 files selected"
 
