@@ -482,7 +482,9 @@ const MatrixHeader = ({ context }) => {
                     </div>
                     <div className="matrix-description">
                         <div className="matrix-description__text">
-                            ENTEx is a collaboration with the GTEx Consortium to profile approximately 30 overlapping tissues from four donors.
+                            ENTEx is a collaboration with the GTEx Consortium to profile approximately 30 overlapping tissues from four donors.<br />
+                            Publication: Rozowsky et al. Cell 2023. (https://doi.org/10.1016/j.cell.2023.02.018)<br />
+                            Additional ancillary files are available from http://entex.encodeproject.org/.<br />
                         </div>
                     </div>
                 </div>
