@@ -1,6 +1,30 @@
 Changes
 =======
 
+130.0 (released) snovault 1.0.68
+--------------------------------
+1. ENCM-139-entex-link (#4382)
+2. ENCM-138-cart-facet-count (#4385)
+3. ENCM-137-undo-italicized-brackets (#4381)
+4. ENCM-136 update snovault 1.0.68 (#4380)
+5. ENCM-132-bpnet-output-types (#4377)
+6. ENCM-131-encyclopedia-tags (#4374)
+7. ENCM-133-remove-walkme (#4378)
+8. ENCM-126-update-ccre-v4-agnostic (#4376)
+9. ENCM-92-organoid-search-links (#4375)
+10. ENCM-127-add-bpnet-model (#4368)
+11. ENCM-129-add-output-type (#4370)
+12. ENCM-90 stem cell (#4372)
+13. ENCM-130-reg-internal-tag (#4371)
+14. ENCM-115 Add FCC matrix (#4364)
+15. ENCM-116 add disease series tab (#4367)
+16. ENCM-125 add google analytics 4 (#4365)
+17. ENCM-88 fix crispr screens browser locations (#4361)
+18. ENCM-128-matrix-brain-term (#4366)
+19. ENCM-124 add seqFISH to Pipelines (#4362)
+20. ENCM-114 mixed genome annotation crashes (#4357)
+21. ENCM-119 fix organism dev error (#4355)
+
 129.0 (released) snovault 1.0.66
 --------------------------------
 1. ENCM-100 update snovault 1.0.66 (#4338)
