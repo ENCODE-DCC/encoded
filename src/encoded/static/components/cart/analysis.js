@@ -35,22 +35,35 @@ const labSortOrder = [
  */
 const compileAnalysesByTitle = (experiment, files = []) => {
     let compiledAnalyses = [];
+
     if (experiment.analyses && experiment.analyses.length > 0) {
         // Get all the analysis objects that qualify for inclusion in the Pipeline facet.
-        const qualifyingAnalyses = experiment.analyses.filter((analysis) => {
-            const rfas = _.uniq(analysis.pipeline_award_rfas);
+        let qualifyingAnalyses = [];
+        if (experiment.default_analysis) {
+            // Get the default analysis object if it exists.
+            const defaultAnalysis = experiment.analyses.find((analysis) => analysis['@id'] === experiment.default_analysis);
+            if (defaultAnalysis) {
+                qualifyingAnalyses = [defaultAnalysis];
+            }
+        }
 
-            // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
-            // `UNIFORM_PIPELINE_LAB` is only valid if alone.
-            return (
-                analysis.assembly
-                && analysis.assembly !== 'mixed'
-                && analysis.genome_annotation !== 'mixed'
-                && analysis.pipeline_award_rfas.length === 1
-                && analysis.pipeline_labs.length > 0
-                && !(analysis.pipeline_labs.length === 1 && analysis.pipeline_labs[0] === UNIFORM_PIPELINE_LAB && rfas.length > 1)
-            );
-        });
+        if (qualifyingAnalyses.length === 0) {
+            // No default analysis object, so get all the analysis objects that qualify for inclusion.
+            qualifyingAnalyses = experiment.analyses.filter((analysis) => {
+                const rfas = _.uniq(analysis.pipeline_award_rfas);
+
+                // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
+                // `UNIFORM_PIPELINE_LAB` is only valid if alone.
+                return (
+                    analysis.assembly
+                    && analysis.assembly !== 'mixed'
+                    && analysis.genome_annotation !== 'mixed'
+                    && analysis.pipeline_award_rfas.length === 1
+                    && analysis.pipeline_labs.length > 0
+                    && !(analysis.pipeline_labs.length === 1 && analysis.pipeline_labs[0] === UNIFORM_PIPELINE_LAB && rfas.length > 1)
+                );
+            });
+        }
 
         if (qualifyingAnalyses.length > 0) {
             // Group all the qualifying analyses' files by their title so we can consolidate their
@@ -204,5 +217,5 @@ export const compileDatasetAnalyses = (datasets) => {
             acc.concat(compiledAnalysis.analysisObjects)
         ), []);
     });
-    return compiledAnalyses;
+    return combinedAnalyses;
 };

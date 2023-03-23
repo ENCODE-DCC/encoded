@@ -77,11 +77,22 @@ const datasetTarget = (dataset) => (hasType(dataset, 'Series') ? '' : dataset.ta
 
 
 /**
+ * Requested dataset properties not displayed in facets.
+ */
+const hiddenDatasetFacetFields = [
+    {
+        field: 'default_analysis',
+        title: 'Default analysis',
+    },
+];
+
+/**
  * Facet fields to request from server -- superset of those displayed in facets, minus calculated
  * props.
  */
 const requestedFacetFields = displayedFileFacetFields
     .concat(displayedDatasetFacetFields.map((facetField) => ({ ...facetField, dataset: true })))
+    .concat(hiddenDatasetFacetFields.map((facetField) => ({ ...facetField, dataset: true })))
     .filter((field) => !field.calculated).concat([
         { field: '@id' },
         { field: 'related_datasets', dataset: true },
@@ -90,6 +101,7 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'assembly' },
         { field: 'assay_term_name' },
         { field: 'annotation_subtype' },
+        { field: 'default_analysis' },
         { field: 'annotation_type' },
         { field: 'file_format_type' },
         { field: 'output_category' },
