@@ -43,7 +43,7 @@ const portal = {
                 { id: 'assaysearch', title: 'Experiment search', url: '/search/?type=Experiment&control_type!=*&status=released&perturbed=false', tag: 'collection' },
                 { id: 'assaymatrix', title: 'Experiment matrix', url: '/matrix/?type=Experiment&control_type!=*&status=released&perturbed=false', tag: 'collection' },
                 { id: 'chip', title: 'ChIP-seq matrix', url: '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released', tag: 'collection' },
-                { id: 'bodymap', title: 'Human body map', url: '/summary/?type=Experiment&control_type!=*&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&status=released', tag: 'collection' },
+                { id: 'bodymap', title: 'Human and mouse body maps', url: '/summary/?type=Experiment&control_type!=*&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&status=released', tag: 'collection' },
                 { id: 'series', title: 'Functional genomics series', url: '/series-search/?type=OrganismDevelopmentSeries&status=released', tag: 'collection' },
                 { id: 'single-cell', title: 'Single-cell experiments', url: '/single-cell/?type=Experiment&assay_slims=Single+cell&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens', tag: 'collection' },
                 { id: 'sep-mm-0' },
