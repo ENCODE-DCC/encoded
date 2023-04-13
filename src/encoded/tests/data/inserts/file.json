@@ -5793,6 +5793,23 @@
         "uuid": "6bac90fb-c115-4257-a109-53d2ce385084"
     },
     {
+        "accession": "ENCFF888BSP",
+        "aliases": [
+            "j-michael-cherry:kundaje_normalized_bias_corrected_predicted_signal_profile"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 69562357,
+        "lab": "j-michael-cherry",
+        "md5sum": "5e07598bbb6f063c719062ecc1103a65",
+        "output_type": "normalized bias-corrected predicted signal profile",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "9a8990fb-01a4-4257-a109-53d2ce3bdbf4"
+    },
+    {
         "accession": "ENCFF919NPP",
         "aliases": [
             "j-michael-cherry:kundaje_normalized_predicted_signal_profile_minus"
