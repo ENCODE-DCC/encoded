@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 39
+* Added *pseudobulk* to the *annotation_type* enum list.
+
 ### Schema version 39
 * Upgraded *internal_tags* as follows:
     * *ENCYCLOPEDIAv3* is now *ENCYCLOPEDIAv0.3*
