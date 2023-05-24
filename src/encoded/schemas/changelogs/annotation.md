@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 39
 * Added *pseudobulk* to the *annotation_type* enum list.
+* Added *disease_term_id*.
 
 ### Schema version 39
 * Upgraded *internal_tags* as follows:

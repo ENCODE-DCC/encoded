@@ -675,6 +675,33 @@ class Annotation(FileSet, CalculatedVisualize):
         if inputs_list:
             return list(inputs_list)
 
+    @calculated_property(define=True, schema={
+        "title": "Disease term names",
+        "description": "Ontology term(s) describing the disease(s) relevant to the annotation.",
+        "comment": "Calculated from disease_term_id",
+        "type": "array",
+        "notSubmittable": True,
+        "uniqueItems": True,
+        "minItems": 1,
+        "items": {
+            "title": "Disease term name",
+            "description": "Ontology term describing the disease(s) relevant to the annotation.",
+            "type": "string",
+        }
+    })
+    def disease_term_name(self, request, registry, disease_term_id=None):
+        if disease_term_id is not None:
+            term_name = list()
+            for term_id in disease_term_id:
+                if term_id in registry['ontology']:
+                    term_name.append(registry['ontology'][term_id]['name'])
+                else:
+                    msg = 'Disease term ID {} is not a valid ID'.format(
+                        term_id
+                    )
+                    raise ValidationFailure('body', ['disease_term_id'], msg)
+            return term_name
+
 
 @collection(
     name='publication-data',

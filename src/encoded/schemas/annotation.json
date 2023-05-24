@@ -516,6 +516,19 @@
             "comment": "See donor.json for available identifiers.",
             "type": "string",
             "linkTo": "Donor"
+        },
+        "disease_term_id": {
+            "title": "Disease ontology IDs",
+            "description": "Ontology identifiers describing the disease(s) relevant to the annotation.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Disease ontology ID",
+                "description": "Ontology identifier describing the disease relevant to the annotation.",
+                "type": "string",
+                "pattern": "^(DOID:[0-9]{2,7}|HP:[0-9]{7})$"
+            }
         }
     },
     "facet_groups": [
