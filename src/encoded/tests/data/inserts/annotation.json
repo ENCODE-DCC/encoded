@@ -267,5 +267,19 @@
             "RegulomeDB_3_0",
             "RegulomeDB_3_1"
         ]
+    },
+    {
+        "_test": "annotation_type pseudobulk",
+        "accession": "ENCSR767PSB",
+        "award": "U54HG007004",
+        "annotation_type": "pseudobulk",
+        "description": "Test for annotation_type pseudobulk",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "a667df99-0495-11ed-b939-02b17a120002",
+        "date_released": "2023-03-15",
+        "disease_term_id": ["HP:0100543", "DOID:10652"]
     }
 ]
