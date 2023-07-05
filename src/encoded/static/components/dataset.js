@@ -193,6 +193,21 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.disease_term_name && context.disease_term_name.length > 0 ?
+                                <div data-test="healthstatus">
+                                    <dt>Health status</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.disease_term_name.map((disease) => (
+                                                <li key={disease} className="multi-comma">
+                                                    {disease}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.organism ?
                                 <div data-test="organism">
                                     <dt>Organism</dt>
