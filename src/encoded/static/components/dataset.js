@@ -20,7 +20,7 @@ import {
     AlternateAccession,
     ItemAccessories,
     InternalTags,
-    TopAccessories,
+    TopAccessories
 } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -120,6 +120,17 @@ const AnnotationComponent = (props, reactContext) => {
 
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
+
+    // Get a list of treatments
+    const treatmentList = [];
+    if (context.treatments && context.treatments.length > 0) {
+        context.treatments.forEach((treatment) => {
+            if (treatment.treatment_term_name) {
+                treatmentList.push(treatment.treatment_term_name);
+            }
+        });
+        treatmentList = _.uniq(treatmentList);
+    }
 
     return (
         <div className={itemClass}>
@@ -267,6 +278,13 @@ const AnnotationComponent = (props, reactContext) => {
                                 <div data-test="softwareused">
                                     <dt>Software used</dt>
                                     <dd>{softwareVersionList(context.software_used)}</dd>
+                                </div>
+                            : null}
+
+                            {treatmentList.length > 0 ?
+                                <div data-test="treatments">
+                                    <dt>Treatments</dt>
+                                    <dd>{treatmentList.join(', ')}</dd>
                                 </div>
                             : null}
                         </dl>
