@@ -121,17 +121,6 @@ const AnnotationComponent = (props, reactContext) => {
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
-    // Get a list of treatments
-    const treatmentList = [];
-    if (context.treatments && context.treatments.length > 0) {
-        context.treatments.forEach((treatment) => {
-            if (treatment.treatment_term_name) {
-                treatmentList.push(treatment.treatment_term_name);
-            }
-        });
-        treatmentList = _.uniq(treatmentList);
-    }
-
     return (
         <div className={itemClass}>
             <header>
@@ -281,10 +270,10 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {treatmentList.length > 0 ?
+                            {context.treatments && context.treatments.length > 0 ?
                                 <div data-test="treatments">
-                                    <dt>Treatments</dt>
-                                    <dd>{treatmentList.join(', ')}</dd>
+                                    <dt>Treatment</dt>
+                                    <dd>{[...new Set(context.treatments.map((t) => t.treatment_term_name))].join(', ')}</dd>
                                 </div>
                             : null}
                         </dl>

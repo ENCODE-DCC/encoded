@@ -750,12 +750,6 @@
         },
         "treatments.treatment_term_name": {
             "title": "Annotation treatment"
-        },
-        "treatments.treatment_type_details": {
-            "title": "Annotation treatment type details"
-        },
-        "treatments.purpose": {
-            "title": "Annotation treatment purpose"
         }
     },
     "boost_values": {
