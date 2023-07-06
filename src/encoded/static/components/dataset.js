@@ -20,7 +20,7 @@ import {
     AlternateAccession,
     ItemAccessories,
     InternalTags,
-    TopAccessories
+    TopAccessories,
 } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
