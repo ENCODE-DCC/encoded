@@ -40,6 +40,14 @@ const matrixAssaySortOrder = [
     'genotyping array',
 ];
 
+const cogdxMap = {
+    'No disease': 1,
+    'mild cognitive impairment': 2,
+    'Cognitive impairment': 3,
+    'Alzheimer\'s disease': 4,
+    'Alzheimer\'s disease and Cognitive impairment': 5,
+};
+
 /** Circle-sector of disease #1 */
 const DISEASE_SECTOR_COLOR_1 = '#27d266';
 
@@ -407,6 +415,7 @@ const convertContextToDataTable = (context, diseaseList, diseaseGroupIndex = 0) 
                         <div className="disease-text">
                             <div>
                                 <a href={url}>{globals.titleize(NO_DISEASE_LABEL === disease ? 'No cognitive impairment' : disease)}</a>
+                                {cogdxMap[disease] && <div className="disease-text__cogdx">Cogdx: {cogdxMap[disease]}</div>}
                             </div>
                         </div>
                     ),
