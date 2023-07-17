@@ -387,6 +387,19 @@ class CalculatedAssayTitle:
                                                                      assay_term_name)
             if preferred_name == 'RNA-seq':
                 preferred_name = 'total RNA-seq'
+            elif preferred_name == 'scRNA-seq':
+                subcellular_fractions = set()
+                for rep in replicates:
+                    replicate_object = request.embed(rep, '@@object?skip_calculated=true')
+                    if 'library' in replicate_object:
+                        library_object = request.embed(replicate_object['library'], '@@object?skip_calculated=true')
+                        if 'biosample' in library_object:
+                            biosample_object = request.embed(library_object['biosample'], '@@object?skip_calculated=true')
+                            subcellular_fraction_term_name = biosample_object.get('subcellular_fraction_term_name')
+                            if subcellular_fraction_term_name:
+                                subcellular_fractions.add(subcellular_fraction_term_name)
+                if len(subcellular_fractions) == 1 and subcellular_fractions[0] == 'nucleus':
+                    preferred_name = 'snRNA-seq'
             elif preferred_name == 'ChIP-seq':
                 preferred_name = 'Control ChIP-seq'
                 if not control_type and target is not None:
