@@ -21,7 +21,7 @@ import {
     ItemAccessories,
     InternalTags,
     TopAccessories,
-    treatmentDisplay
+    treatmentDisplay,
 } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
