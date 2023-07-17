@@ -21,6 +21,7 @@ import {
     ItemAccessories,
     InternalTags,
     TopAccessories,
+    treatmentDisplay
 } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -270,11 +271,11 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {context.treatments && context.treatments.length > 0 ?
-                                <div data-test="treatments">
-                                    <dt>Treatment</dt>
-                                    <dd>{[...new Set(context.treatments.map((t) => t.treatment_term_name))].join(', ')}</dd>
-                                </div>
+                            {context.treatments.length > 0 ?
+                                <PanelBody addClasses="panel__below-split">
+                                    <h4>Treatment details</h4>
+                                    {context.treatments.map((treatment) => treatmentDisplay(treatment))}
+                                </PanelBody>
                             : null}
                         </dl>
                     </div>
