@@ -550,8 +550,8 @@
         },
         "treatments": {
             "title": "Treatments",
-            "description": "A list of treatments applied to the biosample.",
-            "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
+            "description": "A list of treatments applied to the annotation.",
+            "comment": "A list of treatments applied to the annotation, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -564,14 +564,14 @@
         },
         "post_treatment_time": {
             "title": "Post-treatment time",
-            "description": "The time that elapsed past the point when biosamples were treated.",
+            "description": "The time that elapsed past the point of treatment(s) in annotation.",
             "comment": "Use in conjunction with treatment and post_treatment_time_units to specify time elapsed post-treatment. post_treatment_time specification requires non-empty treatments list and post_treatment_time_units specification.",
             "type": "string",
             "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
         },
         "post_treatment_time_units": {
             "title": "Post-treatment time units",
-            "description": "The units of time that elapsed past the point when biosamples were treated.",
+            "description": "The units of time that elapsed past point of treatment(s) in annotation.",
             "comment": "Use in conjunction with post_treatment_time and treatment to specify time elapsed post-treatment. post_treatment_time_units specification requires non-empty treatments list and post_treatment_time specification.",
             "type": "string",
             "enum": [
