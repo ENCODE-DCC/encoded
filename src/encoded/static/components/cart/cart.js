@@ -108,6 +108,7 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'processed' },
         { field: 'title' },
         { field: 'genome_annotation' },
+        { field: 'award.name' },
         { field: 'href' },
         { field: 'dataset' },
         { field: 'biological_replicates' },
