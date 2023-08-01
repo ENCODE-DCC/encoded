@@ -217,12 +217,12 @@
         font-size: 0.8rem;
         bottom: -80px;
         left: 10px;
-        width: 100px;
+        width: 120px;
     }
 
     /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-xs-min) {
-        bottom: -90px;
+        bottom: -70px;
     }
 }
 
@@ -337,6 +337,10 @@
         /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-xs-min) {
             flex: 0 1 100%;
+
+            .mouse-map {
+                margin-top: 60px;
+            }
         }
 
         svg {
@@ -466,35 +470,6 @@
 
 .body-facet-container {
     position: relative;
-
-    &.mus-musculus {
-        .body-facet {
-            padding: 0;
-
-            .body-image-container {
-                flex: 0 1 100%;
-
-                svg {
-                    margin-top: 40px;
-                    width: 100%;
-                }
-            }
-
-            .body-inset-container {
-                flex: 0 1 100%;
-            }
-
-            .body-list {
-                flex: 0 1 100%;
-                margin-left: 0;
-            }
-
-            &:nth-child(4) {
-                order: 4;
-                -webkit-order: 4;
-            }
-        }
-    }
 }
 
 // We want to rearrange the four "body-facet" components on tablet and mobile
@@ -569,6 +544,14 @@
         right: 0;
         top: 120px;
         margin: auto;
+
+        .body-facet {
+            padding-left: 0;
+
+            .mouse-map {
+                margin-right: 0;
+            }
+        }
 
         &.immune-cells-graph {
             max-width: 95%;
@@ -855,6 +838,21 @@
         .body-map-expander {
             background: darken($Homo-sapiens, 10%);
             font-weight: 600;
+        }
+    }
+}
+
+// Summary page styles
+.summary-controls {
+    .body-facet {
+        padding: 20px 0;
+
+        .body-list {
+            margin: 0;
+        }
+
+        .body-image-container .mouse-map {
+            margin-right: 0;
         }
     }
 }

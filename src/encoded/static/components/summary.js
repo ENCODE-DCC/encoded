@@ -410,7 +410,7 @@ class SummaryBody extends React.Component {
                                             </div>
                                         </div>
                                     </div>
-                                    {(this.state.selectedOrganism === 'Homo sapiens') ?
+                                    {(['Homo sapiens', 'Mus musculus'].includes(this.state.selectedOrganism)) ?
                                         <>
                                             <div className="flex-container">
                                                 <BodyMap
