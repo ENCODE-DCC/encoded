@@ -271,7 +271,7 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {context.treatments.length > 0 ?
+                            {context.treatments && context.treatments.length > 0 ?
                                 <PanelBody addClasses="panel__below-split">
                                     <h4>Treatment details</h4>
                                     {context.treatments.map((treatment) => treatmentDisplay(treatment))}
