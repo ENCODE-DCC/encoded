@@ -1813,6 +1813,7 @@ const FILE_COLUMNS = [
     'quality_metrics',
     'lab.title',
     'award.project',
+    'award.name',
     'step_run',
     'date_created',
     'analyses',

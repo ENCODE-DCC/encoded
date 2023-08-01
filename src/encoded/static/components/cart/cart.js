@@ -120,6 +120,7 @@ const requestedFacetFields = displayedFileFacetFields
         { field: 'annotation_subtype', dataset: true },
         { field: 'biochemical_inputs', dataset: true },
         { field: 'award.project', dataset: true },
+        { field: 'award.name', dataset: true },
         { field: 'description', dataset: true },
         { field: 'dbxrefs', dataset: true },
     ]);
@@ -356,6 +357,19 @@ const requestDatasets = (elements, fetch, session) => {
                 return response.json();
             }
             throw new Error(response);
+        }).then((response) => {
+            // Patch all datasets' files with each dataset's award so that the genome browser can
+            // accurately present the legend.
+            if (response) {
+                response['@graph'].forEach((dataset) => {
+                    if (dataset.files?.length > 0) {
+                        dataset.files.forEach((file) => {
+                            file.award = dataset.award;
+                        });
+                    }
+                });
+            }
+            return response;
         })
     ));
 };

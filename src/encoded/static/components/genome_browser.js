@@ -49,7 +49,9 @@ const colorCCREs = {
     'DNase-H3K4me3': '#ffaaaa',
     'CTCF-only': '#00b0f0',
     'DNase-only': '#06da93',
+    'DNase-TF': '#be28e5',
     'Low-DNase': '#e1e1e1',
+    'TF-only': '#d876ec',
     Unclassified: '#8c8c8c',
 };
 
@@ -67,6 +69,20 @@ const colorGenes = {
     'Protein coding': '#575f5a',
     'Non-protein coding': '#f9ce70',
     UTR: '#c14953',
+};
+
+const colorSegway = {
+    Promoter: '#ff0000',
+    PromoterFlanking: '#ff4400',
+    Enhancer: '#ffc34d',
+    EnhancerLow: '#ffff00',
+    Bivalent: '#bdb76b',
+    CTCF: '#c4ff05',
+    Transcribed: '#008000',
+    K9K36: '#66cdaa',
+    FacultativeHet: '#800080',
+    ConstitutiveHet: '#8a91d0',
+    Quiescent: '#ffffff',
 };
 
 /**
@@ -536,6 +552,17 @@ const GenomeLegend = (props) => (
                     </div>
                 ))}
             </div>
+            {(props.colorBlock.indexOf('segway') > -1) ?
+                <div className="legend-block">
+                    <h5>Segway</h5>
+                    {Object.keys(colorSegway).map((segway) => (
+                        <div className="legend-element" key={segway}>
+                            <div className={`legend-swatch ${colorSegway[segway] === '#ffffff' ? 'with-border' : ''}`} style={{ background: `${colorSegway[segway]}` }} />
+                            <div className="legend-label">{segway}</div>
+                        </div>
+                    ))}
+                </div>
+            : null}
             {(props.colorBlock.indexOf('ccres') > -1) ?
                 <div className="legend-block">
                     <h5>CCREs</h5>
@@ -907,15 +934,22 @@ class GenomeBrowser extends React.Component {
 
     filesToTracks(files, label, domain, maxCharPerLine) {
         const tracks = files.map((file) => {
-            if (file.output_type === 'candidate Cis-Regulatory Elements' && this.state.colorBlock.indexOf('ccres') === -1) {
+            if ((file.output_type === 'candidate Cis-Regulatory Elements' || file.title === 'cCRE, all') && this.state.colorBlock.indexOf('ccres') === -1) {
                 this.setState((prevState) => ({
                     colorBlock: [...prevState.colorBlock, 'ccres'],
                 }));
-            }
-            if ((file.output_type === 'semi-automated genome annotation' || file.output_type === 'HMM predicted chromatin state') && this.state.colorBlock.indexOf('chromatin') === -1) {
-                this.setState((prevState) => ({
-                    colorBlock: [...prevState.colorBlock, 'chromatin'],
-                }));
+            } else if ((file.output_type === 'semi-automated genome annotation' && file.award.name === 'NSERC06150')) {
+                if (this.state.colorBlock.indexOf('segway') === -1) {
+                    this.setState((prevState) => ({
+                        colorBlock: [...prevState.colorBlock, 'segway'],
+                    }));
+                }
+            } else if ((file.output_type === 'semi-automated genome annotation' || file.output_type === 'HMM predicted chromatin state')) {
+                if (this.state.colorBlock.indexOf('chromatin') === -1) {
+                    this.setState((prevState) => ({
+                        colorBlock: [...prevState.colorBlock, 'chromatin'],
+                    }));
+                }
             }
             const supplementalShortLabel = this.props.supplementalShortLabels && this.props.supplementalShortLabels[file.dataset];
             const defaultHeight = 30;
