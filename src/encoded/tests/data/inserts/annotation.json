@@ -266,7 +266,13 @@
             "RegulomeDB_2_3",
             "RegulomeDB_3_0",
             "RegulomeDB_3_1"
-        ]
+        ],
+        "treatments": [
+            "2e33a097-412c-4646-87f9-858dfaaa7c06",
+            "3280b708-0f05-40fa-bff2-54e2b6505c13"
+        ],
+        "post_treatment_time": "5",
+        "post_treatment_time_units": "day"
     },
     {
         "_test": "annotation_type pseudobulk",
@@ -280,6 +286,11 @@
         "organism": "human",
         "uuid": "a667df99-0495-11ed-b939-02b17a120002",
         "date_released": "2023-03-15",
-        "disease_term_id": ["HP:0100543", "DOID:10652"]
+        "disease_term_id": ["HP:0100543", "DOID:10652"],
+        "treatments": [
+            "3280b708-0f05-40fa-bff2-54e2b6505c13"
+        ],
+        "post_treatment_time": "3",
+        "post_treatment_time_units": "hour"
     }
 ]

@@ -542,6 +542,7 @@ class Annotation(FileSet, CalculatedVisualize):
         'organism',
         'targets',
         'targets.genes',
+        'treatments',
         'files.dataset',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
