@@ -3474,12 +3474,7 @@ class FileGalleryRendererComponent extends React.Component {
             this.setState({ selectedFilterValue: '0' });
         }
 
-        // Determine how many visualizable files there are
-        const vizFiles = filterForVisualizableFiles(this.props.context.files);
-
-        if (vizFiles.length > 0) {
-            this.setState({ currentTab: 'browser' });
-        } else if (this.props.context.files?.some((file) => file.analysis_step_version)) {
+        if (this.props.context.files?.some((file) => file.analysis_step_version)) {
             this.setState({ currentTab: 'graph' });
         } else {
             this.setState({ currentTab: 'tables' });
@@ -3901,16 +3896,17 @@ class FileGalleryRendererComponent extends React.Component {
     // inclusionOn is disabled, we filter out any files with states in
     // inclusionStatuses.
     filterForInclusion(files) {
+        let inclusionFiles = files;
         if (!this.state.inclusionOn) {
             // The user has chosen to not see files with statuses in
             // inclusionStatuses. Create an array with files having those
             // statuses filtered out. Start by making an array of files with a filtered-out status
-            return files.filter((file) => inclusionStatuses.indexOf(file.status) === -1);
+            inclusionFiles = files.filter((file) => inclusionStatuses.indexOf(file.status) === -1);
         }
 
         // The user requested seeing everything including revoked and archived files, so just
         // return the unmodified array.
-        return files;
+        return filterForVisualizableFiles(inclusionFiles);
     }
 
     closeModal() {
@@ -4157,7 +4153,7 @@ class FileGalleryRendererComponent extends React.Component {
                     >
                         <TabPanelPane key="browser">
                             <GenomeBrowser
-                                files={includedFiles}
+                                files={filterForVisualizableFiles(includedFiles)}
                                 label={showDetailedTracks ? 'cart' : 'file gallery'}
                                 supplementalShortLabels={supplementalShortLabels}
                                 expanded={this.state.facetsOpen}
