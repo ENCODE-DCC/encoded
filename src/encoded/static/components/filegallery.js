@@ -3897,17 +3897,16 @@ class FileGalleryRendererComponent extends React.Component {
     // inclusionOn is disabled, we filter out any files with states in
     // inclusionStatuses.
     filterForInclusion(files) {
-        let inclusionFiles = files;
         if (!this.state.inclusionOn) {
             // The user has chosen to not see files with statuses in
             // inclusionStatuses. Create an array with files having those
             // statuses filtered out. Start by making an array of files with a filtered-out status
-            inclusionFiles = files.filter((file) => inclusionStatuses.indexOf(file.status) === -1);
+            return files.filter((file) => inclusionStatuses.indexOf(file.status) === -1);
         }
 
         // The user requested seeing everything including revoked and archived files, so just
         // return the unmodified array.
-        return filterForVisualizableFiles(inclusionFiles);
+        return files;
     }
 
     closeModal() {
