@@ -12,6 +12,7 @@
   * *normalized predicted signal profile (minus strand)*
   * *selected regions for predicted signal and sequence contribution scores*
 * Added *normalized bias-corrected predicted signal profile* to enum list for *output_type*.
+* Added *genic features quantifications* to enum list for *output_type*.
 
 ### Minor changes since schema version 30
 
