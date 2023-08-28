@@ -398,7 +398,7 @@ class CalculatedAssayTitle:
                             subcellular_fraction_term_name = biosample_object.get('subcellular_fraction_term_name')
                             if subcellular_fraction_term_name:
                                 subcellular_fractions.add(subcellular_fraction_term_name)
-                if len(subcellular_fractions) == 1 and subcellular_fractions[0] == 'nucleus':
+                if len(subcellular_fractions) == 1 and list(subcellular_fractions)[0] == 'nucleus':
                     preferred_name = 'snRNA-seq'
             elif preferred_name == 'ChIP-seq':
                 preferred_name = 'Control ChIP-seq'
