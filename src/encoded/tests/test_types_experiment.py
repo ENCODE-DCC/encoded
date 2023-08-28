@@ -558,7 +558,9 @@ def test_experiment_snrna_seq_assay_title(testapp, base_single_cell_experiment_s
             'library': base_library['@id']
         }
     )
-    res = testapp.get(hic_experiment['@id'] + '@@index-data')
+    res = testapp.get(base_single_cell_experiment_submitted['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'scRNA-seq'
+
     testapp.patch_json(base_biosample['@id'], {'subcellular_fraction_term_name': 'nucleus'})
+    res = testapp.get(base_single_cell_experiment_submitted['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'snRNA-seq'
