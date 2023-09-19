@@ -2192,6 +2192,7 @@
                         "gene alignments",
                         "gene quantifications",
                         "gene stabilities",
+                        "genic features quantifications",
                         "genome compartments",
                         "genome index",
                         "genome reference",
@@ -2965,6 +2966,7 @@
         "kmer weights": "quantification",
         "cell type data": "quantification",
         "variant effect quantifications": "quantification",
+        "genic features quantifications": "quantification",
 
         "3D structure": "annotation",
         "depth normalized signals matrix": "annotation",

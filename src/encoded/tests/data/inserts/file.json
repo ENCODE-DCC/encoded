@@ -6207,5 +6207,18 @@
         "file_format_type": "bed3+",
         "accession": "ENCFF880RDZ",
         "file_size": 13224
+    },
+    {
+        "dataset": "ENCSR200BRU",
+        "status": "in progress",
+        "award": "U41HG006992",
+        "assembly": "GRCh38",
+        "md5sum": "4e24409de4f8500680cc98536733dae9",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "output_type": "genic features quantifications",
+        "file_format": "tsv",
+        "lab": "/labs/j-michael-cherry/",
+        "accession": "ENCFF880GFQ",
+        "file_size": 13224
     }
 ]
