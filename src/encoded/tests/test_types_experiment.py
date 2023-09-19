@@ -548,3 +548,19 @@ def test_experiment_replication_count_2(testapp, base_experiment, biosample_1, b
     testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data') 
     assert res.json['object']['bio_replicate_count'] == 2 and res.json['object']['tech_replicate_count'] == 2
+
+
+def test_experiment_snrna_seq_assay_title(testapp, base_single_cell_experiment_submitted, base_replicate, base_library, base_biosample):
+    testapp.patch_json(
+        base_replicate['@id'],
+        {
+            'experiment': base_single_cell_experiment_submitted['@id'],
+            'library': base_library['@id']
+        }
+    )
+    res = testapp.get(base_single_cell_experiment_submitted['@id'] + '@@index-data')
+    assert res.json['object']['assay_title'] == 'scRNA-seq'
+
+    testapp.patch_json(base_biosample['@id'], {'subcellular_fraction_term_name': 'nucleus'})
+    res = testapp.get(base_single_cell_experiment_submitted['@id'] + '@@index-data')
+    assert res.json['object']['assay_title'] == 'snRNA-seq'
