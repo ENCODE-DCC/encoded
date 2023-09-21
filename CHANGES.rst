@@ -1,6 +1,21 @@
 Changes
 =======
 
+131.0 (released) snovault 1.0.68
+--------------------------------
+ENCM-144-rush-ad-cogdx (#4400)
+ENCM-171 Increase listen-backlog (#4399)
+ENCM-160-snrna-seq-assay-title (#4394)
+ENCM-164-output-type-genic-features (#4398)
+ENCM-165-fix-missing-files (#4397)
+ENCM-156 Add cCRE and Segway legends to Valis (#4395)
+ENCM-141 add mouse body map to summary page (#4389)
+ENCM-162-valis-memory (#4396)
+ENCM-158-annotation-treatment (#4393)
+ENCM-153-display-disease-annotation (#4392)
+ENCM-148-annotation-type-pseudobulk (#4391)
+ENCM-140-bpnet-normalized (#4388)
+
 130.0 (released) snovault 1.0.68
 --------------------------------
 1. ENCM-139-entex-link (#4382)
