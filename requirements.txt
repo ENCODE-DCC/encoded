@@ -86,7 +86,7 @@ waitress==1.4.3
 wcwidth==0.2.5
 WebOb==1.8.6
 WebTest==2.0.35
-Werkzeug==2.0.2
+Werkzeug==2.2.3
 WSGIProxy2==0.4.6
 xlrd==1.2.0
 xmltodict==0.12.0
