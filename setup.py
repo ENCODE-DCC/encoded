@@ -19,7 +19,7 @@ INSTALL_REQUIRES = [
     "botocore==1.14.9",
     "certifi==2019.11.28",
     "elasticsearch==5.4.0",
-    "future==0.18.2",
+    "future==0.18.3",
     "humanfriendly==6.1",
     "jsonschema_serialize_fork==2.1.1",
     "loremipsum==1.0.5",
