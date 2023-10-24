@@ -39,7 +39,7 @@ INSTALL_REQUIRES = [
     "rutter==0.2",
     "subprocess_middleware==0.3",
     "transaction==3.0.0",
-    "waitress==1.4.3",
+    "waitress==2.1.1",
     "xlrd==1.2.0",
     "zope.interface==5.3.0",
     "zope.sqlalchemy==1.2",
