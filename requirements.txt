@@ -24,7 +24,7 @@ jmespath==0.10.0
 jsonschema-serialize-fork==2.1.1
 loremipsum==1.0.5
 lucenequery==0.1
-Mako==1.1.5
+Mako==1.2.2
 MarkupSafe==1.1.1
 mock==4.0.3
 more-itertools==8.10.0
