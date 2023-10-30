@@ -106,6 +106,7 @@
             "type": "string",
             "enum": [
                 "embryonic",
+                "fetal",
                 "newborn",
                 "child",
                 "adult",
